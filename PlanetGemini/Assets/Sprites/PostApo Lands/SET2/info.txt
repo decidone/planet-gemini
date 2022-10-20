@@ -1,0 +1,13 @@
+animated objects sprite sheet block size:
+
+16x16 tileset
+
+w_pomp1		- 64x80
+w_pomp2		- 96x80
+w_pomp3		- 64x80
+
+32x32 tileset
+
+32x32_w_pomp1	- 128x160
+32x32_w_pomp2	- 192x160
+32x32_w_pomp3	- 128x160

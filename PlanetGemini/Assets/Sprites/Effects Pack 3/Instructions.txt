@@ -1,0 +1,59 @@
+
+Thank you for downloading this asset. 
+The following information is useful when importing the sprite sheets:
+----------------
+
+Blood1.png
+4 frames, frame resolution: 16x16px 
+
+Blood2.png
+2 frames, frame resolution: 32x16px
+
+BonePile1.png
+1 frame, frame resolution: 32x16px
+
+BonePile2.png
+1 frame, frame resolution: 32x32px
+
+Campfire.png
+5 frames, frame resolution: 50x50px
+
+FlameVortex.png
+12 frames, frame resolution: 64x64px
+
+HealingPool.png
+7 frames, frame resolution: 64x32px
+
+LargeFire.png
+5 frames, frame resolution: 64x64px
+
+MediumFire.png
+5 frames, frame resolution: 64x64px
+
+Portal.png
+5 frames, frame resolution: 64x64px
+
+Portal_Closing.png
+10 frames, frame resolution: 64x64px
+
+Portal_Opening.png
+10 frames, frame resolution: 64x64px
+
+Skull.png
+10 frames, frame resolution: 16x16px
+
+SmallFire.png
+5 frames, frame resolution: 64x64px
+
+Torch.png
+10 frames, frame resolution: 32x32px
+
+Torch_small.png
+10 frames, frame resolution: 64x64px
+
+----------------
+Check out the Preview files for more info.
+I want to thank you for supporting my work and for making it possible for me to continue doing what I love. 
+
+Best regards,
+ Sven
