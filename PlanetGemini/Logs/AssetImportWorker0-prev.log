@@ -15,7 +15,7 @@ C:/Users/Decidone/Documents/planet-gemini/PlanetGemini
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-13507
+7845
 Successfully changed project path to: C:/Users/Decidone/Documents/planet-gemini/PlanetGemini
 C:/Users/Decidone/Documents/planet-gemini/PlanetGemini
 [UnityMemory] Configuration Parameters - Can be set up in boot.config
@@ -47,7 +47,7 @@ C:/Users/Decidone/Documents/planet-gemini/PlanetGemini
     "memorysetup-temp-allocator-size-cloud-worker=32768"
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
     "memorysetup-temp-allocator-size-gfx=262144"
-Refreshing native plugins compatible for Editor in 118.00 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 119.80 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2021.3.10f1 (1c7d0df0160b)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/Resources/UnitySubsystems
@@ -63,92 +63,92 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56612
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56540
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
 Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.007168 seconds.
+Registered in 0.007186 seconds.
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 117.64 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 115.53 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  0.587 seconds
+- Completed reload, in  0.593 seconds
 Domain Reload Profiling:
-	ReloadAssembly (587ms)
-		BeginReloadAssembly (63ms)
+	ReloadAssembly (593ms)
+		BeginReloadAssembly (62ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (0ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (1ms)
-		EndReloadAssembly (427ms)
-			LoadAssemblies (61ms)
+		EndReloadAssembly (430ms)
+			LoadAssemblies (60ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (91ms)
+			SetupTypeCache (92ms)
 			ReleaseScriptCaches (0ms)
 			RebuildScriptCaches (23ms)
-			SetupLoadedEditorAssemblies (267ms)
+			SetupLoadedEditorAssemblies (265ms)
 				LogAssemblyErrors (0ms)
 				InitializePlatformSupportModulesInManaged (8ms)
 				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (118ms)
+				RefreshPlugins (116ms)
 				BeforeProcessingInitializeOnLoad (1ms)
 				ProcessInitializeOnLoadAttributes (102ms)
-				ProcessInitializeOnLoadMethodAttributes (38ms)
+				ProcessInitializeOnLoadMethodAttributes (37ms)
 				AfterProcessingInitializeOnLoad (0ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (0ms)
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.007413 seconds.
+Registered in 0.006961 seconds.
 Begin MonoManager ReloadAssembly
 Symbol file LoadedFromMemory doesn't match image C:\Users\Decidone\Documents\planet-gemini\PlanetGemini\Library\PackageCache\com.unity.visualscripting@1.7.8\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
 Symbol file LoadedFromMemory doesn't match image C:\Users\Decidone\Documents\planet-gemini\PlanetGemini\Library\PackageCache\com.unity.visualscripting@1.7.8\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
-Refreshing native plugins compatible for Editor in 110.91 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 117.56 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.067 seconds
+- Completed reload, in  1.077 seconds
 Domain Reload Profiling:
-	ReloadAssembly (1068ms)
-		BeginReloadAssembly (107ms)
+	ReloadAssembly (1078ms)
+		BeginReloadAssembly (99ms)
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (5ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (19ms)
-		EndReloadAssembly (853ms)
-			LoadAssemblies (85ms)
+		EndReloadAssembly (864ms)
+			LoadAssemblies (76ms)
 			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (223ms)
+			SetupTypeCache (211ms)
 			ReleaseScriptCaches (1ms)
-			RebuildScriptCaches (48ms)
-			SetupLoadedEditorAssemblies (465ms)
+			RebuildScriptCaches (49ms)
+			SetupLoadedEditorAssemblies (482ms)
 				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (5ms)
+				InitializePlatformSupportModulesInManaged (6ms)
 				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (111ms)
-				BeforeProcessingInitializeOnLoad (102ms)
-				ProcessInitializeOnLoadAttributes (201ms)
-				ProcessInitializeOnLoadMethodAttributes (37ms)
-				AfterProcessingInitializeOnLoad (8ms)
+				RefreshPlugins (118ms)
+				BeforeProcessingInitializeOnLoad (105ms)
+				ProcessInitializeOnLoadAttributes (209ms)
+				ProcessInitializeOnLoadMethodAttributes (36ms)
+				AfterProcessingInitializeOnLoad (7ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (5ms)
 Platform modules already initialized, skipping
 ========================================================================
 Worker process is ready to serve import requests
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
 Refreshing native plugins compatible for Editor in 1.22 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Unloading 4092 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 44 unused Assets / (228.9 KB). Loaded Objects now: 4542.
 Memory consumption went from 152.6 MB to 152.4 MB.
-Total: 3.338500 ms (FindLiveObjects: 0.428700 ms CreateObjectMapping: 0.135200 ms MarkObjects: 2.621600 ms  DeleteObjects: 0.151900 ms)
+Total: 3.276800 ms (FindLiveObjects: 0.345600 ms CreateObjectMapping: 0.111600 ms MarkObjects: 2.639700 ms  DeleteObjects: 0.178800 ms)
 
 AssetImportParameters requested are different than current active one (requested -> active):
   custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
@@ -162,19 +162,53 @@ AssetImportParameters requested are different than current active one (requested
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
 ========================================================================
 Received Import Request.
-  Time since last request: 33605.007211 seconds.
-  path: Assets/Animation/Player.controller
-  artifactKey: Guid(8629d71d4ff417e4abefd1dbb40d135c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Animation/Player.controller using Guid(8629d71d4ff417e4abefd1dbb40d135c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9ecb0f4680113cae55aa8b7313b323ce') in 0.037995 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 0.763514 seconds.
+  Time since last request: 33977.136392 seconds.
   path: Assets/Animation/Player_Idle.anim
   artifactKey: Guid(7c5ada70951cf2f44806a2e6956ef3df) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Animation/Player_Idle.anim using Guid(7c5ada70951cf2f44806a2e6956ef3df) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b4c80f316214cfab4903b9b1a31a1488') in 0.007457 seconds 
+Start importing Assets/Animation/Player_Idle.anim using Guid(7c5ada70951cf2f44806a2e6956ef3df) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '26b83e94a27d046552c41e59a200e125') in 0.032297 seconds 
 ========================================================================
 Received Import Request.
-  Time since last request: 9.029887 seconds.
-  path: Assets/Sprites/DESIRE FANTASY/Grasslands/16x3/characters/Player_Walk_Down.anim
-  artifactKey: Guid(d2965ba6de4feed43a21764e014bb198) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Sprites/DESIRE FANTASY/Grasslands/16x3/characters/Player_Walk_Down.anim using Guid(d2965ba6de4feed43a21764e014bb198) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '898c814328d764a453c99ebc9d5a0266') in 0.006846 seconds 
+  Time since last request: 1.325498 seconds.
+  path: Assets/Animation/Player.controller
+  artifactKey: Guid(8629d71d4ff417e4abefd1dbb40d135c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Player.controller using Guid(8629d71d4ff417e4abefd1dbb40d135c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '50d3f99a202c5afa221ecaa261769274') in 0.005434 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 441.384333 seconds.
+  path: Assets/Sprites/DESIRE FANTASY/Pitaya
+  artifactKey: Guid(b507e2a7140614048a2c0b418baf5626) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprites/DESIRE FANTASY/Pitaya using Guid(b507e2a7140614048a2c0b418baf5626) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9316b3792a94f485ac3bc8db00e5f3c1') in 0.006392 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.211138 seconds.
+  path: Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya
+  artifactKey: Guid(35437a4ba02637c449e3cc06089ceaab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya using Guid(35437a4ba02637c449e3cc06089ceaab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7ffa25284444a59fec2e09b12368dcb3') in 0.002190 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.619732 seconds.
+  path: Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya/characters
+  artifactKey: Guid(f52533228fcffc84394b787a9b787cc8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya/characters using Guid(f52533228fcffc84394b787a9b787cc8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9a7e6f4909ba841dc90e3ac337e57542') in 0.002641 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.023365 seconds.
+  path: Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya/characters/$FrozenYorkshire.png
+  artifactKey: Guid(a32e6aee16858fe40801cc3c20b3dad9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya/characters/$FrozenYorkshire.png using Guid(a32e6aee16858fe40801cc3c20b3dad9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a09d68f98ffec389386b354b9d021ddf') in 0.111628 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000021 seconds.
+  path: Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya/characters/$Teleport.png
+  artifactKey: Guid(9fb848a5744eb9645a9adf6c182ae876) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya/characters/$Teleport.png using Guid(9fb848a5744eb9645a9adf6c182ae876) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6507d01c39ff392b9e7ad648ff3c5fd8') in 0.033139 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000028 seconds.
+  path: Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya/characters/$Pitaya.png
+  artifactKey: Guid(7a198607587443f4d87517aa601174cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Sprites/DESIRE FANTASY/Pitaya/Pitaya/characters/$Pitaya.png using Guid(7a198607587443f4d87517aa601174cb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '05bf70c3d61eeefaf5dbb5cb3b98d7e0') in 0.042035 seconds 
+Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
+AssetImportWorker is now disconnected from the server
+Process exiting
+Exiting without the bug reporter. Application will terminate with return code 0
