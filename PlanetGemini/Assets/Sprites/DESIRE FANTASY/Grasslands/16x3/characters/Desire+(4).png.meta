@@ -33,7 +33,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 48
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -70,7 +70,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -2878,18 +2878,18 @@ TextureImporter:
       Desire+(4)_25: 406014541
       Desire+(4)_56: 676700375
       Desire+(4)_108: 1932312679
-      Desire+(4)_85: -411835656
       Desire+(4)_127: -1248504661
-      Desire+(4)_123: -1284570068
+      Desire+(4)_85: -411835656
       Desire+(4)_48: 1090340096
+      Desire+(4)_123: -1284570068
       Desire+(4)_83: -2070106159
       Desire+(4)_27: -54731280
-      Desire+(4)_32: -962241242
       Desire+(4)_86: -1865588871
       Desire+(4)_41: 1282141310
       Desire+(4)_93: -574482499
       Desire+(4)_54: 691601611
       Desire+(4)_96: 95063371
+      Desire+(4)_32: -962241242
       Desire+(4)_51: 292978375
       Desire+(4)_98: 381660924
       Desire+(4)_65: 1594857210
