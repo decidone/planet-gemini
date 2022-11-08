@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 10f;
+    private float moveSpeed = 8f;
     public Rigidbody2D rb;
     public Animator animator;
-    private float time;
 
     Vector2 movement;
-
+    private float time;
+    
     // Update is called once per frame
     void Update()
     {
@@ -37,6 +37,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
     }
 }
