@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
+    public float moveSpeed = 10f;
     public Rigidbody2D rb;
     public Animator animator;
+    private float time;
 
     Vector2 movement;
 
@@ -19,6 +20,19 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Horizontal", movement.x);
         animator.SetFloat("Vertical", movement.y);
         animator.SetFloat("Speed", movement.sqrMagnitude);
+
+        // idle 모션 방향을 위해 마지막 움직인 방향을 저장
+        time += Time.deltaTime;
+        if (movement.x == 1|| movement.x == -1 || movement.y == 1 || movement.y == -1)
+        {
+            // 0.1초마다 입력 상태를 저장
+            if(time > 0.1)
+            {
+                animator.SetFloat("lastMoveX", movement.x);
+                animator.SetFloat("lastMoveY", movement.y);
+                time = 0;
+            }
+        }
     }
 
     void FixedUpdate()
