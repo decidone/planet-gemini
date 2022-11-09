@@ -21,28 +21,30 @@ public class BeltCtrl : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
+        anim = GetComponent<Animator>();
         BRCtrl = GetComponentInParent<BeltRootCtrl>();
-        BRCtrl.ResetAnimArr();
+        BRCtrl.AddAnimArr();
+        anim.Play("BlendAnim", -1, BRCtrl.animTime % 1);             
     }
 
     void Start()
     {
-        anim = GetComponent<Animator>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        anim.SetFloat("DirNum", dirNum);
+        anim.SetFloat("ModelNum", modelNum);
+        Pos = this.gameObject.transform.position;
 
+        ModelSelFunc();
     }
 
     private void FixedUpdate()
     {
-        anim.SetFloat("DirNum", dirNum);
-        anim.SetFloat("ModelNum", modelNum);
-        Pos = this.gameObject.transform.position;
-        ModelSelFunc();
+ 
     }
 
     void ModelSelFunc()

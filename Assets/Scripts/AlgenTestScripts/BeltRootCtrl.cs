@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class BeltRootCtrl : MonoBehaviour
 {
-    public Animator[] anim;
-
-    float animTime =0;
+    public Animator[] animArr;
+    public float animTime =0;
+    bool NewAnim = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,12 +16,22 @@ public class BeltRootCtrl : MonoBehaviour
     void Update()
     {
         animTime += (Time.deltaTime*100/40);
+        if (NewAnim == true && animTime >= 50 && animArr.Length != 0)
+            ReSetAnim();
     }
 
-    public void ResetAnimArr()
+    public void AddAnimArr()
     {
-        anim = GetComponentsInChildren<Animator>();
-
-        anim[anim.Length - 1].Play("BlendAnim", -1, animTime % 1);
+        animArr = GetComponentsInChildren<Animator>();
+        NewAnim = true;
+    }
+    void ReSetAnim()
+    {
+        for (int index = 0; index < animArr.Length; index++)
+        {
+            animArr[index].Play("BlendAnim", -1, 0);
+        }
+        animTime = 0;
+        NewAnim = false;
     }
 }
