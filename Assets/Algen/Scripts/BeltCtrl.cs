@@ -12,19 +12,16 @@ public class BeltCtrl : MonoBehaviour
     bool leftExit = false;
     bool rightExit = false;
 
-    private Animator anim;
+    protected Animator anim;
+    protected Animator animsync;
 
-    Vector3 Pos;
-
-    BeltRootCtrl BRCtrl;
+    Vector3 pos;
 
     // Start is called before the first frame update
     private void Awake()
     {
+        animsync = GameObject.Find("BeltAnimSync").GetComponent<Animator>();
         anim = GetComponent<Animator>();
-        BRCtrl = GetComponentInParent<BeltRootCtrl>();
-        BRCtrl.AddAnimArr();
-        anim.Play("BlendAnim", -1, BRCtrl.animTime % 1);             
     }
 
     void Start()
@@ -37,7 +34,9 @@ public class BeltCtrl : MonoBehaviour
     {
         anim.SetFloat("DirNum", dirNum);
         anim.SetFloat("ModelNum", modelNum);
-        Pos = this.gameObject.transform.position;
+        pos = this.gameObject.transform.position;
+
+        anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
 
         ModelSelFunc();
     }
@@ -63,13 +62,13 @@ public class BeltCtrl : MonoBehaviour
     {
         if (collision.CompareTag("Belt"))
         {
-            if ((dirNum == 0 || dirNum == 2) && collision.transform.position.x == Pos.x)//棻遴, 機
+            if ((dirNum == 0 || dirNum == 2) && collision.transform.position.x == pos.x)//棻遴, 機
             {
-                if (collision.transform.position.y > Pos.y)
+                if (collision.transform.position.y > pos.y)
                 {
                     upExist = true;
                 }
-                else if (collision.transform.position.y < Pos.y)
+                else if (collision.transform.position.y < pos.y)
                 {
                     downExist = true;
                 }
@@ -77,13 +76,13 @@ public class BeltCtrl : MonoBehaviour
                     return;
             }
 
-            else if ((dirNum == 1 || dirNum == 3) && collision.transform.position.y == Pos.y)//謝, 辦
+            else if ((dirNum == 1 || dirNum == 3) && collision.transform.position.y == pos.y)//謝, 辦
             {
-                if (collision.transform.position.x > Pos.x)
+                if (collision.transform.position.x > pos.x)
                 {
                     leftExit = true;
                 }
-                else if (collision.transform.position.x < Pos.x)
+                else if (collision.transform.position.x < pos.x)
                 {
                     rightExit = true;
                 }
@@ -97,13 +96,13 @@ public class BeltCtrl : MonoBehaviour
     {
         if (collision.CompareTag("Belt"))
         {
-            if ((dirNum == 0 || dirNum == 2) && collision.transform.position.x == Pos.x)//棻遴, 機
+            if ((dirNum == 0 || dirNum == 2) && collision.transform.position.x == pos.x)//棻遴, 機
             {
-                if (collision.transform.position.y > Pos.y)
+                if (collision.transform.position.y > pos.y)
                 {
                     upExist = false;
                 }
-                else if (collision.transform.position.y < Pos.y)
+                else if (collision.transform.position.y < pos.y)
                 {
                     downExist = false;
                 }
@@ -111,13 +110,13 @@ public class BeltCtrl : MonoBehaviour
                     return;
             }
 
-            else if ((dirNum == 1 || dirNum == 3) && collision.transform.position.y == Pos.y)//謝, 辦
+            else if ((dirNum == 1 || dirNum == 3) && collision.transform.position.y == pos.y)//謝, 辦
             {
-                if (collision.transform.position.x > Pos.x)
+                if (collision.transform.position.x > pos.x)
                 {
                     leftExit = false;
                 }
-                else if (collision.transform.position.x < Pos.x)
+                else if (collision.transform.position.x < pos.x)
                 {
                     rightExit = false;
                 }
