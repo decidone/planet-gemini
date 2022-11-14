@@ -3984,7 +3984,7 @@ SortingGroup:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
---- !u!1 &1616102844
+--- !u!1 &1668848003
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3992,30 +3992,30 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1616102847}
-  - component: {fileID: 1616102846}
-  - component: {fileID: 1616102845}
-  - component: {fileID: 1616102848}
-  - component: {fileID: 1616102849}
-  - component: {fileID: 1616102850}
+  - component: {fileID: 1668848006}
+  - component: {fileID: 1668848005}
+  - component: {fileID: 1668848004}
+  - component: {fileID: 1668848007}
+  - component: {fileID: 1668848009}
+  - component: {fileID: 1668848008}
   m_Layer: 0
-  m_Name: Golem_Armor
+  m_Name: Metal_Monster_blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &1616102845
+--- !u!95 &1668848004
 Animator:
   serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1616102844}
+  m_GameObject: {fileID: 1668848003}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 07f2cee745c4fd74c83622eef8cd90bb, type: 2}
+  m_Controller: {fileID: 9100000, guid: f2a48ff5094da274f82cb97713e0f50a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -4025,13 +4025,13 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!212 &1616102846
+--- !u!212 &1668848005
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1616102844}
+  m_GameObject: {fileID: 1668848003}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -4066,52 +4066,52 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1996760734, guid: 482ad91bab7fed448a85a7bc79ee3799, type: 3}
+  m_Sprite: {fileID: -861039232, guid: a32a0f9b4398a7b4591bdd7066467392, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4, y: 4}
+  m_Size: {x: 3, y: 3.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!4 &1616102847
+--- !u!4 &1668848006
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1616102844}
+  m_GameObject: {fileID: 1668848003}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20, y: 0, z: 0}
+  m_LocalPosition: {x: 17.31, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1616102848
+--- !u!114 &1668848007
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1616102844}
+  m_GameObject: {fileID: 1668848003}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9067e5e0a8e508438da96f34906f685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   aggroTarget: {fileID: 0}
---- !u!58 &1616102849
+--- !u!58 &1668848008
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1616102844}
+  m_GameObject: {fileID: 1668848003}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -4121,14 +4121,14 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 10
---- !u!50 &1616102850
+--- !u!50 &1668848009
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1616102844}
+  m_GameObject: {fileID: 1668848003}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
@@ -4173,6 +4173,63 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2995091062270652410
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811077, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995091061736811078, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
+      propertyPath: m_Name
+      value: Golem_Armor
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
 --- !u!1 &7613712180362804517
 GameObject:
   m_ObjectHideFlags: 0

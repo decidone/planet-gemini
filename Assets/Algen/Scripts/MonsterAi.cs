@@ -18,6 +18,7 @@ public class MonsterAi : MonoBehaviour
     float moveSpeed = 3.0f;                 // 이동속도
     Vector2 moveDir = Vector2.zero;         // 이동 벡터 정규화
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
+    Vector2 targetVector = Vector2.zero;    // 이동 위치
     float moveStep = 0.0f;                  // 프레임당 이동 거리
     //이동 관련 변수
 
@@ -38,8 +39,10 @@ public class MonsterAi : MonoBehaviour
     //공격 관련 변수
     public GameObject aggroTarget = null;   // 타겟
     float targetDist = 0.0f;                // 타겟과의 거리
-    float attackDist = 2.0f;                // 공격범위
-    Vector2 targetVector = Vector2.zero;    // 타겟 위치
+    float attackDist = 5.0f;                // 공격범위
+    bool isAttacking = false;
+    bool isAttDelay = false;
+    float AttDelayTime = 1.0f;
     //공격 관련 변수
 
     MonsterAI monsterAI = MonsterAI.MAI_Patrol; // 시작 시 패트롤 상태
@@ -97,44 +100,81 @@ public class MonsterAi : MonoBehaviour
 
     void MonsterMove()
     {
-        if ((monsterAI == MonsterAI.MAI_Patrol))
+        if(isAttacking == false)
         {
-            targetVector = patrolPos - this.transform.position;
-            moveStep = moveSpeed * Time.fixedDeltaTime;
-        }//if ((monsterAI == MonsterAI.MAI_Patrol))
-        else
-        {
-            if (aggroTarget != null)
+            if ((monsterAI == MonsterAI.MAI_Patrol))
             {
-                targetVector = aggroTarget.transform.position - this.transform.position;
-                moveStep = (moveSpeed + 2) * Time.fixedDeltaTime;
-            }//if (aggroTarget != null)
-        }//else
-        targetDist = targetVector.magnitude;
-        moveDir = targetVector.normalized;
-        moveNextStep = moveDir * moveStep;
+                targetVector = patrolPos - this.transform.position;
+                moveStep = moveSpeed * Time.fixedDeltaTime;
+            }//if ((monsterAI == MonsterAI.MAI_Patrol))
+            else
+            {
+                if (aggroTarget != null)
+                {
+                    targetVector = aggroTarget.transform.position - this.transform.position;
+                    moveStep = (moveSpeed + 2) * Time.fixedDeltaTime;
+                }//if (aggroTarget != null)
+            }//else
+            targetDist = targetVector.magnitude;
+            moveDir = targetVector.normalized;
+            moveNextStep = moveDir * moveStep;
+            float patrolPosDis = targetVector.magnitude;
 
-        float patrolPosDis = targetVector.magnitude;
-
-        if (patrolPosDis > 0.10f)        
-            ImgMrror();        
-        else        
-            animator.SetBool("isMoving", false);        
+            if (patrolPosDis > 0.10f)        
+                ImgMrror();        
+            else        
+                animator.SetBool("isMoving", false);
+        }
     }//void MonsterMove()
 
     void NormalTrace()
     {
         animator.SetBool("isMoving", true);
 
-        if (targetDist < attackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격        
-            monsterAI = MonsterAI.MAI_Attack;
+        if (targetDist < attackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격
+        {
+            Invoke("TurnAttack", 0.1f);//0.1초 지연 즉발로 하니 꼬임
+        }
     }//void NormalTrace()
+
+    void TurnAttack()
+    {
+        monsterAI = MonsterAI.MAI_Attack;
+    }
 
     void Attack()
     {
-        if(targetDist > attackDist)        
-            monsterAI = MonsterAI.MAI_NormalTrace;        
+        if (targetDist > attackDist)
+        {
+            animator.SetBool("isAttack", false);
+            monsterAI = MonsterAI.MAI_NormalTrace;
+        }
+        if (isAttacking == false && isAttDelay == false)
+        {
+           if (targetDist <= attackDist)
+            {
+                animator.SetBool("isAttack", true);
+
+                float attackMotion = Random.Range(0, 3);
+                animator.SetFloat("attackMotion", attackMotion);
+                animator.Play("Attack", -1, 0);
+                isAttacking = true;                
+            }
+        }
+        if (isAttDelay == true)
+            return;
     }//void Attack()
+
+    public void AttackEnd(string str)
+    {
+        if(str == "false")
+        {
+            animator.SetBool("isAttack", false);
+            isAttacking = false;
+            isAttDelay = true;
+            StartCoroutine("AttackDelay");
+        }
+    }
 
     void ImgMrror()
     {
@@ -146,7 +186,11 @@ public class MonsterAi : MonoBehaviour
         this.transform.position = this.transform.position + moveNextStep;
     }//void ImgMrror()
 
-
+    IEnumerator AttackDelay()
+    {
+        yield return new WaitForSeconds(AttDelayTime);
+        isAttDelay = false;
+    }//IEnumerator LastFollow()
     IEnumerator LastFollow()
     {
         animator.SetBool("isMoving", false);
@@ -168,7 +212,7 @@ public class MonsterAi : MonoBehaviour
         }//if (spawnDis > 7)
         else
         {
-            idle = Random.Range(0, 3);
+            idle = Random.Range(0, 4);
             if (idle == 0)
             {
                 patrolPos = this.transform.position;
@@ -189,7 +233,6 @@ public class MonsterAi : MonoBehaviour
         if (monsterAI == MonsterAI.MAI_Patrol)
             StartCoroutine("Patrol");
     }//IEnumerator Patrol()
-
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
