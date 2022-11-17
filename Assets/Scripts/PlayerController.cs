@@ -6,6 +6,13 @@ public class PlayerController : MonoBehaviour
 {
     void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.name);
+        ItemProps itemProps = collision.GetComponent<ItemProps>();
+        if (itemProps)
+        {
+            Debug.Log("inventory : " + itemProps.item.name);
+            // 인벤토리에 넣음
+            Inventory.instance.Add(itemProps.item);
+            Destroy(collision.gameObject);
+        }
     }
 }
