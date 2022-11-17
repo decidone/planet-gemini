@@ -14,8 +14,11 @@ public enum MonsterAI   // 몬스터 상태 관리
 
 public class MonsterAi : MonoBehaviour
 {
+    [SerializeField]
+    private MonsterData monsteData;
+    public MonsterData MonsterData { set { monsteData = value; } }
+
     //이동 관련 변수
-    float moveSpeed = 3.0f;                 // 이동속도
     Vector2 moveDir = Vector2.zero;         // 이동 벡터 정규화
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
     Vector2 targetVector = Vector2.zero;    // 이동 위치
@@ -32,17 +35,14 @@ public class MonsterAi : MonoBehaviour
     bool isFollowEnd = false;               // 유저를 놓쳤는지 체크
     Vector3 patrolPos = Vector3.zero;       // 패트롤 지정 위치
     Vector3 patRandomPos = Vector3.zero;    // 패트롤 랜덤 위치
-    float patrolRad = 5.0f;                 // 유닛 패트롤 거리
     int idle = 0;                           // 0 일경우 idle상태
     // 패트롤 변수
 
     //공격 관련 변수
     public GameObject aggroTarget = null;   // 타겟
     float targetDist = 0.0f;                // 타겟과의 거리
-    float attackDist = 5.0f;                // 공격범위
     bool isAttacking = false;
     bool isAttDelay = false;
-    float AttDelayTime = 1.0f;
     //공격 관련 변수
 
     MonsterAI monsterAI = MonsterAI.MAI_Patrol; // 시작 시 패트롤 상태
@@ -52,6 +52,7 @@ public class MonsterAi : MonoBehaviour
     {
         animator = gameObject.GetComponentInChildren<Animator>();
         spawnPos = GameObject.Find("SpawnPos").transform;
+        this.gameObject.GetComponent<CircleCollider2D>().radius = monsteData.ColliderRadius;
         patrolPos = spawnPos.position;
         StartCoroutine("Patrol");
     }//void Start()
@@ -66,6 +67,8 @@ public class MonsterAi : MonoBehaviour
     {
         MonsterAICtrl();
     }//void Update()
+
+
 
     void MonsterAICtrl()
     {
@@ -105,14 +108,14 @@ public class MonsterAi : MonoBehaviour
             if ((monsterAI == MonsterAI.MAI_Patrol))
             {
                 targetVector = patrolPos - this.transform.position;
-                moveStep = moveSpeed * Time.fixedDeltaTime;
+                moveStep = monsteData.MoveSpeed * Time.fixedDeltaTime;
             }//if ((monsterAI == MonsterAI.MAI_Patrol))
             else
             {
                 if (aggroTarget != null)
                 {
                     targetVector = aggroTarget.transform.position - this.transform.position;
-                    moveStep = (moveSpeed + 2) * Time.fixedDeltaTime;
+                    moveStep = (monsteData.MoveSpeed + 2) * Time.fixedDeltaTime;
                 }//if (aggroTarget != null)
             }//else
             targetDist = targetVector.magnitude;
@@ -131,7 +134,7 @@ public class MonsterAi : MonoBehaviour
     {
         animator.SetBool("isMoving", true);
 
-        if (targetDist < attackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격
+        if (targetDist < monsteData.AttackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격
         {
             Invoke("TurnAttack", 0.1f);//0.1초 지연 즉발로 하니 꼬임
         }
@@ -144,14 +147,14 @@ public class MonsterAi : MonoBehaviour
 
     void Attack()
     {
-        if (targetDist > attackDist)
+        if (targetDist > monsteData.AttackDist)
         {
             animator.SetBool("isAttack", false);
             monsterAI = MonsterAI.MAI_NormalTrace;
         }
         if (isAttacking == false && isAttDelay == false)
         {
-           if (targetDist <= attackDist)
+           if (targetDist <= monsteData.AttackDist)
             {
                 animator.SetBool("isAttack", true);
 
@@ -188,7 +191,7 @@ public class MonsterAi : MonoBehaviour
 
     IEnumerator AttackDelay()
     {
-        yield return new WaitForSeconds(AttDelayTime);
+        yield return new WaitForSeconds(monsteData.AttDelayTime);
         isAttDelay = false;
     }//IEnumerator LastFollow()
     IEnumerator LastFollow()
@@ -220,7 +223,7 @@ public class MonsterAi : MonoBehaviour
             }//if (idle == 0)
             else
             {
-                patRandomPos = Random.insideUnitCircle * patrolRad;
+                patRandomPos = Random.insideUnitCircle * monsteData.PatrolRad;
                 patrolPos = this.transform.position + patRandomPos;
 
                 animator.SetBool("isMoving", true);
