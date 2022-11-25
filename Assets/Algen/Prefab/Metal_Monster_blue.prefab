@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 3943188774784533399}
   - component: {fileID: 3943188774784533396}
   - component: {fileID: 3943188774784533397}
-  - component: {fileID: 3943188774784533398}
   - component: {fileID: 3943188774784533400}
   - component: {fileID: 3943188774784533401}
+  - component: {fileID: -543749240867064320}
+  - component: {fileID: -3184883611660089522}
   m_Layer: 0
   m_Name: Metal_Monster_blue
   m_TagString: Untagged
@@ -108,20 +109,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &3943188774784533398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3943188774784533394}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9067e5e0a8e508438da96f34906f685, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monsteData: {fileID: 0}
-  aggroTarget: {fileID: 0}
 --- !u!50 &3943188774784533400
 Rigidbody2D:
   serializedVersion: 4
@@ -159,3 +146,33 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 10
+--- !u!114 &-543749240867064320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3943188774784533394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0982960aff44e44b86cff0aec9ba9cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsteData: {fileID: 0}
+--- !u!114 &-3184883611660089522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3943188774784533394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17bb3646e92517e4d8057a277d5c1f43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  aggroTarget: {fileID: 0}
+  isAttacking: 0
+  isAttDelay: 0
+  attackMotion: 0

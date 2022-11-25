@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BeltDownBodyAnim
+  m_Name: TBLeftUpAnim
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,13 +20,13 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 0}
+      value: {fileID: -1655248181, guid: c2142a258f44740489d6518314c157ab, type: 3}
     - time: 0.1
-      value: {fileID: 0}
+      value: {fileID: -573412049, guid: c2142a258f44740489d6518314c157ab, type: 3}
     - time: 0.2
-      value: {fileID: 0}
+      value: {fileID: -436773828, guid: c2142a258f44740489d6518314c157ab, type: 3}
     - time: 0.3
-      value: {fileID: 0}
+      value: {fileID: -521810224, guid: c2142a258f44740489d6518314c157ab, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -46,10 +46,10 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: -1655248181, guid: c2142a258f44740489d6518314c157ab, type: 3}
+    - {fileID: -573412049, guid: c2142a258f44740489d6518314c157ab, type: 3}
+    - {fileID: -436773828, guid: c2142a258f44740489d6518314c157ab, type: 3}
+    - {fileID: -521810224, guid: c2142a258f44740489d6518314c157ab, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

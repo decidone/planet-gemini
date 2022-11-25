@@ -12,11 +12,16 @@ public enum MonsterAI   // 몬스터 상태 관리
     MAI_Attack,         // 공격 상태
 }
 
+public enum AttackState
+{
+    idle,
+    AttackStart,
+    Attacking,
+    AttackEnd,
+}
 public class MonsterAi : MonoBehaviour
 {
-    [SerializeField]
-    private MonsterData monsteData;
-    public MonsterData MonsterData { set { monsteData = value; } }
+    GetMonsterData getMonsterData;
 
     //이동 관련 변수
     Vector2 moveDir = Vector2.zero;         // 이동 벡터 정규화
@@ -26,7 +31,7 @@ public class MonsterAi : MonoBehaviour
     //이동 관련 변수
 
     //애니메이션 관련 변수
-    Animator animator;
+    public Animator animator;
     //애니메이션 관련 변수
 
     // 패트롤 변수
@@ -41,18 +46,18 @@ public class MonsterAi : MonoBehaviour
     //공격 관련 변수
     public GameObject aggroTarget = null;   // 타겟
     float targetDist = 0.0f;                // 타겟과의 거리
-    bool isAttacking = false;
-    bool isAttDelay = false;
+    public int attackMotion = 0;
     //공격 관련 변수
 
     MonsterAI monsterAI = MonsterAI.MAI_Patrol; // 시작 시 패트롤 상태
-
+    public AttackState attackState = AttackState.idle;
     // Start is called before the first frame update
     void Start()
     {
+        getMonsterData = GetComponentInChildren<GetMonsterData>();
         animator = gameObject.GetComponentInChildren<Animator>();
         spawnPos = GameObject.Find("SpawnPos").transform;
-        this.gameObject.GetComponent<CircleCollider2D>().radius = monsteData.ColliderRadius;
+        this.gameObject.GetComponent<CircleCollider2D>().radius = getMonsterData.monsteData.ColliderRadius;
         patrolPos = spawnPos.position;
         StartCoroutine("Patrol");
     }//void Start()
@@ -60,12 +65,13 @@ public class MonsterAi : MonoBehaviour
     private void FixedUpdate()
     {
         MonsterMove();
+        MonsterAICtrl();
+
     }//private void FixedUpdate()
 
     // Update is called once per frame
     void Update()
     {
-        MonsterAICtrl();
     }//void Update()
 
 
@@ -96,26 +102,29 @@ public class MonsterAi : MonoBehaviour
         }//else if (monsterAI == MonsterAI.MAI_ReturnPos)
         else if (monsterAI == MonsterAI.MAI_Attack)
         {
-            Attack();
+            if (attackState == AttackState.idle)
+            {
+                Attack();
+            }
             //Debug.Log("MAI_Attack");
         }//else if (monsterAI == MonsterAI.MAI_Attack)
     }//void MonsterAICtrl()
 
     void MonsterMove()
     {
-        if(isAttacking == false)
+        if(attackState != AttackState.Attacking)
         {
             if ((monsterAI == MonsterAI.MAI_Patrol))
             {
                 targetVector = patrolPos - this.transform.position;
-                moveStep = monsteData.MoveSpeed * Time.fixedDeltaTime;
+                moveStep = getMonsterData.monsteData.MoveSpeed * Time.fixedDeltaTime;
             }//if ((monsterAI == MonsterAI.MAI_Patrol))
             else
             {
                 if (aggroTarget != null)
                 {
                     targetVector = aggroTarget.transform.position - this.transform.position;
-                    moveStep = (monsteData.MoveSpeed + 2) * Time.fixedDeltaTime;
+                    moveStep = (getMonsterData.monsteData.MoveSpeed + 2) * Time.fixedDeltaTime;
                 }//if (aggroTarget != null)
             }//else
             targetDist = targetVector.magnitude;
@@ -134,7 +143,7 @@ public class MonsterAi : MonoBehaviour
     {
         animator.SetBool("isMoving", true);
 
-        if (targetDist < monsteData.AttackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격
+        if (targetDist < getMonsterData.monsteData.AttackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격
         {
             Invoke("TurnAttack", 0.1f);//0.1초 지연 즉발로 하니 꼬임
         }
@@ -147,36 +156,26 @@ public class MonsterAi : MonoBehaviour
 
     void Attack()
     {
-        if (targetDist > monsteData.AttackDist)
+        if (targetDist > getMonsterData.monsteData.AttackDist)  // 탐색 범위 밖으로 나갈 때
         {
             animator.SetBool("isAttack", false);
-            monsterAI = MonsterAI.MAI_NormalTrace;
+            monsterAI = MonsterAI.MAI_NormalTrace;              // 따라가기 활성화
+            attackState = AttackState.idle;
         }
-        if (isAttacking == false && isAttDelay == false)
-        {
-           if (targetDist <= monsteData.AttackDist)
-            {
-                animator.SetBool("isAttack", true);
-
-                float attackMotion = Random.Range(0, 3);
-                animator.SetFloat("attackMotion", attackMotion);
-                animator.Play("Attack", -1, 0);
-                isAttacking = true;                
-            }
+        else if (targetDist <= getMonsterData.monsteData.AttackDist)  // 공격 범위 내로 들어왔을 때        
+        { 
+            RandomAttackNum(getMonsterData.monsteData.AttackNum, aggroTarget.transform);
         }
-        if (isAttDelay == true)
-            return;
     }//void Attack()
 
-    public void AttackEnd(string str)
+    protected virtual void RandomAttackNum(int attackNum, Transform targetTr)
     {
-        if(str == "false")
-        {
-            animator.SetBool("isAttack", false);
-            isAttacking = false;
-            isAttDelay = true;
-            StartCoroutine("AttackDelay");
-        }
+        
+    }
+
+    protected virtual void AttackEnd(string str)
+    {
+
     }
 
     void ImgMrror()
@@ -191,8 +190,8 @@ public class MonsterAi : MonoBehaviour
 
     IEnumerator AttackDelay()
     {
-        yield return new WaitForSeconds(monsteData.AttDelayTime);
-        isAttDelay = false;
+        yield return new WaitForSeconds(getMonsterData.monsteData.AttDelayTime);
+        attackState = AttackState.idle;
     }//IEnumerator LastFollow()
     IEnumerator LastFollow()
     {
@@ -223,7 +222,7 @@ public class MonsterAi : MonoBehaviour
             }//if (idle == 0)
             else
             {
-                patRandomPos = Random.insideUnitCircle * monsteData.PatrolRad;
+                patRandomPos = Random.insideUnitCircle * getMonsterData.monsteData.PatrolRad;
                 patrolPos = this.transform.position + patRandomPos;
 
                 animator.SetBool("isMoving", true);

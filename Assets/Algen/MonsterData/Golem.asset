@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4342d4be0417a448ada223d591cfe9d, type: 3}
   m_Name: Golem
   m_EditorClassIdentifier: 
-  monsterName: 
+  monsterName: Golem
   hp: 0
   damage: 0
   moveSpeed: 5
@@ -20,3 +20,4 @@ MonoBehaviour:
   attackDist: 5
   attDelayTime: 1
   colliderRadius: 10
+  attackNum: 3

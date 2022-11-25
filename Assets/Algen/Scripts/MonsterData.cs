@@ -28,4 +28,8 @@ public class MonsterData : ScriptableObject
     [SerializeField]
     private float colliderRadius;//Å¸°Ù Å½»ö ¹üÀ§
     public float ColliderRadius { get { return colliderRadius; } }
+
+    [SerializeField]
+    private int attackNum;//Å¸°Ù Å½»ö ¹üÀ§
+    public int AttackNum { get { return attackNum; } }
 }
