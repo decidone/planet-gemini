@@ -7,15 +7,11 @@ public class BeltCtrl : MonoBehaviour
     public float dirNum = 0;
     public float modelNum = 0;
 
-    bool upExist = false;
-    bool downExist = false;
-    bool leftExit = false;
-    bool rightExit = false;
-
     protected Animator anim;
     protected Animator animsync;
 
-    Vector3 pos;
+    public float[] otherBeltNum = new float[] { 4, 4, 4, 4 };  //0 : »ó, 1 : ¿ì, 2 : ÇÏ, 3 : ÁÂ , 4 ¾øÀ½
+    Vector2 pos;
 
     // Start is called before the first frame update
     private void Awake()
@@ -48,77 +44,102 @@ public class BeltCtrl : MonoBehaviour
 
     void ModelSelFunc()
     {
-        if ((upExist == true && downExist == false) || (leftExit == false && rightExit == true))
-            modelNum = 3;
-        else if ((upExist == true && downExist == true) || (leftExit == true && rightExit == true))
-            modelNum = 2;
-        else if ((upExist == false && downExist == true) || (leftExit == true && rightExit == false))
-            modelNum = 1;
-        else
-            modelNum = 0;
+        if (dirNum == 0 || dirNum == 2)
+        {
+            if((otherBeltNum[1] == 3 && otherBeltNum[3] == 1) || (otherBeltNum[1] == 4 && otherBeltNum[3] == 4))
+            {
+                if (otherBeltNum[0] != 4 && otherBeltNum[2] != 4)
+                    modelNum = 2;
+                else if (otherBeltNum[0] != 4 && otherBeltNum[2] == 4)
+                    modelNum = 3;
+                else if (otherBeltNum[0] == 4 && otherBeltNum[2] != 4)
+                    modelNum = 1;
+                else
+                    modelNum = 0;
+            }
+            else if (otherBeltNum[1] == 3)
+                modelNum = 5;
+            else if (otherBeltNum[3] == 1)
+                modelNum = 4;
+        }
+        else if (dirNum == 1 || dirNum == 3)
+        {
+            if ((otherBeltNum[0] == 2 && otherBeltNum[2] == 0) || (otherBeltNum[0] == 4 && otherBeltNum[2] == 4))
+            {
+                if (otherBeltNum[1] != 4 && otherBeltNum[3] != 4)
+                    modelNum = 2;
+                else if (otherBeltNum[1] == 4 && otherBeltNum[3] != 4)
+                    modelNum = 3;
+                else if (otherBeltNum[1] != 4 && otherBeltNum[3] == 4)
+                    modelNum = 1;
+                else
+                    modelNum = 0;
+            }
+            else if (otherBeltNum[0] == 2)
+                modelNum = 5;
+            else if (otherBeltNum[2] == 0)
+                modelNum = 4;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Belt"))
         {
-            if ((dirNum == 0 || dirNum == 2) && collision.transform.position.x == pos.x)//´Ù¿î, ¾÷
+            if (collision.transform.position.x == pos.x)//°°Àº x ÁÂÇ¥°í
             {
-                if (collision.transform.position.y > pos.y)
+                if (collision.transform.position.y > pos.y)//y ÁÂÇ¥°¡ ³ôÀ¸¸é
                 {
-                    upExist = true;
+                    otherBeltNum[0] = collision.GetComponentInChildren<BeltCtrl>().dirNum;
                 }
-                else if (collision.transform.position.y < pos.y)
+                else if (collision.transform.position.y < pos.y)//y ÁÂÇ¥°¡ ³·À¸¸é
                 {
-                    downExist = true;
+                    otherBeltNum[2] = collision.GetComponentInChildren<BeltCtrl>().dirNum;
                 }
                 else
                     return;
             }
-
-            else if ((dirNum == 1 || dirNum == 3) && collision.transform.position.y == pos.y)//ÁÂ, ¿ì
+            else if (collision.transform.position.y == pos.y)//°°Àº y ÁÂÇ¥°í
             {
-                if (collision.transform.position.x > pos.x)
+                if (collision.transform.position.x > pos.x)//x ÁÂÇ¥°¡ ³ôÀ¸¸é
                 {
-                    leftExit = true;
+                    otherBeltNum[1] = collision.GetComponentInChildren<BeltCtrl>().dirNum;
                 }
-                else if (collision.transform.position.x < pos.x)
+                else if (collision.transform.position.x < pos.x)//x ÁÂÇ¥°¡ ³·À¸¸é
                 {
-                    rightExit = true;
+                    otherBeltNum[3] = collision.GetComponentInChildren<BeltCtrl>().dirNum;
                 }
                 else
                     return;
             }
         }
     }
-
     void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Belt"))
         {
-            if ((dirNum == 0 || dirNum == 2) && collision.transform.position.x == pos.x)//´Ù¿î, ¾÷
+            if (collision.transform.position.x == pos.x)//°°Àº x ÁÂÇ¥°í
             {
-                if (collision.transform.position.y > pos.y)
+                if (collision.transform.position.y > pos.y)//y ÁÂÇ¥°¡ ³ôÀ¸¸é
                 {
-                    upExist = false;
+                    otherBeltNum[0] = 4;
                 }
-                else if (collision.transform.position.y < pos.y)
+                else if (collision.transform.position.y < pos.y)//y ÁÂÇ¥°¡ ³·À¸¸é
                 {
-                    downExist = false;
+                    otherBeltNum[2] = 4;
                 }
                 else
                     return;
             }
-
-            else if ((dirNum == 1 || dirNum == 3) && collision.transform.position.y == pos.y)//ÁÂ, ¿ì
+            else if (collision.transform.position.y == pos.y)//°°Àº y ÁÂÇ¥°í
             {
-                if (collision.transform.position.x > pos.x)
+                if (collision.transform.position.x > pos.x)//x ÁÂÇ¥°¡ ³ôÀ¸¸é
                 {
-                    leftExit = false;
+                    otherBeltNum[1] = 4;
                 }
-                else if (collision.transform.position.x < pos.x)
+                else if (collision.transform.position.x < pos.x)//x ÁÂÇ¥°¡ ³·À¸¸é
                 {
-                    rightExit = false;
+                    otherBeltNum[3] = 4;
                 }
                 else
                     return;

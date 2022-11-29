@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2995091061736811078
+--- !u!1 &3943188774784533394
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2995091061736811077}
-  - component: {fileID: 2995091061736811076}
-  - component: {fileID: 2995091061736811079}
-  - component: {fileID: 2995091061736811067}
-  - component: {fileID: 2995091061736811064}
-  - component: {fileID: 7812644108575095247}
-  - component: {fileID: 6998647527298961789}
+  - component: {fileID: 3943188774784533399}
+  - component: {fileID: 3943188774784533396}
+  - component: {fileID: 3943188774784533397}
+  - component: {fileID: 3943188774784533400}
+  - component: {fileID: 3943188774784533401}
+  - component: {fileID: -543749240867064320}
+  - component: {fileID: -3184883611660089522}
   m_Layer: 0
-  m_Name: Golem_Armor
+  m_Name: Metal_Monster_blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2995091061736811077
+--- !u!4 &3943188774784533399
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2995091061736811078}
+  m_GameObject: {fileID: 3943188774784533394}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20, y: 0, z: 0}
+  m_LocalPosition: {x: 17.31, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &2995091061736811076
+--- !u!212 &3943188774784533396
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2995091061736811078}
+  m_GameObject: {fileID: 3943188774784533394}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -78,28 +78,28 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1996760734, guid: 482ad91bab7fed448a85a7bc79ee3799, type: 3}
+  m_Sprite: {fileID: -861039232, guid: a32a0f9b4398a7b4591bdd7066467392, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4, y: 4}
+  m_Size: {x: 3, y: 3.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &2995091061736811079
+--- !u!95 &3943188774784533397
 Animator:
   serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2995091061736811078}
+  m_GameObject: {fileID: 3943188774784533394}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 07f2cee745c4fd74c83622eef8cd90bb, type: 2}
+  m_Controller: {fileID: 9100000, guid: f2a48ff5094da274f82cb97713e0f50a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -109,30 +109,14 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!58 &2995091061736811067
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2995091061736811078}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 10
---- !u!50 &2995091061736811064
+--- !u!50 &3943188774784533400
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2995091061736811078}
+  m_GameObject: {fileID: 3943188774784533394}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
@@ -146,36 +130,49 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &7812644108575095247
+--- !u!58 &3943188774784533401
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3943188774784533394}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 10
+--- !u!114 &-543749240867064320
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2995091061736811078}
+  m_GameObject: {fileID: 3943188774784533394}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0982960aff44e44b86cff0aec9ba9cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   monsteData: {fileID: 0}
---- !u!114 &6998647527298961789
+--- !u!114 &-3184883611660089522
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2995091061736811078}
+  m_GameObject: {fileID: 3943188774784533394}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc9a562dfe3b11e4d82c5b2d31b2b070, type: 3}
+  m_Script: {fileID: 11500000, guid: 17bb3646e92517e4d8057a277d5c1f43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
   aggroTarget: {fileID: 0}
+  isAttacking: 0
+  isAttDelay: 0
   attackMotion: 0
-  attackState: 0
-  golemAttackFX:
-  - {fileID: 3455073265877218510, guid: cd93eff768044de4eba4c9eb476f1bb8, type: 3}
-  - {fileID: 5287082994259688682, guid: a922473a0f716a446bf9822c0af6dcee, type: 3}
-  - {fileID: 2495903882393676707, guid: 15c3cf877d897544badcff13e74c4cba, type: 3}
