@@ -28,6 +28,7 @@ public class Inventory : MonoBehaviour
 
     public bool Add(Item item, int amount)
     {
+        // 스왑기능 넣을 땐 미리 Dictionary 공간을 할당해둘 것
         if(items.Count >= space)
         {
             if (!items.ContainsValue(item))
@@ -38,15 +39,25 @@ public class Inventory : MonoBehaviour
             else
             {
                 // 인벤토리 풀 && 아이템이 이미 인벤토리에 있는 경우
+                // 슬롯 당 아이템 수량 제한 기능이 추가되면 사용하는 코드
                 // 아이템 수량 체크 후 인벤토리에 넣을 수 있는지 판단
+                for (int i = 0; i < items.Count; i++)
+                {
+                    if (items[i] == item)
+                    {
+                        // 나중에 슬롯당 아이템 수량 처리도 넣을 것
+                        amounts[i] += amount;
+                    }
+                }
             }
         }
         else
         {
             if (!items.ContainsValue(item))
             {
-                items.Add(items.Count, item);
-                amounts.Add(items.Count, amount);
+                int count = items.Count;
+                items.Add(count, item);
+                amounts.Add(count, amount);
             }
             else
             {
@@ -54,8 +65,8 @@ public class Inventory : MonoBehaviour
                 {
                     if(items[i] == item)
                     {
+                        // 나중에 슬롯당 아이템 수량 처리도 넣을 것
                         amounts[i] += amount;
-                        Debug.Log(items[i] + ", " + amounts[i]);
                     }
                 }
             }
