@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemProps : MonoBehaviour
 {
     public Item item;
+    public int amount;
 
     private void Awake()
     {

@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("inventory : " + itemProps.item.name);
             // 인벤토리에 넣음
-            bool wasPickedUp = Inventory.instance.Add(itemProps.item);
+            bool wasPickedUp = Inventory.instance.Add(itemProps.item, itemProps.amount);
             if(wasPickedUp)
                 Destroy(collision.gameObject);
         }

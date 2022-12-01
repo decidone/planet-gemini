@@ -4737,6 +4737,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
+  amount: 1
 --- !u!58 &1306839468
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -5850,6 +5851,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 04998b413239b974292ef3b40aa03a66, type: 2}
+  amount: 1
 --- !u!58 &1635113031
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -7386,6 +7388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
+  amount: 1
 --- !u!224 &1970839018 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1308007802165383928, guid: 15e139caf7f128f48911ab69c80f0652, type: 3}
@@ -7620,7 +7623,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   space: 60
-  items: []
 --- !u!4 &2057518975
 Transform:
   m_ObjectHideFlags: 0
