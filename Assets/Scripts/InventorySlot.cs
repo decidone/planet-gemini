@@ -6,7 +6,8 @@ public class InventorySlot : MonoBehaviour
     public Image icon;
     public Text amountText;
 
-    Item item;
+    public int slotNum;
+    public Item item;
     int amount;
 
     public void AddItem(Item newItem, int itemAmount)
