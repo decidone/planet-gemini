@@ -83,6 +83,7 @@ public class InventoryUI : MonoBehaviour
     private void OnDragStart(InventorySlot slot)
     {
         //Debug.Log("DragStart : " + slot);
+        slot.Selected();
         selectedSlot = slot;
 
         if (selectedSlot.item != null)
@@ -111,9 +112,10 @@ public class InventoryUI : MonoBehaviour
     private void OnDragEnd(InventorySlot slot)
     {
         //Debug.Log("DragEnd : " + slot);
+        slot.Release();
         Destroy(mouseDrag);
 
-        if(selectedSlot != null && focusedSlot != null)
+        if (selectedSlot != null && focusedSlot != null)
         {
             if (selectedSlot.item != null)
             {

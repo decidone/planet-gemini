@@ -31,4 +31,16 @@ public class InventorySlot : MonoBehaviour
         amountText.text = null;
         amountText.enabled = false;
     }
+
+    public void Selected()
+    {
+        icon.enabled = false;
+        amountText.enabled = false;
+    }
+
+    public void Release()
+    {
+        icon.enabled = true;
+        amountText.enabled = true;
+    }
 }
