@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,54 +22,104 @@ public class Inventory : MonoBehaviour
     public OnItemChanged onItemChangedCallback;
 
     public int space;
+    public int maxAmount;
     public Dictionary<int, Item> items = new Dictionary<int, Item>();
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
 
     public bool Add(Item item, int amount)
     {
-        // 스왑기능 넣을 땐 미리 Dictionary 공간을 할당해둘 것
-        if(items.Count >= space)
+        int tempAmount = amount;
+        int unoccupiedSlot = space - items.Count;
+        int occupiedSlot = 0;
+        int invenItemAmount = 0;
+
+        for (int i = 0; i < space; i++)
         {
-            if (!items.ContainsValue(item))
+            if (items.ContainsKey(i))
+            {
+                if (items[i] == item)
+                {
+                    occupiedSlot++;
+                    invenItemAmount += amounts[i];
+                }
+            }
+        }
+
+        Debug.Log("unoccupiedSlot : " + unoccupiedSlot);
+        Debug.Log("slot : " + occupiedSlot);
+        Debug.Log("amount : " + invenItemAmount);
+        Debug.Log("total amount : " + invenItemAmount + tempAmount);
+
+        // 1. 빈 칸 계산 후 인벤에 안들어가는 만큼 버리기
+        int totalAmount = invenItemAmount + tempAmount;
+        int usableSlot = unoccupiedSlot + occupiedSlot;
+
+        if (totalAmount > usableSlot * space)
+        {
+            int dropAmount = totalAmount - (usableSlot * space);
+            tempAmount -= dropAmount;
+
+            // 인벤토리 공간이 아예 없을 때
+            if (tempAmount == 0)
             {
                 Debug.Log("Not enough space");
                 return false;
             }
             else
             {
-                // 인벤토리 풀 && 아이템이 이미 인벤토리에 있는 경우
-                // 슬롯 당 아이템 수량 제한 기능이 추가되면 사용하는 코드
-                // 아이템 수량 체크 후 인벤토리에 넣을 수 있는지 판단
-                for (int i = 0; i < items.Count; i++)
-                {
-                    if (items[i] == item)
-                    {
-                        // 나중에 슬롯당 아이템 수량 처리도 넣을 것
-                        amounts[i] += amount;
-                    }
-                }
+                // 아이템 드랍 메서드 필요
+                Debug.Log("Drop : " + dropAmount);
             }
         }
-        else
+
+        // 2. 이미 있던 칸에 수량 증가
+        for (int i = 0; i < space; i++)
         {
-            if (!items.ContainsValue(item))
+            if (items.ContainsKey(i))
             {
-                int count = items.Count;
-                items.Add(count, item);
-                amounts.Add(count, amount);
-            }
-            else
-            {
-                for (int i = 0; i < items.Count; i++)
+                if (items[i] == item)
                 {
-                    if(items[i] == item)
+                    if (amounts[i] + tempAmount <= maxAmount)
                     {
-                        // 나중에 슬롯당 아이템 수량 처리도 넣을 것
-                        amounts[i] += amount;
+                        amounts[i] += tempAmount;
+                        tempAmount = 0;
+                    }
+                    else
+                    {
+                        amounts[i] = maxAmount;
+                        tempAmount -= (maxAmount - amounts[i]);
                     }
                 }
             }
+            if (tempAmount <= 0)
+                break;
         }
+
+        // 3. 2를 처리하고 남은 수량만큼 빈 칸에 배정
+        if (tempAmount > 0)
+        {
+            for (int i = 0; i < space; i++)
+            {
+                if (!items.ContainsKey(i))
+                {
+                    if (tempAmount <= maxAmount)
+                    {
+                        items[i] = item;
+                        amounts[i] = tempAmount;
+                        tempAmount = 0;
+                    }
+                    else
+                    {
+                        items[i] = item;
+                        amounts[i] = maxAmount;
+                        tempAmount -= maxAmount;
+                    }
+                }
+                if (tempAmount <= 0)
+                    break;
+            }
+        }
+
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
 
