@@ -65,7 +65,6 @@ public class Inventory : MonoBehaviour
             // 인벤토리 공간이 아예 없을 때
             if (tempAmount == 0)
             {
-                Debug.Log("Not enough space");
                 return false;
             }
             else
@@ -97,8 +96,8 @@ public class Inventory : MonoBehaviour
                     }
                     else
                     {
-                        amounts[i] = maxAmount;
                         tempAmount -= (maxAmount - amounts[i]);
+                        amounts[i] = maxAmount;
                     }
                 }
             }
@@ -189,7 +188,6 @@ public class Inventory : MonoBehaviour
 
     public void Merge(InventorySlot dragSlot, InventorySlot mergeSlot)
     {
-        Debug.Log("Merge");
         int mergeAmount = amounts[dragSlot.slotNum] + amounts[mergeSlot.slotNum];
 
         if (mergeAmount > maxAmount)
@@ -210,8 +208,6 @@ public class Inventory : MonoBehaviour
 
     public void Remove(Item item, int amount)
     {
-        // items.Remove(item);
-
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
     }

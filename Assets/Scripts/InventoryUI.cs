@@ -80,24 +80,21 @@ public class InventoryUI : MonoBehaviour
 
     private void OnEnter(InventorySlot slot)
     {
-        //Debug.Log("Enter : " + slot);
         focusedSlot = slot;
     }
 
     private void OnExit(InventorySlot slot)
     {
-        //Debug.Log("Exit : " + slot);
         focusedSlot = null;
     }
 
     private void OnDragStart(InventorySlot slot)
     {
-        //Debug.Log("DragStart : " + slot);
-        slot.Selected();
         selectedSlot = slot;
 
         if (selectedSlot.item != null)
         {
+            slot.Selected();
             GameObject temp = new GameObject();
             RectTransform rt = temp.AddComponent<RectTransform>();
             rt.sizeDelta = new Vector2(60, 60);
@@ -112,7 +109,6 @@ public class InventoryUI : MonoBehaviour
 
     private void OnDrag(InventorySlot slot)
     {
-        //Debug.Log("Drag : " + slot);
         if (mouseDrag != null)
         {
             mouseDrag.GetComponent<RectTransform>().position = Input.mousePosition;
@@ -121,21 +117,23 @@ public class InventoryUI : MonoBehaviour
 
     private void OnDragEnd(InventorySlot slot)
     {
-        //Debug.Log("DragEnd : " + slot);
-        slot.Release();
-        Destroy(mouseDrag);
-
-        if (selectedSlot != null && focusedSlot != null)
+        if (selectedSlot != null)
         {
             if (selectedSlot.item != null)
             {
-                if(selectedSlot.item != focusedSlot.item)
+                slot.Release();
+                Destroy(mouseDrag);
+
+                if (focusedSlot != null)
                 {
-                    inventory.Swap(selectedSlot, focusedSlot);
-                }
-                else
-                {
-                    inventory.Merge(selectedSlot, focusedSlot);
+                    if (selectedSlot.item != focusedSlot.item)
+                    {
+                        inventory.Swap(selectedSlot, focusedSlot);
+                    }
+                    else
+                    {
+                        inventory.Merge(selectedSlot, focusedSlot);
+                    }
                 }
             }
         }
