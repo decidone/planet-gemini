@@ -23,6 +23,9 @@ public class Inventory : MonoBehaviour
 
     public int space;
     public int maxAmount;
+    public GameObject itemPref;
+    public GameObject player;
+
     public Dictionary<int, Item> items = new Dictionary<int, Item>();
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
 
@@ -67,8 +70,16 @@ public class Inventory : MonoBehaviour
             }
             else
             {
-                // 아이템 드랍 메서드 필요
+                // 아이템 드랍
                 Debug.Log("Drop : " + dropAmount);
+                GameObject dropItem = Instantiate(itemPref);
+                SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
+                sprite.sprite = item.icon;
+                ItemProps itemProps = dropItem.GetComponent<ItemProps>();
+                itemProps.item = item;
+                itemProps.amount = dropAmount;
+                dropItem.transform.position = player.transform.position;
+                dropItem.transform.position += Vector3.down * 1.5f;
             }
         }
 
