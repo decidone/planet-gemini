@@ -51,7 +51,7 @@ public class Inventory : MonoBehaviour
         Debug.Log("unoccupiedSlot : " + unoccupiedSlot);
         Debug.Log("slot : " + occupiedSlot);
         Debug.Log("amount : " + invenItemAmount);
-        Debug.Log("total amount : " + invenItemAmount + tempAmount);
+        Debug.Log("total amount : " + (invenItemAmount + tempAmount));
 
         // 1. 빈 칸 계산 후 인벤에 안들어가는 만큼 버리기
         int totalAmount = invenItemAmount + tempAmount;
@@ -71,7 +71,7 @@ public class Inventory : MonoBehaviour
             else
             {
                 // 아이템 드랍
-                Debug.Log("Drop : " + dropAmount);
+                Debug.Log("Drop : " + item.name + "Amount : " + dropAmount);
                 GameObject dropItem = Instantiate(itemPref);
                 SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
                 sprite.sprite = item.icon;
@@ -161,9 +161,51 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public void Swap(InventorySlot slot1, InventorySlot slot2)
+    {
+        Item tempItem = items[slot1.slotNum];
+        int tempAmount = amounts[slot1.slotNum];
+
+        if (slot2.item != null)
+        {
+            items[slot1.slotNum] = items[slot2.slotNum];
+            items[slot2.slotNum] = tempItem;
+
+            amounts[slot1.slotNum] = amounts[slot2.slotNum];
+            amounts[slot2.slotNum] = tempAmount;
+        }
+        else
+        {
+            items.Remove(slot1.slotNum);
+            items.Add(slot2.slotNum, tempItem);
+
+            amounts.Remove(slot1.slotNum);
+            amounts.Add(slot2.slotNum, tempAmount);
+        }
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
     public void Merge(InventorySlot dragSlot, InventorySlot mergeSlot)
     {
         Debug.Log("Merge");
+        int mergeAmount = amounts[dragSlot.slotNum] + amounts[mergeSlot.slotNum];
+
+        if (mergeAmount > maxAmount)
+        {
+            amounts[mergeSlot.slotNum] = maxAmount;
+            amounts[dragSlot.slotNum] = mergeAmount - maxAmount;
+        }
+        else
+        {
+            amounts[mergeSlot.slotNum] = mergeAmount;
+            items.Remove(dragSlot.slotNum);
+            amounts.Remove(dragSlot.slotNum);
+        }
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
     }
 
     public void Remove(Item item, int amount)

@@ -129,36 +129,17 @@ public class InventoryUI : MonoBehaviour
         {
             if (selectedSlot.item != null)
             {
-                Swap(selectedSlot, focusedSlot);
-
-                if (inventory.onItemChangedCallback != null)
-                    inventory.onItemChangedCallback.Invoke();
+                if(selectedSlot.item != focusedSlot.item)
+                {
+                    inventory.Swap(selectedSlot, focusedSlot);
+                }
+                else
+                {
+                    inventory.Merge(selectedSlot, focusedSlot);
+                }
             }
         }
 
         selectedSlot = null;
-    }
-
-    private void Swap(InventorySlot slot1, InventorySlot slot2)
-    {
-        Item tempItem = inventory.items[slot1.slotNum];
-        int tempAmount = inventory.amounts[slot1.slotNum];
-
-        if (slot2.item != null)
-        {
-            inventory.items[slot1.slotNum] = inventory.items[slot2.slotNum];
-            inventory.items[slot2.slotNum] = tempItem;
-
-            inventory.amounts[slot1.slotNum] = inventory.amounts[slot2.slotNum];
-            inventory.amounts[slot2.slotNum] = tempAmount;
-        }
-        else
-        {
-            inventory.items.Remove(slot1.slotNum);
-            inventory.items.Add(slot2.slotNum, tempItem);
-
-            inventory.amounts.Remove(slot1.slotNum);
-            inventory.amounts.Add(slot2.slotNum, tempAmount);
-        }
     }
 }
