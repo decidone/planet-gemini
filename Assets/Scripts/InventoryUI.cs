@@ -47,7 +47,7 @@ public class InventoryUI : MonoBehaviour
             {
                 if(focusedSlot.item != null)
                 {
-                    inventory.Split(focusedSlot.item, focusedSlot.slotNum, 1);
+                    inventory.Split(focusedSlot, 1);
                 }
             }
         }

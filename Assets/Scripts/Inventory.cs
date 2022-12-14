@@ -137,20 +137,20 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
-    public void Split(Item item, int slotNum, int splitAmount)
+    public void Split(InventorySlot slot, int splitAmount)
     {
-        if (items.ContainsKey(slotNum))
+        if (items.ContainsKey(slot.slotNum))
         {
-            if (amounts[slotNum] > splitAmount && items.Count < space)
+            if (amounts[slot.slotNum] > splitAmount && items.Count < space)
             {
                 for (int i = 0; i < space; i++)
                 {
                     if (!items.ContainsKey(i))
                     {
-                        items[i] = item;
+                        items[i] = slot.item;
                         amounts[i] = splitAmount;
 
-                        amounts[slotNum] -= splitAmount;
+                        amounts[slot.slotNum] -= splitAmount;
 
                         if (onItemChangedCallback != null)
                             onItemChangedCallback.Invoke();
@@ -161,6 +161,10 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public void Merge(InventorySlot dragSlot, InventorySlot mergeSlot)
+    {
+        Debug.Log("Merge");
+    }
 
     public void Remove(Item item, int amount)
     {
