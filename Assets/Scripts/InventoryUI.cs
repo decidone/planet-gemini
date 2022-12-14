@@ -41,6 +41,16 @@ public class InventoryUI : MonoBehaviour
         {
             inventoryUI.SetActive(!inventoryUI.activeSelf);
         }
+        if (Input.GetMouseButtonDown(1))
+        {
+            if(focusedSlot != null)
+            {
+                if(focusedSlot.item != null)
+                {
+                    inventory.Split(focusedSlot.item, focusedSlot.slotNum, 1);
+                }
+            }
+        }
     }
 
     void UpdateUI()

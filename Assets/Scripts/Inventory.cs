@@ -137,6 +137,31 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
+    public void Split(Item item, int slotNum, int splitAmount)
+    {
+        if (items.ContainsKey(slotNum))
+        {
+            if (amounts[slotNum] > splitAmount && items.Count < space)
+            {
+                for (int i = 0; i < space; i++)
+                {
+                    if (!items.ContainsKey(i))
+                    {
+                        items[i] = item;
+                        amounts[i] = splitAmount;
+
+                        amounts[slotNum] -= splitAmount;
+
+                        if (onItemChangedCallback != null)
+                            onItemChangedCallback.Invoke();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
     public void Remove(Item item, int amount)
     {
         // items.Remove(item);
