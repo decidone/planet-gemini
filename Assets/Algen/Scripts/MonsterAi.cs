@@ -27,6 +27,7 @@ public class MonsterAi : MonoBehaviour
     Vector2 moveDir = Vector2.zero;         // 이동 벡터 정규화
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
     Vector2 targetVector = Vector2.zero;    // 이동 위치
+    public Vector3 targetVelocity = Vector3.zero;
     float moveStep = 0.0f;                  // 프레임당 이동 거리
     //이동 관련 변수
 
@@ -45,12 +46,13 @@ public class MonsterAi : MonoBehaviour
 
     //공격 관련 변수
     public GameObject aggroTarget = null;   // 타겟
-    float targetDist = 0.0f;                // 타겟과의 거리
+    public float targetDist = 0.0f;                // 타겟과의 거리
     public int attackMotion = 0;
     //공격 관련 변수
 
     MonsterAI monsterAI = MonsterAI.MAI_Patrol; // 시작 시 패트롤 상태
     public AttackState attackState = AttackState.idle;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,15 +68,13 @@ public class MonsterAi : MonoBehaviour
     {
         MonsterMove();
         MonsterAICtrl();
-
     }//private void FixedUpdate()
 
     // Update is called once per frame
     void Update()
     {
+
     }//void Update()
-
-
 
     void MonsterAICtrl()
     {
@@ -106,15 +106,19 @@ public class MonsterAi : MonoBehaviour
             {
                 Attack();
             }
+            else if (attackState == AttackState.Attacking)
+            {
+                AttackMove();
+            }
             //Debug.Log("MAI_Attack");
         }//else if (monsterAI == MonsterAI.MAI_Attack)
     }//void MonsterAICtrl()
 
     void MonsterMove()
     {
-        if(attackState != AttackState.Attacking)
+        if (attackState != AttackState.Attacking)
         {
-            if ((monsterAI == MonsterAI.MAI_Patrol))
+            if (monsterAI == MonsterAI.MAI_Patrol)
             {
                 targetVector = patrolPos - this.transform.position;
                 moveStep = getMonsterData.monsteData.MoveSpeed * Time.fixedDeltaTime;
@@ -132,11 +136,15 @@ public class MonsterAi : MonoBehaviour
             moveNextStep = moveDir * moveStep;
             float patrolPosDis = targetVector.magnitude;
 
-            if (patrolPosDis > 0.10f)        
-                ImgMrror();        
-            else        
+            if (patrolPosDis > 0.10f)
+                ImgMrror();
+            else
                 animator.SetBool("isMoving", false);
         }
+        if (moveNextStep.y > 0)
+            animator.SetFloat("moveNextStepY", 1.0f);
+        else if (moveNextStep.y <= 0)
+            animator.SetFloat("moveNextStepY", -1.0f);
     }//void MonsterMove()
 
     void NormalTrace()
@@ -172,19 +180,21 @@ public class MonsterAi : MonoBehaviour
     {
         
     }
-
     protected virtual void AttackEnd(string str)
     {
 
     }
-
-    void ImgMrror()
+    protected virtual void AttackMove()
     {
-        if (moveNextStep.x > 0)        
+
+    }
+    public void ImgMrror()
+    {
+        if (moveNextStep.x >= 0)        
             transform.localScale = new Vector3(1, 1, 1);        
         else if (moveNextStep.x < 0)        
             transform.localScale = new Vector3(-1, 1, 1);
-        
+
         this.transform.position = this.transform.position + moveNextStep;
     }//void ImgMrror()
 
@@ -230,8 +240,8 @@ public class MonsterAi : MonoBehaviour
         }//else
 
         int RandomTime = Random.Range(3, 6);
-        yield return new WaitForSeconds(RandomTime);
 
+        yield return new WaitForSeconds(RandomTime);
         if (monsterAI == MonsterAI.MAI_Patrol)
             StartCoroutine("Patrol");
     }//IEnumerator Patrol()
@@ -245,6 +255,13 @@ public class MonsterAi : MonoBehaviour
             aggroTarget = collision.gameObject;
         }//if (collision.CompareTag("Player"))
     }//private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            targetVelocity = collision.GetComponentInChildren<PlayerMovement>().movement;
+        }
+    }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))

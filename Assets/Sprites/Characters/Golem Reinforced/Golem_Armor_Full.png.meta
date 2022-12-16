@@ -1285,7 +1285,6 @@ TextureImporter:
       Golem_Armor_Full_24: -888546660
       Golem_Armor_Full_0: 1996760734
       Golem_Armor_Full_32: 799179163
-      Golem_Armor_Full_46: 1785177869
       Golem_Armor_Full_4: -1791147853
       Golem_Armor_Full_17: 1658591314
       Golem_Armor_Full_21: -430129431
@@ -1293,6 +1292,7 @@ TextureImporter:
       Golem_Armor_Full_13: -984664040
       Golem_Armor_Full_41: 354862837
       Golem_Armor_Full_14: 862754257
+      Golem_Armor_Full_40: 244768517
       Golem_Armor_Full_45: 1269889101
       Golem_Armor_Full_54: -1808386963
       Golem_Armor_Full_1: -832701146
@@ -1333,9 +1333,9 @@ TextureImporter:
       Golem_Armor_Full_11: -2122855807
       Golem_Armor_Full_9: 1773106418
       Golem_Armor_Full_19: 1378685061
-      Golem_Armor_Full_15: -1904401590
       Golem_Armor_Full_43: -635028104
-      Golem_Armor_Full_40: 244768517
+      Golem_Armor_Full_15: -1904401590
+      Golem_Armor_Full_46: 1785177869
       Golem_Armor_Full_22: -185240684
   spritePackingTag: 
   pSDRemoveMatte: 0

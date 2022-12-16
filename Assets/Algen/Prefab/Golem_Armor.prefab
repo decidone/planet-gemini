@@ -171,8 +171,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc9a562dfe3b11e4d82c5b2d31b2b070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetVelocity: {x: 0, y: 0, z: 0}
   animator: {fileID: 0}
   aggroTarget: {fileID: 0}
+  targetDist: 0
   attackMotion: 0
   attackState: 0
   golemAttackFX:

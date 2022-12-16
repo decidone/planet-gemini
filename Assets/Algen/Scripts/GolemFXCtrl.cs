@@ -29,12 +29,11 @@ public class GolemFXCtrl : MonoBehaviour
 
     void AttackFunc()
     {
-        ImgMrror();
-
         if (attackMotionNum == 0)
         {
             //this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            if(isAnimEnd == true)
+            ImgMrror();
+            if (isAnimEnd == true)
             {
                 Destroy(this.gameObject, 0.1f);
             }
@@ -68,7 +67,7 @@ public class GolemFXCtrl : MonoBehaviour
     public void GetTarget(Vector3 target, int attackMotion)
     {
         moveNextStep = (target - transform.position).normalized;
-        moveNextStep.Normalize();
+        //moveNextStep.Normalize();
 
         attackMotionNum = attackMotion;
     }
@@ -76,6 +75,5 @@ public class GolemFXCtrl : MonoBehaviour
     public void CollOn()
     {
         //this.gameObject.GetComponent<BoxCollider2D>().enabled = true;
-        Debug.Log("ON");
     }
 }

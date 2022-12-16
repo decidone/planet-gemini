@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class BeltCtrl : MonoBehaviour
 {
-    public float dirNum = 0;
-    public float modelNum = 0;
+    public float dirNum = 0;    // 방향
+    public float modelNum = 0;  // 모션
 
     protected Animator anim;
     protected Animator animsync;
 
     public float[] otherBeltNum = new float[] { 4, 4, 4, 4 };  //0 : 상, 1 : 우, 2 : 하, 3 : 좌 , 4 없음
-    Vector2 pos;
+    Vector2 pos;    // 현 위치
 
     // Start is called before the first frame update
     private void Awake()
@@ -22,63 +22,56 @@ public class BeltCtrl : MonoBehaviour
 
     void Start()
     {
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        anim.SetFloat("DirNum", dirNum);
-        anim.SetFloat("ModelNum", modelNum);
         pos = this.gameObject.transform.position;
 
+        anim.SetFloat("DirNum", dirNum);
+        anim.SetFloat("ModelNum", modelNum);
+
         anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-
-        ModelSelFunc();
-    }
-
-    private void FixedUpdate()
-    {
- 
     }
 
     void ModelSelFunc()
     {
-        if (dirNum == 0 || dirNum == 2)
+        if (dirNum == 0 || dirNum == 2) // 방향이 위 아래 일 때 
         {
             if((otherBeltNum[1] == 3 && otherBeltNum[3] == 1) || (otherBeltNum[1] == 4 && otherBeltNum[3] == 4))
-            {
-                if (otherBeltNum[0] != 4 && otherBeltNum[2] != 4)
+            {   // 오른쪽, 왼쪽 둘다 벨트가 있거나 없을 때
+                if (otherBeltNum[0] != 4 && otherBeltNum[2] != 4)       // 위랑 아래에 밸트가 있을 때
                     modelNum = 2;
-                else if (otherBeltNum[0] != 4 && otherBeltNum[2] == 4)
+                else if (otherBeltNum[0] != 4 && otherBeltNum[2] == 4)  // 위에만 벨트가 있을 때
                     modelNum = 3;
-                else if (otherBeltNum[0] == 4 && otherBeltNum[2] != 4)
+                else if (otherBeltNum[0] == 4 && otherBeltNum[2] != 4)  // 아래만 벨트가 있을 때
                     modelNum = 1;
                 else
                     modelNum = 0;
             }
-            else if (otherBeltNum[1] == 3)
-                modelNum = 5;
-            else if (otherBeltNum[3] == 1)
+            else if (otherBeltNum[1] == 3)  // 오른쪽(otherBeltNum[1])에 왼쪽으로 가는 벨트(3)가 있을 때
                 modelNum = 4;
+            else if (otherBeltNum[3] == 1)  // 왼쪽(otherBeltNum[3])에 오른쪽으로 가는 벨트(1)가 있을 때
+                modelNum = 5;
         }
-        else if (dirNum == 1 || dirNum == 3)
+        else if (dirNum == 1 || dirNum == 3)    // 방향이 오른쪽 왼쪽 일 때 
         {
             if ((otherBeltNum[0] == 2 && otherBeltNum[2] == 0) || (otherBeltNum[0] == 4 && otherBeltNum[2] == 4))
-            {
-                if (otherBeltNum[1] != 4 && otherBeltNum[3] != 4)
+            {   // 위, 아래 둘다 벨트가 있거나 없을 때
+                if (otherBeltNum[1] != 4 && otherBeltNum[3] != 4)       // 오른쪽랑 왼쪽에 밸트가 있을 때
                     modelNum = 2;
-                else if (otherBeltNum[1] == 4 && otherBeltNum[3] != 4)
+                else if (otherBeltNum[1] == 4 && otherBeltNum[3] != 4)  // 왼쪽에만 벨트가 있을 때
                     modelNum = 3;
-                else if (otherBeltNum[1] != 4 && otherBeltNum[3] == 4)
+                else if (otherBeltNum[1] != 4 && otherBeltNum[3] == 4)  // 오른쪽에만 벨트가 있을 때
                     modelNum = 1;
                 else
                     modelNum = 0;
             }
-            else if (otherBeltNum[0] == 2)
-                modelNum = 5;
-            else if (otherBeltNum[2] == 0)
+            else if (otherBeltNum[0] == 2)  // 위(otherBeltNum[0])에 아래로 가는 벨트(2)가 있을 때
                 modelNum = 4;
+            else if (otherBeltNum[2] == 0)  // 아래(otherBeltNum[2])에 위로 가는 벨트(0)가 있을 때
+                modelNum = 5;
         }
     }
 
@@ -112,6 +105,7 @@ public class BeltCtrl : MonoBehaviour
                 else
                     return;
             }
+            ModelSelFunc();
         }
     }
     void OnTriggerExit2D(Collider2D collision)
@@ -144,6 +138,7 @@ public class BeltCtrl : MonoBehaviour
                 else
                     return;
             }
+            ModelSelFunc();
         }
     }
 }
