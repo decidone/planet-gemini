@@ -29,23 +29,78 @@ public class InventoryUI : MonoBehaviour
             slot.slotNum = i;
             AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
             AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
-            AddEvent(slot, EventTriggerType.BeginDrag, delegate { OnDragStart(slot); });
-            AddEvent(slot, EventTriggerType.EndDrag, delegate { OnDragEnd(slot); });
-            AddEvent(slot, EventTriggerType.Drag, delegate { OnDrag(slot); });
         }
     }
 
     void Update()
     {
+        InputCheck();
+
+        if (selectedSlot != null && mouseDrag != null)
+        {
+            mouseDrag.GetComponent<RectTransform>().position = Input.mousePosition;
+        }
+    }
+
+    void InputCheck()
+    {
         if (Input.GetButtonDown("Inventory"))
         {
             inventoryUI.SetActive(!inventoryUI.activeSelf);
         }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (selectedSlot == null)
+            {
+                if (focusedSlot != null)
+                {
+                    selectedSlot = focusedSlot;
+
+                    if (selectedSlot.item != null)
+                    {
+                        selectedSlot.Selected();
+                        GameObject temp = new GameObject();
+                        RectTransform rt = temp.AddComponent<RectTransform>();
+                        rt.sizeDelta = new Vector2(60, 60);
+                        temp.transform.SetParent(inventoryItem);
+                        Image img = temp.AddComponent<Image>();
+                        img.sprite = selectedSlot.icon.sprite;
+                        img.raycastTarget = false;
+
+                        mouseDrag = temp;
+                    }
+                }
+            }
+            else
+            {
+                if (selectedSlot.item != null)
+                {
+                    selectedSlot.Release();
+                    Destroy(mouseDrag);
+
+                    if (focusedSlot != null && selectedSlot != focusedSlot)
+                    {
+                        if (selectedSlot.item != focusedSlot.item)
+                        {
+                            inventory.Swap(selectedSlot, focusedSlot);
+                        }
+                        else
+                        {
+                            inventory.Merge(selectedSlot, focusedSlot);
+                        }
+                    }
+                }
+
+                selectedSlot = null;
+            }
+        }
+
         if (Input.GetMouseButtonDown(1))
         {
-            if(focusedSlot != null)
+            if (focusedSlot != null && selectedSlot == null)
             {
-                if(focusedSlot.item != null)
+                if (focusedSlot.item != null)
                 {
                     inventory.Split(focusedSlot, 1);
                 }
@@ -86,58 +141,5 @@ public class InventoryUI : MonoBehaviour
     private void OnExit(InventorySlot slot)
     {
         focusedSlot = null;
-    }
-
-    private void OnDragStart(InventorySlot slot)
-    {
-        selectedSlot = slot;
-
-        if (selectedSlot.item != null)
-        {
-            slot.Selected();
-            GameObject temp = new GameObject();
-            RectTransform rt = temp.AddComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(60, 60);
-            temp.transform.SetParent(inventoryItem);
-            Image img = temp.AddComponent<Image>();
-            img.sprite = selectedSlot.icon.sprite;
-            img.raycastTarget = false;
-
-            mouseDrag = temp;
-        }
-    }
-
-    private void OnDrag(InventorySlot slot)
-    {
-        if (mouseDrag != null)
-        {
-            mouseDrag.GetComponent<RectTransform>().position = Input.mousePosition;
-        }
-    }
-
-    private void OnDragEnd(InventorySlot slot)
-    {
-        if (selectedSlot != null)
-        {
-            if (selectedSlot.item != null)
-            {
-                slot.Release();
-                Destroy(mouseDrag);
-
-                if (focusedSlot != null)
-                {
-                    if (selectedSlot.item != focusedSlot.item)
-                    {
-                        inventory.Swap(selectedSlot, focusedSlot);
-                    }
-                    else
-                    {
-                        inventory.Merge(selectedSlot, focusedSlot);
-                    }
-                }
-            }
-        }
-
-        selectedSlot = null;
     }
 }
