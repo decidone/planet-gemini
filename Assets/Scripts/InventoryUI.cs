@@ -88,6 +88,9 @@ public class InventoryUI : MonoBehaviour
                         {
                             inventory.Merge(selectedSlot, focusedSlot);
                         }
+                    } else if (!EventSystem.current.IsPointerOverGameObject())
+                    {
+                        inventory.Drop(selectedSlot);
                     }
                 }
 

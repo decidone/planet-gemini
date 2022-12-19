@@ -69,16 +69,7 @@ public class Inventory : MonoBehaviour
             }
             else
             {
-                // 아이템 드랍
-                Debug.Log("Drop : " + item.name + "Amount : " + dropAmount);
-                GameObject dropItem = Instantiate(itemPref);
-                SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
-                sprite.sprite = item.icon;
-                ItemProps itemProps = dropItem.GetComponent<ItemProps>();
-                itemProps.item = item;
-                itemProps.amount = dropAmount;
-                dropItem.transform.position = player.transform.position;
-                dropItem.transform.position += Vector3.down * 1.5f;
+                Drop(item, dropAmount);
             }
         }
 
@@ -201,6 +192,38 @@ public class Inventory : MonoBehaviour
             items.Remove(dragSlot.slotNum);
             amounts.Remove(dragSlot.slotNum);
         }
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
+    public void Drop(Item item, int dropAmount)
+    {
+        Debug.Log("Drop : " + item.name + "Amount : " + dropAmount);
+        GameObject dropItem = Instantiate(itemPref);
+        SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
+        sprite.sprite = item.icon;
+        ItemProps itemProps = dropItem.GetComponent<ItemProps>();
+        itemProps.item = item;
+        itemProps.amount = dropAmount;
+        dropItem.transform.position = player.transform.position;
+        dropItem.transform.position += Vector3.down * 1.5f;
+    }
+
+    public void Drop(InventorySlot slot)
+    {
+        Debug.Log("Drop : " + items[slot.slotNum].name + "Amount : " + amounts[slot.slotNum]);
+        GameObject dropItem = Instantiate(itemPref);
+        SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
+        sprite.sprite = items[slot.slotNum].icon;
+        ItemProps itemProps = dropItem.GetComponent<ItemProps>();
+        itemProps.item = items[slot.slotNum];
+        itemProps.amount = amounts[slot.slotNum];
+        dropItem.transform.position = player.transform.position;
+        dropItem.transform.position += Vector3.down * 1.5f;
+
+        items.Remove(slot.slotNum);
+        amounts.Remove(slot.slotNum);
 
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
