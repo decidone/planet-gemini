@@ -55,10 +55,9 @@ public class InventoryUI : MonoBehaviour
             {
                 if (focusedSlot != null)
                 {
-                    selectedSlot = focusedSlot;
-
-                    if (selectedSlot.item != null)
+                    if (focusedSlot.item != null)
                     {
+                        selectedSlot = focusedSlot;
                         selectedSlot.Selected();
                         GameObject temp = new GameObject();
                         RectTransform rt = temp.AddComponent<RectTransform>();
