@@ -331,7 +331,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   icon: {fileID: 6971746725243947134}
+  frame: {fileID: 6971746724997393825}
   amountText: {fileID: 2465830913584215181}
+  slotNum: 0
+  item: {fileID: 0}
 --- !u!114 &1576221340471315434
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class InventoryUI : MonoBehaviour
 {
     public Transform inventoryItem;
     public GameObject inventoryUI;
+    public GameObject slotPref;
 
     Inventory inventory;
     InventorySlot[] slots;
@@ -59,13 +60,16 @@ public class InventoryUI : MonoBehaviour
                     {
                         selectedSlot = focusedSlot;
                         selectedSlot.Selected();
-                        GameObject temp = new GameObject();
-                        RectTransform rt = temp.AddComponent<RectTransform>();
-                        rt.sizeDelta = new Vector2(60, 60);
+
+                        GameObject temp = Instantiate(slotPref);
                         temp.transform.SetParent(inventoryItem);
-                        Image img = temp.AddComponent<Image>();
-                        img.sprite = selectedSlot.icon.sprite;
-                        img.raycastTarget = false;
+                        InventorySlot tempSlot = temp.GetComponent<InventorySlot>();
+                        tempSlot.Copy(selectedSlot.GetComponent<InventorySlot>());
+                        Image[] images = temp.GetComponentsInChildren<Image>();
+                        foreach (Image image in images)
+                        {
+                            image.raycastTarget = false;
+                        }
 
                         mouseDrag = temp;
                     }

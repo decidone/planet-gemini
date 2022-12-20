@@ -2926,6 +2926,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryItem: {fileID: 1874752920}
   inventoryUI: {fileID: 667248888}
+  slotPref: {fileID: 8910572858929051082, guid: 15e139caf7f128f48911ab69c80f0652, type: 3}
 --- !u!224 &825913535 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1308007802165383928, guid: 15e139caf7f128f48911ab69c80f0652, type: 3}
