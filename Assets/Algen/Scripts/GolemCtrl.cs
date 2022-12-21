@@ -24,7 +24,7 @@ public class GolemCtrl : MonsterAi
         animator.Play("Attack", -1, 0);
     }
 
-    protected override void AttackEnd(string str)
+    void AttackEnd(string str)
     {
         if (str == "false")
         {
@@ -34,6 +34,7 @@ public class GolemCtrl : MonsterAi
             checkTarget = false;
         }
     }
+
     protected override void AttackMove()
     {
         if (checkTarget == false)

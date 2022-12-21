@@ -16,16 +16,18 @@ public class MonsterSpawner : MonoBehaviour
 
     void Start()
     {        
-        for(int a = 0; a < 3; a++)
+        for(int a = 0; a < 12; a++)
         {
-            int ranMobType = Random.Range(0, monsterDatas.Count);
-            var monster = SpawnMonster((MonsterType)ranMobType, ranMobType);
+            //int ranMobType = Random.Range(0, monsterDatas.Count);
+            //var monster = SpawnMonster((MonsterType)ranMobType, ranMobType);
+            var monster = SpawnMonster((MonsterType)a, a);
         }        
     }
 
     public GetMonsterData SpawnMonster(MonsterType type, int typeNum)
     {
         var newMonster = Instantiate(monsterPrefab[typeNum]).GetComponent<GetMonsterData>();
+        newMonster.transform.SetParent(this.transform, false);
         newMonster.MonsterData = monsterDatas[(int)type];
         return newMonster;
     }
