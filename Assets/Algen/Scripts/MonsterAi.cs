@@ -17,6 +17,7 @@ public enum AttackState
     idle,
     AttackStart,
     Attacking,
+    AttackDelay,
     AttackEnd,
 }
 public class MonsterAi : MonoBehaviour
@@ -116,7 +117,7 @@ public class MonsterAi : MonoBehaviour
 
     void MonsterMove()
     {
-        if (attackState != AttackState.Attacking)
+        if (attackState != AttackState.Attacking && attackState != AttackState.AttackDelay)
         {
             if (monsterAI == MonsterAI.MAI_Patrol)
             {
@@ -127,7 +128,8 @@ public class MonsterAi : MonoBehaviour
             {
                 if (aggroTarget != null)
                 {
-                    targetVector = aggroTarget.transform.position - this.transform.position;
+                    //targetVector = aggroTarget.transform.position - this.transform.position;
+                    targetVector = new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y - 0.5f) - this.transform.position;
                     moveStep = (getMonsterData.monsteData.MoveSpeed + 2) * Time.fixedDeltaTime;
                 }//if (aggroTarget != null)
             }//else
@@ -145,6 +147,11 @@ public class MonsterAi : MonoBehaviour
             animator.SetFloat("moveNextStepY", 1.0f);
         else if (moveNextStep.y <= 0)
             animator.SetFloat("moveNextStepY", -1.0f);
+
+        if (moveDir.x > 0.75f || moveDir.x < -0.75f)
+            animator.SetFloat("moveNextStepX", 1.0f);
+        else if(moveDir.x <= 0.75f && moveDir.x >= -0.75f)
+            animator.SetFloat("moveNextStepX", 0.0f);
     }//void MonsterMove()
 
     void NormalTrace()
@@ -180,10 +187,7 @@ public class MonsterAi : MonoBehaviour
     {
         
     }
-    protected virtual void AttackEnd(string str)
-    {
 
-    }
     protected virtual void AttackMove()
     {
 
@@ -200,6 +204,7 @@ public class MonsterAi : MonoBehaviour
 
     IEnumerator AttackDelay()
     {
+        attackState = AttackState.AttackDelay;
         yield return new WaitForSeconds(getMonsterData.monsteData.AttDelayTime);
         attackState = AttackState.idle;
     }//IEnumerator LastFollow()
