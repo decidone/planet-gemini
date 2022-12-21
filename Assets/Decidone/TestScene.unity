@@ -3901,7 +3901,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
-  amount: 3
+  amount: 10
 --- !u!58 &973685539
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -6291,6 +6291,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1799185958}
   animator: {fileID: 1799185961}
+  movement: {x: 0, y: 0}
 --- !u!50 &1799185958
 Rigidbody2D:
   serializedVersion: 4
@@ -6411,6 +6412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50336a7f32918024a91ed1621f8d203c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  items: []
 --- !u!70 &1799185963
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
