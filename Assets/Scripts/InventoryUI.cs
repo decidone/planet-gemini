@@ -48,6 +48,17 @@ public class InventoryUI : MonoBehaviour
         if (Input.GetButtonDown("Inventory"))
         {
             inventoryUI.SetActive(!inventoryUI.activeSelf);
+
+            if (selectedSlot != null)
+            {
+                if (selectedSlot.item != null)
+                {
+                    selectedSlot.Release();
+                    Destroy(mouseDrag);
+                }
+
+                selectedSlot = null;
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
