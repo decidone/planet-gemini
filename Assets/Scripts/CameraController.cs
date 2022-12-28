@@ -1,32 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class CameraController : MonoBehaviour
 {
-    Camera cam;
     public Transform target;
     public Vector3 offset;
 
-    private float zoomSpeed = 5f;
-    private float minZoom = 5f;
-    private float maxZoom = 15f;
-    private float currentZoom = 10f;
+    PixelPerfectCamera pixelPerfectCamera;
+    int zoomLevel = 1;
 
     void Awake()
     {
-        cam = Camera.main;
+        pixelPerfectCamera = Camera.main.GetComponent<PixelPerfectCamera>();
     }
 
     void Update()
     {
-        currentZoom -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
-        currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
+        float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
+        if (scrollWheelInput != 0)
+        {
+            zoomLevel += Mathf.RoundToInt(scrollWheelInput * 10);
+            zoomLevel = Mathf.Clamp(zoomLevel, 1, 7);
+            pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
+            pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
+        }
     }
 
     void LateUpdate()
     {
         transform.position = target.position - offset;
-        cam.orthographicSize = currentZoom;
     }
 }
