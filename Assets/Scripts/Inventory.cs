@@ -29,6 +29,9 @@ public class Inventory : MonoBehaviour
     public Dictionary<int, Item> items = new Dictionary<int, Item>();
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
 
+    public List<Item> itemsList = new List<Item>();
+    public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
+
     public bool Add(Item item, int amount)
     {
         int tempAmount = amount;
