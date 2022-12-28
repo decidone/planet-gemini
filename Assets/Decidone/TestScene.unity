@@ -3923,7 +3923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
-  amount: 10
+  amount: 8
 --- !u!58 &973685539
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -5989,7 +5989,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 04998b413239b974292ef3b40aa03a66, type: 2}
-  amount: 1
+  amount: 8
 --- !u!58 &1635113031
 CircleCollider2D:
   m_ObjectHideFlags: 0
