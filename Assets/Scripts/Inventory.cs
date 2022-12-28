@@ -48,7 +48,6 @@ public class Inventory : MonoBehaviour
         int unoccupiedSlot = space - items.Count;
         int occupiedSlot = 0;
         int invenItemAmount = 0;
-
         totalItems[item] += amount;
 
         // 인벤토리의 빈 공간, 습득한 아이템과 같은 아이템이 차지하고 있는 공간을 체크
@@ -63,11 +62,6 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
-
-        //Debug.Log("unoccupiedSlot : " + unoccupiedSlot);
-        //Debug.Log("slot : " + occupiedSlot);
-        //Debug.Log("amount : " + invenItemAmount);
-        //Debug.Log("total amount : " + (invenItemAmount + tempAmount));
 
         // 1. 빈 칸 계산 후 인벤에 안들어가는 만큼 버리기
         int totalAmount = invenItemAmount + tempAmount;
@@ -90,8 +84,6 @@ public class Inventory : MonoBehaviour
                 Drop(item, dropAmount);
             }
         }
-
-        
 
         // 2. 이미 있던 칸에 수량 증가
         for (int i = 0; i < space; i++)
@@ -248,6 +240,46 @@ public class Inventory : MonoBehaviour
 
         items.Remove(slot.slotNum);
         amounts.Remove(slot.slotNum);
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
+    public void Sort()
+    {
+        items = new Dictionary<int, Item>();
+        amounts = new Dictionary<int, int>();
+
+        foreach (KeyValuePair<Item, int> item in totalItems)
+        {
+            if (item.Value > 0)
+            {
+                int tempAmount = item.Value;
+                if (tempAmount > 0)
+                {
+                    for (int i = 0; i < space; i++)
+                    {
+                        if (!items.ContainsKey(i))
+                        {
+                            if (tempAmount <= maxAmount)
+                            {
+                                items[i] = item.Key;
+                                amounts[i] = tempAmount;
+                                tempAmount = 0;
+                            }
+                            else
+                            {
+                                items[i] = item.Key;
+                                amounts[i] = maxAmount;
+                                tempAmount -= maxAmount;
+                            }
+                        }
+                        if (tempAmount <= 0)
+                            break;
+                    }
+                }
+            }
+        }
 
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();

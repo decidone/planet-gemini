@@ -123,6 +123,12 @@ public class InventoryUI : MonoBehaviour
                 }
             }
         }
+
+        // 정렬(임시) 나중에 ui버튼으로
+        if (Input.GetKeyDown("t"))
+        {
+            inventory.Sort();
+        }
     }
 
     void UpdateUI()
