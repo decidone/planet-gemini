@@ -9,7 +9,7 @@ public class InventorySlot : MonoBehaviour
 
     public int slotNum;
     public Item item;
-    int amount;
+    public int amount;
 
     public void AddItem(Item newItem, int itemAmount)
     {
@@ -43,18 +43,5 @@ public class InventorySlot : MonoBehaviour
     {
         icon.enabled = true;
         amountText.enabled = true;
-    }
-
-    public void Copy(InventorySlot slot)
-    {
-        item = slot.item;
-        amount = slot.amount;
-        slotNum = slot.slotNum;
-
-        icon.sprite = item.icon;
-        icon.enabled = true;
-        amountText.text = amount.ToString();
-        amountText.enabled = true;
-        frame.enabled = false;
     }
 }

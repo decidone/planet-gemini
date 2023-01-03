@@ -12,10 +12,10 @@ public class InventoryUI : MonoBehaviour
 
     Inventory inventory;
     InventorySlot[] slots;
+    InventorySlot tempSlot;
 
     InventorySlot selectedSlot;
     InventorySlot focusedSlot;
-    GameObject mouseDrag;
 
     void Start()
     {
@@ -28,8 +28,24 @@ public class InventoryUI : MonoBehaviour
         {
             InventorySlot slot = slots[i];
             slot.slotNum = i;
-            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+
+            
+            if (i != slots.Length - 1)
+            {
+                // ÀÏ¹Ý ½½·Ô
+                AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
+                AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+            }
+            else
+            {
+                // µå·¡±×¿ë ½½·Ô
+                Image[] images = slot.GetComponentsInChildren<Image>();
+                foreach (Image image in images)
+                {
+                    image.raycastTarget = false;
+                }
+                tempSlot = slot;
+            }
         }
     }
 
@@ -37,9 +53,9 @@ public class InventoryUI : MonoBehaviour
     {
         InputCheck();
 
-        if (selectedSlot != null && mouseDrag != null)
+        if (selectedSlot != null && tempSlot.item != null)
         {
-            mouseDrag.GetComponent<RectTransform>().position = Input.mousePosition;
+            tempSlot.GetComponent<RectTransform>().position = Input.mousePosition;
         }
     }
 
@@ -54,7 +70,7 @@ public class InventoryUI : MonoBehaviour
                 if (selectedSlot.item != null)
                 {
                     selectedSlot.Release();
-                    Destroy(mouseDrag);
+                    tempSlot.ClearSlot();
                 }
 
                 selectedSlot = null;
@@ -71,18 +87,8 @@ public class InventoryUI : MonoBehaviour
                     {
                         selectedSlot = focusedSlot;
                         selectedSlot.Selected();
-
-                        GameObject temp = Instantiate(slotPref);
-                        temp.transform.SetParent(inventoryItem);
-                        InventorySlot tempSlot = temp.GetComponent<InventorySlot>();
-                        tempSlot.Copy(selectedSlot.GetComponent<InventorySlot>());
-                        Image[] images = temp.GetComponentsInChildren<Image>();
-                        foreach (Image image in images)
-                        {
-                            image.raycastTarget = false;
-                        }
-
-                        mouseDrag = temp;
+                        InventorySlot slot = selectedSlot.GetComponent<InventorySlot>();
+                        tempSlot.AddItem(slot.item, slot.amount);
                     }
                 }
             }
@@ -91,7 +97,7 @@ public class InventoryUI : MonoBehaviour
                 if (selectedSlot.item != null)
                 {
                     selectedSlot.Release();
-                    Destroy(mouseDrag);
+                    tempSlot.ClearSlot();
 
                     if (focusedSlot != null && selectedSlot != focusedSlot)
                     {
