@@ -4,12 +4,11 @@ using UnityEngine.UI;
 public class InventorySlot : MonoBehaviour
 {
     public Image icon;
-    public Image frame;
     public Text amountText;
 
-    public int slotNum;
     public Item item;
     public int amount;
+    public int slotNum;
 
     public void AddItem(Item newItem, int itemAmount)
     {
@@ -31,17 +30,5 @@ public class InventorySlot : MonoBehaviour
         icon.enabled = false;
         amountText.text = null;
         amountText.enabled = false;
-    }
-
-    public void Selected()
-    {
-        icon.enabled = false;
-        amountText.enabled = false;
-    }
-
-    public void Release()
-    {
-        icon.enabled = true;
-        amountText.enabled = true;
     }
 }

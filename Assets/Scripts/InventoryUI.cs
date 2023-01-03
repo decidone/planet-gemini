@@ -12,10 +12,9 @@ public class InventoryUI : MonoBehaviour
 
     Inventory inventory;
     InventorySlot[] slots;
-    InventorySlot tempSlot;
-
-    InventorySlot selectedSlot;
-    InventorySlot focusedSlot;
+    InventorySlot tempSlot; // 드래그용 슬롯
+    InventorySlot selectedSlot; // 드래그 하기 위해 클릭한 슬롯
+    InventorySlot focusedSlot;  // 마우스가 올라간 슬롯
 
     void Start()
     {
@@ -29,7 +28,6 @@ public class InventoryUI : MonoBehaviour
             InventorySlot slot = slots[i];
             slot.slotNum = i;
 
-            
             if (i != slots.Length - 1)
             {
                 // 일반 슬롯
@@ -53,7 +51,7 @@ public class InventoryUI : MonoBehaviour
     {
         InputCheck();
 
-        if (selectedSlot != null && tempSlot.item != null)
+        if (tempSlot.item != null)
         {
             tempSlot.GetComponent<RectTransform>().position = Input.mousePosition;
         }
@@ -67,9 +65,9 @@ public class InventoryUI : MonoBehaviour
 
             if (selectedSlot != null)
             {
-                if (selectedSlot.item != null)
+                if (tempSlot.item != null)
                 {
-                    selectedSlot.Release();
+                    inventory.Swap(tempSlot, selectedSlot);
                     tempSlot.ClearSlot();
                 }
 
@@ -79,42 +77,49 @@ public class InventoryUI : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (selectedSlot == null)
+            if (tempSlot.item == null)
             {
                 if (focusedSlot != null)
                 {
                     if (focusedSlot.item != null)
                     {
                         selectedSlot = focusedSlot;
-                        selectedSlot.Selected();
-                        InventorySlot slot = selectedSlot.GetComponent<InventorySlot>();
-                        tempSlot.AddItem(slot.item, slot.amount);
+                        inventory.Swap(selectedSlot, tempSlot);
                     }
                 }
             }
             else
             {
-                if (selectedSlot.item != null)
+                if (focusedSlot != null && selectedSlot != focusedSlot)
                 {
-                    selectedSlot.Release();
-                    tempSlot.ClearSlot();
-
-                    if (focusedSlot != null && selectedSlot != focusedSlot)
+                    if (tempSlot.item != focusedSlot.item)
                     {
-                        if (selectedSlot.item != focusedSlot.item)
+                        inventory.Swap(tempSlot, focusedSlot);
+                        if (tempSlot.item != null)
                         {
-                            inventory.Swap(selectedSlot, focusedSlot);
+                            inventory.Swap(tempSlot, selectedSlot);
                         }
-                        else
-                        {
-                            inventory.Merge(selectedSlot, focusedSlot);
-                        }
-                    } else if (!EventSystem.current.IsPointerOverGameObject())
-                    {
-                        inventory.Drop(selectedSlot);
                     }
+                    else
+                    {
+                        inventory.Merge(tempSlot, focusedSlot);
+                        if (tempSlot.item != null)
+                        {
+                            inventory.Swap(tempSlot, selectedSlot);
+                        }
+                    }
+                } else if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    // 인벤토리 UI 바깥
+                    inventory.Drop(tempSlot);
+                }
+                else
+                {
+                    // 인벤토리 UI 내부, 선택된 슬롯 없는 경우
+                    inventory.Swap(tempSlot, selectedSlot);
                 }
 
+                tempSlot.ClearSlot();
                 selectedSlot = null;
             }
         }
