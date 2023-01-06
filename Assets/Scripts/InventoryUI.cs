@@ -8,12 +8,11 @@ public class InventoryUI : MonoBehaviour
 {
     public Transform inventoryItem;
     public GameObject inventoryUI;
-    public GameObject slotPref;
 
     Inventory inventory;
     InventorySlot[] slots;
-    InventorySlot tempSlot; // 드래그용 슬롯
-    InventorySlot selectedSlot; // 드래그 하기 위해 클릭한 슬롯
+    InventorySlot dragSlot; // 드래그용 슬롯
+    InventorySlot selectedSlot; // 드래그 하기 위해 선택한 슬롯
     InventorySlot focusedSlot;  // 마우스가 올라간 슬롯
 
     void Start()
@@ -42,7 +41,7 @@ public class InventoryUI : MonoBehaviour
                 {
                     image.raycastTarget = false;
                 }
-                tempSlot = slot;
+                dragSlot = slot;
             }
         }
     }
@@ -51,9 +50,9 @@ public class InventoryUI : MonoBehaviour
     {
         InputCheck();
 
-        if (tempSlot.item != null)
+        if (dragSlot.item != null)
         {
-            tempSlot.GetComponent<RectTransform>().position = Input.mousePosition;
+            dragSlot.GetComponent<RectTransform>().position = Input.mousePosition;
         }
     }
 
@@ -65,10 +64,11 @@ public class InventoryUI : MonoBehaviour
 
             if (selectedSlot != null)
             {
-                if (tempSlot.item != null)
+                if (dragSlot.item != null)
                 {
-                    inventory.Swap(tempSlot, selectedSlot);
-                    tempSlot.ClearSlot();
+                    //inventory.Swap(dragSlot, selectedSlot);
+                    //inventory.Add(tempSlot.item, tempSlot.amount); 이럼 수량 2배 될 거
+                    //dragSlot.ClearSlot();
                 }
 
                 selectedSlot = null;
@@ -77,14 +77,13 @@ public class InventoryUI : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (tempSlot.item == null)
+            if (dragSlot.item == null)
             {
                 if (focusedSlot != null)
                 {
                     if (focusedSlot.item != null)
                     {
-                        selectedSlot = focusedSlot;
-                        inventory.Swap(selectedSlot, tempSlot);
+                        inventory.Swap(focusedSlot, dragSlot);
                     }
                 }
             }
@@ -92,34 +91,34 @@ public class InventoryUI : MonoBehaviour
             {
                 if (focusedSlot != null && selectedSlot != focusedSlot)
                 {
-                    if (tempSlot.item != focusedSlot.item)
+                    if (dragSlot.item != focusedSlot.item)
                     {
-                        inventory.Swap(tempSlot, focusedSlot);
-                        if (tempSlot.item != null)
-                        {
-                            inventory.Swap(tempSlot, selectedSlot);
-                        }
+                        inventory.Swap(dragSlot, focusedSlot);
+                        //if (dragSlot.item != null)
+                        //{
+                        //    inventory.Swap(dragSlot, selectedSlot);
+                        //}
                     }
                     else
                     {
-                        inventory.Merge(tempSlot, focusedSlot);
-                        if (tempSlot.item != null)
-                        {
-                            inventory.Swap(tempSlot, selectedSlot);
-                        }
+                        inventory.Merge(dragSlot, focusedSlot);
+                        //if (dragSlot.item != null)
+                        //{
+                        //    inventory.Swap(dragSlot, selectedSlot);
+                        //}
                     }
                 } else if (!EventSystem.current.IsPointerOverGameObject())
                 {
                     // 인벤토리 UI 바깥
-                    inventory.Drop(tempSlot);
+                    inventory.Drop(dragSlot);
                 }
                 else
                 {
                     // 인벤토리 UI 내부, 선택된 슬롯 없는 경우
-                    inventory.Swap(tempSlot, selectedSlot);
+                    // inventory.Swap(dragSlot, selectedSlot);
                 }
 
-                tempSlot.ClearSlot();
+                //dragSlot.ClearSlot();
                 selectedSlot = null;
             }
         }
@@ -130,7 +129,10 @@ public class InventoryUI : MonoBehaviour
             {
                 if (focusedSlot.item != null)
                 {
-                    inventory.Split(focusedSlot, 1);
+                    if(dragSlot.item == null || dragSlot.item == focusedSlot.item)
+                    {
+                        inventory.Split(focusedSlot);
+                    }
                 }
             }
         }
@@ -138,7 +140,10 @@ public class InventoryUI : MonoBehaviour
         // 정렬(임시) 나중에 ui버튼으로
         if (Input.GetKeyDown("t"))
         {
-            inventory.Sort();
+            if (dragSlot.item == null)
+            {
+                inventory.Sort();
+            }
         }
     }
 

@@ -21,8 +21,8 @@ public class Inventory : MonoBehaviour
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
-    public int space;
-    public int maxAmount;
+    public int space;   // 아이템 슬롯 상한, 드래그용 슬롯 번호를 겸 함
+    public int maxAmount;   // 한 슬롯 당 최대 수량
     public GameObject itemPref;
     public GameObject player;
 
@@ -139,32 +139,43 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
-    public void Split(InventorySlot slot, int splitAmount)
+    public void Split(InventorySlot slot)
     {
         if (items.ContainsKey(slot.slotNum))
         {
-            if (amounts[slot.slotNum] > splitAmount && items.Count < space)
+            if (amounts[slot.slotNum] > 0)
             {
-                for (int i = 0; i < space; i++)
+                if (!items.ContainsKey(space))
                 {
-                    if (!items.ContainsKey(i))
+                    items.Add(space, slot.item);
+                    amounts.Add(space, 1);
+                    amounts[slot.slotNum]--;
+                }
+                else if (amounts[space] < maxAmount)
+                {
+                    items[space] = slot.item;
+                    amounts[space]++;
+                    amounts[slot.slotNum]--;
+                }
+                
+                if (items.ContainsKey(slot.slotNum))
+                {
+                    if (amounts[slot.slotNum] <= 0)
                     {
-                        items[i] = slot.item;
-                        amounts[i] = splitAmount;
-
-                        amounts[slot.slotNum] -= splitAmount;
-
-                        if (onItemChangedCallback != null)
-                            onItemChangedCallback.Invoke();
-                        break;
+                        items.Remove(slot.slotNum);
+                        amounts.Remove(slot.slotNum);
                     }
                 }
+                
+                if (onItemChangedCallback != null)
+                    onItemChangedCallback.Invoke();
             }
         }
     }
 
     public void Swap(InventorySlot slot1, InventorySlot slot2)
     {
+        // 빈 슬롯을 slot1에 넣으면 안 됨
         Item tempItem = items[slot1.slotNum];
         int tempAmount = amounts[slot1.slotNum];
 
@@ -191,6 +202,7 @@ public class Inventory : MonoBehaviour
 
     public void Merge(InventorySlot dragSlot, InventorySlot mergeSlot)
     {
+        // 드래그 중인 슬롯이 첫 번째 인자
         int mergeAmount = amounts[dragSlot.slotNum] + amounts[mergeSlot.slotNum];
 
         if (mergeAmount > maxAmount)
