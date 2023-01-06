@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
 
     public Vector2 movement;
-    private float time;
+    private float timer;
     
     // Update is called once per frame
     void Update()
@@ -22,15 +22,15 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Speed", movement.sqrMagnitude);
 
         // idle 모션 방향을 위해 마지막 움직인 방향을 저장
-        time += Time.deltaTime;
+        timer += Time.deltaTime;
         if (movement.x == 1|| movement.x == -1 || movement.y == 1 || movement.y == -1)
         {
             // 0.1초마다 입력 상태를 저장
-            if(time > 0.1)
+            if(timer > 0.1)
             {
                 animator.SetFloat("lastMoveX", movement.x);
                 animator.SetFloat("lastMoveY", movement.y);
-                time = 0;
+                timer = 0;
             }
         }
     }

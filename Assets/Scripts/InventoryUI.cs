@@ -15,6 +15,8 @@ public class InventoryUI : MonoBehaviour
     InventorySlot selectedSlot; // 드래그 하기 위해 선택한 슬롯
     InventorySlot focusedSlot;  // 마우스가 올라간 슬롯
 
+    private float timer;
+
     void Start()
     {
         inventory = Inventory.instance;
@@ -48,6 +50,7 @@ public class InventoryUI : MonoBehaviour
 
     void Update()
     {
+        timer += Time.deltaTime;
         InputCheck();
 
         if (dragSlot.item != null)
@@ -123,17 +126,21 @@ public class InventoryUI : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButton(1))
         {
-            if (focusedSlot != null && selectedSlot == null)
+            if (timer > 0.12)
             {
-                if (focusedSlot.item != null)
+                if (focusedSlot != null && selectedSlot == null)
                 {
-                    if(dragSlot.item == null || dragSlot.item == focusedSlot.item)
+                    if (focusedSlot.item != null)
                     {
-                        inventory.Split(focusedSlot);
+                        if (dragSlot.item == null || dragSlot.item == focusedSlot.item)
+                        {
+                            inventory.Split(focusedSlot);
+                        }
                     }
                 }
+                timer = 0;
             }
         }
 

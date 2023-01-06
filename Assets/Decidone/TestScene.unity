@@ -890,7 +890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
-  amount: 8
+  amount: 80
 --- !u!58 &973685539
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1408,6 +1408,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1799185956}
+    - target: {fileID: 1877822181348161266, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: maxAmount
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 1877822181348161267, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: m_RootOrder
       value: 0
