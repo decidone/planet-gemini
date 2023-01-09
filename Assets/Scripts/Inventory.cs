@@ -26,8 +26,21 @@ public class Inventory : MonoBehaviour
     public GameObject itemPref;
     public GameObject player;
 
+    // 인벤토리에 표시되는 아이템
     public Dictionary<int, Item> items = new Dictionary<int, Item>();
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
+
+    // 아이템 총량 관리
+    public List<Item> itemsList = new List<Item>();
+    public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
+
+    public void Start()
+    {
+        foreach (Item item in itemsList)
+        {
+            totalItems.Add(item, 0);
+        }
+    }
 
     public bool Add(Item item, int amount)
     {
@@ -35,7 +48,9 @@ public class Inventory : MonoBehaviour
         int unoccupiedSlot = space - items.Count;
         int occupiedSlot = 0;
         int invenItemAmount = 0;
+        totalItems[item] += amount;
 
+        // 인벤토리의 빈 공간, 습득한 아이템과 같은 아이템이 차지하고 있는 공간을 체크
         for (int i = 0; i < space; i++)
         {
             if (items.ContainsKey(i))
@@ -48,11 +63,6 @@ public class Inventory : MonoBehaviour
             }
         }
 
-        Debug.Log("unoccupiedSlot : " + unoccupiedSlot);
-        Debug.Log("slot : " + occupiedSlot);
-        Debug.Log("amount : " + invenItemAmount);
-        Debug.Log("total amount : " + (invenItemAmount + tempAmount));
-
         // 1. 빈 칸 계산 후 인벤에 안들어가는 만큼 버리기
         int totalAmount = invenItemAmount + tempAmount;
         int usableSlot = unoccupiedSlot + occupiedSlot;
@@ -62,9 +72,11 @@ public class Inventory : MonoBehaviour
             int dropAmount = totalAmount - (usableSlot * space);
             tempAmount -= dropAmount;
 
-            // 인벤토리 공간이 아예 없을 때
             if (tempAmount == 0)
             {
+                // 인벤토리 공간이 아예 없을 때
+                totalItems[item] -= amount;
+
                 return false;
             }
             else
@@ -200,6 +212,8 @@ public class Inventory : MonoBehaviour
     public void Drop(Item item, int dropAmount)
     {
         Debug.Log("Drop : " + item.name + "Amount : " + dropAmount);
+        totalItems[item] -= dropAmount;
+
         GameObject dropItem = Instantiate(itemPref);
         SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
         sprite.sprite = item.icon;
@@ -213,6 +227,8 @@ public class Inventory : MonoBehaviour
     public void Drop(InventorySlot slot)
     {
         Debug.Log("Drop : " + items[slot.slotNum].name + "Amount : " + amounts[slot.slotNum]);
+        totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
+
         GameObject dropItem = Instantiate(itemPref);
         SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
         sprite.sprite = items[slot.slotNum].icon;
@@ -229,8 +245,42 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public void Remove(Item item, int amount)
+    public void Sort()
     {
+        items = new Dictionary<int, Item>();
+        amounts = new Dictionary<int, int>();
+
+        foreach (KeyValuePair<Item, int> item in totalItems)
+        {
+            if (item.Value > 0)
+            {
+                int tempAmount = item.Value;
+                if (tempAmount > 0)
+                {
+                    for (int i = 0; i < space; i++)
+                    {
+                        if (!items.ContainsKey(i))
+                        {
+                            if (tempAmount <= maxAmount)
+                            {
+                                items[i] = item.Key;
+                                amounts[i] = tempAmount;
+                                tempAmount = 0;
+                            }
+                            else
+                            {
+                                items[i] = item.Key;
+                                amounts[i] = maxAmount;
+                                tempAmount -= maxAmount;
+                            }
+                        }
+                        if (tempAmount <= 0)
+                            break;
+                    }
+                }
+            }
+        }
+
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
     }

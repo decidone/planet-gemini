@@ -48,6 +48,17 @@ public class InventoryUI : MonoBehaviour
         if (Input.GetButtonDown("Inventory"))
         {
             inventoryUI.SetActive(!inventoryUI.activeSelf);
+
+            if (selectedSlot != null)
+            {
+                if (selectedSlot.item != null)
+                {
+                    selectedSlot.Release();
+                    Destroy(mouseDrag);
+                }
+
+                selectedSlot = null;
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -111,6 +122,12 @@ public class InventoryUI : MonoBehaviour
                     inventory.Split(focusedSlot, 1);
                 }
             }
+        }
+
+        // 정렬(임시) 나중에 ui버튼으로
+        if (Input.GetKeyDown("t"))
+        {
+            inventory.Sort();
         }
     }
 
