@@ -12,7 +12,6 @@ public class InventoryUI : MonoBehaviour
     Inventory inventory;
     InventorySlot[] slots;
     InventorySlot dragSlot; // 드래그용 슬롯
-    InventorySlot selectedSlot; // 드래그 하기 위해 선택한 슬롯
     InventorySlot focusedSlot;  // 마우스가 올라간 슬롯
 
     private float timer;
@@ -65,16 +64,9 @@ public class InventoryUI : MonoBehaviour
         {
             inventoryUI.SetActive(!inventoryUI.activeSelf);
 
-            if (selectedSlot != null)
+            if (dragSlot.item != null)
             {
-                if (dragSlot.item != null)
-                {
-                    //inventory.Swap(dragSlot, selectedSlot);
-                    //inventory.Add(tempSlot.item, tempSlot.amount); 이럼 수량 2배 될 거
-                    //dragSlot.ClearSlot();
-                }
-
-                selectedSlot = null;
+                // 드래그 도중 인벤토리를 닫았을 때
             }
         }
 
@@ -92,23 +84,15 @@ public class InventoryUI : MonoBehaviour
             }
             else
             {
-                if (focusedSlot != null && selectedSlot != focusedSlot)
+                if (focusedSlot != null)
                 {
                     if (dragSlot.item != focusedSlot.item)
                     {
                         inventory.Swap(dragSlot, focusedSlot);
-                        //if (dragSlot.item != null)
-                        //{
-                        //    inventory.Swap(dragSlot, selectedSlot);
-                        //}
                     }
                     else
                     {
                         inventory.Merge(dragSlot, focusedSlot);
-                        //if (dragSlot.item != null)
-                        //{
-                        //    inventory.Swap(dragSlot, selectedSlot);
-                        //}
                     }
                 } else if (!EventSystem.current.IsPointerOverGameObject())
                 {
@@ -118,11 +102,7 @@ public class InventoryUI : MonoBehaviour
                 else
                 {
                     // 인벤토리 UI 내부, 선택된 슬롯 없는 경우
-                    // inventory.Swap(dragSlot, selectedSlot);
                 }
-
-                //dragSlot.ClearSlot();
-                selectedSlot = null;
             }
         }
 
@@ -130,7 +110,7 @@ public class InventoryUI : MonoBehaviour
         {
             if (timer > 0.12)
             {
-                if (focusedSlot != null && selectedSlot == null)
+                if (focusedSlot != null)
                 {
                     if (focusedSlot.item != null)
                     {
