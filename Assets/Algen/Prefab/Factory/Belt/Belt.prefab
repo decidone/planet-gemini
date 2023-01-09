@@ -10,12 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8826970519567855505}
   - component: {fileID: 8826970519567855506}
-  - component: {fileID: 8826970519567855507}
   - component: {fileID: 8826970519567855504}
   - component: {fileID: 8826970519567855511}
-  - component: {fileID: 8826970519567855508}
   - component: {fileID: 8826970519567855509}
-  - component: {fileID: 8826970519567855510}
+  - component: {fileID: 8257279358658315011}
   m_Layer: 0
   m_Name: Belt
   m_TagString: Belt
@@ -31,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8826970519567855532}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -79,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1399763580, guid: 8a2db2bab3b6c1c4d89d257487429c25, type: 3}
+  m_Sprite: {fileID: 1887245633, guid: 8a2db2bab3b6c1c4d89d257487429c25, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -90,20 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8826970519567855507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8826970519567855532}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c697f4aa69cb7e04ba75e29cda3a139f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dirNum: 1
-  modelNum: 0
 --- !u!95 &8826970519567855504
 Animator:
   serializedVersion: 4
@@ -136,7 +120,7 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_UsedByComposite: 1
+  m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
@@ -148,33 +132,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.2, y: 0.5}
-  m_EdgeRadius: 0
---- !u!61 &8826970519567855508
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8826970519567855532}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 1
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.5, y: 1.2}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &8826970519567855509
 Rigidbody2D:
@@ -197,57 +155,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!66 &8826970519567855510
-CompositeCollider2D:
+--- !u!114 &8257279358658315011
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8826970519567855532}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_GeometryType: 1
-  m_GenerationType: 0
-  m_EdgeRadius: 0
-  m_ColliderPaths:
-  - m_Collider: {fileID: 8826970519567855511}
-    m_ColliderPaths:
-    - - X: 6000000
-        Y: 2500000
-      - X: -6000000
-        Y: 2500000
-      - X: -6000000
-        Y: -2500000
-      - X: 6000000
-        Y: -2500000
-  - m_Collider: {fileID: 8826970519567855508}
-    m_ColliderPaths:
-    - - X: 2500000
-        Y: 6000000
-      - X: -2500000
-        Y: 6000000
-      - X: -2500000
-        Y: -6000000
-      - X: 2500000
-        Y: -6000000
-  m_CompositePaths:
-    m_Paths:
-    - - {x: 0.25, y: -0.25}
-      - {x: 0.6, y: -0.25}
-      - {x: 0.6, y: 0.25}
-      - {x: 0.25, y: 0.25}
-      - {x: 0.25, y: 0.6}
-      - {x: -0.25, y: 0.6}
-      - {x: -0.25, y: 0.25}
-      - {x: -0.6, y: 0.25}
-      - {x: -0.6, y: -0.25}
-      - {x: -0.25, y: -0.25}
-      - {x: -0.25, y: -0.6}
-      - {x: 0.25, y: -0.6}
-  m_VertexDistance: 0.0005
-  m_OffsetDistance: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c697f4aa69cb7e04ba75e29cda3a139f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dirNum: 0
+  modelNum: 0
+  beltGroupMgr: {fileID: 0}
+  beltState: 0
+  isTurn: 0
+  isRightTurn: 1
