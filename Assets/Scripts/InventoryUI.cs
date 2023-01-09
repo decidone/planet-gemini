@@ -67,6 +67,7 @@ public class InventoryUI : MonoBehaviour
             if (dragSlot.item != null)
             {
                 // 드래그 도중 인벤토리를 닫았을 때
+                inventory.CancelDrag();
             }
         }
 

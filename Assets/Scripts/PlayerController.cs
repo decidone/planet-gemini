@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
             if (itemProps)
             {
                 // 인벤토리에 넣음
-                bool wasPickedUp = Inventory.instance.Add(itemProps.item, itemProps.amount);
+                bool wasPickedUp = Inventory.instance.Add(itemProps.item, itemProps.amount, true);
                 if (wasPickedUp)
                 {
                     items.Remove(item);

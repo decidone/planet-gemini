@@ -42,13 +42,14 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public bool Add(Item item, int amount)
+    public bool Add(Item item, int amount, bool isCount)
     {
         int tempAmount = amount;
         int unoccupiedSlot = space - items.Count;
         int occupiedSlot = 0;
         int invenItemAmount = 0;
-        totalItems[item] += amount;
+        if (isCount)
+            totalItems[item] += amount;
 
         // 인벤토리의 빈 공간, 습득한 아이템과 같은 아이템이 차지하고 있는 공간을 체크
         for (int i = 0; i < space; i++)
@@ -75,7 +76,8 @@ public class Inventory : MonoBehaviour
             if (tempAmount == 0)
             {
                 // 인벤토리 공간이 아예 없을 때
-                totalItems[item] -= amount;
+                if (isCount)
+                    totalItems[item] -= amount;
 
                 return false;
             }
@@ -291,6 +293,19 @@ public class Inventory : MonoBehaviour
                     }
                 }
             }
+        }
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
+    public void CancelDrag()
+    {
+        if (items.ContainsKey(space))
+        {
+            Add(items[space], amounts[space], false);
+            items.Remove(space);
+            amounts.Remove(space);
         }
 
         if (onItemChangedCallback != null)
