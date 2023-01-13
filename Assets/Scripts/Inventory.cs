@@ -45,7 +45,7 @@ public class Inventory : MonoBehaviour
     public bool Add(Item item, int amount, bool isCount)
     {
         int tempAmount = amount;
-        int unoccupiedSlot = space - items.Count;
+        int unoccupiedSlot = 0;
         int occupiedSlot = 0;
         int invenItemAmount = 0;
         if (isCount)
@@ -62,29 +62,31 @@ public class Inventory : MonoBehaviour
                     invenItemAmount += amounts[i];
                 }
             }
+            else
+            {
+                unoccupiedSlot++;
+            }
         }
 
         // 1. 빈 칸 계산 후 인벤에 안들어가는 만큼 버리기
         int totalAmount = invenItemAmount + tempAmount;
         int usableSlot = unoccupiedSlot + occupiedSlot;
-
-        if (totalAmount > usableSlot * space)
+        if (totalAmount > usableSlot * maxAmount)
         {
-            int dropAmount = totalAmount - (usableSlot * space);
+            int dropAmount = totalAmount - (usableSlot * maxAmount);
             tempAmount -= dropAmount;
 
             if (tempAmount == 0)
             {
                 // 인벤토리 공간이 아예 없을 때
                 if (isCount)
-                    totalItems[item] -= amount;
+                {
+                    totalItems[item] -= dropAmount;
+                    return false;
+                }
+            }
 
-                return false;
-            }
-            else
-            {
-                Drop(item, dropAmount);
-            }
+            Drop(item, dropAmount);
         }
 
         // 2. 이미 있던 칸에 수량 증가
@@ -225,7 +227,7 @@ public class Inventory : MonoBehaviour
 
     public void Drop(Item item, int dropAmount)
     {
-        Debug.Log("Drop : " + item.name + "Amount : " + dropAmount);
+        Debug.Log("Drop : " + item.name + ", Amount : " + dropAmount);
         totalItems[item] -= dropAmount;
 
         GameObject dropItem = Instantiate(itemPref);
@@ -240,7 +242,7 @@ public class Inventory : MonoBehaviour
 
     public void Drop(InventorySlot slot)
     {
-        Debug.Log("Drop : " + items[slot.slotNum].name + "Amount : " + amounts[slot.slotNum]);
+        Debug.Log("Drop : " + items[slot.slotNum].name + ", Amount : " + amounts[slot.slotNum]);
         totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
 
         GameObject dropItem = Instantiate(itemPref);
