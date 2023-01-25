@@ -22,7 +22,7 @@ public class BeltManager : MonoBehaviour
         BeltGroupMgr fstGroupMgr = fstBelt.GetComponent<BeltGroupMgr>();
         BeltGroupMgr secGroupMgr = secBelt.GetComponent<BeltGroupMgr>();
 
-        List<GameObject> result = new List<GameObject>();
+        List<BeltCtrl> result = new List<BeltCtrl>();
 
         //ÇÕÄ¡±â
         result.AddRange(fstGroupMgr.BeltList);
@@ -31,10 +31,10 @@ public class BeltManager : MonoBehaviour
         fstGroupMgr.BeltList.Clear();
         fstGroupMgr.BeltList = result.Distinct().ToList();
 
-        foreach (GameObject belt in secGroupMgr.BeltList)
+        foreach (BeltCtrl belt in secGroupMgr.BeltList)
         {
             belt.transform.parent = fstGroupMgr.transform;
-            belt.GetComponent<BeltCtrl>().beltGroupMgr = fstBelt;
+            belt.beltGroupMgr = fstBelt;
         }
 
         fstGroupMgr.Reconfirm();
