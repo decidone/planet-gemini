@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 8826970519567855511}
   - component: {fileID: 8826970519567855509}
   - component: {fileID: 8257279358658315011}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Belt
-  m_TagString: Belt
+  m_TagString: Undefined
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 1887245633, guid: 8a2db2bab3b6c1c4d89d257487429c25, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -173,3 +173,7 @@ MonoBehaviour:
   beltState: 0
   isTurn: 0
   isRightTurn: 1
+  beltSpeed: 1.5
+  nextBelt: {fileID: 0}
+  itemSpawner: {fileID: 0}
+  itemList: []

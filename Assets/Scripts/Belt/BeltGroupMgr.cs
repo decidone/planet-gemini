@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BeltGroupMgr : MonoBehaviour
 {
@@ -12,10 +13,13 @@ public class BeltGroupMgr : MonoBehaviour
     public bool left = false;
     public bool right = false;
     
-    public List<GameObject> BeltList = new List<GameObject>();
+    public List<BeltCtrl> BeltList = new List<BeltCtrl>();
+    public List<BeltItemCtrl> GroupItem = new List<BeltItemCtrl>();
 
     Vector2 nextPos;
 
+    //bool isItemStop = false;
+    //int itemIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +49,10 @@ public class BeltGroupMgr : MonoBehaviour
             SetBelt(1);
             right = false;
         }
+        //if (isItemStop == true && GroupItem.Count > 1)
+        //{
+        //    ItemDist();
+        //}
     }
 
     void SetBelt(int beltDir)
@@ -53,20 +61,20 @@ public class BeltGroupMgr : MonoBehaviour
         {
             GameObject belt = Instantiate(BeltObj, this.transform.position, Quaternion.identity);
             belt.transform.parent = this.transform;
-            BeltList.Add(belt);
-            BeltCtrl beltCtrl = belt.GetComponentInChildren<BeltCtrl>();
+            BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
+            BeltList.Add(beltCtrl);
             beltCtrl.dirNum = beltDir;
             beltCtrl.beltState = BeltState.SoloBelt;
         }
         else if (BeltList.Count != 0)
         {
-            BeltCtrl preBeltCtrl = BeltList[BeltList.Count - 1].GetComponentInChildren<BeltCtrl>();
+            BeltCtrl preBeltCtrl = BeltList[BeltList.Count - 1];
 
             if(preBeltCtrl.dirNum == 0)
             {
                 if (beltDir == 0 || beltDir == 1 || beltDir == 3)
                 {
-                    nextPos = new Vector2(BeltList[BeltList.Count - 1].transform.position.x , BeltList[BeltList.Count - 1].transform.position.y + 1);
+                    nextPos = new Vector2(preBeltCtrl.transform.position.x , preBeltCtrl.transform.position.y + 1);
                 }
                 else if(beltDir == 2)
                 {
@@ -77,7 +85,7 @@ public class BeltGroupMgr : MonoBehaviour
             {
                 if (beltDir == 1 || beltDir == 0 || beltDir == 2)
                 {
-                    nextPos = new Vector2(BeltList[BeltList.Count - 1].transform.position.x + 1, BeltList[BeltList.Count - 1].transform.position.y);
+                    nextPos = new Vector2(preBeltCtrl.transform.position.x + 1, preBeltCtrl.transform.position.y);
                 }
                 else if (beltDir == 3)
                 {
@@ -88,7 +96,7 @@ public class BeltGroupMgr : MonoBehaviour
             {
                 if (beltDir == 2 || beltDir == 1 || beltDir == 3)
                 {
-                    nextPos = new Vector2(BeltList[BeltList.Count - 1].transform.position.x, BeltList[BeltList.Count - 1].transform.position.y - 1);
+                    nextPos = new Vector2(preBeltCtrl.transform.position.x, preBeltCtrl.transform.position.y - 1);
                 }
                 else if (beltDir == 0)
                 {
@@ -99,30 +107,30 @@ public class BeltGroupMgr : MonoBehaviour
             {
                 if (beltDir == 3 || beltDir == 0 || beltDir == 2)
                 {
-                    nextPos = new Vector2(BeltList[BeltList.Count - 1].transform.position.x - 1, BeltList[BeltList.Count - 1].transform.position.y );
+                    nextPos = new Vector2(preBeltCtrl.transform.position.x - 1, preBeltCtrl.transform.position.y );
                 }
                 else if (beltDir == 1)
                 {
                     return;
                 }
             }
-
             GameObject belt = Instantiate(BeltObj, nextPos, Quaternion.identity);
             belt.transform.parent = this.transform;
-            BeltList.Add(belt);
-            BeltCtrl beltCtrl = belt.GetComponentInChildren<BeltCtrl>();
+            BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
+            BeltList.Add(beltCtrl);
             beltCtrl.dirNum = beltDir;
-
             BeltModelSet(preBeltCtrl, beltCtrl);
-        }
 
+            //if (BeltList.Count > 0)
+            //    StartCoroutine("RestartItem");
+        }
     }
 
     void BeltModelSet(BeltCtrl preBelt, BeltCtrl nextBelt)
     {
-        if(preBelt == BeltList[0].GetComponent<BeltCtrl>())
+        if(preBelt == BeltList[0])
             preBelt.beltState = BeltState.StartBelt;
-        else if (preBelt != BeltList[0].GetComponent<BeltCtrl>())        
+        else if (preBelt != BeltList[0])        
             preBelt.beltState = BeltState.RepeaterBelt;
 
         if (preBelt.dirNum != nextBelt.dirNum)
@@ -181,19 +189,41 @@ public class BeltGroupMgr : MonoBehaviour
             }
         }
     }
-
     public void Reconfirm()
     {
         int index = 0;
-        foreach(GameObject belt in BeltList)
+        foreach(BeltCtrl belt in BeltList)
         {
             if (BeltList.Count - 1 > index)
             {
-                BeltModelSet(belt.GetComponent<BeltCtrl>(), BeltList[index + 1].GetComponent<BeltCtrl>());
+                BeltModelSet(belt, BeltList[index + 1]);
                 index++;
             }
             else
                 return;
         }
     }
+
+    public void AddItem(BeltItemCtrl item)
+    {
+        GroupItem.Add(item);
+    }
+
+    //IEnumerator RestartItem()
+    //{
+    //    for (int i = BeltList.Count - 1; i >= 0; i--)
+    //    {
+    //        if (BeltList[i].itemList.Count > 0 && BeltList[i].itemList[0].isStop == true)
+    //        {           
+
+    //            BeltList[i].itemList[0].isStop = false;
+    //            BeltList[i].SetNextPos(BeltList[i].itemList[0]);
+    //        }
+    //        //else if (BeltList[i].itemList.Count > 0 && BeltList[i].itemList[0].isStop == false)
+    //        //    yield break;
+            
+    //        yield return new WaitForSecondsRealtime(0.01f);              
+
+    //    }
+    //}
 }
