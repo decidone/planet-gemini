@@ -5,4 +5,9 @@ using UnityEngine;
 public class Miner : Production
 {
     // 매장된 자원 확인, 레시피
+
+    public void ResourceCheck()
+    {
+        // 매장된 자원 확인, 생산 자원을 지정
+    }
 }

@@ -8,8 +8,8 @@ public class InventoryUI : MonoBehaviour
 {
     public Transform inventoryItem;
     public GameObject inventoryUI;
+    public Inventory inventory; // 플레이어 인벤토리(GameManager), 건물 인벤토리 넣을 때 개편 필요
 
-    Inventory inventory;
     InventorySlot[] slots;
     InventorySlot dragSlot; // 드래그용 슬롯
     InventorySlot focusedSlot;  // 마우스가 올라간 슬롯
@@ -18,7 +18,6 @@ public class InventoryUI : MonoBehaviour
 
     void Start()
     {
-        inventory = Inventory.instance;
         inventory.onItemChangedCallback += UpdateUI;
 
         slots = inventoryItem.GetComponentsInChildren<InventorySlot>();
