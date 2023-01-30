@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    public Transform inventoryItem;
     public GameObject inventoryUI;
+    public Transform inventoryItem;
+    
     public Inventory inventory; // 플레이어 인벤토리(GameManager), 건물 인벤토리 넣을 때 개편 필요
 
     InventorySlot[] slots;

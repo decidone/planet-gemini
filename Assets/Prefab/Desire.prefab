@@ -158,6 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   items: []
+  inventory: {fileID: 0}
 --- !u!70 &2369682121264992855
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -171,6 +172,6 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -1.2}
-  m_Size: {x: 1.5, y: 1.5}
-  m_Direction: 0
+  m_Offset: {x: 0, y: -1.35}
+  m_Size: {x: 1, y: 0.8}
+  m_Direction: 1
