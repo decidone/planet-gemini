@@ -7,6 +7,11 @@ public class PlayerController : MonoBehaviour
     public List<GameObject> items = new List<GameObject>();
     public Inventory inventory; // 플레이어 인벤토리(GameManager)
 
+    private void Start()
+    {
+        inventory = PlayerInventory.instance;
+    }
+
     private void Update()
     {
         if (Input.GetButton("Loot"))

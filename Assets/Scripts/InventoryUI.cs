@@ -8,7 +8,7 @@ public class InventoryUI : MonoBehaviour
 {
     public GameObject inventoryUI;
     public Transform inventoryItem;
-    
+    public bool isPlayerInven;
     public Inventory inventory; // 플레이어 인벤토리(GameManager), 건물 인벤토리 넣을 때 개편 필요
 
     InventorySlot[] slots;
@@ -19,31 +19,20 @@ public class InventoryUI : MonoBehaviour
 
     void Start()
     {
+        if (isPlayerInven)
+            inventory = PlayerInventory.instance;
+
+        dragSlot = DragSlot.instance.slot;
         inventory.onItemChangedCallback += UpdateUI;
 
         slots = inventoryItem.GetComponentsInChildren<InventorySlot>();
-
         for (int i = 0; i < slots.Length; i++)
         {
             InventorySlot slot = slots[i];
             slot.slotNum = i;
 
-            if (i != slots.Length - 1)
-            {
-                // 일반 슬롯
-                AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-                AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
-            }
-            else
-            {
-                // 드래그용 슬롯
-                Image[] images = slot.GetComponentsInChildren<Image>();
-                foreach (Image image in images)
-                {
-                    image.raycastTarget = false;
-                }
-                dragSlot = slot;
-            }
+            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
+            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
         }
     }
 
@@ -51,7 +40,7 @@ public class InventoryUI : MonoBehaviour
     {
         timer += Time.deltaTime;
         InputCheck();
-
+        
         if (dragSlot.item != null)
         {
             dragSlot.GetComponent<RectTransform>().position = Input.mousePosition;
@@ -79,7 +68,7 @@ public class InventoryUI : MonoBehaviour
                 {
                     if (focusedSlot.item != null)
                     {
-                        inventory.Swap(focusedSlot, dragSlot);
+                        inventory.Swap(focusedSlot);
                     }
                 }
             }
@@ -89,11 +78,11 @@ public class InventoryUI : MonoBehaviour
                 {
                     if (dragSlot.item != focusedSlot.item)
                     {
-                        inventory.Swap(dragSlot, focusedSlot);
+                        inventory.Swap(focusedSlot);
                     }
                     else
                     {
-                        inventory.Merge(dragSlot, focusedSlot);
+                        inventory.Merge(focusedSlot);
                     }
                 } else if (!EventSystem.current.IsPointerOverGameObject())
                 {
@@ -147,6 +136,15 @@ public class InventoryUI : MonoBehaviour
             {
                 slots[i].ClearSlot();
             }
+        }
+
+        if(dragSlot.item != null)
+        {
+            dragSlot.AddItem(dragSlot.item, dragSlot.amount);
+        }
+        else
+        {
+            dragSlot.ClearSlot();
         }
     }
 

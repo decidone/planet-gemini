@@ -10,6 +10,7 @@ public class Inventory : MonoBehaviour
     public int maxAmount;   // 한 슬롯 당 최대 수량
     public GameObject itemPref;
     public GameObject player;
+    InventorySlot dragSlot;
 
     // 인벤토리에 표시되는 아이템
     public Dictionary<int, Item> items = new Dictionary<int, Item>();
@@ -25,6 +26,7 @@ public class Inventory : MonoBehaviour
         {
             totalItems.Add(item, 0);
         }
+        dragSlot = DragSlot.instance.slot;
     }
 
     public bool Add(Item item, int amount, bool isCount)
@@ -134,26 +136,17 @@ public class Inventory : MonoBehaviour
         {
             if (amounts[slot.slotNum] > 0)
             {
-                if (!items.ContainsKey(space))
+                if (dragSlot.amount < maxAmount)
                 {
-                    items.Add(space, slot.item);
-                    amounts.Add(space, 1);
-                    amounts[slot.slotNum]--;
-                }
-                else if (amounts[space] < maxAmount)
-                {
-                    items[space] = slot.item;
-                    amounts[space]++;
+                    dragSlot.item = slot.item;
+                    dragSlot.amount++;
                     amounts[slot.slotNum]--;
                 }
                 
-                if (items.ContainsKey(slot.slotNum))
+                if (amounts[slot.slotNum] == 0)
                 {
-                    if (amounts[slot.slotNum] <= 0)
-                    {
-                        items.Remove(slot.slotNum);
-                        amounts.Remove(slot.slotNum);
-                    }
+                    items.Remove(slot.slotNum);
+                    amounts.Remove(slot.slotNum);
                 }
                 
                 if (onItemChangedCallback != null)
@@ -162,48 +155,53 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void Swap(InventorySlot slot1, InventorySlot slot2)
+    public void Swap(InventorySlot slot)
     {
-        // 빈 슬롯을 slot1에 넣으면 안 됨
-        Item tempItem = items[slot1.slotNum];
-        int tempAmount = amounts[slot1.slotNum];
-
-        if (slot2.item != null)
+        if (!items.ContainsKey(slot.slotNum))
         {
-            items[slot1.slotNum] = items[slot2.slotNum];
-            items[slot2.slotNum] = tempItem;
+            // 타겟 슬롯이 비어있는 경우
+            items.Add(slot.slotNum, dragSlot.item);
+            amounts.Add(slot.slotNum, dragSlot.amount);
+            dragSlot.ClearSlot();
+        }else if (dragSlot.item == null)
+        {
+            // 드래그 슬롯이 비어있는 경우
+            dragSlot.item = items[slot.slotNum];
+            dragSlot.amount = amounts[slot.slotNum];
 
-            amounts[slot1.slotNum] = amounts[slot2.slotNum];
-            amounts[slot2.slotNum] = tempAmount;
+            items.Remove(slot.slotNum);
+            amounts.Remove(slot.slotNum);
         }
         else
         {
-            items.Remove(slot1.slotNum);
-            items.Add(slot2.slotNum, tempItem);
+            Item tempItem = items[slot.slotNum];
+            int tempAmount = amounts[slot.slotNum];
 
-            amounts.Remove(slot1.slotNum);
-            amounts.Add(slot2.slotNum, tempAmount);
+            items[slot.slotNum] = dragSlot.item;
+            dragSlot.item = tempItem;
+
+            amounts[slot.slotNum] = dragSlot.amount;
+            dragSlot.amount = tempAmount;
         }
 
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
     }
 
-    public void Merge(InventorySlot dragSlot, InventorySlot mergeSlot)
+    public void Merge(InventorySlot mergeSlot)
     {
         // 드래그 중인 슬롯이 첫 번째 인자
-        int mergeAmount = amounts[dragSlot.slotNum] + amounts[mergeSlot.slotNum];
+        int mergeAmount = dragSlot.amount + amounts[mergeSlot.slotNum];
 
         if (mergeAmount > maxAmount)
         {
             amounts[mergeSlot.slotNum] = maxAmount;
-            amounts[dragSlot.slotNum] = mergeAmount - maxAmount;
+            dragSlot.amount = mergeAmount - maxAmount;
         }
         else
         {
             amounts[mergeSlot.slotNum] = mergeAmount;
-            items.Remove(dragSlot.slotNum);
-            amounts.Remove(dragSlot.slotNum);
+            dragSlot.ClearSlot();
         }
 
         if (onItemChangedCallback != null)
