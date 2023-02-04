@@ -5,7 +5,6 @@ using System.Linq;
 
 public class BeltGroupMgr : MonoBehaviour
 {
-
     public GameObject BeltObj = null;
 
     public bool up = false;
@@ -14,12 +13,10 @@ public class BeltGroupMgr : MonoBehaviour
     public bool right = false;
     
     public List<BeltCtrl> BeltList = new List<BeltCtrl>();
-    public List<BeltItemCtrl> GroupItem = new List<BeltItemCtrl>();
+    public List<ItemProps> GroupItem = new List<ItemProps>();
 
     Vector2 nextPos;
 
-    //bool isItemStop = false;
-    //int itemIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -49,10 +46,6 @@ public class BeltGroupMgr : MonoBehaviour
             SetBelt(1);
             right = false;
         }
-        //if (isItemStop == true && GroupItem.Count > 1)
-        //{
-        //    ItemDist();
-        //}
     }
 
     void SetBelt(int beltDir)
@@ -120,9 +113,6 @@ public class BeltGroupMgr : MonoBehaviour
             BeltList.Add(beltCtrl);
             beltCtrl.dirNum = beltDir;
             BeltModelSet(preBeltCtrl, beltCtrl);
-
-            //if (BeltList.Count > 0)
-            //    StartCoroutine("RestartItem");
         }
     }
 
@@ -204,26 +194,8 @@ public class BeltGroupMgr : MonoBehaviour
         }
     }
 
-    public void AddItem(BeltItemCtrl item)
+    public void AddItem(ItemProps item)
     {
         GroupItem.Add(item);
     }
-
-    //IEnumerator RestartItem()
-    //{
-    //    for (int i = BeltList.Count - 1; i >= 0; i--)
-    //    {
-    //        if (BeltList[i].itemList.Count > 0 && BeltList[i].itemList[0].isStop == true)
-    //        {           
-
-    //            BeltList[i].itemList[0].isStop = false;
-    //            BeltList[i].SetNextPos(BeltList[i].itemList[0]);
-    //        }
-    //        //else if (BeltList[i].itemList.Count > 0 && BeltList[i].itemList[0].isStop == false)
-    //        //    yield break;
-            
-    //        yield return new WaitForSecondsRealtime(0.01f);              
-
-    //    }
-    //}
 }

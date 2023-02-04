@@ -40,9 +40,9 @@ public class ItemSpawner : MonoBehaviour
             itemProps.item = itemList[0];
             itemProps.amount = 1;
             spawnItem.transform.position = this.transform.position;
-            spawnItem.AddComponent<BeltItemCtrl>();
-            beltList[0].AddItem(spawnItem.GetComponent<BeltItemCtrl>());
-            beltList[0].beltGroupMgr.GetComponent<BeltGroupMgr>().AddItem(spawnItem.GetComponent<BeltItemCtrl>());
+            //spawnItem.AddComponent<BeltItemCtrl>();
+            beltList[0].AddItem(spawnItem.GetComponent<ItemProps>());
+            beltList[0].beltGroupMgr.GetComponent<BeltGroupMgr>().AddItem(spawnItem.GetComponent<ItemProps>());
         }
 
         yield return new WaitForSecondsRealtime(1.0f);
