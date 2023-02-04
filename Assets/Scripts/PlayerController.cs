@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 public class PlayerController : MonoBehaviour
 {
     public List<GameObject> items = new List<GameObject>();
+    public Inventory inventory; // 플레이어 인벤토리(GameManager)
 
     private void Update()
     {
@@ -39,7 +40,7 @@ public class PlayerController : MonoBehaviour
             if (itemProps)
             {
                 // 인벤토리에 넣음
-                bool wasPickedUp = Inventory.instance.Add(itemProps.item, itemProps.amount, true);
+                bool wasPickedUp = inventory.Add(itemProps.item, itemProps.amount, true);
                 if (wasPickedUp)
                 {
                     items.Remove(item);

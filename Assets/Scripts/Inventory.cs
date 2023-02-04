@@ -3,21 +3,6 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    #region Singleton
-    public static Inventory instance;
-    
-    private void Awake()
-    {
-        if(instance != null)
-        {
-            Debug.LogWarning("More than one instance of inventory found!");
-            return;
-        }
-
-        instance = this;
-    }
-    #endregion
-
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
