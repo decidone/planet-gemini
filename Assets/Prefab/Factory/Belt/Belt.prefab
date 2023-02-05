@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8257279358658315011}
   m_Layer: 6
   m_Name: Belt
-  m_TagString: Undefined
+  m_TagString: Factory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -167,6 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c697f4aa69cb7e04ba75e29cda3a139f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  factoryData: {fileID: 11400000, guid: b1f80cc4a5f98e24287ffd6c848c3ca5, type: 2}
+  itemList: []
+  isFull: 0
   dirNum: 0
   modelNum: 0
   beltGroupMgr: {fileID: 0}
@@ -177,6 +180,5 @@ MonoBehaviour:
   nextObj: {fileID: 0}
   preObj: {fileID: 0}
   nextBelt: {fileID: 0}
-  itemList: []
-  isFull: 0
+  preBelt: {fileID: 0}
   isItemStop: 0

@@ -2,45 +2,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SplitterCtrl : MonoBehaviour
+public class SplitterCtrl : FactoryCtrl
 {
-    public int dirNum = 0;    // πÊ«‚
     public Sprite[] modelNum = new Sprite[4];
     SpriteRenderer setModel;
 
-    public BeltCtrl inBelt = null;
-    public List<BeltCtrl> outBelt = new List<BeltCtrl>();
+    //public BeltCtrl inBelt = null;
 
-    public List<ItemProps> itemList = new List<ItemProps>();
-    int fullItemNum = 10;
-    public bool isFull = false;
-    int getBeltNum = 0;
+    public GameObject inObj = null;
+    public List<GameObject> outObj = new List<GameObject>();
+
+    public GameObject[] nearObj = new GameObject[4];
+
+    int getObjNum = 0;
 
     bool itemGetDelay = false;
     bool itemSetDelay = false;
     float delaySpeed = 0.4f;
 
+    Vector2[] checkPos = new Vector2[4];
+
     // Start is called before the first frame update
     void Start()
     {
         setModel = GetComponent<SpriteRenderer>();
-
     }
 
     // Update is called once per frame
     void Update()
     {
         SetDirNum();
-        if (inBelt != null && isFull == false) 
+        if (inObj != null && isFull == false) 
         {
             if (itemGetDelay == false)
-                StartCoroutine("GetBeltItem");
+                StartCoroutine("GetItem");
         }
-        if (itemList.Count > 0 && outBelt.Count > 0)
+        if (itemList.Count > 0 && outObj.Count > 0)
         {
             if (itemSetDelay == false)
-                StartCoroutine("SetBeltItem");
+                StartCoroutine("SetItem");
         }
+
+        if (nearObj[0] == null)
+            UpObjCheck();
+        if (nearObj[1] == null)
+            RightObjCheck();
+        if (nearObj[2] == null)
+            DownObjCheck();
+        if (nearObj[3] == null)
+            LeftObjCheck();
     }
 
     void SetDirNum()
@@ -48,112 +58,211 @@ public class SplitterCtrl : MonoBehaviour
         if (dirNum < 4)
         {
             setModel.sprite = modelNum[dirNum];
+            CheckPos();
         }
     }
-
-    public void SetBelt(BeltCtrl belt)
+    void CheckPos()
     {
-        if (inBelt == null)
-        {
-            CheckInBelt();
-            if (inBelt == null)
-                outBelt.Add(belt);
-        }
-        else if (inBelt != null)
-            outBelt.Add(belt);
-    }
-
-    void CheckInBelt()
-    {
-        var Check = transform.up;
-
         if (dirNum == 0)
         {
-            Check = -transform.up;
+            checkPos[0] = -transform.up;
+            checkPos[1] = -transform.right;
+            checkPos[2] = transform.up;
+            checkPos[3] = transform.right;
         }
         else if (dirNum == 1)
         {
-            Check = -transform.right;
+            checkPos[0] = -transform.right;
+            checkPos[1] = transform.up;
+            checkPos[2] = transform.right;
+            checkPos[3] = -transform.up;
         }
         else if (dirNum == 2)
         {
-            Check = transform.up;
+            checkPos[0] = transform.up;
+            checkPos[1] = transform.right;
+            checkPos[2] = -transform.up;
+            checkPos[3] = -transform.right;
         }
         else if (dirNum == 3)
         {
-            Check = transform.right;
+            checkPos[0] = transform.right;
+            checkPos[1] = -transform.up;
+            checkPos[2] = -transform.right;
+            checkPos[3] = transform.up;
         }
+    }
 
-        RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, Check, 1f);
-
-        if (hit)
+    void UpObjCheck()
+    {
+        if (nearObj[0] == null)
         {
-            if (hit.collider.GetComponent<BeltCtrl>() != null)
+            RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 1f);
+
+            for (int a = 0; a < upHits.Length; a++)
             {
-                BeltCtrl belt = hit.collider.GetComponent<BeltCtrl>();
-                if (belt.dirNum == dirNum)
-                    inBelt = belt;
+                if (upHits[a].collider.GetComponent<SplitterCtrl>() != this.gameObject.GetComponent<SplitterCtrl>())
+                {
+                    if (upHits[a].collider.CompareTag("Factory"))
+                    {
+                        nearObj[0] = upHits[a].collider.gameObject;
+                        SetInObj();
+                    }
+                }
             }
         }
     }
 
-    void AddItem(ItemProps item)
+    void RightObjCheck()
     {
-        itemList.Add(item);
-        item.transform.position = this.transform.position;
+        if (nearObj[1] == null)
+        {
+            RaycastHit2D[] rightHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[1], 1f);
 
-        if (itemList.Count >= fullItemNum)
-            isFull = true;
+            for (int a = 0; a < rightHits.Length; a++)
+            {
+                if (rightHits[a].collider.GetComponent<SplitterCtrl>() != this.gameObject.GetComponent<SplitterCtrl>())
+                {
+                    if (rightHits[a].collider.CompareTag("Factory"))
+                    {
+                        nearObj[1] = rightHits[a].collider.gameObject;
+                        SetOutObj(nearObj[1]);
+                    }
+                }
+            }
+        }
+    }
+    void DownObjCheck()
+    {
+        if (nearObj[2] == null)
+        {
+            RaycastHit2D[] downHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[2], 1f);
+
+            for (int a = 0; a < downHits.Length; a++)
+            {
+                if (downHits[a].collider.GetComponent<SplitterCtrl>() != this.gameObject.GetComponent<SplitterCtrl>())
+                {
+                    if (downHits[a].collider.CompareTag("Factory"))
+                    {
+                        nearObj[2] = downHits[a].collider.gameObject;
+                        SetOutObj(nearObj[2]);
+                    }
+                }
+            }
+        }
     }
 
-    IEnumerator GetBeltItem()
+    void LeftObjCheck()
+    {
+        if (nearObj[3] == null)
+        {
+            RaycastHit2D[] leftHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[3], 1f);
+
+            for (int a = 0; a < leftHits.Length; a++)
+            {
+                if (leftHits[a].collider.GetComponent<SplitterCtrl>() != this.gameObject.GetComponent<SplitterCtrl>())
+                {
+                    if (leftHits[a].collider.CompareTag("Factory"))
+                    {
+                        nearObj[3] = leftHits[a].collider.gameObject;
+                        SetOutObj(nearObj[3]);
+                    }
+                }
+            }
+        }
+    }
+
+    void SetInObj()
+    {
+        if(nearObj[dirNum].GetComponent<FactoryCtrl>() != null)
+        {
+            inObj = nearObj[dirNum];
+
+            if(inObj.GetComponent<BeltCtrl>() != null)
+            {
+                BeltCtrl inBelt = inObj.GetComponent<BeltCtrl>();
+                if (inBelt.dirNum != dirNum)
+                {
+                    inBelt.dirNum = dirNum;
+
+                    if (inBelt.isTurn == false)
+                    {
+                        inBelt.isTurn = true;
+                        inBelt.BeltModelSet();
+                    }
+                }
+            }
+        }
+     }
+
+    void SetOutObj(GameObject obj)
+    {
+        if (obj.GetComponent<FactoryCtrl>() != null)
+        {
+            if(obj.GetComponent<BeltCtrl>() != null)
+            {
+                if(obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())                
+                    return;                
+            }
+            outObj.Add(obj);
+        }
+    }
+
+    IEnumerator GetItem()
     {
         itemGetDelay = true;
 
-        if (inBelt.isItemStop == true)
+        if(inObj.GetComponent<BeltCtrl>() != null)
         {
-            AddItem(inBelt.itemList[0]);
-            inBelt.isItemStop = false;
-            inBelt.itemList.RemoveAt(0);
+            BeltCtrl inBelt = inObj.GetComponent<BeltCtrl>();
+            if (inBelt.isItemStop == true)
+            {
+                AddItem(inBelt.itemList[0]);
+                inBelt.itemList[0].transform.position = this.transform.position;
+                inBelt.isItemStop = false;
+                inBelt.itemList.RemoveAt(0);
+                inBelt.ItemNumCheck();
 
-            yield return new WaitForSeconds(delaySpeed);
-            itemGetDelay = false;
-        }
-        else if (inBelt.isItemStop == false)
-        {
-            itemGetDelay = false;
-            yield break;
+                yield return new WaitForSeconds(delaySpeed);
+                itemGetDelay = false;
+            }
+            else if (inBelt.isItemStop == false)
+            {
+                itemGetDelay = false;
+                yield break;
+            }
         }
 
     }
 
-    IEnumerator SetBeltItem()
+    IEnumerator SetItem()
     {
         itemSetDelay = true;
 
-        if (outBelt[getBeltNum].isFull == false)
-        {
-            outBelt[getBeltNum].AddItem(itemList[0]);
-            itemList.RemoveAt(0);
+        FactoryCtrl objFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
 
-            getBeltNum++;
-            if (getBeltNum >= outBelt.Count)
-                getBeltNum = 0;        
-            
+        if (objFactory.isFull == false)
+        {
+            objFactory.AddItem(itemList[0]);
+            itemList.RemoveAt(0);
+            ItemNumCheck();
+
+            getObjNum++;
+            if (getObjNum >= outObj.Count)
+                getObjNum = 0;
+
             yield return new WaitForSeconds(delaySpeed);
             itemSetDelay = false;
         }
-        else if(outBelt[getBeltNum].isFull == true)
+        else if (objFactory.isFull == true)
         {
-            getBeltNum++;
-            if (getBeltNum >= outBelt.Count)
-                getBeltNum = 0;
+            getObjNum++;
+            if (getObjNum >= outObj.Count)
+                getObjNum = 0;
 
             itemSetDelay = false;
             yield break;
         }
 
-        if (itemList.Count < fullItemNum)
-            isFull = false;
     }
 }

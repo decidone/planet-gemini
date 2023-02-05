@@ -8,12 +8,11 @@ public enum BeltState
     EndBelt,
     RepeaterBelt,
 }
-public class BeltCtrl : MonoBehaviour
+public class BeltCtrl : FactoryCtrl
 {
-    public int dirNum = 0;    // 방향
     public int modelNum = 0;  // 모션
 
-    public GameObject beltGroupMgr;
+    public BeltGroupMgr beltGroupMgr;
     GameObject beltManager = null;
 
     protected Animator anim;
@@ -26,15 +25,9 @@ public class BeltCtrl : MonoBehaviour
 
     public float beltSpeed = 3f;
 
-    public GameObject nextObj;
-    public GameObject preObj;
-
     public BeltCtrl nextBelt;
-    //public ItemSpawner itemSpawner;
+    public BeltCtrl preBelt;
 
-    public List<ItemProps> itemList = new List<ItemProps>();
-
-    public bool isFull = false;
     Vector2[] nextPos = new Vector2[3];
 
     public bool isItemStop = false;
@@ -50,7 +43,10 @@ public class BeltCtrl : MonoBehaviour
     void Start()
     {
         if (transform.parent.gameObject != null)
-            beltGroupMgr = transform.parent.gameObject;
+            beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+
+        if (preBelt != null)
+            BeltModelSet();
     }
 
     // Update is called once per frame
@@ -61,25 +57,6 @@ public class BeltCtrl : MonoBehaviour
 
         anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
         ModelSet();
-
-        if (beltState == BeltState.SoloBelt || beltState == BeltState.EndBelt)
-        {
-            if (nextBelt != null)
-                CheckGroup();
-        }
-        if(beltState == BeltState.SoloBelt || beltState == BeltState.StartBelt)
-        {
-            if (preObj == null)
-                preObj = PreObjCheck();
-        }
-
-        if (nextObj == null)
-            nextObj = NextObjCheck();
-
-        if (itemList.Count < 3)
-            isFull = false;
-        else if (itemList.Count >= 3)
-            isFull = true;
     }
 
     private void FixedUpdate()
@@ -88,7 +65,6 @@ public class BeltCtrl : MonoBehaviour
             itemMove();
         else if(itemList.Count == 0 && isItemStop == true)
             isItemStop = false;
-
     }
 
     void ModelSet()
@@ -124,157 +100,6 @@ public class BeltCtrl : MonoBehaviour
             }
         }
         SetPos();
-
-    }
-
-    private GameObject NextObjCheck()
-    {
-        var Check = transform.up;
-
-        if (dirNum == 0)
-        {
-            Check = transform.up;
-        }
-        else if (dirNum == 1)
-        {
-            Check = transform.right;
-        }
-        else if (dirNum == 2)
-        {
-            Check = -transform.up;
-        }
-        else if (dirNum == 3)
-        {
-            Check = -transform.right;
-        }
-
-        LayerMask mask = LayerMask.GetMask("Factory");
-        RaycastHit2D[] raycastHits = Physics2D.RaycastAll(this.gameObject.transform.position, Check, 1f, mask);
-
-        for (int a = 0; a < raycastHits.Length; a++)
-        {
-
-            if (raycastHits[a].collider.GetComponent<BeltCtrl>() != this.gameObject.GetComponent<BeltCtrl>())
-            {
-                Debug.Log(raycastHits[a].collider.name);
-
-                if (raycastHits[a].collider.GetComponent<BeltCtrl>() != null)
-                    nextBelt = raycastHits[a].collider.GetComponent<BeltCtrl>();
-
-                return ObjCheck(raycastHits[a]);
-            }
-        }
-
-        //RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, Check, 1f);
-        //if(hit)
-        //{
-        //    if (hit.collider.GetComponent<BeltCtrl>() != null)
-        //        nextBelt = hit.collider.GetComponent<BeltCtrl>();
-
-        //    return ObjCheck(hit);
-        //}
-        return null;
-    }
-    private GameObject PreObjCheck()
-    {
-        var Check = transform.up;
-
-        if (dirNum == 0)
-        {
-            Check = -transform.up;
-        }
-        else if (dirNum == 1)
-        {
-            Check = -transform.right;
-        }
-        else if (dirNum == 2)
-        {
-            Check = transform.up;
-        }
-        else if (dirNum == 3)
-        {
-            Check = transform.right;
-        }
-
-        LayerMask mask = LayerMask.GetMask("Factory");
-        RaycastHit2D[] raycastHits = Physics2D.RaycastAll(this.gameObject.transform.position, Check, 1f, mask);
-            
-
-        for (int a = 0; a < raycastHits.Length; a++)
-        {
-            Debug.Log(raycastHits[a].collider.name);
-
-            if (raycastHits[a].collider.GetComponent<BeltCtrl>() != this.GetComponent<BeltCtrl>())
-                return ObjCheck(raycastHits[a]);
-        }
-        //RaycastHit2D hit = Physics2D.Raycast(this.gameObject.transform.position, Check, 1f);
-
-        //if (hit)
-        //    return ObjCheck(hit); 
-
-        return null;
-    }
-
-    GameObject ObjCheck(RaycastHit2D hit)
-    {
-        if (hit.collider.GetComponent<BeltCtrl>() != null)
-        {
-            BeltCtrl belt = hit.collider.GetComponent<BeltCtrl>();
-            return hit.collider.gameObject;
-        }
-        else if (hit.collider.GetComponent<ItemSpawner>() != null)
-        {
-            if (beltState == BeltState.SoloBelt || beltState == BeltState.StartBelt)
-                hit.collider.GetComponent<ItemSpawner>().AddBeltList(this.GetComponent<BeltCtrl>());
-            return hit.collider.gameObject;
-        }
-        else if (hit.collider.GetComponent<MergerCtrl>() != null)
-        {
-            MergerCtrl merger = hit.collider.GetComponent<MergerCtrl>();
-            merger.SetBelt(GetComponent<BeltCtrl>());
-
-            return hit.collider.gameObject;
-        }
-        else if (hit.collider.GetComponent<SplitterCtrl>() != null)
-        {
-            SplitterCtrl splitter = hit.collider.GetComponent<SplitterCtrl>();
-            splitter.SetBelt(GetComponent<BeltCtrl>());
-
-            return hit.collider.gameObject;
-        }
-        else
-            return null;
-    }
-
-    void CheckGroup()
-    {
-        if (nextBelt.beltGroupMgr != null && beltGroupMgr != nextBelt.beltGroupMgr)
-        {
-            if (nextBelt.beltState == BeltState.StartBelt || nextBelt.beltState == BeltState.SoloBelt)
-            {
-                if (dirNum == nextBelt.dirNum)
-                {
-                    beltManager.GetComponent<BeltManager>().BeltCombine(beltGroupMgr, nextBelt.beltGroupMgr);
-                }
-                else if (dirNum != nextBelt.dirNum)
-                {
-                    if (dirNum % 2 == 0)
-                    {
-                        if (nextBelt.dirNum % 2 == 1)
-                            beltManager.GetComponent<BeltManager>().BeltCombine(beltGroupMgr, nextBelt.beltGroupMgr);
-                        else
-                            return;
-                    }
-                    else if (dirNum % 2 == 1)
-                    {
-                        if (nextBelt.dirNum % 2 == 0)
-                            beltManager.GetComponent<BeltManager>().BeltCombine(beltGroupMgr, nextBelt.beltGroupMgr);
-                        else
-                            return;
-                    }
-                }
-            }
-        }
     }
 
     void SetPos()
@@ -382,11 +207,6 @@ public class BeltCtrl : MonoBehaviour
         }
     }
 
-    public void AddItem(ItemProps item)
-    {
-        itemList.Add(item);
-    }
-
     void itemMove()
     {
         if (itemList.Count == 1)
@@ -430,6 +250,59 @@ public class BeltCtrl : MonoBehaviour
                 {
                     nextBelt.AddItem(itemList[0]);
                     itemList.Remove(itemList[0]);
+                    ItemNumCheck(); ;
+                }
+            }
+        }
+    }
+
+    public void BeltModelSet()
+    {
+        if (preBelt.dirNum != dirNum)
+        {
+            isTurn = true;
+            if (preBelt.dirNum == 0)
+            {
+                if (dirNum == 1)
+                {
+                    isRightTurn = true;
+                }
+                else if (dirNum == 3)
+                {
+                    isRightTurn = false;
+                }
+            }
+            else if (preBelt.dirNum == 1)
+            {
+                if (dirNum == 2)
+                {
+                    isRightTurn = true;
+                }
+                else if (dirNum == 0)
+                {
+                    isRightTurn = false;
+                }
+            }
+            else if (preBelt.dirNum == 2)
+            {
+                if (dirNum == 3)
+                {
+                    isRightTurn = true;
+                }
+                else if (dirNum == 1)
+                {
+                    isRightTurn = false;
+                }
+            }
+            else if (preBelt.dirNum == 3)
+            {
+                if (dirNum == 0)
+                {
+                    isRightTurn = true;
+                }
+                else if (dirNum == 2)
+                {
+                    isRightTurn = false;
                 }
             }
         }

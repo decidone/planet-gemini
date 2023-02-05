@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 2268223559176168503}
   - component: {fileID: 2268223559176168502}
+  - component: {fileID: -9192486032792283099}
   - component: {fileID: 2268223559176168506}
   - component: {fileID: 2268223559176168501}
   - component: {fileID: 2268223559176168500}
   m_Layer: 6
   m_Name: Splitter
-  m_TagString: Untagged
+  m_TagString: Factory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -87,6 +88,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-9192486032792283099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2268223559176168497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea46da87306181449a9303ba7de1030d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  factoryData: {fileID: 11400000, guid: a0c1ce887778bc141997a82195866e51, type: 2}
+  itemList: []
+  isFull: 0
 --- !u!114 &2268223559176168506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,6 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1b7190a4af3deb49ab682359eb43bf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  factoryCtrl: {fileID: 0}
   dirNum: 0
   modelNum:
   - {fileID: -1122253560, guid: 055194f499833f945ae4a47b89baa362, type: 3}
@@ -107,8 +124,13 @@ MonoBehaviour:
   - {fileID: -1234653658, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   inBelt: {fileID: 0}
   outBelt: []
-  itemList: []
-  isFull: 0
+  inObj: {fileID: 0}
+  outObj: []
+  nearObj:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!61 &2268223559176168501
 BoxCollider2D:
   m_ObjectHideFlags: 0

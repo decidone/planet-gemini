@@ -17,11 +17,8 @@ public class BeltManager : MonoBehaviour
         
     }
 
-    public void BeltCombine(GameObject fstBelt, GameObject secBelt)
+    public void BeltCombine(BeltGroupMgr fstGroupMgr, BeltGroupMgr secGroupMgr)
     {
-        BeltGroupMgr fstGroupMgr = fstBelt.GetComponent<BeltGroupMgr>();
-        BeltGroupMgr secGroupMgr = secBelt.GetComponent<BeltGroupMgr>();
-
         List<BeltCtrl> result = new List<BeltCtrl>();
 
         //ÇÕÄ¡±â
@@ -34,10 +31,10 @@ public class BeltManager : MonoBehaviour
         foreach (BeltCtrl belt in secGroupMgr.BeltList)
         {
             belt.transform.parent = fstGroupMgr.transform;
-            belt.beltGroupMgr = fstBelt;
+            belt.beltGroupMgr = fstGroupMgr;
         }
 
         fstGroupMgr.Reconfirm();
-        Destroy(secBelt);
+        Destroy(secGroupMgr);
     }
 }
