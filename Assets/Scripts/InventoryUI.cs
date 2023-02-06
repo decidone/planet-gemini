@@ -57,10 +57,28 @@ public class InventoryUI : MonoBehaviour
             {
                 // 드래그 도중 인벤토리를 닫았을 때
                 inventory.CancelDrag();
+                //DragSlot.instance.slotObj.SetActive(false);
+                //inventory.Drop();
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
+        {
+            if (!isPlayerInven)
+            {
+                if (focusedSlot != null)
+                {
+                    if (focusedSlot.item != null)
+                    {
+                        // 플레이어 인벤으로 아이템 이동
+                        PlayerInventory.instance.Add(focusedSlot.item, focusedSlot.amount, false);
+                        inventory.Remove(focusedSlot);
+                    }
+                }
+                
+            }
+        }
+        else if (Input.GetMouseButtonDown(0))
         {
             if (dragSlot.item == null)
             {
@@ -87,7 +105,7 @@ public class InventoryUI : MonoBehaviour
                 } else if (!EventSystem.current.IsPointerOverGameObject())
                 {
                     // 인벤토리 UI 바깥
-                    inventory.Drop(dragSlot);
+                    inventory.Drop();
                 }
                 else
                 {
@@ -115,7 +133,7 @@ public class InventoryUI : MonoBehaviour
         }
 
         // 정렬(임시) 나중에 ui버튼으로
-        if (Input.GetKeyDown("t"))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             if (dragSlot.item == null)
             {

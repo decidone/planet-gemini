@@ -208,6 +208,35 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
+    public void Remove(InventorySlot slot)
+    {
+        items.Remove(slot.slotNum);
+        amounts.Remove(slot.slotNum);
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
+    public void Drop()
+    {
+        Debug.Log("Drop : " + dragSlot.item.name + ", Amount : " + dragSlot.amount);
+        //totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
+
+        GameObject dropItem = Instantiate(itemPref);
+        SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
+        sprite.sprite = dragSlot.item.icon;
+        ItemProps itemProps = dropItem.GetComponent<ItemProps>();
+        itemProps.item = dragSlot.item;
+        itemProps.amount = dragSlot.amount;
+        dropItem.transform.position = player.transform.position;
+        dropItem.transform.position += Vector3.down * 1.5f;
+
+        dragSlot.ClearSlot();
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
     public void Drop(Item item, int dropAmount)
     {
         Debug.Log("Drop : " + item.name + ", Amount : " + dropAmount);
@@ -221,27 +250,6 @@ public class Inventory : MonoBehaviour
         itemProps.amount = dropAmount;
         dropItem.transform.position = player.transform.position;
         dropItem.transform.position += Vector3.down * 1.5f;
-    }
-
-    public void Drop(InventorySlot slot)
-    {
-        Debug.Log("Drop : " + items[slot.slotNum].name + ", Amount : " + amounts[slot.slotNum]);
-        totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
-
-        GameObject dropItem = Instantiate(itemPref);
-        SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
-        sprite.sprite = items[slot.slotNum].icon;
-        ItemProps itemProps = dropItem.GetComponent<ItemProps>();
-        itemProps.item = items[slot.slotNum];
-        itemProps.amount = amounts[slot.slotNum];
-        dropItem.transform.position = player.transform.position;
-        dropItem.transform.position += Vector3.down * 1.5f;
-
-        items.Remove(slot.slotNum);
-        amounts.Remove(slot.slotNum);
-
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
     }
 
     public void Sort()
@@ -286,12 +294,8 @@ public class Inventory : MonoBehaviour
 
     public void CancelDrag()
     {
-        if (items.ContainsKey(space))
-        {
-            Add(items[space], amounts[space], false);
-            items.Remove(space);
-            amounts.Remove(space);
-        }
+        Add(dragSlot.item, dragSlot.amount, false);
+        dragSlot.ClearSlot();
 
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
