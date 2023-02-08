@@ -14,6 +14,7 @@ public class InventoryUI : MonoBehaviour
     InventorySlot[] slots;
     InventorySlot dragSlot; // 드래그용 슬롯
     InventorySlot focusedSlot;  // 마우스가 올라간 슬롯
+    Inventory playerInven;
 
     private float timer;
 
@@ -22,6 +23,7 @@ public class InventoryUI : MonoBehaviour
         if (isPlayerInven)
             inventory = PlayerInventory.instance;
 
+        playerInven = PlayerInventory.instance;
         dragSlot = DragSlot.instance.slot;
         inventory.onItemChangedCallback += UpdateUI;
 
@@ -70,9 +72,21 @@ public class InventoryUI : MonoBehaviour
                 {
                     if (focusedSlot.item != null)
                     {
-                        // 플레이어 인벤으로 아이템 이동
-                        PlayerInventory.instance.Add(focusedSlot.item, focusedSlot.amount, false);
-                        inventory.Remove(focusedSlot);
+                        int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
+                        if (focusedSlot.amount <= containableAmount)
+                        {
+                            playerInven.Add(focusedSlot.item, focusedSlot.amount);
+                            inventory.Remove(focusedSlot);
+                        }
+                        else if (containableAmount != 0)
+                        {
+                            playerInven.Add(focusedSlot.item, containableAmount);
+                            inventory.Sub(focusedSlot, containableAmount);
+                        }
+                        else
+                        {
+                            Debug.Log("not enough space");
+                        }
                     }
                 }
                 

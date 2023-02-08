@@ -30,52 +30,31 @@ public class Inventory : MonoBehaviour
         dragSlot = DragSlot.instance.slot;
     }
 
-    public bool Add(Item item, int amount, bool isCount)
+    public int SpaceCheck(Item item)
     {
-        int tempAmount = amount;
-        int unoccupiedSlot = 0;
-        int occupiedSlot = 0;
-        int invenItemAmount = 0;
-        if (isCount)
-            totalItems[item] += amount;
-
-        // 인벤토리의 빈 공간, 습득한 아이템과 같은 아이템이 차지하고 있는 공간을 체크
+        int containableAmount = 0;
         for (int i = 0; i < space; i++)
         {
             if (items.ContainsKey(i))
             {
                 if (items[i] == item)
                 {
-                    occupiedSlot++;
-                    invenItemAmount += amounts[i];
+                    containableAmount += (maxAmount - amounts[i]);
                 }
             }
             else
             {
-                unoccupiedSlot++;
+                containableAmount += maxAmount;
             }
         }
 
-        // 1. 빈 칸 계산 후 인벤에 안들어가는 만큼 버리기
-        int totalAmount = invenItemAmount + tempAmount;
-        int usableSlot = unoccupiedSlot + occupiedSlot;
-        if (totalAmount > usableSlot * maxAmount)
-        {
-            int dropAmount = totalAmount - (usableSlot * maxAmount);
-            tempAmount -= dropAmount;
+        return containableAmount;
+    }
 
-            if (tempAmount == 0)
-            {
-                // 인벤토리 공간이 아예 없을 때
-                if (isCount)
-                {
-                    totalItems[item] -= dropAmount;
-                    return false;
-                }
-            }
-
-            Drop(item, dropAmount);
-        }
+    public void Add(Item item, int amount)
+    {
+        int tempAmount = amount;
+        totalItems[item] += amount;
 
         // 2. 이미 있던 칸에 수량 증가
         for (int i = 0; i < space; i++)
@@ -127,8 +106,14 @@ public class Inventory : MonoBehaviour
 
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
+    }
 
-        return true;
+    public void Sub(InventorySlot slot, int amount)
+    {
+        amounts[slot.slotNum] -= amount;
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
     }
 
     public void Split(InventorySlot slot)
@@ -238,21 +223,6 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public void Drop(Item item, int dropAmount)
-    {
-        Debug.Log("Drop : " + item.name + ", Amount : " + dropAmount);
-        totalItems[item] -= dropAmount;
-
-        GameObject dropItem = Instantiate(itemPref);
-        SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
-        sprite.sprite = item.icon;
-        ItemProps itemProps = dropItem.GetComponent<ItemProps>();
-        itemProps.item = item;
-        itemProps.amount = dropAmount;
-        dropItem.transform.position = player.transform.position;
-        dropItem.transform.position += Vector3.down * 1.5f;
-    }
-
     public void Sort()
     {
         items = new Dictionary<int, Item>();
@@ -295,7 +265,8 @@ public class Inventory : MonoBehaviour
 
     public void CancelDrag()
     {
-        Add(dragSlot.item, dragSlot.amount, false);
+        // 이건 동작방식 바꿀거라 Add 바뀐거에 맞게 수량체크 추가 안해놓음
+        Add(dragSlot.item, dragSlot.amount);
         dragSlot.ClearSlot();
 
         if (onItemChangedCallback != null)
