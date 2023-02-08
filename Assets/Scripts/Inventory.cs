@@ -17,11 +17,12 @@ public class Inventory : MonoBehaviour
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
 
     // 아이템 총량 관리
-    public List<Item> itemsList = new List<Item>();
+    List<Item> itemsList;
     public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
 
     public void Start()
     {
+        itemsList = ItemsList.instance.itemsList;
         foreach (Item item in itemsList)
         {
             totalItems.Add(item, 0);
