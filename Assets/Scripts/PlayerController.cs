@@ -7,6 +7,11 @@ public class PlayerController : MonoBehaviour
     public List<GameObject> items = new List<GameObject>();
     public Inventory inventory; // 플레이어 인벤토리(GameManager)
 
+    private void Start()
+    {
+        inventory = PlayerInventory.instance;
+    }
+
     private void Update()
     {
         if (Input.GetButton("Loot"))
@@ -39,13 +44,23 @@ public class PlayerController : MonoBehaviour
             ItemProps itemProps = item.GetComponent<ItemProps>();
             if (itemProps)
             {
-                // 인벤토리에 넣음
-                bool wasPickedUp = inventory.Add(itemProps.item, itemProps.amount, true);
-                if (wasPickedUp)
+                int containableAmount = inventory.SpaceCheck(itemProps.item);
+                if (itemProps.amount <= containableAmount)
                 {
+                    // 인벤토리에 넣음
+                    inventory.Add(itemProps.item, itemProps.amount);
                     items.Remove(item);
                     Destroy(item);
                     break;
+                }
+                else if (containableAmount != 0)
+                {
+                    inventory.Add(itemProps.item, containableAmount);
+                    itemProps.amount -= containableAmount;
+                }
+                else
+                {
+                    Debug.Log("not enough space");
                 }
             }
         }

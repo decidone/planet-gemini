@@ -33,7 +33,7 @@ public class Miner : Production
             // 0.1초마다 입력 상태를 저장
             if (timer > cooldown)
             {
-                inventory.Add(item, 1, true);
+                inventory.Add(item, 1);
                 timer = 0;
             }
         }
