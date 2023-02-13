@@ -61,9 +61,9 @@ public class BeltCtrl : FactoryCtrl
 
     private void FixedUpdate()
     {
-        if (itemList.Count > 0)
+        if (itemObjList.Count > 0)
             itemMove();
-        else if(itemList.Count == 0 && isItemStop == true)
+        else if(itemObjList.Count == 0 && isItemStop == true)
             isItemStop = false;
     }
 
@@ -209,23 +209,23 @@ public class BeltCtrl : FactoryCtrl
 
     void itemMove()
     {
-        if (itemList.Count == 1)
+        if (itemObjList.Count == 1)
         {
-            itemList[0].transform.position = Vector3.MoveTowards(itemList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
         }
-        else if (itemList.Count == 2)
+        else if (itemObjList.Count == 2)
         {
-            itemList[0].transform.position = Vector3.MoveTowards(itemList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
-            itemList[1].transform.position = Vector3.MoveTowards(itemList[1].transform.position, nextPos[1], Time.deltaTime * beltSpeed);
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
+            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * beltSpeed);
         }
-        else if(itemList.Count == 3)
+        else if(itemObjList.Count == 3)
         {
-            itemList[0].transform.position = Vector3.MoveTowards(itemList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
-            itemList[1].transform.position = Vector3.MoveTowards(itemList[1].transform.position, nextPos[1], Time.deltaTime * beltSpeed);
-            itemList[2].transform.position = Vector3.MoveTowards(itemList[2].transform.position, nextPos[2], Time.deltaTime * beltSpeed);
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
+            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * beltSpeed);
+            itemObjList[2].transform.position = Vector3.MoveTowards(itemObjList[2].transform.position, nextPos[2], Time.deltaTime * beltSpeed);
         }
 
-        Vector2 fstItemPos = itemList[0].transform.position;
+        Vector2 fstItemPos = itemObjList[0].transform.position;
 
         if (fstItemPos == nextPos[0])
         {
@@ -243,13 +243,13 @@ public class BeltCtrl : FactoryCtrl
     {
         if (nextBelt != null && beltState != BeltState.EndBelt)
         {
-            if (nextBelt.isFull == false && itemList.Count > 0)
+            if (nextBelt.isFull == false && itemObjList.Count > 0)
             {
-                Vector2 fstItemPos = itemList[0].transform.position;
+                Vector2 fstItemPos = itemObjList[0].transform.position;
                 if (fstItemPos == nextPos[0])
                 {
-                    nextBelt.AddItem(itemList[0]);
-                    itemList.Remove(itemList[0]);
+                    nextBelt.OnBeltItem(itemObjList[0]);
+                    itemObjList.Remove(itemObjList[0]);
                     ItemNumCheck(); ;
                 }
             }

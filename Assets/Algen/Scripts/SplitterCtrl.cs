@@ -217,10 +217,10 @@ public class SplitterCtrl : FactoryCtrl
             BeltCtrl inBelt = inObj.GetComponent<BeltCtrl>();
             if (inBelt.isItemStop == true)
             {
-                AddItem(inBelt.itemList[0]);
-                inBelt.itemList[0].transform.position = this.transform.position;
+                OnFactoryItem(inBelt.itemObjList[0]);
+                inBelt.itemObjList[0].transform.position = this.transform.position;
                 inBelt.isItemStop = false;
-                inBelt.itemList.RemoveAt(0);
+                inBelt.itemObjList.RemoveAt(0);
                 inBelt.ItemNumCheck();
 
                 yield return new WaitForSeconds(delaySpeed);
@@ -232,18 +232,30 @@ public class SplitterCtrl : FactoryCtrl
                 yield break;
             }
         }
-
     }
 
     IEnumerator SetItem()
     {
         itemSetDelay = true;
 
-        FactoryCtrl objFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+        FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
 
-        if (objFactory.isFull == false)
+        if (outFactory.isFull == false)
         {
-            objFactory.AddItem(itemList[0]);
+            if(outObj[getObjNum].GetComponent<BeltCtrl>() != null)
+            {
+                var spawnItem = itemPool.Get();
+                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                sprite.sprite = itemList[0].icon;
+                ItemProps itemProps = spawnItem.GetComponent<ItemProps>();
+                itemProps.item = itemList[0];
+                itemProps.amount = 1;
+                spawnItem.transform.position = this.transform.position;
+                outFactory.OnBeltItem(spawnItem);
+            }
+            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)            
+                outFactory.OnFactoryItem(itemList[0]);
+            
             itemList.RemoveAt(0);
             ItemNumCheck();
 
@@ -254,7 +266,7 @@ public class SplitterCtrl : FactoryCtrl
             yield return new WaitForSeconds(delaySpeed);
             itemSetDelay = false;
         }
-        else if (objFactory.isFull == true)
+        else if (outFactory.isFull == true)
         {
             getObjNum++;
             if (getObjNum >= outObj.Count)

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class ItemSpawner : FactoryCtrl
 {
-    public Item item;
+    public Item itemData;
     public List<BeltCtrl> beltList = new List<BeltCtrl>();
-    public GameObject itemPref;
+    //public GameObject itemPref;
 
     bool itemSetDelay = false;
 
@@ -143,14 +143,20 @@ public class ItemSpawner : FactoryCtrl
 
         if (objFactory.isFull == false)
         {
-            GameObject spawnItem = Instantiate(itemPref);
+            //GameObject spawnItem = Instantiate(itemPref);
+            var spawnItem = itemPool.Get();
             SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-            sprite.sprite = item.icon;
+            sprite.sprite = itemData.icon;
+            //Item item = spawnItem.GetComponent<ItemProps>().item;
+            //objFactory.AddItem(spawnItem);
+
+            //objFactory.AddItem(itemData);
+
             ItemProps itemProps = spawnItem.GetComponent<ItemProps>();
-            itemProps.item = item;
+            itemProps.item = itemData;
             itemProps.amount = 1;
             spawnItem.transform.position = this.transform.position;
-            objFactory.AddItem(spawnItem.GetComponent<ItemProps>());
+            objFactory.OnBeltItem(itemProps);
 
             //beltList[0].beltGroupMgr.GetComponent<BeltGroupMgr>().AddItem(spawnItem.GetComponent<ItemProps>());
 

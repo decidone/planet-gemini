@@ -208,10 +208,11 @@ public class MergerCtrl : FactoryCtrl
             BeltCtrl belt = inObj[getObjNum].GetComponent<BeltCtrl>();
             if (belt.isItemStop == true)
             {
-                AddItem(belt.itemList[0]);
-                belt.itemList[0].transform.position = this.transform.position;
+                //OnBeltItem(belt.itemObjList[0]);
+                OnFactoryItem(belt.itemObjList[0]);
+                belt.itemObjList[0].transform.position = this.transform.position;
                 belt.isItemStop = false;
-                belt.itemList.RemoveAt(0);
+                belt.itemObjList.RemoveAt(0);
                 belt.ItemNumCheck();
 
                 getObjNum++;
@@ -236,11 +237,23 @@ public class MergerCtrl : FactoryCtrl
     IEnumerator SetItem()
     {
         itemSetDelay = true;
-
-        if(outObj.GetComponent<FactoryCtrl>() != null)
+        if (outObj.GetComponent<FactoryCtrl>() != null)
         {
             FactoryCtrl outFactory = outObj.GetComponent<FactoryCtrl>();
-            outFactory.AddItem(itemList[0]);
+            if (outObj.GetComponent<BeltCtrl>() != null)
+            {            
+                var spawnItem = itemPool.Get();
+                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                sprite.sprite = itemList[0].icon;
+                ItemProps itemProps = spawnItem.GetComponent<ItemProps>();
+                itemProps.item = itemList[0];
+                itemProps.amount = 1;
+                spawnItem.transform.position = this.transform.position;
+                outFactory.OnBeltItem(spawnItem);
+            }
+            else
+                outFactory.OnFactoryItem(itemList[0]);
+
             itemList.RemoveAt(0);
             ItemNumCheck();
 

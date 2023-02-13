@@ -13,7 +13,7 @@ public class BeltGroupMgr : MonoBehaviour
     public bool right = false;
     
     public List<BeltCtrl> BeltList = new List<BeltCtrl>();
-    public List<ItemProps> GroupItem = new List<ItemProps>();
+    public List<GameObject> GroupItem = new List<GameObject>();
 
     public FactoryCtrl nextObj = null;
     bool nextCheck = true;
@@ -152,7 +152,7 @@ public class BeltGroupMgr : MonoBehaviour
         }
     }
 
-    public void AddItem(ItemProps item)
+    public void AddItem(GameObject item)
     {
         GroupItem.Add(item);
     }
