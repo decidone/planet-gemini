@@ -1,18 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ClickEvent : MonoBehaviour
 {
     public GameObject structureInfoUI;
+    public Button closeBtn;
 
     Inventory inventory;
     string recipeUI;
     GameObject info;
     GameObject oneStorage;
+    GameManager gameManager;
 
     private void Start()
     {
+        gameManager = GameManager.instance;
+        closeBtn.onClick.AddListener(CloseUI);
+
         info = structureInfoUI.transform.Find("Info").gameObject;
         oneStorage = info.transform.Find("OneStorage").gameObject;
     }
@@ -20,6 +26,11 @@ public class ClickEvent : MonoBehaviour
     public void OpenUI()
     {
         structureInfoUI.SetActive(true);
+
+        if (gameManager.OpenedInvenCheck())
+        {
+            gameManager.dragSlot.SetActive(true);
+        }
 
         // 이거 메서드로 떼서 사용 할 것
         if (this.transform.GetComponent<Miner>())
@@ -44,6 +55,11 @@ public class ClickEvent : MonoBehaviour
     public void CloseUI()
     {
         structureInfoUI.SetActive(false);
+
+        if (!gameManager.OpenedInvenCheck())
+        {
+            gameManager.dragSlot.SetActive(false);
+        }
 
         int childAmount = info.transform.childCount;
         for(int i = 0; i < childAmount; i++)
