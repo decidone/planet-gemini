@@ -8,7 +8,7 @@ public class ItemSpawner : FactoryCtrl
     public List<BeltCtrl> beltList = new List<BeltCtrl>();
     //public GameObject itemPref;
 
-    bool itemSetDelay = false;
+    //bool itemSetDelay = false;
 
     public List<GameObject> outObj = new List<GameObject>();
     public GameObject[] nearObj = new GameObject[4];

@@ -32,6 +32,11 @@ public class BeltCtrl : FactoryCtrl
 
     public bool isItemStop = false;
 
+    public bool isUp = false;
+    public bool isRight = false;
+    public bool isDown = false;
+    public bool isLeft = false;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -45,7 +50,7 @@ public class BeltCtrl : FactoryCtrl
         if (transform.parent.gameObject != null)
             beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
 
-        if (preBelt != null)
+        //if (preBelt != null)
             BeltModelSet();
     }
 
@@ -257,8 +262,12 @@ public class BeltCtrl : FactoryCtrl
     }
 
     public void BeltModelSet()
-    {
-        if (preBelt.dirNum != dirNum)
+    {        
+        if(preBelt == null)
+        {
+            isTurn = false;
+        }
+        else if (preBelt.dirNum != dirNum)
         {
             isTurn = true;
             if (preBelt.dirNum == 0)
@@ -306,5 +315,82 @@ public class BeltCtrl : FactoryCtrl
                 }
             }
         }
+        else if(preBelt.dirNum == dirNum)
+        {
+            isTurn = false;
+        }
+    }
+
+    public void FactoryVecCheck(FactoryCtrl factory)
+    {
+        if (factory.transform.position.x > this.transform.position.x) //벨트 오른쪽        
+            isLeft = true;        
+        else if (factory.transform.position.x < this.transform.position.x) //벨트 왼쪽
+            isRight = true;        
+        else if (factory.transform.position.y - 0.1f > this.transform.position.y) //벨트 위
+            isDown = true;        
+        else if (factory.transform.position.y - 0.1f < this.transform.position.y) //벨트 아래
+            isUp = true;
+
+        FactoryModelSet();
+        //Invoke("FactoryModelSet", 0.1f);
+    }
+
+    void FactoryModelSet()
+    {
+        if (isUp == true && isRight == false && isDown == false && isLeft == false)
+        {
+            if (dirNum == 1)
+            {
+                isTurn = true;
+                isRightTurn = true;
+            }
+            else if (dirNum == 3)
+            {
+                isTurn = true;
+                isRightTurn = false;
+            }
+        }
+        else if (isUp == false && isRight == true && isDown == false && isLeft == false)
+        {
+            if (dirNum == 0)
+            {
+                isTurn = true;
+                isRightTurn = false;
+            }
+            else if (dirNum == 2)
+            {
+                isTurn = true;
+                isRightTurn = true;
+            }            
+        }
+        else if (isUp == false && isRight == false && isDown == true && isLeft == false)
+        {
+            if (dirNum == 1)
+            {
+                isTurn = true;
+                isRightTurn = false;
+            }
+            else if (dirNum == 3)
+            {
+                isTurn = true;
+                isRightTurn = true;
+            }
+        }
+        else if (isUp == false && isRight == false && isDown == false && isLeft == true)
+        {
+            if (dirNum == 0)
+            {
+                isTurn = true;
+                isRightTurn = true;
+            }
+            else if (dirNum == 2)
+            {
+                isTurn = true;
+                isRightTurn = false;
+            }
+        }
+        else
+            isTurn = false;
     }
 }

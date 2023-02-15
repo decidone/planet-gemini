@@ -16,8 +16,8 @@ public class SplitterCtrl : FactoryCtrl
 
     int getObjNum = 0;
 
-    bool itemGetDelay = false;
-    bool itemSetDelay = false;
+    //bool itemGetDelay = false;
+    //bool itemSetDelay = false;
     float delaySpeed = 0.4f;
 
     Vector2[] checkPos = new Vector2[4];
@@ -106,7 +106,8 @@ public class SplitterCtrl : FactoryCtrl
                     if (upHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[0] = upHits[a].collider.gameObject;
-                        SetInObj();
+                        StartCoroutine("SetInObj", nearObj[0]);
+                        //SetInObj();
                     }
                 }
             }
@@ -126,7 +127,8 @@ public class SplitterCtrl : FactoryCtrl
                     if (rightHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[1] = rightHits[a].collider.gameObject;
-                        SetOutObj(nearObj[1]);
+                        StartCoroutine("SetOutObj", nearObj[1]);
+                        //SetOutObj(nearObj[1]);
                     }
                 }
             }
@@ -145,7 +147,8 @@ public class SplitterCtrl : FactoryCtrl
                     if (downHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[2] = downHits[a].collider.gameObject;
-                        SetOutObj(nearObj[2]);
+                        StartCoroutine("SetOutObj", nearObj[2]);
+                        //SetOutObj(nearObj[2]);
                     }
                 }
             }
@@ -165,18 +168,21 @@ public class SplitterCtrl : FactoryCtrl
                     if (leftHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[3] = leftHits[a].collider.gameObject;
-                        SetOutObj(nearObj[3]);
+                        StartCoroutine("SetOutObj", nearObj[3]);
+                        //SetOutObj(nearObj[3]);
                     }
                 }
             }
         }
     }
 
-    void SetInObj()
+    IEnumerator SetInObj(GameObject obj)
     {
-        if(nearObj[dirNum].GetComponent<FactoryCtrl>() != null)
+        yield return new WaitForSeconds(0.1f);
+
+        if (obj.GetComponent<FactoryCtrl>() != null)
         {
-            inObj = nearObj[dirNum];
+            inObj = obj;
 
             if(inObj.GetComponent<BeltCtrl>() != null)
             {
@@ -185,24 +191,32 @@ public class SplitterCtrl : FactoryCtrl
                 {
                     inBelt.dirNum = dirNum;
 
-                    if (inBelt.isTurn == false)
-                    {
-                        inBelt.isTurn = true;
-                        inBelt.BeltModelSet();
-                    }
+                    //if (inBelt.isTurn == false)
+                    //{
+                    //    //inBelt.isTurn = true;
+                    inBelt.BeltModelSet();
+                    //}
                 }
             }
         }
      }
 
-    void SetOutObj(GameObject obj)
+    IEnumerator SetOutObj(GameObject obj)
     {
+        yield return new WaitForSeconds(0.1f);
+
         if (obj.GetComponent<FactoryCtrl>() != null)
         {
             if(obj.GetComponent<BeltCtrl>() != null)
             {
-                if(obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())                
-                    return;                
+                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())
+                    yield break;
+
+                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
+                if(belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                {
+                    belt.FactoryVecCheck(GetComponentInParent<FactoryCtrl>());
+                }
             }
             outObj.Add(obj);
         }
@@ -253,8 +267,11 @@ public class SplitterCtrl : FactoryCtrl
                 spawnItem.transform.position = this.transform.position;
                 outFactory.OnBeltItem(spawnItem);
             }
-            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)            
+            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
+            {
                 outFactory.OnFactoryItem(itemList[0]);
+            }    
+
             
             itemList.RemoveAt(0);
             ItemNumCheck();

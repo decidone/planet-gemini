@@ -21,6 +21,9 @@ public class FactoryCtrl : MonoBehaviour
     public GameObject itemPref;
     public IObjectPool<ItemProps> itemPool;
 
+    public bool itemGetDelay = false;
+    public bool itemSetDelay = false;
+
     private void Awake()
     {
         itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
