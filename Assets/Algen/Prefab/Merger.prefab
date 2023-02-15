@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 262180438270614846}
   m_Layer: 6
   m_Name: Merger
-  m_TagString: Untagged
+  m_TagString: Factory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,16 +99,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e0ec388d0337349a5b6143b7003378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  factoryData: {fileID: 0}
+  itemObjList: []
+  itemList: []
+  isFull: 0
   dirNum: 0
+  itemcheck: 0
+  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   modelNum:
   - {fileID: -588123693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
   - {fileID: 1414011693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
   - {fileID: -81441062, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
   - {fileID: 2099103111, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
-  inBelt: []
-  outBelt: {fileID: 0}
-  itemList: []
-  isFull: 0
+  inObj: []
+  outObj: {fileID: 0}
+  nearObj:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!50 &262180438270614847
 Rigidbody2D:
   serializedVersion: 4
