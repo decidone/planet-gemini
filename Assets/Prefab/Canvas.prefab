@@ -121,7 +121,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8766906530158679211}
+      - m_Target: {fileID: 1704338019}
         m_TargetAssemblyTypeName: InventoryUI, Assembly-CSharp
         m_MethodName: SortBtn
         m_Mode: 1
@@ -143,7 +143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 536729866}
   m_Layer: 5
-  m_Name: Stroage
+  m_Name: Slots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -341,8 +341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryUI: {fileID: 1070314735}
-  inventoryItem: {fileID: 536729866}
-  isPlayerInven: 0
+  inventorySlots: {fileID: 536729866}
   inventory: {fileID: 0}
 --- !u!1 &1052441421
 GameObject:
@@ -541,7 +540,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8766906530158679211}
+      - m_Target: {fileID: 1704338019}
         m_TargetAssemblyTypeName: InventoryUI, Assembly-CSharp
         m_MethodName: CloseBtn
         m_Mode: 1
@@ -816,7 +815,7 @@ GameObject:
   - component: {fileID: 8766906529084730762}
   - component: {fileID: 8766906529084730760}
   m_Layer: 5
-  m_Name: InventoryItem
+  m_Name: Slots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1056,7 +1055,7 @@ GameObject:
   - component: {fileID: 8766906530158679205}
   - component: {fileID: 8766906530158679206}
   - component: {fileID: 8766906530158679207}
-  - component: {fileID: 8766906530158679211}
+  - component: {fileID: 1704338019}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1148,7 +1147,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &8766906530158679211
+--- !u!114 &1704338019
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1157,12 +1156,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8766906530158679200}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4f7404f354d0564f8935a5564b6c028, type: 3}
+  m_Script: {fileID: 11500000, guid: c00990b39c8c4a544877ad12d6da644e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryUI: {fileID: 8766906530296426731}
-  inventoryItem: {fileID: 8766906529084730763}
-  isPlayerInven: 1
+  inventorySlots: {fileID: 8766906529084730763}
   inventory: {fileID: 0}
 --- !u!1 &8766906530296426731
 GameObject:

@@ -5,22 +5,22 @@ using UnityEngine.UI;
 
 public class ClickEvent : MonoBehaviour
 {
-    public GameObject structureInfoUI;
-    public Button closeBtn;
-
+    [SerializeField]
+    GameObject structureInfoUI;
+    Button closeBtn;
     Inventory inventory;
     string recipeUI;
     GameObject info;
     GameObject oneStorage;
     GameManager gameManager;
 
-    private void Start()
+    void Start()
     {
         gameManager = GameManager.instance;
-        closeBtn.onClick.AddListener(CloseUI);
-
         info = structureInfoUI.transform.Find("Info").gameObject;
         oneStorage = info.transform.Find("OneStorage").gameObject;
+        closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+        closeBtn.onClick.AddListener(CloseUI);
     }
 
     public void OpenUI()

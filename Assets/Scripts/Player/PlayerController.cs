@@ -4,15 +4,15 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-    public List<GameObject> items = new List<GameObject>();
-    public Inventory inventory; // 플레이어 인벤토리(GameManager)
+    List<GameObject> items = new List<GameObject>();
+    Inventory inventory;
 
-    private void Start()
+    void Start()
     {
         inventory = PlayerInventory.instance;
     }
 
-    private void Update()
+    void Update()
     {
         if (Input.GetButton("Loot"))
             Loot();
@@ -23,21 +23,21 @@ public class PlayerController : MonoBehaviour
             return;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         if(itemProps)
             items.Add(collision.gameObject);
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         if (itemProps && items.Contains(collision.gameObject))
             items.Remove(collision.gameObject);
     }
 
-    private void Loot()
+    void Loot()
     {
         foreach (GameObject item in items)
         {

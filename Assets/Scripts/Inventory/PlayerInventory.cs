@@ -7,7 +7,7 @@ public class PlayerInventory : Inventory
     #region Singleton
     public static Inventory instance;
 
-    private void Awake()
+    void Awake()
     {
         if (instance != null)
         {

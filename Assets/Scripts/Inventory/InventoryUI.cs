@@ -7,30 +7,28 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    public GameObject inventoryUI;
-    public Transform inventoryItem;
-    public bool isPlayerInven;
+    [SerializeField]
+    protected GameObject inventoryUI;
+    [SerializeField]
+    Transform inventorySlots;
+    [HideInInspector]
     public Inventory inventory;
 
+    protected GameManager gameManager;
+    protected InventorySlot dragSlot; // 드래그용 슬롯
     InventorySlot[] slots;
-    InventorySlot dragSlot; // 드래그용 슬롯
-    InventorySlot focusedSlot;  // 마우스가 올라간 슬롯
+    InventorySlot focusedSlot;  // 마우스 위치에 있는 슬롯
     Inventory playerInven;
-    GameManager gameManager;
+    float splitCooldown;
 
-    private float timer;
-
-    void Start()
+    protected virtual void Start()
     {
-        if (isPlayerInven)
-            inventory = PlayerInventory.instance;
-
         gameManager = GameManager.instance;
         playerInven = PlayerInventory.instance;
         dragSlot = DragSlot.instance.slot;
         inventory.onItemChangedCallback += UpdateUI;
 
-        slots = inventoryItem.GetComponentsInChildren<InventorySlot>();
+        slots = inventorySlots.GetComponentsInChildren<InventorySlot>();
         for (int i = 0; i < slots.Length; i++)
         {
             InventorySlot slot = slots[i];
@@ -41,44 +39,17 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    void Update()
+    protected virtual void Update()
     {
-        timer += Time.deltaTime;
+        splitCooldown += Time.deltaTime;
         InputCheck();
-
-        if (dragSlot.item != null)
-        {
-            dragSlot.GetComponent<RectTransform>().position = Input.mousePosition;
-        }
     }
 
-    void InputCheck()
+    protected virtual void InputCheck()
     {
-        if (Input.GetButtonDown("Inventory") && isPlayerInven)
-        {
-            inventoryUI.SetActive(!inventoryUI.activeSelf);
-
-            if (gameManager.OpenedInvenCheck())
-            {
-                gameManager.dragSlot.SetActive(true);
-            }
-            else
-            {
-                gameManager.dragSlot.SetActive(false);
-            }
-
-            if (dragSlot.item != null)
-            {
-                // 드래그 도중 인벤토리를 닫았을 때
-                //inventory.CancelDrag();
-                //DragSlot.instance.slotObj.SetActive(false);
-                //inventory.Drop();
-            }
-        }
-
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
         {
-            if (!isPlayerInven)
+            if (inventory != playerInven)
             {
                 if (focusedSlot != null)
                 {
@@ -142,7 +113,7 @@ public class InventoryUI : MonoBehaviour
 
         if (Input.GetMouseButton(1))
         {
-            if (timer > 0.12)
+            if (splitCooldown > 0.12)
             {
                 if (focusedSlot != null)
                 {
@@ -154,7 +125,7 @@ public class InventoryUI : MonoBehaviour
                         }
                     }
                 }
-                timer = 0;
+                splitCooldown = 0;
             }
         }
     }
@@ -201,7 +172,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void AddEvent(InventorySlot slot, EventTriggerType type, UnityAction<BaseEventData> action)
+    void AddEvent(InventorySlot slot, EventTriggerType type, UnityAction<BaseEventData> action)
     {
         EventTrigger.Entry eventTrigger = new EventTrigger.Entry();
         eventTrigger.eventID = type;
@@ -211,12 +182,12 @@ public class InventoryUI : MonoBehaviour
         trigger.triggers.Add(eventTrigger);
     }
 
-    private void OnEnter(InventorySlot slot)
+    void OnEnter(InventorySlot slot)
     {
         focusedSlot = slot;
     }
 
-    private void OnExit(InventorySlot slot)
+    void OnExit(InventorySlot slot)
     {
         focusedSlot = null;
     }

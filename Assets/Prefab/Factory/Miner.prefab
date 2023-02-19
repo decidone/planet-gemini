@@ -142,10 +142,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 0
   hp: 0
-  recipeUI: 
-  item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   maxAmount: 99
   cooldown: 3
+  recipeUI: 
+  item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
 --- !u!114 &2359874169441961876
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 
 public class ItemProps : MonoBehaviour
 {
-    private IObjectPool<ItemProps> itemPool;
+    IObjectPool<ItemProps> itemPool;
 
     public Item item;
     public int amount;
