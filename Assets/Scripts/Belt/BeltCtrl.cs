@@ -6,11 +6,12 @@ public enum BeltState
     SoloBelt,
     StartBelt,
     EndBelt,
-    RepeaterBelt,
+    RepeaterBelt
 }
 public class BeltCtrl : FactoryCtrl
 {
-    public int modelNum = 0;  // 모션
+    [SerializeField]
+    int modelNum = 0;  // 모션
 
     public BeltGroupMgr beltGroupMgr;
     GameObject beltManager = null;
@@ -23,8 +24,6 @@ public class BeltCtrl : FactoryCtrl
     public bool isTurn = false;
     public bool isRightTurn = true;
 
-    public float beltSpeed = 1.5f;
-
     public BeltCtrl nextBelt;
     public BeltCtrl preBelt;
 
@@ -32,10 +31,10 @@ public class BeltCtrl : FactoryCtrl
 
     public bool isItemStop = false;
 
-    public bool isUp = false;
-    public bool isRight = false;
-    public bool isDown = false;
-    public bool isLeft = false;
+    bool isUp = false;
+    bool isRight = false;
+    bool isDown = false;
+    bool isLeft = false;
 
     // Start is called before the first frame update
     private void Awake()
@@ -216,18 +215,18 @@ public class BeltCtrl : FactoryCtrl
     {
         if (itemObjList.Count == 1)
         {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);            
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * factoryData.SendSpeed);            
         }
         else if (itemObjList.Count == 2)
         {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
-            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * beltSpeed);
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * factoryData.SendSpeed);
+            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * factoryData.SendSpeed);
         }
         else if(itemObjList.Count == 3)
         {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
-            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * beltSpeed);
-            itemObjList[2].transform.position = Vector3.MoveTowards(itemObjList[2].transform.position, nextPos[2], Time.deltaTime * beltSpeed);
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * factoryData.SendSpeed);
+            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * factoryData.SendSpeed);
+            itemObjList[2].transform.position = Vector3.MoveTowards(itemObjList[2].transform.position, nextPos[2], Time.deltaTime * factoryData.SendSpeed);
         }
         Vector2 fstItemPos = itemObjList[0].transform.position;
 
@@ -261,8 +260,8 @@ public class BeltCtrl : FactoryCtrl
     }
 
     public void BeltModelSet()
-    {        
-        if(preBelt == null)
+    {
+        if (preBelt == null)
         {
             isTurn = false;
         }
@@ -322,21 +321,21 @@ public class BeltCtrl : FactoryCtrl
 
     public void FactoryVecCheck(FactoryCtrl factory)
     {
-        if (factory.transform.position.x > this.transform.position.x) //벨트 오른쪽        
+        if (factory.transform.position.x > this.transform.position.x)  
             isLeft = true;        
-        else if (factory.transform.position.x < this.transform.position.x) //벨트 왼쪽
+        else if (factory.transform.position.x < this.transform.position.x)
             isRight = true;        
-        else if (factory.transform.position.y - 0.1f > this.transform.position.y) //벨트 위
+        else if (factory.transform.position.y - 0.1f > this.transform.position.y)
             isDown = true;        
-        else if (factory.transform.position.y - 0.1f < this.transform.position.y) //벨트 아래
+        else if (factory.transform.position.y - 0.1f < this.transform.position.y)
             isUp = true;
-
-        FactoryModelSet();
-        //Invoke("FactoryModelSet", 0.1f);
+        
+        Invoke("FactoryModelSet", 0.1f);
     }
 
     void FactoryModelSet()
     {
+        
         if (isUp == true && isRight == false && isDown == false && isLeft == false)
         {
             if (dirNum == 1)
@@ -389,7 +388,7 @@ public class BeltCtrl : FactoryCtrl
                 isRightTurn = false;
             }
         }
-        else
+        else        
             isTurn = false;
     }
 }

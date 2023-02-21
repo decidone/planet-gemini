@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Splitter Data
   m_EditorClassIdentifier: 
   factoryName: Splitter
-  itemList: []
   fullItemNum: 10
-  isFull: 0
+  sendSpeed: 1.5
+  sendDelay: 1

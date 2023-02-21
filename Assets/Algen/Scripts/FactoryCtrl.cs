@@ -6,8 +6,8 @@ using UnityEngine.Pool;
 public class FactoryCtrl : MonoBehaviour
 {
     [SerializeField]
-    public FactoryData factoryData;
-    public FactoryData FactoryData { set { factoryData = value; } }
+    protected FactoryData factoryData;
+    protected FactoryData FactoryData { set { factoryData = value; } }
 
     public List<ItemProps> itemObjList = new List<ItemProps>();
     public List<Item> itemList = new List<Item>();
@@ -16,11 +16,12 @@ public class FactoryCtrl : MonoBehaviour
 
     public int dirNum = 0;
 
-    public GameObject itemPref;
-    public IObjectPool<ItemProps> itemPool;
+    [SerializeField]
+    GameObject itemPref;
+    protected IObjectPool<ItemProps> itemPool;
 
-    public bool itemGetDelay = false;
-    public bool itemSetDelay = false;
+    protected bool itemGetDelay = false;
+    protected bool itemSetDelay = false;
 
     private void Awake()
     {
@@ -38,8 +39,6 @@ public class FactoryCtrl : MonoBehaviour
 
     }
 
-
-
     public void OnBeltItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);
@@ -48,7 +47,8 @@ public class FactoryCtrl : MonoBehaviour
         {
             isFull = true;
         }
-    }
+    }    
+
     public void OnFactoryItem(ItemProps itemProps)
     {
         itemList.Add(itemProps.item);

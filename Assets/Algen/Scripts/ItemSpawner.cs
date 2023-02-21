@@ -4,18 +4,14 @@ using UnityEngine;
 
 public class ItemSpawner : FactoryCtrl
 {
-    public Item itemData;
-    public List<BeltCtrl> beltList = new List<BeltCtrl>();
-    //public GameObject itemPref;
+    [SerializeField]
+    Item itemData;
 
-    //bool itemSetDelay = false;
-
-    public List<GameObject> outObj = new List<GameObject>();
-    public GameObject[] nearObj = new GameObject[4];
+    List<GameObject> outObj = new List<GameObject>();
+    GameObject[] nearObj = new GameObject[4];
     Vector2[] checkPos = new Vector2[4];
 
     int getObjNum = 0;
-    float delaySpeed = 1.0f;
 
     // Start is called before the first frame update
     void Start()
@@ -139,35 +135,35 @@ public class ItemSpawner : FactoryCtrl
     {
         itemSetDelay = true;
 
-        FactoryCtrl objFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+        FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
 
-        if (objFactory.isFull == false)
+        if (outFactory.isFull == false)
         {
             if (outObj[getObjNum].GetComponent<BeltCtrl>() != null)
-            {           
-                var spawnItem = itemPool.Get();
+            {
+                ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
                 sprite.sprite = itemData.icon;
-
-                ItemProps itemProps = spawnItem.GetComponent<ItemProps>();
-                itemProps.item = itemData;
-                itemProps.amount = 1;
+                spawnItem.item = itemData;
+                spawnItem.amount = 1;
                 spawnItem.transform.position = this.transform.position;
-                objFactory.OnBeltItem(itemProps);
+                outFactory.OnBeltItem(spawnItem);
+                outObj[getObjNum].GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
             }
             else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
             {
-                objFactory.OnFactoryItem(itemData);
+                StartCoroutine("SetFacDelay", getObjNum);
+                //objFactory.OnFactoryItem(itemData);
             }
 
             getObjNum++;
             if (getObjNum >= outObj.Count)
                 getObjNum = 0;
 
-            yield return new WaitForSeconds(delaySpeed);
+            yield return new WaitForSeconds(factoryData.SendDelay);
             itemSetDelay = false;
         }
-        else if (objFactory.isFull == true)
+        else if (outFactory.isFull == true)
         {
             getObjNum++;
             if (getObjNum >= outObj.Count)
@@ -176,5 +172,28 @@ public class ItemSpawner : FactoryCtrl
             itemSetDelay = false;
             yield break;
         }
+    }
+
+    IEnumerator SetFacDelay(int getObjNum)
+    {
+        var spawnItem = itemPool.Get();
+        SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+        sprite.enabled = false;
+
+        spawnItem.transform.position = this.transform.position;
+
+        while (spawnItem.transform.position != outObj[getObjNum].transform.position)
+        {
+            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[getObjNum].transform.position, factoryData.SendSpeed * Time.deltaTime);
+
+            yield return null;
+        }
+
+        if (spawnItem.transform.position == outObj[getObjNum].transform.position)
+        {
+            FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+            outFactory.OnFactoryItem(itemData);
+        }
+        Destroy(spawnItem.gameObject);
     }
 }

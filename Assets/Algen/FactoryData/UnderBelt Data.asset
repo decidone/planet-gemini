@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: UnderBelt
   fullItemNum: 10
+  sendSpeed: 1.5
+  sendDelay: 1
