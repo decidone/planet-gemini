@@ -99,13 +99,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e0ec388d0337349a5b6143b7003378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  factoryData: {fileID: 0}
+  factoryData: {fileID: 11400000, guid: 5d7c555f9c1c8c542944ff97a4e64561, type: 2}
   itemObjList: []
   itemList: []
   isFull: 0
   dirNum: 0
-  itemcheck: 0
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemGetDelay: 0
+  itemSetDelay: 0
   modelNum:
   - {fileID: -588123693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
   - {fileID: 1414011693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}

@@ -16,8 +16,6 @@ public class FactoryCtrl : MonoBehaviour
 
     public int dirNum = 0;
 
-    public bool itemcheck = false;
-
     public GameObject itemPref;
     public IObjectPool<ItemProps> itemPool;
 
@@ -39,6 +37,8 @@ public class FactoryCtrl : MonoBehaviour
     {
 
     }
+
+
 
     public void OnBeltItem(ItemProps itemObj)
     {
@@ -93,16 +93,5 @@ public class FactoryCtrl : MonoBehaviour
     {
         if (itemObjList.Count < factoryData.FullItemNum)
             isFull = false;
-    }
-
-    public void ItemCheck()
-    {
-        itemList.Clear();
-        
-        for(int i = 0; i < itemObjList.Count; i++)
-        {
-            itemList.Add(itemObjList[i].item);
-            Debug.Log("i :" + i + ", Item : " + itemList[i]);
-        }        
     }
 }

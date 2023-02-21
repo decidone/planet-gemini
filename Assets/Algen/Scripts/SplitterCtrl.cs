@@ -18,7 +18,7 @@ public class SplitterCtrl : FactoryCtrl
 
     //bool itemGetDelay = false;
     //bool itemSetDelay = false;
-    float delaySpeed = 0.4f;
+    float delaySpeed = 1f;
 
     Vector2[] checkPos = new Vector2[4];
 

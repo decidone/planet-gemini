@@ -23,7 +23,7 @@ public class BeltCtrl : FactoryCtrl
     public bool isTurn = false;
     public bool isRightTurn = true;
 
-    public float beltSpeed = 3f;
+    public float beltSpeed = 1.5f;
 
     public BeltCtrl nextBelt;
     public BeltCtrl preBelt;
@@ -216,7 +216,7 @@ public class BeltCtrl : FactoryCtrl
     {
         if (itemObjList.Count == 1)
         {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * beltSpeed);            
         }
         else if (itemObjList.Count == 2)
         {
@@ -229,7 +229,6 @@ public class BeltCtrl : FactoryCtrl
             itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * beltSpeed);
             itemObjList[2].transform.position = Vector3.MoveTowards(itemObjList[2].transform.position, nextPos[2], Time.deltaTime * beltSpeed);
         }
-
         Vector2 fstItemPos = itemObjList[0].transform.position;
 
         if (fstItemPos == nextPos[0])

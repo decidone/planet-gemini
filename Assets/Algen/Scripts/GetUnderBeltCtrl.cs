@@ -2,31 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemSpawner : FactoryCtrl
+public class GetUnderBeltCtrl : FactoryCtrl
 {
-    public Item itemData;
-    public List<BeltCtrl> beltList = new List<BeltCtrl>();
-    //public GameObject itemPref;
-
-    //bool itemSetDelay = false;
-
+    public GameObject inObj = null;
     public List<GameObject> outObj = new List<GameObject>();
-    public GameObject[] nearObj = new GameObject[4];
-    Vector2[] checkPos = new Vector2[4];
 
+    public GameObject[] nearObj = new GameObject[4];
+
+    float delaySpeed = 0.4f;
     int getObjNum = 0;
-    float delaySpeed = 1.0f;
+
+    Vector2[] checkPos = new Vector2[4];
 
     // Start is called before the first frame update
     void Start()
     {
-        CheckPos();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (outObj.Count > 0)
+        SetDirNum();
+        if (itemList.Count > 0 && outObj.Count > 0)
         {
             if (itemSetDelay == false)
                 StartCoroutine("SetItem");
@@ -41,27 +39,62 @@ public class ItemSpawner : FactoryCtrl
         if (nearObj[3] == null)
             LeftObjCheck();
     }
+
+    void SetDirNum()
+    {
+        if (dirNum < 4)
+        {
+            //setModel.sprite = modelNum[dirNum];
+            CheckPos();
+        }
+    }
+
     void CheckPos()
     {
-        checkPos[0] = transform.up;
-        checkPos[1] = transform.right;
-        checkPos[2] = -transform.up;
-        checkPos[3] = -transform.right;
+        if (dirNum == 0)
+        {
+            checkPos[0] = -transform.up;
+            checkPos[1] = -transform.right;
+            checkPos[2] = transform.up;
+            checkPos[3] = transform.right;
+        }
+        else if (dirNum == 1)
+        {
+            checkPos[0] = -transform.right;
+            checkPos[1] = transform.up;
+            checkPos[2] = transform.right;
+            checkPos[3] = -transform.up;
+        }
+        else if (dirNum == 2)
+        {
+            checkPos[0] = transform.up;
+            checkPos[1] = transform.right;
+            checkPos[2] = -transform.up;
+            checkPos[3] = -transform.right;
+        }
+        else if (dirNum == 3)
+        {
+            checkPos[0] = transform.right;
+            checkPos[1] = -transform.up;
+            checkPos[2] = -transform.right;
+            checkPos[3] = transform.up;
+        }
     }
     void UpObjCheck()
     {
         if (nearObj[0] == null)
         {
-            RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 1f);
+            RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 10f);
 
             for (int a = 0; a < upHits.Length; a++)
             {
-                if (upHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
+                if (upHits[a].collider.GetComponent<GetUnderBeltCtrl>() != this.gameObject.GetComponent<GetUnderBeltCtrl>())
                 {
                     if (upHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[0] = upHits[a].collider.gameObject;
-                        SetOutObj(nearObj[0]);
+                        //StartCoroutine("SetInObj", nearObj[0]);
+
                     }
                 }
             }
@@ -76,12 +109,13 @@ public class ItemSpawner : FactoryCtrl
 
             for (int a = 0; a < rightHits.Length; a++)
             {
-                if (rightHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
+                if (rightHits[a].collider.GetComponent<GetUnderBeltCtrl>() != this.gameObject.GetComponent<GetUnderBeltCtrl>())
                 {
                     if (rightHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[1] = rightHits[a].collider.gameObject;
-                        SetOutObj(nearObj[1]);
+                        StartCoroutine("SetOutObj", nearObj[1]);
+                        //SetOutObj(nearObj[1]);
                     }
                 }
             }
@@ -95,12 +129,13 @@ public class ItemSpawner : FactoryCtrl
 
             for (int a = 0; a < downHits.Length; a++)
             {
-                if (downHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
+                if (downHits[a].collider.GetComponent<GetUnderBeltCtrl>() != this.gameObject.GetComponent<GetUnderBeltCtrl>())
                 {
                     if (downHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[2] = downHits[a].collider.gameObject;
-                        SetOutObj(nearObj[2]);
+                        StartCoroutine("SetOutObj", nearObj[2]);
+                        //SetOutObj(nearObj[2]);
                     }
                 }
             }
@@ -115,22 +150,36 @@ public class ItemSpawner : FactoryCtrl
 
             for (int a = 0; a < leftHits.Length; a++)
             {
-                if (leftHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
+                if (leftHits[a].collider.GetComponent<GetUnderBeltCtrl>() != this.gameObject.GetComponent<GetUnderBeltCtrl>())
                 {
                     if (leftHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[3] = leftHits[a].collider.gameObject;
-                        SetOutObj(nearObj[3]);
+                        StartCoroutine("SetOutObj", nearObj[3]);
+                        //SetOutObj(nearObj[3]);
                     }
                 }
             }
         }
     }
 
-    void SetOutObj(GameObject obj)
+    IEnumerator SetOutObj(GameObject obj)
     {
+        yield return new WaitForSeconds(0.1f);
+
         if (obj.GetComponent<FactoryCtrl>() != null)
         {
+            if (obj.GetComponent<BeltCtrl>() != null)
+            {
+                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())
+                    yield break;
+
+                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
+                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                {
+                    belt.FactoryVecCheck(GetComponentInParent<FactoryCtrl>());
+                }
+            }
             outObj.Add(obj);
         }
     }
@@ -139,26 +188,29 @@ public class ItemSpawner : FactoryCtrl
     {
         itemSetDelay = true;
 
-        FactoryCtrl objFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+        FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
 
-        if (objFactory.isFull == false)
+        if (outFactory.isFull == false)
         {
             if (outObj[getObjNum].GetComponent<BeltCtrl>() != null)
-            {           
+            {
                 var spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                sprite.sprite = itemData.icon;
-
+                sprite.sprite = itemList[0].icon;
                 ItemProps itemProps = spawnItem.GetComponent<ItemProps>();
-                itemProps.item = itemData;
+                itemProps.item = itemList[0];
                 itemProps.amount = 1;
                 spawnItem.transform.position = this.transform.position;
-                objFactory.OnBeltItem(itemProps);
+                outFactory.OnBeltItem(spawnItem);
             }
             else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
             {
-                objFactory.OnFactoryItem(itemData);
+                outFactory.OnFactoryItem(itemList[0]);
             }
+
+
+            itemList.RemoveAt(0);
+            ItemNumCheck();
 
             getObjNum++;
             if (getObjNum >= outObj.Count)
@@ -167,7 +219,7 @@ public class ItemSpawner : FactoryCtrl
             yield return new WaitForSeconds(delaySpeed);
             itemSetDelay = false;
         }
-        else if (objFactory.isFull == true)
+        else if (outFactory.isFull == true)
         {
             getObjNum++;
             if (getObjNum >= outObj.Count)
@@ -176,5 +228,6 @@ public class ItemSpawner : FactoryCtrl
             itemSetDelay = false;
             yield break;
         }
+
     }
 }
