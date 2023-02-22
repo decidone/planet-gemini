@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -39,8 +40,8 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // 여기서 ui클릭중일 때 건물 클릭 안되게 예외처리 하거나
-            // ui클릭 메서드랑 통합해서 관리할 것
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
 
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);

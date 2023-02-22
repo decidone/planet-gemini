@@ -119,6 +119,7 @@ public class Inventory : MonoBehaviour
             // 타겟 슬롯이 비어있는 경우
             items.Add(slot.slotNum, dragSlot.item);
             amounts.Add(slot.slotNum, dragSlot.amount);
+            totalItems[dragSlot.item] += dragSlot.amount;
             dragSlot.ClearSlot();
         }
         else if (dragSlot.item == null)
@@ -126,12 +127,15 @@ public class Inventory : MonoBehaviour
             // 드래그 슬롯이 비어있는 경우
             dragSlot.item = items[slot.slotNum];
             dragSlot.amount = amounts[slot.slotNum];
-
+            totalItems[dragSlot.item] -= dragSlot.amount;
             items.Remove(slot.slotNum);
             amounts.Remove(slot.slotNum);
         }
         else
         {
+            totalItems[dragSlot.item] += dragSlot.amount;
+            totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
+
             Item tempItem = items[slot.slotNum];
             int tempAmount = amounts[slot.slotNum];
 
@@ -153,11 +157,13 @@ public class Inventory : MonoBehaviour
 
         if (mergeAmount > maxAmount)
         {
+            totalItems[dragSlot.item] += (maxAmount - amounts[mergeSlot.slotNum]);
             amounts[mergeSlot.slotNum] = maxAmount;
             dragSlot.amount = mergeAmount - maxAmount;
         }
         else
         {
+            totalItems[dragSlot.item] += dragSlot.amount;
             amounts[mergeSlot.slotNum] = mergeAmount;
             dragSlot.ClearSlot();
         }
@@ -168,6 +174,7 @@ public class Inventory : MonoBehaviour
 
     public void Sub(InventorySlot slot, int amount)
     {
+        totalItems[items[slot.slotNum]] -= amount;
         amounts[slot.slotNum] -= amount;
 
         if (onItemChangedCallback != null)
@@ -184,6 +191,7 @@ public class Inventory : MonoBehaviour
                 {
                     dragSlot.item = slot.item;
                     dragSlot.amount++;
+                    totalItems[items[slot.slotNum]]--;
                     amounts[slot.slotNum]--;
                 }
 
@@ -199,8 +207,15 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public void Refresh()
+    {
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
     public void Remove(InventorySlot slot)
     {
+        totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
         items.Remove(slot.slotNum);
         amounts.Remove(slot.slotNum);
 
