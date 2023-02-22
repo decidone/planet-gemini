@@ -7,20 +7,22 @@ public class ClickEvent : MonoBehaviour
 {
     [SerializeField]
     GameObject structureInfoUI;
-    Button closeBtn;
     Inventory inventory;
-    string recipeUI;
-    GameObject info;
+    StructureInvenUI ui;
+    GameObject storage;
     GameObject oneStorage;
+    Button closeBtn;
     GameManager gameManager;
+    string recipeUI;
 
     void Start()
     {
         gameManager = GameManager.instance;
-        info = structureInfoUI.transform.Find("Info").gameObject;
-        oneStorage = info.transform.Find("OneStorage").gameObject;
+        storage = structureInfoUI.transform.Find("Storage").gameObject;
+        oneStorage = storage.transform.Find("OneStorage").gameObject;
         closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
         closeBtn.onClick.AddListener(CloseUI);
+        ui = structureInfoUI.GetComponent<StructureInvenUI>();
     }
 
     public void OpenUI()
@@ -38,7 +40,6 @@ public class ClickEvent : MonoBehaviour
             Miner miner = (Miner)this.transform.GetComponent<Miner>();
             recipeUI = miner.recipeUI;
             inventory = miner.transform.GetComponent<Inventory>();
-            InventoryUI ui = info.GetComponent<InventoryUI>();
             ui.inventory = inventory;
         }
         switch (recipeUI)
@@ -61,10 +62,10 @@ public class ClickEvent : MonoBehaviour
             gameManager.dragSlot.SetActive(false);
         }
 
-        int childAmount = info.transform.childCount;
+        int childAmount = storage.transform.childCount;
         for(int i = 0; i < childAmount; i++)
         {
-            info.transform.GetChild(i).gameObject.SetActive(false);
+            storage.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
 }

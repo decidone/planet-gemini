@@ -127,7 +127,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
-  closeBtn: {fileID: 0}
 --- !u!114 &2359874169441961875
 MonoBehaviour:
   m_ObjectHideFlags: 0

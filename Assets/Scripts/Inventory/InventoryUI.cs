@@ -9,8 +9,6 @@ public class InventoryUI : MonoBehaviour
 {
     [SerializeField]
     protected GameObject inventoryUI;
-    [SerializeField]
-    Transform inventorySlots;
     [HideInInspector]
     public Inventory inventory;
 
@@ -27,8 +25,7 @@ public class InventoryUI : MonoBehaviour
         playerInven = PlayerInventory.instance;
         dragSlot = DragSlot.instance.slot;
         inventory.onItemChangedCallback += UpdateUI;
-
-        slots = inventorySlots.GetComponentsInChildren<InventorySlot>();
+        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<InventorySlot>();
         for (int i = 0; i < slots.Length; i++)
         {
             InventorySlot slot = slots[i];
