@@ -12,4 +12,14 @@ public class FactoryData : ScriptableObject
     [SerializeField]
     private int fullItemNum;
     public int FullItemNum { get { return fullItemNum; } }
+
+    [SerializeField]
+    private float sendSpeed;
+    public float SendSpeed { get { return sendSpeed; } }
+
+    [SerializeField]
+    private float sendDelay;
+    public float SendDelay { get { return sendDelay; } }
+
+
 }

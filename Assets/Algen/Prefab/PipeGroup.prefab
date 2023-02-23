@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2597900821044708963
+--- !u!1 &4164018957596948384
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2590732749571692295}
-  - component: {fileID: 748154097127613359}
+  - component: {fileID: 8516484512541410743}
+  - component: {fileID: 3510923256544073396}
   m_Layer: 0
-  m_Name: BeltGroup
+  m_Name: PipeGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2590732749571692295
+--- !u!4 &8516484512541410743
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2597900821044708963}
+  m_GameObject: {fileID: 4164018957596948384}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,23 +32,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &748154097127613359
+--- !u!114 &3510923256544073396
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2597900821044708963}
+  m_GameObject: {fileID: 4164018957596948384}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac4aec166f912f40bb611f82695709d, type: 3}
+  m_Script: {fileID: 11500000, guid: 75d74864027e1ef4399c01cde225f37b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BeltObj: {fileID: 8826970519567855532, guid: b6ae0db23145322479ffbd03025b5357, type: 3}
+  PipeObj: {fileID: 1009705998080393325, guid: 6ac007628373b46468bdad1c117fec57, type: 3}
   up: 0
   down: 0
   left: 0
   right: 0
-  BeltList: []
-  GroupItem: []
-  nextObj: {fileID: 0}
+  PipeList: []
+  nextFluidObj: {fileID: 0}
+  nextFacObj: {fileID: 0}

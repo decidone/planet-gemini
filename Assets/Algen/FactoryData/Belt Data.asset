@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Belt Data
   m_EditorClassIdentifier: 
   factoryName: Belt
-  itemList: []
   fullItemNum: 3
-  isFull: 0
+  sendSpeed: 1.5
+  sendDelay: 1

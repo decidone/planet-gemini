@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class BeltGroupMgr : MonoBehaviour
 {
-    public GameObject BeltObj = null;
+    [SerializeField]
+    GameObject BeltObj = null;
 
     public bool up = false;
     public bool down = false;
@@ -13,7 +13,7 @@ public class BeltGroupMgr : MonoBehaviour
     public bool right = false;
     
     public List<BeltCtrl> BeltList = new List<BeltCtrl>();
-    public List<GameObject> GroupItem = new List<GameObject>();
+    public List<ItemProps> GroupItem = new List<ItemProps>();
 
     public FactoryCtrl nextObj = null;
     bool nextCheck = true;
@@ -150,11 +150,6 @@ public class BeltGroupMgr : MonoBehaviour
             else
                 return;
         }
-    }
-
-    public void AddItem(GameObject item)
-    {
-        GroupItem.Add(item);
     }
 
     private FactoryCtrl NextObjCheck()

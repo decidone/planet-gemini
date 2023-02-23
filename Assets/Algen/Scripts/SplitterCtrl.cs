@@ -4,21 +4,18 @@ using UnityEngine;
 
 public class SplitterCtrl : FactoryCtrl
 {
-    public Sprite[] modelNum = new Sprite[4];
+    [SerializeField]
+    Sprite[] modelNum = new Sprite[4];
     SpriteRenderer setModel;
 
     //public BeltCtrl inBelt = null;
 
-    public GameObject inObj = null;
-    public List<GameObject> outObj = new List<GameObject>();
+    GameObject inObj = null;
+    List<GameObject> outObj = new List<GameObject>();
 
-    public GameObject[] nearObj = new GameObject[4];
+    GameObject[] nearObj = new GameObject[4];
 
     int getObjNum = 0;
-
-    bool itemGetDelay = false;
-    bool itemSetDelay = false;
-    float delaySpeed = 0.4f;
 
     Vector2[] checkPos = new Vector2[4];
 
@@ -106,7 +103,7 @@ public class SplitterCtrl : FactoryCtrl
                     if (upHits[a].collider.CompareTag("Factory"))
                     {
                         nearObj[0] = upHits[a].collider.gameObject;
-                        SetInObj();
+                        SetInObj(nearObj[0]);
                     }
                 }
             }
@@ -172,24 +169,24 @@ public class SplitterCtrl : FactoryCtrl
         }
     }
 
-    void SetInObj()
+    void SetInObj(GameObject obj)
     {
-        if(nearObj[dirNum].GetComponent<FactoryCtrl>() != null)
+        if (obj.GetComponent<FactoryCtrl>() != null)
         {
-            inObj = nearObj[dirNum];
+            inObj = obj;
 
             if(inObj.GetComponent<BeltCtrl>() != null)
             {
-                BeltCtrl inBelt = inObj.GetComponent<BeltCtrl>();
-                if (inBelt.dirNum != dirNum)
+                BeltCtrl belt = inObj.GetComponent<BeltCtrl>();
+                if (belt.dirNum != dirNum)
                 {
-                    inBelt.dirNum = dirNum;
+                    belt.dirNum = dirNum;
 
-                    if (inBelt.isTurn == false)
-                    {
-                        inBelt.isTurn = true;
-                        inBelt.BeltModelSet();
-                    }
+                    //if (inBelt.isTurn == false)
+                    //{
+                    //    //inBelt.isTurn = true;
+                    belt.BeltModelSet();
+                    //}
                 }
             }
         }
@@ -201,8 +198,14 @@ public class SplitterCtrl : FactoryCtrl
         {
             if(obj.GetComponent<BeltCtrl>() != null)
             {
-                if(obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())                
-                    return;                
+                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())
+                    return;
+
+                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
+                if(belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                {
+                    belt.FactoryVecCheck(GetComponentInParent<FactoryCtrl>());
+                }
             }
             outObj.Add(obj);
         }
@@ -214,19 +217,20 @@ public class SplitterCtrl : FactoryCtrl
 
         if(inObj.GetComponent<BeltCtrl>() != null)
         {
-            BeltCtrl inBelt = inObj.GetComponent<BeltCtrl>();
-            if (inBelt.isItemStop == true)
+            BeltCtrl belt = inObj.GetComponent<BeltCtrl>();
+            if (belt.isItemStop == true)
             {
-                OnFactoryItem(inBelt.itemObjList[0]);
-                inBelt.itemObjList[0].transform.position = this.transform.position;
-                inBelt.isItemStop = false;
-                inBelt.itemObjList.RemoveAt(0);
-                inBelt.ItemNumCheck();
+                OnFactoryItem(belt.itemObjList[0]);
+                belt.itemObjList[0].transform.position = this.transform.position;
+                belt.isItemStop = false;
+                belt.itemObjList.RemoveAt(0);
+                belt.beltGroupMgr.GroupItem.RemoveAt(0);
+                belt.ItemNumCheck();
 
-                yield return new WaitForSeconds(delaySpeed);
+                yield return new WaitForSeconds(factoryData.SendDelay);
                 itemGetDelay = false;
             }
-            else if (inBelt.isItemStop == false)
+            else if (belt.isItemStop == false)
             {
                 itemGetDelay = false;
                 yield break;
@@ -244,26 +248,33 @@ public class SplitterCtrl : FactoryCtrl
         {
             if(outObj[getObjNum].GetComponent<BeltCtrl>() != null)
             {
-                var spawnItem = itemPool.Get();
+                ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
                 sprite.sprite = itemList[0].icon;
-                ItemProps itemProps = spawnItem.GetComponent<ItemProps>();
-                itemProps.item = itemList[0];
-                itemProps.amount = 1;
+                spawnItem.item = itemList[0];
+                spawnItem.amount = 1;
                 spawnItem.transform.position = this.transform.position;
+
+                if (outObj[getObjNum].GetComponent<BeltCtrl>() != null)
+                {
+                    outObj[getObjNum].GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
+                }
                 outFactory.OnBeltItem(spawnItem);
+
+                itemList.RemoveAt(0);
+                ItemNumCheck();
             }
-            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)            
-                outFactory.OnFactoryItem(itemList[0]);
-            
-            itemList.RemoveAt(0);
-            ItemNumCheck();
+            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
+            {
+                StartCoroutine("SetFacDelay", getObjNum);
+                //outFactory.OnFactoryItem(itemList[0]);
+            }    
 
             getObjNum++;
             if (getObjNum >= outObj.Count)
                 getObjNum = 0;
 
-            yield return new WaitForSeconds(delaySpeed);
+            yield return new WaitForSeconds(factoryData.SendDelay);
             itemSetDelay = false;
         }
         else if (outFactory.isFull == true)
@@ -276,5 +287,33 @@ public class SplitterCtrl : FactoryCtrl
             yield break;
         }
 
+    }
+    IEnumerator SetFacDelay(int getObjNum)
+    {
+        var spawnItem = itemPool.Get();
+        SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+        sprite.enabled = false;
+
+        spawnItem.transform.position = this.transform.position;
+
+        while (spawnItem.transform.position != outObj[getObjNum].transform.position)
+        {
+            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[getObjNum].transform.position, factoryData.SendSpeed * Time.deltaTime);
+
+            yield return null;
+        }
+
+        if (spawnItem.transform.position == outObj[getObjNum].transform.position)
+        {
+            if (itemList.Count > 0)
+            {
+                FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+                outFactory.OnFactoryItem(itemList[0]);
+
+                itemList.RemoveAt(0);
+                ItemNumCheck();
+            }            
+        }
+        Destroy(spawnItem.gameObject);
     }
 }

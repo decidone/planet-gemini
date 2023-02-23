@@ -2,14 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MergerCtrl : FactoryCtrl
+public class SendUnderBeltCtrl : FactoryCtrl
 {
-    [SerializeField]
-    Sprite[] modelNum = new Sprite[4];
-    SpriteRenderer setModel;
+    //public Sprite[] modelNum = new Sprite[4];
+    //SpriteRenderer setModel;
 
     List<GameObject> inObj = new List<GameObject>();
-    GameObject outObj = null;
+    public GameObject outObj = null;
 
     GameObject[] nearObj = new GameObject[4];
 
@@ -20,7 +19,7 @@ public class MergerCtrl : FactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
-        setModel = GetComponent<SpriteRenderer>();
+        
     }
 
     // Update is called once per frame
@@ -43,8 +42,8 @@ public class MergerCtrl : FactoryCtrl
                 }
             }
         }
-        if (nearObj[0] == null)
-            UpObjCheck();
+        //if (nearObj[0] == null)
+        //    UpObjCheck();
         if (nearObj[1] == null)
             RightObjCheck();
         if (nearObj[2] == null)
@@ -57,7 +56,7 @@ public class MergerCtrl : FactoryCtrl
     {
         if (dirNum < 4)
         {
-            setModel.sprite = modelNum[dirNum];
+            //setModel.sprite = modelNum[dirNum];
             CheckPos();
         }
     }
@@ -94,22 +93,22 @@ public class MergerCtrl : FactoryCtrl
         }
     }
 
-    void UpObjCheck()
-    {
-        RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 10f);
+    //void UpObjCheck()
+    //{
+    //    RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 10f);
 
-        for (int a = 0; a < upHits.Length; a++)
-        {
-            if (upHits[a].collider.GetComponent<MergerCtrl>() != this.gameObject.GetComponent<MergerCtrl>())
-            {
-                if (upHits[a].collider.CompareTag("Factory"))
-                {
-                    nearObj[0] = upHits[a].collider.gameObject;
-                    SetOutObj(nearObj[0]);
-                }
-            }
-        }
-    }
+    //    for (int a = 0; a < upHits.Length; a++)
+    //    {
+    //        if (upHits[a].collider.GetComponent<SendUnderBeltCtrl>() != this.gameObject.GetComponent<SendUnderBeltCtrl>())
+    //        {
+    //            if (upHits[a].collider.GetComponent<GetUnderBeltCtrl>() != null)
+    //            {
+    //                nearObj[0] = upHits[a].collider.gameObject;
+    //                SetOutObj(nearObj[0]);
+    //            }
+    //        }
+    //    }
+    //}
 
     void RightObjCheck()
     {
@@ -117,7 +116,7 @@ public class MergerCtrl : FactoryCtrl
 
         for (int a = 0; a < rightHits.Length; a++)
         {
-            if (rightHits[a].collider.GetComponent<MergerCtrl>() != this.gameObject.GetComponent<MergerCtrl>())
+            if (rightHits[a].collider.GetComponent<SendUnderBeltCtrl>() != this.gameObject.GetComponent<SendUnderBeltCtrl>())
             {
                 if (rightHits[a].collider.CompareTag("Factory"))
                 {
@@ -125,7 +124,7 @@ public class MergerCtrl : FactoryCtrl
                     SetInObj(nearObj[1]);
                 }
             }
-        }        
+        }
     }
     void DownObjCheck()
     {
@@ -133,7 +132,7 @@ public class MergerCtrl : FactoryCtrl
 
         for (int a = 0; a < downHits.Length; a++)
         {
-            if (downHits[a].collider.GetComponent<MergerCtrl>() != this.gameObject.GetComponent<MergerCtrl>())
+            if (downHits[a].collider.GetComponent<SendUnderBeltCtrl>() != this.gameObject.GetComponent<SendUnderBeltCtrl>())
             {
                 if (downHits[a].collider.CompareTag("Factory"))
                 {
@@ -150,7 +149,7 @@ public class MergerCtrl : FactoryCtrl
 
         for (int a = 0; a < leftHits.Length; a++)
         {
-            if (leftHits[a].collider.GetComponent<MergerCtrl>() != this.gameObject.GetComponent<MergerCtrl>())
+            if (leftHits[a].collider.GetComponent<SendUnderBeltCtrl>() != this.gameObject.GetComponent<SendUnderBeltCtrl>())
             {
                 if (leftHits[a].collider.CompareTag("Factory"))
                 {
@@ -158,7 +157,7 @@ public class MergerCtrl : FactoryCtrl
                     SetInObj(nearObj[3]);
                 }
             }
-        }        
+        }
     }
 
     void SetInObj(GameObject obj)
@@ -167,17 +166,17 @@ public class MergerCtrl : FactoryCtrl
         {
             inObj.Add(obj);
 
-            if(obj.GetComponent<BeltCtrl>() != null)
+            if (obj.GetComponent<BeltCtrl>() != null)
             {
                 BeltCtrl belt = obj.GetComponent<BeltCtrl>();
 
                 int beltReNum = 0;
 
-                if(dirNum == 0)
+                if (dirNum == 0)
                 {
-                    if(nearObj[1] == obj)
+                    if (nearObj[1] == obj)
                         beltReNum = 3;
-                    else if(nearObj[2] == obj)
+                    else if (nearObj[2] == obj)
                         beltReNum = 0;
                     else if (nearObj[3] == obj)
                         beltReNum = 1;
@@ -209,34 +208,29 @@ public class MergerCtrl : FactoryCtrl
                     else if (nearObj[3] == obj)
                         beltReNum = 0;
                 }
-                if(beltReNum != belt.dirNum)
+                if (beltReNum != belt.dirNum)
                 {
                     belt.dirNum = beltReNum;
-                    belt.BeltModelSet();                    
+                    belt.BeltModelSet();
                 }
             }
         }
     }
 
-    void SetOutObj(GameObject obj)
-    {
-        if (obj.GetComponent<FactoryCtrl>() != null)
-        {
-            if (obj.GetComponent<BeltCtrl>() != null)
-            {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())
-                    return;
-
-                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                {
-                    belt.FactoryVecCheck(GetComponentInParent<FactoryCtrl>());
-                }
-            }
-
-            outObj = obj;
-        }
-    }
+    //void SetOutObj(GameObject obj)
+    //{
+    //    if (obj.GetComponent<FactoryCtrl>() != null)
+    //    {
+    //        GetUnderBeltCtrl getUnderbelt = obj.GetComponent<GetUnderBeltCtrl>();
+    //        if(getUnderbelt.dirNum == dirNum)
+    //        {
+    //            outObj = obj;
+    //            getUnderbelt.inObj = this.gameObject;
+    //        }
+    //        else
+    //            return;
+    //    }
+    //}
 
     IEnumerator GetItem()
     {
@@ -247,7 +241,6 @@ public class MergerCtrl : FactoryCtrl
             BeltCtrl belt = inObj[getObjNum].GetComponent<BeltCtrl>();
             if (belt.isItemStop == true)
             {
-                //OnBeltItem(belt.itemObjList[0]);
                 OnFactoryItem(belt.itemObjList[0]);
                 belt.itemObjList[0].transform.position = this.transform.position;
                 belt.isItemStop = false;
@@ -271,8 +264,8 @@ public class MergerCtrl : FactoryCtrl
                 itemGetDelay = false;
                 yield break;
             }
-        }   
-        else if(inObj[getObjNum].GetComponent<BeltCtrl>() == null)
+        }
+        else if (inObj[getObjNum].GetComponent<BeltCtrl>() == null)
         {
             getObjNum++;
             if (getObjNum >= inObj.Count)
@@ -280,44 +273,20 @@ public class MergerCtrl : FactoryCtrl
 
             yield return new WaitForSeconds(factoryData.SendDelay);
             itemGetDelay = false;
-        }        
+        }
     }
 
     IEnumerator SetItem()
     {
         itemSetDelay = true;
 
-        FactoryCtrl outFactory = outObj.GetComponent<FactoryCtrl>();
-        if (outObj.GetComponent<BeltCtrl>() != null)
-        {
-            ItemProps spawnItem = itemPool.Get();
-            SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-            sprite.sprite = itemList[0].icon;
-            spawnItem.item = itemList[0];
-            spawnItem.amount = 1;
-            spawnItem.transform.position = this.transform.position;
-
-            if (outObj.GetComponent<BeltCtrl>() != null)
-            {
-                outObj.GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
-            }
-
-            outFactory.OnBeltItem(spawnItem);
-            itemList.RemoveAt(0);
-            ItemNumCheck();
-        }
-        else
-        {
-            StartCoroutine("SetFacDelay");
-            //outFactory.OnFactoryItem(itemList[0]);
-        }
-
-
+        StartCoroutine("SetDistCheck");
 
         yield return new WaitForSeconds(factoryData.SendDelay);
         itemSetDelay = false;
     }
-    IEnumerator SetFacDelay()
+
+    IEnumerator SetDistCheck()
     {
         var spawnItem = itemPool.Get();
         SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
