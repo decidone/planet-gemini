@@ -10,30 +10,25 @@ public class PlayerInvenUI : InventoryUI
         base.Start();
     }
 
-    protected override void InputCheck()
+    public void SortBtn()
     {
-        base.InputCheck();
-        if (Input.GetButtonDown("Inventory"))
+        if (dragSlot.slot.item == null)
         {
-            inventoryUI.SetActive(!inventoryUI.activeSelf);
-
-            if (gameManager.OpenedInvenCheck())
-            {
-                gameManager.dragSlot.SetActive(true);
-            }
-            else
-            {
-                gameManager.dragSlot.SetActive(false);
-            }
+            inventory.Sort();
         }
     }
 
-    protected override void Update()
+    public void OpenUI()
     {
-        base.Update();
-        if (dragSlot.item != null)
-        {
-            dragSlot.GetComponent<RectTransform>().position = Input.mousePosition;
-        }
+        inventoryUI.SetActive(true);
+        if (gameManager.onUIChangedCallback != null)
+            gameManager.onUIChangedCallback.Invoke(inventoryUI);
+    }
+
+    public void CloseUI()
+    {
+        inventoryUI.SetActive(false);
+        if (gameManager.onUIChangedCallback != null)
+            gameManager.onUIChangedCallback.Invoke(inventoryUI);
     }
 }

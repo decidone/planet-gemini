@@ -7,13 +7,12 @@ using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    [SerializeField]
-    protected GameObject inventoryUI;
+    public GameObject inventoryUI;
     [HideInInspector]
     public Inventory inventory;
 
     protected GameManager gameManager;
-    protected InventorySlot dragSlot; // 드래그용 슬롯
+    protected DragSlot dragSlot; // 드래그용 슬롯
     InventorySlot[] slots;
     InventorySlot focusedSlot;  // 마우스 위치에 있는 슬롯
     Inventory playerInven;
@@ -23,7 +22,7 @@ public class InventoryUI : MonoBehaviour
     {
         gameManager = GameManager.instance;
         playerInven = PlayerInventory.instance;
-        dragSlot = DragSlot.instance.slot;
+        dragSlot = DragSlot.instance;
         inventory.onItemChangedCallback += UpdateUI;
         slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<InventorySlot>();
         for (int i = 0; i < slots.Length; i++)
@@ -74,7 +73,7 @@ public class InventoryUI : MonoBehaviour
         }
         else if (Input.GetMouseButtonDown(0))
         {
-            if (dragSlot.item == null)
+            if (dragSlot.slot.item == null)
             {
                 if (focusedSlot != null)
                 {
@@ -88,7 +87,7 @@ public class InventoryUI : MonoBehaviour
             {
                 if (focusedSlot != null)
                 {
-                    if (dragSlot.item != focusedSlot.item)
+                    if (dragSlot.slot.item != focusedSlot.item)
                     {
                         inventory.Swap(focusedSlot);
                     }
@@ -96,7 +95,7 @@ public class InventoryUI : MonoBehaviour
                     {
                         inventory.Merge(focusedSlot);
                     }
-                } else if (!EventSystem.current.IsPointerOverGameObject() && GameManager.instance.OpenedInvenCheck())
+                } else if (!EventSystem.current.IsPointerOverGameObject() && dragSlot.gameObject.activeSelf)
                 {
                     // 인벤토리 UI 바깥
                     inventory.Drop();
@@ -116,7 +115,7 @@ public class InventoryUI : MonoBehaviour
                 {
                     if (focusedSlot.item != null)
                     {
-                        if (dragSlot.item == null || dragSlot.item == focusedSlot.item)
+                        if (dragSlot.slot.item == null || dragSlot.slot.item == focusedSlot.item)
                         {
                             inventory.Split(focusedSlot);
                         }
@@ -141,31 +140,13 @@ public class InventoryUI : MonoBehaviour
             }
         }
 
-        if(dragSlot.item != null)
+        if (dragSlot.slot.item != null)
         {
-            dragSlot.AddItem(dragSlot.item, dragSlot.amount);
+            dragSlot.slot.AddItem(dragSlot.slot.item, dragSlot.slot.amount);
         }
         else
         {
-            dragSlot.ClearSlot();
-        }
-    }
-
-    public void SortBtn()
-    {
-        if (dragSlot.item == null)
-        {
-            inventory.Sort();
-        }
-    }
-
-    public void CloseBtn()
-    {
-        inventoryUI.SetActive(false);
-
-        if (!gameManager.OpenedInvenCheck())
-        {
-            gameManager.dragSlot.SetActive(false);
+            dragSlot.slot.ClearSlot();
         }
     }
 

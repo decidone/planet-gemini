@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class ClickEvent : MonoBehaviour
 {
-    [SerializeField]
-    GameObject structureInfoUI;
+    public GameObject structureInfoUI;
     Inventory inventory;
     StructureInvenUI ui;
     GameObject storage;
     GameObject oneStorage;
     Button closeBtn;
     GameManager gameManager;
+    DragSlot dragSlot;
     string recipeUI;
 
     void Start()
@@ -23,16 +23,14 @@ public class ClickEvent : MonoBehaviour
         closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
         closeBtn.onClick.AddListener(CloseUI);
         ui = structureInfoUI.GetComponent<StructureInvenUI>();
+        dragSlot = DragSlot.instance;
     }
 
     public void OpenUI()
     {
         structureInfoUI.SetActive(true);
-
-        if (gameManager.OpenedInvenCheck())
-        {
-            gameManager.dragSlot.SetActive(true);
-        }
+        if (gameManager.onUIChangedCallback != null)
+            gameManager.onUIChangedCallback.Invoke(structureInfoUI);
 
         // 이거 메서드로 떼서 사용 할 것
         if (this.transform.GetComponent<Miner>())
@@ -56,11 +54,8 @@ public class ClickEvent : MonoBehaviour
     public void CloseUI()
     {
         structureInfoUI.SetActive(false);
-
-        if (!gameManager.OpenedInvenCheck())
-        {
-            gameManager.dragSlot.SetActive(false);
-        }
+        if (gameManager.onUIChangedCallback != null)
+            gameManager.onUIChangedCallback.Invoke(structureInfoUI);
 
         int childAmount = storage.transform.childCount;
         for(int i = 0; i < childAmount; i++)
