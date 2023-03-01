@@ -15,7 +15,7 @@ public class BeltGroupMgr : MonoBehaviour
     public List<BeltCtrl> BeltList = new List<BeltCtrl>();
     public List<ItemProps> GroupItem = new List<ItemProps>();
 
-    public FactoryCtrl nextObj = null;
+    public GameObject nextObj = null;
     bool nextCheck = true;
 
     Vector2 nextPos;
@@ -152,7 +152,7 @@ public class BeltGroupMgr : MonoBehaviour
         }
     }
 
-    private FactoryCtrl NextObjCheck()
+    private GameObject NextObjCheck()
     {
         var Check = transform.up;
 
@@ -189,7 +189,7 @@ public class BeltGroupMgr : MonoBehaviour
                     else if (raycastHits[a].collider.GetComponent<BeltCtrl>() == null)
                         nextCheck = false;
 
-                    return raycastHits[a].collider.GetComponent<FactoryCtrl>();
+                    return raycastHits[a].collider.gameObject;
                 }
             }
         }
@@ -232,7 +232,7 @@ public class BeltGroupMgr : MonoBehaviour
     {
         BeltManager beltManager = this.GetComponentInParent<BeltManager>();
 
-        beltManager.GetComponent<BeltManager>().BeltCombine(beltGroupMgr, nextBelt.beltGroupMgr);
+        beltManager.BeltCombine(beltGroupMgr, nextBelt.beltGroupMgr);
         belt.nextBelt = nextBelt;
         nextBelt.preBelt = belt;
         nextBelt.BeltModelSet();

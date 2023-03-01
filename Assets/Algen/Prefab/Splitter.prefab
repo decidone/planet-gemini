@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2268223559176168506}
   - component: {fileID: 2268223559176168501}
   - component: {fileID: 2268223559176168500}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Splitter
   m_TagString: Factory
   m_Icon: {fileID: 0}

@@ -44,11 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75d74864027e1ef4399c01cde225f37b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PipeObj: {fileID: 1009705998080393325, guid: 6ac007628373b46468bdad1c117fec57, type: 3}
+  PipeObj: {fileID: 2000658444983299251, guid: 6ac007628373b46468bdad1c117fec57, type: 3}
   up: 0
   down: 0
   left: 0
   right: 0
   PipeList: []
-  nextFluidObj: {fileID: 0}
-  nextFacObj: {fileID: 0}
+  nextObj: {fileID: 0}

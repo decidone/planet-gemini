@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SendUnderBeltCtrl : FactoryCtrl
+public class SendUnderBeltCtrl : SolidFactoryCtrl
 {
     //public Sprite[] modelNum = new Sprite[4];
     //SpriteRenderer setModel;
@@ -33,9 +33,9 @@ public class SendUnderBeltCtrl : FactoryCtrl
         }
         if (itemList.Count > 0 && outObj != null)
         {
-            if (outObj.GetComponent<FactoryCtrl>() != null)
+            if (outObj.GetComponent<SolidFactoryCtrl>() != null)
             {
-                if (outObj.GetComponent<FactoryCtrl>().isFull == false)
+                if (outObj.GetComponent<SolidFactoryCtrl>().isFull == false)
                 {
                     if (itemSetDelay == false)
                         StartCoroutine("SetItem");
@@ -162,7 +162,7 @@ public class SendUnderBeltCtrl : FactoryCtrl
 
     void SetInObj(GameObject obj)
     {
-        if (obj.GetComponent<FactoryCtrl>() != null)
+        if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             inObj.Add(obj);
 
@@ -305,7 +305,7 @@ public class SendUnderBeltCtrl : FactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                FactoryCtrl outFactory = outObj.GetComponent<FactoryCtrl>();
+                SolidFactoryCtrl outFactory = outObj.GetComponent<SolidFactoryCtrl>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4372891051652484689}
   - component: {fileID: 4372891051652484693}
   - component: {fileID: 4372891051652484690}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: ItemSpawner
   m_TagString: Factory
   m_Icon: {fileID: 0}

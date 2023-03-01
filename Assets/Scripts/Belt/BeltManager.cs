@@ -35,6 +35,6 @@ public class BeltManager : MonoBehaviour
         }
 
         fstGroupMgr.Reconfirm();
-        Destroy(secGroupMgr);
+        Destroy(secGroupMgr.gameObject);
     }
 }

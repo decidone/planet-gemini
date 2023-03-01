@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SplitterCtrl : FactoryCtrl
+public class SplitterCtrl : SolidFactoryCtrl
 {
     [SerializeField]
     Sprite[] modelNum = new Sprite[4];
@@ -171,7 +171,7 @@ public class SplitterCtrl : FactoryCtrl
 
     void SetInObj(GameObject obj)
     {
-        if (obj.GetComponent<FactoryCtrl>() != null)
+        if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             inObj = obj;
 
@@ -194,17 +194,17 @@ public class SplitterCtrl : FactoryCtrl
 
     void SetOutObj(GameObject obj)
     {
-        if (obj.GetComponent<FactoryCtrl>() != null)
+        if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             if(obj.GetComponent<BeltCtrl>() != null)
             {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())
+                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     return;
 
                 BeltCtrl belt = obj.GetComponent<BeltCtrl>();
                 if(belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
                 {
-                    belt.FactoryVecCheck(GetComponentInParent<FactoryCtrl>());
+                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
                 }
             }
             outObj.Add(obj);
@@ -242,7 +242,7 @@ public class SplitterCtrl : FactoryCtrl
     {
         itemSetDelay = true;
 
-        FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+        SolidFactoryCtrl outFactory = outObj[getObjNum].GetComponent<SolidFactoryCtrl>();
 
         if (outFactory.isFull == false)
         {
@@ -307,7 +307,7 @@ public class SplitterCtrl : FactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+                SolidFactoryCtrl outFactory = outObj[getObjNum].GetComponent<SolidFactoryCtrl>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);

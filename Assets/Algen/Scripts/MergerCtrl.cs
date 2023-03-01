@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MergerCtrl : FactoryCtrl
+public class MergerCtrl : SolidFactoryCtrl
 {
     [SerializeField]
     Sprite[] modelNum = new Sprite[4];
@@ -34,9 +34,9 @@ public class MergerCtrl : FactoryCtrl
         }
         if (itemList.Count > 0 && outObj != null)
         {
-            if (outObj.GetComponent<FactoryCtrl>() != null)
+            if (outObj.GetComponent<SolidFactoryCtrl>() != null)
             {
-                if (outObj.GetComponent<FactoryCtrl>().isFull == false)
+                if (outObj.GetComponent<SolidFactoryCtrl>().isFull == false)
                 {
                     if (itemSetDelay == false)
                         StartCoroutine("SetItem");
@@ -96,7 +96,7 @@ public class MergerCtrl : FactoryCtrl
 
     void UpObjCheck()
     {
-        RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 10f);
+        RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 1f);
 
         for (int a = 0; a < upHits.Length; a++)
         {
@@ -163,7 +163,7 @@ public class MergerCtrl : FactoryCtrl
 
     void SetInObj(GameObject obj)
     {
-        if (obj.GetComponent<FactoryCtrl>() != null)
+        if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             inObj.Add(obj);
 
@@ -220,17 +220,17 @@ public class MergerCtrl : FactoryCtrl
 
     void SetOutObj(GameObject obj)
     {
-        if (obj.GetComponent<FactoryCtrl>() != null)
+        if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             if (obj.GetComponent<BeltCtrl>() != null)
             {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.GetComponent<FactoryCtrl>())
+                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     return;
 
                 BeltCtrl belt = obj.GetComponent<BeltCtrl>();
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
                 {
-                    belt.FactoryVecCheck(GetComponentInParent<FactoryCtrl>());
+                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
                 }
             }
 
@@ -287,7 +287,7 @@ public class MergerCtrl : FactoryCtrl
     {
         itemSetDelay = true;
 
-        FactoryCtrl outFactory = outObj.GetComponent<FactoryCtrl>();
+        SolidFactoryCtrl outFactory = outObj.GetComponent<SolidFactoryCtrl>();
         if (outObj.GetComponent<BeltCtrl>() != null)
         {
             ItemProps spawnItem = itemPool.Get();
@@ -336,7 +336,7 @@ public class MergerCtrl : FactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                FactoryCtrl outFactory = outObj.GetComponent<FactoryCtrl>();
+                SolidFactoryCtrl outFactory = outObj.GetComponent<SolidFactoryCtrl>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);

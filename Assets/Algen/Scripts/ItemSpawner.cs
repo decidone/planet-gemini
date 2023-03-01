@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemSpawner : FactoryCtrl
+public class ItemSpawner : SolidFactoryCtrl
 {
     [SerializeField]
     Item itemData;
@@ -125,7 +125,7 @@ public class ItemSpawner : FactoryCtrl
 
     void SetOutObj(GameObject obj)
     {
-        if (obj.GetComponent<FactoryCtrl>() != null)
+        if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             outObj.Add(obj);
         }
@@ -135,7 +135,7 @@ public class ItemSpawner : FactoryCtrl
     {
         itemSetDelay = true;
 
-        FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+        SolidFactoryCtrl outFactory = outObj[getObjNum].GetComponent<SolidFactoryCtrl>();
 
         if (outFactory.isFull == false)
         {
@@ -191,7 +191,7 @@ public class ItemSpawner : FactoryCtrl
 
         if (spawnItem.transform.position == outObj[getObjNum].transform.position)
         {
-            FactoryCtrl outFactory = outObj[getObjNum].GetComponent<FactoryCtrl>();
+            SolidFactoryCtrl outFactory = outObj[getObjNum].GetComponent<SolidFactoryCtrl>();
             outFactory.OnFactoryItem(itemData);
         }
         Destroy(spawnItem.gameObject);

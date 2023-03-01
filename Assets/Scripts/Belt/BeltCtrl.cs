@@ -8,7 +8,7 @@ public enum BeltState
     EndBelt,
     RepeaterBelt
 }
-public class BeltCtrl : FactoryCtrl
+public class BeltCtrl : SolidFactoryCtrl
 {
     [SerializeField]
     int modelNum = 0;  // ¸ð¼Ç
@@ -319,7 +319,7 @@ public class BeltCtrl : FactoryCtrl
         }
     }
 
-    public void FactoryVecCheck(FactoryCtrl factory)
+    public void FactoryVecCheck(SolidFactoryCtrl factory)
     {
         if (factory.transform.position.x > this.transform.position.x)  
             isLeft = true;        

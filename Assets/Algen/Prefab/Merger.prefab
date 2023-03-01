@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 262180438270614845}
   - component: {fileID: 262180438270614847}
   - component: {fileID: 262180438270614846}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Merger
   m_TagString: Factory
   m_Icon: {fileID: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4243873348260944142}
   - component: {fileID: 4243873348260944137}
   - component: {fileID: 2112680866680229825}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Pump
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4243873348260944181}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: -2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -146,3 +146,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c01ca9e89fe79146882a5c1bfa61a7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isFull: 0
+  fullFluidNum: 50
+  saveFluidNum: 0
+  fluidIsFull: 0
+  dirNum: 0
+  PumpUp: 0
+  outObj: []

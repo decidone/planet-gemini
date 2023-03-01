@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 649535378188675672}
   - component: {fileID: 649535378188675679}
   - component: {fileID: 649535378188675680}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: SendUnderBelt
   m_TagString: Factory
   m_Icon: {fileID: 0}
