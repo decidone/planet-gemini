@@ -6,10 +6,14 @@ public class Inventory : MonoBehaviour
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
-    public int space;   // 아이템 슬롯 상한, 드래그용 슬롯 번호를 겸 함
-    public int maxAmount;   // 한 슬롯 당 최대 수량
-    public GameObject itemPref;
-    public GameObject player;
+    [SerializeField]
+    int space;   // 아이템 슬롯 상한, 드래그용 슬롯 번호를 겸 함
+    [SerializeField]
+    int maxAmount;   // 한 슬롯 당 최대 수량
+    [SerializeField]
+    GameObject itemPref;
+    [SerializeField]
+    GameObject player;
     InventorySlot dragSlot;
 
     // 인벤토리에 표시되는 아이템
@@ -20,7 +24,7 @@ public class Inventory : MonoBehaviour
     List<Item> itemsList;
     public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
 
-    public void Start()
+    void Start()
     {
         itemsList = ItemsList.instance.itemsList;
         foreach (Item item in itemsList)
@@ -75,7 +79,7 @@ public class Inventory : MonoBehaviour
                     }
                 }
             }
-            if (tempAmount <= 0)
+            if (tempAmount == 0)
                 break;
         }
 
@@ -108,39 +112,6 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public void Sub(InventorySlot slot, int amount)
-    {
-        amounts[slot.slotNum] -= amount;
-
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
-    }
-
-    public void Split(InventorySlot slot)
-    {
-        if (items.ContainsKey(slot.slotNum))
-        {
-            if (amounts[slot.slotNum] > 0)
-            {
-                if (dragSlot.amount < maxAmount)
-                {
-                    dragSlot.item = slot.item;
-                    dragSlot.amount++;
-                    amounts[slot.slotNum]--;
-                }
-                
-                if (amounts[slot.slotNum] == 0)
-                {
-                    items.Remove(slot.slotNum);
-                    amounts.Remove(slot.slotNum);
-                }
-                
-                if (onItemChangedCallback != null)
-                    onItemChangedCallback.Invoke();
-            }
-        }
-    }
-
     public void Swap(InventorySlot slot)
     {
         if (!items.ContainsKey(slot.slotNum))
@@ -148,18 +119,23 @@ public class Inventory : MonoBehaviour
             // 타겟 슬롯이 비어있는 경우
             items.Add(slot.slotNum, dragSlot.item);
             amounts.Add(slot.slotNum, dragSlot.amount);
+            totalItems[dragSlot.item] += dragSlot.amount;
             dragSlot.ClearSlot();
-        }else if (dragSlot.item == null)
+        }
+        else if (dragSlot.item == null)
         {
             // 드래그 슬롯이 비어있는 경우
             dragSlot.item = items[slot.slotNum];
             dragSlot.amount = amounts[slot.slotNum];
-
+            totalItems[dragSlot.item] -= dragSlot.amount;
             items.Remove(slot.slotNum);
             amounts.Remove(slot.slotNum);
         }
         else
         {
+            totalItems[dragSlot.item] += dragSlot.amount;
+            totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
+
             Item tempItem = items[slot.slotNum];
             int tempAmount = amounts[slot.slotNum];
 
@@ -181,11 +157,13 @@ public class Inventory : MonoBehaviour
 
         if (mergeAmount > maxAmount)
         {
+            totalItems[dragSlot.item] += (maxAmount - amounts[mergeSlot.slotNum]);
             amounts[mergeSlot.slotNum] = maxAmount;
             dragSlot.amount = mergeAmount - maxAmount;
         }
         else
         {
+            totalItems[dragSlot.item] += dragSlot.amount;
             amounts[mergeSlot.slotNum] = mergeAmount;
             dragSlot.ClearSlot();
         }
@@ -194,8 +172,50 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
+    public void Sub(InventorySlot slot, int amount)
+    {
+        totalItems[items[slot.slotNum]] -= amount;
+        amounts[slot.slotNum] -= amount;
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
+    public void Split(InventorySlot slot)
+    {
+        if (items.ContainsKey(slot.slotNum))
+        {
+            if (amounts[slot.slotNum] > 0)
+            {
+                if (dragSlot.amount < maxAmount)
+                {
+                    dragSlot.item = slot.item;
+                    dragSlot.amount++;
+                    totalItems[items[slot.slotNum]]--;
+                    amounts[slot.slotNum]--;
+                }
+
+                if (amounts[slot.slotNum] == 0)
+                {
+                    items.Remove(slot.slotNum);
+                    amounts.Remove(slot.slotNum);
+                }
+
+                if (onItemChangedCallback != null)
+                    onItemChangedCallback.Invoke();
+            }
+        }
+    }
+
+    public void Refresh()
+    {
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
     public void Remove(InventorySlot slot)
     {
+        totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
         items.Remove(slot.slotNum);
         amounts.Remove(slot.slotNum);
 
@@ -206,8 +226,6 @@ public class Inventory : MonoBehaviour
     public void Drop()
     {
         Debug.Log("Drop : " + dragSlot.item.name + ", Amount : " + dragSlot.amount);
-        //totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
-
         GameObject dropItem = Instantiate(itemPref);
         SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
         sprite.sprite = dragSlot.item.icon;
@@ -216,7 +234,6 @@ public class Inventory : MonoBehaviour
         itemProps.amount = dragSlot.amount;
         dropItem.transform.position = player.transform.position;
         dropItem.transform.position += Vector3.down * 1.5f;
-
         dragSlot.ClearSlot();
 
         if (onItemChangedCallback != null)
@@ -258,16 +275,6 @@ public class Inventory : MonoBehaviour
                 }
             }
         }
-
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
-    }
-
-    public void CancelDrag()
-    {
-        // 이건 동작방식 바꿀거라 Add 바뀐거에 맞게 수량체크 추가 안해놓음
-        Add(dragSlot.item, dragSlot.amount);
-        dragSlot.ClearSlot();
 
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();

@@ -5,12 +5,14 @@ using UnityEngine.UI;
 
 public class DragSlot : MonoBehaviour
 {
-    public GameObject slotObj;
+    [SerializeField]
+    GameObject slotObj;
     public InventorySlot slot;
 
+    #region Singleton
     public static DragSlot instance;
 
-    private void Awake()
+    void Awake()
     {
         if (instance != null)
         {
@@ -19,7 +21,6 @@ public class DragSlot : MonoBehaviour
         }
 
         instance = this;
-
         slotObj = this.transform.Find("Slot").gameObject;
         slot = slotObj.transform.GetComponent<InventorySlot>();
 
@@ -29,4 +30,5 @@ public class DragSlot : MonoBehaviour
             image.raycastTarget = false;
         }
     }
+    #endregion
 }

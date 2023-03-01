@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private float moveSpeed = 8f;
-    public Rigidbody2D rb;
-    public Animator animator;
-
+    [SerializeField]
+    float moveSpeed;
+    [SerializeField]
+    Rigidbody2D rb;
+    [SerializeField]
+    Animator animator;
     public Vector2 movement;
-    private float timer;
+    float timer;
     
-    // Update is called once per frame
     void Update()
     {
         movement.x = Input.GetAxisRaw("Horizontal");

@@ -6,31 +6,31 @@ using UnityEngine.UI;
 public class ClickEvent : MonoBehaviour
 {
     public GameObject structureInfoUI;
-    public Button closeBtn;
-
     Inventory inventory;
-    string recipeUI;
-    GameObject info;
+    StructureInvenUI ui;
+    GameObject storage;
     GameObject oneStorage;
+    Button closeBtn;
     GameManager gameManager;
+    DragSlot dragSlot;
+    string recipeUI;
 
-    private void Start()
+    void Start()
     {
         gameManager = GameManager.instance;
+        storage = structureInfoUI.transform.Find("Storage").gameObject;
+        oneStorage = storage.transform.Find("OneStorage").gameObject;
+        closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
         closeBtn.onClick.AddListener(CloseUI);
-
-        info = structureInfoUI.transform.Find("Info").gameObject;
-        oneStorage = info.transform.Find("OneStorage").gameObject;
+        ui = structureInfoUI.GetComponent<StructureInvenUI>();
+        dragSlot = DragSlot.instance;
     }
 
     public void OpenUI()
     {
         structureInfoUI.SetActive(true);
-
-        if (gameManager.OpenedInvenCheck())
-        {
-            gameManager.dragSlot.SetActive(true);
-        }
+        if (gameManager.onUIChangedCallback != null)
+            gameManager.onUIChangedCallback.Invoke(structureInfoUI);
 
         // 이거 메서드로 떼서 사용 할 것
         if (this.transform.GetComponent<Miner>())
@@ -38,7 +38,6 @@ public class ClickEvent : MonoBehaviour
             Miner miner = (Miner)this.transform.GetComponent<Miner>();
             recipeUI = miner.recipeUI;
             inventory = miner.transform.GetComponent<Inventory>();
-            InventoryUI ui = info.GetComponent<InventoryUI>();
             ui.inventory = inventory;
         }
         switch (recipeUI)
@@ -55,16 +54,13 @@ public class ClickEvent : MonoBehaviour
     public void CloseUI()
     {
         structureInfoUI.SetActive(false);
+        if (gameManager.onUIChangedCallback != null)
+            gameManager.onUIChangedCallback.Invoke(structureInfoUI);
 
-        if (!gameManager.OpenedInvenCheck())
-        {
-            gameManager.dragSlot.SetActive(false);
-        }
-
-        int childAmount = info.transform.childCount;
+        int childAmount = storage.transform.childCount;
         for(int i = 0; i < childAmount; i++)
         {
-            info.transform.GetChild(i).gameObject.SetActive(false);
+            storage.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
 }
