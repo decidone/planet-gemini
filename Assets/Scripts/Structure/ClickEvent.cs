@@ -9,21 +9,19 @@ public class ClickEvent : MonoBehaviour
     Inventory inventory;
     StructureInvenUI ui;
     GameObject storage;
-    GameObject oneStorage;
+    GameObject miner;
     Button closeBtn;
     GameManager gameManager;
-    DragSlot dragSlot;
     string recipeUI;
 
     void Start()
     {
         gameManager = GameManager.instance;
         storage = structureInfoUI.transform.Find("Storage").gameObject;
-        oneStorage = storage.transform.Find("OneStorage").gameObject;
+        miner = storage.transform.Find("Miner").gameObject;
         closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
         closeBtn.onClick.AddListener(CloseUI);
         ui = structureInfoUI.GetComponent<StructureInvenUI>();
-        dragSlot = DragSlot.instance;
     }
 
     public void OpenUI()
@@ -42,8 +40,8 @@ public class ClickEvent : MonoBehaviour
         }
         switch (recipeUI)
         {
-            case "OneStorage":
-                oneStorage.SetActive(true);
+            case "Miner":
+                miner.SetActive(true);
                 break;
             default:
                 Debug.Log("no recipe detected");

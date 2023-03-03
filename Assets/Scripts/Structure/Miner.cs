@@ -47,6 +47,6 @@ public class Miner : Production
 
     void SetRecipe()
     {
-        recipeUI = "OneStorage";
+        recipeUI = "Miner";
     }
 }
