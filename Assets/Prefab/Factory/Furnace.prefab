@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6828250309792496594}
   - component: {fileID: 2915714397704090837}
   - component: {fileID: 2712751483643601175}
-  - component: {fileID: 2233973952794387984}
   - component: {fileID: 6768119425636190065}
+  - component: {fileID: 2233973952794387984}
   - component: {fileID: 2933665410225861189}
   m_Layer: 0
   m_Name: Furnace
@@ -114,6 +114,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &6768119425636190065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759284699072132164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75c16f7278f4e2a448cead0d6ec8787c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structureInfoUI: {fileID: 0}
 --- !u!114 &2233973952794387984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,19 +143,6 @@ MonoBehaviour:
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   player: {fileID: 0}
---- !u!114 &6768119425636190065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8759284699072132164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75c16f7278f4e2a448cead0d6ec8787c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  structureInfoUI: {fileID: 0}
 --- !u!114 &2933665410225861189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,3 +157,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 0
   hp: 0
+  maxAmount: 99
+  cooldown: 3
+  recipeUI: 

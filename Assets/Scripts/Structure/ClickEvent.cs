@@ -10,6 +10,7 @@ public class ClickEvent : MonoBehaviour
     StructureInvenUI ui;
     GameObject storage;
     GameObject miner;
+    GameObject furnace;
     Button closeBtn;
     GameManager gameManager;
     string recipeUI;
@@ -19,6 +20,7 @@ public class ClickEvent : MonoBehaviour
         gameManager = GameManager.instance;
         storage = structureInfoUI.transform.Find("Storage").gameObject;
         miner = storage.transform.Find("Miner").gameObject;
+        furnace = storage.transform.Find("Furnace").gameObject;
         closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
         closeBtn.onClick.AddListener(CloseUI);
         ui = structureInfoUI.GetComponent<StructureInvenUI>();
@@ -33,15 +35,27 @@ public class ClickEvent : MonoBehaviour
         // 이거 메서드로 떼서 사용 할 것
         if (this.transform.GetComponent<Miner>())
         {
-            Miner miner = (Miner)this.transform.GetComponent<Miner>();
-            recipeUI = miner.recipeUI;
-            inventory = miner.transform.GetComponent<Inventory>();
-            ui.inventory = inventory;
+            Miner _miner = this.transform.GetComponent<Miner>();
+            recipeUI = _miner.recipeUI;
+            inventory = _miner.transform.GetComponent<Inventory>();
+            ui.SetInven(inventory, miner);
         }
+        else if (this.transform.GetComponent<Furnace>())
+        {
+            Furnace _furnace = this.transform.GetComponent<Furnace>();
+            recipeUI = _furnace.recipeUI;
+            inventory = _furnace.transform.GetComponent<Inventory>();
+            ui.SetInven(inventory, furnace);
+        }
+
+
         switch (recipeUI)
         {
             case "Miner":
                 miner.SetActive(true);
+                break;
+            case "Furnace":
+                furnace.SetActive(true);
                 break;
             default:
                 Debug.Log("no recipe detected");

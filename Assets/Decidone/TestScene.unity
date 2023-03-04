@@ -1106,16 +1106,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1548398510 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1921628048, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-  m_PrefabInstance: {fileID: 8766906530786940947}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1591596485 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8766906530296426731, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-  m_PrefabInstance: {fileID: 8766906530786940947}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1635113029
 GameObject:
   m_ObjectHideFlags: 0
@@ -1427,21 +1417,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: dragSlot
-      value: 
-      objectReference: {fileID: 1548398510}
-    - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: playerInvenUI
       value: 
       objectReference: {fileID: 1233251329}
-    - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: invenUI.Array.data[0]
-      value: 
-      objectReference: {fileID: 1591596485}
-    - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: invenUI.Array.data[1]
-      value: 
-      objectReference: {fileID: 1052441421}
     - target: {fileID: 1877822181348161265, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -1494,6 +1472,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1799185956}
+    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: itemList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: itemList.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
+    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: itemList.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 04998b413239b974292ef3b40aa03a66, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
 --- !u!1001 &2359874168915275320
@@ -1690,14 +1680,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1070314735, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_Name
-      value: Miner
-      objectReference: {fileID: 0}
-    - target: {fileID: 3843819938891635663, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_Name
-      value: Furnace
-      objectReference: {fileID: 0}
     - target: {fileID: 8766906530158679200, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_Name
       value: Canvas

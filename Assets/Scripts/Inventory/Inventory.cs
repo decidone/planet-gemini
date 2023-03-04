@@ -21,13 +21,13 @@ public class Inventory : MonoBehaviour
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
 
     // 아이템 총량 관리
-    List<Item> itemsList;
+    List<Item> itemList;
     public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
 
     void Start()
     {
-        itemsList = ItemsList.instance.itemsList;
-        foreach (Item item in itemsList)
+        itemList = ItemsList.instance.itemList;
+        foreach (Item item in itemList)
         {
             totalItems.Add(item, 0);
         }
@@ -176,6 +176,11 @@ public class Inventory : MonoBehaviour
     {
         totalItems[items[slot.slotNum]] -= amount;
         amounts[slot.slotNum] -= amount;
+        if (amounts[slot.slotNum] == 0)
+        {
+            items.Remove(slot.slotNum);
+            amounts.Remove(slot.slotNum);
+        }
 
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();

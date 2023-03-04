@@ -23,16 +23,7 @@ public class InventoryUI : MonoBehaviour
         gameManager = GameManager.instance;
         playerInven = PlayerInventory.instance;
         dragSlot = DragSlot.instance;
-        inventory.onItemChangedCallback += UpdateUI;
-        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<InventorySlot>();
-        for (int i = 0; i < slots.Length; i++)
-        {
-            InventorySlot slot = slots[i];
-            slot.slotNum = i;
-
-            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
-        }
+        SetInven(inventory, inventoryUI);
     }
 
     protected virtual void Update()
@@ -126,6 +117,23 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    public void SetInven(Inventory inven, GameObject invenUI)
+    {
+        inventory = inven;
+        inventoryUI = invenUI;
+        inventory.onItemChangedCallback += UpdateUI;
+        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<InventorySlot>();
+        for (int i = 0; i < slots.Length; i++)
+        {
+            InventorySlot slot = slots[i];
+            slot.slotNum = i;
+
+            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
+            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+        }
+        inventory.Refresh();
+    }
+
     void UpdateUI()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -140,13 +148,16 @@ public class InventoryUI : MonoBehaviour
             }
         }
 
-        if (dragSlot.slot.item != null)
+        if (dragSlot != null)
         {
-            dragSlot.slot.AddItem(dragSlot.slot.item, dragSlot.slot.amount);
-        }
-        else
-        {
-            dragSlot.slot.ClearSlot();
+            if (dragSlot.slot.item != null)
+            {
+                dragSlot.slot.AddItem(dragSlot.slot.item, dragSlot.slot.amount);
+            }
+            else
+            {
+                dragSlot.slot.ClearSlot();
+            }
         }
     }
 
