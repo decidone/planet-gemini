@@ -76,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.24875402, g: 0.8113208, b: 0.80581224, a: 1}
+  m_Sprite: {fileID: 1956361497, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -152,3 +152,19 @@ MonoBehaviour:
   fluidIsFull: 0
   dirNum: 0
   pipeGroupMgr: {fileID: 0}
+  modelNum:
+  - {fileID: 1956361497, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: 344348069, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: -1642286247, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: -786303465, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: -1275357051, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: -604087098, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: 365012003, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: 1960581956, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: 20086592, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: 1487925199, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  - {fileID: -51803728, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
+  isUp: 0
+  isRight: 0
+  isDown: 0
+  isLeft: 0

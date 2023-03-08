@@ -14,7 +14,7 @@ public class PipeGroupMgr : MonoBehaviour
 
     public List<PipeCtrl> pipeList = new List<PipeCtrl>();
     public List<GameObject> factoryList = new List<GameObject>();
-    public Dictionary<GameObject, float> notFullObj = new Dictionary<GameObject, float>();
+    //public Dictionary<GameObject, float> notFullObj = new Dictionary<GameObject, float>();
 
     Vector2 nextPos;
 
@@ -25,7 +25,7 @@ public class PipeGroupMgr : MonoBehaviour
 
     float sendFluid = 1.0f;
     float sendDelayTimer = 0.0f;
-    float sendDelay = 0.1f;
+    float sendDelay = 0.03f;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,12 +56,16 @@ public class PipeGroupMgr : MonoBehaviour
             right = false;
         }
 
-        sendDelayTimer += Time.deltaTime;
-
-        if (sendDelayTimer > sendDelay)
+        if (factoryList.Count > 0 && groupSaveFluidNum >= sendFluid)
         {
-            SendFluid();
-            sendDelayTimer = 0;
+            sendDelayTimer += Time.deltaTime;
+
+            if (sendDelayTimer > sendDelay)
+            {
+                SendFluid();
+                GetFluid();
+                sendDelayTimer = 0;
+            }
         }
     }
 
@@ -93,6 +97,7 @@ public class PipeGroupMgr : MonoBehaviour
             PipeCtrl pipeCtrl = pipe.GetComponent<PipeCtrl>();
             pipeList.Add(pipeCtrl);
             GroupCheck();
+            GroupFluidCount(0);
         }
     }
 
@@ -114,6 +119,7 @@ public class PipeGroupMgr : MonoBehaviour
 
     public void GroupCheck()
     {
+        groupIsFull = false;
         groupFullFluidNum = 0;
 
         foreach (PipeCtrl pipe in pipeList)
@@ -139,68 +145,57 @@ public class PipeGroupMgr : MonoBehaviour
             groupIsFull = true;
             groupSaveFluidNum = groupFullFluidNum;
         }
+        else if (groupFullFluidNum > groupSaveFluidNum)
+        {
+            groupIsFull = false;
+        }
 
         foreach (PipeCtrl pipe in pipeList)
         {
             pipe.saveFluidNum = SendFluid;
-            if (pipe.saveFluidNum == pipe.fullFluidNum)
+            if (pipe.saveFluidNum >= pipe.fullFluidNum)
                 pipe.fluidIsFull = true;
             else if (pipe.saveFluidNum < pipe.fullFluidNum)
                 pipe.fluidIsFull = false;
         }
     }
 
+    public void FactoryListAdd(GameObject facroty)
+    {
+        factoryList.Add(facroty);
+    }
+
     void SendFluid()
+    {
+        foreach (GameObject obj in factoryList)
+        {
+            if (obj.GetComponent<FluidFactoryCtrl>() && obj.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+            {
+                FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
+
+                if (fluidFactory.saveFluidNum < pipeList[0].saveFluidNum)
+                {
+                    fluidFactory.SendFluidFunc(sendFluid);
+                    groupSaveFluidNum -= sendFluid;
+                }
+
+                GroupFluidCount(0);
+            }            
+        }
+    }
+    void GetFluid()
     {
         foreach (GameObject obj in factoryList)
         {
             if (obj.GetComponent<FluidFactoryCtrl>())
             {
-                if (obj.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+                FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
+                if (fluidFactory.fluidIsFull == true && groupIsFull == false)
                 {
-                    if(groupIsFull == false)
-                    {
-                        if (obj.GetComponent<FluidFactoryCtrl>().saveFluidNum < pipeList[0].saveFluidNum)
-                            notFullObj.Add(obj, obj.GetComponent<FluidFactoryCtrl>().ExtraSize());
-                    }
-                    else if(groupIsFull == true)
-                    {
-                        notFullObj.Add(obj, obj.GetComponent<FluidFactoryCtrl>().ExtraSize());
-                    }
+                    fluidFactory.GetFluidFunc(sendFluid);
+                    groupSaveFluidNum += sendFluid;
                 }
             }
         }
-
-        foreach (KeyValuePair<GameObject, float> obj in notFullObj)
-        {
-            if (groupSaveFluidNum - sendFluid < 0)
-            {
-                notFullObj.Clear();
-                return;
-            }
-            else if (groupSaveFluidNum - sendFluid >= 0)
-            {
-                if (obj.Key.GetComponent<FluidFactoryCtrl>())
-                {
-                    if (obj.Value < sendFluid)
-                    {
-                        obj.Key.GetComponent<FluidFactoryCtrl>().GetFluid(obj.Value);
-                        groupSaveFluidNum -= obj.Value;
-
-                    }
-                    else if (obj.Value >= sendFluid)
-                    {
-                        obj.Key.GetComponent<FluidFactoryCtrl>().GetFluid(sendFluid);
-                        groupSaveFluidNum -= sendFluid;
-                    }
-                }
-            }
-        }
-
-        GroupFluidCount(0);
-        if (groupFullFluidNum > groupSaveFluidNum)        
-            groupIsFull = false;        
-
-        notFullObj.Clear();
     }
 }

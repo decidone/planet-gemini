@@ -13,10 +13,10 @@ public class FluidFactoryCtrl : FactoryCtrl
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public void GetFluid(float getNum)
+    public void SendFluidFunc(float getNum)
     {
         if(this.GetComponentInParent<PipeGroupMgr>() != null)
         {
@@ -25,7 +25,6 @@ public class FluidFactoryCtrl : FactoryCtrl
         }
         else if (this.GetComponentInParent<PipeGroupMgr>() == null)
         {
-            //float addFluidNum = saveFluidNum + getNum;
             saveFluidNum += getNum;
 
             if (fullFluidNum <= saveFluidNum)
@@ -35,18 +34,27 @@ public class FluidFactoryCtrl : FactoryCtrl
             }
         }
     }
-    public float ExtraSize()
+
+    public void GetFluidFunc(float getNum)
     {
+
         if (this.GetComponentInParent<PipeGroupMgr>() != null)
         {
             PipeGroupMgr pipeGroupMgr = this.GetComponentInParent<PipeGroupMgr>();
-            return pipeGroupMgr.groupFullFluidNum - pipeGroupMgr.groupSaveFluidNum;
+            if(getNum < pipeGroupMgr.groupSaveFluidNum)
+                pipeGroupMgr.GroupFluidCount(-getNum);
         }
-        else if(this.GetComponentInParent<PipeGroupMgr>() == null)
+        else if (this.GetComponentInParent<PipeGroupMgr>() == null)
         {
-            return fullFluidNum - saveFluidNum;
+            if(getNum < saveFluidNum)
+            { 
+                saveFluidNum -= getNum;
+
+                if (fullFluidNum > saveFluidNum)
+                {
+                    fluidIsFull = false;
+                }
+            }
         }
-        else
-            return 0;
     }
 }
