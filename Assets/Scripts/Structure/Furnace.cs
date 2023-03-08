@@ -29,19 +29,12 @@ public class Furnace : Production
         timer += Time.deltaTime;
         if (amount < maxAmount)
         {
-            // 0.1초마다 입력 상태를 저장
             if (timer > cooldown)
             {
                 //inventory.Add(item, 1);
                 timer = 0;
             }
         }
-    }
-
-    void SetResource()
-    {
-        // 매장된 자원 확인, 생산 자원을 지정
-        // 아마 건설할 때 체크 후 그 뒤로는 사용 안 함. 그러면 이름을 setResource로 변경
     }
 
     void SetRecipe()

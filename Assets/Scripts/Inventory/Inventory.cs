@@ -26,7 +26,7 @@ public class Inventory : MonoBehaviour
 
     void Start()
     {
-        itemList = ItemsList.instance.itemList;
+        itemList = ItemList.instance.itemList;
         foreach (Item item in itemList)
         {
             totalItems.Add(item, 0);

@@ -1541,6 +1541,18 @@ PrefabInstance:
       propertyPath: structureInfoUI
       value: 
       objectReference: {fileID: 1052441421}
+    - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
+      propertyPath: item
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
+      propertyPath: cooldown
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
+      propertyPath: maxAmount
+      value: 99
+      objectReference: {fileID: 0}
     - target: {fileID: 2359874169441961876, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
       propertyPath: player
       value: 

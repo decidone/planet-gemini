@@ -48,15 +48,19 @@ public class ClickEvent : MonoBehaviour
             ui.SetInven(inventory, furnace);
         }
 
-
+        // 이거 떼서 건물쪽 스크립트로 옮기기
         switch (recipeUI)
         {
             case "Miner":
                 miner.SetActive(true);
+                ui.slots[0].outputSlot = true;
                 break;
+
             case "Furnace":
                 furnace.SetActive(true);
+                ui.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
                 break;
+
             default:
                 Debug.Log("no recipe detected");
                 break;

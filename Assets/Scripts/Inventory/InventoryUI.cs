@@ -10,10 +10,11 @@ public class InventoryUI : MonoBehaviour
     public GameObject inventoryUI;
     [HideInInspector]
     public Inventory inventory;
+    [HideInInspector]
+    public InventorySlot[] slots;
 
     protected GameManager gameManager;
     protected DragSlot dragSlot; // 드래그용 슬롯
-    InventorySlot[] slots;
     InventorySlot focusedSlot;  // 마우스 위치에 있는 슬롯
     Inventory playerInven;
     float splitCooldown;
@@ -59,7 +60,6 @@ public class InventoryUI : MonoBehaviour
                         }
                     }
                 }
-                
             }
         }
         else if (Input.GetMouseButtonDown(0))
@@ -78,13 +78,26 @@ public class InventoryUI : MonoBehaviour
             {
                 if (focusedSlot != null)
                 {
-                    if (dragSlot.slot.item != focusedSlot.item)
+                    if (!focusedSlot.outputSlot)
                     {
-                        inventory.Swap(focusedSlot);
-                    }
-                    else
-                    {
-                        inventory.Merge(focusedSlot);
+                        if (dragSlot.slot.item != focusedSlot.item)
+                        {
+                            if (focusedSlot.inputSlot)
+                            {
+                                if (dragSlot.slot.item == focusedSlot.inputItem)
+                                {
+                                    inventory.Swap(focusedSlot);
+                                }
+                            }
+                            else
+                            {
+                                inventory.Swap(focusedSlot);
+                            }
+                        }
+                        else
+                        {
+                            inventory.Merge(focusedSlot);
+                        }
                     }
                 } else if (!EventSystem.current.IsPointerOverGameObject() && dragSlot.gameObject.activeSelf)
                 {
