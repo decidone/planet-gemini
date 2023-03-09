@@ -147,9 +147,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fullFluidNum: 50
-  saveFluidNum: 0
   fluidIsFull: 0
   dirNum: 0
+  fluidFactoryData: {fileID: 11400000, guid: da97283f50a6cae4ab65774e6b14c1ea, type: 2}
+  saveFluidNum: 0
+  sendDelayTimer: 0
   PumpUp: 0
-  outObj: []
+  factoryList: []
+  PumpIng: 0

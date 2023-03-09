@@ -147,10 +147,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fullFluidNum: 50
-  saveFluidNum: 0
   fluidIsFull: 0
   dirNum: 0
+  fluidFactoryData: {fileID: 11400000, guid: ab2027e14cf27f74e98497caaa1d172f, type: 2}
+  saveFluidNum: 0
+  sendDelayTimer: 0
   nearObj:
   - {fileID: 0}
   - {fileID: 0}
@@ -159,3 +160,4 @@ MonoBehaviour:
   - {fileID: 1980767946, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
   - {fileID: -1625049701, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
   - {fileID: -226496762, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
+  connectUnderPipe: {fileID: 0}

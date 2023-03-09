@@ -7,13 +7,9 @@ public class PumpCtrl : FluidFactoryCtrl
     public bool PumpUp = false;
 
     float pumpFluid = 15.0f;
-    float sendFluid = 1.0f;
-    float pumpDelayTimer = 0.0f;
-    float pumpDelay = 0.03f;
 
     [SerializeField]
     List<GameObject> factoryList = new List<GameObject>();
-    public Dictionary<GameObject, float> notFullObj = new Dictionary<GameObject, float>();
 
     GameObject[] nearObj = new GameObject[4];
     Vector2[] checkPos = new Vector2[4];
@@ -44,12 +40,12 @@ public class PumpCtrl : FluidFactoryCtrl
 
         if(PumpIng == true)
         {
-            pumpDelayTimer += Time.deltaTime;
+            sendDelayTimer += Time.deltaTime;
 
-            if (pumpDelayTimer > pumpDelay)
+            if (sendDelayTimer > fluidFactoryData.SendDelay)
             {
                 Pump();
-                pumpDelayTimer = 0;
+                sendDelayTimer = 0;
             }            
         }
     }
@@ -99,11 +95,11 @@ public class PumpCtrl : FluidFactoryCtrl
 
     void Pump()
     {
-        if(saveFluidNum < fullFluidNum)
+        if(saveFluidNum < fluidFactoryData.FullFluidNum)
         { 
-            if (saveFluidNum + pumpFluid >= fullFluidNum)
-                saveFluidNum = fullFluidNum;
-            else if (saveFluidNum + pumpFluid < fullFluidNum)
+            if (saveFluidNum + pumpFluid >= fluidFactoryData.FullFluidNum)
+                saveFluidNum = fluidFactoryData.FullFluidNum;
+            else if (saveFluidNum + pumpFluid < fluidFactoryData.FullFluidNum)
                 saveFluidNum += pumpFluid;
         }
 
@@ -116,12 +112,12 @@ public class PumpCtrl : FluidFactoryCtrl
                 {
                     FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
 
-                    fluidFactory.SendFluidFunc(sendFluid);
-                    saveFluidNum -= sendFluid;
+                    fluidFactory.SendFluidFunc(fluidFactoryData.SendFluid);
+                    saveFluidNum -= fluidFactoryData.SendFluid;
                 }
-                if (fullFluidNum > saveFluidNum)
+                if (fluidFactoryData.FullFluidNum > saveFluidNum)
                     fluidIsFull = false;
-                else if (fullFluidNum <= saveFluidNum)
+                else if (fluidFactoryData.FullFluidNum <= saveFluidNum)
                     fluidIsFull = true;
             }
         }

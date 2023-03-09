@@ -17,11 +17,6 @@ public class FluidTankCtrl : FluidFactoryCtrl
     Vector2[] startTransform = new Vector2[4];
 
     public List<GameObject> factoryList = new List<GameObject>();
-    //public Dictionary<GameObject, float> notFullObj = new Dictionary<GameObject, float>();
-
-    float sendFluid = 1.0f;
-    float sendDelayTimer = 0.0f;
-    float sendDelay = 0.03f;
 
     // Start is called before the first frame update
     void Start()
@@ -49,11 +44,11 @@ public class FluidTankCtrl : FluidFactoryCtrl
         if (isLeft2 == false)
             isLeft2 = ObjCheck(startTransform[3], -transform.right);
 
-        if (factoryList.Count > 0 && saveFluidNum >= sendFluid)
+        if (factoryList.Count > 0 && saveFluidNum >= fluidFactoryData.SendFluid)
         {
             sendDelayTimer += Time.deltaTime;
 
-            if (sendDelayTimer > sendDelay)
+            if (sendDelayTimer > fluidFactoryData.SendDelay)
             {
                 SendFluid();            
                 GetFluid();
@@ -102,13 +97,13 @@ public class FluidTankCtrl : FluidFactoryCtrl
                 FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
                 if (fluidFactory.saveFluidNum < saveFluidNum)
                 {
-                    fluidFactory.SendFluidFunc(sendFluid);
-                    saveFluidNum -= sendFluid;
+                    fluidFactory.SendFluidFunc(fluidFactoryData.SendFluid);
+                    saveFluidNum -= fluidFactoryData.SendFluid;
                 }          
             }
-            if (fullFluidNum > saveFluidNum)
+            if (fluidFactoryData.FullFluidNum > saveFluidNum)
                 fluidIsFull = false;
-            else if (fullFluidNum <= saveFluidNum)
+            else if (fluidFactoryData.FullFluidNum <= saveFluidNum)
                 fluidIsFull = true;
         }
     }
@@ -122,8 +117,8 @@ public class FluidTankCtrl : FluidFactoryCtrl
                 FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
                 if (fluidFactory.fluidIsFull == true && fluidIsFull == false)
                 {
-                    fluidFactory.GetFluidFunc(sendFluid);
-                    saveFluidNum += sendFluid;
+                    fluidFactory.GetFluidFunc(fluidFactoryData.SendFluid);
+                    saveFluidNum += fluidFactoryData.SendFluid;
                 }
             }
         }

@@ -124,7 +124,7 @@ public class PipeGroupMgr : MonoBehaviour
 
         foreach (PipeCtrl pipe in pipeList)
         {
-            groupFullFluidNum += pipe.fullFluidNum;
+            groupFullFluidNum += pipe.fluidFactoryData.FullFluidNum;
         }
 
         float SendFluid = groupSaveFluidNum / pipeList.Count;
@@ -153,9 +153,9 @@ public class PipeGroupMgr : MonoBehaviour
         foreach (PipeCtrl pipe in pipeList)
         {
             pipe.saveFluidNum = SendFluid;
-            if (pipe.saveFluidNum >= pipe.fullFluidNum)
+            if (pipe.saveFluidNum >= pipe.fluidFactoryData.FullFluidNum)
                 pipe.fluidIsFull = true;
-            else if (pipe.saveFluidNum < pipe.fullFluidNum)
+            else if (pipe.saveFluidNum < pipe.fluidFactoryData.FullFluidNum)
                 pipe.fluidIsFull = false;
         }
     }

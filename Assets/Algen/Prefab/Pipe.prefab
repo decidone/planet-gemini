@@ -147,10 +147,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fullFluidNum: 50
-  saveFluidNum: 0
   fluidIsFull: 0
   dirNum: 0
+  fluidFactoryData: {fileID: 11400000, guid: 8ee4d5c35de3b80478c35e5f9dfcb5b6, type: 2}
+  saveFluidNum: 0
+  sendDelayTimer: 0
   pipeGroupMgr: {fileID: 0}
   modelNum:
   - {fileID: 1956361497, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
@@ -164,7 +165,3 @@ MonoBehaviour:
   - {fileID: 20086592, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
   - {fileID: 1487925199, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
   - {fileID: -51803728, guid: 3465a2bc2ea5720498191cf4b83b0226, type: 3}
-  isUp: 0
-  isRight: 0
-  isDown: 0
-  isLeft: 0

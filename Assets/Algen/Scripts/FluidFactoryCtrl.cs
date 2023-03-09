@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class FluidFactoryCtrl : FactoryCtrl
 {
+    [SerializeField]
+    public FluidFactoryData fluidFactoryData;
+    protected FluidFactoryData FluidFactoryData { set { fluidFactoryData = value; } }
+
+    public float saveFluidNum;
+    public float sendDelayTimer = 0.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,10 +34,10 @@ public class FluidFactoryCtrl : FactoryCtrl
         {
             saveFluidNum += getNum;
 
-            if (fullFluidNum <= saveFluidNum)
+            if (fluidFactoryData.FullFluidNum <= saveFluidNum)
             {
                 fluidIsFull = true;
-                saveFluidNum = fullFluidNum;
+                saveFluidNum = fluidFactoryData.FullFluidNum;
             }
         }
     }
@@ -50,7 +57,7 @@ public class FluidFactoryCtrl : FactoryCtrl
             { 
                 saveFluidNum -= getNum;
 
-                if (fullFluidNum > saveFluidNum)
+                if (fluidFactoryData.FullFluidNum > saveFluidNum)
                 {
                     fluidIsFull = false;
                 }

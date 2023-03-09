@@ -252,7 +252,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
                 if (getObjNum >= inObj.Count)
                     getObjNum = 0;
 
-                yield return new WaitForSeconds(factoryData.SendDelay);
+                yield return new WaitForSeconds(solidFactoryData.SendDelay);
                 itemGetDelay = false;
             }
             else if (belt.isItemStop == false)
@@ -271,7 +271,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
             if (getObjNum >= inObj.Count)
                 getObjNum = 0;
 
-            yield return new WaitForSeconds(factoryData.SendDelay);
+            yield return new WaitForSeconds(solidFactoryData.SendDelay);
             itemGetDelay = false;
         }
     }
@@ -282,7 +282,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         StartCoroutine("SetDistCheck");
 
-        yield return new WaitForSeconds(factoryData.SendDelay);
+        yield return new WaitForSeconds(solidFactoryData.SendDelay);
         itemSetDelay = false;
     }
 
@@ -296,7 +296,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         while (spawnItem.transform.position != outObj.transform.position)
         {
-            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj.transform.position, factoryData.SendSpeed * Time.deltaTime);
+            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj.transform.position, solidFactoryData.SendSpeed * Time.deltaTime);
 
             yield return null;
         }
