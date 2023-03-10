@@ -111,7 +111,7 @@ TextureImporter:
         x: 0
         y: 0
         width: 16
-        height: 16
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3dba77940ab2f7842839e013fd8eafcf
-      internalID: 1980767946
+      spriteID: 921c878af69d08b428349884f5d0d18f
+      internalID: 450492463
       vertices: []
       indices: 
       edges: []
@@ -132,7 +132,7 @@ TextureImporter:
         x: 16
         y: 0
         width: 16
-        height: 16
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e08fb7a65b9651c4c9f54cf4979bb61e
-      internalID: -226496762
+      spriteID: 504051f7634714342a658657686f586d
+      internalID: 898153619
       vertices: []
       indices: 
       edges: []
@@ -153,7 +153,7 @@ TextureImporter:
         x: 32
         y: 0
         width: 16
-        height: 16
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -161,8 +161,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4a3f575b2127faf43864f228d1ad8e52
-      internalID: -452289740
+      spriteID: a0932a5bef5890f46837155f13331ebf
+      internalID: 237755507
       vertices: []
       indices: 
       edges: []
@@ -174,7 +174,7 @@ TextureImporter:
         x: 48
         y: 0
         width: 16
-        height: 16
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,8 +182,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e730dd774355af7408ba3b69939fca5f
-      internalID: -1625049701
+      spriteID: 5fad1cb68eba21d4f9105bc1d8429d5a
+      internalID: -1350027233
       vertices: []
       indices: 
       edges: []
@@ -199,10 +199,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      UnderPipe_3: -1625049701
-      UnderPipe_0: 1980767946
-      UnderPipe_1: -226496762
-      UnderPipe_2: -452289740
+      UnderPipe_3: -1350027233
+      UnderPipe_0: 450492463
+      UnderPipe_1: 898153619
+      UnderPipe_2: 237755507
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

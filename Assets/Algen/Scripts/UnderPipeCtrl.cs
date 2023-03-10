@@ -229,8 +229,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
             if (fluidFactory.fluidIsFull == true && fluidIsFull == false)
             {
-                fluidFactory.GetFluidFunc(fluidFactoryData.SendFluid);
-                saveFluidNum += fluidFactoryData.SendFluid;
+                fluidFactory.GetFluidFunc(fluidFactory.fluidFactoryData.SendFluid);
+                saveFluidNum += fluidFactory.fluidFactoryData.SendFluid;
             }
         }
     }

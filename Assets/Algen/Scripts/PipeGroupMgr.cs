@@ -99,6 +99,8 @@ public class PipeGroupMgr : MonoBehaviour
             GroupCheck();
             GroupFluidCount(0);
         }
+        sendFluid = pipeList[0].fluidFactoryData.SendFluid;
+        sendDelay = pipeList[0].fluidFactoryData.SendDelay;
     }
 
    public void CheckGroup(PipeCtrl nextPipe)
@@ -127,17 +129,17 @@ public class PipeGroupMgr : MonoBehaviour
             groupFullFluidNum += pipe.fluidFactoryData.FullFluidNum;
         }
 
-        float SendFluid = groupSaveFluidNum / pipeList.Count;
+        float pipeFluid = groupSaveFluidNum / pipeList.Count;
 
         foreach (PipeCtrl pipe in pipeList)
         {
-            pipe.saveFluidNum = SendFluid;
+            pipe.saveFluidNum = pipeFluid;
         }
     }
 
     public void GroupFluidCount(float getNum)
     {
-        float SendFluid = (groupSaveFluidNum + getNum) / pipeList.Count;
+        float pipeFluid = (groupSaveFluidNum + getNum) / pipeList.Count;
         groupSaveFluidNum += getNum;
 
         if (groupFullFluidNum <= groupSaveFluidNum)
@@ -152,7 +154,7 @@ public class PipeGroupMgr : MonoBehaviour
 
         foreach (PipeCtrl pipe in pipeList)
         {
-            pipe.saveFluidNum = SendFluid;
+            pipe.saveFluidNum = pipeFluid;
             if (pipe.saveFluidNum >= pipe.fluidFactoryData.FullFluidNum)
                 pipe.fluidIsFull = true;
             else if (pipe.saveFluidNum < pipe.fluidFactoryData.FullFluidNum)
@@ -175,8 +177,8 @@ public class PipeGroupMgr : MonoBehaviour
 
                 if (fluidFactory.saveFluidNum < pipeList[0].saveFluidNum)
                 {
-                    fluidFactory.SendFluidFunc(sendFluid);
-                    groupSaveFluidNum -= sendFluid;
+                    fluidFactory.SendFluidFunc(pipeList[0].fluidFactoryData.SendFluid);
+                    groupSaveFluidNum -= pipeList[0].fluidFactoryData.SendFluid;
                 }
 
                 GroupFluidCount(0);
@@ -192,8 +194,8 @@ public class PipeGroupMgr : MonoBehaviour
                 FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
                 if (fluidFactory.fluidIsFull == true && groupIsFull == false)
                 {
-                    fluidFactory.GetFluidFunc(sendFluid);
-                    groupSaveFluidNum += sendFluid;
+                    fluidFactory.GetFluidFunc(fluidFactory.fluidFactoryData.SendFluid);
+                    groupSaveFluidNum += fluidFactory.fluidFactoryData.SendFluid;
                 }
             }
         }
