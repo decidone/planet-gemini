@@ -52,7 +52,7 @@ public class InventoryUI : MonoBehaviour
                         else if (containableAmount != 0)
                         {
                             playerInven.Add(focusedSlot.item, containableAmount);
-                            inventory.Sub(focusedSlot, containableAmount);
+                            inventory.Sub(focusedSlot.slotNum, containableAmount);
                         }
                         else
                         {

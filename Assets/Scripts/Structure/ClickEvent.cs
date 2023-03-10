@@ -59,6 +59,7 @@ public class ClickEvent : MonoBehaviour
             case "Furnace":
                 furnace.SetActive(true);
                 ui.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
+                ui.slots[2].outputSlot = true;
                 break;
 
             default:
