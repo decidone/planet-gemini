@@ -160,7 +160,7 @@ public class ItemSpawner : SolidFactoryCtrl
             if (getObjNum >= outObj.Count)
                 getObjNum = 0;
 
-            yield return new WaitForSeconds(factoryData.SendDelay);
+            yield return new WaitForSeconds(solidFactoryData.SendDelay);
             itemSetDelay = false;
         }
         else if (outFactory.isFull == true)
@@ -184,7 +184,7 @@ public class ItemSpawner : SolidFactoryCtrl
 
         while (spawnItem.transform.position != outObj[getObjNum].transform.position)
         {
-            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[getObjNum].transform.position, factoryData.SendSpeed * Time.deltaTime);
+            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[getObjNum].transform.position, solidFactoryData.SendSpeed * Time.deltaTime);
 
             yield return null;
         }

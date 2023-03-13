@@ -230,7 +230,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             if (getObjNum >= outObj.Count)
                 getObjNum = 0;
 
-            yield return new WaitForSeconds(factoryData.SendDelay);
+            yield return new WaitForSeconds(solidFactoryData.SendDelay);
             itemSetDelay = false;
         }
         else if (outFactory.isFull == true)

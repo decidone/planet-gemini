@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class FluidFactoryCtrl : FactoryCtrl
 {
+    [SerializeField]
+    public FluidFactoryData fluidFactoryData;
+    protected FluidFactoryData FluidFactoryData { set { fluidFactoryData = value; } }
+
+    public float saveFluidNum;
+    public float sendDelayTimer = 0.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,10 +20,10 @@ public class FluidFactoryCtrl : FactoryCtrl
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public void GetFluid(float getNum)
+    public void SendFluidFunc(float getNum)
     {
         if(this.GetComponentInParent<PipeGroupMgr>() != null)
         {
@@ -25,28 +32,36 @@ public class FluidFactoryCtrl : FactoryCtrl
         }
         else if (this.GetComponentInParent<PipeGroupMgr>() == null)
         {
-            //float addFluidNum = saveFluidNum + getNum;
             saveFluidNum += getNum;
 
-            if (fullFluidNum <= saveFluidNum)
+            if (fluidFactoryData.FullFluidNum <= saveFluidNum)
             {
                 fluidIsFull = true;
-                saveFluidNum = fullFluidNum;
+                saveFluidNum = fluidFactoryData.FullFluidNum;
             }
         }
     }
-    public float ExtraSize()
+
+    public void GetFluidFunc(float getNum)
     {
+
         if (this.GetComponentInParent<PipeGroupMgr>() != null)
         {
             PipeGroupMgr pipeGroupMgr = this.GetComponentInParent<PipeGroupMgr>();
-            return pipeGroupMgr.groupFullFluidNum - pipeGroupMgr.groupSaveFluidNum;
+            if(getNum < pipeGroupMgr.groupSaveFluidNum)
+                pipeGroupMgr.GroupFluidCount(-getNum);
         }
-        else if(this.GetComponentInParent<PipeGroupMgr>() == null)
+        else if (this.GetComponentInParent<PipeGroupMgr>() == null)
         {
-            return fullFluidNum - saveFluidNum;
+            if(getNum < saveFluidNum)
+            { 
+                saveFluidNum -= getNum;
+
+                if (fluidFactoryData.FullFluidNum > saveFluidNum)
+                {
+                    fluidIsFull = false;
+                }
+            }
         }
-        else
-            return 0;
     }
 }

@@ -6,8 +6,8 @@ using UnityEngine.Pool;
 public class SolidFactoryCtrl : FactoryCtrl
 {
     [SerializeField]
-    protected FactoryData factoryData;
-    protected FactoryData FactoryData { set { factoryData = value; } }
+    protected SolidFactoryData solidFactoryData;
+    protected SolidFactoryData SolidFactoryData { set { solidFactoryData = value; } }
 
     public List<ItemProps> itemObjList = new List<ItemProps>();
     public List<Item> itemList = new List<Item>();
@@ -39,7 +39,7 @@ public class SolidFactoryCtrl : FactoryCtrl
     {
         itemObjList.Add(itemObj);
 
-        if (itemObjList.Count >= factoryData.FullItemNum)
+        if (itemObjList.Count >= solidFactoryData.FullItemNum)
         {
             isFull = true;
         }
@@ -50,7 +50,7 @@ public class SolidFactoryCtrl : FactoryCtrl
         itemList.Add(itemProps.item);
 
         OnDestroyItem(itemProps);
-        if (itemList.Count >= factoryData.FullItemNum)
+        if (itemList.Count >= solidFactoryData.FullItemNum)
         {
             isFull = true;
         }
@@ -59,7 +59,7 @@ public class SolidFactoryCtrl : FactoryCtrl
     {
         itemList.Add(item);
 
-        if (itemList.Count >= factoryData.FullItemNum)
+        if (itemList.Count >= solidFactoryData.FullItemNum)
         {
             isFull = true;
         }
@@ -87,7 +87,7 @@ public class SolidFactoryCtrl : FactoryCtrl
 
     public void ItemNumCheck()
     {
-        if (itemObjList.Count < factoryData.FullItemNum)
+        if (itemObjList.Count < solidFactoryData.FullItemNum)
             isFull = false;
     }
 

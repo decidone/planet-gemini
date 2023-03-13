@@ -6,8 +6,6 @@ public class FactoryCtrl : MonoBehaviour
 {
     public bool isFull = false;
 
-    public float fullFluidNum = 50.0f;
-    public float saveFluidNum = 0.0f;
     public bool fluidIsFull = false;
 
     public int dirNum = 0;

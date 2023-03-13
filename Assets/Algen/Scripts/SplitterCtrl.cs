@@ -227,7 +227,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                 belt.beltGroupMgr.GroupItem.RemoveAt(0);
                 belt.ItemNumCheck();
 
-                yield return new WaitForSeconds(factoryData.SendDelay);
+                yield return new WaitForSeconds(solidFactoryData.SendDelay);
                 itemGetDelay = false;
             }
             else if (belt.isItemStop == false)
@@ -274,7 +274,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             if (getObjNum >= outObj.Count)
                 getObjNum = 0;
 
-            yield return new WaitForSeconds(factoryData.SendDelay);
+            yield return new WaitForSeconds(solidFactoryData.SendDelay);
             itemSetDelay = false;
         }
         else if (outFactory.isFull == true)
@@ -298,7 +298,7 @@ public class SplitterCtrl : SolidFactoryCtrl
 
         while (spawnItem.transform.position != outObj[getObjNum].transform.position)
         {
-            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[getObjNum].transform.position, factoryData.SendSpeed * Time.deltaTime);
+            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[getObjNum].transform.position, solidFactoryData.SendSpeed * Time.deltaTime);
 
             yield return null;
         }

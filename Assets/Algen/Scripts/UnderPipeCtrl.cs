@@ -9,19 +9,17 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     GameObject[] nearObj = new GameObject[2];
 
     [SerializeField]
+    Sprite[] modelNum = new Sprite[4];
+    SpriteRenderer setModel;
+
     GameObject otherPipe = null;
     [SerializeField]
     GameObject connectUnderPipe = null;
     
-    public Dictionary<GameObject, float> notFullObj = new Dictionary<GameObject, float>();
-
-    float sendFluid = 1.0f;
-    float sendDelayTimer = 0.0f;
-    float sendDelay = 0.1f;
     // Start is called before the first frame update
     void Start()
     {
-        
+        setModel = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -34,13 +32,14 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         if (nearObj[1] == null)
             DownObjCheck();
 
-        if(otherPipe != null)
+        if (otherPipe != null && saveFluidNum >= fluidFactoryData.SendFluid)
         {
             sendDelayTimer += Time.deltaTime;
 
-            if (sendDelayTimer > sendDelay)
+            if (sendDelayTimer > fluidFactoryData.SendDelay)
             {
                 SendFluid();
+                GetFluid();
                 sendDelayTimer = 0;
             }
         }
@@ -48,6 +47,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     }
     void ModelSet()
     {
+        setModel.sprite = modelNum[dirNum];
+
         CheckPos();
     }
 
@@ -148,7 +149,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             if (obj.GetComponent<PipeCtrl>() != null)
             {
                 otherPipe = obj;
-                obj.GetComponentInParent<PipeGroupMgr>().factoryList.Add(this.gameObject);
+                otherPipe.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
+                otherPipe.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
             }
             else if (obj.GetComponent<UnderPipeCtrl>() != null)
             {
@@ -176,58 +178,60 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     void SendFluid()
     {
-        if (otherPipe.GetComponent<FluidFactoryCtrl>())
+        if (otherPipe != null && otherPipe.GetComponent<FluidFactoryCtrl>())
         {
-            if (otherPipe.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+            FluidFactoryCtrl pipe = otherPipe.GetComponent<FluidFactoryCtrl>();
+            if (pipe.fluidIsFull == false)
             {
-                if (otherPipe.GetComponent<FluidFactoryCtrl>().saveFluidNum < saveFluidNum)
-                    notFullObj.Add(otherPipe, otherPipe.GetComponent<FluidFactoryCtrl>().ExtraSize());
+                //if (fluidIsFull == false)
+                //{
+                if (pipe.saveFluidNum < saveFluidNum)
+                {
+                    pipe.SendFluidFunc(fluidFactoryData.SendFluid);
+                    saveFluidNum -= fluidFactoryData.SendFluid;
+                }
             }
         }
-        if (connectUnderPipe.GetComponent<FluidFactoryCtrl>())
+        if (connectUnderPipe != null && connectUnderPipe.GetComponent<FluidFactoryCtrl>())
         {
-            if (connectUnderPipe.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+            FluidFactoryCtrl underPipe = connectUnderPipe.GetComponent<FluidFactoryCtrl>();
+            if (underPipe.fluidIsFull == false)
             {
-                if(fluidIsFull == false)
+                if (underPipe.saveFluidNum < saveFluidNum)
                 {
-                    if (connectUnderPipe.GetComponent<FluidFactoryCtrl>().saveFluidNum < saveFluidNum)
-                        notFullObj.Add(connectUnderPipe, connectUnderPipe.GetComponent<FluidFactoryCtrl>().ExtraSize());
-                }
-                else if(fluidIsFull == true)
-                {
-                    notFullObj.Add(connectUnderPipe, connectUnderPipe.GetComponent<FluidFactoryCtrl>().ExtraSize());
+                    //float checkFluid = underPipe.ExtraSize();
+                    underPipe.SendFluidFunc(fluidFactoryData.SendFluid);
+                    saveFluidNum -= fluidFactoryData.SendFluid;
                 }
             }
         }
 
-        foreach (KeyValuePair<GameObject, float> obj in notFullObj)
-        {
-            if (saveFluidNum - sendFluid < 0)
-            {
-                notFullObj.Clear();
-                return;
-            }
-            else if (saveFluidNum - sendFluid >= 0)
-            {
-                if (obj.Key.GetComponent<FluidFactoryCtrl>())
-                {
-                    if (obj.Value < sendFluid)
-                    {
-                        obj.Key.GetComponent<FluidFactoryCtrl>().GetFluid(obj.Value);
-                        saveFluidNum -= obj.Value;
-
-                    }
-                    else if (obj.Value >= sendFluid)
-                    {
-                        obj.Key.GetComponent<FluidFactoryCtrl>().GetFluid(sendFluid);
-                        saveFluidNum -= sendFluid;
-                    }
-                }
-            }
-        }
-        if (fullFluidNum > saveFluidNum)
+        if(fluidFactoryData.FullFluidNum > saveFluidNum)        
             fluidIsFull = false;
+        else if (fluidFactoryData.FullFluidNum <= saveFluidNum)
+            fluidIsFull = true;
+    }
+    void GetFluid()
+    {
+        if (otherPipe != null && otherPipe.GetComponent<FluidFactoryCtrl>())
+        {
+            FluidFactoryCtrl fluidFactory = otherPipe.GetComponent<FluidFactoryCtrl>();
 
-        notFullObj.Clear();
+            if (fluidFactory.fluidIsFull == true && fluidIsFull == false)
+            {
+                fluidFactory.GetFluidFunc(fluidFactoryData.SendFluid);
+                saveFluidNum += fluidFactoryData.SendFluid;
+            }
+        }
+        if (connectUnderPipe != null && connectUnderPipe.GetComponent<FluidFactoryCtrl>())
+        {
+            FluidFactoryCtrl fluidFactory = connectUnderPipe.GetComponent<FluidFactoryCtrl>();
+
+            if (fluidFactory.fluidIsFull == true && fluidIsFull == false)
+            {
+                fluidFactory.GetFluidFunc(fluidFactory.fluidFactoryData.SendFluid);
+                saveFluidNum += fluidFactory.fluidFactoryData.SendFluid;
+            }
+        }
     }
 }

@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21e1d77f6da131a42b46cd1eff81a873, type: 3}
-  m_Name: Splitter Data
+  m_Script: {fileID: 11500000, guid: e26d57b107969f44b9b0e33e9be09dd5, type: 3}
+  m_Name: Belt Data
   m_EditorClassIdentifier: 
-  factoryName: Splitter
-  fullItemNum: 10
+  factoryName: Belt
+  fullItemNum: 3
   sendSpeed: 1.5
   sendDelay: 1

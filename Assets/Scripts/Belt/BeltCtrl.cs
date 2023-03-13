@@ -215,18 +215,18 @@ public class BeltCtrl : SolidFactoryCtrl
     {
         if (itemObjList.Count == 1)
         {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * factoryData.SendSpeed);            
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * solidFactoryData.SendSpeed);            
         }
         else if (itemObjList.Count == 2)
         {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * factoryData.SendSpeed);
-            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * factoryData.SendSpeed);
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * solidFactoryData.SendSpeed);
+            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * solidFactoryData.SendSpeed);
         }
         else if(itemObjList.Count == 3)
         {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * factoryData.SendSpeed);
-            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * factoryData.SendSpeed);
-            itemObjList[2].transform.position = Vector3.MoveTowards(itemObjList[2].transform.position, nextPos[2], Time.deltaTime * factoryData.SendSpeed);
+            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * solidFactoryData.SendSpeed);
+            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * solidFactoryData.SendSpeed);
+            itemObjList[2].transform.position = Vector3.MoveTowards(itemObjList[2].transform.position, nextPos[2], Time.deltaTime * solidFactoryData.SendSpeed);
         }
         Vector2 fstItemPos = itemObjList[0].transform.position;
 

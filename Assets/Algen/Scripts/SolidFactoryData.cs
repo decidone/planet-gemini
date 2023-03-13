@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Factory Data", menuName = "Scriptable Object/Factory Data", order = int.MaxValue)]
-public class FactoryData : ScriptableObject
+[CreateAssetMenu(fileName = "SolidFactory Data", menuName = "Scriptable Object/SolidFactory Data", order = int.MaxValue)]
+public class SolidFactoryData : ScriptableObject
 {
     [SerializeField]
     private string factoryName;
