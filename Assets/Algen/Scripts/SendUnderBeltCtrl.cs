@@ -8,7 +8,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     //SpriteRenderer setModel;
 
     List<GameObject> inObj = new List<GameObject>();
-    public GameObject outObj = null;
+    public List<GameObject> outObj = new List<GameObject>();
 
     GameObject[] nearObj = new GameObject[4];
 
@@ -31,11 +31,11 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
             if (itemGetDelay == false)
                 StartCoroutine("GetItem");
         }
-        if (itemList.Count > 0 && outObj != null)
+        if (itemList.Count > 0 && outObj.Count > 0)
         {
-            if (outObj.GetComponent<SolidFactoryCtrl>() != null)
+            if (outObj[0].GetComponent<SolidFactoryCtrl>() != null)
             {
-                if (outObj.GetComponent<SolidFactoryCtrl>().isFull == false)
+                if (outObj[0].GetComponent<SolidFactoryCtrl>().isFull == false)
                 {
                     if (itemSetDelay == false)
                         StartCoroutine("SetItem");
@@ -294,18 +294,18 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         spawnItem.transform.position = this.transform.position;
 
-        while (spawnItem.transform.position != outObj.transform.position)
+        while (spawnItem.transform.position != outObj[0].transform.position)
         {
-            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj.transform.position, solidFactoryData.SendSpeed * Time.deltaTime);
+            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[0].transform.position, solidFactoryData.SendSpeed * Time.deltaTime);
 
             yield return null;
         }
 
-        if (spawnItem.transform.position == outObj.transform.position)
+        if (spawnItem.transform.position == outObj[0].transform.position)
         {
             if (itemList.Count > 0)
             {
-                SolidFactoryCtrl outFactory = outObj.GetComponent<SolidFactoryCtrl>();
+                SolidFactoryCtrl outFactory = outObj[0].GetComponent<SolidFactoryCtrl>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);

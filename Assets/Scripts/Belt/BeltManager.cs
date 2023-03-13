@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 
 public class BeltManager : MonoBehaviour
 {
@@ -19,14 +18,7 @@ public class BeltManager : MonoBehaviour
 
     public void BeltCombine(BeltGroupMgr fstGroupMgr, BeltGroupMgr secGroupMgr)
     {
-        List<BeltCtrl> result = new List<BeltCtrl>();
-
-        //ÇÕÄ¡±â
-        result.AddRange(fstGroupMgr.BeltList);
-        result.AddRange(secGroupMgr.BeltList);
-
-        fstGroupMgr.BeltList.Clear();
-        fstGroupMgr.BeltList = result.Distinct().ToList();
+        fstGroupMgr.BeltList.AddRange(secGroupMgr.BeltList);
 
         foreach (BeltCtrl belt in secGroupMgr.BeltList)
         {

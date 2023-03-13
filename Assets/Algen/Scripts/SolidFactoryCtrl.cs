@@ -12,6 +12,8 @@ public class SolidFactoryCtrl : FactoryCtrl
     public List<ItemProps> itemObjList = new List<ItemProps>();
     public List<Item> itemList = new List<Item>();
 
+    public List<GameObject> outSameList = new List<GameObject>();
+
     [SerializeField]
     GameObject itemPref;
     protected IObjectPool<ItemProps> itemPool;
@@ -32,12 +34,23 @@ public class SolidFactoryCtrl : FactoryCtrl
     // Update is called once per frame
     void Update()
     {
-        
+    }
+    public void BeltGroupSendItem(ItemProps itemObj)
+    {
+        itemObjList.Add(itemObj);
+
+        if (itemObjList.Count >= solidFactoryData.FullItemNum)
+        {
+            isFull = true;
+        }
     }
 
     public void OnBeltItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);
+
+        if (GetComponent<BeltCtrl>())        
+            GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(itemObj);       
 
         if (itemObjList.Count >= solidFactoryData.FullItemNum)
         {
@@ -87,8 +100,11 @@ public class SolidFactoryCtrl : FactoryCtrl
 
     public void ItemNumCheck()
     {
-        if (itemObjList.Count < solidFactoryData.FullItemNum)
+        if (itemList.Count < solidFactoryData.FullItemNum)
+        {
             isFull = false;
+        }
+
     }
 
     public void GetFluid(float getNum)

@@ -127,7 +127,45 @@ public class ItemSpawner : SolidFactoryCtrl
     {
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
+            if (obj.GetComponent<BeltCtrl>() != null)
+            {
+                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
+                    return;
+
+                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
+                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                {
+                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
+                }
+            }
+            else if (obj.GetComponent<BeltCtrl>() == null)
+            {
+                outSameList.Add(obj);
+                StartCoroutine("OutCheck", obj);
+            }
             outObj.Add(obj);
+        }
+    }
+    IEnumerator OutCheck(GameObject otherObj)
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        SolidFactoryCtrl otherFacCtrl = otherObj.GetComponent<SolidFactoryCtrl>();
+
+        foreach (GameObject otherList in otherFacCtrl.outSameList)
+        {
+            if (otherList == this.gameObject)
+            {
+                for (int a = outObj.Count - 1; a >= 0; a--)
+                {
+                    if (otherObj == outObj[a])
+                    {
+                        outObj.RemoveAt(a);
+                        StopCoroutine("SetFacDelay");
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -148,7 +186,7 @@ public class ItemSpawner : SolidFactoryCtrl
                 spawnItem.amount = 1;
                 spawnItem.transform.position = this.transform.position;
                 outFactory.OnBeltItem(spawnItem);
-                outObj[getObjNum].GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
+                //outObj[getObjNum].GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
             }
             else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
             {

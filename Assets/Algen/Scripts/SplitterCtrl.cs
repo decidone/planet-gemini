@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SplitterCtrl : SolidFactoryCtrl
 {
@@ -8,46 +9,122 @@ public class SplitterCtrl : SolidFactoryCtrl
     Sprite[] modelNum = new Sprite[4];
     SpriteRenderer setModel;
 
-    //public BeltCtrl inBelt = null;
-
     GameObject inObj = null;
+    [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
-
+    [SerializeField]
     GameObject[] nearObj = new GameObject[4];
 
     int getObjNum = 0;
 
     Vector2[] checkPos = new Vector2[4];
 
+    List<Item> itemsList;
+
+    //int itemListCount = 0;
+    //int outObjCount = 0;
+
+    [SerializeField]
+    bool oKButtonTemp = false;
+    [SerializeField]
+    bool filterOn = false;
+
+    [SerializeField]
+    bool[] isFilterOn = new bool[3];
+    [SerializeField]
+    bool[] isFullFilterOn = new bool[3];
+    [SerializeField]
+    bool[] isItemFilterOn = new bool[3];
+    [SerializeField]
+    Item[] isSelItem = new Item[3];
+
+    [Serializable]
+    public struct Filter
+    {
+        public GameObject outObj;
+        public bool isFilterOn;
+        public bool isFullFilterOn;
+        public bool isItemFilterOn;
+        public Item selItem;
+    }
+    public Filter[] arrFilter = new Filter[3]; // 0 аб 1 ╩С 2 ©Л
+
     // Start is called before the first frame update
     void Start()
     {
         setModel = GetComponent<SpriteRenderer>();
+        itemsList = ItemsList.instance.itemsList;
     }
 
     // Update is called once per frame
     void Update()
     {
         SetDirNum();
-        if (inObj != null && isFull == false) 
+
+        if (inObj != null && !isFull && !itemGetDelay)
+            GetItem();
+        
+        for (int i = 0; i < nearObj.Length; i++)
         {
-            if (itemGetDelay == false)
-                StartCoroutine("GetItem");
-        }
-        if (itemList.Count > 0 && outObj.Count > 0)
-        {
-            if (itemSetDelay == false)
-                StartCoroutine("SetItem");
+            if (nearObj[i] == null)
+            {
+                if (i == 0)
+                    CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                else if (i == 1)
+                    CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj, 0));
+                else if (i == 2)
+                    CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj, 1));
+                else if (i == 3)
+                    CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj, 2));
+            }
         }
 
-        if (nearObj[0] == null)
-            UpObjCheck();
-        if (nearObj[1] == null)
-            RightObjCheck();
-        if (nearObj[2] == null)
-            DownObjCheck();
-        if (nearObj[3] == null)
-            LeftObjCheck();
+        if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+        {
+            if (filterOn)
+            {
+                FilterSetItem();
+            }
+            else
+            {
+                SetItem();
+            }
+        }  
+
+        if (oKButtonTemp == true)
+        {
+            ItemFilterCheck();
+            filterOn = FilterCheck();
+            //StopCoroutine("FilterSetItem");
+
+            oKButtonTemp = false;
+        }
+    }
+
+    bool FilterCheck()
+    {
+        for (int a = 0; a < arrFilter.Length; a++)
+        {
+            if (arrFilter[a].outObj != null)
+            {
+                if (arrFilter[a].isFilterOn)                
+                    return true;
+            }            
+        }
+
+        return false;
+    }
+
+    void ItemFilterCheck()
+    {
+        for (int a = 0; a < arrFilter.Length; a++)
+        {
+            if (arrFilter[a].outObj != null)
+            {
+                FilterSet(a, isFilterOn[a], isFullFilterOn[a], isItemFilterOn[a], isSelItem[a]);
+                //arrFilter[a].selItem = itemsList[arrFilter[a].itemNum];
+            }
+        }
     }
 
     void SetDirNum()
@@ -60,111 +137,32 @@ public class SplitterCtrl : SolidFactoryCtrl
     }
     void CheckPos()
     {
-        if (dirNum == 0)
+        Vector2[] dirs =
         {
-            checkPos[0] = -transform.up;
-            checkPos[1] = -transform.right;
-            checkPos[2] = transform.up;
-            checkPos[3] = transform.right;
-        }
-        else if (dirNum == 1)
+            -transform.up,
+            -transform.right,
+            transform.up,
+            transform.right
+        };
+
+        for (int i = 0; i < dirs.Length; i++)
         {
-            checkPos[0] = -transform.right;
-            checkPos[1] = transform.up;
-            checkPos[2] = transform.right;
-            checkPos[3] = -transform.up;
-        }
-        else if (dirNum == 2)
-        {
-            checkPos[0] = transform.up;
-            checkPos[1] = transform.right;
-            checkPos[2] = -transform.up;
-            checkPos[3] = -transform.right;
-        }
-        else if (dirNum == 3)
-        {
-            checkPos[0] = transform.right;
-            checkPos[1] = -transform.up;
-            checkPos[2] = -transform.right;
-            checkPos[3] = transform.up;
+            checkPos[i] = dirs[(i + dirNum) % dirs.Length];
         }
     }
 
-    void UpObjCheck()
+    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
-        if (nearObj[0] == null)
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
+
+        for (int i = 0; i < hits.Length; i++)
         {
-            RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 1f);
-
-            for (int a = 0; a < upHits.Length; a++)
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<SplitterCtrl>() != GetComponent<SplitterCtrl>())
             {
-                if (upHits[a].collider.GetComponent<SplitterCtrl>() != this.gameObject.GetComponent<SplitterCtrl>())
-                {
-                    if (upHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[0] = upHits[a].collider.gameObject;
-                        SetInObj(nearObj[0]);
-                    }
-                }
-            }
-        }
-    }
-
-    void RightObjCheck()
-    {
-        if (nearObj[1] == null)
-        {
-            RaycastHit2D[] rightHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[1], 1f);
-
-            for (int a = 0; a < rightHits.Length; a++)
-            {
-                if (rightHits[a].collider.GetComponent<SplitterCtrl>() != this.gameObject.GetComponent<SplitterCtrl>())
-                {
-                    if (rightHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[1] = rightHits[a].collider.gameObject;
-                        SetOutObj(nearObj[1]);
-                    }
-                }
-            }
-        }
-    }
-    void DownObjCheck()
-    {
-        if (nearObj[2] == null)
-        {
-            RaycastHit2D[] downHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[2], 1f);
-
-            for (int a = 0; a < downHits.Length; a++)
-            {
-                if (downHits[a].collider.GetComponent<SplitterCtrl>() != this.gameObject.GetComponent<SplitterCtrl>())
-                {
-                    if (downHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[2] = downHits[a].collider.gameObject;
-                        SetOutObj(nearObj[2]);
-                    }
-                }
-            }
-        }
-    }
-
-    void LeftObjCheck()
-    {
-        if (nearObj[3] == null)
-        {
-            RaycastHit2D[] leftHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[3], 1f);
-
-            for (int a = 0; a < leftHits.Length; a++)
-            {
-                if (leftHits[a].collider.GetComponent<SplitterCtrl>() != this.gameObject.GetComponent<SplitterCtrl>())
-                {
-                    if (leftHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[3] = leftHits[a].collider.gameObject;
-                        SetOutObj(nearObj[3]);
-                    }
-                }
+                nearObj[index] = hits[i].collider.gameObject;
+                callback(hitCollider.gameObject);
+                break;
             }
         }
     }
@@ -174,71 +172,110 @@ public class SplitterCtrl : SolidFactoryCtrl
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             inObj = obj;
-
-            if(inObj.GetComponent<BeltCtrl>() != null)
+            if (inObj.TryGetComponent(out BeltCtrl belt) && belt.dirNum != dirNum)
             {
-                BeltCtrl belt = inObj.GetComponent<BeltCtrl>();
-                if (belt.dirNum != dirNum)
-                {
-                    belt.dirNum = dirNum;
-
-                    //if (inBelt.isTurn == false)
-                    //{
-                    //    //inBelt.isTurn = true;
-                    belt.BeltModelSet();
-                    //}
-                }
+                belt.dirNum = dirNum;
+                belt.BeltModelSet();
             }
         }
-     }
-
-    void SetOutObj(GameObject obj)
+    }
+    void SetOutObj(GameObject obj, int num)
     {
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
-            if(obj.GetComponent<BeltCtrl>() != null)
+            if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
+                {
                     return;
-
-                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
-                if(belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                }
+                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
                 {
                     belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
                 }
             }
+            else
+            {
+                outSameList.Add(obj);
+                StartCoroutine(OutCheck(obj));
+            }
             outObj.Add(obj);
+            FilterArr(obj, num);
         }
     }
 
-    IEnumerator GetItem()
+    void FilterArr(GameObject obj, int num)
+    {
+        arrFilter[num].outObj = obj;
+        arrFilter[num].isFilterOn = false;
+        arrFilter[num].isFullFilterOn = false;
+        arrFilter[num].isItemFilterOn = false;
+        arrFilter[num].selItem = itemsList[0];
+    }
+
+    void FilterSet(int num, bool filterOn, bool fullFilterOn, bool itemFilterOn, Item itemNum)
+    {
+        arrFilter[num].isFilterOn = filterOn;
+        arrFilter[num].isFullFilterOn = fullFilterOn;
+        arrFilter[num].isItemFilterOn = itemFilterOn;
+        arrFilter[num].selItem = itemNum;
+    }
+
+    void FilterReset(int num)
+    {
+        arrFilter[num].outObj = null;
+        arrFilter[num].isFilterOn = false;
+        arrFilter[num].isFullFilterOn = false;
+        arrFilter[num].isItemFilterOn = false;
+        arrFilter[num].selItem = itemsList[0];
+    }
+
+    IEnumerator OutCheck(GameObject otherObj)
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        SolidFactoryCtrl otherFacCtrl = otherObj.GetComponent<SolidFactoryCtrl>();
+        GameObject[] outObjArray = outObj.ToArray();
+
+        foreach (GameObject otherList in otherFacCtrl.outSameList)
+        {
+            if (otherList == this.gameObject)
+            {
+                for (int a = outObjArray.Length - 1; a >= 0; a--)
+                {
+                    if (otherObj == outObjArray[a])
+                    {
+                        for (int b = 0; b < arrFilter.Length; b++)
+                        {
+                            if (arrFilter[b].outObj == outObjArray[a])
+                            {
+                                FilterReset(b);
+                            }
+                        }
+                        outObj.RemoveAt(a);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    void GetItem()
     {
         itemGetDelay = true;
-
-        if(inObj.GetComponent<BeltCtrl>() != null)
+        if (inObj.TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
         {
-            BeltCtrl belt = inObj.GetComponent<BeltCtrl>();
-            if (belt.isItemStop == true)
-            {
-                OnFactoryItem(belt.itemObjList[0]);
-                belt.itemObjList[0].transform.position = this.transform.position;
-                belt.isItemStop = false;
-                belt.itemObjList.RemoveAt(0);
-                belt.beltGroupMgr.GroupItem.RemoveAt(0);
-                belt.ItemNumCheck();
-
-                yield return new WaitForSeconds(solidFactoryData.SendDelay);
-                itemGetDelay = false;
-            }
-            else if (belt.isItemStop == false)
-            {
-                itemGetDelay = false;
-                yield break;
-            }
+            OnFactoryItem(belt.itemObjList[0]);
+            belt.itemObjList[0].transform.position = transform.position;
+            belt.isItemStop = false;
+            belt.itemObjList.RemoveAt(0);
+            belt.beltGroupMgr.GroupItem.RemoveAt(0);
+            belt.ItemNumCheck();
+            Invoke("DelayGetItem", solidFactoryData.SendDelay);
         }
+        itemGetDelay = false;
     }
 
-    IEnumerator SetItem()
+    void SetItem()
     {
         itemSetDelay = true;
 
@@ -246,7 +283,7 @@ public class SplitterCtrl : SolidFactoryCtrl
 
         if (outFactory.isFull == false)
         {
-            if(outObj[getObjNum].GetComponent<BeltCtrl>() != null)
+            if (outObj[getObjNum].TryGetComponent(out BeltCtrl beltCtrl))
             {
                 ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -255,65 +292,192 @@ public class SplitterCtrl : SolidFactoryCtrl
                 spawnItem.amount = 1;
                 spawnItem.transform.position = this.transform.position;
 
-                if (outObj[getObjNum].GetComponent<BeltCtrl>() != null)
-                {
-                    outObj[getObjNum].GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
-                }
                 outFactory.OnBeltItem(spawnItem);
 
                 itemList.RemoveAt(0);
                 ItemNumCheck();
             }
-            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
+            else
             {
-                StartCoroutine("SetFacDelay", getObjNum);
-                //outFactory.OnFactoryItem(itemList[0]);
-            }    
+                StartCoroutine("SetFacDelay", outObj[getObjNum]);
+            }
 
             getObjNum++;
             if (getObjNum >= outObj.Count)
+            {
                 getObjNum = 0;
-
-            yield return new WaitForSeconds(solidFactoryData.SendDelay);
-            itemSetDelay = false;
+            }
+            Invoke("DelaySetItem", solidFactoryData.SendDelay);
         }
-        else if (outFactory.isFull == true)
+        else
         {
             getObjNum++;
             if (getObjNum >= outObj.Count)
+            {
                 getObjNum = 0;
+            }
 
             itemSetDelay = false;
-            yield break;
+        }
+    }
+
+    void FilterSetItem()
+    {
+        itemSetDelay = true;
+
+        SolidFactoryCtrl outFactory = null;
+
+        for (int i = 0; i < arrFilter.Length; i++)
+        {
+            int index = (i + getObjNum) % arrFilter.Length;
+            Filter filter = arrFilter[index];
+
+            if (!filter.isFilterOn) continue;
+
+            GameObject outObject = filter.outObj;
+
+            if (outObject == null) continue;
+
+            outFactory = outObject.GetComponent<SolidFactoryCtrl>();
+
+            if (outFactory == null) continue;
+
+            if (outFactory.isFull) continue;
+
+            if (filter.isFullFilterOn)
+            {
+                if (!ItemFilterFullCheck(itemList[0])) continue;
+            }
+            else if (filter.isItemFilterOn)
+            {
+                if (filter.selItem != itemList[0]) continue;
+            }
+
+            if (outObject.TryGetComponent<BeltCtrl>(out BeltCtrl beltCtrl))
+            {
+                ItemProps spawnItem = itemPool.Get();
+                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                sprite.sprite = itemList[0].icon;
+                spawnItem.item = itemList[0];
+                spawnItem.amount = 1;
+                spawnItem.transform.position = transform.position;
+
+                outFactory.OnBeltItem(spawnItem);
+            }
+            else
+            {
+                SetFacDelay(outObject);
+            }
+
+            itemList.RemoveAt(0);
+            ItemNumCheck();
+            getObjNum = index + 1;
+            break;
         }
 
+        if (outFactory != null && !outFactory.isFull)
+        {
+            getObjNum++;
+            if (getObjNum >= arrFilter.Length) getObjNum = 0;
+        }
+
+        itemSetDelay = false;
     }
-    IEnumerator SetFacDelay(int getObjNum)
+
+    bool ItemFilterFullCheck(Item item)
+    {
+        for (int a = 0; a < arrFilter.Length; a++)
+        {
+            Filter filter = arrFilter[a];
+            if (filter.outObj == null) continue;
+
+            if (filter.isItemFilterOn && filter.selItem == item)
+            {
+                SolidFactoryCtrl factoryCtrl = filter.outObj.GetComponent<SolidFactoryCtrl>();
+                if (factoryCtrl != null && !factoryCtrl.isFull)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    IEnumerator SetFacDelay(GameObject outList)
     {
         var spawnItem = itemPool.Get();
-        SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-        sprite.enabled = false;
+        var sprite = spawnItem.GetComponent<SpriteRenderer>();
+        sprite.color = new Color(1f, 1f, 1f, 0f);
 
-        spawnItem.transform.position = this.transform.position;
+        spawnItem.transform.position = transform.position;
 
-        while (spawnItem.transform.position != outObj[getObjNum].transform.position)
+        var targetPos = outList.transform.position;
+        var startTime = Time.time;
+        var distance = Vector3.Distance(spawnItem.transform.position, targetPos);
+        while (spawnItem != null && spawnItem.transform.position != targetPos)
         {
-            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[getObjNum].transform.position, solidFactoryData.SendSpeed * Time.deltaTime);
+            var elapsed = Time.time - startTime;
+            var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed));
+            spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
+
+            sprite.color = new Color(1f, 1f, 1f, t);
 
             yield return null;
         }
 
-        if (spawnItem.transform.position == outObj[getObjNum].transform.position)
+        if (spawnItem != null && spawnItem.transform.position == targetPos)
         {
             if (itemList.Count > 0)
             {
-                SolidFactoryCtrl outFactory = outObj[getObjNum].GetComponent<SolidFactoryCtrl>();
+                var outFactory = outList.GetComponent<SolidFactoryCtrl>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);
+
                 ItemNumCheck();
-            }            
+            }
         }
-        Destroy(spawnItem.gameObject);
+
+        if (spawnItem != null)
+        {
+            itemPool.Release(spawnItem);
+        }
     }
+    //IEnumerator SetFacDelay(GameObject outList)
+    //{
+    //    var spawnItem = itemPool.Get();
+    //    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+    //    sprite.enabled = false;
+
+    //    spawnItem.transform.position = this.transform.position;
+
+    //    while (spawnItem.transform.position != outList.transform.position)
+    //    {
+    //        spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outList.transform.position, solidFactoryData.SendSpeed * Time.deltaTime);
+
+    //        yield return null;
+    //    }
+
+    //    if (spawnItem.transform.position == outList.transform.position)
+    //    {
+    //        if (itemList.Count > 0)
+    //        {
+    //            SolidFactoryCtrl outFactory = outList.GetComponent<SolidFactoryCtrl>();
+    //            outFactory.OnFactoryItem(itemList[0]);
+
+    //            itemList.RemoveAt(0);
+    //            ItemNumCheck();
+    //        }
+    //    }
+    //    Destroy(spawnItem.gameObject);
+    //}
+
+    void DelaySetItem()
+    {
+        itemSetDelay = false;
+    }     
+    void DelayGetItem()
+    {
+        itemGetDelay = false;
+    }    
 }

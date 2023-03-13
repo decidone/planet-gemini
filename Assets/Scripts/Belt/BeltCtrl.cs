@@ -43,11 +43,12 @@ public class BeltCtrl : SolidFactoryCtrl
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
         beltState = BeltState.SoloBelt;
+
     }
     void Start()
     {
-        if (transform.parent.gameObject != null)
-            beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+        //if (transform.parent.gameObject != null)
+        //    beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
 
         //if (preBelt != null)
             BeltModelSet();
@@ -213,33 +214,53 @@ public class BeltCtrl : SolidFactoryCtrl
 
     void itemMove()
     {
-        if (itemObjList.Count == 1)
+        for (int i = 0; i < itemObjList.Count; i++)
         {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * solidFactoryData.SendSpeed);            
+            itemObjList[i].transform.position = Vector3.MoveTowards(itemObjList[i].transform.position, nextPos[i], Time.deltaTime * solidFactoryData.SendSpeed);
         }
-        else if (itemObjList.Count == 2)
-        {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * solidFactoryData.SendSpeed);
-            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * solidFactoryData.SendSpeed);
-        }
-        else if(itemObjList.Count == 3)
-        {
-            itemObjList[0].transform.position = Vector3.MoveTowards(itemObjList[0].transform.position, nextPos[0], Time.deltaTime * solidFactoryData.SendSpeed);
-            itemObjList[1].transform.position = Vector3.MoveTowards(itemObjList[1].transform.position, nextPos[1], Time.deltaTime * solidFactoryData.SendSpeed);
-            itemObjList[2].transform.position = Vector3.MoveTowards(itemObjList[2].transform.position, nextPos[2], Time.deltaTime * solidFactoryData.SendSpeed);
-        }
-        Vector2 fstItemPos = itemObjList[0].transform.position;
 
-        if (fstItemPos == nextPos[0])
+        if (Vector2.Distance(itemObjList[0].transform.position, nextPos[0]) < 0.001f)
         {
             isItemStop = true;
         }
-        else if (fstItemPos != nextPos[0])
+        else
         {
             isItemStop = false;
         }
 
         ItemSend();
+    }
+
+    void AddNewItem(ItemProps newItem)
+    {
+        // 새로운 아이템을 리스트에 추가합니다.
+        itemObjList.Add(newItem);
+
+        // 새로운 아이템의 위치를 가져옵니다.
+        Vector3 newItemPos = newItem.transform.position;
+
+        // 새로운 아이템이 들어갈 위치를 찾습니다.
+        int insertIndex = -1;
+        float minDist = 1.0f;
+        for (int i = 0; i < itemObjList.Count - 1; i++)
+        {
+            float dist = Vector3.Distance(newItemPos, itemObjList[i].transform.position);
+            if (dist < minDist)
+            {
+                insertIndex = i;
+                minDist = dist;
+            }
+        }
+
+        // 새로운 아이템을 리스트에서 제거하고, insertIndex에 다시 추가합니다.
+        itemObjList.Remove(newItem);
+        itemObjList.Insert(insertIndex, newItem);
+
+        //// 아이템의 위치를 다시 설정합니다.
+        //for (int i = 0; i < itemObjList.Count; i++)
+        //{
+        //    itemObjList[i].transform.position = nextPos[i];
+        //}
     }
 
     void ItemSend()
@@ -251,7 +272,7 @@ public class BeltCtrl : SolidFactoryCtrl
                 Vector2 fstItemPos = itemObjList[0].transform.position;
                 if (fstItemPos == nextPos[0])
                 {
-                    nextBelt.OnBeltItem(itemObjList[0]);
+                    nextBelt.BeltGroupSendItem(itemObjList[0]);
                     itemObjList.Remove(itemObjList[0]);
                     ItemNumCheck(); ;
                 }

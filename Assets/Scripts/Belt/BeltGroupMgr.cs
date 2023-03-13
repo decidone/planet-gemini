@@ -59,74 +59,72 @@ public class BeltGroupMgr : MonoBehaviour
 
     void SetBelt(int beltDir)
     {
-        if(BeltList.Count == 0)
+        if (BeltList.Count == 0)
         {
             GameObject belt = Instantiate(BeltObj, this.transform.position, Quaternion.identity);
             belt.transform.parent = this.transform;
             BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
+            beltCtrl.beltGroupMgr = this.GetComponent<BeltGroupMgr>();
             BeltList.Add(beltCtrl);
             beltCtrl.dirNum = beltDir;
             beltCtrl.beltState = BeltState.SoloBelt;
         }
-        else if (BeltList.Count != 0)
+        else
         {
             BeltCtrl preBeltCtrl = BeltList[BeltList.Count - 1];
+            CalculateNextPos(preBeltCtrl, beltDir, out Vector2 nextPos);
 
-            if(preBeltCtrl.dirNum == 0)
+            if (nextPos == Vector2.zero)
             {
-                if (beltDir == 0 || beltDir == 1 || beltDir == 3)
-                {
-                    nextPos = new Vector2(preBeltCtrl.transform.position.x , preBeltCtrl.transform.position.y + 1);
-                }
-                else if(beltDir == 2)
-                {
-                    return;
-                }
+                return;
             }
-            else if (preBeltCtrl.dirNum == 1)
-            {
-                if (beltDir == 1 || beltDir == 0 || beltDir == 2)
-                {
-                    nextPos = new Vector2(preBeltCtrl.transform.position.x + 1, preBeltCtrl.transform.position.y);
-                }
-                else if (beltDir == 3)
-                {
-                    return;
-                }
-            }
-            else if (preBeltCtrl.dirNum == 2)
-            {
-                if (beltDir == 2 || beltDir == 1 || beltDir == 3)
-                {
-                    nextPos = new Vector2(preBeltCtrl.transform.position.x, preBeltCtrl.transform.position.y - 1);
-                }
-                else if (beltDir == 0)
-                {
-                    return;
-                }
-            }
-            else if (preBeltCtrl.dirNum == 3)
-            {
-                if (beltDir == 3 || beltDir == 0 || beltDir == 2)
-                {
-                    nextPos = new Vector2(preBeltCtrl.transform.position.x - 1, preBeltCtrl.transform.position.y );
-                }
-                else if (beltDir == 1)
-                {
-                    return;
-                }
-            }
+
             GameObject belt = Instantiate(BeltObj, nextPos, Quaternion.identity);
             belt.transform.parent = this.transform;
             BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
+            beltCtrl.beltGroupMgr = this.GetComponent<BeltGroupMgr>();
             BeltList.Add(beltCtrl);
             beltCtrl.dirNum = beltDir;
-            beltCtrl.preBelt = BeltList[BeltList.Count - 2];
+            beltCtrl.preBelt = preBeltCtrl;
             BeltList[BeltList.Count - 2].nextBelt = beltCtrl;
             BeltModelSet(preBeltCtrl, beltCtrl);
         }
     }
 
+    void CalculateNextPos(BeltCtrl preBeltCtrl, int beltDir, out Vector2 nextPos)
+    {
+        nextPos = Vector2.zero;
+
+        switch (preBeltCtrl.dirNum)
+        {
+            case 0:
+                if (beltDir == 0 || beltDir == 1 || beltDir == 3)
+                {
+                    nextPos = new Vector2(preBeltCtrl.transform.position.x, preBeltCtrl.transform.position.y + 1);
+                }
+                break;
+            case 1:
+                if (beltDir == 1 || beltDir == 0 || beltDir == 2)
+                {
+                    nextPos = new Vector2(preBeltCtrl.transform.position.x + 1, preBeltCtrl.transform.position.y);
+                }
+                break;
+            case 2:
+                if (beltDir == 2 || beltDir == 1 || beltDir == 3)
+                {
+                    nextPos = new Vector2(preBeltCtrl.transform.position.x, preBeltCtrl.transform.position.y - 1);
+                }
+                break;
+            case 3:
+                if (beltDir == 3 || beltDir == 0 || beltDir == 2)
+                {
+                    nextPos = new Vector2(preBeltCtrl.transform.position.x - 1, preBeltCtrl.transform.position.y);
+                }
+                break;
+            default:
+                break;
+        }
+    }
     void BeltModelSet(BeltCtrl preBelt, BeltCtrl nextBelt)
     {
         if(preBelt == BeltList[0])
@@ -178,21 +176,23 @@ public class BeltGroupMgr : MonoBehaviour
 
         for (int a = 0; a < raycastHits.Length; a++)
         {
-            if (raycastHits[a].collider.GetComponent<BeltCtrl>() != belt)
-            {
-                if (raycastHits[a].collider.CompareTag("Factory"))
-                {
-                    if (raycastHits[a].collider.GetComponent<BeltCtrl>() != null)
-                    {
-                        CheckGroup(belt, raycastHits[a].collider.GetComponent<BeltCtrl>());
-                    }
-                    else if (raycastHits[a].collider.GetComponent<BeltCtrl>() == null)
-                        nextCheck = false;
+            Collider2D collider = raycastHits[a].collider;
 
-                    return raycastHits[a].collider.gameObject;
+            if (collider.CompareTag("Factory") && collider.GetComponent<BeltCtrl>() != belt)
+            {
+                if (collider.GetComponent<BeltCtrl>() != null)
+                {
+                    CheckGroup(belt, collider.GetComponent<BeltCtrl>());
                 }
+                else
+                {
+                    nextCheck = false;
+                }
+
+                return collider.gameObject;
             }
         }
+
         return null;
     }
 

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Merger Data
   m_EditorClassIdentifier: 
   factoryName: Merger
-  fullItemNum: 10
+  fullItemNum: 1
   sendSpeed: 1.5
   sendDelay: 1
