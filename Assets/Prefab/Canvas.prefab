@@ -380,8 +380,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c8b27fe5cb689d42b6715eda6dcc622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryUI: {fileID: 1070314735}
+  inventoryUI: {fileID: 0}
   inventory: {fileID: 0}
+  slots: []
+  playerInven: {fileID: 0}
 --- !u!1 &1070314735
 GameObject:
   m_ObjectHideFlags: 0
@@ -1237,6 +1239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryUI: {fileID: 8766906530296426731}
   inventory: {fileID: 0}
+  slots: []
 --- !u!1 &8766906530296426731
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInvenUI : InventoryUI
+public class PlayerInvenManager : InventoryManager
 {
     protected override void Start()
     {
-        inventory = PlayerInventory.instance;
         base.Start();
     }
 

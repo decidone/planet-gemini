@@ -158,7 +158,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50336a7f32918024a91ed1621f8d203c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items: []
   inventory: {fileID: 0}
 --- !u!70 &2369682121264992855
 CapsuleCollider2D:

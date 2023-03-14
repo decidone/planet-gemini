@@ -7,7 +7,7 @@ public class ClickEvent : MonoBehaviour
 {
     public GameObject structureInfoUI;
     Inventory inventory;
-    StructureInvenUI ui;
+    StructureInvenManager sInvenManager;
     GameObject storage;
     GameObject miner;
     GameObject furnace;
@@ -23,7 +23,7 @@ public class ClickEvent : MonoBehaviour
         furnace = storage.transform.Find("Furnace").gameObject;
         closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
         closeBtn.onClick.AddListener(CloseUI);
-        ui = structureInfoUI.GetComponent<StructureInvenUI>();
+        sInvenManager = structureInfoUI.GetComponent<StructureInvenManager>();
     }
 
     public void OpenUI()
@@ -38,14 +38,14 @@ public class ClickEvent : MonoBehaviour
             Miner _miner = this.transform.GetComponent<Miner>();
             recipeUI = _miner.recipeUI;
             inventory = _miner.transform.GetComponent<Inventory>();
-            ui.SetInven(inventory, miner);
+            sInvenManager.SetInven(inventory, miner);
         }
         else if (this.transform.GetComponent<Furnace>())
         {
             Furnace _furnace = this.transform.GetComponent<Furnace>();
             recipeUI = _furnace.recipeUI;
             inventory = _furnace.transform.GetComponent<Inventory>();
-            ui.SetInven(inventory, furnace);
+            sInvenManager.SetInven(inventory, furnace);
         }
 
         // 이거 떼서 건물쪽 스크립트로 옮기기
@@ -53,13 +53,13 @@ public class ClickEvent : MonoBehaviour
         {
             case "Miner":
                 miner.SetActive(true);
-                ui.slots[0].outputSlot = true;
+                sInvenManager.slots[0].outputSlot = true;
                 break;
 
             case "Furnace":
                 furnace.SetActive(true);
-                ui.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
-                ui.slots[2].outputSlot = true;
+                sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
+                sInvenManager.slots[2].outputSlot = true;
                 break;
 
             default:

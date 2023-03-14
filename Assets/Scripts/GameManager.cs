@@ -6,12 +6,12 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    PlayerInvenUI playerInvenUI;
+    PlayerInvenManager pInvenManager;
     DragSlot dragSlot;
     List<GameObject> openedUI;
     ClickEvent clickEvent;
 
-    public delegate void OnUIChanged(GameObject window);
+    public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
     #region Singleton
@@ -34,16 +34,20 @@ public class GameManager : MonoBehaviour
         openedUI = new List<GameObject>();
         dragSlot = DragSlot.instance;
         onUIChangedCallback += UIChanged;
-        onUIChangedCallback += DragUIActive;
     }
 
     void Update()
     {
+        InputCheck();
+
         if (dragSlot.slot.item != null)
         {
             dragSlot.GetComponent<RectTransform>().position = Input.mousePosition;
         }
+    }
 
+    void InputCheck()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject())
@@ -69,7 +73,7 @@ public class GameManager : MonoBehaviour
                 switch (openedUI[openedUI.Count - 1].gameObject.name)
                 {
                     case "Inventory":
-                        playerInvenUI.CloseUI();
+                        pInvenManager.CloseUI();
                         break;
                     case "StructureInfo":
                         clickEvent.CloseUI();
@@ -82,32 +86,38 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetButtonDown("Inventory"))
         {
-            if (!playerInvenUI.inventoryUI.activeSelf)
+            if (!pInvenManager.inventoryUI.activeSelf)
             {
-                playerInvenUI.OpenUI();
+                pInvenManager.OpenUI();
             }
             else
             {
-                playerInvenUI.CloseUI();
+                pInvenManager.CloseUI();
             }
         }
     }
 
-    void UIChanged(GameObject window)
+    void UIChanged(GameObject ui)
     {
-        if (window.activeSelf)
+        SetOpenedUIList(ui);
+        DragUIActive();
+    }
+
+    void SetOpenedUIList(GameObject ui)
+    {
+        if (ui.activeSelf)
         {
-            if (!openedUI.Contains(window))
-                openedUI.Add(window);
+            if (!openedUI.Contains(ui))
+                openedUI.Add(ui);
         }
         else
         {
-            if (openedUI.Contains(window))
-                openedUI.Remove(window);
+            if (openedUI.Contains(ui))
+                openedUI.Remove(ui);
         }
     }
 
-    void DragUIActive(GameObject window)
+    void DragUIActive()
     {
         bool isOpened = false;
         foreach (GameObject ui in openedUI)

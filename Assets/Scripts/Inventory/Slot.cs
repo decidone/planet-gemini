@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventorySlot : MonoBehaviour
+public class Slot : MonoBehaviour
 {
     public Image icon;
     public Text amountText;
@@ -14,6 +14,11 @@ public class InventorySlot : MonoBehaviour
     public bool outputSlot;
 
     void Start()
+    {
+        Init();
+    }
+
+    public void Init()
     {
         inputSlot = false;
         outputSlot = false;

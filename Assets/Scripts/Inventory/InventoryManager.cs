@@ -5,24 +5,21 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryUI : MonoBehaviour
+public class InventoryManager : MonoBehaviour
 {
     public GameObject inventoryUI;
-    [HideInInspector]
     public Inventory inventory;
     [HideInInspector]
-    public InventorySlot[] slots;
-
+    public Slot[] slots;
+    
     protected GameManager gameManager;
     protected DragSlot dragSlot; // 드래그용 슬롯
-    InventorySlot focusedSlot;  // 마우스 위치에 있는 슬롯
-    Inventory playerInven;
+    protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
     float splitCooldown;
 
     protected virtual void Start()
     {
         gameManager = GameManager.instance;
-        playerInven = PlayerInventory.instance;
         dragSlot = DragSlot.instance;
         SetInven(inventory, inventoryUI);
     }
@@ -35,34 +32,7 @@ public class InventoryUI : MonoBehaviour
 
     protected virtual void InputCheck()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
-        {
-            if (inventory != playerInven)
-            {
-                if (focusedSlot != null)
-                {
-                    if (focusedSlot.item != null)
-                    {
-                        int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
-                        if (focusedSlot.amount <= containableAmount)
-                        {
-                            playerInven.Add(focusedSlot.item, focusedSlot.amount);
-                            inventory.Remove(focusedSlot);
-                        }
-                        else if (containableAmount != 0)
-                        {
-                            playerInven.Add(focusedSlot.item, containableAmount);
-                            inventory.Sub(focusedSlot.slotNum, containableAmount);
-                        }
-                        else
-                        {
-                            Debug.Log("not enough space");
-                        }
-                    }
-                }
-            }
-        }
-        else if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
         {
             if (dragSlot.slot.item == null)
             {
@@ -135,10 +105,10 @@ public class InventoryUI : MonoBehaviour
         inventory = inven;
         inventoryUI = invenUI;
         inventory.onItemChangedCallback += UpdateUI;
-        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<InventorySlot>();
+        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<Slot>();
         for (int i = 0; i < slots.Length; i++)
         {
-            InventorySlot slot = slots[i];
+            Slot slot = slots[i];
             slot.slotNum = i;
 
             AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
@@ -174,7 +144,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    void AddEvent(InventorySlot slot, EventTriggerType type, UnityAction<BaseEventData> action)
+    void AddEvent(Slot slot, EventTriggerType type, UnityAction<BaseEventData> action)
     {
         EventTrigger.Entry eventTrigger = new EventTrigger.Entry();
         eventTrigger.eventID = type;
@@ -184,12 +154,12 @@ public class InventoryUI : MonoBehaviour
         trigger.triggers.Add(eventTrigger);
     }
 
-    void OnEnter(InventorySlot slot)
+    void OnEnter(Slot slot)
     {
         focusedSlot = slot;
     }
 
-    void OnExit(InventorySlot slot)
+    void OnExit(Slot slot)
     {
         focusedSlot = null;
     }

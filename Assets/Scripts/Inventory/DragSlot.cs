@@ -7,7 +7,7 @@ public class DragSlot : MonoBehaviour
 {
     [SerializeField]
     GameObject slotObj;
-    public InventorySlot slot;
+    public Slot slot;
 
     #region Singleton
     public static DragSlot instance;
@@ -22,7 +22,7 @@ public class DragSlot : MonoBehaviour
 
         instance = this;
         slotObj = this.transform.Find("Slot").gameObject;
-        slot = slotObj.transform.GetComponent<InventorySlot>();
+        slot = slotObj.transform.GetComponent<Slot>();
 
         Image[] images = slot.GetComponentsInChildren<Image>();
         foreach (Image image in images)
