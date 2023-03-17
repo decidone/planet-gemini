@@ -1417,7 +1417,7 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: playerInvenUI
+      propertyPath: pInvenManager
       value: 
       objectReference: {fileID: 1233251329}
     - target: {fileID: 1877822181348161265, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}

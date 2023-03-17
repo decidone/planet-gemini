@@ -9,24 +9,27 @@ public class InventoryManager : MonoBehaviour
 {
     public GameObject inventoryUI;
     public Inventory inventory;
+
     [HideInInspector]
     public Slot[] slots;
-    
     protected GameManager gameManager;
     protected DragSlot dragSlot; // 드래그용 슬롯
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
     float splitCooldown;
+    float splitTimer;
+    
 
     protected virtual void Start()
     {
         gameManager = GameManager.instance;
         dragSlot = DragSlot.instance;
+        splitCooldown = 0.12f;
         SetInven(inventory, inventoryUI);
     }
 
     protected virtual void Update()
     {
-        splitCooldown += Time.deltaTime;
+        splitTimer += Time.deltaTime;
         InputCheck();
     }
 
@@ -83,7 +86,7 @@ public class InventoryManager : MonoBehaviour
 
         if (Input.GetMouseButton(1))
         {
-            if (splitCooldown > 0.12)
+            if (splitTimer > splitCooldown)
             {
                 if (focusedSlot != null)
                 {
@@ -95,7 +98,7 @@ public class InventoryManager : MonoBehaviour
                         }
                     }
                 }
-                splitCooldown = 0;
+                splitTimer = 0;
             }
         }
     }

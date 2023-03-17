@@ -14,7 +14,7 @@ public class Miner : Production
     int amount;
     Inventory inventory;
     public Dictionary<string, Item> itemDic;
-    float timer;
+    float prodTimer;
 
     void Start()
     {
@@ -30,13 +30,13 @@ public class Miner : Production
     void Update()
     {
         amount = inventory.totalItems[item];
-        timer += Time.deltaTime;
+        prodTimer += Time.deltaTime;
         if (amount < maxAmount)
         {
-            if (timer > cooldown)
+            if (prodTimer > cooldown)
             {
                 inventory.Add(item, 1);
-                timer = 0;
+                prodTimer = 0;
             }
         }
     }

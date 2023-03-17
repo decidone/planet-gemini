@@ -13,7 +13,7 @@ public class Furnace : Production
     int amount;
     Inventory inventory;
     Item item;
-    float timer;
+    float prodTimer;
 
     void Start()
     {
@@ -27,17 +27,17 @@ public class Furnace : Production
 
     void Update()
     {
-        if (inventory.SlotCheck(0) != 0 && inventory.SlotCheck(1) != 0 && inventory.SlotCheck(2) < maxAmount)
+        if (inventory.AmountCheck(0) != 0 && inventory.AmountCheck(1) != 0 && inventory.AmountCheck(2) < maxAmount)
         {
-            timer += Time.deltaTime;
+            prodTimer += Time.deltaTime;
             if (amount < maxAmount)
             {
-                if (timer > cooldown)
+                if (prodTimer > cooldown)
                 {
                     inventory.Sub(0, 1);
                     inventory.Sub(1, 1);
                     inventory.SlotAdd(2, item, 1);
-                    timer = 0;
+                    prodTimer = 0;
                 }
             }
         }

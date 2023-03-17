@@ -172,7 +172,7 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public int SlotCheck(int slotNum)
+    public int AmountCheck(int slotNum)
     {
         int temp = 0;
 
