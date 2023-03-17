@@ -8,8 +8,11 @@ public class Furnace : Production
     int maxAmount;
     [SerializeField]
     float cooldown;
-
-    public string recipeUI;
+    [SerializeField]
+    StructureInvenManager sInvenManager;
+    [SerializeField]
+    GameObject furnace;
+    string recipeUI;
     int amount;
     Inventory inventory;
     Item item;
@@ -40,6 +43,17 @@ public class Furnace : Production
                     prodTimer = 0;
                 }
             }
+        }
+    }
+
+    public void OpenUI()
+    {
+        if (recipeUI == "Furnace")
+        {
+            furnace.SetActive(true);
+            sInvenManager.SetInven(inventory, furnace);
+            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
+            sInvenManager.slots[2].outputSlot = true;
         }
     }
 

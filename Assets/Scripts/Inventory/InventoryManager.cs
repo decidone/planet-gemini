@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryManager : MonoBehaviour
+public abstract class InventoryManager : MonoBehaviour
 {
     public GameObject inventoryUI;
     public Inventory inventory;
@@ -17,20 +17,38 @@ public class InventoryManager : MonoBehaviour
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
     float splitCooldown;
     float splitTimer;
-    
+
+    public abstract void OpenUI();
+    public abstract void CloseUI();
 
     protected virtual void Start()
     {
+        splitCooldown = 0.12f;
         gameManager = GameManager.instance;
         dragSlot = DragSlot.instance;
-        splitCooldown = 0.12f;
-        SetInven(inventory, inventoryUI);
     }
 
     protected virtual void Update()
     {
         splitTimer += Time.deltaTime;
         InputCheck();
+    }
+
+    public void SetInven(Inventory inven, GameObject invenUI)
+    {
+        inventory = inven;
+        inventoryUI = invenUI;
+        inventory.onItemChangedCallback += UpdateUI;
+        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<Slot>();
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            slot.slotNum = i;
+
+            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
+            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+        }
+        inventory.Refresh();
     }
 
     protected virtual void InputCheck()
@@ -101,23 +119,6 @@ public class InventoryManager : MonoBehaviour
                 splitTimer = 0;
             }
         }
-    }
-
-    public void SetInven(Inventory inven, GameObject invenUI)
-    {
-        inventory = inven;
-        inventoryUI = invenUI;
-        inventory.onItemChangedCallback += UpdateUI;
-        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<Slot>();
-        for (int i = 0; i < slots.Length; i++)
-        {
-            Slot slot = slots[i];
-            slot.slotNum = i;
-
-            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
-        }
-        inventory.Refresh();
     }
 
     void UpdateUI()

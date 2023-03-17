@@ -7,6 +7,7 @@ public class PlayerInvenManager : InventoryManager
     protected override void Start()
     {
         base.Start();
+        SetInven(inventory, inventoryUI);
     }
 
     public void SortBtn()
@@ -17,14 +18,14 @@ public class PlayerInvenManager : InventoryManager
         }
     }
 
-    public void OpenUI()
+    public override void OpenUI()
     {
         inventoryUI.SetActive(true);
         if (gameManager.onUIChangedCallback != null)
             gameManager.onUIChangedCallback.Invoke(inventoryUI);
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
         inventoryUI.SetActive(false);
         if (gameManager.onUIChangedCallback != null)

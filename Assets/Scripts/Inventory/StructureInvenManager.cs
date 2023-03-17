@@ -6,43 +6,60 @@ public class StructureInvenManager : InventoryManager
 {
     [SerializeField]
     Inventory playerInven;
-
-    protected override void Start()
-    {
-        base.Start();
-        inventory.Refresh();
-    }
+    [SerializeField]
+    GameObject structureInfoUI;
 
     protected override void InputCheck()
     {
-        base.InputCheck();
-
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
+        if (inventory != null)
         {
-            if (inventory != playerInven)
+            base.InputCheck();
+
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
             {
-                if (focusedSlot != null)
+                if (inventory != playerInven)
                 {
-                    if (focusedSlot.item != null)
+                    if (focusedSlot != null)
                     {
-                        int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
-                        if (focusedSlot.amount <= containableAmount)
+                        if (focusedSlot.item != null)
                         {
-                            playerInven.Add(focusedSlot.item, focusedSlot.amount);
-                            inventory.Remove(focusedSlot);
-                        }
-                        else if (containableAmount != 0)
-                        {
-                            playerInven.Add(focusedSlot.item, containableAmount);
-                            inventory.Sub(focusedSlot.slotNum, containableAmount);
-                        }
-                        else
-                        {
-                            Debug.Log("not enough space");
+                            int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
+                            if (focusedSlot.amount <= containableAmount)
+                            {
+                                playerInven.Add(focusedSlot.item, focusedSlot.amount);
+                                inventory.Remove(focusedSlot);
+                            }
+                            else if (containableAmount != 0)
+                            {
+                                playerInven.Add(focusedSlot.item, containableAmount);
+                                inventory.Sub(focusedSlot.slotNum, containableAmount);
+                            }
+                            else
+                            {
+                                Debug.Log("not enough space");
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    public override void OpenUI()
+    {
+        inventoryUI.SetActive(true);
+
+        structureInfoUI.SetActive(true);
+        if (gameManager.onUIChangedCallback != null)
+            gameManager.onUIChangedCallback.Invoke(structureInfoUI);
+    }
+
+    public override void CloseUI()
+    {
+        inventoryUI.SetActive(false);
+
+        structureInfoUI.SetActive(false);
+        if (gameManager.onUIChangedCallback != null)
+            gameManager.onUIChangedCallback.Invoke(structureInfoUI);
     }
 }
