@@ -53,7 +53,7 @@ public class SplitterCtrl : SolidFactoryCtrl
     void Start()
     {
         setModel = GetComponent<SpriteRenderer>();
-        itemsList = ItemsList.instance.itemsList;
+        itemsList = ItemList.instance.itemList;
     }
 
     // Update is called once per frame
