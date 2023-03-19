@@ -7,8 +7,18 @@ public class InventorySlot : MonoBehaviour
     public Text amountText;
 
     public Item item;
+    public Item inputItem;  //inputSlot 받는 아이템
     public int amount;
     public int slotNum;
+    public bool inputSlot;
+    public bool outputSlot;
+
+    void Start()
+    {
+        inputSlot = false;
+        outputSlot = false;
+        inputItem = null;
+    }
 
     public void AddItem(Item newItem, int itemAmount)
     {
@@ -30,5 +40,11 @@ public class InventorySlot : MonoBehaviour
         icon.enabled = false;
         amountText.text = null;
         amountText.enabled = false;
+    }
+
+    public void SetInputItem(Item _item)
+    {
+        inputSlot = true;
+        inputItem = _item;
     }
 }

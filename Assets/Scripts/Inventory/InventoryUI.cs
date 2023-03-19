@@ -10,10 +10,11 @@ public class InventoryUI : MonoBehaviour
     public GameObject inventoryUI;
     [HideInInspector]
     public Inventory inventory;
+    [HideInInspector]
+    public InventorySlot[] slots;
 
     protected GameManager gameManager;
     protected DragSlot dragSlot; // 드래그용 슬롯
-    InventorySlot[] slots;
     InventorySlot focusedSlot;  // 마우스 위치에 있는 슬롯
     Inventory playerInven;
     float splitCooldown;
@@ -23,16 +24,7 @@ public class InventoryUI : MonoBehaviour
         gameManager = GameManager.instance;
         playerInven = PlayerInventory.instance;
         dragSlot = DragSlot.instance;
-        inventory.onItemChangedCallback += UpdateUI;
-        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<InventorySlot>();
-        for (int i = 0; i < slots.Length; i++)
-        {
-            InventorySlot slot = slots[i];
-            slot.slotNum = i;
-
-            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
-        }
+        SetInven(inventory, inventoryUI);
     }
 
     protected virtual void Update()
@@ -60,7 +52,7 @@ public class InventoryUI : MonoBehaviour
                         else if (containableAmount != 0)
                         {
                             playerInven.Add(focusedSlot.item, containableAmount);
-                            inventory.Sub(focusedSlot, containableAmount);
+                            inventory.Sub(focusedSlot.slotNum, containableAmount);
                         }
                         else
                         {
@@ -68,7 +60,6 @@ public class InventoryUI : MonoBehaviour
                         }
                     }
                 }
-                
             }
         }
         else if (Input.GetMouseButtonDown(0))
@@ -87,13 +78,26 @@ public class InventoryUI : MonoBehaviour
             {
                 if (focusedSlot != null)
                 {
-                    if (dragSlot.slot.item != focusedSlot.item)
+                    if (!focusedSlot.outputSlot)
                     {
-                        inventory.Swap(focusedSlot);
-                    }
-                    else
-                    {
-                        inventory.Merge(focusedSlot);
+                        if (dragSlot.slot.item != focusedSlot.item)
+                        {
+                            if (focusedSlot.inputSlot)
+                            {
+                                if (dragSlot.slot.item == focusedSlot.inputItem)
+                                {
+                                    inventory.Swap(focusedSlot);
+                                }
+                            }
+                            else
+                            {
+                                inventory.Swap(focusedSlot);
+                            }
+                        }
+                        else
+                        {
+                            inventory.Merge(focusedSlot);
+                        }
                     }
                 } else if (!EventSystem.current.IsPointerOverGameObject() && dragSlot.gameObject.activeSelf)
                 {
@@ -126,6 +130,23 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    public void SetInven(Inventory inven, GameObject invenUI)
+    {
+        inventory = inven;
+        inventoryUI = invenUI;
+        inventory.onItemChangedCallback += UpdateUI;
+        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<InventorySlot>();
+        for (int i = 0; i < slots.Length; i++)
+        {
+            InventorySlot slot = slots[i];
+            slot.slotNum = i;
+
+            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
+            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+        }
+        inventory.Refresh();
+    }
+
     void UpdateUI()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -140,13 +161,16 @@ public class InventoryUI : MonoBehaviour
             }
         }
 
-        if (dragSlot.slot.item != null)
+        if (dragSlot != null)
         {
-            dragSlot.slot.AddItem(dragSlot.slot.item, dragSlot.slot.amount);
-        }
-        else
-        {
-            dragSlot.slot.ClearSlot();
+            if (dragSlot.slot.item != null)
+            {
+                dragSlot.slot.AddItem(dragSlot.slot.item, dragSlot.slot.amount);
+            }
+            else
+            {
+                dragSlot.slot.ClearSlot();
+            }
         }
     }
 

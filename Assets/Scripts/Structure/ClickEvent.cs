@@ -9,21 +9,21 @@ public class ClickEvent : MonoBehaviour
     Inventory inventory;
     StructureInvenUI ui;
     GameObject storage;
-    GameObject oneStorage;
+    GameObject miner;
+    GameObject furnace;
     Button closeBtn;
     GameManager gameManager;
-    DragSlot dragSlot;
     string recipeUI;
 
     void Start()
     {
         gameManager = GameManager.instance;
         storage = structureInfoUI.transform.Find("Storage").gameObject;
-        oneStorage = storage.transform.Find("OneStorage").gameObject;
+        miner = storage.transform.Find("Miner").gameObject;
+        furnace = storage.transform.Find("Furnace").gameObject;
         closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
         closeBtn.onClick.AddListener(CloseUI);
         ui = structureInfoUI.GetComponent<StructureInvenUI>();
-        dragSlot = DragSlot.instance;
     }
 
     public void OpenUI()
@@ -35,16 +35,33 @@ public class ClickEvent : MonoBehaviour
         // 이거 메서드로 떼서 사용 할 것
         if (this.transform.GetComponent<Miner>())
         {
-            Miner miner = (Miner)this.transform.GetComponent<Miner>();
-            recipeUI = miner.recipeUI;
-            inventory = miner.transform.GetComponent<Inventory>();
-            ui.inventory = inventory;
+            Miner _miner = this.transform.GetComponent<Miner>();
+            recipeUI = _miner.recipeUI;
+            inventory = _miner.transform.GetComponent<Inventory>();
+            ui.SetInven(inventory, miner);
         }
+        else if (this.transform.GetComponent<Furnace>())
+        {
+            Furnace _furnace = this.transform.GetComponent<Furnace>();
+            recipeUI = _furnace.recipeUI;
+            inventory = _furnace.transform.GetComponent<Inventory>();
+            ui.SetInven(inventory, furnace);
+        }
+
+        // 이거 떼서 건물쪽 스크립트로 옮기기
         switch (recipeUI)
         {
-            case "OneStorage":
-                oneStorage.SetActive(true);
+            case "Miner":
+                miner.SetActive(true);
+                ui.slots[0].outputSlot = true;
                 break;
+
+            case "Furnace":
+                furnace.SetActive(true);
+                ui.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
+                ui.slots[2].outputSlot = true;
+                break;
+
             default:
                 Debug.Log("no recipe detected");
                 break;

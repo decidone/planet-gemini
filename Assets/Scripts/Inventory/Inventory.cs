@@ -21,13 +21,13 @@ public class Inventory : MonoBehaviour
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
 
     // 아이템 총량 관리
-    List<Item> itemsList;
+    List<Item> itemList;
     public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
 
     void Start()
     {
-        itemsList = ItemsList.instance.itemsList;
-        foreach (Item item in itemsList)
+        itemList = ItemList.instance.itemList;
+        foreach (Item item in itemList)
         {
             totalItems.Add(item, 0);
         }
@@ -172,10 +172,45 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public void Sub(InventorySlot slot, int amount)
+    public int SlotCheck(int slotNum)
     {
-        totalItems[items[slot.slotNum]] -= amount;
-        amounts[slot.slotNum] -= amount;
+        int temp = 0;
+
+        if (items.ContainsKey(slotNum))
+        {
+            temp = amounts[slotNum];
+        }
+
+        return temp;
+    }
+
+    public void SlotAdd(int slotNum, Item item, int amount)
+    {
+        if (!items.ContainsKey(slotNum))
+        {
+            items.Add(slotNum, item);
+            amounts.Add(slotNum, amount);
+            totalItems[item] += amount;
+        }
+        else if (items[slotNum] == item)
+        {
+            amounts[slotNum] += amount;
+            totalItems[items[slotNum]] += amount;
+        }
+
+        if (onItemChangedCallback != null)
+            onItemChangedCallback.Invoke();
+    }
+
+    public void Sub(int slotNum, int amount)
+    {
+        totalItems[items[slotNum]] -= amount;
+        amounts[slotNum] -= amount;
+        if (amounts[slotNum] == 0)
+        {
+            items.Remove(slotNum);
+            amounts.Remove(slotNum);
+        }
 
         if (onItemChangedCallback != null)
             onItemChangedCallback.Invoke();
