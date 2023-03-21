@@ -172,16 +172,18 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public int AmountCheck(int slotNum)
+    public (Item item, int amount) SlotCheck(int slotNum)
     {
-        int temp = 0;
+        Item item = null;
+        int amount = 0;
 
         if (items.ContainsKey(slotNum))
         {
-            temp = amounts[slotNum];
+            item = items[slotNum];
+            amount = amounts[slotNum];
         }
 
-        return temp;
+        return (item, amount);
     }
 
     public void SlotAdd(int slotNum, Item item, int amount)

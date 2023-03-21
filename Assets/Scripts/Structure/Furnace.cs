@@ -13,16 +13,15 @@ public class Furnace : Production
     [SerializeField]
     GameObject furnace;
     string recipeUI;
-    int amount;
+    public int fuel;
     Inventory inventory;
-    Item item;
     float prodTimer;
+    Dictionary<string, Item> itemDic;
 
     void Start()
     {
         inventory = this.GetComponent<Inventory>();
-        amount = 0;
-        item = ItemList.instance.itemDic["Amethyst"];
+        itemDic = ItemList.instance.itemDic;
         // 레시피 설정하는 부분 임시 설정.
         // 나중에 플레이어가 레시피 설정하는 기능이 생기면 해당 메서드는 제거
         SetRecipe();
@@ -30,17 +29,45 @@ public class Furnace : Production
 
     void Update()
     {
-        if (inventory.AmountCheck(0) != 0 && inventory.AmountCheck(1) != 0 && inventory.AmountCheck(2) < maxAmount)
+        if (fuel == 0)
         {
-            prodTimer += Time.deltaTime;
-            if (amount < maxAmount)
+            var slot = inventory.SlotCheck(0);
+            if (slot.item == itemDic["Coal"] && slot.amount > 0)
             {
+                inventory.Sub(0, 1);
+                fuel = 100;
+            }
+        }
+        else
+        {
+            var slot1 = inventory.SlotCheck(1);
+            var slot2 = inventory.SlotCheck(2);
+
+            if (slot1.amount > 0 && slot2.amount < maxAmount)
+            {
+                prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    inventory.Sub(0, 1);
-                    inventory.Sub(1, 1);
-                    inventory.SlotAdd(2, item, 1);
-                    prodTimer = 0;
+                    if (slot1.item == itemDic["Gold"])
+                    {
+                        if (slot2.item == itemDic["GoldBar"] || slot2.item == null)
+                        {
+                            fuel -= 25;
+                            inventory.Sub(1, 1);
+                            inventory.SlotAdd(2, itemDic["GoldBar"], 1);
+                            prodTimer = 0;
+                        }
+                    }
+                    else if (slot1.item == itemDic["Silver"])
+                    {
+                        if (slot2.item == itemDic["SilverBar"] || slot2.item == null)
+                        {
+                            fuel -= 25;
+                            inventory.Sub(1, 1);
+                            inventory.SlotAdd(2, itemDic["SilverBar"], 1);
+                            prodTimer = 0;
+                        }
+                    }
                 }
             }
         }
@@ -53,6 +80,8 @@ public class Furnace : Production
             furnace.SetActive(true);
             sInvenManager.SetInven(inventory, furnace);
             sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
+            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Gold"]);
+            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Silver"]);
             sInvenManager.slots[2].outputSlot = true;
         }
     }

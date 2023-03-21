@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +8,7 @@ public class Slot : MonoBehaviour
     public Text amountText;
 
     public Item item;
-    public Item inputItem;  //inputSlot 받는 아이템
+    public List<Item> inputItem;  //inputSlot 받는 아이템
     public int amount;
     public int slotNum;
     public bool inputSlot;
@@ -22,7 +23,7 @@ public class Slot : MonoBehaviour
     {
         inputSlot = false;
         outputSlot = false;
-        inputItem = null;
+        inputItem.Clear();
     }
 
     public void AddItem(Item newItem, int itemAmount)
@@ -50,6 +51,7 @@ public class Slot : MonoBehaviour
     public void SetInputItem(Item _item)
     {
         inputSlot = true;
-        inputItem = _item;
+        if (!inputItem.Contains(_item))
+            inputItem.Add(_item);
     }
 }

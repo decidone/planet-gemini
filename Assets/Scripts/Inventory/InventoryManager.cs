@@ -75,9 +75,12 @@ public abstract class InventoryManager : MonoBehaviour
                         {
                             if (focusedSlot.inputSlot)
                             {
-                                if (dragSlot.slot.item == focusedSlot.inputItem)
+                                foreach (Item _item in focusedSlot.inputItem)
                                 {
-                                    inventory.Swap(focusedSlot);
+                                    if (dragSlot.slot.item == _item)
+                                    {
+                                        inventory.Swap(focusedSlot);
+                                    }
                                 }
                             }
                             else
