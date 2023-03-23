@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class UnderPipeCtrl : FluidFactoryCtrl
 {
@@ -27,10 +28,16 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     {
         ModelSet();
 
-        if (nearObj[0] == null)
-            UpObjCheck();
-        if (nearObj[1] == null)
-            DownObjCheck();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                if (i == 0)
+                    CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                else if (i == 1)
+                    CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+            }
+        }
 
         if (otherPipe != null && saveFluidNum >= fluidFactoryData.SendFluid)
         {
@@ -76,53 +83,37 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         }
     }
 
-    void UpObjCheck()
+    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
-        RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 10f);
+        float dist = 0;
 
-        for (int a = 0; a < upHits.Length; a++)
+        if (index == 0)
+            dist = 10;
+        else
+            dist = 1;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, dist);
+
+        for (int i = 0; i < hits.Length; i++)
         {
-            if (upHits[a].collider.GetComponent<UnderPipeCtrl>() != this.gameObject.GetComponent<UnderPipeCtrl>())
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.CompareTag("Factory") &&
+                hitCollider.GetComponent<UnderPipeCtrl>() != GetComponent<UnderPipeCtrl>())
             {
-                if (upHits[a].collider.CompareTag("Factory"))
-                {
-                    if (upHits[a].collider.GetComponent<UnderPipeCtrl>() != null)
-                    {
-                        nearObj[0] = upHits[a].collider.gameObject;
-                        ConnectUnder(nearObj[0]);
-                    }
-                }
+                nearObj[index] = hits[i].collider.gameObject;
+                callback(hitCollider.gameObject);
+                break;
             }
         }
     }
 
-    void DownObjCheck()
-    {
-        RaycastHit2D[] downHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[1], 1f);
-
-        for (int a = 0; a < downHits.Length; a++)
-        {
-            if (downHits[a].collider.GetComponent<UnderPipeCtrl>() != this.gameObject.GetComponent<UnderPipeCtrl>())
-            {
-                if (downHits[a].collider.CompareTag("Factory"))
-                {
-                    nearObj[1] = downHits[a].collider.gameObject;
-                    ConnectOther(nearObj[1]);
-                }
-            }
-        }
-    }
-
-
-    void ConnectUnder(GameObject obj)
+    void SetInObj(GameObject obj)
     {
         if (obj.GetComponent<FluidFactoryCtrl>() != null)
         {
-            if (obj.GetComponent<UnderPipeCtrl>() != null)
+            if (obj.TryGetComponent(out UnderPipeCtrl othUnderPipe))
             {
-                UnderPipeCtrl othUnderPipe = obj.GetComponent<UnderPipeCtrl>();
-
-                if(dirNum == 0 && othUnderPipe.dirNum == 2)
+                if (dirNum == 0 && othUnderPipe.dirNum == 2)
                 {
                     connectUnderPipe = obj;
                 }
@@ -130,11 +121,11 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                 {
                     connectUnderPipe = obj;
                 }
-                else if(dirNum == 2 && othUnderPipe.dirNum == 0)
+                else if (dirNum == 2 && othUnderPipe.dirNum == 0)
                 {
                     connectUnderPipe = obj;
                 }
-                else if(dirNum == 3 && othUnderPipe.dirNum == 1)
+                else if (dirNum == 3 && othUnderPipe.dirNum == 1)
                 {
                     connectUnderPipe = obj;
                 }
@@ -142,7 +133,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         }
     }
 
-    void ConnectOther(GameObject obj)
+    void SetOutObj(GameObject obj)
     {
         if (obj.GetComponent<FluidFactoryCtrl>() != null)
         {
@@ -152,10 +143,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                 otherPipe.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
                 otherPipe.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
             }
-            else if (obj.GetComponent<UnderPipeCtrl>() != null)
+            else if (obj.TryGetComponent(out UnderPipeCtrl othUnderPipe))
             {
-                UnderPipeCtrl othUnderPipe = obj.GetComponent<UnderPipeCtrl>();
-
                 if (dirNum == 0 && othUnderPipe.dirNum == 2)
                 {
                     otherPipe = obj;
@@ -178,13 +167,10 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     void SendFluid()
     {
-        if (otherPipe != null && otherPipe.GetComponent<FluidFactoryCtrl>())
+        if (otherPipe != null && otherPipe.TryGetComponent(out FluidFactoryCtrl pipe))
         {
-            FluidFactoryCtrl pipe = otherPipe.GetComponent<FluidFactoryCtrl>();
             if (pipe.fluidIsFull == false)
             {
-                //if (fluidIsFull == false)
-                //{
                 if (pipe.saveFluidNum < saveFluidNum)
                 {
                     pipe.SendFluidFunc(fluidFactoryData.SendFluid);
@@ -192,14 +178,12 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                 }
             }
         }
-        if (connectUnderPipe != null && connectUnderPipe.GetComponent<FluidFactoryCtrl>())
+        if (connectUnderPipe != null && connectUnderPipe.TryGetComponent(out FluidFactoryCtrl underPipe))
         {
-            FluidFactoryCtrl underPipe = connectUnderPipe.GetComponent<FluidFactoryCtrl>();
             if (underPipe.fluidIsFull == false)
             {
                 if (underPipe.saveFluidNum < saveFluidNum)
                 {
-                    //float checkFluid = underPipe.ExtraSize();
                     underPipe.SendFluidFunc(fluidFactoryData.SendFluid);
                     saveFluidNum -= fluidFactoryData.SendFluid;
                 }
@@ -213,24 +197,20 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     }
     void GetFluid()
     {
-        if (otherPipe != null && otherPipe.GetComponent<FluidFactoryCtrl>())
+        if (otherPipe != null && otherPipe.TryGetComponent(out FluidFactoryCtrl otherFac))
         {
-            FluidFactoryCtrl fluidFactory = otherPipe.GetComponent<FluidFactoryCtrl>();
-
-            if (fluidFactory.fluidIsFull == true && fluidIsFull == false)
+            if (otherFac.fluidIsFull == true && fluidIsFull == false)
             {
-                fluidFactory.GetFluidFunc(fluidFactoryData.SendFluid);
+                otherFac.GetFluidFunc(fluidFactoryData.SendFluid);
                 saveFluidNum += fluidFactoryData.SendFluid;
             }
         }
-        if (connectUnderPipe != null && connectUnderPipe.GetComponent<FluidFactoryCtrl>())
+        if (connectUnderPipe != null && connectUnderPipe.TryGetComponent(out FluidFactoryCtrl underPipe))
         {
-            FluidFactoryCtrl fluidFactory = connectUnderPipe.GetComponent<FluidFactoryCtrl>();
-
-            if (fluidFactory.fluidIsFull == true && fluidIsFull == false)
+            if (underPipe.fluidIsFull == true && fluidIsFull == false)
             {
-                fluidFactory.GetFluidFunc(fluidFactory.fluidFactoryData.SendFluid);
-                saveFluidNum += fluidFactory.fluidFactoryData.SendFluid;
+                underPipe.GetFluidFunc(underPipe.fluidFactoryData.SendFluid);
+                saveFluidNum += underPipe.fluidFactoryData.SendFluid;
             }
         }
     }

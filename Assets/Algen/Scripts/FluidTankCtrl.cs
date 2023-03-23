@@ -4,18 +4,11 @@ using UnityEngine;
 
 public class FluidTankCtrl : FluidFactoryCtrl
 {
-
-    bool isUp1 = false;
-    bool isUp2 = false;
-    bool isRight1 = false;
-    bool isRight2 = false;
-    bool isDown1 = false;
-    bool isDown2 = false;
-    bool isLeft1 = false;
-    bool isLeft2 = false;
+    bool[] checkArray = new bool[8];
 
     Vector2[] startTransform = new Vector2[4];
-
+    Vector3[] directions = new Vector3[4];
+    int[] indices = new int[6];
     public List<GameObject> factoryList = new List<GameObject>();
 
     // Start is called before the first frame update
@@ -27,22 +20,14 @@ public class FluidTankCtrl : FluidFactoryCtrl
     // Update is called once per frame
     void Update()
     {
-        if (isUp1 == false)
-            isUp1 = ObjCheck(startTransform[3], transform.up);
-        if (isUp2 == false)
-            isUp2 = ObjCheck(startTransform[0], transform.up);
-        if (isRight1 == false)
-            isRight1 = ObjCheck(startTransform[0], transform.right);
-        if (isRight2 == false)
-            isRight2 = ObjCheck(startTransform[1], transform.right);
-        if (isDown1 == false)
-            isDown1 = ObjCheck(startTransform[1], -transform.up);
-        if (isDown2 == false)
-            isDown2 = ObjCheck(startTransform[2], -transform.up);
-        if (isLeft1 == false)
-            isLeft1 = ObjCheck(startTransform[2], -transform.right);
-        if (isLeft2 == false)
-            isLeft2 = ObjCheck(startTransform[3], -transform.right);
+        for (int i = 0; i < 4; i++)
+        {
+            int index = i * 2;
+            if (!checkArray[index])
+                checkArray[index] = CheckNearObj(startTransform[indices[index]], directions[i]);
+            if (!checkArray[index + 1])
+                checkArray[index + 1] = CheckNearObj(startTransform[indices[index + 1]], directions[i]);
+        }
 
         if (factoryList.Count > 0 && saveFluidNum >= fluidFactoryData.SendFluid)
         {
@@ -59,13 +44,12 @@ public class FluidTankCtrl : FluidFactoryCtrl
 
     void TransformCheck()
     {
-        startTransform[0] = new Vector2(0.5f, 0.5f);
-        startTransform[1] = new Vector2(0.5f, -0.5f);
-        startTransform[2] = new Vector2(-0.5f, -0.5f);
-        startTransform[3] = new Vector2(-0.5f, 0.5f);
+        indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
+        startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
+        directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };
     }
 
-    bool ObjCheck(Vector3 startVec, Vector3 endVec)
+    bool CheckNearObj(Vector3 startVec, Vector3 endVec)
     {
         RaycastHit2D[] Hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
 
@@ -92,29 +76,27 @@ public class FluidTankCtrl : FluidFactoryCtrl
     {
         foreach (GameObject obj in factoryList)
         {
-            if (obj.GetComponent<FluidFactoryCtrl>() && obj.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && fluidFactory.fluidIsFull == false)
             {
-                FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
                 if (fluidFactory.saveFluidNum < saveFluidNum)
                 {
                     fluidFactory.SendFluidFunc(fluidFactoryData.SendFluid);
                     saveFluidNum -= fluidFactoryData.SendFluid;
-                }          
+                }
             }
             if (fluidFactoryData.FullFluidNum > saveFluidNum)
                 fluidIsFull = false;
             else if (fluidFactoryData.FullFluidNum <= saveFluidNum)
                 fluidIsFull = true;
-        }
+        }   
     }
 
     void GetFluid()
     {
         foreach (GameObject obj in factoryList)
         {
-            if (obj.GetComponent<FluidFactoryCtrl>())
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory))
             {
-                FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
                 if (fluidFactory.fluidIsFull == true && fluidIsFull == false)
                 {
                     fluidFactory.GetFluidFunc(fluidFactory.fluidFactoryData.SendFluid);

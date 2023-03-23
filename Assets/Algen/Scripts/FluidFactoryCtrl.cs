@@ -14,7 +14,7 @@ public class FluidFactoryCtrl : FactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -40,6 +40,11 @@ public class FluidFactoryCtrl : FactoryCtrl
                 saveFluidNum = fluidFactoryData.FullFluidNum;
             }
         }
+    }
+
+    public void OnFluidSentHandler(float sentFluid)
+    {
+        // 유체를 받은 후 처리할 작업 수행
     }
 
     public void GetFluidFunc(float getNum)
