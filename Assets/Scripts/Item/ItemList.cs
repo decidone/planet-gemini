@@ -16,7 +16,7 @@ public class ItemList : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of itemsList found!");
+            Debug.LogWarning("More than one instance of itemList found!");
             return;
         }
 

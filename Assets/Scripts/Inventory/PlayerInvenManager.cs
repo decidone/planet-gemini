@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInvenUI : InventoryUI
+public class PlayerInvenManager : InventoryManager
 {
     protected override void Start()
     {
-        inventory = PlayerInventory.instance;
         base.Start();
+        SetInven(inventory, inventoryUI);
     }
 
     public void SortBtn()
@@ -18,14 +18,14 @@ public class PlayerInvenUI : InventoryUI
         }
     }
 
-    public void OpenUI()
+    public override void OpenUI()
     {
         inventoryUI.SetActive(true);
         if (gameManager.onUIChangedCallback != null)
             gameManager.onUIChangedCallback.Invoke(inventoryUI);
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
         inventoryUI.SetActive(false);
         if (gameManager.onUIChangedCallback != null)

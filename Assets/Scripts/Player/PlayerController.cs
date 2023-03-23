@@ -4,13 +4,10 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-    List<GameObject> items = new List<GameObject>();
+    [SerializeField]
     Inventory inventory;
 
-    void Start()
-    {
-        inventory = PlayerInventory.instance;
-    }
+    List<GameObject> items = new List<GameObject>();
 
     void Update()
     {

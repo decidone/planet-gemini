@@ -8,13 +8,16 @@ public class Miner : Production
     int maxAmount;
     [SerializeField]
     float cooldown;
-
-    public string recipeUI;
-    public Item item;   // 임시로 유니티에서 직접 줌. 나중에 관련 기능들을 만들면 setResource에서 처리할 것
+    [SerializeField]
+    StructureInvenManager sInvenManager;
+    [SerializeField]
+    GameObject miner;
+    string recipeUI;
+    Item item;   // 임시로 유니티에서 직접 줌. 나중에 관련 기능들을 만들면 setResource에서 처리할 것
     int amount;
     Inventory inventory;
-    public Dictionary<string, Item> itemDic;
-    float timer;
+    Dictionary<string, Item> itemDic;
+    float prodTimer;
 
     void Start()
     {
@@ -30,14 +33,24 @@ public class Miner : Production
     void Update()
     {
         amount = inventory.totalItems[item];
-        timer += Time.deltaTime;
+        prodTimer += Time.deltaTime;
         if (amount < maxAmount)
         {
-            if (timer > cooldown)
+            if (prodTimer > cooldown)
             {
                 inventory.Add(item, 1);
-                timer = 0;
+                prodTimer = 0;
             }
+        }
+    }
+
+    public void OpenUI()
+    {
+        if (recipeUI == "Miner")
+        {
+            miner.SetActive(true);
+            sInvenManager.SetInven(inventory, miner);
+            sInvenManager.slots[0].outputSlot = true;
         }
     }
 

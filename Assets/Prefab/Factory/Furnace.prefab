@@ -127,6 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
+  sInvenManager: {fileID: 0}
 --- !u!114 &2233973952794387984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,4 +160,6 @@ MonoBehaviour:
   hp: 0
   maxAmount: 99
   cooldown: 3
+  sInvenManager: {fileID: 0}
+  furnace: {fileID: 0}
   recipeUI: 

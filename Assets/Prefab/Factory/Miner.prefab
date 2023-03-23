@@ -127,6 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
+  sInvenManager: {fileID: 0}
 --- !u!114 &2359874169441961876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,5 +160,7 @@ MonoBehaviour:
   hp: 0
   maxAmount: 99
   cooldown: 3
+  sInvenManager: {fileID: 0}
+  miner: {fileID: 0}
   recipeUI: 
-  item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
+  item: {fileID: 0}

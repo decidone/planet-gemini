@@ -14,7 +14,7 @@ public class Inventory : MonoBehaviour
     GameObject itemPref;
     [SerializeField]
     GameObject player;
-    InventorySlot dragSlot;
+    Slot dragSlot;
 
     // 인벤토리에 표시되는 아이템
     public Dictionary<int, Item> items = new Dictionary<int, Item>();
@@ -112,7 +112,7 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public void Swap(InventorySlot slot)
+    public void Swap(Slot slot)
     {
         if (!items.ContainsKey(slot.slotNum))
         {
@@ -150,7 +150,7 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public void Merge(InventorySlot mergeSlot)
+    public void Merge(Slot mergeSlot)
     {
         // 드래그 중인 슬롯이 첫 번째 인자
         int mergeAmount = dragSlot.amount + amounts[mergeSlot.slotNum];
@@ -172,7 +172,7 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public int SlotCheck(int slotNum)
+    public int AmountCheck(int slotNum)
     {
         int temp = 0;
 
@@ -216,7 +216,7 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public void Split(InventorySlot slot)
+    public void Split(Slot slot)
     {
         if (items.ContainsKey(slot.slotNum))
         {
@@ -248,7 +248,7 @@ public class Inventory : MonoBehaviour
             onItemChangedCallback.Invoke();
     }
 
-    public void Remove(InventorySlot slot)
+    public void Remove(Slot slot)
     {
         totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
         items.Remove(slot.slotNum);
