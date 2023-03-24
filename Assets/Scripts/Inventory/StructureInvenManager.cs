@@ -17,27 +17,24 @@ public class StructureInvenManager : InventoryManager
 
             if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
             {
-                if (inventory != playerInven)
+                if (focusedSlot != null)
                 {
-                    if (focusedSlot != null)
+                    if (focusedSlot.item != null)
                     {
-                        if (focusedSlot.item != null)
+                        int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
+                        if (focusedSlot.amount <= containableAmount)
                         {
-                            int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
-                            if (focusedSlot.amount <= containableAmount)
-                            {
-                                playerInven.Add(focusedSlot.item, focusedSlot.amount);
-                                inventory.Remove(focusedSlot);
-                            }
-                            else if (containableAmount != 0)
-                            {
-                                playerInven.Add(focusedSlot.item, containableAmount);
-                                inventory.Sub(focusedSlot.slotNum, containableAmount);
-                            }
-                            else
-                            {
-                                Debug.Log("not enough space");
-                            }
+                            playerInven.Add(focusedSlot.item, focusedSlot.amount);
+                            inventory.Remove(focusedSlot);
+                        }
+                        else if (containableAmount != 0)
+                        {
+                            playerInven.Add(focusedSlot.item, containableAmount);
+                            inventory.Sub(focusedSlot.slotNum, containableAmount);
+                        }
+                        else
+                        {
+                            Debug.Log("not enough space");
                         }
                     }
                 }
@@ -48,18 +45,14 @@ public class StructureInvenManager : InventoryManager
     public override void OpenUI()
     {
         inventoryUI.SetActive(true);
-
         structureInfoUI.SetActive(true);
-        if (gameManager.onUIChangedCallback != null)
-            gameManager.onUIChangedCallback.Invoke(structureInfoUI);
+        gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
     }
 
     public override void CloseUI()
     {
         inventoryUI.SetActive(false);
-
         structureInfoUI.SetActive(false);
-        if (gameManager.onUIChangedCallback != null)
-            gameManager.onUIChangedCallback.Invoke(structureInfoUI);
+        gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
     }
 }

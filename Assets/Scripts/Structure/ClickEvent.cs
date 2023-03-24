@@ -19,18 +19,17 @@ public class ClickEvent : MonoBehaviour
 
     public void OpenUI()
     {
-        // 이거 메서드로 떼서 사용 할 것
-        if (this.transform.GetComponent<Miner>())
+        Miner miner = this.transform.GetComponent<Miner>();
+        Furnace furnace = this.transform.GetComponent<Furnace>();
+
+        if (miner != null)
         {
-            Miner miner = this.transform.GetComponent<Miner>();
             miner.OpenUI();
         }
-        else if (this.transform.GetComponent<Furnace>())
+        else if (furnace != null)
         {
-            Furnace furnace = this.transform.GetComponent<Furnace>();
             furnace.OpenUI();
         }
-
         sInvenManager.OpenUI();
     }
 

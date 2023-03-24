@@ -16,7 +16,7 @@ public class Furnace : Production
     string recipeUI;
     public int fuel;
     Inventory inventory;
-    public float prodTimer;
+    float prodTimer;
     Dictionary<string, Item> itemDic;
 
     void Start()
@@ -24,7 +24,6 @@ public class Furnace : Production
         inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
         // 레시피 설정하는 부분 임시 설정.
-        // 나중에 플레이어가 레시피 설정하는 기능이 생기면 해당 메서드는 제거
         SetRecipe();
     }
 
