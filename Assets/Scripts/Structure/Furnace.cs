@@ -12,10 +12,11 @@ public class Furnace : Production
     StructureInvenManager sInvenManager;
     [SerializeField]
     GameObject furnace;
+
     string recipeUI;
     public int fuel;
     Inventory inventory;
-    float prodTimer;
+    public float prodTimer;
     Dictionary<string, Item> itemDic;
 
     void Start()
@@ -29,47 +30,47 @@ public class Furnace : Production
 
     void Update()
     {
-        if (fuel == 0)
-        {
-            var slot = inventory.SlotCheck(0);
-            if (slot.item == itemDic["Coal"] && slot.amount > 0)
-            {
-                inventory.Sub(0, 1);
-                fuel = 100;
-            }
-        }
-        else
-        {
-            var slot1 = inventory.SlotCheck(1);
-            var slot2 = inventory.SlotCheck(2);
+        var slot = inventory.SlotCheck(0);
+        var slot1 = inventory.SlotCheck(1);
+        var slot2 = inventory.SlotCheck(2);
 
-            if (slot1.amount > 0 && slot2.amount < maxAmount)
+        if (fuel == 0 && slot.item == itemDic["Coal"] && slot.amount > 0)
+        {
+            inventory.Sub(0, 1);
+            fuel = 100;
+        }
+        else if (fuel > 0 && slot1.amount > 0 && slot2.amount < maxAmount)
+        {
+            Item output = null;
+            switch (slot1.item.name)
+            {
+                case "Gold":
+                    output = itemDic["GoldBar"];
+                    break;
+                case "Silver":
+                    output = itemDic["SilverBar"];
+                    break;
+            }
+
+            if (slot2.item == output || slot2.item == null)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    if (slot1.item == itemDic["Gold"])
-                    {
-                        if (slot2.item == itemDic["GoldBar"] || slot2.item == null)
-                        {
-                            fuel -= 25;
-                            inventory.Sub(1, 1);
-                            inventory.SlotAdd(2, itemDic["GoldBar"], 1);
-                            prodTimer = 0;
-                        }
-                    }
-                    else if (slot1.item == itemDic["Silver"])
-                    {
-                        if (slot2.item == itemDic["SilverBar"] || slot2.item == null)
-                        {
-                            fuel -= 25;
-                            inventory.Sub(1, 1);
-                            inventory.SlotAdd(2, itemDic["SilverBar"], 1);
-                            prodTimer = 0;
-                        }
-                    }
+                    fuel -= 25;
+                    inventory.Sub(1, 1);
+                    inventory.SlotAdd(2, output, 1);
+                    prodTimer = 0;
                 }
             }
+            else
+            {
+                prodTimer = 0;
+            }
+        }
+        else
+        {
+            prodTimer = 0;
         }
     }
 
