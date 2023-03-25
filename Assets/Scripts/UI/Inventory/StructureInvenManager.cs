@@ -8,6 +8,7 @@ public class StructureInvenManager : InventoryManager
     Inventory playerInven;
     [SerializeField]
     GameObject structureInfoUI;
+    public ProgressBar progressBar;
 
     protected override void InputCheck()
     {

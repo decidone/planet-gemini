@@ -71,6 +71,9 @@ public class Furnace : Production
         {
             prodTimer = 0;
         }
+
+        // 나중에 ui를 해당 건물이 사용하고 있을때만 돌아가게 할 것
+        sInvenManager.progressBar.SetProgress(prodTimer);
     }
 
     public void OpenUI()
@@ -83,6 +86,7 @@ public class Furnace : Production
             sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Gold"]);
             sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Silver"]);
             sInvenManager.slots[2].outputSlot = true;
+            sInvenManager.progressBar.SetMaxProgress(cooldown);
         }
     }
 

@@ -1721,46 +1721,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: itemList.Array.size
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: itemList.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 1335b8f203f9e564cb67a283917c63fb, type: 2}
-    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: itemList.Array.data[1]
-      value: 
-      objectReference: {fileID: 11400000, guid: e8e6444c1ee3bb143bdc1f5dfb68b1da, type: 2}
-    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: itemList.Array.data[2]
-      value: 
-      objectReference: {fileID: 11400000, guid: c84505e16f282c947a9ddfe3956237f6, type: 2}
-    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: itemList.Array.data[3]
-      value: 
-      objectReference: {fileID: 11400000, guid: ecd9313862db7804bb9aa1540be89326, type: 2}
-    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: itemList.Array.data[4]
-      value: 
-      objectReference: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
-    - target: {fileID: 1877822182247631250, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: itemList.Array.data[5]
-      value: 
-      objectReference: {fileID: 11400000, guid: 04998b413239b974292ef3b40aa03a66, type: 2}
-    - target: {fileID: 5061562842869730163, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: space
-      value: 60
-      objectReference: {fileID: 0}
     - target: {fileID: 5061562842869730163, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1799185956}
-    - target: {fileID: 5061562842869730163, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: maxAmount
-      value: 99
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
 --- !u!114 &1877822182247631245 stripped
