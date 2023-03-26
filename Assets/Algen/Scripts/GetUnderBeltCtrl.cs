@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GetUnderBeltCtrl : SolidFactoryCtrl
 {
     public GameObject inObj = null;
     List<GameObject> outObj = new List<GameObject>();
+
+    [SerializeField]
     GameObject[] nearObj = new GameObject[4];
 
     int getObjNum = 0;
@@ -28,14 +31,20 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
                 StartCoroutine("SetItem");
         }
 
-        if (nearObj[0] == null)
-            UpObjCheck();
-        if (nearObj[1] == null)
-            RightObjCheck();
-        if (nearObj[2] == null)
-            DownObjCheck();
-        if (nearObj[3] == null)
-            LeftObjCheck();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                if (i == 0)
+                    CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                else if (i == 1)
+                    CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                else if (i == 2)
+                    CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj));
+                else if (i == 3)
+                    CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj));
+            }
+        }
     }
 
     void SetDirNum()
@@ -49,113 +58,33 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
 
     void CheckPos()
     {
-        if (dirNum == 0)
+        Vector2[] dirs = { Vector2.down, Vector2.left, Vector2.up, Vector2.right };
+
+        for (int i = 0; i < 4; i++)
         {
-            checkPos[0] = -transform.up;
-            checkPos[1] = -transform.right;
-            checkPos[2] = transform.up;
-            checkPos[3] = transform.right;
-        }
-        else if (dirNum == 1)
-        {
-            checkPos[0] = -transform.right;
-            checkPos[1] = transform.up;
-            checkPos[2] = transform.right;
-            checkPos[3] = -transform.up;
-        }
-        else if (dirNum == 2)
-        {
-            checkPos[0] = transform.up;
-            checkPos[1] = transform.right;
-            checkPos[2] = -transform.up;
-            checkPos[3] = -transform.right;
-        }
-        else if (dirNum == 3)
-        {
-            checkPos[0] = transform.right;
-            checkPos[1] = -transform.up;
-            checkPos[2] = -transform.right;
-            checkPos[3] = transform.up;
+            checkPos[i] = dirs[(dirNum + i) % 4];
         }
     }
-    void UpObjCheck()
+    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
-        if (nearObj[0] == null)
+        float dist = 0;
+
+        if (index == 0)
+            dist = 10;
+        else
+            dist = 1;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, dist);
+
+        for (int i = 0; i < hits.Length; i++)
         {
-            RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 10f);
-
-            for (int a = 0; a < upHits.Length; a++)
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.CompareTag("Factory") &&
+                hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
             {
-                if (upHits[a].collider.GetComponent<GetUnderBeltCtrl>() != this.gameObject.GetComponent<GetUnderBeltCtrl>())
-                {
-                    if (upHits[a].collider.CompareTag("Factory"))
-                    {
-                        if (upHits[a].collider.GetComponent<SendUnderBeltCtrl>())
-                        {
-                            nearObj[0] = upHits[a].collider.gameObject;
-                            SetInObj(nearObj[0]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    void RightObjCheck()
-    {
-        if (nearObj[1] == null)
-        {
-            RaycastHit2D[] rightHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[1], 1f);
-
-            for (int a = 0; a < rightHits.Length; a++)
-            {
-                if (rightHits[a].collider.GetComponent<GetUnderBeltCtrl>() != this.gameObject.GetComponent<GetUnderBeltCtrl>())
-                {
-                    if (rightHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[1] = rightHits[a].collider.gameObject;
-                        SetOutObj(nearObj[1]);
-                    }
-                }
-            }
-        }
-    }
-    void DownObjCheck()
-    {
-        if (nearObj[2] == null)
-        {
-            RaycastHit2D[] downHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[2], 1f);
-
-            for (int a = 0; a < downHits.Length; a++)
-            {
-                if (downHits[a].collider.GetComponent<GetUnderBeltCtrl>() != this.gameObject.GetComponent<GetUnderBeltCtrl>())
-                {
-                    if (downHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[2] = downHits[a].collider.gameObject;
-                        SetOutObj(nearObj[2]);
-                    }
-                }
-            }
-        }
-    }
-
-    void LeftObjCheck()
-    {
-        if (nearObj[3] == null)
-        {
-            RaycastHit2D[] leftHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[3], 1f);
-
-            for (int a = 0; a < leftHits.Length; a++)
-            {
-                if (leftHits[a].collider.GetComponent<GetUnderBeltCtrl>() != this.gameObject.GetComponent<GetUnderBeltCtrl>())
-                {
-                    if (leftHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[3] = leftHits[a].collider.gameObject;
-                        SetOutObj(nearObj[3]);
-                    }
-                }
+                nearObj[index] = hits[i].collider.gameObject;
+                callback(hitCollider.gameObject);
+                break;
             }
         }
     }
@@ -180,19 +109,18 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
     {
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
-            if (obj.GetComponent<BeltCtrl>() != null)
+            if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     return;
 
-                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
                 {
                     belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
                 }
             }
 
-            else if (obj.GetComponent<BeltCtrl>() == null)
+            else
             {
                 outSameList.Add(obj);
                 StartCoroutine("OutCheck", obj);
