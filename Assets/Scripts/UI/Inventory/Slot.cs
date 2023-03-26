@@ -14,18 +14,6 @@ public class Slot : MonoBehaviour
     public bool inputSlot;
     public bool outputSlot;
 
-    void Start()
-    {
-        Init();
-    }
-
-    public void Init()
-    {
-        inputSlot = false;
-        outputSlot = false;
-        inputItem.Clear();
-    }
-
     public void AddItem(Item newItem, int itemAmount)
     {
         item = newItem;
@@ -46,6 +34,13 @@ public class Slot : MonoBehaviour
         icon.enabled = false;
         amountText.text = null;
         amountText.enabled = false;
+    }
+
+    public void ResetOption()
+    {
+        inputSlot = false;
+        outputSlot = false;
+        inputItem.Clear();
     }
 
     public void SetInputItem(Item _item)

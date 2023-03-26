@@ -17,6 +17,7 @@ public class Miner : Production
     Inventory inventory;
     Dictionary<string, Item> itemDic;
     float prodTimer;
+    bool activeUI;
 
     void Start()
     {
@@ -39,15 +40,28 @@ public class Miner : Production
                 prodTimer = 0;
             }
         }
+
+        if (activeUI)
+            sInvenManager.progressBar.SetProgress(prodTimer);
     }
 
     public void OpenUI()
     {
         if (recipeUI == "Miner")
         {
-            miner.SetActive(true);
             sInvenManager.SetInven(inventory, miner);
             sInvenManager.slots[0].outputSlot = true;
+            sInvenManager.progressBar.SetMaxProgress(cooldown);
+            activeUI = true;
+        }
+    }
+
+    public void CloseUI()
+    {
+        if (recipeUI == "Miner")
+        {
+            sInvenManager.ReleaseInven();
+            activeUI = false;
         }
     }
 

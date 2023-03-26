@@ -11,30 +11,31 @@ public class ClickEvent : MonoBehaviour
     StructureInvenManager sInvenManager;
     Button closeBtn;
 
+    Miner miner;
+    Furnace furnace;
+
     void Start()
     {
         closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
         closeBtn.onClick.AddListener(CloseUI);
+
+        miner = this.transform.GetComponent<Miner>();
+        furnace = this.transform.GetComponent<Furnace>();
     }
 
     public void OpenUI()
     {
-        Miner miner = this.transform.GetComponent<Miner>();
-        Furnace furnace = this.transform.GetComponent<Furnace>();
+        if (miner) miner.OpenUI();
+        else if (furnace) furnace.OpenUI();
 
-        if (miner != null)
-        {
-            miner.OpenUI();
-        }
-        else if (furnace != null)
-        {
-            furnace.OpenUI();
-        }
         sInvenManager.OpenUI();
     }
 
     public void CloseUI()
     {
+        if (miner) miner.CloseUI();
+        else if (furnace) furnace.CloseUI();
+
         sInvenManager.CloseUI();
     }
 }

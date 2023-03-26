@@ -18,6 +18,7 @@ public class Furnace : Production
     Inventory inventory;
     float prodTimer;
     Dictionary<string, Item> itemDic;
+    bool activeUI;
 
     void Start()
     {
@@ -72,21 +73,30 @@ public class Furnace : Production
             prodTimer = 0;
         }
 
-        // 나중에 ui를 해당 건물이 사용하고 있을때만 돌아가게 할 것
-        sInvenManager.progressBar.SetProgress(prodTimer);
+        if (activeUI)
+            sInvenManager.progressBar.SetProgress(prodTimer);
     }
 
     public void OpenUI()
     {
         if (recipeUI == "Furnace")
         {
-            furnace.SetActive(true);
             sInvenManager.SetInven(inventory, furnace);
             sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
             sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Gold"]);
             sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Silver"]);
             sInvenManager.slots[2].outputSlot = true;
             sInvenManager.progressBar.SetMaxProgress(cooldown);
+            activeUI = true;
+        }
+    }
+
+    public void CloseUI()
+    {
+        if (recipeUI == "Furnace")
+        {
+            sInvenManager.ReleaseInven();
+            activeUI = false;
         }
     }
 
