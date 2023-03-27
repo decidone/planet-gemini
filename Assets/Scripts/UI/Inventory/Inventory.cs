@@ -108,8 +108,7 @@ public class Inventory : MonoBehaviour
             }
         }
 
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 
     public void Swap(Slot slot)
@@ -146,8 +145,7 @@ public class Inventory : MonoBehaviour
             dragSlot.amount = tempAmount;
         }
 
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 
     public void Merge(Slot mergeSlot)
@@ -168,20 +166,21 @@ public class Inventory : MonoBehaviour
             dragSlot.ClearSlot();
         }
 
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 
-    public int AmountCheck(int slotNum)
+    public (Item item, int amount) SlotCheck(int slotNum)
     {
-        int temp = 0;
+        Item item = null;
+        int amount = 0;
 
         if (items.ContainsKey(slotNum))
         {
-            temp = amounts[slotNum];
+            item = items[slotNum];
+            amount = amounts[slotNum];
         }
 
-        return temp;
+        return (item, amount);
     }
 
     public void SlotAdd(int slotNum, Item item, int amount)
@@ -198,8 +197,7 @@ public class Inventory : MonoBehaviour
             totalItems[items[slotNum]] += amount;
         }
 
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 
     public void Sub(int slotNum, int amount)
@@ -212,8 +210,7 @@ public class Inventory : MonoBehaviour
             amounts.Remove(slotNum);
         }
 
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 
     public void Split(Slot slot)
@@ -236,16 +233,14 @@ public class Inventory : MonoBehaviour
                     amounts.Remove(slot.slotNum);
                 }
 
-                if (onItemChangedCallback != null)
-                    onItemChangedCallback.Invoke();
+                onItemChangedCallback?.Invoke();
             }
         }
     }
 
     public void Refresh()
     {
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 
     public void Remove(Slot slot)
@@ -254,8 +249,7 @@ public class Inventory : MonoBehaviour
         items.Remove(slot.slotNum);
         amounts.Remove(slot.slotNum);
 
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 
     public void Drop()
@@ -271,8 +265,7 @@ public class Inventory : MonoBehaviour
         dropItem.transform.position += Vector3.down * 1.5f;
         dragSlot.ClearSlot();
 
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 
     public void Sort()
@@ -311,7 +304,6 @@ public class Inventory : MonoBehaviour
             }
         }
 
-        if (onItemChangedCallback != null)
-            onItemChangedCallback.Invoke();
+        onItemChangedCallback?.Invoke();
     }
 }

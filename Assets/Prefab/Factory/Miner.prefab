@@ -162,5 +162,3 @@ MonoBehaviour:
   cooldown: 3
   sInvenManager: {fileID: 0}
   miner: {fileID: 0}
-  recipeUI: 
-  item: {fileID: 0}

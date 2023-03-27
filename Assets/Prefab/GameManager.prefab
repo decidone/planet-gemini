@@ -60,6 +60,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemList:
+  - {fileID: 11400000, guid: 1335b8f203f9e564cb67a283917c63fb, type: 2}
+  - {fileID: 11400000, guid: e8e6444c1ee3bb143bdc1f5dfb68b1da, type: 2}
+  - {fileID: 11400000, guid: c84505e16f282c947a9ddfe3956237f6, type: 2}
+  - {fileID: 11400000, guid: ecd9313862db7804bb9aa1540be89326, type: 2}
   - {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   - {fileID: 11400000, guid: 04998b413239b974292ef3b40aa03a66, type: 2}
 --- !u!114 &5061562842869730163
@@ -74,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8612a3248f1ad04197ab52610640ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  space: 3
-  maxAmount: 5
+  space: 60
+  maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   player: {fileID: 0}

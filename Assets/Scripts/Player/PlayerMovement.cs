@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
 
         // idle 모션 방향을 위해 마지막 움직인 방향을 저장
         animTimer += Time.deltaTime;
-        if (movement.x == 1|| movement.x == -1 || movement.y == 1 || movement.y == -1)
+        if (Mathf.Abs(movement.x) == 1 || Mathf.Abs(movement.y) == 1)
         {
             // 0.1초마다 입력 상태를 저장
             if(animTimer > 0.1)

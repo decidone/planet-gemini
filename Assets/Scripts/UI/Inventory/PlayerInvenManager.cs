@@ -21,14 +21,12 @@ public class PlayerInvenManager : InventoryManager
     public override void OpenUI()
     {
         inventoryUI.SetActive(true);
-        if (gameManager.onUIChangedCallback != null)
-            gameManager.onUIChangedCallback.Invoke(inventoryUI);
+        gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 
     public override void CloseUI()
     {
         inventoryUI.SetActive(false);
-        if (gameManager.onUIChangedCallback != null)
-            gameManager.onUIChangedCallback.Invoke(inventoryUI);
+        gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 }

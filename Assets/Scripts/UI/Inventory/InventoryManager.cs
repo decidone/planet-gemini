@@ -75,9 +75,13 @@ public abstract class InventoryManager : MonoBehaviour
                         {
                             if (focusedSlot.inputSlot)
                             {
-                                if (dragSlot.slot.item == focusedSlot.inputItem)
+                                foreach (Item _item in focusedSlot.inputItem)
                                 {
-                                    inventory.Swap(focusedSlot);
+                                    if (dragSlot.slot.item == _item)
+                                    {
+                                        inventory.Swap(focusedSlot);
+                                        break;
+                                    }
                                 }
                             }
                             else
@@ -104,20 +108,21 @@ public abstract class InventoryManager : MonoBehaviour
 
         if (Input.GetMouseButton(1))
         {
-            if (splitTimer > splitCooldown)
+            if (splitTimer <= splitCooldown)
+                return;
+
+            if (focusedSlot == null)
+                return;
+
+            if (focusedSlot.item == null)
+                return;
+
+            if (dragSlot.slot.item == null || dragSlot.slot.item == focusedSlot.item)
             {
-                if (focusedSlot != null)
-                {
-                    if (focusedSlot.item != null)
-                    {
-                        if (dragSlot.slot.item == null || dragSlot.slot.item == focusedSlot.item)
-                        {
-                            inventory.Split(focusedSlot);
-                        }
-                    }
-                }
-                splitTimer = 0;
+                inventory.Split(focusedSlot);
             }
+
+            splitTimer = 0;
         }
     }
 

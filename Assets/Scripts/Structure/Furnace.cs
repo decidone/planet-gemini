@@ -12,38 +12,68 @@ public class Furnace : Production
     StructureInvenManager sInvenManager;
     [SerializeField]
     GameObject furnace;
+
     string recipeUI;
-    int amount;
+    public int fuel;
     Inventory inventory;
-    Item item;
     float prodTimer;
+    Dictionary<string, Item> itemDic;
 
     void Start()
     {
         inventory = this.GetComponent<Inventory>();
-        amount = 0;
-        item = ItemList.instance.itemDic["Amethyst"];
+        itemDic = ItemList.instance.itemDic;
         // 레시피 설정하는 부분 임시 설정.
-        // 나중에 플레이어가 레시피 설정하는 기능이 생기면 해당 메서드는 제거
         SetRecipe();
     }
 
     void Update()
     {
-        if (inventory.AmountCheck(0) != 0 && inventory.AmountCheck(1) != 0 && inventory.AmountCheck(2) < maxAmount)
+        var slot = inventory.SlotCheck(0);
+        var slot1 = inventory.SlotCheck(1);
+        var slot2 = inventory.SlotCheck(2);
+
+        if (fuel == 0 && slot.item == itemDic["Coal"] && slot.amount > 0)
         {
-            prodTimer += Time.deltaTime;
-            if (amount < maxAmount)
+            inventory.Sub(0, 1);
+            fuel = 100;
+        }
+        else if (fuel > 0 && slot1.amount > 0 && slot2.amount < maxAmount)
+        {
+            Item output = null;
+            switch (slot1.item.name)
             {
+                case "Gold":
+                    output = itemDic["GoldBar"];
+                    break;
+                case "Silver":
+                    output = itemDic["SilverBar"];
+                    break;
+            }
+
+            if (slot2.item == output || slot2.item == null)
+            {
+                prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    inventory.Sub(0, 1);
+                    fuel -= 25;
                     inventory.Sub(1, 1);
-                    inventory.SlotAdd(2, item, 1);
+                    inventory.SlotAdd(2, output, 1);
                     prodTimer = 0;
                 }
             }
+            else
+            {
+                prodTimer = 0;
+            }
         }
+        else
+        {
+            prodTimer = 0;
+        }
+
+        // 나중에 ui를 해당 건물이 사용하고 있을때만 돌아가게 할 것
+        sInvenManager.progressBar.SetProgress(prodTimer);
     }
 
     public void OpenUI()
@@ -53,7 +83,10 @@ public class Furnace : Production
             furnace.SetActive(true);
             sInvenManager.SetInven(inventory, furnace);
             sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
+            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Gold"]);
+            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Silver"]);
             sInvenManager.slots[2].outputSlot = true;
+            sInvenManager.progressBar.SetMaxProgress(cooldown);
         }
     }
 

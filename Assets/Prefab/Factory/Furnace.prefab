@@ -162,4 +162,4 @@ MonoBehaviour:
   cooldown: 3
   sInvenManager: {fileID: 0}
   furnace: {fileID: 0}
-  recipeUI: 
+  fuel: 0
