@@ -6,7 +6,7 @@ public class MiniMonsterCtrl : MonsterAi
 {
     protected override void RandomAttackNum(int attackNum, Transform targetTr)
     {
-        attackState = AttackState.Attacking;
+        attackState = MonsterAttackState.Attacking;
 
         animator.SetBool("isAttack", true);
         animator.SetFloat("attackMotion", 0);
@@ -18,7 +18,7 @@ public class MiniMonsterCtrl : MonsterAi
         if (str == "false")
         {
             animator.SetBool("isAttack", false);
-            attackState = AttackState.AttackEnd;
+            attackState = MonsterAttackState.AttackEnd;
 
             StartCoroutine("AttackDelay");
         }

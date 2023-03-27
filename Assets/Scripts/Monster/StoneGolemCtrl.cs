@@ -6,7 +6,7 @@ public class StoneGolemCtrl : MonsterAi
 {
     protected override void RandomAttackNum(int attackNum, Transform targetTr)
     {
-        attackState = AttackState.Attacking;
+        attackState = MonsterAttackState.Attacking;
 
         attackMotion = Random.Range(0, attackNum);
         animator.SetBool("isAttack", true);
@@ -19,7 +19,7 @@ public class StoneGolemCtrl : MonsterAi
         if (str == "false")
         {
             animator.SetBool("isAttack", false);
-            attackState = AttackState.AttackEnd;
+            attackState = MonsterAttackState.AttackEnd;
 
             StartCoroutine("AttackDelay");
         }
