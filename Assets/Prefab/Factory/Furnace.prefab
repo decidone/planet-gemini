@@ -162,4 +162,3 @@ MonoBehaviour:
   cooldown: 3
   sInvenManager: {fileID: 0}
   furnace: {fileID: 0}
-  fuel: 0

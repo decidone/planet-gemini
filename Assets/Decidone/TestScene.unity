@@ -1968,10 +1968,6 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1877822182247631245}
-    - target: {fileID: 1955507992, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_Value
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8766906530158679200, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_Name
       value: Canvas

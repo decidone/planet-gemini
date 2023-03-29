@@ -14,7 +14,8 @@ public class Furnace : Production
     GameObject furnace;
 
     string recipeUI;
-    public int fuel;
+    int fuel;
+    int maxFuel;
     Inventory inventory;
     float prodTimer;
     Dictionary<string, Item> itemDic;
@@ -24,6 +25,7 @@ public class Furnace : Production
     {
         inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
+        maxFuel = 100;
         // 레시피 설정하는 부분 임시 설정.
         SetRecipe();
     }
@@ -37,7 +39,7 @@ public class Furnace : Production
         if (fuel == 0 && slot.item == itemDic["Coal"] && slot.amount > 0)
         {
             inventory.Sub(0, 1);
-            fuel = 100;
+            fuel = maxFuel;
         }
         else if (fuel > 0 && slot1.amount > 0 && slot2.amount < maxAmount)
         {
@@ -74,7 +76,10 @@ public class Furnace : Production
         }
 
         if (activeUI)
+        {
             sInvenManager.progressBar.SetProgress(prodTimer);
+            sInvenManager.energyBar.SetProgress(fuel);
+        }
     }
 
     public void OpenUI()
@@ -87,6 +92,7 @@ public class Furnace : Production
             sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Silver"]);
             sInvenManager.slots[2].outputSlot = true;
             sInvenManager.progressBar.SetMaxProgress(cooldown);
+            sInvenManager.energyBar.SetMaxProgress(maxFuel);
             activeUI = true;
         }
     }

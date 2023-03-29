@@ -9,6 +9,7 @@ public class StructureInvenManager : InventoryManager
     [SerializeField]
     GameObject structureInfoUI;
     public ProgressBar progressBar;
+    public ProgressBar energyBar;
 
     public void ReleaseInven()
     {
@@ -18,6 +19,7 @@ public class StructureInvenManager : InventoryManager
             slot.ResetOption();
         }
         progressBar.SetMaxProgress(1);
+        energyBar.SetMaxProgress(1);
     }
 
     protected override void InputCheck()
