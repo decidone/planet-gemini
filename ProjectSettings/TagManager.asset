@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Undefined
   - Factory
+  - Unit
   layers:
   - Default
   - TransparentFX

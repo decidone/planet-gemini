@@ -15,7 +15,7 @@ public class GolemCtrl : MonsterAi
     bool checkTarget = false;
     protected override void RandomAttackNum(int attackNum, Transform targetTr)
     {
-        attackState = AttackState.Attacking;
+        attackState = MonsterAttackState.Attacking;
 
         attackMotion = Random.Range(0, attackNum);
         getTargetTr = targetTr;
@@ -29,7 +29,7 @@ public class GolemCtrl : MonsterAi
         if (str == "false")
         {
             animator.SetBool("isAttack", false);
-            attackState = AttackState.AttackEnd;
+            attackState = MonsterAttackState.AttackEnd;
             StartCoroutine("AttackDelay");
             checkTarget = false;
         }
