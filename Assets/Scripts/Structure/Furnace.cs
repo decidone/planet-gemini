@@ -36,15 +36,15 @@ public class Furnace : Production
         var slot1 = inventory.SlotCheck(1);
         var slot2 = inventory.SlotCheck(2);
 
-        if (fuel == 0 && slot.item == itemDic["Coal"] && slot.amount > 0)
+        if (fuel == 0 && slot1.item == itemDic["Coal"] && slot1.amount > 0)
         {
-            inventory.Sub(0, 1);
+            inventory.Sub(1, 1);
             fuel = maxFuel;
         }
-        else if (fuel > 0 && slot1.amount > 0 && slot2.amount < maxAmount)
+        else if (fuel > 0 && slot.amount > 0 && slot2.amount < maxAmount)
         {
             Item output = null;
-            switch (slot1.item.name)
+            switch (slot.item.name)
             {
                 case "Gold":
                     output = itemDic["GoldBar"];
@@ -60,7 +60,7 @@ public class Furnace : Production
                 if (prodTimer > cooldown)
                 {
                     fuel -= 25;
-                    inventory.Sub(1, 1);
+                    inventory.Sub(0, 1);
                     inventory.SlotAdd(2, output, 1);
                     prodTimer = 0;
                 }
@@ -87,9 +87,9 @@ public class Furnace : Production
         if (recipeUI == "Furnace")
         {
             sInvenManager.SetInven(inventory, furnace);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Gold"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Silver"]);
+            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Gold"]);
+            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Silver"]);
+            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
             sInvenManager.slots[2].outputSlot = true;
             sInvenManager.progressBar.SetMaxProgress(cooldown);
             sInvenManager.energyBar.SetMaxProgress(maxFuel);

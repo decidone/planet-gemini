@@ -13,6 +13,8 @@ public class ClickEvent : MonoBehaviour
 
     Miner miner;
     Furnace furnace;
+    Constructor constructor;
+    Assembler assembler;
 
     void Start()
     {
@@ -21,12 +23,16 @@ public class ClickEvent : MonoBehaviour
 
         miner = this.transform.GetComponent<Miner>();
         furnace = this.transform.GetComponent<Furnace>();
+        constructor = this.transform.GetComponent<Constructor>();
+        assembler = this.transform.GetComponent<Assembler>();
     }
 
     public void OpenUI()
     {
         if (miner) miner.OpenUI();
         else if (furnace) furnace.OpenUI();
+        else if (constructor) constructor.OpenUI();
+        else if (assembler) assembler.OpenUI();
 
         sInvenManager.OpenUI();
     }
@@ -35,6 +41,8 @@ public class ClickEvent : MonoBehaviour
     {
         if (miner) miner.CloseUI();
         else if (furnace) furnace.CloseUI();
+        else if (constructor) constructor.CloseUI();
+        else if (assembler) assembler.CloseUI();
 
         sInvenManager.CloseUI();
     }
