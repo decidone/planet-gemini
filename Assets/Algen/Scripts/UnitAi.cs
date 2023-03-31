@@ -11,6 +11,7 @@ public class UnitAi : MonoBehaviour
         UAI_Move,
         UAI_Attack,
         UAI_Patrol,
+        UAI_Hold,
         UAI_AggroTrace,
         //홀드 기능 추가
     }
@@ -27,29 +28,43 @@ public class UnitAi : MonoBehaviour
     [SerializeField]
     float moveSpeed;
     [SerializeField]
-    Rigidbody2D rb;
-    [SerializeField]
     Animator animator;
 
+    // 이동 관련
     private Vector3 targetPosition;
     private Vector2 lastMoveDirection = Vector2.zero; // 마지막으로 이동한 방향
-
-    private Vector3 patrolStartPos;
-
-    private float movedDistance = 0f;
+    Vector3 direction = Vector3.zero;
+    [SerializeField]
+    float moveRadi = 0f;
     private Vector3 lastPosition;
     bool isMoveCheckCoroutine = false;
     bool isNewPosSet = false;
 
-    private Collider unitCollider; // Collider 컴포넌트
+    // 우회 관련
+    [SerializeField]
+    bool bypassOn = false;
+    [SerializeField]
+    Vector3 reDirection;
+    private RaycastHit2D[] hits;
+    private RaycastHit2D hitTemp;
+    public LayerMask obstacleLayer;
+    int numHits = 0;
+    private float movedDistance = 0f;
+    bool isBypassCheckCoroutine = false;
 
+    // 페트롤 관련
+    private Vector3 patrolStartPos;
+
+    // 홀드 관련
+
+    // 유닛 상태 관련
     public UnitAIState unitAIState = UnitAIState.UAI_Idle; // 시작 시 패트롤 상태
     UnitAttackState attackState = UnitAttackState.Waiting;
 
     // Start is called before the first frame update
     void Start()
     {
-        unitCollider = GetComponent<Collider>();
+        hits = new RaycastHit2D[2];
 
     }
 
@@ -64,7 +79,6 @@ public class UnitAi : MonoBehaviour
 
     }
 
-
     void UnitAiCtrl()
     {
         switch (unitAIState)
@@ -74,30 +88,50 @@ public class UnitAi : MonoBehaviour
                 break;            
             case UnitAIState.UAI_Move:
                 MoveFunc();
-                break;            
-            case UnitAIState.UAI_Attack:
-
-                break;            
+                break;
             case UnitAIState.UAI_Patrol:
                 PatrolFunc();
-                break;            
+                break;
+            case UnitAIState.UAI_Hold:
+                HoldFunc();
+                break;                          
+            case UnitAIState.UAI_Attack:
+
+                break;    
             case UnitAIState.UAI_AggroTrace:
 
                 break;
         }
     }
 
-    public void MovePosSet(Vector2 dir)
+    void IdleFunc()
+    {
+        animator.SetBool("isMove", false);
+        VariableReset();
+    }
+
+    void VariableReset()
+    {
+        bypassOn = false;
+        isMoveCheckCoroutine = false;
+        isBypassCheckCoroutine = false;
+    }
+
+    public void MovePosSet(Vector2 dir, float radi)
     {
         isNewPosSet = true;
-
+        VariableReset();
         targetPosition = dir;
+        moveRadi = radi;
+
         lastMoveDirection = (targetPosition - transform.position).normalized; // 이동방향 저장
         unitAIState = UnitAIState.UAI_Move;
 
         // 방향에 따라 애니메이션 재생
         animator.SetBool("isMove", true);
-        Vector3 direction = targetPosition - transform.position;
+        direction = targetPosition - transform.position;
+        //MoveCorrDirection = transform.position + direction.normalized * (direction.magnitude + (radi / 2));
+
         if (direction.magnitude > 0.5f)
         {
             float angle = Vector2.SignedAngle(Vector2.up, direction);
@@ -107,31 +141,33 @@ public class UnitAi : MonoBehaviour
         }
     }
 
-    void IdleFunc()
-    {
-        animator.SetBool("isMove", false);
-    }
-
     void MoveFunc()
     {        
-        // 이동
-        Vector3 direction = targetPosition - transform.position;
-        rb.velocity = direction.normalized * moveSpeed;
-        // 도착지점에 도착하면 이동 멈춤
-        if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+        if(bypassOn == false)
         {
-            rb.velocity = Vector3.zero;
-            unitAIState = UnitAIState.UAI_Idle;
-            LastMoveMovemont();
+            // 이동
+            direction = targetPosition - transform.position;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * moveSpeed);
+
+            // 도착지점에 도착하면 이동 멈춤
+
+            if (Vector3.Distance(transform.position, targetPosition) < moveRadi)
+            {
+                if (!isMoveCheckCoroutine)
+                    StartCoroutine(UnitMoveCheck());
+            }
+            else if (Vector3.Distance(transform.position, targetPosition) < 0.3f)
+            {
+                unitAIState = UnitAIState.UAI_Idle;
+                LastMoveMovemont();
+            }
         }
-        if (!isMoveCheckCoroutine)
-            StartCoroutine(UnitMoveCheck());
     }
 
     public void PatrolPosSet(Vector2 dir)
     {
         isNewPosSet = true;
-
+        VariableReset();
         targetPosition = dir;
         patrolStartPos = this.transform.position;
 
@@ -140,7 +176,7 @@ public class UnitAi : MonoBehaviour
 
         // 방향에 따라 애니메이션 재생
         animator.SetBool("isMove", true);
-        Vector3 direction = targetPosition - transform.position;
+        direction = targetPosition - transform.position;
         if (direction.magnitude > 0.5f)
         {
             float angle = Vector2.SignedAngle(Vector2.up, direction);
@@ -153,19 +189,22 @@ public class UnitAi : MonoBehaviour
 
     void PatrolFunc()
     {
-        // 이동
-        Vector3 direction = targetPosition - transform.position;
-        rb.velocity = direction.normalized * moveSpeed;
-        // 도착지점에 도착하면 이동 멈춤
-        if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+        if (bypassOn == false)
         {
-            rb.velocity = Vector3.zero;
-            unitAIState = UnitAIState.UAI_Idle;
-            LastMoveMovemont();
-            PatrolPosSet(patrolStartPos);
+            // 이동
+            direction = targetPosition - transform.position;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * moveSpeed);
+            // 도착지점에 도착하면 이동 멈춤
+            if (Vector3.Distance(transform.position, targetPosition) < 0.3f)
+            {
+                PatrolPosSet(patrolStartPos);
+            }
         }
-        //if (!isMoveCheckCoroutine)
-        //    StartCoroutine(UnitMoveCheck());
+    }
+
+    void HoldFunc()
+    {
+        animator.SetBool("isMove", false);
     }
 
     IEnumerator UnitMoveCheck()
@@ -181,7 +220,6 @@ public class UnitAi : MonoBehaviour
         {
             if (!isNewPosSet)
             {
-                rb.velocity = Vector3.zero;
                 unitAIState = UnitAIState.UAI_Idle;
                 LastMoveMovemont();
                 isMoveCheckCoroutine = false;
@@ -194,7 +232,6 @@ public class UnitAi : MonoBehaviour
                 yield break; // 코루틴 종료  
             }
         }
-
         isMoveCheckCoroutine = false;
     }
 

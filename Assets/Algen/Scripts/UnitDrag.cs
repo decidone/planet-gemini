@@ -8,20 +8,20 @@ public class UnitDrag : MonoBehaviour
     [SerializeField]
     private GameObject[] selectedObjects;
 
-    //UnitGroupCtrl unitGroupCtrl;
-    //GameObject unitGroup;
-
     public delegate void AddUnitDelegate(GameObject obj);
     public static event AddUnitDelegate addUnit;
     
     public delegate void RemoveUnitDelegate();
     public static event RemoveUnitDelegate removeUnit;
 
-    public delegate void TargetDelegate(Vector2 targetPos);
+    public delegate void TargetDelegate(Vector3 targetPos);
     public static event PatrolDelegate targetSet;    
     
-    public delegate void PatrolDelegate(Vector2 patrolPos);
+    public delegate void PatrolDelegate(Vector3 patrolPos);
     public static event PatrolDelegate patrolSet;
+
+    public delegate void GroupCenterDelegate();
+    public static event GroupCenterDelegate groupCenterSet;
 
     private Vector2 targetPosition;
 
@@ -29,8 +29,7 @@ public class UnitDrag : MonoBehaviour
     bool isPKeyPressed = false;
     void Start()
     {
-        //unitGroup = GameObject.Find("UnitGroup");
-        //unitGroupCtrl = unitGroup.GetComponent<UnitGroupCtrl>();
+
     }
 
     void Update()
@@ -51,11 +50,21 @@ public class UnitDrag : MonoBehaviour
             if(!unitCtrlKeyPressed)
             {
                 Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                GroupSelectedObjects(dragStartPosition, dragEndPosition);
+                if (dragStartPosition != dragEndPosition)
+                    GroupSelectedObjects(dragStartPosition, dragEndPosition);
+                else
+                {
+                    RaycastHit2D hit = Physics2D.Raycast(dragEndPosition, Vector2.zero);
+                    if (hit)
+                        SelectedObjects(hit);
+                    else
+                        return;
+                }
             }
             else if (isPKeyPressed)
             {
                 Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                groupCenterSet?.Invoke();
                 patrolSet?.Invoke(dragEndPosition);
             }
             ReSetBool();
@@ -98,6 +107,11 @@ public class UnitDrag : MonoBehaviour
                 addUnit?.Invoke(obj);
             }
         }
+    }
+    private void SelectedObjects(RaycastHit2D ray)
+    {
+        removeUnit?.Invoke();
+        addUnit?.Invoke(ray.collider.gameObject);
     }
 
     void SetTargetPosition()
