@@ -9,6 +9,18 @@ public class StructureInvenManager : InventoryManager
     [SerializeField]
     GameObject structureInfoUI;
     public ProgressBar progressBar;
+    public ProgressBar energyBar;
+
+    public void ReleaseInven()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            slot.ResetOption();
+        }
+        progressBar.SetMaxProgress(1);
+        energyBar.SetMaxProgress(1);
+    }
 
     protected override void InputCheck()
     {
@@ -45,15 +57,15 @@ public class StructureInvenManager : InventoryManager
 
     public override void OpenUI()
     {
-        inventoryUI.SetActive(true);
         structureInfoUI.SetActive(true);
+        inventoryUI.SetActive(true);
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
     }
 
     public override void CloseUI()
     {
-        inventoryUI.SetActive(false);
         structureInfoUI.SetActive(false);
+        inventoryUI.SetActive(false);
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
     }
 }

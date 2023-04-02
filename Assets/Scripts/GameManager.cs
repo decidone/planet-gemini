@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     DragSlot dragSlot;
     List<GameObject> openedUI;
     ClickEvent clickEvent;
+    ClickEvent newClickEvent;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -58,9 +59,15 @@ public class GameManager : MonoBehaviour
 
             if (hit.collider != null)
             {
-                clickEvent = hit.collider.GetComponent<ClickEvent>();
-                if (clickEvent != null)
+                newClickEvent = hit.collider.GetComponent<ClickEvent>();
+                if (newClickEvent != null)
                 {
+                    if (clickEvent != null)
+                    {
+                        clickEvent.CloseUI();
+                    }
+
+                    clickEvent = newClickEvent;
                     clickEvent.OpenUI();
                 }
             }

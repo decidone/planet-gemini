@@ -14,15 +14,18 @@ public class Furnace : Production
     GameObject furnace;
 
     string recipeUI;
-    public int fuel;
+    int fuel;
+    int maxFuel;
     Inventory inventory;
     float prodTimer;
     Dictionary<string, Item> itemDic;
+    bool activeUI;
 
     void Start()
     {
         inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
+        maxFuel = 100;
         // 레시피 설정하는 부분 임시 설정.
         SetRecipe();
     }
@@ -33,15 +36,15 @@ public class Furnace : Production
         var slot1 = inventory.SlotCheck(1);
         var slot2 = inventory.SlotCheck(2);
 
-        if (fuel == 0 && slot.item == itemDic["Coal"] && slot.amount > 0)
+        if (fuel == 0 && slot1.item == itemDic["Coal"] && slot1.amount > 0)
         {
-            inventory.Sub(0, 1);
-            fuel = 100;
+            inventory.Sub(1, 1);
+            fuel = maxFuel;
         }
-        else if (fuel > 0 && slot1.amount > 0 && slot2.amount < maxAmount)
+        else if (fuel > 0 && slot.amount > 0 && slot2.amount < maxAmount)
         {
             Item output = null;
-            switch (slot1.item.name)
+            switch (slot.item.name)
             {
                 case "Gold":
                     output = itemDic["GoldBar"];
@@ -57,7 +60,7 @@ public class Furnace : Production
                 if (prodTimer > cooldown)
                 {
                     fuel -= 25;
-                    inventory.Sub(1, 1);
+                    inventory.Sub(0, 1);
                     inventory.SlotAdd(2, output, 1);
                     prodTimer = 0;
                 }
@@ -72,21 +75,34 @@ public class Furnace : Production
             prodTimer = 0;
         }
 
-        // 나중에 ui를 해당 건물이 사용하고 있을때만 돌아가게 할 것
-        sInvenManager.progressBar.SetProgress(prodTimer);
+        if (activeUI)
+        {
+            sInvenManager.progressBar.SetProgress(prodTimer);
+            sInvenManager.energyBar.SetProgress(fuel);
+        }
     }
 
     public void OpenUI()
     {
         if (recipeUI == "Furnace")
         {
-            furnace.SetActive(true);
             sInvenManager.SetInven(inventory, furnace);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Gold"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Silver"]);
+            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Gold"]);
+            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Silver"]);
+            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
             sInvenManager.slots[2].outputSlot = true;
             sInvenManager.progressBar.SetMaxProgress(cooldown);
+            sInvenManager.energyBar.SetMaxProgress(maxFuel);
+            activeUI = true;
+        }
+    }
+
+    public void CloseUI()
+    {
+        if (recipeUI == "Furnace")
+        {
+            sInvenManager.ReleaseInven();
+            activeUI = false;
         }
     }
 
