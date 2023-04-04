@@ -24,7 +24,7 @@ public class Miner : Production
         inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
         // 레시피 설정하는 부분 임시 설정.
-        SetRecipe();
+        recipeUI = "Miner";
         SetResource(itemDic["Coal"]);
     }
 
@@ -69,10 +69,5 @@ public class Miner : Production
     {
         item = _item;
         // 매장된 자원 확인, 생산 자원을 지정
-    }
-
-    void SetRecipe()
-    {
-        recipeUI = "Miner";
     }
 }

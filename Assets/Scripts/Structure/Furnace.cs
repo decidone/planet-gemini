@@ -27,7 +27,7 @@ public class Furnace : Production
         itemDic = ItemList.instance.itemDic;
         maxFuel = 100;
         // 레시피 설정하는 부분 임시 설정.
-        SetRecipe();
+        recipeUI = "Furnace";
     }
 
     void Update()
@@ -104,10 +104,5 @@ public class Furnace : Production
             sInvenManager.ReleaseInven();
             activeUI = false;
         }
-    }
-
-    void SetRecipe()
-    {
-        recipeUI = "Furnace";
     }
 }

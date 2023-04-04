@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StructureInvenManager : InventoryManager
 {
@@ -10,6 +11,7 @@ public class StructureInvenManager : InventoryManager
     GameObject structureInfoUI;
     public ProgressBar progressBar;
     public ProgressBar energyBar;
+    
 
     public void ReleaseInven()
     {

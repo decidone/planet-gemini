@@ -24,7 +24,7 @@ public class Assembler : Production
         inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
         // 레시피 설정하는 부분 임시 설정.
-        SetRecipe();
+        recipeUI = "Assembler";
     }
 
     void Update()
@@ -97,10 +97,5 @@ public class Assembler : Production
             sInvenManager.ReleaseInven();
             activeUI = false;
         }
-    }
-
-    void SetRecipe()
-    {
-        recipeUI = "Assembler";
     }
 }
