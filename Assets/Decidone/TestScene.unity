@@ -1761,6 +1761,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1799185956}
     - target: {fileID: 375400609723545136, guid: cb993bd292cd4ef419bc785b8c135e23, type: 3}
+      propertyPath: ui
+      value: 
+      objectReference: {fileID: 1342912809}
+    - target: {fileID: 375400609723545136, guid: cb993bd292cd4ef419bc785b8c135e23, type: 3}
       propertyPath: rManager
       value: 
       objectReference: {fileID: 1824061679}
@@ -1907,6 +1911,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1052441421}
     - target: {fileID: 1597667644691574814, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
+      propertyPath: ui
+      value: 
+      objectReference: {fileID: 453893910}
+    - target: {fileID: 1597667644691574814, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
       propertyPath: assembler
       value: 
       objectReference: {fileID: 453893910}
@@ -1923,6 +1931,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
     - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: pInvenManager
       value: 
@@ -2057,7 +2069,15 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1052441421}
     - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
+      propertyPath: ui
+      value: 
+      objectReference: {fileID: 1922134962}
+    - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
       propertyPath: miner
+      value: 
+      objectReference: {fileID: 1922134962}
+    - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
+      propertyPath: minerUI
       value: 
       objectReference: {fileID: 1922134962}
     - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
@@ -2146,6 +2166,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1799185956}
+    - target: {fileID: 2933665410225861189, guid: fe068c47125c8744eb4500be202a2006, type: 3}
+      propertyPath: ui
+      value: 
+      objectReference: {fileID: 2066249244}
     - target: {fileID: 2933665410225861189, guid: fe068c47125c8744eb4500be202a2006, type: 3}
       propertyPath: furnace
       value: 

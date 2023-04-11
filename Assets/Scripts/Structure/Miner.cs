@@ -10,9 +10,7 @@ public class Miner : Production
     float cooldown;
     [SerializeField]
     StructureInvenManager sInvenManager;
-    [SerializeField]
-    GameObject miner;
-    string recipeUI;
+
     Item item;
     Inventory inventory;
     Dictionary<string, Item> itemDic;
@@ -23,8 +21,6 @@ public class Miner : Production
     {
         inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
-        // 레시피 설정하는 부분 임시 설정.
-        recipeUI = "Miner";
         SetResource(itemDic["Coal"]);
     }
 
@@ -45,29 +41,23 @@ public class Miner : Production
             sInvenManager.progressBar.SetProgress(prodTimer);
     }
 
-    public void OpenUI()
-    {
-        if (recipeUI == "Miner")
-        {
-            sInvenManager.SetInven(inventory, miner);
-            sInvenManager.slots[0].outputSlot = true;
-            sInvenManager.progressBar.SetMaxProgress(cooldown);
-            activeUI = true;
-        }
-    }
-
-    public void CloseUI()
-    {
-        if (recipeUI == "Miner")
-        {
-            sInvenManager.ReleaseInven();
-            activeUI = false;
-        }
-    }
-
     void SetResource(Item _item)
     {
+        // 생산 자원을 지정
         item = _item;
-        // 매장된 자원 확인, 생산 자원을 지정
+    }
+
+    public override void OpenUI()
+    {
+        sInvenManager.SetInven(inventory, ui);
+        sInvenManager.slots[0].outputSlot = true;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        activeUI = true;
+    }
+
+    public override void CloseUI()
+    {
+        sInvenManager.ReleaseInven();
+        activeUI = false;
     }
 }

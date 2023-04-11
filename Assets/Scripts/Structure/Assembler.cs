@@ -10,10 +10,7 @@ public class Assembler : Production
     float cooldown;
     [SerializeField]
     StructureInvenManager sInvenManager;
-    [SerializeField]
-    GameObject assembler;
 
-    string recipeUI;
     Inventory inventory;
     float prodTimer;
     Dictionary<string, Item> itemDic;
@@ -23,8 +20,6 @@ public class Assembler : Production
     {
         inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
-        // 레시피 설정하는 부분 임시 설정.
-        recipeUI = "Assembler";
     }
 
     void Update()
@@ -75,27 +70,21 @@ public class Assembler : Production
         }
     }
 
-    public void OpenUI()
+    public override void OpenUI()
     {
-        if (recipeUI == "Assembler")
-        {
-            sInvenManager.SetInven(inventory, assembler);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
-            sInvenManager.slots[2].outputSlot = true;
-            sInvenManager.progressBar.SetMaxProgress(cooldown);
-            activeUI = true;
-        }
+        sInvenManager.SetInven(inventory, ui);
+        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
+        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
+        sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
+        sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
+        sInvenManager.slots[2].outputSlot = true;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        activeUI = true;
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
-        if (recipeUI == "Assembler")
-        {
-            sInvenManager.ReleaseInven();
-            activeUI = false;
-        }
+        sInvenManager.ReleaseInven();
+        activeUI = false;
     }
 }

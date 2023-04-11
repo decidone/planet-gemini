@@ -12,10 +12,7 @@ public class Constructor : Production
     StructureInvenManager sInvenManager;
     [SerializeField]
     RecipeManager rManager;
-    [SerializeField]
-    GameObject constructor;
 
-    string recipeUI;
     Inventory inventory;
     float prodTimer;
     Dictionary<string, Item> itemDic;
@@ -24,10 +21,8 @@ public class Constructor : Production
 
     void Start()
     {
-        inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
-        // 레시피 설정하는 부분 임시 설정.
-        recipeUI = "Constructor";
+        inventory = this.GetComponent<Inventory>();
         recipe = new Recipe();
     }
 
@@ -69,47 +64,40 @@ public class Constructor : Production
         }
     }
 
-    public void OpenUI()
-    {
-        if (recipeUI == "Constructor")
-        {
-            sInvenManager.SetInven(inventory, constructor);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
-            sInvenManager.slots[1].outputSlot = true;
-            sInvenManager.progressBar.SetMaxProgress(cooldown);
-            rManager.recipeBtn.gameObject.SetActive(true);
-            rManager.recipeBtn.onClick.RemoveAllListeners();
-            rManager.recipeBtn.onClick.AddListener(OpenRecipe);
-            activeUI = true;
-        }
-    }
-
-    public void CloseUI()
-    {
-        if (recipeUI == "Constructor")
-        {
-            sInvenManager.ReleaseInven();
-            rManager.recipeBtn.onClick.RemoveAllListeners();
-            rManager.recipeBtn.gameObject.SetActive(false);
-            activeUI = false;
-        }
-    }
-
     void OpenRecipe()
     {
-        //rManager.SetInven(inventory);
         rManager.OpenUI();
-        rManager.SetRecipe("Constructor", this);
+        rManager.SetRecipeUI("Constructor", this);
     }
 
     public override void SetRecipe(Recipe _recipe)
     {
         recipe = _recipe;
-        Debug.Log(recipe.name);
+        Debug.Log("recipe : " + recipe.name);
         sInvenManager.slots[0].ResetOption();
         sInvenManager.slots[0].SetInputItem(recipe.items[0]);
         sInvenManager.slots[1].outputSlot = true;
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
+    }
+
+    public override void OpenUI()
+    {
+        sInvenManager.SetInven(inventory, ui);
+        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
+        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
+        sInvenManager.slots[1].outputSlot = true;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        rManager.recipeBtn.gameObject.SetActive(true);
+        rManager.recipeBtn.onClick.RemoveAllListeners();
+        rManager.recipeBtn.onClick.AddListener(OpenRecipe);
+        activeUI = true;
+    }
+
+    public override void CloseUI()
+    {
+        sInvenManager.ReleaseInven();
+        rManager.recipeBtn.onClick.RemoveAllListeners();
+        rManager.recipeBtn.gameObject.SetActive(false);
+        activeUI = false;
     }
 }

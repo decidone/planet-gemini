@@ -10,10 +10,7 @@ public class Furnace : Production
     float cooldown;
     [SerializeField]
     StructureInvenManager sInvenManager;
-    [SerializeField]
-    GameObject furnace;
 
-    string recipeUI;
     int fuel;
     int maxFuel;
     Inventory inventory;
@@ -26,8 +23,6 @@ public class Furnace : Production
         inventory = this.GetComponent<Inventory>();
         itemDic = ItemList.instance.itemDic;
         maxFuel = 100;
-        // 레시피 설정하는 부분 임시 설정.
-        recipeUI = "Furnace";
     }
 
     void Update()
@@ -82,27 +77,21 @@ public class Furnace : Production
         }
     }
 
-    public void OpenUI()
+    public override void OpenUI()
     {
-        if (recipeUI == "Furnace")
-        {
-            sInvenManager.SetInven(inventory, furnace);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Gold"]);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Silver"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
-            sInvenManager.slots[2].outputSlot = true;
-            sInvenManager.progressBar.SetMaxProgress(cooldown);
-            sInvenManager.energyBar.SetMaxProgress(maxFuel);
-            activeUI = true;
-        }
+        sInvenManager.SetInven(inventory, ui);
+        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Gold"]);
+        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Silver"]);
+        sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
+        sInvenManager.slots[2].outputSlot = true;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.energyBar.SetMaxProgress(maxFuel);
+        activeUI = true;
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
-        if (recipeUI == "Furnace")
-        {
-            sInvenManager.ReleaseInven();
-            activeUI = false;
-        }
+        sInvenManager.ReleaseInven();
+        activeUI = false;
     }
 }

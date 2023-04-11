@@ -48,7 +48,7 @@ public class RecipeManager : InventoryManager
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 
-    public void SetRecipe(string str, Production _prod)
+    public void SetRecipeUI(string str, Production _prod)
     {
         // 인벤 초기화 기능 추가할 것
         recipes = new List<Recipe>();
