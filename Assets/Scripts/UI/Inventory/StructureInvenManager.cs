@@ -11,7 +11,21 @@ public class StructureInvenManager : InventoryManager
     GameObject structureInfoUI;
     public ProgressBar progressBar;
     public ProgressBar energyBar;
-    
+    Production prod;
+    bool isOpened;
+
+    protected override void Update()
+    {
+        base.Update();
+        if (isOpened)
+        {
+            progressBar.SetProgress(prod.GetProgress());
+            if (prod.GetType().Name == "Furnace")
+            {
+                energyBar.SetProgress(prod.GetFuel());
+            }
+        }
+    }
 
     public void ReleaseInven()
     {
@@ -20,6 +34,7 @@ public class StructureInvenManager : InventoryManager
             Slot slot = slots[i];
             slot.ResetOption();
         }
+        prod = null;
         progressBar.SetMaxProgress(1);
         energyBar.SetMaxProgress(1);
     }
@@ -57,11 +72,17 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
+    public void SetProd(Production _prod)
+    {
+        prod = _prod;
+    }
+
     public override void OpenUI()
     {
         structureInfoUI.SetActive(true);
         inventoryUI.SetActive(true);
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
+        isOpened = true;
     }
 
     public override void CloseUI()
@@ -69,5 +90,6 @@ public class StructureInvenManager : InventoryManager
         structureInfoUI.SetActive(false);
         inventoryUI.SetActive(false);
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
+        isOpened = false;
     }
 }

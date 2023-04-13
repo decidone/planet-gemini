@@ -4,24 +4,9 @@ using UnityEngine;
 
 public class Furnace : Production
 {
-    [SerializeField]
-    int maxAmount;
-    [SerializeField]
-    float cooldown;
-    [SerializeField]
-    StructureInvenManager sInvenManager;
-
-    int fuel;
-    int maxFuel;
-    Inventory inventory;
-    float prodTimer;
-    Dictionary<string, Item> itemDic;
-    bool activeUI;
-
-    void Start()
+    protected override void Start()
     {
-        inventory = this.GetComponent<Inventory>();
-        itemDic = ItemList.instance.itemDic;
+        base.Start();
         maxFuel = 100;
     }
 
@@ -38,7 +23,6 @@ public class Furnace : Production
         }
         else if (fuel > 0 && slot.amount > 0 && slot2.amount < maxAmount)
         {
-            Item output = null;
             switch (slot.item.name)
             {
                 case "Gold":
@@ -69,29 +53,23 @@ public class Furnace : Production
         {
             prodTimer = 0;
         }
-
-        if (activeUI)
-        {
-            sInvenManager.progressBar.SetProgress(prodTimer);
-            sInvenManager.energyBar.SetProgress(fuel);
-        }
     }
 
     public override void OpenUI()
     {
         sInvenManager.SetInven(inventory, ui);
+        sInvenManager.SetProd(this);
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+
+        sInvenManager.energyBar.SetMaxProgress(maxFuel);
         sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Gold"]);
         sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Silver"]);
         sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
         sInvenManager.slots[2].outputSlot = true;
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
-        sInvenManager.energyBar.SetMaxProgress(maxFuel);
-        activeUI = true;
     }
 
     public override void CloseUI()
     {
         sInvenManager.ReleaseInven();
-        activeUI = false;
     }
 }

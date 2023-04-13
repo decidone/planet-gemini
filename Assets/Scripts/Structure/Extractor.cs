@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class Extractor : Production
 {
-    
+    public override void OpenUI() { }
+    public override void CloseUI() { }
 }

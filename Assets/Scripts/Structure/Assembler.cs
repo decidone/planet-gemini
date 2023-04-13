@@ -4,24 +4,6 @@ using UnityEngine;
 
 public class Assembler : Production
 {
-    [SerializeField]
-    int maxAmount;
-    [SerializeField]
-    float cooldown;
-    [SerializeField]
-    StructureInvenManager sInvenManager;
-
-    Inventory inventory;
-    float prodTimer;
-    Dictionary<string, Item> itemDic;
-    bool activeUI;
-
-    void Start()
-    {
-        inventory = this.GetComponent<Inventory>();
-        itemDic = ItemList.instance.itemDic;
-    }
-
     void Update()
     {
         var slot = inventory.SlotCheck(0);
@@ -30,7 +12,6 @@ public class Assembler : Production
 
         if (slot.amount > 0 && slot1.amount > 0 && slot2.amount < maxAmount && slot.item != slot1.item)
         {
-            Item output = null;
             switch (slot.item.name)
             {
                 case "GoldBar":
@@ -63,28 +44,23 @@ public class Assembler : Production
         {
             prodTimer = 0;
         }
-
-        if (activeUI)
-        {
-            sInvenManager.progressBar.SetProgress(prodTimer);
-        }
     }
 
     public override void OpenUI()
     {
         sInvenManager.SetInven(inventory, ui);
+        sInvenManager.SetProd(this);
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+
         sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
         sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
         sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
         sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
         sInvenManager.slots[2].outputSlot = true;
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
-        activeUI = true;
     }
 
     public override void CloseUI()
     {
         sInvenManager.ReleaseInven();
-        activeUI = false;
     }
 }

@@ -4,23 +4,9 @@ using UnityEngine;
 
 public class Miner : Production
 {
-    [SerializeField]
-    int maxAmount;
-    [SerializeField]
-    float cooldown;
-    [SerializeField]
-    StructureInvenManager sInvenManager;
-
-    Item item;
-    Inventory inventory;
-    Dictionary<string, Item> itemDic;
-    float prodTimer;
-    bool activeUI;
-
-    void Start()
+    protected override void Start()
     {
-        inventory = this.GetComponent<Inventory>();
-        itemDic = ItemList.instance.itemDic;
+        base.Start();
         SetResource(itemDic["Coal"]);
     }
 
@@ -32,32 +18,29 @@ public class Miner : Production
             prodTimer += Time.deltaTime;
             if (prodTimer > cooldown)
             {
-                inventory.Add(item, 1);
+                inventory.Add(output, 1);
                 prodTimer = 0;
             }
         }
-
-        if (activeUI)
-            sInvenManager.progressBar.SetProgress(prodTimer);
-    }
-
-    void SetResource(Item _item)
-    {
-        // 생산 자원을 지정
-        item = _item;
     }
 
     public override void OpenUI()
     {
         sInvenManager.SetInven(inventory, ui);
-        sInvenManager.slots[0].outputSlot = true;
+        sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
-        activeUI = true;
+        
+        sInvenManager.slots[0].outputSlot = true;
     }
 
     public override void CloseUI()
     {
         sInvenManager.ReleaseInven();
-        activeUI = false;
+    }
+
+    void SetResource(Item item)
+    {
+        // 생산 자원을 지정
+        output = item;
     }
 }

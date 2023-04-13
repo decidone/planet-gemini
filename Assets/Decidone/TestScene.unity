@@ -1915,6 +1915,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 453893910}
     - target: {fileID: 1597667644691574814, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
+    - target: {fileID: 1597667644691574814, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
       propertyPath: assembler
       value: 
       objectReference: {fileID: 453893910}
@@ -2081,6 +2085,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1922134962}
     - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
+    - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
       propertyPath: sInvenManager
       value: 
       objectReference: {fileID: 1233251334}
@@ -2174,6 +2182,10 @@ PrefabInstance:
       propertyPath: furnace
       value: 
       objectReference: {fileID: 2066249244}
+    - target: {fileID: 2933665410225861189, guid: fe068c47125c8744eb4500be202a2006, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
     - target: {fileID: 2933665410225861189, guid: fe068c47125c8744eb4500be202a2006, type: 3}
       propertyPath: sInvenManager
       value: 
