@@ -21,26 +21,33 @@ public class Furnace : Production
             inventory.Sub(1, 1);
             fuel = maxFuel;
         }
-        else if (fuel > 0 && slot.amount > 0 && slot2.amount < maxAmount)
+
+        if (slot.item != null)
         {
-            switch (slot.item.name)
+            foreach (Recipe _recipe in recipes)
             {
-                case "Gold":
-                    output = itemDic["GoldBar"];
-                    break;
-                case "Silver":
-                    output = itemDic["SilverBar"];
-                    break;
+                if (slot.item == _recipe.items[0])
+                {
+                    recipe = _recipe;
+                    output = recipe.items[recipe.items.Count - 1];
+                }
             }
 
-            if (slot2.item == output || slot2.item == null)
+            if (fuel > 0 && slot.amount >= recipe.amounts[0] && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
             {
-                prodTimer += Time.deltaTime;
-                if (prodTimer > cooldown)
+                if (slot2.item == output || slot2.item == null)
                 {
-                    fuel -= 25;
-                    inventory.Sub(0, 1);
-                    inventory.SlotAdd(2, output, 1);
+                    prodTimer += Time.deltaTime;
+                    if (prodTimer > cooldown)
+                    {
+                        fuel -= 25;
+                        inventory.Sub(0, recipe.amounts[0]);
+                        inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                        prodTimer = 0;
+                    }
+                }
+                else
+                {
                     prodTimer = 0;
                 }
             }
@@ -62,8 +69,11 @@ public class Furnace : Production
         sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
-        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Gold"]);
-        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Silver"]);
+        recipes = rManager.GetRecipeList("Furnace", this);
+        foreach (Recipe recipe in recipes)
+        {
+            sInvenManager.slots[0].SetInputItem(recipe.items[0]);
+        }
         sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
         sInvenManager.slots[2].outputSlot = true;
     }

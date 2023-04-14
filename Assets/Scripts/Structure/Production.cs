@@ -23,6 +23,7 @@ public abstract class Production : Structure
     protected int maxFuel;
     protected Item output;
     protected Recipe recipe;
+    protected List<Recipe> recipes;
 
     public abstract void OpenUI();
     public abstract void CloseUI();
@@ -39,7 +40,8 @@ public abstract class Production : Structure
         output = null;
     }
 
-    public virtual void SetRecipe(Recipe recipe) { }
+    public virtual void SetRecipe(Recipe _recipe) { }
     public virtual float GetProgress() { return prodTimer; }
     public virtual float GetFuel() { return fuel; }
+    public virtual void OpenRecipe() { }
 }

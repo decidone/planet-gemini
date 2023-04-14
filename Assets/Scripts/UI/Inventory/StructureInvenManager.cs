@@ -27,18 +27,6 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
-    public void ReleaseInven()
-    {
-        for (int i = 0; i < slots.Length; i++)
-        {
-            Slot slot = slots[i];
-            slot.ResetOption();
-        }
-        prod = null;
-        progressBar.SetMaxProgress(1);
-        energyBar.SetMaxProgress(1);
-    }
-
     protected override void InputCheck()
     {
         if (inventory != null)
@@ -69,6 +57,32 @@ public class StructureInvenManager : InventoryManager
                     }
                 }
             }
+        }
+    }
+
+    public void ReleaseInven()
+    {
+        ResetInvenOption();
+        prod = null;
+        progressBar.SetMaxProgress(1);
+        energyBar.SetMaxProgress(1);
+    }
+
+    public void ResetInvenOption()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            slot.ResetOption();
+        }
+    }
+
+    public void InvenInit()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            slot.outputSlot = true;
         }
     }
 

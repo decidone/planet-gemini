@@ -47,9 +47,7 @@ public class Constructor : Production
         rManager.recipeBtn.onClick.RemoveAllListeners();
         rManager.recipeBtn.onClick.AddListener(OpenRecipe);
 
-        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
-        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
-        sInvenManager.slots[1].outputSlot = true;
+        sInvenManager.InvenInit();
     }
 
     public override void CloseUI()
@@ -60,7 +58,7 @@ public class Constructor : Production
         rManager.recipeBtn.gameObject.SetActive(false);
     }
 
-    void OpenRecipe()
+    public override void OpenRecipe()
     {
         rManager.OpenUI();
         rManager.SetRecipeUI("Constructor", this);
@@ -70,7 +68,7 @@ public class Constructor : Production
     {
         recipe = _recipe;
         Debug.Log("recipe : " + recipe.name);
-        sInvenManager.slots[0].ResetOption();
+        sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].SetInputItem(recipe.items[0]);
         sInvenManager.slots[1].outputSlot = true;
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);

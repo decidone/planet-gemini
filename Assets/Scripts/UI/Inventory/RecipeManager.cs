@@ -51,6 +51,7 @@ public class RecipeManager : InventoryManager
     public void SetRecipeUI(string str, Production _prod)
     {
         // 인벤 초기화 기능 추가할 것
+        prod = _prod;
         recipes = new List<Recipe>();
         recipes = RecipeList.instance.GetRecipeInven(str);
         for (int i = 0; i < recipes.Count; i++)
@@ -58,6 +59,14 @@ public class RecipeManager : InventoryManager
             inventory.Add(itemDic[recipes[i].name], 1);
         }
         SetInven(inventory, inventoryUI);
+    }
+
+    public List<Recipe> GetRecipeList(string str, Production _prod)
+    {
         prod = _prod;
+        recipes = new List<Recipe>();
+        recipes = RecipeList.instance.GetRecipeInven(str);
+        
+        return recipes;
     }
 }
