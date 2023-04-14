@@ -31,12 +31,24 @@ public class GolemCtrl : MonsterAi
             animator.SetBool("isAttack", false);
             attackState = MonsterAttackState.AttackEnd;
             StartCoroutine("AttackDelay");
+            if(attackMotion != 2)
+            {
+                if (aggroTarget != null)
+                {
+                    if (aggroTarget.GetComponent<PlayerStatus>())                    
+                        aggroTarget.GetComponent<PlayerStatus>().TakeDamage(getMonsterData.monsteData.Damage);                    
+                    else if (aggroTarget.GetComponent<UnitAi>())
+                        aggroTarget.GetComponent<UnitAi>().TakeDamage(getMonsterData.monsteData.Damage);
+                    else if (aggroTarget.GetComponent<TowerAi>())
+                        aggroTarget.GetComponent<TowerAi>().TakeDamage(getMonsterData.monsteData.Damage);
+                }
+            }
             checkTarget = false;
         }
     }
 
     protected override void AttackMove()
-    {
+    {   
         if (checkTarget == false)
         {
             if (getTargetTr != null)
@@ -71,7 +83,7 @@ public class GolemCtrl : MonsterAi
             else
                 golemFX.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
-        golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion);
+        golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion, getMonsterData.monsteData.Damage);
     }
 }
 

@@ -13,14 +13,27 @@ public class MonsterSpawner : MonoBehaviour
     private List<MonsterData> monsterDatas;
     [SerializeField]
     private GameObject[] monsterPrefab;
-
+    [SerializeField]
+    int spawnNum = 0;
     void Start()
     {        
-        for(int a = 0; a < 12; a++)
+        if(spawnNum > 0)
         {
-            //int ranMobType = Random.Range(0, monsterDatas.Count);
-            //var monster = SpawnMonster((MonsterType)ranMobType, ranMobType);
-            var monster = SpawnMonster((MonsterType)a, a);
+            for (int a = 0; a < spawnNum; a++)
+            {
+                //int ranMobType = Random.Range(0, monsterDatas.Count);
+                //var monster = SpawnMonster((MonsterType)ranMobType, ranMobType);
+                var monster = SpawnMonster((MonsterType)a, a);
+            }
+        }
+        else
+        {
+            for(int a = 0; a < 12; a++)
+            {
+                //int ranMobType = Random.Range(0, monsterDatas.Count);
+                //var monster = SpawnMonster((MonsterType)ranMobType, ranMobType);
+                var monster = SpawnMonster((MonsterType)a, a);
+            }
         }        
     }
 

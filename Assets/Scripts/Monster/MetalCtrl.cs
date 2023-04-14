@@ -20,7 +20,15 @@ public class MetalCtrl : MonsterAi
         {
             animator.SetBool("isAttack", false);
             attackState = MonsterAttackState.AttackEnd;
-
+            if (aggroTarget != null)
+            {
+                if (aggroTarget.GetComponent<PlayerStatus>())                
+                    aggroTarget.GetComponent<PlayerStatus>().TakeDamage(getMonsterData.monsteData.Damage);                
+                else if (aggroTarget.GetComponent<UnitAi>())
+                    aggroTarget.GetComponent<UnitAi>().TakeDamage(getMonsterData.monsteData.Damage);
+                else if (aggroTarget.GetComponent<TowerAi>())
+                    aggroTarget.GetComponent<TowerAi>().TakeDamage(getMonsterData.monsteData.Damage);
+            }
             StartCoroutine("AttackDelay");
         }
     }
