@@ -9,6 +9,7 @@ public class GolemFXCtrl : MonoBehaviour
     public Transform aggroTarget = null;   // Å¸°Ù
     int attackMotionNum;
     bool isAnimEnd = false;
+    float damage = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,11 +65,11 @@ public class GolemFXCtrl : MonoBehaviour
             transform.localScale = new Vector3(-1, 1, 1);
     }//void ImgMrror()
 
-    public void GetTarget(Vector3 target, int attackMotion)
+    public void GetTarget(Vector3 target, int attackMotion, float getDamage)
     {
         moveNextStep = (target - transform.position).normalized;
         //moveNextStep.Normalize();
-
+        damage = getDamage;
         attackMotionNum = attackMotion;
     }
 
@@ -76,4 +77,30 @@ public class GolemFXCtrl : MonoBehaviour
     {
         //this.gameObject.GetComponent<BoxCollider2D>().enabled = true;
     }
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            if (collision.isTrigger == false)
+            {
+                if (collision.GetComponent<PlayerStatus>())
+                    collision.GetComponent<PlayerStatus>().TakeDamage(damage);                
+            }            
+        }//if (collision.CompareTag("Player"))
+        else if (collision.CompareTag("Unit"))
+        {
+            if (collision.isTrigger == false)
+            {
+                collision.GetComponent<UnitAi>().TakeDamage(damage);
+            }
+        }//if (collision.CompareTag("Player"))
+
+        if(attackMotionNum == 2)
+        {
+            Destroy(this.gameObject, 0.1f);
+        }
+    }//private void OnTriggerEnter2D(Collider2D collision)
+
 }

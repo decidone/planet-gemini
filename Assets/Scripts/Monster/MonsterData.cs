@@ -8,8 +8,8 @@ public class MonsterData : ScriptableObject
     private string monsterName;//이름
     public string MonsterName { get { return monsterName; } }
     [SerializeField]
-    private int hp;//체력
-    public int Hp { get { return hp; } }
+    private int maxHp;//체력
+    public int MaxHp { get { return maxHp; } }
     [SerializeField]
     private int damage;//데미지
     public int Damage { get { return damage; } }
@@ -30,6 +30,6 @@ public class MonsterData : ScriptableObject
     public float ColliderRadius { get { return colliderRadius; } }
 
     [SerializeField]
-    private int attackNum;//타겟 탐색 범위
+    private int attackNum;//공격 모션
     public int AttackNum { get { return attackNum; } }
 }

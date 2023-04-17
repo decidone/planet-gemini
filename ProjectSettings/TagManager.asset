@@ -7,6 +7,8 @@ TagManager:
   - Undefined
   - Factory
   - Unit
+  - Monster
+  - Tower
   layers:
   - Default
   - TransparentFX
@@ -14,8 +16,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Unit
+  - Monster
   - 
   - 
   - 
