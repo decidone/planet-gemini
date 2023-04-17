@@ -158,7 +158,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 0
   hp: 0
+  ui: {fileID: 0}
+  sInvenManager: {fileID: 0}
+  rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
-  sInvenManager: {fileID: 0}
-  assembler: {fileID: 0}

@@ -15,7 +15,7 @@ public class Assembler : Production
             if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
                 && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
             {
-                output = recipe.items[recipe.items.Count - 1];
+                output = itemDic[recipe.items[recipe.items.Count - 1]];
 
                 if (slot2.item == output || slot2.item == null)
                 {
@@ -72,8 +72,8 @@ public class Assembler : Production
         recipe = _recipe;
         Debug.Log("recipe : " + recipe.name);
         sInvenManager.ResetInvenOption();
-        sInvenManager.slots[0].SetInputItem(recipe.items[0]);
-        sInvenManager.slots[1].SetInputItem(recipe.items[1]);
+        sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
+        sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
         sInvenManager.slots[2].outputSlot = true;
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }

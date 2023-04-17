@@ -13,7 +13,7 @@ public class Constructor : Production
         {
             if (slot.amount >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
             {
-                output = recipe.items[recipe.items.Count - 1];
+                output = itemDic[recipe.items[recipe.items.Count - 1]];
 
                 if (slot1.item == output || slot1.item == null)
                 {
@@ -69,7 +69,7 @@ public class Constructor : Production
         recipe = _recipe;
         Debug.Log("recipe : " + recipe.name);
         sInvenManager.ResetInvenOption();
-        sInvenManager.slots[0].SetInputItem(recipe.items[0]);
+        sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].outputSlot = true;
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }

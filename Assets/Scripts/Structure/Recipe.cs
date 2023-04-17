@@ -5,13 +5,13 @@ using UnityEngine;
 public class Recipe
 {
     public string name;
-    public List<Item> items;
+    public List<string> items;
     public List<int> amounts;
     public float cooldown;
 
     public Recipe() { }
 
-    public Recipe(string _name, List<Item> _items, List<int> _amounts, float _cooldown)
+    public Recipe(string _name, List<string> _items, List<int> _amounts, float _cooldown)
     {
         name = _name;
         items = _items;

@@ -26,10 +26,10 @@ public class Furnace : Production
         {
             foreach (Recipe _recipe in recipes)
             {
-                if (slot.item == _recipe.items[0])
+                if (slot.item == itemDic[_recipe.items[0]])
                 {
                     recipe = _recipe;
-                    output = recipe.items[recipe.items.Count - 1];
+                    output = itemDic[recipe.items[recipe.items.Count - 1]];
                 }
             }
 
@@ -73,7 +73,7 @@ public class Furnace : Production
         List<Item> items = new List<Item>();
         foreach (Recipe recipe in recipes)
         {
-            items.Add(recipe.items[0]);
+            items.Add(itemDic[recipe.items[0]]);
         }
         sInvenManager.slots[0].SetInputItem(items);
         sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
