@@ -4,10 +4,34 @@ using UnityEngine;
 
 public class PlayerInvenManager : InventoryManager
 {
+    [SerializeField]
+    StructureInvenManager sManager;
+
     protected override void Start()
     {
         base.Start();
         SetInven(inventory, inventoryUI);
+    }
+
+    protected override void InputCheck()
+    {
+        base.InputCheck();
+
+        if (sManager.isOpened)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
+            {
+                if (focusedSlot != null)
+                {
+                    if (focusedSlot.item != null)
+                    {
+                        int amount = sManager.InsertItem(focusedSlot.item, focusedSlot.amount);
+                        if (amount > 0)
+                            inventory.Sub(focusedSlot.slotNum, amount);
+                    }
+                }
+            }
+        }
     }
 
     public void SortBtn()

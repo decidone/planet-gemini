@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class Slot : MonoBehaviour
 {
+    public delegate void OnSlotChanged();
+    public OnSlotChanged onSlotChangedCallback;
+
     public Image icon;
     public Text amountText;
 
@@ -14,6 +17,34 @@ public class Slot : MonoBehaviour
     public bool inputSlot;
     public bool outputSlot;
 
+    void Start()
+    {
+        onSlotChangedCallback += SlotChanged;
+    }
+
+    void SlotChanged()
+    {
+        if (inputSlot)
+        {
+            if (inputItem.Count == 1)
+            {
+                Color color = icon.color;
+                icon.sprite = inputItem[0].icon;
+                icon.enabled = true;
+
+                if (amount == 0)
+                {
+                    color.a = 0.5f;
+                }
+                else
+                {
+                    color.a = 1f;
+                }
+                icon.color = color;
+            }
+        }
+    }
+
     public void AddItem(Item newItem, int itemAmount)
     {
         item = newItem;
@@ -23,6 +54,8 @@ public class Slot : MonoBehaviour
         icon.enabled = true;
         amountText.text = amount.ToString();
         amountText.enabled = true;
+
+        onSlotChangedCallback?.Invoke();
     }
 
     public void ClearSlot()
@@ -34,6 +67,8 @@ public class Slot : MonoBehaviour
         icon.enabled = false;
         amountText.text = null;
         amountText.enabled = false;
+
+        onSlotChangedCallback?.Invoke();
     }
 
     public void ResetOption()
@@ -41,6 +76,8 @@ public class Slot : MonoBehaviour
         inputSlot = false;
         outputSlot = false;
         inputItem.Clear();
+
+        onSlotChangedCallback?.Invoke();
     }
 
     public void SetInputItem(Item _item)
@@ -48,5 +85,15 @@ public class Slot : MonoBehaviour
         inputSlot = true;
         if (!inputItem.Contains(_item))
             inputItem.Add(_item);
+
+        onSlotChangedCallback?.Invoke();
+    }
+
+    public void SetInputItem(List<Item> items)
+    {
+        inputSlot = true;
+        inputItem = items;
+
+        onSlotChangedCallback?.Invoke();
     }
 }

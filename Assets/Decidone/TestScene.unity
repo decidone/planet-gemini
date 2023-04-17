@@ -2280,6 +2280,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1704338019, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: sManager
+      value: 
+      objectReference: {fileID: 1233251334}
+    - target: {fileID: 1704338019, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1877822182247631245}

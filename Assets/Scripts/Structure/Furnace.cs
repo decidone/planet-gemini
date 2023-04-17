@@ -70,10 +70,12 @@ public class Furnace : Production
 
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
         recipes = rManager.GetRecipeList("Furnace", this);
+        List<Item> items = new List<Item>();
         foreach (Recipe recipe in recipes)
         {
-            sInvenManager.slots[0].SetInputItem(recipe.items[0]);
+            items.Add(recipe.items[0]);
         }
+        sInvenManager.slots[0].SetInputItem(items);
         sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
         sInvenManager.slots[2].outputSlot = true;
     }

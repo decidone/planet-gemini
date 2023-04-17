@@ -11,8 +11,8 @@ public class StructureInvenManager : InventoryManager
     GameObject structureInfoUI;
     public ProgressBar progressBar;
     public ProgressBar energyBar;
+    public bool isOpened;
     Production prod;
-    bool isOpened;
 
     protected override void Update()
     {
@@ -89,6 +89,30 @@ public class StructureInvenManager : InventoryManager
     public void SetProd(Production _prod)
     {
         prod = _prod;
+    }
+
+    public int InsertItem(Item item, int amount)
+    {
+        // input 슬롯으로 지정된 칸에 아이템을 넣을 때 사용
+        int containable = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            if (slot.inputItem.Contains(item) && (slot.item == item || slot.item == null))
+            {
+                if (amount + slot.amount > inventory.maxAmount)
+                {
+                    containable = inventory.maxAmount - slot.amount;
+                }
+                else
+                {
+                    containable = amount;
+                }
+                inventory.SlotAdd(slot.slotNum, item, containable);
+            }
+        }
+
+        return containable;
     }
 
     public override void OpenUI()
