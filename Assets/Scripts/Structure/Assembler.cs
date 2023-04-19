@@ -51,6 +51,8 @@ public class Assembler : Production
         rManager.recipeBtn.onClick.AddListener(OpenRecipe);
 
         sInvenManager.InvenInit();
+        if (recipe.name != null)
+            SetRecipe(recipe);
     }
 
     public override void CloseUI()
@@ -69,8 +71,11 @@ public class Assembler : Production
 
     public override void SetRecipe(Recipe _recipe)
     {
+        if (recipe.name != null && recipe != _recipe)
+        {
+            sInvenManager.EmptySlot();
+        }
         recipe = _recipe;
-        Debug.Log("recipe : " + recipe.name);
         sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);

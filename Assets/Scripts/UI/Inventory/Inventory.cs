@@ -267,6 +267,17 @@ public class Inventory : MonoBehaviour
         onItemChangedCallback?.Invoke();
     }
 
+    public void ResetInven()
+    {
+        items.Clear();
+        amounts.Clear();
+        totalItems.Clear();
+        foreach (Item item in itemList)
+        {
+            totalItems.Add(item, 0);
+        }
+    }
+
     public void Sort()
     {
         items = new Dictionary<int, Item>();

@@ -115,6 +115,19 @@ public class StructureInvenManager : InventoryManager
         return containable;
     }
 
+    public void EmptySlot()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            if (slot.item != null)
+            {
+                playerInven.Add(slot.item, slot.amount);
+                inventory.Remove(slot);
+            }
+        }
+    }
+
     public override void OpenUI()
     {
         structureInfoUI.SetActive(true);
