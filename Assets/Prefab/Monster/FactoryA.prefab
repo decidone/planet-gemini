@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2183262049184912036}
   - component: {fileID: 365108928343600803}
   - component: {fileID: 5320131936670486442}
-  - component: {fileID: 9084144189574927901}
+  - component: {fileID: 1462048544358157173}
   m_Layer: 0
   m_Name: FactoryA
   m_TagString: Monster
@@ -184,8 +184,8 @@ MonoBehaviour:
   unitCanvers: {fileID: 3456046097214474780}
   monsterAI: 0
   attackState: 0
---- !u!58 &9084144189574927901
-CircleCollider2D:
+--- !u!70 &1462048544358157173
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -197,9 +197,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.06, y: -0.12}
-  serializedVersion: 2
-  m_Radius: 0.3
+  m_Offset: {x: -0.09, y: -0.12}
+  m_Size: {x: 0.84, y: 0.8}
+  m_Direction: 0
 --- !u!1 &1139673965210090900
 GameObject:
   m_ObjectHideFlags: 0

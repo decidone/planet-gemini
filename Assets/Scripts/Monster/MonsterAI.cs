@@ -55,7 +55,9 @@ public class MonsterAi : MonoBehaviour
     public float targetDist = 0.0f;                // 타겟과의 거리
     public int attackMotion = 0;
     //float colRad = 10;
-    //CircleCollider2D circle = null;
+
+    CircleCollider2D circle2D = null;
+    CapsuleCollider2D capsule2D = null;
     //공격 관련 변수
 
     // HpBar 관련
@@ -69,17 +71,20 @@ public class MonsterAi : MonoBehaviour
     public MonsterAIState monsterAI = MonsterAIState.MAI_Patrol; // 시작 시 패트롤 상태
     public MonsterAttackState attackState = MonsterAttackState.Waiting;
 
+    bool isFlip = false;
+
     // Start is called before the first frame update
     void Start()
     {
         getMonsterData = GetComponentInChildren<GetMonsterData>();
         animator = gameObject.GetComponentInChildren<Animator>();
         spawnPos = GameObject.Find("SpawnPos").transform;
-        this.gameObject.GetComponent<CircleCollider2D>().radius = getMonsterData.monsteData.ColliderRadius;
+        circle2D = GetComponent<CircleCollider2D>();
+        capsule2D = GetComponent<CapsuleCollider2D>();
+        circle2D.radius = getMonsterData.monsteData.ColliderRadius;
         patrolPos = spawnPos.position;
         StartCoroutine("Patrol");
-        //circle = GetComponent<CircleCollider2D>();
-        //circle.radius = colRad;
+        isFlip = unitSprite.flipX;
         hpBar.fillAmount = hp / maxHP;
 
     }//void Start()
@@ -271,10 +276,45 @@ public class MonsterAi : MonoBehaviour
     }
     public void ImgMrror()
     {
-        if (moveNextStep.x >= 0)        
-            transform.localScale = new Vector3(1, 1, 1);        
-        else if (moveNextStep.x < 0)        
-            transform.localScale = new Vector3(-1, 1, 1);
+        //if (moveNextStep.x >= 0)        
+        //    transform.localScale = new Vector3(1, 1, 1);        
+        //else if (moveNextStep.x < 0)        
+        //    transform.localScale = new Vector3(-1, 1, 1);
+
+        if (isFlip == true)
+        {
+            if (moveNextStep.x > 0)
+            {
+                if (unitSprite.flipX == false)
+                {
+                    unitSprite.flipX = true;
+                }
+            }
+            else if (moveNextStep.x < 0)
+            {
+                if (unitSprite.flipX == true)
+                {
+                    unitSprite.flipX = false;
+                }
+            }
+        }
+        else
+        {
+            if (moveNextStep.x > 0)
+            {
+                if (unitSprite.flipX == true)
+                {
+                    unitSprite.flipX = false;
+                }
+            }
+            else if (moveNextStep.x < 0)
+            {
+                if (unitSprite.flipX == false)
+                {
+                    unitSprite.flipX = true;
+                }
+            }
+        }
 
         this.transform.position = this.transform.position + moveNextStep;
     }//void ImgMrror()
@@ -349,13 +389,8 @@ public class MonsterAi : MonoBehaviour
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvers.SetActive(false);
 
-        foreach (GameObject target in targetList)
-        {
-            if(target.GetComponent<UnitAi>())
-                target.GetComponent<UnitAi>().RemoveMonster(this.gameObject);
-            else if (target.GetComponent<TowerAi>())
-                target.GetComponent<TowerAi>().RemoveMonster(this.gameObject);
-        }
+        capsule2D.enabled = false;
+        circle2D.enabled = false;
 
         Destroy(this.gameObject, 1f);
     }
@@ -409,7 +444,7 @@ public class MonsterAi : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            if(Vector3.Distance(transform.position, collision.transform.position) > getMonsterData.monsteData.AttackDist)
+            if(Vector3.Distance(transform.position, collision.transform.position) > circle2D.radius)
             {
                 //monsterAI = MonsterAIState.MAI_Patrol;
                 isFollowEnd = true;

@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 753128668259487209}
   - component: {fileID: 8234724267398255588}
   - component: {fileID: -6961045231524434650}
-  - component: {fileID: 5649087985180614739}
+  - component: {fileID: 8022674097172093497}
   m_Layer: 0
   m_Name: DyeA
   m_TagString: Monster
@@ -499,8 +499,8 @@ MonoBehaviour:
   unitCanvers: {fileID: 61381033163008437}
   monsterAI: 0
   attackState: 0
---- !u!58 &5649087985180614739
-CircleCollider2D:
+--- !u!70 &8022674097172093497
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -513,5 +513,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.3
+  m_Size: {x: 0.7, y: 0.7}
+  m_Direction: 0

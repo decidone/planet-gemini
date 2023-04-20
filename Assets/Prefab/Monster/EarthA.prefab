@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 6001305810961691229}
   - component: {fileID: 4301427442090909979}
   - component: {fileID: 293481600424882334}
-  - component: {fileID: 7107944843598538077}
+  - component: {fileID: 8051527625688539190}
   m_Layer: 0
   m_Name: EarthA
   m_TagString: Monster
@@ -353,8 +353,8 @@ MonoBehaviour:
   unitCanvers: {fileID: 5521661009913444406}
   monsterAI: 0
   attackState: 0
---- !u!58 &7107944843598538077
-CircleCollider2D:
+--- !u!70 &8051527625688539190
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -366,9 +366,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.06, y: -0.24}
-  serializedVersion: 2
-  m_Radius: 0.3
+  m_Offset: {x: -0.05, y: -0.2}
+  m_Size: {x: 0.8, y: 0.8}
+  m_Direction: 0
 --- !u!1 &5521661009913444406
 GameObject:
   m_ObjectHideFlags: 0

@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 6566239105743671450}
   - component: {fileID: 870764142548545524}
   - component: {fileID: 5872030752021281981}
-  - component: {fileID: 74005979401879951}
+  - component: {fileID: 223529813394900848}
   m_Layer: 0
   m_Name: HeadA
   m_TagString: Monster
@@ -384,8 +384,8 @@ MonoBehaviour:
   unitCanvers: {fileID: 7789758135176094031}
   monsterAI: 0
   attackState: 0
---- !u!58 &74005979401879951
-CircleCollider2D:
+--- !u!70 &223529813394900848
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -397,9 +397,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.06, y: -0.09}
-  serializedVersion: 2
-  m_Radius: 0.3
+  m_Offset: {x: 0, y: -0.12}
+  m_Size: {x: 0.84, y: 0.86}
+  m_Direction: 0
 --- !u!1 &7789758135176094031
 GameObject:
   m_ObjectHideFlags: 0

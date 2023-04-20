@@ -71,18 +71,20 @@ public class UnitAi : MonoBehaviour
     List<GameObject> monsterList = new List<GameObject>();
     bool isDelayAfterAttackCoroutine = false;
 
+    CircleCollider2D circle2D = null;
+    CapsuleCollider2D capsule2D = null;
+
     // HpBar ฐüทร
     public Image hpBar;
     float hp = 100.0f;
 
-    [SerializeField]
     bool isFlip = false;
     // Start is called before the first frame update
     void Start()
     {
-        this.gameObject.GetComponent<CircleCollider2D>().radius = unitData.ColliderRadius;
-        //circle = GetComponent<CircleCollider2D>();
-        //circle.radius = unitData.ColliderRadius;
+        circle2D = GetComponent<CircleCollider2D>();
+        capsule2D = GetComponent<CapsuleCollider2D>();
+        circle2D.radius = unitData.ColliderRadius;
         hp = unitData.MaxHp;
         hpBar.fillAmount = hp / unitData.MaxHp;
         unitGroupCtrl = GameObject.Find("UnitGroup").GetComponent<UnitGroupCtrl>();
@@ -128,7 +130,7 @@ public class UnitAi : MonoBehaviour
                 PatrolFunc();
                 break;                     
             case UnitAIState.UAI_Attack:
-                if (attackState == UnitAttackState.Waiting)
+                if (attackState == UnitAttackState.Waiting)  
                 {
                     AttackCheck();
                 }
@@ -550,13 +552,10 @@ public class UnitAi : MonoBehaviour
         unitSelImg.color = new Color(1f, 1f, 1f, 0f);
         unitCanvers.SetActive(false);
 
-        foreach (GameObject monster in monsterList)
-        {
-            if(monster.GetComponent<MonsterAi>())
-                monster.GetComponent<MonsterAi>().RemoveTarget(this.gameObject);
-        }
+        capsule2D.enabled = false;
+        circle2D.enabled = false;
 
-        if(unitSelect == true)
+        if (unitSelect == true)
         {
             unitGroupCtrl.DieUnitCheck(this.gameObject);
         }

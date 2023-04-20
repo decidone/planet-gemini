@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 5363860141312789268}
   - component: {fileID: 446287635045323555}
   - component: {fileID: -2800277750444707200}
-  - component: {fileID: 8020616892755360339}
+  - component: {fileID: 2670242036717598348}
   m_Layer: 0
   m_Name: SlimeA
   m_TagString: Monster
@@ -347,8 +347,8 @@ MonoBehaviour:
   unitCanvers: {fileID: 3601067226965773963}
   monsterAI: 0
   attackState: 0
---- !u!58 &8020616892755360339
-CircleCollider2D:
+--- !u!70 &2670242036717598348
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -360,9 +360,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.12, y: -0.3}
-  serializedVersion: 2
-  m_Radius: 0.3
+  m_Offset: {x: -0.13, y: -0.3}
+  m_Size: {x: 1.01, y: 0.61}
+  m_Direction: 0
 --- !u!1 &8673130859240096355
 GameObject:
   m_ObjectHideFlags: 0

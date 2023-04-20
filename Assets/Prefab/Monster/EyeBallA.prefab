@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4126868789632292652}
   - component: {fileID: 7184162479064873563}
   - component: {fileID: 1450568532970988622}
-  - component: {fileID: 2069809893943818986}
+  - component: {fileID: 5880749345680461039}
   m_Layer: 0
   m_Name: EyeBallA
   m_TagString: Monster
@@ -184,8 +184,8 @@ MonoBehaviour:
   unitCanvers: {fileID: 5114462088892852843}
   monsterAI: 0
   attackState: 0
---- !u!58 &2069809893943818986
-CircleCollider2D:
+--- !u!70 &5880749345680461039
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -197,9 +197,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.11, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.3
+  m_Offset: {x: -0.1, y: 0}
+  m_Size: {x: 0.6, y: 0.6}
+  m_Direction: 0
 --- !u!1 &2754669930316174709
 GameObject:
   m_ObjectHideFlags: 0

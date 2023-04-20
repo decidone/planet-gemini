@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 3943188774784533401}
   - component: {fileID: -543749240867064320}
   - component: {fileID: -3184883611660089522}
-  - component: {fileID: 2788274295412823924}
+  - component: {fileID: 5456661407106365054}
   m_Layer: 0
   m_Name: Metal_Monster_blue
   m_TagString: Monster
@@ -451,8 +451,8 @@ MonoBehaviour:
   unitCanvers: {fileID: 1541301859813256904}
   monsterAI: 0
   attackState: 0
---- !u!58 &2788274295412823924
-CircleCollider2D:
+--- !u!70 &5456661407106365054
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -464,9 +464,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.09, y: -0.13}
-  serializedVersion: 2
-  m_Radius: 0.3
+  m_Offset: {x: 0.09, y: -0.15}
+  m_Size: {x: 0.98, y: 1.17}
+  m_Direction: 0
 --- !u!1 &7705664241669799134
 GameObject:
   m_ObjectHideFlags: 0
