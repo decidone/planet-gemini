@@ -4,58 +4,32 @@ using UnityEngine;
 
 public class Assembler : Production
 {
-    [SerializeField]
-    int maxAmount;
-    [SerializeField]
-    float cooldown;
-    [SerializeField]
-    StructureInvenManager sInvenManager;
-    [SerializeField]
-    GameObject assembler;
-
-    string recipeUI;
-    Inventory inventory;
-    float prodTimer;
-    Dictionary<string, Item> itemDic;
-    bool activeUI;
-
-    void Start()
-    {
-        inventory = this.GetComponent<Inventory>();
-        itemDic = ItemList.instance.itemDic;
-        // 레시피 설정하는 부분 임시 설정.
-        SetRecipe();
-    }
-
     void Update()
     {
         var slot = inventory.SlotCheck(0);
         var slot1 = inventory.SlotCheck(1);
         var slot2 = inventory.SlotCheck(2);
 
-        if (slot.amount > 0 && slot1.amount > 0 && slot2.amount < maxAmount && slot.item != slot1.item)
+        if (recipe.name != null)
         {
-            Item output = null;
-            switch (slot.item.name)
+            if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
+                && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
             {
-                case "GoldBar":
-                    if (slot1.item.name == "SilverBar")
-                        output = itemDic["Coal"];
-                    break;
-                case "SilverBar":
-                    if (slot1.item.name == "GoldBar")
-                        output = itemDic["Coal"];
-                    break;
-            }
+                output = itemDic[recipe.items[recipe.items.Count - 1]];
 
-            if (slot2.item == output || slot2.item == null)
-            {
-                prodTimer += Time.deltaTime;
-                if (prodTimer > cooldown)
+                if (slot2.item == output || slot2.item == null)
                 {
-                    inventory.Sub(0, 1);
-                    inventory.Sub(1, 1);
-                    inventory.SlotAdd(2, output, 1);
+                    prodTimer += Time.deltaTime;
+                    if (prodTimer > cooldown)
+                    {
+                        inventory.Sub(0, recipe.amounts[0]);
+                        inventory.Sub(1, recipe.amounts[1]);
+                        inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                        prodTimer = 0;
+                    }
+                }
+                else
+                {
                     prodTimer = 0;
                 }
             }
@@ -64,43 +38,43 @@ public class Assembler : Production
                 prodTimer = 0;
             }
         }
-        else
-        {
-            prodTimer = 0;
-        }
-
-        if (activeUI)
-        {
-            sInvenManager.progressBar.SetProgress(prodTimer);
-        }
     }
 
-    public void OpenUI()
+    public override void OpenUI()
     {
-        if (recipeUI == "Assembler")
-        {
-            sInvenManager.SetInven(inventory, assembler);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["GoldBar"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["SilverBar"]);
-            sInvenManager.slots[2].outputSlot = true;
-            sInvenManager.progressBar.SetMaxProgress(cooldown);
-            activeUI = true;
-        }
+        sInvenManager.SetInven(inventory, ui);
+        sInvenManager.SetProd(this);
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+
+        rManager.recipeBtn.gameObject.SetActive(true);
+        rManager.recipeBtn.onClick.RemoveAllListeners();
+        rManager.recipeBtn.onClick.AddListener(OpenRecipe);
+
+        sInvenManager.InvenInit();
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
-        if (recipeUI == "Assembler")
-        {
-            sInvenManager.ReleaseInven();
-            activeUI = false;
-        }
+        sInvenManager.ReleaseInven();
+
+        rManager.recipeBtn.onClick.RemoveAllListeners();
+        rManager.recipeBtn.gameObject.SetActive(false);
     }
 
-    void SetRecipe()
+    public override void OpenRecipe()
     {
-        recipeUI = "Assembler";
+        rManager.OpenUI();
+        rManager.SetRecipeUI("Assembler", this);
+    }
+
+    public override void SetRecipe(Recipe _recipe)
+    {
+        recipe = _recipe;
+        Debug.Log("recipe : " + recipe.name);
+        sInvenManager.ResetInvenOption();
+        sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
+        sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
+        sInvenManager.slots[2].outputSlot = true;
+        sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }
 }

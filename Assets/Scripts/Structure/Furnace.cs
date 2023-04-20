@@ -4,30 +4,10 @@ using UnityEngine;
 
 public class Furnace : Production
 {
-    [SerializeField]
-    int maxAmount;
-    [SerializeField]
-    float cooldown;
-    [SerializeField]
-    StructureInvenManager sInvenManager;
-    [SerializeField]
-    GameObject furnace;
-
-    string recipeUI;
-    int fuel;
-    int maxFuel;
-    Inventory inventory;
-    float prodTimer;
-    Dictionary<string, Item> itemDic;
-    bool activeUI;
-
-    void Start()
+    protected override void Start()
     {
-        inventory = this.GetComponent<Inventory>();
-        itemDic = ItemList.instance.itemDic;
+        base.Start();
         maxFuel = 100;
-        // 레시피 설정하는 부분 임시 설정.
-        SetRecipe();
     }
 
     void Update()
@@ -41,27 +21,33 @@ public class Furnace : Production
             inventory.Sub(1, 1);
             fuel = maxFuel;
         }
-        else if (fuel > 0 && slot.amount > 0 && slot2.amount < maxAmount)
+
+        if (slot.item != null)
         {
-            Item output = null;
-            switch (slot.item.name)
+            foreach (Recipe _recipe in recipes)
             {
-                case "Gold":
-                    output = itemDic["GoldBar"];
-                    break;
-                case "Silver":
-                    output = itemDic["SilverBar"];
-                    break;
+                if (slot.item == itemDic[_recipe.items[0]])
+                {
+                    recipe = _recipe;
+                    output = itemDic[recipe.items[recipe.items.Count - 1]];
+                }
             }
 
-            if (slot2.item == output || slot2.item == null)
+            if (fuel > 0 && slot.amount >= recipe.amounts[0] && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
             {
-                prodTimer += Time.deltaTime;
-                if (prodTimer > cooldown)
+                if (slot2.item == output || slot2.item == null)
                 {
-                    fuel -= 25;
-                    inventory.Sub(0, 1);
-                    inventory.SlotAdd(2, output, 1);
+                    prodTimer += Time.deltaTime;
+                    if (prodTimer > cooldown)
+                    {
+                        fuel -= 25;
+                        inventory.Sub(0, recipe.amounts[0]);
+                        inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                        prodTimer = 0;
+                    }
+                }
+                else
+                {
                     prodTimer = 0;
                 }
             }
@@ -74,40 +60,28 @@ public class Furnace : Production
         {
             prodTimer = 0;
         }
-
-        if (activeUI)
-        {
-            sInvenManager.progressBar.SetProgress(prodTimer);
-            sInvenManager.energyBar.SetProgress(fuel);
-        }
     }
 
-    public void OpenUI()
+    public override void OpenUI()
     {
-        if (recipeUI == "Furnace")
+        sInvenManager.SetInven(inventory, ui);
+        sInvenManager.SetProd(this);
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+
+        sInvenManager.energyBar.SetMaxProgress(maxFuel);
+        recipes = rManager.GetRecipeList("Furnace", this);
+        List<Item> items = new List<Item>();
+        foreach (Recipe recipe in recipes)
         {
-            sInvenManager.SetInven(inventory, furnace);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Gold"]);
-            sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Silver"]);
-            sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
-            sInvenManager.slots[2].outputSlot = true;
-            sInvenManager.progressBar.SetMaxProgress(cooldown);
-            sInvenManager.energyBar.SetMaxProgress(maxFuel);
-            activeUI = true;
+            items.Add(itemDic[recipe.items[0]]);
         }
+        sInvenManager.slots[0].SetInputItem(items);
+        sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
+        sInvenManager.slots[2].outputSlot = true;
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
-        if (recipeUI == "Furnace")
-        {
-            sInvenManager.ReleaseInven();
-            activeUI = false;
-        }
-    }
-
-    void SetRecipe()
-    {
-        recipeUI = "Furnace";
+        sInvenManager.ReleaseInven();
     }
 }

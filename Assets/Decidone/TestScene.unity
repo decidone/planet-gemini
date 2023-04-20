@@ -473,6 +473,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 453893910, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
   m_PrefabInstance: {fileID: 8766906530786940947}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &586357842 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 586357842, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+  m_PrefabInstance: {fileID: 1877822182247631244}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8612a3248f1ad04197ab52610640ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &937196156
 GameObject:
   m_ObjectHideFlags: 0
@@ -1485,6 +1496,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2369682121264992852, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
   m_PrefabInstance: {fileID: 2369682122792596604}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1824061679 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1824061679, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 8766906530786940947}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bccded765eb7cfc42833ae2ca2b97e70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1922134962 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1070314735, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
@@ -1605,7 +1627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
-  amount: 5
+  amount: 99
 --- !u!1 &2066249244 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3843819938891635663, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
@@ -1675,9 +1697,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1799185956}
     - target: {fileID: 375400609723545136, guid: cb993bd292cd4ef419bc785b8c135e23, type: 3}
-      propertyPath: constructor
+      propertyPath: ui
       value: 
       objectReference: {fileID: 1342912809}
+    - target: {fileID: 375400609723545136, guid: cb993bd292cd4ef419bc785b8c135e23, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
     - target: {fileID: 375400609723545136, guid: cb993bd292cd4ef419bc785b8c135e23, type: 3}
       propertyPath: sInvenManager
       value: 
@@ -1817,9 +1843,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1052441421}
     - target: {fileID: 1597667644691574814, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
-      propertyPath: assembler
+      propertyPath: ui
       value: 
       objectReference: {fileID: 453893910}
+    - target: {fileID: 1597667644691574814, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
     - target: {fileID: 1597667644691574814, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
       propertyPath: sInvenManager
       value: 
@@ -1833,6 +1863,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 586357842, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1799185956}
+    - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
     - target: {fileID: 1528217382, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: pInvenManager
       value: 
@@ -1962,9 +2000,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1052441421}
     - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
-      propertyPath: miner
+      propertyPath: ui
       value: 
       objectReference: {fileID: 1922134962}
+    - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
     - target: {fileID: 2359874169441961875, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
       propertyPath: sInvenManager
       value: 
@@ -2052,9 +2094,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1799185956}
     - target: {fileID: 2933665410225861189, guid: fe068c47125c8744eb4500be202a2006, type: 3}
-      propertyPath: furnace
+      propertyPath: ui
       value: 
       objectReference: {fileID: 2066249244}
+    - target: {fileID: 2933665410225861189, guid: fe068c47125c8744eb4500be202a2006, type: 3}
+      propertyPath: rManager
+      value: 
+      objectReference: {fileID: 1824061679}
     - target: {fileID: 2933665410225861189, guid: fe068c47125c8744eb4500be202a2006, type: 3}
       propertyPath: sInvenManager
       value: 
@@ -2132,6 +2178,10 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 1877822182247631245}
+    - target: {fileID: 1824061679, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: inventory
+      value: 
+      objectReference: {fileID: 586357842}
     - target: {fileID: 8766906530158679200, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_Name
       value: Canvas

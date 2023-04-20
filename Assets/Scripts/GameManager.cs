@@ -7,10 +7,12 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     PlayerInvenManager pInvenManager;
+    [SerializeField]
+    RecipeManager rManager;
     DragSlot dragSlot;
     List<GameObject> openedUI;
-    ClickEvent clickEvent;
-    ClickEvent newClickEvent;
+    StructureClickEvent clickEvent;
+    StructureClickEvent newClickEvent;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -59,7 +61,7 @@ public class GameManager : MonoBehaviour
 
             if (hit.collider != null)
             {
-                newClickEvent = hit.collider.GetComponent<ClickEvent>();
+                newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
                 if (newClickEvent != null)
                 {
                     if (clickEvent != null)
@@ -84,6 +86,9 @@ public class GameManager : MonoBehaviour
                         break;
                     case "StructureInfo":
                         clickEvent.CloseUI();
+                        break;
+                    case "RecipeMenu":
+                        rManager.CloseUI();
                         break;
                     default:
                         break;

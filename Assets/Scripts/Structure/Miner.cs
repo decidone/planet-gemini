@@ -4,27 +4,9 @@ using UnityEngine;
 
 public class Miner : Production
 {
-    [SerializeField]
-    int maxAmount;
-    [SerializeField]
-    float cooldown;
-    [SerializeField]
-    StructureInvenManager sInvenManager;
-    [SerializeField]
-    GameObject miner;
-    string recipeUI;
-    Item item;
-    Inventory inventory;
-    Dictionary<string, Item> itemDic;
-    float prodTimer;
-    bool activeUI;
-
-    void Start()
+    protected override void Start()
     {
-        inventory = this.GetComponent<Inventory>();
-        itemDic = ItemList.instance.itemDic;
-        // 레시피 설정하는 부분 임시 설정.
-        SetRecipe();
+        base.Start();
         SetResource(itemDic["Coal"]);
     }
 
@@ -36,43 +18,29 @@ public class Miner : Production
             prodTimer += Time.deltaTime;
             if (prodTimer > cooldown)
             {
-                inventory.Add(item, 1);
+                inventory.Add(output, 1);
                 prodTimer = 0;
             }
         }
-
-        if (activeUI)
-            sInvenManager.progressBar.SetProgress(prodTimer);
     }
 
-    public void OpenUI()
+    public override void OpenUI()
     {
-        if (recipeUI == "Miner")
-        {
-            sInvenManager.SetInven(inventory, miner);
-            sInvenManager.slots[0].outputSlot = true;
-            sInvenManager.progressBar.SetMaxProgress(cooldown);
-            activeUI = true;
-        }
+        sInvenManager.SetInven(inventory, ui);
+        sInvenManager.SetProd(this);
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        
+        sInvenManager.slots[0].outputSlot = true;
     }
 
-    public void CloseUI()
+    public override void CloseUI()
     {
-        if (recipeUI == "Miner")
-        {
-            sInvenManager.ReleaseInven();
-            activeUI = false;
-        }
+        sInvenManager.ReleaseInven();
     }
 
-    void SetResource(Item _item)
+    void SetResource(Item item)
     {
-        item = _item;
-        // 매장된 자원 확인, 생산 자원을 지정
-    }
-
-    void SetRecipe()
-    {
-        recipeUI = "Miner";
+        // 생산 자원을 지정
+        output = item;
     }
 }

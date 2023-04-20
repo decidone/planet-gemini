@@ -8,8 +8,7 @@ public class Inventory : MonoBehaviour
 
     [SerializeField]
     int space;   // 아이템 슬롯 상한, 드래그용 슬롯 번호를 겸 함
-    [SerializeField]
-    int maxAmount;   // 한 슬롯 당 최대 수량
+    public int maxAmount;   // 한 슬롯 당 최대 수량
     [SerializeField]
     GameObject itemPref;
     [SerializeField]

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StructureInvenManager : InventoryManager
 {
@@ -10,16 +11,20 @@ public class StructureInvenManager : InventoryManager
     GameObject structureInfoUI;
     public ProgressBar progressBar;
     public ProgressBar energyBar;
+    public bool isOpened;
+    Production prod;
 
-    public void ReleaseInven()
+    protected override void Update()
     {
-        for (int i = 0; i < slots.Length; i++)
+        base.Update();
+        if (isOpened)
         {
-            Slot slot = slots[i];
-            slot.ResetOption();
+            progressBar.SetProgress(prod.GetProgress());
+            if (prod.GetType().Name == "Furnace")
+            {
+                energyBar.SetProgress(prod.GetFuel());
+            }
         }
-        progressBar.SetMaxProgress(1);
-        energyBar.SetMaxProgress(1);
     }
 
     protected override void InputCheck()
@@ -55,11 +60,67 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
+    public void ReleaseInven()
+    {
+        ResetInvenOption();
+        prod = null;
+        progressBar.SetMaxProgress(1);
+        energyBar.SetMaxProgress(1);
+    }
+
+    public void ResetInvenOption()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            slot.ResetOption();
+        }
+    }
+
+    public void InvenInit()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            slot.outputSlot = true;
+        }
+    }
+
+    public void SetProd(Production _prod)
+    {
+        prod = _prod;
+    }
+
+    public int InsertItem(Item item, int amount)
+    {
+        // input 슬롯으로 지정된 칸에 아이템을 넣을 때 사용
+        int containable = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            if (slot.inputItem.Contains(item) && (slot.item == item || slot.item == null))
+            {
+                if (amount + slot.amount > inventory.maxAmount)
+                {
+                    containable = inventory.maxAmount - slot.amount;
+                }
+                else
+                {
+                    containable = amount;
+                }
+                inventory.SlotAdd(slot.slotNum, item, containable);
+            }
+        }
+
+        return containable;
+    }
+
     public override void OpenUI()
     {
         structureInfoUI.SetActive(true);
         inventoryUI.SetActive(true);
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
+        isOpened = true;
     }
 
     public override void CloseUI()
@@ -67,5 +128,6 @@ public class StructureInvenManager : InventoryManager
         structureInfoUI.SetActive(false);
         inventoryUI.SetActive(false);
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
+        isOpened = false;
     }
 }
