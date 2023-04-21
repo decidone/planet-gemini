@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 3989257764307421973}
   - component: {fileID: 1127319392222400545}
   - component: {fileID: -5951166985654509526}
-  - component: {fileID: 3840320726109493634}
+  - component: {fileID: 4212981719435381732}
   m_Layer: 0
   m_Name: PuddleA
   m_TagString: Monster
@@ -499,8 +499,8 @@ MonoBehaviour:
   unitCanvers: {fileID: 8052036765479633786}
   monsterAI: 0
   attackState: 0
---- !u!58 &3840320726109493634
-CircleCollider2D:
+--- !u!70 &4212981719435381732
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -513,5 +513,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.09}
-  serializedVersion: 2
-  m_Radius: 0.3
+  m_Size: {x: 0.8, y: 0.49}
+  m_Direction: 0
