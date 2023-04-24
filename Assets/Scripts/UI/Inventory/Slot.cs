@@ -20,6 +20,7 @@ public class Slot : MonoBehaviour
     void Start()
     {
         onSlotChangedCallback += SlotChanged;
+        onSlotChangedCallback?.Invoke();
     }
 
     void SlotChanged()
@@ -76,8 +77,6 @@ public class Slot : MonoBehaviour
         inputSlot = false;
         outputSlot = false;
         inputItem.Clear();
-
-        onSlotChangedCallback?.Invoke();
     }
 
     public void SetInputItem(Item _item)

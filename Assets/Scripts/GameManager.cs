@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
         {
             if (EventSystem.current.IsPointerOverGameObject())
                 return;
+            if (rManager.isOpened)
+                return;
 
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);

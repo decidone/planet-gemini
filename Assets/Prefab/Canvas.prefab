@@ -2464,6 +2464,7 @@ MonoBehaviour:
   slots: []
   recipeBtn: {fileID: 1304625492}
   structureInfoUI: {fileID: 1052441421}
+  isOpened: 0
 --- !u!1 &8766906530296426731
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ public class RecipeManager : InventoryManager
     Dictionary<string, Item> itemDic;
     List<Recipe> recipes;
     Production prod;
+    public bool isOpened;
 
     protected override void Start()
     {
@@ -38,6 +39,7 @@ public class RecipeManager : InventoryManager
     {
         inventoryUI.SetActive(true);
         structureInfoUI.SetActive(false);
+        isOpened = true;
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 
@@ -45,12 +47,13 @@ public class RecipeManager : InventoryManager
     {
         inventoryUI.SetActive(false);
         structureInfoUI.SetActive(true);
+        isOpened = false;
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 
     public void SetRecipeUI(string str, Production _prod)
     {
-        // 인벤 초기화 기능 추가할 것
+        inventory.ResetInven();
         prod = _prod;
         recipes = new List<Recipe>();
         recipes = RecipeList.instance.GetRecipeInven(str);
