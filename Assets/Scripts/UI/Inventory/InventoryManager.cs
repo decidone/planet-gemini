@@ -97,7 +97,7 @@ public abstract class InventoryManager : MonoBehaviour
                 } else if (!EventSystem.current.IsPointerOverGameObject() && dragSlot.gameObject.activeSelf)
                 {
                     // 인벤토리 UI 바깥
-                    inventory.Drop();
+                    inventory.DragDrop();
                 }
                 else
                 {

@@ -56,8 +56,16 @@ public class Inventory : MonoBehaviour
 
     public void Add(Item item, int amount)
     {
+        int containableAmount = SpaceCheck(item);
         int tempAmount = amount;
-        totalItems[item] += amount;
+
+        if (containableAmount < amount)
+        {
+            tempAmount = containableAmount;
+            int dropAmount = amount - containableAmount;
+            Drop(item, dropAmount);
+        }
+        totalItems[item] += tempAmount;
 
         // 2. 이미 있던 칸에 수량 증가
         for (int i = 0; i < space; i++)
@@ -251,20 +259,25 @@ public class Inventory : MonoBehaviour
         onItemChangedCallback?.Invoke();
     }
 
-    public void Drop()
+    public void DragDrop()
     {
-        Debug.Log("Drop : " + dragSlot.item.name + ", Amount : " + dragSlot.amount);
-        GameObject dropItem = Instantiate(itemPref);
-        SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
-        sprite.sprite = dragSlot.item.icon;
-        ItemProps itemProps = dropItem.GetComponent<ItemProps>();
-        itemProps.item = dragSlot.item;
-        itemProps.amount = dragSlot.amount;
-        dropItem.transform.position = player.transform.position;
-        dropItem.transform.position += Vector3.down * 1.5f;
+        Drop(dragSlot.item, dragSlot.amount);
         dragSlot.ClearSlot();
 
         onItemChangedCallback?.Invoke();
+    }
+
+    public void Drop(Item item, int amount)
+    {
+        Debug.Log("Drop : " + item.name + ", Amount : " + amount);
+        GameObject dropItem = Instantiate(itemPref);
+        SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
+        sprite.sprite = item.icon;
+        ItemProps itemProps = dropItem.GetComponent<ItemProps>();
+        itemProps.item = item;
+        itemProps.amount = amount;
+        dropItem.transform.position = player.transform.position;
+        dropItem.transform.position += Vector3.down * 1.5f;
     }
 
     public void ResetInven()
