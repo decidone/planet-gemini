@@ -165,21 +165,8 @@ MonoBehaviour:
   animator: {fileID: 248036444977090386}
   unitSprite: {fileID: 248036444977090384}
   unitCanvers: {fileID: 3900482381079000164}
-  moveRadi: 0
-  isMoveCheckCoroutine: 0
-  movedDistance: 0
-  isHold: 0
-  unitAIState: 0
-  unitLastState: 0
-  attackState: 0
   unitSelImg: {fileID: 5345713938874468926}
-  aggroTarget: {fileID: 0}
-  targetDist: 0
-  isTargetSet: 0
-  isAttackMove: 1
-  monsterList: []
   hpBar: {fileID: 5542614678106668238}
-  isFlip: 0
 --- !u!58 &6548727644941508392
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -284,7 +271,6 @@ GameObject:
   - component: {fileID: 1471832180187649144}
   - component: {fileID: 1106560831368199888}
   - component: {fileID: 254279599335913722}
-  - component: {fileID: 3377231994326715512}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -375,18 +361,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3377231994326715512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3900482381079000164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a05e1ad9f94a6bf4c84a4bc743b0bb25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6641633796017715628
 GameObject:
   m_ObjectHideFlags: 0

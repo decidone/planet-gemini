@@ -1,0 +1,21 @@
+{
+  "FireTower": //딕셔너리에 과학 level도 추가해야함
+  {
+    "name": "FireTower",
+    "items": [ "Gold", "GoldBar" ],
+    "amounts": [ 2, 1 ],
+    "cooldown": 3
+  },
+  "IceTower": {
+    "name": "IceTower",
+    "items": [ "Silver", "SilverBar" ],
+    "amounts": [ 2, 1 ],
+    "cooldown": 3
+  },
+  "BloodTower": {
+    "name": "BloodTower",
+    "items": [ "Gold", "GoldBar", "Silver", "SilverBar" ],
+    "amounts": [ 2, 1, 2, 1 ],
+    "cooldown": 3
+  }
+}

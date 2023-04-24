@@ -257,6 +257,7 @@ MonoBehaviour:
   animator: {fileID: 1929914461128864778}
   hpBar: {fileID: 3307338136325962820}
   hp: 200
+  isDie: 0
   isRepair: 0
   repairBar: {fileID: 8347635776944076181}
   attackFX: {fileID: 131646313625141333, guid: b31d241b0c0f49b4583ae09c0b61542c, type: 3}
@@ -425,7 +426,6 @@ GameObject:
   - component: {fileID: 205103733678586541}
   - component: {fileID: 40356280618812828}
   - component: {fileID: 992092320241589362}
-  - component: {fileID: 463639740174358999}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -517,15 +517,3 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &463639740174358999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6100206763459468456}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a05e1ad9f94a6bf4c84a4bc743b0bb25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
