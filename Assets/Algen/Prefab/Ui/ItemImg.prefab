@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1961930473367351385}
   - component: {fileID: 92277208857316195}
   m_Layer: 5
-  m_Name: NeedNum
+  m_Name: amountNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,8 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   icon: {fileID: 8029119213343738113}
-  NeedNumText: {fileID: 92277208857316195}
+  amountText: {fileID: 92277208857316195}
   item: {fileID: 0}
   inputItem: []
   amount: 0
-  inventory: {fileID: 0}

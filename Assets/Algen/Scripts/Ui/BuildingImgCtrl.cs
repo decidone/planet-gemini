@@ -9,13 +9,13 @@ public class BuildingImgCtrl : MonoBehaviour
     public OnSlotChanged onSlotChangedCallback;
 
     public Image icon;
-    public Text NeedNumText;
+    public Text amountText;
 
     public Item item;
     public List<Item> inputItem;  //inputSlot 받는 아이템
     public int amount;
 
-    public Inventory inventory = null;
+    //public Inventory inventory = null;
 
     // Start is called before the first frame update
     void Start()
@@ -39,20 +39,20 @@ public class BuildingImgCtrl : MonoBehaviour
 
         icon.sprite = item.icon;
         icon.enabled = true;
-        NeedNumText.text = amount.ToString();
-        NeedNumText.enabled = true;
+        amountText.text = amount.ToString();
+        amountText.enabled = true;
 
         Color iconColor = icon.color;
 
         if (isEnough)
         {
             iconColor.a = 1f;
-            NeedNumText.color = Color.white;
+            amountText.color = Color.white;
         }
         else
         {
             iconColor.a = 0.5f;
-            NeedNumText.color = Color.red;
+            amountText.color = Color.red;
         }
         icon.color = iconColor;
 

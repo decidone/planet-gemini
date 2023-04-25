@@ -4,12 +4,8 @@ using UnityEngine;
 
 public class BuildingList : MonoBehaviour
 {
-    // 스크립트에서 아이템 사용 및 인벤토리 아이템 정렬에 사용
-    // 아이템 사용을 위해 <string, Item>으로 Document 만들 필요가 있음
     public List<Building> itemList = new List<Building>();
-    //public List<Item> itemList = new List<Item>();
     public Dictionary<string, Building> itemDic = new Dictionary<string, Building>();
-    //public Dictionary<string, Item> itemDic = new Dictionary<string, Item>();
 
     #region Singleton
     public static BuildingList instance;
@@ -24,10 +20,6 @@ public class BuildingList : MonoBehaviour
 
         instance = this;
 
-        //foreach (Item item in itemList)
-        //{
-        //    itemDic.Add(item.name, item);
-        //}
         foreach (Building item in itemList)
         {
             itemDic.Add(item.name, item);

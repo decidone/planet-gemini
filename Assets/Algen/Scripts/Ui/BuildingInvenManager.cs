@@ -73,14 +73,13 @@ public class BuildingInvenManager : MonoBehaviour
         buildingData = new BuildingData();
         buildingData = BuildingDataGet.instance.GetBuildingName(focusedSlot.item.name);
 
-        for (int i = 0; i < buildingInventory.items.Count; i++)
+        for (int i = 0; i < buildingInventory.towerList.Count; i++)
         {
-            if (buildingInventory.items[i].item == focusedSlot.item)
+            if (buildingInventory.towerList[i].item == focusedSlot.item)
             {
-                buildingInfo.CreateItemSlot(buildingData, buildingInventory.items[i]);
+                buildingInfo.SetItemSlot(buildingData, buildingInventory.towerList[i]);
             }
         }
-
         //buildingInfo.CreateItemSlot(buildingData, focusedSlot.item);
     }
 
@@ -88,10 +87,10 @@ public class BuildingInvenManager : MonoBehaviour
     {
         for (int i = 0; i < slots.Length; i++)
         {
-            if (buildingInventory.items.ContainsKey(i))
+            if (buildingInventory.towerList.ContainsKey(i))
             {
                 //slots[i].AddItem(buildingInventory.items[i], buildingInventory.amounts[i]);
-                slots[i].AddItem(buildingInventory.items[i].item, buildingInventory.amounts[i]);
+                slots[i].AddItem(buildingInventory.towerList[i].item, 0);
             }
             else
             {

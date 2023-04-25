@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
                     //테스트용
 
                     if(buildingInfoObj != null && buildingInfoObj.activeSelf == true)
-                        BuildingInfo.instance.CreateItemSlot();
+                        BuildingInfo.instance.SetItemSlot();
 
                     //테스트용
 

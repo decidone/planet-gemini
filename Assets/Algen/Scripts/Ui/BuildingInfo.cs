@@ -50,12 +50,13 @@ public class BuildingInfo : MonoBehaviour
         if (totalAmountsEnough)
         {
             preBuilding.SetActive(true);
-            preBuilding.GetComponent<PreBuilding>().SetImage(selectBuilding.item.icon, selectBuilding.gameObj);
+            PreBuilding.instance.SetImage(selectBuilding.item.icon, selectBuilding.gameObj);
+            //preBuilding.GetComponent<PreBuilding>().SetImage(selectBuilding.item.icon, selectBuilding.gameObj);          
             //preBuilding.GetComponent<PreBuilding>().SetImage(selectBuilding.icon);
         }
     }
 
-    void CrearList()
+    void ClearArr()
     {
         for (int i = 0; i < buildingNeedList.Length; i++) 
         {
@@ -64,11 +65,21 @@ public class BuildingInfo : MonoBehaviour
 
         //buildingNeedList.Clear();
     }
+
     //public void CreateItemSlot(BuildingData buildingDatas, Item select)
-    public void CreateItemSlot(BuildingData buildingDatas, Building select)
+    public void SetItemSlot(BuildingData buildingDatas, Building select)
     {
-        CrearList();
-        totalAmountsEnough = false;
+        ClearArr();
+
+        if (preBuilding.activeSelf)
+        {
+            if (selectBuilding != null && selectBuilding != select)
+            {
+                PreBuilding.instance.ReSetImage();
+            }
+        }
+
+        totalAmountsEnough = true;
 
         selectBuilding = select;
 
@@ -82,7 +93,7 @@ public class BuildingInfo : MonoBehaviour
             bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[buildingDatas.items[i]], out value);
             isEnough = hasItem && value >= buildingDatas.amounts[i];
 
-            if (isEnough)
+            if (isEnough && totalAmountsEnough)
                 totalAmountsEnough = true;
             else
                 totalAmountsEnough = false;
@@ -92,9 +103,26 @@ public class BuildingInfo : MonoBehaviour
         }
     }
 
-    public void CreateItemSlot()
+    public void SetItemSlot()
     {
         if (selectBuildingData != null && selectBuilding.item != null)
-            CreateItemSlot(selectBuildingData, selectBuilding);
+            SetItemSlot(selectBuildingData, selectBuilding);
+    }
+
+    public void BuildingEnd()
+    {
+        for (int i = 0; i < buildingNeedList.Length; i++)
+        {
+            if(buildingNeedList[i].item != null)
+                inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount);
+        }
+
+        SetItemSlot();
+
+        if (!totalAmountsEnough)
+        {
+            PreBuilding.instance.ReSetImage();
+            preBuilding.SetActive(false);
+        }
     }
 }

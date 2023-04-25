@@ -1,5 +1,5 @@
 {
-  "FireTower": //딕셔너리에 과학 level도 추가해야함
+  "FireTower": // 종류 및 과학 별로 정리할 수 있게 수정해야함 
   {
     "name": "FireTower",
     "items": [ "Gold", "GoldBar" ],

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Building : ScriptableObject
 {
+    public string type = "Building";
+    public string scienceName = "basic";
     public Item item = null;
     public GameObject gameObj = null;
 }

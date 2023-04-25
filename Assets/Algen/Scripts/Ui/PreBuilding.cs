@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PreBuilding : MonoBehaviour
 {
@@ -33,17 +34,17 @@ public class PreBuilding : MonoBehaviour
 
     protected virtual void InputCheck()
     {
-        if (Input.GetMouseButton(0))
+        if (!EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonUp(0))
         {
             if (gameObj != null)
             {
                 GameObject obj = Instantiate(gameObj);
                 obj.transform.position = this.transform.position;
-                //건설 시 인벤토리 아이템 사용
-                //건설 중 모드 생성해야함
+
+                BuildingInfo.instance.BuildingEnd();
             }
         }
-        else if (Input.GetMouseButton(1))
+        else if (Input.GetMouseButtonDown(1))
         {
             ReSetImage();
         }
@@ -56,7 +57,7 @@ public class PreBuilding : MonoBehaviour
         isSelect = true;
     }
 
-    void ReSetImage()
+    public void ReSetImage()
     {
         spriteRenderer.sprite = null;
         isSelect = false;
