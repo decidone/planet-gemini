@@ -18,31 +18,34 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
-        
+        dirCount = 4;
     }
 
     // Update is called once per frame
     void Update()
     {
         SetDirNum();
-        if (itemList.Count > 0 && outObj.Count > 0)
+        if (!isPreBuilding)
         {
-            if (itemSetDelay == false)
-                StartCoroutine("SetItem");
-        }
-
-        for (int i = 0; i < nearObj.Length; i++)
-        {
-            if (nearObj[i] == null)
+            if (itemList.Count > 0 && outObj.Count > 0)
             {
-                if (i == 0)
-                    CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
-                else if (i == 1)
-                    CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
-                else if (i == 2)
-                    CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj));
-                else if (i == 3)
-                    CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj));
+                if (itemSetDelay == false)
+                    StartCoroutine("SetItem");
+            }
+
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null)
+                {
+                    if (i == 0)
+                        CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                    else if (i == 1)
+                        CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                    else if (i == 2)
+                        CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj));
+                    else if (i == 3)
+                        CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj));
+                }
             }
         }
     }
@@ -80,6 +83,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
         {
             Collider2D hitCollider = hits[i].collider;
             if (hitCollider.CompareTag("Factory") &&
+                !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
                 hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
             {
                 nearObj[index] = hits[i].collider.gameObject;

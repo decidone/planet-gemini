@@ -42,11 +42,16 @@ public class TowerAi : MonoBehaviour
     protected CircleCollider2D circle2D = null;
     protected CapsuleCollider2D capsule2D = null;
 
-    // Start is called before the first frame update
-    void Start()
+    public bool isPreBuilding = false;
+
+    private void Awake()
     {
         circle2D = GetComponent<CircleCollider2D>();
         capsule2D = GetComponent<CapsuleCollider2D>();
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
         circle2D.radius = towerData.ColliderRadius;
         hp = towerData.MaxHp;
         repairBar.enabled = false;
@@ -124,5 +129,18 @@ public class TowerAi : MonoBehaviour
         circle2D.enabled = true;
 
         animator.SetBool("isDie", false);
+    }
+
+    public void DisableColliders()
+    {
+        capsule2D.enabled = false;
+        circle2D.enabled = false;
+    }
+
+    // 콜라이더 켜기
+    public void EnableColliders()
+    {
+        capsule2D.enabled = true;
+        circle2D.enabled = true;
     }
 }

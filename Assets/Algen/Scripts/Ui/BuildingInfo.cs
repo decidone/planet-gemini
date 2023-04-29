@@ -39,38 +39,31 @@ public class BuildingInfo : MonoBehaviour
 
     void Start()
     {
-        //buildingNeedList = buildingInfoPanel.GetComponentsInChildren<BuildingImgCtrl>();
-
         if (buildingBtn != null)
             buildingBtn.onClick.AddListener(BuildingClick);
     }
 
     void BuildingClick()
     {
-        if (totalAmountsEnough)
+        if (totalAmountsEnough && selectBuildingData != null)
         {
             preBuilding.SetActive(true);
-            PreBuilding.instance.SetImage(selectBuilding.item.icon, selectBuilding.gameObj);
-            //preBuilding.GetComponent<PreBuilding>().SetImage(selectBuilding.item.icon, selectBuilding.gameObj);          
-            //preBuilding.GetComponent<PreBuilding>().SetImage(selectBuilding.icon);
+            PreBuilding.instance.SetImage(selectBuilding.gameObj);
         }
     }
 
-    void ClearArr()
+    public void ClearArr()
     {
         for (int i = 0; i < buildingNeedList.Length; i++) 
         {
             buildingNeedList[i].gameObject.SetActive(false);
         }
-
-        //buildingNeedList.Clear();
+        ResetBuildingData();
     }
 
-    //public void CreateItemSlot(BuildingData buildingDatas, Item select)
     public void SetItemSlot(BuildingData buildingDatas, Building select)
     {
         ClearArr();
-
         if (preBuilding.activeSelf)
         {
             if (selectBuilding != null && selectBuilding != select)
@@ -107,6 +100,12 @@ public class BuildingInfo : MonoBehaviour
     {
         if (selectBuildingData != null && selectBuilding.item != null)
             SetItemSlot(selectBuildingData, selectBuilding);
+    }
+
+    void ResetBuildingData()
+    {
+        if (selectBuildingData != null && selectBuilding.item != null)        
+            selectBuildingData = null;        
     }
 
     public void BuildingEnd()

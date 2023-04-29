@@ -47,11 +47,12 @@ public class BeltCtrl : SolidFactoryCtrl
     }
     void Start()
     {
+        dirCount = 4;
         //if (transform.parent.gameObject != null)
         //    beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
 
         //if (preBelt != null)
-            BeltModelSet();
+        BeltModelSet();
     }
 
     // Update is called once per frame

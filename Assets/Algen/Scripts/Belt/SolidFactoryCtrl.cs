@@ -26,15 +26,7 @@ public class SolidFactoryCtrl : FactoryCtrl
         itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
     }
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
     public void BeltGroupSendItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);

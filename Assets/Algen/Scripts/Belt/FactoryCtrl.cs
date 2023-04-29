@@ -9,17 +9,7 @@ public class FactoryCtrl : MonoBehaviour
     public bool fluidIsFull = false;
 
     public int dirNum = 0;
+    public int dirCount = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    public bool isPreBuilding = false;
 }

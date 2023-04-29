@@ -22,20 +22,23 @@ public class ItemSpawner : SolidFactoryCtrl
     // Update is called once per frame
     void Update()
     {
-        if (outObj.Count > 0)
+        if (!isPreBuilding)
         {
-            if (itemSetDelay == false)
-                StartCoroutine("SetItem");
-        }
+            if (outObj.Count > 0)
+            {
+                if (itemSetDelay == false)
+                    StartCoroutine("SetItem");
+            }
 
-        if (nearObj[0] == null)
-            UpObjCheck();
-        if (nearObj[1] == null)
-            RightObjCheck();
-        if (nearObj[2] == null)
-            DownObjCheck();
-        if (nearObj[3] == null)
-            LeftObjCheck();
+            if (nearObj[0] == null)
+                UpObjCheck();
+            if (nearObj[1] == null)
+                RightObjCheck();
+            if (nearObj[2] == null)
+                DownObjCheck();
+            if (nearObj[3] == null)
+                LeftObjCheck();
+        }
     }
     void CheckPos()
     {
@@ -54,7 +57,7 @@ public class ItemSpawner : SolidFactoryCtrl
             {
                 if (upHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
                 {
-                    if (upHits[a].collider.CompareTag("Factory"))
+                    if (upHits[a].collider.CompareTag("Factory") && !upHits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
                     {
                         nearObj[0] = upHits[a].collider.gameObject;
                         SetOutObj(nearObj[0]);
@@ -74,7 +77,7 @@ public class ItemSpawner : SolidFactoryCtrl
             {
                 if (rightHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
                 {
-                    if (rightHits[a].collider.CompareTag("Factory"))
+                    if (rightHits[a].collider.CompareTag("Factory") && !rightHits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
                     {
                         nearObj[1] = rightHits[a].collider.gameObject;
                         SetOutObj(nearObj[1]);
@@ -93,7 +96,7 @@ public class ItemSpawner : SolidFactoryCtrl
             {
                 if (downHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
                 {
-                    if (downHits[a].collider.CompareTag("Factory"))
+                    if (downHits[a].collider.CompareTag("Factory") && !downHits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
                     {
                         nearObj[2] = downHits[a].collider.gameObject;
                         SetOutObj(nearObj[2]);
@@ -113,7 +116,7 @@ public class ItemSpawner : SolidFactoryCtrl
             {
                 if (leftHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
                 {
-                    if (leftHits[a].collider.CompareTag("Factory"))
+                    if (leftHits[a].collider.CompareTag("Factory") && !leftHits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
                     {
                         nearObj[3] = leftHits[a].collider.gameObject;
                         SetOutObj(nearObj[3]);

@@ -15,7 +15,8 @@ public class BuildingInvenManager : MonoBehaviour
     protected DragSlot dragSlot; // 드래그용 슬롯
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
 
-    BuildingInfo buildingInfo;
+    protected Slot selectSlot;
+
     BuildingData buildingData;
 
     // Start is called before the first frame update
@@ -23,7 +24,6 @@ public class BuildingInvenManager : MonoBehaviour
     {
         SetInven(buildingInventory, buildingInventoryUI);
         dragSlot = DragSlot.instance;
-        buildingInfo = BuildingInfo.instance;
     }
 
     // Update is called once per frame
@@ -73,24 +73,58 @@ public class BuildingInvenManager : MonoBehaviour
         buildingData = new BuildingData();
         buildingData = BuildingDataGet.instance.GetBuildingName(focusedSlot.item.name);
 
-        for (int i = 0; i < buildingInventory.towerList.Count; i++)
+        for (int i = 0; i < buildingInventory.BuildingDic.Count; i++)
         {
-            if (buildingInventory.towerList[i].item == focusedSlot.item)
+            if (buildingInventory.BuildingDic[i].item == focusedSlot.item)
             {
-                buildingInfo.SetItemSlot(buildingData, buildingInventory.towerList[i]);
+                BuildingInfo.instance.SetItemSlot(buildingData, buildingInventory.BuildingDic[i]);
             }
         }
-        //buildingInfo.CreateItemSlot(buildingData, focusedSlot.item);
+
+        if (selectSlot == null)
+        {
+            selectSlot = focusedSlot;
+            Image slotImage = selectSlot.GetComponentInChildren<Image>();
+            SetSlotColor(slotImage, Color.red, 0.5f);
+        }
+        else if (selectSlot != focusedSlot)
+        {
+            Image prevSlotImage = selectSlot.GetComponentInChildren<Image>();
+            SetSlotColor(prevSlotImage, Color.white, 1.0f);
+
+            selectSlot = focusedSlot;
+            Image currSlotImage = selectSlot.GetComponentInChildren<Image>();
+            SetSlotColor(currSlotImage, Color.red, 0.5f);
+        }
+    }
+
+    void SetSlotColor(Image image, Color color, float alpha)
+    {
+        Color slotColor = image.color;
+        slotColor = color;
+        slotColor.a = alpha;
+        image.color = slotColor;
     }
 
     void UpdateUI()
     {
+        if (selectSlot != null)
+        {
+            Image slotImage = selectSlot.GetComponentInChildren<Image>();
+            SetSlotColor(slotImage, Color.white, 1.0f);
+
+            BuildingInfo.instance.ClearArr();
+            selectSlot = null;
+        }
+
+        if(PreBuilding.instance)
+            PreBuilding.instance.ReSetImage();
+
         for (int i = 0; i < slots.Length; i++)
         {
-            if (buildingInventory.towerList.ContainsKey(i))
+            if (buildingInventory.BuildingDic.ContainsKey(i))
             {
-                //slots[i].AddItem(buildingInventory.items[i], buildingInventory.amounts[i]);
-                slots[i].AddItem(buildingInventory.towerList[i].item, 0);
+                slots[i].AddItem(buildingInventory.BuildingDic[i].item, 0);
             }
             else
             {

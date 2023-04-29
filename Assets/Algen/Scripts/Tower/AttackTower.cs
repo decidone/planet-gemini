@@ -16,24 +16,27 @@ public class AttackTower : TowerAi
     // Update is called once per frame
     void Update()
     {
-        if (!isDie)
+        if(!isPreBuilding)
         {
-            AttackTowerAiCtrl();
-            if (monsterList.Count > 0)
+            if (!isDie)
             {
-                mstDisCheckTime += Time.deltaTime;
-                if (mstDisCheckTime > mstDisCheckInterval)
+                AttackTowerAiCtrl();
+                if (monsterList.Count > 0)
                 {
-                    mstDisCheckTime = 0f;
-                    if (monsterList.Count > 0)
-                        AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
+                    mstDisCheckTime += Time.deltaTime;
+                    if (mstDisCheckTime > mstDisCheckInterval)
+                    {
+                        mstDisCheckTime = 0f;
+                        if (monsterList.Count > 0)
+                            AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
+                    }
+                    AttackTargetDisCheck();
                 }
-                AttackTargetDisCheck();
             }
-        }
-        else if(isDie && isRepair == true)
-        {
-            RepairFunc();
+            else if(isDie && isRepair == true)
+            {
+                RepairFunc();
+            }
         }
     }
 
@@ -127,30 +130,36 @@ public class AttackTower : TowerAi
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Monster"))
+        if (!isPreBuilding)
         {
-            if (!monsterList.Contains(collision.gameObject))
+            if (collision.CompareTag("Monster"))
             {
-                if (collision.isTrigger == true)
+                if (!monsterList.Contains(collision.gameObject))
                 {
-                    monsterList.Add(collision.gameObject);
+                    if (collision.isTrigger == true)
+                    {
+                        monsterList.Add(collision.gameObject);
+                    }
                 }
             }
-        }//if (collision.CompareTag("Player"))
+        }
     }//private void OnTriggerEnter2D(Collider2D collision)
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Monster"))
+        if (!isPreBuilding)
         {
-            if (collision.isTrigger == true)
+            if (collision.CompareTag("Monster"))
             {
-                monsterList.Remove(collision.gameObject);
+                if (collision.isTrigger == true)
+                {
+                    monsterList.Remove(collision.gameObject);
+                }
+                if (monsterList.Count == 0)
+                {
+                    aggroTarget = null;
+                }
             }
-            if (monsterList.Count == 0)
-            {
-                aggroTarget = null;
-            }
-        }//if (collision.CompareTag("Player"))
+        }
     }//private void OnTriggerExit2D(Collider2D collision)
 }

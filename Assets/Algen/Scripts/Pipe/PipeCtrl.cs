@@ -19,6 +19,7 @@ public class PipeCtrl : FluidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
+        dirCount = 2;
         setModel = GetComponent<SpriteRenderer>();
         if (transform.parent.gameObject != null)
             pipeGroupMgr = GetComponentInParent<PipeGroupMgr>();
@@ -28,15 +29,17 @@ public class PipeCtrl : FluidFactoryCtrl
     void Update()
     {
         ModelSet();
-
-        if(isUp == false)
-            isUp = ObjCheck(transform.up);
-        if (isRight == false)
-            isRight = ObjCheck(transform.right); 
-        if (isDown == false)
-            isDown = ObjCheck(-transform.up);
-        if (isLeft == false)
-            isLeft = ObjCheck(-transform.right);
+        if (!isPreBuilding)
+        {
+            if(isUp == false)
+                isUp = ObjCheck(transform.up);
+            if (isRight == false)
+                isRight = ObjCheck(transform.right); 
+            if (isDown == false)
+                isDown = ObjCheck(-transform.up);
+            if (isLeft == false)
+                isLeft = ObjCheck(-transform.right);
+        }
     }
 
     void ModelSet()
@@ -54,7 +57,8 @@ public class PipeCtrl : FluidFactoryCtrl
         {
             if (Hits[a].collider.GetComponent<PipeCtrl>() != this.gameObject.GetComponent<PipeCtrl>())
             {
-                if (Hits[a].collider.GetComponent<PipeCtrl>() != null && Hits[a].collider.CompareTag("Factory"))
+                if (Hits[a].collider.GetComponent<PipeCtrl>() != null && Hits[a].collider.CompareTag("Factory") && 
+                    !Hits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
                 {                    
                     if (Hits[a].collider.GetComponent<PipeCtrl>() != null)
                         pipeGroupMgr.CheckGroup(Hits[a].collider.GetComponent<PipeCtrl>());

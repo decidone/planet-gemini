@@ -53,6 +53,7 @@ public class SplitterCtrl : SolidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
+        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         itemsList = ItemList.instance.itemList;
         CheckPos();
@@ -62,44 +63,46 @@ public class SplitterCtrl : SolidFactoryCtrl
     void Update()
     {
         SetDirNum();
-
-        if (inObj != null && !isFull && !itemGetDelay)
-            GetItem();
+        if (!isPreBuilding)
+        {
+            if (inObj != null && !isFull && !itemGetDelay)
+                GetItem();
         
-        for (int i = 0; i < nearObj.Length; i++)
-        {
-            if (nearObj[i] == null)
+            for (int i = 0; i < nearObj.Length; i++)
             {
-                if (i == 0)
-                    CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
-                else if (i == 1)
-                    CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj, 0));
-                else if (i == 2)
-                    CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj, 1));
-                else if (i == 3)
-                    CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj, 2));
+                if (nearObj[i] == null)
+                {
+                    if (i == 0)
+                        CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                    else if (i == 1)
+                        CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj, 0));
+                    else if (i == 2)
+                        CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj, 1));
+                    else if (i == 3)
+                        CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj, 2));
+                }
             }
-        }
 
-        if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
-        {
-            if (filterOn)
+            if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
             {
-                FilterSetItem();
-            }
-            else
+                if (filterOn)
+                {
+                    FilterSetItem();
+                }
+                else
+                {
+                    SetItem();
+                }
+            }  
+
+            if (oKButtonTemp == true)
             {
-                SetItem();
+                ItemFilterCheck();
+                filterOn = FilterCheck();
+                //StopCoroutine("FilterSetItem");
+
+                oKButtonTemp = false;
             }
-        }  
-
-        if (oKButtonTemp == true)
-        {
-            ItemFilterCheck();
-            filterOn = FilterCheck();
-            //StopCoroutine("FilterSetItem");
-
-            oKButtonTemp = false;
         }
     }
 
@@ -160,7 +163,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && 
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
                 hitCollider.GetComponent<SplitterCtrl>() != GetComponent<SplitterCtrl>())
             {
                 nearObj[index] = hits[i].collider.gameObject;

@@ -12,14 +12,17 @@ public class RepairTower : TowerAi
     // Update is called once per frame
     void Update()
     {
-        if (!isDie)       
+        if (!isPreBuilding)
         {
-            RepairTowerAiCtrl();
-        }
-        else if (isDie && isRepair == true)
-        {
-            RepairFunc();
-        }
+          if (!isDie)       
+            {
+                RepairTowerAiCtrl();
+            }
+            else if (isDie && isRepair == true)
+            {
+                RepairFunc();
+            }
+        }  
     }
 
     void RepairTowerAiCtrl()
@@ -94,15 +97,21 @@ public class RepairTower : TowerAi
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Tower"))
+        if(!isPreBuilding)
         {
-            if (!TowerList.Contains(collision.gameObject))
+            if (collision.CompareTag("Tower"))
             {
-                if (collision.isTrigger == true)
+                if (!collision.GetComponent<TowerAi>().isPreBuilding)
                 {
-                    TowerList.Add(collision.gameObject);
+                    if (!TowerList.Contains(collision.gameObject))
+                    {
+                        if (collision.isTrigger == true)
+                        {
+                            TowerList.Add(collision.gameObject);
+                        }
+                    }
                 }
             }
-        }//if (collision.CompareTag("Player"))
+        }
     }//private void OnTriggerEnter2D(Collider2D collision)
 }

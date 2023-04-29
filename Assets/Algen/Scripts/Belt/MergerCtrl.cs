@@ -24,6 +24,7 @@ public class MergerCtrl : SolidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
+        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         CheckPos();
     }
@@ -32,30 +33,34 @@ public class MergerCtrl : SolidFactoryCtrl
     void Update()
     {
         SetDirNum();
-        if (inObj.Count > 0 && !isFull && !itemGetDelay)
+        if (!isPreBuilding)
         {
-            GetItem();
-        }
-
-        if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
-        {
-            SetItem();    
-        }
-
-        for (int i = 0; i < nearObj.Length; i++)
-        {
-            if (nearObj[i] == null)
+            if (inObj.Count > 0 && !isFull && !itemGetDelay)
             {
-                if (i == 0)
-                    CheckNearObj(checkPos[0], 0, obj => SetOutObj(obj));
-                else if (i == 1)
-                    CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
-                else if (i == 2)
-                    CheckNearObj(checkPos[2], 2, obj => SetInObj(obj));
-                else if (i == 3)
-                    CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
+                GetItem();
+            }
+
+            if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+            {
+                SetItem();    
+            }
+
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null)
+                {
+                    if (i == 0)
+                        CheckNearObj(checkPos[0], 0, obj => SetOutObj(obj));
+                    else if (i == 1)
+                        CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
+                    else if (i == 2)
+                        CheckNearObj(checkPos[2], 2, obj => SetInObj(obj));
+                    else if (i == 3)
+                        CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
+                }
             }
         }
+
     }
 
     void SetDirNum()
@@ -90,7 +95,7 @@ public class MergerCtrl : SolidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && 
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
                 hitCollider.GetComponent<MergerCtrl>() != GetComponent<MergerCtrl>())
             {
                 nearObj[index] = hits[i].collider.gameObject;

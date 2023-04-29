@@ -102,9 +102,11 @@ MonoBehaviour:
   isFull: 0
   fluidIsFull: 0
   dirNum: 0
+  isPreBuilding: 0
   solidFactoryData: {fileID: 11400000, guid: 5d7c555f9c1c8c542944ff97a4e64561, type: 2}
   itemObjList: []
   itemList: []
+  outSameList: []
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   modelNum:
   - {fileID: -588123693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}

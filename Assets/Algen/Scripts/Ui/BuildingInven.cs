@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BuildingInven : MonoBehaviour
 {
@@ -12,30 +13,70 @@ public class BuildingInven : MonoBehaviour
     [SerializeField]
     int space;   // 아이템 슬롯 상한, 드래그용 슬롯 번호를 겸 함
 
-    public Dictionary<int, Building> towerList = new Dictionary<int, Building>();
+    public Dictionary<int, Building> BuildingDic = new Dictionary<int, Building>();
+
+    public GameObject BuildingTagsPanel = null;
+    Button[] BuildingTagsBtn;
 
     // Start is called before the first frame update
     void Start()
     {
         itemList = BuildingList.instance.itemList;
-        BuildSet();
+        BuildingTagsBtn = BuildingTagsPanel.GetComponentsInChildren<Button>();
+
+        for (int i = 0; i < BuildingTagsBtn.Length; i++)
+        {
+            int buttonIndex = i;
+            BuildingTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
+
+        }
+        ButtonClicked(0);
     }
 
-    void BuildSet()
-    {// 종류 및 과학 트리에 따른 리스트 받아오기 추가 해야함
+    private void ButtonClicked(int buttonIndex)
+    {
+        if (buttonIndex == 0)
+        {
+            AddDicType("Factory");
+        }
+        else if (buttonIndex == 1)
+        {
+            AddDicType("Transport");
+        }
+        else if (buttonIndex == 2)
+        {
+            AddDicType("Energy");
+        }
+        else if (buttonIndex == 3)
+        {
+            AddDicType("Tower");
+        }
+        else if (buttonIndex == 4)
+        {
+            AddDicType("Wall");
+        }
+        else if (buttonIndex == 5)
+        {
+            AddDicType("Etc");
+        }
+    }
+
+    private void AddDicType(string itemType)
+    {
+        ResetDic();
+
         int index = 0;
         for (int i = 0; i < itemList.Count; i++)
         {
-            if (itemList[i].type == "Tower")
+            if (itemList[i].type == itemType)
             {
-                if (!towerList.ContainsKey(index))
+                if (!BuildingDic.ContainsKey(index))
                 {
-                    towerList[index] = itemList[i];
+                    BuildingDic[index] = itemList[i];
                     index++;
                 }
             }
         }
-
         onItemChangedCallback?.Invoke();
     }
 
@@ -44,4 +85,9 @@ public class BuildingInven : MonoBehaviour
         onItemChangedCallback?.Invoke();
     }
 
+    void ResetDic()
+    {
+        BuildingDic.Clear();
+        onItemChangedCallback?.Invoke();
+    }
 }

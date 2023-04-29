@@ -29,24 +29,27 @@ public class PumpCtrl : FluidFactoryCtrl
     // Update is called once per frame
     void Update()
     {
-        if (isUp == false)
-            isUp = ObjCheck(transform.up);
-        if (isRight == false)
-            isRight = ObjCheck(transform.right);
-        if (isDown == false)
-            isDown = ObjCheck(-transform.up);
-        if (isLeft == false)
-            isLeft = ObjCheck(-transform.right);
-
-        if(PumpIng == true)
+        if(!isPreBuilding)
         {
-            sendDelayTimer += Time.deltaTime;
+            if (isUp == false)
+                isUp = ObjCheck(transform.up);
+            if (isRight == false)
+                isRight = ObjCheck(transform.right);
+            if (isDown == false)
+                isDown = ObjCheck(-transform.up);
+            if (isLeft == false)
+                isLeft = ObjCheck(-transform.right);
 
-            if (sendDelayTimer > fluidFactoryData.SendDelay)
+            if(PumpIng == true)
             {
-                Pump();
-                sendDelayTimer = 0;
-            }            
+                sendDelayTimer += Time.deltaTime;
+
+                if (sendDelayTimer > fluidFactoryData.SendDelay)
+                {
+                    Pump();
+                    sendDelayTimer = 0;
+                }            
+            }
         }
     }
 
@@ -68,7 +71,7 @@ public class PumpCtrl : FluidFactoryCtrl
             {
                 if (Hits[a].collider.GetComponent<PumpCtrl>() != this.gameObject.GetComponent<PumpCtrl>())
                 {
-                    if (Hits[a].collider.CompareTag("Factory"))
+                    if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
                     {
                         nearObj[0] = Hits[a].collider.gameObject;
                         SetOutObj(nearObj[0]);

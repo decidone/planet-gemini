@@ -20,6 +20,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
+        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
     }
 
@@ -27,30 +28,31 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     void Update()
     {
         ModelSet();
-
-        for (int i = 0; i < nearObj.Length; i++)
+        if (!isPreBuilding)
         {
-            if (nearObj[i] == null)
+            for (int i = 0; i < nearObj.Length; i++)
             {
-                if (i == 0)
-                    CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
-                else if (i == 1)
-                    CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                if (nearObj[i] == null)
+                {
+                    if (i == 0)
+                        CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                    else if (i == 1)
+                        CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                }
+            }
+
+            if (otherPipe != null && saveFluidNum >= fluidFactoryData.SendFluid)
+            {
+                sendDelayTimer += Time.deltaTime;
+
+                if (sendDelayTimer > fluidFactoryData.SendDelay)
+                {
+                    SendFluid();
+                    GetFluid();
+                    sendDelayTimer = 0;
+                }
             }
         }
-
-        if (otherPipe != null && saveFluidNum >= fluidFactoryData.SendFluid)
-        {
-            sendDelayTimer += Time.deltaTime;
-
-            if (sendDelayTimer > fluidFactoryData.SendDelay)
-            {
-                SendFluid();
-                GetFluid();
-                sendDelayTimer = 0;
-            }
-        }
-
     }
     void ModelSet()
     {
@@ -97,7 +99,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") &&
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
                 hitCollider.GetComponent<UnderPipeCtrl>() != GetComponent<UnderPipeCtrl>())
             {
                 nearObj[index] = hits[i].collider.gameObject;

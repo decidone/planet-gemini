@@ -428,6 +428,16 @@ public class MonsterAi : MonoBehaviour
                     targetList.Add(collision.gameObject);
             }
         }
+        else if (collision.CompareTag("Factory"))
+        {
+            if (!targetList.Contains(collision.gameObject))
+            {
+                //monsterAI = MonsterAIState.MAI_NormalTrace;
+                isPatrol = false;
+                if (collision.isTrigger == true)
+                    targetList.Add(collision.gameObject);
+            }
+        }
         else if (collision.CompareTag("Tower"))
         {
             if (!targetList.Contains(collision.gameObject))
@@ -457,7 +467,14 @@ public class MonsterAi : MonoBehaviour
             //monsterAI = MonsterAIState.MAI_Patrol;
             isFollowEnd = true;
             if (collision.isTrigger == true)
-                targetList.Remove(collision.gameObject);            
+                targetList.Remove(collision.gameObject);
+        }
+        else if (collision.CompareTag("Factory"))
+        {
+            //monsterAI = MonsterAIState.MAI_Patrol;
+            isFollowEnd = true;
+            if (collision.isTrigger == true)
+                targetList.Remove(collision.gameObject);
         }
         else if (collision.CompareTag("Tower"))
         {

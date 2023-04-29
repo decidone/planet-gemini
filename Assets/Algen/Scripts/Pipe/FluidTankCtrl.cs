@@ -20,24 +20,27 @@ public class FluidTankCtrl : FluidFactoryCtrl
     // Update is called once per frame
     void Update()
     {
-        for (int i = 0; i < 4; i++)
+        if(!isPreBuilding)
         {
-            int index = i * 2;
-            if (!checkArray[index])
-                checkArray[index] = CheckNearObj(startTransform[indices[index]], directions[i]);
-            if (!checkArray[index + 1])
-                checkArray[index + 1] = CheckNearObj(startTransform[indices[index + 1]], directions[i]);
-        }
-
-        if (factoryList.Count > 0 && saveFluidNum >= fluidFactoryData.SendFluid)
-        {
-            sendDelayTimer += Time.deltaTime;
-
-            if (sendDelayTimer > fluidFactoryData.SendDelay)
+            for (int i = 0; i < 4; i++)
             {
-                SendFluid();            
-                GetFluid();
-                sendDelayTimer = 0;
+                int index = i * 2;
+                if (!checkArray[index])
+                    checkArray[index] = CheckNearObj(startTransform[indices[index]], directions[i]);
+                if (!checkArray[index + 1])
+                    checkArray[index + 1] = CheckNearObj(startTransform[indices[index + 1]], directions[i]);
+            }
+
+            if (factoryList.Count > 0 && saveFluidNum >= fluidFactoryData.SendFluid)
+            {
+                sendDelayTimer += Time.deltaTime;
+
+                if (sendDelayTimer > fluidFactoryData.SendDelay)
+                {
+                    SendFluid();            
+                    GetFluid();
+                    sendDelayTimer = 0;
+                }
             }
         }
     }
@@ -57,7 +60,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
         {
             if (Hits[a].collider.GetComponent<FluidTankCtrl>() != this.gameObject.GetComponent<FluidTankCtrl>())
             {
-                if (Hits[a].collider.CompareTag("Factory"))
+                if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
                 {
                     factoryList.Add(Hits[a].collider.gameObject);
                     if (Hits[a].collider.GetComponent<PipeCtrl>() != null)

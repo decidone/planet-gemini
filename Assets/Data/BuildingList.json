@@ -1,6 +1,23 @@
 {
-  "FireTower": // 종류 및 과학 별로 정리할 수 있게 수정해야함 
-  {
+  "Splitter": {
+    "name": "Splitter",
+    "items": [ "Gold", "Silver" ],
+    "amounts": [ 2, 1 ],
+    "cooldown": 3
+  },
+  "Merger": {
+    "name": "Merger",
+    "items": [ "Gold", "Silver" ],
+    "amounts": [ 1, 2 ],
+    "cooldown": 3
+  },
+  "Belt": {
+    "name": "Belt",
+    "items": [ "Coal"],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "FireTower": {
     "name": "FireTower",
     "items": [ "Gold", "GoldBar" ],
     "amounts": [ 2, 1 ],
