@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class Cell
+public class Biome : MonoBehaviour
 {
-    public Tile tile;
-    public Biome biome;
-    public GameObject obj;
+    public List<Tile> tiles;
+
+    public void SetTile()
+    {
+
+    }
 }
