@@ -81,32 +81,55 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
 
         for (int i = 0; i < hits.Length; i++)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") &&
-                !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
-                hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
+            if(index != 0)
             {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
+                Collider2D hitCollider = hits[i].collider;
+                if (hitCollider.CompareTag("Factory") &&
+                    !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
+                    hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
+                {
+                    nearObj[index] = hits[i].collider.gameObject;
+                    callback(hitCollider.gameObject);
+                    break;
+                }
+            }
+            else
+            {
+                Collider2D hitCollider = hits[i].collider;
+                if (hitCollider.CompareTag("Factory") &&
+                    !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
+                    hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>() &&
+                    hitCollider.GetComponent<SendUnderBeltCtrl>() != null)
+                {
+                    nearObj[index] = hits[i].collider.gameObject;
+                    callback(hitCollider.gameObject);
+                    break;
+                }
             }
         }
     }
 
     void SetInObj(GameObject obj)
     {
-        if (obj.GetComponent<SolidFactoryCtrl>() != null && obj.GetComponent<SendUnderBeltCtrl>() != null)
+        //if (obj.GetComponent<SolidFactoryCtrl>() != null && obj.GetComponent<SendUnderBeltCtrl>() != null)
         {        
             SendUnderBeltCtrl sendUnderbelt = obj.GetComponent<SendUnderBeltCtrl>();
 
             if (sendUnderbelt.dirNum == dirNum)
             {
                 inObj = obj;
-                sendUnderbelt.outObj[0] = this.gameObject;
+                //sendUnderbelt.outObj = this.gameObject;
+                sendUnderbelt.SetOutObj(this.gameObject);
             }
             else
                 return;            
         }
+    }
+
+    public void ResetInObj()
+    {
+        nearObj[0] = null;
+        inObj = null;
     }
 
     void SetOutObj(GameObject obj)

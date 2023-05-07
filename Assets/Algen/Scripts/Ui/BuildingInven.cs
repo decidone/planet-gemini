@@ -67,7 +67,8 @@ public class BuildingInven : MonoBehaviour
 
         int index = 0;
         for (int i = 0; i < itemList.Count; i++)
-        {
+        {// 과학 등급이 저장된 파일과 연동해야됨
+            // 이후 수정하느걸로
             if (itemList[i].type == itemType)
             {
                 if (!BuildingDic.ContainsKey(index))

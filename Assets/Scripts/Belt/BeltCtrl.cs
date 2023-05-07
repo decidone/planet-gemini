@@ -37,17 +37,14 @@ public class BeltCtrl : SolidFactoryCtrl
     bool isLeft = false;
 
     // Start is called before the first frame update
-    private void Awake()
+    void Start()
     {
+        dirCount = 4;
         beltManager = GameObject.Find("BeltManager");
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
         beltState = BeltState.SoloBelt;
 
-    }
-    void Start()
-    {
-        dirCount = 4;
         //if (transform.parent.gameObject != null)
         //    beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
 

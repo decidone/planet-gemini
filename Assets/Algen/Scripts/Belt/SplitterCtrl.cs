@@ -73,13 +73,13 @@ public class SplitterCtrl : SolidFactoryCtrl
                 if (nearObj[i] == null)
                 {
                     if (i == 0)
-                        CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                        CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetInObjCoroutine(obj)));
                     else if (i == 1)
-                        CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj, 0));
+                        CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
                     else if (i == 2)
-                        CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj, 1));
+                        CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
                     else if (i == 3)
-                        CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj, 2));
+                        CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 2)));
                 }
             }
 
@@ -173,28 +173,51 @@ public class SplitterCtrl : SolidFactoryCtrl
         }
     }
 
-    void SetInObj(GameObject obj)
+    IEnumerator SetInObjCoroutine(GameObject obj)
     {
+        yield return new WaitForSeconds(0.1f);
+
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             inObj = obj;
             if (inObj.TryGetComponent(out BeltCtrl belt) && belt.dirNum != dirNum)
             {
-                belt.dirNum = dirNum;
-                belt.BeltModelSet();
+                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                {
+                    belt.dirNum = dirNum;
+                    belt.BeltModelSet();
+                }
             }
         }
     }
-    void SetOutObj(GameObject obj, int num)
+
+    //void SetInObj(GameObject obj)
+    //{
+    //    if (obj.GetComponent<SolidFactoryCtrl>() != null)
+    //    {
+    //        inObj = obj;
+    //        if (inObj.TryGetComponent(out BeltCtrl belt) && belt.dirNum != dirNum)
+    //        {
+    //            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+    //            {
+    //                belt.dirNum = dirNum;
+    //                belt.BeltModelSet();
+    //            }
+    //        }
+    //    }
+    //}
+    IEnumerator SetOutObjCoroutine(GameObject obj, int num)
     {
+        yield return new WaitForSeconds(0.1f);
+
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)                
-                    return;                
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)                
-                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());                
+                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
+                    yield break;
+                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
             }
             else
             {
@@ -205,6 +228,27 @@ public class SplitterCtrl : SolidFactoryCtrl
             FilterArr(obj, num);
         }
     }
+
+    //void SetOutObj(GameObject obj, int num)
+    //{
+    //    if (obj.GetComponent<SolidFactoryCtrl>() != null)
+    //    {
+    //        if (obj.TryGetComponent(out BeltCtrl belt))
+    //        {
+    //            if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)                
+    //                return;                
+    //            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)                
+    //                belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());                
+    //        }
+    //        else
+    //        {
+    //            outSameList.Add(obj);
+    //            StartCoroutine(OutCheck(obj));
+    //        }
+    //        outObj.Add(obj);
+    //        FilterArr(obj, num);
+    //    }
+    //}
 
     void FilterArr(GameObject obj, int num)
     {
@@ -355,7 +399,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                 if (filter.selItem != itemList[0]) continue;
             }
 
-            if (outObject.TryGetComponent<BeltCtrl>(out BeltCtrl beltCtrl))
+            if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
             {
                 ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -366,9 +410,10 @@ public class SplitterCtrl : SolidFactoryCtrl
 
                 outFactory.OnBeltItem(spawnItem);
             }
-            else
+            else if(outObject.TryGetComponent(out FactoryCtrl factory))
             {
-                SetFacDelay(outObject);
+                if(!factory.isFull)
+                    SetFacDelay(outObject);
             }
 
             itemList.RemoveAt(0);
@@ -444,6 +489,7 @@ public class SplitterCtrl : SolidFactoryCtrl
 
         if (spawnItem != null)
         {
+            sprite.color = new Color(1f, 1f, 1f, 1f);
             itemPool.Release(spawnItem);
         }
     }

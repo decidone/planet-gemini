@@ -11,9 +11,14 @@ public class PreBuilding : MonoBehaviour
     GameObject gameObj = null; 
     public bool isSelect = false;
 
-    Collider[] colliders;
-
     public GameObject beltMgr = null;
+
+    Vector3 setPos = new Vector3(-0.5f, -0.5f);
+    Vector2 boxSize;
+    public Vector2Int size; // 건물의 크기
+
+    //bool isBuildingOk = false;
+
     void Awake()
     {
         if (instance != null)
@@ -35,7 +40,34 @@ public class PreBuilding : MonoBehaviour
         }
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);        
+        Vector3 roundedPosition = new Vector3(Mathf.Round(mousePosition.x), Mathf.Round(mousePosition.y) , 0f);
+        transform.position = new Vector3(roundedPosition.x, roundedPosition.y, transform.position.z);
+
+        //if (gameObj != null)
+        //{
+        //    Collider2D[] colliders = Physics2D.OverlapBoxAll(gameObj.transform.position, boxSize, 0f);
+        //    isBuildingOk = false;
+
+        //    foreach (Collider2D collider in colliders)
+        //    {
+        //        if (!collider.isTrigger)
+        //        {
+        //            isBuildingOk = true;
+        //            break;
+        //        }
+        //    }
+
+        //    isBuildingOk = !isBuildingOk;
+
+        //    if (isBuildingOk)
+        //    {
+        //        SetSlotColor(spriteRenderer, Color.green, 0.35f);
+        //    }
+        //    else
+        //    {
+        //        SetSlotColor(spriteRenderer, Color.red, 0.35f);
+        //    }
+        //}
     }
 
     protected virtual void InputCheck()
@@ -44,26 +76,36 @@ public class PreBuilding : MonoBehaviour
         {//해당 좌표에 오브젝트가 있음 설치가 안되도록 수정해야함
             if (gameObj != null)
             {
-                GameObject obj = Instantiate(gameObj);
-                SetSlotColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
-                obj.transform.position = this.transform.position;
+                //if (isBuildingOk)
+                {
+                    GameObject obj = Instantiate(gameObj);
+                    SetSlotColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
+                    obj.transform.position = gameObj.transform.position;
 
-                if(obj.TryGetComponent(out FactoryCtrl factory))
-                {
-                    factory.isPreBuilding = false; 
+                    if(obj.TryGetComponent(out FactoryCtrl factory))
+                    {
+                        factory.isPreBuilding = false;
+                        factory.EnableColliders();
+                    }
+                    else if (obj.TryGetComponent(out TowerAi tower))
+                    {
+                        tower.isPreBuilding = false;
+                        tower.EnableColliders();
+                    }
+                    else if (obj.TryGetComponent(out BeltGroupMgr belt))
+                    {
+                        obj.transform.parent = beltMgr.transform;
+                        belt.isPreBuilding = false;
+                        belt.BeltList[0].isPreBuilding = false;
+                        belt.BeltList[0].EnableColliders();
+                    }
+                    else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
+                    {
+                        underBelt.beltScipt.EnableColliders();
+                        underBelt.RemoveObj();
+                    }
+                    BuildingInfo.instance.BuildingEnd();    
                 }
-                else if (obj.TryGetComponent(out TowerAi tower))
-                {
-                    tower.isPreBuilding = false;
-                    tower.EnableColliders();
-                }
-                else if (obj.TryGetComponent(out BeltGroupMgr belt))
-                {
-                    obj.transform.parent = beltMgr.transform;
-                    belt.isPreBuilding = false;
-                    belt.BeltList[0].isPreBuilding = false;
-                }
-                BuildingInfo.instance.BuildingEnd();
             }
         }
         else if (Input.GetMouseButtonDown(1))
@@ -85,6 +127,7 @@ public class PreBuilding : MonoBehaviour
         if (gameObj.TryGetComponent(out FactoryCtrl factory))
         {
             factory.isPreBuilding = true;
+            factory.DisableColliders();
         }
         else if (gameObj.TryGetComponent(out TowerAi tower))
         {
@@ -96,9 +139,37 @@ public class PreBuilding : MonoBehaviour
             belt.isPreBuilding = true;
             belt.SetBelt(0);
             belt.BeltList[0].isPreBuilding = true;
+            belt.BeltList[0].DisableColliders();
+        }
+        else if (gameObj.TryGetComponent(out UnderBeltCtrl underBelt))
+        {
+            underBelt.isPreBuilding = true;
+            underBelt.SetSendUnderBelt();
+            underBelt.beltScipt.DisableColliders();
         }
 
-        gameObj.transform.position = this.transform.position;
+        Bounds objectBounds = gameObj.GetComponentInChildren<SpriteRenderer>().bounds;
+
+        Vector2 size = objectBounds.size;
+        boxSize = new Vector2(size.x, size.y);
+
+        this.size = new Vector2Int(Mathf.RoundToInt(size.x), Mathf.RoundToInt(size.y));
+
+        if (objectBounds.size.x % 2 == 0 || objectBounds.size.y % 2 == 0)
+        {
+            gameObj.transform.position = this.transform.position - setPos;
+        }
+        else
+            gameObj.transform.position = this.transform.position;
+
+        //만약 건물에 사이즈가 필요한경우 위에서 아래로 변경해야할수도
+        //Vector3 bottomLeftTileCenter = new Vector3(
+        //    -numColumns * 1 / 2f + 1 / 2f,
+        //    -numRows * 1 / 2f + 1 / 2f,
+        //    0f);
+
+        //gameObj.transform.position = this.transform.position - bottomLeftTileCenter;
+
         gameObj.transform.parent = this.transform;
 
         spriteRenderer = gameObj.GetComponentInChildren<SpriteRenderer>();
@@ -126,6 +197,7 @@ public class PreBuilding : MonoBehaviour
         if(spriteRenderer)
             spriteRenderer.sprite = null;
         isSelect = false;
+        //isBuildingOk = false;
         gameObj = null;
         gameObject.SetActive(false);
     }
@@ -145,5 +217,14 @@ public class PreBuilding : MonoBehaviour
             if (belt.BeltList[0].dirNum >= belt.BeltList[0].dirCount)
                 belt.BeltList[0].dirNum = 0;
         }
+        else if (gameObj.TryGetComponent(out UnderBeltCtrl underBelt))
+        {
+            underBelt.beltScipt.dirNum++;
+            if (underBelt.beltScipt.dirNum >= underBelt.beltScipt.dirCount)
+                underBelt.beltScipt.dirNum = 0;
+
+            underBelt.dirNum = underBelt.beltScipt.dirNum;
+        }
     }
+
 }

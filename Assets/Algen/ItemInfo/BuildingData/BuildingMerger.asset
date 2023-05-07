@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
-  m_Name: BuildingFireTower
+  m_Name: BuildingMerger
   m_EditorClassIdentifier: 
-  type: Tower
+  type: Factory
   scienceName: basic
-  item: {fileID: 11400000, guid: f2b78055ddfbef747a9477e7faeb451a, type: 2}
-  gameObj: {fileID: 1929914461128864781, guid: d2d2b4b47c22f554aab56e5117c95d13, type: 3}
+  item: {fileID: 11400000, guid: d51119756f0b3684aaadbb5b95de7463, type: 2}
+  gameObj: {fileID: 262180438270614842, guid: 97d33a0f590a6604db6635b18ae370be, type: 3}
+  numRows: 1
+  numColumns: 1

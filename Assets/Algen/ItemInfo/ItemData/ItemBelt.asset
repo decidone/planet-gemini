@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ItemBelt
   m_EditorClassIdentifier: 
   name: Belt
-  icon: {fileID: 463305033, guid: 8a2db2bab3b6c1c4d89d257487429c25, type: 3}
+  icon: {fileID: 1906875529, guid: 8a2db2bab3b6c1c4d89d257487429c25, type: 3}

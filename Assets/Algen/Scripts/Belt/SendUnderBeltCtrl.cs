@@ -9,7 +9,8 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     //SpriteRenderer setModel;
 
     List<GameObject> inObj = new List<GameObject>();
-    public List<GameObject> outObj = new List<GameObject>();
+    //public List<GameObject> outObj = new List<GameObject>();
+    public GameObject outObj = null;
 
     GameObject[] nearObj = new GameObject[4];
     private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
@@ -37,7 +38,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
             {
                 GetItem();
             }
-            if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+            if (itemList.Count > 0 && outObj != null && !itemSetDelay)
             {
                 SetItem();           
             }
@@ -207,7 +208,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         itemSetDelay = true;
 
-        SolidFactoryCtrl outFactory = outObj[0].GetComponent<SolidFactoryCtrl>();
+        SolidFactoryCtrl outFactory = outObj.GetComponent<SolidFactoryCtrl>();
 
         if (outFactory.isFull == false)
         { 
@@ -226,7 +227,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         spawnItem.transform.position = this.transform.position;
 
-        var targetPos = outObj[0].transform.position;
+        var targetPos = outObj.transform.position;
         var startTime = Time.time;
         var distance = Vector3.Distance(spawnItem.transform.position, targetPos);
 
@@ -245,7 +246,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                var outFactory = outObj[0].GetComponent<SolidFactoryCtrl>();
+                var outFactory = outObj.GetComponent<SolidFactoryCtrl>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);
@@ -260,6 +261,15 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
             setFacDelayCoroutine = null;
         }
     }
+
+    public void SetOutObj(GameObject Obj)
+    {
+        if (outObj != null)        
+            outObj.GetComponent<GetUnderBeltCtrl>().ResetInObj();
+
+        outObj = Obj;
+    }
+
     void DelaySetItem()
     {
         itemSetDelay = false;

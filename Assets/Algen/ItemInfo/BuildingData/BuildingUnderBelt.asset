@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
-  m_Name: BuildingMerger
+  m_Name: BuildingUnderBelt
   m_EditorClassIdentifier: 
   type: Factory
   scienceName: basic
-  item: {fileID: 11400000, guid: d51119756f0b3684aaadbb5b95de7463, type: 2}
-  gameObj: {fileID: 262180438270614842, guid: 97d33a0f590a6604db6635b18ae370be, type: 3}
+  item: {fileID: 11400000, guid: 374fa9089cb1cae428bb1eae3d06c339, type: 2}
+  gameObj: {fileID: 5450028805572291566, guid: 3aa577b5efa670948934d124df78d958, type: 3}
+  numRows: 1
+  numColumns: 1

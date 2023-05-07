@@ -50,13 +50,13 @@ public class MergerCtrl : SolidFactoryCtrl
                 if (nearObj[i] == null)
                 {
                     if (i == 0)
-                        CheckNearObj(checkPos[0], 0, obj => SetOutObj(obj));
+                        CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                     else if (i == 1)
-                        CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
+                        CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetInObjCoroutine(obj)));
                     else if (i == 2)
-                        CheckNearObj(checkPos[2], 2, obj => SetInObj(obj));
+                        CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
                     else if (i == 3)
-                        CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
+                        CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetInObjCoroutine(obj)));
                 }
             }
         }
@@ -104,16 +104,17 @@ public class MergerCtrl : SolidFactoryCtrl
             }
         }
     }
-
-    void SetInObj(GameObject obj)
+    IEnumerator SetInObjCoroutine(GameObject obj)
     {
+        yield return new WaitForSeconds(0.1f);
+
         SolidFactoryCtrl solidFactory = obj.GetComponent<SolidFactoryCtrl>();
-        if (solidFactory == null) return;
+        if (solidFactory == null) yield break;
 
         inObj.Add(obj);
 
         BeltCtrl belt = obj.GetComponent<BeltCtrl>();
-        if (belt == null) return;
+        if (belt == null) yield break;
 
         int beltReNum = 0;
 
@@ -144,21 +145,73 @@ public class MergerCtrl : SolidFactoryCtrl
 
         if (beltReNum != belt.dirNum)
         {
-            belt.dirNum = beltReNum;
-            belt.BeltModelSet();                    
-        }  
+            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+            {
+                belt.dirNum = beltReNum;
+                belt.BeltModelSet();
+            }
+        }
     }
 
-    void SetOutObj(GameObject obj)
+    //void SetInObj(GameObject obj)
+    //{
+    //    SolidFactoryCtrl solidFactory = obj.GetComponent<SolidFactoryCtrl>();
+    //    if (solidFactory == null) return;
+
+    //    inObj.Add(obj);
+
+    //    BeltCtrl belt = obj.GetComponent<BeltCtrl>();
+    //    if (belt == null) return;
+
+    //    int beltReNum = 0;
+
+    //    if (dirNum == 0)
+    //    {
+    //        if (nearObj[1] == obj) beltReNum = 3;
+    //        else if (nearObj[2] == obj) beltReNum = 0;
+    //        else if (nearObj[3] == obj) beltReNum = 1;
+    //    }
+    //    else if (dirNum == 1)
+    //    {
+    //        if (nearObj[1] == obj) beltReNum = 0;
+    //        else if (nearObj[2] == obj) beltReNum = 1;
+    //        else if (nearObj[3] == obj) beltReNum = 2;
+    //    }
+    //    else if (dirNum == 2)
+    //    {
+    //        if (nearObj[1] == obj) beltReNum = 1;
+    //        else if (nearObj[2] == obj) beltReNum = 2;
+    //        else if (nearObj[3] == obj) beltReNum = 3;
+    //    }
+    //    else if (dirNum == 3)
+    //    {
+    //        if (nearObj[1] == obj) beltReNum = 2;
+    //        else if (nearObj[2] == obj) beltReNum = 3;
+    //        else if (nearObj[3] == obj) beltReNum = 0;
+    //    }
+
+    //    if (beltReNum != belt.dirNum)
+    //    {
+    //        if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+    //        {
+    //            belt.dirNum = beltReNum;
+    //            belt.BeltModelSet();
+    //        }
+    //    }
+    //}
+
+    IEnumerator SetOutObjCoroutine(GameObject obj)
     {
+        yield return new WaitForSeconds(0.1f);
+
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                    return;
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)                
-                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());                
+                    yield break;
+                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
             }
             else
             {
@@ -168,6 +221,26 @@ public class MergerCtrl : SolidFactoryCtrl
             outObj.Add(obj);
         }
     }
+
+    //void SetOutObj(GameObject obj)
+    //{
+    //    if (obj.GetComponent<SolidFactoryCtrl>() != null)
+    //    {
+    //        if (obj.TryGetComponent(out BeltCtrl belt))
+    //        {
+    //            if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
+    //                return;
+    //            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)                
+    //                belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());                
+    //        }
+    //        else
+    //        {
+    //            outSameList.Add(obj);
+    //            StartCoroutine("OutCheck", obj);
+    //        }
+    //        outObj.Add(obj);
+    //    }
+    //}
 
     IEnumerator OutCheck(GameObject otherObj)
     {

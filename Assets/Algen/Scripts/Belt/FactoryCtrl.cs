@@ -12,4 +12,14 @@ public class FactoryCtrl : MonoBehaviour
     public int dirCount = 0;
 
     public bool isPreBuilding = false;
+
+    public virtual void DisableColliders()
+    {
+
+    }
+
+    public virtual void EnableColliders()
+    {
+
+    }
 }

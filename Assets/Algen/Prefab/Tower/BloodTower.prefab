@@ -107,7 +107,7 @@ Transform:
   m_GameObject: {fileID: 1886033591091936625}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.96, y: 0.96, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2197105412223746817}
@@ -260,6 +260,7 @@ MonoBehaviour:
   isDie: 0
   isRepair: 0
   repairBar: {fileID: 2164452483589807465}
+  isPreBuilding: 0
   attackFX: {fileID: 3832536798139642931, guid: b3f85c014934a084ea6db9bddeba8932, type: 3}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
 --- !u!1 &2584885461931468724

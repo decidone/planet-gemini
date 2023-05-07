@@ -28,8 +28,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3998782486791640873}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.5, y: 7.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -149,6 +149,8 @@ MonoBehaviour:
   isFull: 0
   fluidIsFull: 0
   dirNum: 0
+  dirCount: 0
+  isPreBuilding: 0
   fluidFactoryData: {fileID: 11400000, guid: 01b4fee9acb66e548992f2050517bb2a, type: 2}
   saveFluidNum: 0
   sendDelayTimer: 0

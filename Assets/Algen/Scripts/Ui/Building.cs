@@ -8,4 +8,7 @@ public class Building : ScriptableObject
     public string scienceName = "basic";
     public Item item = null;
     public GameObject gameObj = null;
+
+    //public float numRows = 0;
+    //public float numColumns = 0;
 }

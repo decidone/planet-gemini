@@ -2469,6 +2469,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 15cb12c5d4c0a58418f13e24d05cdca2, type: 2}
   - {fileID: 11400000, guid: 2e18e7546658336488b14dd42c2c9ecd, type: 2}
   - {fileID: 11400000, guid: 693f1580a1ede6a47a9cf387d3f93626, type: 2}
+  - {fileID: 11400000, guid: e07253f443b5b3e49b409934a95799fb, type: 2}
+  - {fileID: 11400000, guid: e939aa5cf7088a24a8de7f5554e8cb45, type: 2}
 --- !u!114 &769492040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2544,6 +2546,7 @@ MonoBehaviour:
   gameObj: {fileID: 0}
   isSelect: 0
   beltMgr: {fileID: 745844382}
+  size: {x: 0, y: 0}
 --- !u!212 &774915816
 SpriteRenderer:
   m_ObjectHideFlags: 0

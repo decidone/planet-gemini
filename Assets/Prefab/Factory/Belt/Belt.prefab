@@ -118,7 +118,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -170,6 +170,7 @@ MonoBehaviour:
   isFull: 0
   fluidIsFull: 0
   dirNum: 0
+  dirCount: 0
   isPreBuilding: 0
   solidFactoryData: {fileID: 11400000, guid: b1f80cc4a5f98e24287ffd6c848c3ca5, type: 2}
   itemObjList: []

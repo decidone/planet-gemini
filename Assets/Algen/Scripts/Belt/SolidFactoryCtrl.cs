@@ -21,8 +21,12 @@ public class SolidFactoryCtrl : FactoryCtrl
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
+    public BoxCollider2D box2D = null;
+
     private void Awake()
     {
+        box2D = GetComponent<BoxCollider2D>();
+
         itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
     }
     // Start is called before the first frame update
@@ -102,5 +106,15 @@ public class SolidFactoryCtrl : FactoryCtrl
     public void GetFluid(float getNum)
     {
 
+    }
+
+    public override void DisableColliders()
+    {
+        box2D.enabled = false;
+    }
+
+    public override void EnableColliders()
+    {
+        box2D.enabled = true;
     }
 }

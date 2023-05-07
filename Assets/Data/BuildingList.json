@@ -13,7 +13,19 @@
   },
   "Belt": {
     "name": "Belt",
-    "items": [ "Coal"],
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "UnderBelt": {
+    "name": "UnderBelt",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "FluidTank": {
+    "name": "FluidTank",
+    "items": [ "Coal" ],
     "amounts": [ 1 ],
     "cooldown": 3
   },
