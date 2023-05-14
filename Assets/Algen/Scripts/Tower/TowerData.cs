@@ -21,4 +21,12 @@ public class TowerData : ScriptableObject
     [SerializeField]
     private float colliderRadius;//Å¸°Ù Å½»ö ¹üÀ§
     public float ColliderRadius { get { return colliderRadius; } }
+
+    [SerializeField]
+    private float maxBuildingGauge;
+    public float MaxBuildingGauge { get { return maxBuildingGauge; } }
+
+    [SerializeField]
+    private float maxRepairGauge;
+    public float MaxRepairGauge { get { return maxRepairGauge; } }
 }

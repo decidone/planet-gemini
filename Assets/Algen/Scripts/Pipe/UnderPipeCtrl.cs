@@ -61,7 +61,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         CheckPos();
     }
 
-    void CheckPos()
+    protected override void CheckPos()
     {
         if (dirNum == 0)
         {
@@ -85,7 +85,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         }
     }
 
-    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         float dist = 0;
 

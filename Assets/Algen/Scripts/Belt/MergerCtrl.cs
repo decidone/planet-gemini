@@ -30,8 +30,10 @@ public class MergerCtrl : SolidFactoryCtrl
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         SetDirNum();
         if (!isPreBuilding)
         {
@@ -63,7 +65,7 @@ public class MergerCtrl : SolidFactoryCtrl
 
     }
 
-    void SetDirNum()
+    protected override void SetDirNum()
     {
         if (dirNum < 4)
         {
@@ -78,7 +80,7 @@ public class MergerCtrl : SolidFactoryCtrl
         }
     }
 
-    void CheckPos()
+    protected override void CheckPos()
     {
         Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
         
@@ -88,7 +90,7 @@ public class MergerCtrl : SolidFactoryCtrl
         }
     }
 
-    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
 
@@ -145,60 +147,13 @@ public class MergerCtrl : SolidFactoryCtrl
 
         if (beltReNum != belt.dirNum)
         {
-            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.EndBelt)
             {
                 belt.dirNum = beltReNum;
                 belt.BeltModelSet();
             }
         }
     }
-
-    //void SetInObj(GameObject obj)
-    //{
-    //    SolidFactoryCtrl solidFactory = obj.GetComponent<SolidFactoryCtrl>();
-    //    if (solidFactory == null) return;
-
-    //    inObj.Add(obj);
-
-    //    BeltCtrl belt = obj.GetComponent<BeltCtrl>();
-    //    if (belt == null) return;
-
-    //    int beltReNum = 0;
-
-    //    if (dirNum == 0)
-    //    {
-    //        if (nearObj[1] == obj) beltReNum = 3;
-    //        else if (nearObj[2] == obj) beltReNum = 0;
-    //        else if (nearObj[3] == obj) beltReNum = 1;
-    //    }
-    //    else if (dirNum == 1)
-    //    {
-    //        if (nearObj[1] == obj) beltReNum = 0;
-    //        else if (nearObj[2] == obj) beltReNum = 1;
-    //        else if (nearObj[3] == obj) beltReNum = 2;
-    //    }
-    //    else if (dirNum == 2)
-    //    {
-    //        if (nearObj[1] == obj) beltReNum = 1;
-    //        else if (nearObj[2] == obj) beltReNum = 2;
-    //        else if (nearObj[3] == obj) beltReNum = 3;
-    //    }
-    //    else if (dirNum == 3)
-    //    {
-    //        if (nearObj[1] == obj) beltReNum = 2;
-    //        else if (nearObj[2] == obj) beltReNum = 3;
-    //        else if (nearObj[3] == obj) beltReNum = 0;
-    //    }
-
-    //    if (beltReNum != belt.dirNum)
-    //    {
-    //        if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-    //        {
-    //            belt.dirNum = beltReNum;
-    //            belt.BeltModelSet();
-    //        }
-    //    }
-    //}
 
     IEnumerator SetOutObjCoroutine(GameObject obj)
     {
@@ -221,26 +176,6 @@ public class MergerCtrl : SolidFactoryCtrl
             outObj.Add(obj);
         }
     }
-
-    //void SetOutObj(GameObject obj)
-    //{
-    //    if (obj.GetComponent<SolidFactoryCtrl>() != null)
-    //    {
-    //        if (obj.TryGetComponent(out BeltCtrl belt))
-    //        {
-    //            if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-    //                return;
-    //            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)                
-    //                belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());                
-    //        }
-    //        else
-    //        {
-    //            outSameList.Add(obj);
-    //            StartCoroutine("OutCheck", obj);
-    //        }
-    //        outObj.Add(obj);
-    //    }
-    //}
 
     IEnumerator OutCheck(GameObject otherObj)
     {
@@ -265,7 +200,7 @@ public class MergerCtrl : SolidFactoryCtrl
         }
     }
 
-    void GetItem()
+    protected override void GetItem()
     {
         itemGetDelay = true;
 
@@ -298,7 +233,7 @@ public class MergerCtrl : SolidFactoryCtrl
         }        
     }
 
-    void SetItem()
+    protected override void SetItem()
     {
         if (setFacDelayCoroutine != null)
         {

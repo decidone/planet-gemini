@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e26d57b107969f44b9b0e33e9be09dd5, type: 3}
-  m_Name: ItemSpawner
+  m_Name: Merger Data
   m_EditorClassIdentifier: 
-  factoryName: ItemSpawner
+  factoryName: Merger
+  maxHp: 50
   fullItemNum: 1
   sendSpeed: 1.5
   sendDelay: 0.5
+  maxBuildingGauge: 10
+  maxRepairGauge: 10

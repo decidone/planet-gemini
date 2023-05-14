@@ -9,10 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e26d57b107969f44b9b0e33e9be09dd5, type: 3}
-  m_Name: Splitter Data
+  m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
+  m_Name: RepairTower Data
   m_EditorClassIdentifier: 
-  factoryName: Splitter
-  fullItemNum: 1
-  sendSpeed: 1.5
-  sendDelay: 0.5
+  towerName: RepairTower
+  maxHp: 100
+  damage: 10
+  attackDist: 10
+  attDelayTime: 5
+  colliderRadius: 10
+  maxBuildingGauge: 100
+  maxRepairGauge: 70

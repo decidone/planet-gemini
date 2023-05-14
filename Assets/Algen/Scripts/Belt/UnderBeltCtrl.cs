@@ -19,12 +19,6 @@ public class UnderBeltCtrl : MonoBehaviour
 
     public int dirNum = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {// 기본적으로 send벨트이고 send벨트의 반대 방향으로 10 체크해서 다른 send벨트가 있을 때 get벨트로 변경
@@ -51,38 +45,30 @@ public class UnderBeltCtrl : MonoBehaviour
 
         for (int i = 0; i < hits.Length; i++)
         {
-            Collider2D hitCollider = hits[i].collider;
+            Collider2D factoryCollider = hits[i].collider;
 
-            if (hitCollider.CompareTag("Factory") &&
-                !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
-                hitCollider.GetComponent<GetUnderBeltCtrl>() != null)
+            if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != belt)
+            //&& !factoryCollider.GetComponent<FactoryCtrl>().isPreBuilding)
             {
-                break;
-            }
-            else if (hitCollider.CompareTag("Factory") &&
-                !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
-                hitCollider.GetComponent<SendUnderBeltCtrl>() != null)
-            {
-                ConnectionDirCheck(hitCollider.gameObject);
-                return;
+                //FactoryCtrl factoryCtrl = factoryCollider.GetComponent<FactoryCtrl>();
+                GetUnderBeltCtrl getUnderBeltCtrl = factoryCollider.GetComponent<GetUnderBeltCtrl>();
+                SendUnderBeltCtrl sendUnderBeltCtrl = factoryCollider.GetComponent<SendUnderBeltCtrl>();
+
+                if (getUnderBeltCtrl != null && getUnderBeltCtrl.dirNum == dirNum)
+                {
+                    SetSendUnderBelt();
+                    return;
+                }
+
+                if (sendUnderBeltCtrl != null && sendUnderBeltCtrl.dirNum == dirNum)
+                {
+                    SetGetUnderBelt();
+                    return;
+                }
             }
         }
 
         ReturnSendBelt();
-    }
-
-    void ConnectionDirCheck(GameObject obj)
-    {
-        if(SendBelt.activeSelf == true)
-        {
-            SendUnderBeltCtrl sendUnderbelt = obj.GetComponent<SendUnderBeltCtrl>();
-            if (sendUnderbelt.dirNum == dirNum)
-            {
-                SetGetUnderBelt();
-            }
-            else
-                return;
-        }
     }
 
     void ReturnSendBelt()
@@ -97,6 +83,7 @@ public class UnderBeltCtrl : MonoBehaviour
     {
         SendBelt.SetActive(false);
         GetBelt.SetActive(true);
+        SetSlotColor(GetBelt.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
         belt = GetBelt;
         beltScipt = belt.GetComponent<GetUnderBeltCtrl>();
         beltScipt.isPreBuilding = true;
@@ -112,39 +99,20 @@ public class UnderBeltCtrl : MonoBehaviour
         beltScipt.isPreBuilding = true;
         beltScipt.dirNum = dirNum;
     }
-
-    //public void SetGetUnderBelt(int beltDir)
-    //{
-    //    if (belt != null)
-    //        Destroy(belt);
-
-    //    isSendBelt = false;
-    //    belt = Instantiate(GetBelt, this.transform.position, Quaternion.identity);
-    //    belt.transform.parent = this.transform;
-    //    beltScipt = belt.GetComponent<GetUnderBeltCtrl>();
-    //    beltScipt.isPreBuilding = true;
-    //    beltScipt.dirNum = beltDir;
-    //}
-
-    //public void SetSendUnderBelt(int beltDir)
-    //{
-    //    if (belt != null)
-    //        Destroy(belt);
-
-    //    isSendBelt = true;
-    //    belt = Instantiate(SendBelt, this.transform.position, Quaternion.identity);
-    //    belt.transform.parent = this.transform;
-    //    beltScipt = belt.GetComponent<SendUnderBeltCtrl>();
-    //    beltScipt.isPreBuilding = true;
-    //    beltScipt.dirNum = beltDir;
-    //}
+    void SetSlotColor(SpriteRenderer sprite, Color color, float alpha)
+    {
+        Color slotColor = sprite.color;
+        slotColor = color;
+        slotColor.a = alpha;
+        sprite.color = slotColor;
+    }
 
     public void RemoveObj()
     {
         if (belt != null)
         {
             belt.transform.parent = null;
-            beltScipt.isPreBuilding = false;
+            //beltScipt.isPreBuilding = false;
         }
 
         Destroy(this.gameObject);

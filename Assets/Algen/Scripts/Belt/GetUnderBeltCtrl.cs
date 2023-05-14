@@ -5,7 +5,12 @@ using System;
 
 public class GetUnderBeltCtrl : SolidFactoryCtrl
 {
+    [SerializeField]
+    Sprite[] modelNum = new Sprite[4];
+    SpriteRenderer setModel;
+
     public GameObject inObj = null;
+    [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
 
     [SerializeField]
@@ -19,18 +24,19 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
     void Start()
     {
         dirCount = 4;
+        setModel = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         SetDirNum();
         if (!isPreBuilding)
         {
-            if (itemList.Count > 0 && outObj.Count > 0)
+            if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
             {
-                if (itemSetDelay == false)
-                    StartCoroutine("SetItem");
+                SetItem();
             }
 
             for (int i = 0; i < nearObj.Length; i++)
@@ -50,16 +56,16 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    void SetDirNum()
+    protected override void SetDirNum()
     {
         if (dirNum < 4)
         {
-            //setModel.sprite = modelNum[dirNum];
+            setModel.sprite = modelNum[dirNum];
             CheckPos();
         }
     }
 
-    void CheckPos()
+    protected override void CheckPos()
     {
         Vector2[] dirs = { Vector2.down, Vector2.left, Vector2.up, Vector2.right };
 
@@ -68,7 +74,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             checkPos[i] = dirs[(dirNum + i) % 4];
         }
     }
-    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         float dist = 0;
 
@@ -178,7 +184,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    IEnumerator SetItem()
+    protected override void SetItem()
     {
         itemSetDelay = true;
 
@@ -186,7 +192,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
 
         if (outFactory.isFull == false)
         {
-            if (outObj[getObjNum].GetComponent<BeltCtrl>() != null)
+            if (outObj[getObjNum].GetComponent<BeltCtrl>())
             {
                 ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -195,37 +201,35 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
                 spawnItem.amount = 1;
                 spawnItem.transform.position = this.transform.position;
 
-                //outObj[getObjNum].GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
-                
                 outFactory.OnBeltItem(spawnItem);
-            }
-            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
-            {
-                StartCoroutine("SetFacDelay", getObjNum);
-                //outFactory.OnFactoryItem(itemList[0]);
-            }    
 
-            itemList.RemoveAt(0);
-            ItemNumCheck();
+                itemList.RemoveAt(0);
+                ItemNumCheck();
+            }
+            else
+            {
+                StartCoroutine("SetFacDelay", outObj[getObjNum]);
+            }
 
             getObjNum++;
             if (getObjNum >= outObj.Count)
+            {
                 getObjNum = 0;
-
-            yield return new WaitForSeconds(solidFactoryData.SendDelay);
-            itemSetDelay = false;
+            }
+            Invoke("DelaySetItem", solidFactoryData.SendDelay);
         }
-        else if (outFactory.isFull == true)
+        else
         {
             getObjNum++;
             if (getObjNum >= outObj.Count)
+            {
                 getObjNum = 0;
+            }
 
             itemSetDelay = false;
-            yield break;
         }
-
     }
+
     IEnumerator SetFacDelay(int getObjNum)
     {
         var spawnItem = itemPool.Get();
@@ -253,5 +257,10 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             }
         }
         Destroy(spawnItem.gameObject);
+    }
+
+    void DelaySetItem()
+    {
+        itemSetDelay = false;
     }
 }

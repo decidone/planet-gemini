@@ -4,25 +4,32 @@ using UnityEngine;
 
 public class RepairTower : TowerAi
 {
+    [SerializeField]
     List<GameObject> TowerList = new List<GameObject>();
     bool isDelayRepairCoroutine = false;
 
     public GameObject RuinExplo;
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (!isPreBuilding)
         {
-          if (!isDie)       
+          if (!isRuin)       
             {
                 RepairTowerAiCtrl();
             }
-            else if (isDie && isRepair == true)
-            {
-                RepairFunc();
-            }
-        }  
+            //else if (isRuin && isRepair)
+            //{
+            //    RepairFunc(false);
+            //}
+        }
+        if (isRuin && isRepair == true)
+        {
+            RepairFunc(false);
+        }
     }
 
     void RepairTowerAiCtrl()
@@ -46,20 +53,31 @@ public class RepairTower : TowerAi
 
     void RepairStart()
     {
-        foreach(GameObject tower in TowerList)
+        foreach (GameObject tower in TowerList)
         {
-            if(tower.TryGetComponent(out TowerAi towerAi))
+            TowerAi towerAi = tower.GetComponent<TowerAi>();
+            FactoryCtrl factory = tower.GetComponent<FactoryCtrl>();
+
+            if (towerAi != null)
             {
-                if (!towerAi.isDie)
-                {                   
+                if (!towerAi.isRuin)
+                {
                     towerAi.HealFunc(towerData.Damage);
                 }
-                else if (towerAi.isDie)
+                else if (!towerAi.isRepair)
                 {
-                    if(towerAi.isRepair == false)
-                    {
-                        towerAi.RepairSet(true);
-                    }
+                    towerAi.RepairSet(true);
+                }
+            }
+            else if (factory != null)
+            {
+                if (!factory.isRuin)
+                {
+                    factory.HealFunc(towerData.Damage);
+                }
+                else if (!factory.isRepair)
+                {
+                    factory.RepairSet(true);
                 }
             }
         }
@@ -68,13 +86,18 @@ public class RepairTower : TowerAi
     protected override void DieFunc()
     {
         //unitCanvers.SetActive(false);
-        hpBar.enabled = false;
+        hp = towerData.MaxHp;
 
-        capsule2D.enabled = false;
-        circle2D.enabled = false;
+        hpBar.enabled = false;
+        repairBar.enabled = true;
+
+        repairGauge = 0;
+        repairBar.fillAmount = repairGauge / towerData.MaxBuildingGauge;
+
+        DisableColliders();
 
         //towerState = TowerState.Die;
-        isDie = true;
+        isRuin = true;
 
         Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
 
@@ -84,7 +107,7 @@ public class RepairTower : TowerAi
         {
             if (tower.TryGetComponent(out TowerAi towerAi))
             {
-                if (towerAi.isDie)
+                if (towerAi.isRuin)
                 {
                     if (towerAi.isRepair == true)
                     {
@@ -101,7 +124,7 @@ public class RepairTower : TowerAi
         {
             if (collision.CompareTag("Tower"))
             {
-                if (!collision.GetComponent<TowerAi>().isPreBuilding)
+                //if (!collision.GetComponent<TowerAi>().isPreBuilding)
                 {
                     if (!TowerList.Contains(collision.gameObject))
                     {
@@ -109,6 +132,16 @@ public class RepairTower : TowerAi
                         {
                             TowerList.Add(collision.gameObject);
                         }
+                    }
+                }
+            }
+            else if (collision.CompareTag("Factory"))
+            {
+                //if (!collision.GetComponent<TowerAi>().isPreBuilding)
+                {
+                    if (!TowerList.Contains(collision.gameObject))
+                    {
+                        TowerList.Add(collision.gameObject);                        
                     }
                 }
             }

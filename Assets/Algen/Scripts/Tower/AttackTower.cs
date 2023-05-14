@@ -10,15 +10,18 @@ public class AttackTower : TowerAi
     float mstDisCheckInterval = 0.5f; // 0.5초 간격으로 몬스터 거리 체크
     float targetDist = 0.0f;         // 타겟과의 거리
     bool isTargetSet = false; 
+    [SerializeField]
     List<GameObject> monsterList = new List<GameObject>();
     bool isDelayAfterAttackCoroutine = false;
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        if(!isPreBuilding)
+        base.Update();
+
+        if (!isPreBuilding)
         {
-            if (!isDie)
+            if (!isRuin)
             {
                 AttackTowerAiCtrl();
                 if (monsterList.Count > 0)
@@ -33,10 +36,14 @@ public class AttackTower : TowerAi
                     AttackTargetDisCheck();
                 }
             }
-            else if(isDie && isRepair == true)
-            {
-                RepairFunc();
-            }
+            //else if(isRuin && isRepair == true)
+            //{
+            //    RepairFunc(false);
+            //}
+        }
+        if (isRuin && isRepair)
+        {
+            RepairFunc(false);
         }
     }
 
@@ -76,11 +83,14 @@ public class AttackTower : TowerAi
             // 모든 몬스터에 대해 거리 계산
             foreach (GameObject monster in monsterList)
             {
-                float distance = Vector3.Distance(this.transform.position, monster.transform.position);
-                if (distance < closestDistance)
+                if(monster != null)
                 {
-                    closestDistance = distance;
-                    aggroTarget = monster;
+                    float distance = Vector3.Distance(this.transform.position, monster.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        aggroTarget = monster;
+                    }
                 }
             }
         }
@@ -130,7 +140,7 @@ public class AttackTower : TowerAi
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!isPreBuilding)
+        //if (!isPreBuilding)
         {
             if (collision.CompareTag("Monster"))
             {
@@ -147,7 +157,7 @@ public class AttackTower : TowerAi
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (!isPreBuilding)
+        //if (!isPreBuilding)
         {
             if (collision.CompareTag("Monster"))
             {

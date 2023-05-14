@@ -5,9 +5,11 @@ using System;
 
 public class SendUnderBeltCtrl : SolidFactoryCtrl
 {
-    //public Sprite[] modelNum = new Sprite[4];
-    //SpriteRenderer setModel;
+    [SerializeField]
+    Sprite[] modelNum = new Sprite[4];
+    SpriteRenderer setModel;
 
+    [SerializeField]
     List<GameObject> inObj = new List<GameObject>();
     //public List<GameObject> outObj = new List<GameObject>();
     public GameObject outObj = null;
@@ -25,11 +27,14 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     void Start()
     {
         dirCount = 4;
+        setModel = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         SetDirNum();
         if(!isPreBuilding)
         {
@@ -58,11 +63,12 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    void SetDirNum()
+    protected override void SetDirNum()
     {
         if (dirNum < 4)
         {
-            //setModel.sprite = modelNum[dirNum];
+            setModel.sprite = modelNum[dirNum];
+
             if (dirNum != prevDirNum)
             {
                 CheckPos();
@@ -71,7 +77,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    void CheckPos()
+    protected override void CheckPos()
     {
         Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
 
@@ -81,7 +87,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
 
@@ -155,7 +161,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    void GetItem()
+    protected override void GetItem()
     {
         itemGetDelay = true;
 
@@ -199,7 +205,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    void SetItem()
+    protected override void SetItem()
     {
         if (setFacDelayCoroutine != null)
         {

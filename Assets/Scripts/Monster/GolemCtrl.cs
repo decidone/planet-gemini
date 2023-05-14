@@ -33,15 +33,16 @@ public class GolemCtrl : MonsterAi
             StartCoroutine("AttackDelay");
             if(attackMotion != 2)
             {
-                if (aggroTarget != null)
-                {
-                    if (aggroTarget.GetComponent<PlayerStatus>())                    
-                        aggroTarget.GetComponent<PlayerStatus>().TakeDamage(getMonsterData.monsteData.Damage);                    
-                    else if (aggroTarget.GetComponent<UnitAi>())
-                        aggroTarget.GetComponent<UnitAi>().TakeDamage(getMonsterData.monsteData.Damage);
-                    else if (aggroTarget.GetComponent<TowerAi>())
-                        aggroTarget.GetComponent<TowerAi>().TakeDamage(getMonsterData.monsteData.Damage);
-                }
+                AttackObjCheck(aggroTarget);
+                //if (aggroTarget != null)
+                //{
+                //    if (aggroTarget.GetComponent<PlayerStatus>())                    
+                //        aggroTarget.GetComponent<PlayerStatus>().TakeDamage(getMonsterData.monsteData.Damage);                    
+                //    else if (aggroTarget.GetComponent<UnitAi>())
+                //        aggroTarget.GetComponent<UnitAi>().TakeDamage(getMonsterData.monsteData.Damage);
+                //    else if (aggroTarget.GetComponent<TowerAi>())
+                //        aggroTarget.GetComponent<TowerAi>().TakeDamage(getMonsterData.monsteData.Damage);
+                //}
             }
             checkTarget = false;
         }

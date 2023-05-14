@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
-  m_Name: BloodTower Data
+  m_Name: IceTower Data
   m_EditorClassIdentifier: 
-  towerName: BloodTower
+  towerName: IceTower
   maxHp: 200
   damage: 15
   attackDist: 10
   attDelayTime: 2
   colliderRadius: 10
+  maxBuildingGauge: 100
+  maxRepairGauge: 70

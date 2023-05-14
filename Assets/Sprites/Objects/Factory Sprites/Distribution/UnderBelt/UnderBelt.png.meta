@@ -119,8 +119,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b8f5ac2b49bbda14fa4f2dbd4e4f2e2b
-      internalID: 2124612436
+      spriteID: ca451b9180b32e24f872eeb583734ced
+      internalID: 1704090391
       vertices: []
       indices: 
       edges: []
@@ -140,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac9517c0836490c4dad6aedcbdf9944c
-      internalID: 1995362632
+      spriteID: ef7eae6bd3685da4ea81825b6b4e1583
+      internalID: -1031399349
       vertices: []
       indices: 
       edges: []
@@ -161,8 +161,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e9a0836b357e93d44a0e5636d0e389a9
-      internalID: 353170044
+      spriteID: abf8abcb6b604fa45a7088c84be9a4d0
+      internalID: -2051148247
       vertices: []
       indices: 
       edges: []
@@ -182,8 +182,92 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a4f381a9259c13b4d8df5c21e1aed4ec
-      internalID: -218517849
+      spriteID: 2bf7f45dc8ad13d4c9f6df73ae371b7f
+      internalID: -1587426880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnderBelt_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc7e4bd924ce9404c88026ded3b0f58d
+      internalID: -627380388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnderBelt_5
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5f9bd9b1e4e78b47bb1828f58bba8f8
+      internalID: -1788641530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnderBelt_6
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 16
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c467141bb0570e4e9e7913f1cfc68fa
+      internalID: -220168426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UnderBelt_7
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 0
+        width: 16
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe635f72b18a40b4282d178e37a6a000
+      internalID: 878528353
       vertices: []
       indices: 
       edges: []
@@ -199,10 +283,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      UnderBelt_1: 1995362632
-      UnderBelt_3: -218517849
-      UnderBelt_2: 353170044
-      UnderBelt_0: 2124612436
+      UnderBelt_1: -1031399349
+      UnderBelt_7: 878528353
+      UnderBelt_6: -220168426
+      UnderBelt_3: -1587426880
+      UnderBelt_2: -2051148247
+      UnderBelt_0: 1704090391
+      UnderBelt_4: -627380388
+      UnderBelt_5: -1788641530
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

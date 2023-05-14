@@ -30,19 +30,19 @@ public class TowerAi : MonoBehaviour
     [HideInInspector]
     public float hp = 200.0f;
     [HideInInspector]
-    public bool isDie = false;
+    public bool isRuin = false;
 
     // Repair ฐüทร
-    [HideInInspector]
+    //[HideInInspector]
     public bool isRepair = false;
     public Image repairBar;
-    float repairGauge = 0.0f;
-    float maxRepairGauge = 100.0f;
+    public float repairGauge = 0.0f;
 
     protected CircleCollider2D circle2D = null;
     protected CapsuleCollider2D capsule2D = null;
 
     public bool isPreBuilding = false;
+    public bool isSetBuildingOk = false;
 
     private void Awake()
     {
@@ -54,19 +54,28 @@ public class TowerAi : MonoBehaviour
     {
         circle2D.radius = towerData.ColliderRadius;
         hp = towerData.MaxHp;
-        repairBar.enabled = false;
         hpBar.fillAmount = hp / towerData.MaxHp;
-        repairBar.fillAmount = repairGauge / maxRepairGauge;
+        repairBar.fillAmount = repairGauge / towerData.MaxRepairGauge;
     }
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //}
+    protected virtual void Update()
+    {
+        if (isPreBuilding && isSetBuildingOk && !isRuin)
+        {
+            RepairFunc(true);
+        }
+    }
 
     public void TakeDamage(float damage)
     {
+        if (!isPreBuilding)
+        {
+            if (!unitCanvers.activeSelf)
+            {
+                unitCanvers.SetActive(true);
+                hpBar.enabled = true;
+            }
+        }
+
         if (hp <= 0f)
             return;
 
@@ -87,8 +96,16 @@ public class TowerAi : MonoBehaviour
 
     public void HealFunc(float heal)
     {
-        if (hp + heal > towerData.MaxHp)
+        if (hp == towerData.MaxHp)
+        {
+            return;
+        }
+        else if (hp + heal > towerData.MaxHp)
+        {
             hp = towerData.MaxHp;
+            if(!isRepair)
+                unitCanvers.SetActive(false);
+        }
         else        
             hp += heal;
 
@@ -97,19 +114,44 @@ public class TowerAi : MonoBehaviour
 
     public void RepairSet(bool repair)
     {
+        hp = towerData.MaxHp;
         isRepair = repair;
-        repairBar.enabled = repair;
+        //repairBar.enabled = repair;
     }
 
-    protected void RepairFunc()
+    protected void RepairFunc(bool isBuilding)
     {
         repairGauge += 10.0f * Time.deltaTime;
 
-        repairBar.fillAmount = repairGauge / maxRepairGauge;
-
-        if (repairGauge  >= maxRepairGauge)
+        if (isBuilding)
         {
-            RepairEnd();
+            repairBar.fillAmount = repairGauge / towerData.MaxBuildingGauge;
+            if (repairGauge >= towerData.MaxBuildingGauge)
+            {
+                isPreBuilding = false;
+                repairGauge = 0.0f;
+                repairBar.enabled = false;
+                if(hp < towerData.MaxHp)
+                {
+                    unitCanvers.SetActive(true);
+                    hpBar.enabled = true;
+                }
+                else
+                {
+                    unitCanvers.SetActive(false);
+                    //isRepair = true;
+                }
+
+                EnableColliders();
+            }
+        }
+        else
+        {
+            repairBar.fillAmount = repairGauge / towerData.MaxRepairGauge;
+            if (repairGauge >= towerData.MaxRepairGauge)
+            {
+                RepairEnd();
+            }
         }
     }
 
@@ -117,18 +159,40 @@ public class TowerAi : MonoBehaviour
     {
         hpBar.enabled = true;
 
-        hp = 100.0f;
+        if (hp < towerData.MaxHp)
+        {
+            unitCanvers.SetActive(true);
+            hpBar.enabled = true;
+        }
+        else
+        {
+            hp = towerData.MaxHp;
+            unitCanvers.SetActive(false);
+        }
+
         hpBar.fillAmount = hp / towerData.MaxHp;
 
         repairBar.enabled = false;
         repairGauge = 0.0f;
 
-        isDie = false;
+        isRuin = false;
+        isPreBuilding = false;
+        //isRepair = false;
 
-        capsule2D.enabled = true;
-        circle2D.enabled = true;
+        EnableColliders();
 
         animator.SetBool("isDie", false);
+    }
+
+    public void SetBuild()
+    {
+        //isRepair = true;
+        unitCanvers.SetActive(true);
+        hpBar.enabled = false;
+        repairBar.enabled = true;
+        repairGauge = 0;
+        repairBar.fillAmount = repairGauge / towerData.MaxRepairGauge;
+        isSetBuildingOk = true;
     }
 
     public void DisableColliders()

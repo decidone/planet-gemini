@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e26d57b107969f44b9b0e33e9be09dd5, type: 3}
-  m_Name: Belt Data
+  m_Name: ItemSpawner
   m_EditorClassIdentifier: 
-  factoryName: Belt
-  fullItemNum: 3
+  factoryName: ItemSpawner
+  maxHp: 50
+  fullItemNum: 1
   sendSpeed: 1.5
-  sendDelay: 1
+  sendDelay: 0.5
+  maxBuildingGauge: 10
+  maxRepairGauge: 10

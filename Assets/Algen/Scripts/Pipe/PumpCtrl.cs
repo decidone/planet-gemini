@@ -53,7 +53,7 @@ public class PumpCtrl : FluidFactoryCtrl
         }
     }
 
-    void CheckPos()
+    protected override void CheckPos()
     {
         checkPos[0] = transform.up;
         checkPos[1] = transform.right;

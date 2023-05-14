@@ -19,13 +19,19 @@ public class TowerAreaAttack : AttackTower
     protected override void DieFunc()
     {
         //unitCanvers.SetActive(false);
+        hp = towerData.MaxHp;
+
+        repairBar.enabled = true;
         hpBar.enabled = false;
 
-        capsule2D.enabled = false;
-        circle2D.enabled = false;
+        repairGauge = 0;
+        repairBar.fillAmount = repairGauge / towerData.MaxBuildingGauge;
+
+        DisableColliders();
 
         //towerState = TowerState.Die;
-        isDie = true;
+        isRuin = true;
+        //isRepair = false;
 
         Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
 

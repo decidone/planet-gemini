@@ -60,8 +60,10 @@ public class SplitterCtrl : SolidFactoryCtrl
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         SetDirNum();
         if (!isPreBuilding)
         {
@@ -132,7 +134,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         }
     }
 
-    void SetDirNum()
+    protected override void SetDirNum()
     {
         if (dirNum < 4)
         {
@@ -146,7 +148,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             }
         }
     }
-    void CheckPos()
+    protected override void CheckPos()
     {
         Vector2[] dirs ={ Vector2.down, Vector2.left, Vector2.up, Vector2.right };
 
@@ -156,7 +158,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         }
     }
 
-    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
 
@@ -305,23 +307,26 @@ public class SplitterCtrl : SolidFactoryCtrl
             }
         }
     }
-    void GetItem()
+    protected override void GetItem()
     {
         itemGetDelay = true;
         if (inObj.TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
         {
-            OnFactoryItem(belt.itemObjList[0]);
-            belt.itemObjList[0].transform.position = transform.position;
-            belt.isItemStop = false;
-            belt.itemObjList.RemoveAt(0);
-            belt.beltGroupMgr.GroupItem.RemoveAt(0);
-            belt.ItemNumCheck();
+            if(belt.itemObjList.Count > 0)
+            {
+                OnFactoryItem(belt.itemObjList[0]);
+                belt.itemObjList[0].transform.position = transform.position;
+                belt.isItemStop = false;
+                belt.itemObjList.RemoveAt(0);
+                belt.beltGroupMgr.GroupItem.RemoveAt(0);
+                belt.ItemNumCheck();
+            }
             Invoke("DelayGetItem", solidFactoryData.SendDelay);
         }
         itemGetDelay = false;
     }
 
-    void SetItem()
+    protected override void SetItem()
     {
         itemSetDelay = true;
 

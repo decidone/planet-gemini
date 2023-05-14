@@ -9,12 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
-  m_Name: StormTower Data
+  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
+  m_Name: ItemUnderBelt
   m_EditorClassIdentifier: 
-  towerName: StormTower
-  maxHp: 200
-  damage: 15
-  attackDist: 10
-  attDelayTime: 2
-  colliderRadius: 10
+  name: UnderBelt
+  icon: {fileID: -220168426, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}

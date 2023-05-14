@@ -53,8 +53,10 @@ public class BeltCtrl : SolidFactoryCtrl
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         anim.SetFloat("DirNum", dirNum);
         anim.SetFloat("ModelNum", modelNum);
 
@@ -102,10 +104,10 @@ public class BeltCtrl : SolidFactoryCtrl
                 modelNum = 4;
             }
         }
-        SetPos();
+        SetDirNum();
     }
 
-    void SetPos()
+    protected override void SetDirNum()
     {
         for (int a = 0; a < nextPos.Length; a++)
         {

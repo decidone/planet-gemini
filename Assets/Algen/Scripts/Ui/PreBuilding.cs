@@ -43,7 +43,7 @@ public class PreBuilding : MonoBehaviour
         Vector3 roundedPosition = new Vector3(Mathf.Round(mousePosition.x), Mathf.Round(mousePosition.y) , 0f);
         transform.position = new Vector3(roundedPosition.x, roundedPosition.y, transform.position.z);
 
-        //if (gameObj != null)
+        //if (gameObj != null) // 오브젝트 중첩설치 안되도록
         //{
         //    Collider2D[] colliders = Physics2D.OverlapBoxAll(gameObj.transform.position, boxSize, 0f);
         //    isBuildingOk = false;
@@ -84,23 +84,24 @@ public class PreBuilding : MonoBehaviour
 
                     if(obj.TryGetComponent(out FactoryCtrl factory))
                     {
-                        factory.isPreBuilding = false;
+                        factory.SetBuild();
                         factory.EnableColliders();
                     }
                     else if (obj.TryGetComponent(out TowerAi tower))
                     {
-                        tower.isPreBuilding = false;
+                        tower.SetBuild();
                         tower.EnableColliders();
                     }
                     else if (obj.TryGetComponent(out BeltGroupMgr belt))
                     {
                         obj.transform.parent = beltMgr.transform;
                         belt.isPreBuilding = false;
-                        belt.BeltList[0].isPreBuilding = false;
+                        belt.BeltList[0].SetBuild();
                         belt.BeltList[0].EnableColliders();
                     }
                     else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
                     {
+                        underBelt.beltScipt.SetBuild();
                         underBelt.beltScipt.EnableColliders();
                         underBelt.RemoveObj();
                     }

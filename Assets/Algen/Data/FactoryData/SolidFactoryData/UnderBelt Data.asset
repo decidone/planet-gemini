@@ -9,8 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: ItemUnderBelt
+  m_Script: {fileID: 11500000, guid: e26d57b107969f44b9b0e33e9be09dd5, type: 3}
+  m_Name: UnderBelt Data
   m_EditorClassIdentifier: 
-  name: UnderBelt
-  icon: {fileID: 21302964, guid: 8495bd4d268f2634a8be23c7c6a4b897, type: 3}
+  factoryName: UnderBelt
+  maxHp: 50
+  fullItemNum: 10
+  sendSpeed: 1.5
+  sendDelay: 1
+  maxBuildingGauge: 10
+  maxRepairGauge: 10
