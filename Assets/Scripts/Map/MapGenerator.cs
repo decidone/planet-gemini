@@ -27,6 +27,7 @@ public class MapGenerator : MonoBehaviour
     public Biome jungle;
     public Biome snow;
 
+    public GameObject objects;
     public List<List<Biome>> biomes;
 
     void Start()
@@ -88,6 +89,7 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 CreateTile(x, y);
+                CreateObj(x, y);
             }
         }
     }
@@ -124,5 +126,20 @@ public class MapGenerator : MonoBehaviour
         Tile tile = biome.SetTile(random);
         cell.tile = tile;
         tilemap.SetTile(new Vector3Int(x, y, 0), tile);
+    }
+
+    void CreateObj(int x, int y)
+    {
+        Cell cell = mapData[x][y];
+        Biome biome = cell.biome;
+        GameObject obj = biome.SetObject(random);
+        if (obj != null)
+        {
+            GameObject objInst = Instantiate(obj, objects.transform);
+            cell.obj = objInst;
+
+            objInst.name = string.Format("map_x{0}_y{1}", x, y);
+            objInst.transform.localPosition = new Vector3(x, y, 0);
+        }
     }
 }

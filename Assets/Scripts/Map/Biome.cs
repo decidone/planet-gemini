@@ -7,6 +7,7 @@ public class Biome : MonoBehaviour
 {
     public List<Tile> tiles;
     public List<Tile> plantTiles;
+    public List<GameObject> objects;
 
     public Tile SetTile(System.Random random)
     {
@@ -21,5 +22,16 @@ public class Biome : MonoBehaviour
         }
 
         return tile;
+    }
+
+    public GameObject SetObject(System.Random random)
+    {
+        GameObject obj = null;
+        if (random.Next(0, 100) > 98 && objects.Count > 0)
+        {
+            obj = objects[random.Next(0, objects.Count)];
+        }
+
+        return obj;
     }
 }
