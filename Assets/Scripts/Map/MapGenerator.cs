@@ -121,7 +121,7 @@ public class MapGenerator : MonoBehaviour
     {
         Cell cell = mapData[x][y];
         Biome biome = cell.biome;
-        Tile tile = biome.tiles[random.Next(0, biome.tiles.Count)];
+        Tile tile = biome.SetTile(random);
         cell.tile = tile;
         tilemap.SetTile(new Vector3Int(x, y, 0), tile);
     }
