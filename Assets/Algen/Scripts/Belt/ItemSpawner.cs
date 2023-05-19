@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ItemSpawner : SolidFactoryCtrl
 {
     [SerializeField]
     Item itemData;
 
+    [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
     GameObject[] nearObj = new GameObject[4];
     Vector2[] checkPos = new Vector2[4];
@@ -16,129 +18,79 @@ public class ItemSpawner : SolidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
+        dirCount = 4;
         CheckPos();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        if (outObj.Count > 0)
-        {
-            if (itemSetDelay == false)
-                StartCoroutine("SetItem");
-        }
+        base.Update();
 
-        if (nearObj[0] == null)
-            UpObjCheck();
-        if (nearObj[1] == null)
-            RightObjCheck();
-        if (nearObj[2] == null)
-            DownObjCheck();
-        if (nearObj[3] == null)
-            LeftObjCheck();
-    }
-    void CheckPos()
-    {
-        checkPos[0] = transform.up;
-        checkPos[1] = transform.right;
-        checkPos[2] = -transform.up;
-        checkPos[3] = -transform.right;
-    }
-    void UpObjCheck()
-    {
-        if (nearObj[0] == null)
+        if (!isPreBuilding)
         {
-            RaycastHit2D[] upHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[0], 1f);
-
-            for (int a = 0; a < upHits.Length; a++)
+            if (outObj.Count > 0 && !itemSetDelay)
             {
-                if (upHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
+                SetItem();
+            }
+
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null)
                 {
-                    if (upHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[0] = upHits[a].collider.gameObject;
-                        SetOutObj(nearObj[0]);
-                    }
+                    if (i == 0)
+                        CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    else if (i == 1)
+                        CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    else if (i == 2)
+                        CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    else if (i == 3)
+                        CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
             }
         }
     }
 
-    void RightObjCheck()
+    protected override void CheckPos()
     {
-        if (nearObj[1] == null)
-        {
-            RaycastHit2D[] rightHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[1], 1f);
+        Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
 
-            for (int a = 0; a < rightHits.Length; a++)
-            {
-                if (rightHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
-                {
-                    if (rightHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[1] = rightHits[a].collider.gameObject;
-                        SetOutObj(nearObj[1]);
-                    }
-                }
-            }
-        }
-    }
-    void DownObjCheck()
-    {
-        if (nearObj[2] == null)
+        for (int i = 0; i < 4; i++)
         {
-            RaycastHit2D[] downHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[2], 1f);
-
-            for (int a = 0; a < downHits.Length; a++)
-            {
-                if (downHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
-                {
-                    if (downHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[2] = downHits[a].collider.gameObject;
-                        SetOutObj(nearObj[2]);
-                    }
-                }
-            }
+            checkPos[i] = dirs[(dirNum + i) % 4];
         }
     }
 
-    void LeftObjCheck()
+    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
-        if (nearObj[3] == null)
-        {
-            RaycastHit2D[] leftHits = Physics2D.RaycastAll(this.gameObject.transform.position, checkPos[3], 1f);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
 
-            for (int a = 0; a < leftHits.Length; a++)
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
+                hitCollider.GetComponent<ItemSpawner>() != GetComponent<ItemSpawner>())
             {
-                if (leftHits[a].collider.GetComponent<ItemSpawner>() != this.gameObject.GetComponent<ItemSpawner>())
-                {
-                    if (leftHits[a].collider.CompareTag("Factory"))
-                    {
-                        nearObj[3] = leftHits[a].collider.gameObject;
-                        SetOutObj(nearObj[3]);
-                    }
-                }
+                nearObj[index] = hits[i].collider.gameObject;
+                callback(hitCollider.gameObject);
+                break;
             }
         }
     }
-
-    void SetOutObj(GameObject obj)
+    IEnumerator SetOutObjCoroutine(GameObject obj)
     {
+        yield return new WaitForSeconds(0.1f);
+
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
-            if (obj.GetComponent<BeltCtrl>() != null)
+            if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                    return;
-
-                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
+                    yield break;
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                {
                     belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
-                }
             }
-            else if (obj.GetComponent<BeltCtrl>() == null)
+            else
             {
                 outSameList.Add(obj);
                 StartCoroutine("OutCheck", obj);
@@ -146,6 +98,7 @@ public class ItemSpawner : SolidFactoryCtrl
             outObj.Add(obj);
         }
     }
+
     IEnumerator OutCheck(GameObject otherObj)
     {
         yield return new WaitForSeconds(0.1f);
@@ -169,7 +122,7 @@ public class ItemSpawner : SolidFactoryCtrl
         }
     }
 
-    IEnumerator SetItem()
+    protected override void SetItem()
     {
         itemSetDelay = true;
 
@@ -177,7 +130,7 @@ public class ItemSpawner : SolidFactoryCtrl
 
         if (outFactory.isFull == false)
         {
-            if (outObj[getObjNum].GetComponent<BeltCtrl>() != null)
+            if (outObj[getObjNum].GetComponent<BeltCtrl>())
             {
                 ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -186,52 +139,72 @@ public class ItemSpawner : SolidFactoryCtrl
                 spawnItem.amount = 1;
                 spawnItem.transform.position = this.transform.position;
                 outFactory.OnBeltItem(spawnItem);
-                //outObj[getObjNum].GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
             }
-            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
+            else
             {
-                StartCoroutine("SetFacDelay", getObjNum);
-                //objFactory.OnFactoryItem(itemData);
+                StartCoroutine("SetFacDelay", outObj[getObjNum]);
             }
 
             getObjNum++;
             if (getObjNum >= outObj.Count)
+            {
                 getObjNum = 0;
-
-            yield return new WaitForSeconds(solidFactoryData.SendDelay);
-            itemSetDelay = false;
+            }
+            Invoke("DelaySetItem", solidFactoryData.SendDelay);
         }
-        else if (outFactory.isFull == true)
+        else
         {
             getObjNum++;
             if (getObjNum >= outObj.Count)
+            {
                 getObjNum = 0;
+            }
 
             itemSetDelay = false;
-            yield break;
         }
     }
 
-    IEnumerator SetFacDelay(int getObjNum)
+    IEnumerator SetFacDelay(GameObject outFac)
     {
         var spawnItem = itemPool.Get();
-        SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-        sprite.enabled = false;
+        var sprite = spawnItem.GetComponent<SpriteRenderer>();
+        sprite.color = new Color(1f, 1f, 1f, 0f);
 
-        spawnItem.transform.position = this.transform.position;
+        spawnItem.transform.position = transform.position;
 
-        while (spawnItem.transform.position != outObj[getObjNum].transform.position)
+        var targetPos = outFac.transform.position;
+        var startTime = Time.time;
+        var distance = Vector3.Distance(spawnItem.transform.position, targetPos);
+
+        while (spawnItem != null && spawnItem.transform.position != targetPos)
         {
-            spawnItem.transform.position = Vector3.MoveTowards(spawnItem.transform.position, outObj[getObjNum].transform.position, solidFactoryData.SendSpeed * Time.deltaTime);
+            var elapsed = Time.time - startTime;
+            var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed));
+            spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
+
+            sprite.color = new Color(1f, 1f, 1f, t);
 
             yield return null;
         }
 
-        if (spawnItem.transform.position == outObj[getObjNum].transform.position)
+        if (spawnItem != null && spawnItem.transform.position == targetPos)
         {
-            SolidFactoryCtrl outFactory = outObj[getObjNum].GetComponent<SolidFactoryCtrl>();
-            outFactory.OnFactoryItem(itemData);
+            if (itemList.Count > 0)
+            {
+                var outFactory = outFac.GetComponent<SolidFactoryCtrl>();
+                outFactory.OnFactoryItem(itemData);
+            }
         }
-        Destroy(spawnItem.gameObject);
+
+        if (spawnItem != null)
+        {
+            sprite.color = new Color(1f, 1f, 1f, 1f);
+            itemPool.Release(spawnItem);
+        }
+    }
+
+    void DelaySetItem()
+    {
+        itemSetDelay = false;
     }
 }

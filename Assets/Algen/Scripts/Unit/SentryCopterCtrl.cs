@@ -6,19 +6,6 @@ public class SentryCopterCtrl : UnitAi
 {
     public GameObject attackFX;
 
-
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-
-    //}
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-        
-    //}
-
     protected override void AttackStart()
     {
         animator.Play("Attack", -1, 0);

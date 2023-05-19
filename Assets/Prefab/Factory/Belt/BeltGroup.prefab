@@ -45,10 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BeltObj: {fileID: 8826970519567855532, guid: b6ae0db23145322479ffbd03025b5357, type: 3}
-  up: 0
-  down: 0
-  left: 0
-  right: 0
   BeltList: []
   GroupItem: []
   nextObj: {fileID: 0}
+  isPreBuilding: 0

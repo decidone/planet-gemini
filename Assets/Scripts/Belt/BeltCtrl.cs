@@ -37,26 +37,26 @@ public class BeltCtrl : SolidFactoryCtrl
     bool isLeft = false;
 
     // Start is called before the first frame update
-    private void Awake()
+    void Start()
     {
+        dirCount = 4;
         beltManager = GameObject.Find("BeltManager");
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
         beltState = BeltState.SoloBelt;
 
-    }
-    void Start()
-    {
         //if (transform.parent.gameObject != null)
         //    beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
 
         //if (preBelt != null)
-            BeltModelSet();
+        BeltModelSet();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         anim.SetFloat("DirNum", dirNum);
         anim.SetFloat("ModelNum", modelNum);
 
@@ -104,10 +104,10 @@ public class BeltCtrl : SolidFactoryCtrl
                 modelNum = 4;
             }
         }
-        SetPos();
+        SetDirNum();
     }
 
-    void SetPos()
+    protected override void SetDirNum()
     {
         for (int a = 0; a < nextPos.Length; a++)
         {

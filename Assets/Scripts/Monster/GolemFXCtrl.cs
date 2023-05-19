@@ -11,12 +11,6 @@ public class GolemFXCtrl : MonoBehaviour
     bool isAnimEnd = false;
     float damage = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {        
@@ -82,33 +76,31 @@ public class GolemFXCtrl : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
-        {
+
+        if (collision.GetComponent<PlayerStatus>())
+        {            
             if (collision.isTrigger == false)
             {
-                if (collision.GetComponent<PlayerStatus>())
-                    collision.GetComponent<PlayerStatus>().TakeDamage(damage);                
-            }            
-        }//if (collision.CompareTag("Player"))
-        else if (collision.CompareTag("Unit"))
+                collision.GetComponent<PlayerStatus>().TakeDamage(damage);
+            }
+        }
+        else if (collision.GetComponent<UnitAi>())
         {
             if (collision.isTrigger == false)
             {
                 collision.GetComponent<UnitAi>().TakeDamage(damage);
             }
-        }//if (collision.CompareTag("Player"))
-        else if (collision.CompareTag("Tower"))
+        }
+        else if (collision.GetComponent<TowerAi>())
         {
             if (collision.isTrigger == false)
             {
                 collision.GetComponent<TowerAi>().TakeDamage(damage);
             }
-        }//if (collision.CompareTag("Player"))
-
+        }
         if (attackMotionNum == 2)
         {
             Destroy(this.gameObject, 0.2f);
         }
     }//private void OnTriggerEnter2D(Collider2D collision)
-
 }

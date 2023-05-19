@@ -5,7 +5,12 @@ using System;
 
 public class GetUnderBeltCtrl : SolidFactoryCtrl
 {
+    [SerializeField]
+    Sprite[] modelNum = new Sprite[4];
+    SpriteRenderer setModel;
+
     public GameObject inObj = null;
+    [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
 
     [SerializeField]
@@ -18,45 +23,49 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
-        
+        dirCount = 4;
+        setModel = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         SetDirNum();
-        if (itemList.Count > 0 && outObj.Count > 0)
+        if (!isPreBuilding)
         {
-            if (itemSetDelay == false)
-                StartCoroutine("SetItem");
-        }
-
-        for (int i = 0; i < nearObj.Length; i++)
-        {
-            if (nearObj[i] == null)
+            if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
             {
-                if (i == 0)
-                    CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
-                else if (i == 1)
-                    CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
-                else if (i == 2)
-                    CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj));
-                else if (i == 3)
-                    CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj));
+                SetItem();
+            }
+
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null)
+                {
+                    if (i == 0)
+                        CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                    else if (i == 1)
+                        CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                    else if (i == 2)
+                        CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj));
+                    else if (i == 3)
+                        CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj));
+                }
             }
         }
     }
 
-    void SetDirNum()
+    protected override void SetDirNum()
     {
         if (dirNum < 4)
         {
-            //setModel.sprite = modelNum[dirNum];
+            setModel.sprite = modelNum[dirNum];
             CheckPos();
         }
     }
 
-    void CheckPos()
+    protected override void CheckPos()
     {
         Vector2[] dirs = { Vector2.down, Vector2.left, Vector2.up, Vector2.right };
 
@@ -65,7 +74,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             checkPos[i] = dirs[(dirNum + i) % 4];
         }
     }
-    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         float dist = 0;
 
@@ -78,31 +87,55 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
 
         for (int i = 0; i < hits.Length; i++)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") &&
-                hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
+            if(index != 0)
             {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
+                Collider2D hitCollider = hits[i].collider;
+                if (hitCollider.CompareTag("Factory") &&
+                    !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
+                    hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
+                {
+                    nearObj[index] = hits[i].collider.gameObject;
+                    callback(hitCollider.gameObject);
+                    break;
+                }
+            }
+            else
+            {
+                Collider2D hitCollider = hits[i].collider;
+                if (hitCollider.CompareTag("Factory") &&
+                    !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
+                    hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>() &&
+                    hitCollider.GetComponent<SendUnderBeltCtrl>() != null)
+                {
+                    nearObj[index] = hits[i].collider.gameObject;
+                    callback(hitCollider.gameObject);
+                    break;
+                }
             }
         }
     }
 
     void SetInObj(GameObject obj)
     {
-        if (obj.GetComponent<SolidFactoryCtrl>() != null && obj.GetComponent<SendUnderBeltCtrl>() != null)
+        //if (obj.GetComponent<SolidFactoryCtrl>() != null && obj.GetComponent<SendUnderBeltCtrl>() != null)
         {        
             SendUnderBeltCtrl sendUnderbelt = obj.GetComponent<SendUnderBeltCtrl>();
 
             if (sendUnderbelt.dirNum == dirNum)
             {
                 inObj = obj;
-                sendUnderbelt.outObj[0] = this.gameObject;
+                //sendUnderbelt.outObj = this.gameObject;
+                sendUnderbelt.SetOutObj(this.gameObject);
             }
             else
                 return;            
         }
+    }
+
+    public void ResetInObj()
+    {
+        nearObj[0] = null;
+        inObj = null;
     }
 
     void SetOutObj(GameObject obj)
@@ -151,7 +184,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    IEnumerator SetItem()
+    protected override void SetItem()
     {
         itemSetDelay = true;
 
@@ -159,7 +192,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
 
         if (outFactory.isFull == false)
         {
-            if (outObj[getObjNum].GetComponent<BeltCtrl>() != null)
+            if (outObj[getObjNum].GetComponent<BeltCtrl>())
             {
                 ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -168,37 +201,35 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
                 spawnItem.amount = 1;
                 spawnItem.transform.position = this.transform.position;
 
-                //outObj[getObjNum].GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(spawnItem);
-                
                 outFactory.OnBeltItem(spawnItem);
-            }
-            else if (outObj[getObjNum].GetComponent<BeltCtrl>() == null)
-            {
-                StartCoroutine("SetFacDelay", getObjNum);
-                //outFactory.OnFactoryItem(itemList[0]);
-            }    
 
-            itemList.RemoveAt(0);
-            ItemNumCheck();
+                itemList.RemoveAt(0);
+                ItemNumCheck();
+            }
+            else
+            {
+                StartCoroutine("SetFacDelay", outObj[getObjNum]);
+            }
 
             getObjNum++;
             if (getObjNum >= outObj.Count)
+            {
                 getObjNum = 0;
-
-            yield return new WaitForSeconds(solidFactoryData.SendDelay);
-            itemSetDelay = false;
+            }
+            Invoke("DelaySetItem", solidFactoryData.SendDelay);
         }
-        else if (outFactory.isFull == true)
+        else
         {
             getObjNum++;
             if (getObjNum >= outObj.Count)
+            {
                 getObjNum = 0;
+            }
 
             itemSetDelay = false;
-            yield break;
         }
-
     }
+
     IEnumerator SetFacDelay(int getObjNum)
     {
         var spawnItem = itemPool.Get();
@@ -226,5 +257,10 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             }
         }
         Destroy(spawnItem.gameObject);
+    }
+
+    void DelaySetItem()
+    {
+        itemSetDelay = false;
     }
 }

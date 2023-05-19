@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 90368467031128404}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.96, y: 0.96, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 364839475389073188}
@@ -181,8 +181,11 @@ MonoBehaviour:
   animator: {fileID: 90368467031128403}
   hpBar: {fileID: 3922465802371952925}
   hp: 200
+  isDie: 0
   isRepair: 0
   repairBar: {fileID: 8302925838158578637}
+  isPreBuilding: 0
+  isSetBuildingOk: 0
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
 --- !u!1 &1317787849305595216
 GameObject:
@@ -313,7 +316,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481776479875789932}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -424,14 +427,13 @@ GameObject:
   - component: {fileID: 1824467593557473268}
   - component: {fileID: 1947310464040782021}
   - component: {fileID: 1607219827973574955}
-  - component: {fileID: 2154496046857196686}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &364839475389073188
 RectTransform:
   m_ObjectHideFlags: 0
@@ -516,15 +518,3 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &2154496046857196686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5701885767846924785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a05e1ad9f94a6bf4c84a4bc743b0bb25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

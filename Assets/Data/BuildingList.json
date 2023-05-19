@@ -1,0 +1,50 @@
+{
+  "Splitter": {
+    "name": "Splitter",
+    "items": [ "Gold", "Silver" ],
+    "amounts": [ 2, 1 ],
+    "cooldown": 3
+  },
+  "Merger": {
+    "name": "Merger",
+    "items": [ "Gold", "Silver" ],
+    "amounts": [ 1, 2 ],
+    "cooldown": 3
+  },
+  "Belt": {
+    "name": "Belt",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "UnderBelt": {
+    "name": "UnderBelt",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "FluidTank": {
+    "name": "FluidTank",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "FireTower": {
+    "name": "FireTower",
+    "items": [ "Gold", "GoldBar" ],
+    "amounts": [ 2, 1 ],
+    "cooldown": 3
+  },
+  "IceTower": {
+    "name": "IceTower",
+    "items": [ "Silver", "SilverBar" ],
+    "amounts": [ 2, 1 ],
+    "cooldown": 3
+  },
+  "BloodTower": {
+    "name": "BloodTower",
+    "items": [ "Gold", "GoldBar", "Silver", "SilverBar" ],
+    "amounts": [ 2, 1, 2, 1 ],
+    "cooldown": 3
+  }
+}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -206,6 +207,36 @@ public class Inventory : MonoBehaviour
 
         onItemChangedCallback?.Invoke();
     }
+
+    // 외부 Ui에서 사용하는 Sub
+
+    public void Sub(Item item, int amount)
+    {
+        int slotNum = FindItemSolt(item);
+        if(slotNum != -1)
+            Sub(slotNum, amount);
+    }
+
+    // 외부 Ui에서 사용하는 Sub
+
+    // 아이템의 슬롯 넘버를 찻는 함수
+
+    int FindItemSolt(Item item)
+    {
+        for (int i = 0; i < space; i++)
+        {
+            if (items.ContainsKey(i))
+            {
+                if (items[i] == item)
+                {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    // 아이템의 슬롯 넘버를 찻는 함수
 
     public void Sub(int slotNum, int amount)
     {

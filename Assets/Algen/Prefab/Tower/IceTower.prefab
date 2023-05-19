@@ -12,14 +12,13 @@ GameObject:
   - component: {fileID: 6812926806579280984}
   - component: {fileID: 6691104146048533353}
   - component: {fileID: 5877288372183292551}
-  - component: {fileID: 6502038929392836386}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4813649641223195784
 RectTransform:
   m_ObjectHideFlags: 0
@@ -104,18 +103,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &6502038929392836386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 647539424351984221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a05e1ad9f94a6bf4c84a4bc743b0bb25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5088120821849387768
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +134,7 @@ Transform:
   m_GameObject: {fileID: 5088120821849387768}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.96, y: 0.96, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4813649641223195784}
@@ -297,8 +284,11 @@ MonoBehaviour:
   animator: {fileID: 5088120821849387775}
   hpBar: {fileID: 8192833412653906609}
   hp: 200
+  isDie: 0
   isRepair: 0
   repairBar: {fileID: 8886362618660265932}
+  isPreBuilding: 0
+  isSetBuildingOk: 0
   attackFX: {fileID: 3832536798139642931, guid: 22067a6743dd85943ac66ba5c3c774f6, type: 3}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
 --- !u!1 &6166578359405844220
@@ -430,7 +420,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7886283438098614204}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

@@ -24,41 +24,48 @@ public class MergerCtrl : SolidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
+        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         CheckPos();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         SetDirNum();
-        if (inObj.Count > 0 && !isFull && !itemGetDelay)
+        if (!isPreBuilding)
         {
-            GetItem();
-        }
-
-        if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
-        {
-            SetItem();    
-        }
-
-        for (int i = 0; i < nearObj.Length; i++)
-        {
-            if (nearObj[i] == null)
+            if (inObj.Count > 0 && !isFull && !itemGetDelay)
             {
-                if (i == 0)
-                    CheckNearObj(checkPos[0], 0, obj => SetOutObj(obj));
-                else if (i == 1)
-                    CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
-                else if (i == 2)
-                    CheckNearObj(checkPos[2], 2, obj => SetInObj(obj));
-                else if (i == 3)
-                    CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
+                GetItem();
+            }
+
+            if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+            {
+                SetItem();    
+            }
+
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null)
+                {
+                    if (i == 0)
+                        CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    else if (i == 1)
+                        CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetInObjCoroutine(obj)));
+                    else if (i == 2)
+                        CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+                    else if (i == 3)
+                        CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetInObjCoroutine(obj)));
+                }
             }
         }
+
     }
 
-    void SetDirNum()
+    protected override void SetDirNum()
     {
         if (dirNum < 4)
         {
@@ -73,7 +80,7 @@ public class MergerCtrl : SolidFactoryCtrl
         }
     }
 
-    void CheckPos()
+    protected override void CheckPos()
     {
         Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
         
@@ -83,14 +90,14 @@ public class MergerCtrl : SolidFactoryCtrl
         }
     }
 
-    void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
 
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && 
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
                 hitCollider.GetComponent<MergerCtrl>() != GetComponent<MergerCtrl>())
             {
                 nearObj[index] = hits[i].collider.gameObject;
@@ -99,16 +106,17 @@ public class MergerCtrl : SolidFactoryCtrl
             }
         }
     }
-
-    void SetInObj(GameObject obj)
+    IEnumerator SetInObjCoroutine(GameObject obj)
     {
+        yield return new WaitForSeconds(0.1f);
+
         SolidFactoryCtrl solidFactory = obj.GetComponent<SolidFactoryCtrl>();
-        if (solidFactory == null) return;
+        if (solidFactory == null) yield break;
 
         inObj.Add(obj);
 
         BeltCtrl belt = obj.GetComponent<BeltCtrl>();
-        if (belt == null) return;
+        if (belt == null) yield break;
 
         int beltReNum = 0;
 
@@ -139,21 +147,26 @@ public class MergerCtrl : SolidFactoryCtrl
 
         if (beltReNum != belt.dirNum)
         {
-            belt.dirNum = beltReNum;
-            belt.BeltModelSet();                    
-        }  
+            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.EndBelt)
+            {
+                belt.dirNum = beltReNum;
+                belt.BeltModelSet();
+            }
+        }
     }
 
-    void SetOutObj(GameObject obj)
+    IEnumerator SetOutObjCoroutine(GameObject obj)
     {
+        yield return new WaitForSeconds(0.1f);
+
         if (obj.GetComponent<SolidFactoryCtrl>() != null)
         {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                    return;
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)                
-                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());                
+                    yield break;
+                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
+                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
             }
             else
             {
@@ -187,7 +200,7 @@ public class MergerCtrl : SolidFactoryCtrl
         }
     }
 
-    void GetItem()
+    protected override void GetItem()
     {
         itemGetDelay = true;
 
@@ -220,7 +233,7 @@ public class MergerCtrl : SolidFactoryCtrl
         }        
     }
 
-    void SetItem()
+    protected override void SetItem()
     {
         if (setFacDelayCoroutine != null)
         {

@@ -8,12 +8,6 @@ public class BulletCtrl : MonoBehaviour
     public Transform aggroTarget = null;   // ≈∏∞Ÿ
     Vector3 moveNextStep = Vector3.zero;    // ¿Ãµø πÊ«‚ ∫§≈Õ
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {

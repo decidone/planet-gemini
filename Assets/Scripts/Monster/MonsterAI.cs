@@ -265,6 +265,21 @@ public class MonsterAi : MonoBehaviour
         }
     }//void Attack()
 
+    protected void AttackObjCheck(GameObject Obj)
+    {
+        if (Obj != null)
+        {
+            if (Obj.GetComponent<PlayerStatus>())
+                Obj.GetComponent<PlayerStatus>().TakeDamage(getMonsterData.monsteData.Damage);
+            else if (Obj.GetComponent<UnitAi>())
+                Obj.GetComponent<UnitAi>().TakeDamage(getMonsterData.monsteData.Damage);
+            else if (Obj.GetComponent<TowerAi>())
+                Obj.GetComponent<TowerAi>().TakeDamage(getMonsterData.monsteData.Damage);
+            else if (Obj.GetComponent<FactoryCtrl>())
+                Obj.GetComponent<FactoryCtrl>().TakeDamage(getMonsterData.monsteData.Damage);
+        }
+    }
+
     protected virtual void RandomAttackNum(int attackNum, Transform targetTr)
     {
         
@@ -428,14 +443,30 @@ public class MonsterAi : MonoBehaviour
                     targetList.Add(collision.gameObject);
             }
         }
+        else if (collision.CompareTag("Factory"))
+        {
+            if (!targetList.Contains(collision.gameObject))
+            {
+                //if (!collision.gameObject.GetComponent<FactoryCtrl>().isPreBuilding)
+                {
+                    //monsterAI = MonsterAIState.MAI_NormalTrace;
+                    isPatrol = false;
+                    //if (collision.isTrigger == true)
+                        targetList.Add(collision.gameObject);
+                }
+            }
+        }
         else if (collision.CompareTag("Tower"))
         {
             if (!targetList.Contains(collision.gameObject))
             {
-                //monsterAI = MonsterAIState.MAI_NormalTrace;
-                isPatrol = false;
-                if (collision.isTrigger == true)
-                    targetList.Add(collision.gameObject);
+                //if (!collision.gameObject.GetComponent<TowerAi>().isPreBuilding)
+                {
+                    //monsterAI = MonsterAIState.MAI_NormalTrace;
+                    isPatrol = false;
+                    if (collision.isTrigger == true)
+                        targetList.Add(collision.gameObject);
+                }
             }
         }
     }//private void OnTriggerEnter2D(Collider2D collision)
@@ -457,7 +488,14 @@ public class MonsterAi : MonoBehaviour
             //monsterAI = MonsterAIState.MAI_Patrol;
             isFollowEnd = true;
             if (collision.isTrigger == true)
-                targetList.Remove(collision.gameObject);            
+                targetList.Remove(collision.gameObject);
+        }
+        else if (collision.CompareTag("Factory"))
+        {
+            //monsterAI = MonsterAIState.MAI_Patrol;
+            isFollowEnd = true;
+            //if (collision.isTrigger == true)
+                targetList.Remove(collision.gameObject);
         }
         else if (collision.CompareTag("Tower"))
         {

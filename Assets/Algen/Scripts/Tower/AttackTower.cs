@@ -10,30 +10,40 @@ public class AttackTower : TowerAi
     float mstDisCheckInterval = 0.5f; // 0.5초 간격으로 몬스터 거리 체크
     float targetDist = 0.0f;         // 타겟과의 거리
     bool isTargetSet = false; 
+    [SerializeField]
     List<GameObject> monsterList = new List<GameObject>();
     bool isDelayAfterAttackCoroutine = false;
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        if (!isDie)
+        base.Update();
+
+        if (!isPreBuilding)
         {
-            AttackTowerAiCtrl();
-            if (monsterList.Count > 0)
+            if (!isRuin)
             {
-                mstDisCheckTime += Time.deltaTime;
-                if (mstDisCheckTime > mstDisCheckInterval)
+                AttackTowerAiCtrl();
+                if (monsterList.Count > 0)
                 {
-                    mstDisCheckTime = 0f;
-                    if (monsterList.Count > 0)
-                        AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
+                    mstDisCheckTime += Time.deltaTime;
+                    if (mstDisCheckTime > mstDisCheckInterval)
+                    {
+                        mstDisCheckTime = 0f;
+                        if (monsterList.Count > 0)
+                            AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
+                    }
+                    AttackTargetDisCheck();
                 }
-                AttackTargetDisCheck();
             }
+            //else if(isRuin && isRepair == true)
+            //{
+            //    RepairFunc(false);
+            //}
         }
-        else if(isDie && isRepair == true)
+        if (isRuin && isRepair)
         {
-            RepairFunc();
+            RepairFunc(false);
         }
     }
 
@@ -73,11 +83,14 @@ public class AttackTower : TowerAi
             // 모든 몬스터에 대해 거리 계산
             foreach (GameObject monster in monsterList)
             {
-                float distance = Vector3.Distance(this.transform.position, monster.transform.position);
-                if (distance < closestDistance)
+                if(monster != null)
                 {
-                    closestDistance = distance;
-                    aggroTarget = monster;
+                    float distance = Vector3.Distance(this.transform.position, monster.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        aggroTarget = monster;
+                    }
                 }
             }
         }
@@ -127,30 +140,36 @@ public class AttackTower : TowerAi
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Monster"))
+        //if (!isPreBuilding)
         {
-            if (!monsterList.Contains(collision.gameObject))
+            if (collision.CompareTag("Monster"))
             {
-                if (collision.isTrigger == true)
+                if (!monsterList.Contains(collision.gameObject))
                 {
-                    monsterList.Add(collision.gameObject);
+                    if (collision.isTrigger == true)
+                    {
+                        monsterList.Add(collision.gameObject);
+                    }
                 }
             }
-        }//if (collision.CompareTag("Player"))
+        }
     }//private void OnTriggerEnter2D(Collider2D collision)
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Monster"))
+        //if (!isPreBuilding)
         {
-            if (collision.isTrigger == true)
+            if (collision.CompareTag("Monster"))
             {
-                monsterList.Remove(collision.gameObject);
+                if (collision.isTrigger == true)
+                {
+                    monsterList.Remove(collision.gameObject);
+                }
+                if (monsterList.Count == 0)
+                {
+                    aggroTarget = null;
+                }
             }
-            if (monsterList.Count == 0)
-            {
-                aggroTarget = null;
-            }
-        }//if (collision.CompareTag("Player"))
+        }
     }//private void OnTriggerExit2D(Collider2D collision)
 }

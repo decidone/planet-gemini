@@ -5,17 +5,6 @@ using System.Linq;
 
 public class PipeManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void PipeCombine(PipeGroupMgr fstGroupMgr, PipeGroupMgr secGroupMgr)
     {
         List<PipeCtrl> pipeCtrl = new List<PipeCtrl>();
