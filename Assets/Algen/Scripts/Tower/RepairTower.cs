@@ -56,7 +56,7 @@ public class RepairTower : TowerAi
         foreach (GameObject tower in TowerList)
         {
             TowerAi towerAi = tower.GetComponent<TowerAi>();
-            FactoryCtrl factory = tower.GetComponent<FactoryCtrl>();
+            Structure factory = tower.GetComponent<Structure>();
 
             if (towerAi != null)
             {

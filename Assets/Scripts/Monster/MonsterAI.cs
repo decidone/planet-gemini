@@ -275,8 +275,8 @@ public class MonsterAi : MonoBehaviour
                 Obj.GetComponent<UnitAi>().TakeDamage(getMonsterData.monsteData.Damage);
             else if (Obj.GetComponent<TowerAi>())
                 Obj.GetComponent<TowerAi>().TakeDamage(getMonsterData.monsteData.Damage);
-            else if (Obj.GetComponent<FactoryCtrl>())
-                Obj.GetComponent<FactoryCtrl>().TakeDamage(getMonsterData.monsteData.Damage);
+            else if (Obj.GetComponent<Structure>())
+                Obj.GetComponent<Structure>().TakeDamage(getMonsterData.monsteData.Damage);
         }
     }
 

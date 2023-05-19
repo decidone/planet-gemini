@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class SolidFactoryCtrl : FactoryCtrl
+public class SolidFactoryCtrl : Structure
 {
     [SerializeField]
     protected SolidFactoryData solidFactoryData;
@@ -12,11 +12,7 @@ public class SolidFactoryCtrl : FactoryCtrl
     public List<ItemProps> itemObjList = new List<ItemProps>();
     public List<Item> itemList = new List<Item>();
 
-    public List<GameObject> outSameList = new List<GameObject>();
-
-    [SerializeField]
-    GameObject itemPref;
-    protected IObjectPool<ItemProps> itemPool;
+    //public List<GameObject> outSameList = new List<GameObject>();
 
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
@@ -51,7 +47,7 @@ public class SolidFactoryCtrl : FactoryCtrl
     protected virtual void SetItem() { }
     // 벨트나 건물로 아이템 보내는 함수
 
-    public void BeltGroupSendItem(ItemProps itemObj)
+    public override void BeltGroupSendItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);
 
@@ -61,7 +57,7 @@ public class SolidFactoryCtrl : FactoryCtrl
         }
     }
 
-    public void OnBeltItem(ItemProps itemObj)
+    public override void OnBeltItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);
 
@@ -74,7 +70,7 @@ public class SolidFactoryCtrl : FactoryCtrl
         }
     }
 
-    public void OnFactoryItem(ItemProps itemProps)
+    public override void OnFactoryItem(ItemProps itemProps)
     {
         itemList.Add(itemProps.item);
 
@@ -84,7 +80,7 @@ public class SolidFactoryCtrl : FactoryCtrl
             isFull = true;
         }
     }
-    public void OnFactoryItem(Item item)
+    public override void OnFactoryItem(Item item)
     {
         itemList.Add(item);
 
@@ -94,27 +90,7 @@ public class SolidFactoryCtrl : FactoryCtrl
         }
     }
 
-    private ItemProps CreateItemObj()
-    {
-        ItemProps item = Instantiate(itemPref).GetComponent<ItemProps>();
-        item.SetPool(itemPool);
-        return item;
-    }
-
-    private void OnGetItem(ItemProps item)
-    {
-        item.gameObject.SetActive(true);
-    }
-    private void OnReleaseItem(ItemProps item)
-    {
-        item.gameObject.SetActive(false);
-    }
-    private void OnDestroyItem(ItemProps item)
-    {
-        Destroy(item.gameObject, 0.4f);
-    }
-
-    public void ItemNumCheck()
+    public override void ItemNumCheck()
     {
         if (itemList.Count < solidFactoryData.FullItemNum)
         {
@@ -270,4 +246,6 @@ public class SolidFactoryCtrl : FactoryCtrl
 
         isRuin = true;
     }
+
+    public virtual void AddProductionFac(GameObject obj) { }
 }

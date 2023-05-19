@@ -82,7 +82,7 @@ public class PreBuilding : MonoBehaviour
                     SetSlotColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
                     obj.transform.position = gameObj.transform.position;
 
-                    if(obj.TryGetComponent(out FactoryCtrl factory))
+                    if(obj.TryGetComponent(out Structure factory))
                     {
                         factory.SetBuild();
                         factory.EnableColliders();
@@ -125,7 +125,7 @@ public class PreBuilding : MonoBehaviour
 
         gameObj = Instantiate(game);
 
-        if (gameObj.TryGetComponent(out FactoryCtrl factory))
+        if (gameObj.TryGetComponent(out Structure factory))
         {
             factory.isPreBuilding = true;
             factory.DisableColliders();
@@ -205,7 +205,7 @@ public class PreBuilding : MonoBehaviour
 
     void RotationImg()
     {
-        if (gameObj.TryGetComponent(out FactoryCtrl factory))
+        if (gameObj.TryGetComponent(out Structure factory))
         {
             factory.dirNum++;
             if(factory.dirNum >= factory.dirCount)

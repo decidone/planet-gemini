@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Constructor : Production
 {
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         var slot = inventory.SlotCheck(0);
         var slot1 = inventory.SlotCheck(1);
 
@@ -34,6 +35,11 @@ public class Constructor : Production
             {
                 prodTimer = 0;
             }
+        }
+
+        if (slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+        {
+            SetItem();
         }
     }
 
@@ -77,5 +83,54 @@ public class Constructor : Production
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].outputSlot = true;
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
+    }
+    public override bool CanTakeItem(Item item)
+    {
+        if (recipe.name == null)
+            return false;
+        else if (itemDic[recipe.items[0]] == item)
+            return true;
+        else
+            return false;
+    }
+
+    public override void OnFactoryItem(ItemProps itemProps)
+    {
+        if (itemDic[recipe.items[0]] == itemProps.item)
+        {
+            inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+        }
+
+        OnDestroyItem(itemProps);
+    }    
+    public override void OnFactoryItem(Item item)
+    {
+        if (itemDic[recipe.items[0]] == item)
+        {
+            inventory.SlotAdd(0, item, 1);
+        }
+    }
+
+    protected override void SubFromInventory()
+    {
+        inventory.Sub(1, 1);
+    }
+    protected override bool CheckOutItemNum()
+    {
+        var slot1 = inventory.SlotCheck(1);
+        if (slot1.amount > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public override void ItemNumCheck()
+    {
+        var slot1 = inventory.SlotCheck(1);
+
+        if (slot1.amount < maxAmount)
+            isFull = false;
+        else
+            isFull = true;
     }
 }

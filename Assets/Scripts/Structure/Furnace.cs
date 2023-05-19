@@ -10,8 +10,9 @@ public class Furnace : Production
         maxFuel = 100;
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         var slot = inventory.SlotCheck(0);
         var slot1 = inventory.SlotCheck(1);
         var slot2 = inventory.SlotCheck(2);
@@ -60,6 +61,11 @@ public class Furnace : Production
         {
             prodTimer = 0;
         }
+
+        if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+        {
+            SetItem();
+        }
     }
 
     public override void OpenUI()
@@ -83,5 +89,80 @@ public class Furnace : Production
     public override void CloseUI()
     {
         sInvenManager.ReleaseInven();
+    }
+
+    public override bool CanTakeItem(Item item)
+    {
+        var slot = inventory.SlotCheck(0);
+
+        if (itemDic["Coal"] == item)
+            return true;
+        else if (slot.item == null)
+        {
+            if (recipes != null)
+            {
+                foreach (Recipe _recipe in recipes)
+                {
+                    if (item == itemDic[_recipe.items[0]])
+                        return true;
+                }
+            }
+        }
+        else if (slot.item == item)
+            return true;
+
+        return false;
+    }
+
+    public override void OnFactoryItem(ItemProps itemProps)
+    {
+        if (itemDic["Coal"] == itemProps.item)
+            inventory.SlotAdd(1, itemProps.item, itemProps.amount);
+        else
+        {
+            foreach (Recipe _recipe in recipes)
+            {
+                if (itemProps.item == itemDic[_recipe.items[0]])
+                    inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+            }
+        }
+
+        OnDestroyItem(itemProps);
+    }
+    public override void OnFactoryItem(Item item)
+    {
+        if (itemDic["Coal"] == item)
+            inventory.SlotAdd(1, item, 1);
+        else
+        {
+            foreach (Recipe _recipe in recipes)
+            {
+                if (item == itemDic[_recipe.items[0]])
+                    inventory.SlotAdd(0, item, 1);
+            }
+        }
+    }
+
+    protected override void SubFromInventory()
+    {
+        inventory.Sub(2, 1);
+    }
+    protected override bool CheckOutItemNum()
+    {
+        var slot2 = inventory.SlotCheck(2);
+        if (slot2.amount > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public override void ItemNumCheck()
+    {
+        var slot2 = inventory.SlotCheck(2);
+
+        if (slot2.amount < maxAmount)
+            isFull = false;
+        else
+            isFull = true;
     }
 }

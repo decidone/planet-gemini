@@ -94,7 +94,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
                 hitCollider.GetComponent<SendUnderBeltCtrl>() != GetComponent<SendUnderBeltCtrl>())
             {
                 nearObj[index] = hits[i].collider.gameObject;
@@ -106,7 +106,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
     void SetInObj(GameObject obj)
     {
-        if (obj.GetComponent<SolidFactoryCtrl>() != null)
+        if (obj.GetComponent<Structure>() != null)
         {
             inObj.Add(obj);
 
@@ -214,7 +214,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         itemSetDelay = true;
 
-        SolidFactoryCtrl outFactory = outObj.GetComponent<SolidFactoryCtrl>();
+        Structure outFactory = outObj.GetComponent<Structure>();
 
         if (outFactory.isFull == false)
         { 
@@ -243,8 +243,6 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
             var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed));
             spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
 
-            sprite.color = new Color(1f, 1f, 1f, t);
-
             yield return null;
         }
 
@@ -252,7 +250,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                var outFactory = outObj.GetComponent<SolidFactoryCtrl>();
+                var outFactory = outObj.GetComponent<Structure>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);

@@ -195,7 +195,7 @@ public class BeltGroupMgr : MonoBehaviour
         {
             Collider2D collider = raycastHits[a].collider;
 
-            if (collider.CompareTag("Factory") && !collider.GetComponent<FactoryCtrl>().isPreBuilding && 
+            if (collider.CompareTag("Factory") && !collider.GetComponent<Structure>().isPreBuilding && 
                 collider.GetComponent<BeltCtrl>() != belt)
             {
                 if (collider.GetComponent<BeltCtrl>() != null)

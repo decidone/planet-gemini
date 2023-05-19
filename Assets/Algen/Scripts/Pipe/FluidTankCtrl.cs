@@ -60,7 +60,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
         {
             if (Hits[a].collider.GetComponent<FluidTankCtrl>() != this.gameObject.GetComponent<FluidTankCtrl>())
             {
-                if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
+                if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
                 {
                     factoryList.Add(Hits[a].collider.gameObject);
                     if (Hits[a].collider.GetComponent<PipeCtrl>() != null)

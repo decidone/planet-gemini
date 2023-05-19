@@ -10,8 +10,9 @@ public class Miner : Production
         SetResource(itemDic["Coal"]);
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         var slot = inventory.SlotCheck(0);
         if (slot.amount < maxAmount)
         {
@@ -21,6 +22,11 @@ public class Miner : Production
                 inventory.Add(output, 1);
                 prodTimer = 0;
             }
+        }
+
+        if (slot.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+        {
+            SetItem();
         }
     }
 
@@ -42,5 +48,30 @@ public class Miner : Production
     {
         // 생산 자원을 지정
         output = item;
+    }
+
+    protected override void SubFromInventory()
+    {
+        inventory.Sub(0, 1);
+    }
+
+    protected override bool CheckOutItemNum() 
+    {
+        var slot = inventory.SlotCheck(0);
+        if (slot.amount > 0)
+            return true;
+        else
+            return false;
+    }
+
+
+    public override void ItemNumCheck()
+    {
+        var slot = inventory.SlotCheck(0);
+
+        if (slot.amount < maxAmount)
+            isFull = false;        
+        else
+            isFull = true;
     }
 }
