@@ -14,10 +14,13 @@ public class PreBuilding : MonoBehaviour
     public GameObject beltMgr = null;
 
     Vector3 setPos = new Vector3(-0.5f, -0.5f);
+
     Vector2 boxSize;
     public Vector2Int size; // 건물의 크기
 
-    //bool isBuildingOk = false;
+    //Tilemap tilemap
+    //Vector3Int tilemapOrigin; // 타일맵의 원점 좌표
+    //Vector3 tileSize; // 타일 크기
 
     void Awake()
     {
@@ -27,7 +30,10 @@ public class PreBuilding : MonoBehaviour
             return;
         }
 
-        instance = this;        
+        instance = this;
+        //tilemap // 타일맵 참조를 가져옵니다.
+        //tilemapOrigin = tilemap.origin;
+        //tileSize = tilemap.cellSize;
     }
 
     void Update()
@@ -40,8 +46,17 @@ public class PreBuilding : MonoBehaviour
         }
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 roundedPosition = new Vector3(Mathf.Round(mousePosition.x), Mathf.Round(mousePosition.y) , 0f);
+        Vector3 roundedPosition = new Vector3(Mathf.Round(mousePosition.x), Mathf.Round(mousePosition.y), 0f);
         transform.position = new Vector3(roundedPosition.x, roundedPosition.y, transform.position.z);
+
+        //타일맵을 추가하고 마우스가 가리킨 타일의 중앙을 체크하고 그 위치에 오브젝트가 가도록 수정한다면 
+
+        //Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //Vector3Int tilePosition = WorldToTile(mousePosition);
+        //Vector3 tileCenter = TileToWorld(tilePosition);
+        //transform.position = new Vector3(tileCenter.x, tileCenter.y, transform.position.z);
+
+        //타일맵을 추가하고 마우스가 가리킨 타일의 중앙을 체크하고 그 위치에 오브젝트가 가도록 수정한다면
 
         //if (gameObj != null) // 오브젝트 중첩설치 안되도록
         //{
@@ -69,6 +84,19 @@ public class PreBuilding : MonoBehaviour
         //    }
         //}
     }
+
+    //// 그리드 월드 좌표를 타일 좌표로 변환하는 함수
+    //Vector3Int WorldToTile(Vector3 worldPosition)
+    //{
+    //    Vector3Int tilePosition = tilemap.WorldToCell(worldPosition);
+    //    return tilePosition - tilemapOrigin;
+    //}
+
+    //// 타일 좌표를 그리드 월드 좌표로 변환하는 함수
+    //Vector3 TileToWorld(Vector3Int tilePosition)
+    //{
+    //    return tilemap.CellToWorld(tilePosition + tilemapOrigin) + tileSize * 0.5f;
+    //}
 
     protected virtual void InputCheck()
     {

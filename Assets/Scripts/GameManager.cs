@@ -5,14 +5,21 @@ using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject inventoryUiCanvas;
     [SerializeField]
     PlayerInvenManager pInvenManager;
     [SerializeField]
+    BuildingInvenManager bManager;
+    [SerializeField]
     RecipeManager rManager;
+    [SerializeField]
+    SplitterFilterManager sManager;
     DragSlot dragSlot;
     List<GameObject> openedUI;
     StructureClickEvent clickEvent;
     StructureClickEvent newClickEvent;
+    SplitterClickEvent splitterClickEvent;
+    SplitterClickEvent splitterNewClickEvent;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -74,6 +81,18 @@ public class GameManager : MonoBehaviour
                     clickEvent = newClickEvent;
                     clickEvent.OpenUI();
                 }
+
+                splitterNewClickEvent = hit.collider.GetComponent<SplitterClickEvent>();
+                if (splitterNewClickEvent != null)
+                {
+                    if (splitterClickEvent != null)
+                    {
+                        splitterClickEvent.CloseUI();
+                    }
+
+                    splitterClickEvent = splitterNewClickEvent;
+                    splitterClickEvent.OpenUI();
+                }
             }
         }
 
@@ -89,8 +108,14 @@ public class GameManager : MonoBehaviour
                     case "StructureInfo":
                         clickEvent.CloseUI();
                         break;
+                    case "SplitterMenu":
+                        splitterClickEvent.CloseUI();
+                        break;
                     case "RecipeMenu":
                         rManager.CloseUI();
+                        break;
+                    case "BuildingInven":
+                        bManager.CloseUI();
                         break;
                     default:
                         break;
@@ -107,6 +132,17 @@ public class GameManager : MonoBehaviour
             else
             {
                 pInvenManager.CloseUI();
+            }
+        }
+        else if (Input.GetButtonDown("Building"))
+        {
+            if (!bManager.buildingInventoryUI.activeSelf)
+            {
+                bManager.OpenUI();
+            }
+            else
+            {
+                bManager.CloseUI();
             }
         }
     }

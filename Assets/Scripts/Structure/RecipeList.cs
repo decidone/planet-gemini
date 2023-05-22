@@ -22,14 +22,11 @@ public class RecipeList : MonoBehaviour
 
         instance = this;
         recipeDic = new Dictionary<string, List<Recipe>>();
-    }
-    #endregion
 
-    void Start()
-    {
         string json = File.ReadAllText("Assets/Data/Recipe.json");
         recipeDic = JsonConvert.DeserializeObject<Dictionary<string, List<Recipe>>>(json);
     }
+    #endregion
 
     public List<Recipe> GetRecipeInven(string str)
     {

@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 5043839874347049424}
   - component: {fileID: 5043839874347049425}
   - component: {fileID: 6522629440870445346}
+  - component: {fileID: -7841223284810881725}
   m_Layer: 0
   m_Name: Splitter
   m_TagString: Factory
@@ -410,12 +411,14 @@ MonoBehaviour:
   isSetBuildingOk: 0
   unitCanvers: {fileID: 3026482398367123645}
   hpBar: {fileID: 1241109194534453869}
+  isRuin: 0
+  isRepair: 0
   repairBar: {fileID: 40968013195264733}
+  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  outSameList: []
   solidFactoryData: {fileID: 11400000, guid: a0c1ce887778bc141997a82195866e51, type: 2}
   itemObjList: []
   itemList: []
-  outSameList: []
-  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   box2D: {fileID: 0}
   modelNum:
   - {fileID: -1122253560, guid: 055194f499833f945ae4a47b89baa362, type: 3}
@@ -453,6 +456,20 @@ MonoBehaviour:
     isFullFilterOn: 0
     isItemFilterOn: 0
     selItem: {fileID: 0}
+--- !u!114 &-7841223284810881725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043839874347049428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0bc8acfb9905a40b960e75cdb9136b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spilterInfoUI: {fileID: 0}
+  sFilterManager: {fileID: 0}
 --- !u!1 &7656740688557692711
 GameObject:
   m_ObjectHideFlags: 0

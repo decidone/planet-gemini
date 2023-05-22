@@ -12,7 +12,7 @@ public class BuildingInvenManager : MonoBehaviour
 
     [HideInInspector]
     public Slot[] slots;
-    protected DragSlot dragSlot; // 드래그용 슬롯
+    protected GameManager gameManager;
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
 
     protected Slot selectSlot;
@@ -22,8 +22,9 @@ public class BuildingInvenManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameManager.instance;
         SetInven(buildingInventory, buildingInventoryUI);
-        dragSlot = DragSlot.instance;
+        //dragSlot = DragSlot.instance;
     }
 
     // Update is called once per frame
@@ -54,17 +55,14 @@ public class BuildingInvenManager : MonoBehaviour
     protected virtual void InputCheck()
     {
         if (Input.GetMouseButtonDown(0))
-        {
-            if (dragSlot.slot.item == null)
+        {            
+            if (focusedSlot != null)
             {
-                if (focusedSlot != null)
+                if (focusedSlot.item != null)
                 {
-                    if (focusedSlot.item != null)
-                    {
-                        BuildingInfoCheck();
-                    }
+                    BuildingInfoCheck();
                 }
-            }
+            }            
         }
     }
 
@@ -131,18 +129,6 @@ public class BuildingInvenManager : MonoBehaviour
                 slots[i].ClearSlot();
             }
         }
-
-        if (dragSlot != null)
-        {
-            if (dragSlot.slot.item != null)
-            {
-                dragSlot.slot.AddItem(dragSlot.slot.item, dragSlot.slot.amount);
-            }
-            else
-            {
-                dragSlot.slot.ClearSlot();
-            }
-        }
     }
 
     void AddEvent(Slot slot, EventTriggerType type, UnityAction<BaseEventData> action)
@@ -163,5 +149,16 @@ public class BuildingInvenManager : MonoBehaviour
     void OnExit(Slot slot)
     {
         focusedSlot = null;
+    }
+    public void OpenUI()
+    {
+        buildingInventoryUI.SetActive(true);
+        gameManager.onUIChangedCallback?.Invoke(buildingInventoryUI);
+    }
+
+    public void CloseUI()
+    {
+        buildingInventoryUI.SetActive(false);
+        gameManager.onUIChangedCallback?.Invoke(buildingInventoryUI);
     }
 }

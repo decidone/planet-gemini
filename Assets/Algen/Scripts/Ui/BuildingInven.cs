@@ -8,10 +8,7 @@ public class BuildingInven : MonoBehaviour
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
-    public List<Building> itemList;
-
-    [SerializeField]
-    int space;   // 아이템 슬롯 상한, 드래그용 슬롯 번호를 겸 함
+    public List<Building> buildingDataList;
 
     public Dictionary<int, Building> BuildingDic = new Dictionary<int, Building>();
 
@@ -21,7 +18,7 @@ public class BuildingInven : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        itemList = BuildingList.instance.itemList;
+        buildingDataList = BuildingList.instance.buildingDataList;
         BuildingTagsBtn = BuildingTagsPanel.GetComponentsInChildren<Button>();
 
         for (int i = 0; i < BuildingTagsBtn.Length; i++)
@@ -66,14 +63,14 @@ public class BuildingInven : MonoBehaviour
         ResetDic();
 
         int index = 0;
-        for (int i = 0; i < itemList.Count; i++)
+        for (int i = 0; i < buildingDataList.Count; i++)
         {// 과학 등급이 저장된 파일과 연동해야됨
             // 이후 수정하느걸로
-            if (itemList[i].type == itemType)
+            if (buildingDataList[i].type == itemType)
             {
                 if (!BuildingDic.ContainsKey(index))
                 {
-                    BuildingDic[index] = itemList[i];
+                    BuildingDic[index] = buildingDataList[i];
                     index++;
                 }
             }

@@ -30,14 +30,14 @@ public class SplitterCtrl : SolidFactoryCtrl
     [SerializeField]
     bool filterOn = false;
 
-    [SerializeField]
-    bool[] isFilterOn = new bool[3];
-    [SerializeField]
-    bool[] isFullFilterOn = new bool[3];
-    [SerializeField]
-    bool[] isItemFilterOn = new bool[3];
-    [SerializeField]
-    Item[] isSelItem = new Item[3];
+    //[SerializeField]
+    //bool[] isFilterOn = new bool[3];
+    //[SerializeField]
+    //bool[] isFullFilterOn = new bool[3];
+    //[SerializeField]
+    //bool[] isItemFilterOn = new bool[3];
+    //[SerializeField]
+    //Item[] isSelItem = new Item[3];
 
     [Serializable]
     public struct Filter
@@ -97,14 +97,14 @@ public class SplitterCtrl : SolidFactoryCtrl
                 }
             }  
 
-            if (oKButtonTemp == true)
-            {
-                ItemFilterCheck();
-                filterOn = FilterCheck();
-                //StopCoroutine("FilterSetItem");
+            //if (oKButtonTemp == true)
+            //{
+            //    ItemFilterCheck();
+            //    filterOn = FilterCheck();
+            //    //StopCoroutine("FilterSetItem");
 
-                oKButtonTemp = false;
-            }
+            //    oKButtonTemp = false;
+            //}
         }
     }
 
@@ -112,26 +112,24 @@ public class SplitterCtrl : SolidFactoryCtrl
     {
         for (int a = 0; a < arrFilter.Length; a++)
         {
-            if (arrFilter[a].outObj != null)
-            {
-                if (arrFilter[a].isFilterOn)                
-                    return true;
-            }            
+            if (arrFilter[a].isFilterOn)                
+                return true;
         }
 
         return false;
     }
 
-    void ItemFilterCheck()
+    public void ItemFilterCheck()
     {
-        for (int a = 0; a < arrFilter.Length; a++)
-        {
-            if (arrFilter[a].outObj != null)
-            {
-                FilterSet(a, isFilterOn[a], isFullFilterOn[a], isItemFilterOn[a], isSelItem[a]);
-                //arrFilter[a].selItem = itemsList[arrFilter[a].itemNum];
-            }
-        }
+        //for (int a = 0; a < arrFilter.Length; a++)
+        //{
+        //    if (arrFilter[a].outObj != null)
+        //    {
+        //        FilterSet(a, isFilterOn[a], isFullFilterOn[a], isItemFilterOn[a], isSelItem[a]);
+        //        //arrFilter[a].selItem = itemsList[arrFilter[a].itemNum];
+        //    }
+        //}
+        filterOn = FilterCheck();
     }
 
     protected override void SetDirNum()
@@ -255,13 +253,13 @@ public class SplitterCtrl : SolidFactoryCtrl
     void FilterArr(GameObject obj, int num)
     {
         arrFilter[num].outObj = obj;
-        arrFilter[num].isFilterOn = false;
-        arrFilter[num].isFullFilterOn = false;
-        arrFilter[num].isItemFilterOn = false;
-        arrFilter[num].selItem = itemsList[0];
+        //arrFilter[num].isFilterOn = false;
+        //arrFilter[num].isFullFilterOn = false;
+        //arrFilter[num].isItemFilterOn = false;
+        //arrFilter[num].selItem = itemsList[0];
     }
 
-    void FilterSet(int num, bool filterOn, bool fullFilterOn, bool itemFilterOn, Item itemNum)
+    public void FilterSet(int num, bool filterOn, bool fullFilterOn, bool itemFilterOn, Item itemNum)
     {
         arrFilter[num].isFilterOn = filterOn;
         arrFilter[num].isFullFilterOn = fullFilterOn;
@@ -275,7 +273,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         arrFilter[num].isFilterOn = false;
         arrFilter[num].isFullFilterOn = false;
         arrFilter[num].isItemFilterOn = false;
-        arrFilter[num].selItem = itemsList[0];
+        arrFilter[num].selItem = null;
     }
 
     IEnumerator OutCheck(GameObject otherObj)

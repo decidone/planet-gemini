@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Furnace : Production
-{
+{ 
     protected override void Start()
     {
         base.Start();
         maxFuel = 100;
+        recipes = rManager.GetRecipeList("Furnace", this);
     }
 
     protected override void Update()
@@ -75,7 +76,6 @@ public class Furnace : Production
         sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
-        recipes = rManager.GetRecipeList("Furnace", this);
         List<Item> items = new List<Item>();
         foreach (Recipe recipe in recipes)
         {

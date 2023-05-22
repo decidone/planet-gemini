@@ -202,7 +202,7 @@ public abstract class Production : Structure
 
     public virtual bool CanTakeItem(Item item) { return new bool(); }
 
-    protected void GetItem() // 나중에 받는 필터 추가해야함
+    protected void GetItem()
     {
         itemGetDelay = true;
 
@@ -250,7 +250,7 @@ public abstract class Production : Structure
 
     protected virtual void SubFromInventory() { }
 
-    protected void SetItem() // 나중에 보내는 필터 추가해야함
+    protected void SetItem()
     {
         if (setFacDelayCoroutine != null)
         {
@@ -405,7 +405,6 @@ public abstract class Production : Structure
                 else
                 {
                     unitCanvers.SetActive(false);
-                    //isRepair = true;
                 }
                 EnableColliders();
             }
@@ -424,16 +423,8 @@ public abstract class Production : Structure
     {
         hpBar.enabled = true;
 
-        //if (hp < solidFactoryData.MaxHp)
-        //{
-        //    unitCanvers.SetActive(true);
-        //    hpBar.enabled = true;
-        //}
-        //else
-        //{
         hp = productionData.MaxHp;
         unitCanvers.SetActive(false);
-        //}
 
         hpBar.fillAmount = hp / productionData.MaxHp;
 
@@ -491,12 +482,10 @@ public abstract class Production : Structure
     {
         hp = productionData.MaxHp;
         isRepair = repair;
-        //repairBar.enabled = repair;
     }
 
     protected override void DieFunc()
     {
-        //unitCanvers.SetActive(false);
         repairBar.enabled = true;
         hpBar.enabled = false;
 
