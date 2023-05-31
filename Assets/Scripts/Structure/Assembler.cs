@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Assembler : Production
 {
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         var slot = inventory.SlotCheck(0);
         var slot1 = inventory.SlotCheck(1);
         var slot2 = inventory.SlotCheck(2);
@@ -38,6 +39,11 @@ public class Assembler : Production
                 prodTimer = 0;
             }
         }
+
+        if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+        {
+            SetItem();
+        }
     }
 
     public override void OpenUI()
@@ -63,6 +69,7 @@ public class Assembler : Production
         rManager.recipeBtn.gameObject.SetActive(false);
     }
 
+
     public override void OpenRecipe()
     {
         rManager.OpenUI();
@@ -81,5 +88,63 @@ public class Assembler : Production
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
         sInvenManager.slots[2].outputSlot = true;
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
+    }
+
+    public override bool CanTakeItem(Item item) 
+    {
+        if (recipe.name == null)
+            return false;
+        else if (itemDic[recipe.items[0]] == item || itemDic[recipe.items[1]] == item)
+            return true;
+        else 
+            return false;
+    }
+
+    public override void OnFactoryItem(ItemProps itemProps)
+    {
+        if(itemDic[recipe.items[0]] == itemProps.item)
+        {
+            inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+        }
+        else if(itemDic[recipe.items[1]] == itemProps.item)
+        {
+            inventory.SlotAdd(1, itemProps.item, itemProps.amount);
+        }
+
+        OnDestroyItem(itemProps);
+    }
+    public override void OnFactoryItem(Item item)
+    {
+        if (itemDic[recipe.items[0]] == item)
+        {
+            inventory.SlotAdd(0, item, 1);
+        }
+        else if (itemDic[recipe.items[1]] == item)
+        {
+            inventory.SlotAdd(1, item, 1);
+        }
+    }
+
+    protected override void SubFromInventory()
+    {
+        inventory.Sub(2, 1);
+    }
+    protected override bool CheckOutItemNum()
+    {
+        var slot2 = inventory.SlotCheck(2);
+        if (slot2.amount > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public override void ItemNumCheck()
+    {
+        var slot2 = inventory.SlotCheck(2);
+
+        if (slot2.amount < maxAmount)
+            isFull = false;
+        else
+            isFull = true;
     }
 }

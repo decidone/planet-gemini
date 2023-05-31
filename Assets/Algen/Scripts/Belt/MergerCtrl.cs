@@ -11,6 +11,8 @@ public class MergerCtrl : SolidFactoryCtrl
     private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
 
     List<GameObject> inObj = new List<GameObject>();
+
+    [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
 
     GameObject[] nearObj = new GameObject[4];
@@ -97,7 +99,7 @@ public class MergerCtrl : SolidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
                 hitCollider.GetComponent<MergerCtrl>() != GetComponent<MergerCtrl>())
             {
                 nearObj[index] = hits[i].collider.gameObject;
@@ -110,7 +112,7 @@ public class MergerCtrl : SolidFactoryCtrl
     {
         yield return new WaitForSeconds(0.1f);
 
-        SolidFactoryCtrl solidFactory = obj.GetComponent<SolidFactoryCtrl>();
+        Structure solidFactory = obj.GetComponent<Structure>();
         if (solidFactory == null) yield break;
 
         inObj.Add(obj);
@@ -159,14 +161,14 @@ public class MergerCtrl : SolidFactoryCtrl
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<SolidFactoryCtrl>() != null)
+        if (obj.GetComponent<Structure>() != null)
         {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     yield break;
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
+                    belt.FactoryVecCheck(GetComponentInParent<Structure>());
             }
             else
             {
@@ -181,7 +183,7 @@ public class MergerCtrl : SolidFactoryCtrl
     {
         yield return new WaitForSeconds(0.1f);
 
-        SolidFactoryCtrl otherFacCtrl = otherObj.GetComponent<SolidFactoryCtrl>();
+        Structure otherFacCtrl = otherObj.GetComponent<Structure>();
 
         foreach (GameObject otherList in otherFacCtrl.outSameList)
         {
@@ -192,6 +194,7 @@ public class MergerCtrl : SolidFactoryCtrl
                     if (otherObj == outObj[a])
                     {
                         outObj.RemoveAt(a);
+                        Invoke("RemoveSameOutList", 0.1f);
                         StopCoroutine("SetFacDelay");
                         break;
                     }
@@ -242,7 +245,7 @@ public class MergerCtrl : SolidFactoryCtrl
 
         itemSetDelay = true;
 
-        SolidFactoryCtrl outFactory = outObj[0].GetComponent<SolidFactoryCtrl>();
+        Structure outFactory = outObj[0].GetComponent<Structure>();
 
         if (outFactory.isFull == false)
         {
@@ -260,9 +263,16 @@ public class MergerCtrl : SolidFactoryCtrl
                 itemList.RemoveAt(0);
                 ItemNumCheck();
             }
-            else
+            else if (outObj[0].GetComponent<SolidFactoryCtrl>())
             {
-                setFacDelayCoroutine = StartCoroutine("SetFacDelay");
+                StartCoroutine("SetFacDelay", outObj[0]);
+            }
+            else if (outObj[0].TryGetComponent(out Production production))
+            {
+                if (production.CanTakeItem(itemList[0]))
+                {
+                    StartCoroutine("SetFacDelay", outObj[0]);
+                }
             }
         }
         Invoke("DelaySetItem", solidFactoryData.SendDelay);
@@ -288,8 +298,6 @@ public class MergerCtrl : SolidFactoryCtrl
             var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed));
             spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
 
-            sprite.color = new Color(1f, 1f, 1f, t);
-
             yield return null;
         }
 
@@ -297,7 +305,7 @@ public class MergerCtrl : SolidFactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                var outFactory = outObj[0].GetComponent<SolidFactoryCtrl>();
+                var outFactory = outObj[0].GetComponent<Structure>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);
@@ -321,5 +329,8 @@ public class MergerCtrl : SolidFactoryCtrl
     {
         itemGetDelay = false;
     }
-
+    public override void AddProductionFac(GameObject obj)
+    {
+        outObj.Add(obj);
+    }
 }

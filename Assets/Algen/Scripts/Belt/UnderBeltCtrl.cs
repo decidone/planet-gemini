@@ -13,7 +13,7 @@ public class UnderBeltCtrl : MonoBehaviour
     public bool isPreBuilding = false;
 
     public GameObject belt = null;
-    public FactoryCtrl beltScipt = null;
+    public Structure beltScipt = null;
 
     Vector2[] checkPos = new Vector2[4];
 

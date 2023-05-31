@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuildingList : MonoBehaviour
 {
-    public List<Building> itemList = new List<Building>();
+    public List<Building> buildingDataList = new List<Building>();
     public Dictionary<string, Building> itemDic = new Dictionary<string, Building>();
 
     #region Singleton
@@ -20,7 +20,7 @@ public class BuildingList : MonoBehaviour
 
         instance = this;
 
-        foreach (Building item in itemList)
+        foreach (Building item in buildingDataList)
         {
             itemDic.Add(item.name, item);
         }

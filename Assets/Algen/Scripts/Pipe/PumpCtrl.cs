@@ -71,7 +71,7 @@ public class PumpCtrl : FluidFactoryCtrl
             {
                 if (Hits[a].collider.GetComponent<PumpCtrl>() != this.gameObject.GetComponent<PumpCtrl>())
                 {
-                    if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<FactoryCtrl>().isPreBuilding)
+                    if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
                     {
                         nearObj[0] = Hits[a].collider.gameObject;
                         SetOutObj(nearObj[0]);

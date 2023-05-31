@@ -340,7 +340,7 @@ public class BeltCtrl : SolidFactoryCtrl
         }
     }
 
-    public void FactoryVecCheck(SolidFactoryCtrl factory)
+    public void FactoryVecCheck(Structure factory)
     {
         if (factory.transform.position.x > this.transform.position.x)  
             isLeft = true;        

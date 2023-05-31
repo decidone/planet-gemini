@@ -3,7 +3,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SolidFactory Data", menuName = "Scriptable Object/SolidFactory Data", order = int.MaxValue)]
 public class SolidFactoryData : ScriptableObject
 {
-
     [SerializeField]
     private string factoryName;
     public string FactoryName { get { return factoryName; } }

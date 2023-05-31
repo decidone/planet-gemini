@@ -16,7 +16,7 @@ public class SplitterCtrl : SolidFactoryCtrl
     [SerializeField]
     GameObject[] nearObj = new GameObject[4];
 
-    int getObjNum = 0;
+    int sendObjNum = 0;
 
     Vector2[] checkPos = new Vector2[4];
 
@@ -30,14 +30,14 @@ public class SplitterCtrl : SolidFactoryCtrl
     [SerializeField]
     bool filterOn = false;
 
-    [SerializeField]
-    bool[] isFilterOn = new bool[3];
-    [SerializeField]
-    bool[] isFullFilterOn = new bool[3];
-    [SerializeField]
-    bool[] isItemFilterOn = new bool[3];
-    [SerializeField]
-    Item[] isSelItem = new Item[3];
+    //[SerializeField]
+    //bool[] isFilterOn = new bool[3];
+    //[SerializeField]
+    //bool[] isFullFilterOn = new bool[3];
+    //[SerializeField]
+    //bool[] isItemFilterOn = new bool[3];
+    //[SerializeField]
+    //Item[] isSelItem = new Item[3];
 
     [Serializable]
     public struct Filter
@@ -97,14 +97,14 @@ public class SplitterCtrl : SolidFactoryCtrl
                 }
             }  
 
-            if (oKButtonTemp == true)
-            {
-                ItemFilterCheck();
-                filterOn = FilterCheck();
-                //StopCoroutine("FilterSetItem");
+            //if (oKButtonTemp == true)
+            //{
+            //    ItemFilterCheck();
+            //    filterOn = FilterCheck();
+            //    //StopCoroutine("FilterSetItem");
 
-                oKButtonTemp = false;
-            }
+            //    oKButtonTemp = false;
+            //}
         }
     }
 
@@ -112,26 +112,24 @@ public class SplitterCtrl : SolidFactoryCtrl
     {
         for (int a = 0; a < arrFilter.Length; a++)
         {
-            if (arrFilter[a].outObj != null)
-            {
-                if (arrFilter[a].isFilterOn)                
-                    return true;
-            }            
+            if (arrFilter[a].isFilterOn)                
+                return true;
         }
 
         return false;
     }
 
-    void ItemFilterCheck()
+    public void ItemFilterCheck()
     {
-        for (int a = 0; a < arrFilter.Length; a++)
-        {
-            if (arrFilter[a].outObj != null)
-            {
-                FilterSet(a, isFilterOn[a], isFullFilterOn[a], isItemFilterOn[a], isSelItem[a]);
-                //arrFilter[a].selItem = itemsList[arrFilter[a].itemNum];
-            }
-        }
+        //for (int a = 0; a < arrFilter.Length; a++)
+        //{
+        //    if (arrFilter[a].outObj != null)
+        //    {
+        //        FilterSet(a, isFilterOn[a], isFullFilterOn[a], isItemFilterOn[a], isSelItem[a]);
+        //        //arrFilter[a].selItem = itemsList[arrFilter[a].itemNum];
+        //    }
+        //}
+        filterOn = FilterCheck();
     }
 
     protected override void SetDirNum()
@@ -165,7 +163,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<FactoryCtrl>().isPreBuilding &&
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
                 hitCollider.GetComponent<SplitterCtrl>() != GetComponent<SplitterCtrl>())
             {
                 nearObj[index] = hits[i].collider.gameObject;
@@ -179,7 +177,7 @@ public class SplitterCtrl : SolidFactoryCtrl
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<SolidFactoryCtrl>() != null)
+        if (obj.GetComponent<Structure>() != null)
         {
             inObj = obj;
             if (inObj.TryGetComponent(out BeltCtrl belt) && belt.dirNum != dirNum)
@@ -212,14 +210,14 @@ public class SplitterCtrl : SolidFactoryCtrl
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<SolidFactoryCtrl>() != null)
+        if (obj.GetComponent<Structure>() != null)
         {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     yield break;
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());
+                    belt.FactoryVecCheck(GetComponentInParent<Structure>());
             }
             else
             {
@@ -255,13 +253,13 @@ public class SplitterCtrl : SolidFactoryCtrl
     void FilterArr(GameObject obj, int num)
     {
         arrFilter[num].outObj = obj;
-        arrFilter[num].isFilterOn = false;
-        arrFilter[num].isFullFilterOn = false;
-        arrFilter[num].isItemFilterOn = false;
-        arrFilter[num].selItem = itemsList[0];
+        //arrFilter[num].isFilterOn = false;
+        //arrFilter[num].isFullFilterOn = false;
+        //arrFilter[num].isItemFilterOn = false;
+        //arrFilter[num].selItem = itemsList[0];
     }
 
-    void FilterSet(int num, bool filterOn, bool fullFilterOn, bool itemFilterOn, Item itemNum)
+    public void FilterSet(int num, bool filterOn, bool fullFilterOn, bool itemFilterOn, Item itemNum)
     {
         arrFilter[num].isFilterOn = filterOn;
         arrFilter[num].isFullFilterOn = fullFilterOn;
@@ -275,14 +273,14 @@ public class SplitterCtrl : SolidFactoryCtrl
         arrFilter[num].isFilterOn = false;
         arrFilter[num].isFullFilterOn = false;
         arrFilter[num].isItemFilterOn = false;
-        arrFilter[num].selItem = itemsList[0];
+        arrFilter[num].selItem = null;
     }
 
     IEnumerator OutCheck(GameObject otherObj)
     {
         yield return new WaitForSeconds(0.1f);
 
-        SolidFactoryCtrl otherFacCtrl = otherObj.GetComponent<SolidFactoryCtrl>();
+        Structure otherFacCtrl = otherObj.GetComponent<Structure>();
         GameObject[] outObjArray = outObj.ToArray();
 
         foreach (GameObject otherList in otherFacCtrl.outSameList)
@@ -301,6 +299,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                             }
                         }
                         outObj.RemoveAt(a);
+                        Invoke("RemoveSameOutList", 0.1f);
                         break;
                     }
                 }
@@ -330,11 +329,11 @@ public class SplitterCtrl : SolidFactoryCtrl
     {
         itemSetDelay = true;
 
-        SolidFactoryCtrl outFactory = outObj[getObjNum].GetComponent<SolidFactoryCtrl>();
+        Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
 
         if (outFactory.isFull == false)
         {
-            if (outObj[getObjNum].GetComponent<BeltCtrl>())
+            if (outObj[sendObjNum].GetComponent<BeltCtrl>())
             {
                 ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -350,22 +349,22 @@ public class SplitterCtrl : SolidFactoryCtrl
             }
             else
             {
-                StartCoroutine("SetFacDelay", outObj[getObjNum]);
+                StartCoroutine("SetFacDelay", outObj[sendObjNum]);
             }
 
-            getObjNum++;
-            if (getObjNum >= outObj.Count)
+            sendObjNum++;
+            if (sendObjNum >= outObj.Count)
             {
-                getObjNum = 0;
+                sendObjNum = 0;
             }
             Invoke("DelaySetItem", solidFactoryData.SendDelay);
         }
         else
         {
-            getObjNum++;
-            if (getObjNum >= outObj.Count)
+            sendObjNum++;
+            if (sendObjNum >= outObj.Count)
             {
-                getObjNum = 0;
+                sendObjNum = 0;
             }
 
             itemSetDelay = false;
@@ -376,11 +375,11 @@ public class SplitterCtrl : SolidFactoryCtrl
     {
         itemSetDelay = true;
 
-        SolidFactoryCtrl outFactory = null;
+        Structure outFactory = null;
 
         for (int i = 0; i < arrFilter.Length; i++)
         {
-            int index = (i + getObjNum) % arrFilter.Length;
+            int index = (i + sendObjNum) % arrFilter.Length;
             Filter filter = arrFilter[index];
 
             if (!filter.isFilterOn) continue;
@@ -389,7 +388,7 @@ public class SplitterCtrl : SolidFactoryCtrl
 
             if (outObject == null) continue;
 
-            outFactory = outObject.GetComponent<SolidFactoryCtrl>();
+            outFactory = outObject.GetComponent<Structure>();
 
             if (outFactory == null) continue;
 
@@ -415,7 +414,7 @@ public class SplitterCtrl : SolidFactoryCtrl
 
                 outFactory.OnBeltItem(spawnItem);
             }
-            else if(outObject.TryGetComponent(out FactoryCtrl factory))
+            else if(outObject.TryGetComponent(out Structure factory))
             {
                 if(!factory.isFull)
                     SetFacDelay(outObject);
@@ -423,14 +422,14 @@ public class SplitterCtrl : SolidFactoryCtrl
 
             itemList.RemoveAt(0);
             ItemNumCheck();
-            getObjNum = index + 1;
+            sendObjNum = index + 1;
             break;
         }
 
         if (outFactory != null && !outFactory.isFull)
         {
-            getObjNum++;
-            if (getObjNum >= arrFilter.Length) getObjNum = 0;
+            sendObjNum++;
+            if (sendObjNum >= arrFilter.Length) sendObjNum = 0;
         }
 
         itemSetDelay = false;
@@ -445,7 +444,7 @@ public class SplitterCtrl : SolidFactoryCtrl
 
             if (filter.isItemFilterOn && filter.selItem == item)
             {
-                SolidFactoryCtrl factoryCtrl = filter.outObj.GetComponent<SolidFactoryCtrl>();
+                Structure factoryCtrl = filter.outObj.GetComponent<Structure>();
                 if (factoryCtrl != null && !factoryCtrl.isFull)
                 {
                     return false;
@@ -474,7 +473,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed));
             spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
 
-            sprite.color = new Color(1f, 1f, 1f, t);
+            //sprite.color = new Color(1f, 1f, 1f, t);
 
             yield return null;
         }
@@ -483,7 +482,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                var outFactory = outFac.GetComponent<SolidFactoryCtrl>();
+                var outFactory = outFac.GetComponent<Structure>();
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);
@@ -506,5 +505,9 @@ public class SplitterCtrl : SolidFactoryCtrl
     void DelayGetItem()
     {
         itemGetDelay = false;
-    }    
+    }
+    public override void AddProductionFac(GameObject obj)
+    {
+        outObj.Add(obj);
+    }
 }
