@@ -8,7 +8,6 @@ public class MapGenerator : MonoBehaviour
     System.Random random;
     public bool randomSeed;
     public int seed;
-
     public int width;
     public int height;
     public float magnification;
@@ -16,19 +15,20 @@ public class MapGenerator : MonoBehaviour
     int tempY;
     int heightX;
     int heightY;
+
+    [Space]
     public Tilemap tilemap;
-    List<List<Cell>> mapData;
+    public GameObject objects;
+    Map map;
 
     [Space]
     [Header("Biomes")]
     public Biome plain;
     public Biome desert;
-    public Biome frozen;
     public Biome jungle;
     public Biome snow;
-
-    public GameObject objects;
-    public List<List<Biome>> biomes;
+    public Biome frozen;
+    List<List<Biome>> biomes;
 
     void Start()
     {
@@ -38,7 +38,10 @@ public class MapGenerator : MonoBehaviour
 
     void Init()
     {
-        mapData = new List<List<Cell>>();
+        map = new Map();
+        map.width = width;
+        map.height = height;
+        map.mapData = new List<List<Cell>>();
 
         // x축 온도, y축 높이
         biomes = new List<List<Biome>>() {
@@ -76,11 +79,21 @@ public class MapGenerator : MonoBehaviour
 
         for (int x = 0; x < width; x++)
         {
-            mapData.Add(new List<Cell>());
+            map.mapData.Add(new List<Cell>());
 
             for (int y = 0; y < height; y++)
             {
                 SetBiome(x, y);
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = map.mapData[x][y];
+                Biome biome = cell.biome;
+                biome.BiomeSmoother(map, x, y);
             }
         }
 
@@ -116,21 +129,21 @@ public class MapGenerator : MonoBehaviour
 
         Cell cell = new Cell();
         cell.biome = biomes[Mathf.FloorToInt(scaledHeight)][Mathf.FloorToInt(scaledTemp)];
-        mapData[x].Add(cell);
+        map.mapData[x].Add(cell);
     }
 
     void CreateTile(int x, int y)
     {
-        Cell cell = mapData[x][y];
+        Cell cell = map.mapData[x][y];
         Biome biome = cell.biome;
-        Tile tile = biome.SetTile(random);
+        Tile tile = biome.SetTile(random, map, x, y);
         cell.tile = tile;
         tilemap.SetTile(new Vector3Int(x, y, 0), tile);
     }
 
     void CreateObj(int x, int y)
     {
-        Cell cell = mapData[x][y];
+        Cell cell = map.mapData[x][y];
         Biome biome = cell.biome;
         GameObject obj = biome.SetObject(random);
         if (obj != null)
