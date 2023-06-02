@@ -18,8 +18,8 @@ public class GameManager : MonoBehaviour
     List<GameObject> openedUI;
     StructureClickEvent clickEvent;
     StructureClickEvent newClickEvent;
-    SplitterClickEvent splitterClickEvent;
-    SplitterClickEvent splitterNewClickEvent;
+    SolidFacClickEvent solidFacClickEvent;
+    SolidFacClickEvent solidFacNewClickEvent;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -82,16 +82,17 @@ public class GameManager : MonoBehaviour
                     clickEvent.OpenUI();
                 }
 
-                splitterNewClickEvent = hit.collider.GetComponent<SplitterClickEvent>();
-                if (splitterNewClickEvent != null)
+                solidFacNewClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
+                if (solidFacNewClickEvent != null)
                 {
-                    if (splitterClickEvent != null)
+                    if (solidFacClickEvent != null)
                     {
-                        splitterClickEvent.CloseUI();
+                        solidFacClickEvent.CloseUI();
                     }
 
-                    splitterClickEvent = splitterNewClickEvent;
-                    splitterClickEvent.OpenUI();
+                    solidFacClickEvent = solidFacNewClickEvent;
+                    solidFacClickEvent.SolidFacCheck();
+                    solidFacClickEvent.OpenUI();
                 }
             }
         }
@@ -108,14 +109,17 @@ public class GameManager : MonoBehaviour
                     case "StructureInfo":
                         clickEvent.CloseUI();
                         break;
-                    case "SplitterMenu":
-                        splitterClickEvent.CloseUI();
-                        break;
                     case "RecipeMenu":
                         rManager.CloseUI();
-                        break;
+                        break;                    
                     case "BuildingInven":
                         bManager.CloseUI();
+                        break;
+                    case "SplitterFillterMenu":
+                        solidFacClickEvent.CloseUI();
+                        break;
+                    case "SplitterMenu":
+                        solidFacClickEvent.CloseUI();
                         break;
                     default:
                         break;

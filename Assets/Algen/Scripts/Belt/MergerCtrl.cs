@@ -35,7 +35,6 @@ public class MergerCtrl : SolidFactoryCtrl
     protected override void Update()
     {
         base.Update();
-
         SetDirNum();
         if (!isPreBuilding)
         {
@@ -209,13 +208,15 @@ public class MergerCtrl : SolidFactoryCtrl
 
         if (inObj[getObjNum].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
         {
-
-            OnFactoryItem(belt.itemObjList[0]);
-            belt.itemObjList[0].transform.position = this.transform.position;
-            belt.isItemStop = false;
-            belt.itemObjList.RemoveAt(0);
-            belt.beltGroupMgr.GroupItem.RemoveAt(0);
-            belt.ItemNumCheck();
+            if (belt.itemObjList.Count > 0)
+            {
+                OnFactoryItem(belt.itemObjList[0]);
+                belt.itemObjList[0].transform.position = this.transform.position;
+                belt.isItemStop = false;
+                belt.itemObjList.RemoveAt(0);
+                belt.beltGroupMgr.GroupItem.RemoveAt(0);
+                belt.ItemNumCheck();
+            }
 
             getObjNum++;
             if (getObjNum >= inObj.Count)
@@ -248,6 +249,7 @@ public class MergerCtrl : SolidFactoryCtrl
         Structure outFactory = outObj[0].GetComponent<Structure>();
 
         if (outFactory.isFull == false)
+        //if (outFactory.CheckOutItemNum() == false)
         {
             if (outObj[0].GetComponent<BeltCtrl>())
             {
@@ -265,24 +267,24 @@ public class MergerCtrl : SolidFactoryCtrl
             }
             else if (outObj[0].GetComponent<SolidFactoryCtrl>())
             {
-                StartCoroutine("SetFacDelay", outObj[0]);
+                setFacDelayCoroutine = StartCoroutine("SetFacDelay");
             }
             else if (outObj[0].TryGetComponent(out Production production))
             {
                 if (production.CanTakeItem(itemList[0]))
                 {
-                    StartCoroutine("SetFacDelay", outObj[0]);
+                    setFacDelayCoroutine = StartCoroutine("SetFacDelay");
                 }
             }
+            Invoke("DelaySetItem", solidFactoryData.SendDelay);
         }
-        Invoke("DelaySetItem", solidFactoryData.SendDelay);
         itemSetDelay = false;
     }
 
     IEnumerator SetFacDelay()
     {
         var spawnItem = itemPool.Get();
-        SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+        var sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
 
         spawnItem.transform.position = this.transform.position;
@@ -316,8 +318,9 @@ public class MergerCtrl : SolidFactoryCtrl
 
         if (spawnItem != null)
         {
-            itemPool.Release(spawnItem);
+            sprite.color = new Color(1f, 1f, 1f, 1f);
             setFacDelayCoroutine = null;
+            itemPool.Release(spawnItem);
         }            
     }
 

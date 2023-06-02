@@ -12,6 +12,8 @@ public class SolidFactoryCtrl : Structure
     public List<ItemProps> itemObjList = new List<ItemProps>();
     public List<Item> itemList = new List<Item>();
 
+    List<Item> items = new List<Item>();
+
     //public List<GameObject> outSameList = new List<GameObject>();
 
     protected bool itemGetDelay = false;
@@ -47,14 +49,23 @@ public class SolidFactoryCtrl : Structure
     protected virtual void SetItem() { }
     // 벨트나 건물로 아이템 보내는 함수
 
+    public List<Item> PlayerGetItemList()
+    {
+        List<Item> itemListCopy = new List<Item>(itemList); // itemList를 복사하여 itemListCopy에 저장
+        itemList.Clear(); // itemList 초기화
+        ItemNumCheck();
+
+        return itemListCopy;
+    }
+
     public override void BeltGroupSendItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);
 
-        if (itemObjList.Count >= solidFactoryData.FullItemNum)
-        {
-            isFull = true;
-        }
+        if (itemObjList.Count >= solidFactoryData.FullItemNum)        
+            isFull = true;        
+        else
+            isFull = false;
     }
 
     public override void OnBeltItem(ItemProps itemObj)
@@ -62,12 +73,12 @@ public class SolidFactoryCtrl : Structure
         itemObjList.Add(itemObj);
 
         if (GetComponent<BeltCtrl>())        
-            GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(itemObj);       
+            GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(itemObj);
 
         if (itemObjList.Count >= solidFactoryData.FullItemNum)
-        {
             isFull = true;
-        }
+        else
+            isFull = false;
     }
 
     public override void OnFactoryItem(ItemProps itemProps)
@@ -80,6 +91,7 @@ public class SolidFactoryCtrl : Structure
             isFull = true;
         }
     }
+
     public override void OnFactoryItem(Item item)
     {
         itemList.Add(item);
@@ -92,11 +104,24 @@ public class SolidFactoryCtrl : Structure
 
     public override void ItemNumCheck()
     {
-        if (itemList.Count < solidFactoryData.FullItemNum)
+        if (GetComponent<BeltCtrl>())
         {
-            isFull = false;
+            if (itemObjList.Count >= solidFactoryData.FullItemNum)
+            {
+                isFull = true;
+            }
+            else
+                isFull = false;
         }
-
+        else
+        {
+            if (itemList.Count >= solidFactoryData.FullItemNum)
+            {
+                isFull = true;
+            }
+            else
+                isFull = false;
+        }
     }
 
     //public void GetFluid(float getNum) // 나중에 유체 기능도 넣을 때 추가

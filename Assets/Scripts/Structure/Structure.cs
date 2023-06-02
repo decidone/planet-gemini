@@ -62,6 +62,7 @@ public class Structure : MonoBehaviour
         item.DestroyItem();
         //Destroy(item.gameObject, 0.4f);
     }
+    public virtual bool CheckOutItemNum()  { return new bool(); }
 
     protected virtual void SetDirNum() { }
     // 건물의 방향 설정

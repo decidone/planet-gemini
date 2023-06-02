@@ -15167,7 +15167,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spliterFilterUI: {fileID: 349139540}
   splitterFilterRecipe: {fileID: 8603474882824653210}
-  splitter: {fileID: 0}
   slots:
   - {fileID: 1958411135}
   - {fileID: 1492551731}
@@ -15215,7 +15214,6 @@ MonoBehaviour:
   slots: []
   itemsList: []
   splitter: {fileID: 8603474882824653208}
-  isOpened: 0
 --- !u!1001 &8603474882862928941
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public class ItemSpawner : SolidFactoryCtrl
     Vector2[] checkPos = new Vector2[4];
 
     int sendObjNum = 0;
+    protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
     // Start is called before the first frame update
     void Start()
@@ -125,6 +126,11 @@ public class ItemSpawner : SolidFactoryCtrl
 
     protected override void SetItem()
     {
+        if (setFacDelayCoroutine != null)
+        {
+            return;
+        }
+
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
@@ -202,6 +208,7 @@ public class ItemSpawner : SolidFactoryCtrl
         if (spawnItem != null)
         {
             sprite.color = new Color(1f, 1f, 1f, 1f);
+            setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }
     }
@@ -213,5 +220,5 @@ public class ItemSpawner : SolidFactoryCtrl
     public override void AddProductionFac(GameObject obj)
     {
         outObj.Add(obj);
-    } 
+    }
 }

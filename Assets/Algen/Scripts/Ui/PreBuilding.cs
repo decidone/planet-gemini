@@ -130,7 +130,8 @@ public class PreBuilding : MonoBehaviour
                     else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
                     {
                         underBelt.beltScipt.SetBuild();
-                        underBelt.beltScipt.EnableColliders();
+                        underBelt.EnableColliders();
+                        //underBelt.beltScipt.EnableColliders();
                         underBelt.RemoveObj();
                     }
                     BuildingInfo.instance.BuildingEnd();    
@@ -174,7 +175,6 @@ public class PreBuilding : MonoBehaviour
         {
             underBelt.isPreBuilding = true;
             underBelt.SetSendUnderBelt();
-            underBelt.beltScipt.DisableColliders();
         }
 
         Bounds objectBounds = gameObj.GetComponentInChildren<SpriteRenderer>().bounds;

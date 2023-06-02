@@ -107,6 +107,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: SendUnderBelt
       objectReference: {fileID: 0}
+    - target: {fileID: 2346018906326954991, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
+      propertyPath: space
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2346018906326954991, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2346018906326954991, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
+      propertyPath: itemPref
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2346018906326954991, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
+      propertyPath: maxAmount
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
 --- !u!4 &712072425183305679 stripped
@@ -172,6 +188,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7931006461449339347, guid: 3028c2927e9496945b4209cab7935378, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8199072486916723325, guid: 3028c2927e9496945b4209cab7935378, type: 3}
+      propertyPath: space
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8199072486916723325, guid: 3028c2927e9496945b4209cab7935378, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8199072486916723325, guid: 3028c2927e9496945b4209cab7935378, type: 3}
+      propertyPath: itemPref
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8199072486916723325, guid: 3028c2927e9496945b4209cab7935378, type: 3}
+      propertyPath: maxAmount
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

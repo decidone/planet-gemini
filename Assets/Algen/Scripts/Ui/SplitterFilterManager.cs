@@ -11,7 +11,7 @@ public class SplitterFilterManager : MonoBehaviour
     [SerializeField]
     SplitterFilterRecipe splitterFilterRecipe;
 
-    public SplitterCtrl splitter = null;
+    SplitterCtrl splitter = null;
 
     public Slot[] slots;
     protected GameManager gameManager;

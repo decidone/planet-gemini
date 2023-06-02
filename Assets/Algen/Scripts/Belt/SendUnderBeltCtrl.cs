@@ -34,9 +34,8 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     protected override void Update()
     {
         base.Update();
-
         SetDirNum();
-        if(!isPreBuilding)
+        if (!isPreBuilding)
         {
 
             if (inObj.Count > 0 && !isFull && !itemGetDelay)
@@ -45,7 +44,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
             }
             if (itemList.Count > 0 && outObj != null && !itemSetDelay)
             {
-                SetItem();           
+                SetItem();
             }
 
             for (int i = 1; i < nearObj.Length; i++)
@@ -165,9 +164,9 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     {
         itemGetDelay = true;
 
-        if (inObj[getObjNum].TryGetComponent(out BeltCtrl belt))
+        if (inObj[getObjNum].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
         {
-            if (belt.isItemStop == true)
+            if (belt.itemObjList.Count > 0)
             {
                 OnFactoryItem(belt.itemObjList[0]);
                 belt.itemObjList[0].transform.position = this.transform.position;
@@ -217,7 +216,8 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         Structure outFactory = outObj.GetComponent<Structure>();
 
         if (outFactory.isFull == false)
-        { 
+        //if (!outFactory.CheckOutItemNum())
+        {
             setFacDelayCoroutine = StartCoroutine("SetFacDelay");
         }
 
@@ -254,15 +254,15 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
                 outFactory.OnFactoryItem(itemList[0]);
 
                 itemList.RemoveAt(0);
-
                 ItemNumCheck();
             }
         }
 
         if (spawnItem != null)
         {
-            itemPool.Release(spawnItem);
+            sprite.color = new Color(1f, 1f, 1f, 1f);
             setFacDelayCoroutine = null;
+            itemPool.Release(spawnItem);
         }
     }
 
@@ -282,5 +282,4 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     {
         itemGetDelay = false;
     }
-
 }

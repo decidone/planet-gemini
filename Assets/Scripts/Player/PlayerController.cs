@@ -19,6 +19,20 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetButton("Loot"))
             Loot();
+
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.F))
+        {
+            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+            if (hit.collider.TryGetComponent(out SolidFactoryCtrl factoryCtrl))
+            {
+                List<Item> factItemList = factoryCtrl.PlayerGetItemList();
+                for (int i = 0; i < factItemList.Count; i++) 
+                {
+                    inventory.Add(factItemList[i], 1);
+                }
+            }
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collision)

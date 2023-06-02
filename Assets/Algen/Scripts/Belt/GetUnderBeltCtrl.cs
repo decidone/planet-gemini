@@ -154,7 +154,6 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
                     belt.FactoryVecCheck(GetComponentInParent<Structure>());
                 }
             }
-
             else
             {
                 outSameList.Add(obj);
@@ -198,6 +197,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
 
         if (outFactory.isFull == false)
+        //if (outFactory.CheckOutItemNum() == false)
         {
             if (outObj[sendObjNum].GetComponent<BeltCtrl>())
             {
@@ -215,13 +215,13 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             }
             else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>())
             {
-                StartCoroutine("SetFacDelay", outObj[sendObjNum]);
+                setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObj[sendObjNum]);
             }
             else if (outObj[sendObjNum].TryGetComponent(out Production production))
             {
                 if (production.CanTakeItem(itemList[0]))
                 {
-                    StartCoroutine("SetFacDelay", outObj[sendObjNum]);
+                    setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObj[sendObjNum]);
                 }
             }
 
@@ -280,8 +280,9 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
 
         if (spawnItem != null)
         {
-            itemPool.Release(spawnItem);
+            sprite.color = new Color(1f, 1f, 1f, 1f);
             setFacDelayCoroutine = null;
+            itemPool.Release(spawnItem);
         }
     }
 
@@ -292,5 +293,5 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
     public override void AddProductionFac(GameObject obj)
     {
         outObj.Add(obj);
-    }
+    }   
 }

@@ -416,6 +416,9 @@ MonoBehaviour:
   repairBar: {fileID: 40968013195264733}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
+  ui: {fileID: 0}
+  sFInvenManager: {fileID: 0}
+  inventory: {fileID: 0}
   solidFactoryData: {fileID: 11400000, guid: a0c1ce887778bc141997a82195866e51, type: 2}
   itemObjList: []
   itemList: []
@@ -431,15 +434,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  oKButtonTemp: 0
-  filterOn: 0
-  isFilterOn: 000000
-  isFullFilterOn: 000000
-  isItemFilterOn: 000000
-  isSelItem:
-  - {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
-  - {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
-  - {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   arrFilter:
   - outObj: {fileID: 0}
     isFilterOn: 0
@@ -468,7 +462,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0bc8acfb9905a40b960e75cdb9136b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  solidFacUI: {fileID: 0}
   spilterInfoUI: {fileID: 0}
+  sFacInvManager: {fileID: 0}
   sFilterManager: {fileID: 0}
 --- !u!1 &7656740688557692711
 GameObject:

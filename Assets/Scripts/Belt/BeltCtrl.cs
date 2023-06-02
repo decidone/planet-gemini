@@ -274,7 +274,7 @@ public class BeltCtrl : SolidFactoryCtrl
                 {
                     nextBelt.BeltGroupSendItem(itemObjList[0]);
                     itemObjList.Remove(itemObjList[0]);
-                    ItemNumCheck(); ;
+                    ItemNumCheck(); 
                 }
             }
         }

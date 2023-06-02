@@ -30,7 +30,6 @@ public abstract class Production : Structure
     [SerializeField]
     protected ProductionData productionData;
     protected ProductionData ProductionData { set { productionData = value; } }
-    public List<Item> itemList = new List<Item>();
 
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
@@ -274,8 +273,6 @@ public abstract class Production : Structure
                 outFactory.OnBeltItem(spawnItem);
 
                 SubFromInventory();
-
-                ItemNumCheck();
             }
             else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>()) 
             {
@@ -338,7 +335,7 @@ public abstract class Production : Structure
 
                 SubFromInventory();
 
-                ItemNumCheck();
+                //ItemNumCheck();
             }
         }
 
@@ -348,8 +345,6 @@ public abstract class Production : Structure
             itemPool.Release(spawnItem);
         }
     }
-
-    protected virtual bool CheckOutItemNum() { return new bool(); }
 
     protected void DelaySetItem()
     {

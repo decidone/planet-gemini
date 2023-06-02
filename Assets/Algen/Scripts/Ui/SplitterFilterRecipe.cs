@@ -7,7 +7,6 @@ public class SplitterFilterRecipe : InventoryManager
     [SerializeField]
     List<Item> itemsList;
     public SplitterFilterManager splitter;
-    public bool isOpened;
 
     int slotIndex = -1;
 
@@ -16,7 +15,7 @@ public class SplitterFilterRecipe : InventoryManager
     {
         gameManager = GameManager.instance;
         itemsList = gameManager.GetComponent<ItemList>().itemList;
-        SetItemList();
+        //SetItemList();
     }
 
     protected override void InputCheck()
@@ -53,15 +52,15 @@ public class SplitterFilterRecipe : InventoryManager
 
     public override void OpenUI()
     {
+        SetItemList();
+
         inventoryUI.SetActive(true);
-        isOpened = true;
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 
     public override void CloseUI()
     {
         inventoryUI.SetActive(false);
-        isOpened = false;
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
         slotIndex = -1;
     }

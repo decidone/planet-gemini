@@ -20,24 +20,9 @@ public class SplitterCtrl : SolidFactoryCtrl
 
     Vector2[] checkPos = new Vector2[4];
 
-    List<Item> itemsList;
+    protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
-    //int itemListCount = 0;
-    //int outObjCount = 0;
-
-    [SerializeField]
-    bool oKButtonTemp = false;
-    [SerializeField]
     bool filterOn = false;
-
-    //[SerializeField]
-    //bool[] isFilterOn = new bool[3];
-    //[SerializeField]
-    //bool[] isFullFilterOn = new bool[3];
-    //[SerializeField]
-    //bool[] isItemFilterOn = new bool[3];
-    //[SerializeField]
-    //Item[] isSelItem = new Item[3];
 
     [Serializable]
     public struct Filter
@@ -55,7 +40,6 @@ public class SplitterCtrl : SolidFactoryCtrl
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
-        itemsList = ItemList.instance.itemList;
         CheckPos();
     }
 
@@ -63,10 +47,9 @@ public class SplitterCtrl : SolidFactoryCtrl
     protected override void Update()
     {
         base.Update();
-
         SetDirNum();
         if (!isPreBuilding)
-        {
+        { 
             if (inObj != null && !isFull && !itemGetDelay)
                 GetItem();
         
@@ -96,15 +79,6 @@ public class SplitterCtrl : SolidFactoryCtrl
                     SetItem();
                 }
             }  
-
-            //if (oKButtonTemp == true)
-            //{
-            //    ItemFilterCheck();
-            //    filterOn = FilterCheck();
-            //    //StopCoroutine("FilterSetItem");
-
-            //    oKButtonTemp = false;
-            //}
         }
     }
 
@@ -121,14 +95,6 @@ public class SplitterCtrl : SolidFactoryCtrl
 
     public void ItemFilterCheck()
     {
-        //for (int a = 0; a < arrFilter.Length; a++)
-        //{
-        //    if (arrFilter[a].outObj != null)
-        //    {
-        //        FilterSet(a, isFilterOn[a], isFullFilterOn[a], isItemFilterOn[a], isSelItem[a]);
-        //        //arrFilter[a].selItem = itemsList[arrFilter[a].itemNum];
-        //    }
-        //}
         filterOn = FilterCheck();
     }
 
@@ -191,21 +157,6 @@ public class SplitterCtrl : SolidFactoryCtrl
         }
     }
 
-    //void SetInObj(GameObject obj)
-    //{
-    //    if (obj.GetComponent<SolidFactoryCtrl>() != null)
-    //    {
-    //        inObj = obj;
-    //        if (inObj.TryGetComponent(out BeltCtrl belt) && belt.dirNum != dirNum)
-    //        {
-    //            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-    //            {
-    //                belt.dirNum = dirNum;
-    //                belt.BeltModelSet();
-    //            }
-    //        }
-    //    }
-    //}
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)
     {
         yield return new WaitForSeconds(0.1f);
@@ -229,34 +180,9 @@ public class SplitterCtrl : SolidFactoryCtrl
         }
     }
 
-    //void SetOutObj(GameObject obj, int num)
-    //{
-    //    if (obj.GetComponent<SolidFactoryCtrl>() != null)
-    //    {
-    //        if (obj.TryGetComponent(out BeltCtrl belt))
-    //        {
-    //            if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)                
-    //                return;                
-    //            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)                
-    //                belt.FactoryVecCheck(GetComponentInParent<SolidFactoryCtrl>());                
-    //        }
-    //        else
-    //        {
-    //            outSameList.Add(obj);
-    //            StartCoroutine(OutCheck(obj));
-    //        }
-    //        outObj.Add(obj);
-    //        FilterArr(obj, num);
-    //    }
-    //}
-
     void FilterArr(GameObject obj, int num)
     {
         arrFilter[num].outObj = obj;
-        //arrFilter[num].isFilterOn = false;
-        //arrFilter[num].isFullFilterOn = false;
-        //arrFilter[num].isItemFilterOn = false;
-        //arrFilter[num].selItem = itemsList[0];
     }
 
     public void FilterSet(int num, bool filterOn, bool fullFilterOn, bool itemFilterOn, Item itemNum)
@@ -325,18 +251,26 @@ public class SplitterCtrl : SolidFactoryCtrl
         itemGetDelay = false;
     }
 
+
     protected override void SetItem()
     {
+        if (setFacDelayCoroutine != null)
+        {
+            return;
+        }
+
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
 
-        if (outFactory.isFull == false)
+        if (outFactory.isFull == false)        
+        //if (outFactory.CheckOutItemNum() == false)
         {
             if (outObj[sendObjNum].GetComponent<BeltCtrl>())
             {
                 ItemProps spawnItem = itemPool.Get();
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+
                 sprite.sprite = itemList[0].icon;
                 spawnItem.item = itemList[0];
                 spawnItem.amount = 1;
@@ -347,9 +281,16 @@ public class SplitterCtrl : SolidFactoryCtrl
                 itemList.RemoveAt(0);
                 ItemNumCheck();
             }
-            else
+            else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>())
             {
-                StartCoroutine("SetFacDelay", outObj[sendObjNum]);
+                setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObj[sendObjNum]);
+            }
+            else if (outObj[sendObjNum].TryGetComponent(out Production production))
+            {
+                if (production.CanTakeItem(itemList[0]))
+                {
+                    setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObj[sendObjNum]);
+                }
             }
 
             sendObjNum++;
@@ -373,6 +314,11 @@ public class SplitterCtrl : SolidFactoryCtrl
 
     void FilterSetItem()
     {
+        if (setFacDelayCoroutine != null)
+        {
+            return;
+        }
+
         itemSetDelay = true;
 
         Structure outFactory = null;
@@ -416,8 +362,8 @@ public class SplitterCtrl : SolidFactoryCtrl
             }
             else if(outObject.TryGetComponent(out Structure factory))
             {
-                if(!factory.isFull)
-                    SetFacDelay(outObject);
+                if(!factory.CheckOutItemNum())
+                    setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObject);
             }
 
             itemList.RemoveAt(0);
@@ -426,7 +372,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             break;
         }
 
-        if (outFactory != null && !outFactory.isFull)
+        if (outFactory != null && !outFactory.CheckOutItemNum())
         {
             sendObjNum++;
             if (sendObjNum >= arrFilter.Length) sendObjNum = 0;
@@ -445,7 +391,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             if (filter.isItemFilterOn && filter.selItem == item)
             {
                 Structure factoryCtrl = filter.outObj.GetComponent<Structure>();
-                if (factoryCtrl != null && !factoryCtrl.isFull)
+                if (factoryCtrl != null && !factoryCtrl.CheckOutItemNum())
                 {
                     return false;
                 }
@@ -494,6 +440,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         if (spawnItem != null)
         {
             sprite.color = new Color(1f, 1f, 1f, 1f);
+            setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }
     }

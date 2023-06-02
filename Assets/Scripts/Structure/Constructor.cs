@@ -115,7 +115,7 @@ public class Constructor : Production
     {
         inventory.Sub(1, 1);
     }
-    protected override bool CheckOutItemNum()
+    public override bool CheckOutItemNum()
     {
         var slot1 = inventory.SlotCheck(1);
         if (slot1.amount > 0)

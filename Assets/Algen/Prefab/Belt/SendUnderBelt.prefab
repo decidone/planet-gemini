@@ -231,12 +231,14 @@ MonoBehaviour:
   isSetBuildingOk: 0
   unitCanvers: {fileID: 8574984838784083980}
   hpBar: {fileID: 5405150552168193051}
+  isRuin: 0
+  isRepair: 0
   repairBar: {fileID: 6343450013532052628}
+  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  outSameList: []
   solidFactoryData: {fileID: 11400000, guid: c181e3d39e2c4e448bfdfe0b1e4231b0, type: 2}
   itemObjList: []
   itemList: []
-  outSameList: []
-  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   box2D: {fileID: 0}
   modelNum:
   - {fileID: -220168426, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}

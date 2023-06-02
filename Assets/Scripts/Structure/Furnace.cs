@@ -147,7 +147,7 @@ public class Furnace : Production
     {
         inventory.Sub(2, 1);
     }
-    protected override bool CheckOutItemNum()
+    public override bool CheckOutItemNum()
     {
         var slot2 = inventory.SlotCheck(2);
         if (slot2.amount > 0)

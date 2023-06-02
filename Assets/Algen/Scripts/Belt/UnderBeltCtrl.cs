@@ -86,6 +86,7 @@ public class UnderBeltCtrl : MonoBehaviour
         SetSlotColor(GetBelt.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
         belt = GetBelt;
         beltScipt = belt.GetComponent<GetUnderBeltCtrl>();
+        DisableColliders();
         beltScipt.isPreBuilding = true;
         beltScipt.dirNum = dirNum;
     }
@@ -96,6 +97,7 @@ public class UnderBeltCtrl : MonoBehaviour
         SendBelt.SetActive(true);
         belt = SendBelt;
         beltScipt = belt.GetComponent<SendUnderBeltCtrl>();
+        DisableColliders();
         beltScipt.isPreBuilding = true;
         beltScipt.dirNum = dirNum;
     }
@@ -105,6 +107,16 @@ public class UnderBeltCtrl : MonoBehaviour
         slotColor = color;
         slotColor.a = alpha;
         sprite.color = slotColor;
+    }
+
+    public void DisableColliders()
+    {
+        beltScipt.DisableColliders();
+    }
+
+    public void EnableColliders()
+    {
+        beltScipt.EnableColliders();
     }
 
     public void RemoveObj()

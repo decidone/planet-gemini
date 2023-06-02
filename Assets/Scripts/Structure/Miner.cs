@@ -55,7 +55,7 @@ public class Miner : Production
         inventory.Sub(0, 1);
     }
 
-    protected override bool CheckOutItemNum() 
+    public override bool CheckOutItemNum() 
     {
         var slot = inventory.SlotCheck(0);
         if (slot.amount > 0)
