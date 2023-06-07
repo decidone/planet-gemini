@@ -79,7 +79,9 @@ public class TowerAi : MonoBehaviour
         if (hp <= 0f)
             return;
 
-        hp -= damage;
+        float reducedDamage = Mathf.Max(damage - towerData.Defense, 5);
+
+        hp -= reducedDamage;
         hpBar.fillAmount = hp / towerData.MaxHp;
 
         if (hp <= 0f)

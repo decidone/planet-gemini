@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: ScorpionA
   m_EditorClassIdentifier: 
   monsterName: ScorpionA
-  hp: 70
-  damage: 10
+  maxHp: 150
+  defense: 15
+  damage: 17
   moveSpeed: 3
   patrolRad: 3
   attackDist: 2

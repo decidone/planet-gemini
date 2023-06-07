@@ -535,7 +535,9 @@ public class UnitAi : MonoBehaviour
         if (hp <= 0f)
             return;
 
-        hp -= damage;
+        float reducedDamage = Mathf.Max(damage - unitData.Defense, 5);
+
+        hp -= reducedDamage;
         hpBar.fillAmount = hp / unitData.MaxHp;
 
         if (hp <= 0f)

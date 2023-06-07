@@ -32,6 +32,12 @@ public class PlayerController : MonoBehaviour
                     inventory.Add(factItemList[i], 1);
                 }
             }
+            else if (hit.collider != null && hit.collider.TryGetComponent(out Production production))
+            {
+                var item = production.QuickPullOut();
+                if(item.Item1 != null && item.Item2 > 0)
+                    inventory.Add(item.Item1, item.Item2);
+            }
         }
         if (Input.GetMouseButtonDown(1))
         {

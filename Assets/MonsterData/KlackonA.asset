@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: KlackonA
   m_EditorClassIdentifier: 
   monsterName: KlackonA
-  hp: 70
-  damage: 10
+  maxHp: 100
+  defense: 10
+  damage: 15
   moveSpeed: 3
   patrolRad: 3
   attackDist: 2

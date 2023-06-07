@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Metal_blue
   m_EditorClassIdentifier: 
   monsterName: Metal
-  hp: 80
-  damage: 15
+  maxHp: 200
+  defense: 20
+  damage: 25
   moveSpeed: 7
   patrolRad: 5
   attackDist: 2
-  attDelayTime: 1
+  attDelayTime: 1.5
   colliderRadius: 10
   attackNum: 1

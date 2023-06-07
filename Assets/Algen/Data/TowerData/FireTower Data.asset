@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: FireTower Data
   m_EditorClassIdentifier: 
   towerName: FireTower
-  maxHp: 200
-  damage: 7
-  attackDist: 10
+  maxHp: 350
+  defense: 8
+  damage: 20
+  attackDist: 5
   attDelayTime: 2
   colliderRadius: 10
   maxBuildingGauge: 100

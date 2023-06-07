@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: IceTower Data
   m_EditorClassIdentifier: 
   towerName: IceTower
-  maxHp: 200
-  damage: 15
-  attackDist: 10
-  attDelayTime: 2
+  maxHp: 250
+  defense: 6
+  damage: 30
+  attackDist: 7
+  attDelayTime: 1.5
   colliderRadius: 10
   maxBuildingGauge: 100
   maxRepairGauge: 70

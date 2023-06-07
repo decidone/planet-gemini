@@ -201,6 +201,8 @@ public abstract class Production : Structure
 
     public virtual bool CanTakeItem(Item item) { return new bool(); }
 
+    public virtual (Item, int) QuickPullOut() { return  (new Item(), new int()); }
+
     protected void GetItem()
     {
         itemGetDelay = true;
@@ -277,7 +279,7 @@ public abstract class Production : Structure
                 }
                 else
                 {
-                    OnDestroyItem(spawnItem);
+                    OnDestroyItem(spawnItem);   
                     itemSetDelay = false;
                     return;
                 }

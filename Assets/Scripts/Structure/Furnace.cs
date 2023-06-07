@@ -167,4 +167,12 @@ public class Furnace : Production
         else
             isFull = true;
     }
+
+    public override (Item, int) QuickPullOut()
+    {
+        var slot2 = inventory.SlotCheck(2);
+        if (slot2.amount > 0)
+            inventory.Sub(2, slot2.amount);
+        return slot2;
+    }
 }

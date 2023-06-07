@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: SlimeSmallA
   m_EditorClassIdentifier: 
   monsterName: SlimeSmallA
-  hp: 50
-  damage: 10
+  maxHp: 50
+  defense: 5
+  damage: 13
   moveSpeed: 3
   patrolRad: 3
   attackDist: 2

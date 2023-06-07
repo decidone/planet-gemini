@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: BloodTower Data
   m_EditorClassIdentifier: 
   towerName: BloodTower
-  maxHp: 200
-  damage: 15
-  attackDist: 10
+  maxHp: 350
+  defense: 8
+  damage: 40
+  attackDist: 7
   attDelayTime: 2
   colliderRadius: 10
   maxBuildingGauge: 100

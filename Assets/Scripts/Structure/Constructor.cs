@@ -135,4 +135,11 @@ public class Constructor : Production
         else
             isFull = true;
     }
+    public override (Item, int) QuickPullOut()
+    {
+        var slot1 = inventory.SlotCheck(1);
+        if (slot1.amount > 0)
+            inventory.Sub(1, slot1.amount);
+        return slot1;
+    }
 }

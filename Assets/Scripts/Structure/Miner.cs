@@ -74,4 +74,12 @@ public class Miner : Production
         else
             isFull = true;
     }
+
+    public override (Item, int) QuickPullOut()
+    {
+        var slot = inventory.SlotCheck(0);
+        if(slot.amount > 0)
+            inventory.Sub(0, slot.amount);
+        return slot;
+    }
 }

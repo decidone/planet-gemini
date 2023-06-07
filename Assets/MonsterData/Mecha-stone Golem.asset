@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Mecha-stone Golem
   m_EditorClassIdentifier: 
   monsterName: Mecha-stone Golem
-  hp: 100
-  damage: 15
+  maxHp: 300
+  defense: 30
+  damage: 20
   moveSpeed: 3
   patrolRad: 3
-  attackDist: 3
-  attDelayTime: 1
+  attackDist: 4
+  attDelayTime: 2
   colliderRadius: 10
   attackNum: 2

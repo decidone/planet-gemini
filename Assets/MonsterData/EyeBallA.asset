@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: EyeBallA
   m_EditorClassIdentifier: 
   monsterName: EyeBallA
-  hp: 70
-  damage: 10
+  maxHp: 100
+  defense: 10
+  damage: 15
   moveSpeed: 3
   patrolRad: 3
-  attackDist: 2
+  attackDist: 4
   attDelayTime: 1
   colliderRadius: 10
   attackNum: 1

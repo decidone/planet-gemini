@@ -476,6 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monsterData: {fileID: 11400000, guid: badfb68353495724b9ad671b278c5ed7, type: 2}
   animator: {fileID: 0}
   aggroTarget: {fileID: 0}
   targetList: []

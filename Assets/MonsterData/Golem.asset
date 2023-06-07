@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Golem
   m_EditorClassIdentifier: 
   monsterName: Golem
-  hp: 80
-  damage: 15
+  maxHp: 200
+  defense: 20
+  damage: 25
   moveSpeed: 5
   patrolRad: 5
-  attackDist: 5
-  attDelayTime: 1
+  attackDist: 8
+  attDelayTime: 1.5
   colliderRadius: 10
   attackNum: 3

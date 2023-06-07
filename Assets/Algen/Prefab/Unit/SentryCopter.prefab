@@ -259,7 +259,7 @@ MonoBehaviour:
   unitCanvers: {fileID: 3421677391031086563}
   unitSelImg: {fileID: 6013075139773666233}
   hpBar: {fileID: 6176163336920458569}
-  attackFX: {fileID: 0}
+  attackFX: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!1 &3421677391031086563
 GameObject:
   m_ObjectHideFlags: 0

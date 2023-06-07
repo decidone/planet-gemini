@@ -84,7 +84,8 @@ public class GolemCtrl : MonsterAi
             else
                 golemFX.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
-        golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion, getMonsterData.monsteData.Damage);
+        golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion, monsterData.Damage);
+        //golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion, getMonsterData.monsteData.Damage);
     }
 }
 

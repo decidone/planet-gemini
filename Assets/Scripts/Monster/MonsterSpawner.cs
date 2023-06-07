@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum MonsterType
-{
-    Golem_Armor, Metal_Monster_blue
-}
+//public enum MonsterType
+//{
+//    Golem_Armor, Metal_Monster_blue
+//}
 
 public class MonsterSpawner : MonoBehaviour
 {
-    [SerializeField]
-    private List<MonsterData> monsterDatas;
     [SerializeField]
     private GameObject[] monsterPrefab;
     [SerializeField]
@@ -21,27 +19,22 @@ public class MonsterSpawner : MonoBehaviour
         {
             for (int a = 0; a < spawnNum; a++)
             {
-                //int ranMobType = Random.Range(0, monsterDatas.Count);
-                //var monster = SpawnMonster((MonsterType)ranMobType, ranMobType);
-                var monster = SpawnMonster((MonsterType)a, a);
+                var monster = SpawnMonster(a);
             }
         }
         else
         {
             for(int a = 0; a < 12; a++)
             {
-                //int ranMobType = Random.Range(0, monsterDatas.Count);
-                //var monster = SpawnMonster((MonsterType)ranMobType, ranMobType);
-                var monster = SpawnMonster((MonsterType)a, a);
+                var monster = SpawnMonster(a);
             }
         }        
     }
 
-    public GetMonsterData SpawnMonster(MonsterType type, int typeNum)
+    public GameObject SpawnMonster(int typeNum)
     {
-        var newMonster = Instantiate(monsterPrefab[typeNum]).GetComponent<GetMonsterData>();
+        var newMonster = Instantiate(monsterPrefab[typeNum]);
         newMonster.transform.SetParent(this.transform, false);
-        newMonster.MonsterData = monsterDatas[(int)type];
         return newMonster;
     }
 }

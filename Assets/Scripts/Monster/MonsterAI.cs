@@ -25,8 +25,9 @@ public enum MonsterAttackState
 
 public class MonsterAi : MonoBehaviour
 {
-    protected GetMonsterData getMonsterData;
-
+    [SerializeField]
+    protected MonsterData monsterData;
+    protected MonsterData MonsterData { set { monsterData = value; } }
     //이동 관련 변수
     Vector2 moveDir = Vector2.zero;         // 이동 벡터 정규화
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
@@ -63,7 +64,6 @@ public class MonsterAi : MonoBehaviour
     // HpBar 관련
     public Image hpBar;
     float hp = 100.0f;
-    float maxHP = 100.0f;
 
     public SpriteRenderer unitSprite = null;
     public GameObject unitCanvers = null;
@@ -76,17 +76,16 @@ public class MonsterAi : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        getMonsterData = GetComponentInChildren<GetMonsterData>();
         animator = gameObject.GetComponentInChildren<Animator>();
         spawnPos = GameObject.Find("SpawnPos").transform;
         circle2D = GetComponent<CircleCollider2D>();
         capsule2D = GetComponent<CapsuleCollider2D>();
-        circle2D.radius = getMonsterData.monsteData.ColliderRadius;
+        circle2D.radius = monsterData.ColliderRadius;
         patrolPos = spawnPos.position;
         StartCoroutine("Patrol");
         isFlip = unitSprite.flipX;
-        hpBar.fillAmount = hp / maxHP;
-
+        hp = monsterData.MaxHp;
+        hpBar.fillAmount = hp / monsterData.MaxHp;
     }//void Start()
 
     private void FixedUpdate()
@@ -158,21 +157,15 @@ public class MonsterAi : MonoBehaviour
             if (monsterAI == MonsterAIState.MAI_Patrol)
             {
                 targetVector = patrolPos - this.transform.position;
-                moveStep = getMonsterData.monsteData.MoveSpeed * Time.fixedDeltaTime;
+                moveStep = monsterData.MoveSpeed * Time.fixedDeltaTime;
             }//if ((monsterAI == MonsterAI.MAI_Patrol))
             else
             {
                 if (aggroTarget != null)
                 {
                     targetVector = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - this.transform.position);
-                    moveStep = (getMonsterData.monsteData.MoveSpeed + 2) * Time.fixedDeltaTime;
+                    moveStep = (monsterData.MoveSpeed + 2) * Time.fixedDeltaTime;
                 }
-                //if (aggroTarget != null)
-                //{
-                //    //targetVector = aggroTarget.transform.position - this.transform.position;
-                //    targetVector = new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y - 0.5f) - this.transform.position;
-                //    moveStep = (getMonsterData.monsteData.MoveSpeed + 2) * Time.fixedDeltaTime;
-                //}//if (aggroTarget != null)
             }//else
             targetDist = targetVector.magnitude;
             moveDir = targetVector.normalized;
@@ -201,7 +194,7 @@ public class MonsterAi : MonoBehaviour
 
         if(aggroTarget != null)
         {
-            if (targetDist < getMonsterData.monsteData.AttackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격
+            if (targetDist < monsterData.AttackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격
             {
                 Invoke("TurnAttack", 0.1f);//0.1초 지연 즉발로 하니 꼬임
             }
@@ -231,7 +224,7 @@ public class MonsterAi : MonoBehaviour
             }
         }        
 
-        if(aggroTarget != null && targetDist < getMonsterData.monsteData.ColliderRadius && monsterAI != MonsterAIState.MAI_NormalTrace && monsterAI != MonsterAIState.MAI_Attack)
+        if(aggroTarget != null && targetDist < monsterData.ColliderRadius && monsterAI != MonsterAIState.MAI_NormalTrace && monsterAI != MonsterAIState.MAI_Attack)
         {
             monsterAI = MonsterAIState.MAI_NormalTrace;
         }
@@ -247,15 +240,15 @@ public class MonsterAi : MonoBehaviour
     {
         if(aggroTarget != null)
         {
-            if (targetDist > getMonsterData.monsteData.AttackDist)  // 탐색 범위 밖으로 나갈 때
+            if (targetDist > monsterData.AttackDist)  // 탐색 범위 밖으로 나갈 때
             {
                 animator.SetBool("isAttack", false);
                 monsterAI = MonsterAIState.MAI_NormalTrace;              // 따라가기 활성화
                 attackState = MonsterAttackState.Waiting;
             }
-            else if (targetDist <= getMonsterData.monsteData.AttackDist)  // 공격 범위 내로 들어왔을 때        
+            else if (targetDist <= monsterData.AttackDist)  // 공격 범위 내로 들어왔을 때        
             { 
-                RandomAttackNum(getMonsterData.monsteData.AttackNum, aggroTarget.transform);
+                RandomAttackNum(monsterData.AttackNum, aggroTarget.transform);
             }
         }
         else
@@ -270,13 +263,13 @@ public class MonsterAi : MonoBehaviour
         if (Obj != null)
         {
             if (Obj.GetComponent<PlayerStatus>())
-                Obj.GetComponent<PlayerStatus>().TakeDamage(getMonsterData.monsteData.Damage);
+                Obj.GetComponent<PlayerStatus>().TakeDamage(monsterData.Damage);
             else if (Obj.GetComponent<UnitAi>())
-                Obj.GetComponent<UnitAi>().TakeDamage(getMonsterData.monsteData.Damage);
+                Obj.GetComponent<UnitAi>().TakeDamage(monsterData.Damage);
             else if (Obj.GetComponent<TowerAi>())
-                Obj.GetComponent<TowerAi>().TakeDamage(getMonsterData.monsteData.Damage);
+                Obj.GetComponent<TowerAi>().TakeDamage(monsterData.Damage);
             else if (Obj.GetComponent<Structure>())
-                Obj.GetComponent<Structure>().TakeDamage(getMonsterData.monsteData.Damage);
+                Obj.GetComponent<Structure>().TakeDamage(monsterData.Damage);
         }
     }
 
@@ -291,11 +284,6 @@ public class MonsterAi : MonoBehaviour
     }
     public void ImgMrror()
     {
-        //if (moveNextStep.x >= 0)        
-        //    transform.localScale = new Vector3(1, 1, 1);        
-        //else if (moveNextStep.x < 0)        
-        //    transform.localScale = new Vector3(-1, 1, 1);
-
         if (isFlip == true)
         {
             if (moveNextStep.x > 0)
@@ -337,7 +325,7 @@ public class MonsterAi : MonoBehaviour
     IEnumerator AttackDelay()
     {
         attackState = MonsterAttackState.AttackDelay;
-        yield return new WaitForSeconds(getMonsterData.monsteData.AttDelayTime);
+        yield return new WaitForSeconds(monsterData.AttDelayTime);
         attackState = MonsterAttackState.Waiting;
     }
     IEnumerator LastFollow()
@@ -369,7 +357,7 @@ public class MonsterAi : MonoBehaviour
             }//if (idle == 0)
             else
             {
-                patRandomPos = Random.insideUnitCircle * getMonsterData.monsteData.PatrolRad;
+                patRandomPos = Random.insideUnitCircle * monsterData.PatrolRad;
                 patrolPos = this.transform.position + patRandomPos;
 
                 animator.SetBool("isMoving", true);
@@ -388,8 +376,10 @@ public class MonsterAi : MonoBehaviour
         if (hp <= 0f)
             return;
 
-        hp -= damage;
-        hpBar.fillAmount = hp / maxHP;
+        float reducedDamage = Mathf.Max(damage - monsterData.Defense, 5);
+
+        hp -= reducedDamage;
+        hpBar.fillAmount = hp / monsterData.MaxHp;
 
         if (hp <= 0f)
         {
@@ -427,17 +417,14 @@ public class MonsterAi : MonoBehaviour
         {
             if (!targetList.Contains(collision.gameObject))
             {
-                //monsterAI = MonsterAIState.MAI_NormalTrace;
                 isPatrol = false;
                 targetList.Add(collision.gameObject);
-                //aggroTarget = collision.gameObject;
             }
         }//if (collision.CompareTag("Player"))
         else if(collision.CompareTag("Unit"))
         {
             if (!targetList.Contains(collision.gameObject))
             {
-                //monsterAI = MonsterAIState.MAI_NormalTrace;
                 isPatrol = false;
                 if (collision.isTrigger == true)
                     targetList.Add(collision.gameObject);
@@ -447,12 +434,9 @@ public class MonsterAi : MonoBehaviour
         {
             if (!targetList.Contains(collision.gameObject))
             {
-                //if (!collision.gameObject.GetComponent<FactoryCtrl>().isPreBuilding)
                 {
-                    //monsterAI = MonsterAIState.MAI_NormalTrace;
                     isPatrol = false;
-                    //if (collision.isTrigger == true)
-                        targetList.Add(collision.gameObject);
+                    targetList.Add(collision.gameObject);
                 }
             }
         }
@@ -460,9 +444,7 @@ public class MonsterAi : MonoBehaviour
         {
             if (!targetList.Contains(collision.gameObject))
             {
-                //if (!collision.gameObject.GetComponent<TowerAi>().isPreBuilding)
                 {
-                    //monsterAI = MonsterAIState.MAI_NormalTrace;
                     isPatrol = false;
                     if (collision.isTrigger == true)
                         targetList.Add(collision.gameObject);
@@ -477,7 +459,6 @@ public class MonsterAi : MonoBehaviour
         {
             if(Vector3.Distance(transform.position, collision.transform.position) > circle2D.radius)
             {
-                //monsterAI = MonsterAIState.MAI_Patrol;
                 isFollowEnd = true;
                 targetList.Remove(collision.gameObject);
                 //aggroTarget = null;            
@@ -485,21 +466,17 @@ public class MonsterAi : MonoBehaviour
         }//if (collision.CompareTag("Player"))
         else if (collision.CompareTag("Unit"))
         {
-            //monsterAI = MonsterAIState.MAI_Patrol;
             isFollowEnd = true;
             if (collision.isTrigger == true)
                 targetList.Remove(collision.gameObject);
         }
         else if (collision.CompareTag("Factory"))
         {
-            //monsterAI = MonsterAIState.MAI_Patrol;
             isFollowEnd = true;
-            //if (collision.isTrigger == true)
-                targetList.Remove(collision.gameObject);
+            targetList.Remove(collision.gameObject);
         }
         else if (collision.CompareTag("Tower"))
         {
-            //monsterAI = MonsterAIState.MAI_Patrol;
             isFollowEnd = true;
             if (collision.isTrigger == true)
                 targetList.Remove(collision.gameObject);

@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: PoisonTower Data
   m_EditorClassIdentifier: 
   towerName: PoisonTower
-  maxHp: 200
-  damage: 7
-  attackDist: 10
+  maxHp: 300
+  defense: 6
+  damage: 30
+  attackDist: 8
   attDelayTime: 2
   colliderRadius: 10
   maxBuildingGauge: 100

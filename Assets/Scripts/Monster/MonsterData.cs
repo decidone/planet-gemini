@@ -11,6 +11,9 @@ public class MonsterData : ScriptableObject
     private int maxHp;//체력
     public int MaxHp { get { return maxHp; } }
     [SerializeField]
+    private float defense;//체력
+    public float Defense { get { return defense; } }
+    [SerializeField]
     private int damage;//데미지
     public int Damage { get { return damage; } }
     [SerializeField]
