@@ -33,26 +33,29 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
     protected override void Update()
     {
         base.Update();
-        SetDirNum();
-        if (!isPreBuilding)
+        if (!removeState)
         {
-            if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+           SetDirNum();
+            if (!isPreBuilding)
             {
-                SetItem();
-            }
-
-            for (int i = 0; i < nearObj.Length; i++)
-            {
-                if (nearObj[i] == null)
+                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
-                    if (i == 0)
-                        CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
-                    else if (i == 1)
-                        CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
-                    else if (i == 2)
-                        CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj));
-                    else if (i == 3)
-                        CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj));
+                    SetItem();
+                }
+
+                for (int i = 0; i < nearObj.Length; i++)
+                {
+                    if (nearObj[i] == null)
+                    {
+                        if (i == 0)
+                            CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                        else if (i == 1)
+                            CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                        else if (i == 2)
+                            CheckNearObj(checkPos[2], 2, obj => SetOutObj(obj));
+                        else if (i == 3)
+                            CheckNearObj(checkPos[3], 3, obj => SetOutObj(obj));
+                    }
                 }
             }
         }
@@ -154,10 +157,10 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
                     belt.FactoryVecCheck(GetComponentInParent<Structure>());
                 }
             }
-            else
+            else if (obj.GetComponent<SolidFactoryCtrl>())
             {
                 outSameList.Add(obj);
-                StartCoroutine("OutCheck", obj);
+                StartCoroutine(OutCheck(obj));
             }
             outObj.Add(obj);
         }
@@ -202,16 +205,23 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             if (outObj[sendObjNum].GetComponent<BeltCtrl>())
             {
                 ItemProps spawnItem = itemPool.Get();
-                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                sprite.sprite = itemList[0].icon;
-                spawnItem.item = itemList[0];
-                spawnItem.amount = 1;
-                spawnItem.transform.position = this.transform.position;
+                if (outFactory.OnBeltItem(spawnItem))
+                {
+                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                    sprite.sprite = itemList[0].icon;
+                    spawnItem.item = itemList[0];
+                    spawnItem.amount = 1;
+                    spawnItem.transform.position = transform.position;
 
-                outFactory.OnBeltItem(spawnItem);
-
-                itemList.RemoveAt(0);
-                ItemNumCheck();
+                    itemList.RemoveAt(0);
+                    ItemNumCheck();
+                }
+                else
+                {
+                    OnDestroyItem(spawnItem);
+                    itemSetDelay = false;
+                    return;
+                }
             }
             else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>())
             {
@@ -290,8 +300,8 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
     {
         itemSetDelay = false;
     }
-    public override void AddProductionFac(GameObject obj)
-    {
-        outObj.Add(obj);
-    }   
+    //public override void AddProductionFac(GameObject obj)
+    //{
+    //    outObj.Add(obj);
+    //}   
 }

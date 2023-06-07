@@ -34,13 +34,16 @@ public class SolidFactoryCtrl : Structure
 
     protected virtual void Update()
     {
-        if (isRuin && isRepair)
+        if(!removeState)
         {
-            RepairFunc(false);
-        }
-        else if (isPreBuilding && isSetBuildingOk && !isRuin)
-        {
-            RepairFunc(true);
+            if (isRuin && isRepair)
+            {
+                RepairFunc(false);
+            }
+            else if (isPreBuilding && isSetBuildingOk && !isRuin)
+            {
+                RepairFunc(true);
+            }
         }
     }
 
@@ -68,17 +71,23 @@ public class SolidFactoryCtrl : Structure
             isFull = false;
     }
 
-    public override void OnBeltItem(ItemProps itemObj)
+    public override bool OnBeltItem(ItemProps itemObj)
     {
-        itemObjList.Add(itemObj);
+        if(itemObjList.Count < solidFactoryData.FullItemNum)
+        {
+            itemObjList.Add(itemObj);
 
-        if (GetComponent<BeltCtrl>())        
-            GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(itemObj);
+            if (GetComponent<BeltCtrl>())
+                GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(itemObj);
 
-        if (itemObjList.Count >= solidFactoryData.FullItemNum)
-            isFull = true;
-        else
-            isFull = false;
+            if (itemObjList.Count >= solidFactoryData.FullItemNum)
+                isFull = true;
+            else
+                isFull = false;
+
+            return true;
+        }
+        return false;
     }
 
     public override void OnFactoryItem(ItemProps itemProps)
@@ -272,5 +281,5 @@ public class SolidFactoryCtrl : Structure
         isRuin = true;
     }
 
-    public virtual void AddProductionFac(GameObject obj) { }
+    //public virtual void AddProductionFac(GameObject obj) { }
 }

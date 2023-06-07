@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: Splitter
   maxHp: 50
-  fullItemNum: 1
+  fullItemNum: 5
   sendSpeed: 1.5
   sendDelay: 0.5
   maxBuildingGauge: 10

@@ -94,10 +94,12 @@ public class Furnace : Production
     public override bool CanTakeItem(Item item)
     {
         var slot = inventory.SlotCheck(0);
+        var slot1 = inventory.SlotCheck(1);
 
-        if (itemDic["Coal"] == item)
+        if (itemDic["Coal"] == item && slot1.amount < 99)
             return true;
-        else if (slot.item == null)
+
+        if (slot.item == null)
         {
             if (recipes != null)
             {
@@ -108,7 +110,7 @@ public class Furnace : Production
                 }
             }
         }
-        else if (slot.item == item)
+        else if (slot.item == item && slot.amount < 99)
             return true;
 
         return false;

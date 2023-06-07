@@ -34,32 +34,35 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     protected override void Update()
     {
         base.Update();
-        SetDirNum();
-        if (!isPreBuilding)
+        if (!removeState)
         {
+            SetDirNum();
+            if (!isPreBuilding)
+            {
 
-            if (inObj.Count > 0 && !isFull && !itemGetDelay)
-            {
-                GetItem();
-            }
-            if (itemList.Count > 0 && outObj != null && !itemSetDelay)
-            {
-                SetItem();
-            }
-
-            for (int i = 1; i < nearObj.Length; i++)
-            {
-                if (nearObj[i] == null)
+                if (inObj.Count > 0 && !isFull && !itemGetDelay)
                 {
-                    if (i == 1)
-                        CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
-                    else if (i == 2)
-                        CheckNearObj(checkPos[2], 2, obj => SetInObj(obj));
-                    else if (i == 3)
-                        CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
+                    GetItem();
+                }
+                if (itemList.Count > 0 && outObj != null && !itemSetDelay)
+                {
+                    SetItem();
+                }
+
+                for (int i = 1; i < nearObj.Length; i++)
+                {
+                    if (nearObj[i] == null)
+                    {
+                        if (i == 1)
+                            CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
+                        else if (i == 2)
+                            CheckNearObj(checkPos[2], 2, obj => SetInObj(obj));
+                        else if (i == 3)
+                            CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
+                    }
                 }
             }
-        }
+        } 
     }
 
     protected override void SetDirNum()

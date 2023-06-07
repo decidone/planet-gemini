@@ -90,14 +90,21 @@ public class Assembler : Production
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }
 
-    public override bool CanTakeItem(Item item) 
+    public override bool CanTakeItem(Item item)
     {
         if (recipe.name == null)
             return false;
-        else if (itemDic[recipe.items[0]] == item || itemDic[recipe.items[1]] == item)
+
+        var slot = inventory.SlotCheck(0);
+        var slot1 = inventory.SlotCheck(1);
+
+        if (itemDic[recipe.items[0]] == item && slot.amount < 99)
             return true;
-        else 
-            return false;
+
+        if (itemDic[recipe.items[1]] == item && slot1.amount < 99)
+            return true;
+
+        return false;
     }
 
     public override void OnFactoryItem(ItemProps itemProps)

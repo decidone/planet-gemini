@@ -37,7 +37,6 @@ public class SplitterFilterRecipe : InventoryManager
     void SetItemList()
     {
         inventory.ResetInven();
-
         for (int i = 0; i < itemsList.Count; i++)
         {
             inventory.Add(itemsList[i], 1);

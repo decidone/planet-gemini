@@ -84,14 +84,16 @@ public class Constructor : Production
         sInvenManager.slots[1].outputSlot = true;
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }
+
     public override bool CanTakeItem(Item item)
     {
-        if (recipe.name == null)
-            return false;
-        else if (itemDic[recipe.items[0]] == item)
-            return true;
-        else
-            return false;
+        if (recipe.name != null && itemDic[recipe.items[0]] == item)
+        {
+            var slot = inventory.SlotCheck(0);
+            return slot.amount < 99;
+        }
+
+        return false;
     }
 
     public override void OnFactoryItem(ItemProps itemProps)

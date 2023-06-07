@@ -9,13 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e26d57b107969f44b9b0e33e9be09dd5, type: 3}
-  m_Name: Merger Data
+  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
+  m_Name: emptFilter
   m_EditorClassIdentifier: 
-  factoryName: Merger
-  maxHp: 50
-  fullItemNum: 5
-  sendSpeed: 1.5
-  sendDelay: 0.5
-  maxBuildingGauge: 10
-  maxRepairGauge: 10
+  name: emptFilter
+  icon: {fileID: 0}

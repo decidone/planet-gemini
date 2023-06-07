@@ -20,6 +20,8 @@ public class SplitterFilterManager : MonoBehaviour
     Button[] fillterMenuBtns = null;
     [SerializeField]
     ToggleButton[] fillterOnOffBtns = null;
+    [SerializeField]
+    Toggle[] reverseToggle = null;
 
     // Start is called before the first frame update
     void Start()
@@ -43,12 +45,23 @@ public class SplitterFilterManager : MonoBehaviour
             int buttonIndex = i;
             fillterOnOffBtns[i].onToggleOn.AddListener(() => SentFillterInfo(buttonIndex));
         }
+
+        for (int i = 0; i < fillterOnOffBtns.Length; i++)
+        {
+            int toggleIndex = i;
+            reverseToggle[i].onValueChanged.AddListener(isOn => Function_Toggle(toggleIndex));
+        }
     }
 
     void OpenSplitterFillterMenu(int buttonIndex)
     {
         splitterFilterRecipe.OpenUI();
         splitterFilterRecipe.GetFillterNum(buttonIndex);
+    }
+
+    private void Function_Toggle(int toggleIndex)
+    {
+        SentFillterInfo(toggleIndex);
     }
 
     public void SetSplitter(SplitterCtrl _split)
@@ -82,19 +95,30 @@ public class SplitterFilterManager : MonoBehaviour
 
     public void SetItem(Item _item, int slotIndex)
     {
-        if (slots[slotIndex].item == null)
+        if (_item.name == "emptFilter")
         {
-            slots[slotIndex].AddItem(_item, 1);
-        }
-        else if (slots[slotIndex].item != _item)
-        {
+            splitter.SlotReset(slotIndex);
+            fillterOnOffBtns[slotIndex].ButtonSetModle(false);
+            reverseToggle[slotIndex].isOn = false;
             slots[slotIndex].ClearSlot();
-            slots[slotIndex].AddItem(_item, 1);
         }
-        else if (slots[slotIndex].item == _item)
-            return;
 
-        SentFillterInfo(slotIndex);
+        else
+        {
+            if (slots[slotIndex].item == null)
+            {
+                slots[slotIndex].AddItem(_item, 1);
+            }
+            else if (slots[slotIndex].item != _item)
+            {
+                slots[slotIndex].ClearSlot();
+                slots[slotIndex].AddItem(_item, 1);
+            }
+            else if (slots[slotIndex].item == _item)
+                return;
+
+            SentFillterInfo(slotIndex);
+        }
     }
 
     public void OpenUI()
@@ -135,11 +159,11 @@ public class SplitterFilterManager : MonoBehaviour
         {
             if (slots[i].item.name != "fullFilter")
             {
-                splitter.FilterSet(i, fillterOnOffBtns[i].isOn, false, true, slots[i].item);
+                splitter.FilterSet(i, fillterOnOffBtns[i].isOn, false, true, reverseToggle[i].isOn, slots[i].item);
             }
             else if (slots[i].item.name == "fullFilter")
             {
-                splitter.FilterSet(i, fillterOnOffBtns[i].isOn, true, false, slots[i].item);
+                splitter.FilterSet(i, fillterOnOffBtns[i].isOn, true, false, false, slots[i].item);
             }
             splitter.ItemFilterCheck();
         }

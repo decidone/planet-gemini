@@ -57,11 +57,14 @@ public class BeltCtrl : SolidFactoryCtrl
     {
         base.Update();
 
-        anim.SetFloat("DirNum", dirNum);
-        anim.SetFloat("ModelNum", modelNum);
+        if (!removeState)
+        {
+            anim.SetFloat("DirNum", dirNum);
+            anim.SetFloat("ModelNum", modelNum);
 
-        anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-        ModelSet();
+            anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+            ModelSet();
+        }
     }
 
     private void FixedUpdate()

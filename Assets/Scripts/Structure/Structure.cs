@@ -20,6 +20,8 @@ public class Structure : MonoBehaviour
     public bool isPreBuilding = false;
     public bool isSetBuildingOk = false;
 
+    protected bool removeState = false;
+
     [SerializeField]
     protected GameObject unitCanvers = null;
 
@@ -78,7 +80,7 @@ public class Structure : MonoBehaviour
     // 건물 설치 기능
 
     public virtual void BeltGroupSendItem(ItemProps itemObj) { }
-    public virtual void OnBeltItem(ItemProps itemObj) { }
+    public virtual bool OnBeltItem(ItemProps itemObj) { return new bool(); }
     public virtual void OnFactoryItem(ItemProps itemObj) { }
     public virtual void OnFactoryItem(Item item) { }
     public virtual void ItemNumCheck() { }
@@ -95,6 +97,13 @@ public class Structure : MonoBehaviour
     {
         outSameList.Clear();
     }
+
+    public virtual void RemoveObj() 
+    {
+        removeState = true;
+        StopAllCoroutines();
+    }
+
     //[SerializeField]
     //protected int maxHp;
     //[SerializeField]

@@ -20,17 +20,26 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButton("Loot"))
             Loot();
 
-        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.F))
+        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl))
         {
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
-            if (hit.collider.TryGetComponent(out SolidFactoryCtrl factoryCtrl))
+            if (hit.collider != null && hit.collider.TryGetComponent(out SolidFactoryCtrl factoryCtrl))
             {
                 List<Item> factItemList = factoryCtrl.PlayerGetItemList();
                 for (int i = 0; i < factItemList.Count; i++) 
                 {
                     inventory.Add(factItemList[i], 1);
                 }
+            }
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+            if (hit.collider != null && hit.collider.TryGetComponent(out Structure structure))
+            {
+                structure.RemoveObj();
             }
         }
     }

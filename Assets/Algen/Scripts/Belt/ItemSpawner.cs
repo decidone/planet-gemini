@@ -27,29 +27,31 @@ public class ItemSpawner : SolidFactoryCtrl
     protected override void Update()
     {
         base.Update();
-
-        if (!isPreBuilding)
+        if (!removeState)
         {
-            if (outObj.Count > 0 && !itemSetDelay)
+            if (!isPreBuilding)
             {
-                SetItem();
-            }
-
-            for (int i = 0; i < nearObj.Length; i++)
-            {
-                if (nearObj[i] == null)
+                if (outObj.Count > 0 && !itemSetDelay)
                 {
-                    if (i == 0)
-                        CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    else if (i == 1)
-                        CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    else if (i == 2)
-                        CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    else if (i == 3)
-                        CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    SetItem();
+                }
+
+                for (int i = 0; i < nearObj.Length; i++)
+                {
+                    if (nearObj[i] == null)
+                    {
+                        if (i == 0)
+                            CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                        else if (i == 1)
+                            CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                        else if (i == 2)
+                            CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                        else if (i == 3)
+                            CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    }
                 }
             }
-        }
+        } 
     }
 
     protected override void CheckPos()
@@ -91,10 +93,10 @@ public class ItemSpawner : SolidFactoryCtrl
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
                     belt.FactoryVecCheck(GetComponentInParent<Structure>());
             }
-            else
+            else if (obj.GetComponent<SolidFactoryCtrl>())
             {
                 outSameList.Add(obj);
-                StartCoroutine("OutCheck", obj);
+                StartCoroutine(OutCheck(obj));
             }
             outObj.Add(obj);
         }
@@ -140,12 +142,20 @@ public class ItemSpawner : SolidFactoryCtrl
             if (outObj[sendObjNum].GetComponent<BeltCtrl>())
             {
                 ItemProps spawnItem = itemPool.Get();
-                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                sprite.sprite = itemData.icon;
-                spawnItem.item = itemData;
-                spawnItem.amount = 1;
-                spawnItem.transform.position = this.transform.position;
-                outFactory.OnBeltItem(spawnItem);
+                if (outFactory.OnBeltItem(spawnItem))
+                {
+                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                    sprite.sprite = itemData.icon;
+                    spawnItem.item = itemData;
+                    spawnItem.amount = 1;
+                    spawnItem.transform.position = transform.position;
+                }
+                else
+                {
+                    OnDestroyItem(spawnItem);
+                    itemSetDelay = false;
+                    return;
+                }
             }
             else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>())
             {
@@ -217,8 +227,8 @@ public class ItemSpawner : SolidFactoryCtrl
     {
         itemSetDelay = false;
     }
-    public override void AddProductionFac(GameObject obj)
-    {
-        outObj.Add(obj);
-    }
+    //public override void AddProductionFac(GameObject obj)
+    //{
+    //    outObj.Add(obj);
+    //}
 }

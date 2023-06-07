@@ -184,10 +184,10 @@ public abstract class Production : Structure
                             StartCoroutine(SetInObjCoroutine(otherObj));
                             outObj.RemoveAt(a);
 
-                            if(!GetComponentInChildren<Miner>() && otherObj.GetComponent<SolidFactoryCtrl>())
-                            {
-                                otherObj.GetComponent<SolidFactoryCtrl>().AddProductionFac(gameObject);
-                            }
+                            //if(!GetComponentInChildren<Miner>() && otherObj.GetComponent<SolidFactoryCtrl>())
+                            //{
+                            //    otherObj.GetComponent<SolidFactoryCtrl>().AddProductionFac(gameObject);
+                            //}
 
                             Invoke("RemoveSameOutList", 0.1f);
                             StopCoroutine("SetFacDelay");
@@ -265,14 +265,22 @@ public abstract class Production : Structure
             if (outObj[sendObjNum].GetComponent<BeltCtrl>())
             {
                 ItemProps spawnItem = itemPool.Get();
-                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                sprite.sprite = output.icon;
-                spawnItem.item = output;
-                spawnItem.amount = 1;
-                spawnItem.transform.position = this.transform.position;
-                outFactory.OnBeltItem(spawnItem);
+                if (outFactory.OnBeltItem(spawnItem))
+                {
+                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                    sprite.sprite = output.icon;
+                    spawnItem.item = output;
+                    spawnItem.amount = 1;
+                    spawnItem.transform.position = transform.position;
 
-                SubFromInventory();
+                    SubFromInventory();
+                }
+                else
+                {
+                    OnDestroyItem(spawnItem);
+                    itemSetDelay = false;
+                    return;
+                }
             }
             else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>()) 
             {

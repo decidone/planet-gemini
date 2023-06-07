@@ -33,27 +33,21 @@ public class ToggleButton : MonoBehaviour
         if (toggleButtonSprite == null) 
             toggleButtonSprite = toggleButtonObj.GetComponent<Image>();
 
-        if (isOn)
-        {
-            toggleButtonSprite.sprite = toggleImg[0];
-            Vector3 newPosition = toggleSwObj.anchoredPosition;
-            newPosition.x = 15f;
-            toggleSwObj.anchoredPosition = newPosition;
-        }
-        else
-        {
-            toggleButtonSprite.sprite = toggleImg[1];
-            Vector3 newPosition = toggleSwObj.anchoredPosition;
-            newPosition.x = -15f;
-            toggleSwObj.anchoredPosition = newPosition;
-        }
+        ButtonSetModle(isOn);
     }
 
     void ToggleButtonClick()
     {
         isOn = !isOn;
 
-        if (isOn)
+        ButtonSetModle(isOn);
+
+        onToggleOn?.Invoke();
+    }
+
+    public void ButtonSetModle(bool On)
+    {
+        if (On)
         {
             toggleButtonSprite.sprite = toggleImg[0];
             Vector3 newPosition = toggleSwObj.anchoredPosition;
@@ -68,6 +62,6 @@ public class ToggleButton : MonoBehaviour
             toggleSwObj.anchoredPosition = newPosition;
         }
 
-        onToggleOn?.Invoke();
+        isOn = On;
     }
 }
