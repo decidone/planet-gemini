@@ -176,7 +176,6 @@ MonoBehaviour:
   maxAmount: 99
   cooldown: 3
   productionData: {fileID: 11400000, guid: d644889767257af4fb098c89edf47e96, type: 2}
-  itemList: []
   box2D: {fileID: 0}
   inObj: []
   outObj: []
