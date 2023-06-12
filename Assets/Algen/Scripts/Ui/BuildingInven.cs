@@ -8,7 +8,7 @@ public class BuildingInven : MonoBehaviour
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
-    public List<Building> buildingDataList;
+    List<Building> buildingDataList;
 
     public Dictionary<int, Building> BuildingDic = new Dictionary<int, Building>();
 

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: RepairTower
   maxHp: 100
-  defense: 5
+  defense: 0
   damage: 10
   attackDist: 10
   attDelayTime: 5

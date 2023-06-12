@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: SpinRobot
   maxHp: 200
-  defense: 4
+  defense: 0
   damage: 20
   moveSpeed: 8
   attackDist: 2

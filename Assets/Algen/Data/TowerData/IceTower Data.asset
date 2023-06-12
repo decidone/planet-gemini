@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: IceTower
   maxHp: 250
-  defense: 6
+  defense: 0
   damage: 30
   attackDist: 7
   attDelayTime: 1.5

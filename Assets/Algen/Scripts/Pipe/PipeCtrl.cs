@@ -19,7 +19,6 @@ public class PipeCtrl : FluidFactoryCtrl
     // Start is called before the first frame update
     void Start()
     {
-        dirCount = 2;
         setModel = GetComponent<SpriteRenderer>();
         if (transform.parent.gameObject != null)
             pipeGroupMgr = GetComponentInParent<PipeGroupMgr>();

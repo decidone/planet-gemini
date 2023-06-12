@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: StormTower
   maxHp: 400
-  defense: 6
+  defense: 0
   damage: 40
   attackDist: 7
   attDelayTime: 1.5

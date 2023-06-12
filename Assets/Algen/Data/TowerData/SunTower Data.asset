@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: SunTower
   maxHp: 400
-  defense: 5
+  defense: 0
   damage: 35
   attackDist: 10
   attDelayTime: 2

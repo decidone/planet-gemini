@@ -112,54 +112,54 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         {
             inObj.Add(obj);
 
-            if (obj.GetComponent<BeltCtrl>() != null)
-            {
-                BeltCtrl belt = obj.GetComponent<BeltCtrl>();
+            //if (obj.GetComponent<BeltCtrl>() != null)
+            //{
+            //    BeltCtrl belt = obj.GetComponent<BeltCtrl>();
 
-                int beltReNum = 0;
+            //    int beltReNum = 0;
 
-                if (dirNum == 0)
-                {
-                    if (nearObj[1] == obj)
-                        beltReNum = 3;
-                    else if (nearObj[2] == obj)
-                        beltReNum = 0;
-                    else if (nearObj[3] == obj)
-                        beltReNum = 1;
-                }
-                if (dirNum == 1)
-                {
-                    if (nearObj[1] == obj)
-                        beltReNum = 0;
-                    else if (nearObj[2] == obj)
-                        beltReNum = 1;
-                    else if (nearObj[3] == obj)
-                        beltReNum = 2;
-                }
-                if (dirNum == 2)
-                {
-                    if (nearObj[1] == obj)
-                        beltReNum = 1;
-                    else if (nearObj[2] == obj)
-                        beltReNum = 2;
-                    else if (nearObj[3] == obj)
-                        beltReNum = 3;
-                }
-                if (dirNum == 3)
-                {
-                    if (nearObj[1] == obj)
-                        beltReNum = 2;
-                    else if (nearObj[2] == obj)
-                        beltReNum = 3;
-                    else if (nearObj[3] == obj)
-                        beltReNum = 0;
-                }
-                if (beltReNum != belt.dirNum)
-                {
-                    belt.dirNum = beltReNum;
-                    belt.BeltModelSet();
-                }
-            }
+            //    if (dirNum == 0)
+            //    {
+            //        if (nearObj[1] == obj)
+            //            beltReNum = 3;
+            //        else if (nearObj[2] == obj)
+            //            beltReNum = 0;
+            //        else if (nearObj[3] == obj)
+            //            beltReNum = 1;
+            //    }
+            //    if (dirNum == 1)
+            //    {
+            //        if (nearObj[1] == obj)
+            //            beltReNum = 0;
+            //        else if (nearObj[2] == obj)
+            //            beltReNum = 1;
+            //        else if (nearObj[3] == obj)
+            //            beltReNum = 2;
+            //    }
+            //    if (dirNum == 2)
+            //    {
+            //        if (nearObj[1] == obj)
+            //            beltReNum = 1;
+            //        else if (nearObj[2] == obj)
+            //            beltReNum = 2;
+            //        else if (nearObj[3] == obj)
+            //            beltReNum = 3;
+            //    }
+            //    if (dirNum == 3)
+            //    {
+            //        if (nearObj[1] == obj)
+            //            beltReNum = 2;
+            //        else if (nearObj[2] == obj)
+            //            beltReNum = 3;
+            //        else if (nearObj[3] == obj)
+            //            beltReNum = 0;
+            //    }
+            //    if (beltReNum != belt.dirNum)
+            //    {
+            //        belt.dirNum = beltReNum;
+            //        belt.BeltModelSet();
+            //    }
+            //}
         }
     }
 

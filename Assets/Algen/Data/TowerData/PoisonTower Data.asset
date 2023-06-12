@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: PoisonTower
   maxHp: 300
-  defense: 6
+  defense: 0
   damage: 30
   attackDist: 8
   attDelayTime: 2

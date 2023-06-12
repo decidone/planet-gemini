@@ -13578,7 +13578,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c0c058d8fc0634b81aa39036b1371f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingDataList: []
   BuildingTagsPanel: {fileID: 968631564}
 --- !u!114 &7131987286442069793
 MonoBehaviour:
@@ -16002,7 +16001,6 @@ MonoBehaviour:
   inventoryUI: {fileID: 1330986495}
   inventory: {fileID: 352262288}
   slots: []
-  itemsList: []
   splitter: {fileID: 8603474882824653208}
 --- !u!1001 &8603474882862928941
 PrefabInstance:

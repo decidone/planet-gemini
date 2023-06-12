@@ -34,16 +34,14 @@ public abstract class Production : Structure
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
+    [HideInInspector]
     public BoxCollider2D box2D = null;
 
     //[SerializeField]
     //Sprite[] modelNum = new Sprite[4];
     //SpriteRenderer setModel;
     //private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
-    [SerializeField]
     protected List<GameObject> inObj = new List<GameObject>();
-
-    [SerializeField]
     protected List<GameObject> outObj = new List<GameObject>();
 
     GameObject[] nearObj = new GameObject[4];

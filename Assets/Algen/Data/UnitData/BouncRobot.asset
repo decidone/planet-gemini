@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: BouncRobot
   maxHp: 150
-  defense: 3
+  defense: 0
   damage: 30
   moveSpeed: 8
   attackDist: 4

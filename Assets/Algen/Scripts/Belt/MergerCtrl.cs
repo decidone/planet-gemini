@@ -121,41 +121,41 @@ public class MergerCtrl : SolidFactoryCtrl
         BeltCtrl belt = obj.GetComponent<BeltCtrl>();
         if (belt == null) yield break;
 
-        int beltReNum = 0;
+        //int beltReNum = 0;
 
-        if (dirNum == 0)
-        {
-            if (nearObj[1] == obj) beltReNum = 3;
-            else if (nearObj[2] == obj) beltReNum = 0;
-            else if (nearObj[3] == obj) beltReNum = 1;
-        }
-        else if (dirNum == 1)
-        {
-            if (nearObj[1] == obj) beltReNum = 0;
-            else if (nearObj[2] == obj) beltReNum = 1;
-            else if (nearObj[3] == obj) beltReNum = 2;
-        }
-        else if (dirNum == 2)
-        {
-            if (nearObj[1] == obj) beltReNum = 1;
-            else if (nearObj[2] == obj) beltReNum = 2;
-            else if (nearObj[3] == obj) beltReNum = 3;
-        }
-        else if (dirNum == 3)
-        {
-            if (nearObj[1] == obj) beltReNum = 2;
-            else if (nearObj[2] == obj) beltReNum = 3;
-            else if (nearObj[3] == obj) beltReNum = 0;
-        }
+        //if (dirNum == 0)
+        //{
+        //    if (nearObj[1] == obj) beltReNum = 3;
+        //    else if (nearObj[2] == obj) beltReNum = 0;
+        //    else if (nearObj[3] == obj) beltReNum = 1;
+        //}
+        //else if (dirNum == 1)
+        //{
+        //    if (nearObj[1] == obj) beltReNum = 0;
+        //    else if (nearObj[2] == obj) beltReNum = 1;
+        //    else if (nearObj[3] == obj) beltReNum = 2;
+        //}
+        //else if (dirNum == 2)
+        //{
+        //    if (nearObj[1] == obj) beltReNum = 1;
+        //    else if (nearObj[2] == obj) beltReNum = 2;
+        //    else if (nearObj[3] == obj) beltReNum = 3;
+        //}
+        //else if (dirNum == 3)
+        //{
+        //    if (nearObj[1] == obj) beltReNum = 2;
+        //    else if (nearObj[2] == obj) beltReNum = 3;
+        //    else if (nearObj[3] == obj) beltReNum = 0;
+        //}
 
-        if (beltReNum != belt.dirNum)
-        {
-            if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.EndBelt)
-            {
-                belt.dirNum = beltReNum;
-                belt.BeltModelSet();
-            }
-        }
+        //if (beltReNum != belt.dirNum)
+        //{
+        //    if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.EndBelt)
+        //    {
+        //        belt.dirNum = beltReNum;
+        //        belt.BeltModelSet();
+        //    }
+        //}
     }
 
     IEnumerator SetOutObjCoroutine(GameObject obj)

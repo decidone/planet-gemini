@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: FireTower
   maxHp: 350
-  defense: 8
+  defense: 0
   damage: 20
   attackDist: 5
   attDelayTime: 2

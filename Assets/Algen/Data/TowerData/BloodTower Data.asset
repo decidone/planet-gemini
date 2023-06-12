@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerName: BloodTower
   maxHp: 350
-  defense: 8
+  defense: 0
   damage: 40
   attackDist: 7
   attDelayTime: 2

@@ -32,7 +32,6 @@ public class BuildingInfo : MonoBehaviour
             Debug.LogWarning("More than one instance of recipeList found!");
             return;
         }
-
         instance = this;
     }
     #endregion
