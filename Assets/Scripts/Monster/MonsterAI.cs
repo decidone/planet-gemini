@@ -66,7 +66,7 @@ public class MonsterAi : MonoBehaviour
     float hp = 100.0f;
 
     public SpriteRenderer unitSprite = null;
-    public GameObject unitCanvers = null;
+    public GameObject unitCanvas = null;
 
     public MonsterAIState monsterAI = MonsterAIState.MAI_Patrol; // 시작 시 패트롤 상태
     public MonsterAttackState attackState = MonsterAttackState.Waiting;
@@ -392,7 +392,7 @@ public class MonsterAi : MonoBehaviour
     void DieFunc()
     {
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
-        unitCanvers.SetActive(false);
+        unitCanvas.SetActive(false);
 
         capsule2D.enabled = false;
         circle2D.enabled = false;

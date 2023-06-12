@@ -315,7 +315,6 @@ GameObject:
   - component: {fileID: 4262384227631555500}
   - component: {fileID: 609389399136354693}
   - component: {fileID: 753128668259487209}
-  - component: {fileID: 8234724267398255588}
   - component: {fileID: -6961045231524434650}
   - component: {fileID: 8022674097172093497}
   m_Layer: 0
@@ -451,19 +450,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &8234724267398255588
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6170366634080306581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0982960aff44e44b86cff0aec9ba9cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monsteData: {fileID: 0}
 --- !u!114 &-6961045231524434650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,7 +470,7 @@ MonoBehaviour:
   attackMotion: 0
   hpBar: {fileID: 3182610173967690890}
   unitSprite: {fileID: 5009158862103463290}
-  unitCanvers: {fileID: 61381033163008437}
+  unitCanvas: {fileID: 61381033163008437}
   monsterAI: 0
   attackState: 0
 --- !u!70 &8022674097172093497

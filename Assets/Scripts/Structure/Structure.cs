@@ -11,19 +11,25 @@ public class Structure : MonoBehaviour
     // Update처럼 함수 호출하는 부분은 다 하위 클래스에 넣을 것
     // 연결된 구조물 확인 방법 1. 콜라이더, 2. 맵에서 인접 타일 체크
 
+    [HideInInspector]
     public bool isFull = false;         // 건물의 아이템 슬롯별로 꽉 찼는지 체크하는 방식으로 변경되어야 함, 그러므로 건물 쪽 변수로 들어가야 할거같음
+    [HideInInspector]
     public bool fluidIsFull = false;    // 창고 처럼 모든 칸이 구분없이 채울 수 있다면 모든 슬롯이 차있는지 체크하는 방식으로도 생각해 봐야함
 
+    [HideInInspector]
     public int dirNum = 0;
+    [HideInInspector]
     public int dirCount = 0;
 
+    [HideInInspector]
     public bool isPreBuilding = false;
+    [HideInInspector]
     public bool isSetBuildingOk = false;
 
     protected bool removeState = false;
 
     [SerializeField]
-    protected GameObject unitCanvers = null;
+    protected GameObject unitCanvas = null;
 
     // HpBar 관련
     [SerializeField]
@@ -42,6 +48,7 @@ public class Structure : MonoBehaviour
     [SerializeField]
     GameObject itemPref;
     protected IObjectPool<ItemProps> itemPool;
+    [HideInInspector]
     public List<GameObject> outSameList = new List<GameObject>();
 
     protected ItemProps CreateItemObj()

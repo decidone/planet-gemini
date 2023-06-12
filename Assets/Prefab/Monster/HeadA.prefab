@@ -213,7 +213,6 @@ GameObject:
   - component: {fileID: 4473749486166491645}
   - component: {fileID: 6478049652833788890}
   - component: {fileID: 6566239105743671450}
-  - component: {fileID: 870764142548545524}
   - component: {fileID: 5872030752021281981}
   - component: {fileID: 223529813394900848}
   m_Layer: 0
@@ -349,19 +348,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &870764142548545524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7517060564855879891}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0982960aff44e44b86cff0aec9ba9cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monsteData: {fileID: 0}
 --- !u!114 &5872030752021281981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,7 +368,7 @@ MonoBehaviour:
   attackMotion: 0
   hpBar: {fileID: 5453272591419942249}
   unitSprite: {fileID: 4224763193725532762}
-  unitCanvers: {fileID: 7789758135176094031}
+  unitCanvas: {fileID: 7789758135176094031}
   monsterAI: 0
   attackState: 0
 --- !u!70 &223529813394900848
