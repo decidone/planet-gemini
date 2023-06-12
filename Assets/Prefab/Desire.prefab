@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
+  buildingInfoObj: {fileID: 0}
 --- !u!114 &7093100876002410941
 MonoBehaviour:
   m_ObjectHideFlags: 0
