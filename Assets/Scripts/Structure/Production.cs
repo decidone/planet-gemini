@@ -380,7 +380,7 @@ public abstract class Production : Structure
 
     public override void SetBuild()
     {
-        unitCanvers.SetActive(true);
+        unitCanvas.SetActive(true);
         hpBar.enabled = false;
         repairBar.enabled = true;
         repairGauge = 0;
@@ -402,12 +402,12 @@ public abstract class Production : Structure
                 repairBar.enabled = false;
                 if (hp < productionData.MaxHp)
                 {
-                    unitCanvers.SetActive(true);
+                    unitCanvas.SetActive(true);
                     hpBar.enabled = true;
                 }
                 else
                 {
-                    unitCanvers.SetActive(false);
+                    unitCanvas.SetActive(false);
                 }
                 EnableColliders();
             }
@@ -427,7 +427,7 @@ public abstract class Production : Structure
         hpBar.enabled = true;
 
         hp = productionData.MaxHp;
-        unitCanvers.SetActive(false);
+        unitCanvas.SetActive(false);
 
         hpBar.fillAmount = hp / productionData.MaxHp;
 
@@ -444,9 +444,9 @@ public abstract class Production : Structure
     {
         if (!isPreBuilding)
         {
-            if (!unitCanvers.activeSelf)
+            if (!unitCanvas.activeSelf)
             {
-                unitCanvers.SetActive(true);
+                unitCanvas.SetActive(true);
                 hpBar.enabled = true;
             }
         }
@@ -473,7 +473,7 @@ public abstract class Production : Structure
         {
             hp = productionData.MaxHp;
             if (!isRepair)
-                unitCanvers.SetActive(false);
+                unitCanvas.SetActive(false);
         }
         else
             hp += heal;

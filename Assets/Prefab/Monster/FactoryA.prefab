@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 9205663056679505284}
   - component: {fileID: 7933333061001074333}
   - component: {fileID: 2183262049184912036}
-  - component: {fileID: 365108928343600803}
   - component: {fileID: 5320131936670486442}
   - component: {fileID: 1462048544358157173}
   m_Layer: 0
@@ -149,19 +148,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 10
---- !u!114 &365108928343600803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1077087328519019245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0982960aff44e44b86cff0aec9ba9cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monsteData: {fileID: 0}
 --- !u!114 &5320131936670486442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +168,7 @@ MonoBehaviour:
   attackMotion: 0
   hpBar: {fileID: 6349790761103010388}
   unitSprite: {fileID: 2589093502875389040}
-  unitCanvers: {fileID: 3456046097214474780}
+  unitCanvas: {fileID: 3456046097214474780}
   monsterAI: 0
   attackState: 0
 --- !u!70 &1462048544358157173

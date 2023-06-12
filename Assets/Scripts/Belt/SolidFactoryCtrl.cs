@@ -150,7 +150,7 @@ public class SolidFactoryCtrl : Structure
 
     public override void SetBuild() 
     {
-        unitCanvers.SetActive(true);
+        unitCanvas.SetActive(true);
         hpBar.enabled = false;
         repairBar.enabled = true;
         repairGauge = 0;
@@ -172,12 +172,12 @@ public class SolidFactoryCtrl : Structure
                 repairBar.enabled = false;
                 if (hp < solidFactoryData.MaxHp)
                 {
-                    unitCanvers.SetActive(true);
+                    unitCanvas.SetActive(true);
                     hpBar.enabled = true;
                 }
                 else
                 {
-                    unitCanvers.SetActive(false);
+                    unitCanvas.SetActive(false);
                     //isRepair = true;
                 }
                 EnableColliders();
@@ -205,7 +205,7 @@ public class SolidFactoryCtrl : Structure
         //else
         //{
         hp = solidFactoryData.MaxHp;
-        unitCanvers.SetActive(false);
+        unitCanvas.SetActive(false);
         //}
 
         hpBar.fillAmount = hp / solidFactoryData.MaxHp;
@@ -223,9 +223,9 @@ public class SolidFactoryCtrl : Structure
     {
         if (!isPreBuilding)
         {
-            if (!unitCanvers.activeSelf)
+            if (!unitCanvas.activeSelf)
             {
-                unitCanvers.SetActive(true);
+                unitCanvas.SetActive(true);
                 hpBar.enabled = true;
             }
         }
@@ -252,7 +252,7 @@ public class SolidFactoryCtrl : Structure
         {
             hp = solidFactoryData.MaxHp;
             if (!isRepair)
-                unitCanvers.SetActive(false);
+                unitCanvas.SetActive(false);
         }
         else
             hp += heal;

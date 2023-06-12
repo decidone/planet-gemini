@@ -29,7 +29,7 @@ public class Structure : MonoBehaviour
     protected bool removeState = false;
 
     [SerializeField]
-    protected GameObject unitCanvers = null;
+    protected GameObject unitCanvas = null;
 
     // HpBar ฐüทร
     [SerializeField]

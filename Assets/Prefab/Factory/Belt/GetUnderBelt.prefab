@@ -408,7 +408,7 @@ MonoBehaviour:
   dirCount: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
-  unitCanvers: {fileID: 5209748675834970393}
+  unitCanvas: {fileID: 5209748675834970393}
   hpBar: {fileID: 6716281867631382315}
   isRuin: 0
   isRepair: 0

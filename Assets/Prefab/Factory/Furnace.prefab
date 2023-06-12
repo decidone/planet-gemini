@@ -494,7 +494,7 @@ MonoBehaviour:
   dirCount: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
-  unitCanvers: {fileID: 7151233568437708852}
+  unitCanvas: {fileID: 7151233568437708852}
   hpBar: {fileID: 7748072995334832043}
   isRuin: 0
   isRepair: 0
@@ -508,5 +508,3 @@ MonoBehaviour:
   cooldown: 3
   productionData: {fileID: 11400000, guid: d0df61e38f4fb69438347d5fe585628f, type: 2}
   box2D: {fileID: 0}
-  inObj: []
-  outObj: []

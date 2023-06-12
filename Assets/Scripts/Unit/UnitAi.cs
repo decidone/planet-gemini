@@ -32,7 +32,7 @@ public class UnitAi : MonoBehaviour
     protected Animator animator;
 
     public SpriteRenderer unitSprite = null;
-    public GameObject unitCanvers = null;
+    public GameObject unitCanvas = null;
 
     // 이동 관련
     Vector3 targetPosition;
@@ -552,7 +552,7 @@ public class UnitAi : MonoBehaviour
     {
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitSelImg.color = new Color(1f, 1f, 1f, 0f);
-        unitCanvers.SetActive(false);
+        unitCanvas.SetActive(false);
 
         capsule2D.enabled = false;
         circle2D.enabled = false;

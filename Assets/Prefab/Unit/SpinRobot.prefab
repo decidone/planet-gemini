@@ -164,7 +164,7 @@ MonoBehaviour:
   unitData: {fileID: 11400000, guid: 7c298bae8defb09438f80feb136915ee, type: 2}
   animator: {fileID: 248036444977090386}
   unitSprite: {fileID: 248036444977090384}
-  unitCanvers: {fileID: 3900482381079000164}
+  unitCanvas: {fileID: 3900482381079000164}
   unitSelImg: {fileID: 5345713938874468926}
   hpBar: {fileID: 5542614678106668238}
 --- !u!58 &6548727644941508392
