@@ -8,13 +8,23 @@ public class Miner : Production
     {
         base.Start();
         SetResource(itemDic["Coal"]);
+        //Map map = GameManager.instance.map;
+        //int x = Mathf.FloorToInt(this.gameObject.transform.position.x);
+        //int y = Mathf.FloorToInt(this.gameObject.transform.position.y);
+        //if (map.IsOnMap(x, y))
+        //{
+        //    if (map.mapData[x][y].obj != null)
+        //    {
+        //        SetResource(itemDic["Coal"]);
+        //    }
+        //}
     }
 
     protected override void Update()
     {
         base.Update();
         var slot = inventory.SlotCheck(0);
-        if (slot.amount < maxAmount)
+        if (output != null && slot.amount < maxAmount)
         {
             prodTimer += Time.deltaTime;
             if (prodTimer > cooldown)

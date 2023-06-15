@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     public GameObject inventoryUiCanvas;
+    public Map map;
     [SerializeField]
     PlayerInvenManager pInvenManager;
     [SerializeField]
@@ -14,6 +15,8 @@ public class GameManager : MonoBehaviour
     RecipeManager rManager;
     [SerializeField]
     SplitterFilterManager sManager;
+    
+    bool debug;
     DragSlot dragSlot;
     List<GameObject> openedUI;
     StructureClickEvent clickEvent;
@@ -58,6 +61,13 @@ public class GameManager : MonoBehaviour
 
     void InputCheck()
     {
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            debug = !debug;
+            Debug.Log("debug : " + debug);
+        }
+            
+
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject())
@@ -67,6 +77,25 @@ public class GameManager : MonoBehaviour
 
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+
+            int x = Mathf.FloorToInt(pos.x);
+            int y = Mathf.FloorToInt(pos.y);
+            if (debug && map.IsOnMap(x, y))
+            {
+                if (map.mapData[x][y].obj == null)
+                {
+                    Debug.Log("x : " + x + ", y : " + y +
+                    ", biome : " + map.mapData[x][y].biome
+                    );
+                }
+                else
+                {
+                    Debug.Log("x : " + x + ", y : " + y +
+                    ", biome : " + map.mapData[x][y].biome +
+                    ", obj : " + map.mapData[x][y].obj.name
+                    );
+                }
+            }
 
             if (hit.collider != null)
             {

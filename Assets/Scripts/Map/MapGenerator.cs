@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour
     [Space]
     public Tilemap tilemap;
     public GameObject objects;
-    Map map;
+    public Map map;
 
     [Space]
     [Header("Biomes")]
@@ -38,7 +38,6 @@ public class MapGenerator : MonoBehaviour
 
     void Init()
     {
-        map = new Map();
         map.width = width;
         map.height = height;
         map.mapData = new List<List<Cell>>();
@@ -152,7 +151,7 @@ public class MapGenerator : MonoBehaviour
             cell.obj = objInst;
 
             objInst.name = string.Format("map_x{0}_y{1}", x, y);
-            objInst.transform.localPosition = new Vector3(x, y, 0);
+            objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
         }
     }
 }
