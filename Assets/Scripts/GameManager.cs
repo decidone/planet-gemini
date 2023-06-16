@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour
                     }
 
                     clickEvent = newClickEvent;
+                    clickEvent.StructureClick();
                     clickEvent.OpenUI();
                 }
 

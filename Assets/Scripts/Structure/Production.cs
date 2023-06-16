@@ -18,6 +18,8 @@ public abstract class Production : Structure
     [SerializeField]
     protected float cooldown;
 
+    protected GameObject canvas;
+
     protected Inventory inventory;
     protected Dictionary<string, Item> itemDic;
     protected float prodTimer;
@@ -70,9 +72,15 @@ public abstract class Production : Structure
 
     protected virtual void Start()
     {
-        itemDic = ItemList.instance.itemDic;
+        itemDic = ItemList.instance.itemDic;  
         recipe = new Recipe();
         output = null;
+
+        GameManager gameManager = GameManager.instance;
+        canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
+        sInvenManager = canvas.GetComponent<StructureInvenManager>();
+        rManager = canvas.GetComponent<RecipeManager>();
+        GetUIFunc();
 
         CheckPos();
     }
@@ -80,6 +88,17 @@ public abstract class Production : Structure
     protected virtual void Update()
     {
         //SetDirNum();
+        if (!removeState)
+        {
+            if (isRuin && isRepair)
+            {
+                RepairFunc(false);
+            }
+            else if (isPreBuilding && isSetBuildingOk && !isRuin)
+            {
+                RepairFunc(true);
+            }
+        }
         if (!isPreBuilding)
         {
             if (inObj.Count > 0 && !itemGetDelay)
@@ -99,7 +118,7 @@ public abstract class Production : Structure
     public virtual float GetProgress() { return prodTimer; }
     public virtual float GetFuel() { return fuel; }
     public virtual void OpenRecipe() { }
-
+    public virtual void GetUIFunc() { }
 
     protected override void CheckPos()
     {

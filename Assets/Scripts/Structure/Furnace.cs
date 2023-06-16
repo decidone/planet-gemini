@@ -14,37 +14,44 @@ public class Furnace : Production
     protected override void Update()
     {
         base.Update();
-        var slot = inventory.SlotCheck(0);
-        var slot1 = inventory.SlotCheck(1);
-        var slot2 = inventory.SlotCheck(2);
-
-        if (fuel == 0 && slot1.item == itemDic["Coal"] && slot1.amount > 0)
+        if (!isPreBuilding)
         {
-            inventory.Sub(1, 1);
-            fuel = maxFuel;
-        }
+            var slot = inventory.SlotCheck(0);
+            var slot1 = inventory.SlotCheck(1);
+            var slot2 = inventory.SlotCheck(2);
 
-        if (slot.item != null)
-        {
-            foreach (Recipe _recipe in recipes)
+            if (fuel == 0 && slot1.item == itemDic["Coal"] && slot1.amount > 0)
             {
-                if (slot.item == itemDic[_recipe.items[0]])
-                {
-                    recipe = _recipe;
-                    output = itemDic[recipe.items[recipe.items.Count - 1]];
-                }
+                inventory.Sub(1, 1);
+                fuel = maxFuel;
             }
 
-            if (fuel > 0 && slot.amount >= recipe.amounts[0] && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+            if (slot.item != null)
             {
-                if (slot2.item == output || slot2.item == null)
+                foreach (Recipe _recipe in recipes)
                 {
-                    prodTimer += Time.deltaTime;
-                    if (prodTimer > cooldown)
+                    if (slot.item == itemDic[_recipe.items[0]])
                     {
-                        fuel -= 25;
-                        inventory.Sub(0, recipe.amounts[0]);
-                        inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                        recipe = _recipe;
+                        output = itemDic[recipe.items[recipe.items.Count - 1]];
+                    }
+                }
+
+                if (fuel > 0 && slot.amount >= recipe.amounts[0] && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                {
+                    if (slot2.item == output || slot2.item == null)
+                    {
+                        prodTimer += Time.deltaTime;
+                        if (prodTimer > cooldown)
+                        {
+                            fuel -= 25;
+                            inventory.Sub(0, recipe.amounts[0]);
+                            inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                            prodTimer = 0;
+                        }
+                    }
+                    else
+                    {
                         prodTimer = 0;
                     }
                 }
@@ -57,15 +64,11 @@ public class Furnace : Production
             {
                 prodTimer = 0;
             }
-        }
-        else
-        {
-            prodTimer = 0;
-        }
 
-        if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay)
-        {
-            SetItem();
+            if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+            {
+                SetItem();
+            }
         }
     }
 
@@ -174,5 +177,17 @@ public class Furnace : Production
         if (slot2.amount > 0)
             inventory.Sub(2, slot2.amount);
         return slot2;
+    }
+    public override void GetUIFunc()
+    {
+        InventoryList inventoryList = canvas.GetComponent<InventoryList>();
+
+        foreach (GameObject list in inventoryList.StructureStorageArr)
+        {
+            if (list.name == "Furnace")
+            {
+                ui = list;
+            }
+        }
     }
 }

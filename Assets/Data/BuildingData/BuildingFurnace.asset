@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
-  m_Name: BuildingMerger
+  m_Name: BuildingFurnace
   m_EditorClassIdentifier: 
   type: Factory
   scienceName: basic
-  item: {fileID: 11400000, guid: d51119756f0b3684aaadbb5b95de7463, type: 2}
-  gameObj: {fileID: 262180438270614842, guid: 97d33a0f590a6604db6635b18ae370be, type: 3}
+  item: {fileID: 11400000, guid: 33a54e32c67906f4096cbc3a2b3a83f5, type: 2}
+  gameObj: {fileID: 8759284699072132164, guid: fe068c47125c8744eb4500be202a2006, type: 3}

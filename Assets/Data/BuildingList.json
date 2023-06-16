@@ -1,4 +1,28 @@
 {
+  "Miner": {
+    "name": "Miner",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "Furnace": {
+    "name": "Furnace",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "Constructor": {
+    "name": "Constructor",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
+  "Assembler": {
+    "name": "Assembler",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "cooldown": 3
+  },
   "Splitter": {
     "name": "Splitter",
     "items": [ "Gold", "Silver" ],

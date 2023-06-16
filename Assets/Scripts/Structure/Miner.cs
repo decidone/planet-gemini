@@ -13,20 +13,23 @@ public class Miner : Production
     protected override void Update()
     {
         base.Update();
-        var slot = inventory.SlotCheck(0);
-        if (slot.amount < maxAmount)
+        if (!isPreBuilding)
         {
-            prodTimer += Time.deltaTime;
-            if (prodTimer > cooldown)
+            var slot = inventory.SlotCheck(0);
+            if (slot.amount < maxAmount)
             {
-                inventory.Add(output, 1);
-                prodTimer = 0;
+                prodTimer += Time.deltaTime;
+                if (prodTimer > cooldown)
+                {
+                    inventory.Add(output, 1);
+                    prodTimer = 0;
+                }
             }
-        }
 
-        if (slot.amount > 0 && outObj.Count > 0 && !itemSetDelay)
-        {
-            SetItem();
+            if (slot.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+            {
+                SetItem();
+            }
         }
     }
 
@@ -81,5 +84,17 @@ public class Miner : Production
         if(slot.amount > 0)
             inventory.Sub(0, slot.amount);
         return slot;
+    }
+    public override void GetUIFunc()
+    {
+        InventoryList inventoryList = canvas.GetComponent<InventoryList>();
+
+        foreach (GameObject list in inventoryList.StructureStorageArr)
+        {
+            if (list.name == "Miner")
+            {
+                ui = list;
+            }
+        }
     }
 }
