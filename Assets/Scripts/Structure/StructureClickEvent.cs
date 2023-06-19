@@ -12,12 +12,34 @@ public class StructureClickEvent : MonoBehaviour
     Button closeBtn;
     Production prod;
 
-    void Start()
+    GameManager gameManager;
+
+    //void Start()
+    //{
+    //    closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+    //    closeBtn.onClick.AddListener(CloseUI);
+
+    //    prod = this.transform.GetComponent<Production>();
+    //}
+
+    public void StructureClick()
     {
-        closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
-        closeBtn.onClick.AddListener(CloseUI);
+        gameManager = GameManager.instance;
+        GameObject canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
+        InventoryList inventoryList = canvas.GetComponent<InventoryList>();
 
         prod = this.transform.GetComponent<Production>();
+
+        foreach (GameObject list in inventoryList.InventoryArr)
+        {
+            if (list.name == "StructureInfo")
+            {
+                structureInfoUI = list;
+                closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+                closeBtn.onClick.AddListener(CloseUI);
+            }
+        }
+        sInvenManager = canvas.GetComponent<StructureInvenManager>();
     }
 
     public void OpenUI()

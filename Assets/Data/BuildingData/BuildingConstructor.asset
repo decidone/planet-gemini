@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
-  m_Name: BuildingMerger
+  m_Name: BuildingConstructor
   m_EditorClassIdentifier: 
-  type: Factory
+  type: Constructor
   scienceName: basic
-  item: {fileID: 11400000, guid: d51119756f0b3684aaadbb5b95de7463, type: 2}
-  gameObj: {fileID: 262180438270614842, guid: 97d33a0f590a6604db6635b18ae370be, type: 3}
+  item: {fileID: 11400000, guid: 313f675245c0c7a43801065795b15fc9, type: 2}
+  gameObj: {fileID: 375400609723545137, guid: cb993bd292cd4ef419bc785b8c135e23, type: 3}
