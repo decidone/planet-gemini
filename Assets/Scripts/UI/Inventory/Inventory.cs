@@ -308,7 +308,6 @@ public class Inventory : MonoBehaviour
         itemProps.item = item;
         itemProps.amount = amount;
         dropItem.transform.position = player.transform.position;
-        dropItem.transform.position += Vector3.down * 1.5f;
     }
 
     public void ResetInven()

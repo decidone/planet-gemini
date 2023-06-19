@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Map
+public class Map : MonoBehaviour
 {
+    [HideInInspector]
     public int width;
+    [HideInInspector]
     public int height;
     public List<List<Cell>> mapData;
 
