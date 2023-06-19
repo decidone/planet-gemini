@@ -1,0 +1,86 @@
+{
+  "Miner": {
+    "name": "Miner",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "Furnace": {
+    "name": "Furnace",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "Constructor": {
+    "name": "Constructor",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "Assembler": {
+    "name": "Assembler",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "Splitter": {
+    "name": "Splitter",
+    "items": [ "Coal", "Gold", "Silver" ],
+    "amounts": [ 2, 1, 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "Merger": {
+    "name": "Merger",
+    "items": [ "Coal", "Gold" ],
+    "amounts": [ 2, 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "Belt": {
+    "name": "Belt",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "UnderBelt": {
+    "name": "UnderBelt",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "FluidTank": {
+    "name": "FluidTank",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "FireTower": {
+    "name": "FireTower",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "IceTower": {
+    "name": "IceTower",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  },
+  "BloodTower": {
+    "name": "BloodTower",
+    "items": [ "Coal" ],
+    "amounts": [ 1 ],
+    "level": 1,
+    "coreLv": 1
+  }
+}
