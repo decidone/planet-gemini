@@ -868,6 +868,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8820302177735671957, guid: 315f71dd78fda254095cd53ca95f5c07, type: 3}
   m_PrefabInstance: {fileID: 8820302178443478640}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &858931766 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 875718241, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
+  m_PrefabInstance: {fileID: 298971887}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bdcff9729832164191c6941898b9c65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &906460523
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,6 +2155,10 @@ PrefabInstance:
       propertyPath: BuildingTagsPanel
       value: 
       objectReference: {fileID: 968631564}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: map
+      value: 
+      objectReference: {fileID: 858931766}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: bManager
       value: 

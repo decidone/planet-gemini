@@ -22,6 +22,7 @@ public class Biome : MonoBehaviour
 
     [Space]
     [Header("Objects")]
+    public List<GameObject> ores;
     public List<GameObject> objects;
     
     public Tile SetTile(System.Random random, Map map, int x, int y)
@@ -144,6 +145,17 @@ public class Biome : MonoBehaviour
         }
 
         return tile;
+    }
+
+    public GameObject SetOre(System.Random random)
+    {
+        GameObject ore = null;
+        if (ores.Count > 0)
+        {
+            ore = ores[random.Next(0, ores.Count)];
+        }
+
+        return ore;
     }
 
     public GameObject SetObject(System.Random random)

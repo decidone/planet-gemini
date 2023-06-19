@@ -15,7 +15,14 @@ public class Miner : Production
         //{
         //    if (map.mapData[x][y].obj != null)
         //    {
-        //        SetResource(itemDic["Coal"]);
+        //        ObjData objData = map.mapData[x][y].obj.gameObject.GetComponent<ObjData>();
+        //        if (objData != null && objData.objType == "Ore")
+        //        {
+        //            if (itemDic.ContainsKey(objData.objName))
+        //            {
+        //                SetResource(itemDic[objData.objName]);
+        //            }
+        //        }
         //    }
         //}
     }

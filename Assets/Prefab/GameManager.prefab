@@ -103,6 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryUiCanvas: {fileID: 0}
+  map: {fileID: 0}
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -214,7 +215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c0c058d8fc0634b81aa39036b1371f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingDataList: []
   BuildingTagsPanel: {fileID: 0}
 --- !u!114 &762871311885926032
 MonoBehaviour:

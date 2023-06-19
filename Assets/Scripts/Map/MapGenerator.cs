@@ -15,6 +15,8 @@ public class MapGenerator : MonoBehaviour
     int tempY;
     int heightX;
     int heightY;
+    int oreX;
+    int oreY;
 
     [Space]
     public Tilemap tilemap;
@@ -101,6 +103,7 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 CreateTile(x, y);
+                CreateOre(x, y);
                 CreateObj(x, y);
             }
         }
@@ -140,18 +143,44 @@ public class MapGenerator : MonoBehaviour
         tilemap.SetTile(new Vector3Int(x, y, 0), tile);
     }
 
+    void CreateOre(int x, int y)
+    {
+        float oreNoise = Mathf.PerlinNoise(
+            (x - oreX) / 10f,
+            (y - oreY) / 10f
+        );
+
+        if (oreNoise > 0.9)
+        {
+            Cell cell = map.mapData[x][y];
+            Biome biome = cell.biome;
+            GameObject ore = biome.SetOre(random);
+            if (ore != null)
+            {
+                GameObject objInst = Instantiate(ore, objects.transform);
+                cell.obj = objInst;
+
+                objInst.name = string.Format("map_x{0}_y{1}", x, y);
+                objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+            }
+        }
+    }
+
     void CreateObj(int x, int y)
     {
         Cell cell = map.mapData[x][y];
         Biome biome = cell.biome;
-        GameObject obj = biome.SetObject(random);
-        if (obj != null)
+        if (cell.obj == null)
         {
-            GameObject objInst = Instantiate(obj, objects.transform);
-            cell.obj = objInst;
+            GameObject obj = biome.SetObject(random);
+            if (obj != null)
+            {
+                GameObject objInst = Instantiate(obj, objects.transform);
+                cell.obj = objInst;
 
-            objInst.name = string.Format("map_x{0}_y{1}", x, y);
-            objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+                objInst.name = string.Format("map_x{0}_y{1}", x, y);
+                objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+            }
         }
     }
 }
