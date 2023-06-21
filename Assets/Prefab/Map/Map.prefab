@@ -99,6 +99,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 668e546b9e884354fb13d76f5964cd95, type: 2}
   - {fileID: 11400000, guid: 2ff7c3ee95307d744b7c79ae5299da40, type: 2}
   - {fileID: 11400000, guid: 4af4f58b6b7b23a4597d2cdc78d27111, type: 2}
+  ores: []
   objects: []
 --- !u!1 &2480601897858781117
 GameObject:
@@ -199,6 +200,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 842a27df0940c844c835cbbbf7b2911b, type: 2}
   - {fileID: 11400000, guid: 97fea4d51407bac42836a7aae7551a40, type: 2}
   - {fileID: 11400000, guid: 9cf575cd82660e641b9e3d9287ee246e, type: 2}
+  ores: []
   objects: []
 --- !u!1 &2480601898082089274
 GameObject:
@@ -299,6 +301,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b4da76c66267bbb499ac26575bc5e355, type: 2}
   - {fileID: 11400000, guid: c1f3636ea5cd0f046a9ab31f0b365e6f, type: 2}
   - {fileID: 11400000, guid: 25b0341e874d8294089760c1a5455cb4, type: 2}
+  ores: []
   objects: []
 --- !u!1 &2480601898731471735
 GameObject:
@@ -489,6 +492,13 @@ MonoBehaviour:
   bottom: []
   corner: []
   innerCorner: []
+  ores:
+  - {fileID: 1743506930803894082, guid: 7ef39cc67c69d604087c3a02b477e0f8, type: 3}
+  - {fileID: 3759995805083329859, guid: f01fd0db26d73ec41bfbf991855e54bf, type: 3}
+  - {fileID: 4600834707433014162, guid: b703144322c88f6428b518929c00d289, type: 3}
+  - {fileID: 6531262685787266718, guid: 2a4793f95d5e74549a4fc7bfb2e2e090, type: 3}
+  - {fileID: 3533856919909627195, guid: 0675707ae1702db40b15bc25469648ce, type: 3}
+  - {fileID: 2657639289822921252, guid: a98da4d62d72eaa469939a00aee9d24d, type: 3}
   objects:
   - {fileID: 5926884596008681359, guid: 88cc628080c40234eadeb1e4357f2765, type: 3}
   - {fileID: 7345338030069168500, guid: 11d1af49142c51444bc857bd5616322a, type: 3}
@@ -627,4 +637,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dd68c805f93afbb46aa2696eab88da1b, type: 2}
   - {fileID: 11400000, guid: 2fc2033348d523d48825c7f29f365c9f, type: 2}
   - {fileID: 11400000, guid: 472f2130d2a952644886964ef4e92fbc, type: 2}
+  ores: []
   objects: []

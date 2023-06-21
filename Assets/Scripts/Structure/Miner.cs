@@ -7,24 +7,26 @@ public class Miner : Production
     protected override void Start()
     {
         base.Start();
-        SetResource(itemDic["Coal"]);
-        //Map map = GameManager.instance.map;
-        //int x = Mathf.FloorToInt(this.gameObject.transform.position.x);
-        //int y = Mathf.FloorToInt(this.gameObject.transform.position.y);
-        //if (map.IsOnMap(x, y))
-        //{
-        //    if (map.mapData[x][y].obj != null)
-        //    {
-        //        ObjData objData = map.mapData[x][y].obj.gameObject.GetComponent<ObjData>();
-        //        if (objData != null && objData.objType == "Ore")
-        //        {
-        //            if (itemDic.ContainsKey(objData.objName))
-        //            {
-        //                SetResource(itemDic[objData.objName]);
-        //            }
-        //        }
-        //    }
-        //}
+        Init();
+    }
+
+    void Init()
+    {
+        Map map = GameManager.instance.map;
+        int x = Mathf.FloorToInt(this.gameObject.transform.position.x);
+        int y = Mathf.FloorToInt(this.gameObject.transform.position.y);
+        if (map.IsOnMap(x, y))
+        {
+            if (map.mapData[x][y].obj != null)
+            {
+                ObjData objData = map.mapData[x][y].obj.gameObject.GetComponent<ObjData>();
+                if (objData != null)
+                {
+                    if (objData.type == "Ore" && objData.item != null)
+                        SetResource(objData.item);
+                }
+            }
+        }
     }
 
     protected override void Update()
@@ -66,7 +68,6 @@ public class Miner : Production
 
     void SetResource(Item item)
     {
-        // ���� �ڿ��� ����
         output = item;
     }
 
