@@ -440,10 +440,6 @@ PrefabInstance:
       propertyPath: ores.Array.size
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 2480601898745360442, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
-      propertyPath: ores.Array.data[1]
-      value: 
-      objectReference: {fileID: 6531262685787266718, guid: 2a4793f95d5e74549a4fc7bfb2e2e090, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
 --- !u!114 &352262288 stripped
