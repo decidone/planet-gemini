@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: SilverBar
+  m_Name: Iron
   m_EditorClassIdentifier: 
-  name: SilverBar
-  icon: {fileID: 1060100889, guid: 7df6bf93ee5b9bb45b6d2dda87d00b3c, type: 3}
+  name: Iron
+  icon: {fileID: 1114433276, guid: 7df6bf93ee5b9bb45b6d2dda87d00b3c, type: 3}

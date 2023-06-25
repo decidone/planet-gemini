@@ -11,12 +11,8 @@ public class MapGenerator : MonoBehaviour
     public int width;
     public int height;
     public float magnification;
-    int tempX;
-    int tempY;
-    int heightX;
-    int heightY;
-    int oreX;
-    int oreY;
+    public float oreMagnification;
+    public float oreSize;
 
     [Space]
     public Tilemap tilemap;
@@ -31,6 +27,12 @@ public class MapGenerator : MonoBehaviour
     public Biome snow;
     public Biome frozen;
     List<List<Biome>> biomes;
+
+    [Space]
+    [Header("Ores")]
+    List<List<GameObject>> ores;
+    public List<GameObject> gold;
+    public List<GameObject> iron;
 
     void Start()
     {
@@ -55,6 +57,10 @@ public class MapGenerator : MonoBehaviour
             new List<Biome> { desert, desert, jungle, plain, plain, plain, snow, snow },
             new List<Biome> { desert, desert, jungle, plain, plain, plain, snow, snow },
         };
+
+        ores = new List<List<GameObject>>();
+        ores.Add(gold);
+        ores.Add(iron);
     }
 
     void Generate()
@@ -73,10 +79,19 @@ public class MapGenerator : MonoBehaviour
 
     void GenerateMap()
     {
-        tempX = random.Next(0, 1000000);
-        tempY = random.Next(0, 1000000);
-        heightX = random.Next(0, 1000000);
-        heightY = random.Next(0, 1000000);
+        SetBiome();
+        SmoothBiome();
+        CreateTile();
+        CreateOre();
+        CreateObj();
+    }
+
+    void SetBiome()
+    {
+        int tempX = random.Next(0, 1000000);
+        int tempY = random.Next(0, 1000000);
+        int heightX = random.Next(0, 1000000);
+        int heightY = random.Next(0, 1000000);
 
         for (int x = 0; x < width; x++)
         {
@@ -84,10 +99,33 @@ public class MapGenerator : MonoBehaviour
 
             for (int y = 0; y < height; y++)
             {
-                SetBiome(x, y);
+                float tempNoise = Mathf.PerlinNoise(
+                    (x - tempX) / magnification,
+                    (y - tempY) / magnification
+                );
+                tempNoise = Mathf.Clamp01(tempNoise);
+                float scaledTemp = tempNoise * biomes.Count;
+                if (scaledTemp == biomes.Count)
+                    scaledTemp = (biomes.Count - 1);
+
+                float heightNoise = Mathf.PerlinNoise(
+                    (x - heightX) / magnification,
+                    (y - heightY) / magnification
+                );
+                heightNoise = Mathf.Clamp01(heightNoise);
+                float scaledHeight = heightNoise * biomes.Count;
+                if (scaledHeight == biomes.Count)
+                    scaledHeight = (biomes.Count - 1);
+
+                Cell cell = new Cell();
+                cell.biome = biomes[Mathf.FloorToInt(scaledHeight)][Mathf.FloorToInt(scaledTemp)];
+                map.mapData[x].Add(cell);
             }
         }
+    }
 
+    void SmoothBiome()
+    {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -97,89 +135,81 @@ public class MapGenerator : MonoBehaviour
                 biome.BiomeSmoother(map, x, y);
             }
         }
+    }
 
+    void CreateTile()
+    {
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                CreateTile(x, y);
-                CreateOre(x, y);
-                CreateObj(x, y);
+                Cell cell = map.mapData[x][y];
+                Biome biome = cell.biome;
+                Tile tile = biome.SetTile(random, map, x, y);
+                cell.tile = tile;
+                tilemap.SetTile(new Vector3Int(x, y, 0), tile);
             }
         }
     }
 
-    void SetBiome(int x, int y)
+    void CreateOre()
     {
-        float tempNoise = Mathf.PerlinNoise(
-            (x - tempX) / magnification,
-            (y - tempY) / magnification
-        );
-        tempNoise = Mathf.Clamp01(tempNoise);
-        float scaledTemp = tempNoise * biomes.Count;
-        if (scaledTemp == biomes.Count)
-            scaledTemp = (biomes.Count - 1);
-
-        float heightNoise = Mathf.PerlinNoise(
-            (x - heightX) / magnification,
-            (y - heightY) / magnification
-        );
-        heightNoise = Mathf.Clamp01(heightNoise);
-        float scaledHeight = heightNoise * biomes.Count;
-        if (scaledHeight == biomes.Count)
-            scaledHeight = (biomes.Count - 1);
-
-        Cell cell = new Cell();
-        cell.biome = biomes[Mathf.FloorToInt(scaledHeight)][Mathf.FloorToInt(scaledTemp)];
-        map.mapData[x].Add(cell);
-    }
-
-    void CreateTile(int x, int y)
-    {
-        Cell cell = map.mapData[x][y];
-        Biome biome = cell.biome;
-        Tile tile = biome.SetTile(random, map, x, y);
-        cell.tile = tile;
-        tilemap.SetTile(new Vector3Int(x, y, 0), tile);
-    }
-
-    void CreateOre(int x, int y)
-    {
-        float oreNoise = Mathf.PerlinNoise(
-            (x - oreX) / 10f,
-            (y - oreY) / 10f
-        );
-
-        if (oreNoise > 0.9)
+        for (int i = 0; i < ores.Count; i++)
         {
-            Cell cell = map.mapData[x][y];
-            Biome biome = cell.biome;
-            GameObject ore = biome.SetOre(random);
-            if (ore != null)
-            {
-                GameObject objInst = Instantiate(ore, objects.transform);
-                cell.obj = objInst;
+            string genOre = ores[i][0].gameObject.GetComponent<ObjData>().item.name;
+            Debug.Log("ore gen : " + genOre);
 
-                objInst.name = string.Format("map_x{0}_y{1}", x, y);
-                objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+            int oreX = random.Next(0, 1000000);
+            int oreY = random.Next(0, 1000000);
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    float oreNoise = Mathf.PerlinNoise(
+                        (x - oreX) / oreMagnification,
+                        (y - oreY) / oreMagnification
+                    );
+
+                    if (oreNoise < oreSize)
+                    {
+                        Cell cell = map.mapData[x][y];
+                        Biome biome = cell.biome;
+                        GameObject ore = ores[i][random.Next(0, ores[i].Count)];
+                        if (cell.obj == null && ore != null)
+                        {
+                            GameObject objInst = Instantiate(ore, objects.transform);
+                            cell.obj = objInst;
+
+                            objInst.name = string.Format("map_x{0}_y{1}", x, y);
+                            objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+                        }
+                    }
+                }
             }
         }
     }
 
-    void CreateObj(int x, int y)
+    void CreateObj()
     {
-        Cell cell = map.mapData[x][y];
-        Biome biome = cell.biome;
-        if (cell.obj == null)
+        for (int x = 0; x < width; x++)
         {
-            GameObject obj = biome.SetObject(random);
-            if (obj != null)
+            for (int y = 0; y < height; y++)
             {
-                GameObject objInst = Instantiate(obj, objects.transform);
-                cell.obj = objInst;
+                Cell cell = map.mapData[x][y];
+                Biome biome = cell.biome;
+                if (cell.obj == null)
+                {
+                    GameObject obj = biome.SetObject(random);
+                    if (obj != null)
+                    {
+                        GameObject objInst = Instantiate(obj, objects.transform);
+                        cell.obj = objInst;
 
-                objInst.name = string.Format("map_x{0}_y{1}", x, y);
-                objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+                        objInst.name = string.Format("map_x{0}_y{1}", x, y);
+                        objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+                    }
+                }
             }
         }
     }

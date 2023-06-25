@@ -1,14 +1,14 @@
 {
     "Furnace":[
         {"name":"GoldBar","items":["Gold","GoldBar"],"amounts":[1,1],"cooldown":3},
-        {"name":"SilverBar","items":["Silver","SilverBar"],"amounts":[2,3],"cooldown":3}
+        {"name":"IronBar","items":["Iron","IronBar"],"amounts":[2,3],"cooldown":3}
     ],
     "Constructor":[
         {"name":"GoldBar","items":["Gold","GoldBar"],"amounts":[2,1],"cooldown":3},
-        {"name":"SilverBar","items":["Silver","SilverBar"],"amounts":[1,1],"cooldown":3}
+        {"name":"IronBar","items":["Iron","IronBar"],"amounts":[1,1],"cooldown":3}
     ],
     "Assembler":[
         {"name":"Coal","items":["Gold","GoldBar","Coal"],"amounts":[2,1,2],"cooldown":3},
-        {"name":"Gold","items":["Silver","SilverBar","Gold"],"amounts":[1,1,2],"cooldown":3}
+        {"name":"Gold","items":["Iron","IronBar","Gold"],"amounts":[1,1,2],"cooldown":3}
     ]
 }
