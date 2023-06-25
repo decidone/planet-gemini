@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class ObjData : MonoBehaviour
 {
-    public string objType;
-    public string objName;
+    public string type;
+    public Item item;
 }
