@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ItemFurnace
   m_EditorClassIdentifier: 
   name: Furnace
-  icon: {fileID: -409879194, guid: 0f116614bbcb5d44ea7fc313354b0ca1, type: 3}
+  icon: {fileID: 938026677, guid: d8113a977399f09419856ff266463f59, type: 3}

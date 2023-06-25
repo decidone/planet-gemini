@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ItemAssembler
   m_EditorClassIdentifier: 
   name: Assembler
-  icon: {fileID: -837928072, guid: 56863cafb098ab040bf03b230c0cd33b, type: 3}
+  icon: {fileID: 356485783, guid: eec59c07266b73e498a5186398b8e6ef, type: 3}

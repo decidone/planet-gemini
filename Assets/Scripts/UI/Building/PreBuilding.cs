@@ -84,7 +84,6 @@ public class PreBuilding : MonoBehaviour
                     {
                         underBelt.beltScipt.SetBuild();
                         underBelt.EnableColliders();
-                        //underBelt.beltScipt.EnableColliders();
                         underBelt.RemoveObj();
                     }
                     BuildingInfo.instance.BuildingEnd();    
@@ -144,14 +143,6 @@ public class PreBuilding : MonoBehaviour
         else
             gameObj.transform.position = this.transform.position;
 
-        //만약 건물에 사이즈가 필요한경우 위에서 아래로 변경해야할수도
-        //Vector3 bottomLeftTileCenter = new Vector3(
-        //    -numColumns * 1 / 2f + 1 / 2f,
-        //    -numRows * 1 / 2f + 1 / 2f,
-        //    0f);
-
-        //gameObj.transform.position = this.transform.position - bottomLeftTileCenter;
-
         gameObj.transform.parent = this.transform;
 
         spriteRenderer = gameObj.GetComponentInChildren<SpriteRenderer>();
@@ -179,7 +170,6 @@ public class PreBuilding : MonoBehaviour
         if(spriteRenderer)
             spriteRenderer.sprite = null;
         isSelect = false;
-        //isBuildingOk = false;
         gameObj = null;
         gameObject.SetActive(false);
     }
@@ -191,7 +181,6 @@ public class PreBuilding : MonoBehaviour
             factory.dirNum++;
             if(factory.dirNum >= factory.dirCount)
                 factory.dirNum = 0;
-            //spriteRenderer.sprite = gameObj.GetComponent<Sprite>();
         }
         else if(gameObj.TryGetComponent(out BeltGroupMgr belt))
         {

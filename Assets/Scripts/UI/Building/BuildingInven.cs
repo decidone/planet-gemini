@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,84 +7,82 @@ public class BuildingInven : MonoBehaviour
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
-    List<Building> buildingDataList;
+    private List<Building> buildingDataList;
+    public Dictionary<int, Building> buildingDic = new Dictionary<int, Building>();
+    private TempScienceDb scienceDb;
+    private Button[] buildingTagsBtn;
+    private int preBtnIndex = 0;
 
-    public Dictionary<int, Building> BuildingDic = new Dictionary<int, Building>();
+    [SerializeField]
+    private GameObject buildingTagsPanel = null;
 
-    public GameObject BuildingTagsPanel = null;
-    Button[] BuildingTagsBtn;
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
+        scienceDb = TempScienceDb.instance;
         buildingDataList = BuildingList.instance.buildingDataList;
-        BuildingTagsBtn = BuildingTagsPanel.GetComponentsInChildren<Button>();
+        buildingTagsBtn = buildingTagsPanel.GetComponentsInChildren<Button>();
 
-        for (int i = 0; i < BuildingTagsBtn.Length; i++)
+        for (int i = 0; i < buildingTagsBtn.Length; i++)
         {
             int buttonIndex = i;
-            BuildingTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
-
+            buildingTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
         }
+
         ButtonClicked(0);
     }
 
     private void ButtonClicked(int buttonIndex)
     {
-        if (buttonIndex == 0)
+        string itemType = GetItemType(buttonIndex);
+        AddDicType(itemType);
+        preBtnIndex = buttonIndex;
+    }
+
+    private string GetItemType(int buttonIndex)
+    {
+        switch (buttonIndex)
         {
-            AddDicType("Factory");
-        }
-        else if (buttonIndex == 1)
-        {
-            AddDicType("Transport");
-        }
-        else if (buttonIndex == 2)
-        {
-            AddDicType("Energy");
-        }
-        else if (buttonIndex == 3)
-        {
-            AddDicType("Tower");
-        }
-        else if (buttonIndex == 4)
-        {
-            AddDicType("Wall");
-        }
-        else if (buttonIndex == 5)
-        {
-            AddDicType("Etc");
+            case 0:
+                return "Factory";
+            case 1:
+                return "Transport";
+            case 2:
+                return "Energy";
+            case 3:
+                return "Tower";
+            case 4:
+                return "Wall";
+            case 5:
+                return "Etc";
+            default:
+                return "";
         }
     }
 
     private void AddDicType(string itemType)
     {
-        ResetDic();
-
+        buildingDic.Clear();
         int index = 0;
         for (int i = 0; i < buildingDataList.Count; i++)
-        {// 과학 등급이 저장된 파일과 연동해야됨
-            // 이후 수정하느걸로
-            if (buildingDataList[i].type == itemType)
+        {
+            for (int a = 0; a < scienceDb.scienceNameDb.Count; a++)
             {
-                if (!BuildingDic.ContainsKey(index))
+                if (scienceDb.scienceNameDb[a] == buildingDataList[i].scienceName && buildingDataList[i].type == itemType)
                 {
-                    BuildingDic[index] = buildingDataList[i];
+                    buildingDic[index] = buildingDataList[i];
                     index++;
+                    break;
                 }
             }
         }
+
         onItemChangedCallback?.Invoke();
     }
 
     public void Refresh()
     {
-        onItemChangedCallback?.Invoke();
-    }
-
-    void ResetDic()
-    {
-        BuildingDic.Clear();
+        string itemType = GetItemType(preBtnIndex);
+        AddDicType(itemType);
         onItemChangedCallback?.Invoke();
     }
 }

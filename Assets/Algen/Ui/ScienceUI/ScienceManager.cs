@@ -13,21 +13,24 @@ public class ScienceManager : MonoBehaviour
     [SerializeField]
     GameObject[] contents = null;
     [SerializeField]
-    GameObject scienceUi = null;
-    [SerializeField]
     ScrollRect scrollRect = null;
     [SerializeField]
-    GameObject infoWindow;
+    GameObject[] infoWindow;
 
     public ScienceBtn[] scienceBtns = null;
+    public GameObject scienceTreeUI;
 
     ScienceInfoData scienceInfoData;
+    protected GameManager gameManager;
+    protected ScienceBtn focusedSciBtn;  // 마우스 위치에 있는 슬롯
 
-    protected ScienceBtn focusedBtn;  // 마우스 위치에 있는 슬롯
-
+    TempScienceDb scienceDb;
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameManager.instance;
+        scienceDb = TempScienceDb.instance;
+
         contents[0].SetActive(true);
         contents[1].SetActive(false);
 
@@ -47,17 +50,27 @@ public class ScienceManager : MonoBehaviour
             ScienceBtn btn = scienceBtns[i];
 
             AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
-            AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(btn); });
+            AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(); });
         }
     }
 
     void Update()
     {
-        if (infoWindow.activeSelf)
+        if (infoWindow[0].activeSelf)
         {
             Vector3 mousePosition = Input.mousePosition;
-            infoWindow.transform.position = mousePosition;
+            infoWindow[0].transform.position = mousePosition;
         }
+        else if (infoWindow[1].activeSelf)
+        {
+            Vector3 mousePosition = Input.mousePosition;
+            infoWindow[1].transform.position = mousePosition;
+        }
+    }
+
+    void SciDbGet()
+    {
+
     }
 
     void SwContent(int index)
@@ -82,22 +95,41 @@ public class ScienceManager : MonoBehaviour
 
     void OnEnter(ScienceBtn btn)
     {
-        focusedBtn = btn;
-
-        if (focusedBtn.iconName != "")
+        focusedSciBtn = btn;
+        if (focusedSciBtn.sciName != "")
         {
             scienceInfoData = new ScienceInfoData();
-            scienceInfoData = ScienceInfoGet.instance.GetBuildingName(focusedBtn.iconName);
-            infoWindow.GetComponent<InfoWindow>().SetNeedItem(scienceInfoData);
-            infoWindow.SetActive(true);
+            scienceInfoData = ScienceInfoGet.instance.GetBuildingName(focusedSciBtn.sciName, focusedSciBtn.level);
+            
+            if (focusedSciBtn.isCore)
+            {
+                infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore);
+                infoWindow[1].SetActive(true);
+            }
+            else
+            {
+                infoWindow[0].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore);
+                infoWindow[0].SetActive(true);
+            }
         }
-
     }
 
-    void OnExit(ScienceBtn btn)
+    void OnExit()
     {
-        focusedBtn = null;
+        focusedSciBtn = null;
+        infoWindow[0].SetActive(false);
+        infoWindow[1].SetActive(false);
+    }
 
-        infoWindow.SetActive(false);
+    public void OpenUI()
+    {
+        scienceTreeUI.SetActive(true);
+        gameManager.onUIChangedCallback?.Invoke(scienceTreeUI);
+    }
+
+    public void CloseUI()
+    {
+        scienceTreeUI.SetActive(false);
+        gameManager.onUIChangedCallback?.Invoke(scienceTreeUI);
     }
 }

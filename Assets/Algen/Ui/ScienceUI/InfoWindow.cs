@@ -22,35 +22,49 @@ public class InfoWindow : MonoBehaviour
     public Inventory inventory = null;
 
     ScienceInfoData preSciInfoData;
-
+    TempScienceDb scienceDb;
     #region Singleton
     public static InfoWindow instance;
+    BuildingInven buildingInven;
 
-    void Awake()
-    {
-        if (instance != null)
-        {
-            Debug.LogWarning("More than one instance of InfoWindow found!");
-            return;
-        }
-        instance = this;
-    }
+    bool isCoreSel = false;
+    int preSciLevel = 0;
+    string preSciName = null;
+
     #endregion
-
-    public void SetNeedItem(ScienceInfoData scienceInfoData)
+    private void Start()
     {
-        needItems.Clear();
+        buildingInven = gameManager.GetComponent<BuildingInven>();
+    }
 
+    public void SetNeedItem(ScienceInfoData scienceInfoData, string name, int level ,bool isCore)
+    {
+        instance = this;
+
+        needItems.Clear();
+        isCoreSel = isCore;
+        preSciLevel = level;
+        preSciName = name;
         if (itemsList.Count == 0)
         {
             gameManager = GameManager.instance;
             itemsList = gameManager.GetComponent<ItemList>().itemList;
         }
+        if(scienceDb == null)
+            scienceDb = gameManager.GetComponent<TempScienceDb>();
 
         preSciInfoData = scienceInfoData;
 
-        nameText.text = $"{scienceInfoData.name} Lv.{scienceInfoData.level}";
-        coreLvText.text = $"Core Lv.{scienceInfoData.coreLv}";
+        nameText.text = $"{name} Lv.{level}";
+        if(coreLvText != null)
+        {
+            coreLvText.text = $"Core Lv.{scienceInfoData.coreLv}";
+
+            if (scienceInfoData.coreLv <= scienceDb.coreLevel)
+                coreLvText.color = Color.white;
+            else
+                coreLvText.color = Color.red;
+        }
 
         totalAmountsEnough = true;
 
@@ -80,9 +94,17 @@ public class InfoWindow : MonoBehaviour
                     needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
                 }
             }
-
             needItemObj[index].SetActive(isActive);
         }
+        if (totalAmountsEnough && scienceInfoData.coreLv <= scienceDb.coreLevel)
+            totalAmountsEnough = true;
+        else
+            totalAmountsEnough = false;
+    }
+
+    public void SetNeedItem()
+    {
+        SetNeedItem(preSciInfoData, name, preSciLevel, isCoreSel);
     }
 
     public void SciUpgradeEnd()
@@ -94,9 +116,31 @@ public class InfoWindow : MonoBehaviour
             if (needItem.item != null)
             {
                 inventory.Sub(needItem.item, needItem.amount);
-                SetNeedItem(preSciInfoData);
             }
         }
+        SetNeedItem();
+        if (isCoreSel)
+        {
+            if (preSciInfoData.name == "CoreLv.2")
+            {
+                scienceDb.coreLevel = 2;
+            }
+            else if (preSciInfoData.name == "CoreLv.3")
+            {
+                scienceDb.coreLevel = 3;
+            }
+            else if (preSciInfoData.name == "CoreLv.4")
+            {
+                scienceDb.coreLevel = 4;
+            }
+            else if (preSciInfoData.name == "CoreLv.5")
+            {
+                scienceDb.coreLevel = 5;
+            }
+        }
+        else
+            scienceDb.SaveSciDb(preSciInfoData.name);
+        buildingInven.Refresh();
     }
 }
 

@@ -15,7 +15,9 @@ public class GameManager : MonoBehaviour
     RecipeManager rManager;
     [SerializeField]
     SplitterFilterManager sManager;
-    
+    [SerializeField]
+    ScienceManager sTreeManager;
+
     bool debug;
     DragSlot dragSlot;
     List<GameObject> openedUI;
@@ -151,6 +153,9 @@ public class GameManager : MonoBehaviour
                     case "SplitterMenu":
                         solidFacClickEvent.CloseUI();
                         break;
+                    case "ScienceTree":
+                        sTreeManager.CloseUI();
+                        break;
                     default:
                         break;
                 }
@@ -177,6 +182,17 @@ public class GameManager : MonoBehaviour
             else
             {
                 bManager.CloseUI();
+            }
+        }
+        else if (Input.GetButtonDown("ScienceTree"))
+        {
+            if (!sTreeManager.scienceTreeUI.activeSelf)
+            {
+                sTreeManager.OpenUI();
+            }
+            else
+            {
+                sTreeManager.CloseUI();
             }
         }
     }

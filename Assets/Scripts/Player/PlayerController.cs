@@ -7,12 +7,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     Inventory inventory;
 
-    //테스트용
-
-    public GameObject buildingInfoObj = null;
-
-    //테스트용
-
     List<GameObject> items = new List<GameObject>();
 
     void Update()
@@ -79,12 +73,13 @@ public class PlayerController : MonoBehaviour
                     items.Remove(item);
                     Destroy(item);
 
-                    //테스트용
-
-                    if(buildingInfoObj != null && buildingInfoObj.activeSelf == true)
+                    if(BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
                         BuildingInfo.instance.SetItemSlot();
+                    if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
+                    {
+                        InfoWindow.instance.SetNeedItem();
 
-                    //테스트용
+                    }
 
                     break;
                 }

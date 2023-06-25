@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: BuildingFluidTank
   m_EditorClassIdentifier: 
   type: Factory
-  scienceName: basic
+  scienceName: FluidTank
   item: {fileID: 11400000, guid: 52197354780bf2e4e88183bfc40ca398, type: 2}
   gameObj: {fileID: 3998782486791640873, guid: 40ca4ac413692e741b25f31e366b882f, type: 3}
-  numRows: 2
-  numColumns: 2
