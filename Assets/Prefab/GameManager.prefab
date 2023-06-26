@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingDataList:
   - {fileID: 11400000, guid: 693f1580a1ede6a47a9cf387d3f93626, type: 2}
+  - {fileID: 11400000, guid: 78dd487befa84ed468fab2484596cfe2, type: 2}
   - {fileID: 11400000, guid: 4b20ab3bce573494694880b10697e05e, type: 2}
   - {fileID: 11400000, guid: 1f1ecca9e619acb498d909b4c0c1f0b0, type: 2}
   - {fileID: 11400000, guid: e07253f443b5b3e49b409934a95799fb, type: 2}
@@ -259,7 +260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48473663dbf9a8941958b0db0c2cecf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scienceNameDb: []
+  coreLevel: 1
 --- !u!1 &7525422398918600961
 GameObject:
   m_ObjectHideFlags: 0

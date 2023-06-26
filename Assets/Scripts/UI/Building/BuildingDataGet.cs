@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BuildingDataGet : MonoBehaviour
 {
-    Dictionary<string, BuildingData> buildingDataDic;
+    Dictionary<string, Dictionary<int, BuildingData>> buildingDataDic;
     BuildingData buildingData;
 
     #region Singleton
@@ -20,19 +20,28 @@ public class BuildingDataGet : MonoBehaviour
         }
 
         instance = this;
-        buildingDataDic = new Dictionary<string, BuildingData>();
+        buildingDataDic = new Dictionary<string, Dictionary<int, BuildingData>>();
     }
     #endregion
 
     void Start()
     {
         string json = File.ReadAllText("Assets/Data/BuildingList.json");
-        buildingDataDic = JsonConvert.DeserializeObject<Dictionary<string, BuildingData>>(json);
+        buildingDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, BuildingData>>>(json);
     }
 
-    public BuildingData GetBuildingName(string str)
+    public BuildingData GetBuildingName(string str, int level)
     {
-        buildingData = buildingDataDic[str];
-        return buildingData;
+        if (buildingDataDic.ContainsKey(str))
+        {
+            Dictionary<int, BuildingData> innerDictionary = buildingDataDic[str];
+            if (innerDictionary.ContainsKey(level))
+            {
+                return innerDictionary[level];
+            }
+        }
+
+        // 찾을 수 없는 경우 또는 예외 처리를 원하는 경우에 대한 기본값 반환
+        return null;
     }
 }

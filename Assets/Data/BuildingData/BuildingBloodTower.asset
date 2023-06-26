@@ -16,3 +16,4 @@ MonoBehaviour:
   scienceName: BloodTower
   item: {fileID: 11400000, guid: 767f0066598cd5b4c8260cd8ca5e2b1d, type: 2}
   gameObj: {fileID: 1886033591091936625, guid: b905a48784adc434a9301f9e7fc4ca96, type: 3}
+  level: 1

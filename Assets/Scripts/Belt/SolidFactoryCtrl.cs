@@ -24,8 +24,8 @@ public class SolidFactoryCtrl : Structure
     private void Awake()
     {
         box2D = GetComponent<BoxCollider2D>();
-        hp = solidFactoryData.MaxHp;
-        hpBar.fillAmount = hp / solidFactoryData.MaxHp;
+        hp = solidFactoryData.MaxHp[level];
+        hpBar.fillAmount = hp / solidFactoryData.MaxHp[level];
         repairBar.fillAmount = 0;
 
         itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
@@ -170,7 +170,7 @@ public class SolidFactoryCtrl : Structure
                 isPreBuilding = false;
                 repairGauge = 0.0f;
                 repairBar.enabled = false;
-                if (hp < solidFactoryData.MaxHp)
+                if (hp < solidFactoryData.MaxHp[level])
                 {
                     unitCanvas.SetActive(true);
                     hpBar.enabled = true;
@@ -204,11 +204,11 @@ public class SolidFactoryCtrl : Structure
         //}
         //else
         //{
-        hp = solidFactoryData.MaxHp;
+        hp = solidFactoryData.MaxHp[level];
         unitCanvas.SetActive(false);
         //}
 
-        hpBar.fillAmount = hp / solidFactoryData.MaxHp;
+        hpBar.fillAmount = hp / solidFactoryData.MaxHp[level];
 
         repairBar.enabled = false;
         repairGauge = 0.0f;
@@ -234,7 +234,7 @@ public class SolidFactoryCtrl : Structure
             return;
 
         hp -= damage;
-        hpBar.fillAmount = hp / solidFactoryData.MaxHp;
+        hpBar.fillAmount = hp / solidFactoryData.MaxHp[level];
 
         if (hp <= 0f)
         {
@@ -244,25 +244,25 @@ public class SolidFactoryCtrl : Structure
     }
     public override void HealFunc(float heal)
     {
-        if (hp == solidFactoryData.MaxHp)
+        if (hp == solidFactoryData.MaxHp[level])
         {
             return;
         }
-        else if (hp + heal > solidFactoryData.MaxHp)
+        else if (hp + heal > solidFactoryData.MaxHp[level])
         {
-            hp = solidFactoryData.MaxHp;
+            hp = solidFactoryData.MaxHp[level];
             if (!isRepair)
                 unitCanvas.SetActive(false);
         }
         else
             hp += heal;
 
-        hpBar.fillAmount = hp / solidFactoryData.MaxHp;
+        hpBar.fillAmount = hp / solidFactoryData.MaxHp[level];
     }
 
     public override void RepairSet(bool repair)
     {
-        hp = solidFactoryData.MaxHp;
+        hp = solidFactoryData.MaxHp[level];
         isRepair = repair;
         //repairBar.enabled = repair;
     }

@@ -8,16 +8,16 @@ public class SolidFactoryData : ScriptableObject
     public string FactoryName { get { return factoryName; } }
 
     [SerializeField]
-    private int maxHp;//체력
-    public int MaxHp { get { return maxHp; } }
+    private int[] maxHp;//체력
+    public int[] MaxHp { get { return maxHp; } }
 
     [SerializeField]
     private int fullItemNum;
     public int FullItemNum { get { return fullItemNum; } }
 
     [SerializeField]
-    private float sendSpeed;
-    public float SendSpeed { get { return sendSpeed; } }
+    private float[] sendSpeed;
+    public float[] SendSpeed { get { return sendSpeed; } }
 
     [SerializeField]
     private float sendDelay;

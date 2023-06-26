@@ -32,6 +32,8 @@ public class TowerAi : MonoBehaviour
     [HideInInspector]
     public bool isRuin = false;
 
+    public int level = 0;
+
     // Repair ฐüทร
     //[HideInInspector]
     public bool isRepair = false;

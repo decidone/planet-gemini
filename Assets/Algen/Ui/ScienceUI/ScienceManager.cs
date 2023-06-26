@@ -68,9 +68,23 @@ public class ScienceManager : MonoBehaviour
         }
     }
 
-    void SciDbGet()
+    void SciDbGet(int index)
     {
+        ScienceBtn[] btns = contents[index].GetComponentsInChildren<ScienceBtn>();
+        for (int i = 0; i < btns.Length; i++)
+        {
+            ScienceBtn btn = btns[i];
 
+            if (scienceDb.scienceNameDb.TryGetValue(btn.sciName, out List<int> levels))
+            {
+                bool sciNameFound = levels.Contains(btn.level);
+
+                if (sciNameFound)
+                {
+                    btn.LockUiActiveFalse();
+                }
+            }
+        }
     }
 
     void SwContent(int index)
@@ -80,6 +94,7 @@ public class ScienceManager : MonoBehaviour
         for (int i = 0; i < contents.Length; i++)
         {
             contents[i].SetActive(i == index);
+            SciDbGet(index);
         }
     }
 

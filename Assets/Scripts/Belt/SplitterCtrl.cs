@@ -638,7 +638,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         while (spawnItem != null && spawnItem.transform.position != targetPos)
         {
             var elapsed = Time.time - startTime;
-            var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed));
+            var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed[level]));
             spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
 
             //sprite.color = new Color(1f, 1f, 1f, t);

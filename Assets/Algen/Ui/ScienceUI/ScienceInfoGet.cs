@@ -5,37 +5,6 @@ using UnityEngine;
 
 public class ScienceInfoGet : MonoBehaviour
 {
-    //Dictionary<string, ScienceInfoData> scienceInfoDataDic;
-    //ScienceInfoData scienceInfoData;
-
-    //#region Singleton
-    //public static ScienceInfoGet instance;
-
-    //void Awake()
-    //{
-    //    if (instance != null)
-    //    {
-    //        Debug.LogWarning("More than one instance of recipeList found!");
-    //        return;
-    //    }
-
-    //    instance = this;
-    //    scienceInfoDataDic = new Dictionary<string, ScienceInfoData>();
-    //}
-    //#endregion
-
-    //void Start()
-    //{
-    //    string json = File.ReadAllText("Assets/Data/ScienceInfo.json");
-    //    scienceInfoDataDic = JsonConvert.DeserializeObject<Dictionary<string, ScienceInfoData>>(json);
-    //}
-
-    //public ScienceInfoData GetBuildingName(string str)
-    //{
-    //    scienceInfoData = scienceInfoDataDic[str];
-    //    return scienceInfoData;
-    //}
-
     Dictionary<string, Dictionary<int, ScienceInfoData>> scienceInfoDataDic;
     ScienceInfoData scienceInfoData;
 
@@ -57,7 +26,7 @@ public class ScienceInfoGet : MonoBehaviour
 
     void Start()
     {
-        string json = File.ReadAllText("Assets/Data/test.json");
+        string json = File.ReadAllText("Assets/Data/ScienceInfo.json");
         scienceInfoDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, ScienceInfoData>>>(json);
     }
 

@@ -1,114 +1,288 @@
 {
-    "CoreLv.2": {
-      "name": "CoreLv.2",
+  "Core": {
+    "1": {
       "items": [ "Coal", "Gold", "Silver" ],
       "amounts": [ 1, 1, 1 ],
-      "level": 1,
       "coreLv": 1
     },
-    "CoreLv.3": {
-      "name": "CoreLv.3",
+    "2": {
       "items": [ "Coal", "Gold", "Silver", "GoldBar" ],
       "amounts": [ 1, 1, 1, 1 ],
-      "level": 1,
       "coreLv": 2
     },
-    "CoreLv.4": {
-      "name": "CoreLv.4",
+    "3": {
       "items": [ "Coal", "Gold", "Silver", "GoldBar", "SilverBar" ],
       "amounts": [ 1, 1, 1, 1, 1 ],
-      "level": 1,
       "coreLv": 3
     },
-    "CoreLv.5": {
-      "name": "CoreLv.5",
+    "4": {
       "items": [ "Coal", "Gold", "Silver", "GoldBar", "SilverBar", "Amethyst" ],
       "amounts": [ 1, 1, 1, 1, 1, 1 ],
-      "level": 1,
+      "coreLv": 4
+    }
+  },
+  "Miner": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
       "coreLv": 4
     },
-    "Miner": {
-      "name": "Miner",
+    "5": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
-      "coreLv": 1
-    },
-    "Furnace": {
-      "name": "Furnace",
+      "coreLv": 5
+    }
+  },
+  "Furnace": {
+    "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
       "coreLv": 1
     },
-    "Constructor": {
-      "name": "Constructor",
+    "2": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
-      "coreLv": 1
+      "coreLv": 2
     },
-    "Assembler": {
-      "name": "Assembler",
+    "3": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
+      "coreLv": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 4
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
+    }
+  },
+  "Constructor": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
       "coreLv": 1
     },
-    "Splitter": {
-      "name": "Splitter",
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 4
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
+    }
+  },
+  "Assembler": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 4
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
+    }
+  },
+  "Splitter": {
+    "1": {
       "items": [ "Coal", "Gold", "Silver" ],
       "amounts": [ 2, 1, 1 ],
-      "level": 1,
       "coreLv": 1
     },
-    "Merger": {
-      "name": "Merger",
+    "2": {
+      "items": [ "Coal", "Gold", "Silver" ],
+      "amounts": [ 2, 1, 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal", "Gold", "Silver" ],
+      "amounts": [ 2, 1, 1 ],
+      "coreLv": 3
+    },
+    "4": {
+      "items": [ "Coal", "Gold", "Silver" ],
+      "amounts": [ 2, 1, 1 ],
+      "coreLv": 4
+    },
+    "5": {
+      "items": [ "Coal", "Gold", "Silver" ],
+      "amounts": [ 2, 1, 1 ],
+      "coreLv": 5
+    }
+  },
+  "Merger": {
+    "1": {
       "items": [ "Coal", "Gold" ],
       "amounts": [ 2, 1 ],
-      "level": 1,
       "coreLv": 1
     },
-    "Belt": {
-      "name": "Belt",
+    "2": {
+      "items": [ "Coal", "Gold" ],
+      "amounts": [ 2, 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal", "Gold" ],
+      "amounts": [ 2, 1 ],
+      "coreLv": 3
+    },
+    "4": {
+      "items": [ "Coal", "Gold" ],
+      "amounts": [ 2, 1 ],
+      "coreLv": 4
+    },
+    "5": {
+      "items": [ "Coal", "Gold" ],
+      "amounts": [ 2, 1 ],
+      "coreLv": 5
+    }
+  },
+  "Belt": {
+    "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
       "coreLv": 1
     },
-    "UnderBelt": {
-      "name": "UnderBelt",
+    "2": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 4
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
+    }
+  },
+  "UnderBelt": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
       "coreLv": 1
     },
-    "FluidTank": {
-      "name": "FluidTank",
+    "2": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 4
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
+    }
+  },
+  "FluidTank": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
       "coreLv": 1
     },
-    "FireTower": {
-      "name": "FireTower",
+    "2": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
-      "coreLv": 1
+      "coreLv": 2
     },
-    "IceTower": {
-      "name": "IceTower",
+    "3": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
-      "coreLv": 1
+      "coreLv": 3
     },
-    "BloodTower": {
-      "name": "BloodTower",
+    "4": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "level": 1,
+      "coreLv": 4
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
+    }
+  },
+  "FireTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    }
+  },
+  "IceTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    }
+  },
+  "BloodTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
       "coreLv": 1
     }
   }
+}

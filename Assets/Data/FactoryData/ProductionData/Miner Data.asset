@@ -13,9 +13,14 @@ MonoBehaviour:
   m_Name: Miner Data
   m_EditorClassIdentifier: 
   factoryName: Miner
-  maxHp: 50
+  maxHp: 320000003c00000046000000500000005a000000
   fullItemNum: 99
-  sendSpeed: 1.5
+  sendSpeed:
+  - 2
+  - 1.7
+  - 1.5
+  - 1.2
+  - 1
   sendDelay: 0.5
   maxBuildingGauge: 10
   maxRepairGauge: 10

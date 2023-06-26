@@ -5,7 +5,9 @@ using UnityEngine;
 public class TempScienceDb : MonoBehaviour
 {
     public static TempScienceDb instance;
-    public List<string> scienceNameDb = new List<string>();
+    public Dictionary<string, List<int>> scienceNameDb = new Dictionary<string, List<int>>();
+
+    //public List<string> scienceNameDb = new List<string>();
     public int coreLevel = 1;
 
     private void Awake()
@@ -18,8 +20,30 @@ public class TempScienceDb : MonoBehaviour
         instance = this;
     }
 
-    public void SaveSciDb(string sciName)
+    public void SaveSciDb(string sciName, int sciLv)
     {
-        scienceNameDb.Add(sciName);
+        if (scienceNameDb.ContainsKey(sciName))
+        {
+            if (!IsLevelExists(sciName, sciLv))
+            {            
+                scienceNameDb[sciName].Add(sciLv);
+            }
+        }
+        else
+        {
+            scienceNameDb.Add(sciName, new List<int>());
+            scienceNameDb[sciName].Add(sciLv);
+        }
+    }
+
+    public bool IsLevelExists(string sciName, int sciLv)
+    {
+        if (scienceNameDb.ContainsKey(sciName))
+        {
+            List<int> levels = scienceNameDb[sciName];
+            return levels.Contains(sciLv);
+        }
+
+        return false;
     }
 }
