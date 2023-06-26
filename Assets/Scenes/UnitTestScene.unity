@@ -689,7 +689,7 @@ GameObject:
   - component: {fileID: 545919525}
   - component: {fileID: 545919524}
   m_Layer: 0
-  m_Name: Silver
+  m_Name: Iron
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1008,7 +1008,7 @@ GameObject:
   - component: {fileID: 957873729}
   - component: {fileID: 957873728}
   m_Layer: 0
-  m_Name: SilverBar
+  m_Name: IronBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
