@@ -16,3 +16,4 @@ MonoBehaviour:
   scienceName: Constructor
   item: {fileID: 11400000, guid: 313f675245c0c7a43801065795b15fc9, type: 2}
   gameObj: {fileID: 375400609723545137, guid: cb993bd292cd4ef419bc785b8c135e23, type: 3}
+  level: 1

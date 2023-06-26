@@ -67,11 +67,15 @@ public class BuildingInven : MonoBehaviour
         {
             for (int a = 0; a < scienceDb.scienceNameDb.Count; a++)
             {
-                if (scienceDb.scienceNameDb[a] == buildingDataList[i].scienceName && buildingDataList[i].type == itemType)
+                if (scienceDb.scienceNameDb.ContainsKey(buildingDataList[i].scienceName) && buildingDataList[i].type == itemType)
                 {
-                    buildingDic[index] = buildingDataList[i];
-                    index++;
-                    break;
+                    List<int> values;
+                    if (scienceDb.scienceNameDb.TryGetValue(buildingDataList[i].scienceName, out values) && values.Contains(buildingDataList[i].level))
+                    {
+                        buildingDic[index] = buildingDataList[i];
+                        index++;
+                        break;
+                    }
                 }
             }
         }

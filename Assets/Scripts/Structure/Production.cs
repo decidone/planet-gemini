@@ -63,8 +63,8 @@ public abstract class Production : Structure
         inventory = this.GetComponent<Inventory>();
 
         box2D = GetComponent<BoxCollider2D>();
-        hp = productionData.MaxHp;
-        hpBar.fillAmount = hp / productionData.MaxHp;
+        hp = productionData.MaxHp[level];
+        hpBar.fillAmount = hp / productionData.MaxHp[level];
         repairBar.fillAmount = 0;
 
         itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
@@ -347,7 +347,7 @@ public abstract class Production : Structure
         while (spawnItem != null && spawnItem.transform.position != targetPos)
         {
             var elapsed = Time.time - startTime;
-            var t = Mathf.Clamp01(elapsed / (distance / productionData.SendSpeed));
+            var t = Mathf.Clamp01(elapsed / (distance / productionData.SendSpeed[level]));
             spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
 
             yield return null;
@@ -419,7 +419,7 @@ public abstract class Production : Structure
                 isPreBuilding = false;
                 repairGauge = 0.0f;
                 repairBar.enabled = false;
-                if (hp < productionData.MaxHp)
+                if (hp < productionData.MaxHp[level])
                 {
                     unitCanvas.SetActive(true);
                     hpBar.enabled = true;
@@ -445,10 +445,10 @@ public abstract class Production : Structure
     {
         hpBar.enabled = true;
 
-        hp = productionData.MaxHp;
+        hp = productionData.MaxHp[level];
         unitCanvas.SetActive(false);
 
-        hpBar.fillAmount = hp / productionData.MaxHp;
+        hpBar.fillAmount = hp / productionData.MaxHp[level];
 
         repairBar.enabled = false;
         repairGauge = 0.0f;
@@ -474,7 +474,7 @@ public abstract class Production : Structure
             return;
 
         hp -= damage;
-        hpBar.fillAmount = hp / productionData.MaxHp;
+        hpBar.fillAmount = hp / productionData.MaxHp[level];
 
         if (hp <= 0f)
         {
@@ -484,25 +484,25 @@ public abstract class Production : Structure
     }
     public override void HealFunc(float heal)
     {
-        if (hp == productionData.MaxHp)
+        if (hp == productionData.MaxHp[level])
         {
             return;
         }
-        else if (hp + heal > productionData.MaxHp)
+        else if (hp + heal > productionData.MaxHp[level])
         {
-            hp = productionData.MaxHp;
+            hp = productionData.MaxHp[level];
             if (!isRepair)
                 unitCanvas.SetActive(false);
         }
         else
             hp += heal;
 
-        hpBar.fillAmount = hp / productionData.MaxHp;
+        hpBar.fillAmount = hp / productionData.MaxHp[level];
     }
 
     public override void RepairSet(bool repair)
     {
-        hp = productionData.MaxHp;
+        hp = productionData.MaxHp[level];
         isRepair = repair;
     }
 

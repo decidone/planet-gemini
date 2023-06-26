@@ -104,8 +104,10 @@ public class InfoWindow : MonoBehaviour
 
     public void SetNeedItem()
     {
-        SetNeedItem(preSciInfoData, name, preSciLevel, isCoreSel);
+        SetNeedItem(preSciInfoData, preSciName, preSciLevel, isCoreSel);
     }
+
+
 
     public void SciUpgradeEnd()
     {
@@ -119,28 +121,14 @@ public class InfoWindow : MonoBehaviour
             }
         }
         SetNeedItem();
-        if (isCoreSel)
+
+        if(preSciName == "Core")
         {
-            if (preSciInfoData.name == "CoreLv.2")
-            {
-                scienceDb.coreLevel = 2;
-            }
-            else if (preSciInfoData.name == "CoreLv.3")
-            {
-                scienceDb.coreLevel = 3;
-            }
-            else if (preSciInfoData.name == "CoreLv.4")
-            {
-                scienceDb.coreLevel = 4;
-            }
-            else if (preSciInfoData.name == "CoreLv.5")
-            {
-                scienceDb.coreLevel = 5;
-            }
+            scienceDb.coreLevel = preSciLevel + 1;
         }
-        else
-            scienceDb.SaveSciDb(preSciInfoData.name);
+        scienceDb.SaveSciDb(preSciName, preSciLevel);
         buildingInven.Refresh();
+        totalAmountsEnough = false;
     }
 }
 

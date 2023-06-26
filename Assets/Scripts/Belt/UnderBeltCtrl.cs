@@ -18,7 +18,8 @@ public class UnderBeltCtrl : MonoBehaviour
     Vector2[] checkPos = new Vector2[4];
 
     public int dirNum = 0;
-
+    GetUnderBeltCtrl getUnderBeltCtrl;
+    SendUnderBeltCtrl sendUnderBeltCtrl;
     // Update is called once per frame
     void Update()
     {// 기본적으로 send벨트이고 send벨트의 반대 방향으로 10 체크해서 다른 send벨트가 있을 때 get벨트로 변경
@@ -51,8 +52,8 @@ public class UnderBeltCtrl : MonoBehaviour
             //&& !factoryCollider.GetComponent<FactoryCtrl>().isPreBuilding)
             {
                 //FactoryCtrl factoryCtrl = factoryCollider.GetComponent<FactoryCtrl>();
-                GetUnderBeltCtrl getUnderBeltCtrl = factoryCollider.GetComponent<GetUnderBeltCtrl>();
-                SendUnderBeltCtrl sendUnderBeltCtrl = factoryCollider.GetComponent<SendUnderBeltCtrl>();
+                getUnderBeltCtrl = factoryCollider.GetComponent<GetUnderBeltCtrl>();
+                sendUnderBeltCtrl = factoryCollider.GetComponent<SendUnderBeltCtrl>();
 
                 if (getUnderBeltCtrl != null && getUnderBeltCtrl.dirNum == dirNum)
                 {
@@ -77,6 +78,12 @@ public class UnderBeltCtrl : MonoBehaviour
         {
             SetSendUnderBelt();
         }
+    }
+
+    public void SetLevel(int level)
+    {
+        getUnderBeltCtrl.level = level;
+        sendUnderBeltCtrl.level = level;
     }
 
     public void SetGetUnderBelt()

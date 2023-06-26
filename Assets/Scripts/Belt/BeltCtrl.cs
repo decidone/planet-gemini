@@ -219,7 +219,7 @@ public class BeltCtrl : SolidFactoryCtrl
     {
         for (int i = 0; i < itemObjList.Count; i++)
         {
-            itemObjList[i].transform.position = Vector3.MoveTowards(itemObjList[i].transform.position, nextPos[i], Time.deltaTime * solidFactoryData.SendSpeed);
+            itemObjList[i].transform.position = Vector3.MoveTowards(itemObjList[i].transform.position, nextPos[i], Time.deltaTime * solidFactoryData.SendSpeed[level]);
         }
 
         if (Vector2.Distance(itemObjList[0].transform.position, nextPos[0]) < 0.001f)

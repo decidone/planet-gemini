@@ -47,7 +47,7 @@ public class BuildingInfo : MonoBehaviour
         if (totalAmountsEnough && selectBuildingData != null)
         {
             preBuilding.SetActive(true);
-            PreBuilding.instance.SetImage(selectBuilding.gameObj);
+            PreBuilding.instance.SetImage(selectBuilding.gameObj, selectBuilding.level);
         }
     }
 

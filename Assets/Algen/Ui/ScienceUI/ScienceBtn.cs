@@ -25,25 +25,32 @@ public class ScienceBtn : MonoBehaviour
             scBtn.onClick.AddListener(ButtonFunc);
     }
 
-    //Update is called once per frame
-    void Update()
-    {
-
-    }
-
     void ButtonFunc()
     {
-        if (InfoWindow.instance != null)
+        if (InfoWindow.instance != null && sciName != "")
         { 
             if (isLock == true && InfoWindow.instance.enabled)
             {
                 if (InfoWindow.instance.totalAmountsEnough)
                 {
-                    lockUI.SetActive(false);
                     InfoWindow.instance.SciUpgradeEnd();
-                    isLock = false;
+                    LockUiActiveFalse();          
                 }
             }
         }
+    }
+
+    public void LockUiActiveFalse()
+    {
+        if(lockUI == null)
+        {
+            if (isCore)
+                lockUI = this.transform.parent.Find("LockUi").gameObject;
+            else
+                lockUI = this.transform.Find("LockUi").gameObject;
+        }
+
+        lockUI.SetActive(false);
+        isLock = false;
     }
 }

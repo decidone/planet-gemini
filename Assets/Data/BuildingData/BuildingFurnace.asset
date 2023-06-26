@@ -16,3 +16,4 @@ MonoBehaviour:
   scienceName: Furnace
   item: {fileID: 11400000, guid: 33a54e32c67906f4096cbc3a2b3a83f5, type: 2}
   gameObj: {fileID: 8759284699072132164, guid: fe068c47125c8744eb4500be202a2006, type: 3}
+  level: 1

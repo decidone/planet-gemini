@@ -1,74 +1,326 @@
 {
   "Miner": {
-    "name": "Miner",
-    "items": [ "Coal" ],
-    "amounts": [ 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "Furnace": {
-    "name": "Furnace",
-    "items": [ "Coal" ],
-    "amounts": [ 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "Constructor": {
-    "name": "Constructor",
-    "items": [ "Coal" ],
-    "amounts": [ 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "Assembler": {
-    "name": "Assembler",
-    "items": [ "Coal" ],
-    "amounts": [ 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "Splitter": {
-    "name": "Splitter",
-    "items": [ "Gold", "Silver" ],
-    "amounts": [ 2, 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "Merger": {
-    "name": "Merger",
-    "items": [ "Gold", "Silver" ],
-    "amounts": [ 1, 2 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "Belt": {
-    "name": "Belt",
-    "items": [ "Coal" ],
-    "amounts": [ 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "UnderBelt": {
-    "name": "UnderBelt",
-    "items": [ "Coal" ],
-    "amounts": [ 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "FluidTank": {
-    "name": "FluidTank",
-    "items": [ "Coal" ],
-    "amounts": [ 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "FireTower": {
-    "name": "FireTower",
-    "items": [ "Gold", "GoldBar" ],
-    "amounts": [ 2, 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "IceTower": {
-    "name": "IceTower",
-    "items": [ "Silver", "SilverBar" ],
-    "amounts": [ 2, 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   },
   "BloodTower": {
-    "name": "BloodTower",
-    "items": [ "Gold", "GoldBar", "Silver", "SilverBar" ],
-    "amounts": [ 2, 1, 2, 1 ],
-    "cooldown": 3
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    },
+    "4": {
+      "items": [ "Coal" ],
+      "amounts": [ 4 ],
+      "cooldown": 3
+    },
+    "5": {
+      "items": [ "Coal" ],
+      "amounts": [ 5 ],
+      "cooldown": 3
+    }
   }
 }

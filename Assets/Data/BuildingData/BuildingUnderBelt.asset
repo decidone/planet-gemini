@@ -16,3 +16,4 @@ MonoBehaviour:
   scienceName: UnderBelt
   item: {fileID: 11400000, guid: 374fa9089cb1cae428bb1eae3d06c339, type: 2}
   gameObj: {fileID: 5450028805572291566, guid: 3aa577b5efa670948934d124df78d958, type: 3}
+  level: 1

@@ -96,7 +96,7 @@ public class PreBuilding : MonoBehaviour
         }
     }
 
-    public void SetImage(GameObject game)
+    public void SetImage(GameObject game, int level)
     {
         if (this.transform.childCount > 0)
         {
@@ -110,11 +110,13 @@ public class PreBuilding : MonoBehaviour
         {
             factory.isPreBuilding = true;
             factory.DisableColliders();
+            factory.level = level;
         }
         else if (gameObj.TryGetComponent(out TowerAi tower))
         {
             tower.isPreBuilding = true;
             tower.DisableColliders();
+            tower.level = level;
         }
         else if (gameObj.TryGetComponent(out BeltGroupMgr belt))
         {
@@ -122,11 +124,13 @@ public class PreBuilding : MonoBehaviour
             belt.SetBelt(0);
             belt.BeltList[0].isPreBuilding = true;
             belt.BeltList[0].DisableColliders();
+            belt.BeltList[0].level = level;
         }
         else if (gameObj.TryGetComponent(out UnderBeltCtrl underBelt))
         {
             underBelt.isPreBuilding = true;
             underBelt.SetSendUnderBelt();
+            underBelt.SetLevel(level);
         }
 
         Bounds objectBounds = gameObj.GetComponentInChildren<SpriteRenderer>().bounds;
