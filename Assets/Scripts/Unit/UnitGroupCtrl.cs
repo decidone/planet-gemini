@@ -58,11 +58,8 @@ public class UnitGroupCtrl : MonoBehaviour
         float totalDiameter = 1 * unitList.Count;
         float largeCircleRadius = totalDiameter / (2 * Mathf.PI);
 
-        //float sumRadii = unitList.Count * 0.5f;
-        //float delta = Mathf.Max(0f, sumRadii - largeCircleRadius);
         float delta = Mathf.Max(0f, largeCircleRadius);
 
-        //float minDiameter = (sumRadii + delta) / 2;
         float minDiameter = (delta + 0.6f) / 2;
 
         foreach (GameObject obj in unitList)

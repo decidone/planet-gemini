@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
+  m_Name: BuildingPoisonTower
+  m_EditorClassIdentifier: 
+  type: Tower
+  scienceName: PoisonTower
+  item: {fileID: 11400000, guid: b29131d9adf995843b19561299a1d8d9, type: 2}
+  gameObj: {fileID: 7592073746180229604, guid: 91f03f0c9af544b4e8334b7f1a906103, type: 3}
+  level: 1

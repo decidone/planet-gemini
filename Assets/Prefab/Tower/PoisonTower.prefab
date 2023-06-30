@@ -339,9 +339,9 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.15}
-  m_Size: {x: 1.8, y: 2.3}
-  m_Direction: 0
+  m_Offset: {x: 0, y: -0.85}
+  m_Size: {x: 1.5, y: 0.85}
+  m_Direction: 1
 --- !u!114 &4499044516474926020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -360,11 +360,14 @@ MonoBehaviour:
   animator: {fileID: 7592073746180229603}
   hpBar: {fileID: 6805535667440992685}
   hp: 200
-  isDie: 0
+  isRuin: 0
+  level: 0
   isRepair: 0
   repairBar: {fileID: 7683537340506458647}
+  repairGauge: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
+  monsterList: []
   attackFX: {fileID: 3832536798139642931, guid: fdb8544d40d9b5e4a92423109023958f, type: 3}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
 --- !u!1 &8011384680271846714
