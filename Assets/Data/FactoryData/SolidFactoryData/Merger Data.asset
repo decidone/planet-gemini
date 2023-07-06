@@ -13,13 +13,11 @@ MonoBehaviour:
   m_Name: Merger Data
   m_EditorClassIdentifier: 
   factoryName: Merger
-  maxHp: 320000003c00000046000000500000005a000000
+  maxHp: 320000003c00000046000000
   fullItemNum: 5
   sendSpeed:
   - 2
-  - 1.75
   - 1.5
-  - 1.25
   - 1
   sendDelay: 0.5
   maxBuildingGauge: 10

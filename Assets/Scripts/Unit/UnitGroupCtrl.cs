@@ -1,15 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class UnitGroupCtrl : MonoBehaviour
 {
     public List<GameObject> unitList = new List<GameObject>();
     public List<Vector3> unitVecList = new List<Vector3>();
-
-    Vector3 Groupcenter = Vector3.zero;
+    Vector3 groupCenter = Vector3.zero;
     [SerializeField]
     float radius = 0;
+
+    //Seeker seeker;
+
+    //protected Coroutine checkPathCoroutine; // 실행 중인 코루틴을 저장하는 변수
+
+    //private void Awake()
+    //{
+    //    seeker = GetComponent<Seeker>();
+    //}
 
     private void OnEnable()
     {
@@ -48,32 +57,66 @@ public class UnitGroupCtrl : MonoBehaviour
     {
         if(obj.GetComponentInParent<UnitAi>())
         {
-            unitList.Add(obj.transform.parent.gameObject);
-            obj.transform.parent.gameObject.GetComponent<UnitAi>().UnitSelImg(true);
-        }           
+            unitList.Add(obj);
+            obj.gameObject.GetComponent<UnitAi>().UnitSelImg(true);
+        }
+        CalculateGroupCenter();
     }
 
     private void TargetSetPos(Vector3 targetPos, bool isAttack)
     {
-        float totalDiameter = 1 * unitList.Count;
-        float largeCircleRadius = totalDiameter / (2 * Mathf.PI);
+        float totalDiameter = 0.7f * unitList.Count;
 
+        float largeCircleRadius = totalDiameter / (2 * Mathf.PI);
         float delta = Mathf.Max(0f, largeCircleRadius);
 
-        float minDiameter = (delta + 0.6f) / 2;
+        float minDiameter = (delta) / 2;
+        //if (checkPathCoroutine == null)
+        //    checkPathCoroutine = StartCoroutine(CheckPath(targetPos, minDiameter, isAttack));
+        //else
+        //{
+        //    StopCoroutine(checkPathCoroutine);
+        //    checkPathCoroutine = StartCoroutine(CheckPath(targetPos, minDiameter, isAttack));
+        //}
 
         foreach (GameObject obj in unitList)
         {
             obj.GetComponent<UnitAi>().MovePosSet(targetPos, minDiameter, isAttack);
         }
     }
+    //IEnumerator CheckPath(Vector3 targetPos, float minDiameter, bool isAttack)
+    //{
+    //    ABPath path = ABPath.Construct(groupCenter, targetPos, null);
+    //    seeker.CancelCurrentPathRequest();
+    //    seeker.StartPath(path);
+    //    AutoRepathPolicy autoRepath = new AutoRepathPolicy();
+    //    autoRepath.DidRecalculatePath(targetPos);
+    //    //var path = seeker.StartPath(this.transform.position, targetPos);
+
+    //    // Wait... (may take some time depending on how complex the path is)
+    //    // The rest of the game will continue to run while waiting
+    //    yield return StartCoroutine(path.WaitForPath());
+    //    // The path is calculated now
+    //    foreach (GameObject obj in unitList)
+    //    {
+    //        obj.GetComponent<UnitAi>().MovePosSet(targetPos, path.vectorPath, minDiameter, isAttack, groupCenter);
+    //    }
+    //    checkPathCoroutine = null;
+    //}
 
     private void PatrolSetPos(Vector3 patrolPos)
     {
-        for (int i = 0; i < unitList.Count; i++)
+        if(unitList.Count > 1)
         {
-            Vector3 movePosition = patrolPos + unitVecList[i];
-            unitList[i].GetComponent<UnitAi>().PatrolPosSet(movePosition);
+            for (int i = 0; i < unitList.Count; i++)
+            {
+                Vector3 movePosition = patrolPos + unitVecList[i];
+                unitList[i].GetComponent<UnitAi>().PatrolPosSet(movePosition);
+            }
+        }
+        else if (unitList.Count == 1)
+        {
+            unitList[0].GetComponent<UnitAi>().PatrolPosSet(patrolPos);
         }
     }
 
@@ -81,33 +124,40 @@ public class UnitGroupCtrl : MonoBehaviour
     {
         int count = unitList.Count;
 
-        Groupcenter = Vector3.zero;
-
-        foreach (GameObject unit in unitList)
+        if (count > 1)
         {
-            Groupcenter += unit.transform.position;
+            groupCenter = Vector3.zero;
+
+            foreach (GameObject unit in unitList)
+            {
+                groupCenter += unit.transform.position;
+            }
+
+            if (count > 0)
+            {
+                groupCenter /= count;
+            }
+
+            radius = 0;
+
+            foreach (GameObject unit in unitList)
+            {
+                float radChack = Vector3.Distance(unit.transform.position, groupCenter);
+                if (radius < radChack)
+                    radius = radChack;
+            }
+
+            unitVecList.Clear();
+
+            foreach (GameObject unit in unitList)
+            {
+                Vector3 direction = unit.transform.position - groupCenter;
+                unitVecList.Add(direction);
+            }
         }
-
-        if (count > 0)
+        else if (count == 1)
         {
-            Groupcenter /= count;
-        }
-
-        radius = 0;
-
-        foreach (GameObject unit in unitList)
-        {
-            float radChack = Vector3.Distance(unit.transform.position, Groupcenter);
-            if (radius < radChack)
-                radius = radChack;
-        }
-
-        unitVecList.Clear();
-
-        foreach (GameObject unit in unitList)
-        {
-            Vector3 direction = unit.transform.position - Groupcenter;
-            unitVecList.Add(direction);
+            groupCenter = unitList[0].transform.position;
         }
     }
 

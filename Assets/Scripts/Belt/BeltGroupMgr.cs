@@ -5,20 +5,13 @@ using UnityEngine;
 public class BeltGroupMgr : MonoBehaviour
 {
     [SerializeField]
-    GameObject BeltObj = null;
+    GameObject beltObj = null;
 
-    //public bool up = false;
-    //public bool down = false;
-    //public bool left = false;
-    //public bool right = false;
-    
-    public List<BeltCtrl> BeltList = new List<BeltCtrl>();
-    public List<ItemProps> GroupItem = new List<ItemProps>();
+    public List<BeltCtrl> beltList = new List<BeltCtrl>();
+    public List<ItemProps> groupItem = new List<ItemProps>();
 
     public GameObject nextObj = null;
     bool nextCheck = true;
-
-    Vector2 nextPos;
 
     public bool isPreBuilding = false;
 
@@ -31,32 +24,11 @@ public class BeltGroupMgr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if(up == true)
-        //{
-        //    SetBelt(0);
-        //    up = false;
-        //}
-        //else if (down == true)
-        //{
-        //    SetBelt(2);
-        //    down = false;
-        //}
-        //else if (left == true)
-        //{
-        //    SetBelt(3);
-        //    left = false;
-        //}
-        //else if (right == true)
-        //{
-        //    SetBelt(1);
-        //    right = false;
-        //}
-
         if (!isPreBuilding)
         {
             if(nextCheck == true)
             {
-                if(BeltList.Count > 0)
+                if(beltList.Count > 0)
                     nextObj = NextObjCheck();        
             }
         }
@@ -64,89 +36,19 @@ public class BeltGroupMgr : MonoBehaviour
 
     public void SetBelt(int beltDir)
     {
-        GameObject belt = Instantiate(BeltObj, this.transform.position, Quaternion.identity);
+        GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
         belt.transform.parent = this.transform;
         BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
         beltCtrl.beltGroupMgr = this.GetComponent<BeltGroupMgr>();
-        BeltList.Add(beltCtrl);
+        beltList.Add(beltCtrl);
         beltCtrl.dirNum = beltDir;
         beltCtrl.beltState = BeltState.SoloBelt;
     }
-
-    //void SetBelt(int beltDir)
-    //{
-    //    if (BeltList.Count == 0)
-    //    {
-    //        GameObject belt = Instantiate(BeltObj, this.transform.position, Quaternion.identity);
-    //        belt.transform.parent = this.transform;
-    //        BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
-    //        beltCtrl.beltGroupMgr = this.GetComponent<BeltGroupMgr>();
-    //        BeltList.Add(beltCtrl);
-    //        beltCtrl.dirNum = beltDir;
-    //        beltCtrl.beltState = BeltState.SoloBelt;
-    //    }
-    //    else
-    //    {
-    //        BeltCtrl preBeltCtrl = BeltList[BeltList.Count - 1];
-    //        CalculateNextPos(preBeltCtrl, beltDir, out Vector2 nextPos);
-
-    //        if (nextPos == Vector2.zero)
-    //        {
-    //            return;
-    //        }
-
-    //        GameObject belt = Instantiate(BeltObj, nextPos, Quaternion.identity);
-    //        belt.transform.parent = this.transform;
-    //        BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
-    //        beltCtrl.beltGroupMgr = this.GetComponent<BeltGroupMgr>();
-    //        BeltList.Add(beltCtrl);
-    //        beltCtrl.dirNum = beltDir;
-    //        beltCtrl.preBelt = preBeltCtrl;
-    //        BeltList[BeltList.Count - 2].nextBelt = beltCtrl;
-    //        BeltModelSet(preBeltCtrl, beltCtrl);
-    //    }
-    //}
-
-    //void CalculateNextPos(BeltCtrl preBeltCtrl, int beltDir, out Vector2 nextPos)
-    //{
-    //    nextPos = Vector2.zero;
-
-    //    switch (preBeltCtrl.dirNum)
-    //    {
-    //        case 0:
-    //            if (beltDir == 0 || beltDir == 1 || beltDir == 3)
-    //            {
-    //                nextPos = new Vector2(preBeltCtrl.transform.position.x, preBeltCtrl.transform.position.y + 1);
-    //            }
-    //            break;
-    //        case 1:
-    //            if (beltDir == 1 || beltDir == 0 || beltDir == 2)
-    //            {
-    //                nextPos = new Vector2(preBeltCtrl.transform.position.x + 1, preBeltCtrl.transform.position.y);
-    //            }
-    //            break;
-    //        case 2:
-    //            if (beltDir == 2 || beltDir == 1 || beltDir == 3)
-    //            {
-    //                nextPos = new Vector2(preBeltCtrl.transform.position.x, preBeltCtrl.transform.position.y - 1);
-    //            }
-    //            break;
-    //        case 3:
-    //            if (beltDir == 3 || beltDir == 0 || beltDir == 2)
-    //            {
-    //                nextPos = new Vector2(preBeltCtrl.transform.position.x - 1, preBeltCtrl.transform.position.y);
-    //            }
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //}
-
     void BeltModelSet(BeltCtrl preBelt, BeltCtrl nextBelt)
     {
-        if(preBelt == BeltList[0])
+        if(preBelt == beltList[0])
             preBelt.beltState = BeltState.StartBelt;
-        else if (preBelt != BeltList[0])        
+        else if (preBelt != beltList[0])        
             preBelt.beltState = BeltState.RepeaterBelt;
 
         nextBelt.beltState = BeltState.EndBelt;
@@ -155,11 +57,11 @@ public class BeltGroupMgr : MonoBehaviour
     public void Reconfirm()
     {
         int index = 0;
-        foreach(BeltCtrl belt in BeltList)
+        foreach(BeltCtrl belt in beltList)
         {
-            if (BeltList.Count - 1 > index)
+            if (beltList.Count - 1 > index)
             {
-                BeltModelSet(belt, BeltList[index + 1]);
+                BeltModelSet(belt, beltList[index + 1]);
                 index++;
             }
             else
@@ -171,7 +73,7 @@ public class BeltGroupMgr : MonoBehaviour
     {
         var Check = transform.up;
 
-        BeltCtrl belt = BeltList[BeltList.Count - 1].GetComponent<BeltCtrl>();
+        BeltCtrl belt = beltList[beltList.Count - 1].GetComponent<BeltCtrl>();
         if (belt.dirNum == 0)
         {
             Check = belt.transform.up;

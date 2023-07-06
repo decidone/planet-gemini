@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
+  m_Name: BuildingUnderPipe
+  m_EditorClassIdentifier: 
+  type: Transport
+  scienceName: UnderPipe
+  item: {fileID: 11400000, guid: 8a719f6949919734e8252d432c51621f, type: 2}
+  gameObj: {fileID: 2000658444983299251, guid: 214359c066b22fe43a28346c6febe3db, type: 3}
+  level: 1

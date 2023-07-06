@@ -157,6 +157,57 @@
       "coreLv": 5
     }
   },
+  "Pump": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    }
+  },
+  "Pipe": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    }
+  },
+  "UnderPipe": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    }
+  },
   "FluidTank": {
     "1": {
       "items": [ "Coal" ],

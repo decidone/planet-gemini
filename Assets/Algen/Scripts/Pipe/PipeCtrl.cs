@@ -20,24 +20,29 @@ public class PipeCtrl : FluidFactoryCtrl
     void Start()
     {
         setModel = GetComponent<SpriteRenderer>();
-        if (transform.parent.gameObject != null)
-            pipeGroupMgr = GetComponentInParent<PipeGroupMgr>();
+        //if (transform.parent.gameObject != null)
+        //    pipeGroupMgr = GetComponentInParent<PipeGroupMgr>();
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         ModelSet();
-        if (!isPreBuilding)
+        if (!removeState)
         {
-            if(isUp == false)
-                isUp = ObjCheck(transform.up);
-            if (isRight == false)
-                isRight = ObjCheck(transform.right); 
-            if (isDown == false)
-                isDown = ObjCheck(-transform.up);
-            if (isLeft == false)
-                isLeft = ObjCheck(-transform.right);
+            if (!isPreBuilding)
+            {
+                if (isUp == false)
+                    isUp = ObjCheck(transform.up);
+                if (isRight == false)
+                    isRight = ObjCheck(transform.right);
+                if (isDown == false)
+                    isDown = ObjCheck(-transform.up);
+                if (isLeft == false)
+                    isLeft = ObjCheck(-transform.right);
+            }
         }
     }
 

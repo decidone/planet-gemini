@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: FluidTank Data
   m_EditorClassIdentifier: 
   factoryName: FluidTank
+  maxHp: 320000003c00000046000000
   fullFluidNum: 300
   sendFluid: 1
   sendDelay: 0.06
+  maxBuildingGauge: 10
+  maxRepairGauge: 10

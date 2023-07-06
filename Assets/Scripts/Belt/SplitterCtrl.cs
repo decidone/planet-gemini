@@ -259,7 +259,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                 belt.itemObjList[0].transform.position = transform.position;
                 belt.isItemStop = false;
                 belt.itemObjList.RemoveAt(0);
-                belt.beltGroupMgr.GroupItem.RemoveAt(0);
+                belt.beltGroupMgr.groupItem.RemoveAt(0);
                 belt.ItemNumCheck();
             }
             Invoke("DelayGetItem", solidFactoryData.SendDelay);

@@ -110,7 +110,7 @@ RectTransform:
   - {fileID: 4991948505474292527}
   - {fileID: 6570018696396704086}
   m_Father: {fileID: 8176445444991740880}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -190,10 +190,10 @@ GameObject:
   - component: {fileID: 3559846934866174847}
   - component: {fileID: 1348046023968233562}
   - component: {fileID: 7350129897357660758}
-  - component: {fileID: 5418037601818132106}
   - component: {fileID: 2984219195707197509}
   - component: {fileID: 7765666989520418348}
-  m_Layer: 0
+  - component: {fileID: -7323413020101550112}
+  m_Layer: 7
   m_Name: Mecha-stone Golem
   m_TagString: Monster
   m_Icon: {fileID: 0}
@@ -212,7 +212,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 268942719261833433}
   - {fileID: 7234992284292435987}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -310,22 +309,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!58 &5418037601818132106
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3200930217413261185}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 10
 --- !u!114 &2984219195707197509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,6 +323,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: fe24e8a5d4564c547970d753123596f0, type: 2}
   animator: {fileID: 0}
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
   aggroTarget: {fileID: 0}
   targetList: []
   targetDist: 0
@@ -363,56 +349,36 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.07, y: 0.18}
-  m_Size: {x: 1.18, y: 2.64}
+  m_Size: {x: 1.5, y: 2.5}
   m_Direction: 0
---- !u!1 &3469827348631073494
-GameObject:
+--- !u!114 &-7323413020101550112
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 268942719261833433}
-  - component: {fileID: 1147783917910268405}
-  m_Layer: 7
-  m_Name: ClickCollider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &268942719261833433
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3469827348631073494}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8176445444991740880}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &1147783917910268405
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3469827348631073494}
+  m_GameObject: {fileID: 3200930217413261185}
   m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.03, y: 0.06}
-  m_Size: {x: 2.79, y: 3.55}
-  m_Direction: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
 --- !u!1 &9077968973470161356
 GameObject:
   m_ObjectHideFlags: 0

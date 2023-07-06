@@ -46,6 +46,9 @@ public class TowerAi : MonoBehaviour
     public bool isPreBuilding = false;
     public bool isSetBuildingOk = false;
 
+    protected float searchTimer = 0f;
+    protected float searchInterval = 1f; // 딜레이 간격 설정
+
     private void Awake()
     {
         circle2D = GetComponent<CircleCollider2D>();

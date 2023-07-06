@@ -118,6 +118,57 @@
       "cooldown": 3
     }
   },
+  "Pump": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    }
+  },
+  "Pipe": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    }
+  },
+  "UnderPipe": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    }
+  },
   "UnderBelt": {
     "1": {
       "items": [ "Coal" ],

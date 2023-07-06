@@ -14,9 +14,9 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     SpriteRenderer setModel;
 
     GameObject otherPipe = null;
-    [SerializeField]
-    GameObject connectUnderPipe = null;
-    
+
+    public GameObject connectUnderPipe = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,31 +25,36 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
+
         ModelSet();
-        if (!isPreBuilding)
+        if (!removeState)
         {
-            for (int i = 0; i < nearObj.Length; i++)
+            if (!isPreBuilding)
             {
-                if (nearObj[i] == null)
+                for (int i = 0; i < nearObj.Length; i++)
                 {
-                    if (i == 0)
-                        CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
-                    else if (i == 1)
-                        CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                    if (nearObj[i] == null)
+                    {
+                        if (i == 0)
+                            CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
+                        else if (i == 1)
+                            CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                    }
                 }
-            }
 
-            if (otherPipe != null && saveFluidNum >= fluidFactoryData.SendFluid)
-            {
-                sendDelayTimer += Time.deltaTime;
-
-                if (sendDelayTimer > fluidFactoryData.SendDelay)
+                if (otherPipe != null && saveFluidNum >= fluidFactoryData.SendFluid)
                 {
-                    SendFluid();
-                    GetFluid();
-                    sendDelayTimer = 0;
+                    sendDelayTimer += Time.deltaTime;
+
+                    if (sendDelayTimer > fluidFactoryData.SendDelay)
+                    {
+                        SendFluid();
+                        GetFluid();
+                        sendDelayTimer = 0;
+                    }
                 }
             }
         }
@@ -132,7 +137,25 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                     connectUnderPipe = obj;
                 }
             }
+            StartCoroutine("CntOthObjCheck", othUnderPipe);
         }
+    }
+
+    IEnumerator CntOthObjCheck(UnderPipeCtrl othUnderPipe)
+    {
+        yield return null;
+
+        if (othUnderPipe.connectUnderPipe != null && othUnderPipe.connectUnderPipe != this.gameObject)
+        {
+            othUnderPipe.connectUnderPipe.GetComponent<UnderPipeCtrl>().DisCntObj();
+            othUnderPipe.DisCntObj();
+        }
+    }
+
+    public void DisCntObj()
+    {
+        connectUnderPipe = null;
+        nearObj = new GameObject[2];
     }
 
     void SetOutObj(GameObject obj)

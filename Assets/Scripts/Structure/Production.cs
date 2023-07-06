@@ -234,7 +234,7 @@ public abstract class Production : Structure
                     belt.itemObjList[0].transform.position = this.transform.position;
                     belt.isItemStop = false;
                     belt.itemObjList.RemoveAt(0);
-                    belt.beltGroupMgr.GroupItem.RemoveAt(0);
+                    belt.beltGroupMgr.groupItem.RemoveAt(0);
                     belt.ItemNumCheck();
 
                     getObjNum++;

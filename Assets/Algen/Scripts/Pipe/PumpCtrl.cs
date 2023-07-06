@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PumpCtrl : FluidFactoryCtrl
 {
-    public bool PumpUp = false;
-
     float pumpFluid = 15.0f;
 
     [SerializeField]
@@ -14,7 +12,7 @@ public class PumpCtrl : FluidFactoryCtrl
     GameObject[] nearObj = new GameObject[4];
     Vector2[] checkPos = new Vector2[4];
 
-    public bool PumpIng = false;
+    public bool PumpIng = true;
 
     bool isUp = false;
     bool isRight = false;
@@ -27,28 +25,33 @@ public class PumpCtrl : FluidFactoryCtrl
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        if(!isPreBuilding)
+        base.Update();
+
+        if (!removeState)
         {
-            if (isUp == false)
-                isUp = ObjCheck(transform.up);
-            if (isRight == false)
-                isRight = ObjCheck(transform.right);
-            if (isDown == false)
-                isDown = ObjCheck(-transform.up);
-            if (isLeft == false)
-                isLeft = ObjCheck(-transform.right);
-
-            if(PumpIng == true)
+            if (!isPreBuilding)
             {
-                sendDelayTimer += Time.deltaTime;
+                if (isUp == false)
+                    isUp = ObjCheck(transform.up);
+                if (isRight == false)
+                    isRight = ObjCheck(transform.right);
+                if (isDown == false)
+                    isDown = ObjCheck(-transform.up);
+                if (isLeft == false)
+                    isLeft = ObjCheck(-transform.right);
 
-                if (sendDelayTimer > fluidFactoryData.SendDelay)
+                if (PumpIng == true)
                 {
-                    Pump();
-                    sendDelayTimer = 0;
-                }            
+                    sendDelayTimer += Time.deltaTime;
+
+                    if (sendDelayTimer > fluidFactoryData.SendDelay)
+                    {
+                        Pump();
+                        sendDelayTimer = 0;
+                    }
+                }
             }
         }
     }
