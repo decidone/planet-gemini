@@ -240,7 +240,7 @@ MonoBehaviour:
   unitData: {fileID: 11400000, guid: 024e98e49b2d6a24cbe15a47aff74845, type: 2}
   animator: {fileID: 1885955664131610325}
   unitSprite: {fileID: 1885955664131610327}
-  unitCanvas: {fileID: 0}
+  unitCanvas: {fileID: 3421677391031086563}
   unitAIState: 0
   unitSelImg: {fileID: 6013075139773666233}
   aggroTarget: {fileID: 0}

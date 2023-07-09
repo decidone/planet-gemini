@@ -486,7 +486,6 @@ public class UnitAi : MonoBehaviour
 
     IEnumerator UnitMoveCheck()
     {
-        Debug.Log("dd");
         isMoveCheckCoroutine = true;
         yield return new WaitForSeconds(0.05f);
 
