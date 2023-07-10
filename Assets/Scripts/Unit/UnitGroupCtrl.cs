@@ -71,38 +71,12 @@ public class UnitGroupCtrl : MonoBehaviour
         float delta = Mathf.Max(0f, largeCircleRadius);
 
         float minDiameter = (delta) / 2;
-        //if (checkPathCoroutine == null)
-        //    checkPathCoroutine = StartCoroutine(CheckPath(targetPos, minDiameter, isAttack));
-        //else
-        //{
-        //    StopCoroutine(checkPathCoroutine);
-        //    checkPathCoroutine = StartCoroutine(CheckPath(targetPos, minDiameter, isAttack));
-        //}
 
         foreach (GameObject obj in unitList)
         {
             obj.GetComponent<UnitAi>().MovePosSet(targetPos, minDiameter, isAttack);
         }
     }
-    //IEnumerator CheckPath(Vector3 targetPos, float minDiameter, bool isAttack)
-    //{
-    //    ABPath path = ABPath.Construct(groupCenter, targetPos, null);
-    //    seeker.CancelCurrentPathRequest();
-    //    seeker.StartPath(path);
-    //    AutoRepathPolicy autoRepath = new AutoRepathPolicy();
-    //    autoRepath.DidRecalculatePath(targetPos);
-    //    //var path = seeker.StartPath(this.transform.position, targetPos);
-
-    //    // Wait... (may take some time depending on how complex the path is)
-    //    // The rest of the game will continue to run while waiting
-    //    yield return StartCoroutine(path.WaitForPath());
-    //    // The path is calculated now
-    //    foreach (GameObject obj in unitList)
-    //    {
-    //        obj.GetComponent<UnitAi>().MovePosSet(targetPos, path.vectorPath, minDiameter, isAttack, groupCenter);
-    //    }
-    //    checkPathCoroutine = null;
-    //}
 
     private void PatrolSetPos(Vector3 patrolPos)
     {

@@ -37,6 +37,7 @@ public class UnitAi : MonoBehaviour
 
     // 이동 관련
     Transform tr;
+    Rigidbody2D rg;
     Vector3 targetPosition;
     Vector2 lastMoveDirection = Vector2.zero; // 마지막으로 이동한 방향
     Vector3 direction = Vector3.zero;
@@ -49,7 +50,6 @@ public class UnitAi : MonoBehaviour
     Seeker seeker;
     protected Coroutine checkPathCoroutine; // 실행 중인 코루틴을 저장하는 변수
     private int currentWaypointIndex; // 현재 이동 중인 경로 점 인덱스
-    private int indexCheck = -1; // 현재 이동 중인 경로 점 인덱스
     List<Vector3> movePath = new List<Vector3>();
     // 페트롤 관련
     Vector3 patrolStartPos;
@@ -62,6 +62,7 @@ public class UnitAi : MonoBehaviour
     [SerializeField]
     UnitAIState unitAIState = UnitAIState.UAI_Idle; // 시작 시 패트롤 상태
     bool isLastStateOn = false;
+    [SerializeField]
     UnitAIState unitLastState = UnitAIState.UAI_Idle; // 시작 시 패트롤 상태
     UnitAttackState attackState = UnitAttackState.Waiting;
     public SpriteRenderer unitSelImg = null;
@@ -69,10 +70,11 @@ public class UnitAi : MonoBehaviour
     UnitGroupCtrl unitGroupCtrl = null;
     Vector3 groupCenter;
     // 공격 관련 변수
-    [SerializeField]
     protected GameObject aggroTarget = null;   // 타겟
+    List<Vector3> aggroPath = new List<Vector3>();    
+    private int aggropointIndex; // 현재 이동 중인 경로 점 인덱스
     float mstDisCheckTime = 0f;
-    float mstDisCheckInterval = 1f; // 1초 간격으로 몬스터 거리 체크
+    float mstDisCheckInterval = 0.5f; // 1초 간격으로 몬스터 거리 체크
     float targetDist = 0.0f;         // 타겟과의 거리
     //CircleCollider2D circle = null;
     Vector3 targetVec = Vector3.zero;
@@ -80,7 +82,7 @@ public class UnitAi : MonoBehaviour
     bool isAttackMove = true;
     public List<GameObject> monsterList = new List<GameObject>();
     bool isDelayAfterAttackCoroutine = false;
-    private float searchInterval = 1f; // 딜레이 간격 설정
+    private float searchInterval = 0.5f; // 딜레이 간격 설정
     private float searchTimer = 0f;
     CapsuleCollider2D capsule2D = null;
 
@@ -94,6 +96,7 @@ public class UnitAi : MonoBehaviour
     void Start()
     {
         tr = GetComponent<Transform>();
+        rg = GetComponent<Rigidbody2D>();
         capsule2D = GetComponent<CapsuleCollider2D>();
         hp = unitData.MaxHp;
         hpBar.fillAmount = hp / unitData.MaxHp;
@@ -170,8 +173,6 @@ public class UnitAi : MonoBehaviour
                 }              
                 break;
         }
-        //if(monsterList.Count > 0)
-        //    AttackTargetDisCheck();
     }
 
     void IdleFunc()
@@ -179,24 +180,6 @@ public class UnitAi : MonoBehaviour
         animator.SetBool("isMove", false);
         isMoveCheckCoroutine = false;
     }
-
-    //public void MovePosSet(Vector3 dir, List<Vector3> targetWaypoint, float radi, bool isAttack, Vector3 gCenter)
-    //{
-    //    isNewPosSet = true;
-    //    isHold = false;
-    //    isAttackMove = isAttack;
-    //    isMoveCheckCoroutine = false;
-    //    isTargetSet = false;
-    //    targetPosition = dir;
-    //    moveRadi = radi;
-    //    groupCenter = gCenter;
-    //    currentWaypointIndex = 0;
-    //    movePath = targetWaypoint;
-
-    //    lastMoveDirection = (targetPosition - tr.position).normalized; // 이동방향 저장
-    //    unitAIState = UnitAIState.UAI_Move;
-    //    direction = targetPosition - tr.position;
-    //}
 
     public void MovePosSet(Vector2 dir, float radi, bool isAttack)
     {
@@ -229,26 +212,38 @@ public class UnitAi : MonoBehaviour
         ABPath path = ABPath.Construct(tr.position, targetPos, null);
         seeker.CancelCurrentPathRequest();
         seeker.StartPath(path);
-        //AutoRepathPolicy autoRepath = new AutoRepathPolicy();
-        //autoRepath.DidRecalculatePath(targetPos);
 
-        // Wait... (may take some time depending on how complex the path is)
-        // The rest of the game will continue to run while waiting
         yield return StartCoroutine(path.WaitForPath());
-        // The path is calculated now
-        currentWaypointIndex = 0;
-        movePath = path.vectorPath;
 
-        if(moveFunc == "Move")
-            unitAIState = UnitAIState.UAI_Move;
-        else if(moveFunc == "Patrol")
+        currentWaypointIndex = 0;
+        aggropointIndex = 0;
+
+        if (moveFunc == "Move")
         {
+            movePath = path.vectorPath;
+            unitAIState = UnitAIState.UAI_Move;
+        }
+        else if (moveFunc == "Patrol")
+        {
+            movePath = path.vectorPath;
             isPatrolGo = true;
             unitAIState = UnitAIState.UAI_Patrol;
         }
+        else if (moveFunc == "NormalTrace")
+        {
+            aggroPath = path.vectorPath;
 
-        direction = targetPosition - tr.position;
+            if (!isLastStateOn)
+            {
+                unitLastState = unitAIState;
+                isLastStateOn = true;
+            }
 
+            unitAIState = UnitAIState.UAI_NormalTrace;
+        }
+
+        SwBodyType(true);
+        direction = targetPos - tr.position;
         checkPathCoroutine = null;
     }
 
@@ -323,24 +318,21 @@ public class UnitAi : MonoBehaviour
         {
             tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitData.MoveSpeed);
             //도착지점에 도착하면 이동 멈춤
-            //if (Vector3.Distance(tr.position, targetPosition) <= moveRadi / 2)
-            if (tr.position == targetPosition)
+            if (Vector3.Distance(tr.position, targetPosition) <= moveRadi / 2)
             {
                 if (!isMoveCheckCoroutine)
                     StartCoroutine(UnitMoveCheck());
             }
-            //if (Vector3.Distance(tr.position, targetWaypoint) <= moveRadi/2)
-            if (tr.position == targetWaypoint)
-
+            if (Vector3.Distance(tr.position, targetWaypoint) <= moveRadi / 2)
             {
                 currentWaypointIndex++;
 
                 if (currentWaypointIndex >= movePath.Count)
                 {
-                    Debug.Log("????");
                     AnimSetFloat(lastMoveDirection, false);
                     isAttackMove = true;
                     unitAIState = UnitAIState.UAI_Idle;
+                    SwBodyType(false);
                 }
             }
 
@@ -356,39 +348,6 @@ public class UnitAi : MonoBehaviour
             animator.SetBool("isMove", false);
     }
 
-    //void MoveFunc()
-    //{
-    //    // 이동
-    //    direction = targetPosition - tr.position;
-    //    if (!isHold)
-    //    {
-    //        tr.position = Vector3.MoveTowards(tr.position, targetPosition, Time.deltaTime * unitData.MoveSpeed);
-    //        // 도착지점에 도착하면 이동 멈춤
-
-    //        if (Vector3.Distance(tr.position, targetPosition) < moveRadi)
-    //        {
-    //            if (!isMoveCheckCoroutine)
-    //                StartCoroutine(UnitMoveCheck());
-    //        }
-    //        else if (Vector3.Distance(tr.position, targetPosition) < 0.3f)
-    //        {
-    //            AnimSetFloat(lastMoveDirection, false);
-    //            isAttackMove = true;
-    //            unitAIState = UnitAIState.UAI_Idle;
-    //        }
-
-    //        // 방향에 따라 애니메이션 재생
-    //        animator.SetBool("isMove", true);
-
-    //        if (direction.magnitude > 0.5f)
-    //        {
-    //            AnimSetFloat(direction, true);
-    //        }
-    //    }
-    //    else
-    //        animator.SetBool("isMove", false);
-    //}
-
     public void PatrolPosSet(Vector2 dir)
     {
         isHold = false;
@@ -398,7 +357,6 @@ public class UnitAi : MonoBehaviour
 
         targetPosition = dir;
         patrolStartPos = tr.position;
-        indexCheck = -1;
 
         lastMoveDirection = (targetPosition - tr.position).normalized; // 이동방향 저장
         unitAIState = UnitAIState.UAI_Patrol;
@@ -432,8 +390,7 @@ public class UnitAi : MonoBehaviour
             tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitData.MoveSpeed);
             // 도착지점에 도착하면 이동 멈춤
 
-            if (tr.position == targetWaypoint)
-            //if (Vector3.Distance(tr.position, targetWaypoint) <= 1f)
+            if (Vector3.Distance(tr.position, targetWaypoint) <= 0.5f)
             {
                 if (isGo)
                 {
@@ -455,17 +412,6 @@ public class UnitAi : MonoBehaviour
                 }
             }
 
-            //if(currentWaypointIndex >= movePath.Count)
-            //{
-            //    isPatrolGo = !isPatrolGo;
-            //    currentWaypointIndex = movePath.Count - 1;
-            //}
-            //else if (currentWaypointIndex < 0)
-            //{
-            //    isPatrolGo = !isPatrolGo;
-            //    currentWaypointIndex = 0;
-            //}
-
             animator.SetBool("isAttack", false);
 
             // 방향에 따라 애니메이션 재생
@@ -473,11 +419,6 @@ public class UnitAi : MonoBehaviour
             if (direction.magnitude > 0.5f)
             {
                 AnimSetFloat(direction, true);
-            }
-
-            if (aggroTarget != null && targetDist < unitData.ColliderRadius)
-            {
-                unitAIState = UnitAIState.UAI_NormalTrace;
             }
         }
         else
@@ -497,16 +438,10 @@ public class UnitAi : MonoBehaviour
         {
             if (!isNewPosSet)
             {
-                if (aggroTarget != null && targetDist < unitData.ColliderRadius)
-                {
-                    unitAIState = UnitAIState.UAI_NormalTrace; 
-                }
-                else
-                {
-                    Debug.Log("dd");
+                if(unitAIState == UnitAIState.UAI_Move)
                     unitAIState = UnitAIState.UAI_Idle;
-                    isAttackMove = true;
-                }
+                isAttackMove = true;
+                //}
                 AnimSetFloat(lastMoveDirection, false);
                 isMoveCheckCoroutine = false;
                 yield break; // 코루틴 종료         
@@ -519,6 +454,18 @@ public class UnitAi : MonoBehaviour
             }
         }
         isMoveCheckCoroutine = false;
+    }
+
+    void SwBodyType(bool isMove)
+    {
+        if(isMove)
+        {
+            rg.bodyType = RigidbodyType2D.Kinematic;
+        }
+        else
+        {
+            rg.bodyType = RigidbodyType2D.Dynamic;
+        }
     }
 
     public void UnitSelImg(bool isOn)
@@ -553,8 +500,6 @@ public class UnitAi : MonoBehaviour
                 if (!monsterList.Contains(monster))
                 {
                     monsterList.Add(monster);
-                    if (unitAIState == UnitAIState.UAI_Idle || (unitAIState == UnitAIState.UAI_Move && isAttackMove))
-                        unitAIState = UnitAIState.UAI_NormalTrace;
                 }
             }
         }
@@ -573,17 +518,6 @@ public class UnitAi : MonoBehaviour
                 {
                     monsterList.RemoveAt(i);
                 }
-            }
-        }
-
-        if (monsterList.Count == 0)
-        {
-            aggroTarget = null;
-
-            if (isLastStateOn == false)
-            {
-                unitAIState = unitLastState;
-                isLastStateOn = false;
             }
         }
     }
@@ -607,6 +541,20 @@ public class UnitAi : MonoBehaviour
                     }
                 }
             }
+
+            if (aggroTarget != null)
+            {
+                if ((unitAIState == UnitAIState.UAI_Move && !isAttackMove) || isHold)
+                    return;
+
+                if (checkPathCoroutine == null)
+                    checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+                else
+                {
+                    StopCoroutine(checkPathCoroutine);
+                    checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+                }
+            }
         }
     }
 
@@ -616,17 +564,6 @@ public class UnitAi : MonoBehaviour
         {
             targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
             targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
-        }
-
-        if (targetDist < unitData.ColliderRadius && isAttackMove == true && unitAIState != UnitAIState.UAI_NormalTrace && unitAIState != UnitAIState.UAI_Attack)
-        {
-            if(isLastStateOn == false)
-            {
-                unitLastState = unitAIState;
-                isLastStateOn = true;
-            }
-            unitAIState = UnitAIState.UAI_NormalTrace;
-            attackState = UnitAttackState.Waiting;
         }
     }
 
@@ -645,12 +582,6 @@ public class UnitAi : MonoBehaviour
             unitAIState = UnitAIState.UAI_Attack;
             attackState = UnitAttackState.Attack;
         }
-
-        if (aggroTarget == null && monsterList.Count == 0)
-        {
-            unitAIState = unitLastState;
-            isLastStateOn = false;
-        }
     }//void Attack()
 
 
@@ -660,8 +591,6 @@ public class UnitAi : MonoBehaviour
 
         if (!isDelayAfterAttackCoroutine)
         {
-            //animator.Play("Attack", -1, 0);
-            //animator.SetBool("isAttack", true);
             attackState = UnitAttackState.AttackDelay;
             StartCoroutine(DelayAfterAttack(unitData.AttDelayTime)); // 1.5초 후 딜레이 적용
         }
@@ -671,6 +600,7 @@ public class UnitAi : MonoBehaviour
     {
         isDelayAfterAttackCoroutine = true;
         AttackStart();
+        SwBodyType(false);
 
         while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f)
         {
@@ -679,32 +609,8 @@ public class UnitAi : MonoBehaviour
 
         yield return new WaitForSeconds(delayTime);
 
-        //animator.SetBool("isAttack", false);
-        //animator.SetBool("isMove", false);
-        //AnimSetFloat(targetVec, false);
-        //attackState = UnitAttackState.Waiting;
         isDelayAfterAttackCoroutine = false;
     }
-
-    //void AttackStart()
-    //{
-    //    animator.Play("Attack", -1, 0);
-    //    animator.SetBool("isAttack", true);
-
-    //    if(aggroTarget != null)
-    //    {
-    //        GameObject attackFXSpwan;
-    //        Vector3 dir = aggroTarget.transform.position - transform.position;
-    //        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-    //        attackFXSpwan = Instantiate(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
-    //        if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
-    //            attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-    //        else
-    //            attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
-    //        attackFXSpwan.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, unitData.Damage);
-    //    }
-    //}
 
     protected virtual void AttackStart()
     {
@@ -718,8 +624,6 @@ public class UnitAi : MonoBehaviour
             animator.SetBool("isAttack", false);
             animator.SetBool("isMove", false);
             AnimSetFloat(targetVec, false);
-            //if(aggroTarget != null)
-            //    aggroTarget.GetComponent<MonsterAi>().TakeDamage(damage);
             attackState = UnitAttackState.Waiting;
         }
     }
@@ -734,18 +638,34 @@ public class UnitAi : MonoBehaviour
 
     void NormalTrace()
     {
-        if (!isHold)
+        if (isHold || aggroTarget == null)
         {
-            if(aggroTarget != null)
+            animator.SetBool("isMove", false);
+            return;
+        }
+
+        animator.SetBool("isMove", true);
+        AnimSetFloat(targetVec, true);
+
+        if (targetDist > unitData.AttackDist)
+        {
+            if (aggropointIndex >= aggroPath.Count)
+                return;
+
+            Vector3 targetWaypoint = aggroPath[aggropointIndex];
+            direction = targetWaypoint - tr.position;
+            direction.Normalize();
+
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitData.MoveSpeed);
+
+            if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
             {
-                animator.SetBool("isMove", true);
-                AnimSetFloat(targetVec, true);
-                if(targetDist > unitData.AttackDist)
-                    tr.position = Vector3.MoveTowards(tr.position, aggroTarget.transform.position, Time.deltaTime * unitData.MoveSpeed);
+                aggropointIndex++;
+
+                if (aggropointIndex >= aggroPath.Count)
+                    return;
             }
         }
-        else
-            animator.SetBool("isMove", false);
     }
 
     public void TakeDamage(float damage)
@@ -800,7 +720,7 @@ public class UnitAi : MonoBehaviour
         {
            aggroTarget = null;
 
-            if (isLastStateOn == false)
+            if (isLastStateOn == true)
             {
                 unitAIState = unitLastState;
                 isLastStateOn = false;

@@ -164,7 +164,6 @@ GameObject:
   - component: {fileID: 3940087546727930379}
   - component: {fileID: 4266575292539597394}
   - component: {fileID: 1685870109245103154}
-  - component: {fileID: 6001305810961691229}
   - component: {fileID: 293481600424882334}
   - component: {fileID: 8051527625688539190}
   - component: {fileID: -9044928422796286906}
@@ -275,7 +274,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 8
+  m_Mass: 5
   m_LinearDrag: 5
   m_AngularDrag: 5
   m_GravityScale: 0
@@ -284,22 +283,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!58 &6001305810961691229
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2081385084214852163}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 10
 --- !u!114 &293481600424882334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,9 +297,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: e6a78ef6288643b4fbc5a12456d20521, type: 2}
   animator: {fileID: 0}
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 0
   aggroTarget: {fileID: 0}
   targetList: []
   targetDist: 0

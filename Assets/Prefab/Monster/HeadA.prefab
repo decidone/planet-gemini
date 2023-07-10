@@ -254,7 +254,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 8
+  m_Mass: 5
   m_LinearDrag: 5
   m_AngularDrag: 5
   m_GravityScale: 0
@@ -297,9 +297,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: 83d7801ff6fb6fd4ab53026352125513, type: 2}
   animator: {fileID: 0}
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 0
   aggroTarget: {fileID: 0}
   targetList: []
   targetDist: 0
