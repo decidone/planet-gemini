@@ -14,16 +14,6 @@
       "items": [ "Coal" ],
       "amounts": [ 3 ],
       "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
-      "cooldown": 3
     }
   },
   "Furnace": {
@@ -40,16 +30,6 @@
     "3": {
       "items": [ "Coal" ],
       "amounts": [ 3 ],
-      "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
       "cooldown": 3
     }
   },
@@ -68,16 +48,6 @@
       "items": [ "Coal" ],
       "amounts": [ 3 ],
       "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
-      "cooldown": 3
     }
   },
   "Assembler": {
@@ -94,16 +64,6 @@
     "3": {
       "items": [ "Coal" ],
       "amounts": [ 3 ],
-      "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
       "cooldown": 3
     }
   },
@@ -122,16 +82,6 @@
       "items": [ "Coal" ],
       "amounts": [ 3 ],
       "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
-      "cooldown": 3
     }
   },
   "Merger": {
@@ -148,16 +98,6 @@
     "3": {
       "items": [ "Coal" ],
       "amounts": [ 3 ],
-      "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
       "cooldown": 3
     }
   },
@@ -176,15 +116,56 @@
       "items": [ "Coal" ],
       "amounts": [ 3 ],
       "cooldown": 3
-    },
-    "4": {
+    }
+  },
+  "Pump": {
+    "1": {
       "items": [ "Coal" ],
-      "amounts": [ 4 ],
+      "amounts": [ 1 ],
       "cooldown": 3
     },
-    "5": {
+    "2": {
       "items": [ "Coal" ],
-      "amounts": [ 5 ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    }
+  },
+  "Pipe": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
+      "cooldown": 3
+    }
+  },
+  "UnderPipe": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 2 ],
+      "cooldown": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 3 ],
       "cooldown": 3
     }
   },
@@ -203,16 +184,6 @@
       "items": [ "Coal" ],
       "amounts": [ 3 ],
       "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
-      "cooldown": 3
     }
   },
   "FluidTank": {
@@ -225,47 +196,12 @@
       "items": [ "Coal" ],
       "amounts": [ 2 ],
       "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
-      "cooldown": 3
     }
   },
   "FireTower": {
     "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
       "cooldown": 3
     }
   },
@@ -274,29 +210,23 @@
       "items": [ "Coal" ],
       "amounts": [ 1 ],
       "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 4 ],
-      "cooldown": 3
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 5 ],
-      "cooldown": 3
     }
   },
   "BloodTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    }
+  },
+  "PoisonTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "cooldown": 3
+    }
+  },
+  "RepairTower": {
     "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
@@ -311,15 +241,19 @@
       "items": [ "Coal" ],
       "amounts": [ 3 ],
       "cooldown": 3
-    },
-    "4": {
+    }
+  },
+  "StormTower": {
+    "1": {
       "items": [ "Coal" ],
-      "amounts": [ 4 ],
+      "amounts": [ 1 ],
       "cooldown": 3
-    },
-    "5": {
+    }
+  },
+  "SunTower": {
+    "1": {
       "items": [ "Coal" ],
-      "amounts": [ 5 ],
+      "amounts": [ 1 ],
       "cooldown": 3
     }
   }

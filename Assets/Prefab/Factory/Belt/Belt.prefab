@@ -345,7 +345,8 @@ GameObject:
   - component: {fileID: 8826970519567855511}
   - component: {fileID: 8826970519567855509}
   - component: {fileID: 8257279358658315011}
-  m_Layer: 0
+  - component: {fileID: 7238383103120028486}
+  m_Layer: 8
   m_Name: Belt
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -516,7 +517,6 @@ MonoBehaviour:
   solidFactoryData: {fileID: 11400000, guid: b1f80cc4a5f98e24287ffd6c848c3ca5, type: 2}
   itemObjList: []
   itemList: []
-  box2D: {fileID: 0}
   modelNum: 0
   beltGroupMgr: {fileID: 0}
   beltState: 0
@@ -525,3 +525,19 @@ MonoBehaviour:
   nextBelt: {fileID: 0}
   preBelt: {fileID: 0}
   isItemStop: 0
+--- !u!114 &7238383103120028486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8826970519567855532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  uniqueID: 1231022248523281720
+  updateError: 1
+  checkTime: 0.2

@@ -17,8 +17,17 @@ public class RepairTower : TowerAi
 
         if (!isPreBuilding)
         {
-          if (!isRuin)       
+          if (!isRuin)
             {
+                searchTimer += Time.deltaTime;
+
+                if (searchTimer >= searchInterval)
+                {
+                    SearchObjectsInRange();
+                    //RemoveObjectsOutOfRange();
+                    searchTimer = 0f; // 탐색 후 타이머 초기화
+                }
+
                 RepairTowerAiCtrl();
             }
             //else if (isRuin && isRepair)
@@ -31,6 +40,39 @@ public class RepairTower : TowerAi
             RepairFunc(false);
         }
     }
+    private void SearchObjectsInRange()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);
+
+        foreach (Collider2D collider in colliders)
+        {
+            GameObject tower = collider.gameObject;
+            if (tower.CompareTag("Tower"))
+            {
+                if (!TowerList.Contains(tower))
+                {
+                    TowerList.Add(tower);
+                }
+            }
+        }
+    }
+
+    //private void RemoveObjectsOutOfRange()
+    //{
+    //    for (int i = TowerList.Count - 1; i >= 0; i--)
+    //    {
+    //        if (TowerList[i] == null)
+    //            TowerList.RemoveAt(i);
+    //        else
+    //        {
+    //            GameObject tower = TowerList[i];
+    //            if (Vector2.Distance(this.transform.position, tower.transform.position) > towerData.ColliderRadius)
+    //            {
+    //                TowerList.RemoveAt(i);
+    //            }
+    //        }
+    //    }
+    //}
 
     void RepairTowerAiCtrl()
     {
@@ -118,33 +160,33 @@ public class RepairTower : TowerAi
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(!isPreBuilding)
-        {
-            if (collision.CompareTag("Tower"))
-            {
-                //if (!collision.GetComponent<TowerAi>().isPreBuilding)
-                {
-                    if (!TowerList.Contains(collision.gameObject))
-                    {
-                        if (collision.isTrigger == true)
-                        {
-                            TowerList.Add(collision.gameObject);
-                        }
-                    }
-                }
-            }
-            else if (collision.CompareTag("Factory"))
-            {
-                //if (!collision.GetComponent<TowerAi>().isPreBuilding)
-                {
-                    if (!TowerList.Contains(collision.gameObject))
-                    {
-                        TowerList.Add(collision.gameObject);                        
-                    }
-                }
-            }
-        }
-    }//private void OnTriggerEnter2D(Collider2D collision)
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if(!isPreBuilding)
+    //    {
+    //        if (collision.CompareTag("Tower"))
+    //        {
+    //            //if (!collision.GetComponent<TowerAi>().isPreBuilding)
+    //            {
+    //                if (!TowerList.Contains(collision.gameObject))
+    //                {
+    //                    if (collision.isTrigger == true)
+    //                    {
+    //                        TowerList.Add(collision.gameObject);
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        else if (collision.CompareTag("Factory"))
+    //        {
+    //            //if (!collision.GetComponent<TowerAi>().isPreBuilding)
+    //            {
+    //                if (!TowerList.Contains(collision.gameObject))
+    //                {
+    //                    TowerList.Add(collision.gameObject);                        
+    //                }
+    //            }
+    //        }
+    //    }
+    //}//private void OnTriggerEnter2D(Collider2D collision)
 }

@@ -13,6 +13,7 @@ public class PreBuilding : MonoBehaviour
     public bool isSelect = false;
 
     public GameObject beltMgr = null;
+    public GameObject pipeMgr = null;
 
     Vector3 setPos = new Vector3(-0.5f, -0.5f);
 
@@ -77,8 +78,15 @@ public class PreBuilding : MonoBehaviour
                     {
                         obj.transform.parent = beltMgr.transform;
                         belt.isPreBuilding = false;
-                        belt.BeltList[0].SetBuild();
-                        belt.BeltList[0].EnableColliders();
+                        belt.beltList[0].SetBuild();
+                        belt.beltList[0].EnableColliders();
+                    }
+                    else if (obj.TryGetComponent(out PipeGroupMgr pipe))
+                    {
+                        obj.transform.parent = pipeMgr.transform;
+                        pipe.isPreBuilding = false;
+                        pipe.pipeList[0].SetBuild();
+                        pipe.pipeList[0].EnableColliders();
                     }
                     else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
                     {
@@ -122,15 +130,22 @@ public class PreBuilding : MonoBehaviour
         {
             belt.isPreBuilding = true;
             belt.SetBelt(0);
-            belt.BeltList[0].isPreBuilding = true;
-            belt.BeltList[0].DisableColliders();
-            belt.BeltList[0].level = level;
+            belt.beltList[0].isPreBuilding = true;
+            belt.beltList[0].DisableColliders();
+            belt.beltList[0].level = level;
+        }
+        else if (gameObj.TryGetComponent(out PipeGroupMgr pipe))
+        {
+            pipe.isPreBuilding = true;
+            pipe.SetPipe(0);
+            pipe.pipeList[0].isPreBuilding = true;
+            pipe.pipeList[0].DisableColliders();
         }
         else if (gameObj.TryGetComponent(out UnderBeltCtrl underBelt))
         {
             underBelt.isPreBuilding = true;
             underBelt.SetSendUnderBelt();
-            underBelt.SetLevel(level);
+            //underBelt.SetLevel(level);
         }
 
         Bounds objectBounds = gameObj.GetComponentInChildren<SpriteRenderer>().bounds;
@@ -188,9 +203,9 @@ public class PreBuilding : MonoBehaviour
         }
         else if(gameObj.TryGetComponent(out BeltGroupMgr belt))
         {
-            belt.BeltList[0].dirNum++;
-            if (belt.BeltList[0].dirNum >= belt.BeltList[0].dirCount)
-                belt.BeltList[0].dirNum = 0;
+            belt.beltList[0].dirNum++;
+            if (belt.beltList[0].dirNum >= belt.beltList[0].dirCount)
+                belt.beltList[0].dirNum = 0;
         }
         else if (gameObj.TryGetComponent(out UnderBeltCtrl underBelt))
         {
@@ -199,6 +214,12 @@ public class PreBuilding : MonoBehaviour
                 underBelt.beltScipt.dirNum = 0;
 
             underBelt.dirNum = underBelt.beltScipt.dirNum;
+        }
+        else if (gameObj.TryGetComponent(out UnderPipeCtrl underPipe))
+        {
+            underPipe.dirNum++;
+            if (underPipe.dirNum >= underPipe.dirCount)
+                underPipe.dirNum = 0;
         }
     }
 

@@ -237,6 +237,7 @@ MonoBehaviour:
   fluidIsFull: 0
   dirNum: 0
   dirCount: 0
+  level: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 2403284375177730568}

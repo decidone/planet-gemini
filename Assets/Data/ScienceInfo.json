@@ -1,22 +1,22 @@
 {
   "Core": {
     "1": {
-      "items": [ "Coal", "Gold", "Silver" ],
+      "items": [ "Coal", "Gold", "Iron" ],
       "amounts": [ 1, 1, 1 ],
       "coreLv": 1
     },
     "2": {
-      "items": [ "Coal", "Gold", "Silver", "GoldBar" ],
+      "items": [ "Coal", "Gold", "Iron", "GoldBar" ],
       "amounts": [ 1, 1, 1, 1 ],
       "coreLv": 2
     },
     "3": {
-      "items": [ "Coal", "Gold", "Silver", "GoldBar", "SilverBar" ],
+      "items": [ "Coal", "Gold", "Iron", "GoldBar", "IronBar" ],
       "amounts": [ 1, 1, 1, 1, 1 ],
       "coreLv": 3
     },
     "4": {
-      "items": [ "Coal", "Gold", "Silver", "GoldBar", "SilverBar", "Amethyst" ],
+      "items": [ "Coal", "Gold", "Iron", "GoldBar", "IronBar", "Amethyst" ],
       "amounts": [ 1, 1, 1, 1, 1, 1 ],
       "coreLv": 4
     }
@@ -35,17 +35,7 @@
     "3": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
       "coreLv": 4
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "coreLv": 5
     }
   },
   "Furnace": {
@@ -62,17 +52,7 @@
     "3": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
       "coreLv": 4
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "coreLv": 5
     }
   },
   "Constructor": {
@@ -84,19 +64,9 @@
     "2": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 2
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
       "coreLv": 3
     },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "coreLv": 4
-    },
-    "5": {
+    "3": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
       "coreLv": 5
@@ -111,19 +81,9 @@
     "2": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 2
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
       "coreLv": 3
     },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "coreLv": 4
-    },
-    "5": {
+    "3": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
       "coreLv": 5
@@ -131,27 +91,17 @@
   },
   "Splitter": {
     "1": {
-      "items": [ "Coal", "Gold", "Silver" ],
+      "items": [ "Coal", "Gold", "Iron" ],
       "amounts": [ 2, 1, 1 ],
       "coreLv": 1
     },
     "2": {
-      "items": [ "Coal", "Gold", "Silver" ],
-      "amounts": [ 2, 1, 1 ],
-      "coreLv": 2
-    },
-    "3": {
-      "items": [ "Coal", "Gold", "Silver" ],
+      "items": [ "Coal", "Gold", "Iron" ],
       "amounts": [ 2, 1, 1 ],
       "coreLv": 3
     },
-    "4": {
-      "items": [ "Coal", "Gold", "Silver" ],
-      "amounts": [ 2, 1, 1 ],
-      "coreLv": 4
-    },
-    "5": {
-      "items": [ "Coal", "Gold", "Silver" ],
+    "3": {
+      "items": [ "Coal", "Gold", "Iron" ],
       "amounts": [ 2, 1, 1 ],
       "coreLv": 5
     }
@@ -165,19 +115,9 @@
     "2": {
       "items": [ "Coal", "Gold" ],
       "amounts": [ 2, 1 ],
-      "coreLv": 2
-    },
-    "3": {
-      "items": [ "Coal", "Gold" ],
-      "amounts": [ 2, 1 ],
       "coreLv": 3
     },
-    "4": {
-      "items": [ "Coal", "Gold" ],
-      "amounts": [ 2, 1 ],
-      "coreLv": 4
-    },
-    "5": {
+    "3": {
       "items": [ "Coal", "Gold" ],
       "amounts": [ 2, 1 ],
       "coreLv": 5
@@ -197,20 +137,27 @@
     "3": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 3
-    },
-    "4": {
+      "coreLv": 4
+    }
+  },
+  "UnderBelt": {
+    "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 4
+      "coreLv": 1
     },
-    "5": {
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    },
+    "3": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
       "coreLv": 5
     }
   },
-  "UnderBelt": {
+  "Pump": {
     "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
@@ -225,16 +172,40 @@
       "items": [ "Coal" ],
       "amounts": [ 1 ],
       "coreLv": 3
-    },
-    "4": {
+    }
+  },
+  "Pipe": {
+    "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 4
+      "coreLv": 1
     },
-    "5": {
+    "2": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 5
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    }
+  },
+  "UnderPipe": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
     }
   },
   "FluidTank": {
@@ -252,23 +223,13 @@
       "items": [ "Coal" ],
       "amounts": [ 1 ],
       "coreLv": 3
-    },
-    "4": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "coreLv": 4
-    },
-    "5": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "coreLv": 5
     }
   },
   "FireTower": {
     "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
-      "coreLv": 1
+      "coreLv": 3
     }
   },
   "IceTower": {
@@ -282,7 +243,45 @@
     "1": {
       "items": [ "Coal" ],
       "amounts": [ 1 ],
+      "coreLv": 2
+    }
+  },
+  "PoisonTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
       "coreLv": 1
+    }
+  },
+  "RepairTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
+    }
+  },
+  "StormTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 4
+    }
+  },
+  "SunTower": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
     }
   }
 }

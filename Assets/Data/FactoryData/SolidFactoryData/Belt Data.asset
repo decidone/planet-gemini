@@ -13,13 +13,11 @@ MonoBehaviour:
   m_Name: Belt Data
   m_EditorClassIdentifier: 
   factoryName: Belt
-  maxHp: 320000003c00000046000000500000005a000000
+  maxHp: 320000003c00000046000000
   fullItemNum: 3
   sendSpeed:
   - 2
-  - 1.75
   - 1.5
-  - 1.25
   - 1
   sendDelay: 1
   maxBuildingGauge: 10

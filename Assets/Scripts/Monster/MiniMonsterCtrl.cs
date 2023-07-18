@@ -19,7 +19,8 @@ public class MiniMonsterCtrl : MonsterAi
         {
             animator.SetBool("isAttack", false);
             attackState = MonsterAttackState.AttackEnd;
-            AttackObjCheck(aggroTarget);
+            if(aggroTarget != null)
+                AttackObjCheck(aggroTarget);
             StartCoroutine("AttackDelay");
         }
     }

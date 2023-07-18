@@ -10,8 +10,8 @@ public class AttackTower : TowerAi
     float mstDisCheckInterval = 0.5f; // 0.5초 간격으로 몬스터 거리 체크
     float targetDist = 0.0f;         // 타겟과의 거리
     bool isTargetSet = false; 
-    [SerializeField]
-    List<GameObject> monsterList = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> monsterList = new List<GameObject>();
     bool isDelayAfterAttackCoroutine = false;
 
     // Update is called once per frame
@@ -23,6 +23,14 @@ public class AttackTower : TowerAi
         {
             if (!isRuin)
             {
+                searchTimer += Time.deltaTime;
+
+                if (searchTimer >= searchInterval)
+                {
+                    SearchObjectsInRange();
+                    searchTimer = 0f; // 탐색 후 타이머 초기화
+                }
+
                 AttackTowerAiCtrl();
                 if (monsterList.Count > 0)
                 {
@@ -30,8 +38,8 @@ public class AttackTower : TowerAi
                     if (mstDisCheckTime > mstDisCheckInterval)
                     {
                         mstDisCheckTime = 0f;
-                        if (monsterList.Count > 0)
-                            AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
+                        AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
+                        RemoveObjectsOutOfRange();                        
                     }
                     AttackTargetDisCheck();
                 }
@@ -95,7 +103,44 @@ public class AttackTower : TowerAi
             }
         }
     }
+    private void SearchObjectsInRange()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);
 
+        foreach (Collider2D collider in colliders)
+        {
+            GameObject monster = collider.gameObject;
+            if (monster.CompareTag("Monster"))
+            {
+                if (!monsterList.Contains(monster))
+                {
+                    monsterList.Add(monster);
+                }
+            }
+        }
+    }
+
+    private void RemoveObjectsOutOfRange()
+    {
+        for (int i = monsterList.Count - 1; i >= 0; i--)
+        {
+            if (monsterList[i] == null)
+                monsterList.RemoveAt(i);
+            else
+            {
+                GameObject monster = monsterList[i];
+                if (Vector2.Distance(this.transform.position, monster.transform.position) > towerData.ColliderRadius)
+                {
+                    monsterList.RemoveAt(i);
+                }
+            }
+        }
+
+        if (monsterList.Count == 0)
+        {
+            aggroTarget = null;
+        }
+    }
     void AttackTargetDisCheck()
     {
         if (aggroTarget != null)
@@ -135,6 +180,10 @@ public class AttackTower : TowerAi
 
             if (aggroTarget == monster)
                 aggroTarget = null;
+        }
+        if (monsterList.Count == 0)
+        {
+            aggroTarget = null;
         }
     }
 

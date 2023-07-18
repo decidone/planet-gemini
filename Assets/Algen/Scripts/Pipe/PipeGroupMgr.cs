@@ -5,18 +5,20 @@ using UnityEngine;
 public class PipeGroupMgr : MonoBehaviour
 {
     [SerializeField]
-    GameObject PipeObj = null;
+    GameObject pipeObj = null;
 
-    public bool up = false;
-    public bool down = false;
-    public bool left = false;
-    public bool right = false;
+    //public bool up = false;
+    //public bool down = false;
+    //public bool left = false;
+    //public bool right = false;
 
     public List<PipeCtrl> pipeList = new List<PipeCtrl>();
     public List<GameObject> factoryList = new List<GameObject>();
     //public Dictionary<GameObject, float> notFullObj = new Dictionary<GameObject, float>();
 
-    Vector2 nextPos;
+    //Vector2 nextPos;
+
+    public bool isPreBuilding = false;
 
     public float groupFullFluidNum = 0.0f;
     public float groupSaveFluidNum = 0.0f;
@@ -30,75 +32,95 @@ public class PipeGroupMgr : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (up == true)
+        //if (up == true)
+        //{
+        //    SetPipe(0);
+        //    up = false;
+        //}
+        //else if (down == true)
+        //{
+        //    SetPipe(2);
+        //    down = false;
+        //}
+        //else if (left == true)
+        //{
+        //    SetPipe(3);
+        //    left = false;
+        //}
+        //else if (right == true)
+        //{
+        //    SetPipe(1);
+        //    right = false;
+        //}
+        if (!isPreBuilding)
         {
-            SetPipe(0);
-            up = false;
-        }
-        else if (down == true)
-        {
-            SetPipe(2);
-            down = false;
-        }
-        else if (left == true)
-        {
-            SetPipe(3);
-            left = false;
-        }
-        else if (right == true)
-        {
-            SetPipe(1);
-            right = false;
-        }
-
-        if (factoryList.Count > 0 && groupSaveFluidNum >= sendFluid)
-        {
-            sendDelayTimer += Time.deltaTime;
-
-            if (sendDelayTimer > sendDelay)
+            if (factoryList.Count > 0 && groupSaveFluidNum >= sendFluid)
             {
-                SendFluid();
-                GetFluid();
-                sendDelayTimer = 0;
+                sendDelayTimer += Time.deltaTime;
+
+                if (sendDelayTimer > sendDelay)
+                {
+                    SendFluid();
+                    GetFluid();
+                    sendDelayTimer = 0;
+                }
             }
         }
-    }
 
-    void SetPipe(int pipeDir)
+    }
+    public void SetPipe(int pipeDir)
     {
-        if (pipeList.Count == 0)
-        {
-            GameObject pipe = Instantiate(PipeObj, this.transform.position, Quaternion.identity);
-            pipe.transform.parent = this.transform;
-            PipeCtrl pipeCtrl = pipe.GetComponent<PipeCtrl>();
-            pipeList.Add(pipeCtrl);
-            GroupCheck();
-        }
-        else if (pipeList.Count != 0)
-        {
-            PipeCtrl prePipeCtrl = pipeList[pipeList.Count - 1];
+        GameObject pipe = Instantiate(pipeObj, this.transform.position, Quaternion.identity);
+        pipe.transform.parent = this.transform;
+        PipeCtrl pipeCtrl = pipe.GetComponent<PipeCtrl>();
+        pipeCtrl.pipeGroupMgr = this.GetComponent<PipeGroupMgr>();
+        pipeList.Add(pipeCtrl);
+        pipeCtrl.dirNum = pipeDir;
+        GroupCheck();
+        GroupFluidCount(0);
 
-            if(pipeDir == 0)
-                nextPos = new Vector2(prePipeCtrl.transform.position.x, prePipeCtrl.transform.position.y + 1);
-            if (pipeDir == 1)
-                nextPos = new Vector2(prePipeCtrl.transform.position.x + 1, prePipeCtrl.transform.position.y);
-            if (pipeDir == 2)
-                nextPos = new Vector2(prePipeCtrl.transform.position.x, prePipeCtrl.transform.position.y - 1);
-            if (pipeDir == 3)
-                nextPos = new Vector2(prePipeCtrl.transform.position.x - 1, prePipeCtrl.transform.position.y);
-
-            GameObject pipe = Instantiate(PipeObj, nextPos, Quaternion.identity);
-            pipe.transform.parent = this.transform;
-            PipeCtrl pipeCtrl = pipe.GetComponent<PipeCtrl>();
-            pipeList.Add(pipeCtrl);
-            GroupCheck();
-            GroupFluidCount(0);
+        if(pipeList.Count == 1)
+        {
+            sendFluid = pipeList[0].fluidFactoryData.SendFluid;
+            sendDelay = pipeList[0].fluidFactoryData.SendDelay;
         }
-        sendFluid = pipeList[0].fluidFactoryData.SendFluid;
-        sendDelay = pipeList[0].fluidFactoryData.SendDelay;
     }
 
-   public void CheckGroup(PipeCtrl nextPipe)
+    //void SetPipe(int pipeDir)
+    //{
+    //    if (pipeList.Count == 0)
+    //    {
+    //        GameObject pipe = Instantiate(PipeObj, this.transform.position, Quaternion.identity);
+    //        pipe.transform.parent = this.transform;
+    //        PipeCtrl pipeCtrl = pipe.GetComponent<PipeCtrl>();
+    //        pipeList.Add(pipeCtrl);
+    //        GroupCheck();
+    //    }
+    //    else if (pipeList.Count != 0)
+    //    {
+    //        PipeCtrl prePipeCtrl = pipeList[pipeList.Count - 1];
+
+    //        if(pipeDir == 0)
+    //            nextPos = new Vector2(prePipeCtrl.transform.position.x, prePipeCtrl.transform.position.y + 1);
+    //        if (pipeDir == 1)
+    //            nextPos = new Vector2(prePipeCtrl.transform.position.x + 1, prePipeCtrl.transform.position.y);
+    //        if (pipeDir == 2)
+    //            nextPos = new Vector2(prePipeCtrl.transform.position.x, prePipeCtrl.transform.position.y - 1);
+    //        if (pipeDir == 3)
+    //            nextPos = new Vector2(prePipeCtrl.transform.position.x - 1, prePipeCtrl.transform.position.y);
+
+    //        GameObject pipe = Instantiate(PipeObj, nextPos, Quaternion.identity);
+    //        pipe.transform.parent = this.transform;
+    //        PipeCtrl pipeCtrl = pipe.GetComponent<PipeCtrl>();
+    //        pipeList.Add(pipeCtrl);
+    //        GroupCheck();
+    //        GroupFluidCount(0);
+    //    }
+    //    sendFluid = pipeList[0].fluidFactoryData.SendFluid;
+    //    sendDelay = pipeList[0].fluidFactoryData.SendDelay;
+    //}
+
+    public void CheckGroup(PipeCtrl nextPipe)
     {
         PipeGroupMgr pipeGroupMgr = this.GetComponent<PipeGroupMgr>();
 

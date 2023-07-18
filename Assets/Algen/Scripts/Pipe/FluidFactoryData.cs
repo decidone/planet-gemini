@@ -10,6 +10,10 @@ public class FluidFactoryData : ScriptableObject
     public string FactoryName { get { return factoryName; } }
 
     [SerializeField]
+    private int[] maxHp;//Ã¼·Â
+    public int[] MaxHp { get { return maxHp; } }
+
+    [SerializeField]
     private float fullFluidNum;
     public float FullFluidNum { get { return fullFluidNum; } }
 
@@ -20,4 +24,12 @@ public class FluidFactoryData : ScriptableObject
     [SerializeField]
     private float sendDelay;
     public float SendDelay { get { return sendDelay; } }
+
+    [SerializeField]
+    private float maxBuildingGauge;
+    public float MaxBuildingGauge { get { return maxBuildingGauge; } }
+
+    [SerializeField]
+    private float maxRepairGauge;
+    public float MaxRepairGauge { get { return maxRepairGauge; } }
 }

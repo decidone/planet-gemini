@@ -87,7 +87,7 @@ public class UnitDrag : MonoBehaviour
             else if (isPKeyPressed)
             {
                 Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                groupCenterSet?.Invoke();
+                groupCenterSet?.Invoke(); 
                 patrolSet?.Invoke(dragEndPosition);
             }
             else if (isAKeyPressed)
@@ -96,7 +96,7 @@ public class UnitDrag : MonoBehaviour
                 RaycastHit2D hit = Physics2D.Raycast(dragEndPosition, Vector2.zero, 0f, 1 << monsterLayer);
                 if(hit)
                 {
-                    monsterTargetSet?.Invoke(hit.collider.gameObject.transform.parent.gameObject);
+                    monsterTargetSet?.Invoke(hit.collider.gameObject);
                 }
                 else
                 {
@@ -151,6 +151,7 @@ public class UnitDrag : MonoBehaviour
             Vector3 hitPoint = ray.GetPoint(distance);
             targetPosition = new Vector2(hitPoint.x, hitPoint.y);
         }
+        groupCenterSet?.Invoke();
 
         targetSet?.Invoke(targetPosition, isAttack);
     }

@@ -59,6 +59,20 @@ public class ScienceManager : MonoBehaviour
         if (infoWindow[0].activeSelf)
         {
             Vector3 mousePosition = Input.mousePosition;
+
+            // 팝업의 크기를 고려하여 화면 밖으로 나갈 경우 위치 조정
+            float popupWidth = 495f;
+
+            // 팝업이 화면 밖으로 나갈 때 X 좌표 조정
+            if (mousePosition.x + popupWidth > Screen.width)
+            {
+                mousePosition.x = Screen.width - popupWidth - 10.0f;
+            }
+            else if (mousePosition.x < 0)
+            {
+                mousePosition.x = 0;
+            }
+
             infoWindow[0].transform.position = mousePosition;
         }
         else if (infoWindow[1].activeSelf)

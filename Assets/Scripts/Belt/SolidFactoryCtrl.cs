@@ -19,7 +19,7 @@ public class SolidFactoryCtrl : Structure
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
-    public BoxCollider2D box2D = null;
+    BoxCollider2D box2D = null;
 
     private void Awake()
     {
@@ -78,7 +78,7 @@ public class SolidFactoryCtrl : Structure
             itemObjList.Add(itemObj);
 
             if (GetComponent<BeltCtrl>())
-                GetComponent<BeltCtrl>().beltGroupMgr.GroupItem.Add(itemObj);
+                GetComponent<BeltCtrl>().beltGroupMgr.groupItem.Add(itemObj);
 
             if (itemObjList.Count >= solidFactoryData.FullItemNum)
                 isFull = true;

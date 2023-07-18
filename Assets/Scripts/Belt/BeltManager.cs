@@ -6,9 +6,9 @@ public class BeltManager : MonoBehaviour
 {
     public void BeltCombine(BeltGroupMgr fstGroupMgr, BeltGroupMgr secGroupMgr)
     {
-        fstGroupMgr.BeltList.AddRange(secGroupMgr.BeltList);
+        fstGroupMgr.beltList.AddRange(secGroupMgr.beltList);
 
-        foreach (BeltCtrl belt in secGroupMgr.BeltList)
+        foreach (BeltCtrl belt in secGroupMgr.beltList)
         {
             belt.transform.parent = fstGroupMgr.transform;
             belt.beltGroupMgr = fstGroupMgr;

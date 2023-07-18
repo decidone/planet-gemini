@@ -39,6 +39,14 @@ public class TowerSingleAttack : AttackTower
         isRuin = true;
         //isRepair = false;
 
+        foreach (GameObject monster in monsterList)
+        {
+            if (monster.TryGetComponent(out MonsterAi monsterAi))
+            {
+                monsterAi.RemoveTarget(this.gameObject);
+            }
+        }
+
         Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
 
         animator.SetBool("isDie", true);

@@ -13,13 +13,11 @@ MonoBehaviour:
   m_Name: ItemSpawner
   m_EditorClassIdentifier: 
   factoryName: ItemSpawner
-  maxHp: 320000003c00000046000000500000005a000000
+  maxHp: 320000003c00000046000000
   fullItemNum: 1
   sendSpeed:
   - 2
-  - 1.75
   - 1.5
-  - 1.25
   - 1
   sendDelay: 0.5
   maxBuildingGauge: 10

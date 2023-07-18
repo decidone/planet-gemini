@@ -160,9 +160,9 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.15}
-  m_Size: {x: 1.8, y: 2.3}
-  m_Direction: 0
+  m_Offset: {x: 0, y: -0.85}
+  m_Size: {x: 1.5, y: 0.85}
+  m_Direction: 1
 --- !u!114 &7182665562401536423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,11 +181,14 @@ MonoBehaviour:
   animator: {fileID: 90368467031128403}
   hpBar: {fileID: 3922465802371952925}
   hp: 200
-  isDie: 0
+  isRuin: 0
+  level: 0
   isRepair: 0
   repairBar: {fileID: 8302925838158578637}
+  repairGauge: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
+  TowerList: []
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
 --- !u!1 &1317787849305595216
 GameObject:

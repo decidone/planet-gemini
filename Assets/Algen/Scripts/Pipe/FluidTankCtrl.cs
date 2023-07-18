@@ -18,28 +18,33 @@ public class FluidTankCtrl : FluidFactoryCtrl
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        if(!isPreBuilding)
+        base.Update();
+
+        if (!removeState)
         {
-            for (int i = 0; i < 4; i++)
+            if (!isPreBuilding)
             {
-                int index = i * 2;
-                if (!checkArray[index])
-                    checkArray[index] = CheckNearObj(startTransform[indices[index]], directions[i]);
-                if (!checkArray[index + 1])
-                    checkArray[index + 1] = CheckNearObj(startTransform[indices[index + 1]], directions[i]);
-            }
-
-            if (factoryList.Count > 0 && saveFluidNum >= fluidFactoryData.SendFluid)
-            {
-                sendDelayTimer += Time.deltaTime;
-
-                if (sendDelayTimer > fluidFactoryData.SendDelay)
+                for (int i = 0; i < 4; i++)
                 {
-                    SendFluid();            
-                    GetFluid();
-                    sendDelayTimer = 0;
+                    int index = i * 2;
+                    if (!checkArray[index])
+                        checkArray[index] = CheckNearObj(startTransform[indices[index]], directions[i]);
+                    if (!checkArray[index + 1])
+                        checkArray[index + 1] = CheckNearObj(startTransform[indices[index + 1]], directions[i]);
+                }
+
+                if (factoryList.Count > 0 && saveFluidNum >= fluidFactoryData.SendFluid)
+                {
+                    sendDelayTimer += Time.deltaTime;
+
+                    if (sendDelayTimer > fluidFactoryData.SendDelay)
+                    {
+                        SendFluid();
+                        GetFluid();
+                        sendDelayTimer = 0;
+                    }
                 }
             }
         }
