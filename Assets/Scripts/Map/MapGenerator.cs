@@ -13,6 +13,7 @@ public class MapGenerator : MonoBehaviour
     public float magnification;
     public float oreMagnification;
     public float oreSize;
+    public bool hostMap;
 
     [Space]
     public Tilemap tilemap;
@@ -23,9 +24,10 @@ public class MapGenerator : MonoBehaviour
     [Header("Biomes")]
     public Biome plain;
     public Biome desert;
-    public Biome jungle;
+    public Biome forest;
     public Biome snow;
     public Biome frozen;
+    public Biome lake;
     List<List<Biome>> biomes;
 
     [Space]
@@ -46,17 +48,32 @@ public class MapGenerator : MonoBehaviour
         map.height = height;
         map.mapData = new List<List<Cell>>();
 
-        // x축 온도, y축 높이
-        biomes = new List<List<Biome>>() {
-            new List<Biome> { desert, desert, jungle, plain, plain, plain, frozen, frozen },
-            new List<Biome> { desert, desert, jungle, plain, plain, plain, frozen, frozen },
-            new List<Biome> { desert, desert, jungle, plain, plain, plain, snow, snow },
-            new List<Biome> { desert, desert, jungle, plain, plain, plain, snow, snow },
-            new List<Biome> { desert, desert, jungle, plain, plain, plain, snow, snow },
-            new List<Biome> { desert, desert, jungle, plain, plain, plain, snow, snow },
-            new List<Biome> { desert, desert, jungle, plain, plain, plain, snow, snow },
-            new List<Biome> { desert, desert, jungle, plain, plain, plain, snow, snow },
-        };
+        if (hostMap)
+        {
+            biomes = new List<List<Biome>>() {
+                new List<Biome> { lake, forest, forest, plain, plain, plain, frozen, frozen },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, frozen, frozen },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
+            };
+        }
+        else
+        {
+            biomes = new List<List<Biome>>() {
+                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+            };
+        }
 
         ores = new List<List<GameObject>>();
         ores.Add(gold);

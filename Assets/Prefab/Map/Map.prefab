@@ -1,5 +1,76 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1272315144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1272315145}
+  - component: {fileID: 1272315146}
+  m_Layer: 0
+  m_Name: Lake
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1272315145
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1272315144}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2480601898737974143}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1272315146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1272315144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  biome: lake
+  diffBiome: forest
+  tiles:
+  - {fileID: 11400000, guid: 88562867fb9ffe146a9c621cd4402235, type: 2}
+  pointTiles:
+  - {fileID: 11400000, guid: ee91e1dd73b40f8488a0bb29c5447534, type: 2}
+  exceptionalTiles:
+  - {fileID: 11400000, guid: 88562867fb9ffe146a9c621cd4402235, type: 2}
+  top:
+  - {fileID: 11400000, guid: 455cf23a66996f349a9e92b5c4f61ac0, type: 2}
+  left:
+  - {fileID: 11400000, guid: b90991f74caa80548b2c04ae2756001a, type: 2}
+  right:
+  - {fileID: 11400000, guid: 6038fe10f7e328341b7d40826964a552, type: 2}
+  bottom:
+  - {fileID: 11400000, guid: dd5e7dc29a2927247b01a23e1563a244, type: 2}
+  corner:
+  - {fileID: 11400000, guid: fbbf249d2d13c3044b85217e9f5b127f, type: 2}
+  - {fileID: 11400000, guid: 942fd1a9ee874e64bb894cbf5f2e66e8, type: 2}
+  - {fileID: 11400000, guid: bf9e6f52b9882164b844a16c1fe232ff, type: 2}
+  - {fileID: 11400000, guid: f4c1bdd18a1225c43b20698938ee302a, type: 2}
+  innerCorner:
+  - {fileID: 11400000, guid: 5aeb5dc5f71c1de46b22b6bc9fc72fac, type: 2}
+  - {fileID: 11400000, guid: 7ca60f5dca2b7924e8d3f743dc0ae8b6, type: 2}
+  - {fileID: 11400000, guid: 8bc366509d358d84db77f2cb236239cd, type: 2}
+  - {fileID: 11400000, guid: 5cbd13949784a1a47bb2cb6642454d89, type: 2}
+  objects: []
 --- !u!1 &2480601897812969364
 GameObject:
   m_ObjectHideFlags: 0
@@ -11,7 +82,7 @@ GameObject:
   - component: {fileID: 2480601897812969367}
   - component: {fileID: 2480601897812969366}
   m_Layer: 0
-  m_Name: Jungle
+  m_Name: Forest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  biome: jungle
+  biome: forest
   diffBiome: plain
   tiles:
   - {fileID: 11400000, guid: 2246986c50e565447a072765e2a97c52, type: 2}
@@ -245,7 +316,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   biome: desert
-  diffBiome: jungle
+  diffBiome: plain
   tiles:
   - {fileID: 11400000, guid: f80fb08902621c648a448caa87f4af64, type: 2}
   - {fileID: 11400000, guid: 260693d7c4aeada4899b20725afd8f5e, type: 2}
@@ -274,31 +345,31 @@ MonoBehaviour:
   exceptionalTiles:
   - {fileID: 11400000, guid: 368878d82f9bbae4aa1055be96249c8b, type: 2}
   top:
-  - {fileID: 11400000, guid: 485dcd6d856a1dd4297a5cbbf8ac7663, type: 2}
-  - {fileID: 11400000, guid: d7780d73d0913be459d2197eff6b6395, type: 2}
-  - {fileID: 11400000, guid: bdb06ef06518d48409440adb690bd9d3, type: 2}
+  - {fileID: 11400000, guid: b7dfe3eac3f865a40900333607b0ada0, type: 2}
+  - {fileID: 11400000, guid: 533efb2b127787c40946462f1e094e6a, type: 2}
+  - {fileID: 11400000, guid: 79de36dd33f559e44b93eb8bc87e8010, type: 2}
   left:
-  - {fileID: 11400000, guid: 852640db96173814bb6ac4590b251ff7, type: 2}
-  - {fileID: 11400000, guid: 492e851c234f7ab4a84e864696de6bbf, type: 2}
-  - {fileID: 11400000, guid: 8b2e0870b22535b4f98ad508cfb1d970, type: 2}
+  - {fileID: 11400000, guid: dded28430a49eb14698ec8cce927b7c8, type: 2}
+  - {fileID: 11400000, guid: 7b978f89c55eeed4ab9fa6a81f9777f2, type: 2}
+  - {fileID: 11400000, guid: c56debcbfc7766442854928d8f555d48, type: 2}
   right:
-  - {fileID: 11400000, guid: a8143533ea53fd94aa7eedfa5e821647, type: 2}
-  - {fileID: 11400000, guid: 5f3475ee2b9b60f41962c7a247a91699, type: 2}
-  - {fileID: 11400000, guid: 3576f8b15eb087141b67c5d858358399, type: 2}
+  - {fileID: 11400000, guid: e7a72bd06d53af64a80acfb65f2a3a4a, type: 2}
+  - {fileID: 11400000, guid: 595b234b6e7e39d46a30422c84af18d3, type: 2}
+  - {fileID: 11400000, guid: ce40590f7f3e82143bb9f6dbae1114c4, type: 2}
   bottom:
-  - {fileID: 11400000, guid: 1361612806b6d274a89ee40103ce2ecd, type: 2}
-  - {fileID: 11400000, guid: 21adf0fc23053234385f57d2ab64ce89, type: 2}
-  - {fileID: 11400000, guid: ef338875d4129c14c84c68b388a4d9c8, type: 2}
+  - {fileID: 11400000, guid: fd1428908e2932b4e9ed76bb7e751b2f, type: 2}
+  - {fileID: 11400000, guid: b2ec639cbc16440409457fb0929d2917, type: 2}
+  - {fileID: 11400000, guid: f93be90f28e88b54496d5412ba7317ee, type: 2}
   corner:
-  - {fileID: 11400000, guid: 76630d73a5f56f34a9f715463334041a, type: 2}
-  - {fileID: 11400000, guid: dbf68b753e1f0684d8878d89a1670800, type: 2}
-  - {fileID: 11400000, guid: 703dad7aa6339d24da52e8c8529d66c8, type: 2}
-  - {fileID: 11400000, guid: f0574c15f7c68734ca2ba143b826f368, type: 2}
+  - {fileID: 11400000, guid: aff2c85c05d952e4580cb723e3f4581e, type: 2}
+  - {fileID: 11400000, guid: 8cf5fb16e10ceb74c8908333c21d5bca, type: 2}
+  - {fileID: 11400000, guid: 11d65dfa241a40e418329a69d5ea4d6e, type: 2}
+  - {fileID: 11400000, guid: 14ca102695455bc408c4a886083610dc, type: 2}
   innerCorner:
-  - {fileID: 11400000, guid: 8dc43116160eae7439754f465aeb99fc, type: 2}
-  - {fileID: 11400000, guid: b4da76c66267bbb499ac26575bc5e355, type: 2}
-  - {fileID: 11400000, guid: c1f3636ea5cd0f046a9ab31f0b365e6f, type: 2}
-  - {fileID: 11400000, guid: 25b0341e874d8294089760c1a5455cb4, type: 2}
+  - {fileID: 11400000, guid: 479acbf64b699c34f860f614526ea537, type: 2}
+  - {fileID: 11400000, guid: 1edc95299ee4ccb4aa28bce4a0429131, type: 2}
+  - {fileID: 11400000, guid: d8531447cac6d4c4998152859ec11899, type: 2}
+  - {fileID: 11400000, guid: b2b598ced2d60d049be7bbadb0a2e31a, type: 2}
   objects: []
 --- !u!1 &2480601898731471735
 GameObject:
@@ -350,19 +421,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomSeed: 0
   seed: 0
-  width: 160
-  height: 90
+  width: 1600
+  height: 900
   magnification: 60
   oreMagnification: 10
   oreSize: 0.05
+  hostMap: 0
   tilemap: {fileID: 0}
   objects: {fileID: 2480601899221957862}
   map: {fileID: 875718241}
   plain: {fileID: 2480601898745360442}
   desert: {fileID: 2480601898082089276}
-  jungle: {fileID: 2480601897812969366}
+  forest: {fileID: 2480601897812969366}
   snow: {fileID: 2480601897858781119}
   frozen: {fileID: 2480601899821529544}
+  lake: {fileID: 1272315146}
   gold:
   - {fileID: 1743506930803894082, guid: 7ef39cc67c69d604087c3a02b477e0f8, type: 3}
   - {fileID: 6531262685787266718, guid: 2a4793f95d5e74549a4fc7bfb2e2e090, type: 3}
@@ -471,6 +544,7 @@ Transform:
   - {fileID: 2480601897812969367}
   - {fileID: 2480601897858781116}
   - {fileID: 2480601899821529545}
+  - {fileID: 1272315145}
   m_Father: {fileID: 2480601898731471625}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -554,9 +628,6 @@ MonoBehaviour:
   corner: []
   innerCorner: []
   objects:
-  - {fileID: 5926884596008681359, guid: 88cc628080c40234eadeb1e4357f2765, type: 3}
-  - {fileID: 7345338030069168500, guid: 11d1af49142c51444bc857bd5616322a, type: 3}
-  - {fileID: 5008128230040348792, guid: ed87f579e628bb34ca84785c33882142, type: 3}
   - {fileID: 2557397671702435269, guid: 0317abe437244da46846ca7f94deecd1, type: 3}
   - {fileID: 7020412104492794120, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
   - {fileID: 8159159478609809111, guid: fc76007f987c05749a8db6c1f51e00eb, type: 3}
