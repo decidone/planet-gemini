@@ -13,7 +13,6 @@ public class SolidFactoryCtrl : Structure
     public List<Item> itemList = new List<Item>();
 
     List<Item> items = new List<Item>();
-
     //public List<GameObject> outSameList = new List<GameObject>();
 
     protected bool itemGetDelay = false;
@@ -138,14 +137,22 @@ public class SolidFactoryCtrl : Structure
 
     //}
 
-    public override void DisableColliders()
-    {
-        box2D.enabled = false;
-    }
+    //public override void DisableColliders()
+    //{
+    //    box2D.enabled = false;
+    //}
 
-    public override void EnableColliders()
+    //public override void EnableColliders()
+    //{
+    //    box2D.enabled = true;
+    //}
+
+    public override void ColliderTriggerOnOff(bool isOn)
     {
-        box2D.enabled = true;
+        if (isOn)
+            box2D.isTrigger = true;
+        else
+            box2D.isTrigger = false;
     }
 
     public override void SetBuild() 
@@ -180,7 +187,9 @@ public class SolidFactoryCtrl : Structure
                     unitCanvas.SetActive(false);
                     //isRepair = true;
                 }
-                EnableColliders();
+                //EnableColliders();
+                ColliderTriggerOnOff(false);
+
             }
         }
         else
@@ -216,7 +225,8 @@ public class SolidFactoryCtrl : Structure
         isRuin = false;
         isPreBuilding = false;
 
-        EnableColliders();
+        ColliderTriggerOnOff(false);
+        //EnableColliders();
     }
 
     public override void TakeDamage(float damage)
@@ -276,10 +286,53 @@ public class SolidFactoryCtrl : Structure
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / solidFactoryData.MaxBuildingGauge;
 
-        DisableColliders();
+        //DisableColliders();
+        ColliderTriggerOnOff(true);
 
         isRuin = true;
     }
 
     //public virtual void AddProductionFac(GameObject obj) { }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (isPreBuilding)
+        {
+            buildingPosObj.Add(collision.gameObject);
+            
+            if(buildingPosObj.Count > 0)
+            {
+                canBuilding = false;
+          
+                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                if (preBuilding != null)
+                {
+                    if (collision.GetComponent<SolidFactoryCtrl>() && !collision.GetComponent<SolidFactoryCtrl>().isSetBuildingOk)
+                    {
+                        preBuilding.isBuildingOk = true;
+                    }
+                    else
+                        preBuilding.isBuildingOk = false;
+                }
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (isPreBuilding)
+        {
+            buildingPosObj.Remove(collision.gameObject);
+            if (buildingPosObj.Count > 0)
+                canBuilding = false;
+            else
+            {
+                canBuilding = true;
+
+                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                if (preBuilding != null)
+                    preBuilding.isBuildingOk = true;
+            }
+        }
+    }
 }

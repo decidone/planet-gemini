@@ -47,7 +47,8 @@ public class BuildingInfo : MonoBehaviour
         if (totalAmountsEnough && selectBuildingData != null)
         {
             preBuilding.SetActive(true);
-            PreBuilding.instance.SetImage(selectBuilding.gameObj, selectBuilding.level);
+            PreBuilding.instance.SetImage(selectBuilding.gameObj, selectBuilding.level, selectBuilding.height, selectBuilding.width);
+            PreBuilding.instance.isEnough = AmountsEnoughCheck();
         }
     }
 
@@ -116,11 +117,11 @@ public class BuildingInfo : MonoBehaviour
         }
 
         SetItemSlot();
+    }
 
-        if (!totalAmountsEnough)
-        {
-            PreBuilding.instance.ReSetImage();
-            preBuilding.SetActive(false);
-        }
+    public bool AmountsEnoughCheck()
+    {
+        SetItemSlot();
+        return totalAmountsEnough;
     }
 }

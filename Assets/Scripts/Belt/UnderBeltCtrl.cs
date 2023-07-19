@@ -6,13 +6,14 @@ using System;
 public class UnderBeltCtrl : MonoBehaviour
 {
     [SerializeField]
-    GameObject GetBelt = null;
+    GameObject getBelt = null;
     [SerializeField]
-    GameObject SendBelt = null;
+    GameObject sendBelt = null;
 
     public bool isPreBuilding = false;
 
-    public GameObject belt = null;
+    public GameObject underBelt = null;
+    public bool isSendBelt = true;
     public Structure beltScipt = null;
 
     Vector2[] checkPos = new Vector2[4];
@@ -20,6 +21,12 @@ public class UnderBeltCtrl : MonoBehaviour
     public int dirNum = 0;
     GetUnderBeltCtrl getUnderBeltCtrl;
     SendUnderBeltCtrl sendUnderBeltCtrl;
+
+    void Start()
+    {
+        SetSlotColor(getBelt.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
+        SetSlotColor(sendBelt.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
+    }
 
     // Update is called once per frame
     void Update()
@@ -49,7 +56,7 @@ public class UnderBeltCtrl : MonoBehaviour
         {
             Collider2D factoryCollider = hits[i].collider;
 
-            if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != belt)
+            if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != underBelt && factoryCollider.gameObject.transform.position != underBelt.transform.position)
             //&& !factoryCollider.GetComponent<FactoryCtrl>().isPreBuilding)
             {
                 //FactoryCtrl factoryCtrl = factoryCollider.GetComponent<FactoryCtrl>();
@@ -69,13 +76,12 @@ public class UnderBeltCtrl : MonoBehaviour
                 }
             }
         }
-
         ReturnSendBelt();
     }
 
     void ReturnSendBelt()
     {
-        if (GetBelt.activeSelf == true)
+        if (getBelt.activeSelf == true)
         {
             SetSendUnderBelt();
         }
@@ -89,26 +95,40 @@ public class UnderBeltCtrl : MonoBehaviour
 
     public void SetGetUnderBelt()
     {
-        SendBelt.SetActive(false);
-        GetBelt.SetActive(true);
-        SetSlotColor(GetBelt.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
-        belt = GetBelt;
-        beltScipt = belt.GetComponent<GetUnderBeltCtrl>();
-        DisableColliders();
+        sendBelt.SetActive(false);
+        getBelt.SetActive(true);
+        PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+        underBelt = getBelt;
+        isSendBelt = false;
+        beltScipt = underBelt.GetComponent<GetUnderBeltCtrl>();
+        ColliderTriggerOnOff(true);
+        //DisableColliders();
         beltScipt.isPreBuilding = true;
         beltScipt.dirNum = dirNum;
     }
 
     public void SetSendUnderBelt()
     {
-        GetBelt.SetActive(false);
-        SendBelt.SetActive(true);
-        belt = SendBelt;
-        beltScipt = belt.GetComponent<SendUnderBeltCtrl>();
-        DisableColliders();
+        getBelt.SetActive(false);
+        sendBelt.SetActive(true);
+        underBelt = sendBelt;
+        isSendBelt = true;
+        beltScipt = underBelt.GetComponent<SendUnderBeltCtrl>();
+        ColliderTriggerOnOff(true);
+        //DisableColliders();
         beltScipt.isPreBuilding = true;
         beltScipt.dirNum = dirNum;
     }
+
+    public void SetColor(Color color)
+    {
+        SpriteRenderer getRen = getBelt.GetComponent<SpriteRenderer>();
+        SpriteRenderer senRen = sendBelt.GetComponent<SpriteRenderer>();
+
+        SetSlotColor(getRen, color, 0.35f);
+        SetSlotColor(senRen, color, 0.35f);
+    }
+
     void SetSlotColor(SpriteRenderer sprite, Color color, float alpha)
     {
         Color slotColor = sprite.color;
@@ -117,21 +137,26 @@ public class UnderBeltCtrl : MonoBehaviour
         sprite.color = slotColor;
     }
 
-    public void DisableColliders()
-    {
-        beltScipt.DisableColliders();
-    }
+    //public void DisableColliders()
+    //{
+    //    beltScipt.DisableColliders();
+    //}
 
-    public void EnableColliders()
+    //public void EnableColliders()
+    //{
+    //    beltScipt.EnableColliders();
+    //}
+
+    public void ColliderTriggerOnOff(bool isOn)
     {
-        beltScipt.EnableColliders();
+        beltScipt.ColliderTriggerOnOff(isOn);
     }
 
     public void RemoveObj()
     {
-        if (belt != null)
+        if (underBelt != null)
         {
-            belt.transform.parent = null;
+            underBelt.transform.parent = null;
             //beltScipt.isPreBuilding = false;
         }
 

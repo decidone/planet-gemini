@@ -345,7 +345,9 @@ GameObject:
   - component: {fileID: 6768119425636190065}
   - component: {fileID: 2233973952794387984}
   - component: {fileID: 2933665410225861189}
-  m_Layer: 0
+  - component: {fileID: 6309344173794642405}
+  - component: {fileID: -2819984684848976233}
+  m_Layer: 8
   m_Name: Furnace
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -444,7 +446,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.9, y: 0.9}
   m_EdgeRadius: 0
 --- !u!114 &6768119425636190065
 MonoBehaviour:
@@ -492,6 +494,7 @@ MonoBehaviour:
   fluidIsFull: 0
   dirNum: 0
   dirCount: 0
+  level: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 7151233568437708852}
@@ -508,3 +511,40 @@ MonoBehaviour:
   cooldown: 3
   productionData: {fileID: 11400000, guid: d0df61e38f4fb69438347d5fe585628f, type: 2}
   box2D: {fileID: 0}
+--- !u!114 &6309344173794642405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759284699072132164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  uniqueID: 166429868105885489
+  updateError: 1
+  checkTime: 0.2
+--- !u!50 &-2819984684848976233
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759284699072132164}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 7

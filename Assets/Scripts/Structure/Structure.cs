@@ -52,6 +52,9 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public List<GameObject> outSameList = new List<GameObject>();
 
+    public bool canBuilding = true;
+    protected List<GameObject> buildingPosObj = new List<GameObject>();
+
     protected ItemProps CreateItemObj()
     {
         ItemProps item = Instantiate(itemPref).GetComponent<ItemProps>();
@@ -80,10 +83,11 @@ public class Structure : MonoBehaviour
     // 근처 오브젝트 찻는 위치(상하좌우) 설정
     protected virtual void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback) { }
     // CheckPos의 방향 기준으로 오브젝트 찻기
-    public virtual void DisableColliders() { }
+    //public virtual void DisableColliders() { }
     // 콜라이더 끄기
-    public virtual void EnableColliders() { }
+    //public virtual void EnableColliders() { }
     // 콜라이더 키기
+    public virtual void ColliderTriggerOnOff(bool isOn) { }
     public virtual void SetBuild() { }
     // 건물 설치 기능
 

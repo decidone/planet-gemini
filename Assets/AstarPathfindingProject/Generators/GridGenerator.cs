@@ -760,8 +760,10 @@ namespace Pathfinding {
 			newSize.y *= Mathf.Sign(newSize.y);
 
 			// Clamp the nodeSize so that the graph is never larger than 1024*1024
-			nodeSize = Mathf.Max(this.nodeSize, newSize.x/1024F);
-			nodeSize = Mathf.Max(this.nodeSize, newSize.y/1024F);
+			nodeSize = Mathf.Max(this.nodeSize, newSize.x/2048F);
+			nodeSize = Mathf.Max(this.nodeSize, newSize.y/ 2048F);			
+			//nodeSize = Mathf.Max(this.nodeSize, newSize.x/1024F);
+			//nodeSize = Mathf.Max(this.nodeSize, newSize.y/1024F);
 
 			// Prevent the graph to become smaller than a single node
 			newSize.x = newSize.x < nodeSize ? nodeSize : newSize.x;
@@ -1026,10 +1028,14 @@ namespace Pathfinding {
 			// Make sure the matrix is up to date
 			UpdateTransform();
 
-			if (width > 1024 || depth > 1024) {
+			if (width > 2048 || depth > 2048) {
 				Debug.LogError("One of the grid's sides is longer than 1024 nodes");
 				yield break;
-			}
+			}			
+			//if (width > 1024 || depth > 1024) {
+			//	Debug.LogError("One of the grid's sides is longer than 1024 nodes");
+			//	yield break;
+			//}
 
 
 			SetUpOffsetsAndCosts();

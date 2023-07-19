@@ -192,7 +192,8 @@ GameObject:
   - component: {fileID: 4372891051652484689}
   - component: {fileID: 4372891051652484693}
   - component: {fileID: 4372891051652484690}
-  m_Layer: 0
+  - component: {fileID: 20748179840043738}
+  m_Layer: 8
   m_Name: ItemSpawner
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -283,6 +284,7 @@ MonoBehaviour:
   fluidIsFull: 0
   dirNum: 0
   dirCount: 0
+  level: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 2596895666414250251}
@@ -295,7 +297,6 @@ MonoBehaviour:
   solidFactoryData: {fileID: 11400000, guid: b98e07cc0faacb54883a16ecf080cff3, type: 2}
   itemObjList: []
   itemList: []
-  box2D: {fileID: 0}
   itemData: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   outObj: []
 --- !u!61 &4372891051652484693
@@ -322,7 +323,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.9, y: 0.9}
   m_EdgeRadius: 0
 --- !u!50 &4372891051652484690
 Rigidbody2D:
@@ -345,6 +346,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &20748179840043738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372891051652484718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  uniqueID: 4908371331433248364
+  updateError: 1
+  checkTime: 0.2
 --- !u!1 &6351396696244375524
 GameObject:
   m_ObjectHideFlags: 0

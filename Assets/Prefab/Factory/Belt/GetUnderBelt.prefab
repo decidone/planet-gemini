@@ -268,13 +268,13 @@ GameObject:
   - component: {fileID: 8397932745155669645}
   - component: {fileID: 8021879270789177578}
   - component: {fileID: 2404147784598303516}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GetUnderBelt
   m_TagString: Factory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7931006461449339347
 Transform:
   m_ObjectHideFlags: 0
@@ -333,7 +333,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2051148247, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 0, a: 0.35}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -367,7 +367,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.9, y: 0.9}
   m_EdgeRadius: 0
 --- !u!50 &8021879270789177578
 Rigidbody2D:
@@ -406,6 +406,7 @@ MonoBehaviour:
   fluidIsFull: 0
   dirNum: 0
   dirCount: 0
+  level: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 5209748675834970393}
@@ -415,10 +416,10 @@ MonoBehaviour:
   repairBar: {fileID: 2107308098714527005}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
+  canBuilding: 1
   solidFactoryData: {fileID: 11400000, guid: c181e3d39e2c4e448bfdfe0b1e4231b0, type: 2}
   itemObjList: []
   itemList: []
-  box2D: {fileID: 0}
   modelNum:
   - {fileID: -1587426880, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: -1031399349, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}

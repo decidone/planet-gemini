@@ -17,3 +17,5 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 92718ba4d78b2b443bc25484597da3d3, type: 2}
   gameObj: {fileID: 90368467031128404, guid: 189c0709a23868347a99325d5713de72, type: 3}
   level: 1
+  height: 1
+  width: 1

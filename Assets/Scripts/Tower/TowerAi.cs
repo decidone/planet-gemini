@@ -40,24 +40,28 @@ public class TowerAi : MonoBehaviour
     public Image repairBar;
     public float repairGauge = 0.0f;
 
-    protected CircleCollider2D circle2D = null;
-    protected CapsuleCollider2D capsule2D = null;
+    public CapsuleCollider2D capsule2D = null;
 
     public bool isPreBuilding = false;
     public bool isSetBuildingOk = false;
 
+    [HideInInspector]
+    public List<GameObject> monsterList = new List<GameObject>();
+
     protected float searchTimer = 0f;
     protected float searchInterval = 1f; // 딜레이 간격 설정
 
+    public bool canBuilding = true;
+    List<GameObject> buildingPosObj = new List<GameObject>();
+
+
     private void Awake()
     {
-        circle2D = GetComponent<CircleCollider2D>();
         capsule2D = GetComponent<CapsuleCollider2D>();
     }
     // Start is called before the first frame update
     void Start()
     {
-        circle2D.radius = towerData.ColliderRadius;
         hp = towerData.MaxHp;
         hpBar.fillAmount = hp / towerData.MaxHp;
         repairBar.fillAmount = repairGauge / towerData.MaxRepairGauge;
@@ -148,8 +152,8 @@ public class TowerAi : MonoBehaviour
                     unitCanvers.SetActive(false);
                     //isRepair = true;
                 }
-
-                EnableColliders();
+                ColliderTriggerOnOff(false);
+                //EnableColliders();
             }
         }
         else
@@ -186,7 +190,8 @@ public class TowerAi : MonoBehaviour
         isPreBuilding = false;
         //isRepair = false;
 
-        EnableColliders();
+        //EnableColliders();
+        ColliderTriggerOnOff(false);
 
         animator.SetBool("isDie", false);
     }
@@ -202,16 +207,62 @@ public class TowerAi : MonoBehaviour
         isSetBuildingOk = true;
     }
 
-    public void DisableColliders()
+    //public void DisableColliders()
+    //{
+    //    capsule2D.enabled = false;
+    //}
+
+    //// 콜라이더 켜기
+    //public void EnableColliders()
+    //{
+    //    capsule2D.enabled = true;
+    //}
+
+    public void ColliderTriggerOnOff(bool isOn)
     {
-        capsule2D.enabled = false;
-        circle2D.enabled = false;
+        if (isOn)
+            capsule2D.isTrigger = true;
+        else
+            capsule2D.isTrigger = false;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (isPreBuilding)
+        {
+            buildingPosObj.Add(collision.gameObject);
+            if (buildingPosObj.Count > 0)
+            {
+                canBuilding = false;
+
+                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                if (preBuilding != null)
+                {
+                    if (collision.GetComponent<SolidFactoryCtrl>() && !collision.GetComponent<SolidFactoryCtrl>().isSetBuildingOk)
+                    {
+                        preBuilding.isBuildingOk = true;
+                    }
+                    else
+                        preBuilding.isBuildingOk = false;
+                }
+            }
+        }
     }
 
-    // 콜라이더 켜기
-    public void EnableColliders()
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        capsule2D.enabled = true;
-        circle2D.enabled = true;
+        if (isPreBuilding)
+        {
+            buildingPosObj.Remove(collision.gameObject);            
+            if (buildingPosObj.Count > 0)
+                canBuilding = false;
+            else
+            {
+                canBuilding = true;
+
+                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                if (preBuilding != null)
+                    preBuilding.isBuildingOk = true;
+            }
+        }
     }
 }

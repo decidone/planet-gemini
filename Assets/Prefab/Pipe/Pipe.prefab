@@ -112,7 +112,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.9, y: 0.9}
   m_EdgeRadius: 0
 --- !u!50 &2000658444983299215
 Rigidbody2D:
@@ -165,7 +165,6 @@ MonoBehaviour:
   fluidName: 
   saveFluidNum: 0
   sendDelayTimer: 0
-  box2D: {fileID: 0}
   pipeGroupMgr: {fileID: 0}
   modelNum:
   - {fileID: -1520857884, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}

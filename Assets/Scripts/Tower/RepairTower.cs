@@ -24,16 +24,11 @@ public class RepairTower : TowerAi
                 if (searchTimer >= searchInterval)
                 {
                     SearchObjectsInRange();
-                    //RemoveObjectsOutOfRange();
                     searchTimer = 0f; // 탐색 후 타이머 초기화
                 }
 
                 RepairTowerAiCtrl();
             }
-            //else if (isRuin && isRepair)
-            //{
-            //    RepairFunc(false);
-            //}
         }
         if (isRuin && isRepair == true)
         {
@@ -47,6 +42,8 @@ public class RepairTower : TowerAi
         foreach (Collider2D collider in colliders)
         {
             GameObject tower = collider.gameObject;
+            if (tower == this.gameObject)
+                continue;
             if (tower.CompareTag("Tower"))
             {
                 if (!TowerList.Contains(tower))
@@ -57,20 +54,11 @@ public class RepairTower : TowerAi
         }
     }
 
-    //private void RemoveObjectsOutOfRange()
+    //public void RemoveObjectsOutOfRange(GameObject obj)//근쳐 타워 삭제시 발동되게
     //{
-    //    for (int i = TowerList.Count - 1; i >= 0; i--)
+    //    if (obj.CompareTag("Tower"))
     //    {
-    //        if (TowerList[i] == null)
-    //            TowerList.RemoveAt(i);
-    //        else
-    //        {
-    //            GameObject tower = TowerList[i];
-    //            if (Vector2.Distance(this.transform.position, tower.transform.position) > towerData.ColliderRadius)
-    //            {
-    //                TowerList.RemoveAt(i);
-    //            }
-    //        }
+    //        TowerList.Remove(obj);            
     //    }
     //}
 
@@ -136,14 +124,15 @@ public class RepairTower : TowerAi
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / towerData.MaxBuildingGauge;
 
-        DisableColliders();
+        //DisableColliders();
+        ColliderTriggerOnOff(true);
 
         //towerState = TowerState.Die;
         isRuin = true;
 
         Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
 
-        animator.SetBool("isDie", true);
+        //animator.SetBool("isDie", true);
 
         foreach (GameObject tower in TowerList)
         {
@@ -158,35 +147,28 @@ public class RepairTower : TowerAi
                 }
             }
         }
-    }
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if(!isPreBuilding)
-    //    {
-    //        if (collision.CompareTag("Tower"))
-    //        {
-    //            //if (!collision.GetComponent<TowerAi>().isPreBuilding)
-    //            {
-    //                if (!TowerList.Contains(collision.gameObject))
-    //                {
-    //                    if (collision.isTrigger == true)
-    //                    {
-    //                        TowerList.Add(collision.gameObject);
-    //                    }
-    //                }
-    //            }
-    //        }
-    //        else if (collision.CompareTag("Factory"))
-    //        {
-    //            //if (!collision.GetComponent<TowerAi>().isPreBuilding)
-    //            {
-    //                if (!TowerList.Contains(collision.gameObject))
-    //                {
-    //                    TowerList.Add(collision.gameObject);                        
-    //                }
-    //            }
-    //        }
-    //    }
-    //}//private void OnTriggerEnter2D(Collider2D collision)
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);
+
+        foreach (Collider2D collider in colliders)
+        {
+            GameObject monster = collider.gameObject;
+            if (monster.CompareTag("Monster"))
+            {
+                if (!monsterList.Contains(monster))
+                {
+                    monsterList.Add(monster);
+                }
+            }
+        }
+        foreach (GameObject monsterObj in monsterList)
+        {
+            if (monsterObj.TryGetComponent(out MonsterAi monsterAi))
+            {
+                monsterAi.RemoveTarget(this.gameObject);
+            }
+        }
+
+        monsterList.Clear();
+    }
 }

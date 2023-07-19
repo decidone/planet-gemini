@@ -10,6 +10,6 @@ public class Building : ScriptableObject
     public GameObject gameObj = null;
     public int level = 0;
 
-    //public float numRows = 0;
-    //public float numColumns = 0;
+    public int height = 0;
+    public int width = 0;
 }

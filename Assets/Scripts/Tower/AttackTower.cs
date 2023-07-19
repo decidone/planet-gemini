@@ -10,8 +10,6 @@ public class AttackTower : TowerAi
     float mstDisCheckInterval = 0.5f; // 0.5초 간격으로 몬스터 거리 체크
     float targetDist = 0.0f;         // 타겟과의 거리
     bool isTargetSet = false; 
-    [HideInInspector]
-    public List<GameObject> monsterList = new List<GameObject>();
     bool isDelayAfterAttackCoroutine = false;
 
     // Update is called once per frame
@@ -135,11 +133,6 @@ public class AttackTower : TowerAi
                 }
             }
         }
-
-        if (monsterList.Count == 0)
-        {
-            aggroTarget = null;
-        }
     }
     void AttackTargetDisCheck()
     {
@@ -177,48 +170,10 @@ public class AttackTower : TowerAi
         if (monsterList.Contains(monster))
         {
             monsterList.Remove(monster);
-
-            if (aggroTarget == monster)
-                aggroTarget = null;
         }
         if (monsterList.Count == 0)
         {
             aggroTarget = null;
         }
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        //if (!isPreBuilding)
-        {
-            if (collision.CompareTag("Monster"))
-            {
-                if (!monsterList.Contains(collision.gameObject))
-                {
-                    if (collision.isTrigger == true)
-                    {
-                        monsterList.Add(collision.gameObject);
-                    }
-                }
-            }
-        }
-    }//private void OnTriggerEnter2D(Collider2D collision)
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        //if (!isPreBuilding)
-        {
-            if (collision.CompareTag("Monster"))
-            {
-                if (collision.isTrigger == true)
-                {
-                    monsterList.Remove(collision.gameObject);
-                }
-                if (monsterList.Count == 0)
-                {
-                    aggroTarget = null;
-                }
-            }
-        }
-    }//private void OnTriggerExit2D(Collider2D collision)
 }

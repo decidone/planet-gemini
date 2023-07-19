@@ -57,12 +57,12 @@ public class MonsterAi : MonoBehaviour
                                             // 패트롤 변수
 
     //공격 관련 변수
-    private float searchInterval = 0.5f; // 딜레이 간격 설정
+    private float searchInterval = 0.3f; // 딜레이 간격 설정
     private float searchTimer = 0f;
     public GameObject aggroTarget = null;   // 타겟
     public List<GameObject> targetList = new List<GameObject>();
     float tarDisCheckTime = 0f;
-    float tarDisCheckInterval = 0.5f; // 1초 간격으로 몬스터 거리 체크
+    float tarDisCheckInterval = 0.3f; // 1초 간격으로 몬스터 거리 체크
     public float targetDist = 0.0f;                // 타겟과의 거리
     public int attackMotion = 0;
     List<string> targetTags = new List<string> { "Player", "Unit", "Tower"};//, "Factory" };
@@ -331,18 +331,26 @@ public class MonsterAi : MonoBehaviour
     private void SearchObjectsInRange()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, monsterData.ColliderRadius);
+        HashSet<GameObject> targetListSet = new HashSet<GameObject>(targetList);
 
-        foreach (Collider2D collider in colliders)
+        for (int i = 0; i < colliders.Length; i++)
         {
+            Collider2D collider = colliders[i];
             GameObject target = collider.gameObject;
             string targetTag = target.tag;
 
             if (targetTags.Contains(targetTag))
             {
-                if (!targetList.Contains(target))
+                TowerAi towerAiComponent = target.GetComponent<TowerAi>();
+                if (towerAiComponent != null && !towerAiComponent.capsule2D.isTrigger == false)//isTrigger가 아니라 die일때로 바꿔야할듯
                 {
+                    continue;
+                }                
+                else if (!targetListSet.Contains(target))
+                {
+                    targetListSet.Add(target);
                     targetList.Add(target);
-                }
+                }                
             }
         }
     }
@@ -421,16 +429,22 @@ public class MonsterAi : MonoBehaviour
 
     protected void AttackObjCheck(GameObject Obj)
     {
-        if (Obj != null)
+        if (targetDist > monsterData.AttackDist)
+            return;
+
+        else if(targetDist <= monsterData.AttackDist)
         {
-            if (Obj.GetComponent<PlayerStatus>())
-                Obj.GetComponent<PlayerStatus>().TakeDamage(monsterData.Damage);
-            else if (Obj.GetComponent<UnitAi>())
-                Obj.GetComponent<UnitAi>().TakeDamage(monsterData.Damage);
-            else if (Obj.GetComponent<TowerAi>())
-                Obj.GetComponent<TowerAi>().TakeDamage(monsterData.Damage);
-            else if (Obj.GetComponent<Structure>())
-                Obj.GetComponent<Structure>().TakeDamage(monsterData.Damage);
+            if (Obj != null)
+            {
+                if (Obj.GetComponent<PlayerStatus>())
+                    Obj.GetComponent<PlayerStatus>().TakeDamage(monsterData.Damage);
+                else if (Obj.GetComponent<UnitAi>())
+                    Obj.GetComponent<UnitAi>().TakeDamage(monsterData.Damage);
+                else if (Obj.GetComponent<TowerAi>())
+                    Obj.GetComponent<TowerAi>().TakeDamage(monsterData.Damage);
+                else if (Obj.GetComponent<Structure>())
+                    Obj.GetComponent<Structure>().TakeDamage(monsterData.Damage);
+            }
         }
     }
 

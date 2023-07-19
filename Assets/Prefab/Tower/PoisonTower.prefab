@@ -191,10 +191,10 @@ GameObject:
   - component: {fileID: 7592073746180229602}
   - component: {fileID: 7592073746180229603}
   - component: {fileID: 7592073746180229614}
-  - component: {fileID: 7592073746180229615}
   - component: {fileID: 7592073746180229600}
   - component: {fileID: 4499044516474926020}
-  m_Layer: 0
+  - component: {fileID: 4217045939000031503}
+  m_Layer: 8
   m_Name: PoisonTower
   m_TagString: Tower
   m_Icon: {fileID: 0}
@@ -210,7 +210,7 @@ Transform:
   m_GameObject: {fileID: 7592073746180229604}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.96, y: 0.96, z: 1}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7858025904867784596}
@@ -310,22 +310,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!58 &7592073746180229615
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7592073746180229604}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 10
 --- !u!70 &7592073746180229600
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -339,8 +323,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.85}
-  m_Size: {x: 1.5, y: 0.85}
+  m_Offset: {x: 0, y: -0.8}
+  m_Size: {x: 1.5, y: 0.75}
   m_Direction: 1
 --- !u!114 &4499044516474926020
 MonoBehaviour:
@@ -365,11 +349,28 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 7683537340506458647}
   repairGauge: 0
+  capsule2D: {fileID: 0}
   isPreBuilding: 0
   isSetBuildingOk: 0
   monsterList: []
   attackFX: {fileID: 3832536798139642931, guid: fdb8544d40d9b5e4a92423109023958f, type: 3}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
+--- !u!114 &4217045939000031503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7592073746180229604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  uniqueID: 2138985781139890718
+  updateError: 1
+  checkTime: 0.2
 --- !u!1 &8011384680271846714
 GameObject:
   m_ObjectHideFlags: 0

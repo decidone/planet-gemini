@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 262180438270614845}
   - component: {fileID: 262180438270614847}
   - component: {fileID: 262180438270614846}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Merger
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -104,6 +104,7 @@ MonoBehaviour:
   fluidIsFull: 0
   dirNum: 0
   dirCount: 0
+  level: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 6286358328183777270}
@@ -113,10 +114,10 @@ MonoBehaviour:
   repairBar: {fileID: 4544653209108275032}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
+  canBuilding: 1
   solidFactoryData: {fileID: 11400000, guid: 5d7c555f9c1c8c542944ff97a4e64561, type: 2}
   itemObjList: []
   itemList: []
-  box2D: {fileID: 0}
   modelNum:
   - {fileID: -588123693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
   - {fileID: 1414011693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
@@ -131,9 +132,9 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 262180438270614842}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 1
   m_Mass: 1.1875
   m_LinearDrag: 0
@@ -168,7 +169,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.1875}
+  m_Size: {x: 0.9, y: 0.9}
   m_EdgeRadius: 0
 --- !u!1 &2022314172133507151
 GameObject:

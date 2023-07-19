@@ -46,10 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1e910173d2bc5b458c9109598c669af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GetBelt: {fileID: 6368630732634495136}
-  SendBelt: {fileID: 712072425183305714}
+  getBelt: {fileID: 6368630732634495136}
+  sendBelt: {fileID: 712072425183305714}
   isPreBuilding: 0
   belt: {fileID: 0}
+  isSendBelt: 1
   beltScipt: {fileID: 0}
   dirNum: 0
 --- !u!1001 &63708887233787281

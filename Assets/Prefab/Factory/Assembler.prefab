@@ -90,7 +90,9 @@ GameObject:
   - component: {fileID: 1597667644691574810}
   - component: {fileID: 1597667644691574789}
   - component: {fileID: 1597667644691574814}
-  m_Layer: 0
+  - component: {fileID: 8480866024980907032}
+  - component: {fileID: 3808787349838589497}
+  m_Layer: 8
   m_Name: Assembler
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -189,7 +191,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.9, y: 0.9}
   m_EdgeRadius: 0
 --- !u!114 &1597667644691574810
 MonoBehaviour:
@@ -254,6 +256,43 @@ MonoBehaviour:
   cooldown: 3
   productionData: {fileID: 11400000, guid: 209c9acad5f193e4db292986ef205c22, type: 2}
   box2D: {fileID: 0}
+--- !u!114 &8480866024980907032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597667644691574791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  uniqueID: 4228045504067476369
+  updateError: 1
+  checkTime: 0.2
+--- !u!50 &3808787349838589497
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597667644691574791}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 7
 --- !u!1 &2403284375177730568
 GameObject:
   m_ObjectHideFlags: 0

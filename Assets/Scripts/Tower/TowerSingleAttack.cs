@@ -33,17 +33,44 @@ public class TowerSingleAttack : AttackTower
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / towerData.MaxBuildingGauge;
 
-        DisableColliders();
+        //DisableColliders();
+        ColliderTriggerOnOff(true);
 
         //towerState = TowerState.Die;
         isRuin = true;
         //isRepair = false;
 
-        foreach (GameObject monster in monsterList)
+        if (!isPreBuilding)
         {
-            if (monster.TryGetComponent(out MonsterAi monsterAi))
+            foreach (GameObject monster in monsterList)
             {
-                monsterAi.RemoveTarget(this.gameObject);
+                if (monster.TryGetComponent(out MonsterAi monsterAi))
+                {
+                    monsterAi.RemoveTarget(this.gameObject);
+                }
+            }
+        }
+        else
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);
+
+            foreach (Collider2D collider in colliders)
+            {
+                GameObject monster = collider.gameObject;
+                if (monster.CompareTag("Monster"))
+                {
+                    if (!monsterList.Contains(monster))
+                    {
+                        monsterList.Add(monster);
+                    }
+                }
+            }
+            foreach (GameObject monsterObj in monsterList)
+            {
+                if (monsterObj.TryGetComponent(out MonsterAi monsterAi))
+                {
+                    monsterAi.RemoveTarget(this.gameObject);
+                }
             }
         }
 

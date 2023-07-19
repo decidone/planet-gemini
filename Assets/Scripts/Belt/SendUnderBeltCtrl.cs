@@ -53,12 +53,13 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
                 {
                     if (nearObj[i] == null)
                     {
-                        if (i == 1)
-                            CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
-                        else if (i == 2)
+                        //if (i == 1)
+                        //    CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
+                        if (i == 2)
+                        //else if (i == 2)
                             CheckNearObj(checkPos[2], 2, obj => SetInObj(obj));
-                        else if (i == 3)
-                            CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
+                        //else if (i == 3)
+                        //    CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
                     }
                 }
             }

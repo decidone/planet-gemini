@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
             if (hit.collider != null)
             {
                 newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
-                if (newClickEvent != null)
+                if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                 {
                     if (clickEvent != null)
                     {
@@ -111,11 +111,13 @@ public class GameManager : MonoBehaviour
 
                     clickEvent = newClickEvent;
                     clickEvent.StructureClick();
-                    clickEvent.OpenUI();
+                    clickEvent.OpenUI();                    
                 }
+                else
+                    return;
 
                 solidFacNewClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
-                if (solidFacNewClickEvent != null)
+                if (solidFacNewClickEvent != null && !solidFacNewClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                 {
                     if (solidFacClickEvent != null)
                     {
@@ -124,8 +126,10 @@ public class GameManager : MonoBehaviour
 
                     solidFacClickEvent = solidFacNewClickEvent;
                     solidFacClickEvent.SolidFacCheck();
-                    solidFacClickEvent.OpenUI();
+                    solidFacClickEvent.OpenUI();                    
                 }
+                else
+                    return;
             }
         }
 
