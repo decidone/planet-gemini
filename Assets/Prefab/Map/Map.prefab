@@ -47,19 +47,45 @@ MonoBehaviour:
   biome: lake
   diffBiome: forest
   tiles:
-  - {fileID: 11400000, guid: 88562867fb9ffe146a9c621cd4402235, type: 2}
-  pointTiles:
+  - {fileID: 11400000, guid: ea603f490c76d9c4ca3210959283cdeb, type: 2}
+  - {fileID: 11400000, guid: 8f63f5a063269df43b54c82e27b4b58e, type: 2}
+  - {fileID: 11400000, guid: 016c82cd5c1c102478fff8999cd3e321, type: 2}
+  - {fileID: 11400000, guid: 5aa1479354afd664b88abba42507a6b1, type: 2}
   - {fileID: 11400000, guid: ee91e1dd73b40f8488a0bb29c5447534, type: 2}
-  exceptionalTiles:
+  - {fileID: 11400000, guid: 71e01dddbbc372b49a953c5d4964a391, type: 2}
   - {fileID: 11400000, guid: 88562867fb9ffe146a9c621cd4402235, type: 2}
+  - {fileID: 11400000, guid: cc189c51875cd0348878a87db9ac5a96, type: 2}
+  - {fileID: 11400000, guid: c072ea4f32ddc1f40b6e476a9c3af4d3, type: 2}
+  - {fileID: 11400000, guid: 79d1380988c6b934a9cacc856b1210e5, type: 2}
+  - {fileID: 11400000, guid: aae9a967f11f9cb4caf56411ebecebf4, type: 2}
+  - {fileID: 11400000, guid: fda3514e2141f2248a50beefeacfe6bf, type: 2}
+  - {fileID: 11400000, guid: eaf6985b3ae876842b61a28dcb6cadff, type: 2}
+  - {fileID: 11400000, guid: 37fb7b217fabc8a43a6163882a52c738, type: 2}
+  - {fileID: 11400000, guid: 142534d64ea84ec4d9af2a4b301ebb89, type: 2}
+  - {fileID: 11400000, guid: 701c1223dd32e1d49b80b338b7008f51, type: 2}
+  pointTiles: []
+  exceptionalTiles:
+  - {fileID: 11400000, guid: ea603f490c76d9c4ca3210959283cdeb, type: 2}
   top:
+  - {fileID: 11400000, guid: ced48e09531ba0d4fad78374cd0bb704, type: 2}
+  - {fileID: 11400000, guid: 3017a021a22ff2340ab2fbacb693de68, type: 2}
   - {fileID: 11400000, guid: 455cf23a66996f349a9e92b5c4f61ac0, type: 2}
+  - {fileID: 11400000, guid: b87dccb1e15ac9f40a7d4aaf4debc84a, type: 2}
   left:
   - {fileID: 11400000, guid: b90991f74caa80548b2c04ae2756001a, type: 2}
+  - {fileID: 11400000, guid: 4b5a2f52e7e6ebc4f8de6ea5e3e033f0, type: 2}
+  - {fileID: 11400000, guid: f55e2e1544716d849884b34dc616a4bc, type: 2}
+  - {fileID: 11400000, guid: 1aab57eb986c96e44ab9c81bf9e450ca, type: 2}
   right:
   - {fileID: 11400000, guid: 6038fe10f7e328341b7d40826964a552, type: 2}
+  - {fileID: 11400000, guid: 7483c31c61a2c1c42afd72b606c79c5e, type: 2}
+  - {fileID: 11400000, guid: a0b26d16fbe09fd478cb20b9aeb2c314, type: 2}
+  - {fileID: 11400000, guid: c7d06511b77842840b87091f184fca4e, type: 2}
   bottom:
   - {fileID: 11400000, guid: dd5e7dc29a2927247b01a23e1563a244, type: 2}
+  - {fileID: 11400000, guid: ca3d9f1a95a73334db51382f7d12cbf0, type: 2}
+  - {fileID: 11400000, guid: bf536527d68180e409a5cce52964d883, type: 2}
+  - {fileID: 11400000, guid: bfac8efb956fd1444b8a257ccf22784c, type: 2}
   corner:
   - {fileID: 11400000, guid: fbbf249d2d13c3044b85217e9f5b127f, type: 2}
   - {fileID: 11400000, guid: 942fd1a9ee874e64bb894cbf5f2e66e8, type: 2}
@@ -428,6 +454,7 @@ MonoBehaviour:
   oreSize: 0.05
   hostMap: 0
   tilemap: {fileID: 0}
+  lakeTile: {fileID: 0}
   objects: {fileID: 2480601899221957862}
   map: {fileID: 875718241}
   plain: {fileID: 2480601898745360442}

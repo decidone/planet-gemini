@@ -432,6 +432,10 @@ PrefabInstance:
       propertyPath: tilemap
       value: 
       objectReference: {fileID: 200245074}
+    - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
+      propertyPath: lakeTile
+      value: 
+      objectReference: {fileID: 1657229459}
     - target: {fileID: 2480601898731471735, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
       propertyPath: m_Name
       value: Map
@@ -609,6 +613,10 @@ PrefabInstance:
       propertyPath: sInvenManager
       value: 
       objectReference: {fileID: 1067319957431955763}
+    - target: {fileID: 8480866024980907032, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
+      propertyPath: uniqueID
+      value: 7657495667424585996
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
 --- !u!1001 &455235296
@@ -856,6 +864,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 20748179840043738, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
+      propertyPath: uniqueID
+      value: 6379655074428526460
+      objectReference: {fileID: 0}
     - target: {fileID: 4372891051652484689, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
       propertyPath: isPreBuilding
       value: 0
@@ -1453,6 +1465,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 20748179840043738, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
+      propertyPath: uniqueID
+      value: 1954920279822794817
+      objectReference: {fileID: 0}
     - target: {fileID: 4372891051652484689, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
       propertyPath: itemData
       value: 
@@ -1765,6 +1781,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe068c47125c8744eb4500be202a2006, type: 3}
+--- !u!1839735485 &1657229459 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 1657229459, guid: 2759a3724998939479e610db4ee5b66a, type: 3}
+  m_PrefabInstance: {fileID: 1358553896}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1769780998
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1910,6 +1931,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 20748179840043738, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
+      propertyPath: uniqueID
+      value: 7765557311431543639
+      objectReference: {fileID: 0}
     - target: {fileID: 4372891051652484689, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
       propertyPath: itemData
       value: 
@@ -1975,6 +2000,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 20748179840043738, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
+      propertyPath: uniqueID
+      value: 8424335759431563178
+      objectReference: {fileID: 0}
     - target: {fileID: 4372891051652484689, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
       propertyPath: itemData
       value: 

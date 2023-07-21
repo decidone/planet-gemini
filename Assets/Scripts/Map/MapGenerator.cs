@@ -17,6 +17,7 @@ public class MapGenerator : MonoBehaviour
 
     [Space]
     public Tilemap tilemap;
+    public Tilemap lakeTile;
     public GameObject objects;
     public Map map;
 
@@ -164,7 +165,15 @@ public class MapGenerator : MonoBehaviour
                 Biome biome = cell.biome;
                 Tile tile = biome.SetTile(random, map, x, y);
                 cell.tile = tile;
-                tilemap.SetTile(new Vector3Int(x, y, 0), tile);
+
+                if (biome.biome == "lake")
+                {
+                    lakeTile.SetTile(new Vector3Int(x, y, 0), tile);
+                }
+                else
+                {
+                    tilemap.SetTile(new Vector3Int(x, y, 0), tile);
+                }
             }
         }
     }
