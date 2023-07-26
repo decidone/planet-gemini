@@ -84,17 +84,25 @@ public class GameManager : MonoBehaviour
             int y = Mathf.FloorToInt(pos.y);
             if (debug && map.IsOnMap(x, y))
             {
+                string buildable = "";
+                foreach(string str in map.mapData[x][y].buildable)
+                {
+                    buildable = buildable + " " + str;
+                }
+
                 if (map.mapData[x][y].obj == null)
                 {
                     Debug.Log("x : " + x + ", y : " + y +
-                    ", biome : " + map.mapData[x][y].biome
+                    ", biome : " + map.mapData[x][y].biome +
+                    ", buildable : " + buildable
                     );
                 }
                 else
                 {
                     Debug.Log("x : " + x + ", y : " + y +
                     ", biome : " + map.mapData[x][y].biome +
-                    ", obj : " + map.mapData[x][y].obj.name
+                    ", obj : " + map.mapData[x][y].obj.name +
+                    ", buildable : " + buildable
                     );
                 }
             }

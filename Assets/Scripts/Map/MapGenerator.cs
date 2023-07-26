@@ -163,16 +163,18 @@ public class MapGenerator : MonoBehaviour
             {
                 Cell cell = map.mapData[x][y];
                 Biome biome = cell.biome;
-                Tile tile = biome.SetTile(random, map, x, y);
-                cell.tile = tile;
+                var tile = biome.SetTile(random, map, x, y);
+                cell.tile = tile.tile;
 
                 if (biome.biome == "lake")
                 {
-                    lakeTile.SetTile(new Vector3Int(x, y, 0), tile);
+                    lakeTile.SetTile(new Vector3Int(x, y, 0), tile.tile);
+                    if (tile.form == "side")
+                        cell.buildable.Add("pump");
                 }
                 else
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), tile);
+                    tilemap.SetTile(new Vector3Int(x, y, 0), tile.tile);
                 }
             }
         }
@@ -206,7 +208,7 @@ public class MapGenerator : MonoBehaviour
                         {
                             GameObject objInst = Instantiate(ore, objects.transform);
                             cell.obj = objInst;
-
+                            cell.buildable.Add("miner");
                             objInst.name = string.Format("map_x{0}_y{1}", x, y);
                             objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
                         }

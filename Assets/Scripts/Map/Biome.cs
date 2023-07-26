@@ -24,9 +24,10 @@ public class Biome : MonoBehaviour
     [Header("Objects")]
     public List<GameObject> objects;
     
-    public Tile SetTile(System.Random random, Map map, int x, int y)
+    public (Tile tile, string form) SetTile(System.Random random, Map map, int x, int y)
     {
         Tile tile = null;
+        string form = "corner";
         bool isBorder = false;
         if (exceptionalTiles.Count > 0)
         {
@@ -68,6 +69,7 @@ public class Biome : MonoBehaviour
                 isBorder = true;
                 if (nearDiff.Count == 1)
                 {
+                    form = "side";
                     if (nearDiff.Contains(1) && top.Count > 0)
                     {
                         tile = top[random.Next(0, top.Count)];
@@ -143,7 +145,7 @@ public class Biome : MonoBehaviour
             }
         }
 
-        return tile;
+        return (tile, form);
     }
 
     public GameObject SetObject(System.Random random)
