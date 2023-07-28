@@ -11,16 +11,20 @@ public class UnderPipeBuild : MonoBehaviour
 
     public GameObject underPipeObj = null;
     public Structure pipeScipt = null;
+    public bool isSendPipe = true;
 
     Vector2[] checkPos = new Vector2[4];
-
+    Vector2[] dirs = { Vector2.down, Vector2.left, Vector2.up, Vector2.right };
     public int dirNum = 0;
     int tempDir = 0;
     UnderPipeCtrl underpipeCtrl;
-
+    PreBuilding preBuilding;
+    public bool buildEnd = false;
     void Start()
     {
         SetSlotColor(underPipe.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
+        preBuilding = PreBuilding.instance;
+        tempDir = pipeScipt.dirNum;
     }
 
     // Update is called once per frame
@@ -29,7 +33,13 @@ public class UnderPipeBuild : MonoBehaviour
         if (isPreBuilding)
         {
             CheckPos();
-            CheckNearObj(checkPos[0]);
+            if (preBuilding !=null && preBuilding.isDrag)
+            {
+                if (!buildEnd)
+                {
+                    CheckNearObj(checkPos[0]);
+                }
+            }
         }
     }
 
@@ -51,34 +61,22 @@ public class UnderPipeBuild : MonoBehaviour
         {
             Collider2D factoryCollider = hits[i].collider;
 
-            if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != underPipeObj)
+            if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != underPipeObj && factoryCollider.gameObject.transform.position != underPipeObj.transform.position)
             {
                 underpipeCtrl = factoryCollider.GetComponent<UnderPipeCtrl>();
-                if (underpipeCtrl != null)
+                if (underpipeCtrl.isPreBuilding)
                 {
-                    if (underpipeCtrl.dirNum == 0)
+                    if (underpipeCtrl != null)
                     {
-                        pipeScipt.dirNum = 2;
+                        TurnDir(underpipeCtrl.dirNum);
+                        return;
                     }
-                    else if (underpipeCtrl.dirNum == 1)
+                    else if (underpipeCtrl != null)
                     {
-                        pipeScipt.dirNum = 3;
-                    }
-                    else if (underpipeCtrl.dirNum == 2)
-                    {
-                        pipeScipt.dirNum = 0;
-                    }
-                    else if (underpipeCtrl.dirNum == 3)
-                    {
-                        pipeScipt.dirNum = 1;
-                    }
-                }
-                else if(!factoryCollider.GetComponent<UnderPipeCtrl>())
-                {
-                    Debug.Log("dd");
-                    pipeScipt.dirNum = tempDir;
-
-                }
+                        isSendPipe = true;
+                        return;
+                    }    
+                }            
             }
         }
     }
@@ -91,7 +89,38 @@ public class UnderPipeBuild : MonoBehaviour
         //DisableColliders();
         pipeScipt.isPreBuilding = true;
         pipeScipt.dirNum = dirNum;
-        tempDir = pipeScipt.dirNum;
+    }
+
+    void TurnDir(int preDir)
+    {
+        if (pipeScipt.dirNum == 0 || pipeScipt.dirNum == 2)
+        {
+            if (preDir == 0)
+            {
+                pipeScipt.dirNum = 2;
+            }
+            else if (preDir == 2)
+            {
+                pipeScipt.dirNum = 0;
+            }
+        }
+        if (pipeScipt.dirNum == 1 || pipeScipt.dirNum == 3)
+        {
+            if (preDir == 1)
+            {
+                pipeScipt.dirNum = 3;
+            }
+            else if (preDir == 3)
+            {
+                pipeScipt.dirNum = 1;
+            }
+        }
+        if (tempDir == pipeScipt.dirNum)
+            isSendPipe = true;
+        else
+            isSendPipe = false;
+
+        dirNum = pipeScipt.dirNum;
     }
 
     void SetSlotColor(SpriteRenderer sprite, Color color, float alpha)

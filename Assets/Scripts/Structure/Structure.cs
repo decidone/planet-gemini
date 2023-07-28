@@ -16,7 +16,7 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public bool fluidIsFull = false;    // 창고 처럼 모든 칸이 구분없이 채울 수 있다면 모든 슬롯이 차있는지 체크하는 방식으로도 생각해 봐야함
 
-    [HideInInspector]
+    //[HideInInspector]
     public int dirNum = 0;
     [HideInInspector]
     public int dirCount = 0;

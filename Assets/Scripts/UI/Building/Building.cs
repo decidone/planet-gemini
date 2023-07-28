@@ -12,4 +12,5 @@ public class Building : ScriptableObject
 
     public int height = 0;
     public int width = 0;
+    public int dirCount = 0;
 }

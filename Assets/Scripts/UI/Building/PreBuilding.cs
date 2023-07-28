@@ -5,6 +5,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Pathfinding;
 
+enum MouseBtnFunc
+{
+    None,
+    MouseButtonDown,
+    MouseButton,
+    MouseButtonUp
+}
+
 public class PreBuilding : MonoBehaviour
 {
     public static PreBuilding instance;
@@ -32,18 +40,25 @@ public class PreBuilding : MonoBehaviour
     Vector3 startBuildPos;
     Vector3 startTempPos;
     Vector3 endBuildPos;
-    Vector3 tempPos;
-    public bool shiftKeyDown = false;
+
     bool isUnderObj = false;
     public bool isEnough = true;
 
     [SerializeField]
-    List<GameObject> buildingList = new List<GameObject>();
+    List<GameObject> buildingList = new List<GameObject>();    
+    Vector3 tempPos;
     [SerializeField]
     List<Vector3> posList = new List<Vector3>();
     bool isMoveX = true; 
     bool tempMoveX;
+    bool moveDir;
+    bool tempMoveDir;
     bool isPreBeltSend;
+    MouseBtnFunc mouseBtnFunc = MouseBtnFunc.None;
+    bool isMouseLeft = true;
+    public bool isDrag = false;
+    Coroutine setBuild;
+
     void Awake()
     {
         tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
@@ -60,29 +75,42 @@ public class PreBuilding : MonoBehaviour
 
     void Update()
     {
-        InputCheck();
-        BuildingListCtrl();
-
-        if (Input.GetKeyDown(KeyCode.R) && gameObj != null && !shiftKeyDown && !Input.GetMouseButton(0))
+        if (Input.GetKeyDown(KeyCode.R) && gameObj != null && !Input.GetMouseButton(0))
         {
             RotationImg(gameObj);
         }
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+
+        if (Input.GetMouseButtonDown(0))
         {
-            shiftKeyDown = true;
+            startBuildPos = transform.position;
+            endBuildPos = transform.position;
+            isMouseLeft = true;
+            if(!EventSystem.current.IsPointerOverGameObject())
+                mouseBtnFunc = MouseBtnFunc.MouseButtonDown;
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        else if (Input.GetMouseButton(0))
         {
-            shiftKeyDown = false;
+            isMouseLeft = true;
+            mouseBtnFunc = MouseBtnFunc.MouseButton;
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            isMouseLeft = true;
+            mouseBtnFunc = MouseBtnFunc.MouseButtonUp;
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            isMouseLeft = false;
+            mouseBtnFunc = MouseBtnFunc.MouseButtonUp;
         }
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int cellPosition = tilemap.WorldToCell(mousePosition);
         Vector3 cellCenter = tilemap.GetCellCenterWorld(cellPosition);
         cellCenter.z = transform.position.z;
-        transform.position = cellCenter;        
+        transform.position = cellCenter;
 
-        if(gameObj != null)
+        if (gameObj != null)
         {
             if (isBuildingOk && isEnough)
             {
@@ -103,157 +131,99 @@ public class PreBuilding : MonoBehaviour
                 }
             }
         }
+        InputCheck();
+        BuildingListCtrl();
+    }
+
+    void FixedUpdate()
+    {
+        if (!EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton && isMouseLeft)//Input.GetMouseButton(0))
+        {
+            if (startTempPos == startBuildPos)
+                startBuildPos = transform.position;
+
+            tempPos = transform.position;
+            float tempDeltaX = tempPos.x - endBuildPos.x;
+            float tempDeltaY = tempPos.y - endBuildPos.y;
+            float tempAbsDeltaX = Mathf.Abs(tempDeltaX);
+            float tempAbsDeltaY = Mathf.Abs(tempDeltaY);
+
+            if (tempAbsDeltaX >= 1 || tempAbsDeltaY >= 1)
+            {
+                endBuildPos = tempPos;
+
+                float deltaX = endBuildPos.x - startBuildPos.x;
+                float deltaY = endBuildPos.y - startBuildPos.y;
+                float absDeltaX = Mathf.Abs(deltaX);
+                float absDeltaY = Mathf.Abs(deltaY);
+
+                //posList.Clear();
+
+                if (absDeltaX >= absDeltaY)
+                    isMoveX = true;
+                else
+                    isMoveX = false;
+
+                CheckPos();
+                isDrag = true;
+            }
+        }
     }
 
     protected virtual void InputCheck()
     {
-        if (shiftKeyDown && isEnough)
+        if (!isEnough || mouseBtnFunc != MouseBtnFunc.MouseButtonUp)
+            return;
+
+        if (isMouseLeft)
         {
-            if (!EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
+            if (!isDrag && !EventSystem.current.IsPointerOverGameObject())
             {
-                startBuildPos = transform.position;
-                endBuildPos = transform.position; 
+                CheckPos();
             }
-            else if (!EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButton(0))
+
+            foreach (GameObject obj in buildingList)
             {
-                if (startTempPos == startBuildPos)
-                    startBuildPos = transform.position;
-
-                tempPos = transform.position;
-                float tempDeltaX = tempPos.x - endBuildPos.x;
-                float tempDeltaY = tempPos.y - endBuildPos.y;
-                float tempAbsDeltaX = Mathf.Abs(tempDeltaX);
-                float tempAbsDeltaY = Mathf.Abs(tempDeltaY);
-
-                if (tempAbsDeltaX >= 1 || tempAbsDeltaY >= 1)
+                setBuild = StartCoroutine("SetBuilding", obj);
+                if(obj.TryGetComponent(out UnderBeltCtrl underBelt))
                 {
-                    endBuildPos = tempPos;
-
-                    float deltaX = endBuildPos.x - startBuildPos.x;
-                    float deltaY = endBuildPos.y - startBuildPos.y;
-                    float absDeltaX = Mathf.Abs(deltaX);
-                    float absDeltaY = Mathf.Abs(deltaY);
-
-                    //posList.Clear();
-
-                    if (absDeltaX >= absDeltaY)
-                        isMoveX = true;
-                    else
-                        isMoveX = false;
-
-                    CheckPos();
+                    underBelt.buildEnd = true;
                 }
-            }    
-            else if (Input.GetMouseButtonUp(0))
-            {
-                if (buildingList.Count > 0)
+                else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
                 {
-                    foreach (GameObject obj in buildingList)
-                    {
-                        StartCoroutine("SetBuilding", obj);
-                    }
+                    underPipe.buildEnd = true;
                 }
-                buildingList.Clear();
-                startTempPos = startBuildPos;
-                gameObj.SetActive(true); 
-                posList.Clear();
-                //isEnough = BuildingInfo.instance.AmountsEnoughCheck();
             }
+
+            buildingList.Clear();
+            startTempPos = startBuildPos;
+            gameObj.SetActive(true);
+            posList.Clear();
+            isDrag = false;
         }
-        else if (!EventSystem.current.IsPointerOverGameObject() && Input.GetMouseButtonDown(0))
+        else
         {
-            startBuildPos = transform.position;
-            endBuildPos = transform.position;
-        }
-
-        else if (Input.GetMouseButtonUp(0) && !shiftKeyDown)
-        {
-            if (buildingList.Count > 0)
-            {
-                foreach (GameObject obj in buildingList)
-                {
-                    StartCoroutine("SetBuilding", obj);
-                }
-                buildingList.Clear();
-                startTempPos = startBuildPos;
-                gameObj.SetActive(true);
-                posList.Clear();
-            }
-            else
-            {
-                if (gameObj != null)
-                {
-                    if (isBuildingOk && BuildingInfo.instance.AmountsEnoughCheck())
-                    {
-                        GameObject obj = Instantiate(gameObj);
-                        SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
-                        obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = layNumTemp;
-
-                        obj.transform.position = gameObj.transform.position;
-
-                        if(obj.TryGetComponent(out Structure factory))
-                        {
-                            factory.SetBuild();
-                            factory.ColliderTriggerOnOff(false);
-                            obj.AddComponent<DynamicGridObstacle>();
-                        }
-                        else if (obj.TryGetComponent(out TowerAi tower))
-                        {
-                            tower.SetBuild();
-                            tower.ColliderTriggerOnOff(false);
-                            obj.AddComponent<DynamicGridObstacle>();
-                        }
-                        else if (obj.TryGetComponent(out BeltGroupMgr belt))
-                        {
-                            obj.transform.parent = beltMgr.transform;
-                            belt.isPreBuilding = false;
-                            belt.beltList[0].SetBuild();
-                            belt.beltList[0].ColliderTriggerOnOff(false);
-                            belt.beltList[0].gameObject.AddComponent<DynamicGridObstacle>();
-                        }
-                        else if (obj.TryGetComponent(out PipeGroupMgr pipe))
-                        {
-                            obj.transform.parent = pipeMgr.transform;
-                            pipe.isPreBuilding = false;
-                            pipe.pipeList[0].SetBuild();
-                            pipe.pipeList[0].ColliderTriggerOnOff(false);
-                            pipe.pipeList[0].gameObject.AddComponent<DynamicGridObstacle>();
-                        }
-                        else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
-                        {
-                            underBelt.beltScipt.SetBuild();
-                            underBelt.ColliderTriggerOnOff(false);
-                            underBelt.RemoveObj();
-                            underBelt.beltScipt.gameObject.AddComponent<DynamicGridObstacle>();
-                        }
-                        BuildingInfo.instance.BuildingEnd();
-                        isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-                    }
-                }
-            }
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (buildingList.Count > 0)
+            if(setBuild == null)
             {
                 foreach (GameObject build in buildingList)
                 {
                     Destroy(build);
                 }
-                buildingList.Clear();
-            }
-            ReSetImage();
-            shiftKeyDown = false;
-            posList.Clear();
-        }
-    }
 
+                buildingList.Clear();
+                ReSetImage();
+                posList.Clear();
+                isDrag = false;
+            }
+        }
+        mouseBtnFunc = MouseBtnFunc.None;
+    }
 
     void CheckPos()
     {
         if(posList.Count > 0)
         {
-            if (isMoveX != tempMoveX)
+            if (!isGetDir && isMoveX != tempMoveX)
             {
                 if (buildingList.Count > 0)
                 {
@@ -264,15 +234,13 @@ public class PreBuilding : MonoBehaviour
                     buildingList.Clear();
                 }
                 posList.Clear();
-                //tempMoveX = isMoveX;
             }
-
-            int posIndex = 0;
 
             List<GameObject> objectsToRemove = new List<GameObject>(); // 삭제된 오브젝트를 추적할 리스트
             List<Vector3> posToRemove = new List<Vector3>();
+            bool isRemoe = false;
 
-            if ((!isGetDir && isMoveX) || (isGetDir && dirNum == 1 || dirNum == 3))
+            if ((!isGetDir && isMoveX) || (isGetDir && (dirNum == 1 || dirNum == 3)))
             {
                 if (posList.Contains(new Vector3(tempPos.x, startBuildPos.y, 0)))
                 {
@@ -282,78 +250,84 @@ public class PreBuilding : MonoBehaviour
                         {
                             for (int i = 0; i < posList.Count; i++)
                             {
-                                if (i < buildingList.Count && tempPos.x > posList[i].x)
+                                if (tempPos.x > posList[i].x)
                                 {
-                                    Destroy(buildingList[i]);
-                                    objectsToRemove.Add(buildingList[i]);
                                     posToRemove.Add(posList[i]);
                                 }
-                                else
+                            }
+                            for (int b = buildingList.Count - 1; b > 0; b--)
+                            {
+                                if (tempPos.x > buildingList[b].transform.position.x)
                                 {
-                                    posIndex++;
+                                    Destroy(buildingList[b]);
+                                    objectsToRemove.Add(buildingList[b]);
+                                    isRemoe = true;
                                 }
                             }
-
                             buildingList.RemoveAll(obj => objectsToRemove.Contains(obj));
                             posList.RemoveAll(pos => posToRemove.Contains(pos));
+                            if (buildingList[buildingList.Count - 1].TryGetComponent(out UnderBeltCtrl lastBelt))
+                            {
+                                isPreBeltSend = lastBelt.isSendBelt;
+
+                                if (isRemoe && buildingList[buildingList.Count - 1].transform.position != posList[posList.Count - 1])
+                                {
+                                    AddBuildingToList(posList[posList.Count - 1]);
+                                    isPreBeltSend = !isPreBeltSend;
+                                }
+                            }
+                            else if (buildingList[buildingList.Count - 1].TryGetComponent(out UnderPipeBuild lastPipe))
+                            {
+                                isPreBeltSend = lastPipe.isSendPipe;
+
+                                if (isRemoe && buildingList[buildingList.Count - 1].transform.position != posList[posList.Count - 1])
+                                {
+                                    AddBuildingToList(posList[posList.Count - 1]);
+                                    isPreBeltSend = !isPreBeltSend;
+                                }
+                            }
                         }
                         else if (startBuildPos.x < posList[1].x)
                         {
                             for (int i = 0; i < posList.Count; i++)
                             {
-                                if (i < buildingList.Count && tempPos.x < posList[i].x)
+                                if (tempPos.x < posList[i].x)
                                 {
-                                    Destroy(buildingList[i]);
-                                    objectsToRemove.Add(buildingList[i]);
                                     posToRemove.Add(posList[i]);
                                 }
-                                else
+                            }
+                            for (int b = buildingList.Count - 1; b > 0; b--)
+                            {
+                                if (tempPos.x < buildingList[b].transform.position.x)
                                 {
-                                    posIndex++;
+                                    Destroy(buildingList[b]);
+                                    objectsToRemove.Add(buildingList[b]); 
+                                    isRemoe = true;
                                 }
                             }
-
                             buildingList.RemoveAll(obj => objectsToRemove.Contains(obj));
                             posList.RemoveAll(pos => posToRemove.Contains(pos));
+                            if (buildingList[buildingList.Count - 1].TryGetComponent(out UnderBeltCtrl lastBelt))
+                            {
+                                isPreBeltSend = lastBelt.isSendBelt;
+
+                                if (isRemoe && buildingList[buildingList.Count - 1].transform.position != posList[posList.Count - 1])
+                                {
+                                    AddBuildingToList(posList[posList.Count - 1]);
+                                    isPreBeltSend = !isPreBeltSend;
+                                }
+                            }
+                            else if (buildingList[buildingList.Count - 1].TryGetComponent(out UnderPipeBuild lastPipe))
+                            {
+                                isPreBeltSend = lastPipe.isSendPipe;
+
+                                if (isRemoe && buildingList[buildingList.Count - 1].transform.position != posList[posList.Count - 1])
+                                {
+                                    AddBuildingToList(posList[posList.Count - 1]);
+                                    isPreBeltSend = !isPreBeltSend;
+                                }
+                            }
                         }
-                        //if (startBuildPos.x > posList[1].x)
-                        //{
-                        //    for (int i = 0; i < posList.Count; i++)
-                        //    {
-                        //        if (tempPos.x > posList[i].x)
-                        //        {
-                        //            break;
-                        //        }
-                        //        posIndex++;
-                        //    }
-                        //    for (int i = posIndex; i < buildingList.Count; i++)
-                        //    {
-                        //        Destroy(buildingList[i]);
-                        //        objectsToRemove.Add(buildingList[i]);
-                        //        posToRemove.Add(posList[i]);
-                        //    }
-                        //    buildingList.RemoveAll(obj => objectsToRemove.Contains(obj));
-                        //    posList.RemoveAll(pos => posToRemove.Contains(pos));
-                        //}
-                        //else if (startBuildPos.x < posList[1].x)
-                        //{
-                        //    for (int i = 0; i < posList.Count; i++)
-                        //    {
-                        //        if (tempPos.x < posList[i].x)
-                        //        {
-                        //            break;
-                        //        }
-                        //        posIndex++;
-                        //    }
-                        //    for (int i = posIndex; i < buildingList.Count; i++)
-                        //    {
-                        //        Destroy(buildingList[i]);
-                        //        objectsToRemove.Add(buildingList[i]);
-                        //        posToRemove.Add(posList[i]);
-                        //    }
-                        //    buildingList.RemoveAll(obj => objectsToRemove.Contains(obj));
-                        //    posList.RemoveAll(pos => posToRemove.Contains(pos));
-                        //}
                     }
                 }
                 else
@@ -362,7 +336,7 @@ public class PreBuilding : MonoBehaviour
                 }
                 tempMoveX = true;
             }
-            else if((!isGetDir && !isMoveX) || (isGetDir && dirNum == 0 || dirNum == 2))
+            else if((!isGetDir && !isMoveX) || (isGetDir && (dirNum == 0 || dirNum == 2)))
             {
                 if (posList.Contains(new Vector3(startBuildPos.x, tempPos.y, 0)))
                 {
@@ -372,78 +346,82 @@ public class PreBuilding : MonoBehaviour
                         {
                             for (int i = 0; i < posList.Count; i++)
                             {
-                                if (i < buildingList.Count && tempPos.y > posList[i].y)
+                                if (tempPos.y > posList[i].y)
                                 {
-                                    Destroy(buildingList[i]);
-                                    objectsToRemove.Add(buildingList[i]);
                                     posToRemove.Add(posList[i]);
                                 }
-                                else
+                            }
+                            for (int b = buildingList.Count - 1; b > 0; b--)
+                            { 
+                                if(tempPos.y > buildingList[b].transform.position.y)
                                 {
-                                    posIndex++;
+                                    Destroy(buildingList[b]);
+                                    objectsToRemove.Add(buildingList[b]);
+                                    isRemoe = true;
                                 }
                             }
-
                             buildingList.RemoveAll(obj => objectsToRemove.Contains(obj));
                             posList.RemoveAll(pos => posToRemove.Contains(pos));
+                            if (buildingList[buildingList.Count - 1].TryGetComponent(out UnderBeltCtrl lastBelt))
+                            {
+                                isPreBeltSend = lastBelt.isSendBelt;
+
+                                if (isRemoe && buildingList[buildingList.Count - 1].transform.position != posList[posList.Count - 1])
+                                {
+                                    AddBuildingToList(posList[posList.Count - 1]);
+                                    isPreBeltSend = !isPreBeltSend;
+                                }
+                            }
+                            else if (buildingList[buildingList.Count - 1].TryGetComponent(out UnderPipeBuild lastPipe))
+                            {
+                                isPreBeltSend = lastPipe.isSendPipe;
+
+                                if (isRemoe && buildingList[buildingList.Count - 1].transform.position != posList[posList.Count - 1])
+                                {
+                                    AddBuildingToList(posList[posList.Count - 1]);
+                                    isPreBeltSend = !isPreBeltSend;
+                                }
+                            }
                         }
                         else if (startBuildPos.y < posList[1].y)
                         {
                             for (int i = 0; i < posList.Count; i++)
                             {
-                                if (i < buildingList.Count && tempPos.y < posList[i].y)
+                                if (tempPos.y < posList[i].y)
                                 {
-                                    Destroy(buildingList[i]);
-                                    objectsToRemove.Add(buildingList[i]);
                                     posToRemove.Add(posList[i]);
                                 }
-                                else
+                            }
+                            for (int b = buildingList.Count - 1; b > 0; b--)
+                            {
+                                if (tempPos.y < buildingList[b].transform.position.y)
                                 {
-                                    posIndex++;
+                                    Destroy(buildingList[b]);
+                                    objectsToRemove.Add(buildingList[b]);
+                                    isRemoe = true;
                                 }
                             }
-
                             buildingList.RemoveAll(obj => objectsToRemove.Contains(obj));
                             posList.RemoveAll(pos => posToRemove.Contains(pos));
+                            if (buildingList[buildingList.Count - 1].TryGetComponent(out UnderBeltCtrl lastBelt))
+                            {
+                                isPreBeltSend = lastBelt.isSendBelt;
+                                if (isRemoe && buildingList[buildingList.Count - 1].transform.position != posList[posList.Count - 1])
+                                {
+                                    AddBuildingToList(posList[posList.Count - 1]);
+                                    isPreBeltSend = !isPreBeltSend;
+                                }
+                            }
+                            else if (buildingList[buildingList.Count - 1].TryGetComponent(out UnderPipeBuild lastPipe))
+                            {
+                                isPreBeltSend = lastPipe.isSendPipe;
+                                if (isRemoe && buildingList[buildingList.Count - 1].transform.position != posList[posList.Count - 1])
+                                {
+                                    AddBuildingToList(posList[posList.Count - 1]);
+                                    isPreBeltSend = !isPreBeltSend;
+                                }
+                            }
                         }
-                        //if (startBuildPos.y > posList[1].y)
-                        //{
-                        //    for (int i = 0; i < posList.Count; i++)
-                        //    {
-                        //        if (tempPos.y > posList[i].y)
-                        //        {
-                        //            break;
-                        //        }
-                        //        posIndex++;
-                        //    }
-                        //    for (int i = posIndex; i < buildingList.Count; i++)
-                        //    {
-                        //        Destroy(buildingList[i]);
-                        //        objectsToRemove.Add(buildingList[i]);
-                        //        posToRemove.Add(posList[i]);
-                        //    }
-                        //    buildingList.RemoveAll(obj => objectsToRemove.Contains(obj));
-                        //    posList.RemoveAll(pos => posToRemove.Contains(pos));
-                        //}
-                        //else if (startBuildPos.y < posList[1].y)
-                        //{
-                        //    for (int i = 0; i < posList.Count; i++)
-                        //    {
-                        //        if (tempPos.y < posList[i].y)
-                        //        {
-                        //            break;
-                        //        }
-                        //        posIndex++;
-                        //    }
-                        //    for (int i = posIndex; i < buildingList.Count; i++)
-                        //    {
-                        //        Destroy(buildingList[i]);
-                        //        objectsToRemove.Add(buildingList[i]);
-                        //        posToRemove.Add(posList[i]);
-                        //    }
-                        //    buildingList.RemoveAll(obj => objectsToRemove.Contains(obj));
-                        //    posList.RemoveAll(pos => posToRemove.Contains(pos));
-                        //}
                     }
                 }
                 else
@@ -457,137 +435,75 @@ public class PreBuilding : MonoBehaviour
         {
             SetPos();
         }
-     
- 
-        //if (isMoveX)
-        //{
-        //    float currentX = startBuildPos.x;
-        //    float direction = Mathf.Sign(endBuildPos.x - startBuildPos.x);
-
-        //    while (Mathf.Approximately(currentX, endBuildPos.x) || (direction > 0 && currentX <= endBuildPos.x) || (direction < 0 && currentX >= endBuildPos.x))
-        //    {
-
-        //        Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
-        //        posList.Add(position);
-        //        currentX += objWidth * direction;
-        //    }
-        //}
-        //else
-        //{
-        //    float currentY = startBuildPos.y;
-        //    float direction = Mathf.Sign(endBuildPos.y - startBuildPos.y);
-
-        //    while (Mathf.Approximately(currentY, endBuildPos.y) || (direction > 0 && currentY <= endBuildPos.y) || (direction < 0 && currentY >= endBuildPos.y))
-        //    {
-        //        Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
-        //        posList.Add(position);
-        //        currentY += objHeight * direction;
-        //    }
-        //}
-
     }
 
     void SetPos()
     {
-        //float deltaX = endBuildPos.x - startBuildPos.x;
-        //float deltaY = endBuildPos.y - startBuildPos.y;
-        //float absDeltaX = Mathf.Abs(deltaX);
-        //float absDeltaY = Mathf.Abs(deltaY);
-
-        ////posList.Clear();
-
-        //if (absDeltaX >= absDeltaY)
-        //    isMoveX = true;
-        //else
-        //    isMoveX = false;
-
         if (isGetDir)
         {
             if (dirNum == 0 || dirNum == 2)
-            {
-                //if (!isMoveX)
-                {
-                    float currentY = startBuildPos.y;
-                    float direction = Mathf.Sign(endBuildPos.y - startBuildPos.y);
+            {                
+                float currentY = startBuildPos.y;
+                float direction = Mathf.Sign(endBuildPos.y - startBuildPos.y);
 
-                    if (dirNum == 0)
+                if (dirNum == 0)
+                {
+                    while (Mathf.Approximately(currentY, endBuildPos.y) || (direction > 0 && currentY <= endBuildPos.y))
                     {
-                        while (Mathf.Approximately(currentY, endBuildPos.y) || (direction > 0 && currentY < endBuildPos.y))
+                        Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
+                        if (!posList.Contains(position))
                         {
-                            Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
-                            if (!posList.Contains(position))
-                            {
-                                posList.Add(position);
-                                CreateObj(position);
-                            }
-                            currentY += objHeight * direction;
+                            posList.Add(position);
+                            CreateObj(position);                            
                         }
-                    }
-                    else if (dirNum == 2)
-                    {
-                        while (Mathf.Approximately(currentY, endBuildPos.y) || (direction < 0 && currentY > endBuildPos.y))
-                        {
-                            Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
-                            if (!posList.Contains(position))
-                            {
-                                posList.Add(position);
-                                CreateObj(position);
-                            }
-                            currentY += objHeight * direction;
-                        }
+                        currentY += objHeight * direction;
                     }
                 }
-                //else
-                //{
-                //    if (!posList.Contains(startBuildPos))
-                //    {
-                //        posList.Add(startBuildPos);
-                //        CreateObj(startBuildPos);
-                //    }
-                //}
+                else if (dirNum == 2)
+                {
+                    while (Mathf.Approximately(currentY, endBuildPos.y) || (direction < 0 && currentY >= endBuildPos.y))
+                    {
+                        Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
+                        if (!posList.Contains(position))
+                        {
+                            posList.Add(position);
+                            CreateObj(position);
+                        }
+                        currentY += objHeight * direction;
+                    }
+                }
             }
             else if (dirNum == 1 || dirNum == 3)
-            {
-                //if (isMoveX)
-                {
-                    float currentX = startBuildPos.x;
-                    float direction = Mathf.Sign(endBuildPos.x - startBuildPos.x);
+            {                
+                float currentX = startBuildPos.x;
+                float direction = Mathf.Sign(endBuildPos.x - startBuildPos.x);
 
-                    if (dirNum == 1)
+                if (dirNum == 1)
+                {
+                    while (Mathf.Approximately(currentX, endBuildPos.x) || (direction > 0 && currentX <= endBuildPos.x))
                     {
-                        while (Mathf.Approximately(currentX, endBuildPos.x) || (direction > 0 && currentX < endBuildPos.x))
+                        Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
+                        if (!posList.Contains(position))
                         {
-                            Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
-                            if (!posList.Contains(position))
-                            {
-                                posList.Add(position);
-                                CreateObj(position);
-                            }
-                            currentX += objWidth * direction;
+                            posList.Add(position);
+                            CreateObj(position);
                         }
-                    }
-                    else if (dirNum == 3)
-                    {
-                        while (Mathf.Approximately(currentX, endBuildPos.x) || (direction < 0 && currentX > endBuildPos.x))
-                        {
-                            Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
-                            if (!posList.Contains(position))
-                            {
-                                posList.Add(position);
-                                CreateObj(position);
-                            }
-                            currentX += objWidth * direction;
-                        }
+                        currentX += objWidth * direction;
                     }
                 }
-                //else
-                //{
-                //    if (!posList.Contains(startBuildPos))
-                //    {
-                //        posList.Add(startBuildPos);
-                //        CreateObj(startBuildPos);
-                //    }
-                //}
+                else if (dirNum == 3)
+                {
+                    while (Mathf.Approximately(currentX, endBuildPos.x) || (direction < 0 && currentX >= endBuildPos.x))
+                    {
+                        Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
+                        if (!posList.Contains(position))
+                        {
+                            posList.Add(position);
+                            CreateObj(position);
+                        }
+                        currentX += objWidth * direction;
+                    }
+                }
             }
             gameObj.SetActive(false);
         }
@@ -597,6 +513,44 @@ public class PreBuilding : MonoBehaviour
             {
                 float currentX = startBuildPos.x;
                 float direction = Mathf.Sign(endBuildPos.x - startBuildPos.x);
+
+                if(buildingList.Count == 0)
+                {
+                    if (direction > 0 && currentX <= endBuildPos.x)
+                    {
+                        moveDir = true;
+                    }
+                    else if (direction < 0 && currentX >= endBuildPos.x)
+                    {
+                        moveDir = false;
+                    }
+                    tempMoveDir = moveDir;
+                }
+                else
+                {
+                    if(direction > 0 && currentX <= endBuildPos.x)
+                    {
+                        moveDir = true;
+                    }
+                    else if (direction < 0 && currentX >= endBuildPos.x)
+                    {
+                        moveDir = false;
+                    }
+
+                    if (moveDir != tempMoveDir)
+                    {
+                        if (buildingList.Count > 0)
+                        {
+                            foreach (GameObject build in buildingList)
+                            {
+                                Destroy(build);
+                            }
+                            buildingList.Clear();
+                        }
+                        posList.Clear();
+                    }
+                }
+
                 while (Mathf.Approximately(currentX, endBuildPos.x) || (direction > 0 && currentX <= endBuildPos.x) || (direction < 0 && currentX >= endBuildPos.x))
                 {
                     Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
@@ -607,11 +561,51 @@ public class PreBuilding : MonoBehaviour
                     }
                     currentX += objWidth * direction;
                 }
+                tempMoveDir = moveDir;
             }
             else
             {
                 float currentY = startBuildPos.y;
                 float direction = Mathf.Sign(endBuildPos.y - startBuildPos.y);
+
+                if (buildingList.Count == 0)
+                {
+                    if (direction > 0 && currentY <= endBuildPos.y)
+                    {
+                        moveDir = true;
+                    }
+                    else if (direction < 0 && currentY >= endBuildPos.y)
+                    {
+                        moveDir = false;
+                    }
+                    tempMoveDir = moveDir;
+
+                }
+                else
+                {
+                    if (direction > 0 && currentY <= endBuildPos.y)
+                    {
+                        moveDir = true;
+                    }
+                    else if (direction < 0 && currentY >= endBuildPos.y)
+                    {
+                        moveDir = false;
+                    }
+
+                    if (moveDir != tempMoveDir)
+                    {
+                        if (buildingList.Count > 0)
+                        {
+                            foreach (GameObject build in buildingList)
+                            {
+                                Destroy(build);
+                            }
+                            buildingList.Clear();
+                        }
+                        posList.Clear();
+                    }
+                }
+
                 while (Mathf.Approximately(currentY, endBuildPos.y) || (direction > 0 && currentY <= endBuildPos.y) || (direction < 0 && currentY >= endBuildPos.y))
                 {
                     Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
@@ -622,12 +616,10 @@ public class PreBuilding : MonoBehaviour
                     }
                     currentY += objHeight * direction;
                 }
+                tempMoveDir = moveDir;
             }
             gameObj.SetActive(false);
-            //CreateObj(startBuildPos);
         }
-        //if (posList.Count > 0)
-        //    CreateObj();
     }
 
     IEnumerator SetBuilding(GameObject obj)
@@ -713,6 +705,21 @@ public class PreBuilding : MonoBehaviour
                     yield break;
                 }
             }
+            else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+            {
+                if (underPipe.pipeScipt.canBuilding)
+                {
+                    underPipe.pipeScipt.SetBuild();
+                    underPipe.ColliderTriggerOnOff(false);
+                    underPipe.RemoveObj();
+                    underPipe.pipeScipt.gameObject.AddComponent<DynamicGridObstacle>();
+                }
+                else
+                {
+                    Destroy(obj);
+                    yield break;
+                }
+            }
             BuildingInfo.instance.BuildingEnd();
         }
         else
@@ -720,12 +727,11 @@ public class PreBuilding : MonoBehaviour
             Destroy(obj);
         }
         isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+        setBuild = null;
     }
 
     void CreateObj(Vector3 pos)
     {
-        Vector3 lastPos = posList[posList.Count - 1];
-
         if (isNeedSetPos)
         {
             AddBuildingToList(pos - setPos);
@@ -738,86 +744,47 @@ public class PreBuilding : MonoBehaviour
             }
             else
             {
+                UnderBeltCtrl underBelt = gameObj.GetComponent<UnderBeltCtrl>();
+                UnderPipeBuild underPipe = gameObj.GetComponent<UnderPipeBuild>();
+
                 if (buildingList.Count == 0)
                 {
                     AddBuildingToList(pos);
-                    isPreBeltSend = gameObj.GetComponent<UnderBeltCtrl>().isSendBelt;
+                    if(underBelt != null)
+                    {
+                        isPreBeltSend = underBelt.isSendBelt;
+                    }
+                    else if (underPipe != null)
+                    {
+                        isPreBeltSend = underPipe.isSendPipe;
+                    }
                 }
                 else if (buildingList.Count > 0)
                 {
                     if (!isPreBeltSend)
                     {
-                        AddBuildingToList(pos);
-                        isPreBeltSend = !isPreBeltSend;
-                    }
-                    else
-                    {
-                        Debug.Log(Vector3.Distance(pos, buildingList[buildingList.Count - 1].transform.position) > 9);
-                        if (Vector3.Distance(pos, buildingList[buildingList.Count - 1].transform.position) > 9)
-                        {
+                        if (buildingList.Count == 1)
+                        {                            
                             AddBuildingToList(pos);
                             isPreBeltSend = !isPreBeltSend;
                         }
+                        else if (Vector3.Distance(pos, buildingList[buildingList.Count - 2].transform.position) >= 11)
+                        {
+                            AddBuildingToList(pos);
+                            isPreBeltSend = !isPreBeltSend; 
+                        }
+                        else if (Vector3.Distance(pos, buildingList[buildingList.Count - 2].transform.position) < 11)
+                        {
+                            AddBuildingToList(pos);
+                            Destroy(buildingList[buildingList.Count - 2]);
+                            buildingList.RemoveAt(buildingList.Count - 2);
+                        }
                     }
-
-
-                    //UnderBeltCtrl underBeltCtrl = gameObj.GetComponent<UnderBeltCtrl>();
-
-                    //if ((underBeltCtrl.dirNum == 0 || underBeltCtrl.dirNum == 2) ||
-                    //    (underBeltCtrl.dirNum == 1 || underBeltCtrl.dirNum == 3))
-                    //{
-                    //    if (posList.Count <= 12)
-                    //    {
-                    //        AddBuildingToList(pos);
-                    //        if(buildingList.Count > 2 && posList.Count != 12)
-                    //        {
-                    //            Destroy(buildingList[buildingList.Count - 2]);
-                    //            buildingList.RemoveAt(buildingList.Count - 2);
-                    //        }
-                    //        else
-                    //        {
-                    //            isPreBeltSend = !isPreBeltSend;
-                    //        }
-                    //    }
-                    //    else if (posList.Count > 12)
-                    //    {
-                    //        if(!isPreBeltSend)
-                    //        {
-                    //            AddBuildingToList(pos); 
-                    //            isPreBeltSend = !isPreBeltSend;
-                    //        }
-                    //        else
-                    //        {
-                    //            Debug.Log(Vector3.Distance(pos, buildingList[buildingList.Count - 1].transform.position) > 9);
-                    //            if(Vector3.Distance(pos, buildingList[buildingList.Count - 1].transform.position) > 9)
-                    //            {
-                    //                AddBuildingToList(pos);
-                    //                isPreBeltSend = !isPreBeltSend;
-                    //            }
-                    //        }
-                    //    }
-                        //else if (posList.Count > 12)
-                        //{
-                        //    if (pos == lastPos || setNum == 1 || setNum % 13 == 0)
-                        //    {
-                        //        AddBuildingToList(pos);
-                        //        if (buildingList.Count > 2 && setNum != 0)
-                        //        {
-                        //            Destroy(buildingList[buildingList.Count - 2]);
-                        //            buildingList.RemoveAt(buildingList.Count - 2);
-                        //        }
-                        //        if (setNum % 13 == 0)
-                        //        {
-                        //            setNum = 0;
-                        //        }
-                        //    }
-                        //}
-                        //Debug.Log(setNum);
-                    //}
-                    //else
-                    //{
-                    //    AddBuildingToList(pos);
-                    //}
+                    else
+                    {
+                        AddBuildingToList(pos);
+                        isPreBeltSend = !isPreBeltSend;
+                    }
                 }
             }
         }        
@@ -893,7 +860,7 @@ public class PreBuilding : MonoBehaviour
         buildingList.Add(obj);
     }
 
-    public void SetImage(GameObject game, int level, int height, int width)
+    public void SetImage(GameObject game, int level, int height, int width, int dirCount)
     {
         if (this.transform.childCount > 0)
         {
@@ -910,16 +877,7 @@ public class PreBuilding : MonoBehaviour
             factory.ColliderTriggerOnOff(true);
             //factory.DisableColliders();
             factory.level = level;
-            if (factory.dirCount == 4)
-            {
-                isGetDir = true;
-                dirNum = factory.dirNum;
-            }
-            else
-            {
-                isGetDir = false;
-                dirNum = 0;
-            }
+            dirNum = factory.dirNum;
         }
         else if (gameObj.TryGetComponent(out TowerAi tower))
         {
@@ -927,7 +885,7 @@ public class PreBuilding : MonoBehaviour
             //tower.DisableColliders();
             tower.ColliderTriggerOnOff(true);
             tower.level = level;
-            isGetDir = false;
+            //isGetDir = false;
             dirNum = 0;
         }
         else if (gameObj.TryGetComponent(out BeltGroupMgr belt))
@@ -938,28 +896,36 @@ public class PreBuilding : MonoBehaviour
             belt.beltList[0].ColliderTriggerOnOff(true);
             //belt.beltList[0].DisableColliders();
             belt.beltList[0].level = level;
-            isGetDir = true;
-            dirNum = belt.beltList[0].dirNum;            
+            //isGetDir = true;
+            dirNum = belt.beltList[0].dirNum;
         }
-        //else if (gameObj.TryGetComponent(out PipeGroupMgr pipe))
-        //{
-        //    pipe.isPreBuilding = true;
-        //    pipe.SetPipe(0);
-        //    pipe.pipeList[0].isPreBuilding = true;
-        //    pipe.pipeList[0].ColliderTriggerOnOff(true);
-        //    //pipe.pipeList[0].DisableColliders();
-        //    isUnderObj = true;
-        //    isGetDir = true;
-        //    dirNum = pipe.pipeList[0].dirNum;            
-        //}
+        else if (gameObj.TryGetComponent(out PipeGroupMgr pipe))
+        {
+            pipe.isPreBuilding = true;
+            pipe.SetPipe(0);
+            pipe.pipeList[0].isPreBuilding = true;
+            pipe.pipeList[0].ColliderTriggerOnOff(true);
+            //pipe.pipeList[0].DisableColliders();
+            //isGetDir = false;
+            dirNum = pipe.pipeList[0].dirNum;
+        }
         else if (gameObj.TryGetComponent(out UnderBeltCtrl underBelt))
         {
             underBelt.isPreBuilding = true;
             underBelt.SetSendUnderBelt();
             //underBelt.SetLevel(level);
             isUnderObj = true;
-            isGetDir = true;
+            //isGetDir = true;
             dirNum = underBelt.dirNum;            
+        }
+        else if (gameObj.TryGetComponent(out UnderPipeBuild underPipe))
+        {
+            underPipe.isPreBuilding = true;
+            underPipe.SetUnderPipe();
+            //underBelt.SetLevel(level);
+            isUnderObj = true;
+            isGetDir = true;
+            dirNum = underPipe.dirNum;
         }
 
         if (height == 1 && width == 1)
@@ -983,10 +949,23 @@ public class PreBuilding : MonoBehaviour
         objHeight = height;
         objWidth = width;
 
+        if (dirCount == 4)
+        {
+            isGetDir = true;
+        }
+        else
+        {
+            isGetDir = false;
+        }
+
         gameObj.transform.parent = this.transform;
 
-        spriteRenderer = gameObj.GetComponentInChildren<SpriteRenderer>();
-        layNumTemp = spriteRenderer.sortingOrder;
+        if(gameObj.GetComponentInChildren<SpriteRenderer>() != null)
+        {
+             spriteRenderer = gameObj.GetComponentInChildren<SpriteRenderer>();
+            layNumTemp = spriteRenderer.sortingOrder;
+        }
+
 
         spriteRenderer.sortingOrder = 50;
         if(!gameObj.GetComponent<UnderBeltCtrl>())
@@ -1039,6 +1018,10 @@ public class PreBuilding : MonoBehaviour
                 {
                     canBuilding = underBelt.beltScipt.canBuilding;
                 }
+                else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+                {
+                    canBuilding = underPipe.pipeScipt.canBuilding;
+                }
 
                 if (!canBuilding)
                 {
@@ -1049,7 +1032,7 @@ public class PreBuilding : MonoBehaviour
                     SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorGreen, alpha);
                 }
             }
-        }        
+        }
     }
 
     public void ReSetImage()
@@ -1091,6 +1074,15 @@ public class PreBuilding : MonoBehaviour
 
             underBelt.dirNum = underBelt.beltScipt.dirNum;
             dirNum = underBelt.beltScipt.dirNum;
+        }
+        else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+        {
+            underPipe.pipeScipt.dirNum++;
+            if (underPipe.pipeScipt.dirNum >= underPipe.pipeScipt.dirCount)
+                underPipe.pipeScipt.dirNum = 0;
+
+            underPipe.dirNum = underPipe.pipeScipt.dirNum;
+            dirNum = underPipe.pipeScipt.dirNum;
         }
     }
 }

@@ -21,6 +21,7 @@ public class UnderBeltCtrl : MonoBehaviour
     public int dirNum = 0;
     GetUnderBeltCtrl getUnderBeltCtrl;
     SendUnderBeltCtrl sendUnderBeltCtrl;
+    public bool buildEnd = false;
 
     void Start()
     {
@@ -34,7 +35,10 @@ public class UnderBeltCtrl : MonoBehaviour
         if(isPreBuilding)
         {
             CheckPos();
-            CheckNearObj(checkPos[0]);
+            if (!buildEnd)
+            {
+                CheckNearObj(checkPos[0]);
+            }
         }
     }
 
@@ -62,19 +66,17 @@ public class UnderBeltCtrl : MonoBehaviour
                 //FactoryCtrl factoryCtrl = factoryCollider.GetComponent<FactoryCtrl>();
                 getUnderBeltCtrl = factoryCollider.GetComponent<GetUnderBeltCtrl>();
                 sendUnderBeltCtrl = factoryCollider.GetComponent<SendUnderBeltCtrl>();
-
                 if (getUnderBeltCtrl != null && getUnderBeltCtrl.dirNum == dirNum)
                 {
                     SetSendUnderBelt();
                     return;
                 }
-
                 if (sendUnderBeltCtrl != null && sendUnderBeltCtrl.dirNum == dirNum)
                 {
                     SetGetUnderBelt();
                     return;
                 }
-            }
+            }            
         }
         ReturnSendBelt();
     }

@@ -76,7 +76,6 @@ public class BuildingInvenManager : MonoBehaviour
             if (buildingInventory.buildingDic[i].item == focusedSlot.item && buildingInventory.buildingDic[i].level == focusedSlot.amount)
             {
                 BuildingInfo.instance.SetItemSlot(buildingData, buildingInventory.buildingDic[i]);
-                Debug.Log(buildingInventory.buildingDic[i].level);
             }
         }
 
