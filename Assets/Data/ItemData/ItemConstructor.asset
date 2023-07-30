@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ItemConstructor
   m_EditorClassIdentifier: 
   name: Constructor
-  icon: {fileID: 1083056278, guid: 8a38568c3ac83434082939895f687f86, type: 3}
+  icon: {fileID: 464322378, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}

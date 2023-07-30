@@ -10,5 +10,13 @@
     "Assembler":[
         {"name":"Coal","items":["Gold","GoldBar","Coal"],"amounts":[2,1,2],"cooldown":3},
         {"name":"Gold","items":["Iron","IronBar","Gold"],"amounts":[1,1,2],"cooldown":3}
+    ],
+    "Smelter":[
+        {"name":"Coal","items":["Gold","GoldBar","Coal"],"amounts":[2,1,2],"cooldown":3},
+        {"name":"Gold","items":["Iron","IronBar","Gold"],"amounts":[1,1,2],"cooldown":3}
+    ],
+    "Manufacturer":[
+        {"name":"Iron","items":["Gold","GoldBar","Coal","Iron"],"amounts":[2,1,1,2],"cooldown":3},
+        {"name":"Gold","items":["Iron","IronBar","Coal","Gold"],"amounts":[1,1,1,2],"cooldown":3}
     ]
 }
