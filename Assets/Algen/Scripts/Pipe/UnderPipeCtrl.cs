@@ -13,7 +13,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     Sprite[] modelNum = new Sprite[4];
     SpriteRenderer setModel;
 
-    GameObject otherPipe = null;
+    public GameObject otherPipe = null;
 
     public GameObject connectUnderPipe = null;
 
@@ -41,7 +41,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                         if (i == 0)
                             CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
                         else if (i == 1)
-                            CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                            CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));                        
                     }
                 }
 
@@ -70,23 +70,23 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     {
         if (dirNum == 0)
         {
-            checkPos[0] = -transform.up;
-            checkPos[1] = transform.up;
-        }
-        else if (dirNum == 1)
-        {
-            checkPos[0] = -transform.right;
-            checkPos[1] = transform.right;
-        }
-        else if (dirNum == 2)
-        {
             checkPos[0] = transform.up;
             checkPos[1] = -transform.up;
         }
-        else if (dirNum == 3)
+        else if (dirNum == 1)
         {
             checkPos[0] = transform.right;
             checkPos[1] = -transform.right;
+        }
+        else if (dirNum == 2)
+        {
+            checkPos[0] = -transform.up;
+            checkPos[1] = transform.up;
+        }
+        else if (dirNum == 3)
+        {
+            checkPos[0] = -transform.right;
+            checkPos[1] = transform.right;
         }
     }
 
@@ -187,6 +187,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                     otherPipe = obj;
                 }
             }
+            otherPipe = obj;
         }
     }
 

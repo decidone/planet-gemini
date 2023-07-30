@@ -80,7 +80,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -1393652103, guid: 98d2d4d2e2ceca04c859878cf361943a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -166,8 +166,8 @@ MonoBehaviour:
   unitSprite: {fileID: 248036444977090384}
   unitCanvas: {fileID: 3900482381079000164}
   unitAIState: 0
+  unitLastState: 0
   unitSelImg: {fileID: 5345713938874468926}
-  aggroTarget: {fileID: 0}
   monsterList: []
   hpBar: {fileID: 5542614678106668238}
 --- !u!114 &-4049017294882040239
@@ -470,7 +470,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingOrder: 0
   m_Sprite: {fileID: -34568631, guid: a7813361682fbf64ebe8f2881c8a4f8d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0

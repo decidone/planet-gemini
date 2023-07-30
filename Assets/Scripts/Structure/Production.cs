@@ -537,17 +537,14 @@ public abstract class Production : Structure
             buildingPosObj.Add(collision.gameObject);            
             if (buildingPosObj.Count > 0)
             {
-                canBuilding = false;
-
+                if (!collision.GetComponentInParent<PreBuilding>())
+                {
+                    canBuilding = false;
+                }
                 PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
                 if (preBuilding != null)
                 {
-                    if (collision.GetComponent<SolidFactoryCtrl>() && !collision.GetComponent<SolidFactoryCtrl>().isSetBuildingOk)
-                    {
-                        preBuilding.isBuildingOk = true;
-                    }
-                    else
-                        preBuilding.isBuildingOk = false;
+                    preBuilding.isBuildingOk = false;
                 }
             }
         }

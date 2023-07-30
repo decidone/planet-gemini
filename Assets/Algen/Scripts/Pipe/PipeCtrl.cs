@@ -63,7 +63,7 @@ public class PipeCtrl : FluidFactoryCtrl
             {
                 if (Hits[a].collider.GetComponent<PipeCtrl>() != null && Hits[a].collider.CompareTag("Factory") && 
                     !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
-                {                    
+                {
                     if (Hits[a].collider.GetComponent<PipeCtrl>() != null)
                         pipeGroupMgr.CheckGroup(Hits[a].collider.GetComponent<PipeCtrl>());
 

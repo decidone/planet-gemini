@@ -237,6 +237,7 @@ MonoBehaviour:
   repairBar: {fileID: 5987129193063934876}
   itemPref: {fileID: 0}
   outSameList: []
+  canBuilding: 1
   fluidFactoryData: {fileID: 11400000, guid: ab2027e14cf27f74e98497caaa1d172f, type: 2}
   fluidName: 
   saveFluidNum: 0
@@ -245,10 +246,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   modelNum:
-  - {fileID: 898153619, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
-  - {fileID: 237755507, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
   - {fileID: 450492463, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
   - {fileID: -1350027233, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
+  - {fileID: 898153619, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
+  - {fileID: 237755507, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
   connectUnderPipe: {fileID: 0}
 --- !u!1 &3569326893753386058
 GameObject:

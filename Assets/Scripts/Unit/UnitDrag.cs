@@ -37,6 +37,9 @@ public class UnitDrag : MonoBehaviour
     bool unitCtrlKeyPressed = false;
     bool isPKeyPressed = false;
     bool isAKeyPressed = false;
+
+    public GameObject preBuilding = null;
+
     //bool isHKeyPressed = false;
     void Start()
     {
@@ -46,71 +49,74 @@ public class UnitDrag : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        if (!preBuilding.activeSelf)
         {
-            isPKeyPressed = true;
-            unitCtrlKeyPressed = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            isAKeyPressed = true;
-            unitCtrlKeyPressed = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.H))
-        {
-            //isHKeyPressed = true;
-            //unitCtrlKeyPressed = true;
-            unitHoldSet?.Invoke();
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            dragStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            if(!unitCtrlKeyPressed)
+            if (Input.GetKeyDown(KeyCode.P))
             {
-                Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                if (dragStartPosition != dragEndPosition)
-                    GroupSelectedObjects(dragStartPosition, dragEndPosition);
-                else
+                isPKeyPressed = true;
+                unitCtrlKeyPressed = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.A))
+            {
+                isAKeyPressed = true;
+                unitCtrlKeyPressed = true;
+            }
+            else if (Input.GetKeyDown(KeyCode.H))
+            {
+                //isHKeyPressed = true;
+                //unitCtrlKeyPressed = true;
+                unitHoldSet?.Invoke();
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                dragStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if(!unitCtrlKeyPressed)
                 {
-                    RaycastHit2D hit = Physics2D.Raycast(dragEndPosition, Vector2.zero, 0f, 1 << unitLayer);
-                    if (hit)
-                        SelectedObjects(hit);
+                    Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    if (dragStartPosition != dragEndPosition)
+                        GroupSelectedObjects(dragStartPosition, dragEndPosition);
                     else
-                        removeUnit?.Invoke();
+                    {
+                        RaycastHit2D hit = Physics2D.Raycast(dragEndPosition, Vector2.zero, 0f, 1 << unitLayer);
+                        if (hit)
+                            SelectedObjects(hit);
+                        else
+                            removeUnit?.Invoke();
+                    }
                 }
-            }
-            else if (isPKeyPressed)
-            {
-                Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                groupCenterSet?.Invoke(); 
-                patrolSet?.Invoke(dragEndPosition);
-            }
-            else if (isAKeyPressed)
-            {
-                Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.Raycast(dragEndPosition, Vector2.zero, 0f, 1 << monsterLayer);
-                if(hit)
+                else if (isPKeyPressed)
                 {
-                    monsterTargetSet?.Invoke(hit.collider.gameObject);
+                    Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    groupCenterSet?.Invoke(); 
+                    patrolSet?.Invoke(dragEndPosition);
                 }
-                else
+                else if (isAKeyPressed)
                 {
-                    SetTargetPosition(true);
+                    Vector2 dragEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    RaycastHit2D hit = Physics2D.Raycast(dragEndPosition, Vector2.zero, 0f, 1 << monsterLayer);
+                    if(hit)
+                    {
+                        monsterTargetSet?.Invoke(hit.collider.gameObject);
+                    }
+                    else
+                    {
+                        SetTargetPosition(true);
+                    }
                 }
+                ReSetBool();
             }
-            ReSetBool();
-        }
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            SetTargetPosition(false);
-            ReSetBool();
-        }
+            if (Input.GetMouseButtonDown(1))
+            {
+                SetTargetPosition(false);
+                ReSetBool();
+            }
+        }        
     }
     private void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition)
     {
