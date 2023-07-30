@@ -70,17 +70,14 @@ public class PumpCtrl : FluidFactoryCtrl
 
         for (int a = 0; a < Hits.Length; a++)
         {
-            if (Hits[a].collider.GetComponent<PipeCtrl>() != this.gameObject.GetComponent<PipeCtrl>())
+            if (Hits[a].collider.GetComponent<PumpCtrl>() != this.gameObject.GetComponent<PumpCtrl>())
             {
-                if (Hits[a].collider.GetComponent<PumpCtrl>() != this.gameObject.GetComponent<PumpCtrl>())
+                if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
                 {
-                    if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
-                    {
-                        nearObj[0] = Hits[a].collider.gameObject;
-                        SetOutObj(nearObj[0]);
-                        return true;
-                    }
-                }
+                    nearObj[0] = Hits[a].collider.gameObject;
+                    SetOutObj(nearObj[0]);
+                    return true;
+                }                
             }
         }
         return false;

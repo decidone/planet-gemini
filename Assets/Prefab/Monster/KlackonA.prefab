@@ -221,6 +221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: f9ef4ae07f396e04886abd0be04af385, type: 2}
   animator: {fileID: 0}
+  isPatrolCoroutine: 0
   aggroTarget: {fileID: 0}
   targetList: []
   targetDist: 0
@@ -334,7 +335,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &2928954196851737198
 MonoBehaviour:

@@ -182,16 +182,38 @@ public class PreBuilding : MonoBehaviour
                 CheckPos();
             }
 
+            bool canBuild = false;
             foreach (GameObject obj in buildingList)
             {
-                setBuild = StartCoroutine("SetBuilding", obj);
-                if(obj.TryGetComponent(out UnderBeltCtrl underBelt))
+                if (GroupBuildCheck(obj))
+                    canBuild = true;
+                else
                 {
-                    underBelt.buildEnd = true;
+                    canBuild = false;
+                    break;
                 }
-                else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+            }
+
+            if (canBuild)
+            {
+                foreach (GameObject obj in buildingList)
                 {
-                    underPipe.buildEnd = true;
+                    setBuild = StartCoroutine("SetBuilding", obj);
+                    if(obj.TryGetComponent(out UnderBeltCtrl underBelt))
+                    {
+                        underBelt.buildEnd = true;
+                    }
+                    else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+                    {
+                        underPipe.buildEnd = true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (GameObject build in buildingList)
+                {
+                    Destroy(build);
                 }
             }
 
@@ -620,6 +642,35 @@ public class PreBuilding : MonoBehaviour
             }
             gameObj.SetActive(false);
         }
+    }
+
+    bool GroupBuildCheck(GameObject obj)
+    {
+        if (obj.TryGetComponent(out Structure factory) && factory.canBuilding)
+        {
+            return true;
+        }
+        if (obj.TryGetComponent(out TowerAi tower) && tower.canBuilding)
+        {
+            return true;
+        }
+        if (obj.TryGetComponent(out BeltGroupMgr belt) && belt.beltList[0].canBuilding)
+        {
+            return true;
+        }
+        if (obj.TryGetComponent(out PipeGroupMgr pipe) && pipe.pipeList[0].canBuilding)
+        {
+            return true;
+        }
+        if (obj.TryGetComponent(out UnderBeltCtrl underBelt) && underBelt.beltScipt.canBuilding)
+        {
+            return true;
+        }
+        if (obj.TryGetComponent(out UnderPipeBuild underPipe) && underPipe.pipeScipt.canBuilding)
+        {
+            return true;
+        }
+        return false;
     }
 
     IEnumerator SetBuilding(GameObject obj)

@@ -60,7 +60,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &5799338872261431785
 MonoBehaviour:
@@ -378,6 +378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterData: {fileID: 11400000, guid: 6a2dbd7c8eaf44d448af75ec68cf7464, type: 2}
   animator: {fileID: 0}
+  isPatrolCoroutine: 0
   aggroTarget: {fileID: 0}
   targetList: []
   targetDist: 0
