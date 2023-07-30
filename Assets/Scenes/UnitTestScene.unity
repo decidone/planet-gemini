@@ -2495,6 +2495,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 762871311885926062, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: preBuilding
+      value: 
+      objectReference: {fileID: 774915813}
     - target: {fileID: 762871311885926063, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: BuildingTagsPanel
       value: 
