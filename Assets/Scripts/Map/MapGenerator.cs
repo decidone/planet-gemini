@@ -52,27 +52,27 @@ public class MapGenerator : MonoBehaviour
         if (hostMap)
         {
             biomes = new List<List<Biome>>() {
-                new List<Biome> { lake, forest, forest, plain, plain, plain, frozen, frozen },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, frozen, frozen },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
             };
         }
         else
         {
             biomes = new List<List<Biome>>() {
-                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
-                new List<Biome> { lake, forest, forest, plain, plain, plain, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
             };
         }
 

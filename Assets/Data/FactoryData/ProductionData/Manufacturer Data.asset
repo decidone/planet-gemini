@@ -9,8 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: ItemFurnace
+  m_Script: {fileID: 11500000, guid: 71624083e3f1a7c46aad2eb80004d424, type: 3}
+  m_Name: Manufacturer Data
   m_EditorClassIdentifier: 
-  name: Furnace
-  icon: {fileID: -107386639, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  factoryName: Manufacturer
+  maxHp: 320000003c00000046000000
+  fullItemNum: 99
+  sendSpeed:
+  - 2
+  - 1.5
+  - 1
+  sendDelay: 0.5
+  maxBuildingGauge: 10
+  maxRepairGauge: 10
