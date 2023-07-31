@@ -35,14 +35,14 @@ public class FluidTankCtrl : FluidFactoryCtrl
                         checkArray[index + 1] = CheckNearObj(startTransform[indices[index + 1]], directions[i]);
                 }
 
-                if (factoryList.Count > 0 && saveFluidNum >= fluidFactoryData.SendFluid)
+                if (factoryList.Count > 0)
                 {
                     sendDelayTimer += Time.deltaTime;
 
                     if (sendDelayTimer > fluidFactoryData.SendDelay)
                     {
-                        SendFluid();
-                        GetFluid();
+                        if(saveFluidNum >= fluidFactoryData.SendFluid)
+                            SendFluid();
                         sendDelayTimer = 0;
                     }
                 }
@@ -67,48 +67,52 @@ public class FluidTankCtrl : FluidFactoryCtrl
             {
                 if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
                 {
-                    factoryList.Add(Hits[a].collider.gameObject);
-                    if (Hits[a].collider.GetComponent<PipeCtrl>() != null)
+                    if (!factoryList.Contains(Hits[a].collider.gameObject))
                     {
-                        Hits[a].collider.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position + startVec);
-                        Hits[a].collider.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
+                        factoryList.Add(Hits[a].collider.gameObject);
+                        if (Hits[a].collider.GetComponent<PipeCtrl>() != null)
+                        {
+                            Hits[a].collider.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position + startVec);
+                            Hits[a].collider.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
+                        }
+                        StartCoroutine("ObjAddCheck", Hits[a].collider.gameObject);
+                        return true;
                     }
-                    return true;
                 }
             }
         }
         return false;
     }
 
+    IEnumerator ObjAddCheck(GameObject obj)
+    {
+        yield return null;
+
+        if (obj.GetComponent<UnderPipeCtrl>())
+        {
+            if (obj.GetComponent<UnderPipeCtrl>().otherPipe == null || obj.GetComponent<UnderPipeCtrl>().otherPipe != this.gameObject)
+            {
+                factoryList.Remove(obj);
+            }
+        }
+    }
+
     void SendFluid()
     {
         foreach (GameObject obj in factoryList)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && fluidFactory.fluidIsFull == false)
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && fluidFactory.GetComponent<PumpCtrl>() == null)
             {
-                if (fluidFactory.saveFluidNum < saveFluidNum)
+                if (fluidFactory.fluidFactoryData.FullFluidNum > fluidFactory.saveFluidNum)
                 {
-                    fluidFactory.SendFluidFunc(fluidFactoryData.SendFluid);
-                    saveFluidNum -= fluidFactoryData.SendFluid;
-                }
-            }
-            if (fluidFactoryData.FullFluidNum > saveFluidNum)
-                fluidIsFull = false;
-            else if (fluidFactoryData.FullFluidNum <= saveFluidNum)
-                fluidIsFull = true;
-        }   
-    }
+                    float currentFillRatio = (float)fluidFactory.fluidFactoryData.FullFluidNum / fluidFactory.saveFluidNum;
+                    float targetFillRatio = (float)fluidFactoryData.FullFluidNum / saveFluidNum;
 
-    void GetFluid()
-    {
-        foreach (GameObject obj in factoryList)
-        {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory))
-            {
-                if (fluidFactory.fluidIsFull == true && fluidIsFull == false)
-                {
-                    fluidFactory.GetFluidFunc(fluidFactory.fluidFactoryData.SendFluid);
-                    saveFluidNum += fluidFactory.fluidFactoryData.SendFluid;
+                    if (currentFillRatio > targetFillRatio)
+                    {
+                        saveFluidNum -= fluidFactoryData.SendFluid;
+                        fluidFactory.SendFluidFunc(fluidFactoryData.SendFluid);
+                    }
                 }
             }
         }

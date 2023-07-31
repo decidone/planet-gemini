@@ -28,7 +28,6 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     protected override void Update()
     {
         base.Update();
-
         ModelSet();
         if (!removeState)
         {
@@ -41,18 +40,18 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                         if (i == 0)
                             CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
                         else if (i == 1)
-                            CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));                        
+                            CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
                     }
                 }
 
-                if (otherPipe != null && saveFluidNum >= fluidFactoryData.SendFluid)
+                if (otherPipe != null)
                 {
                     sendDelayTimer += Time.deltaTime;
 
                     if (sendDelayTimer > fluidFactoryData.SendDelay)
                     {
-                        SendFluid();
-                        GetFluid();
+                        if(saveFluidNum >= fluidFactoryData.SendFluid)
+                            SendFluid();
                         sendDelayTimer = 0;
                     }
                 }
@@ -136,19 +135,13 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                 {
                     connectUnderPipe = obj;
                 }
+                if (othUnderPipe.connectUnderPipe != this.gameObject)
+                {
+                    if(othUnderPipe.connectUnderPipe != null)
+                        othUnderPipe.connectUnderPipe.GetComponent<UnderPipeCtrl>().DisCntObj();
+                    othUnderPipe.DisCntObj();
+                }
             }
-            StartCoroutine("CntOthObjCheck", othUnderPipe);
-        }
-    }
-
-    IEnumerator CntOthObjCheck(UnderPipeCtrl othUnderPipe)
-    {
-        yield return null;
-
-        if (othUnderPipe.connectUnderPipe != null && othUnderPipe.connectUnderPipe != this.gameObject)
-        {
-            othUnderPipe.connectUnderPipe.GetComponent<UnderPipeCtrl>().DisCntObj();
-            othUnderPipe.DisCntObj();
         }
     }
 
@@ -193,50 +186,32 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     void SendFluid()
     {
-        if (otherPipe != null && otherPipe.TryGetComponent(out FluidFactoryCtrl pipe))
+        if (otherPipe != null && otherPipe.TryGetComponent(out FluidFactoryCtrl othObj) && otherPipe.GetComponent<PumpCtrl>() == null)
         {
-            if (pipe.fluidIsFull == false)
+            if (othObj.fluidFactoryData.FullFluidNum > othObj.saveFluidNum)
             {
-                if (pipe.saveFluidNum < saveFluidNum)
-                {
-                    pipe.SendFluidFunc(fluidFactoryData.SendFluid);
-                    saveFluidNum -= fluidFactoryData.SendFluid;
-                }
-            }
-        }
-        if (connectUnderPipe != null && connectUnderPipe.TryGetComponent(out FluidFactoryCtrl underPipe))
-        {
-            if (underPipe.fluidIsFull == false)
-            {
-                if (underPipe.saveFluidNum < saveFluidNum)
-                {
-                    underPipe.SendFluidFunc(fluidFactoryData.SendFluid);
-                    saveFluidNum -= fluidFactoryData.SendFluid;
-                }
-            }
-        }
+                float currentFillRatio = (float)othObj.fluidFactoryData.FullFluidNum / othObj.saveFluidNum;
+                float targetFillRatio = (float)fluidFactoryData.FullFluidNum / saveFluidNum;
 
-        if(fluidFactoryData.FullFluidNum > saveFluidNum)        
-            fluidIsFull = false;
-        else if (fluidFactoryData.FullFluidNum <= saveFluidNum)
-            fluidIsFull = true;
-    }
-    void GetFluid()
-    {
-        if (otherPipe != null && otherPipe.TryGetComponent(out FluidFactoryCtrl otherFac))
-        {
-            if (otherFac.fluidIsFull == true && fluidIsFull == false)
-            {
-                otherFac.GetFluidFunc(fluidFactoryData.SendFluid);
-                saveFluidNum += fluidFactoryData.SendFluid;
-            }
+                if (currentFillRatio > targetFillRatio)
+                {
+                    saveFluidNum -= fluidFactoryData.SendFluid;
+                    othObj.SendFluidFunc(fluidFactoryData.SendFluid);
+                }
+            }           
         }
         if (connectUnderPipe != null && connectUnderPipe.TryGetComponent(out FluidFactoryCtrl underPipe))
         {
-            if (underPipe.fluidIsFull == true && fluidIsFull == false)
+            if (underPipe.fluidFactoryData.FullFluidNum > underPipe.saveFluidNum)
             {
-                underPipe.GetFluidFunc(underPipe.fluidFactoryData.SendFluid);
-                saveFluidNum += underPipe.fluidFactoryData.SendFluid;
+                float currentFillRatio = (float)underPipe.fluidFactoryData.FullFluidNum / underPipe.saveFluidNum;
+                float targetFillRatio = (float)fluidFactoryData.FullFluidNum / saveFluidNum;
+
+                if (currentFillRatio > targetFillRatio)
+                {
+                    saveFluidNum -= fluidFactoryData.SendFluid;
+                    underPipe.SendFluidFunc(fluidFactoryData.SendFluid);
+                }
             }
         }
     }

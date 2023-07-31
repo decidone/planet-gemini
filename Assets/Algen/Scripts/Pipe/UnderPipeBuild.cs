@@ -64,7 +64,7 @@ public class UnderPipeBuild : MonoBehaviour
             if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != underPipeObj && factoryCollider.gameObject.transform.position != underPipeObj.transform.position)
             {
                 underpipeCtrl = factoryCollider.GetComponent<UnderPipeCtrl>();
-                if (underpipeCtrl.isPreBuilding)
+                if (underpipeCtrl != null && underpipeCtrl.isPreBuilding)
                 {
                     if (underpipeCtrl != null)
                     {

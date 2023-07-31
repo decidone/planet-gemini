@@ -47,11 +47,10 @@ public class FluidFactoryCtrl : Structure
         {
             saveFluidNum += getNum;
 
-            if (fluidFactoryData.FullFluidNum <= saveFluidNum)
-            {
-                fluidIsFull = true;
-                saveFluidNum = fluidFactoryData.FullFluidNum;
-            }
+            //if (fluidFactoryData.FullFluidNum <= saveFluidNum)
+            //{
+            //    saveFluidNum = fluidFactoryData.FullFluidNum;
+            //}
         }
     }
 
@@ -60,28 +59,6 @@ public class FluidFactoryCtrl : Structure
         // 유체를 받은 후 처리할 작업 수행
     }
 
-    public void GetFluidFunc(float getNum)
-    {
-
-        if (this.GetComponentInParent<PipeGroupMgr>() != null)
-        {
-            PipeGroupMgr pipeGroupMgr = this.GetComponentInParent<PipeGroupMgr>();
-            if(getNum < pipeGroupMgr.groupSaveFluidNum)
-                pipeGroupMgr.GroupFluidCount(-getNum);
-        }
-        else if (this.GetComponentInParent<PipeGroupMgr>() == null)
-        {
-            if(getNum < saveFluidNum)
-            { 
-                saveFluidNum -= getNum;
-
-                if (fluidFactoryData.FullFluidNum > saveFluidNum)
-                {
-                    fluidIsFull = false;
-                }
-            }
-        }
-    }
     //public override void DisableColliders()
     //{
     //    box2D.enabled = false;

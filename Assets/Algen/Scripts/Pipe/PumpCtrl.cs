@@ -93,7 +93,6 @@ public class PumpCtrl : FluidFactoryCtrl
                 obj.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
             }
         }
-
     }
 
     void Pump()
@@ -111,17 +110,14 @@ public class PumpCtrl : FluidFactoryCtrl
         {
             foreach (GameObject obj in factoryList)
             {
-                if (obj.GetComponent<FluidFactoryCtrl>() && obj.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)// && obj.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
                 {
-                    FluidFactoryCtrl fluidFactory = obj.GetComponent<FluidFactoryCtrl>();
-
-                    fluidFactory.SendFluidFunc(fluidFactoryData.SendFluid);
-                    saveFluidNum -= fluidFactoryData.SendFluid;
+                    if (fluidFactory.fluidFactoryData.FullFluidNum > fluidFactory.saveFluidNum)
+                    {
+                        fluidFactory.SendFluidFunc(fluidFactoryData.SendFluid);
+                        saveFluidNum -= fluidFactoryData.SendFluid;
+                    }
                 }
-                if (fluidFactoryData.FullFluidNum > saveFluidNum)
-                    fluidIsFull = false;
-                else if (fluidFactoryData.FullFluidNum <= saveFluidNum)
-                    fluidIsFull = true;
             }
         }
     }
