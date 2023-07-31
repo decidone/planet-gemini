@@ -19,6 +19,7 @@ public class BuildingInvenManager : MonoBehaviour
 
     BuildingData buildingData;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +32,7 @@ public class BuildingInvenManager : MonoBehaviour
     void Update()
     {
         InputCheck();
+
     }
 
     public void SetInven(BuildingInven inven, GameObject invenUI)

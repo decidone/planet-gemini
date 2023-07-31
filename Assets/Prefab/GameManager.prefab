@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingDataList:
+  - {fileID: 11400000, guid: fa46f237aedd15e43b797c7d958c7cb4, type: 2}
   - {fileID: 11400000, guid: 693f1580a1ede6a47a9cf387d3f93626, type: 2}
   - {fileID: 11400000, guid: 78dd487befa84ed468fab2484596cfe2, type: 2}
   - {fileID: 11400000, guid: 164efcaf3363cd24fbe6d3fa6d10a2d7, type: 2}
@@ -173,6 +174,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8e58dc881cfa11049b1fb1b87e6257ca, type: 2}
   - {fileID: 11400000, guid: 6a15a0fcd2bc36f4ea6cd98e9f23ff5e, type: 2}
   - {fileID: 11400000, guid: e07253f443b5b3e49b409934a95799fb, type: 2}
+  - {fileID: 11400000, guid: 49a36106ddf5c9c40bdcd0327a40acc9, type: 2}
+  - {fileID: 11400000, guid: 4ed2fc918cd74774da44e28552fdca74, type: 2}
 --- !u!114 &3986364633838151513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedObjects: []
+  preBuilding: {fileID: 0}
 --- !u!114 &762871311885926063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingTagsPanel: {fileID: 0}
+  debugMode: 0
 --- !u!114 &762871311885926032
 MonoBehaviour:
   m_ObjectHideFlags: 0

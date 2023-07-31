@@ -15,6 +15,7 @@ public class BuildingInven : MonoBehaviour
 
     [SerializeField]
     private GameObject buildingTagsPanel = null;
+    public bool debugMode = false;
 
     private void Start()
     {
@@ -29,6 +30,14 @@ public class BuildingInven : MonoBehaviour
         }
 
         ButtonClicked(0);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            debugMode = !debugMode;
+        }
     }
 
     private void ButtonClicked(int buttonIndex)
@@ -65,18 +74,29 @@ public class BuildingInven : MonoBehaviour
         int index = 0;
         for (int i = 0; i < buildingDataList.Count; i++)
         {
-            for (int a = 0; a < scienceDb.scienceNameDb.Count; a++)
+            if (!debugMode)
             {
-                if (scienceDb.scienceNameDb.ContainsKey(buildingDataList[i].scienceName) && buildingDataList[i].type == itemType)
+                for (int a = 0; a < scienceDb.scienceNameDb.Count; a++)
                 {
-                    List<int> values;
-                    if (scienceDb.scienceNameDb.TryGetValue(buildingDataList[i].scienceName, out values) && values.Contains(buildingDataList[i].level))
+                    if (scienceDb.scienceNameDb.ContainsKey(buildingDataList[i].scienceName) && buildingDataList[i].type == itemType)
                     {
-                        buildingDic[index] = buildingDataList[i];
-                        index++;
-                        break;
+                        List<int> values;
+                        if (scienceDb.scienceNameDb.TryGetValue(buildingDataList[i].scienceName, out values) && values.Contains(buildingDataList[i].level))
+                        {
+                            buildingDic[index] = buildingDataList[i];
+                            index++;
+                            break;
+                        }
                     }
                 }
+            }
+            else
+            {
+                if (buildingDataList[i].type == itemType)
+                {
+                    buildingDic[index] = buildingDataList[i];
+                    index++;
+                }                
             }
         }
 

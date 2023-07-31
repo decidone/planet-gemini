@@ -296,21 +296,24 @@ public class SolidFactoryCtrl : Structure
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isPreBuilding)
+        if(!collision.GetComponent<ItemProps>())
         {
-            buildingPosObj.Add(collision.gameObject);
-            
-            if(buildingPosObj.Count > 0)
+            if (isPreBuilding)
             {
-                if (!collision.GetComponentInParent<PreBuilding>())
+                buildingPosObj.Add(collision.gameObject);
+            
+                if(buildingPosObj.Count > 0)
                 {
-                    canBuilding = false;
-                }
+                    if (!collision.GetComponentInParent<PreBuilding>())
+                    {
+                        canBuilding = false;
+                    }
 
-                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                if (preBuilding != null)
-                {
-                    preBuilding.isBuildingOk = false;
+                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                    if (preBuilding != null)
+                    {
+                        preBuilding.isBuildingOk = false;
+                    }
                 }
             }
         }
@@ -318,18 +321,21 @@ public class SolidFactoryCtrl : Structure
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (isPreBuilding)
+        if (!collision.GetComponent<ItemProps>())
         {
-            buildingPosObj.Remove(collision.gameObject);
-            if (buildingPosObj.Count > 0)
-                canBuilding = false;
-            else
+            if (isPreBuilding)
             {
-                canBuilding = true;
+                buildingPosObj.Remove(collision.gameObject);
+                if (buildingPosObj.Count > 0)
+                    canBuilding = false;
+                else
+                {
+                    canBuilding = true;
 
-                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                if (preBuilding != null)
-                    preBuilding.isBuildingOk = true;
+                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                    if (preBuilding != null)
+                        preBuilding.isBuildingOk = true;
+                }
             }
         }
     }

@@ -72,7 +72,7 @@ public abstract class Production : Structure
 
     protected virtual void Start()
     {
-        itemDic = ItemList.instance.itemDic;  
+        itemDic = ItemList.instance.itemDic;
         recipe = new Recipe();
         output = null;
 
@@ -186,7 +186,7 @@ public abstract class Production : Structure
     {
         yield return new WaitForSeconds(0.1f);
 
-        if(otherObj.TryGetComponent(out Structure otherFacCtrl))
+        if (otherObj.TryGetComponent(out Structure otherFacCtrl))
         {
             if (otherObj.GetComponent<Production>())
                 yield break;
@@ -213,12 +213,12 @@ public abstract class Production : Structure
                     }
                 }
             }
-        }        
+        }
     }
 
     public virtual bool CanTakeItem(Item item) { return new bool(); }
 
-    public virtual (Item, int) QuickPullOut() { return  (new Item(), new int()); }
+    public virtual (Item, int) QuickPullOut() { return (new Item(), new int()); }
 
     protected void GetItem()
     {
@@ -296,18 +296,18 @@ public abstract class Production : Structure
                 }
                 else
                 {
-                    OnDestroyItem(spawnItem);   
+                    OnDestroyItem(spawnItem);
                     itemSetDelay = false;
                     return;
                 }
             }
-            else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>()) 
+            else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>())
             {
                 StartCoroutine("SetFacDelay", outObj[sendObjNum]);
             }
             else if (outObj[sendObjNum].TryGetComponent(out Production production))
             {
-                if(production.CanTakeItem(output))
+                if (production.CanTakeItem(output))
                 {
                     StartCoroutine("SetFacDelay", outObj[sendObjNum]);
                 }
@@ -532,19 +532,22 @@ public abstract class Production : Structure
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isPreBuilding)
+        if (!collision.GetComponent<ItemProps>())
         {
-            buildingPosObj.Add(collision.gameObject);            
-            if (buildingPosObj.Count > 0)
+            if (isPreBuilding)
             {
-                if (!collision.GetComponentInParent<PreBuilding>())
+                buildingPosObj.Add(collision.gameObject);
+                if (buildingPosObj.Count > 0)
                 {
-                    canBuilding = false;
-                }
-                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                if (preBuilding != null)
-                {
-                    preBuilding.isBuildingOk = false;
+                    if (!collision.GetComponentInParent<PreBuilding>())
+                    {
+                        canBuilding = false;
+                    }
+                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                    if (preBuilding != null)
+                    {
+                        preBuilding.isBuildingOk = false;
+                    }
                 }
             }
         }
@@ -552,18 +555,21 @@ public abstract class Production : Structure
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (isPreBuilding)
+        if (!collision.GetComponent<ItemProps>())
         {
-            buildingPosObj.Remove(collision.gameObject);            
-            if (buildingPosObj.Count > 0)
-                canBuilding = false;
-            else
+            if (isPreBuilding)
             {
-                canBuilding = true;
+                buildingPosObj.Remove(collision.gameObject);
+                if (buildingPosObj.Count > 0)
+                    canBuilding = false;
+                else
+                {
+                    canBuilding = true;
 
-                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                if (preBuilding != null)
-                    preBuilding.isBuildingOk = true;
+                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                    if (preBuilding != null)
+                        preBuilding.isBuildingOk = true;
+                }
             }
         }
     }
