@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     SplitterFilterManager sManager;
     [SerializeField]
+    ItemSpManager iManager;
+    [SerializeField]
     ScienceManager sTreeManager;
 
     bool debug;
@@ -77,8 +79,12 @@ public class GameManager : MonoBehaviour
             if (rManager.isOpened)
                 return;
 
+            //Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+
+            //건물 위 오브젝트가 있을때 클릭이 안되서 RaycastAll로 변경
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
 
             int x = Mathf.FloorToInt(pos.x);
             int y = Mathf.FloorToInt(pos.y);
@@ -107,37 +113,88 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            if (hit.collider != null)
+            //if (hit.collider != null)
+            //{
+            //    newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
+            //    solidFacNewClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
+
+            //    if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+            //    {
+            //        if (clickEvent != null)
+            //        {
+            //            clickEvent.CloseUI();
+            //        }
+            //        if(solidFacClickEvent != null)
+            //        {
+            //            solidFacClickEvent.CloseUI();
+            //        }
+
+            //        clickEvent = newClickEvent;
+            //        clickEvent.StructureClick();
+            //        clickEvent.OpenUI();
+            //    }
+            //    else if (solidFacNewClickEvent != null && !solidFacNewClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+            //    {
+            //        if (solidFacClickEvent != null)
+            //        {
+            //            solidFacClickEvent.CloseUI();
+            //        }
+            //        if (clickEvent != null)
+            //        {
+            //            clickEvent.CloseUI();
+            //        }
+
+            //        solidFacClickEvent = solidFacNewClickEvent;
+            //        solidFacClickEvent.SolidFacCheck();
+            //        solidFacClickEvent.OpenUI();                    
+            //    }
+            //    else
+            //        return;
+            //}
+            if (hits.Length > 0)
             {
-                newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
-                if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+                foreach (RaycastHit2D hit in hits)
                 {
-                    if (clickEvent != null)
+                    newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
+                    solidFacNewClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
+
+                    if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
-                        clickEvent.CloseUI();
+                        if (clickEvent != null)
+                        {
+                            clickEvent.CloseUI();
+                        }
+                        if (solidFacClickEvent != null)
+                        {
+                            solidFacClickEvent.CloseUI();
+                        }
+
+                        clickEvent = newClickEvent;
+                        clickEvent.StructureClick();
+                        clickEvent.OpenUI();
+                        break;
                     }
-
-                    clickEvent = newClickEvent;
-                    clickEvent.StructureClick();
-                    clickEvent.OpenUI();                    
-                }
-                else
-                    return;
-
-                solidFacNewClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
-                if (solidFacNewClickEvent != null && !solidFacNewClickEvent.GetComponentInParent<Structure>().isPreBuilding)
-                {
-                    if (solidFacClickEvent != null)
+                    else if (solidFacNewClickEvent != null && !solidFacNewClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
-                        solidFacClickEvent.CloseUI();
-                    }
+                        if (solidFacClickEvent != null)
+                        {
+                            solidFacClickEvent.CloseUI();
+                        }
+                        if (clickEvent != null)
+                        {
+                            clickEvent.CloseUI();
+                        }
 
-                    solidFacClickEvent = solidFacNewClickEvent;
-                    solidFacClickEvent.SolidFacCheck();
-                    solidFacClickEvent.OpenUI();                    
+                        solidFacClickEvent = solidFacNewClickEvent;
+                        solidFacClickEvent.SolidFacCheck();
+                        solidFacClickEvent.OpenUI();
+                        break;
+                    }
                 }
-                else
-                    return;
+            }
+            else
+            {
+                return;
             }
         }
 
@@ -163,6 +220,9 @@ public class GameManager : MonoBehaviour
                         solidFacClickEvent.CloseUI();
                         break;
                     case "SplitterMenu":
+                        solidFacClickEvent.CloseUI();
+                        break;
+                    case "ItemSpwanerFilter":
                         solidFacClickEvent.CloseUI();
                         break;
                     case "ScienceTree":
