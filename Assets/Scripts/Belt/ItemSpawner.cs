@@ -5,8 +5,7 @@ using System;
 
 public class ItemSpawner : SolidFactoryCtrl
 {
-    [SerializeField]
-    Item itemData;
+    public Item itemData;
 
     [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
@@ -31,7 +30,8 @@ public class ItemSpawner : SolidFactoryCtrl
             {
                 if (outObj.Count > 0 && !itemSetDelay)
                 {
-                    SetItem();
+                    if(itemData.name != "emptFilter")
+                        SetItem();
                 }
 
                 for (int i = 0; i < nearObj.Length; i++)
@@ -136,7 +136,7 @@ public class ItemSpawner : SolidFactoryCtrl
 
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
 
-        if (outFactory.isFull == false)
+        if (outFactory.isFull == false && outFactory.GetComponent<ItemSpawner>() == null)
         {
             if (outObj[sendObjNum].GetComponent<BeltCtrl>())
             {

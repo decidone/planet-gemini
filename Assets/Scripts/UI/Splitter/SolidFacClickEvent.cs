@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class SolidFacClickEvent : MonoBehaviour
 {
     [SerializeField]
-    GameObject spilterInfoUI;
+    GameObject solidFacUI;
     [SerializeField]
-    SplitterFilterManager sFilterManager;
+    SplitterFilterManager sFilterManager;    
+    [SerializeField]
+    ItemSpManager itemSpManager;
 
     Button closeBtn;
     Button splittercloseBtn;
@@ -28,12 +30,19 @@ public class SolidFacClickEvent : MonoBehaviour
         {
             if (solidFactory.GetComponent<SplitterCtrl>() && list.name == "SplitterMenu")
             {
-                spilterInfoUI = list;
-                splittercloseBtn = spilterInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+                solidFacUI = list;
+                splittercloseBtn = solidFacUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
                 splittercloseBtn.onClick.AddListener(CloseUI);
+                sFilterManager = canvas.GetComponent<SplitterFilterManager>();
+            }
+            else if (solidFactory.GetComponent<ItemSpawner>() && list.name == "ItemSpwanerFilter")
+            {
+                solidFacUI = list;
+                splittercloseBtn = solidFacUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+                splittercloseBtn.onClick.AddListener(CloseUI);
+                itemSpManager = canvas.GetComponent<ItemSpManager>();
             }
         }
-        sFilterManager = canvas.GetComponent<SplitterFilterManager>();
     }
 
     public void OpenUI()
@@ -43,6 +52,11 @@ public class SolidFacClickEvent : MonoBehaviour
             sFilterManager.SetSplitter(splitter);
             sFilterManager.OpenUI();
         }
+        else if (solidFactory.TryGetComponent(out ItemSpawner itemSpawner))
+        {
+            itemSpManager.SetItemSp(itemSpawner);
+            itemSpManager.OpenUI();
+        }
     }
 
     public void CloseUI()
@@ -51,6 +65,11 @@ public class SolidFacClickEvent : MonoBehaviour
         {
             sFilterManager.ReleaseInven();
             sFilterManager.CloseUI();
+        }
+        else if (solidFactory.GetComponent<ItemSpawner>())
+        {
+            itemSpManager.ReleaseInven();
+            itemSpManager.CloseUI();
         }
     }
 }

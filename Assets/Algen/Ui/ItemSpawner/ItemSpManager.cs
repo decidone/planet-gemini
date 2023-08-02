@@ -2,19 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SplitterFilterRecipe : InventoryManager
+public class ItemSpManager : InventoryManager
 {
     List<Item> itemsList;
-    public SplitterFilterManager splitter;
+    ItemSpawner itemSpawner = null;
     int slotIndex = -1;
 
+    // Start is called before the first frame update
     protected override void Start()
     {
         gameManager = GameManager.instance;
         itemsList = gameManager.GetComponent<ItemList>().itemList;
-        //SetItemList();
-    }
 
+        for (int i = 0; i < slots.Length; i++)
+        {
+            slots[i].amountText.gameObject.SetActive(false);
+        }
+    }
     protected override void InputCheck()
     {
         if (Input.GetMouseButtonDown(0))
@@ -23,12 +27,43 @@ public class SplitterFilterRecipe : InventoryManager
             {
                 if (focusedSlot.item != null)
                 {
-                    splitter.SetItem(focusedSlot.item, slotIndex);
+                    SetItem(focusedSlot.item);
                     focusedSlot = null;
-                    CloseUI();
                 }
             }
         }
+    }
+
+    public void SetItemSp(ItemSpawner _itemSp)
+    {
+        itemSpawner = _itemSp;
+    }
+    public void ReleaseInven()
+    {
+        ResetInvenOption();
+        itemSpawner = null;
+    }
+
+    public void ResetInvenOption()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            slot.ResetOption();
+        }
+    }
+    public void InvenInit()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            Slot slot = slots[i];
+            slot.outputSlot = true;
+        }
+    }
+
+    public void SetItem(Item _item)
+    {
+        itemSpawner.itemData = _item;
     }
 
     void SetItemList()
@@ -36,20 +71,16 @@ public class SplitterFilterRecipe : InventoryManager
         inventory.ResetInven();
         for (int i = 0; i < itemsList.Count; i++)
         {
+            if (itemsList[i].name == "fullFilter")
+                continue;
             inventory.Add(itemsList[i], 1);
         }
         SetInven(inventory, inventoryUI);
     }
 
-    public void GetFillterNum(int buttonIndex)
-    {
-        slotIndex = buttonIndex;
-    }
-
     public override void OpenUI()
     {
         SetItemList();
-
         inventoryUI.SetActive(true);
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
@@ -58,6 +89,6 @@ public class SplitterFilterRecipe : InventoryManager
     {
         inventoryUI.SetActive(false);
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
-        slotIndex = -1;
     }
+
 }

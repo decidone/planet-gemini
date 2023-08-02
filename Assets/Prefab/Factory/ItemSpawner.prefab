@@ -193,6 +193,7 @@ GameObject:
   - component: {fileID: 4372891051652484693}
   - component: {fileID: 4372891051652484690}
   - component: {fileID: 20748179840043738}
+  - component: {fileID: 999354849698614313}
   m_Layer: 8
   m_Name: ItemSpawner
   m_TagString: Factory
@@ -284,6 +285,7 @@ MonoBehaviour:
   dirNum: 0
   dirCount: 0
   level: 0
+  buildName: 
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 2596895666414250251}
@@ -359,9 +361,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 4908371331433248364
+  uniqueID: 4728292835242472398
   updateError: 1
   checkTime: 0.2
+--- !u!114 &999354849698614313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372891051652484718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0bc8acfb9905a40b960e75cdb9136b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spilterInfoUI: {fileID: 0}
+  sFilterManager: {fileID: 0}
 --- !u!1 &6351396696244375524
 GameObject:
   m_ObjectHideFlags: 0
