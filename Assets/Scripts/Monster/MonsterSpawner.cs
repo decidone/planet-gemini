@@ -13,6 +13,7 @@ public class MonsterSpawner : MonoBehaviour
     private GameObject[] monsterPrefab;
     [SerializeField]
     int spawnNum = 0;
+
     void Start()
     {        
         if(spawnNum > 0)

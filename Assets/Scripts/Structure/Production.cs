@@ -57,6 +57,11 @@ public abstract class Production : Structure
 
     public abstract void OpenUI();
     public abstract void CloseUI();
+    public virtual void SetRecipe(Recipe _recipe) { }
+    public virtual float GetProgress() { return prodTimer; }
+    public virtual float GetFuel() { return fuel; }
+    public virtual void OpenRecipe() { }
+    public virtual void GetUIFunc() { }
 
     protected virtual void Awake()
     {
@@ -113,12 +118,6 @@ public abstract class Production : Structure
             }
         }
     }
-
-    public virtual void SetRecipe(Recipe _recipe) { }
-    public virtual float GetProgress() { return prodTimer; }
-    public virtual float GetFuel() { return fuel; }
-    public virtual void OpenRecipe() { }
-    public virtual void GetUIFunc() { }
 
     protected override void CheckPos()
     {
@@ -377,6 +376,7 @@ public abstract class Production : Structure
     {
         itemSetDelay = false;
     }
+
     protected void DelayGetItem()
     {
         itemGetDelay = false;
@@ -493,6 +493,7 @@ public abstract class Production : Structure
             DieFunc();
         }
     }
+
     public override void HealFunc(float heal)
     {
         if (hp == productionData.MaxHp[level])
@@ -530,6 +531,7 @@ public abstract class Production : Structure
 
         isRuin = true;
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.GetComponent<ItemProps>())

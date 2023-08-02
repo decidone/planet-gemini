@@ -10,14 +10,13 @@ public class RepairTower : TowerAi
 
     public GameObject RuinExplo;
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
 
         if (!isPreBuilding)
         {
-          if (!isRuin)
+            if (!isRuin)
             {
                 searchTimer += Time.deltaTime;
 
@@ -35,6 +34,7 @@ public class RepairTower : TowerAi
             RepairFunc(false);
         }
     }
+
     private void SearchObjectsInRange()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);

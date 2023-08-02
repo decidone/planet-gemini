@@ -23,6 +23,7 @@ public class InfoWindow : MonoBehaviour
 
     ScienceInfoData preSciInfoData;
     TempScienceDb scienceDb;
+
     #region Singleton
     public static InfoWindow instance;
     BuildingInven buildingInven;
@@ -32,6 +33,7 @@ public class InfoWindow : MonoBehaviour
     string preSciName = null;
 
     #endregion
+
     private void Start()
     {
         buildingInven = gameManager.GetComponent<BuildingInven>();
@@ -106,8 +108,6 @@ public class InfoWindow : MonoBehaviour
     {
         SetNeedItem(preSciInfoData, preSciName, preSciLevel, isCoreSel);
     }
-
-
 
     public void SciUpgradeEnd()
     {

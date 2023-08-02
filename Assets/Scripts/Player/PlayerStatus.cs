@@ -10,7 +10,6 @@ public class PlayerStatus : MonoBehaviour
     float hp = 100.0f;
     float maxHP = 100.0f;
 
-    // Start is called before the first frame update
     void Start()
     {
         hpBar.fillAmount = hp / maxHP;

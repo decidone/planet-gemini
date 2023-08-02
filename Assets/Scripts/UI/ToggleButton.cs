@@ -17,7 +17,6 @@ public class ToggleButton : MonoBehaviour
     Image toggleButtonSprite = null;
     public RectTransform toggleSwObj = null;
 
-    // Start is called before the first frame update
     void Awake()
     {
         toggleButton = toggleButtonObj.GetComponent<Button>();

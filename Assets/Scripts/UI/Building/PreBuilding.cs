@@ -62,10 +62,9 @@ public class PreBuilding : MonoBehaviour
     {
         tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
 
-
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of drag slot found!");
+            Debug.LogWarning("More than one instance of PreBuilding found!");
             return;
         }
 
@@ -458,6 +457,7 @@ public class PreBuilding : MonoBehaviour
             SetPos();
         }
     }
+
     void SetPos()
     {
         if (isMoveX)
@@ -658,6 +658,7 @@ public class PreBuilding : MonoBehaviour
         }
         gameObj.SetActive(false);
     }
+
     bool GroupBuildCheck(GameObject obj)
     {
         if (obj.TryGetComponent(out Structure factory) && factory.canBuilding)

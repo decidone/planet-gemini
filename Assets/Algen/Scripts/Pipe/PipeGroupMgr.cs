@@ -29,7 +29,6 @@ public class PipeGroupMgr : MonoBehaviour
     float sendDelayTimer = 0.0f;
     float sendDelay = 0.03f;
 
-    // Update is called once per frame
     void Update()
     {
         if (!isPreBuilding)
@@ -46,8 +45,8 @@ public class PipeGroupMgr : MonoBehaviour
                 }
             }
         }
-
     }
+
     public void SetPipe(int pipeDir)
     {
         GameObject pipe = Instantiate(pipeObj, this.transform.position, Quaternion.identity);

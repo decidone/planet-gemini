@@ -22,6 +22,7 @@ public class FluidFactoryCtrl : Structure
         hpBar.fillAmount = hp / fluidFactoryData.MaxHp[level];
         repairBar.fillAmount = 0;
     }
+
     protected virtual void Update()
     {
         if (!removeState)
@@ -69,6 +70,7 @@ public class FluidFactoryCtrl : Structure
     //{
     //    box2D.enabled = true;
     //}
+
     public override void ColliderTriggerOnOff(bool isOn)
     {
         if (isOn)
@@ -76,6 +78,7 @@ public class FluidFactoryCtrl : Structure
         else
             box2D.isTrigger = false;
     }
+
     public override void SetBuild()
     {
         unitCanvas.SetActive(true);
@@ -85,6 +88,7 @@ public class FluidFactoryCtrl : Structure
         repairBar.fillAmount = repairGauge / fluidFactoryData.MaxRepairGauge;
         isSetBuildingOk = true;
     }
+
     protected override void RepairFunc(bool isBuilding)
     {
         repairGauge += 10.0f * Time.deltaTime;
@@ -120,6 +124,7 @@ public class FluidFactoryCtrl : Structure
             }
         }
     }
+
     protected override void RepairEnd()
     {
         hpBar.enabled = true;
@@ -170,6 +175,7 @@ public class FluidFactoryCtrl : Structure
             DieFunc();
         }
     }
+
     public override void HealFunc(float heal)
     {
         if (hp == fluidFactoryData.MaxHp[level])
@@ -187,6 +193,7 @@ public class FluidFactoryCtrl : Structure
 
         hpBar.fillAmount = hp / fluidFactoryData.MaxHp[level];
     }
+
     public override void RepairSet(bool repair)
     {
         hp = fluidFactoryData.MaxHp[level];
@@ -208,6 +215,7 @@ public class FluidFactoryCtrl : Structure
 
         isRuin = true;
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.GetComponent<ItemProps>())

@@ -14,5 +14,4 @@ public class SpinRobot : UnitAi
             aggroTarget.GetComponent<MonsterAi>().TakeDamage(unitData.Damage);
         }
     }
-
 }

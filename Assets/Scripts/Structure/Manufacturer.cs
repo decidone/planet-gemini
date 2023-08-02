@@ -75,7 +75,6 @@ public class Manufacturer : Production
         rManager.recipeBtn.gameObject.SetActive(false);
     }
 
-
     public override void OpenRecipe()
     {
         rManager.OpenUI();

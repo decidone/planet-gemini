@@ -12,7 +12,6 @@ public class AttackTower : TowerAi
     bool isTargetSet = false; 
     bool isDelayAfterAttackCoroutine = false;
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
@@ -65,7 +64,9 @@ public class AttackTower : TowerAi
         {
             towerState = TowerState.Attack;
         }
-    }//void Attack()
+    }
+    
+    //void Attack()
 
     void AttackTowerAiCtrl()
     {
@@ -101,6 +102,7 @@ public class AttackTower : TowerAi
             }
         }
     }
+
     private void SearchObjectsInRange()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);
@@ -134,6 +136,7 @@ public class AttackTower : TowerAi
             }
         }
     }
+
     void AttackTargetDisCheck()
     {
         if (aggroTarget != null)
@@ -141,6 +144,7 @@ public class AttackTower : TowerAi
             targetDist = Vector3.Distance(transform.position, aggroTarget.transform.position);
         }
     }
+
     void Attack()
     {
         if (!isDelayAfterAttackCoroutine)
@@ -149,6 +153,7 @@ public class AttackTower : TowerAi
             StartCoroutine(DelayAfterAttack(towerData.AttDelayTime)); // 1.5초 후 딜레이 적용            
         }
     }
+
     IEnumerator DelayAfterAttack(float delayTime)
     {
         isDelayAfterAttackCoroutine = true;

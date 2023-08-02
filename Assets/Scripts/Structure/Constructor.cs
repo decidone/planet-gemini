@@ -120,6 +120,7 @@ public class Constructor : Production
     {
         inventory.Sub(1, 1);
     }
+
     public override bool CheckOutItemNum()
     {
         var slot1 = inventory.SlotCheck(1);
@@ -138,6 +139,7 @@ public class Constructor : Production
         else
             isFull = true;
     }
+
     public override (Item, int) QuickPullOut()
     {
         var slot1 = inventory.SlotCheck(1);
@@ -145,6 +147,7 @@ public class Constructor : Production
             inventory.Sub(1, slot1.amount);
         return slot1;
     }
+
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();

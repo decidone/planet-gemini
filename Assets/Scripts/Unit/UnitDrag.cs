@@ -116,8 +116,9 @@ public class UnitDrag : MonoBehaviour
                 SetTargetPosition(false);
                 ReSetBool();
             }
-        }        
+        }
     }
+
     private void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition)
     {
         Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << unitLayer);
@@ -141,6 +142,7 @@ public class UnitDrag : MonoBehaviour
             }
         }
     }
+
     private void SelectedObjects(RaycastHit2D ray)
     {
         removeUnit?.Invoke();

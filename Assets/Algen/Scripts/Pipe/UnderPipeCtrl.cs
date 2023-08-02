@@ -17,14 +17,12 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     public GameObject connectUnderPipe = null;
 
-    // Start is called before the first frame update
     void Start()
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
@@ -58,6 +56,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             }
         }
     }
+
     void ModelSet()
     {
         setModel.sprite = modelNum[dirNum];

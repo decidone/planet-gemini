@@ -13,6 +13,7 @@ public class GolemCtrl : MonsterAi
     Vector3 nextStep = Vector3.zero;
     float speed;
     bool checkTarget = false;
+
     protected override void RandomAttackNum(int attackNum, Transform targetTr)
     {
         attackState = MonsterAttackState.Attacking;
@@ -55,6 +56,7 @@ public class GolemCtrl : MonsterAi
             transform.position += targetVec * 15 * Time.fixedDeltaTime;
         }
     }
+
     public void FXSpawn()
     {
         if (attackMotion == 0)
@@ -80,4 +82,3 @@ public class GolemCtrl : MonsterAi
         //golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion, getMonsterData.monsteData.Damage);
     }
 }
-

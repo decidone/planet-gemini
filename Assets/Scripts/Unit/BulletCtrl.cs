@@ -8,7 +8,6 @@ public class BulletCtrl : MonoBehaviour
     public Transform aggroTarget = null;   // ≈∏∞Ÿ
     Vector3 moveNextStep = Vector3.zero;    // ¿Ãµø πÊ«‚ ∫§≈Õ
 
-    // Update is called once per frame
     void Update()
     {
         transform.position += moveNextStep * 2 * Time.fixedDeltaTime;
@@ -31,5 +30,5 @@ public class BulletCtrl : MonoBehaviour
                 Destroy(this.gameObject, 0.1f);
             }
         }//if (collision.CompareTag("Player"))
-    }//private void OnTriggerEnter2D(Collider2D collision)
+    }
 }

@@ -18,6 +18,7 @@ public class UnitAi : MonoBehaviour
         UAI_Die,
     }
     //스톱 기능도 추가
+
     public enum UnitAttackState
     {
         Waiting,
@@ -92,7 +93,6 @@ public class UnitAi : MonoBehaviour
 
     bool isFlip = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         tr = GetComponent<Transform>();
@@ -111,7 +111,6 @@ public class UnitAi : MonoBehaviour
             UnitAiCtrl();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (unitAIState != UnitAIState.UAI_Die)
@@ -170,7 +169,7 @@ public class UnitAi : MonoBehaviour
             case UnitAIState.UAI_AggroTrace:
                 {
 
-                }              
+                }
                 break;
         }
     }
@@ -304,6 +303,7 @@ public class UnitAi : MonoBehaviour
         }
  
     }
+
     void MoveFunc()
     {
         if (movePath.Count <= currentWaypointIndex)
@@ -370,7 +370,6 @@ public class UnitAi : MonoBehaviour
         }
         direction = targetPosition - tr.position;
     }
-
 
     void PatrolFunc(bool isGo)
     {
@@ -488,6 +487,7 @@ public class UnitAi : MonoBehaviour
         isTargetSet = false;
         AnimSetFloat(direction, false);
     }
+
     private void SearchObjectsInRange()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, unitData.ColliderRadius);
@@ -582,9 +582,8 @@ public class UnitAi : MonoBehaviour
             unitAIState = UnitAIState.UAI_Attack;
             attackState = UnitAttackState.Attack;
         }
-    }//void Attack()
-
-
+    }
+    
     void Attack()
     {
         AnimSetFloat(targetVec, true);

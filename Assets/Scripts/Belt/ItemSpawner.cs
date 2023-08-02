@@ -16,14 +16,12 @@ public class ItemSpawner : SolidFactoryCtrl
     int sendObjNum = 0;
     protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
-    // Start is called before the first frame update
     void Start()
     {
         dirCount = 4;
         CheckPos();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
@@ -80,6 +78,7 @@ public class ItemSpawner : SolidFactoryCtrl
             }
         }
     }
+
     IEnumerator SetOutObjCoroutine(GameObject obj)
     {
         yield return new WaitForSeconds(0.1f);
@@ -227,6 +226,7 @@ public class ItemSpawner : SolidFactoryCtrl
     {
         itemSetDelay = false;
     }
+
     //public override void AddProductionFac(GameObject obj)
     //{
     //    outObj.Add(obj);

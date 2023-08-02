@@ -212,7 +212,7 @@ public class Inventory : MonoBehaviour
 
     public void Sub(Item item, int amount)
     {
-        int slotNum = FindItemSolt(item);
+        int slotNum = FindItemSlot(item);
         if(slotNum != -1)
             Sub(slotNum, amount);
     }
@@ -221,7 +221,7 @@ public class Inventory : MonoBehaviour
 
     // 아이템의 슬롯 넘버를 찻는 함수
 
-    int FindItemSolt(Item item)
+    int FindItemSlot(Item item)
     {
         for (int i = 0; i < space; i++)
         {
@@ -236,7 +236,7 @@ public class Inventory : MonoBehaviour
         return -1;
     }
 
-    // 아이템의 슬롯 넘버를 찻는 함수
+    // 아이템의 슬롯 넘버를 찾는 함수
 
     public void Sub(int slotNum, int amount)
     {

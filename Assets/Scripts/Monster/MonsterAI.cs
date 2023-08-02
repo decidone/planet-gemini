@@ -39,7 +39,7 @@ public class MonsterAi : MonoBehaviour
     float moveStep = 0.0f;                  // 프레임당 이동 거리
     Seeker seeker;
     protected Coroutine checkPathCoroutine; // 실행 중인 코루틴을 저장하는 변수
-    private int currentWaypointIndex; // 현재 이동 중인 경로 점 인덱스
+    private int currentWaypointIndex;       // 현재 이동 중인 경로 점 인덱스
     List<Vector3> movePath = new List<Vector3>();
     //이동 관련 변수
 
@@ -54,16 +54,15 @@ public class MonsterAi : MonoBehaviour
     Vector3 patrolPos = Vector3.zero;       // 패트롤 지정 위치
     Vector3 patRandomPos = Vector3.zero;    // 패트롤 랜덤 위치
     int idle = 0;                           // 0 일경우 idle상태
-                                            // 패트롤 변수
 
     //공격 관련 변수
-    private float searchInterval = 0.3f; // 딜레이 간격 설정
+    private float searchInterval = 0.3f;    // 딜레이 간격 설정
     private float searchTimer = 0f;
     public GameObject aggroTarget = null;   // 타겟
     public List<GameObject> targetList = new List<GameObject>();
     float tarDisCheckTime = 0f;
-    float tarDisCheckInterval = 0.3f; // 1초 간격으로 몬스터 거리 체크
-    public float targetDist = 0.0f;                // 타겟과의 거리
+    float tarDisCheckInterval = 0.3f;       // 1초 간격으로 몬스터 거리 체크
+    public float targetDist = 0.0f;         // 타겟과의 거리
     public int attackMotion = 0;
     List<string> targetTags = new List<string> { "Player", "Unit", "Tower"};//, "Factory" };
 
@@ -84,7 +83,6 @@ public class MonsterAi : MonoBehaviour
 
     bool isFlip = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         tr = GetComponent<Transform>();
@@ -98,7 +96,7 @@ public class MonsterAi : MonoBehaviour
         hp = monsterData.MaxHp;
         hpBar.fillAmount = hp / monsterData.MaxHp;
         seeker = GetComponent<Seeker>();
-    }//void Start()
+    }
 
     private void FixedUpdate()
     {
@@ -106,9 +104,8 @@ public class MonsterAi : MonoBehaviour
         {
             MonsterMove();
         }
-    }//private void FixedUpdate()
+    }
 
-    // Update is called once per frame
     void Update()
     {
         if (monsterAI != MonsterAIState.MAI_Die)
@@ -136,7 +133,7 @@ public class MonsterAi : MonoBehaviour
                 }
             } 
         }
-    }//void Update()
+    }
 
     void MonsterAICtrl()
     {
@@ -168,7 +165,7 @@ public class MonsterAi : MonoBehaviour
                 AttackMove();
             }
         }//else if (monsterAI == MonsterAI.MAI_Attack)
-    }//void MonsterAICtrl()
+    }
 
     //void MonsterMove()
     //{
@@ -207,7 +204,7 @@ public class MonsterAi : MonoBehaviour
     //        animator.SetFloat("moveNextStepX", 1.0f);
     //    else if(moveDir.x <= 0.75f && moveDir.x >= -0.75f)
     //        animator.SetFloat("moveNextStepX", 0.0f);
-    //}//void MonsterMove()
+    //}
 
     void MovePosSet()
     {
@@ -280,7 +277,7 @@ public class MonsterAi : MonoBehaviour
             animator.SetFloat("moveNextStepX", 1.0f);
         else if (moveDir.x <= 0.75f && moveDir.x >= -0.75f)
             animator.SetFloat("moveNextStepX", 0.0f);
-    }//void MonsterMove()
+    }
 
     IEnumerator CheckPath(Vector3 targetPos)
     {
@@ -300,6 +297,7 @@ public class MonsterAi : MonoBehaviour
 
         checkPathCoroutine = null;
     }
+
     void SwBodyType(bool isMove)
     {
         if (isMove)
@@ -327,7 +325,8 @@ public class MonsterAi : MonoBehaviour
         {
             monsterAI = MonsterAIState.MAI_Patrol;
         }
-    }//void NormalTrace()
+    }
+
     private void SearchObjectsInRange()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, monsterData.ColliderRadius);
@@ -376,6 +375,7 @@ public class MonsterAi : MonoBehaviour
             monsterAI = MonsterAIState.MAI_Patrol;
         }
     }
+
     void AttackTargetDisCheck()
     {
         float closestDistance = float.MaxValue;
@@ -399,7 +399,6 @@ public class MonsterAi : MonoBehaviour
             monsterAI = MonsterAIState.MAI_NormalTrace;
         }
     }
-
 
     void TurnAttack()
     {
@@ -425,7 +424,7 @@ public class MonsterAi : MonoBehaviour
         {
             monsterAI = MonsterAIState.MAI_Patrol;
         }
-    }//void Attack()
+    }
 
     protected void AttackObjCheck(GameObject Obj)
     {
@@ -457,6 +456,7 @@ public class MonsterAi : MonoBehaviour
     {
 
     }
+
     public void ImgMrror()
     {
         if (isFlip == true)
@@ -495,7 +495,7 @@ public class MonsterAi : MonoBehaviour
         }
 
         //tr.position = tr.position + moveNextStep;
-    }//void ImgMrror()
+    }
 
     IEnumerator AttackDelay()
     {
@@ -566,8 +566,8 @@ public class MonsterAi : MonoBehaviour
         //    StartCoroutine("Patrol");
         //}            
         isPatrolCoroutine = false;
-
     }
+
     public void TakeDamage(float damage)
     {
         if (hp <= 0f)

@@ -22,14 +22,12 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
 
     private Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
-    // Start is called before the first frame update
     void Start()
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
@@ -79,6 +77,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             checkPos[i] = dirs[(dirNum + i) % 4];
         }
     }
+
     protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         float dist = 0;
@@ -165,6 +164,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
             outObj.Add(obj);
         }
     }
+
     IEnumerator OutCheck(GameObject otherObj)
     {
         yield return new WaitForSeconds(0.1f);
@@ -300,6 +300,7 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
     {
         itemSetDelay = false;
     }
+
     //public override void AddProductionFac(GameObject obj)
     //{
     //    outObj.Add(obj);

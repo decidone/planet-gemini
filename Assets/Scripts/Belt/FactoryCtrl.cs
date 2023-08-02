@@ -7,7 +7,6 @@ using System;
 public class FactoryCtrl : MonoBehaviour
 {
     public bool isFull = false;
-
     public bool fluidIsFull = false;
 
     public int dirNum = 0;
@@ -52,5 +51,4 @@ public class FactoryCtrl : MonoBehaviour
     public virtual void RepairSet(bool repair) { }
     protected virtual void RepairFunc(bool isBuilding) { }
     protected virtual void RepairEnd() { }
-
 }

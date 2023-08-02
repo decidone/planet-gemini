@@ -72,7 +72,6 @@ public class Smelter : Production
         rManager.recipeBtn.gameObject.SetActive(false);
     }
 
-
     public override void OpenRecipe()
     {
         rManager.OpenUI();

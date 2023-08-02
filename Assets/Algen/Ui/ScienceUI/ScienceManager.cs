@@ -25,7 +25,7 @@ public class ScienceManager : MonoBehaviour
     protected ScienceBtn focusedSciBtn;  // 마우스 위치에 있는 슬롯
 
     TempScienceDb scienceDb;
-    // Start is called before the first frame update
+
     void Start()
     {
         gameManager = GameManager.instance;

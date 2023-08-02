@@ -11,11 +11,9 @@ public class GolemFXCtrl : MonoBehaviour
     bool isAnimEnd = false;
     float damage = 0;
 
-    // Update is called once per frame
     void Update()
     {        
         AttackFunc();
-
     }
 
     public void FXEnd()
@@ -51,15 +49,18 @@ public class GolemFXCtrl : MonoBehaviour
     void FXMove()
     {
         
-    }//void MonsterMove()
+    }
+
+    //void MonsterMove()
+
     void ImgMrror()
     {
         if (moveNextStep.x > 0)
             transform.localScale = new Vector3(1, 1, 1);
         else if (moveNextStep.x < 0)
             transform.localScale = new Vector3(-1, 1, 1);
-    }//void ImgMrror()
-
+    }
+    
     public void GetTarget(Vector3 target, int attackMotion, float getDamage)
     {
         moveNextStep = (target - transform.position).normalized;
@@ -73,10 +74,8 @@ public class GolemFXCtrl : MonoBehaviour
         //this.gameObject.GetComponent<BoxCollider2D>().enabled = true;
     }
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
         if (collision.GetComponent<PlayerStatus>())
         {            
             if (collision.isTrigger == false)
@@ -102,5 +101,7 @@ public class GolemFXCtrl : MonoBehaviour
         {
             Destroy(this.gameObject, 0.2f);
         }
-    }//private void OnTriggerEnter2D(Collider2D collision)
+    }
+    
+    //private void OnTriggerEnter2D(Collider2D collision)
 }

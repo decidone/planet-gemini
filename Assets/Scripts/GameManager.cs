@@ -68,7 +68,6 @@ public class GameManager : MonoBehaviour
             debug = !debug;
             Debug.Log("debug : " + debug);
         }
-            
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -185,7 +184,8 @@ public class GameManager : MonoBehaviour
                 pInvenManager.CloseUI();
             }
         }
-        else if (Input.GetButtonDown("Building"))
+        
+        if (Input.GetButtonDown("Building"))
         {
             if (!bManager.buildingInventoryUI.activeSelf)
             {
@@ -196,7 +196,8 @@ public class GameManager : MonoBehaviour
                 bManager.CloseUI();
             }
         }
-        else if (Input.GetButtonDown("ScienceTree"))
+        
+        if (Input.GetButtonDown("ScienceTree"))
         {
             if (!sTreeManager.scienceTreeUI.activeSelf)
             {

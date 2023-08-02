@@ -35,7 +35,6 @@ public class SplitterCtrl : SolidFactoryCtrl
     }
     public Filter[] arrFilter = new Filter[3]; // 0 аб 1 ╩С 2 ©Л
 
-    // Start is called before the first frame update
     void Start()
     {
         dirCount = 4;
@@ -43,7 +42,6 @@ public class SplitterCtrl : SolidFactoryCtrl
         CheckPos();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
@@ -116,6 +114,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             }
         }
     }
+
     protected override void CheckPos()
     {
         Vector2[] dirs ={ Vector2.down, Vector2.left, Vector2.up, Vector2.right };
@@ -248,6 +247,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             }
         }
     }
+
     protected override void GetItem()
     {
         itemGetDelay = true;
@@ -266,7 +266,6 @@ public class SplitterCtrl : SolidFactoryCtrl
         }
         itemGetDelay = false;
     }
-
 
     protected override void SetItem()
     {
@@ -670,15 +669,18 @@ public class SplitterCtrl : SolidFactoryCtrl
     void DelaySetItem()
     {
         itemSetDelay = false;
-    }     
+    }
+
     void DelayGetItem()
     {
         itemGetDelay = false;
     }
+
     //public override void AddProductionFac(GameObject obj)
     //{
     //    outObj.Add(obj);
     //}
+
     public override void RemoveObj()
     {
         base.RemoveObj();

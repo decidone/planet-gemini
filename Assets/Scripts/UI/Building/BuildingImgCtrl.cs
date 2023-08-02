@@ -17,7 +17,6 @@ public class BuildingImgCtrl : MonoBehaviour
 
     //public Inventory inventory = null;
 
-    // Start is called before the first frame update
     void Start()
     {
         onSlotChangedCallback += SlotChanged;

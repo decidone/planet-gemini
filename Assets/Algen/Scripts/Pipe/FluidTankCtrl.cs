@@ -11,13 +11,11 @@ public class FluidTankCtrl : FluidFactoryCtrl
     int[] indices = new int[6];
     public List<GameObject> factoryList = new List<GameObject>();
 
-    // Start is called before the first frame update
     void Start()
     {
         TransformCheck();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();

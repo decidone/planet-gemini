@@ -23,14 +23,12 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
     private Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
-    // Start is called before the first frame update
     void Start()
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
@@ -282,6 +280,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     {
         itemSetDelay = false;
     }
+
     void DelayGetItem()
     {
         itemGetDelay = false;

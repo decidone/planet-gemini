@@ -10,25 +10,6 @@ public class Miner : Production
         Init();
     }
 
-    void Init()
-    {
-        Map map = GameManager.instance.map;
-        int x = Mathf.FloorToInt(this.gameObject.transform.position.x);
-        int y = Mathf.FloorToInt(this.gameObject.transform.position.y);
-        if (map.IsOnMap(x, y))
-        {
-            if (map.mapData[x][y].obj != null)
-            {
-                ObjData objData = map.mapData[x][y].obj.gameObject.GetComponent<ObjData>();
-                if (objData != null)
-                {
-                    if (objData.type == "Ore" && objData.item != null)
-                        SetResource(objData.item);
-                }
-            }
-        }
-    }
-
     protected override void Update()
     {
         base.Update();
@@ -48,6 +29,25 @@ public class Miner : Production
             if (slot.amount > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 SetItem();
+            }
+        }
+    }
+
+    void Init()
+    {
+        Map map = GameManager.instance.map;
+        int x = Mathf.FloorToInt(this.gameObject.transform.position.x);
+        int y = Mathf.FloorToInt(this.gameObject.transform.position.y);
+        if (map.IsOnMap(x, y))
+        {
+            if (map.mapData[x][y].obj != null)
+            {
+                ObjData objData = map.mapData[x][y].obj.gameObject.GetComponent<ObjData>();
+                if (objData != null)
+                {
+                    if (objData.type == "Ore" && objData.item != null)
+                        SetResource(objData.item);
+                }
             }
         }
     }
@@ -85,7 +85,6 @@ public class Miner : Production
             return false;
     }
 
-
     public override void ItemNumCheck()
     {
         var slot = inventory.SlotCheck(0);
@@ -103,6 +102,7 @@ public class Miner : Production
             inventory.Sub(0, slot.amount);
         return slot;
     }
+
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();

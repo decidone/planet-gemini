@@ -16,7 +16,6 @@ public class PipeCtrl : FluidFactoryCtrl
     bool isDown = false;
     bool isLeft = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         setModel = GetComponent<SpriteRenderer>();
@@ -24,7 +23,6 @@ public class PipeCtrl : FluidFactoryCtrl
         //    pipeGroupMgr = GetComponentInParent<PipeGroupMgr>();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();

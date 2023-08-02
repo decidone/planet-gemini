@@ -36,7 +36,6 @@ public class BeltCtrl : SolidFactoryCtrl
     bool isDown = false;
     bool isLeft = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         dirCount = 4;
@@ -52,7 +51,6 @@ public class BeltCtrl : SolidFactoryCtrl
         BeltModelSet();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();

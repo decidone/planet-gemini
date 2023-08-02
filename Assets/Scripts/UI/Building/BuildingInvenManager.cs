@@ -19,8 +19,6 @@ public class BuildingInvenManager : MonoBehaviour
 
     BuildingData buildingData;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         gameManager = GameManager.instance;
@@ -28,11 +26,9 @@ public class BuildingInvenManager : MonoBehaviour
         //dragSlot = DragSlot.instance;
     }
 
-    // Update is called once per frame
     void Update()
     {
         InputCheck();
-
     }
 
     public void SetInven(BuildingInven inven, GameObject invenUI)
@@ -152,6 +148,7 @@ public class BuildingInvenManager : MonoBehaviour
     {
         focusedSlot = null;
     }
+
     public void OpenUI()
     {
         buildingInventoryUI.SetActive(true);

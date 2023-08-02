@@ -134,6 +134,7 @@ public class Furnace : Production
 
         OnDestroyItem(itemProps);
     }
+
     public override void OnFactoryItem(Item item)
     {
         if (itemDic["Coal"] == item)
@@ -152,6 +153,7 @@ public class Furnace : Production
     {
         inventory.Sub(2, 1);
     }
+
     public override bool CheckOutItemNum()
     {
         var slot2 = inventory.SlotCheck(2);
@@ -178,6 +180,7 @@ public class Furnace : Production
             inventory.Sub(2, slot2.amount);
         return slot2;
     }
+
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();

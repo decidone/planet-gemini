@@ -16,11 +16,12 @@ public class BuildingInven : MonoBehaviour
     [SerializeField]
     private GameObject buildingTagsPanel = null;
     public bool debugMode = false;
+
     void Awake()
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of drag slot found!");
+            Debug.LogWarning("More than one instance of building inven found!");
             return;
         }
 

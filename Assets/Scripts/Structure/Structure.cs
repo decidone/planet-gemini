@@ -115,24 +115,4 @@ public class Structure : MonoBehaviour
         removeState = true;
         StopAllCoroutines();
     }
-
-    //[SerializeField]
-    //protected int maxHp;
-    //[SerializeField]
-    //protected int hp;
-
-    //protected void ConveyorCheck()
-    //{
-    //    // 연결된 컨베이어 벨트 체크
-    //}
-
-    //protected void PipeCheck()
-    //{
-    //    // 연결된 파이프 체크
-    //}
-
-    //protected void StructureCheck()
-    //{
-    //    // 연결된 건물 체크
-    //}
 }

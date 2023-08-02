@@ -29,9 +29,9 @@ public class UnderBeltCtrl : MonoBehaviour
         SetSlotColor(sendBelt.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
     }
 
-    // Update is called once per frame
     void Update()
-    {// 기본적으로 send벨트이고 send벨트의 반대 방향으로 10 체크해서 다른 send벨트가 있을 때 get벨트로 변경
+    {
+        // 기본적으로 send벨트이고 send벨트의 반대 방향으로 10 체크해서 다른 send벨트가 있을 때 get벨트로 변경
         if(isPreBuilding)
         {
             CheckPos();

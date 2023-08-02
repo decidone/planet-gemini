@@ -17,13 +17,7 @@ public class BeltGroupMgr : MonoBehaviour
     bool preCheck = true;
 
     public bool isPreBuilding = false;
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (!isPreBuilding)
@@ -51,6 +45,7 @@ public class BeltGroupMgr : MonoBehaviour
         beltCtrl.dirNum = beltDir;
         beltCtrl.beltState = BeltState.SoloBelt;
     }
+
     void BeltModelSet(BeltCtrl preBelt, BeltCtrl nextBelt)
     {
         if(preBelt == beltList[0])
@@ -125,6 +120,7 @@ public class BeltGroupMgr : MonoBehaviour
 
         return null;
     }
+
     private GameObject PreObjCheck()
     {
         var Check = -transform.up;

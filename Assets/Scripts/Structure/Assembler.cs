@@ -72,7 +72,6 @@ public class Assembler : Production
         rManager.recipeBtn.gameObject.SetActive(false);
     }
 
-
     public override void OpenRecipe()
     {
         rManager.OpenUI();
@@ -123,6 +122,7 @@ public class Assembler : Production
 
         OnDestroyItem(itemProps);
     }
+
     public override void OnFactoryItem(Item item)
     {
         if (itemDic[recipe.items[0]] == item)
@@ -139,6 +139,7 @@ public class Assembler : Production
     {
         inventory.Sub(2, 1);
     }
+
     public override bool CheckOutItemNum()
     {
         var slot2 = inventory.SlotCheck(2);
@@ -165,6 +166,7 @@ public class Assembler : Production
             inventory.Sub(2, slot2.amount);
         return slot2;
     }
+
     public override void GetUIFunc() 
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();

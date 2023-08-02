@@ -23,7 +23,6 @@ public class MergerCtrl : SolidFactoryCtrl
 
     private Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
-    // Start is called before the first frame update
     void Start()
     {
         dirCount = 4;
@@ -31,7 +30,6 @@ public class MergerCtrl : SolidFactoryCtrl
         CheckPos();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
@@ -109,6 +107,7 @@ public class MergerCtrl : SolidFactoryCtrl
             }
         }
     }
+
     IEnumerator SetInObjCoroutine(GameObject obj)
     {
         yield return new WaitForSeconds(0.1f);
@@ -337,10 +336,12 @@ public class MergerCtrl : SolidFactoryCtrl
     {
         itemSetDelay = false;
     }
+
     void DelayGetItem()
     {
         itemGetDelay = false;
     }
+
     //public override void AddProductionFac(GameObject obj)
     //{
     //    outObj.Add(obj);

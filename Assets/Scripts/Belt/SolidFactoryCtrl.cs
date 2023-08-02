@@ -20,6 +20,11 @@ public class SolidFactoryCtrl : Structure
 
     BoxCollider2D box2D = null;
 
+    protected virtual void GetItem() { }
+    // 벨트에서 아이템 받아오는 함수
+    protected virtual void SetItem() { }
+    // 벨트나 건물로 아이템 보내는 함수
+
     private void Awake()
     {
         buildName = solidFactoryData.FactoryName;
@@ -30,7 +35,6 @@ public class SolidFactoryCtrl : Structure
 
         itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
     }
-    // Start is called before the first frame update
 
     protected virtual void Update()
     {
@@ -46,11 +50,6 @@ public class SolidFactoryCtrl : Structure
             }
         }
     }
-
-    protected virtual void GetItem() { }
-    // 벨트에서 아이템 받아오는 함수
-    protected virtual void SetItem() { }
-    // 벨트나 건물로 아이템 보내는 함수
 
     public List<Item> PlayerGetItemList()
     {
@@ -253,6 +252,7 @@ public class SolidFactoryCtrl : Structure
             DieFunc();
         }
     }
+
     public override void HealFunc(float heal)
     {
         if (hp == solidFactoryData.MaxHp[level])

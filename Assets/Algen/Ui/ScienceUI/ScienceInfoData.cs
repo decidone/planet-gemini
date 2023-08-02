@@ -7,6 +7,7 @@ public class ScienceInfoData
     public List<string> items;
     public List<int> amounts;
     public int coreLv;
+
     public ScienceInfoData() { }
 
     public ScienceInfoData(List<string> _items, List<int> _amounts, int _coreLv)

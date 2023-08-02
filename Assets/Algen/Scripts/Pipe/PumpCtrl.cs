@@ -18,13 +18,12 @@ public class PumpCtrl : FluidFactoryCtrl
     bool isRight = false;
     bool isDown = false;
     bool isLeft = false;
-    // Start is called before the first frame update
+
     void Start()
     {
         CheckPos();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();

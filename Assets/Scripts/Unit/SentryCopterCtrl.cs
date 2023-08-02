@@ -25,5 +25,4 @@ public class SentryCopterCtrl : UnitAi
             attackFXSpwan.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, unitData.Damage);
         }
     }
-
 }

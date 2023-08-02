@@ -12,7 +12,6 @@ public class ScienceBtn : MonoBehaviour
     bool isLock = true;
     public bool isCore = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         scBtn = this.GetComponent<Button>();

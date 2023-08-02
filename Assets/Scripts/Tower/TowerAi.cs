@@ -54,18 +54,18 @@ public class TowerAi : MonoBehaviour
     public bool canBuilding = true;
     List<GameObject> buildingPosObj = new List<GameObject>();
 
-
     private void Awake()
     {
         capsule2D = GetComponent<CapsuleCollider2D>();
     }
-    // Start is called before the first frame update
+
     void Start()
     {
         hp = towerData.MaxHp;
         hpBar.fillAmount = hp / towerData.MaxHp;
         repairBar.fillAmount = repairGauge / towerData.MaxRepairGauge;
     }
+
     protected virtual void Update()
     {
         if (isPreBuilding && isSetBuildingOk && !isRuin)
@@ -225,6 +225,7 @@ public class TowerAi : MonoBehaviour
         else
             capsule2D.isTrigger = false;
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (isPreBuilding)

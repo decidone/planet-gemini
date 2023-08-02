@@ -15,7 +15,6 @@ public class SolidFacClickEvent : MonoBehaviour
     GameManager gameManager;
 
     SolidFactoryCtrl solidFactory;
-    // Start is called before the first frame update
 
     public void SolidFacCheck()
     {

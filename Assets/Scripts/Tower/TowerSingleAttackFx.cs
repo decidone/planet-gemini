@@ -11,7 +11,6 @@ public class TowerSingleAttackFx : MonoBehaviour
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
     bool isHit = false;
 
-    // Update is called once per frame
     void Update()
     {
         transform.position += moveNextStep * 2 * Time.fixedDeltaTime;
@@ -35,5 +34,5 @@ public class TowerSingleAttackFx : MonoBehaviour
                 Destroy(this.gameObject, 0.1f);
             }
         }
-    }//private void OnTriggerEnter2D(Collider2D collision)
+    }
 }

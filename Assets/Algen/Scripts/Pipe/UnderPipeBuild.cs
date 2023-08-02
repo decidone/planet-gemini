@@ -20,6 +20,7 @@ public class UnderPipeBuild : MonoBehaviour
     UnderPipeCtrl underpipeCtrl;
     PreBuilding preBuilding;
     public bool buildEnd = false;
+
     void Start()
     {
         SetSlotColor(underPipe.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
@@ -27,7 +28,6 @@ public class UnderPipeBuild : MonoBehaviour
         tempDir = pipeScipt.dirNum;
     }
 
-    // Update is called once per frame
     void Update()
     {// 기본적으로 send벨트이고 send벨트의 반대 방향으로 10 체크해서 다른 send벨트가 있을 때 get벨트로 변경
         if (isPreBuilding)
@@ -130,6 +130,7 @@ public class UnderPipeBuild : MonoBehaviour
         slotColor.a = alpha;
         sprite.color = slotColor;
     }
+
     public void SetLevel(int getLevel)
     {
         pipeScipt.level = getLevel;
