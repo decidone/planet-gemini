@@ -82,9 +82,11 @@ public class PreBuilding : MonoBehaviour
         {
             startBuildPos = transform.position;
             endBuildPos = transform.position;
-            isMouseLeft = true;
-            if(!EventSystem.current.IsPointerOverGameObject())
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                isMouseLeft = true;
                 mouseBtnFunc = MouseBtnFunc.MouseButtonDown;
+            }
         }
         else if (Input.GetMouseButton(0))
         {

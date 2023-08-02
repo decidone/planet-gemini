@@ -26,7 +26,8 @@ public class BuildingDataGet : MonoBehaviour
 
     void Start()
     {
-        string json = File.ReadAllText("Assets/Data/BuildingList.json");
+        //string json = File.ReadAllText("Assets/Data/BuildingList.json");
+        string json = Resources.Load<TextAsset>("BuildingList").ToString();
         buildingDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, BuildingData>>>(json);
     }
 

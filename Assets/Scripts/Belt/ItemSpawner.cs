@@ -30,7 +30,7 @@ public class ItemSpawner : SolidFactoryCtrl
             {
                 if (outObj.Count > 0 && !itemSetDelay)
                 {
-                    if(itemData.name != "emptFilter")
+                    if (itemData.name != "emptyFilter")
                         SetItem();
                 }
 
@@ -131,7 +131,7 @@ public class ItemSpawner : SolidFactoryCtrl
         {
             return;
         }
-
+        Debug.Log("send");
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();

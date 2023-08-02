@@ -26,7 +26,8 @@ public class ScienceInfoGet : MonoBehaviour
 
     void Start()
     {
-        string json = File.ReadAllText("Assets/Data/ScienceInfo.json");
+        //string json = File.ReadAllText("Assets/Data/ScienceInfo.json");
+        string json = Resources.Load<TextAsset>("ScienceInfo").ToString();
         scienceInfoDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, ScienceInfoData>>>(json);
     }
 

@@ -23,7 +23,8 @@ public class RecipeList : MonoBehaviour
         instance = this;
         recipeDic = new Dictionary<string, List<Recipe>>();
 
-        string json = File.ReadAllText("Assets/Data/Recipe.json");
+        //string json = File.ReadAllText("Assets/Data/Recipe.json");
+        string json = Resources.Load<TextAsset>("Recipe").ToString();
         recipeDic = JsonConvert.DeserializeObject<Dictionary<string, List<Recipe>>>(json);
     }
     #endregion
