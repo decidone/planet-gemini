@@ -20,6 +20,7 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public int dirCount = 0;
     public int level = 0;
+    public string buildName;
 
     [HideInInspector]
     public bool isPreBuilding = false;

@@ -11,10 +11,12 @@ public class BeltGroupMgr : MonoBehaviour
     public List<ItemProps> groupItem = new List<ItemProps>();
 
     public GameObject nextObj = null;
+    public GameObject preObj = null;
+
     bool nextCheck = true;
+    bool preCheck = true;
 
     public bool isPreBuilding = false;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +31,12 @@ public class BeltGroupMgr : MonoBehaviour
             if(nextCheck == true)
             {
                 if(beltList.Count > 0)
-                    nextObj = NextObjCheck();        
+                    nextObj = NextObjCheck();    
+            }
+            if (preCheck == true)
+            {
+                if (beltList.Count > 0)
+                    preObj = PreObjCheck();
             }
         }
     }
@@ -100,13 +107,62 @@ public class BeltGroupMgr : MonoBehaviour
             if (collider.CompareTag("Factory") && !collider.GetComponent<Structure>().isPreBuilding && 
                 collider.GetComponent<BeltCtrl>() != belt)
             {
-                if (collider.GetComponent<BeltCtrl>() != null)
+                if (collider.TryGetComponent(out BeltCtrl otherBelt))
                 {
-                    CheckGroup(belt, collider.GetComponent<BeltCtrl>());
+                    CheckGroup(belt, otherBelt, true);
+                    if (otherBelt.beltGroupMgr.nextObj != null)
+                    {
+                        return otherBelt.beltGroupMgr.nextObj;
+                    }
                 }
                 else
                 {
                     nextCheck = false;
+                    return collider.gameObject;
+                }
+            }
+        }
+
+        return null;
+    }
+    private GameObject PreObjCheck()
+    {
+        var Check = -transform.up;
+
+        BeltCtrl belt = beltList[0].GetComponent<BeltCtrl>();
+        if (belt.dirNum == 0)
+        {
+            Check = -belt.transform.up;
+        }
+        else if (belt.dirNum == 1)
+        {
+            Check = -belt.transform.right;
+        }
+        else if (belt.dirNum == 2)
+        {
+            Check = belt.transform.up;
+        }
+        else if (belt.dirNum == 3)
+        {
+            Check = belt.transform.right;
+        }
+
+        RaycastHit2D[] raycastHits = Physics2D.RaycastAll(belt.transform.position, Check, 1f);
+
+        for (int a = 0; a < raycastHits.Length; a++)
+        {
+            Collider2D collider = raycastHits[a].collider;
+
+            if (collider.CompareTag("Factory") && !collider.GetComponent<Structure>().isPreBuilding &&
+                collider.GetComponent<BeltCtrl>() != belt)
+            {
+                if (collider.TryGetComponent(out BeltCtrl otherBelt))
+                {
+                    CheckGroup(belt, otherBelt, false);
+                }
+                else
+                {
+                    preCheck = false;
                 }
 
                 return collider.gameObject;
@@ -116,45 +172,108 @@ public class BeltGroupMgr : MonoBehaviour
         return null;
     }
 
-    void CheckGroup(BeltCtrl belt, BeltCtrl nextBelt)
+    void CheckGroup(BeltCtrl belt, BeltCtrl otherBelt, bool isNextFind)
     {
         BeltGroupMgr beltGroupMgr = this.GetComponent<BeltGroupMgr>();
-
-        if (nextBelt.beltGroupMgr != null && beltGroupMgr != nextBelt.beltGroupMgr)
-        {
-            if (nextBelt.beltState == BeltState.StartBelt || nextBelt.beltState == BeltState.SoloBelt)
+        if (otherBelt.beltGroupMgr != null && beltGroupMgr != otherBelt.beltGroupMgr)
+        {        
+            if (isNextFind)
             {
-                if (belt.dirNum == nextBelt.dirNum)                
-                    CombineFunc(beltGroupMgr, belt, nextBelt);
-                
-                else if (belt.dirNum != nextBelt.dirNum)
+                if (otherBelt.beltState == BeltState.StartBelt || otherBelt.beltState == BeltState.SoloBelt)
                 {
-                    if (belt.dirNum % 2 == 0)
+                    if (belt.dirNum == otherBelt.dirNum)                
+                        CombineFunc(beltGroupMgr, belt, otherBelt, isNextFind);
+                
+                    else if (belt.dirNum != otherBelt.dirNum)
                     {
-                        if (nextBelt.dirNum % 2 == 1)                        
-                            CombineFunc(beltGroupMgr, belt, nextBelt);                        
-                        else
-                            return;
+                        if (belt.dirNum % 2 == 0)
+                        {
+                            if (otherBelt.dirNum % 2 == 1)                        
+                                CombineFunc(beltGroupMgr, belt, otherBelt, isNextFind);                        
+                            else
+                                return;
+                        }
+                        else if (belt.dirNum % 2 == 1)
+                        {
+                            if (otherBelt.dirNum % 2 == 0)                        
+                                CombineFunc(beltGroupMgr, belt, otherBelt, isNextFind);                        
+                            else
+                                return;
+                        }
                     }
-                    else if (belt.dirNum % 2 == 1)
+                }
+            }
+            else
+            {
+                if(otherBelt.beltState == BeltState.EndBelt || otherBelt.beltState == BeltState.SoloBelt)
+                {
+                    if (otherBelt.beltGroupMgr.nextObj == null)
+                    {                        
+                        if (belt.dirNum != otherBelt.dirNum)
+                        {
+                            if (belt.dirNum % 2 == 0)
+                            {
+                                if (otherBelt.dirNum % 2 == 1)
+                                    CombineFunc(beltGroupMgr, belt, otherBelt, isNextFind);
+                                else
+                                    return;
+                            }
+                            else if (belt.dirNum % 2 == 1)
+                            {
+                                if (otherBelt.dirNum % 2 == 0)
+                                    CombineFunc(beltGroupMgr, belt, otherBelt, isNextFind);
+                                else
+                                    return;
+                            }
+                        }
+                    }
+                    else if (otherBelt.beltGroupMgr.nextObj != null && otherBelt.beltGroupMgr.nextObj.GetComponent<BeltCtrl>() != null)
                     {
-                        if (nextBelt.dirNum % 2 == 0)                        
-                            CombineFunc(beltGroupMgr, belt, nextBelt);                        
-                        else
-                            return;
+                        if (belt.dirNum != otherBelt.dirNum)
+                        {
+                            Debug.Log("xx");
+
+                            if (belt.dirNum % 2 == 0)
+                            {
+                                if (otherBelt.dirNum % 2 == 1)
+                                    CombineFunc(beltGroupMgr, belt, otherBelt, isNextFind);
+                                else
+                                    return;
+                            }
+                            else if (belt.dirNum % 2 == 1)
+                            {
+                                if (otherBelt.dirNum % 2 == 0)
+                                    CombineFunc(beltGroupMgr, belt, otherBelt, isNextFind);
+                                else
+                                    return;
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    void CombineFunc(BeltGroupMgr beltGroupMgr, BeltCtrl belt, BeltCtrl nextBelt)
+    void CombineFunc(BeltGroupMgr beltGroupMgr, BeltCtrl belt, BeltCtrl otherBelt, bool isNextFind)
     {
         BeltManager beltManager = this.GetComponentInParent<BeltManager>();
 
-        beltManager.BeltCombine(beltGroupMgr, nextBelt.beltGroupMgr);
-        belt.nextBelt = nextBelt;
-        nextBelt.preBelt = belt;
-        nextBelt.BeltModelSet();
+        if (isNextFind)
+        {
+            beltManager.BeltCombine(beltGroupMgr, otherBelt.beltGroupMgr);
+            belt.nextBelt = otherBelt;
+            otherBelt.preBelt = belt;
+            otherBelt.BeltModelSet();
+        }
+        else
+        {
+            beltManager.BeltCombine(otherBelt.beltGroupMgr, beltGroupMgr);
+            belt.preBelt = otherBelt;
+            otherBelt.nextBelt = belt;
+            int tempDir = otherBelt.dirNum;
+            otherBelt.dirNum = belt.dirNum;
+            otherBelt.BeltModelSet();
+            //otherBelt.PreBeltCombinModelSet(tempDir);
+        }
     }
 }

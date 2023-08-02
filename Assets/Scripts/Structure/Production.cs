@@ -61,7 +61,7 @@ public abstract class Production : Structure
     protected virtual void Awake()
     {
         inventory = this.GetComponent<Inventory>();
-
+        buildName = productionData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
         hp = productionData.MaxHp[level];
         hpBar.fillAmount = hp / productionData.MaxHp[level];

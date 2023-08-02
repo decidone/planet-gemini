@@ -44,7 +44,6 @@ public class PreBuilding : MonoBehaviour
     bool isUnderObj = false;
     public bool isEnough = true;
 
-    [SerializeField]
     List<GameObject> buildingList = new List<GameObject>();    
     Vector3 tempPos;
     [SerializeField]
@@ -237,6 +236,7 @@ public class PreBuilding : MonoBehaviour
                 posList.Clear();
                 isDrag = false;
             }
+
         }
         mouseBtnFunc = MouseBtnFunc.None;
     }
@@ -458,121 +458,37 @@ public class PreBuilding : MonoBehaviour
             SetPos();
         }
     }
-
     void SetPos()
     {
-        if (isGetDir)
+        if (isMoveX)
         {
-            if (dirNum == 0 || dirNum == 2)
-            {                
-                float currentY = startBuildPos.y;
-                float direction = Mathf.Sign(endBuildPos.y - startBuildPos.y);
+            float currentX = startBuildPos.x;
+            float direction = Mathf.Sign(endBuildPos.x - startBuildPos.x);
 
-                if (dirNum == 0)
-                {
-                    while (Mathf.Approximately(currentY, endBuildPos.y) || (direction > 0 && currentY <= endBuildPos.y))
-                    {
-                        Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
-                        if (!posList.Contains(position))
-                        {
-                            posList.Add(position);
-                            CreateObj(position);                            
-                        }
-                        currentY += objHeight * direction;
-                    }
-                }
-                else if (dirNum == 2)
-                {
-                    while (Mathf.Approximately(currentY, endBuildPos.y) || (direction < 0 && currentY >= endBuildPos.y))
-                    {
-                        Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
-                        if (!posList.Contains(position))
-                        {
-                            posList.Add(position);
-                            CreateObj(position);
-                        }
-                        currentY += objHeight * direction;
-                    }
-                }
-            }
-            else if (dirNum == 1 || dirNum == 3)
-            {                
-                float currentX = startBuildPos.x;
-                float direction = Mathf.Sign(endBuildPos.x - startBuildPos.x);
-
-                if (dirNum == 1)
-                {
-                    while (Mathf.Approximately(currentX, endBuildPos.x) || (direction > 0 && currentX <= endBuildPos.x))
-                    {
-                        Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
-                        if (!posList.Contains(position))
-                        {
-                            posList.Add(position);
-                            CreateObj(position);
-                        }
-                        currentX += objWidth * direction;
-                    }
-                }
-                else if (dirNum == 3)
-                {
-                    while (Mathf.Approximately(currentX, endBuildPos.x) || (direction < 0 && currentX >= endBuildPos.x))
-                    {
-                        Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
-                        if (!posList.Contains(position))
-                        {
-                            posList.Add(position);
-                            CreateObj(position);
-                        }
-                        currentX += objWidth * direction;
-                    }
-                }
-            }
-            gameObj.SetActive(false);
-        }
-        else
-        {
-            if (isMoveX)
+            if (direction > 0 && currentX < endBuildPos.x)
             {
-                float currentX = startBuildPos.x;
-                float direction = Mathf.Sign(endBuildPos.x - startBuildPos.x);
+                moveDir = true;
+            }
+            else if (direction < 0 && currentX > endBuildPos.x)
+            {
+                moveDir = false;
+            }
 
-                if(buildingList.Count == 0)
+            if (moveDir != tempMoveDir)
+            {
+                if (buildingList.Count > 0)
                 {
-                    if (direction > 0 && currentX <= endBuildPos.x)
+                    foreach (GameObject build in buildingList)
                     {
-                        moveDir = true;
+                        Destroy(build);
                     }
-                    else if (direction < 0 && currentX >= endBuildPos.x)
-                    {
-                        moveDir = false;
-                    }
-                    tempMoveDir = moveDir;
+                    buildingList.Clear();
                 }
-                else
-                {
-                    if(direction > 0 && currentX <= endBuildPos.x)
-                    {
-                        moveDir = true;
-                    }
-                    else if (direction < 0 && currentX >= endBuildPos.x)
-                    {
-                        moveDir = false;
-                    }
+                posList.Clear();
+            }            
 
-                    if (moveDir != tempMoveDir)
-                    {
-                        if (buildingList.Count > 0)
-                        {
-                            foreach (GameObject build in buildingList)
-                            {
-                                Destroy(build);
-                            }
-                            buildingList.Clear();
-                        }
-                        posList.Clear();
-                    }
-                }
-
+            if (!isGetDir || (!isUnderObj && isGetDir && (dirNum == 1 || dirNum == 3)))
+            {
                 while (Mathf.Approximately(currentX, endBuildPos.x) || (direction > 0 && currentX <= endBuildPos.x) || (direction < 0 && currentX >= endBuildPos.x))
                 {
                     Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
@@ -585,49 +501,40 @@ public class PreBuilding : MonoBehaviour
                 }
                 tempMoveDir = moveDir;
             }
-            else
+            else if (isUnderObj && isGetDir && (dirNum == 1 || dirNum == 3))
             {
-                float currentY = startBuildPos.y;
-                float direction = Mathf.Sign(endBuildPos.y - startBuildPos.y);
-
-                if (buildingList.Count == 0)
+                if (dirNum == 1 && moveDir)
                 {
-                    if (direction > 0 && currentY <= endBuildPos.y)
+                    while (Mathf.Approximately(currentX, endBuildPos.x) || (direction > 0 && currentX <= endBuildPos.x))
                     {
-                        moveDir = true;
-                    }
-                    else if (direction < 0 && currentY >= endBuildPos.y)
-                    {
-                        moveDir = false;
+                        Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
+                        if (!posList.Contains(position))
+                        {
+                            posList.Add(position);
+                            CreateObj(position);
+                        }
+                        currentX += objWidth * direction;
                     }
                     tempMoveDir = moveDir;
-
                 }
-                else
+                else if (dirNum == 3 && !moveDir)
                 {
-                    if (direction > 0 && currentY <= endBuildPos.y)
+                    while (Mathf.Approximately(currentX, endBuildPos.x) || (direction < 0 && currentX >= endBuildPos.x))
                     {
-                        moveDir = true;
-                    }
-                    else if (direction < 0 && currentY >= endBuildPos.y)
-                    {
-                        moveDir = false;
-                    }
-
-                    if (moveDir != tempMoveDir)
-                    {
-                        if (buildingList.Count > 0)
+                        Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
+                        if (!posList.Contains(position))
                         {
-                            foreach (GameObject build in buildingList)
-                            {
-                                Destroy(build);
-                            }
-                            buildingList.Clear();
+                            posList.Add(position);
+                            CreateObj(position);
                         }
-                        posList.Clear();
+                        currentX += objWidth * direction;
                     }
+                    tempMoveDir = moveDir;
                 }
-
+            }
+            else if (!isUnderObj && isGetDir && (dirNum == 0 || dirNum == 2))
+            {
+                float currentY = startBuildPos.y;
                 while (Mathf.Approximately(currentY, endBuildPos.y) || (direction > 0 && currentY <= endBuildPos.y) || (direction < 0 && currentY >= endBuildPos.y))
                 {
                     Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
@@ -640,10 +547,117 @@ public class PreBuilding : MonoBehaviour
                 }
                 tempMoveDir = moveDir;
             }
-            gameObj.SetActive(false);
+            else if (isUnderObj && isGetDir && (dirNum == 0 || dirNum == 2))
+            {
+                Vector3 position = new Vector3(startBuildPos.x, startBuildPos.y, 0);
+                if (!posList.Contains(position))
+                {
+                    posList.Add(position);
+                    CreateObj(position);
+                }
+                tempMoveDir = moveDir;
+            }
         }
-    }
+        else
+        {
+            float currentY = startBuildPos.y;
+            float direction = Mathf.Sign(endBuildPos.y - startBuildPos.y);
 
+            if (direction > 0 && currentY < endBuildPos.y)
+            {
+                moveDir = true;
+            }
+            else if (direction < 0 && currentY > endBuildPos.y)
+            {
+                moveDir = false;
+            }
+
+            if (moveDir != tempMoveDir)
+            {
+                if (buildingList.Count > 0)
+                {
+                    foreach (GameObject build in buildingList)
+                    {
+                        Destroy(build);
+                    }
+                    buildingList.Clear();
+                }
+                posList.Clear();
+            }
+            
+            if (!isGetDir || (!isUnderObj && isGetDir && (dirNum == 0 || dirNum == 2)))
+            {
+                while (Mathf.Approximately(currentY, endBuildPos.y) || (direction > 0 && currentY <= endBuildPos.y) || (direction < 0 && currentY >= endBuildPos.y))
+                {
+                    Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
+                    if (!posList.Contains(position))
+                    {
+                        posList.Add(position);
+                        CreateObj(position);
+                    }
+                    currentY += objHeight * direction;
+                }
+                tempMoveDir = moveDir;
+            }
+            else if (isUnderObj && isGetDir && (dirNum == 0 || dirNum == 2))
+            {
+                if (dirNum == 0 && moveDir)
+                {
+                    while (Mathf.Approximately(currentY, endBuildPos.y) || (direction > 0 && currentY <= endBuildPos.y))
+                    {
+                        Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
+                        if (!posList.Contains(position))
+                        {
+                            posList.Add(position);
+                            CreateObj(position);
+                        }
+                        currentY += objHeight * direction;
+                    }
+                    tempMoveDir = moveDir;
+                }
+                else if (dirNum == 2 && !moveDir)
+                {
+                    while (Mathf.Approximately(currentY, endBuildPos.y) || (direction < 0 && currentY >= endBuildPos.y))
+                    {
+                        Vector3 position = new Vector3(startBuildPos.x, currentY, 0);
+                        if (!posList.Contains(position))
+                        {
+                            posList.Add(position);
+                            CreateObj(position);
+                        }
+                        currentY += objHeight * direction;
+                    }
+                    tempMoveDir = moveDir;
+                }
+            }
+            else if (!isUnderObj && isGetDir && (dirNum == 1 || dirNum == 3))
+            {
+                float currentX = startBuildPos.x;
+                while (Mathf.Approximately(currentX, endBuildPos.x) || (direction > 0 && currentX <= endBuildPos.x) || (direction < 0 && currentX >= endBuildPos.x))
+                {
+                    Vector3 position = new Vector3(currentX, startBuildPos.y, 0);
+                    if (!posList.Contains(position))
+                    {
+                        posList.Add(position);
+                        CreateObj(position);
+                    }
+                    currentX += objWidth * direction;
+                }
+                tempMoveDir = moveDir;
+            }
+            else if (isUnderObj && isGetDir && (dirNum == 1 || dirNum == 3))
+            {
+                Vector3 position = new Vector3(startBuildPos.x, startBuildPos.y, 0);
+                if (!posList.Contains(position))
+                {
+                    posList.Add(position);
+                    CreateObj(position);
+                }
+                tempMoveDir = moveDir;
+            }
+        }
+        gameObj.SetActive(false);
+    }
     bool GroupBuildCheck(GameObject obj)
     {
         if (obj.TryGetComponent(out Structure factory) && factory.canBuilding)
@@ -675,7 +689,7 @@ public class PreBuilding : MonoBehaviour
 
     IEnumerator SetBuilding(GameObject obj)
     {
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.1f);
 
         if (BuildingInfo.instance.AmountsEnoughCheck())
         {
@@ -927,7 +941,7 @@ public class PreBuilding : MonoBehaviour
             factory.isPreBuilding = true;
             factory.ColliderTriggerOnOff(true);
             //factory.DisableColliders();
-            factory.level = level;
+            factory.level = level -1;
             dirNum = factory.dirNum;
         }
         else if (gameObj.TryGetComponent(out TowerAi tower))
@@ -935,7 +949,7 @@ public class PreBuilding : MonoBehaviour
             tower.isPreBuilding = true;
             //tower.DisableColliders();
             tower.ColliderTriggerOnOff(true);
-            tower.level = level;
+            tower.level = level - 1;
             //isGetDir = false;
             dirNum = 0;
         }
@@ -946,7 +960,7 @@ public class PreBuilding : MonoBehaviour
             belt.beltList[0].isPreBuilding = true;
             belt.beltList[0].ColliderTriggerOnOff(true);
             //belt.beltList[0].DisableColliders();
-            belt.beltList[0].level = level;
+            belt.beltList[0].level = level - 1;
             //isGetDir = true;
             dirNum = belt.beltList[0].dirNum;
         }

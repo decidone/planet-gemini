@@ -22,6 +22,7 @@ public class SolidFactoryCtrl : Structure
 
     private void Awake()
     {
+        buildName = solidFactoryData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
         hp = solidFactoryData.MaxHp[level];
         hpBar.fillAmount = hp / solidFactoryData.MaxHp[level];

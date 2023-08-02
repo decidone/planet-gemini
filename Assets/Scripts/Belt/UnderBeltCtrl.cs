@@ -89,12 +89,6 @@ public class UnderBeltCtrl : MonoBehaviour
         }
     }
 
-    //public void SetLevel(int level)
-    //{
-    //    getUnderBeltCtrl.level = level;
-    //    sendUnderBeltCtrl.level = level;
-    //}
-
     public void SetGetUnderBelt()
     {
         sendBelt.SetActive(false);
@@ -129,6 +123,12 @@ public class UnderBeltCtrl : MonoBehaviour
 
         SetSlotColor(getRen, color, 0.35f);
         SetSlotColor(senRen, color, 0.35f);
+    }
+
+    public void SetLevel(int getLevel)
+    {
+        sendUnderBeltCtrl.level = getLevel;
+        getUnderBeltCtrl.level = getLevel;
     }
 
     void SetSlotColor(SpriteRenderer sprite, Color color, float alpha)

@@ -16,6 +16,7 @@ public class FluidFactoryCtrl : Structure
 
     private void Awake()
     {
+        buildName = fluidFactoryData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
         hp = fluidFactoryData.MaxHp[level];
         hpBar.fillAmount = hp / fluidFactoryData.MaxHp[level];

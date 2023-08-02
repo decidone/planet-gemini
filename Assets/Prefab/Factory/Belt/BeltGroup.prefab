@@ -48,4 +48,6 @@ MonoBehaviour:
   beltList: []
   groupItem: []
   nextObj: {fileID: 0}
+  preObj: {fileID: 0}
+  IsEndCombine: 1
   isPreBuilding: 0

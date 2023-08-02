@@ -343,6 +343,22 @@ public class BeltCtrl : SolidFactoryCtrl
         }
     }
 
+    public void PreBeltCombinModelSet(int tempDir)
+    {
+        isTurn = true;
+
+        if ((tempDir == 0 && dirNum == 1) || (tempDir == 2 && dirNum == 3) ||
+            (tempDir == 1 && dirNum == 2) || (tempDir == 3 && dirNum == 0))
+        {
+            isRightTurn = true;
+        }
+        else if ((tempDir == 0 && dirNum == 3) || (tempDir == 2 && dirNum == 1) ||
+            (tempDir == 1 && dirNum == 0) || (tempDir == 3 && dirNum == 2))
+        {
+            isRightTurn = false;
+        }
+    }
+
     public void FactoryVecCheck(Structure factory)
     {
         if (factory.transform.position.x > this.transform.position.x)  

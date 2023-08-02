@@ -12,10 +12,20 @@ public class BuildingInven : MonoBehaviour
     private TempScienceDb scienceDb;
     private Button[] buildingTagsBtn;
     private int preBtnIndex = 0;
-
+    public static BuildingInven instance;
     [SerializeField]
     private GameObject buildingTagsPanel = null;
     public bool debugMode = false;
+    void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogWarning("More than one instance of drag slot found!");
+            return;
+        }
+
+        instance = this;
+    }
 
     private void Start()
     {
@@ -37,6 +47,7 @@ public class BuildingInven : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F3))
         {
             debugMode = !debugMode;
+            Refresh();
         }
     }
 

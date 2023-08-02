@@ -13,8 +13,14 @@ public class BeltManager : MonoBehaviour
             belt.transform.parent = fstGroupMgr.transform;
             belt.beltGroupMgr = fstGroupMgr;
         }
+        foreach (ItemProps item in secGroupMgr.groupItem)
+        {
+            fstGroupMgr.groupItem.Add(item);
+        }
 
         fstGroupMgr.Reconfirm();
+        if (secGroupMgr.nextObj != null)
+            fstGroupMgr.nextObj = secGroupMgr.nextObj;
         Destroy(secGroupMgr.gameObject);
     }
 }

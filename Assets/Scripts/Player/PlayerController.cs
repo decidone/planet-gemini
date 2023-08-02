@@ -33,15 +33,6 @@ public class PlayerController : MonoBehaviour
                     inventory.Add(item.Item1, item.Item2);
             }
         }
-        if (Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl))
-        {
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
-            if (hit.collider != null && hit.collider.TryGetComponent(out Structure structure))
-            {
-                structure.RemoveObj();
-            }
-        }
     }
 
     void OnTriggerEnter2D(Collider2D collision)

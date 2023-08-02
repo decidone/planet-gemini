@@ -130,6 +130,10 @@ public class UnderPipeBuild : MonoBehaviour
         slotColor.a = alpha;
         sprite.color = slotColor;
     }
+    public void SetLevel(int getLevel)
+    {
+        pipeScipt.level = getLevel;
+    }
 
     public void ColliderTriggerOnOff(bool isOn)
     {
