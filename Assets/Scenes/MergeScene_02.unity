@@ -2315,14 +2315,6 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 219787472492811319}
-    - target: {fileID: 142728372057670182, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 142728372679589277, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 792990450431671789, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
@@ -2717,10 +2709,6 @@ PrefabInstance:
       propertyPath: preBuilding
       value: 
       objectReference: {fileID: 774915813}
-    - target: {fileID: 762871311885926063, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: BuildingTagsPanel
-      value: 
-      objectReference: {fileID: 968631564}
     - target: {fileID: 762871311885926063, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: buildingTagsPanel
       value: 

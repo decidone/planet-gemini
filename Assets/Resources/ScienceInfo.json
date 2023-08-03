@@ -123,6 +123,57 @@
       "coreLv": 5
     }
   },
+  "Extractor": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    }
+  },
+  "Refinery": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 5
+    }
+  },
+  "ChemicalPlant": {
+    "1": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 1
+    },
+    "2": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 2
+    },
+    "3": {
+      "items": [ "Coal" ],
+      "amounts": [ 1 ],
+      "coreLv": 3
+    }
+  },
   "Splitter": {
     "1": {
       "items": [ "Coal", "Gold", "Iron" ],

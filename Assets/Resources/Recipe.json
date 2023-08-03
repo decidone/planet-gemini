@@ -18,5 +18,13 @@
     "Manufacturer":[
         {"name":"Iron","items":["Gold","GoldBar","Coal","Iron"],"amounts":[2,1,1,2],"cooldown":3},
         {"name":"Gold","items":["Iron","IronBar","Coal","Gold"],"amounts":[1,1,1,2],"cooldown":3}
+    ],
+    "Refinery":[
+        {"name":"GoldBar","items":["Gold","GoldBar"],"amounts":[2,1],"cooldown":3},
+        {"name":"IronBar","items":["Iron","IronBar"],"amounts":[1,1],"cooldown":3}
+    ],
+    "ChemicalPlant":[
+        {"name":"GoldBar","items":["Gold","GoldBar"],"amounts":[2,1],"cooldown":3},
+        {"name":"IronBar","items":["Iron","IronBar"],"amounts":[1,1],"cooldown":3}
     ]
 }

@@ -71,7 +71,7 @@ public class PipeGroupMgr : MonoBehaviour
 
         if (nextPipe.pipeGroupMgr != null && pipeGroupMgr != nextPipe.pipeGroupMgr)
         {
-            CombineFunc(pipeGroupMgr, nextPipe);         
+            CombineFunc(pipeGroupMgr, nextPipe);
         }
     }
 
