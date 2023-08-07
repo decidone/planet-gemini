@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
+  m_Name: BuildingChemicalPlant
+  m_EditorClassIdentifier: 
+  type: Factory
+  scienceName: ChemicalPlant
+  item: {fileID: 11400000, guid: 3499b32e1f48213419831acfa8bb70dd, type: 2}
+  gameObj: {fileID: 375400609723545137, guid: 640cf292502abb54097588785ea33c45, type: 3}
+  level: 1
+  height: 1
+  width: 1
+  dirCount: 0

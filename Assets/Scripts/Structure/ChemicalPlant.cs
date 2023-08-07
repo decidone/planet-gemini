@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Refinery : Production
+public class ChemicalPlant : Production
 {
     protected override void Update()
     {
@@ -72,7 +72,7 @@ public class Refinery : Production
     public override void OpenRecipe()
     {
         rManager.OpenUI();
-        rManager.SetRecipeUI("Refinery", this);
+        rManager.SetRecipeUI("ChemicalPlant", this);
     }
 
     public override void SetRecipe(Recipe _recipe)
@@ -154,7 +154,7 @@ public class Refinery : Production
 
         foreach (GameObject list in inventoryList.StructureStorageArr)
         {
-            if (list.name == "Refinery")
+            if (list.name == "ChemicalPlant")
             {
                 ui = list;
             }
