@@ -65,7 +65,7 @@ public class Furnace : Production
                 prodTimer = 0;
             }
 
-            if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+            if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 SetItem();
             }

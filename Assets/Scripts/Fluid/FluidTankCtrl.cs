@@ -13,6 +13,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
 
     void Start()
     {
+        base.nearObj = new GameObject[8];
         TransformCheck();
     }
 

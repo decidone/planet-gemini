@@ -14,7 +14,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     //public List<GameObject> outObj = new List<GameObject>();
     public GameObject outObj = null;
 
-    GameObject[] nearObj = new GameObject[4];
+    //GameObject[] nearObj = new GameObject[4];
     private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
 
     int getObjNum = 0;
@@ -27,6 +27,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
+        base.nearObj = new GameObject[4];
     }
 
     protected override void Update()
@@ -252,8 +253,17 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                var outFactory = outObj.GetComponent<Structure>();
-                outFactory.OnFactoryItem(itemList[0]);
+                if (checkObj && outObj != null)
+                {
+                    if (outObj.TryGetComponent(out Structure outFactory))
+                    {
+                        outFactory.OnFactoryItem(itemList[0]);
+                    }
+                }
+                else
+                {
+                    Debug.Log("22");
+                }
 
                 itemList.RemoveAt(0);
                 ItemNumCheck();
@@ -274,6 +284,25 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
             outObj.GetComponent<GetUnderBeltCtrl>().ResetInObj();
 
         outObj = Obj;
+    }
+    public override void ResetCheckObj(GameObject game)
+    {
+        base.ResetCheckObj(game);
+
+        for (int i = 0; i < inObj.Count; i++)
+        {
+            if (inObj[i] == game)
+            {
+                Debug.Log(game.name);
+                inObj.Remove(game);
+
+            }
+        }
+        if (outObj == game)
+        {
+            Debug.Log(game.name);
+            outObj = null;
+        }
     }
 
     void DelaySetItem()

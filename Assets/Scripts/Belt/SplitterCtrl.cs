@@ -10,11 +10,12 @@ public class SplitterCtrl : SolidFactoryCtrl
     SpriteRenderer setModel;
     private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
 
+    [SerializeField]
     GameObject inObj = null;
     [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
-    [SerializeField]
-    GameObject[] nearObj = new GameObject[4];
+    //[SerializeField]
+    //GameObject[] nearObj = new GameObject[4];
 
     int sendObjNum = 0;
     Vector2[] checkPos = new Vector2[4];
@@ -39,6 +40,7 @@ public class SplitterCtrl : SolidFactoryCtrl
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
+        base.nearObj = new GameObject[4];
         CheckPos();
     }
 
@@ -51,7 +53,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             SetDirNum();
             if (!isPreBuilding)
             { 
-                if (inObj != null && !isFull && !itemGetDelay)
+                if (inObj != null && !isFull && !itemGetDelay && checkObj)
                     GetItem();
         
                 for (int i = 0; i < nearObj.Length; i++)
@@ -69,7 +71,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                     }
                 }
 
-                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
                 {
                     if (filterOn)
                     {
@@ -349,8 +351,6 @@ public class SplitterCtrl : SolidFactoryCtrl
             return;
         }
 
-        Debug.Log(index);
-
         itemSetDelay = true;
         Item sendItem = itemList[0];
         Structure outFactory = null;
@@ -421,172 +421,6 @@ public class SplitterCtrl : SolidFactoryCtrl
         itemSetDelay = false;
     }
 
-    //void FilterSetItem()
-    //{
-    //    if (setFacDelayCoroutine != null)
-    //    {
-    //        return;
-    //    }
-
-    //    itemSetDelay = true;
-    //    Item sendItem = itemList[0];
-    //    int listIdx = 0;
-    //    Structure outFactory = null;
-
-    //    for (int i = 0; i < arrFilter.Length; i++)
-    //    {
-    //        int index = (sendFilterObjNum + i) % arrFilter.Length;
-    //        Filter filter = arrFilter[index];
-    //        bool isFound = false;
-
-    //        if (filter.outObj == null || filter.outObj.GetComponent<Structure>().isFull || !filter.isFilterOn)
-    //        {
-    //            continue;
-    //        }
-
-    //        if (filter.isItemFilterOn)
-    //        {
-    //            bool isReverseFilter = filter.isReverseFilterOn;
-    //            Item selectedFilterItem = filter.selItem;
-
-    //            for (int a = 0; a < itemList.Count; a++)
-    //            {
-    //                bool isMatched = selectedFilterItem == itemList[a];
-    //                if (isReverseFilter)
-    //                {
-    //                    if (!isMatched)
-    //                    {
-    //                        isFound = true;
-    //                        sendItem = itemList[a];
-    //                        listIdx = a;
-    //                        break;
-    //                    }
-    //                }
-    //                else
-    //                {
-    //                    if (isMatched)
-    //                    {
-    //                        isFound = true;
-    //                        sendItem = itemList[a];
-    //                        listIdx = a;
-    //                        break;
-    //                    }
-    //                }
-    //            }
-
-    //            Debug.Log(i +" : "+ isFound + " : "+ listIdx);
-    //            if (!isFound)
-    //                continue;
-    //        }
-    //        else if (filter.isFullFilterOn)
-    //        {
-    //            for (int a = 0; a < itemList.Count; a++)
-    //            {
-    //                if (!ItemFilterFullCheck(itemList[a]))
-    //                {
-    //                    sendItem = itemList[a];
-    //                    listIdx = a;
-    //                    isFound = true;
-    //                    break;
-    //                }
-    //            }
-
-    //            if (!isFound)
-    //                continue;
-    //        }
-
-    //        //if (filter.isItemFilterOn)
-    //        //{
-    //        //    if (!filter.isReverseFilterOn)
-    //        //    {
-    //        //        for (int a = 0; a < itemList.Count; a++)
-    //        //        {
-    //        //            if (filter.selItem == itemList[a])
-    //        //            {
-    //        //                sendItem = itemList[a];
-    //        //                listIdx = a;
-    //        //                isFound = true;
-    //        //                break;
-    //        //            }
-    //        //        }
-    //        //        if (!isFound) continue;
-    //        //    }
-    //        //    else
-    //        //    {
-    //        //        for (int a = 0; a < itemList.Count; a++)
-    //        //        {
-    //        //            bool isOtherFilterItem = false;
-
-    //        //            if (filter.selItem != itemList[a])
-    //        //            {
-    //        //                for (int b = 0; b < arrFilter.Length; b++)
-    //        //                {
-    //        //                    if (arrFilter[b].isItemFilterOn && !arrFilter[b].isReverseFilterOn && arrFilter[b].selItem == itemList[a])
-    //        //                    {
-    //        //                        isOtherFilterItem = true;
-    //        //                        continue;
-    //        //                    }
-    //        //                }
-    //        //                if (isOtherFilterItem) continue;
-
-    //        //                sendItem = itemList[a];
-    //        //                listIdx = a;
-    //        //                isFound = true;
-    //        //                break;
-    //        //            }
-    //        //        }
-
-    //        //        if (isFound == false) continue;
-    //        //    }
-    //        //}
-    //        //else if (filter.isFullFilterOn)
-    //        //{
-    //        //    for (int a = 0; a < itemList.Count; a++)
-    //        //    {
-    //        //        if (!ItemFilterFullCheck(itemList[a]))
-    //        //        {
-    //        //            sendItem = itemList[a];
-    //        //            listIdx = a;
-    //        //            isFound = true;
-    //        //            break;
-    //        //        }
-    //        //    }
-    //        //    if (isFound == false) continue;
-    //        //}
-
-    //        GameObject outObject = filter.outObj;
-    //        outFactory = outObject.GetComponent<Structure>();
-
-    //        if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
-    //        {
-    //            ItemProps spawnItem = itemPool.Get();
-    //            SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-    //            sprite.sprite = sendItem.icon;
-    //            spawnItem.item = sendItem;
-    //            spawnItem.amount = 1;
-    //            spawnItem.transform.position = transform.position;
-
-    //            outFactory.OnBeltItem(spawnItem);
-    //        }
-    //        else if (outObject.GetComponent<SolidFactoryCtrl>())
-    //        {
-    //            setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObject);
-    //        }
-    //        else if (outObject.TryGetComponent(out Production production))
-    //        {
-    //            if (production.CanTakeItem(sendItem))
-    //            {
-    //                setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObject);
-    //            }
-    //        }
-    //        itemList.RemoveAt(listIdx);
-    //        ItemNumCheck();
-    //    }
-
-    //    sendFilterObjNum = (sendFilterObjNum + arrFilter.Length) % arrFilter.Length;
-    //    itemSetDelay = false;
-    //}
-
     bool ItemFilterFullCheck(Item item)
     {
         bool isFacNotFull1 = true;
@@ -649,11 +483,19 @@ public class SplitterCtrl : SolidFactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                var outFactory = outFac.GetComponent<Structure>();
-                outFactory.OnFactoryItem(itemList[0]);
+                if (checkObj && outFac != null)
+                {
+                    if (outFac.TryGetComponent(out Structure outFactory))
+                    {   
+                        outFactory.OnFactoryItem(itemList[0]);
+                    }
+                }
+                else
+                {
+                    Debug.Log("22");
+                }
 
                 itemList.RemoveAt(0);
-
                 ItemNumCheck();
             }
         }
@@ -664,6 +506,21 @@ public class SplitterCtrl : SolidFactoryCtrl
             setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }
+    }
+
+    public override void ResetCheckObj(GameObject game)
+    {
+        base.ResetCheckObj(game);
+
+        for (int i = 0; i  < outObj.Count; i++)
+        {
+            if (outObj[i] == game)
+                outObj.Remove(game);
+        }
+        if (inObj == game)
+            inObj = null;
+
+        sendObjNum = 0;
     }
 
     void DelaySetItem()
@@ -681,8 +538,4 @@ public class SplitterCtrl : SolidFactoryCtrl
     //    outObj.Add(obj);
     //}
 
-    public override void RemoveObj()
-    {
-        base.RemoveObj();
-    }
 }

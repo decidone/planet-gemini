@@ -9,7 +9,7 @@ public class ItemSpawner : SolidFactoryCtrl
 
     [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
-    GameObject[] nearObj = new GameObject[4];
+    //GameObject[] nearObj = new GameObject[4];
     Vector2[] checkPos = new Vector2[4];
 
     int sendObjNum = 0;
@@ -17,6 +17,7 @@ public class ItemSpawner : SolidFactoryCtrl
 
     void Start()
     {
+        base.nearObj = new GameObject[4];
         dirCount = 4;
         CheckPos();
     }
@@ -28,7 +29,7 @@ public class ItemSpawner : SolidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                if (outObj.Count > 0 && !itemSetDelay)
+                if (outObj.Count > 0 && !itemSetDelay && checkObj)
                 {
                     if (itemData.name != "emptyFilter")
                         SetItem();
@@ -72,9 +73,12 @@ public class ItemSpawner : SolidFactoryCtrl
             if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
                 hitCollider.GetComponent<ItemSpawner>() != GetComponent<ItemSpawner>())
             {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
+                if(hitCollider.GetComponent<ItemSpawner>() == null)
+                {
+                    nearObj[index] = hits[i].collider.gameObject;
+                    callback(hitCollider.gameObject);
+                    break;
+                }
             }
         }
     }
@@ -117,7 +121,7 @@ public class ItemSpawner : SolidFactoryCtrl
                     {
                         outObj.RemoveAt(a);
                         Invoke("RemoveSameOutList", 0.1f);
-                        StopCoroutine("SetFacDelay");
+                        //StopCoroutine("SetFacDelay");
                         break;
                     }
                 }
@@ -131,7 +135,6 @@ public class ItemSpawner : SolidFactoryCtrl
         {
             return;
         }
-        Debug.Log("send");
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
@@ -210,8 +213,17 @@ public class ItemSpawner : SolidFactoryCtrl
 
         if (spawnItem != null && spawnItem.transform.position == targetPos)
         {
-            var outFactory = outFac.GetComponent<Structure>();
-            outFactory.OnFactoryItem(itemData);
+            if (checkObj && outFac != null)
+            {
+                if ( outFac.TryGetComponent(out Structure outFactory))
+                {
+                    outFactory.OnFactoryItem(itemData);
+                }
+            }
+            else
+            {
+                Debug.Log("22");
+            }
         }
 
         if (spawnItem != null)
@@ -220,6 +232,17 @@ public class ItemSpawner : SolidFactoryCtrl
             setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }
+    }
+    public override void ResetCheckObj(GameObject game)
+    {
+        base.ResetCheckObj(game);
+
+        for (int i = 0; i < outObj.Count; i++)
+        {
+            if (outObj[i] == game)
+                outObj.Remove(game);
+        }
+        sendObjNum = 0;
     }
 
     void DelaySetItem()

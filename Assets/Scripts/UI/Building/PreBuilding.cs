@@ -137,6 +137,10 @@ public class PreBuilding : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton)
+        {
+            mouseBtnFunc = MouseBtnFunc.None;
+        }
         if (!EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton && isMouseLeft)//Input.GetMouseButton(0))
         {
             if (startTempPos == startBuildPos)

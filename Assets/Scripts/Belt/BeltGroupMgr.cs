@@ -13,10 +13,11 @@ public class BeltGroupMgr : MonoBehaviour
     public GameObject nextObj = null;
     public GameObject preObj = null;
 
-    bool nextCheck = true;
-    bool preCheck = true;
+    public bool nextCheck = true;
+    public bool preCheck = true;
 
     public bool isPreBuilding = false;
+    //public bool checkObj = true;
 
     void Update()
     {
@@ -58,9 +59,15 @@ public class BeltGroupMgr : MonoBehaviour
 
     public void Reconfirm()
     {
+        groupItem.Clear();
+
         int index = 0;
         foreach(BeltCtrl belt in beltList)
         {
+            foreach (ItemProps item in belt.itemObjList)
+            {
+                groupItem.Add(item);
+            }
             if (beltList.Count - 1 > index)
             {
                 BeltModelSet(belt, beltList[index + 1]);
@@ -227,8 +234,6 @@ public class BeltGroupMgr : MonoBehaviour
                     {
                         if (belt.dirNum != otherBelt.dirNum)
                         {
-                            Debug.Log("xx");
-
                             if (belt.dirNum % 2 == 0)
                             {
                                 if (otherBelt.dirNum % 2 == 1)
@@ -269,7 +274,6 @@ public class BeltGroupMgr : MonoBehaviour
             int tempDir = otherBelt.dirNum;
             otherBelt.dirNum = belt.dirNum;
             otherBelt.BeltModelSet();
-            //otherBelt.PreBeltCombinModelSet(tempDir);
         }
     }
 }

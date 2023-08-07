@@ -5,10 +5,8 @@ using UnityEngine.UI;
 
 public class StructureClickEvent : MonoBehaviour
 {
-    [SerializeField]
-    GameObject structureInfoUI;
-    [SerializeField]
-    StructureInvenManager sInvenManager;
+    public GameObject structureInfoUI;
+    public StructureInvenManager sInvenManager;
     Button closeBtn;
     Production prod;
 

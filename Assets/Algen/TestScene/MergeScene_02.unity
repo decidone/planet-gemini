@@ -1689,6 +1689,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1932302118311834675, guid: 30fb03d4f5333974dbfc1a85400c4d85, type: 3}
+      propertyPath: beltGroupMgr
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30fb03d4f5333974dbfc1a85400c4d85, type: 3}
 --- !u!1 &1513452418

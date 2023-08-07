@@ -20,11 +20,18 @@ public class RemoveBuild : MonoBehaviour
         if (Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl))
         {
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
-            if (hit.collider != null && hit.collider.TryGetComponent(out Structure structure))
+            RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
+            if (hits.Length > 0)
             {
-                structure.RemoveObj();
-                refundCost(structure);
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider.TryGetComponent(out Structure structure))
+                    {
+                        UiCheck(structure);
+                        structure.RemoveObj();
+                        refundCost(structure);
+                    }
+                }
             }
         }
     }
@@ -36,6 +43,34 @@ public class RemoveBuild : MonoBehaviour
         for (int i = 0; i < buildingData.GetItemCount(); i++)
         {
             Debug.Log(buildingData.items[i] + " : "+ buildingData.amounts[i]);
+        }
+    }
+
+    void UiCheck(Structure obj)
+    {
+        if(obj.TryGetComponent(out SolidFacClickEvent solidFacClickEvent))
+        {
+            if(solidFacClickEvent.solidFacUI != null)
+            {
+                if (solidFacClickEvent.solidFacUI.activeSelf)
+                {           
+                    if(solidFacClickEvent.sFilterManager != null)            
+                        solidFacClickEvent.sFilterManager.CloseUI();            
+                    else if (solidFacClickEvent.itemSpManager != null)            
+                        solidFacClickEvent.itemSpManager.CloseUI(); 
+                }  
+            }         
+        }
+        else if (obj.TryGetComponent(out StructureClickEvent structureClickEvent))
+        {
+            if (structureClickEvent.structureInfoUI != null)
+            {
+                if (structureClickEvent.structureInfoUI.activeSelf)
+                {
+                    if (structureClickEvent.sInvenManager != null)
+                    structureClickEvent.sInvenManager.CloseUI();
+                }
+            }
         }
     }
 }

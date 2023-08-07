@@ -6,7 +6,7 @@ public class ItemSpManager : InventoryManager
 {
     List<Item> itemsList;
     ItemSpawner itemSpawner = null;
-    int slotIndex = -1;
+    //int slotIndex = -1;
 
     // Start is called before the first frame update
     protected override void Start()

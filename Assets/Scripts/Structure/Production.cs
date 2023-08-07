@@ -44,9 +44,10 @@ public abstract class Production : Structure
     //SpriteRenderer setModel;
     //private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
     protected List<GameObject> inObj = new List<GameObject>();
+    [SerializeField]
     protected List<GameObject> outObj = new List<GameObject>();
 
-    GameObject[] nearObj = new GameObject[4];
+    //GameObject[] nearObj = new GameObject[4];
 
     protected int getObjNum = 0;
     protected int sendObjNum = 0;
@@ -86,6 +87,7 @@ public abstract class Production : Structure
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
+        base.nearObj = new GameObject[4];
 
         CheckPos();
     }
@@ -106,7 +108,7 @@ public abstract class Production : Structure
         }
         if (!isPreBuilding)
         {
-            if (inObj.Count > 0 && !itemGetDelay)
+            if (inObj.Count > 0 && !itemGetDelay && checkObj)
                 GetItem();
 
             for (int i = 0; i < nearObj.Length; i++)
@@ -160,7 +162,7 @@ public abstract class Production : Structure
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<Structure>() != null)
+        if (obj.GetComponent<Structure>() != null && !obj.GetComponent<Miner>() && !obj.GetComponent<ItemSpawner>())
         {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
@@ -199,11 +201,6 @@ public abstract class Production : Structure
                         {
                             StartCoroutine(SetInObjCoroutine(otherObj));
                             outObj.RemoveAt(a);
-
-                            //if(!GetComponentInChildren<Miner>() && otherObj.GetComponent<SolidFactoryCtrl>())
-                            //{
-                            //    otherObj.GetComponent<SolidFactoryCtrl>().AddProductionFac(gameObject);
-                            //}
 
                             Invoke("RemoveSameOutList", 0.1f);
                             StopCoroutine("SetFacDelay");
@@ -356,11 +353,19 @@ public abstract class Production : Structure
         {
             if (CheckOutItemNum())
             {
-                var outFactory = outFac.GetComponent<Structure>();
-                outFactory.OnFactoryItem(output);
+                if (checkObj && outFac != null)
+                {
+                    if (outFac.TryGetComponent(out Structure outFactory))
+                    {
+                        outFactory.OnFactoryItem(output);
+                    }
+                }
+                else
+                {
+                    Debug.Log("22");
+                }
 
                 SubFromInventory();
-
                 //ItemNumCheck();
             }
         }
@@ -530,6 +535,23 @@ public abstract class Production : Structure
         ColliderTriggerOnOff(true);
 
         isRuin = true;
+    }
+
+    public override void ResetCheckObj(GameObject game)
+    {
+        base.ResetCheckObj(game);
+
+        for (int i = 0; i < outObj.Count; i++)
+        {
+            if (outObj[i] == game)
+                outObj.Remove(game);
+        }
+        for (int i = 0; i < inObj.Count; i++)
+        {
+            if (inObj[i] == game)
+                inObj.Remove(game);
+        }
+        sendObjNum = 0;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

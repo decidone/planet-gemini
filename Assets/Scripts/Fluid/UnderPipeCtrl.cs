@@ -6,8 +6,8 @@ using System;
 public class UnderPipeCtrl : FluidFactoryCtrl
 {
     Vector2[] checkPos = new Vector2[2];
-    [SerializeField]
-    GameObject[] nearObj = new GameObject[2];
+    //[SerializeField]
+    //GameObject[] nearObj = new GameObject[2];
 
     [SerializeField]
     Sprite[] modelNum = new Sprite[4];
@@ -21,6 +21,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
+        base.nearObj = new GameObject[2];
     }
 
     protected override void Update()

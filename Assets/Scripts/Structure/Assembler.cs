@@ -42,7 +42,7 @@ public class Assembler : Production
                 }
             }
 
-            if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+            if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 SetItem();
             }

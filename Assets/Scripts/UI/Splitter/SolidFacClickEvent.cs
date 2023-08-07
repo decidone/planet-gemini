@@ -5,12 +5,9 @@ using UnityEngine.UI;
 
 public class SolidFacClickEvent : MonoBehaviour
 {
-    [SerializeField]
-    GameObject solidFacUI;
-    [SerializeField]
-    SplitterFilterManager sFilterManager;    
-    [SerializeField]
-    ItemSpManager itemSpManager;
+    public GameObject solidFacUI;
+    public SplitterFilterManager sFilterManager;    
+    public ItemSpManager itemSpManager;
 
     Button closeBtn;
     Button splittercloseBtn;

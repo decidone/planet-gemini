@@ -43,11 +43,7 @@ public class BeltCtrl : SolidFactoryCtrl
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
         beltState = BeltState.SoloBelt;
-
-        //if (transform.parent.gameObject != null)
-        //    beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-
-        //if (preBelt != null)
+        base.nearObj = new GameObject[4];
         BeltModelSet();
     }
 
@@ -359,19 +355,31 @@ public class BeltCtrl : SolidFactoryCtrl
 
     public void FactoryVecCheck(Structure factory)
     {
-        if (factory.transform.position.x > this.transform.position.x)  
-            isLeft = true;        
+        if (factory.transform.position.x > this.transform.position.x)
+        {
+            isLeft = true;
+            nearObj[3] = factory.gameObject;
+        }
         else if (factory.transform.position.x < this.transform.position.x)
-            isRight = true;        
+        {
+            isRight = true;
+            nearObj[1] = factory.gameObject;
+        }
         else if (factory.transform.position.y - 0.1f > this.transform.position.y)
-            isDown = true;        
+        {
+            isDown = true;
+            nearObj[2] = factory.gameObject;
+        }
         else if (factory.transform.position.y - 0.1f < this.transform.position.y)
+        {
             isUp = true;
+            nearObj[0] = factory.gameObject;
+        }
         
         Invoke("FactoryModelSet", 0.1f);
     }
 
-    void FactoryModelSet()
+    public void FactoryModelSet()
     {
         
         if (isUp == true && isRight == false && isDown == false && isLeft == false)
@@ -428,5 +436,32 @@ public class BeltCtrl : SolidFactoryCtrl
         }
         else        
             isTurn = false;
+    }
+    public override void ResetCheckObj(GameObject game)
+    {
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] != null && nearObj[i] == game)
+            {
+                nearObj[i] = null;
+                if(i == 0)
+                {
+                    isUp = false;
+                }
+                else if (i == 1)
+                {
+                    isRight = false;
+                }
+                else if (i == 2)
+                {
+                    isDown = false;
+                }
+                else if (i == 3)
+                {
+                    isLeft = false;
+                }
+            }
+        }
+        FactoryModelSet();
     }
 }

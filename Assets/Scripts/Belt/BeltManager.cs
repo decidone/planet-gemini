@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BeltManager : MonoBehaviour
 {
+    [SerializeField]
+    GameObject beltGroupMgrObj = null;
+
     public void BeltCombine(BeltGroupMgr fstGroupMgr, BeltGroupMgr secGroupMgr)
     {
         fstGroupMgr.beltList.AddRange(secGroupMgr.beltList);
@@ -23,4 +26,183 @@ public class BeltManager : MonoBehaviour
             fstGroupMgr.nextObj = secGroupMgr.nextObj;
         Destroy(secGroupMgr.gameObject);
     }
+    public void BeltDivide(BeltGroupMgr beltGroup, GameObject removeBelt)
+    {
+        if (beltGroup.beltList.Count <= 1)
+        {
+            Destroy(beltGroup.gameObject);
+            return;
+        }
+
+        List<BeltCtrl> groupAList = new List<BeltCtrl>();
+        List<BeltCtrl> groupBList = new List<BeltCtrl>();
+        bool isRemoveObj = false;
+
+        foreach (BeltCtrl belt in beltGroup.beltList)
+        {
+            if (removeBelt == belt.gameObject)
+            {
+                isRemoveObj = true;
+                continue;
+            }
+
+            if (isRemoveObj)
+                groupAList.Add(belt);
+            else
+                groupBList.Add(belt);
+        }
+
+        if (groupAList.Count == 0)
+        {
+            if (groupBList.Count > 0)
+            {
+                UpdateBeltGroup(beltGroup, groupBList);
+            }
+        }
+        else if (groupAList.Count > 0)
+        {
+            UpdateBeltGroup(beltGroup, groupAList);
+
+            if (groupBList.Count > 0)
+            {
+                CreateNewBeltGroup(groupBList);
+            }
+        }
+    }
+
+    private void UpdateBeltGroup(BeltGroupMgr beltGroup, List<BeltCtrl> beltList)
+    {
+        beltGroup.beltList.Clear();
+        foreach (BeltCtrl belt in beltList)
+        {
+            beltGroup.beltList.Add(belt);
+            belt.BeltModelSet();
+        }
+        beltGroup.Reconfirm();
+        beltGroup.nextCheck = true;
+        beltGroup.preCheck = true;
+
+        if (beltGroup.beltList.Count == 1)
+        {
+            beltGroup.beltList[0].beltState = BeltState.SoloBelt;
+            beltGroup.beltList[0].FactoryModelSet();
+        }
+    }
+
+    private void CreateNewBeltGroup(List<BeltCtrl> beltList)
+    {
+        GameObject newObj = Instantiate(beltGroupMgrObj);
+        newObj.transform.parent = this.gameObject.transform;
+
+        BeltGroupMgr newBeltGroup = newObj.GetComponent<BeltGroupMgr>();
+        foreach (BeltCtrl belt in beltList)
+        {
+            belt.transform.parent = newBeltGroup.transform;
+            belt.beltGroupMgr = newBeltGroup;
+            newBeltGroup.beltList.Add(belt);
+            belt.BeltModelSet();
+        }
+        newBeltGroup.Reconfirm();
+        newBeltGroup.nextCheck = true;
+        newBeltGroup.preCheck = true;
+
+        if (newBeltGroup.beltList.Count == 1)
+        {
+            newBeltGroup.beltList[0].beltState = BeltState.SoloBelt;
+            newBeltGroup.beltList[0].FactoryModelSet();
+        }
+    }
+
+    //public void BeltDivide(BeltGroupMgr beltGroup, GameObject removeBelt)
+    //{
+    //    //beltGroup.checkObj = false;
+    //    if (beltGroup.beltList.Count == 1)
+    //    {
+    //        Destroy(beltGroup.gameObject);
+    //    }
+    //    else if (beltGroup.beltList.Count > 1)
+    //    {
+    //        List<BeltCtrl> groupAList = new List<BeltCtrl>(); // 분류 결과를 담을 리스트 A
+    //        List<BeltCtrl> groupBList = new List<BeltCtrl>(); // 분류 결과를 담을 리스트 B
+
+    //        bool isRemoveObj = false;
+    //        foreach (BeltCtrl belt in beltGroup.beltList)
+    //        {        
+    //            if(removeBelt == belt.gameObject)
+    //            {
+    //                isRemoveObj = true;
+    //                continue;
+    //            }
+    //            if(isRemoveObj)
+    //            {
+    //                groupAList.Add(belt);
+    //            }
+    //            else
+    //            {
+    //                groupBList.Add(belt);
+    //            }
+    //        } 
+
+    //        if(groupAList.Count == 0)
+    //        {
+    //            if (groupBList.Count > 0)
+    //            {
+    //                beltGroup.beltList.Clear();
+    //                foreach (BeltCtrl belt in groupBList)
+    //                {
+    //                    beltGroup.beltList.Add(belt);
+    //                    belt.BeltModelSet();
+    //                }
+    //                beltGroup.Reconfirm();
+    //                beltGroup.nextCheck = true;
+    //                beltGroup.preCheck = true;
+    //                if(beltGroup.beltList.Count == 1)
+    //                {
+    //                    beltGroup.beltList[0].beltState = BeltState.SoloBelt;
+    //                    beltGroup.beltList[0].FactoryModelSet();
+    //                }
+    //            }
+    //        }
+    //        else if (groupAList.Count > 0)
+    //        {
+    //            beltGroup.beltList.Clear();
+    //            foreach (BeltCtrl belt in groupAList)
+    //            {
+    //                beltGroup.beltList.Add(belt);
+    //                belt.BeltModelSet();
+    //            }
+    //            beltGroup.Reconfirm();
+    //            beltGroup.nextCheck = true;
+    //            beltGroup.preCheck = true; 
+    //            if (beltGroup.beltList.Count == 1)
+    //            {
+    //                beltGroup.beltList[0].beltState = BeltState.SoloBelt;
+    //                beltGroup.beltList[0].FactoryModelSet();
+    //            }
+
+    //            if (groupBList.Count > 0)
+    //            {
+    //                GameObject newObj = Instantiate(beltGroupMgrObj);
+    //                newObj.transform.parent = this.gameObject.transform;
+
+    //                BeltGroupMgr newBeltGroup = newObj.GetComponent<BeltGroupMgr>();
+    //                foreach (BeltCtrl belt in groupBList)
+    //                {
+    //                    belt.transform.parent = newBeltGroup.transform;
+    //                    belt.beltGroupMgr = newBeltGroup;
+    //                    newBeltGroup.beltList.Add(belt);
+    //                    belt.BeltModelSet();
+    //                }
+    //                newBeltGroup.Reconfirm();
+    //                newBeltGroup.nextCheck = true;
+    //                newBeltGroup.preCheck = true;
+    //                if (newBeltGroup.beltList.Count == 1)
+    //                {
+    //                    newBeltGroup.beltList[0].beltState = BeltState.SoloBelt;
+    //                    newBeltGroup.beltList[0].FactoryModelSet();
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 }

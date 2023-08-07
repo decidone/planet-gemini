@@ -15,7 +15,7 @@ public class MergerCtrl : SolidFactoryCtrl
     [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
 
-    GameObject[] nearObj = new GameObject[4];
+    //GameObject[] nearObj = new GameObject[4];
 
     int getObjNum = 0;
 
@@ -27,6 +27,7 @@ public class MergerCtrl : SolidFactoryCtrl
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
+        base.nearObj = new GameObject[4];
         CheckPos();
     }
 
@@ -38,12 +39,12 @@ public class MergerCtrl : SolidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                if (inObj.Count > 0 && !isFull && !itemGetDelay)
+                if (inObj.Count > 0 && !isFull && !itemGetDelay && checkObj)
                 {
                     GetItem();
                 }
 
-                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
                 {
                     SetItem();    
                 }
@@ -119,42 +120,6 @@ public class MergerCtrl : SolidFactoryCtrl
 
         BeltCtrl belt = obj.GetComponent<BeltCtrl>();
         if (belt == null) yield break;
-
-        //int beltReNum = 0;
-
-        //if (dirNum == 0)
-        //{
-        //    if (nearObj[1] == obj) beltReNum = 3;
-        //    else if (nearObj[2] == obj) beltReNum = 0;
-        //    else if (nearObj[3] == obj) beltReNum = 1;
-        //}
-        //else if (dirNum == 1)
-        //{
-        //    if (nearObj[1] == obj) beltReNum = 0;
-        //    else if (nearObj[2] == obj) beltReNum = 1;
-        //    else if (nearObj[3] == obj) beltReNum = 2;
-        //}
-        //else if (dirNum == 2)
-        //{
-        //    if (nearObj[1] == obj) beltReNum = 1;
-        //    else if (nearObj[2] == obj) beltReNum = 2;
-        //    else if (nearObj[3] == obj) beltReNum = 3;
-        //}
-        //else if (dirNum == 3)
-        //{
-        //    if (nearObj[1] == obj) beltReNum = 2;
-        //    else if (nearObj[2] == obj) beltReNum = 3;
-        //    else if (nearObj[3] == obj) beltReNum = 0;
-        //}
-
-        //if (beltReNum != belt.dirNum)
-        //{
-        //    if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.EndBelt)
-        //    {
-        //        belt.dirNum = beltReNum;
-        //        belt.BeltModelSet();
-        //    }
-        //}
     }
 
     IEnumerator SetOutObjCoroutine(GameObject obj)
@@ -315,8 +280,17 @@ public class MergerCtrl : SolidFactoryCtrl
         {
             if (itemList.Count > 0)
             {
-                var outFactory = outObj[0].GetComponent<Structure>();
-                outFactory.OnFactoryItem(itemList[0]);
+                if (checkObj && outObj.Count > 0 && outObj[0] != null)
+                {
+                    if (outObj[0].TryGetComponent(out Structure outFactory))
+                    {
+                        outFactory.OnFactoryItem(itemList[0]);
+                    }
+                }
+                else
+                {
+                    Debug.Log("22");
+                }
 
                 itemList.RemoveAt(0);
 
@@ -331,6 +305,23 @@ public class MergerCtrl : SolidFactoryCtrl
             itemPool.Release(spawnItem);
         }            
     }
+    public override void ResetCheckObj(GameObject game)
+    {
+        base.ResetCheckObj(game);
+
+        for (int i = 0; i < outObj.Count; i++)
+        {
+            if (outObj[i] == game)
+                outObj.Remove(game);
+        }
+        for (int i = 0; i < inObj.Count; i++)
+        {
+            if (inObj[i] == game)
+                inObj.Remove(game);
+        }
+
+        getObjNum = 0;
+    }
 
     void DelaySetItem()
     {
@@ -342,8 +333,4 @@ public class MergerCtrl : SolidFactoryCtrl
         itemGetDelay = false;
     }
 
-    //public override void AddProductionFac(GameObject obj)
-    //{
-    //    outObj.Add(obj);
-    //}
 }

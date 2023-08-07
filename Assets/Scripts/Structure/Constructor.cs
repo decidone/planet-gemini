@@ -39,7 +39,7 @@ public class Constructor : Production
                 }
             }
 
-            if (slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+            if (slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 SetItem();
             }

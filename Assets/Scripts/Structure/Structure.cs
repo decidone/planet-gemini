@@ -55,6 +55,11 @@ public class Structure : MonoBehaviour
     public bool canBuilding = true;
     protected List<GameObject> buildingPosObj = new List<GameObject>();
 
+    [SerializeField]
+    protected GameObject[] nearObj;
+    [SerializeField]
+    protected bool checkObj = true;
+
     protected ItemProps CreateItemObj()
     {
         ItemProps item = Instantiate(itemPref).GetComponent<ItemProps>();
@@ -110,9 +115,55 @@ public class Structure : MonoBehaviour
         outSameList.Clear();
     }
 
+    public virtual void ResetCheckObj(GameObject game)
+    {
+        for(int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] != null && nearObj[i] == game) 
+            {
+                nearObj[i] = null;
+            }
+        }
+    }
     public virtual void RemoveObj() 
     {
         removeState = true;
+        ColliderTriggerOnOff(true); 
         StopAllCoroutines();
+
+        Structure structure = null;
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if(nearObj[i] != null && nearObj[i].TryGetComponent(out structure))
+            {
+                structure.checkObj = false;
+                structure.ResetCheckObj(this.gameObject);
+
+            }
+        }
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] != null && nearObj[i].TryGetComponent(out structure))
+            {
+                structure.checkObj = true;
+                if (structure.GetComponentInParent<BeltGroupMgr>())
+                {
+                    BeltGroupMgr beltGroup = structure.GetComponentInParent<BeltGroupMgr>();
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        if(GetComponentInParent<BeltManager>() && GetComponentInParent<BeltGroupMgr>())
+        {
+            BeltManager beltManager = GetComponentInParent<BeltManager>();
+            BeltGroupMgr beltGroup = GetComponentInParent<BeltGroupMgr>();
+            beltManager.BeltDivide(beltGroup, this.gameObject);
+        }
+
+        Destroy(this.gameObject);
     }
 }
