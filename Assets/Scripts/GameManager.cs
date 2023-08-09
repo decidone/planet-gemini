@@ -211,7 +211,7 @@ public class GameManager : MonoBehaviour
                         break;
                     case "RecipeMenu":
                         rManager.CloseUI();
-                        break;                    
+                        break;
                     case "BuildingInven":
                         bManager.CloseUI();
                         break;

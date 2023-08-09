@@ -16,7 +16,7 @@ public class PipeCtrl : FluidFactoryCtrl
     bool isDown = false;
     bool isLeft = false;
 
-    void Start()
+    protected override void Start()
     {
         setModel = GetComponent<SpriteRenderer>();
         //if (transform.parent.gameObject != null)
@@ -67,7 +67,7 @@ public class PipeCtrl : FluidFactoryCtrl
 
                     return true;
                 }
-            }            
+            }
         }
         return false;
     }

@@ -52,12 +52,12 @@ public abstract class Production : Structure
     protected int getObjNum = 0;
     protected int sendObjNum = 0;
 
-    Vector2[] checkPos = new Vector2[4];
+    protected Vector2[] checkPos = new Vector2[4];
 
     protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
-    public abstract void OpenUI();
-    public abstract void CloseUI();
+    public virtual void OpenUI() { }
+    public virtual void CloseUI() { }
     public virtual void SetRecipe(Recipe _recipe) { }
     public virtual float GetProgress() { return prodTimer; }
     public virtual float GetFuel() { return fuel; }

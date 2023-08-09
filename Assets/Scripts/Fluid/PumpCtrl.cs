@@ -10,7 +10,7 @@ public class PumpCtrl : FluidFactoryCtrl
     List<GameObject> factoryList = new List<GameObject>();
 
     //GameObject[] nearObj = new GameObject[4];
-    Vector2[] checkPos = new Vector2[4];
+    //Vector2[] checkPos = new Vector2[4];
 
     public bool PumpIng = true;
 
@@ -19,9 +19,10 @@ public class PumpCtrl : FluidFactoryCtrl
     bool isDown = false;
     bool isLeft = false;
 
-    void Start()
+    protected override void Start()
     {
         base.nearObj = new GameObject[4];
+        checkPos = new Vector2[4];
         CheckPos();
     }
 

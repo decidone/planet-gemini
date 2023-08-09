@@ -1,12 +1,95 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
-public class Refinery : Production
+public class Refinery : FluidFactoryCtrl
 {
+    public List<GameObject> factoryList = new List<GameObject>();
+
+    bool isUp = false;
+    bool isRight = false;
+    bool isDown = false;
+    bool isLeft = false;
+
+    protected override void Awake()
+    {
+        #region ProductionAwake
+        inventory = this.GetComponent<Inventory>();
+        buildName = productionData.FactoryName;
+        box2D = GetComponent<BoxCollider2D>();
+        hp = productionData.MaxHp[level];
+        hpBar.fillAmount = hp / productionData.MaxHp[level];
+        repairBar.fillAmount = 0;
+
+        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
+        #endregion
+    }
+
+    protected override void Start()
+    {
+        #region ProductionStart
+        itemDic = ItemList.instance.itemDic;
+        recipe = new Recipe();
+        output = null;
+
+        GameManager gameManager = GameManager.instance;
+        canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
+        sInvenManager = canvas.GetComponent<StructureInvenManager>();
+        rManager = canvas.GetComponent<RecipeManager>();
+        GetUIFunc();
+        base.nearObj = new GameObject[4];
+
+        CheckPos();
+        #endregion
+    }
+
     protected override void Update()
     {
+        #region ProductionUpdate
+        if (!removeState)
+        {
+            if (isRuin && isRepair)
+            {
+                RepairFunc(false);
+            }
+            else if (isPreBuilding && isSetBuildingOk && !isRuin)
+            {
+                RepairFunc(true);
+            }
+        }
+        if (!isPreBuilding)
+        {
+            if (inObj.Count > 0 && !itemGetDelay && checkObj)
+                GetItem();
+
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null)
+                {
+                    CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                }
+            }
+        }
+        #endregion
+
         base.Update();
+
+        if (!removeState)
+        {
+            if (!isPreBuilding)
+            {
+                if (isUp == false)
+                    isUp = ObjCheck(transform.up);
+                if (isRight == false)
+                    isRight = ObjCheck(transform.right);
+                if (isDown == false)
+                    isDown = ObjCheck(-transform.up);
+                if (isLeft == false)
+                    isLeft = ObjCheck(-transform.right);
+            }
+        }
+
         if (!isPreBuilding)
         {
             var slot = inventory.SlotCheck(0);
@@ -42,6 +125,38 @@ public class Refinery : Production
             if (slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 SetItem();
+            }
+        }
+    }
+
+    bool ObjCheck(Vector3 vec)
+    {
+        RaycastHit2D[] Hits = Physics2D.RaycastAll(this.gameObject.transform.position, vec, 1f);
+
+        for (int a = 0; a < Hits.Length; a++)
+        {
+            if (Hits[a].collider.GetComponent<Refinery>() != this.gameObject.GetComponent<Refinery>())
+            {
+                if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
+                {
+                    nearObj[0] = Hits[a].collider.gameObject;
+                    SetOutObj(nearObj[0]);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void SetOutObj(GameObject obj)
+    {
+        if (obj.GetComponent<FluidFactoryCtrl>() != null)
+        {
+            factoryList.Add(obj);
+            if (obj.GetComponent<PipeCtrl>() != null)
+            {
+                obj.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
+                obj.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
             }
         }
     }

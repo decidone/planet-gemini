@@ -5,7 +5,7 @@ using System;
 
 public class UnderPipeCtrl : FluidFactoryCtrl
 {
-    Vector2[] checkPos = new Vector2[2];
+    //Vector2[] checkPos = new Vector2[2];
     //[SerializeField]
     //GameObject[] nearObj = new GameObject[2];
 
@@ -17,11 +17,12 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     public GameObject connectUnderPipe = null;
 
-    void Start()
+    protected override void Start()
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         base.nearObj = new GameObject[2];
+        checkPos = new Vector2[2];
     }
 
     protected override void Update()

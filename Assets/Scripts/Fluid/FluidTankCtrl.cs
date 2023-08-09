@@ -11,7 +11,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
     int[] indices = new int[6];
     public List<GameObject> factoryList = new List<GameObject>();
 
-    void Start()
+    protected override void Start()
     {
         base.nearObj = new GameObject[8];
         TransformCheck();

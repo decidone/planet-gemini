@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FluidFactoryCtrl : Structure
+public class FluidFactoryCtrl : Production
 {
     [SerializeField]
     public FluidFactoryData fluidFactoryData;
@@ -12,9 +12,9 @@ public class FluidFactoryCtrl : Structure
     public float saveFluidNum;
     public float sendDelayTimer = 0.0f;
 
-    BoxCollider2D box2D = null;
+    //BoxCollider2D box2D = null;
 
-    private void Awake()
+    protected override void Awake()
     {
         buildName = fluidFactoryData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
@@ -23,7 +23,7 @@ public class FluidFactoryCtrl : Structure
         repairBar.fillAmount = 0;
     }
 
-    protected virtual void Update()
+    protected override void Update()
     {
         if (!removeState)
         {
