@@ -42,7 +42,7 @@ public class RemoveBuild : MonoBehaviour
         buildingData = BuildingDataGet.instance.GetBuildingName(obj.buildName, obj.level + 1);
         for (int i = 0; i < buildingData.GetItemCount(); i++)
         {
-            Debug.Log(buildingData.items[i] + " : "+ buildingData.amounts[i]);
+            inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
         }
     }
 

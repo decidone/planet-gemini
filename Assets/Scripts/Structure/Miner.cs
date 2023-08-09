@@ -115,4 +115,13 @@ public class Miner : Production
             }
         }
     }
+    protected override void AddInvenItem()
+    {
+        var slot = inventory.SlotCheck(0);
+
+        if (slot.item != null)
+        {
+            playerInven.Add(slot.item, slot.amount);
+        }
+    }
 }

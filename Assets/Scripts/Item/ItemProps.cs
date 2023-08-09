@@ -10,6 +10,11 @@ public class ItemProps : MonoBehaviour
     public Item item;
     public int amount;
 
+    [HideInInspector]
+    public bool isOnBelt = false;
+    [HideInInspector]
+    public BeltCtrl setOnBelt = null;
+
     public void SetPool(IObjectPool<ItemProps> pool)
     {
         itemPool = pool;
@@ -19,4 +24,6 @@ public class ItemProps : MonoBehaviour
     {
         itemPool.Release(this);
     }
+
+
 }

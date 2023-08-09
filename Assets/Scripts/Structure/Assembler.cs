@@ -179,4 +179,24 @@ public class Assembler : Production
             }
         }
     }
+
+    protected override void AddInvenItem()
+    {
+        var slot = inventory.SlotCheck(0);
+        var slot1 = inventory.SlotCheck(1);
+        var slot2 = inventory.SlotCheck(2);
+
+        if(slot.item != null)
+        {
+            playerInven.Add(slot.item, slot.amount);
+        }
+        if (slot1.item != null)
+        {
+            playerInven.Add(slot1.item, slot1.amount);
+        }
+        if (slot2.item != null)
+        {
+            playerInven.Add(slot2.item, slot2.amount);
+        }
+    }
 }

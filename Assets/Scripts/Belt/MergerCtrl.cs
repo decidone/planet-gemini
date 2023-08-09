@@ -217,7 +217,7 @@ public class MergerCtrl : SolidFactoryCtrl
         if (outFactory.isFull == false)
         //if (outFactory.CheckOutItemNum() == false)
         {
-            if (outObj[0].GetComponent<BeltCtrl>())
+            if (outObj[0].TryGetComponent(out BeltCtrl beltCtrl))
             {
                 ItemProps spawnItem = itemPool.Get();
                 if (outFactory.OnBeltItem(spawnItem))
@@ -227,7 +227,8 @@ public class MergerCtrl : SolidFactoryCtrl
                     spawnItem.item = itemList[0];
                     spawnItem.amount = 1;
                     spawnItem.transform.position = transform.position;
-
+                    spawnItem.isOnBelt = true;
+                    spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
                     itemList.RemoveAt(0);
                     ItemNumCheck();
                 }
@@ -259,6 +260,8 @@ public class MergerCtrl : SolidFactoryCtrl
         var spawnItem = itemPool.Get();
         var sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
+        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
+        coll.enabled = false;
 
         spawnItem.transform.position = this.transform.position;
 
@@ -289,7 +292,12 @@ public class MergerCtrl : SolidFactoryCtrl
                 }
                 else
                 {
-                    Debug.Log("22");
+                    spawnItem.item = itemList[0];
+                    spawnItem.amount = 1;
+                    playerInven.Add(spawnItem.item, spawnItem.amount);
+                    sprite.color = new Color(1f, 1f, 1f, 1f);
+                    coll.enabled = true;
+                    itemPool.Release(spawnItem);
                 }
 
                 itemList.RemoveAt(0);
@@ -301,6 +309,7 @@ public class MergerCtrl : SolidFactoryCtrl
         if (spawnItem != null)
         {
             sprite.color = new Color(1f, 1f, 1f, 1f);
+            coll.enabled = true;
             setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }            

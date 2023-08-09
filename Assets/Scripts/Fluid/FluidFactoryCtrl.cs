@@ -14,8 +14,10 @@ public class FluidFactoryCtrl : Structure
 
     BoxCollider2D box2D = null;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         buildName = fluidFactoryData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
         hp = fluidFactoryData.MaxHp[level];

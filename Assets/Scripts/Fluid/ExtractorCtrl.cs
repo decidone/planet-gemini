@@ -9,7 +9,6 @@ public class ExtractorCtrl : FluidFactoryCtrl
     [SerializeField]
     List<GameObject> factoryList = new List<GameObject>();
 
-    GameObject[] nearObj = new GameObject[4];
     Vector2[] checkPos = new Vector2[4];
 
     public bool PumpIng = true;
@@ -21,6 +20,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
 
     void Start()
     {
+        base.nearObj = new GameObject[4];
         CheckPos();
     }
 

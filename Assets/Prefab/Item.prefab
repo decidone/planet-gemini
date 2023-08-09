@@ -101,7 +101,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 1.5
 --- !u!114 &3924517579319507838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,3 +116,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 0}
   amount: 0
+  isOnBelt: 0
+  setOnBelt: {fileID: 0}

@@ -195,4 +195,28 @@ public class Manufacturer : Production
             }
         }
     }
+    protected override void AddInvenItem()
+    {
+        var slot = inventory.SlotCheck(0);
+        var slot1 = inventory.SlotCheck(1);
+        var slot2 = inventory.SlotCheck(2);
+        var slot3 = inventory.SlotCheck(3);
+
+        if (slot.item != null)
+        {
+            playerInven.Add(slot.item, slot.amount);
+        }
+        if (slot1.item != null)
+        {
+            playerInven.Add(slot1.item, slot1.amount);
+        }
+        if (slot2.item != null)
+        {
+            playerInven.Add(slot2.item, slot2.amount);
+        }
+        if (slot3.item != null)
+        {
+            playerInven.Add(slot3.item, slot3.amount);
+        }
+    }
 }

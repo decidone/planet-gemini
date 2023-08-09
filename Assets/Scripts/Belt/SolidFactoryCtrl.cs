@@ -25,8 +25,10 @@ public class SolidFactoryCtrl : Structure
     protected virtual void SetItem() { }
     // 벨트나 건물로 아이템 보내는 함수
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         buildName = solidFactoryData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
         hp = solidFactoryData.MaxHp[level];
@@ -63,7 +65,7 @@ public class SolidFactoryCtrl : Structure
     public override void BeltGroupSendItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);
-
+        itemObj.setOnBelt = GetComponent<BeltCtrl>();
         if (itemObjList.Count >= solidFactoryData.FullItemNum)        
             isFull = true;        
         else
@@ -293,7 +295,30 @@ public class SolidFactoryCtrl : Structure
         isRuin = true;
     }
 
-    //public virtual void AddProductionFac(GameObject obj) { }
+    protected override void AddInvenItem()
+    {
+        if(GetComponent<BeltCtrl>() == null)
+        {
+            if(itemList.Count > 0)
+            {
+                foreach(Item item in itemList)
+                {
+                    playerInven.Add(item, 1);
+                }
+            }
+        }
+        else
+        {
+            if (itemObjList.Count > 0)
+            {
+                foreach (ItemProps itemProps in itemObjList)
+                {
+                    playerInven.Add(itemProps.item, itemProps.amount);
+                    OnDestroyItem(itemProps);
+                }
+            }
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

@@ -283,7 +283,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         if (outFactory.isFull == false)        
         //if (outFactory.CheckOutItemNum() == false)
         {
-            if (outObj[sendObjNum].GetComponent<BeltCtrl>())
+            if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
             {
                 ItemProps spawnItem = itemPool.Get();
                 if (outFactory.OnBeltItem(spawnItem))
@@ -293,7 +293,8 @@ public class SplitterCtrl : SolidFactoryCtrl
                     spawnItem.item = itemList[0];
                     spawnItem.amount = 1;
                     spawnItem.transform.position = transform.position;
-
+                    spawnItem.isOnBelt = true;
+                    spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
                     itemList.RemoveAt(0);
                     ItemNumCheck();
                 }
@@ -396,6 +397,8 @@ public class SplitterCtrl : SolidFactoryCtrl
                 spawnItem.item = sendItem;
                 spawnItem.amount = 1;
                 spawnItem.transform.position = transform.position;
+                spawnItem.isOnBelt = true;
+                spawnItem.setOnBelt = beltCtrl;
             }
             else
             {
@@ -461,6 +464,8 @@ public class SplitterCtrl : SolidFactoryCtrl
         var spawnItem = itemPool.Get();
         var sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
+        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
+        coll.enabled = false;
 
         spawnItem.transform.position = transform.position;
 
@@ -492,7 +497,12 @@ public class SplitterCtrl : SolidFactoryCtrl
                 }
                 else
                 {
-                    Debug.Log("22");
+                    spawnItem.item = itemList[0];
+                    spawnItem.amount = 1; 
+                    playerInven.Add(spawnItem.item, spawnItem.amount);
+                    sprite.color = new Color(1f, 1f, 1f, 1f);
+                    coll.enabled = true;
+                    itemPool.Release(spawnItem);
                 }
 
                 itemList.RemoveAt(0);
@@ -503,6 +513,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         if (spawnItem != null)
         {
             sprite.color = new Color(1f, 1f, 1f, 1f);
+            coll.enabled = true;
             setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }

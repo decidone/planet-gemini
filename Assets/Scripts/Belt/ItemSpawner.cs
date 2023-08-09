@@ -141,7 +141,7 @@ public class ItemSpawner : SolidFactoryCtrl
 
         if (outFactory.isFull == false && outFactory.GetComponent<ItemSpawner>() == null)
         {
-            if (outObj[sendObjNum].GetComponent<BeltCtrl>())
+            if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
             {
                 ItemProps spawnItem = itemPool.Get();
                 if (outFactory.OnBeltItem(spawnItem))
@@ -151,6 +151,8 @@ public class ItemSpawner : SolidFactoryCtrl
                     spawnItem.item = itemData;
                     spawnItem.amount = 1;
                     spawnItem.transform.position = transform.position;
+                    spawnItem.isOnBelt = true;
+                    spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
                 }
                 else
                 {
@@ -195,6 +197,8 @@ public class ItemSpawner : SolidFactoryCtrl
         var spawnItem = itemPool.Get();
         var sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
+        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
+        coll.enabled = false;
 
         spawnItem.transform.position = transform.position;
 
@@ -222,13 +226,19 @@ public class ItemSpawner : SolidFactoryCtrl
             }
             else
             {
-                Debug.Log("22");
+                spawnItem.item = itemData;
+                spawnItem.amount = 1;
+                playerInven.Add(spawnItem.item, spawnItem.amount);
+                sprite.color = new Color(1f, 1f, 1f, 1f);
+                coll.enabled = true;
+                itemPool.Release(spawnItem);
             }
         }
 
         if (spawnItem != null)
         {
             sprite.color = new Color(1f, 1f, 1f, 1f);
+            coll.enabled = true;
             setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }

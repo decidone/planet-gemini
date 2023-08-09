@@ -60,6 +60,14 @@ public class Structure : MonoBehaviour
     [SerializeField]
     protected bool checkObj = true;
 
+    protected Inventory playerInven = null;
+
+    protected virtual void Awake()
+    {
+        GameManager gameManager = GameManager.instance;
+        playerInven = gameManager.GetComponent<Inventory>();
+    }
+
     protected ItemProps CreateItemObj()
     {
         ItemProps item = Instantiate(itemPref).GetComponent<ItemProps>();
@@ -139,7 +147,6 @@ public class Structure : MonoBehaviour
             {
                 structure.checkObj = false;
                 structure.ResetCheckObj(this.gameObject);
-
             }
         }
 
@@ -163,7 +170,9 @@ public class Structure : MonoBehaviour
             BeltGroupMgr beltGroup = GetComponentInParent<BeltGroupMgr>();
             beltManager.BeltDivide(beltGroup, this.gameObject);
         }
-
+        AddInvenItem();
         Destroy(this.gameObject);
     }
+
+    protected virtual void AddInvenItem() { }
 }
