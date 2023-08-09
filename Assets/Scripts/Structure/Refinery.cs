@@ -275,4 +275,18 @@ public class Refinery : FluidFactoryCtrl
             }
         }
     }
+    protected override void AddInvenItem()
+    {
+        var slot = inventory.SlotCheck(0);
+        var slot1 = inventory.SlotCheck(1);
+
+        if (slot.item != null)
+        {
+            playerInven.Add(slot.item, slot.amount);
+        }
+        if (slot1.item != null)
+        {
+            playerInven.Add(slot1.item, slot1.amount);
+        }
+    }
 }

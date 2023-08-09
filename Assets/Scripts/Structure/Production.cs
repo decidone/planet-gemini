@@ -64,8 +64,9 @@ public abstract class Production : Structure
     public virtual void OpenRecipe() { }
     public virtual void GetUIFunc() { }
 
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         inventory = this.GetComponent<Inventory>();
         buildName = productionData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
@@ -277,7 +278,7 @@ public abstract class Production : Structure
 
         if (outFactory.isFull == false)
         {
-            if (outObj[sendObjNum].GetComponent<BeltCtrl>())
+            if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
             {
                 ItemProps spawnItem = itemPool.Get();
                 if (outFactory.OnBeltItem(spawnItem))
@@ -287,7 +288,8 @@ public abstract class Production : Structure
                     spawnItem.item = output;
                     spawnItem.amount = 1;
                     spawnItem.transform.position = transform.position;
-
+                    spawnItem.isOnBelt = true;
+                    spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
                     SubFromInventory();
                 }
                 else
@@ -333,6 +335,8 @@ public abstract class Production : Structure
         var spawnItem = itemPool.Get();
         var sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
+        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
+        coll.enabled = false;
 
         spawnItem.transform.position = transform.position;
 
@@ -362,7 +366,12 @@ public abstract class Production : Structure
                 }
                 else
                 {
-                    Debug.Log("22");
+                    sprite.sprite = output.icon;
+                    spawnItem.item = output; 
+                    playerInven.Add(spawnItem.item, spawnItem.amount);
+                    sprite.color = new Color(1f, 1f, 1f, 1f);
+                    coll.enabled = true;
+                    itemPool.Release(spawnItem);
                 }
 
                 SubFromInventory();
@@ -373,6 +382,7 @@ public abstract class Production : Structure
         if (spawnItem != null)
         {
             sprite.color = new Color(1f, 1f, 1f, 1f);
+            coll.enabled = true; 
             itemPool.Release(spawnItem);
         }
     }

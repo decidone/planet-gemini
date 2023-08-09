@@ -464,4 +464,17 @@ public class BeltCtrl : SolidFactoryCtrl
         }
         FactoryModelSet();
     }
+
+     public void PlayerRootItem(ItemProps item)
+    {
+        if (itemObjList.Contains(item))
+        {
+            itemObjList.Remove(item);
+        }
+
+        if (itemObjList.Count >= solidFactoryData.FullItemNum)
+            isFull = true;
+        else
+            isFull = false;
+    }
 }

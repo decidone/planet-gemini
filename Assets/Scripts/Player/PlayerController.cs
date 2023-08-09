@@ -4,8 +4,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    Inventory inventory;
+    public Inventory inventory;
 
     List<GameObject> items = new List<GameObject>();
 
@@ -56,6 +55,10 @@ public class PlayerController : MonoBehaviour
             ItemProps itemProps = item.GetComponent<ItemProps>();
             if (itemProps)
             {
+                if (itemProps.isOnBelt) 
+                {
+                    itemProps.setOnBelt.PlayerRootItem(itemProps);
+                }
                 int containableAmount = inventory.SpaceCheck(itemProps.item);
                 if (itemProps.amount <= containableAmount)
                 {
