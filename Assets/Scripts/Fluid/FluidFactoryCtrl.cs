@@ -16,8 +16,8 @@ public class FluidFactoryCtrl : Production
 
     protected override void Awake()
     {
-        base.Awake();
-
+        GameManager gameManager = GameManager.instance;
+        playerInven = gameManager.GetComponent<Inventory>();
         buildName = fluidFactoryData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
         hp = fluidFactoryData.MaxHp[level];

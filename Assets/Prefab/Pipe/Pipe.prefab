@@ -148,10 +148,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fluidIsFull: 0
   dirNum: 0
   dirCount: 0
   level: 0
+  buildName: 
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 3120548149533964704}
@@ -161,6 +161,17 @@ MonoBehaviour:
   repairBar: {fileID: 2686902316315216677}
   itemPref: {fileID: 0}
   outSameList: []
+  canBuilding: 1
+  nearObj: []
+  checkObj: 1
+  ui: {fileID: 0}
+  sInvenManager: {fileID: 0}
+  rManager: {fileID: 0}
+  maxAmount: 0
+  cooldown: 0
+  productionData: {fileID: 0}
+  box2D: {fileID: 0}
+  outObj: []
   fluidFactoryData: {fileID: 11400000, guid: 8ee4d5c35de3b80478c35e5f9dfcb5b6, type: 2}
   fluidName: 
   saveFluidNum: 0

@@ -62,12 +62,6 @@ public class Structure : MonoBehaviour
 
     protected Inventory playerInven = null;
 
-    protected virtual void Awake()
-    {
-        GameManager gameManager = GameManager.instance;
-        playerInven = gameManager.GetComponent<Inventory>();
-    }
-
     protected ItemProps CreateItemObj()
     {
         ItemProps item = Instantiate(itemPref).GetComponent<ItemProps>();

@@ -64,9 +64,10 @@ public abstract class Production : Structure
     public virtual void OpenRecipe() { }
     public virtual void GetUIFunc() { }
 
-    protected override void Awake()
+    protected virtual void Awake()
     {
-        base.Awake();
+        GameManager gameManager = GameManager.instance;
+        playerInven = gameManager.GetComponent<Inventory>();
         inventory = this.GetComponent<Inventory>();
         buildName = productionData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();

@@ -25,10 +25,10 @@ public class SolidFactoryCtrl : Structure
     protected virtual void SetItem() { }
     // 벨트나 건물로 아이템 보내는 함수
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
-
+        GameManager gameManager = GameManager.instance;
+        playerInven = gameManager.GetComponent<Inventory>();
         buildName = solidFactoryData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
         hp = solidFactoryData.MaxHp[level];

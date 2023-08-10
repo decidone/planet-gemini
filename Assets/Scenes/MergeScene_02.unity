@@ -2715,6 +2715,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 762871311885926061, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: beltGroupMgrObj
+      value: 
+      objectReference: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
     - target: {fileID: 762871311885926062, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: preBuilding
       value: 
