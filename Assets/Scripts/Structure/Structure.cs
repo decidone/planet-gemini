@@ -15,7 +15,7 @@ public class Structure : MonoBehaviour
     public bool isFull = false;         // 건물의 아이템 슬롯별로 꽉 찼는지 체크하는 방식으로 변경되어야 함, 그러므로 건물 쪽 변수로 들어가야 할거같음
     //public bool fluidIsFull = false;    // 창고 처럼 모든 칸이 구분없이 채울 수 있다면 모든 슬롯이 차있는지 체크하는 방식으로도 생각해 봐야함
 
-    //[HideInInspector]
+    [HideInInspector]
     public int dirNum = 0;
     [HideInInspector]
     public int dirCount = 0;
@@ -30,7 +30,7 @@ public class Structure : MonoBehaviour
     protected bool removeState = false;
 
     [SerializeField]
-    protected GameObject unitCanvas = null;
+    protected GameObject unitCanvas;
 
     // HpBar 관련
     [SerializeField]
@@ -55,12 +55,15 @@ public class Structure : MonoBehaviour
     public bool canBuilding = true;
     protected List<GameObject> buildingPosObj = new List<GameObject>();
 
-    [SerializeField]
-    protected GameObject[] nearObj;
-    [SerializeField]
+    protected GameObject[] nearObj = new GameObject[4];
+    protected Vector2[] checkPos = new Vector2[4];
     protected bool checkObj = true;
 
     protected Inventory playerInven = null;
+
+    protected bool itemGetDelay = false;
+    protected bool itemSetDelay = false;
+    protected BoxCollider2D box2D = null;
 
     protected ItemProps CreateItemObj()
     {
@@ -93,8 +96,6 @@ public class Structure : MonoBehaviour
     //public virtual void DisableColliders() { }
     // 콜라이더 끄기
     //public virtual void EnableColliders() { }
-    // 콜라이더 키기
-    public virtual void ColliderTriggerOnOff(bool isOn) { }
     public virtual void SetBuild() { }
     // 건물 설치 기능
 
@@ -112,6 +113,15 @@ public class Structure : MonoBehaviour
     protected virtual void RepairFunc(bool isBuilding) { }
     protected virtual void RepairEnd() { }
 
+    // 콜라이더 키기
+    public virtual void ColliderTriggerOnOff(bool isOn)
+    {
+        if (isOn)
+            box2D.isTrigger = true;
+        else
+            box2D.isTrigger = false;
+    }
+
     protected void RemoveSameOutList()
     {
         outSameList.Clear();
@@ -127,6 +137,7 @@ public class Structure : MonoBehaviour
             }
         }
     }
+
     public virtual void RemoveObj() 
     {
         removeState = true;
@@ -169,4 +180,14 @@ public class Structure : MonoBehaviour
     }
 
     protected virtual void AddInvenItem() { }
+
+    protected void DelaySetItem()
+    {
+        itemSetDelay = false;
+    }
+
+    protected void DelayGetItem()
+    {
+        itemGetDelay = false;
+    }
 }

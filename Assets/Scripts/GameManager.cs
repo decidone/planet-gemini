@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     SplitterFilterManager sManager;
     [SerializeField]
-    ItemSpManager iManager;
+    ItemSpManager iSpManager;
     [SerializeField]
     ScienceManager sTreeManager;
 
@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     StructureClickEvent clickEvent;
     StructureClickEvent newClickEvent;
     SolidFacClickEvent solidFacClickEvent;
-    SolidFacClickEvent solidFacNewClickEvent;
+    SolidFacClickEvent newSolidFacClickEvent;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -78,10 +78,7 @@ public class GameManager : MonoBehaviour
             if (rManager.isOpened)
                 return;
 
-            //Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
-
-            //건물 위 오브젝트가 있을때 클릭이 안되서 RaycastAll로 변경
+            //건물 위 오브젝트가 있을때 클릭이 안되서 Raycast > RaycastAll로 변경
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
 
@@ -112,50 +109,12 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            //if (hit.collider != null)
-            //{
-            //    newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
-            //    solidFacNewClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
-
-            //    if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
-            //    {
-            //        if (clickEvent != null)
-            //        {
-            //            clickEvent.CloseUI();
-            //        }
-            //        if(solidFacClickEvent != null)
-            //        {
-            //            solidFacClickEvent.CloseUI();
-            //        }
-
-            //        clickEvent = newClickEvent;
-            //        clickEvent.StructureClick();
-            //        clickEvent.OpenUI();
-            //    }
-            //    else if (solidFacNewClickEvent != null && !solidFacNewClickEvent.GetComponentInParent<Structure>().isPreBuilding)
-            //    {
-            //        if (solidFacClickEvent != null)
-            //        {
-            //            solidFacClickEvent.CloseUI();
-            //        }
-            //        if (clickEvent != null)
-            //        {
-            //            clickEvent.CloseUI();
-            //        }
-
-            //        solidFacClickEvent = solidFacNewClickEvent;
-            //        solidFacClickEvent.SolidFacCheck();
-            //        solidFacClickEvent.OpenUI();                    
-            //    }
-            //    else
-            //        return;
-            //}
             if (hits.Length > 0)
             {
                 foreach (RaycastHit2D hit in hits)
                 {
                     newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
-                    solidFacNewClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
+                    newSolidFacClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
 
                     if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
@@ -173,7 +132,7 @@ public class GameManager : MonoBehaviour
                         clickEvent.OpenUI();
                         break;
                     }
-                    else if (solidFacNewClickEvent != null && !solidFacNewClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+                    else if (newSolidFacClickEvent != null && !newSolidFacClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
                         if (solidFacClickEvent != null)
                         {
@@ -184,7 +143,7 @@ public class GameManager : MonoBehaviour
                             clickEvent.CloseUI();
                         }
 
-                        solidFacClickEvent = solidFacNewClickEvent;
+                        solidFacClickEvent = newSolidFacClickEvent;
                         solidFacClickEvent.SolidFacCheck();
                         solidFacClickEvent.OpenUI();
                         break;

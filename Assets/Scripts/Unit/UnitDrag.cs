@@ -5,7 +5,6 @@ using UnityEngine;
 public class UnitDrag : MonoBehaviour
 {
     private Vector2 dragStartPosition;
-    [SerializeField]
     private GameObject[] selectedObjects;
 
     int unitLayer = 0;

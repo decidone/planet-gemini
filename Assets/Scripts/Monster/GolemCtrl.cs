@@ -10,8 +10,6 @@ public class GolemCtrl : MonsterAi
     GameObject golemFX;
     Transform getTargetTr;
     Vector3 targetVec = Vector3.zero;
-    Vector3 nextStep = Vector3.zero;
-    float speed;
     bool checkTarget = false;
 
     protected override void RandomAttackNum(int attackNum, Transform targetTr)
@@ -79,6 +77,5 @@ public class GolemCtrl : MonsterAi
                 golemFX.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
         golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion, monsterData.Damage);
-        //golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion, getMonsterData.monsteData.Damage);
     }
 }

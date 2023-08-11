@@ -6,19 +6,19 @@ using System;
 public class UnderBeltCtrl : MonoBehaviour
 {
     [SerializeField]
-    GameObject getBelt = null;
+    GameObject getBelt;
     [SerializeField]
-    GameObject sendBelt = null;
+    GameObject sendBelt;
 
     public bool isPreBuilding = false;
 
-    public GameObject underBelt = null;
+    public GameObject underBelt;
     public bool isSendBelt = true;
-    public Structure beltScipt = null;
+    public Structure beltScipt;
 
     Vector2[] checkPos = new Vector2[4];
 
-    public int dirNum = 0;
+    public int dirNum;
     GetUnderBeltCtrl getUnderBeltCtrl;
     SendUnderBeltCtrl sendUnderBeltCtrl;
     public bool buildEnd = false;
@@ -60,10 +60,9 @@ public class UnderBeltCtrl : MonoBehaviour
         {
             Collider2D factoryCollider = hits[i].collider;
 
-            if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != underBelt && factoryCollider.gameObject.transform.position != underBelt.transform.position)
-            //&& !factoryCollider.GetComponent<FactoryCtrl>().isPreBuilding)
+            if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != underBelt
+                && factoryCollider.gameObject.transform.position != underBelt.transform.position)
             {
-                //FactoryCtrl factoryCtrl = factoryCollider.GetComponent<FactoryCtrl>();
                 getUnderBeltCtrl = factoryCollider.GetComponent<GetUnderBeltCtrl>();
                 sendUnderBeltCtrl = factoryCollider.GetComponent<SendUnderBeltCtrl>();
                 if (getUnderBeltCtrl != null && getUnderBeltCtrl.dirNum == dirNum)
@@ -98,7 +97,6 @@ public class UnderBeltCtrl : MonoBehaviour
         isSendBelt = false;
         beltScipt = underBelt.GetComponent<GetUnderBeltCtrl>();
         ColliderTriggerOnOff(true);
-        //DisableColliders();
         beltScipt.isPreBuilding = true;
         beltScipt.dirNum = dirNum;
     }
@@ -111,7 +109,6 @@ public class UnderBeltCtrl : MonoBehaviour
         isSendBelt = true;
         beltScipt = underBelt.GetComponent<SendUnderBeltCtrl>();
         ColliderTriggerOnOff(true);
-        //DisableColliders();
         beltScipt.isPreBuilding = true;
         beltScipt.dirNum = dirNum;
     }
@@ -139,16 +136,6 @@ public class UnderBeltCtrl : MonoBehaviour
         sprite.color = slotColor;
     }
 
-    //public void DisableColliders()
-    //{
-    //    beltScipt.DisableColliders();
-    //}
-
-    //public void EnableColliders()
-    //{
-    //    beltScipt.EnableColliders();
-    //}
-
     public void ColliderTriggerOnOff(bool isOn)
     {
         beltScipt.ColliderTriggerOnOff(isOn);
@@ -159,7 +146,6 @@ public class UnderBeltCtrl : MonoBehaviour
         if (underBelt != null)
         {
             underBelt.transform.parent = null;
-            //beltScipt.isPreBuilding = false;
         }
 
         Destroy(this.gameObject);

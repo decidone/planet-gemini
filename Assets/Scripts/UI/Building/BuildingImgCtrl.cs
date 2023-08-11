@@ -15,8 +15,6 @@ public class BuildingImgCtrl : MonoBehaviour
     public List<Item> inputItem;  //inputSlot 받는 아이템
     public int amount;
 
-    //public Inventory inventory = null;
-
     void Start()
     {
         onSlotChangedCallback += SlotChanged;

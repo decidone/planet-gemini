@@ -17,9 +17,8 @@ public class PipeManager : MonoBehaviour
         gameObjects.AddRange(fstGroupMgr.factoryList);
         gameObjects.AddRange(secGroupMgr.factoryList);
 
-
         fstGroupMgr.pipeList.Clear();
-        fstGroupMgr.pipeList = pipeCtrl.Distinct().ToList();        
+        fstGroupMgr.pipeList = pipeCtrl.Distinct().ToList();
         
         fstGroupMgr.factoryList.Clear();
         fstGroupMgr.factoryList = gameObjects.Distinct().ToList();

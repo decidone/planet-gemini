@@ -4,10 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerStatus : MonoBehaviour
-{    
-    // HpBar ฐüทร
+{
     public Image hpBar;
-    float hp = 100.0f;
+    public float hp = 100.0f;
     float maxHP = 100.0f;
 
     void Start()

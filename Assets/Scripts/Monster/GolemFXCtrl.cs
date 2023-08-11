@@ -16,16 +16,12 @@ public class GolemFXCtrl : MonoBehaviour
         AttackFunc();
     }
 
-    public void FXEnd()
-    {
-        isAnimEnd = true;
-    }
+    public void FXEnd(){ isAnimEnd = true; }
 
     void AttackFunc()
     {
         if (attackMotionNum == 0)
         {
-            //this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
             ImgMrror();
             if (isAnimEnd == true)
             {
@@ -46,12 +42,7 @@ public class GolemFXCtrl : MonoBehaviour
         }
     }
 
-    void FXMove()
-    {
-        
-    }
-
-    //void MonsterMove()
+    public void FXMove() { }
 
     void ImgMrror()
     {
@@ -64,15 +55,11 @@ public class GolemFXCtrl : MonoBehaviour
     public void GetTarget(Vector3 target, int attackMotion, float getDamage)
     {
         moveNextStep = (target - transform.position).normalized;
-        //moveNextStep.Normalize();
         damage = getDamage;
         attackMotionNum = attackMotion;
     }
 
-    public void CollOn()
-    {
-        //this.gameObject.GetComponent<BoxCollider2D>().enabled = true;
-    }
+    public void CollOn() { }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -102,6 +89,4 @@ public class GolemFXCtrl : MonoBehaviour
             Destroy(this.gameObject, 0.2f);
         }
     }
-    
-    //private void OnTriggerEnter2D(Collider2D collision)
 }

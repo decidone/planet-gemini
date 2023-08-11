@@ -12,8 +12,6 @@ public class FluidFactoryCtrl : Production
     public float saveFluidNum;
     public float sendDelayTimer = 0.0f;
 
-    //BoxCollider2D box2D = null;
-
     protected override void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -62,16 +60,6 @@ public class FluidFactoryCtrl : Production
     {
         // 유체를 받은 후 처리할 작업 수행
     }
-
-    //public override void DisableColliders()
-    //{
-    //    box2D.enabled = false;
-    //}
-
-    //public override void EnableColliders()
-    //{
-    //    box2D.enabled = true;
-    //}
 
     public override void ColliderTriggerOnOff(bool isOn)
     {

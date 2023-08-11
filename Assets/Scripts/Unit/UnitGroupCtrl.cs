@@ -8,7 +8,6 @@ public class UnitGroupCtrl : MonoBehaviour
     public List<GameObject> unitList = new List<GameObject>();
     public List<Vector3> unitVecList = new List<Vector3>();
     Vector3 groupCenter = Vector3.zero;
-    [SerializeField]
     float radius = 0;
 
     //Seeker seeker;

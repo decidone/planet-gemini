@@ -6,28 +6,20 @@ using System;
 public class MergerCtrl : SolidFactoryCtrl
 {
     [SerializeField]
-    Sprite[] modelNum = new Sprite[4];
+    Sprite[] modelNum;
     SpriteRenderer setModel;
     private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
 
     List<GameObject> inObj = new List<GameObject>();
-
-    [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
 
-    //GameObject[] nearObj = new GameObject[4];
-
     int getObjNum = 0;
-
-    Vector2[] checkPos = new Vector2[4];
-
     private Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
     void Start()
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
-        base.nearObj = new GameObject[4];
         CheckPos();
     }
 
@@ -46,7 +38,7 @@ public class MergerCtrl : SolidFactoryCtrl
 
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
                 {
-                    SetItem();    
+                    SendItem();    
                 }
 
                 for (int i = 0; i < nearObj.Length; i++)
@@ -133,7 +125,7 @@ public class MergerCtrl : SolidFactoryCtrl
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     yield break;
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryVecCheck(GetComponentInParent<Structure>());
+                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else if (obj.GetComponent<SolidFactoryCtrl>())
             {
@@ -203,7 +195,7 @@ public class MergerCtrl : SolidFactoryCtrl
         }        
     }
 
-    protected override void SetItem()
+    protected override void SendItem()
     {
         if (setFacDelayCoroutine != null)
         {
@@ -215,7 +207,6 @@ public class MergerCtrl : SolidFactoryCtrl
         Structure outFactory = outObj[0].GetComponent<Structure>();
 
         if (outFactory.isFull == false)
-        //if (outFactory.CheckOutItemNum() == false)
         {
             if (outObj[0].TryGetComponent(out BeltCtrl beltCtrl))
             {
@@ -314,6 +305,7 @@ public class MergerCtrl : SolidFactoryCtrl
             itemPool.Release(spawnItem);
         }            
     }
+
     public override void ResetCheckObj(GameObject game)
     {
         base.ResetCheckObj(game);
@@ -331,15 +323,4 @@ public class MergerCtrl : SolidFactoryCtrl
 
         getObjNum = 0;
     }
-
-    void DelaySetItem()
-    {
-        itemSetDelay = false;
-    }
-
-    void DelayGetItem()
-    {
-        itemGetDelay = false;
-    }
-
 }

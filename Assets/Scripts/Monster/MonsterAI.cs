@@ -49,7 +49,6 @@ public class MonsterAi : MonoBehaviour
 
     // 패트롤 변수
     Transform spawnPos;                     // 스폰 위치
-    [SerializeField]
     bool isPatrolCoroutine = false;
     Vector3 patrolPos = Vector3.zero;       // 패트롤 지정 위치
     Vector3 patRandomPos = Vector3.zero;    // 패트롤 랜덤 위치
@@ -141,19 +140,19 @@ public class MonsterAi : MonoBehaviour
         {
             if (!isPatrolCoroutine)
                 StartCoroutine("Patrol");
-        }//if (monsterAI == MonsterAI.MAI_Patrol)
+        }
         else if(monsterAI == MonsterAIState.MAI_AggroTrace)
         {
 
-        }//else if(monsterAI == MonsterAI.MAI_AggroTrace)
+        }
         else if (monsterAI == MonsterAIState.MAI_NormalTrace)
         {
             NormalTrace();
-        }//else if (monsterAI == MonsterAI.MAI_NormalTrace)
+        }
         else if (monsterAI == MonsterAIState.MAI_ReturnPos)
         {
 
-        }//else if (monsterAI == MonsterAI.MAI_ReturnPos)
+        }
         else if (monsterAI == MonsterAIState.MAI_Attack)
         {
             if (attackState == MonsterAttackState.Waiting)
@@ -164,47 +163,8 @@ public class MonsterAi : MonoBehaviour
             {
                 AttackMove();
             }
-        }//else if (monsterAI == MonsterAI.MAI_Attack)
+        }
     }
-
-    //void MonsterMove()
-    //{
-    //    if (attackState != MonsterAttackState.Attacking && attackState != MonsterAttackState.AttackDelay)
-    //    {
-    //        if (monsterAI == MonsterAIState.MAI_Patrol)
-    //        {
-    //            targetVector = patrolPos - tr.position;
-    //        }//if ((monsterAI == MonsterAI.MAI_Patrol))
-    //        else
-    //        {
-    //            if (aggroTarget != null)
-    //            {
-    //                targetVector = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position);
-    //            }
-    //        }//else
-
-    //        moveStep = (monsterData.MoveSpeed + 2) * Time.fixedDeltaTime;
-
-    //        targetDist = targetVector.magnitude;
-    //        moveDir = targetVector.normalized;
-    //        moveNextStep = moveDir * moveStep;
-    //        float patrolPosDis = targetVector.magnitude;
-
-    //        if (patrolPosDis > 0.10f)
-    //            ImgMrror();
-    //        else
-    //            animator.SetBool("isMoving", false);
-    //    }
-    //    if (moveNextStep.y > 0)
-    //        animator.SetFloat("moveNextStepY", 1.0f);
-    //    else if (moveNextStep.y <= 0)
-    //        animator.SetFloat("moveNextStepY", -1.0f);
-
-    //    if (moveDir.x > 0.75f || moveDir.x < -0.75f)
-    //        animator.SetFloat("moveNextStepX", 1.0f);
-    //    else if(moveDir.x <= 0.75f && moveDir.x >= -0.75f)
-    //        animator.SetFloat("moveNextStepX", 0.0f);
-    //}
 
     void MovePosSet()
     {
@@ -218,7 +178,7 @@ public class MonsterAi : MonoBehaviour
                 StopCoroutine(checkPathCoroutine);
                 checkPathCoroutine = StartCoroutine(CheckPath(patrolPos));
             }
-        }//if ((monsterAI == MonsterAI.MAI_Patrol))
+        }
         else
         {
             if (aggroTarget != null)
@@ -232,7 +192,7 @@ public class MonsterAi : MonoBehaviour
                     checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position));
                 }
             }
-        }//else
+        }
     }
 
     void MonsterMove()
@@ -258,7 +218,7 @@ public class MonsterAi : MonoBehaviour
                 }
                 Vector3 targetWaypoint = movePath[currentWaypointIndex];
                 tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, moveStep);
-                //if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+                
                 if (tr.position == targetWaypoint)
                 {
                     currentWaypointIndex++;
@@ -284,13 +244,8 @@ public class MonsterAi : MonoBehaviour
         ABPath path = ABPath.Construct(tr.position, targetPos, null);
         seeker.CancelCurrentPathRequest();
         seeker.StartPath(path);
-        //AutoRepathPolicy autoRepath = new AutoRepathPolicy();
-        //autoRepath.DidRecalculatePath(targetPos);
 
-        // Wait... (may take some time depending on how complex the path is)
-        // The rest of the game will continue to run while waiting
         yield return StartCoroutine(path.WaitForPath());
-        // The path is calculated now
         currentWaypointIndex = 0;
         movePath = path.vectorPath;
         SwBodyType(true);
@@ -316,9 +271,9 @@ public class MonsterAi : MonoBehaviour
 
         if(aggroTarget != null)
         {
-            if (targetDist < monsterData.AttackDist)//플레이어와의 거리가 공격범위 보다 가까울 때 공격
+            if (targetDist < monsterData.AttackDist)    //플레이어와의 거리가 공격범위 보다 가까울 때 공격
             {
-                Invoke("TurnAttack", 0.1f);//0.1초 지연 즉발로 하니 꼬임
+                Invoke("TurnAttack", 0.1f); //0.1초 지연 즉발로 하니 꼬임
             }
         }
         else
@@ -409,10 +364,10 @@ public class MonsterAi : MonoBehaviour
     {
         if(aggroTarget != null)
         {
-            if (targetDist > monsterData.AttackDist)  // 탐색 범위 밖으로 나갈 때
+            if (targetDist > monsterData.AttackDist)    // 탐색 범위 밖으로 나갈 때
             {
                 animator.SetBool("isAttack", false);
-                monsterAI = MonsterAIState.MAI_NormalTrace;              // 따라가기 활성화
+                monsterAI = MonsterAIState.MAI_NormalTrace; // 따라가기 활성화
                 attackState = MonsterAttackState.Waiting;
             }
             else if (targetDist <= monsterData.AttackDist)  // 공격 범위 내로 들어왔을 때
@@ -447,15 +402,9 @@ public class MonsterAi : MonoBehaviour
         }
     }
 
-    protected virtual void RandomAttackNum(int attackNum, Transform targetTr)
-    {
-        
-    }
+    protected virtual void RandomAttackNum(int attackNum, Transform targetTr) { }
 
-    protected virtual void AttackMove()
-    {
-
-    }
+    protected virtual void AttackMove() { }
 
     public void ImgMrror()
     {
@@ -493,8 +442,6 @@ public class MonsterAi : MonoBehaviour
                 }
             }
         }
-
-        //tr.position = tr.position + moveNextStep;
     }
 
     IEnumerator AttackDelay()
@@ -560,11 +507,6 @@ public class MonsterAi : MonoBehaviour
         int RandomTime = Random.Range(5, 8);
 
         yield return new WaitForSeconds(RandomTime);
-
-        //if (monsterAI == MonsterAIState.MAI_Patrol)
-        //{
-        //    StartCoroutine("Patrol");
-        //}            
         isPatrolCoroutine = false;
     }
 

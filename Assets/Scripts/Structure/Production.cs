@@ -19,7 +19,6 @@ public abstract class Production : Structure
     protected float cooldown;
 
     protected GameObject canvas;
-
     protected Inventory inventory;
     protected Dictionary<string, Item> itemDic;
     protected float prodTimer;
@@ -33,26 +32,11 @@ public abstract class Production : Structure
     protected ProductionData productionData;
     protected ProductionData ProductionData { set { productionData = value; } }
 
-    protected bool itemGetDelay = false;
-    protected bool itemSetDelay = false;
-
-    [HideInInspector]
-    public BoxCollider2D box2D = null;
-
-    //[SerializeField]
-    //Sprite[] modelNum = new Sprite[4];
-    //SpriteRenderer setModel;
-    //private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
     protected List<GameObject> inObj = new List<GameObject>();
-    [SerializeField]
     protected List<GameObject> outObj = new List<GameObject>();
-
-    //GameObject[] nearObj = new GameObject[4];
 
     protected int getObjNum = 0;
     protected int sendObjNum = 0;
-
-    protected Vector2[] checkPos = new Vector2[4];
 
     protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
@@ -89,14 +73,11 @@ public abstract class Production : Structure
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        base.nearObj = new GameObject[4];
-
         CheckPos();
     }
 
     protected virtual void Update()
     {
-        //SetDirNum();
         if (!removeState)
         {
             if (isRuin && isRepair)
@@ -174,7 +155,7 @@ public abstract class Production : Structure
                     yield break;
                 }
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryVecCheck(GetComponentInParent<Structure>());
+                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
             {
@@ -376,7 +357,6 @@ public abstract class Production : Structure
                 }
 
                 SubFromInventory();
-                //ItemNumCheck();
             }
         }
 
@@ -386,39 +366,6 @@ public abstract class Production : Structure
             coll.enabled = true; 
             itemPool.Release(spawnItem);
         }
-    }
-
-    protected void DelaySetItem()
-    {
-        itemSetDelay = false;
-    }
-
-    protected void DelayGetItem()
-    {
-        itemGetDelay = false;
-    }
-
-    //public void GetFluid(float getNum) // 나중에 유체 기능도 넣을 때 추가
-    //{
-
-    //}
-
-    //public override void DisableColliders()
-    //{
-    //    box2D.enabled = false;
-    //}
-
-    //public override void EnableColliders()
-    //{
-    //    box2D.enabled = true;
-    //}
-
-    public override void ColliderTriggerOnOff(bool isOn)
-    {
-        if (isOn)
-            box2D.isTrigger = true;
-        else
-            box2D.isTrigger = false;
     }
 
     public override void SetBuild()
@@ -452,9 +399,8 @@ public abstract class Production : Structure
                 {
                     unitCanvas.SetActive(false);
                 }
-                //EnableColliders();
-                ColliderTriggerOnOff(false);
 
+                ColliderTriggerOnOff(false);
             }
         }
         else
@@ -482,8 +428,6 @@ public abstract class Production : Structure
         isRuin = false;
         isPreBuilding = false;
         ColliderTriggerOnOff(false);
-
-        //EnableColliders();
     }
 
     public override void TakeDamage(float damage)
@@ -542,9 +486,7 @@ public abstract class Production : Structure
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / productionData.MaxBuildingGauge;
 
-        //DisableColliders();
         ColliderTriggerOnOff(true);
-
         isRuin = true;
     }
 

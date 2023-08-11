@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public enum BeltState
 {
     SoloBelt,
@@ -8,9 +9,9 @@ public enum BeltState
     EndBelt,
     RepeaterBelt
 }
+
 public class BeltCtrl : SolidFactoryCtrl
 {
-    [SerializeField]
     int modelNum = 0;  // ¸ð¼Ç
 
     public BeltGroupMgr beltGroupMgr;
@@ -43,7 +44,6 @@ public class BeltCtrl : SolidFactoryCtrl
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
         beltState = BeltState.SoloBelt;
-        base.nearObj = new GameObject[4];
         BeltModelSet();
     }
 
@@ -64,7 +64,7 @@ public class BeltCtrl : SolidFactoryCtrl
     private void FixedUpdate()
     {
         if (itemObjList.Count > 0)
-            itemMove();
+            ItemMove();
         else if(itemObjList.Count == 0 && isItemStop == true)
             isItemStop = false;
     }
@@ -101,10 +101,10 @@ public class BeltCtrl : SolidFactoryCtrl
                 modelNum = 4;
             }
         }
-        SetDirNum();
+        SetItemDir();
     }
 
-    protected override void SetDirNum()
+    protected void SetItemDir()
     {
         for (int a = 0; a < nextPos.Length; a++)
         {
@@ -209,7 +209,7 @@ public class BeltCtrl : SolidFactoryCtrl
         }
     }
 
-    void itemMove()
+    void ItemMove()
     {
         for (int i = 0; i < itemObjList.Count; i++)
         {
@@ -337,23 +337,7 @@ public class BeltCtrl : SolidFactoryCtrl
         }
     }
 
-    public void PreBeltCombinModelSet(int tempDir)
-    {
-        isTurn = true;
-
-        if ((tempDir == 0 && dirNum == 1) || (tempDir == 2 && dirNum == 3) ||
-            (tempDir == 1 && dirNum == 2) || (tempDir == 3 && dirNum == 0))
-        {
-            isRightTurn = true;
-        }
-        else if ((tempDir == 0 && dirNum == 3) || (tempDir == 2 && dirNum == 1) ||
-            (tempDir == 1 && dirNum == 0) || (tempDir == 3 && dirNum == 2))
-        {
-            isRightTurn = false;
-        }
-    }
-
-    public void FactoryVecCheck(Structure factory)
+    public void FactoryPosCheck(Structure factory)
     {
         if (factory.transform.position.x > this.transform.position.x)
         {
@@ -381,8 +365,7 @@ public class BeltCtrl : SolidFactoryCtrl
 
     public void FactoryModelSet()
     {
-        
-        if (isUp == true && isRight == false && isDown == false && isLeft == false)
+        if (isUp && !isRight && !isDown && !isLeft)
         {
             if (dirNum == 1)
             {
@@ -395,7 +378,7 @@ public class BeltCtrl : SolidFactoryCtrl
                 isRightTurn = false;
             }
         }
-        else if (isUp == false && isRight == true && isDown == false && isLeft == false)
+        else if (!isUp && isRight && !isDown && !isLeft)
         {
             if (dirNum == 0)
             {
@@ -408,7 +391,7 @@ public class BeltCtrl : SolidFactoryCtrl
                 isRightTurn = true;
             }            
         }
-        else if (isUp == false && isRight == false && isDown == true && isLeft == false)
+        else if (!isUp && !isRight && isDown && !isLeft)
         {
             if (dirNum == 1)
             {
@@ -421,7 +404,7 @@ public class BeltCtrl : SolidFactoryCtrl
                 isRightTurn = true;
             }
         }
-        else if (isUp == false && isRight == false && isDown == false && isLeft == true)
+        else if (!isUp && !isRight && !isDown && isLeft)
         {
             if (dirNum == 0)
             {
@@ -437,6 +420,7 @@ public class BeltCtrl : SolidFactoryCtrl
         else        
             isTurn = false;
     }
+
     public override void ResetCheckObj(GameObject game)
     {
         for (int i = 0; i < nearObj.Length; i++)
@@ -465,7 +449,7 @@ public class BeltCtrl : SolidFactoryCtrl
         FactoryModelSet();
     }
 
-     public void PlayerRootItem(ItemProps item)
+    public void PlayerRootItem(ItemProps item)
     {
         if (itemObjList.Contains(item))
         {

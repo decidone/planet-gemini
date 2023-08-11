@@ -7,18 +7,9 @@ public class StructureClickEvent : MonoBehaviour
 {
     public GameObject structureInfoUI;
     public StructureInvenManager sInvenManager;
+    GameManager gameManager;
     Button closeBtn;
     Production prod;
-
-    GameManager gameManager;
-
-    //void Start()
-    //{
-    //    closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
-    //    closeBtn.onClick.AddListener(CloseUI);
-
-    //    prod = this.transform.GetComponent<Production>();
-    //}
 
     public void StructureClick()
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 public class BeltGroupMgr : MonoBehaviour
 {
     [SerializeField]
-    GameObject beltObj = null;
+    GameObject beltObj;
 
     public List<BeltCtrl> beltList = new List<BeltCtrl>();
     public List<ItemProps> groupItem = new List<ItemProps>();
@@ -17,7 +17,6 @@ public class BeltGroupMgr : MonoBehaviour
     public bool preCheck = true;
 
     public bool isPreBuilding = false;
-    //public bool checkObj = true;
 
     void Update()
     {
@@ -57,6 +56,7 @@ public class BeltGroupMgr : MonoBehaviour
         nextBelt.beltState = BeltState.EndBelt;
     }
 
+    //벨트 그룹 병합
     public void Reconfirm()
     {
         groupItem.Clear();

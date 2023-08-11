@@ -60,10 +60,8 @@ public class UnitAi : MonoBehaviour
     bool isHold = false;
 
     // 유닛 상태 관련
-    [SerializeField]
     UnitAIState unitAIState = UnitAIState.UAI_Idle; // 시작 시 패트롤 상태
     bool isLastStateOn = false;
-    [SerializeField]
     UnitAIState unitLastState = UnitAIState.UAI_Idle; // 시작 시 패트롤 상태
     UnitAttackState attackState = UnitAttackState.Waiting;
     public SpriteRenderer unitSelImg = null;

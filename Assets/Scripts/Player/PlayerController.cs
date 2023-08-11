@@ -72,7 +72,6 @@ public class PlayerController : MonoBehaviour
                     if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
                     {
                         InfoWindow.instance.SetNeedItem();
-
                     }
 
                     break;

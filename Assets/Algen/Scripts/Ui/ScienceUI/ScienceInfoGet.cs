@@ -6,7 +6,6 @@ using UnityEngine;
 public class ScienceInfoGet : MonoBehaviour
 {
     Dictionary<string, Dictionary<int, ScienceInfoData>> scienceInfoDataDic;
-    ScienceInfoData scienceInfoData;
 
     #region Singleton
     public static ScienceInfoGet instance;
@@ -26,7 +25,6 @@ public class ScienceInfoGet : MonoBehaviour
 
     void Start()
     {
-        //string json = File.ReadAllText("Assets/Data/ScienceInfo.json");
         string json = Resources.Load<TextAsset>("ScienceInfo").ToString();
         scienceInfoDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, ScienceInfoData>>>(json);
     }

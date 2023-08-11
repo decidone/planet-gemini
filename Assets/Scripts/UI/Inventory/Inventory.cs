@@ -208,18 +208,25 @@ public class Inventory : MonoBehaviour
         onItemChangedCallback?.Invoke();
     }
 
-    // 외부 Ui에서 사용하는 Sub
+    public void Sub(int slotNum, int amount)
+    {
+        totalItems[items[slotNum]] -= amount;
+        amounts[slotNum] -= amount;
+        if (amounts[slotNum] == 0)
+        {
+            items.Remove(slotNum);
+            amounts.Remove(slotNum);
+        }
+
+        onItemChangedCallback?.Invoke();
+    }
 
     public void Sub(Item item, int amount)
     {
         int slotNum = FindItemSlot(item);
-        if(slotNum != -1)
+        if (slotNum != -1)
             Sub(slotNum, amount);
     }
-
-    // 외부 Ui에서 사용하는 Sub
-
-    // 아이템의 슬롯 넘버를 찻는 함수
 
     int FindItemSlot(Item item)
     {
@@ -234,21 +241,6 @@ public class Inventory : MonoBehaviour
             }
         }
         return -1;
-    }
-
-    // 아이템의 슬롯 넘버를 찾는 함수
-
-    public void Sub(int slotNum, int amount)
-    {
-        totalItems[items[slotNum]] -= amount;
-        amounts[slotNum] -= amount;
-        if (amounts[slotNum] == 0)
-        {
-            items.Remove(slotNum);
-            amounts.Remove(slotNum);
-        }
-
-        onItemChangedCallback?.Invoke();
     }
 
     public void Split(Slot slot)

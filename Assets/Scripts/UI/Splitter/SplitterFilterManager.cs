@@ -17,11 +17,11 @@ public class SplitterFilterManager : MonoBehaviour
     protected GameManager gameManager;
 
     [SerializeField]
-    Button[] fillterMenuBtns = null;
+    Button[] fillterMenuBtns;
     [SerializeField]
-    ToggleButton[] fillterOnOffBtns = null;
+    ToggleButton[] fillterOnOffBtns;
     [SerializeField]
-    Toggle[] reverseToggle = null;
+    Toggle[] reverseToggle;
 
     void Start()
     {

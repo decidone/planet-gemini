@@ -6,13 +6,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
 {
     float pumpFluid = 15.0f;
 
-    [SerializeField]
     List<GameObject> factoryList = new List<GameObject>();
-
-    //GameObject[] nearObj = new GameObject[4];
-    //Vector2[] checkPos = new Vector2[4];
-
-    public bool PumpIng = true;
 
     bool isUp = false;
     bool isRight = false;
@@ -21,8 +15,6 @@ public class ExtractorCtrl : FluidFactoryCtrl
 
     protected override void Start()
     {
-        base.nearObj = new GameObject[4];
-        checkPos = new Vector2[4];
         CheckPos();
     }
 
@@ -43,15 +35,12 @@ public class ExtractorCtrl : FluidFactoryCtrl
                 if (isLeft == false)
                     isLeft = ObjCheck(-transform.right);
 
-                if (PumpIng == true)
-                {
-                    sendDelayTimer += Time.deltaTime;
+                sendDelayTimer += Time.deltaTime;
 
-                    if (sendDelayTimer > fluidFactoryData.SendDelay)
-                    {
-                        Pump();
-                        sendDelayTimer = 0;
-                    }
+                if (sendDelayTimer > fluidFactoryData.SendDelay)
+                {
+                    Pump();
+                    sendDelayTimer = 0;
                 }
             }
         }
@@ -106,12 +95,11 @@ public class ExtractorCtrl : FluidFactoryCtrl
                 saveFluidNum += pumpFluid;
         }
 
-
         if (factoryList.Count > 0)
         {
             foreach (GameObject obj in factoryList)
             {
-                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<ExtractorCtrl>() == null)// && obj.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<ExtractorCtrl>() == null)
                 {
                     if (fluidFactory.fluidFactoryData.FullFluidNum > fluidFactory.saveFluidNum)
                     {

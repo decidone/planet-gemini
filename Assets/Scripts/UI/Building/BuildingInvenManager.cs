@@ -53,14 +53,14 @@ public class BuildingInvenManager : MonoBehaviour
     protected virtual void InputCheck()
     {
         if (Input.GetMouseButtonDown(0))
-        {            
+        {
             if (focusedSlot != null)
             {
                 if (focusedSlot.item != null)
                 {
                     BuildingInfoCheck();
                 }
-            }            
+            }
         }
     }
 

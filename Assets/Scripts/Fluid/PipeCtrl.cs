@@ -7,7 +7,7 @@ public class PipeCtrl : FluidFactoryCtrl
     public PipeGroupMgr pipeGroupMgr;
 
     [SerializeField]
-    Sprite[] modelNum = new Sprite[11];
+    Sprite[] modelNum;
     SpriteRenderer setModel;
 
     //GameObject[] nearObj = new GameObject[4];

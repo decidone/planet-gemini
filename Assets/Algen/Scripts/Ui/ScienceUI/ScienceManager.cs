@@ -9,15 +9,15 @@ using System.Linq;
 public class ScienceManager : MonoBehaviour
 {
     [SerializeField]
-    Button[] tagBtns = null;
+    Button[] tagBtns;
     [SerializeField]
-    GameObject[] contents = null;
+    GameObject[] contents;
     [SerializeField]
-    ScrollRect scrollRect = null;
+    ScrollRect scrollRect;
     [SerializeField]
     GameObject[] infoWindow;
 
-    public ScienceBtn[] scienceBtns = null;
+    public ScienceBtn[] scienceBtns;
     public GameObject scienceTreeUI;
 
     ScienceInfoData scienceInfoData;

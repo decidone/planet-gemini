@@ -5,26 +5,14 @@ using UnityEngine;
 public class PipeGroupMgr : MonoBehaviour
 {
     [SerializeField]
-    GameObject pipeObj = null;
-
-    //public bool up = false;
-    //public bool down = false;
-    //public bool left = false;
-    //public bool right = false;
+    GameObject pipeObj;
 
     public List<PipeCtrl> pipeList = new List<PipeCtrl>();
     public List<GameObject> factoryList = new List<GameObject>();
-    //public Dictionary<GameObject, float> notFullObj = new Dictionary<GameObject, float>();
-
-    //Vector2 nextPos;
 
     public bool isPreBuilding = false;
-
     public float groupFullFluidNum = 0.0f;
     public float groupSaveFluidNum = 0.0f;
-
-    //public bool groupIsFull = false;
-
     float sendFluid = 1.0f;
     float sendDelayTimer = 0.0f;
     float sendDelay = 0.03f;
@@ -144,7 +132,7 @@ public class PipeGroupMgr : MonoBehaviour
 
                     GroupFluidCount(0);
                 }
-            }            
+            }
         }
     }
 }

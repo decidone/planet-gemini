@@ -13,7 +13,6 @@ public class InfoWindow : MonoBehaviour
     public Text[] amount;
 
     GameManager gameManager;
-    [SerializeField]
     List<Item> itemsList = new List<Item>();
 
     List<NeedItem> needItems = new List<NeedItem>();

@@ -2748,6 +2748,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8603474882824653208}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: iSpManager
+      value: 
+      objectReference: {fileID: 1095768246952270822}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: sTreeManager
       value: 
       objectReference: {fileID: 8603474882824653211}

@@ -33,7 +33,7 @@ public class ScienceBtn : MonoBehaviour
                 if (InfoWindow.instance.totalAmountsEnough)
                 {
                     InfoWindow.instance.SciUpgradeEnd();
-                    LockUiActiveFalse();          
+                    LockUiActiveFalse();
                 }
             }
         }

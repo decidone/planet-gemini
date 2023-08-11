@@ -15,14 +15,9 @@ public class SolidFactoryCtrl : Structure
     List<Item> items = new List<Item>();
     //public List<GameObject> outSameList = new List<GameObject>();
 
-    protected bool itemGetDelay = false;
-    protected bool itemSetDelay = false;
-
-    BoxCollider2D box2D = null;
-
     protected virtual void GetItem() { }
     // 벨트에서 아이템 받아오는 함수
-    protected virtual void SetItem() { }
+    protected virtual void SendItem() { }
     // 벨트나 건물로 아이템 보내는 함수
 
     protected void Awake()
@@ -134,29 +129,6 @@ public class SolidFactoryCtrl : Structure
         }
     }
 
-    //public void GetFluid(float getNum) // 나중에 유체 기능도 넣을 때 추가
-    //{
-
-    //}
-
-    //public override void DisableColliders()
-    //{
-    //    box2D.enabled = false;
-    //}
-
-    //public override void EnableColliders()
-    //{
-    //    box2D.enabled = true;
-    //}
-
-    public override void ColliderTriggerOnOff(bool isOn)
-    {
-        if (isOn)
-            box2D.isTrigger = true;
-        else
-            box2D.isTrigger = false;
-    }
-
     public override void SetBuild() 
     {
         unitCanvas.SetActive(true);
@@ -187,11 +159,9 @@ public class SolidFactoryCtrl : Structure
                 else
                 {
                     unitCanvas.SetActive(false);
-                    //isRepair = true;
                 }
-                //EnableColliders();
-                ColliderTriggerOnOff(false);
 
+                ColliderTriggerOnOff(false);
             }
         }
         else
@@ -207,28 +177,15 @@ public class SolidFactoryCtrl : Structure
     protected override void RepairEnd()
     {
         hpBar.enabled = true;
-
-        //if (hp < solidFactoryData.MaxHp)
-        //{
-        //    unitCanvers.SetActive(true);
-        //    hpBar.enabled = true;
-        //}
-        //else
-        //{
         hp = solidFactoryData.MaxHp[level];
         unitCanvas.SetActive(false);
-        //}
-
         hpBar.fillAmount = hp / solidFactoryData.MaxHp[level];
-
         repairBar.enabled = false;
         repairGauge = 0.0f;
-
         isRuin = false;
         isPreBuilding = false;
 
         ColliderTriggerOnOff(false);
-        //EnableColliders();
     }
 
     public override void TakeDamage(float damage)
@@ -277,21 +234,16 @@ public class SolidFactoryCtrl : Structure
     {
         hp = solidFactoryData.MaxHp[level];
         isRepair = repair;
-        //repairBar.enabled = repair;
     }
 
     protected override void DieFunc()
     {
-        //unitCanvers.SetActive(false);
         repairBar.enabled = true;
         hpBar.enabled = false;
-
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / solidFactoryData.MaxBuildingGauge;
 
-        //DisableColliders();
         ColliderTriggerOnOff(true);
-
         isRuin = true;
     }
 

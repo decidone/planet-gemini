@@ -6,20 +6,14 @@ using System;
 public class SendUnderBeltCtrl : SolidFactoryCtrl
 {
     [SerializeField]
-    Sprite[] modelNum = new Sprite[4];
+    Sprite[] modelNum;
     SpriteRenderer setModel;
 
-    [SerializeField]
     List<GameObject> inObj = new List<GameObject>();
-    //public List<GameObject> outObj = new List<GameObject>();
     public GameObject outObj = null;
 
-    //GameObject[] nearObj = new GameObject[4];
     private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
-
     int getObjNum = 0;
-
-    Vector2[] checkPos = new Vector2[4];
 
     private Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
@@ -27,7 +21,6 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
     {
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
-        base.nearObj = new GameObject[4];
     }
 
     protected override void Update()
@@ -45,20 +38,15 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
                 }
                 if (itemList.Count > 0 && outObj != null && !itemSetDelay)
                 {
-                    SetItem();
+                    SendItem();
                 }
 
                 for (int i = 1; i < nearObj.Length; i++)
                 {
                     if (nearObj[i] == null)
                     {
-                        //if (i == 1)
-                        //    CheckNearObj(checkPos[1], 1, obj => SetInObj(obj));
                         if (i == 2)
-                        //else if (i == 2)
                             CheckNearObj(checkPos[2], 2, obj => SetInObj(obj));
-                        //else if (i == 3)
-                        //    CheckNearObj(checkPos[3], 3, obj => SetInObj(obj));
                     }
                 }
             }
@@ -111,55 +99,6 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         if (obj.GetComponent<Structure>() != null)
         {
             inObj.Add(obj);
-
-            //if (obj.GetComponent<BeltCtrl>() != null)
-            //{
-            //    BeltCtrl belt = obj.GetComponent<BeltCtrl>();
-
-            //    int beltReNum = 0;
-
-            //    if (dirNum == 0)
-            //    {
-            //        if (nearObj[1] == obj)
-            //            beltReNum = 3;
-            //        else if (nearObj[2] == obj)
-            //            beltReNum = 0;
-            //        else if (nearObj[3] == obj)
-            //            beltReNum = 1;
-            //    }
-            //    if (dirNum == 1)
-            //    {
-            //        if (nearObj[1] == obj)
-            //            beltReNum = 0;
-            //        else if (nearObj[2] == obj)
-            //            beltReNum = 1;
-            //        else if (nearObj[3] == obj)
-            //            beltReNum = 2;
-            //    }
-            //    if (dirNum == 2)
-            //    {
-            //        if (nearObj[1] == obj)
-            //            beltReNum = 1;
-            //        else if (nearObj[2] == obj)
-            //            beltReNum = 2;
-            //        else if (nearObj[3] == obj)
-            //            beltReNum = 3;
-            //    }
-            //    if (dirNum == 3)
-            //    {
-            //        if (nearObj[1] == obj)
-            //            beltReNum = 2;
-            //        else if (nearObj[2] == obj)
-            //            beltReNum = 3;
-            //        else if (nearObj[3] == obj)
-            //            beltReNum = 0;
-            //    }
-            //    if (beltReNum != belt.dirNum)
-            //    {
-            //        belt.dirNum = beltReNum;
-            //        belt.BeltModelSet();
-            //    }
-            //}
         }
     }
 
@@ -207,7 +146,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         }
     }
 
-    protected override void SetItem()
+    protected override void SendItem()
     {
         if (setFacDelayCoroutine != null)
         {
@@ -219,7 +158,6 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
         Structure outFactory = outObj.GetComponent<Structure>();
 
         if (outFactory.isFull == false)
-        //if (!outFactory.CheckOutItemNum())
         {
             setFacDelayCoroutine = StartCoroutine("SetFacDelay");
         }
@@ -293,6 +231,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         outObj = Obj;
     }
+
     public override void ResetCheckObj(GameObject game)
     {
         base.ResetCheckObj(game);
@@ -311,15 +250,5 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
             Debug.Log(game.name);
             outObj = null;
         }
-    }
-
-    void DelaySetItem()
-    {
-        itemSetDelay = false;
-    }
-
-    void DelayGetItem()
-    {
-        itemGetDelay = false;
     }
 }

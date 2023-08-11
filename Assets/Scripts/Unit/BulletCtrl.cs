@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletCtrl : MonoBehaviour
 {
     float damage = 0;
-    public Transform aggroTarget = null;   // ≈∏∞Ÿ
+    public Transform aggroTarget = null;    // ≈∏∞Ÿ
     Vector3 moveNextStep = Vector3.zero;    // ¿Ãµø πÊ«‚ ∫§≈Õ
 
     void Update()
@@ -24,11 +24,12 @@ public class BulletCtrl : MonoBehaviour
     {
         if (collision.CompareTag("Monster"))
         {
-            if (collision.isTrigger == false)
+            if (!collision.isTrigger)
             {
                 collision.GetComponent<MonsterAi>().TakeDamage(damage);
                 Destroy(this.gameObject, 0.1f);
             }
-        }//if (collision.CompareTag("Player"))
+        }
+        //if (collision.CompareTag("Player"))
     }
 }

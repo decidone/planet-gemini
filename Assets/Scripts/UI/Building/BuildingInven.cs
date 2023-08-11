@@ -14,7 +14,7 @@ public class BuildingInven : MonoBehaviour
     private int preBtnIndex = 0;
     public static BuildingInven instance;
     [SerializeField]
-    private GameObject buildingTagsPanel = null;
+    private GameObject buildingTagsPanel;
     public bool debugMode = false;
 
     void Awake()

@@ -8,7 +8,7 @@ public class SolidFactoryData : ScriptableObject
     public string FactoryName { get { return factoryName; } }
 
     [SerializeField]
-    private int[] maxHp;//Ã¼·Â
+    private int[] maxHp;
     public int[] MaxHp { get { return maxHp; } }
 
     [SerializeField]

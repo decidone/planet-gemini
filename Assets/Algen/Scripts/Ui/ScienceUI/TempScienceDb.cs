@@ -7,7 +7,6 @@ public class TempScienceDb : MonoBehaviour
     public static TempScienceDb instance;
     public Dictionary<string, List<int>> scienceNameDb = new Dictionary<string, List<int>>();
 
-    //public List<string> scienceNameDb = new List<string>();
     public int coreLevel = 1;
 
     private void Awake()

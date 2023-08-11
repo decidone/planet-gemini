@@ -7,17 +7,13 @@ public class ItemSpawner : SolidFactoryCtrl
 {
     public Item itemData;
 
-    [SerializeField]
     List<GameObject> outObj = new List<GameObject>();
-    //GameObject[] nearObj = new GameObject[4];
-    Vector2[] checkPos = new Vector2[4];
 
     int sendObjNum = 0;
     protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
     void Start()
     {
-        base.nearObj = new GameObject[4];
         dirCount = 4;
         CheckPos();
     }
@@ -32,7 +28,7 @@ public class ItemSpawner : SolidFactoryCtrl
                 if (outObj.Count > 0 && !itemSetDelay && checkObj)
                 {
                     if (itemData.name != "emptyFilter")
-                        SetItem();
+                        SendItem();
                 }
 
                 for (int i = 0; i < nearObj.Length; i++)
@@ -94,7 +90,7 @@ public class ItemSpawner : SolidFactoryCtrl
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     yield break;
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryVecCheck(GetComponentInParent<Structure>());
+                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else if (obj.GetComponent<SolidFactoryCtrl>())
             {
@@ -121,7 +117,6 @@ public class ItemSpawner : SolidFactoryCtrl
                     {
                         outObj.RemoveAt(a);
                         Invoke("RemoveSameOutList", 0.1f);
-                        //StopCoroutine("SetFacDelay");
                         break;
                     }
                 }
@@ -129,7 +124,7 @@ public class ItemSpawner : SolidFactoryCtrl
         }
     }
 
-    protected override void SetItem()
+    protected override void SendItem()
     {
         if (setFacDelayCoroutine != null)
         {
@@ -243,6 +238,7 @@ public class ItemSpawner : SolidFactoryCtrl
             itemPool.Release(spawnItem);
         }
     }
+
     public override void ResetCheckObj(GameObject game)
     {
         base.ResetCheckObj(game);
@@ -254,14 +250,4 @@ public class ItemSpawner : SolidFactoryCtrl
         }
         sendObjNum = 0;
     }
-
-    void DelaySetItem()
-    {
-        itemSetDelay = false;
-    }
-
-    //public override void AddProductionFac(GameObject obj)
-    //{
-    //    outObj.Add(obj);
-    //}
 }

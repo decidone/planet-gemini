@@ -2,16 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//public enum MonsterType
-//{
-//    Golem_Armor, Metal_Monster_blue
-//}
-
 public class MonsterSpawner : MonoBehaviour
 {
     [SerializeField]
     private GameObject[] monsterPrefab;
-    [SerializeField]
     int spawnNum = 0;
 
     void Start()

@@ -17,8 +17,7 @@ public class PreBuilding : MonoBehaviour
 {
     public static PreBuilding instance;
     SpriteRenderer spriteRenderer;
-    [SerializeField]
-    GameObject gameObj = null; 
+    GameObject gameObj;
     public bool isSelect = false;
 
     public GameObject beltMgr = null;
@@ -46,7 +45,6 @@ public class PreBuilding : MonoBehaviour
 
     List<GameObject> buildingList = new List<GameObject>();    
     Vector3 tempPos;
-    [SerializeField]
     List<Vector3> posList = new List<Vector3>();
     bool isMoveX = true; 
     bool tempMoveX;
@@ -861,69 +859,6 @@ public class PreBuilding : MonoBehaviour
             }
         }        
     }
-
-    //void CreateObj()
-    //{
-    //    //bool isPreBeltSend = true;
-    //    int setNum = 0;
-    //    int buildIndex = 0;
-    //    Vector3 lastPos = posList[posList.Count - 1];
-
-    //    foreach (Vector3 pos in posList)
-    //    {
-    //        if (isNeedSetPos)
-    //        {
-    //            AddBuildingToList(pos - setPos);
-    //        }
-    //        else
-    //        {
-    //            if (!isUnderObj)
-    //            {
-    //                AddBuildingToList(pos);
-    //            }
-    //            else
-    //            {
-    //                setNum++;
-    //                if (buildIndex == 0)
-    //                //if (buildingList.Count == 0)
-    //                {
-    //                    AddBuildingToList(pos);
-    //                }
-    //                else if (buildIndex > 0)
-    //                //else if (buildingList.Count > 0)
-    //                {
-    //                    UnderBeltCtrl underBeltCtrl = gameObj.GetComponent<UnderBeltCtrl>();
-    //                    //isPreBeltSend = gameObj.GetComponent<UnderBeltCtrl>().isSendBelt;
-
-    //                    if ((!isMoveX && (underBeltCtrl.dirNum == 0 || underBeltCtrl.dirNum == 2)) ||
-    //                        (isMoveX && (underBeltCtrl.dirNum == 1 || underBeltCtrl.dirNum == 3)))
-    //                    {
-    //                        if (posList.Count <= 11 && setNum == posList.Count)
-    //                        {
-    //                            AddBuildingToList(pos);
-    //                        }
-    //                        else if (posList.Count > 11)
-    //                        {
-    //                            if (pos == lastPos || setNum == 1 || setNum % 11 == 0)
-    //                            {
-    //                                AddBuildingToList(pos);
-    //                                if (setNum % 11 == 0)
-    //                                {
-    //                                    setNum = 0;
-    //                                }
-    //                            }
-    //                        }
-    //                    }
-    //                    else
-    //                    {
-    //                        AddBuildingToList(pos);
-    //                    }
-    //                }
-    //                buildIndex++;
-    //            }
-    //        }
-    //    }
-    //}
 
     void AddBuildingToList(Vector3 pos)
     {

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RepairTower : TowerAi
 {
-    [SerializeField]
     List<GameObject> TowerList = new List<GameObject>();
     bool isDelayRepairCoroutine = false;
 

@@ -7,16 +7,13 @@ using UnityEngine;
 public class ToggleButton : MonoBehaviour
 {
     public UnityEvent onToggleOn;
-
     public bool isOn = false;
-
     public Sprite[] toggleImg = null;
-
     public GameObject toggleButtonObj = null;
+    public RectTransform toggleSwObj = null;
     Button toggleButton = null;
     Image toggleButtonSprite = null;
-    public RectTransform toggleSwObj = null;
-
+    
     void Awake()
     {
         toggleButton = toggleButtonObj.GetComponent<Button>();

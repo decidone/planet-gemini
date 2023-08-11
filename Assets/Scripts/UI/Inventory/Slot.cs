@@ -9,7 +9,6 @@ public class Slot : MonoBehaviour
 
     public Image icon;
     public Text amountText;
-
     public Item item;
     public List<Item> inputItem;  //inputSlot 받는 아이템
     public int amount;

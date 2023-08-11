@@ -5,7 +5,7 @@ using UnityEngine;
 public class UnderPipeBuild : MonoBehaviour
 {
     [SerializeField]
-    GameObject underPipe = null;
+    GameObject underPipe;
 
     public bool isPreBuilding = false;
 

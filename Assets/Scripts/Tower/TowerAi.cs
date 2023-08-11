@@ -9,8 +9,7 @@ public class TowerAi : MonoBehaviour
     {
         Waiting,
         Attack,
-        AttackDelay,
-        //Die
+        AttackDelay
     }
 
     [SerializeField]
@@ -100,10 +99,7 @@ public class TowerAi : MonoBehaviour
         }
     }
 
-    protected virtual void DieFunc()
-    {
- 
-    }
+    protected virtual void DieFunc() { }
 
     public void HealFunc(float heal)
     {
@@ -206,17 +202,6 @@ public class TowerAi : MonoBehaviour
         repairBar.fillAmount = repairGauge / towerData.MaxRepairGauge;
         isSetBuildingOk = true;
     }
-
-    //public void DisableColliders()
-    //{
-    //    capsule2D.enabled = false;
-    //}
-
-    //// 콜라이더 켜기
-    //public void EnableColliders()
-    //{
-    //    capsule2D.enabled = true;
-    //}
 
     public void ColliderTriggerOnOff(bool isOn)
     {
