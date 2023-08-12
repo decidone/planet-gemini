@@ -61,7 +61,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &8131965230812121209
 MonoBehaviour:
@@ -192,6 +192,7 @@ GameObject:
   - component: {fileID: 4243873348260944142}
   - component: {fileID: 4243873348260944137}
   - component: {fileID: 4937467329174644339}
+  - component: {fileID: 2529755388699993842}
   m_Layer: 0
   m_Name: Extractor
   m_TagString: Factory
@@ -341,12 +342,33 @@ MonoBehaviour:
   itemPref: {fileID: 0}
   outSameList: []
   canBuilding: 1
+  nearObj: []
+  checkObj: 1
+  ui: {fileID: 0}
+  sInvenManager: {fileID: 0}
+  rManager: {fileID: 0}
+  maxAmount: 0
+  cooldown: 0
+  productionData: {fileID: 0}
+  box2D: {fileID: 0}
+  outObj: []
   fluidFactoryData: {fileID: 11400000, guid: eb70e9b0e8903ad40bb0a1e497dd30dd, type: 2}
   fluidName: 
   saveFluidNum: 0
   sendDelayTimer: 0
   factoryList: []
   PumpIng: 1
+--- !u!210 &2529755388699993842
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4243873348260944181}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &4626445189485384686
 GameObject:
   m_ObjectHideFlags: 0

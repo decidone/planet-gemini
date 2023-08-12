@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8306905347839344631}
   - component: {fileID: 4728357262672415551}
   - component: {fileID: -5741374001319015705}
+  - component: {fileID: -7860553363915093949}
   m_Layer: 8
   m_Name: Tree_01
   m_TagString: Untagged
@@ -118,3 +119,14 @@ MonoBehaviour:
   uniqueID: 2778350982201979642
   updateError: 1
   checkTime: 0.2
+--- !u!210 &-7860553363915093949
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2557397671702435269}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3

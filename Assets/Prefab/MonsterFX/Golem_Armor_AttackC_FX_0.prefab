@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2495903882393676704}
   - component: {fileID: 785125560462693006}
   - component: {fileID: 3815812924653637648}
+  - component: {fileID: -8578295621808633652}
   m_Layer: 0
   m_Name: Golem_Armor_AttackC_FX_0
   m_TagString: Untagged
@@ -137,3 +138,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
   aggroTarget: {fileID: 0}
+--- !u!210 &-8578295621808633652
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2495903882393676707}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3

@@ -289,7 +289,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &5950944164448616758
 MonoBehaviour:
@@ -347,6 +347,7 @@ GameObject:
   - component: {fileID: 2933665410225861189}
   - component: {fileID: 6309344173794642405}
   - component: {fileID: -2819984684848976233}
+  - component: {fileID: 5950252673430294717}
   m_Layer: 8
   m_Name: Furnace
   m_TagString: Factory
@@ -491,10 +492,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fluidIsFull: 0
   dirNum: 0
   dirCount: 0
   level: 0
+  buildName: 
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 7151233568437708852}
@@ -505,6 +506,8 @@ MonoBehaviour:
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
   canBuilding: 1
+  nearObj: []
+  checkObj: 1
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -512,6 +515,7 @@ MonoBehaviour:
   cooldown: 3
   productionData: {fileID: 11400000, guid: d0df61e38f4fb69438347d5fe585628f, type: 2}
   box2D: {fileID: 0}
+  outObj: []
 --- !u!114 &6309344173794642405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,7 +529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 166429868105885489
+  uniqueID: 318039314851059914
   updateError: 1
   checkTime: 0.2
 --- !u!50 &-2819984684848976233
@@ -549,3 +553,14 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!210 &5950252673430294717
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759284699072132164}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3

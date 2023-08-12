@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 1929914461128864777}
   - component: {fileID: 505774869806293970}
   - component: {fileID: -5483542174312113062}
+  - component: {fileID: 7549646749729045474}
   m_Layer: 8
   m_Name: FireTower
   m_TagString: Tower
@@ -250,6 +251,7 @@ MonoBehaviour:
   isPreBuilding: 0
   isSetBuildingOk: 0
   monsterList: []
+  canBuilding: 1
   attackFX: {fileID: 131646313625141333, guid: b31d241b0c0f49b4583ae09c0b61542c, type: 3}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
 --- !u!114 &-5483542174312113062
@@ -268,6 +270,17 @@ MonoBehaviour:
   uniqueID: 6604552128431321110
   updateError: 1
   checkTime: 0.2
+--- !u!210 &7549646749729045474
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929914461128864781}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &2538830438076231368
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,7 +494,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &40356280618812828
 MonoBehaviour:

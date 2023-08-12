@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4638321260778344907}
   - component: {fileID: 2494145269715281245}
   - component: {fileID: 3924517579319507838}
+  - component: {fileID: -1731349307443616935}
   m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
@@ -118,3 +119,14 @@ MonoBehaviour:
   amount: 0
   isOnBelt: 0
   setOnBelt: {fileID: 0}
+--- !u!210 &-1731349307443616935
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706260756050914416}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3

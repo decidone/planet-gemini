@@ -167,6 +167,7 @@ GameObject:
   - component: {fileID: 293481600424882334}
   - component: {fileID: 8051527625688539190}
   - component: {fileID: -9044928422796286906}
+  - component: {fileID: -3060893478362932590}
   m_Layer: 7
   m_Name: EarthA
   m_TagString: Monster
@@ -351,6 +352,17 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
+--- !u!210 &-3060893478362932590
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2081385084214852163}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &5521661009913444406
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +423,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &1319392926647424206
 MonoBehaviour:

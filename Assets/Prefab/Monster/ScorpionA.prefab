@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 460137294059678698}
   - component: {fileID: 5337739608376463110}
   - component: {fileID: 8848798566448613666}
+  - component: {fileID: 3930791469157306135}
   m_Layer: 7
   m_Name: ScorpionA
   m_TagString: Monster
@@ -199,6 +200,17 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
+--- !u!210 &3930791469157306135
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 579694149276134389}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &6210862339453238710
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +347,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &7331995840320756803
 MonoBehaviour:

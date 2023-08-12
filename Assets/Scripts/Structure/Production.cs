@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.Rendering;
 using System;
 
 public abstract class Production : Structure
@@ -287,6 +288,7 @@ public abstract class Production : Structure
                     SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
                     sprite.sprite = output.icon;
                     spawnItem.item = output;
+                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
                     spawnItem.amount = 1;
                     spawnItem.transform.position = transform.position;
                     spawnItem.isOnBelt = true;

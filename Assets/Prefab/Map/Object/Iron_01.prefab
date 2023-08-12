@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8375910991808067626}
   - component: {fileID: 8212761883254759723}
   - component: {fileID: 2537296174426121693}
+  - component: {fileID: 7392616662951334733}
   m_Layer: 8
   m_Name: Iron_01
   m_TagString: Untagged
@@ -133,3 +134,14 @@ MonoBehaviour:
   uniqueID: 898035302420508601
   updateError: 1
   checkTime: 0.2
+--- !u!210 &7392616662951334733
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2943585721529328332}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3

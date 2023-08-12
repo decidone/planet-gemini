@@ -24,6 +24,4 @@ public class ItemProps : MonoBehaviour
     {
         itemPool.Release(this);
     }
-
-
 }

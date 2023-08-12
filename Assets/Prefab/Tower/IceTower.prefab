@@ -61,7 +61,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &6691104146048533353
 MonoBehaviour:
@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 5088120821849387772}
   - component: {fileID: 5101119551645714666}
   - component: {fileID: -9021604783637356113}
+  - component: {fileID: -599829405816113539}
   m_Layer: 8
   m_Name: IceTower
   m_TagString: Tower
@@ -277,6 +278,7 @@ MonoBehaviour:
   isPreBuilding: 0
   isSetBuildingOk: 0
   monsterList: []
+  canBuilding: 1
   attackFX: {fileID: 3832536798139642931, guid: 22067a6743dd85943ac66ba5c3c774f6, type: 3}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
 --- !u!114 &-9021604783637356113
@@ -295,6 +297,17 @@ MonoBehaviour:
   uniqueID: 1607646607832735825
   updateError: 1
   checkTime: 0.2
+--- !u!210 &-599829405816113539
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5088120821849387768}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &6166578359405844220
 GameObject:
   m_ObjectHideFlags: 0

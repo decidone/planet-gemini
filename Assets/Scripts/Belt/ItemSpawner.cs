@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using System;
 
 public class ItemSpawner : SolidFactoryCtrl
@@ -150,6 +151,7 @@ public class ItemSpawner : SolidFactoryCtrl
                     sprite.sprite = itemData.icon;
                     spawnItem.item = itemData;
                     spawnItem.amount = 1;
+                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
                     spawnItem.transform.position = transform.position;
                     spawnItem.isOnBelt = true;
                     spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
@@ -259,9 +261,4 @@ public class ItemSpawner : SolidFactoryCtrl
     {
         itemSetDelay = false;
     }
-
-    //public override void AddProductionFac(GameObject obj)
-    //{
-    //    outObj.Add(obj);
-    //}
 }

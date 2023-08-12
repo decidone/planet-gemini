@@ -61,7 +61,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &7759650965421902626
 MonoBehaviour:
@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 5043839874347049425}
   - component: {fileID: 6522629440870445346}
   - component: {fileID: -7841223284810881725}
+  - component: {fileID: 4855410685162119447}
   m_Layer: 8
   m_Name: Splitter
   m_TagString: Factory
@@ -404,10 +405,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fluidIsFull: 0
   dirNum: 0
   dirCount: 0
   level: 0
+  buildName: 
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 3026482398367123645}
@@ -418,6 +419,12 @@ MonoBehaviour:
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
   canBuilding: 1
+  nearObj:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  checkObj: 1
   solidFactoryData: {fileID: 11400000, guid: a0c1ce887778bc141997a82195866e51, type: 2}
   itemObjList: []
   itemList: []
@@ -426,12 +433,8 @@ MonoBehaviour:
   - {fileID: 1484085052, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1234653658, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  inObj: {fileID: 0}
   outObj: []
-  nearObj:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   arrFilter:
   - outObj: {fileID: 0}
     isFilterOn: 0
@@ -463,8 +466,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0bc8acfb9905a40b960e75cdb9136b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spilterInfoUI: {fileID: 0}
+  solidFacUI: {fileID: 0}
   sFilterManager: {fileID: 0}
+  itemSpManager: {fileID: 0}
+--- !u!210 &4855410685162119447
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043839874347049428}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &7656740688557692711
 GameObject:
   m_ObjectHideFlags: 0

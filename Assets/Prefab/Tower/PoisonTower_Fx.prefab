@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3832536798139642928}
   - component: {fileID: 8411309729273021137}
   - component: {fileID: 269795649541123606}
+  - component: {fileID: 3783141599253432389}
   m_Layer: 0
   m_Name: PoisonTower_Fx
   m_TagString: Untagged
@@ -136,3 +137,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 3832536798139642928}
+--- !u!210 &3783141599253432389
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3832536798139642931}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3

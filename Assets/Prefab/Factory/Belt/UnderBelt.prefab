@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7931006461449339347}
   - component: {fileID: 4313036500327750273}
+  - component: {fileID: -6454587437084407809}
   m_Layer: 0
   m_Name: UnderBelt
   m_TagString: Factory
@@ -49,10 +50,22 @@ MonoBehaviour:
   getBelt: {fileID: 6368630732634495136}
   sendBelt: {fileID: 712072425183305714}
   isPreBuilding: 0
-  belt: {fileID: 0}
+  underBelt: {fileID: 0}
   isSendBelt: 1
   beltScipt: {fileID: 0}
   dirNum: 0
+  buildEnd: 0
+--- !u!210 &-6454587437084407809
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5450028805572291566}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1001 &63708887233787281
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -124,6 +137,10 @@ PrefabInstance:
       propertyPath: maxAmount
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8006417560495388800, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
 --- !u!4 &712072425183305679 stripped
@@ -143,6 +160,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7931006461449339347}
     m_Modifications:
+    - target: {fileID: 4111370274523885645, guid: 3028c2927e9496945b4209cab7935378, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5450028805572291566, guid: 3028c2927e9496945b4209cab7935378, type: 3}
       propertyPath: m_Name
       value: GetUnderBelt

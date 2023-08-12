@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 649535378188675672}
   - component: {fileID: 649535378188675679}
   - component: {fileID: 649535378188675680}
+  - component: {fileID: 8006417560495388800}
   m_Layer: 8
   m_Name: SendUnderBelt
   m_TagString: Factory
@@ -224,10 +225,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fluidIsFull: 0
   dirNum: 0
   dirCount: 0
   level: 0
+  buildName: 
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 8574984838784083980}
@@ -238,6 +239,8 @@ MonoBehaviour:
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
   canBuilding: 1
+  nearObj: []
+  checkObj: 1
   solidFactoryData: {fileID: 11400000, guid: c181e3d39e2c4e448bfdfe0b1e4231b0, type: 2}
   itemObjList: []
   itemList: []
@@ -248,6 +251,17 @@ MonoBehaviour:
   - {fileID: -1788641530, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   inObj: []
   outObj: {fileID: 0}
+--- !u!210 &8006417560495388800
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649535378188675683}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &2281727570577981253
 GameObject:
   m_ObjectHideFlags: 0
@@ -461,7 +475,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &8971357876690225514
 MonoBehaviour:

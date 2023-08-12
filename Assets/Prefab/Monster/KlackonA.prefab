@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 7038860482242949868}
   - component: {fileID: 5794467203413403170}
   - component: {fileID: 5910734465314056952}
+  - component: {fileID: -7971249789050543182}
   m_Layer: 7
   m_Name: KlackonA
   m_TagString: Monster
@@ -275,6 +276,17 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
+--- !u!210 &-7971249789050543182
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4548960195778844340}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &5894639996944755368
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,7 +347,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &2928954196851737198
 MonoBehaviour:
