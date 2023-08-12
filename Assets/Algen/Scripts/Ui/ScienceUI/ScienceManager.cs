@@ -31,10 +31,10 @@ public class ScienceManager : MonoBehaviour
 
     TempScienceDb scienceDb;
 
-    void Awake()
-    {
-        UISetting();
-    }
+    //void Awake()
+    //{
+    //    UISetting();
+    //}
 
     void Start()
     {
