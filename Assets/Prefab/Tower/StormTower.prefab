@@ -243,6 +243,7 @@ GameObject:
   - component: {fileID: 4304459724202878726}
   - component: {fileID: -5745141633721722988}
   - component: {fileID: 4479695996821480989}
+  - component: {fileID: 8092711835912466673}
   m_Layer: 8
   m_Name: StormTower
   m_TagString: Tower
@@ -402,6 +403,7 @@ MonoBehaviour:
   isPreBuilding: 0
   isSetBuildingOk: 0
   monsterList: []
+  canBuilding: 1
   attackFX: {fileID: 3832536798139642931, guid: dbd38acb8484d144c8515c998e13240d, type: 3}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
 --- !u!114 &4479695996821480989
@@ -420,6 +422,17 @@ MonoBehaviour:
   uniqueID: 7048850569086664272
   updateError: 1
   checkTime: 0.2
+--- !u!210 &8092711835912466673
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304459724202878722}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &8492843390990340007
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,7 +494,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &2448747054358501011
 MonoBehaviour:

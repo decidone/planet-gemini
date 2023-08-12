@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2000658444983299208}
   - component: {fileID: 2000658444983299215}
   - component: {fileID: 4566261785829022729}
+  - component: {fileID: 6382187505503053573}
   m_Layer: 0
   m_Name: Pipe
   m_TagString: Factory
@@ -189,6 +190,17 @@ MonoBehaviour:
   - {fileID: -1162067384, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}
   - {fileID: -1641305824, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}
   - {fileID: 265864695, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}
+--- !u!210 &6382187505503053573
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000658444983299251}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &2018329097081818886
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +338,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &2795782033876824883
 MonoBehaviour:

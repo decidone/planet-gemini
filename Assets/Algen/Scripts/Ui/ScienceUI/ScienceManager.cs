@@ -17,7 +17,12 @@ public class ScienceManager : MonoBehaviour
     [SerializeField]
     GameObject[] infoWindow;
 
-    public ScienceBtn[] scienceBtns;
+    public GameObject coreLvUI = null;
+    public ScienceBtn[] scienceBtns = null;
+
+    ScienceCoreLvCtrl[] buildContent = new ScienceCoreLvCtrl[5];
+    ScienceCoreLvCtrl[] battleContent = new ScienceCoreLvCtrl[5];
+
     public GameObject scienceTreeUI;
 
     ScienceInfoData scienceInfoData;
@@ -82,6 +87,22 @@ public class ScienceManager : MonoBehaviour
         }
     }
 
+    void UISetting()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            GameObject buildUI = Instantiate(coreLvUI);
+            buildUI.transform.SetParent(contents[0].transform, false);
+            buildContent[i] = buildUI.GetComponent<ScienceCoreLvCtrl>();
+            buildContent[i].UISetting(i);
+
+            GameObject battleUI = Instantiate(coreLvUI);
+            battleUI.transform.SetParent(contents[1].transform, false);
+            battleContent[i] = battleUI.GetComponent<ScienceCoreLvCtrl>();
+            battleContent[i].UISetting(i);
+        }
+    }
+
     void SciDbGet(int index)
     {
         ScienceBtn[] btns = contents[index].GetComponentsInChildren<ScienceBtn>();
@@ -129,7 +150,7 @@ public class ScienceManager : MonoBehaviour
         {
             scienceInfoData = new ScienceInfoData();
             scienceInfoData = ScienceInfoGet.instance.GetBuildingName(focusedSciBtn.sciName, focusedSciBtn.level);
-            
+
             if (focusedSciBtn.isCore)
             {
                 infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore);

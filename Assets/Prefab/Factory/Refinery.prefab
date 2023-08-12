@@ -61,7 +61,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &7605991370529733031
 MonoBehaviour:
@@ -195,6 +195,7 @@ GameObject:
   - component: {fileID: 6974587320990756614}
   - component: {fileID: 5578666564477954337}
   - component: {fileID: 8224777291930825977}
+  - component: {fileID: -4585892132436383644}
   m_Layer: 8
   m_Name: Refinery
   m_TagString: Factory
@@ -405,6 +406,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!210 &-4585892132436383644
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359874169441961886}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &5250668218170398480
 GameObject:
   m_ObjectHideFlags: 0

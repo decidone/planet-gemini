@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -2941292111203208783}
   - component: {fileID: 339431878275595622}
   - component: {fileID: 5917450652055428785}
+  - component: {fileID: -4361037318255718909}
   m_Layer: 8
   m_Name: Gold_02
   m_TagString: Untagged
@@ -133,3 +134,14 @@ MonoBehaviour:
   uniqueID: 3223482784389181768
   updateError: 1
   checkTime: 0.2
+--- !u!210 &-4361037318255718909
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6531262685787266718}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3

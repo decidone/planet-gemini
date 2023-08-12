@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -9124879248276961019}
   - component: {fileID: 1724769857655924793}
   - component: {fileID: 4895866325520528144}
+  - component: {fileID: -1958185445846789633}
   m_Layer: 8
   m_Name: ChemicalPlant
   m_TagString: Factory
@@ -174,6 +175,8 @@ MonoBehaviour:
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
   canBuilding: 1
+  nearObj: []
+  checkObj: 1
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -181,6 +184,7 @@ MonoBehaviour:
   cooldown: 3
   productionData: {fileID: 11400000, guid: a0a35518477e3874694bc112f9ab1a69, type: 2}
   box2D: {fileID: 0}
+  outObj: []
 --- !u!114 &1724769857655924793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,6 +222,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!210 &-1958185445846789633
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375400609723545137}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &500232594085181976
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,7 +446,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &309691849005239390
 MonoBehaviour:

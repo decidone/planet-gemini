@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using System;
 
 public class GetUnderBeltCtrl : SolidFactoryCtrl
@@ -200,7 +201,8 @@ public class GetUnderBeltCtrl : SolidFactoryCtrl
                 {
                     SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
                     sprite.sprite = itemList[0].icon;
-                    spawnItem.item = itemList[0];
+                    spawnItem.item = itemList[0]; 
+                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
                     spawnItem.amount = 1;
                     spawnItem.transform.position = transform.position;
                     spawnItem.isOnBelt = true;

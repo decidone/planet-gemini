@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class ScienceInfoGet : MonoBehaviour
 {
-    Dictionary<string, Dictionary<int, ScienceInfoData>> scienceInfoDataDic;
+    Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>> scienceInfoDataDic;
+    ScienceInfoData scienceInfoData;
 
     #region Singleton
     public static ScienceInfoGet instance;
@@ -19,28 +20,63 @@ public class ScienceInfoGet : MonoBehaviour
         }
 
         instance = this;
-        scienceInfoDataDic = new Dictionary<string, Dictionary<int, ScienceInfoData>>();
+        scienceInfoDataDic = new Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>>();
     }
     #endregion
 
     void Start()
     {
         string json = Resources.Load<TextAsset>("ScienceInfo").ToString();
-        scienceInfoDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, ScienceInfoData>>>(json);
+        scienceInfoDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>>>(json);
     }
 
-    public ScienceInfoData GetBuildingName(string str, int level)
+    public ScienceInfoData GetBuildingName(string buildingName, int level)
     {
-        if (scienceInfoDataDic.ContainsKey(str))
+        foreach (var sciData in scienceInfoDataDic)
         {
-            Dictionary<int, ScienceInfoData> innerDictionary = scienceInfoDataDic[str];
-            if (innerDictionary.ContainsKey(level))
+            if(sciData.Key == buildingName)
             {
-                return innerDictionary[level];
+                var categoryDictionary = sciData.Value;
+                foreach (Dictionary<int, ScienceInfoData> Value in categoryDictionary.Values)
+                {
+                    Dictionary<int, ScienceInfoData> innerDictionary = Value;
+                    if (innerDictionary.ContainsKey(level))
+                    {
+                        return innerDictionary[level];
+                    }
+                }
             }
         }
 
         // 찾을 수 없는 경우 또는 예외 처리를 원하는 경우에 대한 기본값 반환
         return null;
+    }
+
+    public List<string> GetSciLevel(string category, int level)
+    {
+        List<string> sciName = new List<string>();
+
+        foreach (var sciData in scienceInfoDataDic)
+        {
+            var categoryDictionary = sciData.Value;
+            if (categoryDictionary.ContainsKey(category))
+            {
+                foreach (Dictionary<int, ScienceInfoData> Value in categoryDictionary.Values)
+                {
+                    Dictionary<int, ScienceInfoData> innerDictionary = Value;
+                    if (innerDictionary.ContainsKey(level))
+                    {
+                        sciName.Add(sciData.Key);
+                    }
+                }
+            }
+        }
+
+        if(sciName.Count > 0)
+        {
+            return sciName;
+        }
+        else
+            return null;
     }
 }

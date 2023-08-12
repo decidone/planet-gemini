@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 6822189885475181107}
   - component: {fileID: -8952409389878889617}
   - component: {fileID: -2575623707125964746}
+  - component: {fileID: 1421145015509313804}
   m_Layer: 6
   m_Name: SentryCopter
   m_TagString: Unit
@@ -297,6 +298,17 @@ MonoBehaviour:
   bezierTangentLength: 0.4
   offset: 0.2
   factor: 0.1
+--- !u!210 &1421145015509313804
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885955664131610326}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &3421677391031086563
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,7 +369,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &1587020019211528023
 MonoBehaviour:

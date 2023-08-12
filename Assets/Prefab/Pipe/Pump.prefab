@@ -61,7 +61,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &8131965230812121209
 MonoBehaviour:
@@ -192,6 +192,7 @@ GameObject:
   - component: {fileID: 4243873348260944142}
   - component: {fileID: 4243873348260944137}
   - component: {fileID: 2112680866680229825}
+  - component: {fileID: 6373355095094737204}
   m_Layer: 0
   m_Name: Pump
   m_TagString: Factory
@@ -327,10 +328,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fluidIsFull: 0
   dirNum: 0
   dirCount: 0
   level: 0
+  buildName: 
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 1318512822529483086}
@@ -341,12 +342,33 @@ MonoBehaviour:
   itemPref: {fileID: 0}
   outSameList: []
   canBuilding: 1
+  nearObj: []
+  checkObj: 1
+  ui: {fileID: 0}
+  sInvenManager: {fileID: 0}
+  rManager: {fileID: 0}
+  maxAmount: 0
+  cooldown: 0
+  productionData: {fileID: 0}
+  box2D: {fileID: 0}
+  outObj: []
   fluidFactoryData: {fileID: 11400000, guid: da97283f50a6cae4ab65774e6b14c1ea, type: 2}
   fluidName: 
   saveFluidNum: 0
   sendDelayTimer: 0
   factoryList: []
   PumpIng: 1
+--- !u!210 &6373355095094737204
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4243873348260944181}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &4626445189485384686
 GameObject:
   m_ObjectHideFlags: 0

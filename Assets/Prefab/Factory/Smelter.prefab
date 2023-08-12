@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 1934325794086783238}
   - component: {fileID: 1934325794086783239}
   - component: {fileID: 1934325794086783232}
+  - component: {fileID: 2149320666929894349}
   m_Layer: 8
   m_Name: Smelter
   m_TagString: Factory
@@ -235,10 +236,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFull: 0
-  fluidIsFull: 0
   dirNum: 0
   dirCount: 0
   level: 0
+  buildName: 
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 1934325794344875421}
@@ -249,6 +250,8 @@ MonoBehaviour:
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
   canBuilding: 1
+  nearObj: []
+  checkObj: 1
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -256,6 +259,7 @@ MonoBehaviour:
   cooldown: 3
   productionData: {fileID: 11400000, guid: 61f67de1a88c10e45b4b7b30239afd5b, type: 2}
   box2D: {fileID: 0}
+  outObj: []
 --- !u!114 &1934325794086783232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,9 +273,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 4206197761581002381
+  uniqueID: 6529377677558148998
   updateError: 1
   checkTime: 0.2
+--- !u!210 &2149320666929894349
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934325794086783233}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &1934325794344875421
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +348,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &1934325794344875490
 MonoBehaviour:

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2369682121264992857}
   - component: {fileID: 2369682121264992854}
   - component: {fileID: 7093100876002410941}
+  - component: {fileID: 1307886023896449956}
   m_Layer: 0
   m_Name: Desire
   m_TagString: Player
@@ -190,6 +191,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpBar: {fileID: 3148945542982582302}
+--- !u!210 &1307886023896449956
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2369682121264992856}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
 --- !u!1 &4083177463247228394
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,7 +262,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &6183199968309202555
 MonoBehaviour:

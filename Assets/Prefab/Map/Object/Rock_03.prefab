@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1602056227298555377}
   - component: {fileID: 4844484106299182776}
   - component: {fileID: 6624006906808698131}
+  - component: {fileID: -7687190501942731785}
   m_Layer: 8
   m_Name: Rock_03
   m_TagString: Untagged
@@ -118,3 +119,14 @@ MonoBehaviour:
   uniqueID: 4594312214476578277
   updateError: 1
   checkTime: 0.2
+--- !u!210 &-7687190501942731785
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5008128230040348792}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
