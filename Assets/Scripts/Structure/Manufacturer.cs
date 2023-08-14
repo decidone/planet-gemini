@@ -195,6 +195,7 @@ public class Manufacturer : Production
             }
         }
     }
+
     protected override void AddInvenItem()
     {
         var slot = inventory.SlotCheck(0);
