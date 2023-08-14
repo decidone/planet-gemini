@@ -94,14 +94,13 @@ public class SplitterFilterManager : MonoBehaviour
 
     public void SetItem(Item _item, int slotIndex)
     {
-        if (_item.name == "emptFilter")
+        if (_item.name == "emptyFilter")
         {
             splitter.SlotReset(slotIndex);
             fillterOnOffBtns[slotIndex].ButtonSetModle(false);
             reverseToggle[slotIndex].isOn = false;
             slots[slotIndex].ClearSlot();
         }
-
         else
         {
             if (slots[slotIndex].item == null)
@@ -168,5 +167,14 @@ public class SplitterFilterManager : MonoBehaviour
         }
         else
             return;
+    }
+
+    public void UiReset()
+    {
+        if (splitter != null)
+        {
+            GetFillterInfo();
+        }
+        gameManager.onUIChangedCallback?.Invoke(spliterFilterUI);
     }
 }

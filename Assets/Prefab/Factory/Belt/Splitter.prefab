@@ -419,12 +419,8 @@ MonoBehaviour:
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
   canBuilding: 1
-  nearObj:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  checkObj: 1
+  inObj: []
+  outObj: []
   solidFactoryData: {fileID: 11400000, guid: a0c1ce887778bc141997a82195866e51, type: 2}
   itemObjList: []
   itemList: []
@@ -433,27 +429,6 @@ MonoBehaviour:
   - {fileID: 1484085052, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1234653658, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  inObj: {fileID: 0}
-  outObj: []
-  arrFilter:
-  - outObj: {fileID: 0}
-    isFilterOn: 0
-    isFullFilterOn: 0
-    isItemFilterOn: 0
-    isReverseFilterOn: 0
-    selItem: {fileID: 0}
-  - outObj: {fileID: 0}
-    isFilterOn: 0
-    isFullFilterOn: 0
-    isItemFilterOn: 0
-    isReverseFilterOn: 0
-    selItem: {fileID: 0}
-  - outObj: {fileID: 0}
-    isFilterOn: 0
-    isFullFilterOn: 0
-    isItemFilterOn: 0
-    isReverseFilterOn: 0
-    selItem: {fileID: 0}
 --- !u!114 &-7841223284810881725
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -239,8 +239,8 @@ MonoBehaviour:
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   outSameList: []
   canBuilding: 1
-  nearObj: []
-  checkObj: 1
+  inObj: []
+  outObj: []
   solidFactoryData: {fileID: 11400000, guid: c181e3d39e2c4e448bfdfe0b1e4231b0, type: 2}
   itemObjList: []
   itemList: []
@@ -249,8 +249,6 @@ MonoBehaviour:
   - {fileID: -627380388, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: 878528353, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: -1788641530, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  inObj: []
-  outObj: {fileID: 0}
 --- !u!210 &8006417560495388800
 SortingGroup:
   m_ObjectHideFlags: 0

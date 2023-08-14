@@ -33,14 +33,6 @@ public abstract class Production : Structure
     protected ProductionData productionData;
     protected ProductionData ProductionData { set { productionData = value; } }
 
-    protected List<GameObject> inObj = new List<GameObject>();
-    protected List<GameObject> outObj = new List<GameObject>();
-
-    protected int getObjNum = 0;
-    protected int sendObjNum = 0;
-
-    protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
-
     public virtual void OpenUI() { }
     public virtual void CloseUI() { }
     public virtual void SetRecipe(Recipe _recipe) { }
@@ -105,44 +97,7 @@ public abstract class Production : Structure
         }
     }
 
-    protected override void CheckPos()
-    {
-        Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
-
-        for (int i = 0; i < 4; i++)
-        {
-            checkPos[i] = dirs[i];
-        }
-    }
-
-    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
-    {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
-                hitCollider.GetComponent<Structure>() != GetComponent<Structure>())
-            {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
-            }
-        }
-    }
-
-    protected IEnumerator SetInObjCoroutine(GameObject obj)
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        if (obj.GetComponent<Structure>() != null)
-        {
-            inObj.Add(obj);
-        }
-    }
-
-    protected IEnumerator SetOutObjCoroutine(GameObject obj)
+    protected override IEnumerator SetOutObjCoroutine(GameObject obj)
     {
         yield return new WaitForSeconds(0.1f);
 
@@ -167,7 +122,7 @@ public abstract class Production : Structure
         }
     }
 
-    protected IEnumerator OutCheck(GameObject otherObj)
+    protected override IEnumerator OutCheck(GameObject otherObj)
     {
         yield return new WaitForSeconds(0.1f);
 
@@ -175,23 +130,14 @@ public abstract class Production : Structure
         {
             if (otherObj.GetComponent<Production>())
                 yield break;
-            foreach (GameObject otherList in otherFacCtrl.outSameList)
-            {
-                if (otherList == this.gameObject)
-                {
-                    for (int a = outObj.Count - 1; a >= 0; a--)
-                    {
-                        if (otherObj == outObj[a])
-                        {
-                            StartCoroutine(SetInObjCoroutine(otherObj));
-                            outObj.RemoveAt(a);
 
-                            Invoke("RemoveSameOutList", 0.1f);
-                            StopCoroutine("SetFacDelay");
-                            break;
-                        }
-                    }
-                }
+            if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
+            {
+                StartCoroutine(SetInObjCoroutine(otherObj));
+                outObj.Remove(otherObj);
+                outSameList.Remove(otherObj);
+                Invoke("RemoveSameOutList", 0.1f);
+                StopCoroutine("SetFacDelay");
             }
         }
     }
@@ -200,13 +146,13 @@ public abstract class Production : Structure
 
     public virtual (Item, int) QuickPullOut() { return (new Item(), new int()); }
 
-    protected void GetItem()
+    protected override void GetItem()
     {
         itemGetDelay = true;
 
         if (!GetComponentInChildren<Miner>())
         {
-            if (inObj[getObjNum].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
+            if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
             {
                 if (CanTakeItem(belt.itemObjList[0].item))
                 {
@@ -217,18 +163,18 @@ public abstract class Production : Structure
                     belt.beltGroupMgr.groupItem.RemoveAt(0);
                     belt.ItemNumCheck();
 
-                    getObjNum++;
-                    if (getObjNum >= inObj.Count)
-                        getObjNum = 0;
+                    getItemIndex++;
+                    if (getItemIndex >= inObj.Count)
+                        getItemIndex = 0;
 
                     Invoke("DelayGetItem", productionData.SendDelay);
                     itemGetDelay = false;
                 }
                 else
                 {
-                    getObjNum++;
-                    if (getObjNum >= inObj.Count)
-                        getObjNum = 0;
+                    getItemIndex++;
+                    if (getItemIndex >= inObj.Count)
+                        getItemIndex = 0;
 
                     itemGetDelay = false;
                     return;
@@ -236,81 +182,13 @@ public abstract class Production : Structure
             }
             else
             {
-                getObjNum++;
-                if (getObjNum >= inObj.Count)
-                    getObjNum = 0;
+                getItemIndex++;
+                if (getItemIndex >= inObj.Count)
+                    getItemIndex = 0;
 
                 itemGetDelay = false;
                 return;
             }
-        }
-    }
-
-    protected virtual void SubFromInventory() { }
-
-    protected void SetItem()
-    {
-        if (setFacDelayCoroutine != null)
-        {
-            return;
-        }
-
-        itemSetDelay = true;
-
-        Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
-
-        if (!outFactory.isFull)
-        {
-            if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
-            {
-                ItemProps spawnItem = itemPool.Get();
-                if (outFactory.OnBeltItem(spawnItem))
-                {
-                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                    sprite.sprite = output.icon;
-                    spawnItem.item = output;
-                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
-                    spawnItem.amount = 1;
-                    spawnItem.transform.position = transform.position;
-                    spawnItem.isOnBelt = true;
-                    spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
-                    SubFromInventory();
-                }
-                else
-                {
-                    OnDestroyItem(spawnItem);
-                    itemSetDelay = false;
-                    return;
-                }
-            }
-            else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>())
-            {
-                StartCoroutine("SetFacDelay", outObj[sendObjNum]);
-            }
-            else if (outObj[sendObjNum].TryGetComponent(out Production production))
-            {
-                if (production.CanTakeItem(output))
-                {
-                    StartCoroutine("SetFacDelay", outObj[sendObjNum]);
-                }
-            }
-
-            sendObjNum++;
-            if (sendObjNum >= outObj.Count)
-            {
-                sendObjNum = 0;
-            }
-            Invoke("DelaySetItem", productionData.SendDelay);
-        }
-        else
-        {
-            sendObjNum++;
-            if (sendObjNum >= outObj.Count)
-            {
-                sendObjNum = 0;
-            }
-
-            itemSetDelay = false;
         }
     }
 
@@ -356,6 +234,7 @@ public abstract class Production : Structure
                     sprite.color = new Color(1f, 1f, 1f, 1f);
                     coll.enabled = true;
                     itemPool.Release(spawnItem);
+                    spawnItem = null;
                 }
 
                 SubFromInventory();
@@ -506,7 +385,7 @@ public abstract class Production : Structure
             if (inObj[i] == game)
                 inObj.Remove(game);
         }
-        sendObjNum = 0;
+        sendItemIndex = 0;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

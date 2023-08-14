@@ -48,14 +48,6 @@ public class PumpCtrl : FluidFactoryCtrl
         }
     }
 
-    protected override void CheckPos()
-    {
-        checkPos[0] = transform.up;
-        checkPos[1] = transform.right;
-        checkPos[2] = -transform.up;
-        checkPos[3] = -transform.right;
-    }
-
     bool ObjCheck(Vector3 vec)
     {
         RaycastHit2D[] Hits = Physics2D.RaycastAll(this.gameObject.transform.position, vec, 1f);

@@ -8,11 +8,6 @@ public class ItemSpawner : SolidFactoryCtrl
 {
     public Item itemData;
 
-    List<GameObject> outObj = new List<GameObject>();
-
-    int sendObjNum = 0;
-    protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
-
     void Start()
     {
         dirCount = 4;
@@ -24,12 +19,12 @@ public class ItemSpawner : SolidFactoryCtrl
         base.Update();
         if (!removeState)
         {
-            if (!isPreBuilding)
+            if (!isPreBuilding && checkObj)
             {
-                if (outObj.Count > 0 && !itemSetDelay && checkObj)
+                if (outObj.Count > 0 && !itemSetDelay)
                 {
                     if (itemData.name != "emptyFilter")
-                        SendItem();
+                        SendItem(itemData);
                 }
 
                 for (int i = 0; i < nearObj.Length; i++)
@@ -48,145 +43,6 @@ public class ItemSpawner : SolidFactoryCtrl
                 }
             }
         } 
-    }
-
-    protected override void CheckPos()
-    {
-        Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
-
-        for (int i = 0; i < 4; i++)
-        {
-            checkPos[i] = dirs[(dirNum + i) % 4];
-        }
-    }
-
-    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
-    {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
-                hitCollider.GetComponent<ItemSpawner>() != GetComponent<ItemSpawner>())
-            {
-                if(hitCollider.GetComponent<ItemSpawner>() == null)
-                {
-                    nearObj[index] = hits[i].collider.gameObject;
-                    callback(hitCollider.gameObject);
-                    break;
-                }
-            }
-        }
-    }
-
-    IEnumerator SetOutObjCoroutine(GameObject obj)
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        if (obj.GetComponent<Structure>() != null)
-        {
-            if (obj.TryGetComponent(out BeltCtrl belt))
-            {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                    yield break;
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
-            }
-            else if (obj.GetComponent<SolidFactoryCtrl>())
-            {
-                outSameList.Add(obj);
-                StartCoroutine(OutCheck(obj));
-            }
-            outObj.Add(obj);
-        }
-    }
-
-    IEnumerator OutCheck(GameObject otherObj)
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        Structure otherFacCtrl = otherObj.GetComponent<Structure>();
-
-        foreach (GameObject otherList in otherFacCtrl.outSameList)
-        {
-            if (otherList == this.gameObject)
-            {
-                for (int a = outObj.Count - 1; a >= 0; a--)
-                {
-                    if (otherObj == outObj[a])
-                    {
-                        outObj.RemoveAt(a);
-                        Invoke("RemoveSameOutList", 0.1f);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    protected override void SendItem()
-    {
-        if (setFacDelayCoroutine != null)
-        {
-            return;
-        }
-        itemSetDelay = true;
-
-        Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
-
-        if (!outFactory.isFull && outFactory.GetComponent<ItemSpawner>() == null)
-        {
-            if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
-            {
-                ItemProps spawnItem = itemPool.Get();
-                if (outFactory.OnBeltItem(spawnItem))
-                {
-                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                    sprite.sprite = itemData.icon;
-                    spawnItem.item = itemData;
-                    spawnItem.amount = 1;
-                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
-                    spawnItem.transform.position = transform.position;
-                    spawnItem.isOnBelt = true;
-                    spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
-                }
-                else
-                {
-                    OnDestroyItem(spawnItem);
-                    itemSetDelay = false;
-                    return;
-                }
-            }
-            else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>())
-            {
-                StartCoroutine("SetFacDelay", outObj[sendObjNum]);
-            }
-            else if (outObj[sendObjNum].TryGetComponent(out Production production))
-            {
-                if (production.CanTakeItem(itemData))
-                {
-                    StartCoroutine("SetFacDelay", outObj[sendObjNum]);
-                }
-            }
-
-            sendObjNum++;
-            if (sendObjNum >= outObj.Count)
-            {
-                sendObjNum = 0;
-            }
-            Invoke("DelaySetItem", solidFactoryData.SendDelay);
-        }
-        else
-        {
-            sendObjNum++;
-            if (sendObjNum >= outObj.Count)
-            {
-                sendObjNum = 0;
-            }
-
-            itemSetDelay = false;
-        }
     }
 
     IEnumerator SetFacDelay(GameObject outFac)
@@ -229,6 +85,7 @@ public class ItemSpawner : SolidFactoryCtrl
                 sprite.color = new Color(1f, 1f, 1f, 1f);
                 coll.enabled = true;
                 itemPool.Release(spawnItem);
+                spawnItem = null;
             }
         }
 
@@ -239,17 +96,7 @@ public class ItemSpawner : SolidFactoryCtrl
             setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }
-    }
-
-    public override void ResetCheckObj(GameObject game)
-    {
-        base.ResetCheckObj(game);
-
-        for (int i = 0; i < outObj.Count; i++)
-        {
-            if (outObj[i] == game)
-                outObj.Remove(game);
-        }
-        sendObjNum = 0;
+        else
+            setFacDelayCoroutine = null;
     }
 }

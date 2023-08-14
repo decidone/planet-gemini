@@ -6,21 +6,11 @@ using System;
 
 public class SplitterCtrl : SolidFactoryCtrl
 {
-    [SerializeField]
-    Sprite[] modelNum;
-    SpriteRenderer setModel;
-    private int prevDirNum = -1; // 이전 방향 값을 저장할 변수
-
-    GameObject inObj = null;
-    List<GameObject> outObj = new List<GameObject>();
-
-    int sendObjNum = 0;
-
-    protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
-
     bool filterOn = false;
     int filterindex = 0;
+    SolidFacClickEvent clickEvent;
 
+    [Serializable]
     public struct Filter
     {
         public GameObject outObj;
@@ -37,6 +27,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         CheckPos();
+        clickEvent = GetComponent<SolidFacClickEvent>();
     }
 
     protected override void Update()
@@ -46,9 +37,9 @@ public class SplitterCtrl : SolidFactoryCtrl
         if (!removeState)
         {
             SetDirNum();
-            if (!isPreBuilding)
+            if (!isPreBuilding && checkObj)
             { 
-                if (inObj != null && !isFull && !itemGetDelay && checkObj)
+                if (inObj.Count > 0 && !isFull && !itemGetDelay)
                     GetItem();
         
                 for (int i = 0; i < nearObj.Length; i++)
@@ -56,17 +47,17 @@ public class SplitterCtrl : SolidFactoryCtrl
                     if (nearObj[i] == null)
                     {
                         if (i == 0)
-                            CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetInObjCoroutine(obj)));
+                            CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
                         else if (i == 1)
-                            CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
+                            CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj, 2)));
                         else if (i == 2)
-                            CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
+                            CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
                         else if (i == 3)
-                            CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 2)));
+                            CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
                     }
                 }
 
-                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
                     if (filterOn)
                     {
@@ -74,7 +65,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                     }
                     else
                     {
-                        SendItem();
+                        SendItem(itemList[0]);
                     }
                 }
             }
@@ -129,6 +120,10 @@ public class SplitterCtrl : SolidFactoryCtrl
         arrFilter[num].isItemFilterOn = false;
         arrFilter[num].isReverseFilterOn = false;
         arrFilter[num].selItem = null;
+        if (clickEvent.sFilterManager != null)
+        {
+            clickEvent.sFilterManager.UiReset();
+        }
     }
 
     void FilterIndexCheck()
@@ -152,6 +147,13 @@ public class SplitterCtrl : SolidFactoryCtrl
         Structure outFactory = null;
 
         Filter filter = arrFilter[index];
+
+        if (filter.outObj == null)
+        {
+            FilterIndexCheck();
+            itemSetDelay = false;
+            return;
+        }
 
         bool isReverseFilter = filter.isItemFilterOn && filter.isReverseFilterOn;
         Item selectedFilterItem = filter.selItem;
@@ -251,69 +253,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                 }
             }
         }
-        Debug.Log(isFacNotFull1 + " : " + isFacNotFull2);
         return !(isFacNotFull1 && isFacNotFull2);
-    }
-
-
-    protected override void SetDirNum()
-    {
-        if (dirNum < 4)
-        {
-            setModel.sprite = modelNum[dirNum];
-
-            // dirNum 값이 변경됐는지 체크하고, 변경됐으면 CheckPos() 실행
-            if (dirNum != prevDirNum)
-            {
-                CheckPos();
-                prevDirNum = dirNum;
-            }
-        }
-    }
-
-    protected override void CheckPos()
-    {
-        Vector2[] dirs = { Vector2.down, Vector2.left, Vector2.up, Vector2.right };
-
-        for (int i = 0; i < dirs.Length; i++)
-        {
-            checkPos[i] = dirs[(i + dirNum) % dirs.Length];
-        }
-    }
-
-    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
-    {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
-                hitCollider.GetComponent<SplitterCtrl>() != GetComponent<SplitterCtrl>())
-            {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
-            }
-        }
-    }
-
-    IEnumerator SetInObjCoroutine(GameObject obj)
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        if (obj.GetComponent<Structure>() != null)
-        {
-            inObj = obj;
-            if (inObj.TryGetComponent(out BeltCtrl belt) && belt.dirNum != dirNum)
-            {
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                {
-                    belt.dirNum = dirNum;
-                    belt.BeltModelSet();
-                }
-            }
-        }
     }
 
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)
@@ -329,7 +269,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                 if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
                     belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
-            else if (obj.GetComponent<SolidFactoryCtrl>())
+            else
             {
                 outSameList.Add(obj);
                 StartCoroutine(OutCheck(obj));
@@ -339,121 +279,28 @@ public class SplitterCtrl : SolidFactoryCtrl
         }
     }
 
-    IEnumerator OutCheck(GameObject otherObj)
+    protected override IEnumerator OutCheck(GameObject otherObj)
     {
         yield return new WaitForSeconds(0.1f);
 
-        Structure otherFacCtrl = otherObj.GetComponent<Structure>();
-        GameObject[] outObjArray = outObj.ToArray();
-
-        foreach (GameObject otherList in otherFacCtrl.outSameList)
+        if (otherObj.TryGetComponent(out Structure otherFacCtrl))
         {
-            if (otherList == this.gameObject)
+            if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
             {
-                for (int a = outObjArray.Length - 1; a >= 0; a--)
+                if (otherObj.GetComponent<Production>())
+                    yield break;
+
+                for (int i = 0; i < arrFilter.Length; i++)
                 {
-                    if (otherObj == outObjArray[a])
+                    if (arrFilter[i].outObj == otherObj)
                     {
-                        for (int b = 0; b < arrFilter.Length; b++)
-                        {
-                            if (arrFilter[b].outObj == outObjArray[a])
-                            {
-                                FilterReset(b);
-                            }
-                        }
-                        outObj.RemoveAt(a);
-                        Invoke("RemoveSameOutList", 0.1f);
-                        break;
+                        FilterReset(i);
                     }
                 }
+                outObj.Remove(otherObj);
+                Invoke("RemoveSameOutList", 0.1f);
+                StopCoroutine("SetFacDelay");
             }
-        }
-    }
-
-    protected override void GetItem()
-    {
-        itemGetDelay = true;
-        if (inObj.TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
-        {
-            if(belt.itemObjList.Count > 0)
-            {
-                OnFactoryItem(belt.itemObjList[0]);
-                belt.itemObjList[0].transform.position = transform.position;
-                belt.isItemStop = false;
-                belt.itemObjList.RemoveAt(0);
-                belt.beltGroupMgr.groupItem.RemoveAt(0);
-                belt.ItemNumCheck();
-            }
-            Invoke("DelayGetItem", solidFactoryData.SendDelay);
-        }
-        itemGetDelay = false;
-    }
-
-    protected override void SendItem()
-    {
-        if (setFacDelayCoroutine != null)
-        {
-            return;
-        }
-
-        itemSetDelay = true;
-
-        Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
-
-        if (!outFactory.isFull)        
-        //if (!outFactory.CheckOutItemNum())
-        {
-            if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
-            {
-                ItemProps spawnItem = itemPool.Get();
-                if (outFactory.OnBeltItem(spawnItem))
-                {
-                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                    sprite.sprite = itemList[0].icon;
-                    spawnItem.item = itemList[0];
-                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
-                    spawnItem.amount = 1;
-                    spawnItem.transform.position = transform.position;
-                    spawnItem.isOnBelt = true;
-                    spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
-                    itemList.RemoveAt(0);
-                    ItemNumCheck();
-                }
-                else
-                {
-                    OnDestroyItem(spawnItem);
-                    itemSetDelay = false;
-                    return;
-                }
-            }
-            else if (outObj[sendObjNum].GetComponent<SolidFactoryCtrl>())
-            {
-                setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObj[sendObjNum]);
-            }
-            else if (outObj[sendObjNum].TryGetComponent(out Production production))
-            {
-                if (production.CanTakeItem(itemList[0]))
-                {
-                    setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObj[sendObjNum]);
-                }
-            }
-
-            sendObjNum++;
-            if (sendObjNum >= outObj.Count)
-            {
-                sendObjNum = 0;
-            }
-            Invoke("DelaySetItem", solidFactoryData.SendDelay);
-        }
-        else
-        {
-            sendObjNum++;
-            if (sendObjNum >= outObj.Count)
-            {
-                sendObjNum = 0;
-            }
-
-            itemSetDelay = false;
         }
     }
 
@@ -501,6 +348,7 @@ public class SplitterCtrl : SolidFactoryCtrl
                     sprite.color = new Color(1f, 1f, 1f, 1f);
                     coll.enabled = true;
                     itemPool.Release(spawnItem);
+                    spawnItem = null;
                 }
 
                 itemList.RemoveAt(0);
@@ -515,20 +363,19 @@ public class SplitterCtrl : SolidFactoryCtrl
             setFacDelayCoroutine = null;
             itemPool.Release(spawnItem);
         }
+        else
+            setFacDelayCoroutine = null;
     }
 
     public override void ResetCheckObj(GameObject game)
     {
-        base.ResetCheckObj(game);
-
-        for (int i = 0; i  < outObj.Count; i++)
+        for (int i = 0; i < arrFilter.Length; i++)
         {
-            if (outObj[i] == game)
-                outObj.Remove(game);
+            if (arrFilter[i].outObj == game)
+            {
+                FilterReset(i);
+            }
         }
-        if (inObj == game)
-            inObj = null;
-
-        sendObjNum = 0;
+        base.ResetCheckObj(game);
     }
 }

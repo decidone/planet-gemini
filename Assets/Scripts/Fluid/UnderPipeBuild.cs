@@ -86,7 +86,6 @@ public class UnderPipeBuild : MonoBehaviour
         underPipeObj = underPipe;
         pipeScipt = underPipeObj.GetComponent<UnderPipeCtrl>();
         ColliderTriggerOnOff(true);
-        //DisableColliders();
         pipeScipt.isPreBuilding = true;
         pipeScipt.dirNum = dirNum;
     }
