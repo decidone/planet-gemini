@@ -41,7 +41,7 @@ public class GolemCtrl : MonsterAi
 
     protected override void AttackMove()
     {   
-        if (checkTarget == false)
+        if (!checkTarget)
         {
             if (getTargetTr != null)
             {

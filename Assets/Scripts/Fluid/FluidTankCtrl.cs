@@ -13,7 +13,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
 
     protected override void Start()
     {
-        base.nearObj = new GameObject[8];
+        nearObj = new GameObject[8];
         TransformCheck();
     }
 

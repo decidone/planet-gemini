@@ -27,7 +27,7 @@ public class TowerSingleAttackFx : MonoBehaviour
     {
         if (collision.CompareTag("Monster") && !isHit)
         {
-            if (collision.isTrigger == false)
+            if (!collision.isTrigger)
             {
                 collision.GetComponent<MonsterAi>().TakeDamage(damage);
                 isHit = true;

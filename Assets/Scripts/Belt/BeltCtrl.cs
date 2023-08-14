@@ -65,13 +65,13 @@ public class BeltCtrl : SolidFactoryCtrl
     {
         if (itemObjList.Count > 0)
             ItemMove();
-        else if(itemObjList.Count == 0 && isItemStop == true)
+        else if(itemObjList.Count == 0 && isItemStop)
             isItemStop = false;
     }
 
     void ModelSet()
     {
-        if (isTurn == false)
+        if (!isTurn)
         {
             if (beltState == BeltState.SoloBelt)
             {
@@ -90,13 +90,13 @@ public class BeltCtrl : SolidFactoryCtrl
                 modelNum = 2;
             }
         }
-        else if (isTurn == true)
+        else if (isTurn)
         {
-            if (isRightTurn == true)
+            if (isRightTurn)
             {
                 modelNum = 5;
             }
-            else if (isRightTurn == false)
+            else if (!isRightTurn)
             {
                 modelNum = 4;
             }
@@ -264,7 +264,7 @@ public class BeltCtrl : SolidFactoryCtrl
     {
         if (nextBelt != null && beltState != BeltState.EndBelt)
         {
-            if (nextBelt.isFull == false && itemObjList.Count > 0)
+            if (!nextBelt.isFull && itemObjList.Count > 0)
             {
                 Vector2 fstItemPos = itemObjList[0].transform.position;
                 if (fstItemPos == nextPos[0])

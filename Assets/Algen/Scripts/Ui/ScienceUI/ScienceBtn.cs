@@ -28,7 +28,7 @@ public class ScienceBtn : MonoBehaviour
     {
         if (InfoWindow.instance != null && sciName != "")
         { 
-            if (isLock == true && InfoWindow.instance.enabled)
+            if (isLock && InfoWindow.instance.enabled)
             {
                 if (InfoWindow.instance.totalAmountsEnough)
                 {

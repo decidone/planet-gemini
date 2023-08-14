@@ -125,7 +125,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
                 itemGetDelay = false;
             }
-            else if (belt.isItemStop == false)
+            else if (!belt.isItemStop)
             {
                 getObjNum++;
                 if (getObjNum >= inObj.Count)
@@ -157,7 +157,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         Structure outFactory = outObj.GetComponent<Structure>();
 
-        if (outFactory.isFull == false)
+        if (!outFactory.isFull)
         {
             setFacDelayCoroutine = StartCoroutine("SetFacDelay");
         }

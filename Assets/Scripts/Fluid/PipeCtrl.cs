@@ -32,13 +32,13 @@ public class PipeCtrl : FluidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                if (isUp == false)
+                if (!isUp)
                     isUp = ObjCheck(transform.up);
-                if (isRight == false)
+                if (!isRight)
                     isRight = ObjCheck(transform.right);
-                if (isDown == false)
+                if (!isDown)
                     isDown = ObjCheck(-transform.up);
-                if (isLeft == false)
+                if (!isLeft)
                     isLeft = ObjCheck(-transform.right);
             }
         }
@@ -74,51 +74,51 @@ public class PipeCtrl : FluidFactoryCtrl
 
     void ChangeModel()
     {
-        if ((isUp == true && isRight == false && isDown == false && isLeft == false)
-            || (isUp == false && isRight == false && isDown == true && isLeft == false)
-            || (isUp == true && isRight == false && isDown == true && isLeft == false)) 
+        if ((isUp && !isRight && !isDown && !isLeft)
+            || (!isUp && !isRight && isDown && !isLeft)
+            || (isUp && !isRight && isDown && !isLeft)) 
         {
             dirNum = 0;
         }
-        else if ((isUp == false && isRight == true && isDown == false && isLeft == false) 
-            || (isUp == false && isRight == false && isDown == false && isLeft == true)
-            || (isUp == false && isRight == true && isDown == false && isLeft == true))
+        else if ((!isUp && isRight && !isDown && !isLeft) 
+            || (!isUp && !isRight && !isDown && isLeft)
+            || (!isUp && isRight && !isDown && isLeft))
         {
             dirNum = 1;
         }
-        else if(isUp == true && isRight == true && isDown == false && isLeft == false)
+        else if(isUp && isRight && !isDown && !isLeft)
         {
             dirNum = 2;
         }
-        else if (isUp == true && isRight == false && isDown == false && isLeft == true)
+        else if (isUp && !isRight && !isDown && isLeft)
         {
             dirNum = 3;
         }
-        else if (isUp == false && isRight == false && isDown == true && isLeft == true)
+        else if (!isUp && !isRight && isDown && isLeft)
         {
             dirNum = 4;
         }
-        else if (isUp == false && isRight == true && isDown == true && isLeft == false)
+        else if (!isUp && isRight && isDown && !isLeft)
         {
             dirNum = 5;
         }
-        else if (isUp == true && isRight == true && isDown == true && isLeft == false)
+        else if (isUp && isRight && isDown && !isLeft)
         {
             dirNum = 6;
         }
-        else if (isUp == true && isRight == false && isDown == true && isLeft == true)
+        else if (isUp && !isRight && isDown && isLeft)
         {
             dirNum = 7;
         }
-        else if (isUp == false && isRight == true && isDown == true && isLeft == true)
+        else if (!isUp && isRight && isDown && isLeft)
         {
             dirNum = 8;
         }
-        else if (isUp == true && isRight == true && isDown == false && isLeft == true)
+        else if (isUp && isRight && !isDown && isLeft)
         {
             dirNum = 9;
         }
-        else if (isUp == true && isRight == true && isDown == true && isLeft == true)
+        else if (isUp && isRight && isDown && isLeft)
         {
             dirNum = 10;
         }

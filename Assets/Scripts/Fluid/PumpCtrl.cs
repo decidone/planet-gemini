@@ -15,7 +15,7 @@ public class PumpCtrl : FluidFactoryCtrl
 
     protected override void Start()
     {
-        base.nearObj = new GameObject[4];
+        nearObj = new GameObject[4];
         checkPos = new Vector2[4];
         CheckPos();
     }
@@ -28,13 +28,13 @@ public class PumpCtrl : FluidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                if (isUp == false)
+                if (!isUp)
                     isUp = ObjCheck(transform.up);
-                if (isRight == false)
+                if (!isRight)
                     isRight = ObjCheck(transform.right);
-                if (isDown == false)
+                if (!isDown)
                     isDown = ObjCheck(-transform.up);
-                if (isLeft == false)
+                if (!isLeft)
                     isLeft = ObjCheck(-transform.right);
 
                 sendDelayTimer += Time.deltaTime;
@@ -102,7 +102,7 @@ public class PumpCtrl : FluidFactoryCtrl
         {
             foreach (GameObject obj in factoryList)
             {
-                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)// && obj.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)// && !obj.GetComponent<FluidFactoryCtrl>().fluidIsFull)
                 {
                     if (fluidFactory.fluidFactoryData.FullFluidNum > fluidFactory.saveFluidNum)
                     {

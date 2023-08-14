@@ -296,7 +296,7 @@ public class MonsterAi : MonoBehaviour
             if (targetTags.Contains(targetTag))
             {
                 TowerAi towerAiComponent = target.GetComponent<TowerAi>();
-                if (towerAiComponent != null && !towerAiComponent.capsule2D.isTrigger == false)//isTrigger가 아니라 die일때로 바꿔야할듯
+                if (towerAiComponent != null && towerAiComponent.capsule2D.isTrigger)   //isTrigger가 아니라 die일때로 바꿔야할듯
                 {
                     continue;
                 }                
@@ -408,18 +408,18 @@ public class MonsterAi : MonoBehaviour
 
     public void ImgMrror()
     {
-        if (isFlip == true)
+        if (isFlip)
         {
             if (moveNextStep.x > 0)
             {
-                if (unitSprite.flipX == false)
+                if (!unitSprite.flipX)
                 {
                     unitSprite.flipX = true;
                 }
             }
             else if (moveNextStep.x < 0)
             {
-                if (unitSprite.flipX == true)
+                if (unitSprite.flipX)
                 {
                     unitSprite.flipX = false;
                 }
@@ -429,14 +429,14 @@ public class MonsterAi : MonoBehaviour
         {
             if (moveNextStep.x > 0)
             {
-                if (unitSprite.flipX == true)
+                if (unitSprite.flipX)
                 {
                     unitSprite.flipX = false;
                 }
             }
             else if (moveNextStep.x < 0)
             {
-                if (unitSprite.flipX == false)
+                if (!unitSprite.flipX)
                 {
                     unitSprite.flipX = true;
                 }

@@ -38,7 +38,7 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        base.nearObj = new GameObject[4];
+        nearObj = new GameObject[4];
 
         CheckPos();
         #endregion
@@ -79,13 +79,13 @@ public class Refinery : FluidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                if (isUp == false)
+                if (!isUp)
                     isUp = ObjCheck(transform.up);
-                if (isRight == false)
+                if (!isRight)
                     isRight = ObjCheck(transform.right);
-                if (isDown == false)
+                if (!isDown)
                     isDown = ObjCheck(-transform.up);
-                if (isLeft == false)
+                if (!isLeft)
                     isLeft = ObjCheck(-transform.right);
             }
         }
@@ -122,7 +122,7 @@ public class Refinery : FluidFactoryCtrl
                 }
             }
 
-            if (slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay)
+            if (slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 SetItem();
             }

@@ -26,13 +26,13 @@ public class ExtractorCtrl : FluidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                if (isUp == false)
+                if (!isUp)
                     isUp = ObjCheck(transform.up);
-                if (isRight == false)
+                if (!isRight)
                     isRight = ObjCheck(transform.right);
-                if (isDown == false)
+                if (!isDown)
                     isDown = ObjCheck(-transform.up);
-                if (isLeft == false)
+                if (!isLeft)
                     isLeft = ObjCheck(-transform.right);
 
                 sendDelayTimer += Time.deltaTime;

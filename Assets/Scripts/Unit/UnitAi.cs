@@ -265,18 +265,18 @@ public class UnitAi : MonoBehaviour
             animator.SetFloat("lastMoveY", verticalValue);
         }
 
-        if(isFlip == true)
+        if(isFlip)
         {
            if (direction.x > 0)
             {
-                if(unitSprite.flipX == false)
+                if(!unitSprite.flipX)
                 {
                     unitSprite.flipX = true;
                 }
             }
             else if (direction.x < 0)
             {
-                if (unitSprite.flipX == true)
+                if (unitSprite.flipX)
                 {
                     unitSprite.flipX = false;
                 }
@@ -286,14 +286,14 @@ public class UnitAi : MonoBehaviour
         {
             if (direction.x > 0)
             {
-                if (unitSprite.flipX == true)
+                if (unitSprite.flipX)
                 {
                     unitSprite.flipX = false;
                 }
             }
             else if (direction.x < 0)
             {
-                if (unitSprite.flipX == false)
+                if (!unitSprite.flipX)
                 {
                     unitSprite.flipX = true;
                 }
@@ -522,7 +522,7 @@ public class UnitAi : MonoBehaviour
 
     void AttackTargetCheck()
     {
-        if (isTargetSet == false)
+        if (!isTargetSet)
         {
             float closestDistance = float.MaxValue;
 
@@ -699,7 +699,7 @@ public class UnitAi : MonoBehaviour
             }
         }
 
-        if (unitSelect == true)
+        if (unitSelect)
         {
             unitGroupCtrl.DieUnitCheck(this.gameObject);
         }
@@ -717,7 +717,7 @@ public class UnitAi : MonoBehaviour
         {
            aggroTarget = null;
 
-            if (isLastStateOn == true)
+            if (isLastStateOn)
             {
                 unitAIState = unitLastState;
                 isLastStateOn = false;

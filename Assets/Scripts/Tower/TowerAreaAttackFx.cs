@@ -26,10 +26,10 @@ public class TowerAreaAttackFx : MonoBehaviour
     {
         if (collision.CompareTag("Monster"))
         {
-            if (collision.isTrigger == false)
+            if (!collision.isTrigger)
             {
                 collision.GetComponent<MonsterAi>().TakeDamage(damage);
-            }            
+            }
         }
     }
 }

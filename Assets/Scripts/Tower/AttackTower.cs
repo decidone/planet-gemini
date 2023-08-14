@@ -41,7 +41,7 @@ public class AttackTower : TowerAi
                     AttackTargetDisCheck();
                 }
             }
-            //else if(isRuin && isRepair == true)
+            //else if(isRuin && isRepair)
             //{
             //    RepairFunc(false);
             //}
@@ -83,7 +83,7 @@ public class AttackTower : TowerAi
 
     void AttackTargetCheck()
     {
-        if (isTargetSet == false)
+        if (!isTargetSet)
         {
             float closestDistance = float.MaxValue;
 

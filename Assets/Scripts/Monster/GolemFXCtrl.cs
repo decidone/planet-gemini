@@ -23,14 +23,14 @@ public class GolemFXCtrl : MonoBehaviour
         if (attackMotionNum == 0)
         {
             ImgMrror();
-            if (isAnimEnd == true)
+            if (isAnimEnd)
             {
                 Destroy(this.gameObject, 0.1f);
             }
         }
         else if (attackMotionNum == 1)
         {
-            if (isAnimEnd == true)
+            if (isAnimEnd)
             {
                 Destroy(this.gameObject, 0.1f);
             }
@@ -65,21 +65,21 @@ public class GolemFXCtrl : MonoBehaviour
     {
         if (collision.GetComponent<PlayerStatus>())
         {            
-            if (collision.isTrigger == false)
+            if (!collision.isTrigger)
             {
                 collision.GetComponent<PlayerStatus>().TakeDamage(damage);
             }
         }
         else if (collision.GetComponent<UnitAi>())
         {
-            if (collision.isTrigger == false)
+            if (!collision.isTrigger)
             {
                 collision.GetComponent<UnitAi>().TakeDamage(damage);
             }
         }
         else if (collision.GetComponent<TowerAi>())
         {
-            if (collision.isTrigger == false)
+            if (!collision.isTrigger)
             {
                 collision.GetComponent<TowerAi>().TakeDamage(damage);
             }

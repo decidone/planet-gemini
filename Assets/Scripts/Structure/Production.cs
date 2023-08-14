@@ -259,7 +259,7 @@ public abstract class Production : Structure
 
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
 
-        if (outFactory.isFull == false)
+        if (!outFactory.isFull)
         {
             if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
             {

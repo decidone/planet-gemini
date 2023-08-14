@@ -28,7 +28,7 @@ public class RepairTower : TowerAi
                 RepairTowerAiCtrl();
             }
         }
-        if (isRuin && isRepair == true)
+        if (isRuin && isRepair)
         {
             RepairFunc(false);
         }
@@ -139,7 +139,7 @@ public class RepairTower : TowerAi
             {
                 if (towerAi.isRuin)
                 {
-                    if (towerAi.isRepair == true)
+                    if (towerAi.isRepair)
                     {
                         towerAi.RepairSet(false);
                     }

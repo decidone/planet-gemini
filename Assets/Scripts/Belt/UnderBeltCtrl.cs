@@ -82,7 +82,7 @@ public class UnderBeltCtrl : MonoBehaviour
 
     void ReturnSendBelt()
     {
-        if (getBelt.activeSelf == true)
+        if (getBelt.activeSelf)
         {
             SetSendUnderBelt();
         }

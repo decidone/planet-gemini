@@ -400,8 +400,8 @@ public class SplitterCtrl : SolidFactoryCtrl
 
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
 
-        if (outFactory.isFull == false)        
-        //if (outFactory.CheckOutItemNum() == false)
+        if (!outFactory.isFull)        
+        //if (!outFactory.CheckOutItemNum())
         {
             if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
             {

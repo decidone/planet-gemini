@@ -135,7 +135,7 @@ public class ItemSpawner : SolidFactoryCtrl
 
         Structure outFactory = outObj[sendObjNum].GetComponent<Structure>();
 
-        if (outFactory.isFull == false && outFactory.GetComponent<ItemSpawner>() == null)
+        if (!outFactory.isFull && outFactory.GetComponent<ItemSpawner>() == null)
         {
             if (outObj[sendObjNum].TryGetComponent(out BeltCtrl beltCtrl))
             {

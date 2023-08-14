@@ -22,12 +22,12 @@ public class BeltGroupMgr : MonoBehaviour
     {
         if (!isPreBuilding)
         {
-            if(nextCheck == true)
+            if(nextCheck)
             {
                 if(beltList.Count > 0)
                     nextObj = NextObjCheck();    
             }
-            if (preCheck == true)
+            if (preCheck)
             {
                 if (beltList.Count > 0)
                     preObj = PreObjCheck();

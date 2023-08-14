@@ -117,7 +117,7 @@ public class PipeGroupMgr : MonoBehaviour
     {
         foreach (GameObject obj in factoryList)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)// && obj.GetComponent<FluidFactoryCtrl>().fluidIsFull == false)
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)// && !obj.GetComponent<FluidFactoryCtrl>().fluidIsFull)
             {
                 if(fluidFactory.fluidFactoryData.FullFluidNum > fluidFactory.saveFluidNum)
                 {

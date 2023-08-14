@@ -207,7 +207,7 @@ public class MergerCtrl : SolidFactoryCtrl
 
         Structure outFactory = outObj[0].GetComponent<Structure>();
 
-        if (outFactory.isFull == false)
+        if (!outFactory.isFull)
         {
             if (outObj[0].TryGetComponent(out BeltCtrl beltCtrl))
             {
