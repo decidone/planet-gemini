@@ -5,10 +5,6 @@ using System;
 
 public class UnderPipeCtrl : FluidFactoryCtrl
 {
-    [SerializeField]
-    Sprite[] modelNum;
-    SpriteRenderer setModel;
-
     public GameObject otherPipe = null;
 
     public GameObject connectUnderPipe = null;
@@ -36,7 +32,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                         if (i == 0)
                             CheckNearObj(checkPos[0], 0, obj => SetInObj(obj));
                         else if (i == 1)
-                            CheckNearObj(checkPos[1], 1, obj => SetOutObj(obj));
+                            CheckNearObj(checkPos[1], 1,  obj => SetOutObj(obj));
                     }
                 }
 
@@ -101,7 +97,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         {
             Collider2D hitCollider = hits[i].collider;
             if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
-                hitCollider.GetComponent<UnderPipeCtrl>() != GetComponent<UnderPipeCtrl>())
+                hits[i].collider.gameObject != this.gameObject)
             {
                 nearObj[index] = hits[i].collider.gameObject;
                 callback(hitCollider.gameObject);

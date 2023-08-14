@@ -47,7 +47,7 @@ public class Manufacturer : Production
 
             if (slot3.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
-                SetItem();
+                SendItem(output);
             }
         }
     }

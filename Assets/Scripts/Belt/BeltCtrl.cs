@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum BeltState
@@ -12,7 +10,7 @@ public enum BeltState
 
 public class BeltCtrl : SolidFactoryCtrl
 {
-    int modelNum = 0;  // 모션
+    int modelMotion = 0;  // 모션
 
     public BeltGroupMgr beltGroupMgr;
     GameObject beltManager = null;
@@ -54,7 +52,7 @@ public class BeltCtrl : SolidFactoryCtrl
         if (!removeState)
         {
             anim.SetFloat("DirNum", dirNum);
-            anim.SetFloat("ModelNum", modelNum);
+            anim.SetFloat("ModelNum", modelMotion);
 
             anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
             ModelSet();
@@ -75,30 +73,30 @@ public class BeltCtrl : SolidFactoryCtrl
         {
             if (beltState == BeltState.SoloBelt)
             {
-                modelNum = 0;
+                modelMotion = 0;
             }
             else if (beltState == BeltState.StartBelt)
             {
-                modelNum = 1;
+                modelMotion = 1;
             }
             else if (beltState == BeltState.EndBelt)
             {
-                modelNum = 3;
+                modelMotion = 3;
             }
             else if (beltState == BeltState.RepeaterBelt)
             {
-                modelNum = 2;
+                modelMotion = 2;
             }
         }
         else if (isTurn == true)
         {
             if (isRightTurn == true)
             {
-                modelNum = 5;
+                modelMotion = 5;
             }
             else if (isRightTurn == false)
             {
-                modelNum = 4;
+                modelMotion = 4;
             }
         }
         SetItemDir();
@@ -113,19 +111,19 @@ public class BeltCtrl : SolidFactoryCtrl
 
         if (dirNum == 0)
         {
-            if (modelNum != 4 && modelNum != 5)
+            if (modelMotion != 4 && modelMotion != 5)
             {
                 nextPos[0] += Vector2.up * 0.34f;
                 nextPos[2] += Vector2.down * 0.34f;
             }
-            else if (modelNum == 4)
+            else if (modelMotion == 4)
             {
                 nextPos[0] += Vector2.up * 0.34f;
                 nextPos[1] += Vector2.up * 0.1f;
                 nextPos[2] += Vector2.left * 0.34f;
                 nextPos[2] += Vector2.up * 0.1f;
             }
-            else if (modelNum == 5)
+            else if (modelMotion == 5)
             {
                 nextPos[0] += Vector2.up * 0.34f;
                 nextPos[1] += Vector2.up * 0.1f;
@@ -135,7 +133,7 @@ public class BeltCtrl : SolidFactoryCtrl
         }
         else if (dirNum == 1)
         {
-            if (modelNum != 4 && modelNum != 5)
+            if (modelMotion != 4 && modelMotion != 5)
             {
                 nextPos[0] += Vector2.right * 0.34f;
                 nextPos[2] += Vector2.left * 0.34f;
@@ -144,14 +142,14 @@ public class BeltCtrl : SolidFactoryCtrl
                     nextPos[a] += Vector2.up * 0.1f;
                 }
             }
-            else if (modelNum == 4)
+            else if (modelMotion == 4)
             {
                 nextPos[0] += Vector2.right * 0.34f;
                 nextPos[0] += Vector2.up * 0.1f;
                 nextPos[1] += Vector2.up * 0.1f;
                 nextPos[2] += Vector2.up * 0.34f;
             }
-            else if (modelNum == 5)
+            else if (modelMotion == 5)
             {
                 nextPos[0] += Vector2.right * 0.34f;
                 nextPos[0] += Vector2.up * 0.1f;
@@ -161,19 +159,19 @@ public class BeltCtrl : SolidFactoryCtrl
         }
         else if (dirNum == 2)
         {
-            if (modelNum != 4 && modelNum != 5)
+            if (modelMotion != 4 && modelMotion != 5)
             {
                 nextPos[0] += Vector2.down * 0.34f;
                 nextPos[2] += Vector2.up * 0.34f;
             }
-            else if (modelNum == 4)
+            else if (modelMotion == 4)
             {
                 nextPos[0] += Vector2.down * 0.34f;
                 nextPos[1] += Vector2.up * 0.1f;
                 nextPos[2] += Vector2.right * 0.34f;
                 nextPos[2] += Vector2.up * 0.1f;
             }
-            else if (modelNum == 5)
+            else if (modelMotion == 5)
             {
                 nextPos[0] += Vector2.down * 0.34f;
                 nextPos[1] += Vector2.up * 0.1f;
@@ -183,7 +181,7 @@ public class BeltCtrl : SolidFactoryCtrl
         }
         else if (dirNum == 3)
         {
-            if (modelNum != 4 && modelNum != 5)
+            if (modelMotion != 4 && modelMotion != 5)
             {
                 nextPos[0] += Vector2.left * 0.34f;
                 nextPos[2] += Vector2.right * 0.34f;
@@ -192,14 +190,14 @@ public class BeltCtrl : SolidFactoryCtrl
                     nextPos[a] += Vector2.up * 0.1f;
                 }
             }
-            else if (modelNum == 4)
+            else if (modelMotion == 4)
             {
                 nextPos[0] += Vector2.left * 0.34f;
                 nextPos[0] += Vector2.up * 0.1f;
                 nextPos[1] += Vector2.up * 0.1f;
                 nextPos[2] += Vector2.down * 0.34f;
             }
-            else if (modelNum == 5)
+            else if (modelMotion == 5)
             {
                 nextPos[0] += Vector2.left * 0.34f;
                 nextPos[0] += Vector2.up * 0.1f;

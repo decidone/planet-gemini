@@ -10,15 +10,6 @@ public class SolidFactoryCtrl : Structure
     protected SolidFactoryData SolidFactoryData { set { solidFactoryData = value; } }
 
     public List<ItemProps> itemObjList = new List<ItemProps>();
-    public List<Item> itemList = new List<Item>();
-
-    List<Item> items = new List<Item>();
-    //public List<GameObject> outSameList = new List<GameObject>();
-
-    protected virtual void GetItem() { }
-    // 벨트에서 아이템 받아오는 함수
-    protected virtual void SendItem() { }
-    // 벨트나 건물로 아이템 보내는 함수
 
     protected void Awake()
     {

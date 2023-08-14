@@ -44,7 +44,7 @@ public class Smelter : Production
 
             if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
-                SetItem();
+                SendItem(output);
             }
         }
     }

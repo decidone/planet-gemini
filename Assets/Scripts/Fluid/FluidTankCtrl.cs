@@ -14,7 +14,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
     protected override void Start()
     {
         base.nearObj = new GameObject[8];
-        TransformCheck();
+        CheckPos();
     }
 
     protected override void Update()
@@ -49,7 +49,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
         }
     }
 
-    void TransformCheck()
+    protected override void CheckPos()
     {
         indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
         startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };

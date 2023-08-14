@@ -6,10 +6,6 @@ public class PipeCtrl : FluidFactoryCtrl
 {
     public PipeGroupMgr pipeGroupMgr;
 
-    [SerializeField]
-    Sprite[] modelNum;
-    SpriteRenderer setModel;
-
     //GameObject[] nearObj = new GameObject[4];
     bool isUp = false;
     bool isRight = false;
