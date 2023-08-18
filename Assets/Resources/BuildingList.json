@@ -1,352 +1,112 @@
 {
-  "Miner": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "ItemSpawner":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3}
   },
-  "Furnace": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Miner":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Constructor": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Furnace":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "ItemSpawner": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    }
+  "Smelter":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Assembler": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Constructor":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Smelter": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Assembler":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Manufacturer": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Manufacturer":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Extractor": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Belt":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Refinery": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "UnderBelt":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "ChemicalPlant": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Splitter":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Splitter": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Merger":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Merger": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Pump":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Belt": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Pipe":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Pump": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "UnderPipe":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "Pipe": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "FluidTank":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3}
   },
-  "UnderPipe": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Extractor":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "UnderBelt": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "Refinery":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "FluidTank": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    }
+  "ChemicalPlant":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "FireTower": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    }
+  "FireTower":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3}
   },
-  "IceTower": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    }
+  "IceTower":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3}
   },
-  "BloodTower": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    }
+  "BloodTower":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3}
   },
-  "PoisonTower": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    }
+  "PoisonTower":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3}
   },
-  "RepairTower": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    },
-    "2": {
-      "items": [ "Coal" ],
-      "amounts": [ 2 ],
-      "cooldown": 3
-    },
-    "3": {
-      "items": [ "Coal" ],
-      "amounts": [ 3 ],
-      "cooldown": 3
-    }
+  "StormTower":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3}
   },
-  "StormTower": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    }
+  "SunTower":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3}
   },
-  "SunTower": {
-    "1": {
-      "items": [ "Coal" ],
-      "amounts": [ 1 ],
-      "cooldown": 3
-    }
+  "RepairTower":{
+    "1":{"items":["Coal"],"amounts":[1],"cooldown":3},
+    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
+    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   }
 }
