@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
-            if (hit.collider != null && hit.collider.TryGetComponent(out SolidFactoryCtrl factoryCtrl))
+            if (hit.collider != null && hit.collider.TryGetComponent(out LogisticsCtrl factoryCtrl))
             {
                 List<Item> factItemList = factoryCtrl.PlayerGetItemList();
                 for (int i = 0; i < factItemList.Count; i++) 
@@ -65,9 +65,15 @@ public class PlayerController : MonoBehaviour
                     // 인벤토리에 넣음
                     inventory.Add(itemProps.item, itemProps.amount);
                     items.Remove(item);
-                    Destroy(item);
+                    if (itemProps.isOnBelt)
+                    {
+                        itemProps.SetReleased(true); 
+                        itemProps.DestroyItem();
+                    }
+                    else
+                        Destroy(item);
 
-                    if(BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
+                    if (BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
                         BuildingInfo.instance.SetItemSlot();
                     if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
                     {

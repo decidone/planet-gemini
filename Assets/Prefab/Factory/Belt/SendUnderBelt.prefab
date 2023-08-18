@@ -224,6 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae54e437be35d814f96298284e168cd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  structureData: {fileID: 11400000, guid: a2eb7386890acc945b7f49cbce4e7e8f, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -237,18 +238,19 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 6343450013532052628}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  outSameList: []
+  itemList: []
+  itemObjList: []
   canBuilding: 1
   inObj: []
   outObj: []
-  solidFactoryData: {fileID: 11400000, guid: c181e3d39e2c4e448bfdfe0b1e4231b0, type: 2}
-  itemObjList: []
-  itemList: []
+  outSameList: []
   modelNum:
   - {fileID: -220168426, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: -627380388, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: 878528353, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: -1788641530, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  spawnItem: {fileID: 0}
+  solidFactoryData: {fileID: 11400000, guid: c181e3d39e2c4e448bfdfe0b1e4231b0, type: 2}
 --- !u!210 &8006417560495388800
 SortingGroup:
   m_ObjectHideFlags: 0

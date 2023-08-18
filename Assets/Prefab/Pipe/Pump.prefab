@@ -327,6 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c01ca9e89fe79146882a5c1bfa61a7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  structureData: {fileID: 11400000, guid: 51f539ef13b205c48b1fddb782a9cadc, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -340,24 +341,23 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 3048744443531792842}
   itemPref: {fileID: 0}
-  outSameList: []
+  itemList: []
+  itemObjList: []
   canBuilding: 1
-  nearObj: []
-  checkObj: 1
+  inObj: []
+  outObj: []
+  outSameList: []
+  modelNum: []
+  spawnItem: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   maxAmount: 0
   cooldown: 0
   productionData: {fileID: 0}
-  box2D: {fileID: 0}
-  outObj: []
-  fluidFactoryData: {fileID: 11400000, guid: da97283f50a6cae4ab65774e6b14c1ea, type: 2}
   fluidName: 
   saveFluidNum: 0
   sendDelayTimer: 0
-  factoryList: []
-  PumpIng: 1
 --- !u!210 &6373355095094737204
 SortingGroup:
   m_ObjectHideFlags: 0

@@ -37,13 +37,13 @@ public class PreBuilding : MonoBehaviour
     int dirNum = 0;
 
     Vector3 startBuildPos;
-    Vector3 startTempPos;
+    //Vector3 startTempPos;
     Vector3 endBuildPos;
 
     bool isUnderObj = false;
     public bool isEnough = true;
 
-    List<GameObject> buildingList = new List<GameObject>();    
+    public List<GameObject> buildingList = new List<GameObject>();    
     Vector3 tempPos;
     List<Vector3> posList = new List<Vector3>();
     bool isMoveX = true; 
@@ -141,8 +141,8 @@ public class PreBuilding : MonoBehaviour
         }
         if (!EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton && isMouseLeft)//Input.GetMouseButton(0))
         {
-            if (startTempPos == startBuildPos)
-                startBuildPos = transform.position;
+            //if (startTempPos == startBuildPos)
+            //    startBuildPos = transform.position;
 
             tempPos = transform.position;
             float tempDeltaX = tempPos.x - endBuildPos.x;
@@ -172,7 +172,7 @@ public class PreBuilding : MonoBehaviour
         }
     }
 
-    protected virtual void InputCheck()
+    protected void InputCheck()
     {
         if (!isEnough || mouseBtnFunc != MouseBtnFunc.MouseButtonUp)
             return;
@@ -220,7 +220,7 @@ public class PreBuilding : MonoBehaviour
             }
 
             buildingList.Clear();
-            startTempPos = startBuildPos;
+            //startTempPos = startBuildPos;
             gameObj.SetActive(true);
             posList.Clear();
             isDrag = false;
@@ -464,7 +464,21 @@ public class PreBuilding : MonoBehaviour
 
     void SetPos()
     {
-        if (isMoveX)
+        bool notMove = false;
+
+        if (startBuildPos.x == endBuildPos.x && startBuildPos.y == endBuildPos.y)
+            notMove = true;
+
+        if (notMove)
+        {
+            Vector3 position = new Vector3(startBuildPos.x, startBuildPos.y, 0);
+            if (!posList.Contains(position))
+            {
+                posList.Add(position);
+                CreateObj(position);
+            }
+        }
+        else if (isMoveX)
         {
             float currentX = startBuildPos.x;
             float direction = Mathf.Sign(endBuildPos.x - startBuildPos.x);
@@ -476,7 +490,7 @@ public class PreBuilding : MonoBehaviour
             else if (direction < 0 && currentX > endBuildPos.x)
             {
                 moveDir = false;
-            }
+            }             
 
             if (moveDir != tempMoveDir)
             {
@@ -489,7 +503,7 @@ public class PreBuilding : MonoBehaviour
                     buildingList.Clear();
                 }
                 posList.Clear();
-            }            
+            }
 
             if (!isGetDir || (!isUnderObj && isGetDir && (dirNum == 1 || dirNum == 3)))
             {
@@ -562,11 +576,11 @@ public class PreBuilding : MonoBehaviour
                 tempMoveDir = moveDir;
             }
         }
-        else
+        else if(!isMoveX)
         {
             float currentY = startBuildPos.y;
             float direction = Mathf.Sign(endBuildPos.y - startBuildPos.y);
-
+            
             if (direction > 0 && currentY < endBuildPos.y)
             {
                 moveDir = true;
@@ -574,9 +588,9 @@ public class PreBuilding : MonoBehaviour
             else if (direction < 0 && currentY > endBuildPos.y)
             {
                 moveDir = false;
-            }
-
-            if (moveDir != tempMoveDir)
+            }            
+            
+            if(moveDir != tempMoveDir)
             {
                 if (buildingList.Count > 0)
                 {
@@ -708,11 +722,6 @@ public class PreBuilding : MonoBehaviour
                     factory.ColliderTriggerOnOff(false);
                     obj.AddComponent<DynamicGridObstacle>();
                 }
-                else
-                {
-                    Destroy(obj);
-                    yield break;
-                }
             }
             else if (obj.TryGetComponent(out TowerAi tower))
             {
@@ -721,11 +730,6 @@ public class PreBuilding : MonoBehaviour
                     tower.SetBuild();
                     tower.ColliderTriggerOnOff(false);
                     obj.AddComponent<DynamicGridObstacle>();
-                }
-                else
-                {
-                    Destroy(obj);
-                    yield break;
                 }
             }
             else if (obj.TryGetComponent(out BeltGroupMgr belt))
@@ -738,11 +742,6 @@ public class PreBuilding : MonoBehaviour
                     belt.beltList[0].ColliderTriggerOnOff(false);
                     belt.beltList[0].gameObject.AddComponent<DynamicGridObstacle>();
                 }
-                else
-                {
-                    Destroy(obj);
-                    yield break;
-                }
             }
             else if (obj.TryGetComponent(out PipeGroupMgr pipe))
             {
@@ -754,11 +753,6 @@ public class PreBuilding : MonoBehaviour
                     pipe.pipeList[0].ColliderTriggerOnOff(false);
                     pipe.pipeList[0].gameObject.AddComponent<DynamicGridObstacle>();
                 }
-                else
-                {
-                    Destroy(obj);
-                    yield break;
-                }
             }
             else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
             {
@@ -769,25 +763,15 @@ public class PreBuilding : MonoBehaviour
                     underBelt.RemoveObj();
                     underBelt.beltScipt.gameObject.AddComponent<DynamicGridObstacle>();
                 }
-                else
-                {
-                    Destroy(obj);
-                    yield break;
-                }
             }
             else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
             {
                 if (underPipe.pipeScipt.canBuilding)
-                {
+                {                    
                     underPipe.pipeScipt.SetBuild();
                     underPipe.ColliderTriggerOnOff(false);
                     underPipe.RemoveObj();
                     underPipe.pipeScipt.gameObject.AddComponent<DynamicGridObstacle>();
-                }
-                else
-                {
-                    Destroy(obj);
-                    yield break;
                 }
             }
             BuildingInfo.instance.BuildingEnd();

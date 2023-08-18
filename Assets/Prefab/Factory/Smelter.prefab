@@ -235,6 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 206c6245c946a4f47b5edd6b60cdaf46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  structureData: {fileID: 11400000, guid: ea5d99f77c263ab4281697afa62d7cfe, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -248,18 +249,19 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 1934325793548784660}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  outSameList: []
+  itemList: []
+  itemObjList: []
   canBuilding: 1
-  nearObj: []
-  checkObj: 1
+  inObj: []
+  outObj: []
+  outSameList: []
+  modelNum: []
+  spawnItem: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
-  productionData: {fileID: 11400000, guid: 61f67de1a88c10e45b4b7b30239afd5b, type: 2}
-  box2D: {fileID: 0}
-  outObj: []
 --- !u!114 &1934325794086783232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,7 +275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 6529377677558148998
+  uniqueID: 5942621343077300737
   updateError: 1
   checkTime: 0.2
 --- !u!210 &2149320666929894349

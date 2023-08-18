@@ -500,6 +500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c697f4aa69cb7e04ba75e29cda3a139f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  structureData: {fileID: 11400000, guid: 42ec42722be5d9c4591ffa838178e1d9, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -513,14 +514,15 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 9158340193923133533}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  outSameList: []
-  canBuilding: 1
-  nearObj: []
-  checkObj: 1
-  solidFactoryData: {fileID: 11400000, guid: b1f80cc4a5f98e24287ffd6c848c3ca5, type: 2}
-  itemObjList: []
   itemList: []
-  modelNum: 0
+  itemObjList: []
+  canBuilding: 1
+  inObj: []
+  outObj: []
+  outSameList: []
+  modelNum: []
+  spawnItem: {fileID: 0}
+  solidFactoryData: {fileID: 11400000, guid: b1f80cc4a5f98e24287ffd6c848c3ca5, type: 2}
   beltGroupMgr: {fileID: 0}
   beltState: 0
   isTurn: 0

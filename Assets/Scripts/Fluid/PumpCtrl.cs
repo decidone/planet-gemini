@@ -4,19 +4,10 @@ using UnityEngine;
 
 public class PumpCtrl : FluidFactoryCtrl
 {
-    float pumpFluid = 15.0f;
-
-    List<GameObject> factoryList = new List<GameObject>();
-
-    bool isUp = false;
-    bool isRight = false;
-    bool isDown = false;
-    bool isLeft = false;
+    float pumpFluid = 10.0f;
 
     protected override void Start()
     {
-        nearObj = new GameObject[4];
-        checkPos = new Vector2[4];
         CheckPos();
     }
 
@@ -28,78 +19,48 @@ public class PumpCtrl : FluidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                if (!isUp)
-                    isUp = ObjCheck(transform.up);
-                if (!isRight)
-                    isRight = ObjCheck(transform.right);
-                if (!isDown)
-                    isDown = ObjCheck(-transform.up);
-                if (!isLeft)
-                    isLeft = ObjCheck(-transform.right);
+                CheckPos();
+
+                for (int i = 0; i < nearObj.Length; i++)
+                {
+                    if (nearObj[i] == null)
+                    {
+                        CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
+                    }
+                }
 
                 sendDelayTimer += Time.deltaTime;
 
-                if (sendDelayTimer > fluidFactoryData.SendDelay)
+                if (sendDelayTimer > structureData.SendDelay)
                 {
-                    Pump();
+                    SendFluid();
                     sendDelayTimer = 0;
                 }
             }
         }
     }
 
-    bool ObjCheck(Vector3 vec)
+    protected override void SendFluid()
     {
-        RaycastHit2D[] Hits = Physics2D.RaycastAll(this.gameObject.transform.position, vec, 1f);
-
-        for (int a = 0; a < Hits.Length; a++)
-        {
-            if (Hits[a].collider.GetComponent<PumpCtrl>() != this.gameObject.GetComponent<PumpCtrl>())
-            {
-                if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
-                {
-                    nearObj[0] = Hits[a].collider.gameObject;
-                    SetOutObj(nearObj[0]);
-                    return true;
-                }                
-            }
-        }
-        return false;
-    }
-
-    void SetOutObj(GameObject obj)
-    { 
-        if(obj.GetComponent<FluidFactoryCtrl>() != null)
-        {
-            factoryList.Add(obj);
-            if(obj.GetComponent<PipeCtrl>() != null)
-            {
-                obj.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
-            }
-        }
-    }
-
-    void Pump()
-    {
-        if(saveFluidNum < fluidFactoryData.FullFluidNum)
+        if (saveFluidNum < structureData.MaxFulidStorageLimit)
         { 
-            if (saveFluidNum + pumpFluid >= fluidFactoryData.FullFluidNum)
-                saveFluidNum = fluidFactoryData.FullFluidNum;
-            else if (saveFluidNum + pumpFluid < fluidFactoryData.FullFluidNum)
+            if (saveFluidNum + pumpFluid >= structureData.MaxFulidStorageLimit)
+                saveFluidNum = structureData.MaxFulidStorageLimit;
+            else if (saveFluidNum + pumpFluid < structureData.MaxFulidStorageLimit)
                 saveFluidNum += pumpFluid;
         }
 
 
-        if (factoryList.Count > 0)
+        if (outObj.Count > 0)
         {
-            foreach (GameObject obj in factoryList)
+            foreach (GameObject obj in outObj)
             {
-                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)// && !obj.GetComponent<FluidFactoryCtrl>().fluidIsFull)
+                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)
                 {
-                    if (fluidFactory.fluidFactoryData.FullFluidNum > fluidFactory.saveFluidNum)
+                    if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum)
                     {
-                        fluidFactory.SendFluidFunc(fluidFactoryData.SendFluid);
-                        saveFluidNum -= fluidFactoryData.SendFluid;
+                        fluidFactory.SendFluidFunc(structureData.SendFluidAmount);
+                        saveFluidNum -= structureData.SendFluidAmount;
                     }
                 }
             }

@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System;
 
-public class SplitterCtrl : SolidFactoryCtrl
+public class SplitterCtrl : LogisticsCtrl
 {
     bool filterOn = false;
     int filterindex = 0;
-    SolidFacClickEvent clickEvent;
+    LogisticsClickEvent clickEvent;
 
     [Serializable]
     public struct Filter
@@ -27,7 +27,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         CheckPos();
-        clickEvent = GetComponent<SolidFacClickEvent>();
+        clickEvent = GetComponent<LogisticsClickEvent>();
     }
 
     protected override void Update()
@@ -187,7 +187,7 @@ public class SplitterCtrl : SolidFactoryCtrl
         if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
         {
             ItemProps spawnItem = itemPool.Get();
-            if (outFactory.OnBeltItem(spawnItem))
+            if (beltCtrl.OnBeltItem(spawnItem))
             {
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
                 sprite.sprite = sendItem.icon;
@@ -206,13 +206,13 @@ public class SplitterCtrl : SolidFactoryCtrl
                 return;
             }
         }
-        else if (outObject.GetComponent<SolidFactoryCtrl>())
+        else if (outObject.GetComponent<LogisticsCtrl>())
         {
-            setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObject);
+            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
         }
         else if (outObject.TryGetComponent(out Production production) && production.CanTakeItem(sendItem))
         {
-            setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObject);
+            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
         }
 
         itemList.RemoveAt(0);
@@ -235,7 +235,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             if (filter.isFilterOn && filter.isItemFilterOn)
             {
                 Structure factoryCtrl = filter.outObj.GetComponent<Structure>();
-                if (factoryCtrl.TryGetComponent(out SolidFactoryCtrl fac))
+                if (factoryCtrl.TryGetComponent(out LogisticsCtrl fac))
                 {
                     if (!fac.isFull)
                     {
@@ -266,8 +266,7 @@ public class SplitterCtrl : SolidFactoryCtrl
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     yield break;
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
+                belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
             {
@@ -299,72 +298,9 @@ public class SplitterCtrl : SolidFactoryCtrl
                 }
                 outObj.Remove(otherObj);
                 Invoke("RemoveSameOutList", 0.1f);
-                StopCoroutine("SetFacDelay");
+                StopCoroutine("SendFacDelay");
             }
         }
-    }
-
-    IEnumerator SetFacDelay(GameObject outFac)
-    {
-        var spawnItem = itemPool.Get();
-        var sprite = spawnItem.GetComponent<SpriteRenderer>();
-        sprite.color = new Color(1f, 1f, 1f, 0f);
-        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
-        coll.enabled = false;
-
-        spawnItem.transform.position = transform.position;
-
-        var targetPos = outFac.transform.position;
-        var startTime = Time.time;
-        var distance = Vector3.Distance(spawnItem.transform.position, targetPos);
-
-        while (spawnItem != null && spawnItem.transform.position != targetPos)
-        {
-            var elapsed = Time.time - startTime;
-            var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed[level]));
-            spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
-
-            //sprite.color = new Color(1f, 1f, 1f, t);
-
-            yield return null;
-        }
-
-        if (spawnItem != null && spawnItem.transform.position == targetPos)
-        {
-            if (itemList.Count > 0)
-            {
-                if (checkObj && outFac != null)
-                {
-                    if (outFac.TryGetComponent(out Structure outFactory))
-                    {   
-                        outFactory.OnFactoryItem(itemList[0]);
-                    }
-                }
-                else
-                {
-                    spawnItem.item = itemList[0];
-                    spawnItem.amount = 1; 
-                    playerInven.Add(spawnItem.item, spawnItem.amount);
-                    sprite.color = new Color(1f, 1f, 1f, 1f);
-                    coll.enabled = true;
-                    itemPool.Release(spawnItem);
-                    spawnItem = null;
-                }
-
-                itemList.RemoveAt(0);
-                ItemNumCheck();
-            }
-        }
-
-        if (spawnItem != null)
-        {
-            sprite.color = new Color(1f, 1f, 1f, 1f);
-            coll.enabled = true;
-            setFacDelayCoroutine = null;
-            itemPool.Release(spawnItem);
-        }
-        else
-            setFacDelayCoroutine = null;
     }
 
     public override void ResetCheckObj(GameObject game)

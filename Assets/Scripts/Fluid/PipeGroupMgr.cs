@@ -8,7 +8,7 @@ public class PipeGroupMgr : MonoBehaviour
     GameObject pipeObj;
 
     public List<PipeCtrl> pipeList = new List<PipeCtrl>();
-    public List<GameObject> factoryList = new List<GameObject>();
+    public List<GameObject> outObj = new List<GameObject>();
 
     public bool isPreBuilding = false;
     public float groupFullFluidNum = 0.0f;
@@ -21,7 +21,7 @@ public class PipeGroupMgr : MonoBehaviour
     {
         if (!isPreBuilding)
         {
-            if (factoryList.Count > 0)
+            if (outObj.Count > 0)
             {
                 sendDelayTimer += Time.deltaTime;
 
@@ -48,8 +48,8 @@ public class PipeGroupMgr : MonoBehaviour
 
         if(pipeList.Count == 1)
         {
-            sendFluid = pipeList[0].fluidFactoryData.SendFluid;
-            sendDelay = pipeList[0].fluidFactoryData.SendDelay;
+            sendFluid = pipeList[0].structureData.SendFluidAmount;
+            sendDelay = pipeList[0].structureData.SendDelay;
         }
     }
 
@@ -72,12 +72,11 @@ public class PipeGroupMgr : MonoBehaviour
 
     public void GroupCheck()
     {
-        //groupIsFull = false;
         groupFullFluidNum = 0;
 
         foreach (PipeCtrl pipe in pipeList)
         {
-            groupFullFluidNum += pipe.fluidFactoryData.FullFluidNum;
+            groupFullFluidNum += pipe.structureData.MaxFulidStorageLimit;
         }
 
         float pipeFluid = groupSaveFluidNum / pipeList.Count;
@@ -94,40 +93,35 @@ public class PipeGroupMgr : MonoBehaviour
         groupSaveFluidNum += getNum;
         if (groupFullFluidNum <= groupSaveFluidNum)
         {
-            //groupIsFull = true;
             groupSaveFluidNum = groupFullFluidNum;
         }
 
         foreach (PipeCtrl pipe in pipeList)
         {
             pipe.saveFluidNum = pipeFluid;
-            //if (pipe.saveFluidNum >= pipe.fluidFactoryData.FullFluidNum)
-            //    pipe.fluidIsFull = true;
-            //else if (pipe.saveFluidNum < pipe.fluidFactoryData.FullFluidNum)
-            //    pipe.fluidIsFull = false;
         }
     }
 
     public void FactoryListAdd(GameObject facroty)
     {
-        factoryList.Add(facroty);
+        outObj.Add(facroty);
     }
 
     void SendFluid()
     {
-        foreach (GameObject obj in factoryList)
+        foreach (GameObject obj in outObj)
         {
             if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)// && !obj.GetComponent<FluidFactoryCtrl>().fluidIsFull)
             {
-                if(fluidFactory.fluidFactoryData.FullFluidNum > fluidFactory.saveFluidNum)
+                if(fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum)
                 {
-                    float currentFillRatio = (float)fluidFactory.fluidFactoryData.FullFluidNum / fluidFactory.saveFluidNum;
+                    float currentFillRatio = (float)fluidFactory.structureData.MaxFulidStorageLimit / fluidFactory.saveFluidNum;
                     float targetFillRatio = groupFullFluidNum / groupSaveFluidNum;
 
                     if (currentFillRatio > targetFillRatio)
                     {
-                        groupSaveFluidNum -= pipeList[0].fluidFactoryData.SendFluid;
-                        fluidFactory.SendFluidFunc(pipeList[0].fluidFactoryData.SendFluid);
+                        groupSaveFluidNum -= pipeList[0].structureData.SendFluidAmount;
+                        fluidFactory.SendFluidFunc(pipeList[0].structureData.SendFluidAmount);
                     }
 
                     GroupFluidCount(0);

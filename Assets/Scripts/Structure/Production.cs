@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
-using UnityEngine.Rendering;
-using System;
 
 public abstract class Production : Structure
 {
@@ -29,10 +27,6 @@ public abstract class Production : Structure
     protected Recipe recipe;
     protected List<Recipe> recipes;
 
-    [SerializeField]
-    protected ProductionData productionData;
-    protected ProductionData ProductionData { set { productionData = value; } }
-
     public virtual void OpenUI() { }
     public virtual void CloseUI() { }
     public virtual void SetRecipe(Recipe _recipe) { }
@@ -46,13 +40,13 @@ public abstract class Production : Structure
         GameManager gameManager = GameManager.instance;
         playerInven = gameManager.GetComponent<Inventory>();
         inventory = this.GetComponent<Inventory>();
-        buildName = productionData.FactoryName;
+        buildName = structureData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
-        hp = productionData.MaxHp[level];
-        hpBar.fillAmount = hp / productionData.MaxHp[level];
+        hp = structureData.MaxHp[level];
+        hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
 
-        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
+        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 100);
     }
 
     protected virtual void Start()
@@ -102,7 +96,7 @@ public abstract class Production : Structure
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<Structure>() != null && !obj.GetComponent<Miner>() && !obj.GetComponent<ItemSpawner>())
-        {
+            {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
@@ -110,8 +104,7 @@ public abstract class Production : Structure
                     StartCoroutine(SetInObjCoroutine(obj));
                     yield break;
                 }
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
+                belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
             {
@@ -137,7 +130,6 @@ public abstract class Production : Structure
                 outObj.Remove(otherObj);
                 outSameList.Remove(otherObj);
                 Invoke("RemoveSameOutList", 0.1f);
-                StopCoroutine("SetFacDelay");
             }
         }
     }
@@ -167,8 +159,7 @@ public abstract class Production : Structure
                     if (getItemIndex >= inObj.Count)
                         getItemIndex = 0;
 
-                    Invoke("DelayGetItem", productionData.SendDelay);
-                    itemGetDelay = false;
+                    Invoke("DelayGetItem", structureData.SendDelay);
                 }
                 else
                 {
@@ -192,185 +183,6 @@ public abstract class Production : Structure
         }
     }
 
-    IEnumerator SetFacDelay(GameObject outFac)
-    {
-        var spawnItem = itemPool.Get();
-        var sprite = spawnItem.GetComponent<SpriteRenderer>();
-        sprite.color = new Color(1f, 1f, 1f, 0f);
-        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
-        coll.enabled = false;
-
-        spawnItem.transform.position = transform.position;
-
-        var targetPos = outFac.transform.position;
-        var startTime = Time.time;
-        var distance = Vector3.Distance(spawnItem.transform.position, targetPos);
-
-        while (spawnItem != null && spawnItem.transform.position != targetPos)
-        {
-            var elapsed = Time.time - startTime;
-            var t = Mathf.Clamp01(elapsed / (distance / productionData.SendSpeed[level]));
-            spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
-
-            yield return null;
-        }
-
-        if (spawnItem != null && spawnItem.transform.position == targetPos)
-        {
-            if (CheckOutItemNum())
-            {
-                if (checkObj && outFac != null)
-                {
-                    if (outFac.TryGetComponent(out Structure outFactory))
-                    {
-                        outFactory.OnFactoryItem(output);
-                    }
-                }
-                else
-                {
-                    sprite.sprite = output.icon;
-                    spawnItem.item = output; 
-                    playerInven.Add(spawnItem.item, spawnItem.amount);
-                    sprite.color = new Color(1f, 1f, 1f, 1f);
-                    coll.enabled = true;
-                    itemPool.Release(spawnItem);
-                    spawnItem = null;
-                }
-
-                SubFromInventory();
-            }
-        }
-
-        if (spawnItem != null)
-        {
-            sprite.color = new Color(1f, 1f, 1f, 1f);
-            coll.enabled = true; 
-            itemPool.Release(spawnItem);
-        }
-    }
-
-    public override void SetBuild()
-    {
-        unitCanvas.SetActive(true);
-        hpBar.enabled = false;
-        repairBar.enabled = true;
-        repairGauge = 0;
-        repairBar.fillAmount = repairGauge / productionData.MaxRepairGauge;
-        isSetBuildingOk = true;
-    }
-
-    protected override void RepairFunc(bool isBuilding)
-    {
-        repairGauge += 10.0f * Time.deltaTime;
-
-        if (isBuilding)
-        {
-            repairBar.fillAmount = repairGauge / productionData.MaxBuildingGauge;
-            if (repairGauge >= productionData.MaxRepairGauge)
-            {
-                isPreBuilding = false;
-                repairGauge = 0.0f;
-                repairBar.enabled = false;
-                if (hp < productionData.MaxHp[level])
-                {
-                    unitCanvas.SetActive(true);
-                    hpBar.enabled = true;
-                }
-                else
-                {
-                    unitCanvas.SetActive(false);
-                }
-
-                ColliderTriggerOnOff(false);
-            }
-        }
-        else
-        {
-            repairBar.fillAmount = repairGauge / productionData.MaxRepairGauge;
-            if (repairGauge >= productionData.MaxRepairGauge)
-            {
-                RepairEnd();
-            }
-        }
-    }
-
-    protected override void RepairEnd()
-    {
-        hpBar.enabled = true;
-
-        hp = productionData.MaxHp[level];
-        unitCanvas.SetActive(false);
-
-        hpBar.fillAmount = hp / productionData.MaxHp[level];
-
-        repairBar.enabled = false;
-        repairGauge = 0.0f;
-
-        isRuin = false;
-        isPreBuilding = false;
-        ColliderTriggerOnOff(false);
-    }
-
-    public override void TakeDamage(float damage)
-    {
-        if (!isPreBuilding)
-        {
-            if (!unitCanvas.activeSelf)
-            {
-                unitCanvas.SetActive(true);
-                hpBar.enabled = true;
-            }
-        }
-
-        if (hp <= 0f)
-            return;
-
-        hp -= damage;
-        hpBar.fillAmount = hp / productionData.MaxHp[level];
-
-        if (hp <= 0f)
-        {
-            hp = 0f;
-            DieFunc();
-        }
-    }
-
-    public override void HealFunc(float heal)
-    {
-        if (hp == productionData.MaxHp[level])
-        {
-            return;
-        }
-        else if (hp + heal > productionData.MaxHp[level])
-        {
-            hp = productionData.MaxHp[level];
-            if (!isRepair)
-                unitCanvas.SetActive(false);
-        }
-        else
-            hp += heal;
-
-        hpBar.fillAmount = hp / productionData.MaxHp[level];
-    }
-
-    public override void RepairSet(bool repair)
-    {
-        hp = productionData.MaxHp[level];
-        isRepair = repair;
-    }
-
-    protected override void DieFunc()
-    {
-        repairBar.enabled = true;
-        hpBar.enabled = false;
-
-        repairGauge = 0;
-        repairBar.fillAmount = repairGauge / productionData.MaxBuildingGauge;
-
-        ColliderTriggerOnOff(true);
-        isRuin = true;
-    }
-
     public override void ResetCheckObj(GameObject game)
     {
         base.ResetCheckObj(game);
@@ -386,49 +198,5 @@ public abstract class Production : Structure
                 inObj.Remove(game);
         }
         sendItemIndex = 0;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (!collision.GetComponent<ItemProps>())
-        {
-            if (isPreBuilding)
-            {
-                buildingPosObj.Add(collision.gameObject);
-                if (buildingPosObj.Count > 0)
-                {
-                    if (!collision.GetComponentInParent<PreBuilding>())
-                    {
-                        canBuilding = false;
-                    }
-                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                    if (preBuilding != null)
-                    {
-                        preBuilding.isBuildingOk = false;
-                    }
-                }
-            }
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (!collision.GetComponent<ItemProps>())
-        {
-            if (isPreBuilding)
-            {
-                buildingPosObj.Remove(collision.gameObject);
-                if (buildingPosObj.Count > 0)
-                    canBuilding = false;
-                else
-                {
-                    canBuilding = true;
-
-                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                    if (preBuilding != null)
-                        preBuilding.isBuildingOk = true;
-                }
-            }
-        }
     }
 }

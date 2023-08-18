@@ -7,82 +7,76 @@ public class PipeCtrl : FluidFactoryCtrl
     public PipeGroupMgr pipeGroupMgr;
 
     //GameObject[] nearObj = new GameObject[4];
-    bool isUp = false;
-    bool isRight = false;
-    bool isDown = false;
-    bool isLeft = false;
+    public bool isUp = false;
+    public bool isRight = false;
+    public bool isDown = false;
+    public bool isLeft = false;
 
     protected override void Start()
     {
         setModel = GetComponent<SpriteRenderer>();
-        //if (transform.parent.gameObject != null)
-        //    pipeGroupMgr = GetComponentInParent<PipeGroupMgr>();
     }
 
     protected override void Update()
     {
         base.Update();
-
-        ModelSet();
         if (!removeState)
         {
+            SetDirNum();
             if (!isPreBuilding)
             {
-                if (!isUp)
-                    isUp = ObjCheck(transform.up);
-                if (!isRight)
-                    isRight = ObjCheck(transform.right);
-                if (!isDown)
-                    isDown = ObjCheck(-transform.up);
-                if (!isLeft)
-                    isLeft = ObjCheck(-transform.right);
-            }
-        }
-    }
-
-    void ModelSet()
-    {
-        setModel.sprite = modelNum[dirNum];
-
-        ChangeModel();
-    }
-
-    bool ObjCheck(Vector3 vec)
-    {
-        RaycastHit2D[] Hits = Physics2D.RaycastAll(this.gameObject.transform.position, vec, 1f);
-
-        for (int a = 0; a < Hits.Length; a++)
-        {
-            if (Hits[a].collider.GetComponent<PipeCtrl>() != this.gameObject.GetComponent<PipeCtrl>())
-            {
-                if (Hits[a].collider.GetComponent<PipeCtrl>() != null && Hits[a].collider.CompareTag("Factory") && 
-                    !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
+                for (int i = 0; i < nearObj.Length; i++)
                 {
-                    if (Hits[a].collider.GetComponent<PipeCtrl>() != null)
-                        pipeGroupMgr.CheckGroup(Hits[a].collider.GetComponent<PipeCtrl>());
-
-                    return true;
+                    if (nearObj[i] == null)
+                    {
+                        CheckNearObj(checkPos[i], i, obj => ObjCheck(obj, checkPos[i]));
+                    }
                 }
             }
         }
-        return false;
+    }
+
+    protected override void CheckPos()
+    {
+        Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
+
+        for (int i = 0; i < 4; i++)
+        {
+            checkPos[i] = dirs[i];
+        }
+        ChangeModel();
+    }
+
+    void ObjCheck(GameObject game, Vector3 vec)
+    {
+        if (vec == transform.up)
+            isUp = true;
+        if (vec == transform.right)
+            isRight = true;
+        if (vec == -transform.up)
+            isDown = true;
+        if (vec == -transform.right)
+            isLeft = true;
+
+        if (game.GetComponent<PipeCtrl>() != null)
+            pipeGroupMgr.CheckGroup(game.GetComponent<PipeCtrl>());
     }
 
     void ChangeModel()
     {
         if ((isUp && !isRight && !isDown && !isLeft)
             || (!isUp && !isRight && isDown && !isLeft)
-            || (isUp && !isRight && isDown && !isLeft)) 
+            || (isUp && !isRight && isDown && !isLeft))
         {
             dirNum = 0;
         }
-        else if ((!isUp && isRight && !isDown && !isLeft) 
+        else if ((!isUp && isRight && !isDown && !isLeft)
             || (!isUp && !isRight && !isDown && isLeft)
             || (!isUp && isRight && !isDown && isLeft))
         {
             dirNum = 1;
         }
-        else if(isUp && isRight && !isDown && !isLeft)
+        else if (isUp && isRight && !isDown && !isLeft)
         {
             dirNum = 2;
         }

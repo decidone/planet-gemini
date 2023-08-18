@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SendUnderBeltCtrl : SolidFactoryCtrl
+public class SendUnderBeltCtrl : LogisticsCtrl
 {
     void Start()
     {
@@ -26,7 +26,7 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
                 }
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
-                    SendItem(null);
+                    SendItem(itemList[0]);
                 }
 
                 for (int i = 1; i < nearObj.Length; i++)
@@ -56,72 +56,11 @@ public class SendUnderBeltCtrl : SolidFactoryCtrl
 
         if (!outFactory.isFull)
         {
-            setFacDelayCoroutine = StartCoroutine("SetFacDelay");
+            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[0], item));
         }
 
-        Invoke("DelaySetItem", solidFactoryData.SendDelay);
+        Invoke("DelaySetItem", structureData.SendDelay);
         itemSetDelay = false;
-    }
-
-    IEnumerator SetFacDelay()
-    {
-        var spawnItem = itemPool.Get();
-        SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-        sprite.color = new Color(1f, 1f, 1f, 0f);
-        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
-        coll.enabled = false;
-
-        spawnItem.transform.position = this.transform.position;
-
-        var targetPos = outObj[0].transform.position;
-        var startTime = Time.time;
-        var distance = Vector3.Distance(spawnItem.transform.position, targetPos);
-
-        while (spawnItem != null && spawnItem.transform.position != targetPos)
-        {
-            var elapsed = Time.time - startTime;
-            var t = Mathf.Clamp01(elapsed / (distance / solidFactoryData.SendSpeed[level]));
-            spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
-
-            yield return null;
-        }
-
-        if (spawnItem != null && spawnItem.transform.position == targetPos)
-        {
-            if (itemList.Count > 0)
-            {
-                if (checkObj && outObj[0] != null)
-                {
-                    if (outObj[0].TryGetComponent(out Structure outFactory))
-                    {
-                        outFactory.OnFactoryItem(itemList[0]);
-                    }
-                }
-                else
-                {
-                    spawnItem.item = itemList[0];
-                    spawnItem.amount = 1;
-                    playerInven.Add(spawnItem.item, spawnItem.amount);
-                    sprite.color = new Color(1f, 1f, 1f, 1f);
-                    coll.enabled = true;
-                    itemPool.Release(spawnItem);
-                    spawnItem = null;
-                }
-
-                itemList.RemoveAt(0);
-                ItemNumCheck();
-            }
-        }
-
-        if (spawnItem != null)
-        {
-            sprite.color = new Color(1f, 1f, 1f, 1f);
-            coll.enabled = true;
-            setFacDelayCoroutine = null;
-            itemPool.Release(spawnItem);
-        }
-        else
-            setFacDelayCoroutine = null;
     }
 
     public void SetOutObj(GameObject Obj)

@@ -236,6 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489b0432e72e01c488d6ce1a6e8cb181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  structureData: {fileID: 11400000, guid: 37177b88eac5e474c9dbd952d65ab384, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -249,18 +250,20 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 7424224097605013762}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  outSameList: []
+  itemList: []
+  itemObjList: []
   canBuilding: 1
-  nearObj: []
-  checkObj: 1
+  inObj: []
+  outObj: []
+  outSameList: []
+  modelNum: []
+  spawnItem: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
   productionData: {fileID: 11400000, guid: 209c9acad5f193e4db292986ef205c22, type: 2}
-  box2D: {fileID: 0}
-  outObj: []
 --- !u!114 &8480866024980907032
 MonoBehaviour:
   m_ObjectHideFlags: 0
