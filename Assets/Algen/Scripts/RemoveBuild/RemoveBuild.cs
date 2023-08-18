@@ -48,11 +48,11 @@ public class RemoveBuild : MonoBehaviour
 
     void UiCheck(Structure obj)
     {
-        if(obj.TryGetComponent(out SolidFacClickEvent solidFacClickEvent))
+        if(obj.TryGetComponent(out LogisticsClickEvent solidFacClickEvent))
         {
-            if(solidFacClickEvent.solidFacUI != null)
+            if(solidFacClickEvent.LogisticsUI != null)
             {
-                if (solidFacClickEvent.solidFacUI.activeSelf)
+                if (solidFacClickEvent.LogisticsUI.activeSelf)
                 {           
                     if(solidFacClickEvent.sFilterManager != null)            
                         solidFacClickEvent.sFilterManager.CloseUI();            

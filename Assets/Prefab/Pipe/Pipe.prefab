@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b35b2d17909ad49b0a1ad847f9412e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  structureData: {fileID: 11400000, guid: 823924ca0a90833419ca315ebc071a18, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -161,23 +162,12 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 2686902316315216677}
   itemPref: {fileID: 0}
-  outSameList: []
+  itemList: []
+  itemObjList: []
   canBuilding: 1
-  nearObj: []
-  checkObj: 1
-  ui: {fileID: 0}
-  sInvenManager: {fileID: 0}
-  rManager: {fileID: 0}
-  maxAmount: 0
-  cooldown: 0
-  productionData: {fileID: 0}
-  box2D: {fileID: 0}
+  inObj: []
   outObj: []
-  fluidFactoryData: {fileID: 11400000, guid: 8ee4d5c35de3b80478c35e5f9dfcb5b6, type: 2}
-  fluidName: 
-  saveFluidNum: 0
-  sendDelayTimer: 0
-  pipeGroupMgr: {fileID: 0}
+  outSameList: []
   modelNum:
   - {fileID: -1520857884, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}
   - {fileID: -2123331135, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}
@@ -190,6 +180,21 @@ MonoBehaviour:
   - {fileID: -1162067384, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}
   - {fileID: -1641305824, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}
   - {fileID: 265864695, guid: 69dd4c4b1aa37124f817ee6dbe4ddf71, type: 3}
+  spawnItem: {fileID: 0}
+  ui: {fileID: 0}
+  sInvenManager: {fileID: 0}
+  rManager: {fileID: 0}
+  maxAmount: 0
+  cooldown: 0
+  productionData: {fileID: 0}
+  fluidName: 
+  saveFluidNum: 0
+  sendDelayTimer: 0
+  pipeGroupMgr: {fileID: 0}
+  isUp: 0
+  isRight: 0
+  isDown: 0
+  isLeft: 0
 --- !u!210 &6382187505503053573
 SortingGroup:
   m_ObjectHideFlags: 0

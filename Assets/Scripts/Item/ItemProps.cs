@@ -15,6 +15,17 @@ public class ItemProps : MonoBehaviour
     [HideInInspector]
     public BeltCtrl setOnBelt = null;
 
+    public bool isReleased = false;
+    public bool IsReleased
+    {
+        get { return isReleased; }
+    }
+
+    public void SetReleased(bool released)
+    {
+        isReleased = released;
+    }
+
     public void SetPool(IObjectPool<ItemProps> pool)
     {
         itemPool = pool;
@@ -22,6 +33,11 @@ public class ItemProps : MonoBehaviour
 
     public void DestroyItem()
     {
-        itemPool.Release(this);
+        if (isOnBelt || isReleased)
+        {
+            itemPool.Release(this);
+        }
+        else
+            Destroy(this.gameObject);
     }
 }

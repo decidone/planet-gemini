@@ -4,22 +4,21 @@ using UnityEngine;
 
 public class FluidFactoryCtrl : Production
 {
-    [SerializeField]
-    public FluidFactoryData fluidFactoryData;
-    protected FluidFactoryData FluidFactoryData { set { fluidFactoryData = value; } }
-
+    [HideInInspector]
     public string fluidName;
+    [HideInInspector]
     public float saveFluidNum;
+    [HideInInspector]
     public float sendDelayTimer = 0.0f;
 
     protected override void Awake()
     {
         GameManager gameManager = GameManager.instance;
         playerInven = gameManager.GetComponent<Inventory>();
-        buildName = fluidFactoryData.FactoryName;
+        buildName = structureData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
-        hp = fluidFactoryData.MaxHp[level];
-        hpBar.fillAmount = hp / fluidFactoryData.MaxHp[level];
+        hp = structureData.MaxHp[level];
+        hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
     }
 
@@ -49,204 +48,9 @@ public class FluidFactoryCtrl : Production
         {
             saveFluidNum += getNum;
 
-            //if (fluidFactoryData.FullFluidNum <= saveFluidNum)
-            //{
-            //    saveFluidNum = fluidFactoryData.FullFluidNum;
-            //}
-        }
-    }
-
-    public void OnFluidSentHandler(float sentFluid)
-    {
-        // 유체를 받은 후 처리할 작업 수행
-    }
-
-    public override void ColliderTriggerOnOff(bool isOn)
-    {
-        if (isOn)
-            box2D.isTrigger = true;
-        else
-            box2D.isTrigger = false;
-    }
-
-    public override void SetBuild()
-    {
-        unitCanvas.SetActive(true);
-        hpBar.enabled = false;
-        repairBar.enabled = true;
-        repairGauge = 0;
-        repairBar.fillAmount = repairGauge / fluidFactoryData.MaxRepairGauge;
-        isSetBuildingOk = true;
-    }
-
-    protected override void RepairFunc(bool isBuilding)
-    {
-        repairGauge += 10.0f * Time.deltaTime;
-
-        if (isBuilding)
-        {
-            repairBar.fillAmount = repairGauge / fluidFactoryData.MaxBuildingGauge;
-            if (repairGauge >= fluidFactoryData.MaxRepairGauge)
+            if (structureData.MaxFulidStorageLimit <= saveFluidNum)
             {
-                isPreBuilding = false;
-                repairGauge = 0.0f;
-                repairBar.enabled = false;
-                if (hp < fluidFactoryData.MaxHp[level])
-                {
-                    unitCanvas.SetActive(true);
-                    hpBar.enabled = true;
-                }
-                else
-                {
-                    unitCanvas.SetActive(false);
-                    //isRepair = true;
-                }
-                //EnableColliders();
-                ColliderTriggerOnOff(false);
-            }
-        }
-        else
-        {
-            repairBar.fillAmount = repairGauge / fluidFactoryData.MaxRepairGauge;
-            if (repairGauge >= fluidFactoryData.MaxRepairGauge)
-            {
-                RepairEnd();
-            }
-        }
-    }
-
-    protected override void RepairEnd()
-    {
-        hpBar.enabled = true;
-
-        //if (hp < solidFactoryData.MaxHp)
-        //{
-        //    unitCanvers.SetActive(true);
-        //    hpBar.enabled = true;
-        //}
-        //else
-        //{
-        hp = fluidFactoryData.MaxHp[level];
-        unitCanvas.SetActive(false);
-        //}
-
-        hpBar.fillAmount = hp / fluidFactoryData.MaxHp[level];
-
-        repairBar.enabled = false;
-        repairGauge = 0.0f;
-
-        isRuin = false;
-        isPreBuilding = false;
-
-        //EnableColliders();
-        ColliderTriggerOnOff(false);
-    }
-
-    public override void TakeDamage(float damage)
-    {
-        if (!isPreBuilding)
-        {
-            if (!unitCanvas.activeSelf)
-            {
-                unitCanvas.SetActive(true);
-                hpBar.enabled = true;
-            }
-        }
-
-        if (hp <= 0f)
-            return;
-
-        hp -= damage;
-        hpBar.fillAmount = hp / fluidFactoryData.MaxHp[level];
-
-        if (hp <= 0f)
-        {
-            hp = 0f;
-            DieFunc();
-        }
-    }
-
-    public override void HealFunc(float heal)
-    {
-        if (hp == fluidFactoryData.MaxHp[level])
-        {
-            return;
-        }
-        else if (hp + heal > fluidFactoryData.MaxHp[level])
-        {
-            hp = fluidFactoryData.MaxHp[level];
-            if (!isRepair)
-                unitCanvas.SetActive(false);
-        }
-        else
-            hp += heal;
-
-        hpBar.fillAmount = hp / fluidFactoryData.MaxHp[level];
-    }
-
-    public override void RepairSet(bool repair)
-    {
-        hp = fluidFactoryData.MaxHp[level];
-        isRepair = repair;
-        //repairBar.enabled = repair;
-    }
-
-    protected override void DieFunc()
-    {
-        //unitCanvers.SetActive(false);
-        repairBar.enabled = true;
-        hpBar.enabled = false;
-
-        repairGauge = 0;
-        repairBar.fillAmount = repairGauge / fluidFactoryData.MaxBuildingGauge;
-
-        //DisableColliders();
-        ColliderTriggerOnOff(true);
-
-        isRuin = true;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (!collision.GetComponent<ItemProps>())
-        {
-            if (isPreBuilding)
-            {
-                buildingPosObj.Add(collision.gameObject);
-                if (buildingPosObj.Count > 0)
-                {
-                    if (!collision.GetComponentInParent<PreBuilding>())
-                    {
-                        canBuilding = false;
-                    }
-
-                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                    if (preBuilding != null)
-                    {
-                        preBuilding.isBuildingOk = false;
-                    }
-                }
-            }
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (!collision.GetComponent<ItemProps>())
-        {
-            if (isPreBuilding)
-            {
-                buildingPosObj.Remove(collision.gameObject);
-                if (buildingPosObj.Count > 0)
-                    canBuilding = false;
-                else
-                {
-                    canBuilding = true;
-
-                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                    if (preBuilding != null)
-                        preBuilding.isBuildingOk = true;
-                }
+                saveFluidNum = structureData.MaxFulidStorageLimit;
             }
         }
     }

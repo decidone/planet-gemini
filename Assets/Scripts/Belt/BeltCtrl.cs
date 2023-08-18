@@ -8,7 +8,7 @@ public enum BeltState
     RepeaterBelt
 }
 
-public class BeltCtrl : SolidFactoryCtrl
+public class BeltCtrl : LogisticsCtrl
 {
     int modelMotion = 0;  // ¸ð¼Ç
 
@@ -211,7 +211,7 @@ public class BeltCtrl : SolidFactoryCtrl
     {
         for (int i = 0; i < itemObjList.Count; i++)
         {
-            itemObjList[i].transform.position = Vector3.MoveTowards(itemObjList[i].transform.position, nextPos[i], Time.deltaTime * solidFactoryData.SendSpeed[level]);
+            itemObjList[i].transform.position = Vector3.MoveTowards(itemObjList[i].transform.position, nextPos[i], Time.deltaTime * structureData.SendSpeed[level]);
         }
 
         if (Vector2.Distance(itemObjList[0].transform.position, nextPos[0]) < 0.001f)
@@ -357,8 +357,9 @@ public class BeltCtrl : SolidFactoryCtrl
             isUp = true;
             nearObj[0] = factory.gameObject;
         }
-        
-        Invoke("FactoryModelSet", 0.1f);
+
+        if(beltState != BeltState.RepeaterBelt)
+            Invoke("FactoryModelSet", 0.1f);
     }
 
     public void FactoryModelSet()
@@ -454,7 +455,7 @@ public class BeltCtrl : SolidFactoryCtrl
             itemObjList.Remove(item);
         }
 
-        if (itemObjList.Count >= solidFactoryData.FullItemNum)
+        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
             isFull = true;
         else
             isFull = false;

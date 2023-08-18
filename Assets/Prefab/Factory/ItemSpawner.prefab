@@ -282,6 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bb972b41d0b2af459bcb9c6ee40c8b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  structureData: {fileID: 11400000, guid: c1fffede48be184478eb7289b7cc4297, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -295,15 +296,16 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 8047090835710424365}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  outSameList: []
-  canBuilding: 1
-  nearObj: []
-  checkObj: 1
-  solidFactoryData: {fileID: 11400000, guid: b98e07cc0faacb54883a16ecf080cff3, type: 2}
-  itemObjList: []
   itemList: []
-  itemData: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
+  itemObjList: []
+  canBuilding: 1
+  inObj: []
   outObj: []
+  outSameList: []
+  modelNum: []
+  spawnItem: {fileID: 0}
+  solidFactoryData: {fileID: 11400000, guid: b98e07cc0faacb54883a16ecf080cff3, type: 2}
+  itemData: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
 --- !u!61 &4372891051652484693
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -364,7 +366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 3833917440953087545
+  uniqueID: 7626493799444060486
   updateError: 1
   checkTime: 0.2
 --- !u!114 &999354849698614313
@@ -376,10 +378,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4372891051652484718}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb0bc8acfb9905a40b960e75cdb9136b, type: 3}
+  m_Script: {fileID: 11500000, guid: e40dc268bd926c64daba5a5974b04681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  solidFacUI: {fileID: 0}
+  LogisticsUI: {fileID: 0}
   sFilterManager: {fileID: 0}
   itemSpManager: {fileID: 0}
 --- !u!210 &-8180398617988423839

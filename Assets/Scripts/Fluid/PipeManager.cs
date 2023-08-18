@@ -14,14 +14,14 @@ public class PipeManager : MonoBehaviour
         pipeCtrl.AddRange(fstGroupMgr.pipeList);
         pipeCtrl.AddRange(secGroupMgr.pipeList);
 
-        gameObjects.AddRange(fstGroupMgr.factoryList);
-        gameObjects.AddRange(secGroupMgr.factoryList);
+        gameObjects.AddRange(fstGroupMgr.outObj);
+        gameObjects.AddRange(secGroupMgr.outObj);
 
         fstGroupMgr.pipeList.Clear();
         fstGroupMgr.pipeList = pipeCtrl.Distinct().ToList();
         
-        fstGroupMgr.factoryList.Clear();
-        fstGroupMgr.factoryList = gameObjects.Distinct().ToList();
+        fstGroupMgr.outObj.Clear();
+        fstGroupMgr.outObj = gameObjects.Distinct().ToList();
 
         foreach (PipeCtrl pipe in secGroupMgr.pipeList)
         {

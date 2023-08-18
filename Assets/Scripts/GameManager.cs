@@ -25,8 +25,8 @@ public class GameManager : MonoBehaviour
     List<GameObject> openedUI;
     StructureClickEvent clickEvent;
     StructureClickEvent newClickEvent;
-    SolidFacClickEvent solidFacClickEvent;
-    SolidFacClickEvent newSolidFacClickEvent;
+    LogisticsClickEvent logisticsClickEvent;
+    LogisticsClickEvent newLogisticsClickEvent;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
                 foreach (RaycastHit2D hit in hits)
                 {
                     newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
-                    newSolidFacClickEvent = hit.collider.GetComponent<SolidFacClickEvent>();
+                    newLogisticsClickEvent = hit.collider.GetComponent<LogisticsClickEvent>();
 
                     if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
@@ -122,9 +122,9 @@ public class GameManager : MonoBehaviour
                         {
                             clickEvent.CloseUI();
                         }
-                        if (solidFacClickEvent != null)
+                        if (logisticsClickEvent != null)
                         {
-                            solidFacClickEvent.CloseUI();
+                            logisticsClickEvent.CloseUI();
                         }
 
                         clickEvent = newClickEvent;
@@ -132,20 +132,20 @@ public class GameManager : MonoBehaviour
                         clickEvent.OpenUI();
                         break;
                     }
-                    else if (newSolidFacClickEvent != null && !newSolidFacClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+                    else if (newLogisticsClickEvent != null && !newLogisticsClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
-                        if (solidFacClickEvent != null)
+                        if (logisticsClickEvent != null)
                         {
-                            solidFacClickEvent.CloseUI();
+                            logisticsClickEvent.CloseUI();
                         }
                         if (clickEvent != null)
                         {
                             clickEvent.CloseUI();
                         }
 
-                        solidFacClickEvent = newSolidFacClickEvent;
-                        solidFacClickEvent.SolidFacCheck();
-                        solidFacClickEvent.OpenUI();
+                        logisticsClickEvent = newLogisticsClickEvent;
+                        logisticsClickEvent.LogisticsCheck();
+                        logisticsClickEvent.OpenUI();
                         break;
                     }
                 }
@@ -175,13 +175,13 @@ public class GameManager : MonoBehaviour
                         bManager.CloseUI();
                         break;
                     case "SplitterFillterMenu":
-                        solidFacClickEvent.CloseUI();
+                        logisticsClickEvent.CloseUI();
                         break;
                     case "SplitterMenu":
-                        solidFacClickEvent.CloseUI();
+                        logisticsClickEvent.CloseUI();
                         break;
                     case "ItemSpwanerFilter":
-                        solidFacClickEvent.CloseUI();
+                        logisticsClickEvent.CloseUI();
                         break;
                     case "ScienceTree":
                         sTreeManager.CloseUI();

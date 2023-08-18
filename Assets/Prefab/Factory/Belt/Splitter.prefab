@@ -268,8 +268,8 @@ GameObject:
   - component: {fileID: 5043839874347049424}
   - component: {fileID: 5043839874347049425}
   - component: {fileID: 6522629440870445346}
-  - component: {fileID: -7841223284810881725}
   - component: {fileID: 4855410685162119447}
+  - component: {fileID: 7801653508956483264}
   m_Layer: 8
   m_Name: Splitter
   m_TagString: Factory
@@ -404,6 +404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e79bb8fa328f4a642b8513a151f49b07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  structureData: {fileID: 11400000, guid: 2aea6f27a43f1d64785f2fb0b2663c67, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -417,33 +418,38 @@ MonoBehaviour:
   isRepair: 0
   repairBar: {fileID: 40968013195264733}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  outSameList: []
+  itemList: []
+  itemObjList: []
   canBuilding: 1
   inObj: []
   outObj: []
-  solidFactoryData: {fileID: 11400000, guid: a0c1ce887778bc141997a82195866e51, type: 2}
-  itemObjList: []
-  itemList: []
+  outSameList: []
   modelNum:
   - {fileID: -1122253560, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: 1484085052, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1234653658, guid: 055194f499833f945ae4a47b89baa362, type: 3}
---- !u!114 &-7841223284810881725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5043839874347049428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb0bc8acfb9905a40b960e75cdb9136b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  solidFacUI: {fileID: 0}
-  sFilterManager: {fileID: 0}
-  itemSpManager: {fileID: 0}
+  spawnItem: {fileID: 0}
+  solidFactoryData: {fileID: 11400000, guid: a0c1ce887778bc141997a82195866e51, type: 2}
+  arrFilter:
+  - outObj: {fileID: 0}
+    isFilterOn: 0
+    isFullFilterOn: 0
+    isItemFilterOn: 0
+    isReverseFilterOn: 0
+    selItem: {fileID: 0}
+  - outObj: {fileID: 0}
+    isFilterOn: 0
+    isFullFilterOn: 0
+    isItemFilterOn: 0
+    isReverseFilterOn: 0
+    selItem: {fileID: 0}
+  - outObj: {fileID: 0}
+    isFilterOn: 0
+    isFullFilterOn: 0
+    isItemFilterOn: 0
+    isReverseFilterOn: 0
+    selItem: {fileID: 0}
 --- !u!210 &4855410685162119447
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -455,6 +461,21 @@ SortingGroup:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
+--- !u!114 &7801653508956483264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043839874347049428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40dc268bd926c64daba5a5974b04681, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LogisticsUI: {fileID: 0}
+  sFilterManager: {fileID: 0}
+  itemSpManager: {fileID: 0}
 --- !u!1 &7656740688557692711
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,10 +11,12 @@ public class Structure : MonoBehaviour
     // 건물 공용 스크립트
     // Update처럼 함수 호출하는 부분은 다 하위 클래스에 넣을 것
     // 연결된 구조물 확인 방법 1. 콜라이더, 2. 맵에서 인접 타일 체크
+    [SerializeField]
+    public StructureData structureData;
+    protected StructureData StructureData { set { structureData = value; } }
 
     [HideInInspector]
-    public bool isFull = false;         // 건물의 아이템 슬롯별로 꽉 찼는지 체크하는 방식으로 변경되어야 함, 그러므로 건물 쪽 변수로 들어가야 할거같음
-    //public bool fluidIsFull = false;    // 창고 처럼 모든 칸이 구분없이 채울 수 있다면 모든 슬롯이 차있는지 체크하는 방식으로도 생각해 봐야함
+    public bool isFull = false;
 
     [HideInInspector]
     public int dirNum = 0;
@@ -33,14 +35,12 @@ public class Structure : MonoBehaviour
     [SerializeField]
     protected GameObject unitCanvas;
 
-    // HpBar 관련
     [SerializeField]
     protected Image hpBar;
     protected float hp = 200.0f;
     [HideInInspector]
     public bool isRuin = false;
 
-    // Repair 관련
     [HideInInspector]
     public bool isRepair = false;
     [SerializeField]
@@ -50,10 +50,9 @@ public class Structure : MonoBehaviour
     [SerializeField]
     GameObject itemPref;
     protected IObjectPool<ItemProps> itemPool;
-    [HideInInspector] 
-    public List<Item> itemList = new List<Item>();
     [HideInInspector]
-    public List<GameObject> outSameList = new List<GameObject>();
+    public List<Item> itemList = new List<Item>();
+    public List<ItemProps> itemObjList = new List<ItemProps>();
 
     public bool canBuilding = true;
     protected List<GameObject> buildingPosObj = new List<GameObject>();
@@ -70,6 +69,8 @@ public class Structure : MonoBehaviour
 
     public List<GameObject> inObj = new List<GameObject>();
     public List<GameObject> outObj = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> outSameList = new List<GameObject>();
 
     protected int getItemIndex = 0;
     protected int sendItemIndex = 0;
@@ -79,6 +80,8 @@ public class Structure : MonoBehaviour
     [SerializeField]
     protected Sprite[] modelNum;
     protected SpriteRenderer setModel;
+
+    public ItemProps spawnItem;
 
     protected ItemProps CreateItemObj()
     {
@@ -97,19 +100,21 @@ public class Structure : MonoBehaviour
     }
     protected void OnDestroyItem(ItemProps item)
     {
-        item.DestroyItem();
+        if (item != null)
+        {
+            item.SetReleased(true);
+            item.DestroyItem();
+        }
         //Destroy(item.gameObject, 0.4f);
     }
     public virtual bool CheckOutItemNum()  { return new bool(); }
 
     protected virtual void SetDirNum()
     {
-        if (dirNum < 4)
-        {
-            setModel.sprite = modelNum[dirNum];
-            CheckPos();
-        }
+        setModel.sprite = modelNum[dirNum];
+        CheckPos();        
     }
+
     // 건물의 방향 설정
     protected virtual void CheckPos()
     {
@@ -120,6 +125,7 @@ public class Structure : MonoBehaviour
             checkPos[i] = dirs[(dirNum + i) % 4];
         }
     }
+
     // 근처 오브젝트 찻는 위치(상하좌우) 설정
     protected virtual void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
@@ -128,6 +134,22 @@ public class Structure : MonoBehaviour
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
+
+            if(GetComponent<LogisticsCtrl>() || (GetComponent<Production>() && !GetComponent<FluidFactoryCtrl>()))
+            {
+                if(hitCollider.GetComponent<FluidFactoryCtrl>() && !hitCollider.GetComponent<Refinery>())
+                {
+                    continue;
+                }
+            }
+            else if (GetComponent<FluidFactoryCtrl>() && !GetComponent<Refinery>())
+            {
+                if (hitCollider.GetComponent<LogisticsCtrl>())
+                {
+                    continue;
+                }
+            }
+
             if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
                 hits[i].collider.gameObject != this.gameObject)
             {
@@ -138,11 +160,17 @@ public class Structure : MonoBehaviour
         }
     }
 
-    public virtual void SetBuild() { }
+    public void SetBuild()
+    {
+        unitCanvas.SetActive(true);
+        hpBar.enabled = false;
+        repairBar.enabled = true;
+        repairGauge = 0;
+        repairBar.fillAmount = repairGauge / structureData.MaxRepairGauge;
+        isSetBuildingOk = true;
+    }
     // 건물 설치 기능
 
-    public virtual void BeltGroupSendItem(ItemProps itemObj) { }
-    public virtual bool OnBeltItem(ItemProps itemObj) { return new bool(); }
     public virtual void OnFactoryItem(ItemProps itemObj) { }
     public virtual void OnFactoryItem(Item item) { }
     public virtual void ItemNumCheck() { }
@@ -170,11 +198,8 @@ public class Structure : MonoBehaviour
                 getItemIndex++;
                 if (getItemIndex >= inObj.Count)
                     getItemIndex = 0;
-
-                //Invoke("DelayGetItem", solidFactoryData.SendDelay); 
-                // 공장데이터 작업 후
-                // 위 형식처럼 SendDelay값을 가져와서 수정해야함                
-                Invoke("DelayGetItem", 0.5f);
+              
+                Invoke("DelayGetItem", structureData.SendDelay);
             }
             else if (belt.isItemStop == false)
             {
@@ -193,12 +218,18 @@ public class Structure : MonoBehaviour
                 getItemIndex = 0;
 
             itemGetDelay = false;
+            return;
         }
     }
     protected virtual void SendItem(Item item) 
     {
         if (setFacDelayCoroutine != null)
         {
+            return;
+        }
+        else if (outObj[sendItemIndex] == null)
+        {
+            getItemIndex = 0;
             return;
         }
 
@@ -210,8 +241,9 @@ public class Structure : MonoBehaviour
         {
             if (outObj[sendItemIndex].TryGetComponent(out BeltCtrl beltCtrl))
             {
-                ItemProps spawnItem = itemPool.Get();
-                if (outFactory.OnBeltItem(spawnItem))
+                spawnItem = itemPool.Get();
+                spawnItem.SetReleased(false);
+                if (beltCtrl.OnBeltItem(spawnItem))
                 {
                     SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
                     sprite.sprite = item.icon;
@@ -226,7 +258,7 @@ public class Structure : MonoBehaviour
                     {
                         SubFromInventory();
                     }
-                    else if(GetComponent<SolidFactoryCtrl>() && !GetComponent<ItemSpawner>())
+                    else if(GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
                     {
                         itemList.RemoveAt(0);
                         ItemNumCheck();
@@ -234,20 +266,23 @@ public class Structure : MonoBehaviour
                 }
                 else
                 {
-                    OnDestroyItem(spawnItem);
+                    if(!spawnItem.isReleased)
+                    {
+                        OnDestroyItem(spawnItem);
+                    }    
                     itemSetDelay = false;
                     return;
                 }
             }
-            else if (outObj[sendItemIndex].GetComponent<SolidFactoryCtrl>())
+            else if (outObj[sendItemIndex].GetComponent<LogisticsCtrl>())
             {
-                setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObj[sendItemIndex]);
+                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
             }
             else if (outObj[sendItemIndex].TryGetComponent(out Production production))
             {
                 if (production.CanTakeItem(item))
                 {
-                    setFacDelayCoroutine = StartCoroutine("SetFacDelay", outObj[sendItemIndex]);
+                    setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
                 }
             }
 
@@ -255,10 +290,7 @@ public class Structure : MonoBehaviour
             if (sendItemIndex >= outObj.Count)
                 sendItemIndex = 0;
 
-            Invoke("DelaySetItem", 0.5f);
-            //Invoke("DelaySetItem", solidFactoryData.SendDelay);
-            // 공장데이터 작업 후
-            // 위 형식처럼 SendDelay값을 가져와서 수정해야함    
+            Invoke("DelaySetItem", structureData.SendDelay);
         }
         else
         {
@@ -269,16 +301,207 @@ public class Structure : MonoBehaviour
             itemSetDelay = false;
         }
     }
+
+    protected IEnumerator SendFacDelayArguments(GameObject game, Item item)
+    {
+        yield return StartCoroutine(SendFacDelay(game, item));
+    }
+
+    protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
+    {
+        spawnItem = itemPool.Get();
+        spawnItem.SetReleased(false);
+        SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+        sprite.color = new Color(1f, 1f, 1f, 0f);
+        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
+        coll.enabled = false;
+
+        spawnItem.transform.position = this.transform.position;
+
+        var targetPos = outFac.transform.position;
+        var startTime = Time.time;
+        var distance = Vector3.Distance(spawnItem.transform.position, targetPos);
+
+        while (spawnItem != null && spawnItem.transform.position != targetPos)
+        {
+            var elapsed = Time.time - startTime;
+            var t = Mathf.Clamp01(elapsed / (distance / structureData.SendSpeed[level]));
+
+            spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
+
+            yield return null;
+        }
+
+        if (spawnItem != null && spawnItem.transform.position == targetPos)
+        {
+            if (CanSendItemCheck())
+            {
+                if (checkObj && outObj.Count > 0 && outFac != null)
+                {
+                    if (outFac.TryGetComponent(out Structure outFactory))
+                    {
+                        outFactory.OnFactoryItem(item);
+                    }
+                }
+                else
+                {
+                    sprite.color = new Color(1f, 1f, 1f, 1f);
+                    coll.enabled = true;
+                    if (!spawnItem.isReleased)
+                        OnDestroyItem(spawnItem);
+                    spawnItem = null;
+                }
+                if(GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
+                {
+                    itemList.RemoveAt(0);
+                    ItemNumCheck();
+                }
+                else if (GetComponent<Production>())
+                {
+                    SubFromInventory();
+                }
+            }
+        }
+
+        if (spawnItem != null)
+        {
+            sprite.color = new Color(1f, 1f, 1f, 1f);
+            coll.enabled = true;
+            setFacDelayCoroutine = null;
+            if (!spawnItem.isReleased)
+                OnDestroyItem(spawnItem);
+        }
+        else
+        {
+            setFacDelayCoroutine = null;
+        }
+    }
+
+    bool CanSendItemCheck()
+    {
+        if (GetComponent<LogisticsCtrl>())
+        {
+            if (GetComponent<ItemSpawner>())
+                return true;
+            else if (itemList.Count > 0)
+                return true;
+        }
+        else if(GetComponent<Production>() && CheckOutItemNum())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     protected virtual void SubFromInventory() { }
 
-    public virtual void TakeDamage(float damage) { }
-    protected virtual void DieFunc() { }
-    public virtual void HealFunc(float heal) { }
-    public virtual void RepairSet(bool repair) { }
-    protected virtual void RepairFunc(bool isBuilding) { }
-    protected virtual void RepairEnd() { }
+    public void TakeDamage(float damage)
+    {
+        if (!isPreBuilding)
+        {
+            if (!unitCanvas.activeSelf)
+            {
+                unitCanvas.SetActive(true);
+                hpBar.enabled = true;
+            }
+        }
 
-    // 콜라이더 키기
+        if (hp <= 0f)
+            return;
+
+        hp -= damage;
+        hpBar.fillAmount = hp / structureData.MaxHp[level];
+
+        if (hp <= 0f)
+        {
+            hp = 0f;
+            DieFunc();
+        }
+    }
+
+    protected void DieFunc()
+    {
+        repairBar.enabled = true;
+        hpBar.enabled = false;
+        repairGauge = 0;
+        repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
+        ColliderTriggerOnOff(true);
+        isRuin = true;
+    }
+
+    public void HealFunc(float heal)
+    {
+        if (hp == structureData.MaxHp[level])
+        {
+            return;
+        }
+        else if (hp + heal > structureData.MaxHp[level])
+        {
+            hp = structureData.MaxHp[level];
+            if (!isRepair)
+                unitCanvas.SetActive(false);
+        }
+        else
+            hp += heal;
+
+        hpBar.fillAmount = hp / structureData.MaxHp[level];
+    }
+
+    public void RepairSet(bool repair)
+    {
+        hp = structureData.MaxHp[level];
+        isRepair = repair;
+    }
+
+    protected void RepairFunc(bool isBuilding)
+    {
+        repairGauge += 10.0f * Time.deltaTime;
+
+        if (isBuilding)
+        {
+            repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
+            if (repairGauge >= structureData.MaxRepairGauge)
+            {
+                isPreBuilding = false;
+                repairGauge = 0.0f;
+                repairBar.enabled = false;
+                if (hp < structureData.MaxHp[level])
+                {
+                    unitCanvas.SetActive(true);
+                    hpBar.enabled = true;
+                }
+                else
+                {
+                    unitCanvas.SetActive(false);
+                }
+
+                ColliderTriggerOnOff(false);
+            }
+        }
+        else
+        {
+            repairBar.fillAmount = repairGauge / structureData.MaxRepairGauge;
+            if (repairGauge >= structureData.MaxRepairGauge)
+            {
+                RepairEnd();
+            }
+        }
+    }
+
+    protected void RepairEnd()
+    {
+        hpBar.enabled = true;
+        hp = structureData.MaxHp[level];
+        unitCanvas.SetActive(false);
+        hpBar.fillAmount = hp / structureData.MaxHp[level];
+        repairBar.enabled = false;
+        repairGauge = 0.0f;
+        isRuin = false;
+        isPreBuilding = false;
+        ColliderTriggerOnOff(false);
+    }
+
     public virtual void ColliderTriggerOnOff(bool isOn)
     {
         if (isOn)
@@ -304,8 +527,7 @@ public class Structure : MonoBehaviour
                 {
                     yield break;
                 }
-                else if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
+                belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             inObj.Add(obj);
         }
@@ -321,8 +543,7 @@ public class Structure : MonoBehaviour
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     yield break;
-                if (belt.beltState == BeltState.SoloBelt || belt.beltState == BeltState.StartBelt)
-                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
+                belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
             {
@@ -344,9 +565,10 @@ public class Structure : MonoBehaviour
 
             if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
             {
+                StopCoroutine("SendFacDelay");
                 outObj.Remove(otherObj);
                 Invoke("RemoveSameOutList", 0.1f);
-                StopCoroutine("SetFacDelay");
+                sendItemIndex = 0;
             }
         }
     }
@@ -404,11 +626,48 @@ public class Structure : MonoBehaviour
             beltManager.BeltDivide(beltGroup, this.gameObject);
         }
 
+        if (spawnItem && !spawnItem.isOnBelt && !spawnItem.isReleased)
+            //Destroy(spawnItem.gameObject);
+            OnDestroyItem(spawnItem);
+
         AddInvenItem();
+
         Destroy(this.gameObject);
     }
 
     protected virtual void AddInvenItem() { }
+    protected virtual void SendFluid() { }
+
+    protected virtual void FluidSetOutObj(GameObject obj)
+    {
+        if (obj.GetComponent<FluidFactoryCtrl>() != null)
+        {
+            outObj.Add(obj);
+            if (obj.GetComponent<PipeCtrl>() != null)
+            {
+                obj.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
+                if(GetComponent<FluidTankCtrl>())
+                    obj.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
+            }
+            else if (obj.GetComponent<UnderPipeCtrl>() != null)
+            {
+                StartCoroutine("UnderPipeConnectCheck", obj);
+            }
+        }
+    }
+
+    protected virtual IEnumerator UnderPipeConnectCheck(GameObject obj)
+    {
+        yield return null;
+
+        if (obj.GetComponent<UnderPipeCtrl>())
+        {
+            if (obj.GetComponent<UnderPipeCtrl>().otherPipe == null || obj.GetComponent<UnderPipeCtrl>().otherPipe != this.gameObject)
+            {
+                outObj.Remove(obj);
+            }
+        }
+    }
 
     protected void DelaySetItem()
     {
@@ -418,5 +677,51 @@ public class Structure : MonoBehaviour
     protected void DelayGetItem()
     {
         itemGetDelay = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.GetComponent<ItemProps>())
+        {
+            if (isPreBuilding)
+            {
+                buildingPosObj.Add(collision.gameObject);
+
+                if (buildingPosObj.Count > 0)
+                {
+                    if (!collision.GetComponentInParent<PreBuilding>())
+                    {
+                        canBuilding = false;
+                    }
+
+                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                    if (preBuilding != null)
+                    {
+                        preBuilding.isBuildingOk = false;
+                    }
+                }
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (!collision.GetComponent<ItemProps>())
+        {
+            if (isPreBuilding)
+            {
+                buildingPosObj.Remove(collision.gameObject);
+                if (buildingPosObj.Count > 0)
+                    canBuilding = false;
+                else
+                {
+                    canBuilding = true;
+
+                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+                    if (preBuilding != null)
+                        preBuilding.isBuildingOk = true;
+                }
+            }
+        }
     }
 }

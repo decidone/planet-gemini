@@ -5,24 +5,17 @@ using UnityEngine.Pool;
 
 public class Refinery : FluidFactoryCtrl
 {
-    public List<GameObject> factoryList = new List<GameObject>();
-
-    bool isUp = false;
-    bool isRight = false;
-    bool isDown = false;
-    bool isLeft = false;
-
     protected override void Awake()
     {
         #region ProductionAwake
         inventory = this.GetComponent<Inventory>();
-        buildName = productionData.FactoryName;
+        buildName = structureData.FactoryName;
         box2D = GetComponent<BoxCollider2D>();
-        hp = productionData.MaxHp[level];
-        hpBar.fillAmount = hp / productionData.MaxHp[level];
+        hp = structureData.MaxHp[level];
+        hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
 
-        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 20);
+        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 100);
         #endregion
     }
 
@@ -60,6 +53,7 @@ public class Refinery : FluidFactoryCtrl
         }
         if (!isPreBuilding)
         {
+            CheckPos();
             if (inObj.Count > 0 && !itemGetDelay && checkObj)
                 GetItem();
 
@@ -67,28 +61,13 @@ public class Refinery : FluidFactoryCtrl
             {
                 if (nearObj[i] == null)
                 {
-                    CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    CheckNearObj(checkPos[i], i, obj => CheckOutObjScript(obj));
                 }
             }
         }
         #endregion
 
         base.Update();
-
-        if (!removeState)
-        {
-            if (!isPreBuilding)
-            {
-                if (!isUp)
-                    isUp = ObjCheck(transform.up);
-                if (!isRight)
-                    isRight = ObjCheck(transform.right);
-                if (!isDown)
-                    isDown = ObjCheck(-transform.up);
-                if (!isLeft)
-                    isLeft = ObjCheck(-transform.right);
-            }
-        }
 
         if (!isPreBuilding)
         {
@@ -129,36 +108,14 @@ public class Refinery : FluidFactoryCtrl
         }
     }
 
-    bool ObjCheck(Vector3 vec)
+    void CheckOutObjScript(GameObject game)
     {
-        RaycastHit2D[] Hits = Physics2D.RaycastAll(this.gameObject.transform.position, vec, 1f);
-
-        for (int a = 0; a < Hits.Length; a++)
+        if (game.GetComponent<PipeCtrl>())
         {
-            if (Hits[a].collider.GetComponent<Refinery>() != this.gameObject.GetComponent<Refinery>())
-            {
-                if (Hits[a].collider.CompareTag("Factory") && !Hits[a].collider.GetComponent<Structure>().isPreBuilding)
-                {
-                    nearObj[0] = Hits[a].collider.gameObject;
-                    SetOutObj(nearObj[0]);
-                    return true;
-                }
-            }
+            game.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
+            return;
         }
-        return false;
-    }
-
-    void SetOutObj(GameObject obj)
-    {
-        if (obj.GetComponent<FluidFactoryCtrl>() != null)
-        {
-            factoryList.Add(obj);
-            if (obj.GetComponent<PipeCtrl>() != null)
-            {
-                obj.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
-                obj.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
-            }
-        }
+        StartCoroutine(SetOutObjCoroutine(game));        
     }
 
     public override void OpenUI()
