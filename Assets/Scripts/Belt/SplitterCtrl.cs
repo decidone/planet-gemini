@@ -274,6 +274,7 @@ public class SplitterCtrl : LogisticsCtrl
                 StartCoroutine(OutCheck(obj));
             }
             outObj.Add(obj);
+            StartCoroutine(UnderBeltConnectCheck(obj));
             FilterArr(obj, num);
         }
     }
@@ -300,6 +301,54 @@ public class SplitterCtrl : LogisticsCtrl
                 Invoke("RemoveSameOutList", 0.1f);
                 StopCoroutine("SendFacDelay");
             }
+        }
+    }
+    protected override IEnumerator UnderBeltConnectCheck(GameObject game)
+    {
+        yield return new WaitForSeconds(0.1f);
+        bool isReomveFilter = false;
+
+        if (game.TryGetComponent(out GetUnderBeltCtrl getUnder))
+        {
+            if (!getUnder.outObj.Contains(this.gameObject))
+            {
+                inObj.Remove(game);
+                isReomveFilter = true;
+            }
+            if (!getUnder.inObj.Contains(this.gameObject))
+            {
+                outObj.Remove(game);
+                outSameList.Remove(game);
+                isReomveFilter = true;
+            }
+        }
+        else if (game.TryGetComponent(out SendUnderBeltCtrl sendUnder))
+        {
+            if (!sendUnder.inObj.Contains(this.gameObject))
+            {
+                outObj.Remove(game);
+                outSameList.Remove(game);
+                isReomveFilter = true;
+            }
+            if (!sendUnder.outObj.Contains(this.gameObject))
+            {
+                inObj.Remove(game);
+                isReomveFilter = true;
+            }
+        }
+
+        if (isReomveFilter)
+        {
+            for (int i = 0; i < arrFilter.Length; i++)
+            {
+                if (arrFilter[i].outObj == game)
+                {
+                    FilterReset(i);
+                }
+            }
+            outObj.Remove(game);
+            Invoke("RemoveSameOutList", 0.1f);
+            StopCoroutine("SendFacDelay");
         }
     }
 

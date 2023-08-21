@@ -714,6 +714,7 @@ MonoBehaviour:
   amount: 99
   isOnBelt: 0
   setOnBelt: {fileID: 0}
+  isReleased: 0
 --- !u!58 &106975708
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2742,6 +2743,7 @@ MonoBehaviour:
   amount: 99
   isOnBelt: 0
   setOnBelt: {fileID: 0}
+  isReleased: 0
 --- !u!58 &545919525
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -4196,6 +4198,7 @@ MonoBehaviour:
   amount: 99
   isOnBelt: 0
   setOnBelt: {fileID: 0}
+  isReleased: 0
 --- !u!58 &906460525
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -4406,6 +4409,7 @@ MonoBehaviour:
   amount: 99
   isOnBelt: 0
   setOnBelt: {fileID: 0}
+  isReleased: 0
 --- !u!58 &957873729
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -6408,7 +6412,6 @@ MonoBehaviour:
   - {fileID: 930074877}
   - {fileID: 718306191}
   - {fileID: 168717140}
-  itemsList: []
   totalAmountsEnough: 0
   inventory: {fileID: 219787472492811319}
 --- !u!1 &1403718930
@@ -7041,6 +7044,7 @@ MonoBehaviour:
   amount: 99
   isOnBelt: 0
   setOnBelt: {fileID: 0}
+  isReleased: 0
 --- !u!58 &1513452420
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -7804,7 +7808,6 @@ MonoBehaviour:
   - {fileID: 1290322866}
   - {fileID: 975635380}
   - {fileID: 1938380383}
-  itemsList: []
   totalAmountsEnough: 0
   inventory: {fileID: 219787472492811319}
 --- !u!1 &1686654270

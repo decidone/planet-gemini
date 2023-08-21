@@ -16,7 +16,7 @@ public class FluidFactoryCtrl : Production
         GameManager gameManager = GameManager.instance;
         playerInven = gameManager.GetComponent<Inventory>();
         buildName = structureData.FactoryName;
-        box2D = GetComponent<BoxCollider2D>();
+        col = GetComponent<BoxCollider2D>();
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;

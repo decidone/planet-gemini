@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class RepairTower : TowerAi
 {
-    List<GameObject> TowerList = new List<GameObject>();
+    public List<GameObject> TowerList = new List<GameObject>();
     bool isDelayRepairCoroutine = false;
-
-    public GameObject RuinExplo;
 
     protected override void Update()
     {
@@ -36,30 +34,31 @@ public class RepairTower : TowerAi
 
     private void SearchObjectsInRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
 
         foreach (Collider2D collider in colliders)
         {
             GameObject tower = collider.gameObject;
             if (tower == this.gameObject)
                 continue;
-            if (tower.CompareTag("Tower"))
+            if (tower.GetComponent<Structure>())
             {
                 if (!TowerList.Contains(tower))
                 {
                     TowerList.Add(tower);
+                    tower.GetComponent<Structure>().repairTower = gameObject.GetComponent<RepairTower>();
                 }
             }
         }
     }
 
-    //public void RemoveObjectsOutOfRange(GameObject obj)//근쳐 타워 삭제시 발동되게
-    //{
-    //    if (obj.CompareTag("Tower"))
-    //    {
-    //        TowerList.Remove(obj);            
-    //    }
-    //}
+    public void RemoveObjectsOutOfRange(GameObject obj)//근쳐 타워 삭제시 발동되게
+    {
+        if (TowerList.Contains(obj))
+        {
+            TowerList.Remove(obj);
+        }
+    }
 
     void RepairTowerAiCtrl()
     {
@@ -114,25 +113,10 @@ public class RepairTower : TowerAi
 
     protected override void DieFunc()
     {
-        //unitCanvers.SetActive(false);
-        hp = towerData.MaxHp;
-
-        hpBar.enabled = false;
-        repairBar.enabled = true;
-
-        repairGauge = 0;
-        repairBar.fillAmount = repairGauge / towerData.MaxBuildingGauge;
-
-        //DisableColliders();
-        ColliderTriggerOnOff(true);
-
-        //towerState = TowerState.Die;
-        isRuin = true;
+        base.DieFunc();
 
         Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
-
-        //animator.SetBool("isDie", true);
-
+                
         foreach (GameObject tower in TowerList)
         {
             if (tower.TryGetComponent(out TowerAi towerAi))
@@ -146,28 +130,5 @@ public class RepairTower : TowerAi
                 }
             }
         }
-
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);
-
-        foreach (Collider2D collider in colliders)
-        {
-            GameObject monster = collider.gameObject;
-            if (monster.CompareTag("Monster"))
-            {
-                if (!monsterList.Contains(monster))
-                {
-                    monsterList.Add(monster);
-                }
-            }
-        }
-        foreach (GameObject monsterObj in monsterList)
-        {
-            if (monsterObj.TryGetComponent(out MonsterAi monsterAi))
-            {
-                monsterAi.RemoveTarget(this.gameObject);
-            }
-        }
-
-        monsterList.Clear();
     }
 }

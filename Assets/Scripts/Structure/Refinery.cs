@@ -10,7 +10,7 @@ public class Refinery : FluidFactoryCtrl
         #region ProductionAwake
         inventory = this.GetComponent<Inventory>();
         buildName = structureData.FactoryName;
-        box2D = GetComponent<BoxCollider2D>();
+        col = GetComponent<BoxCollider2D>();
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;

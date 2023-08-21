@@ -141,33 +141,33 @@ public class PreBuilding : MonoBehaviour
         }
         if (!EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton && isMouseLeft)//Input.GetMouseButton(0))
         {
-            //if (startTempPos == startBuildPos)
-            //    startBuildPos = transform.position;
-
-            tempPos = transform.position;
-            float tempDeltaX = tempPos.x - endBuildPos.x;
-            float tempDeltaY = tempPos.y - endBuildPos.y;
-            float tempAbsDeltaX = Mathf.Abs(tempDeltaX);
-            float tempAbsDeltaY = Mathf.Abs(tempDeltaY);
-
-            if (tempAbsDeltaX >= 1 || tempAbsDeltaY >= 1)
+            if(BuildingInfo.instance.AmountsEnoughCheck())
             {
-                endBuildPos = tempPos;
+                tempPos = transform.position;
+                float tempDeltaX = tempPos.x - endBuildPos.x;
+                float tempDeltaY = tempPos.y - endBuildPos.y;
+                float tempAbsDeltaX = Mathf.Abs(tempDeltaX);
+                float tempAbsDeltaY = Mathf.Abs(tempDeltaY);
 
-                float deltaX = endBuildPos.x - startBuildPos.x;
-                float deltaY = endBuildPos.y - startBuildPos.y;
-                float absDeltaX = Mathf.Abs(deltaX);
-                float absDeltaY = Mathf.Abs(deltaY);
+                if (tempAbsDeltaX >= 1 || tempAbsDeltaY >= 1)
+                {
+                    endBuildPos = tempPos;
 
-                //posList.Clear();
+                    float deltaX = endBuildPos.x - startBuildPos.x;
+                    float deltaY = endBuildPos.y - startBuildPos.y;
+                    float absDeltaX = Mathf.Abs(deltaX);
+                    float absDeltaY = Mathf.Abs(deltaY);
 
-                if (absDeltaX >= absDeltaY)
-                    isMoveX = true;
-                else
-                    isMoveX = false;
+                    //posList.Clear();
 
-                CheckPos();
-                isDrag = true;
+                    if (absDeltaX >= absDeltaY)
+                        isMoveX = true;
+                    else
+                        isMoveX = false;
+
+                    CheckPos();
+                    isDrag = true;
+                }
             }
         }
     }

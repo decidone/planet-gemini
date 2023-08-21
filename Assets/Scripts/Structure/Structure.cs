@@ -65,7 +65,6 @@ public class Structure : MonoBehaviour
 
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
-    protected BoxCollider2D box2D = null;
 
     public List<GameObject> inObj = new List<GameObject>();
     public List<GameObject> outObj = new List<GameObject>();
@@ -82,6 +81,12 @@ public class Structure : MonoBehaviour
     protected SpriteRenderer setModel;
 
     public ItemProps spawnItem;
+
+    [HideInInspector]
+    public List<GameObject> monsterList = new List<GameObject>();
+
+    public Collider2D col;
+    public RepairTower repairTower;
 
     protected ItemProps CreateItemObj()
     {
@@ -175,15 +180,49 @@ public class Structure : MonoBehaviour
     public virtual void OnFactoryItem(Item item) { }
     public virtual void ItemNumCheck() { }
 
+    protected virtual IEnumerator UnderBeltConnectCheck(GameObject game)
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        if (game.TryGetComponent(out GetUnderBeltCtrl getUnder))
+        {
+            if (!getUnder.outObj.Contains(this.gameObject))
+            {
+                inObj.Remove(game);
+            }
+            if (!getUnder.inObj.Contains(this.gameObject))
+            {
+                outObj.Remove(game);
+                outSameList.Remove(game);
+            }
+        }
+        else if (game.TryGetComponent(out SendUnderBeltCtrl sendUnder))
+        {
+            if (!sendUnder.inObj.Contains(this.gameObject))
+            {
+                outObj.Remove(game); 
+                outSameList.Remove(game);
+            }
+            if (!sendUnder.outObj.Contains(this.gameObject))
+            {
+                inObj.Remove(game);
+            }
+        }
+    }
+
     protected virtual void GetItem()
     {
         itemGetDelay = true;
-
-        if (inObj[getItemIndex] == null)
+        if (getItemIndex > inObj.Count)
         {
             getItemIndex = 0;
             return;
         }
+        else if (inObj[getItemIndex] == null)
+        {
+            getItemIndex = 0;
+            return;
+        }         
         else if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
         {
             if (belt.itemObjList.Count > 0)
@@ -226,12 +265,18 @@ public class Structure : MonoBehaviour
         if (setFacDelayCoroutine != null)
         {
             return;
+        }        
+        else if(sendItemIndex > outObj.Count)
+        {
+            sendItemIndex = 0;
+            return;
         }
         else if (outObj[sendItemIndex] == null)
         {
-            getItemIndex = 0;
+            sendItemIndex = 0;
             return;
         }
+
 
         itemSetDelay = true;
 
@@ -420,14 +465,50 @@ public class Structure : MonoBehaviour
         }
     }
 
-    protected void DieFunc()
+    protected virtual void DieFunc()
     {
+        hp = structureData.MaxHp[level];
         repairBar.enabled = true;
         hpBar.enabled = false;
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         ColliderTriggerOnOff(true);
         isRuin = true;
+
+        if (!isPreBuilding)
+        {
+            foreach (GameObject monster in monsterList)
+            {
+                if (monster.TryGetComponent(out MonsterAi monsterAi))
+                {
+                    monsterAi.RemoveTarget(this.gameObject);
+                }
+            }
+        }
+        else
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
+
+            foreach (Collider2D collider in colliders)
+            {
+                GameObject monster = collider.gameObject;
+                if (monster.CompareTag("Monster"))
+                {
+                    if (!monsterList.Contains(monster))
+                    {
+                        monsterList.Add(monster);
+                    }
+                }
+            }
+            foreach (GameObject monsterObj in monsterList)
+            {
+                if (monsterObj.TryGetComponent(out MonsterAi monsterAi))
+                {
+                    monsterAi.RemoveTarget(this.gameObject);
+                }
+            }
+        }
+        monsterList.Clear();
     }
 
     public void HealFunc(float heal)
@@ -489,7 +570,7 @@ public class Structure : MonoBehaviour
         }
     }
 
-    protected void RepairEnd()
+    protected virtual void RepairEnd()
     {
         hpBar.enabled = true;
         hp = structureData.MaxHp[level];
@@ -505,9 +586,9 @@ public class Structure : MonoBehaviour
     public virtual void ColliderTriggerOnOff(bool isOn)
     {
         if (isOn)
-            box2D.isTrigger = true;
+            col.isTrigger = true;
         else
-            box2D.isTrigger = false;
+            col.isTrigger = false;
     }
 
     protected void RemoveSameOutList()
@@ -530,6 +611,7 @@ public class Structure : MonoBehaviour
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             inObj.Add(obj);
+            StartCoroutine(UnderBeltConnectCheck(obj));
         }
     }
 
@@ -551,6 +633,7 @@ public class Structure : MonoBehaviour
                 StartCoroutine(OutCheck(obj));
             }
             outObj.Add(obj);
+            StartCoroutine(UnderBeltConnectCheck(obj));
         }
     }
 
@@ -625,6 +708,9 @@ public class Structure : MonoBehaviour
             BeltGroupMgr beltGroup = GetComponentInParent<BeltGroupMgr>();
             beltManager.BeltDivide(beltGroup, this.gameObject);
         }
+
+        if (repairTower != null)
+            repairTower.RemoveObjectsOutOfRange(this.gameObject);
 
         if (spawnItem && !spawnItem.isOnBelt && !spawnItem.isReleased)
             //Destroy(spawnItem.gameObject);
