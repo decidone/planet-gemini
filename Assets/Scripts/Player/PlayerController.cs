@@ -67,8 +67,7 @@ public class PlayerController : MonoBehaviour
                     items.Remove(item);
                     if (itemProps.isOnBelt)
                     {
-                        itemProps.SetReleased(true); 
-                        itemProps.DestroyItem();
+                        itemProps.Pool.Release(itemProps.gameObject);
                     }
                     else
                         Destroy(item);

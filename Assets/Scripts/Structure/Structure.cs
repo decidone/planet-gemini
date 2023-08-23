@@ -47,9 +47,6 @@ public class Structure : MonoBehaviour
     protected Image repairBar;
     protected float repairGauge = 0.0f;
 
-    [SerializeField]
-    GameObject itemPref;
-    protected IObjectPool<ItemProps> itemPool;
     [HideInInspector]
     public List<Item> itemList = new List<Item>();
     public List<ItemProps> itemObjList = new List<ItemProps>();
@@ -88,30 +85,6 @@ public class Structure : MonoBehaviour
     public Collider2D col;
     public RepairTower repairTower;
 
-    protected ItemProps CreateItemObj()
-    {
-        ItemProps item = Instantiate(itemPref).GetComponent<ItemProps>();
-        item.SetPool(itemPool);
-        return item;
-    }
-
-    protected void OnGetItem(ItemProps item)
-    {
-        item.gameObject.SetActive(true);
-    }
-    protected void OnReleaseItem(ItemProps item)
-    {
-        item.gameObject.SetActive(false);
-    }
-    protected void OnDestroyItem(ItemProps item)
-    {
-        if (item != null)
-        {
-            item.SetReleased(true);
-            item.DestroyItem();
-        }
-        //Destroy(item.gameObject, 0.4f);
-    }
     public virtual bool CheckOutItemNum()  { return new bool(); }
 
     protected virtual void SetDirNum()
@@ -176,7 +149,11 @@ public class Structure : MonoBehaviour
     }
     // 건물 설치 기능
 
-    public virtual void OnFactoryItem(ItemProps itemObj) { }
+    public virtual void OnFactoryItem(ItemProps itemObj) 
+    {
+        itemObj.Pool.Release(itemObj.gameObject);
+    }
+
     public virtual void OnFactoryItem(Item item) { }
     public virtual void ItemNumCheck() { }
 
@@ -286,8 +263,8 @@ public class Structure : MonoBehaviour
         {
             if (outObj[sendItemIndex].TryGetComponent(out BeltCtrl beltCtrl))
             {
-                spawnItem = itemPool.Get();
-                spawnItem.SetReleased(false);
+                var itemPool = ItemPoolManager.instance.Pool.Get();
+                spawnItem = itemPool.GetComponent<ItemProps>();
                 if (beltCtrl.OnBeltItem(spawnItem))
                 {
                     SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -311,10 +288,6 @@ public class Structure : MonoBehaviour
                 }
                 else
                 {
-                    if(!spawnItem.isReleased)
-                    {
-                        OnDestroyItem(spawnItem);
-                    }    
                     itemSetDelay = false;
                     return;
                 }
@@ -354,8 +327,8 @@ public class Structure : MonoBehaviour
 
     protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
     {
-        spawnItem = itemPool.Get();
-        spawnItem.SetReleased(false);
+        var itemPool = ItemPoolManager.instance.Pool.Get();
+        spawnItem = itemPool.GetComponent<ItemProps>();
         SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
         CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
@@ -392,8 +365,7 @@ public class Structure : MonoBehaviour
                 {
                     sprite.color = new Color(1f, 1f, 1f, 1f);
                     coll.enabled = true;
-                    if (!spawnItem.isReleased)
-                        OnDestroyItem(spawnItem);
+                    spawnItem.Pool.Release(itemPool);
                     spawnItem = null;
                 }
                 if(GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
@@ -413,8 +385,7 @@ public class Structure : MonoBehaviour
             sprite.color = new Color(1f, 1f, 1f, 1f);
             coll.enabled = true;
             setFacDelayCoroutine = null;
-            if (!spawnItem.isReleased)
-                OnDestroyItem(spawnItem);
+            spawnItem.Pool.Release(itemPool);
         }
         else
         {
@@ -711,10 +682,6 @@ public class Structure : MonoBehaviour
 
         if (repairTower != null)
             repairTower.RemoveObjectsOutOfRange(this.gameObject);
-
-        if (spawnItem && !spawnItem.isOnBelt && !spawnItem.isReleased)
-            //Destroy(spawnItem.gameObject);
-            OnDestroyItem(spawnItem);
 
         AddInvenItem();
 

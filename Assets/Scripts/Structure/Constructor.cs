@@ -106,8 +106,8 @@ public class Constructor : Production
             inventory.SlotAdd(0, itemProps.item, itemProps.amount);
         }
 
-        OnDestroyItem(itemProps);
-    }    
+        base.OnFactoryItem(itemProps);
+    }
     public override void OnFactoryItem(Item item)
     {
         if (itemDic[recipe.items[0]] == item)

@@ -106,7 +106,7 @@ public class ChemicalPlant : Production
             inventory.SlotAdd(0, itemProps.item, itemProps.amount);
         }
 
-        OnDestroyItem(itemProps);
+        base.OnFactoryItem(itemProps);
     }
     public override void OnFactoryItem(Item item)
     {

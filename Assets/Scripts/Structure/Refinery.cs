@@ -15,7 +15,6 @@ public class Refinery : FluidFactoryCtrl
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
 
-        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 100);
         #endregion
     }
 
@@ -178,7 +177,7 @@ public class Refinery : FluidFactoryCtrl
             inventory.SlotAdd(0, itemProps.item, itemProps.amount);
         }
 
-        OnDestroyItem(itemProps);
+        base.OnFactoryItem(itemProps);
     }
     public override void OnFactoryItem(Item item)
     {

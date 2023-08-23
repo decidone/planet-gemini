@@ -45,8 +45,6 @@ public abstract class Production : Structure
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
-
-        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 100);
     }
 
     protected virtual void Start()

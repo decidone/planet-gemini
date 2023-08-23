@@ -120,7 +120,7 @@ public class Assembler : Production
             inventory.SlotAdd(1, itemProps.item, itemProps.amount);
         }
 
-        OnDestroyItem(itemProps);
+        base.OnFactoryItem(itemProps);
     }
 
     public override void OnFactoryItem(Item item)

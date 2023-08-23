@@ -132,7 +132,7 @@ public class Manufacturer : Production
             inventory.SlotAdd(2, itemProps.item, itemProps.amount);
         }
 
-        OnDestroyItem(itemProps);
+        base.OnFactoryItem(itemProps);
     }
 
     public override void OnFactoryItem(Item item)

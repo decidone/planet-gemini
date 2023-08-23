@@ -186,7 +186,7 @@ public class SplitterCtrl : LogisticsCtrl
 
         if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
         {
-            ItemProps spawnItem = itemPool.Get();
+            //ItemProps spawnItem = itemPool.Get();
             if (beltCtrl.OnBeltItem(spawnItem))
             {
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -200,7 +200,7 @@ public class SplitterCtrl : LogisticsCtrl
             }
             else
             {
-                OnDestroyItem(spawnItem);
+                //OnDestroyItem(spawnItem);
                 FilterIndexCheck();
                 itemSetDelay = false;
                 return;
