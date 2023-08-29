@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public enum BeltState
 {
@@ -448,16 +450,29 @@ public class BeltCtrl : LogisticsCtrl
         FactoryModelSet();
     }
 
-    public void PlayerRootItem(ItemProps item)
-    {
-        if (itemObjList.Contains(item))
-        {
-            itemObjList.Remove(item);
-        }
+    //public void PlayerRootItem(ItemProps item)
+    //{
+    //    if (itemObjList.Contains(item))
+    //    {
+    //        itemObjList.Remove(item);
+    //    }
 
+    //    if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+    //        isFull = true;
+    //    else
+    //        isFull = false;
+    //}
+
+    public List<ItemProps> PlayerRootItem()
+    {
+        List<ItemProps> sendItemList = new List<ItemProps>(itemObjList);
+        itemObjList.Clear();
+        
         if (itemObjList.Count >= structureData.MaxItemStorageLimit)
             isFull = true;
         else
             isFull = false;
+
+        return sendItemList;
     }
 }

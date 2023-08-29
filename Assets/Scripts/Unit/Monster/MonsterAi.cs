@@ -283,8 +283,19 @@ public class MonsterAi : UnitCommonAi
 
             if (targetTags.Contains(targetTag))
             {
-                TowerAi towerAiComponent = target.GetComponent<TowerAi>();
-                if (towerAiComponent != null && towerAiComponent.col.isTrigger)
+                Structure structure = target.GetComponent<Structure>();
+                if (structure != null && structure.col.isTrigger)
+                {
+                    continue;
+                }
+                else if (!targetListSet.Contains(target))
+                {
+                    targetListSet.Add(target);
+                    targetList.Add(target);
+                }
+
+                PlayerController player = target.GetComponent<PlayerController>();
+                if (player != null && !player.circleColl)
                 {
                     continue;
                 }

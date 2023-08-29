@@ -34,7 +34,7 @@ public class BuildingInfo : MonoBehaviour
 
     public void BuildingClick()
     {
-        if (totalAmountsEnough && selectBuildingData != null)
+        if (selectBuildingData != null)
         {
             preBuilding.SetActive(true);
             PreBuilding.instance.SetImage(selectBuilding.gameObj, selectBuilding.level, selectBuilding.height, selectBuilding.width, selectBuilding.dirCount);

@@ -13,5 +13,12 @@ public class ItemProps : MonoBehaviour
     [HideInInspector]
     public bool isOnBelt = false;
     [HideInInspector]
-    public BeltCtrl setOnBelt = null;
+    public BeltCtrl setOnBelt;
+
+    public Collider2D col;
+
+    private void Awake()
+    {
+        col = GetComponent<Collider2D>();
+    }
 }

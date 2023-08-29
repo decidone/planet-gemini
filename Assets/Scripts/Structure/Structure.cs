@@ -268,6 +268,7 @@ public class Structure : MonoBehaviour
                 if (beltCtrl.OnBeltItem(spawnItem))
                 {
                     SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                    spawnItem.col.enabled = false;
                     sprite.sprite = item.icon;
                     spawnItem.item = item;
                     spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
@@ -294,11 +295,28 @@ public class Structure : MonoBehaviour
             }
             else if (outObj[sendItemIndex].GetComponent<LogisticsCtrl>())
             {
-                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
+                if (outObj[sendItemIndex].GetComponent<ItemSpawner>()) 
+                {
+                    sendItemIndex++;
+                    if (sendItemIndex >= outObj.Count)
+                        sendItemIndex = 0;
+
+                    itemSetDelay = false;
+                }
+                else
+                    setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
             }
             else if (outObj[sendItemIndex].TryGetComponent(out Production production))
             {
-                if (production.CanTakeItem(item))
+                if (outObj[sendItemIndex].GetComponent<Miner>())
+                {
+                    sendItemIndex++;
+                    if (sendItemIndex >= outObj.Count)
+                        sendItemIndex = 0;
+
+                    itemSetDelay = false;
+                }
+                else if (production.CanTakeItem(item))
                 {
                     setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
                 }
@@ -328,6 +346,7 @@ public class Structure : MonoBehaviour
     protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
     {
         var itemPool = ItemPoolManager.instance.Pool.Get();
+        spawnItem.col.enabled = false;
         spawnItem = itemPool.GetComponent<ItemProps>();
         SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
