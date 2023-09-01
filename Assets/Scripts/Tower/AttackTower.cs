@@ -41,10 +41,6 @@ public class AttackTower : TowerAi
                     AttackTargetDisCheck();
                 }
             }
-            //else if(isRuin && isRepair)
-            //{
-            //    RepairFunc(false);
-            //}
         }
         if (isRuin && isRepair)
         {
@@ -105,7 +101,7 @@ public class AttackTower : TowerAi
 
     private void SearchObjectsInRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, towerData.ColliderRadius);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
 
         foreach (Collider2D collider in colliders)
         {
@@ -129,7 +125,7 @@ public class AttackTower : TowerAi
             else
             {
                 GameObject monster = monsterList[i];
-                if (Vector2.Distance(this.transform.position, monster.transform.position) > towerData.ColliderRadius)
+                if (Vector2.Distance(this.transform.position, monster.transform.position) > structureData.ColliderRadius)
                 {
                     monsterList.RemoveAt(i);
                 }
@@ -168,6 +164,14 @@ public class AttackTower : TowerAi
     protected virtual void AttackStart()
     {
 
+    }
+    protected override void DieFunc()
+    {
+        base.DieFunc();
+
+        Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
+
+        animator.SetBool("isDie", true);
     }
 
     public void RemoveMonster(GameObject monster)

@@ -132,7 +132,7 @@ public class Furnace : Production
             }
         }
 
-        OnDestroyItem(itemProps);
+        base.OnFactoryItem(itemProps);
     }
 
     public override void OnFactoryItem(Item item)

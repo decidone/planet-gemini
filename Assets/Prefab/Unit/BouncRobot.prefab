@@ -424,15 +424,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff9eefa22e2ccc04cac3e9088740b8b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitData: {fileID: 11400000, guid: 40e0200c2877caf4cad2740d816989a7, type: 2}
+  unitCommonData: {fileID: 11400000, guid: d4523c5fa7df1244998568cd8862e84a, type: 2}
+  targetList: []
   animator: {fileID: 8598225404917607297}
   unitSprite: {fileID: 8598225404917607299}
   unitCanvas: {fileID: 4756777200039858359}
-  unitAIState: 0
-  unitLastState: 0
-  unitSelImg: {fileID: 4471495155955281645}
-  monsterList: []
   hpBar: {fileID: 4091917225622394909}
+  unitSelImg: {fileID: 4471495155955281645}
   attackFX: {fileID: 6504030904359307953, guid: 40bd9cdc15d5f9240b0890356a39b38b, type: 3}
 --- !u!114 &3784004604832727098
 MonoBehaviour:

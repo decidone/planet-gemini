@@ -25,7 +25,7 @@ public class RemoveBuild : MonoBehaviour
             {
                 foreach (RaycastHit2D hit in hits)
                 {
-                    if (hit.collider.TryGetComponent(out Structure structure))
+                    if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
                     {
                         UiCheck(structure);
                         structure.RemoveObj();

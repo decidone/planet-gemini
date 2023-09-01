@@ -10,12 +10,10 @@ public class LogisticsCtrl : Structure
         GameManager gameManager = GameManager.instance;
         playerInven = gameManager.GetComponent<Inventory>();
         buildName = structureData.FactoryName;
-        box2D = GetComponent<BoxCollider2D>();
+        col = GetComponent<BoxCollider2D>();
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
-
-        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 100);
     }
 
     protected virtual void Update()
@@ -33,7 +31,7 @@ public class LogisticsCtrl : Structure
         }
     }
 
-    public List<Item> PlayerGetItemList() //나중에 프러덕션도 추가하는걸로
+    public List<Item> PlayerGetItemList()
     {
         List<Item> itemListCopy = new List<Item>(itemList);
         itemList.Clear();
@@ -75,11 +73,11 @@ public class LogisticsCtrl : Structure
     {
         itemList.Add(itemProps.item);
 
-        OnDestroyItem(itemProps);
         if (itemList.Count >= structureData.MaxItemStorageLimit)
         {
             isFull = true;
         }
+        base.OnFactoryItem(itemProps);
     }
 
     public override void OnFactoryItem(Item item)
@@ -123,7 +121,7 @@ public class LogisticsCtrl : Structure
                 foreach (ItemProps itemProps in itemObjList)
                 {
                     playerInven.Add(itemProps.item, itemProps.amount);
-                    OnDestroyItem(itemProps);
+                    itemProps.Pool.Release(itemProps.gameObject);
                 }
             }
         }

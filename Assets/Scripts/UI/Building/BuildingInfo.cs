@@ -7,7 +7,6 @@ public class BuildingInfo : MonoBehaviour
 {
     public GameObject itemImg = null;
     public GameObject buildingInfoPanel = null;
-    //List<GameObject> buildingNeedList = new List<GameObject>();
     [SerializeField]
     BuildingImgCtrl[] buildingNeedList;
 
@@ -15,9 +14,6 @@ public class BuildingInfo : MonoBehaviour
     BuildingData selectBuildingData = null;
     public GameObject preBuilding;
 
-    //protected PreBuilding preBuilding;
-
-    public Button buildingBtn;
     bool totalAmountsEnough = false;
 
     public Inventory inventory = null;
@@ -36,15 +32,9 @@ public class BuildingInfo : MonoBehaviour
     }
     #endregion
 
-    void Start()
+    public void BuildingClick()
     {
-        if (buildingBtn != null)
-            buildingBtn.onClick.AddListener(BuildingClick);
-    }
-
-    void BuildingClick()
-    {
-        if (totalAmountsEnough && selectBuildingData != null)
+        if (selectBuildingData != null)
         {
             preBuilding.SetActive(true);
             PreBuilding.instance.SetImage(selectBuilding.gameObj, selectBuilding.level, selectBuilding.height, selectBuilding.width, selectBuilding.dirCount);

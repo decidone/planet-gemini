@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 
 public class ItemProps : MonoBehaviour
 {
-    IObjectPool<ItemProps> itemPool;
+    public IObjectPool<GameObject> Pool { get; set; }
 
     public Item item;
     public int amount;
@@ -13,31 +13,12 @@ public class ItemProps : MonoBehaviour
     [HideInInspector]
     public bool isOnBelt = false;
     [HideInInspector]
-    public BeltCtrl setOnBelt = null;
+    public BeltCtrl setOnBelt;
 
-    public bool isReleased = false;
-    public bool IsReleased
-    {
-        get { return isReleased; }
-    }
+    public Collider2D col;
 
-    public void SetReleased(bool released)
+    private void Awake()
     {
-        isReleased = released;
-    }
-
-    public void SetPool(IObjectPool<ItemProps> pool)
-    {
-        itemPool = pool;
-    }
-
-    public void DestroyItem()
-    {
-        if (isOnBelt || isReleased)
-        {
-            itemPool.Release(this);
-        }
-        else
-            Destroy(this.gameObject);
+        col = GetComponent<Collider2D>();
     }
 }

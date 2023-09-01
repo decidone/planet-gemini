@@ -135,111 +135,122 @@ public class PreBuilding : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton)
+        if(isEnough)
         {
-            mouseBtnFunc = MouseBtnFunc.None;
-        }
-        if (!EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton && isMouseLeft)//Input.GetMouseButton(0))
-        {
-            //if (startTempPos == startBuildPos)
-            //    startBuildPos = transform.position;
-
-            tempPos = transform.position;
-            float tempDeltaX = tempPos.x - endBuildPos.x;
-            float tempDeltaY = tempPos.y - endBuildPos.y;
-            float tempAbsDeltaX = Mathf.Abs(tempDeltaX);
-            float tempAbsDeltaY = Mathf.Abs(tempDeltaY);
-
-            if (tempAbsDeltaX >= 1 || tempAbsDeltaY >= 1)
+            if(EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton)
             {
-                endBuildPos = tempPos;
+                mouseBtnFunc = MouseBtnFunc.None;
+            }
+            if (!EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton && isMouseLeft)//Input.GetMouseButton(0))
+            {
+                if(BuildingInfo.instance.AmountsEnoughCheck())
+                {
+                    tempPos = transform.position;
+                    float tempDeltaX = tempPos.x - endBuildPos.x;
+                    float tempDeltaY = tempPos.y - endBuildPos.y;
+                    float tempAbsDeltaX = Mathf.Abs(tempDeltaX);
+                    float tempAbsDeltaY = Mathf.Abs(tempDeltaY);
 
-                float deltaX = endBuildPos.x - startBuildPos.x;
-                float deltaY = endBuildPos.y - startBuildPos.y;
-                float absDeltaX = Mathf.Abs(deltaX);
-                float absDeltaY = Mathf.Abs(deltaY);
+                    if (tempAbsDeltaX >= 1 || tempAbsDeltaY >= 1)
+                    {
+                        endBuildPos = tempPos;
 
-                //posList.Clear();
+                        float deltaX = endBuildPos.x - startBuildPos.x;
+                        float deltaY = endBuildPos.y - startBuildPos.y;
+                        float absDeltaX = Mathf.Abs(deltaX);
+                        float absDeltaY = Mathf.Abs(deltaY);
 
-                if (absDeltaX >= absDeltaY)
-                    isMoveX = true;
-                else
-                    isMoveX = false;
+                        //posList.Clear();
 
-                CheckPos();
-                isDrag = true;
+                        if (absDeltaX >= absDeltaY)
+                            isMoveX = true;
+                        else
+                            isMoveX = false;
+
+                        CheckPos();
+                        isDrag = true;
+                    }
+                }
             }
         }
     }
 
     protected void InputCheck()
     {
-        if (!isEnough || mouseBtnFunc != MouseBtnFunc.MouseButtonUp)
+        if (mouseBtnFunc != MouseBtnFunc.MouseButtonUp)        
             return;
 
-        if (isMouseLeft)
+        if (!isEnough && mouseBtnFunc == MouseBtnFunc.MouseButtonUp && !isMouseLeft)
         {
-            if (!isDrag && !EventSystem.current.IsPointerOverGameObject())
-            {
-                CheckPos();
-            }
+            ReSetImage();
+            return;
+        }
 
-            bool canBuild = false;
-            foreach (GameObject obj in buildingList)
+        if (isEnough)
+        {
+            if (isMouseLeft)
             {
-                if (GroupBuildCheck(obj))
-                    canBuild = true;
-                else
+                if (!isDrag && !EventSystem.current.IsPointerOverGameObject())
                 {
-                    canBuild = false;
-                    break;
+                    CheckPos();
                 }
-            }
 
-            if (canBuild)
-            {
+                bool canBuild = false;
                 foreach (GameObject obj in buildingList)
                 {
-                    setBuild = StartCoroutine("SetBuilding", obj);
-                    if(obj.TryGetComponent(out UnderBeltCtrl underBelt))
+                    if (GroupBuildCheck(obj))
+                        canBuild = true;
+                    else
                     {
-                        underBelt.buildEnd = true;
-                    }
-                    else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
-                    {
-                        underPipe.buildEnd = true;
+                        canBuild = false;
+                        break;
                     }
                 }
-            }
-            else
-            {
-                foreach (GameObject build in buildingList)
-                {
-                    Destroy(build);
-                }
-            }
 
-            buildingList.Clear();
-            //startTempPos = startBuildPos;
-            gameObj.SetActive(true);
-            posList.Clear();
-            isDrag = false;
-        }
-        else
-        {
-            if(setBuild == null)
-            {
-                foreach (GameObject build in buildingList)
+                if (canBuild)
                 {
-                    Destroy(build);
+                    foreach (GameObject obj in buildingList)
+                    {
+                        setBuild = StartCoroutine("SetBuilding", obj);
+                        if(obj.TryGetComponent(out UnderBeltCtrl underBelt))
+                        {
+                            underBelt.buildEnd = true;
+                        }
+                        else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+                        {
+                            underPipe.buildEnd = true;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (GameObject build in buildingList)
+                    {
+                        Destroy(build);
+                    }
                 }
 
                 buildingList.Clear();
-                ReSetImage();
+                //startTempPos = startBuildPos;
+                gameObj.SetActive(true);
                 posList.Clear();
                 isDrag = false;
             }
+            else
+            {
+                if(setBuild == null)
+                {
+                    foreach (GameObject build in buildingList)
+                    {
+                        Destroy(build);
+                    }
 
+                    buildingList.Clear();
+                    ReSetImage();
+                    posList.Clear();
+                    isDrag = false;
+                }
+            }
         }
         mouseBtnFunc = MouseBtnFunc.None;
     }

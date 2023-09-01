@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4342d4be0417a448ada223d591cfe9d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7649eee2cce166345b3adb9b43376fcd, type: 3}
   m_Name: SlimeSmallA
   m_EditorClassIdentifier: 
-  monsterName: SlimeSmallA
+  unitName: SlimeSmallA
   maxHp: 50
-  defense: 5
   damage: 13
   moveSpeed: 3
-  patrolRad: 3
   attackDist: 2
   attDelayTime: 1
   colliderRadius: 10
+  patrolRad: 3
   attackNum: 1
+  defense: 5

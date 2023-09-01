@@ -41,12 +41,10 @@ public abstract class Production : Structure
         playerInven = gameManager.GetComponent<Inventory>();
         inventory = this.GetComponent<Inventory>();
         buildName = structureData.FactoryName;
-        box2D = GetComponent<BoxCollider2D>();
+        col = GetComponent<BoxCollider2D>();
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
-
-        itemPool = new ObjectPool<ItemProps>(CreateItemObj, OnGetItem, OnReleaseItem, OnDestroyItem, maxSize: 100);
     }
 
     protected virtual void Start()
@@ -96,7 +94,7 @@ public abstract class Production : Structure
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<Structure>() != null && !obj.GetComponent<Miner>() && !obj.GetComponent<ItemSpawner>())
-            {
+        {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
@@ -112,6 +110,7 @@ public abstract class Production : Structure
                 StartCoroutine(OutCheck(obj));
             }
             outObj.Add(obj);
+            StartCoroutine(UnderBeltConnectCheck(obj));
         }
     }
 

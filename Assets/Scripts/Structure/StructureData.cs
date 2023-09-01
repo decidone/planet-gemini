@@ -40,4 +40,8 @@ public class StructureData : ScriptableObject
     [SerializeField]
     private float maxRepairGauge;
     public float MaxRepairGauge { get { return maxRepairGauge; } }
+
+    [SerializeField]
+    private float colliderRadius;//Å¸°Ù Å½»ö ¹üÀ§
+    public float ColliderRadius { get { return colliderRadius; } }
 }

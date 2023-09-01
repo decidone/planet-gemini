@@ -278,7 +278,6 @@ GameObject:
   - component: {fileID: 3134461431185528280}
   - component: {fileID: 3134461431185528283}
   - component: {fileID: 3134461431185528282}
-  - component: {fileID: 3134461431185528281}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -380,18 +379,6 @@ MonoBehaviour:
   m_Spacing: {x: 100, y: 10}
   m_Constraint: 0
   m_ConstraintCount: 2
---- !u!114 &3134461431185528281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3134461431185528284}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf0b7f218c0c3ad46819560271e0a26f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3134461431190745330
 GameObject:
   m_ObjectHideFlags: 0

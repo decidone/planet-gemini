@@ -9,14 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6d1e02c475b0ed408006eff5a9e2d42, type: 3}
+  m_Script: {fileID: 11500000, guid: 7649eee2cce166345b3adb9b43376fcd, type: 3}
   m_Name: SpinRobot
   m_EditorClassIdentifier: 
   unitName: SpinRobot
   maxHp: 200
-  defense: 0
   damage: 20
   moveSpeed: 8
   attackDist: 2
   attDelayTime: 2
   colliderRadius: 10
+  patrolRad: 0
+  attackNum: 0
+  defense: 0

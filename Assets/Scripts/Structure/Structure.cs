@@ -47,9 +47,6 @@ public class Structure : MonoBehaviour
     protected Image repairBar;
     protected float repairGauge = 0.0f;
 
-    [SerializeField]
-    GameObject itemPref;
-    protected IObjectPool<ItemProps> itemPool;
     [HideInInspector]
     public List<Item> itemList = new List<Item>();
     public List<ItemProps> itemObjList = new List<ItemProps>();
@@ -65,7 +62,6 @@ public class Structure : MonoBehaviour
 
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
-    protected BoxCollider2D box2D = null;
 
     public List<GameObject> inObj = new List<GameObject>();
     public List<GameObject> outObj = new List<GameObject>();
@@ -83,30 +79,12 @@ public class Structure : MonoBehaviour
 
     public ItemProps spawnItem;
 
-    protected ItemProps CreateItemObj()
-    {
-        ItemProps item = Instantiate(itemPref).GetComponent<ItemProps>();
-        item.SetPool(itemPool);
-        return item;
-    }
+    [HideInInspector]
+    public List<GameObject> monsterList = new List<GameObject>();
 
-    protected void OnGetItem(ItemProps item)
-    {
-        item.gameObject.SetActive(true);
-    }
-    protected void OnReleaseItem(ItemProps item)
-    {
-        item.gameObject.SetActive(false);
-    }
-    protected void OnDestroyItem(ItemProps item)
-    {
-        if (item != null)
-        {
-            item.SetReleased(true);
-            item.DestroyItem();
-        }
-        //Destroy(item.gameObject, 0.4f);
-    }
+    public Collider2D col;
+    public RepairTower repairTower;
+
     public virtual bool CheckOutItemNum()  { return new bool(); }
 
     protected virtual void SetDirNum()
@@ -171,19 +149,57 @@ public class Structure : MonoBehaviour
     }
     // 건물 설치 기능
 
-    public virtual void OnFactoryItem(ItemProps itemObj) { }
+    public virtual void OnFactoryItem(ItemProps itemObj) 
+    {
+        itemObj.Pool.Release(itemObj.gameObject);
+    }
+
     public virtual void OnFactoryItem(Item item) { }
     public virtual void ItemNumCheck() { }
+
+    protected virtual IEnumerator UnderBeltConnectCheck(GameObject game)
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        if (game.TryGetComponent(out GetUnderBeltCtrl getUnder))
+        {
+            if (!getUnder.outObj.Contains(this.gameObject))
+            {
+                inObj.Remove(game);
+            }
+            if (!getUnder.inObj.Contains(this.gameObject))
+            {
+                outObj.Remove(game);
+                outSameList.Remove(game);
+            }
+        }
+        else if (game.TryGetComponent(out SendUnderBeltCtrl sendUnder))
+        {
+            if (!sendUnder.inObj.Contains(this.gameObject))
+            {
+                outObj.Remove(game); 
+                outSameList.Remove(game);
+            }
+            if (!sendUnder.outObj.Contains(this.gameObject))
+            {
+                inObj.Remove(game);
+            }
+        }
+    }
 
     protected virtual void GetItem()
     {
         itemGetDelay = true;
-
-        if (inObj[getItemIndex] == null)
+        if (getItemIndex > inObj.Count)
         {
             getItemIndex = 0;
             return;
         }
+        else if (inObj[getItemIndex] == null)
+        {
+            getItemIndex = 0;
+            return;
+        }         
         else if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
         {
             if (belt.itemObjList.Count > 0)
@@ -226,12 +242,18 @@ public class Structure : MonoBehaviour
         if (setFacDelayCoroutine != null)
         {
             return;
+        }        
+        else if(sendItemIndex > outObj.Count)
+        {
+            sendItemIndex = 0;
+            return;
         }
         else if (outObj[sendItemIndex] == null)
         {
-            getItemIndex = 0;
+            sendItemIndex = 0;
             return;
         }
+
 
         itemSetDelay = true;
 
@@ -241,11 +263,12 @@ public class Structure : MonoBehaviour
         {
             if (outObj[sendItemIndex].TryGetComponent(out BeltCtrl beltCtrl))
             {
-                spawnItem = itemPool.Get();
-                spawnItem.SetReleased(false);
+                var itemPool = ItemPoolManager.instance.Pool.Get();
+                spawnItem = itemPool.GetComponent<ItemProps>();
                 if (beltCtrl.OnBeltItem(spawnItem))
                 {
                     SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                    spawnItem.col.enabled = false;
                     sprite.sprite = item.icon;
                     spawnItem.item = item;
                     spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
@@ -266,21 +289,34 @@ public class Structure : MonoBehaviour
                 }
                 else
                 {
-                    if(!spawnItem.isReleased)
-                    {
-                        OnDestroyItem(spawnItem);
-                    }    
                     itemSetDelay = false;
                     return;
                 }
             }
             else if (outObj[sendItemIndex].GetComponent<LogisticsCtrl>())
             {
-                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
+                if (outObj[sendItemIndex].GetComponent<ItemSpawner>()) 
+                {
+                    sendItemIndex++;
+                    if (sendItemIndex >= outObj.Count)
+                        sendItemIndex = 0;
+
+                    itemSetDelay = false;
+                }
+                else
+                    setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
             }
             else if (outObj[sendItemIndex].TryGetComponent(out Production production))
             {
-                if (production.CanTakeItem(item))
+                if (outObj[sendItemIndex].GetComponent<Miner>())
+                {
+                    sendItemIndex++;
+                    if (sendItemIndex >= outObj.Count)
+                        sendItemIndex = 0;
+
+                    itemSetDelay = false;
+                }
+                else if (production.CanTakeItem(item))
                 {
                     setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
                 }
@@ -309,8 +345,9 @@ public class Structure : MonoBehaviour
 
     protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
     {
-        spawnItem = itemPool.Get();
-        spawnItem.SetReleased(false);
+        var itemPool = ItemPoolManager.instance.Pool.Get();
+        spawnItem.col.enabled = false;
+        spawnItem = itemPool.GetComponent<ItemProps>();
         SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
         CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
@@ -347,8 +384,7 @@ public class Structure : MonoBehaviour
                 {
                     sprite.color = new Color(1f, 1f, 1f, 1f);
                     coll.enabled = true;
-                    if (!spawnItem.isReleased)
-                        OnDestroyItem(spawnItem);
+                    spawnItem.Pool.Release(itemPool);
                     spawnItem = null;
                 }
                 if(GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
@@ -368,8 +404,7 @@ public class Structure : MonoBehaviour
             sprite.color = new Color(1f, 1f, 1f, 1f);
             coll.enabled = true;
             setFacDelayCoroutine = null;
-            if (!spawnItem.isReleased)
-                OnDestroyItem(spawnItem);
+            spawnItem.Pool.Release(itemPool);
         }
         else
         {
@@ -420,14 +455,50 @@ public class Structure : MonoBehaviour
         }
     }
 
-    protected void DieFunc()
+    protected virtual void DieFunc()
     {
+        hp = structureData.MaxHp[level];
         repairBar.enabled = true;
         hpBar.enabled = false;
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         ColliderTriggerOnOff(true);
         isRuin = true;
+
+        if (!isPreBuilding)
+        {
+            foreach (GameObject monster in monsterList)
+            {
+                if (monster.TryGetComponent(out MonsterAi monsterAi))
+                {
+                    monsterAi.RemoveTarget(this.gameObject);
+                }
+            }
+        }
+        else
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
+
+            foreach (Collider2D collider in colliders)
+            {
+                GameObject monster = collider.gameObject;
+                if (monster.CompareTag("Monster"))
+                {
+                    if (!monsterList.Contains(monster))
+                    {
+                        monsterList.Add(monster);
+                    }
+                }
+            }
+            foreach (GameObject monsterObj in monsterList)
+            {
+                if (monsterObj.TryGetComponent(out MonsterAi monsterAi))
+                {
+                    monsterAi.RemoveTarget(this.gameObject);
+                }
+            }
+        }
+        monsterList.Clear();
     }
 
     public void HealFunc(float heal)
@@ -489,7 +560,7 @@ public class Structure : MonoBehaviour
         }
     }
 
-    protected void RepairEnd()
+    protected virtual void RepairEnd()
     {
         hpBar.enabled = true;
         hp = structureData.MaxHp[level];
@@ -505,9 +576,9 @@ public class Structure : MonoBehaviour
     public virtual void ColliderTriggerOnOff(bool isOn)
     {
         if (isOn)
-            box2D.isTrigger = true;
+            col.isTrigger = true;
         else
-            box2D.isTrigger = false;
+            col.isTrigger = false;
     }
 
     protected void RemoveSameOutList()
@@ -530,6 +601,7 @@ public class Structure : MonoBehaviour
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             inObj.Add(obj);
+            StartCoroutine(UnderBeltConnectCheck(obj));
         }
     }
 
@@ -551,6 +623,7 @@ public class Structure : MonoBehaviour
                 StartCoroutine(OutCheck(obj));
             }
             outObj.Add(obj);
+            StartCoroutine(UnderBeltConnectCheck(obj));
         }
     }
 
@@ -626,9 +699,8 @@ public class Structure : MonoBehaviour
             beltManager.BeltDivide(beltGroup, this.gameObject);
         }
 
-        if (spawnItem && !spawnItem.isOnBelt && !spawnItem.isReleased)
-            //Destroy(spawnItem.gameObject);
-            OnDestroyItem(spawnItem);
+        if (repairTower != null)
+            repairTower.RemoveObjectsOutOfRange(this.gameObject);
 
         AddInvenItem();
 

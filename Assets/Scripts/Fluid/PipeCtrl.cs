@@ -6,7 +6,6 @@ public class PipeCtrl : FluidFactoryCtrl
 {
     public PipeGroupMgr pipeGroupMgr;
 
-    //GameObject[] nearObj = new GameObject[4];
     public bool isUp = false;
     public bool isRight = false;
     public bool isDown = false;
@@ -49,17 +48,40 @@ public class PipeCtrl : FluidFactoryCtrl
 
     void ObjCheck(GameObject game, Vector3 vec)
     {
-        if (vec == transform.up)
-            isUp = true;
-        if (vec == transform.right)
-            isRight = true;
-        if (vec == -transform.up)
-            isDown = true;
-        if (vec == -transform.right)
-            isLeft = true;
+        if(!game.TryGetComponent(out UnderPipeCtrl underPipe))
+        {
+            if (vec == transform.up)
+                isUp = true;
+            if (vec == transform.right)
+                isRight = true;
+            if (vec == -transform.up)
+                isDown = true;
+            if (vec == -transform.right)
+                isLeft = true;
 
-        if (game.GetComponent<PipeCtrl>() != null)
-            pipeGroupMgr.CheckGroup(game.GetComponent<PipeCtrl>());
+            if (game.GetComponent<PipeCtrl>() != null)
+                pipeGroupMgr.CheckGroup(game.GetComponent<PipeCtrl>());
+        }
+        else
+        {
+            UnderPipeConnectCheck(underPipe, vec);
+        }
+    }
+
+    IEnumerator UnderPipeConnectCheck(UnderPipeCtrl underPipe, Vector3 vec)
+    {
+        yield return new WaitForSeconds(0.1f);
+        if(underPipe.otherPipe == this.gameObject)
+        {
+            if (vec == transform.up)
+                isUp = true;
+            if (vec == transform.right)
+                isRight = true;
+            if (vec == -transform.up)
+                isDown = true;
+            if (vec == -transform.right)
+                isLeft = true;
+        }
     }
 
     void ChangeModel()

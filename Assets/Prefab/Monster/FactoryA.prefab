@@ -144,16 +144,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterData: {fileID: 11400000, guid: 452ff8c6d33545d4997bbe30003633be, type: 2}
-  animator: {fileID: 0}
-  isPatrolCoroutine: 0
-  aggroTarget: {fileID: 0}
+  unitCommonData: {fileID: 11400000, guid: 93edbc800f24e6b46b92bff6d3af7e92, type: 2}
   targetList: []
-  targetDist: 0
-  attackMotion: 0
-  hpBar: {fileID: 6349790761103010388}
+  animator: {fileID: 0}
   unitSprite: {fileID: 2589093502875389040}
   unitCanvas: {fileID: 3456046097214474780}
+  hpBar: {fileID: 6349790761103010388}
+  attackMotion: 0
   monsterAI: 0
   attackState: 0
 --- !u!70 &1462048544358157173

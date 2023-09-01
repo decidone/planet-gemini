@@ -92,6 +92,8 @@ public class BuildingInvenManager : MonoBehaviour
             Image currSlotImage = selectSlot.GetComponentInChildren<Image>();
             SetSlotColor(currSlotImage, Color.red, 0.5f);
         }
+
+        BuildingInfo.instance.BuildingClick();
     }
 
     void SetSlotColor(Image image, Color color, float alpha)

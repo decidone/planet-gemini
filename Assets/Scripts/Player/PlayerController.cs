@@ -7,6 +7,14 @@ public class PlayerController : MonoBehaviour
     public Inventory inventory;
 
     List<GameObject> items = new List<GameObject>();
+    List<GameObject> beltList = new List<GameObject>();
+
+    public Collider2D circleColl;
+
+    private void Awake()
+    {
+        circleColl = GetComponent<CircleCollider2D>();
+    }
 
     void Update()
     {
@@ -37,15 +45,23 @@ public class PlayerController : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         ItemProps itemProps = collision.GetComponent<ItemProps>();
-        if(itemProps)
+        BeltCtrl belt = collision.GetComponent<BeltCtrl>();
+
+        if (itemProps)
             items.Add(collision.gameObject);
+        else if (belt)
+            beltList.Add(collision.gameObject);
     }
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        ItemProps itemProps = collision.GetComponent<ItemProps>();
+        ItemProps itemProps = collision.GetComponent<ItemProps>(); 
+        BeltCtrl belt = collision.GetComponent<BeltCtrl>();
+
         if (itemProps && items.Contains(collision.gameObject))
             items.Remove(collision.gameObject);
+        else if (belt && beltList.Contains(collision.gameObject))
+            beltList.Remove(collision.gameObject);
     }
 
     void Loot()
@@ -55,30 +71,12 @@ public class PlayerController : MonoBehaviour
             ItemProps itemProps = item.GetComponent<ItemProps>();
             if (itemProps)
             {
-                if (itemProps.isOnBelt) 
-                {
-                    itemProps.setOnBelt.PlayerRootItem(itemProps);
-                }
                 int containableAmount = inventory.SpaceCheck(itemProps.item);
                 if (itemProps.amount <= containableAmount)
                 {
-                    // 인벤토리에 넣음
                     inventory.Add(itemProps.item, itemProps.amount);
                     items.Remove(item);
-                    if (itemProps.isOnBelt)
-                    {
-                        itemProps.SetReleased(true); 
-                        itemProps.DestroyItem();
-                    }
-                    else
-                        Destroy(item);
-
-                    if (BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
-                        BuildingInfo.instance.SetItemSlot();
-                    if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
-                    {
-                        InfoWindow.instance.SetNeedItem();
-                    }
+                    Destroy(item);
 
                     break;
                 }
@@ -90,6 +88,54 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     Debug.Log("not enough space");
+                }
+
+                if (BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
+                {
+                    BuildingInfo.instance.SetItemSlot();
+                    PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+                }
+                if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
+                {
+                    InfoWindow.instance.SetNeedItem();
+                }
+            }
+        }
+
+        foreach (GameObject belt in beltList)
+        {
+            List<ItemProps> beltItems = new List<ItemProps>();
+
+            if (belt.TryGetComponent(out BeltCtrl beltCtrl))
+            {
+                beltItems = beltCtrl.PlayerRootItem();
+            }
+
+            foreach (ItemProps itemProps in beltItems)
+            {
+                int containableAmount = inventory.SpaceCheck(itemProps.item);
+                if (itemProps.amount <= containableAmount)
+                {
+                    inventory.Add(itemProps.item, itemProps.amount);
+                    itemProps.Pool.Release(itemProps.gameObject);
+                }
+                else if (containableAmount != 0)
+                {
+                    inventory.Add(itemProps.item, containableAmount);
+                    itemProps.amount -= containableAmount;
+                }
+                else
+                {
+                    Debug.Log("not enough space");
+                }
+                if (BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
+                {
+                    BuildingInfo.instance.SetItemSlot();
+                    PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+                }
+                if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
+                {
+                    InfoWindow.instance.SetNeedItem();
                 }
             }
         }

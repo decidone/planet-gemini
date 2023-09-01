@@ -263,24 +263,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca02a8664a226a14fbaf8f630c899b4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerData: {fileID: 11400000, guid: d63a1354048524c4db6cef6738baa67d, type: 2}
-  towerState: 0
-  unitCanvers: {fileID: 647539424351984221}
-  animator: {fileID: 5088120821849387775}
-  hpBar: {fileID: 8192833412653906609}
-  hp: 200
-  isRuin: 0
+  structureData: {fileID: 11400000, guid: 1491e26ad5fc7e9498ee0983d8f64ea9, type: 2}
+  isFull: 0
+  dirNum: 0
+  dirCount: 0
   level: 0
-  isRepair: 0
-  repairBar: {fileID: 8886362618660265932}
-  repairGauge: 0
-  capsule2D: {fileID: 0}
+  buildName: 
   isPreBuilding: 0
   isSetBuildingOk: 0
-  monsterList: []
+  unitCanvas: {fileID: 647539424351984221}
+  hpBar: {fileID: 8192833412653906609}
+  isRuin: 0
+  isRepair: 0
+  repairBar: {fileID: 8886362618660265932}
+  itemPref: {fileID: 0}
+  itemList: []
+  itemObjList: []
   canBuilding: 1
-  attackFX: {fileID: 3832536798139642931, guid: 22067a6743dd85943ac66ba5c3c774f6, type: 3}
+  inObj: []
+  outObj: []
+  outSameList: []
+  modelNum: []
+  spawnItem: {fileID: 0}
+  monsterList: []
+  towerData: {fileID: 11400000, guid: d63a1354048524c4db6cef6738baa67d, type: 2}
+  towerState: 0
+  animator: {fileID: 5088120821849387775}
+  capsule2D: {fileID: 0}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
+  attackFX: {fileID: 3832536798139642931, guid: 22067a6743dd85943ac66ba5c3c774f6, type: 3}
 --- !u!114 &-9021604783637356113
 MonoBehaviour:
   m_ObjectHideFlags: 0
