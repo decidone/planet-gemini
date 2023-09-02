@@ -2,25 +2,26 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 public class Inventory : MonoBehaviour
 {
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
     [SerializeField]
-    int space;   // ¾ÆÀÌÅÛ ½½·Ô »óÇÑ, µå·¡±×¿ë ½½·Ô ¹øÈ£¸¦ °â ÇÔ
-    public int maxAmount;   // ÇÑ ½½·Ô ´ç ÃÖ´ë ¼ö·®
+    int space;   // ì•„ì´í…œ ìŠ¬ë¡¯ ìƒí•œ, ë“œë˜ê·¸ìš© ìŠ¬ë¡¯ ë²ˆí˜¸ë¥¼ ê²¸ í•¨
+    public int maxAmount;   // í•œ ìŠ¬ë¡¯ ë‹¹ ìµœëŒ€ ìˆ˜ëŸ‰
     [SerializeField]
     GameObject itemPref;
     [SerializeField]
     GameObject player;
     Slot dragSlot;
 
-    // ÀÎº¥Åä¸®¿¡ Ç¥½ÃµÇ´Â ¾ÆÀÌÅÛ
+    // ì¸ë²¤í† ë¦¬ì— í‘œì‹œë˜ëŠ” ì•„ì´í…œ
     public Dictionary<int, Item> items = new Dictionary<int, Item>();
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
 
-    // ¾ÆÀÌÅÛ ÃÑ·® °ü¸®
+    // ì•„ì´í…œ ì´ëŸ‰ ê´€ë¦¬
     List<Item> itemList;
     public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
 
@@ -68,7 +69,7 @@ public class Inventory : MonoBehaviour
         }
         totalItems[item] += tempAmount;
 
-        // 2. ÀÌ¹Ì ÀÖ´ø Ä­¿¡ ¼ö·® Áõ°¡
+        // 2. ì´ë¯¸ ìˆë˜ ì¹¸ì— ìˆ˜ëŸ‰ ì¦ê°€
         for (int i = 0; i < space; i++)
         {
             if (items.ContainsKey(i))
@@ -91,7 +92,7 @@ public class Inventory : MonoBehaviour
                 break;
         }
 
-        // 3. 2¸¦ Ã³¸®ÇÏ°í ³²Àº ¼ö·®¸¸Å­ ºó Ä­¿¡ ¹èÁ¤
+        // 3. 2ë¥¼ ì²˜ë¦¬í•˜ê³  ë‚¨ì€ ìˆ˜ëŸ‰ë§Œí¼ ë¹ˆ ì¹¸ì— ë°°ì •
         if (tempAmount > 0)
         {
             for (int i = 0; i < space; i++)
@@ -123,7 +124,7 @@ public class Inventory : MonoBehaviour
     {
         if (!items.ContainsKey(slot.slotNum))
         {
-            // Å¸°Ù ½½·ÔÀÌ ºñ¾îÀÖ´Â °æ¿ì
+            // íƒ€ê²Ÿ ìŠ¬ë¡¯ì´ ë¹„ì–´ìˆëŠ” ê²½ìš°
             items.Add(slot.slotNum, dragSlot.item);
             amounts.Add(slot.slotNum, dragSlot.amount);
             totalItems[dragSlot.item] += dragSlot.amount;
@@ -131,7 +132,7 @@ public class Inventory : MonoBehaviour
         }
         else if (dragSlot.item == null)
         {
-            // µå·¡±× ½½·ÔÀÌ ºñ¾îÀÖ´Â °æ¿ì
+            // ë“œë˜ê·¸ ìŠ¬ë¡¯ì´ ë¹„ì–´ìˆëŠ” ê²½ìš°
             dragSlot.item = items[slot.slotNum];
             dragSlot.amount = amounts[slot.slotNum];
             totalItems[dragSlot.item] -= dragSlot.amount;
@@ -158,7 +159,7 @@ public class Inventory : MonoBehaviour
 
     public void Merge(Slot mergeSlot)
     {
-        // µå·¡±× ÁßÀÎ ½½·ÔÀÌ Ã¹ ¹øÂ° ÀÎÀÚ
+        // ë“œë˜ê·¸ ì¤‘ì¸ ìŠ¬ë¡¯ì´ ì²« ë²ˆì§¸ ì¸ì
         int mergeAmount = dragSlot.amount + amounts[mergeSlot.slotNum];
 
         if (mergeAmount > maxAmount)

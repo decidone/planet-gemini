@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ÏÑ§Ï†ï
 public class TowerSingleAttackFx : MonoBehaviour
 {
     float damage = 0;
 
     [SerializeField]
     protected Animator animator;
-    Vector3 moveNextStep = Vector3.zero;    // ¿Ãµø πÊ«‚ ∫§≈Õ
+    Vector3 moveNextStep = Vector3.zero;    // Ïù¥Îèô Î∞©Ìñ• Î≤°ÌÑ∞
     bool isHit = false;
 
     void Update()

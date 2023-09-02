@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 public class BuildingDataGet : MonoBehaviour
 {
     Dictionary<string, Dictionary<int, BuildingData>> buildingDataDic;
@@ -41,7 +42,7 @@ public class BuildingDataGet : MonoBehaviour
             }
         }
 
-        // Ã£À» ¼ö ¾ø´Â °æ¿ì ¶Ç´Â ¿¹¿Ü Ã³¸®¸¦ ¿øÇÏ´Â °æ¿ì¿¡ ´ëÇÑ ±âº»°ª ¹İÈ¯
+        // ì°¾ì„ ìˆ˜ ì—†ëŠ” ê²½ìš° ë˜ëŠ” ì˜ˆì™¸ ì²˜ë¦¬ë¥¼ ì›í•˜ëŠ” ê²½ìš°ì— ëŒ€í•œ ê¸°ë³¸ê°’ ë°˜í™˜
         return null;
     }
 }

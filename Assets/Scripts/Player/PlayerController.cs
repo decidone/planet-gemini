@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// UTF-8 설정
 public class PlayerController : MonoBehaviour
 {
     public Inventory inventory;

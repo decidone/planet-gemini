@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// UTF-8 설정
 public class RecipeManager : InventoryManager
 {
     public Button recipeBtn;

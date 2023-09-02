@@ -1,15 +1,16 @@
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 [CreateAssetMenu(fileName = "Tower Data", menuName = "Scriptable Object/Tower Data", order = int.MaxValue)]
 public class TowerData : ScriptableObject
 {
     [SerializeField]
-    private int damage;//µ¥¹ÌÁö
+    private int damage;//ë°ë¯¸ì§€
     public int Damage { get { return damage; } }
     [SerializeField]
-    private float attackDist;//°ø°İ ¹üÀ§
+    private float attackDist;//ê³µê²© ë²”ìœ„
     public float AttackDist { get { return attackDist; } }
     [SerializeField]
-    private float attDelayTime;//°ø°İ µô·¹ÀÌ
+    private float attDelayTime;//ê³µê²© ë”œë ˆì´
     public float AttDelayTime { get { return attDelayTime; } }
 }

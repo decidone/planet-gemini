@@ -3,31 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+// UTF-8 ì„¤ì •
 public class UnitAi : UnitCommonAi
 {
-    // ÀÌµ¿ °ü·Ã
+    // ì´ë™ ê´€ë ¨
     float moveRadi;
     Vector3 lastPosition;
     bool isMoveCheckCoroutine = false;
     bool isNewPosSet = false;
     float movedDistance;
 
-    // ÆäÆ®·Ñ °ü·Ã
+    // í˜íŠ¸ë¡¤ ê´€ë ¨
     bool isPatrolMove = true;
 
-    // È¦µå °ü·Ã
+    // í™€ë“œ ê´€ë ¨
     bool isHold = false;
 
-    // À¯´Ö »óÅÂ °ü·Ã
+    // ìœ ë‹› ìƒíƒœ ê´€ë ¨
     bool isLastStateOn = false;
 
-    AIState unitLastState = AIState.AI_Idle; // ½ÃÀÛ ½Ã ÆĞÆ®·Ñ »óÅÂ
+    AIState unitLastState = AIState.AI_Idle; // ì‹œì‘ ì‹œ íŒ¨íŠ¸ë¡¤ ìƒíƒœ
     public SpriteRenderer unitSelImg;
     bool unitSelect = false;
     UnitGroupCtrl unitGroupCtrl;
-    // °ø°İ °ü·Ã º¯¼ö
+    // ê³µê²© ê´€ë ¨ ë³€ìˆ˜
     List<Vector3> aggroPath = new List<Vector3>();    
-    private int aggropointIndex; // ÇöÀç ÀÌµ¿ ÁßÀÎ °æ·Î Á¡ ÀÎµ¦½º
+    private int aggropointIndex; // í˜„ì¬ ì´ë™ ì¤‘ì¸ ê²½ë¡œ ì  ì¸ë±ìŠ¤
     bool isTargetSet = false;
     bool isAttackMove = true;
 

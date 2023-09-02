@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine;
 
+// UTF-8 설정
 public class ToggleButton : MonoBehaviour
 {
     public UnityEvent onToggleOn;

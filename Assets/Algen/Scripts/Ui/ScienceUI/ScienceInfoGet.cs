@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 설정
 public class ScienceInfoGet : MonoBehaviour
 {
     Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>> scienceInfoDataDic;

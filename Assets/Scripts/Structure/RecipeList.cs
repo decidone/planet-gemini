@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 public class RecipeList : MonoBehaviour
 {
     Dictionary<string, List<Recipe>> recipeDic;
     List<Recipe> recipes;
-    // ·¹½ÃÇÇ ¾ç½Ä È®Á¤µÇ¸é jsonÀ¸·Î ¸¸µé¾î¼­ ÀúÀå/°ü¸®ÇÏ°í ¿©±â¼­ ºÒ·¯¿Í¼­ »ç¿ë
+    // ë ˆì‹œí”¼ ì–‘ì‹ í™•ì •ë˜ë©´ jsonìœ¼ë¡œ ë§Œë“¤ì–´ì„œ ì €ì¥/ê´€ë¦¬í•˜ê³  ì—¬ê¸°ì„œ ë¶ˆëŸ¬ì™€ì„œ ì‚¬ìš©
 
     #region Singleton
     public static RecipeList instance;

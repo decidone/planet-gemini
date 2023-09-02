@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// UTF-8 ì„¤ì •
 public class StructureInvenManager : InventoryManager
 {
     [SerializeField]
@@ -93,7 +94,7 @@ public class StructureInvenManager : InventoryManager
 
     public int InsertItem(Item item, int amount)
     {
-        // input ½½·ÔÀ¸·Î ÁöÁ¤µÈ Ä­¿¡ ¾ÆÀÌÅÛÀ» ³ÖÀ» ¶§ »ç¿ë
+        // input ìŠ¬ë¡¯ìœ¼ë¡œ ì§€ì •ëœ ì¹¸ì— ì•„ì´í…œì„ ë„£ì„ ë•Œ ì‚¬ìš©
         int containable = 0;
         for (int i = 0; i < slots.Length; i++)
         {

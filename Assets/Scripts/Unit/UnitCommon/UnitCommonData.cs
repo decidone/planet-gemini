@@ -1,37 +1,38 @@
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 [CreateAssetMenu(fileName = "UnitCommonData Data", menuName = "Scriptable Object/UnitCommon Data", order = int.MaxValue)]
 public class UnitCommonData : ScriptableObject
 {
     [SerializeField]
-    private string unitName;//ÀÌ¸§
+    private string unitName;//ì´ë¦„
     public string UnitName { get { return unitName; } }
     [SerializeField]
-    private int maxHp;//Ã¼·Â
+    private int maxHp;//ì²´ë ¥
     public int MaxHp { get { return maxHp; } }
 
     [SerializeField]
-    private int damage;//µ¥¹ÌÁö
+    private int damage;//ë°ë¯¸ì§€
     public int Damage { get { return damage; } }
     [SerializeField]
-    private float moveSpeed;//ÀÌµ¿¼Óµµ
+    private float moveSpeed;//ì´ë™ì†ë„
     public float MoveSpeed { get { return moveSpeed; } }
     [SerializeField]
-    private float attackDist;//°ø°İ ¹üÀ§
+    private float attackDist;//ê³µê²© ë²”ìœ„
     public float AttackDist { get { return attackDist; } }
     [SerializeField]
-    private float attDelayTime;//°ø°İ µô·¹ÀÌ
+    private float attDelayTime;//ê³µê²© ë”œë ˆì´
     public float AttDelayTime { get { return attDelayTime; } }
     [SerializeField]
-    private float colliderRadius;//Å¸°Ù Å½»ö ¹üÀ§
+    private float colliderRadius;//íƒ€ê²Ÿ íƒìƒ‰ ë²”ìœ„
     public float ColliderRadius { get { return colliderRadius; } }
     
-    //¸ó½ºÅÍ Àü¿ë
+    //ëª¬ìŠ¤í„° ì „ìš©
     [SerializeField]
-    private float patrolRad;//ÆĞÆ®·Ñ ¹üÀ§
+    private float patrolRad;//íŒ¨íŠ¸ë¡¤ ë²”ìœ„
     public float PatrolRad { get { return patrolRad; } }
     [SerializeField]
-    private int attackNum;//°ø°İ ¸ğ¼Ç
+    private int attackNum;//ê³µê²© ëª¨ì…˜
     public int AttackNum { get { return attackNum; } }    
     [SerializeField]
     private float defense;

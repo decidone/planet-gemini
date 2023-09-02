@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// UTF-8 설정
 [CreateAssetMenu(fileName = "New Buliding", menuName = "Inventory/Buliding")]
 
 public class Building : ScriptableObject

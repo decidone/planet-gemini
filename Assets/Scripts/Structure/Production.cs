@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
+// UTF-8 ì„¤ì •
 public abstract class Production : Structure
 {
-    // ¿¬·á(¼®Åº, Àü±â), ÀÛ¾÷ ½Ã°£, ÀÛ¾÷·®, Àç·á, »ı»êÇ°, ¾ÆÀÌÅÛ ½½·Ô
+    // ì—°ë£Œ(ì„íƒ„, ì „ê¸°), ì‘ì—… ì‹œê°„, ì‘ì—…ëŸ‰, ì¬ë£Œ, ìƒì‚°í’ˆ, ì•„ì´í…œ ìŠ¬ë¡¯
     [SerializeField]
     protected GameObject ui;
     [SerializeField]

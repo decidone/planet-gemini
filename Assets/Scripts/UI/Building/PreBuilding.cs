@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Pathfinding;
 
+// UTF-8 ì„¤ì •
 enum MouseBtnFunc
 {
     None,
@@ -272,7 +273,7 @@ public class PreBuilding : MonoBehaviour
                 posList.Clear();
             }
 
-            List<GameObject> objectsToRemove = new List<GameObject>(); // »èÁ¦µÈ ¿ÀºêÁ§Æ®¸¦ ÃßÀûÇÒ ¸®½ºÆ®
+            List<GameObject> objectsToRemove = new List<GameObject>(); // ì‚­ì œëœ ì˜¤ë¸Œì íŠ¸ë¥¼ ì¶”ì í•  ë¦¬ìŠ¤íŠ¸
             List<Vector3> posToRemove = new List<Vector3>();
             bool isRemoe = false;
 

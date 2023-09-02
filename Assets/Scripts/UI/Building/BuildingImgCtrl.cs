@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// UTF-8 ì„¤ì •
 public class BuildingImgCtrl : MonoBehaviour
 {
     public delegate void OnSlotChanged();
@@ -12,7 +13,7 @@ public class BuildingImgCtrl : MonoBehaviour
     public Text amountText;
 
     public Item item;
-    public List<Item> inputItem;  //inputSlot ¹Ş´Â ¾ÆÀÌÅÛ
+    public List<Item> inputItem;  //inputSlot ë°›ëŠ” ì•„ì´í…œ
     public int amount;
 
     void Start()

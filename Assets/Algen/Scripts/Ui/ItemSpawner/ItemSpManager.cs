@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 설정
 public class ItemSpManager : InventoryManager
 {
     List<Item> itemsList;
@@ -71,7 +72,7 @@ public class ItemSpManager : InventoryManager
         inventory.ResetInven();
         for (int i = 0; i < itemsList.Count; i++)
         {
-            if (itemsList[i].name == "fullFilter")
+            if (itemsList[i].name == "FullFilter")
                 continue;
             inventory.Add(itemsList[i], 1);
         }

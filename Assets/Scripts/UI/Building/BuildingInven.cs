@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// UTF-8 설정
 public class BuildingInven : MonoBehaviour
 {
     public delegate void OnItemChanged();

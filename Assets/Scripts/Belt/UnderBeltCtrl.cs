@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+// UTF-8 ì„¤ì •
 public class UnderBeltCtrl : MonoBehaviour
 {
     [SerializeField]
@@ -31,7 +32,7 @@ public class UnderBeltCtrl : MonoBehaviour
 
     void Update()
     {
-        // ±âº»ÀûÀ¸·Î sendº§Æ®ÀÌ°í sendº§Æ®ÀÇ ¹İ´ë ¹æÇâÀ¸·Î 10 Ã¼Å©ÇØ¼­ ´Ù¸¥ sendº§Æ®°¡ ÀÖÀ» ¶§ getº§Æ®·Î º¯°æ
+        // ê¸°ë³¸ì ìœ¼ë¡œ sendë²¨íŠ¸ì´ê³  sendë²¨íŠ¸ì˜ ë°˜ëŒ€ ë°©í–¥ìœ¼ë¡œ 10 ì²´í¬í•´ì„œ ë‹¤ë¥¸ sendë²¨íŠ¸ê°€ ìˆì„ ë•Œ getë²¨íŠ¸ë¡œ ë³€ê²½
         if(isPreBuilding)
         {
             CheckPos();

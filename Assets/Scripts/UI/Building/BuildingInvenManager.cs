@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// UTF-8 ì„¤ì •
 public class BuildingInvenManager : MonoBehaviour
 {
     public GameObject buildingInventoryUI;
@@ -13,7 +14,7 @@ public class BuildingInvenManager : MonoBehaviour
     [HideInInspector]
     public Slot[] slots;
     protected GameManager gameManager;
-    protected Slot focusedSlot;  // ¸¶¿ì½º À§Ä¡¿¡ ÀÖ´Â ½½·Ô
+    protected Slot focusedSlot;  // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ì— ìˆëŠ” ìŠ¬ë¡¯
 
     protected Slot selectSlot;
 

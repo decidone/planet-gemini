@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 public class RepairTower : TowerAi
 {
     public List<GameObject> TowerList = new List<GameObject>();
@@ -20,7 +21,7 @@ public class RepairTower : TowerAi
                 if (searchTimer >= searchInterval)
                 {
                     SearchObjectsInRange();
-                    searchTimer = 0f; // Å½»ö ÈÄ Å¸ÀÌ¸Ó ÃÊ±âÈ­
+                    searchTimer = 0f; // íƒìƒ‰ í›„ íƒ€ì´ë¨¸ ì´ˆê¸°í™”
                 }
 
                 RepairTowerAiCtrl();
@@ -52,7 +53,7 @@ public class RepairTower : TowerAi
         }
     }
 
-    public void RemoveObjectsOutOfRange(GameObject obj)//±ÙÃÄ Å¸¿ö »èÁ¦½Ã ¹ßµ¿µÇ°Ô
+    public void RemoveObjectsOutOfRange(GameObject obj)//ê·¼ì³ íƒ€ì›Œ ì‚­ì œì‹œ ë°œë™ë˜ê²Œ
     {
         if (TowerList.Contains(obj))
         {

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
+// UTF-8 ì„¤ì •
 public class ItemPoolManager : MonoBehaviour
 {
     public static ItemPoolManager instance;
@@ -26,7 +27,7 @@ public class ItemPoolManager : MonoBehaviour
         Pool = new ObjectPool<GameObject>(CreatePooledItem, OnTakeFromPool, OnReturnedToPool,
         OnDestroyPoolObject, true, defaultCapacity, maxPoolSize);
 
-        // ¹Ì¸® ¿ÀºêÁ§Æ® »ı¼º ÇØ³õ±â
+        // ë¯¸ë¦¬ ì˜¤ë¸Œì íŠ¸ ìƒì„± í•´ë†“ê¸°
         for (int i = 0; i < defaultCapacity; i++)
         {
             ItemProps item = CreatePooledItem().GetComponent<ItemProps>();
@@ -34,7 +35,7 @@ public class ItemPoolManager : MonoBehaviour
         }
     }
 
-    // »ı¼º
+    // ìƒì„±
     private GameObject CreatePooledItem()
     {
         GameObject poolGo = Instantiate(itemPrefab);
@@ -42,19 +43,19 @@ public class ItemPoolManager : MonoBehaviour
         return poolGo;
     }
 
-    // »ç¿ë
+    // ì‚¬ìš©
     private void OnTakeFromPool(GameObject poolGo)
     {
         poolGo.SetActive(true);
     }
 
-    // ¹İÈ¯
+    // ë°˜í™˜
     private void OnReturnedToPool(GameObject poolGo)
     {
         poolGo.SetActive(false);
     }
 
-    // »èÁ¦
+    // ì‚­ì œ
     private void OnDestroyPoolObject(GameObject poolGo)
     {
         Destroy(poolGo);
