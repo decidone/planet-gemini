@@ -6,11 +6,12 @@ using UnityEngine.Pool;
 using UnityEngine.Rendering;
 using System;
 
+// UTF-8 ì„¤ì •
 public class Structure : MonoBehaviour
 {
-    // °Ç¹° °ø¿ë ½ºÅ©¸³Æ®
-    // UpdateÃ³·³ ÇÔ¼ö È£ÃâÇÏ´Â ºÎºĞÀº ´Ù ÇÏÀ§ Å¬·¡½º¿¡ ³ÖÀ» °Í
-    // ¿¬°áµÈ ±¸Á¶¹° È®ÀÎ ¹æ¹ı 1. Äİ¶óÀÌ´õ, 2. ¸Ê¿¡¼­ ÀÎÁ¢ Å¸ÀÏ Ã¼Å©
+    // ê±´ë¬¼ ê³µìš© ìŠ¤í¬ë¦½íŠ¸
+    // Updateì²˜ëŸ¼ í•¨ìˆ˜ í˜¸ì¶œí•˜ëŠ” ë¶€ë¶„ì€ ë‹¤ í•˜ìœ„ í´ë˜ìŠ¤ì— ë„£ì„ ê²ƒ
+    // ì—°ê²°ëœ êµ¬ì¡°ë¬¼ í™•ì¸ ë°©ë²• 1. ì½œë¼ì´ë”, 2. ë§µì—ì„œ ì¸ì ‘ íƒ€ì¼ ì²´í¬
     [SerializeField]
     public StructureData structureData;
     protected StructureData StructureData { set { structureData = value; } }
@@ -71,7 +72,7 @@ public class Structure : MonoBehaviour
     protected int getItemIndex = 0;
     protected int sendItemIndex = 0;
 
-    protected Coroutine setFacDelayCoroutine; // ½ÇÇà ÁßÀÎ ÄÚ·çÆ¾À» ÀúÀåÇÏ´Â º¯¼ö
+    protected Coroutine setFacDelayCoroutine; // ì‹¤í–‰ ì¤‘ì¸ ì½”ë£¨í‹´ì„ ì €ì¥í•˜ëŠ” ë³€ìˆ˜
 
     [SerializeField]
     protected Sprite[] modelNum;
@@ -93,7 +94,7 @@ public class Structure : MonoBehaviour
         CheckPos();        
     }
 
-    // °Ç¹°ÀÇ ¹æÇâ ¼³Á¤
+    // ê±´ë¬¼ì˜ ë°©í–¥ ì„¤ì •
     protected virtual void CheckPos()
     {
         Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
@@ -104,7 +105,7 @@ public class Structure : MonoBehaviour
         }
     }
 
-    // ±ÙÃ³ ¿ÀºêÁ§Æ® Âş´Â À§Ä¡(»óÇÏÁÂ¿ì) ¼³Á¤
+    // ê·¼ì²˜ ì˜¤ë¸Œì íŠ¸ ì°»ëŠ” ìœ„ì¹˜(ìƒí•˜ì¢Œìš°) ì„¤ì •
     protected virtual void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
@@ -147,7 +148,7 @@ public class Structure : MonoBehaviour
         repairBar.fillAmount = repairGauge / structureData.MaxRepairGauge;
         isSetBuildingOk = true;
     }
-    // °Ç¹° ¼³Ä¡ ±â´É
+    // ê±´ë¬¼ ì„¤ì¹˜ ê¸°ëŠ¥
 
     public virtual void OnFactoryItem(ItemProps itemObj) 
     {

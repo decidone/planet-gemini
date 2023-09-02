@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// UTF-8 설정
 public class TowerAreaAttack : AttackTower
 {
     public GameObject attackFX;

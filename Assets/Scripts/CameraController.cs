@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
+// UTF-8 설정
 public class CameraController : MonoBehaviour
 {
     [SerializeField]

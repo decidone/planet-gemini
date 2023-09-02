@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// UTF-8 ì„¤ì •
 public enum BeltState
 {
     SoloBelt,
@@ -12,7 +13,7 @@ public enum BeltState
 
 public class BeltCtrl : LogisticsCtrl
 {
-    int modelMotion = 0;  // ¸ğ¼Ç
+    int modelMotion = 0;  // ëª¨ì…˜
 
     public BeltGroupMgr beltGroupMgr;
     GameObject beltManager = null;
@@ -230,13 +231,13 @@ public class BeltCtrl : LogisticsCtrl
 
     void AddNewItem(ItemProps newItem)
     {
-        // »õ·Î¿î ¾ÆÀÌÅÛÀ» ¸®½ºÆ®¿¡ Ãß°¡ÇÕ´Ï´Ù.
+        // ìƒˆë¡œìš´ ì•„ì´í…œì„ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€í•©ë‹ˆë‹¤.
         itemObjList.Add(newItem);
 
-        // »õ·Î¿î ¾ÆÀÌÅÛÀÇ À§Ä¡¸¦ °¡Á®¿É´Ï´Ù.
+        // ìƒˆë¡œìš´ ì•„ì´í…œì˜ ìœ„ì¹˜ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
         Vector3 newItemPos = newItem.transform.position;
 
-        // »õ·Î¿î ¾ÆÀÌÅÛÀÌ µé¾î°¥ À§Ä¡¸¦ Ã£½À´Ï´Ù.
+        // ìƒˆë¡œìš´ ì•„ì´í…œì´ ë“¤ì–´ê°ˆ ìœ„ì¹˜ë¥¼ ì°¾ìŠµë‹ˆë‹¤.
         int insertIndex = -1;
         float minDist = 1.0f;
         for (int i = 0; i < itemObjList.Count - 1; i++)
@@ -249,11 +250,11 @@ public class BeltCtrl : LogisticsCtrl
             }
         }
 
-        // »õ·Î¿î ¾ÆÀÌÅÛÀ» ¸®½ºÆ®¿¡¼­ Á¦°ÅÇÏ°í, insertIndex¿¡ ´Ù½Ã Ãß°¡ÇÕ´Ï´Ù.
+        // ìƒˆë¡œìš´ ì•„ì´í…œì„ ë¦¬ìŠ¤íŠ¸ì—ì„œ ì œê±°í•˜ê³ , insertIndexì— ë‹¤ì‹œ ì¶”ê°€í•©ë‹ˆë‹¤.
         itemObjList.Remove(newItem);
         itemObjList.Insert(insertIndex, newItem);
 
-        //// ¾ÆÀÌÅÛÀÇ À§Ä¡¸¦ ´Ù½Ã ¼³Á¤ÇÕ´Ï´Ù.
+        //// ì•„ì´í…œì˜ ìœ„ì¹˜ë¥¼ ë‹¤ì‹œ ì„¤ì •í•©ë‹ˆë‹¤.
         //for (int i = 0; i < itemObjList.Count; i++)
         //{
         //    itemObjList[i].transform.position = nextPos[i];

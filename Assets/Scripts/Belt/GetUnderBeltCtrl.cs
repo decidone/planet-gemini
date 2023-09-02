@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System;
 
+// UTF-8 설정
 public class GetUnderBeltCtrl : LogisticsCtrl
 {
     void Start()

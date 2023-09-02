@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System;
 
+// UTF-8 ì„¤ì •
 public class SplitterCtrl : LogisticsCtrl
 {
     bool filterOn = false;
@@ -20,7 +21,7 @@ public class SplitterCtrl : LogisticsCtrl
         public bool isReverseFilterOn;
         public Item selItem;
     }
-    public Filter[] arrFilter = new Filter[3]; // 0 ÁÂ 1 »ó 2 ¿ì
+    public Filter[] arrFilter = new Filter[3]; // 0 ì¢Œ 1 ìƒ 2 ìš°
 
     void Start()
     {

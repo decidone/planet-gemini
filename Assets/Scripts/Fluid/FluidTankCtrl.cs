@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+// UTF-8 설정
 public class FluidTankCtrl : FluidFactoryCtrl
 {
     Vector2[] startTransform;

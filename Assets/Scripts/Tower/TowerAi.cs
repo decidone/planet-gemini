@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 public class TowerAi : Structure
 {
     public enum TowerState
@@ -15,7 +16,7 @@ public class TowerAi : Structure
     protected TowerData towerData;
     protected TowerData TowerData { set { towerData = value; } }
 
-    // À¯´Ö »óÅÂ °ü·Ã
+    // ìœ ë‹› ìƒíƒœ ê´€ë ¨
     [HideInInspector]
     public TowerState towerState = TowerState.Waiting;
 
@@ -25,7 +26,7 @@ public class TowerAi : Structure
     //public CapsuleCollider2D capsule2D = null;
 
     protected float searchTimer = 0f;
-    protected float searchInterval = 1f; // µô·¹ÀÌ °£°İ ¼³Á¤
+    protected float searchInterval = 1f; // ë”œë ˆì´ ê°„ê²© ì„¤ì •
 
     public GameObject RuinExplo;
 

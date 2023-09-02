@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
+// UTF-8 설정
 public class InfoWindow : MonoBehaviour
 {
     public Text nameText;

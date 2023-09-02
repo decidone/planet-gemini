@@ -4,7 +4,8 @@ using UnityEngine.UI;
 using UnityEngine;
 using Pathfinding;
 
-public enum AIState   // ¸ó½ºÅÍ »óÅÂ °ü¸®
+// UTF-8 ì„¤ì •
+public enum AIState   // ëª¬ìŠ¤í„° ìƒíƒœ ê´€ë¦¬
 {
     AI_Idle,
     AI_Move,
@@ -34,10 +35,10 @@ public class UnitCommonAi : MonoBehaviour
     protected Transform tr;
     protected Rigidbody2D rg;
     protected Seeker seeker;
-    protected Coroutine checkPathCoroutine;             // ½ÇÇà ÁßÀÎ ÄÚ·çÆ¾À» ÀúÀåÇÏ´Â º¯¼ö
-    protected int currentWaypointIndex;                 // ÇöÀç ÀÌµ¿ ÁßÀÎ °æ·Î Á¡ ÀÎµ¦½º
+    protected Coroutine checkPathCoroutine;             // ì‹¤í–‰ ì¤‘ì¸ ì½”ë£¨í‹´ì„ ì €ì¥í•˜ëŠ” ë³€ìˆ˜
+    protected int currentWaypointIndex;                 // í˜„ì¬ ì´ë™ ì¤‘ì¸ ê²½ë¡œ ì  ì¸ë±ìŠ¤
     protected Vector3 targetPosition;
-    protected Vector2 lastMoveDirection = Vector2.zero; // ¸¶Áö¸·À¸·Î ÀÌµ¿ÇÑ ¹æÇâ
+    protected Vector2 lastMoveDirection = Vector2.zero; // ë§ˆì§€ë§‰ìœ¼ë¡œ ì´ë™í•œ ë°©í–¥
     protected Vector3 direction = Vector3.zero;
     protected Vector3 targetVec = Vector3.zero;
     protected List<Vector3> movePath = new List<Vector3>();
@@ -46,7 +47,7 @@ public class UnitCommonAi : MonoBehaviour
     protected float searchTimer;
     protected GameObject aggroTarget;
     protected float tarDisCheckTime;
-    protected float tarDisCheckInterval;                // 0.3ÃÊ °£°İÀ¸·Î ¸ó½ºÅÍ °Å¸® Ã¼Å©
+    protected float tarDisCheckInterval;                // 0.3ì´ˆ ê°„ê²©ìœ¼ë¡œ ëª¬ìŠ¤í„° ê±°ë¦¬ ì²´í¬
     protected float targetDist;
     public List<GameObject> targetList = new List<GameObject>();
 
@@ -104,7 +105,7 @@ public class UnitCommonAi : MonoBehaviour
             if (searchTimer >= searchInterval)
             {
                 SearchObjectsInRange();
-                searchTimer = 0f; // Å½»ö ÈÄ Å¸ÀÌ¸Ó ÃÊ±âÈ­
+                searchTimer = 0f; // íƒìƒ‰ í›„ íƒ€ì´ë¨¸ ì´ˆê¸°í™”
             }
 
             if (targetList.Count > 0)
@@ -161,13 +162,13 @@ public class UnitCommonAi : MonoBehaviour
     {
         if (targetDist == 0)
             return;
-        else if (targetDist > unitCommonData.AttackDist)  // °ø°İ ¹üÀ§ ¹ÛÀ¸·Î ³ª°¥ ¶§
+        else if (targetDist > unitCommonData.AttackDist)  // ê³µê²© ë²”ìœ„ ë°–ìœ¼ë¡œ ë‚˜ê°ˆ ë•Œ
         {
             animator.SetBool("isAttack", false);
             aIState = AIState.AI_NormalTrace;
             attackState = AttackState.Waiting;
         }
-        else if (targetDist <= unitCommonData.AttackDist)  // °ø°İ ¹üÀ§ ³»·Î µé¾î¿ÔÀ» ¶§        
+        else if (targetDist <= unitCommonData.AttackDist)  // ê³µê²© ë²”ìœ„ ë‚´ë¡œ ë“¤ì–´ì™”ì„ ë•Œ        
         {
             aIState = AIState.AI_Attack;
             attackState = AttackState.AttackStart;
@@ -181,7 +182,7 @@ public class UnitCommonAi : MonoBehaviour
         if (!isDelayAfterAttackCoroutine)
         {
             attackState = AttackState.AttackDelay;
-            StartCoroutine(DelayAfterAttack(unitCommonData.AttDelayTime)); // 1.5ÃÊ ÈÄ µô·¹ÀÌ Àû¿ë
+            StartCoroutine(DelayAfterAttack(unitCommonData.AttDelayTime)); // 1.5ì´ˆ í›„ ë”œë ˆì´ ì ìš©
         }
     }
     protected IEnumerator DelayAfterAttack(float delayTime)

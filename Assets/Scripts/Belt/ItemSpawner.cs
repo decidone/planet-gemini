@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System;
 
+// UTF-8 설정
 public class ItemSpawner : LogisticsCtrl
 {
     public Item itemData;
@@ -23,7 +24,7 @@ public class ItemSpawner : LogisticsCtrl
             {
                 if (outObj.Count > 0 && !itemSetDelay)
                 {
-                    if (itemData.name != "emptyFilter")
+                    if (itemData.name != "EmptyFilter")
                         SendItem(itemData);
                 }
 

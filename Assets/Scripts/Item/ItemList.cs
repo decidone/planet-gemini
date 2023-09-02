@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 public class ItemList : MonoBehaviour
 {
-    // ½ºÅ©¸³Æ®¿¡¼­ ¾ÆÀÌÅÛ »ç¿ë ¹× ÀÎº¥Åä¸® ¾ÆÀÌÅÛ Á¤·Ä¿¡ »ç¿ë
-    // ¾ÆÀÌÅÛ »ç¿ëÀ» À§ÇØ <string, Item>À¸·Î Document ¸¸µé ÇÊ¿ä°¡ ÀÖÀ½
+    // ìŠ¤í¬ë¦½íŠ¸ì—ì„œ ì•„ì´í…œ ì‚¬ìš© ë° ì¸ë²¤í† ë¦¬ ì•„ì´í…œ ì •ë ¬ì— ì‚¬ìš©
+    // ì•„ì´í…œ ì‚¬ìš©ì„ ìœ„í•´ <string, Item>ìœ¼ë¡œ Document ë§Œë“¤ í•„ìš”ê°€ ìˆìŒ
     public List<Item> itemList = new List<Item>();
     public Dictionary<string, Item> itemDic = new Dictionary<string, Item>();
 

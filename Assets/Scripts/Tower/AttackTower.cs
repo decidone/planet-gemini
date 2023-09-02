@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 public class AttackTower : TowerAi
 {
-    // °ø°Ý °ü·Ã º¯¼ö
-    protected GameObject aggroTarget = null;   // Å¸°Ù
+    // ê³µê²© ê´€ë ¨ ë³€ìˆ˜
+    protected GameObject aggroTarget = null;   // íƒ€ê²Ÿ
     float mstDisCheckTime = 0f;
-    float mstDisCheckInterval = 0.5f; // 0.5ÃÊ °£°ÝÀ¸·Î ¸ó½ºÅÍ °Å¸® Ã¼Å©
-    float targetDist = 0.0f;         // Å¸°Ù°úÀÇ °Å¸®
+    float mstDisCheckInterval = 0.5f; // 0.5ì´ˆ ê°„ê²©ìœ¼ë¡œ ëª¬ìŠ¤í„° ê±°ë¦¬ ì²´í¬
+    float targetDist = 0.0f;         // íƒ€ê²Ÿê³¼ì˜ ê±°ë¦¬
     bool isTargetSet = false; 
     bool isDelayAfterAttackCoroutine = false;
 
@@ -25,7 +26,7 @@ public class AttackTower : TowerAi
                 if (searchTimer >= searchInterval)
                 {
                     SearchObjectsInRange();
-                    searchTimer = 0f; // Å½»ö ÈÄ Å¸ÀÌ¸Ó ÃÊ±âÈ­
+                    searchTimer = 0f; // íƒìƒ‰ í›„ íƒ€ì´ë¨¸ ì´ˆê¸°í™”
                 }
 
                 AttackTowerAiCtrl();
@@ -35,7 +36,7 @@ public class AttackTower : TowerAi
                     if (mstDisCheckTime > mstDisCheckInterval)
                     {
                         mstDisCheckTime = 0f;
-                        AttackTargetCheck(); // ¸ó½ºÅÍ °Å¸® Ã¼Å© ÇÔ¼ö È£Ãâ
+                        AttackTargetCheck(); // ëª¬ìŠ¤í„° ê±°ë¦¬ ì²´í¬ í•¨ìˆ˜ í˜¸ì¶œ
                         RemoveObjectsOutOfRange();                        
                     }
                     AttackTargetDisCheck();
@@ -52,11 +53,11 @@ public class AttackTower : TowerAi
     {
         if (targetDist == 0)
             return;
-        else if (targetDist > towerData.AttackDist)  // °ø°Ý ¹üÀ§ ¹ÛÀ¸·Î ³ª°¥ ¶§
+        else if (targetDist > towerData.AttackDist)  // ê³µê²© ë²”ìœ„ ë°–ìœ¼ë¡œ ë‚˜ê°ˆ ë•Œ
         {
             towerState = TowerState.Waiting;
         }
-        else if (targetDist <= towerData.AttackDist)  // °ø°Ý ¹üÀ§ ³»·Î µé¾î¿ÔÀ» ¶§        
+        else if (targetDist <= towerData.AttackDist)  // ê³µê²© ë²”ìœ„ ë‚´ë¡œ ë“¤ì–´ì™”ì„ ë•Œ        
         {
             towerState = TowerState.Attack;
         }
@@ -83,7 +84,7 @@ public class AttackTower : TowerAi
         {
             float closestDistance = float.MaxValue;
 
-            // ¸ðµç ¸ó½ºÅÍ¿¡ ´ëÇØ °Å¸® °è»ê
+            // ëª¨ë“  ëª¬ìŠ¤í„°ì— ëŒ€í•´ ê±°ë¦¬ ê³„ì‚°
             foreach (GameObject monster in monsterList)
             {
                 if(monster != null)
@@ -146,7 +147,7 @@ public class AttackTower : TowerAi
         if (!isDelayAfterAttackCoroutine)
         {
             towerState = TowerState.AttackDelay;
-            StartCoroutine(DelayAfterAttack(towerData.AttDelayTime)); // 1.5ÃÊ ÈÄ µô·¹ÀÌ Àû¿ë            
+            StartCoroutine(DelayAfterAttack(towerData.AttDelayTime)); // 1.5ì´ˆ í›„ ë”œë ˆì´ ì ìš©            
         }
     }
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 설정
 public class SpinRobot : UnitAi
 {
     protected override void AttackStart()

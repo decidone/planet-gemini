@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ÏÑ§Ï†ï
 public class GolemFXCtrl : MonoBehaviour
 {
     public Animator animator;
-    Vector3 moveNextStep = Vector3.zero;    // ¿Ãµø πÊ«‚ ∫§≈Õ
-    public Transform aggroTarget = null;   // ≈∏∞Ÿ
+    Vector3 moveNextStep = Vector3.zero;    // Ïù¥Îèô Î∞©Ìñ• Î≤°ÌÑ∞
+    public Transform aggroTarget = null;   // ÌÉÄÍ≤ü
     int attackMotionNum;
     bool isAnimEnd = false;
     float damage = 0;

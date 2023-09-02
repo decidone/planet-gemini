@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Linq;
 
+// UTF-8 ì„¤ì •
 public class ScienceManager : MonoBehaviour
 {
     [SerializeField]
@@ -27,7 +28,7 @@ public class ScienceManager : MonoBehaviour
 
     ScienceInfoData scienceInfoData;
     protected GameManager gameManager;
-    protected ScienceBtn focusedSciBtn;  // ¸¶¿ì½º À§Ä¡¿¡ ÀÖ´Â ½½·Ô
+    protected ScienceBtn focusedSciBtn;  // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ì— ìžˆëŠ” ìŠ¬ë¡¯
 
     TempScienceDb scienceDb;
 
@@ -65,10 +66,10 @@ public class ScienceManager : MonoBehaviour
         {
             Vector3 mousePosition = Input.mousePosition;
 
-            // ÆË¾÷ÀÇ Å©±â¸¦ °í·ÁÇÏ¿© È­¸é ¹ÛÀ¸·Î ³ª°¥ °æ¿ì À§Ä¡ Á¶Á¤
+            // íŒì—…ì˜ í¬ê¸°ë¥¼ ê³ ë ¤í•˜ì—¬ í™”ë©´ ë°–ìœ¼ë¡œ ë‚˜ê°ˆ ê²½ìš° ìœ„ì¹˜ ì¡°ì •
             float popupWidth = 495f;
 
-            // ÆË¾÷ÀÌ È­¸é ¹ÛÀ¸·Î ³ª°¥ ¶§ X ÁÂÇ¥ Á¶Á¤
+            // íŒì—…ì´ í™”ë©´ ë°–ìœ¼ë¡œ ë‚˜ê°ˆ ë•Œ X ì¢Œí‘œ ì¡°ì •
             if (mousePosition.x + popupWidth > Screen.width)
             {
                 mousePosition.x = Screen.width - popupWidth - 10.0f;

@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// UTF-8 ì„¤ì •
 public abstract class InventoryManager : MonoBehaviour
 {
     public GameObject inventoryUI;
@@ -13,8 +14,8 @@ public abstract class InventoryManager : MonoBehaviour
     [HideInInspector]
     public Slot[] slots;
     protected GameManager gameManager;
-    protected DragSlot dragSlot; // µå·¡±×¿ë ½½·Ô
-    protected Slot focusedSlot;  // ¸¶¿ì½º À§Ä¡¿¡ ÀÖ´Â ½½·Ô
+    protected DragSlot dragSlot; // ë“œë˜ê·¸ìš© ìŠ¬ë¡¯
+    protected Slot focusedSlot;  // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ì— ìˆëŠ” ìŠ¬ë¡¯
     float splitCooldown;
     float splitTimer;
 
@@ -96,12 +97,12 @@ public abstract class InventoryManager : MonoBehaviour
                     }
                 } else if (!EventSystem.current.IsPointerOverGameObject() && dragSlot.gameObject.activeSelf)
                 {
-                    // ÀÎº¥Åä¸® UI ¹Ù±ù
+                    // ì¸ë²¤í† ë¦¬ UI ë°”ê¹¥
                     inventory.DragDrop();
                 }
                 else
                 {
-                    // ÀÎº¥Åä¸® UI ³»ºÎ, ¼±ÅÃµÈ ½½·Ô ¾ø´Â °æ¿ì
+                    // ì¸ë²¤í† ë¦¬ UI ë‚´ë¶€, ì„ íƒëœ ìŠ¬ë¡¯ ì—†ëŠ” ê²½ìš°
                 }
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// UTF-8 ì„¤ì •
 public class GameManager : MonoBehaviour
 {
     public GameObject inventoryUiCanvas;
@@ -78,7 +79,7 @@ public class GameManager : MonoBehaviour
             if (rManager.isOpened)
                 return;
 
-            //°Ç¹° À§ ¿ÀºêÁ§Æ®°¡ ÀÖÀ»¶§ Å¬¸¯ÀÌ ¾ÈµÇ¼­ Raycast > RaycastAll·Î º¯°æ
+            //ê±´ë¬¼ ìœ„ ì˜¤ë¸Œì íŠ¸ê°€ ìžˆì„ë•Œ í´ë¦­ì´ ì•ˆë˜ì„œ Raycast > RaycastAllë¡œ ë³€ê²½
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
 

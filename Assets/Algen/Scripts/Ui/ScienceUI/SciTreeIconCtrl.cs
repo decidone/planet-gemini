@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
+// UTF-8 설정
 public class SciTreeIconCtrl : MonoBehaviour
 {
     public Image icon;

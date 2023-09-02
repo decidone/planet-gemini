@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+// UTF-8 ì„¤ì •
 public class UnitGroupCtrl : MonoBehaviour
 {
     public List<GameObject> unitList = new List<GameObject>();
@@ -12,7 +13,7 @@ public class UnitGroupCtrl : MonoBehaviour
 
     //Seeker seeker;
 
-    //protected Coroutine checkPathCoroutine; // ½ÇÇà ÁßÀÎ ÄÚ·çÆ¾À» ÀúÀåÇÏ´Â º¯¼ö
+    //protected Coroutine checkPathCoroutine; // ì‹¤í–‰ ì¤‘ì¸ ì½”ë£¨í‹´ì„ ì €ì¥í•˜ëŠ” ë³€ìˆ˜
 
     //private void Awake()
     //{
@@ -21,7 +22,7 @@ public class UnitGroupCtrl : MonoBehaviour
 
     private void OnEnable()
     {
-        // ÀÌº¥Æ® ÇÚµé·¯ µî·Ï
+        // ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬ ë“±ë¡
         UnitDrag.removeUnit += ClearUnitList;
         UnitDrag.addUnit += AddUnitList;
         UnitDrag.targetSet += TargetSetPos;
@@ -33,7 +34,7 @@ public class UnitGroupCtrl : MonoBehaviour
 
     private void OnDisable()
     {
-        // ÀÌº¥Æ® ÇÚµé·¯ ÇØÁ¦
+        // ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬ í•´ì œ
         UnitDrag.removeUnit -= ClearUnitList;
         UnitDrag.addUnit -= AddUnitList;
         UnitDrag.targetSet -= TargetSetPos;

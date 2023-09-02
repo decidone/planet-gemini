@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+// UTF-8 ì„¤ì •
 public class PipeManager : MonoBehaviour
 {
     public void PipeCombine(PipeGroupMgr fstGroupMgr, PipeGroupMgr secGroupMgr)
@@ -10,7 +11,7 @@ public class PipeManager : MonoBehaviour
         List<PipeCtrl> pipeCtrl = new List<PipeCtrl>();
         List<GameObject> gameObjects = new List<GameObject>();
 
-        //ÇÕÄ¡±â
+        //í•©ì¹˜ê¸°
         pipeCtrl.AddRange(fstGroupMgr.pipeList);
         pipeCtrl.AddRange(secGroupMgr.pipeList);
 

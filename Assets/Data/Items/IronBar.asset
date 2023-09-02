@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: IronBar
   m_EditorClassIdentifier: 
   name: IronBar
-  icon: {fileID: 1060100889, guid: 7df6bf93ee5b9bb45b6d2dda87d00b3c, type: 3}
+  icon: {fileID: 21300000, guid: 2ad35c3aed184e947a96dce0819ff7eb, type: 3}

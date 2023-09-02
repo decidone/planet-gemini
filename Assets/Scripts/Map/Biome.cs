@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+// UTF-8 설정
 public class Biome : MonoBehaviour
 {
     public string biome;

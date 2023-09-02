@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 public class BeltGroupMgr : MonoBehaviour
 {
     [SerializeField]
@@ -56,7 +57,7 @@ public class BeltGroupMgr : MonoBehaviour
         nextBelt.beltState = BeltState.EndBelt;
     }
 
-    //º§Æ® ±×·ì º´ÇÕ
+    //ë²¨íŠ¸ ê·¸ë£¹ ë³‘í•©
     public void Reconfirm()
     {
         groupItem.Clear();

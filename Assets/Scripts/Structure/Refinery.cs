@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
+// UTF-8 설정
 public class Refinery : FluidFactoryCtrl
 {
     protected override void Awake()

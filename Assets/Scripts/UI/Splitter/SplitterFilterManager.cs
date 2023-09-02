@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// UTF-8 설정
 public class SplitterFilterManager : MonoBehaviour
 {
     public GameObject spliterFilterUI;
@@ -94,7 +95,7 @@ public class SplitterFilterManager : MonoBehaviour
 
     public void SetItem(Item _item, int slotIndex)
     {
-        if (_item.name == "emptyFilter")
+        if (_item.name == "EmptyFilter")
         {
             splitter.SlotReset(slotIndex);
             fillterOnOffBtns[slotIndex].ButtonSetModle(false);
@@ -155,11 +156,11 @@ public class SplitterFilterManager : MonoBehaviour
     {
         if (slots[i].item != null)
         {
-            if (slots[i].item.name != "fullFilter")
+            if (slots[i].item.name != "FullFilter")
             {
                 splitter.FilterSet(i, fillterOnOffBtns[i].isOn, false, true, reverseToggle[i].isOn, slots[i].item);
             }
-            else if (slots[i].item.name == "fullFilter")
+            else if (slots[i].item.name == "FullFilter")
             {
                 splitter.FilterSet(i, fillterOnOffBtns[i].isOn, true, false, false, slots[i].item);
             }

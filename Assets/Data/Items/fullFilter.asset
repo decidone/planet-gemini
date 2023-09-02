@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: fullFilter
+  m_Name: FullFilter
   m_EditorClassIdentifier: 
-  name: fullFilter
+  name: FullFilter
   icon: {fileID: 21300000, guid: 94305e34f4fab8a4da928dfa4ef30f08, type: 3}

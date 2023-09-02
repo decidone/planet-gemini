@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+// UTF-8 설정
 public class MonsterAi : UnitCommonAi
 {
     Transform spawnPos; 

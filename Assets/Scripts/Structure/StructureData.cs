@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// UTF-8 ì„¤ì •
 [CreateAssetMenu(fileName = "Structure Data", menuName = "Scriptable Object/Structure Data", order = int.MaxValue)]
 public class StructureData : ScriptableObject
 {
@@ -42,6 +43,6 @@ public class StructureData : ScriptableObject
     public float MaxRepairGauge { get { return maxRepairGauge; } }
 
     [SerializeField]
-    private float colliderRadius;//Å¸°Ù Å½»ö ¹üÀ§
+    private float colliderRadius;//íƒ€ê²Ÿ íƒìƒ‰ ë²”ìœ„
     public float ColliderRadius { get { return colliderRadius; } }
 }
