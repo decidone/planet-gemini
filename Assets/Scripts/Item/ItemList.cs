@@ -7,6 +7,7 @@ public class ItemList : MonoBehaviour
     // 스크립트에서 아이템 사용 및 인벤토리 아이템 정렬에 사용
     // 아이템 사용을 위해 <string, Item>으로 Document 만들 필요가 있음
     public List<Item> itemList = new List<Item>();
+    public List<Item> uiItemList = new List<Item>();
     public Dictionary<string, Item> itemDic = new Dictionary<string, Item>();
 
     #region Singleton
@@ -28,4 +29,15 @@ public class ItemList : MonoBehaviour
         }
     }
     #endregion
+
+    public Item FindData(string getBuildName)
+    {
+        foreach (var itemData in uiItemList)
+        {
+            if (itemData.name == getBuildName)
+                return itemData;
+        }
+
+        return null;
+    }
 }

@@ -9,20 +9,13 @@ public class SciTreeIconCtrl : MonoBehaviour
     public Button iconBtn;
     ScienceBtn scienceBtn;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         scienceBtn = iconBtn.GetComponent<ScienceBtn>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SetIcon(string sciName, int level)
     {
-        scienceBtn.sciName = sciName;
-        scienceBtn.level = level;
+        scienceBtn.SetInfo(sciName, level, false);
     }
 }

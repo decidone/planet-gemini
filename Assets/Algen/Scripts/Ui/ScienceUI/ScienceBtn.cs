@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class ScienceBtn : MonoBehaviour
 {
-    public string sciName = null;
-    public int level = 0;
-    GameObject lockUI = null;
-    Button scBtn = null;
+    public string sciName;
+    public int level;
+    GameObject lockUI;
+    Button scBtn;
     bool isLock = true;
     public bool isCore = false;
 
@@ -51,5 +51,12 @@ public class ScienceBtn : MonoBehaviour
 
         lockUI.SetActive(false);
         isLock = false;
+    }
+
+    public void SetInfo(string name, int coreLv, bool core)
+    {
+        sciName = name;
+        level = coreLv;
+        isCore = core;
     }
 }

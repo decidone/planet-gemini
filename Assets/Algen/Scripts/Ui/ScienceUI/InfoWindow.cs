@@ -8,9 +8,10 @@ public class InfoWindow : MonoBehaviour
 {
     public Text nameText;
     public Text coreLvText;
-    public GameObject[] needItemObj;
-    public Image[] icon;
-    public Text[] amount;
+    public Text infoText;
+    public List<GameObject> needItemObj = new List<GameObject>();
+    public GameObject needItemUI;
+    public GameObject needItemRoot;
 
     GameManager gameManager;
     List<Item> itemsList = new List<Item>();
@@ -18,12 +19,11 @@ public class InfoWindow : MonoBehaviour
     List<NeedItem> needItems = new List<NeedItem>();
 
     public bool totalAmountsEnough = false;
-    public Inventory inventory = null;
+    public Inventory inventory;
 
     ScienceInfoData preSciInfoData;
     TempScienceDb scienceDb;
 
-    #region Singleton
     public static InfoWindow instance;
     BuildingInven buildingInven;
 
@@ -31,11 +31,21 @@ public class InfoWindow : MonoBehaviour
     int preSciLevel = 0;
     string preSciName = null;
 
-    #endregion
+    private void Awake()
+    {
+        for (int i = 0; i < 6; i++) 
+        {
+            GameObject uI = Instantiate(needItemUI);
+            uI.transform.SetParent(needItemRoot.transform, false);
+            needItemObj.Add(uI);
+        }
+        this.gameObject.SetActive(false);
+    }
 
     private void Start()
     {
         buildingInven = gameManager.GetComponent<BuildingInven>();
+        inventory = gameManager.GetComponent<Inventory>();
     }
 
     public void SetNeedItem(ScienceInfoData scienceInfoData, string name, int level ,bool isCore)
@@ -67,9 +77,14 @@ public class InfoWindow : MonoBehaviour
                 coreLvText.color = Color.red;
         }
 
+        if(!isCore)
+        {
+            infoText.text = scienceInfoData.info;
+        }
+
         totalAmountsEnough = true;
 
-        for (int index = 0; index < needItemObj.Length; index++)
+        for (int index = 0; index < needItemObj.Count; index++)
         {
             bool isActive = index < scienceInfoData.items.Count;
 
@@ -89,10 +104,13 @@ public class InfoWindow : MonoBehaviour
                     else
                         totalAmountsEnough = false;
 
-                    icon[index].sprite = item.icon;
-                    amount[index].text = scienceInfoData.amounts[index].ToString();
-                    amount[index].color = isEnough ? Color.white : Color.red;
-                    needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
+                    if(needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
+                    {
+                        itemUi.icon.sprite = item.icon;
+                        itemUi.amount.text = scienceInfoData.amounts[index].ToString();
+                        itemUi.amount.color = isEnough ? Color.white : Color.red;
+                        needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
+                    }
                 }
             }
             needItemObj[index].SetActive(isActive);
@@ -123,7 +141,7 @@ public class InfoWindow : MonoBehaviour
 
         if(preSciName == "Core")
         {
-            scienceDb.coreLevel = preSciLevel + 1;
+            scienceDb.coreLevel = preSciLevel;
         }
         scienceDb.SaveSciDb(preSciName, preSciLevel);
         buildingInven.Refresh();

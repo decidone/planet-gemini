@@ -5,18 +5,24 @@ using UnityEngine;
 
 public class ScienceCoreLvCtrl : MonoBehaviour
 {
-    public GameObject panel = null;
-    public GameObject sciTreeIcon = null;
-    public int coreLv = 0;
+    public GameObject panel;
+    public GameObject sciTreeIcon;
+    string sciClass;
+    int coreLv;
     [SerializeField]
     Text coreLvTx;
-    List<SciTreeIconCtrl> sciTreeIcons = new List<SciTreeIconCtrl>();
     [SerializeField]
-    GameObject coreBtnObj = null;
+    GameObject coreBtnObj;
     [SerializeField]
-    GameObject LockBtnObj = null;
+    GameObject LockBtnObj;
+    ItemList itemList;
 
-    public void UISetting(int level)
+    private void Awake()
+    {
+        itemList = GameManager.instance.GetComponent<ItemList>();
+    }
+
+    public void UISetting(int level, string getSciClass)
     {
         coreLv = level + 1;
         coreLvTx.text = "Lv." + coreLv;
@@ -25,9 +31,24 @@ public class ScienceCoreLvCtrl : MonoBehaviour
         else
         {
             ScienceBtn scienceBtn = coreBtnObj.AddComponent<ScienceBtn>();
-            scienceBtn.sciName = "Core";
-            scienceBtn.level = coreLv;
-            scienceBtn.isCore = true;
+            scienceBtn.SetInfo("Core", coreLv, true);
+        }
+        sciClass = getSciClass;
+        SciTreeInst();
+    }
+
+    void SciTreeInst()
+    {
+        Dictionary<string, int> getSciData = new Dictionary<string, int>(ScienceInfoGet.instance.GetSciLevelData(sciClass, coreLv));
+
+        foreach (var sciData in getSciData)
+        {
+            GameObject iconUI = Instantiate(sciTreeIcon);
+            iconUI.transform.SetParent(panel.transform, false);
+            SciTreeIconCtrl sciTreeIconCtrl = iconUI.GetComponent<SciTreeIconCtrl>();
+            Item itemData = itemList.FindData(sciData.Key);
+            sciTreeIconCtrl.icon.sprite = itemData.icon;
+            sciTreeIconCtrl.SetIcon(sciData.Key, sciData.Value);
         }
     }
 }

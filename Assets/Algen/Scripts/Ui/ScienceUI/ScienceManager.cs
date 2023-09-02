@@ -17,8 +17,8 @@ public class ScienceManager : MonoBehaviour
     [SerializeField]
     GameObject[] infoWindow;
 
-    public GameObject coreLvUI = null;
-    public ScienceBtn[] scienceBtns = null;
+    public GameObject coreLvUI;
+    public ScienceBtn[] scienceBtns;
 
     ScienceCoreLvCtrl[] buildContent = new ScienceCoreLvCtrl[5];
     ScienceCoreLvCtrl[] battleContent = new ScienceCoreLvCtrl[5];
@@ -31,6 +31,13 @@ public class ScienceManager : MonoBehaviour
 
     TempScienceDb scienceDb;
 
+    float popupWidth;
+
+    private void Awake()
+    {
+        UISetting();
+    }
+
     void Start()
     {
         gameManager = GameManager.instance;
@@ -38,6 +45,7 @@ public class ScienceManager : MonoBehaviour
 
         contents[0].SetActive(true);
         contents[1].SetActive(false);
+        popupWidth = infoWindow[0].transform.Find("Menu").gameObject.GetComponent<RectTransform>().rect.width;
 
         for (int i = 0; i < tagBtns.Length; i++)
         {
@@ -64,10 +72,6 @@ public class ScienceManager : MonoBehaviour
         if (infoWindow[0].activeSelf)
         {
             Vector3 mousePosition = Input.mousePosition;
-
-            // 팝업의 크기를 고려하여 화면 밖으로 나갈 경우 위치 조정
-            float popupWidth = 495f;
-
             // 팝업이 화면 밖으로 나갈 때 X 좌표 조정
             if (mousePosition.x + popupWidth > Screen.width)
             {
@@ -77,7 +81,6 @@ public class ScienceManager : MonoBehaviour
             {
                 mousePosition.x = 0;
             }
-
             infoWindow[0].transform.position = mousePosition;
         }
         else if (infoWindow[1].activeSelf)
@@ -94,12 +97,12 @@ public class ScienceManager : MonoBehaviour
             GameObject buildUI = Instantiate(coreLvUI);
             buildUI.transform.SetParent(contents[0].transform, false);
             buildContent[i] = buildUI.GetComponent<ScienceCoreLvCtrl>();
-            buildContent[i].UISetting(i);
+            buildContent[i].UISetting(i, "Build");
 
             GameObject battleUI = Instantiate(coreLvUI);
             battleUI.transform.SetParent(contents[1].transform, false);
             battleContent[i] = battleUI.GetComponent<ScienceCoreLvCtrl>();
-            battleContent[i].UISetting(i);
+            battleContent[i].UISetting(i, "Battle");
         }
     }
 

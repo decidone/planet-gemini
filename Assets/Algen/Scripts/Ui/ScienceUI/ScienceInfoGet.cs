@@ -1,12 +1,10 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 public class ScienceInfoGet : MonoBehaviour
 {
     Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>> scienceInfoDataDic;
-    ScienceInfoData scienceInfoData;
 
     #region Singleton
     public static ScienceInfoGet instance;
@@ -20,15 +18,10 @@ public class ScienceInfoGet : MonoBehaviour
         }
 
         instance = this;
-        scienceInfoDataDic = new Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>>();
-    }
-    #endregion
-
-    void Start()
-    {
         string json = Resources.Load<TextAsset>("ScienceInfo").ToString();
         scienceInfoDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>>>(json);
     }
+    #endregion
 
     public ScienceInfoData GetBuildingName(string buildingName, int level)
     {
@@ -47,36 +40,36 @@ public class ScienceInfoGet : MonoBehaviour
                 }
             }
         }
-
-        // 찾을 수 없는 경우 또는 예외 처리를 원하는 경우에 대한 기본값 반환
         return null;
     }
 
-    public List<string> GetSciLevel(string category, int level)
+    public Dictionary<string, int> GetSciLevelData(string desiredClass, int desiredLevel)
     {
-        List<string> sciName = new List<string>();
+        Dictionary<string, int> matchingData = new Dictionary<string, int>();
 
-        foreach (var sciData in scienceInfoDataDic)
+        foreach (var scienceCategory in scienceInfoDataDic)
         {
-            var categoryDictionary = sciData.Value;
-            if (categoryDictionary.ContainsKey(category))
+            var categoryData = scienceCategory.Value;
+
+            foreach (var classData in categoryData)
             {
-                foreach (Dictionary<int, ScienceInfoData> Value in categoryDictionary.Values)
+                if (classData.Key == desiredClass)
                 {
-                    Dictionary<int, ScienceInfoData> innerDictionary = Value;
-                    if (innerDictionary.ContainsKey(level))
+                    var levelData = classData.Value;
+
+                    foreach (var levelEntry in levelData)
                     {
-                        sciName.Add(sciData.Key);
+                        var scienceInfo = levelEntry.Value;
+
+                        if (scienceInfo.coreLv == desiredLevel)
+                        {
+                            matchingData.Add(scienceCategory.Key, levelEntry.Key);
+                        }
                     }
                 }
             }
         }
 
-        if(sciName.Count > 0)
-        {
-            return sciName;
-        }
-        else
-            return null;
+        return matchingData;
     }
 }
