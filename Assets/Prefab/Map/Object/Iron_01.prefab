@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: Ore
-  item: {fileID: 11400000, guid: c84505e16f282c947a9ddfe3956237f6, type: 2}
+  item: {fileID: 11400000, guid: 8f35d578a91839e459b68ede2603b22a, type: 2}
 --- !u!114 &2537296174426121693
 MonoBehaviour:
   m_ObjectHideFlags: 0

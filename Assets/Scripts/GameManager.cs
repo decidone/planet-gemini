@@ -72,6 +72,19 @@ public class GameManager : MonoBehaviour
             Debug.Log("debug : " + debug);
         }
 
+        if (debug)
+        {
+            if (Input.GetKeyDown(KeyCode.Equals))
+            {
+                Inventory inven = this.GetComponent<Inventory>();
+                foreach (Item item in ItemList.instance.itemList)
+                {
+                    if (item.name != "EmptyFilter" && item.name != "FullFilter" && item.name != "Water" && item.name != "Oil")
+                        inven.Add(item, 99);
+                }
+            }
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             if (EventSystem.current.IsPointerOverGameObject())
