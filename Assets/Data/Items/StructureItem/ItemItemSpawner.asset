@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ItemItemSpawner
   m_EditorClassIdentifier: 
   name: ItemSpawner
-  icon: {fileID: 903626226, guid: 2ba2efe0f4bd4b84db4da27dc303798a, type: 3}
+  icon: {fileID: 1129706821, guid: b2133c5e746dee349a65f95a528ace90, type: 3}

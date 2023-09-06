@@ -34,7 +34,7 @@ public class UnitAi : UnitCommonAi
 
     void Start()
     {
-        unitGroupCtrl = GameObject.Find("UnitGroup").GetComponent<UnitGroupCtrl>();
+        unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
     }
 
     protected override void UnitAiCtrl()

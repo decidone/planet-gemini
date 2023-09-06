@@ -259,7 +259,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 903626226, guid: 2ba2efe0f4bd4b84db4da27dc303798a, type: 3}
+  m_Sprite: {fileID: 1129706821, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -295,7 +295,6 @@ MonoBehaviour:
   isRuin: 0
   isRepair: 0
   repairBar: {fileID: 8047090835710424365}
-  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   itemList: []
   itemObjList: []
   canBuilding: 1
@@ -304,7 +303,9 @@ MonoBehaviour:
   outSameList: []
   modelNum: []
   spawnItem: {fileID: 0}
-  solidFactoryData: {fileID: 11400000, guid: b98e07cc0faacb54883a16ecf080cff3, type: 2}
+  monsterList: []
+  col: {fileID: 0}
+  repairTower: {fileID: 0}
   itemData: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
 --- !u!61 &4372891051652484693
 BoxCollider2D:
@@ -323,7 +324,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1, y: 1.1875}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

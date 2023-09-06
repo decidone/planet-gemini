@@ -97,7 +97,8 @@ public class GameManager : MonoBehaviour
                 {
                     Debug.Log("x : " + x + ", y : " + y +
                     ", biome : " + map.mapData[x][y].biome +
-                    ", buildable : " + buildable
+                    ", buildable : " + buildable +
+                    ", structure : " + map.mapData[x][y].structure
                     );
                 }
                 else
@@ -105,7 +106,8 @@ public class GameManager : MonoBehaviour
                     Debug.Log("x : " + x + ", y : " + y +
                     ", biome : " + map.mapData[x][y].biome +
                     ", obj : " + map.mapData[x][y].obj.name +
-                    ", buildable : " + buildable
+                    ", buildable : " + buildable +
+                    ", structure : " + map.mapData[x][y].structure
                     );
                 }
             }

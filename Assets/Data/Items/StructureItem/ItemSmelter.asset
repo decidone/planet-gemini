@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ItemSmelter
   m_EditorClassIdentifier: 
   name: Smelter
-  icon: {fileID: 1561624191, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  icon: {fileID: 1559316745, guid: b2133c5e746dee349a65f95a528ace90, type: 3}

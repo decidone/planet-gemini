@@ -109,11 +109,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 41
+        y: 38
         width: 32
         height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -130,11 +130,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 32
-        y: 41
+        y: 38
         width: 32
         height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -151,11 +151,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 64
-        y: 41
+        y: 38
         width: 32
         height: 35
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -172,7 +172,28 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 96
-        y: 41
+        y: 38
+        width: 32
+        height: 35
+      alignment: 9
+      pivot: {x: 0.55370545, y: 0.6582186}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 04af348077904f442a6b2cd835a0666a
+      internalID: 1701051910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Structure2x2_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 38
         width: 32
         height: 35
       alignment: 0
@@ -182,8 +203,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 04af348077904f442a6b2cd835a0666a
-      internalID: 1701051910
+      spriteID: 616babe68fc153440afc5f192b15c502
+      internalID: 471881988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Structure2x2_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 778162152f64d884fb14b400377d475e
+      internalID: -797419743
       vertices: []
       indices: 
       edges: []
@@ -199,7 +241,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      Structure2x2_5: -797419743
       Structure2x2_1: 1789975643
+      Structure2x2_4: 471881988
       Structure2x2_2: 1828273114
       Structure2x2_3: 1701051910
       Structure2x2_0: -1932201936

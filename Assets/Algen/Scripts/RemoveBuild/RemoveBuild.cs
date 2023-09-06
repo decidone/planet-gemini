@@ -3,35 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // UTF-8 설정
-public class RemoveBuild : MonoBehaviour
+public class RemoveBuild : DragFunc
 {
     protected GameObject canvas;
     BuildingData buildingData;
     Inventory inventory;
+    int structureLayer;
 
     void Start()
     {
         GameManager gameManager = GameManager.instance;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         inventory = gameManager.GetComponent<Inventory>();
+        structureLayer = LayerMask.NameToLayer("Obj");
     }
 
-    void Update()
+    public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
     {
-        if (Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl))
+        if (startPos != endPos)
+            GroupSelectedObjects(startPos, endPos, structureLayer);
+        else
+            RemoveClick(startPos);
+    }
+
+    protected override List<GameObject> GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
+    {
+        List<GameObject> List = base.GroupSelectedObjects(startPosition, endPosition, layer);
+        selectedObjects = List.ToArray();
+
+        foreach (GameObject obj in selectedObjects)
         {
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
-            if (hits.Length > 0)
+            if (obj.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
             {
-                foreach (RaycastHit2D hit in hits)
+                UiCheck(structure);
+                structure.RemoveObj();
+                refundCost(structure);
+            }
+        }
+
+        return null;
+    }
+
+    void RemoveClick(Vector2 mousePos)
+    {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+        if (hits.Length > 0)
+        {
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
                 {
-                    if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
-                    {
-                        UiCheck(structure);
-                        structure.RemoveObj();
-                        refundCost(structure);
-                    }
+                    UiCheck(structure);
+                    structure.RemoveObj();
+                    refundCost(structure);
                 }
             }
         }
