@@ -106,7 +106,7 @@ Transform:
   m_GameObject: {fileID: 3998782486791640873}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3696101674928124394}
@@ -154,8 +154,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2139102105, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
-  m_Color: {r: 0.11764706, g: 0.50980395, b: 0.2444361, a: 1}
+  m_Sprite: {fileID: -797419743, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -182,14 +182,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 2, y: 2.375}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9, y: 0.9}
+  m_Size: {x: 1.8, y: 1.8}
   m_EdgeRadius: 0
 --- !u!50 &3998782486791640853
 Rigidbody2D:
@@ -237,7 +237,6 @@ MonoBehaviour:
   isRuin: 0
   isRepair: 0
   repairBar: {fileID: 5614633727134001743}
-  itemPref: {fileID: 0}
   itemList: []
   itemObjList: []
   canBuilding: 1
@@ -246,12 +245,14 @@ MonoBehaviour:
   outSameList: []
   modelNum: []
   spawnItem: {fileID: 0}
+  monsterList: []
+  col: {fileID: 0}
+  repairTower: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   maxAmount: 0
   cooldown: 0
-  productionData: {fileID: 0}
   fluidName: 
   saveFluidNum: 0
   sendDelayTimer: 0

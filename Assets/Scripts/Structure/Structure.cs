@@ -53,7 +53,7 @@ public class Structure : MonoBehaviour
     public List<ItemProps> itemObjList = new List<ItemProps>();
 
     public bool canBuilding = true;
-    protected List<GameObject> buildingPosObj = new List<GameObject>();
+    protected List<GameObject> buildingPosUnit = new List<GameObject>();
 
     protected GameObject[] nearObj = new GameObject[4];
     protected Vector2[] checkPos = new Vector2[4];
@@ -347,8 +347,8 @@ public class Structure : MonoBehaviour
     protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
     {
         var itemPool = ItemPoolManager.instance.Pool.Get();
-        spawnItem.col.enabled = false;
         spawnItem = itemPool.GetComponent<ItemProps>();
+        spawnItem.col.enabled = false;
         SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
         CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
@@ -705,7 +705,15 @@ public class Structure : MonoBehaviour
 
         AddInvenItem();
 
-        Destroy(this.gameObject);
+        GameManager gameManager = GameManager.instance;
+        int x = Mathf.FloorToInt(transform.position.x);
+        int y = Mathf.FloorToInt(transform.position.y);
+        if (gameManager.map.IsOnMap(x, y) && gameManager.map.mapData[x][y].structure == gameObject)
+        {
+            gameManager.map.mapData[x][y].structure = null;
+        }
+
+         Destroy(this.gameObject);
     }
 
     protected virtual void AddInvenItem() { }
@@ -754,13 +762,13 @@ public class Structure : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.GetComponent<ItemProps>())
+        if (collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>() || collision.GetComponent<Structure>())
         {
             if (isPreBuilding)
             {
-                buildingPosObj.Add(collision.gameObject);
+                buildingPosUnit.Add(collision.gameObject);
 
-                if (buildingPosObj.Count > 0)
+                if (buildingPosUnit.Count > 0)
                 {
                     if (!collision.GetComponentInParent<PreBuilding>())
                     {
@@ -779,12 +787,12 @@ public class Structure : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (!collision.GetComponent<ItemProps>())
+        if (collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>() || collision.GetComponent<Structure>())
         {
             if (isPreBuilding)
             {
-                buildingPosObj.Remove(collision.gameObject);
-                if (buildingPosObj.Count > 0)
+                buildingPosUnit.Remove(collision.gameObject);
+                if (buildingPosUnit.Count > 0)
                     canBuilding = false;
                 else
                 {

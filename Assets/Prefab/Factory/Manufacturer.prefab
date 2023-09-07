@@ -172,7 +172,6 @@ MonoBehaviour:
   isRuin: 0
   isRepair: 0
   repairBar: {fileID: 1875794501949138447}
-  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   itemList: []
   itemObjList: []
   canBuilding: 1
@@ -181,12 +180,14 @@ MonoBehaviour:
   outSameList: []
   modelNum: []
   spawnItem: {fileID: 0}
+  monsterList: []
+  col: {fileID: 0}
+  repairTower: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
-  productionData: {fileID: 11400000, guid: b746b739b21272149b4bf7c9e1508b1d, type: 2}
 --- !u!114 &1875794501085088102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,7 +201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 316582323246070914
+  uniqueID: 8922920890939387646
   updateError: 1
   checkTime: 0.2
 --- !u!210 &2162283624201612947

@@ -119,7 +119,7 @@ MonoBehaviour:
   amount: 0
   isOnBelt: 0
   setOnBelt: {fileID: 0}
-  col: {fileID: 0}
+  col: {fileID: 2494145269715281245}
 --- !u!210 &-1731349307443616935
 SortingGroup:
   m_ObjectHideFlags: 0

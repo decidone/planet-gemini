@@ -146,7 +146,7 @@ public abstract class Production : Structure
         {
             if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
             {
-                if (CanTakeItem(belt.itemObjList[0].item))
+                if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
                 {
                     OnFactoryItem(belt.itemObjList[0]);
                     belt.itemObjList[0].transform.position = this.transform.position;

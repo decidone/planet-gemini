@@ -196,6 +196,7 @@ GameObject:
   - component: {fileID: 5578666564477954337}
   - component: {fileID: 8224777291930825977}
   - component: {fileID: 7486228035820775271}
+  - component: {fileID: 3883913979261858583}
   m_Layer: 8
   m_Name: Miner
   m_TagString: Factory
@@ -260,8 +261,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 807909680, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
-  m_Color: {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 1}
+  m_Sprite: {fileID: 917022446, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -288,7 +289,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1, y: 1.1875}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -352,7 +353,6 @@ MonoBehaviour:
   isRuin: 0
   isRepair: 0
   repairBar: {fileID: 5543201709866322754}
-  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   itemList: []
   itemObjList: []
   canBuilding: 1
@@ -361,12 +361,14 @@ MonoBehaviour:
   outSameList: []
   modelNum: []
   spawnItem: {fileID: 0}
+  monsterList: []
+  col: {fileID: 0}
+  repairTower: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
-  productionData: {fileID: 11400000, guid: b273d04615237f840a9eec99934e9b72, type: 2}
 --- !u!114 &5578666564477954337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,7 +382,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 252575761549738699
+  uniqueID: 1508046654787058426
   updateError: 1
   checkTime: 0.2
 --- !u!50 &8224777291930825977
@@ -415,6 +417,26 @@ SortingGroup:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
+--- !u!95 &3883913979261858583
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359874169441961886}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ddc99314c89959a4d8d0fdad4ba79016, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5250668218170398480
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,7 +16,6 @@ enum MouseBtnFunc
 
 public class PreBuilding : MonoBehaviour
 {
-    public static PreBuilding instance;
     SpriteRenderer spriteRenderer;
     GameObject gameObj;
     public bool isSelect = false;
@@ -38,7 +37,6 @@ public class PreBuilding : MonoBehaviour
     int dirNum = 0;
 
     Vector3 startBuildPos;
-    //Vector3 startTempPos;
     Vector3 endBuildPos;
 
     bool isUnderObj = false;
@@ -46,16 +44,21 @@ public class PreBuilding : MonoBehaviour
 
     public List<GameObject> buildingList = new List<GameObject>();    
     Vector3 tempPos;
-    List<Vector3> posList = new List<Vector3>();
+    public List<Vector3> posList = new List<Vector3>();
     bool isMoveX = true; 
     bool tempMoveX;
     bool moveDir;
     bool tempMoveDir;
     bool isPreBeltSend;
     MouseBtnFunc mouseBtnFunc = MouseBtnFunc.None;
-    bool isMouseLeft = true;
+    public bool isMouseLeft = true;
     public bool isDrag = false;
     Coroutine setBuild;
+
+    GameManager gameManager;
+
+    #region Singleton
+    public static PreBuilding instance;
 
     void Awake()
     {
@@ -68,7 +71,10 @@ public class PreBuilding : MonoBehaviour
         }
 
         instance = this;
+        gameManager = GameManager.instance;
     }
+    #endregion
+
 
     void Update()
     {
@@ -109,29 +115,8 @@ public class PreBuilding : MonoBehaviour
         cellCenter.z = transform.position.z;
         transform.position = cellCenter;
 
-        if (gameObj != null)
-        {
-            if (isBuildingOk && isEnough)
-            {
-                if (!gameObj.GetComponent<UnderBeltCtrl>())
-                    SetColor(spriteRenderer, Color.green, 0.35f);
-                else
-                {
-                    gameObj.GetComponent<UnderBeltCtrl>().SetColor(Color.green);
-                }
-            }
-            else if (!isBuildingOk || !isEnough)
-            {
-                if (!gameObj.GetComponent<UnderBeltCtrl>())
-                    SetColor(spriteRenderer, Color.red, 0.35f);
-                else
-                {
-                    gameObj.GetComponent<UnderBeltCtrl>().SetColor(Color.red);
-                }
-            }
-        }
         InputCheck();
-        BuildingListCtrl();
+        BuildingListSetColor();
     }
 
     void FixedUpdate()
@@ -221,6 +206,7 @@ public class PreBuilding : MonoBehaviour
                         {
                             underPipe.buildEnd = true;
                         }
+                        MapDataCheck(obj);
                     }
                 }
                 else
@@ -232,7 +218,6 @@ public class PreBuilding : MonoBehaviour
                 }
 
                 buildingList.Clear();
-                //startTempPos = startBuildPos;
                 gameObj.SetActive(true);
                 posList.Clear();
                 isDrag = false;
@@ -254,6 +239,24 @@ public class PreBuilding : MonoBehaviour
             }
         }
         mouseBtnFunc = MouseBtnFunc.None;
+    }
+
+    void MapDataCheck(GameObject obj)
+    {
+        Vector2 pos = obj.transform.position;
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+
+        if (obj.TryGetComponent(out BeltGroupMgr beltGroup))        
+            gameManager.map.mapData[x][y].structure = beltGroup.beltList[0].gameObject;        
+        else if (obj.TryGetComponent(out PipeGroupMgr pipeGroup))
+            gameManager.map.mapData[x][y].structure = pipeGroup.pipeList[0].gameObject;
+        else if (obj.TryGetComponent(out UnderBeltCtrl underBeltCtrl))
+            gameManager.map.mapData[x][y].structure = underBeltCtrl.underBelt;
+        else if (obj.TryGetComponent(out UnderPipeBuild underPipeBuild))
+            gameManager.map.mapData[x][y].structure = underPipeBuild.underPipeObj.gameObject;
+        else
+            gameManager.map.mapData[x][y].structure = obj;
     }
 
     void CheckPos()
@@ -691,27 +694,23 @@ public class PreBuilding : MonoBehaviour
 
     bool GroupBuildCheck(GameObject obj)
     {
-        if (obj.TryGetComponent(out Structure factory) && factory.canBuilding)
+        if (obj.TryGetComponent(out Structure structure) && structure.canBuilding && CellCheck(obj, obj.transform.position))
         {
             return true;
         }
-        if (obj.TryGetComponent(out TowerAi tower) && tower.canBuilding)
+        if (obj.TryGetComponent(out BeltGroupMgr belt) && belt.beltList[0].canBuilding && CellCheck(obj, obj.transform.position))
         {
             return true;
         }
-        if (obj.TryGetComponent(out BeltGroupMgr belt) && belt.beltList[0].canBuilding)
+        if (obj.TryGetComponent(out PipeGroupMgr pipe) && pipe.pipeList[0].canBuilding && CellCheck(obj, obj.transform.position))
         {
             return true;
         }
-        if (obj.TryGetComponent(out PipeGroupMgr pipe) && pipe.pipeList[0].canBuilding)
+        if (obj.TryGetComponent(out UnderBeltCtrl underBelt) && underBelt.beltScipt.canBuilding && CellCheck(obj, obj.transform.position))
         {
             return true;
         }
-        if (obj.TryGetComponent(out UnderBeltCtrl underBelt) && underBelt.beltScipt.canBuilding)
-        {
-            return true;
-        }
-        if (obj.TryGetComponent(out UnderPipeBuild underPipe) && underPipe.pipeScipt.canBuilding)
+        if (obj.TryGetComponent(out UnderPipeBuild underPipe) && underPipe.pipeScipt.canBuilding && CellCheck(obj, obj.transform.position))
         {
             return true;
         }
@@ -726,21 +725,12 @@ public class PreBuilding : MonoBehaviour
         {
             SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
             obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = layNumTemp;
-            if (obj.TryGetComponent(out Structure factory))
+            if (obj.TryGetComponent(out Structure structure))
             {
-                if (factory.canBuilding)
+                if (structure.canBuilding)
                 {
-                    factory.SetBuild();
-                    factory.ColliderTriggerOnOff(false);
-                    obj.AddComponent<DynamicGridObstacle>();
-                }
-            }
-            else if (obj.TryGetComponent(out TowerAi tower))
-            {
-                if (tower.canBuilding)
-                {
-                    tower.SetBuild();
-                    tower.ColliderTriggerOnOff(false);
+                    structure.SetBuild();
+                    structure.ColliderTriggerOnOff(false);
                     obj.AddComponent<DynamicGridObstacle>();
                 }
             }
@@ -882,15 +872,6 @@ public class PreBuilding : MonoBehaviour
             factory.level = level -1;
             dirNum = factory.dirNum;
         }
-        else if (gameObj.TryGetComponent(out TowerAi tower))
-        {
-            tower.isPreBuilding = true;
-            //tower.DisableColliders();
-            tower.ColliderTriggerOnOff(true);
-            tower.level = level - 1;
-            //isGetDir = false;
-            dirNum = 0;
-        }
         else if (gameObj.TryGetComponent(out BeltGroupMgr belt))
         {
             belt.isPreBuilding = true;
@@ -965,7 +946,7 @@ public class PreBuilding : MonoBehaviour
 
         if(gameObj.GetComponentInChildren<SpriteRenderer>() != null)
         {
-             spriteRenderer = gameObj.GetComponentInChildren<SpriteRenderer>();
+            spriteRenderer = gameObj.GetComponentInChildren<SpriteRenderer>();
             layNumTemp = spriteRenderer.sortingOrder;
         }
 
@@ -990,7 +971,7 @@ public class PreBuilding : MonoBehaviour
         sprite.color = slotColor;
     }
 
-    void BuildingListCtrl()
+    void BuildingListSetColor()
     {
         if(buildingList.Count > 0)
         {
@@ -1001,13 +982,9 @@ public class PreBuilding : MonoBehaviour
                 Color colorGreen = Color.green;
                 float alpha = 0.35f;
 
-                if (obj.TryGetComponent(out Structure factory))
+                if (obj.TryGetComponent(out Structure structure))
                 {
-                    canBuilding = factory.canBuilding;
-                }
-                else if (obj.TryGetComponent(out TowerAi tower))
-                {
-                    canBuilding = tower.canBuilding;
+                    canBuilding = structure.canBuilding;
                 }
                 else if (obj.TryGetComponent(out BeltGroupMgr belt))
                 {
@@ -1026,17 +1003,78 @@ public class PreBuilding : MonoBehaviour
                     canBuilding = underPipe.pipeScipt.canBuilding;
                 }
 
-                if (!canBuilding)
+                if (canBuilding && CellCheck(obj, obj.transform.position))
                 {
-                    SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorRed, alpha);
+                    SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorGreen, alpha);
                 }
                 else
                 {
-                    SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorGreen, alpha);
+                    SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorRed, alpha);
+                }
+            }
+        }
+        else
+        {
+            if(gameObj != null)
+            {
+                if (isBuildingOk && isEnough && GroupBuildCheck(gameObj))
+                {
+                    if (!gameObj.GetComponent<UnderBeltCtrl>())
+                        SetColor(spriteRenderer, Color.green, 0.35f);
+                    else
+                    {
+                        gameObj.GetComponent<UnderBeltCtrl>().SetColor(Color.green);
+                    }
+                }
+                else if (!isBuildingOk || !isEnough || !GroupBuildCheck(gameObj))
+                {
+                    if (!gameObj.GetComponent<UnderBeltCtrl>())
+                        SetColor(spriteRenderer, Color.red, 0.35f);
+                    else
+                    {
+                        gameObj.GetComponent<UnderBeltCtrl>().SetColor(Color.red);
+                    }
                 }
             }
         }
     }
+
+    bool CellCheck(GameObject obj,Vector2 pos)
+    {
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+
+        if (gameManager.map.IsOnMap(x, y))
+        {            
+            if (gameManager.map.mapData[x][y].structure != null)
+            {
+                return false;
+            }
+
+            string buildable = "";
+            foreach (string str in gameManager.map.mapData[x][y].buildable)
+            {
+                buildable = str;
+            }
+
+            if (obj.GetComponent<Miner>() && buildable == "miner")
+            {
+                return true;
+            }
+            else if (obj.GetComponent<PumpCtrl>() && buildable == "pump")
+            {
+                return true;
+            }
+            else if (!obj.GetComponent<Miner>() && !obj.GetComponent<PumpCtrl>() && buildable == "" && gameManager.map.mapData[x][y].obj == null)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        return false;
+    } 
+
 
     public void ReSetImage()
     {

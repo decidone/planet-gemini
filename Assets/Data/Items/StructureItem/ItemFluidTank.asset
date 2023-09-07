@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ItemFluidTank
   m_EditorClassIdentifier: 
   name: FluidTank
-  icon: {fileID: 2139102105, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  icon: {fileID: -797419743, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}

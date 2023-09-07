@@ -17,9 +17,4 @@ public class ItemProps : MonoBehaviour
     public BeltCtrl setOnBelt;
 
     public Collider2D col;
-
-    private void Awake()
-    {
-        col = GetComponent<Collider2D>();
-    }
 }
