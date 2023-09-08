@@ -14,12 +14,11 @@ public class DragGraphic : MonoBehaviour
 
     public GameObject preBuilding;
 
-    #region Singleton
-    public static DragGraphic instance;
-
     UnitDrag unitDrag;
     RemoveBuild removeBuild;
-    bool isAltKeyDown = false;
+
+    #region Singleton
+    public static DragGraphic instance;
 
     private void Awake()
     {
@@ -46,50 +45,54 @@ public class DragGraphic : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftAlt))
-        {
-            ColorSet(Color.red);
-            isAltKeyDown = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftAlt))
-        {
-            ColorSet(Color.green);
-            isAltKeyDown = false;
-        }
+        bool altKeyHeld = Input.GetKey(KeyCode.LeftAlt);
+        bool isMouseOverUI = EventSystem.current.IsPointerOverGameObject();
+        bool isMouseButtonDown = Input.GetMouseButtonDown(0);
+        bool isMouseButtonUp = Input.GetMouseButtonUp(0);
+
+        if (altKeyHeld)        
+            ColorSet(Color.red);        
+        else
+            ColorSet(Color.green);        
 
         if (!preBuilding.activeSelf)
         {
-            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+            if (isMouseButtonDown && !isMouseOverUI)
             {
                 startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 rightUp = false;
                 clickCheck = true;
                 sprite.enabled = true;
             }
+
             if (clickCheck)
             {
-                if (Input.GetMouseButton(0))
+                endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                BoxSizeChange();
+
+                if (isMouseButtonUp && !rightUp)
                 {
-                    endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    BoxSizeChange();
-                }
-                if (Input.GetMouseButtonUp(0) && !rightUp)
-                {
-                    if (!isAltKeyDown)
-                        unitDrag.LeftMouseUp(startPosition, endPosition);
-                    else
+                    if (altKeyHeld)
+                    {
                         removeBuild.LeftMouseUp(startPosition, endPosition);
+                    }
+                    else
+                    {
+                        unitDrag.LeftMouseUp(startPosition, endPosition);
+                    }
+
                     DisableFunc();
-                    clickCheck = false;
                     rightUp = false;
                 }
             }
+
             if (Input.GetMouseButtonDown(1))
             {
-                if (!isAltKeyDown && startPosition == endPosition)
+                if (!altKeyHeld && startPosition == endPosition)
+                {
                     unitDrag.RightMouseUp();
+                }
                 DisableFunc();
-                clickCheck = false;
                 rightUp = true;
             }
         }
@@ -117,5 +120,6 @@ public class DragGraphic : MonoBehaviour
         startPosition = Vector2.zero;
         endPosition = Vector2.zero;
         sprite.enabled = false;
+        clickCheck = false;
     }
 }

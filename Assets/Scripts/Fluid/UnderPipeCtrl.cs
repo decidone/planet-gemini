@@ -12,7 +12,6 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     protected override void Start()
     {
-        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         nearObj = new GameObject[2];
         checkPos = new Vector2[2];

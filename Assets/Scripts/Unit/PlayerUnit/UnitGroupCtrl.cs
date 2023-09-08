@@ -11,15 +11,6 @@ public class UnitGroupCtrl : MonoBehaviour
     Vector3 groupCenter = Vector3.zero;
     float radius = 0;
 
-    //Seeker seeker;
-
-    //protected Coroutine checkPathCoroutine; // 실행 중인 코루틴을 저장하는 변수
-
-    //private void Awake()
-    //{
-    //    seeker = GetComponent<Seeker>();
-    //}
-
     private void OnEnable()
     {
         // 이벤트 핸들러 등록

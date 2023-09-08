@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 2000658444983299215}
   - component: {fileID: 5588891184518126777}
   - component: {fileID: -4227467579231314770}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: UnderPipe
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -230,6 +230,9 @@ MonoBehaviour:
   dirCount: 0
   level: 0
   buildName: 
+  height: 0
+  width: 0
+  sizeOneByOne: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 3569326893753386058}
@@ -237,10 +240,20 @@ MonoBehaviour:
   isRuin: 0
   isRepair: 0
   repairBar: {fileID: 5987129193063934876}
-  itemPref: {fileID: 0}
   itemList: []
   itemObjList: []
   canBuilding: 1
+  nearObj:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  checkPos:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  checkObj: 1
   inObj: []
   outObj: []
   outSameList: []
@@ -250,12 +263,14 @@ MonoBehaviour:
   - {fileID: 898153619, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
   - {fileID: 237755507, guid: f3ab44da77a99b14aacbaaea13c8b464, type: 3}
   spawnItem: {fileID: 0}
+  monsterList: []
+  col: {fileID: 0}
+  repairTower: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   maxAmount: 0
   cooldown: 0
-  productionData: {fileID: 0}
   fluidName: 
   saveFluidNum: 0
   sendDelayTimer: 0

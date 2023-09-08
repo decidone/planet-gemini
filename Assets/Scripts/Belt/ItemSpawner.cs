@@ -11,7 +11,6 @@ public class ItemSpawner : LogisticsCtrl
 
     void Start()
     {
-        dirCount = 4;
         CheckPos();
     }
 

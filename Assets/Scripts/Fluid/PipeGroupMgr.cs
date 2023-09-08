@@ -36,7 +36,7 @@ public class PipeGroupMgr : MonoBehaviour
         }
     }
 
-    public void SetPipe(int pipeDir)
+    public void SetPipe(int pipeDir, int level, int height, int width, int dirCount)
     {
         GameObject pipe = Instantiate(pipeObj, this.transform.position, Quaternion.identity);
         pipe.transform.parent = this.transform;
@@ -44,6 +44,8 @@ public class PipeGroupMgr : MonoBehaviour
         pipeCtrl.pipeGroupMgr = this.GetComponent<PipeGroupMgr>();
         pipeList.Add(pipeCtrl);
         pipeCtrl.dirNum = pipeDir;
+        pipeCtrl.BuildingSetting(level, height, width, dirCount);
+
         GroupCheck();
         GroupFluidCount(0);
 

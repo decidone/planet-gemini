@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ItemManufacturer
   m_EditorClassIdentifier: 
   name: Manufacturer
-  icon: {fileID: 1830172192, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  icon: {fileID: 471881988, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}

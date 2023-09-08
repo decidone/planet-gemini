@@ -12,10 +12,8 @@ public class BeltGroupMgr : MonoBehaviour
     public List<ItemProps> groupItem = new List<ItemProps>();
 
     public GameObject nextObj = null;
-    public GameObject preObj = null;
 
     public bool nextCheck = true;
-    public bool preCheck = true;
 
     public bool isPreBuilding = false;
 
@@ -28,15 +26,10 @@ public class BeltGroupMgr : MonoBehaviour
                 if(beltList.Count > 0)
                     nextObj = NextObjCheck();    
             }
-            if (preCheck)
-            {
-                if (beltList.Count > 0)
-                    preObj = PreObjCheck();
-            }
         }
     }
 
-    public void SetBelt(int beltDir)
+    public void SetBelt(int beltDir, int level, int height, int width, int dirCount)
     {
         GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
         belt.transform.parent = this.transform;
@@ -45,6 +38,7 @@ public class BeltGroupMgr : MonoBehaviour
         beltList.Add(beltCtrl);
         beltCtrl.dirNum = beltDir;
         beltCtrl.beltState = BeltState.SoloBelt;
+        beltCtrl.BuildingSetting(level, height, width, dirCount);
     }
 
     void BeltModelSet(BeltCtrl preBelt, BeltCtrl nextBelt)
@@ -123,53 +117,6 @@ public class BeltGroupMgr : MonoBehaviour
                     nextCheck = false;
                     return collider.gameObject;
                 }
-            }
-        }
-
-        return null;
-    }
-
-    private GameObject PreObjCheck()
-    {
-        var Check = -transform.up;
-
-        BeltCtrl belt = beltList[0].GetComponent<BeltCtrl>();
-        if (belt.dirNum == 0)
-        {
-            Check = -belt.transform.up;
-        }
-        else if (belt.dirNum == 1)
-        {
-            Check = -belt.transform.right;
-        }
-        else if (belt.dirNum == 2)
-        {
-            Check = belt.transform.up;
-        }
-        else if (belt.dirNum == 3)
-        {
-            Check = belt.transform.right;
-        }
-
-        RaycastHit2D[] raycastHits = Physics2D.RaycastAll(belt.transform.position, Check, 1f);
-
-        for (int a = 0; a < raycastHits.Length; a++)
-        {
-            Collider2D collider = raycastHits[a].collider;
-
-            if (collider.CompareTag("Factory") && !collider.GetComponent<Structure>().isPreBuilding &&
-                collider.GetComponent<BeltCtrl>() != belt)
-            {
-                if (collider.TryGetComponent(out BeltCtrl otherBelt))
-                {
-                    CheckGroup(belt, otherBelt, false);
-                }
-                else
-                {
-                    preCheck = false;
-                }
-
-                return collider.gameObject;
             }
         }
 

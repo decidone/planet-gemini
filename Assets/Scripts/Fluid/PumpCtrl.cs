@@ -20,8 +20,6 @@ public class PumpCtrl : FluidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                CheckPos();
-
                 for (int i = 0; i < nearObj.Length; i++)
                 {
                     if (nearObj[i] == null)

@@ -5,8 +5,7 @@ using UnityEngine;
 // UTF-8 설정
 public class UnderPipeBuild : MonoBehaviour
 {
-    [SerializeField]
-    GameObject underPipe;
+    public GameObject underPipe;
 
     public bool isPreBuilding = false;
 
@@ -30,11 +29,11 @@ public class UnderPipeBuild : MonoBehaviour
     }
 
     void Update()
-    {// 기본적으로 send벨트이고 send벨트의 반대 방향으로 10 체크해서 다른 send벨트가 있을 때 get벨트로 변경
+    {
         if (isPreBuilding)
         {
             CheckPos();
-            if (preBuilding !=null && preBuilding.isDrag)
+            if (preBuilding !=null)
             {
                 if (!buildEnd)
                 {
@@ -82,12 +81,12 @@ public class UnderPipeBuild : MonoBehaviour
         }
     }
 
-    public void SetUnderPipe()
+    public void SetUnderPipe(int level, int height, int width, int dirCount)
     {
         underPipeObj = underPipe;
         pipeScipt = underPipeObj.GetComponent<UnderPipeCtrl>();
         ColliderTriggerOnOff(true);
-        pipeScipt.isPreBuilding = true;
+        pipeScipt.BuildingSetting(level, height, width, dirCount);
         pipeScipt.dirNum = dirNum;
     }
 
@@ -129,11 +128,6 @@ public class UnderPipeBuild : MonoBehaviour
         slotColor = color;
         slotColor.a = alpha;
         sprite.color = slotColor;
-    }
-
-    public void SetLevel(int getLevel)
-    {
-        pipeScipt.level = getLevel;
     }
 
     public void ColliderTriggerOnOff(bool isOn)

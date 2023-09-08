@@ -18,16 +18,16 @@ public class PreBuilding : MonoBehaviour
 {
     SpriteRenderer spriteRenderer;
     GameObject gameObj;
-    public bool isSelect = false;
 
-    public GameObject beltMgr = null;
-    public GameObject pipeMgr = null;
+    public GameObject beltMgr;
+    public GameObject pipeMgr;
 
     bool isNeedSetPos = false;
     Vector3 setPos;
 
     private Tilemap tilemap;
 
+    [HideInInspector]
     public bool isBuildingOk = true;
     int layNumTemp = 0;
 
@@ -40,19 +40,21 @@ public class PreBuilding : MonoBehaviour
     Vector3 endBuildPos;
 
     bool isUnderObj = false;
+    [HideInInspector]
     public bool isEnough = true;
 
-    public List<GameObject> buildingList = new List<GameObject>();    
+    List<GameObject> buildingList = new List<GameObject>();
     Vector3 tempPos;
-    public List<Vector3> posList = new List<Vector3>();
+    List<Vector3> posList = new List<Vector3>();
     bool isMoveX = true; 
     bool tempMoveX;
     bool moveDir;
     bool tempMoveDir;
     bool isPreBeltSend;
+    Vector3 mousePosition;
     MouseBtnFunc mouseBtnFunc = MouseBtnFunc.None;
-    public bool isMouseLeft = true;
-    public bool isDrag = false;
+    bool isMouseLeft = true;
+    bool isDrag = false;
     Coroutine setBuild;
 
     GameManager gameManager;
@@ -109,7 +111,7 @@ public class PreBuilding : MonoBehaviour
             mouseBtnFunc = MouseBtnFunc.MouseButtonUp;
         }
 
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int cellPosition = tilemap.WorldToCell(mousePosition);
         Vector3 cellCenter = tilemap.GetCellCenterWorld(cellPosition);
         cellCenter.z = transform.position.z;
@@ -146,8 +148,6 @@ public class PreBuilding : MonoBehaviour
                         float absDeltaX = Mathf.Abs(deltaX);
                         float absDeltaY = Mathf.Abs(deltaY);
 
-                        //posList.Clear();
-
                         if (absDeltaX >= absDeltaY)
                             isMoveX = true;
                         else
@@ -182,19 +182,22 @@ public class PreBuilding : MonoBehaviour
                 }
 
                 bool canBuild = false;
+                int index = 0;
                 foreach (GameObject obj in buildingList)
                 {
-                    if (GroupBuildCheck(obj))
+                    if (GroupBuildCheck(obj, posList[index]))
                         canBuild = true;
                     else
                     {
                         canBuild = false;
                         break;
                     }
+                    index++;
                 }
 
                 if (canBuild)
                 {
+                    int posIndex = 0;
                     foreach (GameObject obj in buildingList)
                     {
                         setBuild = StartCoroutine("SetBuilding", obj);
@@ -206,7 +209,11 @@ public class PreBuilding : MonoBehaviour
                         {
                             underPipe.buildEnd = true;
                         }
-                        MapDataCheck(obj);
+                        if(!isUnderObj)
+                            MapDataCheck(obj,posList[posIndex]);
+                        else if (isUnderObj)
+                            MapDataCheck(obj, obj.transform.position);
+                        posIndex++;
                     }
                 }
                 else
@@ -241,22 +248,44 @@ public class PreBuilding : MonoBehaviour
         mouseBtnFunc = MouseBtnFunc.None;
     }
 
-    void MapDataCheck(GameObject obj)
+    void MapDataCheck(GameObject obj, Vector2 pos)
     {
-        Vector2 pos = obj.transform.position;
         int x = Mathf.FloorToInt(pos.x);
         int y = Mathf.FloorToInt(pos.y);
 
-        if (obj.TryGetComponent(out BeltGroupMgr beltGroup))        
-            gameManager.map.mapData[x][y].structure = beltGroup.beltList[0].gameObject;        
+        GameObject buildObj = GetBuildObject(obj);
+
+        for (int i = 0; i < objHeight; i++)
+        {
+            for (int j = 0; j < objWidth; j++)
+            {
+                gameManager.map.mapData[x + i][y + j].structure = buildObj;
+            }
+        }
+    }
+
+    GameObject GetBuildObject(GameObject obj)
+    {
+        GameObject buildObj = obj;
+
+        if (obj.TryGetComponent(out BeltGroupMgr beltGroup))
+        {
+            buildObj = beltGroup.beltList[0].gameObject;
+        }
         else if (obj.TryGetComponent(out PipeGroupMgr pipeGroup))
-            gameManager.map.mapData[x][y].structure = pipeGroup.pipeList[0].gameObject;
+        {
+            buildObj = pipeGroup.pipeList[0].gameObject;
+        }
         else if (obj.TryGetComponent(out UnderBeltCtrl underBeltCtrl))
-            gameManager.map.mapData[x][y].structure = underBeltCtrl.underBelt;
+        {
+            buildObj = underBeltCtrl.underBelt;
+        }
         else if (obj.TryGetComponent(out UnderPipeBuild underPipeBuild))
-            gameManager.map.mapData[x][y].structure = underPipeBuild.underPipeObj.gameObject;
-        else
-            gameManager.map.mapData[x][y].structure = obj;
+        {
+            buildObj = underPipeBuild.underPipeObj;
+        }
+
+        return buildObj;
     }
 
     void CheckPos()
@@ -327,6 +356,7 @@ public class PreBuilding : MonoBehaviour
                                 }
                             }
                         }
+
                         else if (startBuildPos.x < posList[1].x)
                         {
                             for (int i = 0; i < posList.Count; i++)
@@ -338,7 +368,7 @@ public class PreBuilding : MonoBehaviour
                             }
                             for (int b = buildingList.Count - 1; b > 0; b--)
                             {
-                                if (tempPos.x < buildingList[b].transform.position.x)
+                                if (tempPos.x < buildingList[b].transform.position.x - 0.5f)
                                 {
                                     Destroy(buildingList[b]);
                                     objectsToRemove.Add(buildingList[b]); 
@@ -434,7 +464,7 @@ public class PreBuilding : MonoBehaviour
                             }
                             for (int b = buildingList.Count - 1; b > 0; b--)
                             {
-                                if (tempPos.y < buildingList[b].transform.position.y)
+                                if (tempPos.y < buildingList[b].transform.position.y - 0.5f)
                                 {
                                     Destroy(buildingList[b]);
                                     objectsToRemove.Add(buildingList[b]);
@@ -692,29 +722,15 @@ public class PreBuilding : MonoBehaviour
         gameObj.SetActive(false);
     }
 
-    bool GroupBuildCheck(GameObject obj)
+    bool GroupBuildCheck(GameObject obj, Vector2 pos)
     {
-        if (obj.TryGetComponent(out Structure structure) && structure.canBuilding && CellCheck(obj, obj.transform.position))
-        {
+        GameObject buildObj = GetBuildObject(obj);
+        Structure str = buildObj.GetComponent<Structure>();
+
+        if (str.canBuilding && CellCheck(buildObj, pos))
             return true;
-        }
-        if (obj.TryGetComponent(out BeltGroupMgr belt) && belt.beltList[0].canBuilding && CellCheck(obj, obj.transform.position))
-        {
-            return true;
-        }
-        if (obj.TryGetComponent(out PipeGroupMgr pipe) && pipe.pipeList[0].canBuilding && CellCheck(obj, obj.transform.position))
-        {
-            return true;
-        }
-        if (obj.TryGetComponent(out UnderBeltCtrl underBelt) && underBelt.beltScipt.canBuilding && CellCheck(obj, obj.transform.position))
-        {
-            return true;
-        }
-        if (obj.TryGetComponent(out UnderPipeBuild underPipe) && underPipe.pipeScipt.canBuilding && CellCheck(obj, obj.transform.position))
-        {
-            return true;
-        }
-        return false;
+        else
+            return false;
     }
 
     IEnumerator SetBuilding(GameObject obj)
@@ -862,51 +878,41 @@ public class PreBuilding : MonoBehaviour
         }
 
         gameObj = Instantiate(game);
+
         isUnderObj = false;
+        
+        objHeight = height;
+        objWidth = width;
 
         if (gameObj.TryGetComponent(out Structure factory))
         {
-            factory.isPreBuilding = true;
-            factory.ColliderTriggerOnOff(true);
-            //factory.DisableColliders();
-            factory.level = level -1;
+            factory.BuildingSetting(level, height, width, dirCount);
             dirNum = factory.dirNum;
         }
         else if (gameObj.TryGetComponent(out BeltGroupMgr belt))
         {
             belt.isPreBuilding = true;
-            belt.SetBelt(0);
-            belt.beltList[0].isPreBuilding = true;
-            belt.beltList[0].ColliderTriggerOnOff(true);
-            //belt.beltList[0].DisableColliders();
-            belt.beltList[0].level = level - 1;
-            //isGetDir = true;
+            belt.SetBelt(0, level, height, width, dirCount);
             dirNum = belt.beltList[0].dirNum;
         }
         else if (gameObj.TryGetComponent(out PipeGroupMgr pipe))
         {
             pipe.isPreBuilding = true;
-            pipe.SetPipe(0);
-            pipe.pipeList[0].isPreBuilding = true;
-            pipe.pipeList[0].ColliderTriggerOnOff(true);
-            //pipe.pipeList[0].DisableColliders();
-            //isGetDir = false;
+            pipe.SetPipe(0, level, height, width, dirCount);
             dirNum = pipe.pipeList[0].dirNum;
         }
         else if (gameObj.TryGetComponent(out UnderBeltCtrl underBelt))
         {
             underBelt.isPreBuilding = true;
+            underBelt.BuildingSetting(level, height, width, dirCount);
             underBelt.SetSendUnderBelt();
-            //underBelt.SetLevel(level);
             isUnderObj = true;
-            //isGetDir = true;
-            dirNum = underBelt.dirNum;            
+            dirNum = underBelt.dirNum;
         }
         else if (gameObj.TryGetComponent(out UnderPipeBuild underPipe))
         {
             underPipe.isPreBuilding = true;
-            underPipe.SetUnderPipe();
-            //underBelt.SetLevel(level);
+            underPipe.SetUnderPipe(level, height, width, dirCount);
             isUnderObj = true;
             isGetDir = true;
             dirNum = underPipe.dirNum;
@@ -929,9 +935,6 @@ public class PreBuilding : MonoBehaviour
             isNeedSetPos = true;
             gameObj.transform.position = this.transform.position - setPos;
         }
-
-        objHeight = height;
-        objWidth = width;
 
         if (dirCount == 4)
         {
@@ -960,7 +963,6 @@ public class PreBuilding : MonoBehaviour
         }
         startBuildPos = transform.position;
         endBuildPos = transform.position;
-        isSelect = true;
     }
 
     void SetColor(SpriteRenderer sprite, Color color, float alpha)
@@ -975,6 +977,7 @@ public class PreBuilding : MonoBehaviour
     {
         if(buildingList.Count > 0)
         {
+            int posIndex = 0;
             foreach (GameObject obj in buildingList)
             {
                 bool canBuilding = false;
@@ -982,28 +985,11 @@ public class PreBuilding : MonoBehaviour
                 Color colorGreen = Color.green;
                 float alpha = 0.35f;
 
-                if (obj.TryGetComponent(out Structure structure))
-                {
-                    canBuilding = structure.canBuilding;
-                }
-                else if (obj.TryGetComponent(out BeltGroupMgr belt))
-                {
-                    canBuilding = belt.beltList[0].canBuilding;
-                }
-                else if (obj.TryGetComponent(out PipeGroupMgr pipe))
-                {
-                    canBuilding = pipe.pipeList[0].canBuilding;
-                }
-                else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
-                {
-                    canBuilding = underBelt.beltScipt.canBuilding;
-                }
-                else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
-                {
-                    canBuilding = underPipe.pipeScipt.canBuilding;
-                }
+                GameObject buildObj = GetBuildObject(obj);
+                Structure str = buildObj.GetComponent<Structure>();
+                canBuilding = str.canBuilding;
 
-                if (canBuilding && CellCheck(obj, obj.transform.position))
+                if (canBuilding && CellCheck(obj, posList[posIndex]))
                 {
                     SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorGreen, alpha);
                 }
@@ -1011,13 +997,14 @@ public class PreBuilding : MonoBehaviour
                 {
                     SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorRed, alpha);
                 }
+                posIndex++;
             }
         }
         else
         {
             if(gameObj != null)
             {
-                if (isBuildingOk && isEnough && GroupBuildCheck(gameObj))
+                if (isBuildingOk && isEnough && GroupBuildCheck(gameObj, mousePosition))
                 {
                     if (!gameObj.GetComponent<UnderBeltCtrl>())
                         SetColor(spriteRenderer, Color.green, 0.35f);
@@ -1026,7 +1013,7 @@ public class PreBuilding : MonoBehaviour
                         gameObj.GetComponent<UnderBeltCtrl>().SetColor(Color.green);
                     }
                 }
-                else if (!isBuildingOk || !isEnough || !GroupBuildCheck(gameObj))
+                else if (!isBuildingOk || !isEnough || !GroupBuildCheck(gameObj, mousePosition))
                 {
                     if (!gameObj.GetComponent<UnderBeltCtrl>())
                         SetColor(spriteRenderer, Color.red, 0.35f);
@@ -1039,42 +1026,96 @@ public class PreBuilding : MonoBehaviour
         }
     }
 
-    bool CellCheck(GameObject obj,Vector2 pos)
+    bool CellCheck(GameObject obj, Vector2 pos)
     {
         int x = Mathf.FloorToInt(pos.x);
         int y = Mathf.FloorToInt(pos.y);
 
-        if (gameManager.map.IsOnMap(x, y))
-        {            
-            if (gameManager.map.mapData[x][y].structure != null)
-            {
-                return false;
-            }
+        List<int> xList = new List<int>();
+        List<int> yList = new List<int>();
 
-            string buildable = "";
-            foreach (string str in gameManager.map.mapData[x][y].buildable)
-            {
-                buildable = str;
-            }
-
-            if (obj.GetComponent<Miner>() && buildable == "miner")
-            {
-                return true;
-            }
-            else if (obj.GetComponent<PumpCtrl>() && buildable == "pump")
-            {
-                return true;
-            }
-            else if (!obj.GetComponent<Miner>() && !obj.GetComponent<PumpCtrl>() && buildable == "" && gameManager.map.mapData[x][y].obj == null)
-            {
-                return true;
-            }
-            else
-                return false;
+        if (objHeight == 1 && objWidth == 1)
+        {
+            xList.Add(x);
+            yList.Add(y);
         }
-        return false;
-    } 
+        else if (objHeight == 1 && objWidth == 2)
+        {
+            xList.Add(x);
+            xList.Add(x + 1);
+            yList.Add(y);
+        }
+        else if (objHeight == 2 && objWidth == 2)
+        {
+            xList.Add(x);
+            xList.Add(x + 1);
+            yList.Add(y);
+            yList.Add(y + 1);
+        }
 
+        bool canBuild = false;
+
+        if (obj.GetComponent<Miner>() || obj.GetComponent<PumpCtrl>())
+        {
+            foreach (int newX in xList)
+            {
+                foreach (int newY in yList)
+                {
+                    if (gameManager.map.IsOnMap(newX, newY))
+                    {
+                        if (gameManager.map.mapData[newX][newY].structure != null)
+                        {
+                            return false;
+                        }
+
+                        string buildable = "";
+                        foreach (string str in gameManager.map.mapData[newX][newY].buildable)
+                        {
+                            buildable = str;
+                        }
+
+                        if (obj.GetComponent<Miner>() && buildable == "miner")
+                        {
+                            return true;
+                        }
+                        else if (obj.GetComponent<PumpCtrl>() && buildable == "pump")
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (int newX in xList)
+            {
+                foreach (int newY in yList)
+                {
+                    if (gameManager.map.IsOnMap(newX, newY))
+                    {
+                        if (gameManager.map.mapData[newX][newY].structure != null)
+                        {
+                            return false;
+                        }
+
+                        string buildable = "";
+                        if (buildable == "" && gameManager.map.mapData[newX][newY].obj == null)
+                        {
+                            canBuild = true;
+                        }
+                        else 
+                            return false;
+                    }
+                }
+            }
+        }
+
+        if (canBuild)
+            return true;
+        else
+            return false;
+    }
 
     public void ReSetImage()
     {
@@ -1086,44 +1127,28 @@ public class PreBuilding : MonoBehaviour
 
         if(spriteRenderer)
             spriteRenderer.sprite = null;
-        isSelect = false;
         gameObj = null;
         gameObject.SetActive(false);
     }
 
+
     void RotationImg(GameObject obj)
     {
-        if (obj.TryGetComponent(out Structure factory))
-        {
-            factory.dirNum++;
-            if(factory.dirNum >= factory.dirCount)
-                factory.dirNum = 0;
-            dirNum = factory.dirNum;
-        }
-        else if(obj.TryGetComponent(out BeltGroupMgr belt))
-        {
-            belt.beltList[0].dirNum++;
-            if (belt.beltList[0].dirNum >= belt.beltList[0].dirCount)
-                belt.beltList[0].dirNum = 0;
-            dirNum = belt.beltList[0].dirNum;
-        }
-        else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
-        {
-            underBelt.beltScipt.dirNum++;
-            if (underBelt.beltScipt.dirNum >= underBelt.beltScipt.dirCount)
-                underBelt.beltScipt.dirNum = 0;
+        GameObject buildObj = GetBuildObject(obj);
+        Structure str = buildObj.GetComponent<Structure>();
 
+        str.dirNum++;
+        if (str.dirNum >= str.dirCount)
+            str.dirNum = 0;
+        dirNum = str.dirNum;
+
+        if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
+        {
             underBelt.dirNum = underBelt.beltScipt.dirNum;
-            dirNum = underBelt.beltScipt.dirNum;
         }
         else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
         {
-            underPipe.pipeScipt.dirNum++;
-            if (underPipe.pipeScipt.dirNum >= underPipe.pipeScipt.dirCount)
-                underPipe.pipeScipt.dirNum = 0;
-
             underPipe.dirNum = underPipe.pipeScipt.dirNum;
-            dirNum = underPipe.pipeScipt.dirNum;
         }
     }
 }

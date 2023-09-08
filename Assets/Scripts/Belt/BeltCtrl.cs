@@ -33,14 +33,13 @@ public class BeltCtrl : LogisticsCtrl
 
     public bool isItemStop = false;
 
-    bool isUp = false;
-    bool isRight = false;
-    bool isDown = false;
-    bool isLeft = false;
+    public bool isUp = false;
+    public bool isRight = false;
+    public bool isDown = false;
+    public bool isLeft = false;
 
     void Start()
     {
-        dirCount = 4;
         beltManager = GameObject.Find("BeltManager");
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
@@ -340,29 +339,80 @@ public class BeltCtrl : LogisticsCtrl
 
     public void FactoryPosCheck(Structure factory)
     {
-        if (factory.transform.position.x > this.transform.position.x)
+        float xDiff = factory.transform.position.x - this.transform.position.x;
+        float yDiff = factory.transform.position.y - this.transform.position.y;
+
+        if (factory.sizeOneByOne) 
         {
-            isLeft = true;
-            nearObj[3] = factory.gameObject;
+            if (xDiff > 0)
+            {
+                isLeft = true;
+                nearObj[3] = factory.gameObject;
+            }
+            else if (xDiff < 0)
+            {
+                isRight = true;
+                nearObj[1] = factory.gameObject;
+            }
+            else if (yDiff > 0)
+            {
+                isDown = true;
+                nearObj[2] = factory.gameObject;
+            }
+            else if (yDiff < 0)
+            {
+                isUp = true;
+                nearObj[0] = factory.gameObject;
+            }
         }
-        else if (factory.transform.position.x < this.transform.position.x)
+        else
         {
-            isRight = true;
-            nearObj[1] = factory.gameObject;
-        }
-        else if (factory.transform.position.y - 0.1f > this.transform.position.y)
-        {
-            isDown = true;
-            nearObj[2] = factory.gameObject;
-        }
-        else if (factory.transform.position.y - 0.1f < this.transform.position.y)
-        {
-            isUp = true;
-            nearObj[0] = factory.gameObject;
+            if (xDiff > 0)
+            {
+                if(Mathf.Abs(xDiff) > Mathf.Abs(yDiff))
+                {
+                    isLeft = true;
+                    nearObj[3] = factory.gameObject;
+                }
+                else
+                {
+                    if (yDiff > 0) 
+                    {
+                        isDown = true;
+                        nearObj[2] = factory.gameObject;
+                    }
+                    else
+                    {
+                        isUp = true;
+                        nearObj[0] = factory.gameObject;
+                    }
+                }
+            }
+            else
+            {
+                if (Mathf.Abs(xDiff) > Mathf.Abs(yDiff))
+                {
+                    isRight = true;
+                    nearObj[1] = factory.gameObject;
+                }
+                else
+                {
+                    if (yDiff > 0)
+                    {
+                        isDown = true;
+                        nearObj[2] = factory.gameObject;
+                    }
+                    else
+                    {
+                        isUp = true;
+                        nearObj[0] = factory.gameObject;
+                    }
+                }
+            }
         }
 
-        if(beltState != BeltState.RepeaterBelt)
-            Invoke("FactoryModelSet", 0.1f);
+        if (beltState == BeltState.StartBelt || beltState == BeltState.SoloBelt)
+            Invoke("FactoryModelSet", 0.1f);        
     }
 
     public void FactoryModelSet()
@@ -391,7 +441,7 @@ public class BeltCtrl : LogisticsCtrl
             {
                 isTurn = true;
                 isRightTurn = true;
-            }            
+            }
         }
         else if (!isUp && !isRight && isDown && !isLeft)
         {
@@ -450,19 +500,6 @@ public class BeltCtrl : LogisticsCtrl
         }
         FactoryModelSet();
     }
-
-    //public void PlayerRootItem(ItemProps item)
-    //{
-    //    if (itemObjList.Contains(item))
-    //    {
-    //        itemObjList.Remove(item);
-    //    }
-
-    //    if (itemObjList.Count >= structureData.MaxItemStorageLimit)
-    //        isFull = true;
-    //    else
-    //        isFull = false;
-    //}
 
     public List<ItemProps> PlayerRootItem()
     {

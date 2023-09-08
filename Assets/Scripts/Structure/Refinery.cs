@@ -53,7 +53,6 @@ public class Refinery : FluidFactoryCtrl
         }
         if (!isPreBuilding)
         {
-            CheckPos();
             if (inObj.Count > 0 && !itemGetDelay && checkObj)
                 GetItem();
 

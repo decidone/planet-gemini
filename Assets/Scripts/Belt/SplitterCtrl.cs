@@ -25,7 +25,6 @@ public class SplitterCtrl : LogisticsCtrl
 
     void Start()
     {
-        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         CheckPos();
         clickEvent = GetComponent<LogisticsClickEvent>();

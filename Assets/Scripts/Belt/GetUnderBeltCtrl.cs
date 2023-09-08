@@ -9,7 +9,6 @@ public class GetUnderBeltCtrl : LogisticsCtrl
 {
     void Start()
     {
-        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
     }
 

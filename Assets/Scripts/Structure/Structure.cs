@@ -27,6 +27,13 @@ public class Structure : MonoBehaviour
     public string buildName;
 
     [HideInInspector]
+    public int height;
+    [HideInInspector]
+    public int width;
+    [HideInInspector]
+    public bool sizeOneByOne;
+
+    [HideInInspector]
     public bool isPreBuilding = false;
     [HideInInspector]
     public bool isSetBuildingOk = false;
@@ -50,21 +57,29 @@ public class Structure : MonoBehaviour
 
     [HideInInspector]
     public List<Item> itemList = new List<Item>();
+    [HideInInspector]
     public List<ItemProps> itemObjList = new List<ItemProps>();
 
+    [HideInInspector]
     public bool canBuilding = true;
     protected List<GameObject> buildingPosUnit = new List<GameObject>();
 
-    protected GameObject[] nearObj = new GameObject[4];
-    protected Vector2[] checkPos = new Vector2[4];
-    protected bool checkObj = true;
+    public GameObject[] nearObj = new GameObject[4];
+    public Vector2[] checkPos = new Vector2[4];
+    public bool checkObj = true;
+
+    protected Vector2[] startTransform = new Vector2[4];
+    protected Vector3[] directions = new Vector3[4];
+    protected int[] indices = new int[6];
 
     protected Inventory playerInven = null;
 
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
+    //[HideInInspector]
     public List<GameObject> inObj = new List<GameObject>();
+    //[HideInInspector]
     public List<GameObject> outObj = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> outSameList = new List<GameObject>();
@@ -83,10 +98,22 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public List<GameObject> monsterList = new List<GameObject>();
 
+    [HideInInspector]
     public Collider2D col;
+    [HideInInspector]
     public RepairTower repairTower;
 
     public virtual bool CheckOutItemNum()  { return new bool(); }
+
+    public void BuildingSetting(int _level, int _height, int _width, int _dirCount)
+    {
+        isPreBuilding = true;
+        ColliderTriggerOnOff(true);
+        level = _level - 1;
+        height = _height;
+        width = _width;
+        dirCount = _dirCount;
+    }
 
     protected virtual void SetDirNum()
     {
@@ -97,15 +124,26 @@ public class Structure : MonoBehaviour
     // 건물의 방향 설정
     protected virtual void CheckPos()
     {
-        Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
-
-        for (int i = 0; i < 4; i++)
+        if (width == 1 && height == 1)
         {
-            checkPos[i] = dirs[(dirNum + i) % 4];
+            sizeOneByOne = true;
+            Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
+
+            for (int i = 0; i < 4; i++)
+            {
+                checkPos[i] = dirs[(dirNum + i) % 4];
+            }
+        }
+        else if (width == 2 && height == 2)
+        {
+            sizeOneByOne = false;
+            indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
+            startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
+            directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };
         }
     }
 
-    // 근처 오브젝트 찻는 위치(상하좌우) 설정
+    // 1x1 사이즈 근처 오브젝트 찻는 위치(상하좌우) 설정
     protected virtual void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
@@ -129,6 +167,24 @@ public class Structure : MonoBehaviour
                 }
             }
 
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
+                hits[i].collider.gameObject != this.gameObject)
+            {
+                nearObj[index] = hits[i].collider.gameObject;
+                callback(hitCollider.gameObject);
+                break;
+            }
+        }
+    }
+
+    // 2x2 사이즈 근처 오브젝트 찻는 위치(상하좌우) 설정
+    protected virtual void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback) 
+    {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hitCollider = hits[i].collider;
             if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
                 hits[i].collider.gameObject != this.gameObject)
             {
@@ -688,7 +744,6 @@ public class Structure : MonoBehaviour
                 {
                     BeltGroupMgr beltGroup = structure.GetComponentInParent<BeltGroupMgr>();
                     beltGroup.nextCheck = true;
-                    beltGroup.preCheck = true;
                 }
             }
         }
@@ -708,9 +763,22 @@ public class Structure : MonoBehaviour
         GameManager gameManager = GameManager.instance;
         int x = Mathf.FloorToInt(transform.position.x);
         int y = Mathf.FloorToInt(transform.position.y);
-        if (gameManager.map.IsOnMap(x, y) && gameManager.map.mapData[x][y].structure == gameObject)
+        if (sizeOneByOne)
         {
-            gameManager.map.mapData[x][y].structure = null;
+            if (gameManager.map.IsOnMap(x, y) && gameManager.map.mapData[x][y].structure == gameObject)
+            {
+                gameManager.map.mapData[x][y].structure = null;
+            }
+        }
+        else
+        {
+            if (gameManager.map.IsOnMap(x, y) && gameManager.map.mapData[x][y].structure == gameObject)
+            {
+                gameManager.map.mapData[x][y].structure = null;
+                gameManager.map.mapData[x + 1][y].structure = null;
+                gameManager.map.mapData[x][y + 1].structure = null;
+                gameManager.map.mapData[x + 1][y + 1].structure = null;
+            }
         }
 
          Destroy(this.gameObject);
@@ -762,7 +830,7 @@ public class Structure : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>() || collision.GetComponent<Structure>())
+        if (collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>())
         {
             if (isPreBuilding)
             {
@@ -787,7 +855,7 @@ public class Structure : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>() || collision.GetComponent<Structure>())
+        if (collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>())
         {
             if (isPreBuilding)
             {

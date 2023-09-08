@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 4243873348260944137}
   - component: {fileID: 2112680866680229825}
   - component: {fileID: 6373355095094737204}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pump
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -333,6 +333,9 @@ MonoBehaviour:
   dirCount: 0
   level: 0
   buildName: 
+  height: 0
+  width: 0
+  sizeOneByOne: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 1318512822529483086}
@@ -343,6 +346,17 @@ MonoBehaviour:
   itemList: []
   itemObjList: []
   canBuilding: 1
+  nearObj:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  checkPos:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  checkObj: 1
   inObj: []
   outObj: []
   outSameList: []

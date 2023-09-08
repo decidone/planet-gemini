@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
-  m_Name: BuildingManufacturer
+  m_Name: BuildingMinerLevel1
   m_EditorClassIdentifier: 
   type: Factory
-  scienceName: Manufacturer
-  item: {fileID: 11400000, guid: 4dd78497b0a424d428c9bccb431e5a7f, type: 2}
-  gameObj: {fileID: 1875794501085088104, guid: 0d06fb23ed4102848b23ec68d7f1b80a, type: 3}
+  scienceName: Miner
+  item: {fileID: 11400000, guid: 71ffee1754cdcdd49ba94f8203f28333, type: 2}
+  gameObj: {fileID: 2359874169441961886, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
   level: 1
-  height: 2
-  width: 2
+  height: 1
+  width: 1
   dirCount: 0

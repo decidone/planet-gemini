@@ -6,10 +6,8 @@ using System;
 // UTF-8 설정
 public class UnderBeltCtrl : MonoBehaviour
 {
-    [SerializeField]
-    GameObject getBelt;
-    [SerializeField]
-    GameObject sendBelt;
+    public GameObject getBelt;
+    public GameObject sendBelt;
 
     public bool isPreBuilding = false;
 
@@ -88,12 +86,22 @@ public class UnderBeltCtrl : MonoBehaviour
             SetSendUnderBelt();
         }
     }
+    public void BuildingSetting(int _level, int _height, int _width, int _dirCount)
+    {
+        getBelt.SetActive(true);
+        sendBelt.SetActive(true);
+        Structure getObj = getBelt.GetComponent<Structure>();
+        Structure sendObj = sendBelt.GetComponent<Structure>();
+        getObj.BuildingSetting(_level, _height, _width, _dirCount);
+        sendObj.BuildingSetting(_level, _height, _width, _dirCount);
+        getBelt.SetActive(false);
+        sendBelt.SetActive(false);
+    }
 
     public void SetGetUnderBelt()
     {
         sendBelt.SetActive(false);
         getBelt.SetActive(true);
-        PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
         underBelt = getBelt;
         isSendBelt = false;
         beltScipt = underBelt.GetComponent<GetUnderBeltCtrl>();
@@ -121,12 +129,6 @@ public class UnderBeltCtrl : MonoBehaviour
 
         SetSlotColor(getRen, color, 0.35f);
         SetSlotColor(senRen, color, 0.35f);
-    }
-
-    public void SetLevel(int getLevel)
-    {
-        sendUnderBeltCtrl.level = getLevel;
-        getUnderBeltCtrl.level = getLevel;
     }
 
     void SetSlotColor(SpriteRenderer sprite, Color color, float alpha)

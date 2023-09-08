@@ -8,7 +8,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 {
     void Start()
     {
-        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
     }
 

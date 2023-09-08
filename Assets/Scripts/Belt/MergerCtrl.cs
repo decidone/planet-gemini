@@ -9,7 +9,6 @@ public class MergerCtrl : LogisticsCtrl
 {
     void Start()
     {
-        dirCount = 4;
         setModel = GetComponent<SpriteRenderer>();
         CheckPos();
     }

@@ -465,7 +465,7 @@ MonoBehaviour:
   lake: {fileID: 1272315146}
   gold:
   - {fileID: 1743506930803894082, guid: 7ef39cc67c69d604087c3a02b477e0f8, type: 3}
-  - {fileID: 6531262685787266718, guid: 2a4793f95d5e74549a4fc7bfb2e2e090, type: 3}
+  - {fileID: 6531262685787266718, guid: f01fd0db26d73ec41bfbf991855e54bf, type: 3}
   iron:
   - {fileID: 2943585721529328332, guid: 37fc7c057a3a6744f98e748e5e72ba74, type: 3}
   - {fileID: 7946055017742300197, guid: b1a55e27d18e40a449c2355972c30910, type: 3}
