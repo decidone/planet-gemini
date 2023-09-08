@@ -1,17 +1,17 @@
 {
   "Core":{
     "Core":{
-      "2":{"items":["Coal","Gold","Iron"],"amounts":[1,1,1],"coreLv":1},
-      "3":{"items":["Coal","Gold","Iron","GoldBar"],"amounts":[1,1,1,1],"coreLv":2},
-      "4":{"items":["Coal","Gold","Iron","GoldBar","IronBar"],"amounts":[1,1,1,1,1],"coreLv":3},
-      "5":{"items":["Coal","Gold","Iron","GoldBar","IronBar","Amethyst"],"amounts":[1,1,1,1,1,1],"coreLv":4}
+      "2":{"items":["Coal","CopperBar","IronBar"],"amounts":[1,1,1],"coreLv":1},
+      "3":{"items":["Coal","CopperBar","IronBar","SteelBar"],"amounts":[1,1,1,1],"coreLv":2},
+      "4":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic"],"amounts":[1,1,1,1,1],"coreLv":3},
+      "5":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic","Computer"],"amounts":[1,1,1,1,1,1],"coreLv":4}
     }
   },
   "Miner":{
     "Build":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a building that automatically mines resources by placing them on a resource node."},
       "2":{"items":["Coal"],"amounts":[1],"coreLv":2,"Info":"Produces faster than conventional Miners."},
-      "3":{"items":["Coal","Gold","Iron","GoldBar","IronBar","Amethyst"],"amounts":[1,1,1,1,1,1],"coreLv":4,"Info":"It can be mined much faster than conventional Miners, but it requires a lot of power to operate."}
+      "3":{"items":["Coal","IronBar"],"amounts":[1,1],"coreLv":4,"Info":"It can be mined much faster than conventional Miners, but it requires a lot of power to operate."}
     }
   },
   "Furnace":{
@@ -177,5 +177,5 @@
     "Battle":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
     }
-  },
+  }
 }

@@ -44,9 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06c6fd063f2e0cd4fbee637b4fb8219b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameObj: {fileID: 0}
   isSelect: 0
   beltMgr: {fileID: 0}
   pipeMgr: {fileID: 0}
-  size: {x: 0, y: 0}
   isBuildingOk: 1
+  isEnough: 1
+  buildingList: []
+  isDrag: 0

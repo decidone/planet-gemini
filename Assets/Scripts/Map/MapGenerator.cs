@@ -172,6 +172,8 @@ public class MapGenerator : MonoBehaviour
                     lakeTile.SetTile(new Vector3Int(x, y, 0), tile.tile);
                     if (tile.form == "side")
                         cell.buildable.Add("pump");
+                    else
+                        cell.buildable.Add("none");
                 }
                 else
                 {
