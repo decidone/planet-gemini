@@ -18,7 +18,8 @@ public class MapGenerator : MonoBehaviour
 
     [Space]
     public Tilemap tilemap;
-    public Tilemap lakeTile;
+    public Tilemap lakeTilemap;
+    public Tilemap resourcesTilemap;
     public GameObject objects;
     public Map map;
 
@@ -34,9 +35,9 @@ public class MapGenerator : MonoBehaviour
 
     [Space]
     [Header("Ores")]
-    List<List<GameObject>> ores;
-    public List<GameObject> gold;
-    public List<GameObject> iron;
+    List<List<Tile>> resources;
+    public List<Tile> coal;
+    public List<Tile> iron;
 
     void Start()
     {
@@ -77,9 +78,9 @@ public class MapGenerator : MonoBehaviour
             };
         }
 
-        ores = new List<List<GameObject>>();
-        ores.Add(gold);
-        ores.Add(iron);
+        resources = new List<List<Tile>>();
+        resources.Add(coal);
+        resources.Add(iron);
     }
 
     void Generate()
@@ -169,7 +170,7 @@ public class MapGenerator : MonoBehaviour
 
                 if (biome.biome == "lake")
                 {
-                    lakeTile.SetTile(new Vector3Int(x, y, 0), tile.tile);
+                    lakeTilemap.SetTile(new Vector3Int(x, y, 0), tile.tile);
                     if (tile.form == "side")
                         cell.buildable.Add("pump");
                     else
@@ -185,11 +186,14 @@ public class MapGenerator : MonoBehaviour
 
     void CreateOre()
     {
-        for (int i = 0; i < ores.Count; i++)
+        for (int i = 0; i < resources.Count; i++)
         {
-            string genOre = ores[i][0].gameObject.GetComponent<ObjData>().item.name;
-            Debug.Log("ore gen : " + genOre);
-
+            string resource = "";
+            if (resources[i].Equals(coal))
+                resource = "Coal";
+            else if (resources[i].Equals(iron))
+                resource = "IronOre";
+            Debug.Log("ore gen : " + resource);
             int oreX = random.Next(0, 1000000);
             int oreY = random.Next(0, 1000000);
 
@@ -206,14 +210,19 @@ public class MapGenerator : MonoBehaviour
                     {
                         Cell cell = map.mapData[x][y];
                         Biome biome = cell.biome;
-                        GameObject ore = ores[i][random.Next(0, ores[i].Count)];
-                        if (cell.obj == null && ore != null)
+                        Tile resourceTile = resources[i][random.Next(0, resources[i].Count)];
+                        
+                        if (resource == "Coal" && resourceTile != null)
                         {
-                            GameObject objInst = Instantiate(ore, objects.transform);
-                            cell.obj = objInst;
+                            resourcesTilemap.SetTile(new Vector3Int(x, y, 0), resourceTile);
                             cell.buildable.Add("miner");
-                            objInst.name = string.Format("map_x{0}_y{1}", x, y);
-                            objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+                            cell.resource = resource;
+                        }
+                        else if (resource == "IronOre" && resourceTile != null)
+                        {
+                            resourcesTilemap.SetTile(new Vector3Int(x, y, 0), resourceTile);
+                            cell.buildable.Add("miner");
+                            cell.resource = resource;
                         }
                     }
                 }

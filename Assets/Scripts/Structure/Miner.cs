@@ -41,14 +41,19 @@ public class Miner : Production
         int y = Mathf.FloorToInt(this.gameObject.transform.position.y);
         if (map.IsOnMap(x, y))
         {
-            if (map.mapData[x][y].obj != null)
+            if (map.mapData[x][y].resource != null && map.mapData[x][y].resource != "")
             {
-                ObjData objData = map.mapData[x][y].obj.gameObject.GetComponent<ObjData>();
-                if (objData != null)
+                Item item = itemDic[map.mapData[x][y].resource];
+                if (item != null)
                 {
-                    if (objData.type == "Ore" && objData.item != null)
-                        SetResource(objData.item);
+                    SetResource(item);
                 }
+                //ObjData objData = map.mapData[x][y].obj.gameObject.GetComponent<ObjData>();
+                //if (objData != null)
+                //{
+                //    if (objData.type == "Ore" && objData.item != null)
+                //        SetResource(objData.item);
+                //}
             }
         }
     }

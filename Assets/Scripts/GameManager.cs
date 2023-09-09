@@ -108,19 +108,21 @@ public class GameManager : MonoBehaviour
 
                 if (map.mapData[x][y].obj == null)
                 {
-                    Debug.Log("x : " + x + ", y : " + y +
-                    ", biome : " + map.mapData[x][y].biome +
-                    ", buildable : " + buildable +
-                    ", structure : " + map.mapData[x][y].structure
+                    Debug.Log("x : " + x + ",   y : " + y +
+                    ",   biome : " + map.mapData[x][y].biome +
+                    ",   resource : " + map.mapData[x][y].resource +
+                    ",   buildable : " + buildable +
+                    ",   structure : " + map.mapData[x][y].structure
                     );
                 }
                 else
                 {
-                    Debug.Log("x : " + x + ", y : " + y +
-                    ", biome : " + map.mapData[x][y].biome +
-                    ", obj : " + map.mapData[x][y].obj.name +
-                    ", buildable : " + buildable +
-                    ", structure : " + map.mapData[x][y].structure
+                    Debug.Log("x : " + x + ",   y : " + y +
+                    ",   biome : " + map.mapData[x][y].biome +
+                    ",   resource : " + map.mapData[x][y].resource +
+                    ",   obj : " + map.mapData[x][y].obj.name +
+                    ",   buildable : " + buildable +
+                    ",   structure : " + map.mapData[x][y].structure
                     );
                 }
             }
