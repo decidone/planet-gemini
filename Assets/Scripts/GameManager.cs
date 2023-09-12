@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
                 Inventory inven = this.GetComponent<Inventory>();
                 foreach (Item item in ItemList.instance.itemList)
                 {
-                    if (item.name != "EmptyFilter" && item.name != "FullFilter" && item.name != "Water" && item.name != "Oil")
+                    if (item.name != "EmptyFilter" && item.name != "FullFilter" && item.name != "Water" && item.name != "CrudeOil")
                         inven.Add(item, 99);
                 }
             }

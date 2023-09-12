@@ -12,8 +12,8 @@ public class MapGenerator : MonoBehaviour
     public int width;
     public int height;
     public float magnification;
-    public float oreMagnification;
-    public float oreSize;
+    //public float oreMagnification;
+    //public float oreSize;
     public bool hostMap;
 
     [Space]
@@ -34,10 +34,8 @@ public class MapGenerator : MonoBehaviour
     List<List<Biome>> biomes;
 
     [Space]
-    [Header("Ores")]
-    List<List<Tile>> resources;
-    public List<Tile> coal;
-    public List<Tile> iron;
+    [Header("Resources")]
+    public List<Resource> resources = new List<Resource>();
 
     void Start()
     {
@@ -77,10 +75,6 @@ public class MapGenerator : MonoBehaviour
                 new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
             };
         }
-
-        resources = new List<List<Tile>>();
-        resources.Add(coal);
-        resources.Add(iron);
     }
 
     void Generate()
@@ -102,7 +96,7 @@ public class MapGenerator : MonoBehaviour
         SetBiome();
         SmoothBiome();
         CreateTile();
-        CreateOre();
+        CreateResource();
         CreateObj();
     }
 
@@ -184,16 +178,12 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void CreateOre()
+    void CreateResource()
     {
         for (int i = 0; i < resources.Count; i++)
         {
-            string resource = "";
-            if (resources[i].Equals(coal))
-                resource = "Coal";
-            else if (resources[i].Equals(iron))
-                resource = "IronOre";
-            Debug.Log("ore gen : " + resource);
+            Resource resource = resources[i];
+            Debug.Log("ore gen : " + resource.name);
             int oreX = random.Next(0, 1000000);
             int oreY = random.Next(0, 1000000);
 
@@ -202,27 +192,30 @@ public class MapGenerator : MonoBehaviour
                 for (int y = 0; y < height; y++)
                 {
                     float oreNoise = Mathf.PerlinNoise(
-                        (x - oreX) / oreMagnification,
-                        (y - oreY) / oreMagnification
+                        (x - oreX) / resource.distribution,
+                        (y - oreY) / resource.distribution
                     );
 
-                    if (oreNoise < oreSize)
+                    if (oreNoise < resource.scale)
                     {
                         Cell cell = map.mapData[x][y];
                         Biome biome = cell.biome;
-                        Tile resourceTile = resources[i][random.Next(0, resources[i].Count)];
-                        
-                        if (resource == "Coal" && resourceTile != null)
+
+                        if ((resource.biome == "all" || resource.biome == biome.biome)
+                            && biome.biome != "lake" && cell.resource == null)
                         {
+                            Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
                             resourcesTilemap.SetTile(new Vector3Int(x, y, 0), resourceTile);
-                            cell.buildable.Add("miner");
                             cell.resource = resource;
-                        }
-                        else if (resource == "IronOre" && resourceTile != null)
-                        {
-                            resourcesTilemap.SetTile(new Vector3Int(x, y, 0), resourceTile);
-                            cell.buildable.Add("miner");
-                            cell.resource = resource;
+
+                            if (resource.type == "ore")
+                            {
+                                cell.buildable.Add("miner");
+                            }
+                            else if (resource.type == "oil")
+                            {
+                                cell.buildable.Add("extractor");
+                            }
                         }
                     }
                 }

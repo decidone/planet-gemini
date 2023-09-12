@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // UTF-8 설정
-[CreateAssetMenu(fileName = "UnitCommonData Data", menuName = "Scriptable Object/UnitCommon Data", order = int.MaxValue)]
+[CreateAssetMenu(fileName = "UnitCommonData Data", menuName = "Data/UnitCommon Data", order = int.MaxValue)]
 public class UnitCommonData : ScriptableObject
 {
     [SerializeField]

@@ -8,7 +8,7 @@ public class Cell
 {
     public Tile tile;
     public Biome biome;
-    public string resource;
+    public Resource resource;
     public GameObject obj;
     public GameObject structure;
     public List<string> buildable = new List<string>();

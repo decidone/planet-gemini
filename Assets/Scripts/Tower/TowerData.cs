@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // UTF-8 설정
-[CreateAssetMenu(fileName = "Tower Data", menuName = "Scriptable Object/Tower Data", order = int.MaxValue)]
+[CreateAssetMenu(fileName = "Tower Data", menuName = "Data/Tower Data", order = int.MaxValue)]
 public class TowerData : ScriptableObject
 {
     [SerializeField]

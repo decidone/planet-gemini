@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // UTF-8 설정
-[CreateAssetMenu(fileName = "Structure Data", menuName = "Scriptable Object/Structure Data", order = int.MaxValue)]
+[CreateAssetMenu(fileName = "Structure Data", menuName = "Data/Structure Data", order = int.MaxValue)]
 public class StructureData : ScriptableObject
 {
     [SerializeField]
