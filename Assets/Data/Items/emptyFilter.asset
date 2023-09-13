@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: EmptyFilter
   icon: {fileID: 0}
+  tier: -1

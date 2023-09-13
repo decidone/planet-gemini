@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: SteelBeam
   icon: {fileID: 21300000, guid: 33d9d3e2bd69c5f409d1dd024d4a4bc3, type: 3}
+  tier: 2

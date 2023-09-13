@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Fuse
   icon: {fileID: 21300000, guid: 73bc107b7e3f8ef4c92ffa52dc13a552, type: 3}
+  tier: 2

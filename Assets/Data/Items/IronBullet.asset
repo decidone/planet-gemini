@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: IronBullet
   icon: {fileID: 21300000, guid: bcf789a0e791996438f7773b16966911, type: 3}
+  tier: 4

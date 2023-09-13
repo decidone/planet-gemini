@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: ToxicPlant
   icon: {fileID: 21300000, guid: 74cc7e89d03ecd945b379fe0dbcd0122, type: 3}
+  tier: 5

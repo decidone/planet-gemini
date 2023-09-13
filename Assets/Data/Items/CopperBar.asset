@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CopperBar
   icon: {fileID: 21300000, guid: dddc9c2a31832134396bb88b3722c1bd, type: 3}
+  tier: 1

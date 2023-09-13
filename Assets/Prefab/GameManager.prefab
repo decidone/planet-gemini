@@ -47,7 +47,6 @@ MonoBehaviour:
   space: 12
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  player: {fileID: 0}
 --- !u!1 &3268826976656388762
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +94,6 @@ MonoBehaviour:
   space: 12
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  player: {fileID: 0}
 --- !u!1 &3986364635626952762
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,6 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryUiCanvas: {fileID: 0}
   map: {fileID: 0}
+  player: {fileID: 0}
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -179,7 +178,6 @@ MonoBehaviour:
   space: 60
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  player: {fileID: 0}
 --- !u!114 &762871311885926033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,4 +485,3 @@ MonoBehaviour:
   space: 12
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  player: {fileID: 0}

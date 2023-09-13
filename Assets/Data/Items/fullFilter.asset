@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: FullFilter
   icon: {fileID: 21300000, guid: 94305e34f4fab8a4da928dfa4ef30f08, type: 3}
+  tier: -1

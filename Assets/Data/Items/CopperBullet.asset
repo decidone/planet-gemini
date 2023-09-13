@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CopperBullet
   icon: {fileID: 21300000, guid: 82d3569bbe70942419e57f8cd8b1ce75, type: 3}
+  tier: 4

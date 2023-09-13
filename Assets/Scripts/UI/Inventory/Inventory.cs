@@ -13,7 +13,6 @@ public class Inventory : MonoBehaviour
     public int maxAmount;   // 한 슬롯 당 최대 수량
     [SerializeField]
     GameObject itemPref;
-    [SerializeField]
     GameObject player;
     Slot dragSlot;
 
@@ -33,6 +32,7 @@ public class Inventory : MonoBehaviour
             totalItems.Add(item, 0);
         }
         dragSlot = DragSlot.instance.slot;
+        player = GameManager.instance.player;
     }
 
     public int SpaceCheck(Item item)

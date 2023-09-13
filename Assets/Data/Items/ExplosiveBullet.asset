@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: ExplosiveBullet
   icon: {fileID: 21300000, guid: 6781c495646530e42b425ca5667d9ce4, type: 3}
+  tier: 4

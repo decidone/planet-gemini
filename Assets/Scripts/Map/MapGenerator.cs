@@ -34,7 +34,6 @@ public class MapGenerator : MonoBehaviour
     List<List<Biome>> biomes;
 
     [Space]
-    [Header("Resources")]
     public List<Resource> resources = new List<Resource>();
 
     void Start()

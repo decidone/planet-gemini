@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Sulfur
   icon: {fileID: 21300000, guid: 08b9bc09fc1b3a94eb09f7af3b2d376c, type: 3}
+  tier: 3

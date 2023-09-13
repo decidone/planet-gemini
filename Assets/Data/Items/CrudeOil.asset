@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CrudeOil
   icon: {fileID: 21300000, guid: 665899d747af1e842aea7e4eae3d23a9, type: 3}
+  tier: -1

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: IronRod
   icon: {fileID: 21300000, guid: 0fcbfe942f8592341b912c43a19f9e1a, type: 3}
+  tier: 1

@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 {
     public GameObject inventoryUiCanvas;
     public Map map;
+    public GameObject player;
     [SerializeField]
     PlayerInvenManager pInvenManager;
     [SerializeField]

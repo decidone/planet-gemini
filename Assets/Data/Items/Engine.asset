@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Engine
   icon: {fileID: 21300000, guid: a13d808ef170c664b8a9264ad724369f, type: 3}
+  tier: 3

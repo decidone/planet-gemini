@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Battery
   icon: {fileID: 21300000, guid: 5077575d2295ff34e95ff82bb97a238c, type: 3}
+  tier: 3

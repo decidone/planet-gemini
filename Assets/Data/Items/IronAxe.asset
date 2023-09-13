@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: IronAxe
   icon: {fileID: 21300000, guid: 7acd63d853634ea4dbef1fc0dec8f5ea, type: 3}
+  tier: 5

@@ -4,7 +4,7 @@
       "2":{"items":["Coal","CopperBar","IronBar"],"amounts":[1,1,1],"coreLv":1},
       "3":{"items":["Coal","CopperBar","IronBar","SteelBar"],"amounts":[1,1,1,1],"coreLv":2},
       "4":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic"],"amounts":[1,1,1,1,1],"coreLv":3},
-      "5":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic","Computer"],"amounts":[1,1,1,1,1,1],"coreLv":4}
+      "5":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic","ControlUnit"],"amounts":[1,1,1,1,1,1],"coreLv":4}
     }
   },
   "Miner":{

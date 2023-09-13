@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: AdamantiteAlloy
   icon: {fileID: 21300000, guid: adc24a564e9552b4aa132ad15b150215, type: 3}
+  tier: 3

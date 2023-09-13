@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: SlimyPlant
   icon: {fileID: 21300000, guid: 1ea5eac480056bf4fa4fcb64bc1141eb, type: 3}
+  tier: 5

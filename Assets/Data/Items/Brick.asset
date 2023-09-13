@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Brick
   icon: {fileID: 21300000, guid: ec3440ea075963e4db5836a04bd18a56, type: 3}
+  tier: 1
