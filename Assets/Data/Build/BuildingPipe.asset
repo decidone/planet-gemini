@@ -15,7 +15,7 @@ MonoBehaviour:
   type: Transport
   scienceName: Pipe
   item: {fileID: 11400000, guid: 05a3966caa4585245b1af0696d3b46b3, type: 2}
-  gameObj: {fileID: 4164018957596948384, guid: c4192dd0d363b044e84c8f36e776a2c1, type: 3}
+  gameObj: {fileID: 2000658444983299251, guid: 6ac007628373b46468bdad1c117fec57, type: 3}
   level: 1
   height: 1
   width: 1

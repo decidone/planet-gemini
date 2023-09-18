@@ -359,6 +359,17 @@ MonoBehaviour:
   itemList: []
   itemObjList: []
   canBuilding: 1
+  nearObj:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  checkPos:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  checkObj: 1
   inObj: []
   outObj: []
   outSameList: []
@@ -430,7 +441,7 @@ Animator:
   m_GameObject: {fileID: 2359874169441961886}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ddc99314c89959a4d8d0fdad4ba79016, type: 2}
+  m_Controller: {fileID: 9100000, guid: cb971a9bba38a984dbc6f21022af7996, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

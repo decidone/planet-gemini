@@ -5,8 +5,6 @@ using UnityEngine;
 // UTF-8 설정
 public class PipeCtrl : FluidFactoryCtrl
 {
-    public PipeGroupMgr pipeGroupMgr;
-
     public bool isUp = false;
     public bool isRight = false;
     public bool isDown = false;
@@ -29,7 +27,19 @@ public class PipeCtrl : FluidFactoryCtrl
                 {
                     if (nearObj[i] == null)
                     {
-                        CheckNearObj(checkPos[i], i, obj => ObjCheck(obj, checkPos[i]));
+                        CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj, checkPos[i]));
+                    }
+                }
+
+                if (outObj.Count > 0)
+                {
+                    sendDelayTimer += Time.deltaTime;
+
+                    if (sendDelayTimer > structureData.SendDelay)
+                    {
+                        if (saveFluidNum >= structureData.SendFluidAmount)
+                            SendFluid();
+                        sendDelayTimer = 0;
                     }
                 }
             }
@@ -47,32 +57,15 @@ public class PipeCtrl : FluidFactoryCtrl
         ChangeModel();
     }
 
-    void ObjCheck(GameObject game, Vector3 vec)
+    protected void FluidSetOutObj(GameObject obj, Vector3 vec)
     {
-        if(!game.TryGetComponent(out UnderPipeCtrl underPipe))
-        {
-            if (vec == transform.up)
-                isUp = true;
-            if (vec == transform.right)
-                isRight = true;
-            if (vec == -transform.up)
-                isDown = true;
-            if (vec == -transform.right)
-                isLeft = true;
-
-            if (game.GetComponent<PipeCtrl>() != null)
-                pipeGroupMgr.CheckGroup(game.GetComponent<PipeCtrl>());
-        }
-        else
-        {
-            UnderPipeConnectCheck(underPipe, vec);
-        }
+        base.FluidSetOutObj(obj);
+        ObjCheck(obj, vec);
     }
 
-    IEnumerator UnderPipeConnectCheck(UnderPipeCtrl underPipe, Vector3 vec)
+    void ObjCheck(GameObject game, Vector3 vec)
     {
-        yield return new WaitForSeconds(0.1f);
-        if(underPipe.otherPipe == this.gameObject)
+        if(!game.GetComponent<UnderPipeCtrl>() && game.GetComponent<FluidFactoryCtrl>())
         {
             if (vec == transform.up)
                 isUp = true;
@@ -137,17 +130,68 @@ public class PipeCtrl : FluidFactoryCtrl
         }
     }
 
-    public void FactoryVecCheck(Vector3 factory)
+    public void FactoryVecCheck(GameObject factory)
     {
-        if (factory.x < this.transform.position.x)
+        if (factory.transform.position.x < this.transform.position.x)
+        {
+            nearObj[3] = factory;
             isLeft = true;
-        else if (factory.x > this.transform.position.x)
+        }
+        else if (factory.transform.position.x > this.transform.position.x)
+        {
+            nearObj[1] = factory;
             isRight = true;
-        else if (factory.y - 0.1f < this.transform.position.y)
+        }
+        else if (factory.transform.position.y - 0.1f < this.transform.position.y)
+        {
+            nearObj[2] = factory;
             isDown = true;
-        else if (factory.y - 0.1f > this.transform.position.y)
+
+        }
+        else if (factory.transform.position.y - 0.1f > this.transform.position.y)
+        {
+            nearObj[0] = factory;
             isUp = true;
+        }
+        outObj.Add(factory);
+        ChangeModel();
+    }
+
+    public override void ResetCheckObj(GameObject game)
+    {
+        checkObj = false;
+
+        if (outObj.Contains(game))
+        {
+            outObj.Remove(game);
+            sendItemIndex = 0;
+        }
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] != null && nearObj[i] == game)
+            {
+                nearObj[i] = null;
+                if (i == 0)
+                {
+                    isUp = false;
+                }
+                else if (i == 1)
+                {
+                    isRight = false;
+                }
+                else if (i == 2)
+                {
+                    isDown = false;
+                }
+                else if (i == 3)
+                {
+                    isLeft = false;
+                }
+            }
+        }
 
         ChangeModel();
+        checkObj = true;
     }
 }

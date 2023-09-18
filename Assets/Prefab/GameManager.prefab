@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 4059864358883353247}
   - component: {fileID: 5450049282960680587}
   - component: {fileID: 4153718066960112512}
+  - component: {fileID: 3729439446491037180}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -218,6 +219,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2e18e7546658336488b14dd42c2c9ecd, type: 2}
   - {fileID: 11400000, guid: e939aa5cf7088a24a8de7f5554e8cb45, type: 2}
   - {fileID: 11400000, guid: 60ea69fac71748d4682f10abecfd4c33, type: 2}
+  - {fileID: 11400000, guid: 40d7a5e8f5659594293acb2a1880bfb0, type: 2}
   - {fileID: 11400000, guid: 10b6ce2e82ea4b54a91f615cef63041e, type: 2}
   - {fileID: 11400000, guid: 3292331e56947e94ea788e4c15074922, type: 2}
   - {fileID: 11400000, guid: c06ccafcd217bf442bb9e5cc6303907f, type: 2}
@@ -230,6 +232,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4ed2fc918cd74774da44e28552fdca74, type: 2}
   - {fileID: 11400000, guid: 7303a81e0c4ef2744863b0a533d9ce2e, type: 2}
   - {fileID: 11400000, guid: 0bca4782f02e62d4c90aee46b2d278b5, type: 2}
+  - {fileID: 11400000, guid: d5422a6d997f3f04fa7928b66a1c1e3d, type: 2}
 --- !u!114 &3986364633838151513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,6 +309,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4dd78497b0a424d428c9bccb431e5a7f, type: 2}
   - {fileID: 11400000, guid: d51119756f0b3684aaadbb5b95de7463, type: 2}
   - {fileID: 11400000, guid: 71ffee1754cdcdd49ba94f8203f28333, type: 2}
+  - {fileID: 11400000, guid: f6e1188f27d208645a58d2578ed65006, type: 2}
   - {fileID: 11400000, guid: 05a3966caa4585245b1af0696d3b46b3, type: 2}
   - {fileID: 11400000, guid: b29131d9adf995843b19561299a1d8d9, type: 2}
   - {fileID: 11400000, guid: fb678545f54734343b42a0e9c8957916, type: 2}
@@ -319,6 +323,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: af022b03362f07345b54ec333d8cf7a7, type: 2}
   - {fileID: 11400000, guid: 374fa9089cb1cae428bb1eae3d06c339, type: 2}
   - {fileID: 11400000, guid: 8a719f6949919734e8252d432c51621f, type: 2}
+  - {fileID: 11400000, guid: e5b61a4c5a526844e85a9f253fac2880, type: 2}
 --- !u!114 &762871311885926061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,6 +350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedObjects: []
+  isSelectingUnits: 0
 --- !u!114 &762871311885926063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,6 +444,19 @@ MonoBehaviour:
   defaultCapacity: 10
   maxPoolSize: 10000
   itemPrefab: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+--- !u!114 &3729439446491037180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fd45b7e1e75fa64d8f6f0e599502b92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedObjects: []
 --- !u!1 &7525422398918600961
 GameObject:
   m_ObjectHideFlags: 0

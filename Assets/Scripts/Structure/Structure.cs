@@ -280,7 +280,7 @@ public class Structure : MonoBehaviour
                 if (getItemIndex >= inObj.Count)
                     getItemIndex = 0;
 
-                itemGetDelay = false;
+                DelayGetItem();
                 return;
             }
         }
@@ -290,7 +290,7 @@ public class Structure : MonoBehaviour
             if (getItemIndex >= inObj.Count)
                 getItemIndex = 0;
 
-            itemGetDelay = false;
+            DelayGetItem();
             return;
         }
     }
@@ -346,7 +346,7 @@ public class Structure : MonoBehaviour
                 }
                 else
                 {
-                    itemSetDelay = false;
+                    DelaySetItem();
                     return;
                 }
             }
@@ -358,7 +358,7 @@ public class Structure : MonoBehaviour
                     if (sendItemIndex >= outObj.Count)
                         sendItemIndex = 0;
 
-                    itemSetDelay = false;
+                    DelaySetItem();
                 }
                 else
                     setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
@@ -371,7 +371,7 @@ public class Structure : MonoBehaviour
                     if (sendItemIndex >= outObj.Count)
                         sendItemIndex = 0;
 
-                    itemSetDelay = false;
+                    DelaySetItem();
                 }
                 else if (production.CanTakeItem(item))
                 {
@@ -391,7 +391,7 @@ public class Structure : MonoBehaviour
             if (sendItemIndex >= outObj.Count)
                 sendItemIndex = 0;
 
-            itemSetDelay = false;
+                    DelaySetItem();
         }
     }
 
@@ -748,11 +748,16 @@ public class Structure : MonoBehaviour
             }
         }
 
-        if (gameObject.GetComponent<BeltCtrl>() && GetComponentInParent<BeltManager>() && GetComponentInParent<BeltGroupMgr>())
+        if (GetComponent<BeltCtrl>() && GetComponentInParent<BeltManager>() && GetComponentInParent<BeltGroupMgr>())
         {
             BeltManager beltManager = GetComponentInParent<BeltManager>();
             BeltGroupMgr beltGroup = GetComponentInParent<BeltGroupMgr>();
             beltManager.BeltDivide(beltGroup, this.gameObject);
+        }
+
+        if(TryGetComponent(out FluidFactoryCtrl fluid))
+        {
+            fluid.RemoveMainSorce();
         }
 
         if (repairTower != null)
@@ -774,10 +779,13 @@ public class Structure : MonoBehaviour
         {
             if (gameManager.map.IsOnMap(x, y) && gameManager.map.mapData[x][y].structure == gameObject)
             {
-                gameManager.map.mapData[x][y].structure = null;
-                gameManager.map.mapData[x + 1][y].structure = null;
-                gameManager.map.mapData[x][y + 1].structure = null;
-                gameManager.map.mapData[x + 1][y + 1].structure = null;
+                for (int i = 0; i < height; i++)
+                {
+                    for (int j = 0; j < width; j++)
+                    {
+                        gameManager.map.mapData[x + j][y + i].structure = null;
+                    }
+                }
             }
         }
 
@@ -785,38 +793,7 @@ public class Structure : MonoBehaviour
     }
 
     protected virtual void AddInvenItem() { }
-    protected virtual void SendFluid() { }
 
-    protected virtual void FluidSetOutObj(GameObject obj)
-    {
-        if (obj.GetComponent<FluidFactoryCtrl>() != null)
-        {
-            outObj.Add(obj);
-            if (obj.GetComponent<PipeCtrl>() != null)
-            {
-                obj.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
-                if(GetComponent<FluidTankCtrl>())
-                    obj.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
-            }
-            else if (obj.GetComponent<UnderPipeCtrl>() != null)
-            {
-                StartCoroutine("UnderPipeConnectCheck", obj);
-            }
-        }
-    }
-
-    protected virtual IEnumerator UnderPipeConnectCheck(GameObject obj)
-    {
-        yield return null;
-
-        if (obj.GetComponent<UnderPipeCtrl>())
-        {
-            if (obj.GetComponent<UnderPipeCtrl>().otherPipe == null || obj.GetComponent<UnderPipeCtrl>().otherPipe != this.gameObject)
-            {
-                outObj.Remove(obj);
-            }
-        }
-    }
 
     protected void DelaySetItem()
     {

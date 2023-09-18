@@ -118,7 +118,8 @@ public class PreBuilding : MonoBehaviour
         transform.position = cellCenter;
 
         InputCheck();
-        BuildingListSetColor();
+        if(spriteRenderer != null)
+            BuildingListSetColor();
     }
 
     void FixedUpdate()
@@ -259,7 +260,7 @@ public class PreBuilding : MonoBehaviour
         {
             for (int j = 0; j < objWidth; j++)
             {
-                gameManager.map.mapData[x + i][y + j].structure = buildObj;
+                gameManager.map.mapData[x + j][y + i].structure = buildObj;
             }
         }
     }
@@ -271,10 +272,6 @@ public class PreBuilding : MonoBehaviour
         if (obj.TryGetComponent(out BeltGroupMgr beltGroup))
         {
             buildObj = beltGroup.beltList[0].gameObject;
-        }
-        else if (obj.TryGetComponent(out PipeGroupMgr pipeGroup))
-        {
-            buildObj = pipeGroup.pipeList[0].gameObject;
         }
         else if (obj.TryGetComponent(out UnderBeltCtrl underBeltCtrl))
         {
@@ -761,17 +758,6 @@ public class PreBuilding : MonoBehaviour
                     belt.beltList[0].gameObject.AddComponent<DynamicGridObstacle>();
                 }
             }
-            else if (obj.TryGetComponent(out PipeGroupMgr pipe))
-            {
-                if (pipe.pipeList[0].canBuilding)
-                {
-                    obj.transform.parent = pipeMgr.transform;
-                    pipe.isPreBuilding = false;
-                    pipe.pipeList[0].SetBuild();
-                    pipe.pipeList[0].ColliderTriggerOnOff(false);
-                    pipe.pipeList[0].gameObject.AddComponent<DynamicGridObstacle>();
-                }
-            }
             else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
             {
                 if (underBelt.beltScipt.canBuilding)
@@ -894,12 +880,6 @@ public class PreBuilding : MonoBehaviour
             belt.isPreBuilding = true;
             belt.SetBelt(0, level, height, width, dirCount);
             dirNum = belt.beltList[0].dirNum;
-        }
-        else if (gameObj.TryGetComponent(out PipeGroupMgr pipe))
-        {
-            pipe.isPreBuilding = true;
-            pipe.SetPipe(0, level, height, width, dirCount);
-            dirNum = pipe.pipeList[0].dirNum;
         }
         else if (gameObj.TryGetComponent(out UnderBeltCtrl underBelt))
         {
@@ -1054,58 +1034,37 @@ public class PreBuilding : MonoBehaviour
         }
 
         bool canBuild = false;
-
-        if (obj.GetComponent<Miner>() || obj.GetComponent<PumpCtrl>())
+        foreach (int newX in xList)
         {
-            foreach (int newX in xList)
+            foreach (int newY in yList)
             {
-                foreach (int newY in yList)
+                if (!gameManager.map.IsOnMap(newX, newY))
                 {
-                    if (gameManager.map.IsOnMap(newX, newY))
+                    continue;
+                }
+
+                if (gameManager.map.mapData[newX][newY].structure != null)
+                {
+                    return false;
+                }
+
+                if (obj.GetComponent<Miner>() || obj.GetComponent<PumpCtrl>())
+                {
+                    if ((obj.GetComponent<Miner>() && gameManager.map.mapData[newX][newY].BuildCheck("miner")) ||
+                        (obj.GetComponent<PumpCtrl>() && gameManager.map.mapData[newX][newY].BuildCheck("pump")))
                     {
-                        if (gameManager.map.mapData[newX][newY].structure != null)
-                        {
-                            return false;
-                        }
-
-                        string buildable = "";
-                        foreach (string str in gameManager.map.mapData[newX][newY].buildable)
-                        {
-                            buildable = str;
-                        }
-
-                        if (obj.GetComponent<Miner>() && buildable == "miner")
-                        {
-                            return true;
-                        }
-                        else if (obj.GetComponent<PumpCtrl>() && buildable == "pump")
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
-            }
-        }
-        else
-        {
-            foreach (int newX in xList)
-            {
-                foreach (int newY in yList)
+                else
                 {
-                    if (gameManager.map.IsOnMap(newX, newY))
+                    if (gameManager.map.mapData[newX][newY].buildable.Count == 0 && gameManager.map.mapData[newX][newY].obj == null)
                     {
-                        if (gameManager.map.mapData[newX][newY].structure != null)
-                        {
-                            return false;
-                        }
-
-                        string buildable = "";
-                        if (buildable == "" && gameManager.map.mapData[newX][newY].obj == null)
-                        {
-                            canBuild = true;
-                        }
-                        else 
-                            return false;
+                        canBuild = true;
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
             }

@@ -90,16 +90,6 @@ public class PlayerController : MonoBehaviour
                 {
                     Debug.Log("not enough space");
                 }
-
-                if (BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
-                {
-                    BuildingInfo.instance.SetItemSlot();
-                    PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-                }
-                if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
-                {
-                    InfoWindow.instance.SetNeedItem();
-                }
             }
         }
 
@@ -109,7 +99,7 @@ public class PlayerController : MonoBehaviour
 
             if (belt.TryGetComponent(out BeltCtrl beltCtrl))
             {
-                beltItems = beltCtrl.PlayerRootItem();
+                beltItems = beltCtrl.PlayerRootItemCheck();
             }
 
             foreach (ItemProps itemProps in beltItems)
@@ -118,7 +108,7 @@ public class PlayerController : MonoBehaviour
                 if (itemProps.amount <= containableAmount)
                 {
                     inventory.Add(itemProps.item, itemProps.amount);
-                    itemProps.Pool.Release(itemProps.gameObject);
+                    beltCtrl.PlayerRootFunc(itemProps);
                 }
                 else if (containableAmount != 0)
                 {
@@ -129,16 +119,8 @@ public class PlayerController : MonoBehaviour
                 {
                     Debug.Log("not enough space");
                 }
-                if (BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
-                {
-                    BuildingInfo.instance.SetItemSlot();
-                    PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-                }
-                if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
-                {
-                    InfoWindow.instance.SetNeedItem();
-                }
             }
         }
+        GameManager.instance.BuildAndSciUiReset();
     }
 }

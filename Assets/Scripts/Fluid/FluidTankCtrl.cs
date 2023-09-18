@@ -37,25 +37,4 @@ public class FluidTankCtrl : FluidFactoryCtrl
             }
         }
     }
-
-    protected override void SendFluid()
-    {
-        foreach (GameObject obj in outObj)
-        {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && fluidFactory.GetComponent<PumpCtrl>() == null)
-            {
-                if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum)
-                {
-                    float currentFillRatio = (float)fluidFactory.structureData.MaxFulidStorageLimit / fluidFactory.saveFluidNum;
-                    float targetFillRatio = (float)structureData.MaxFulidStorageLimit / saveFluidNum;
-
-                    if (currentFillRatio > targetFillRatio)
-                    {
-                        saveFluidNum -= structureData.SendFluidAmount;
-                        fluidFactory.SendFluidFunc(structureData.SendFluidAmount);
-                    }
-                }
-            }
-        }
-    }
 }

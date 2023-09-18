@@ -83,6 +83,7 @@ public class GameManager : MonoBehaviour
                     if (item.name != "EmptyFilter" && item.name != "FullFilter" && item.name != "Water" && item.name != "CrudeOil")
                         inven.Add(item, 99);
                 }
+                BuildAndSciUiReset();
             }
         }
 
@@ -284,6 +285,20 @@ public class GameManager : MonoBehaviour
         else
         {
             dragSlot.gameObject.SetActive(false);
+        }
+    }
+
+    public void BuildAndSciUiReset()
+    {
+        if (BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
+        {
+            BuildingInfo.instance.SetItemSlot();
+            if(PreBuilding.instance != null)
+                PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+        }
+        if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
+        {
+            InfoWindow.instance.SetNeedItem();
         }
     }
 }

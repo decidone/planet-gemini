@@ -17,11 +17,12 @@ MonoBehaviour:
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed:
-  - 2
-  - 1.5
   - 1
+  - 1.5
+  - 2
   sendFluidAmount: 0
   sendDelay: 0.5
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
+  maxLevel: 3

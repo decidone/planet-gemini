@@ -106,7 +106,7 @@ public class BuildingInfo : MonoBehaviour
             if(buildingNeedList[i].item != null)
                 inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount);
         }
-
+        GameManager.instance.BuildAndSciUiReset();
         SetItemSlot();
     }
 

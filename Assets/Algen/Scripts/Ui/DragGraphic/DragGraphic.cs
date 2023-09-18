@@ -10,12 +10,13 @@ public class DragGraphic : MonoBehaviour
     Vector2 endPosition;
     SpriteRenderer sprite;
     bool clickCheck = false;
-    bool rightUp = false;
+    bool holdAnyKey = false;
 
     public GameObject preBuilding;
 
     UnitDrag unitDrag;
     RemoveBuild removeBuild;
+    UpgradeBuild UpgradeBuild;
 
     #region Singleton
     public static DragGraphic instance;
@@ -37,6 +38,7 @@ public class DragGraphic : MonoBehaviour
     {
         unitDrag = GameManager.instance.GetComponent<UnitDrag>();
         removeBuild = GameManager.instance.GetComponent<RemoveBuild>();
+        UpgradeBuild = GameManager.instance.GetComponent<UpgradeBuild>();
         boxVisual = GetComponent<Transform>();
         sprite = GetComponent<SpriteRenderer>();
         sprite.enabled = false;
@@ -45,55 +47,60 @@ public class DragGraphic : MonoBehaviour
 
     private void Update()
     {
-        bool altKeyHeld = Input.GetKey(KeyCode.LeftAlt);
+        bool ctrlKeyHeld = Input.GetKey(KeyCode.LeftControl);
         bool isMouseOverUI = EventSystem.current.IsPointerOverGameObject();
-        bool isMouseButtonDown = Input.GetMouseButtonDown(0);
-        bool isMouseButtonUp = Input.GetMouseButtonUp(0);
-
-        if (altKeyHeld)        
-            ColorSet(Color.red);        
-        else
-            ColorSet(Color.green);        
+        bool isLeftMouseButtonDown = Input.GetMouseButtonDown(0);
+        bool isLeftMouseButtonUp = Input.GetMouseButtonUp(0);
+        bool isRightMouseButtonDown = Input.GetMouseButtonDown(1);
+        bool isRightMouseButtonUp = Input.GetMouseButtonUp(1);
 
         if (!preBuilding.activeSelf)
         {
-            if (isMouseButtonDown && !isMouseOverUI)
+            if (ctrlKeyHeld)
+                holdAnyKey = true;
+            else
+                holdAnyKey = false;
+
+            if ((isLeftMouseButtonDown || isRightMouseButtonDown) && !isMouseOverUI)
             {
                 startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                rightUp = false;
                 clickCheck = true;
                 sprite.enabled = true;
             }
 
             if (clickCheck)
             {
+                if (Input.GetMouseButton(0))
+                {
+                    if (!holdAnyKey)
+                        ColorSet(Color.green);
+                    else if (ctrlKeyHeld)
+                        ColorSet(Color.blue);
+                }
+                else if (Input.GetMouseButton(1))
+                    ColorSet(Color.red);
+
                 endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 BoxSizeChange();
 
-                if (isMouseButtonUp && !rightUp)
+                if (isLeftMouseButtonUp)
                 {
-                    if (altKeyHeld)
+                    if (!holdAnyKey)
+                        unitDrag.LeftMouseUp(startPosition, endPosition);
+                    else if (ctrlKeyHeld)
+                        UpgradeBuild.LeftMouseUp(startPosition, endPosition);
+                    DisableFunc();
+                }
+                else if (isRightMouseButtonUp)
+                {
+                    if (unitDrag.isSelectingUnits && startPosition == endPosition)
                     {
-                        removeBuild.LeftMouseUp(startPosition, endPosition);
+                        unitDrag.RightMouseUp();
                     }
                     else
-                    {
-                        unitDrag.LeftMouseUp(startPosition, endPosition);
-                    }
-
+                        removeBuild.LeftMouseUp(startPosition, endPosition);
                     DisableFunc();
-                    rightUp = false;
                 }
-            }
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                if (!altKeyHeld && startPosition == endPosition)
-                {
-                    unitDrag.RightMouseUp();
-                }
-                DisableFunc();
-                rightUp = true;
             }
         }
     }

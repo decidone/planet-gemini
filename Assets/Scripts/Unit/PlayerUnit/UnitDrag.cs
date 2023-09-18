@@ -32,6 +32,7 @@ public class UnitDrag : DragFunc
 
     private Vector2 targetPosition;
 
+    public bool isSelectingUnits = false;
     bool unitCtrlKeyPressed = false;
     bool isPKeyPressed = false;
     bool isAKeyPressed = false;
@@ -77,6 +78,7 @@ public class UnitDrag : DragFunc
                 else
                 {
                     selectedObjects = new GameObject[0];
+                    isSelectingUnits = false;
                     removeUnit?.Invoke();
                 }
             }
@@ -120,6 +122,7 @@ public class UnitDrag : DragFunc
             {
                 addUnit?.Invoke(obj);
             }
+            isSelectingUnits = true;
         }
 
         return null;
@@ -129,6 +132,7 @@ public class UnitDrag : DragFunc
     {
         removeUnit?.Invoke();
         addUnit?.Invoke(ray.collider.gameObject);
+        isSelectingUnits = true;
     }
 
     void SetTargetPosition(bool isAttack)
@@ -151,6 +155,5 @@ public class UnitDrag : DragFunc
         unitCtrlKeyPressed = false;
         isPKeyPressed = false;
         isAKeyPressed = false;
-        //isHKeyPressed = false;
     }
 }

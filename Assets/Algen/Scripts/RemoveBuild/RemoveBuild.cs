@@ -33,13 +33,9 @@ public class RemoveBuild : DragFunc
 
         foreach (GameObject obj in selectedObjects)
         {
-            if (obj.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
-            {
-                UiCheck(structure);
-                structure.RemoveObj();
-                refundCost(structure);
-            }
+            ObjRemoveFunc(obj);
         }
+        GameManager.instance.BuildAndSciUiReset();
 
         return null;
     }
@@ -51,13 +47,19 @@ public class RemoveBuild : DragFunc
         {
             foreach (RaycastHit2D hit in hits)
             {
-                if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
-                {
-                    UiCheck(structure);
-                    structure.RemoveObj();
-                    refundCost(structure);
-                }
+                ObjRemoveFunc(hit.collider.gameObject);
             }
+        }
+        GameManager.instance.BuildAndSciUiReset();
+    }
+
+    void ObjRemoveFunc(GameObject obj)
+    {
+        if (obj.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
+        {
+            UiCheck(structure);
+            structure.RemoveObj();
+            refundCost(structure);
         }
     }
 
@@ -78,13 +80,13 @@ public class RemoveBuild : DragFunc
             if(solidFacClickEvent.LogisticsUI != null)
             {
                 if (solidFacClickEvent.LogisticsUI.activeSelf)
-                {           
-                    if(solidFacClickEvent.sFilterManager != null)            
-                        solidFacClickEvent.sFilterManager.CloseUI();            
-                    else if (solidFacClickEvent.itemSpManager != null)            
-                        solidFacClickEvent.itemSpManager.CloseUI(); 
-                }  
-            }         
+                {
+                    if(solidFacClickEvent.sFilterManager != null)
+                        solidFacClickEvent.sFilterManager.CloseUI();
+                    else if (solidFacClickEvent.itemSpManager != null)
+                        solidFacClickEvent.itemSpManager.CloseUI();
+                }
+            }
         }
         else if (obj.TryGetComponent(out StructureClickEvent structureClickEvent))
         {

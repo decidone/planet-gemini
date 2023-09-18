@@ -60,7 +60,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
 
         Invoke("DelaySetItem", structureData.SendDelay);
-        itemSetDelay = false;
     }
 
     public void SetOutObj(GameObject Obj)
