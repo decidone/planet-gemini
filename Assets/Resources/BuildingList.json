@@ -108,5 +108,8 @@
     "1":{"items":["Brick","ManaStone"],"amounts":[1,1],"cooldown":3},
     "2":{"items":["SteelPlate","ManaStone"],"amounts":[2,2],"cooldown":3},
     "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+  },
+  "Wall":{
+    "1":{"items":["Stone"],"amounts":[1],"cooldown":3}
   }
 }

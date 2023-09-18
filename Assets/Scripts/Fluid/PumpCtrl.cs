@@ -47,6 +47,7 @@ public class PumpCtrl : FluidFactoryCtrl
                 saveFluidNum = structureData.MaxFulidStorageLimit;
             else if (saveFluidNum + pumpFluid < structureData.MaxFulidStorageLimit)
                 saveFluidNum += pumpFluid;
+
         }
 
 

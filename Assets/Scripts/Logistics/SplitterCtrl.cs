@@ -151,7 +151,7 @@ public class SplitterCtrl : LogisticsCtrl
         if (filter.outObj == null)
         {
             FilterIndexCheck();
-            itemSetDelay = false;
+            DelaySetItem();
             return;
         }
 
@@ -163,63 +163,66 @@ public class SplitterCtrl : LogisticsCtrl
             if (isReverseFilter && selectedFilterItem == sendItem)
             {
                 FilterIndexCheck();
-                itemSetDelay = false;
+                DelaySetItem();
                 return;
             }
 
             if (!isReverseFilter && selectedFilterItem != sendItem)
             {
                 FilterIndexCheck();
-                itemSetDelay = false;
+                DelaySetItem();
                 return;
             }
         }
         else if (!isReverseFilter && filter.isFullFilterOn && ItemFilterFullCheck(sendItem))
         {
             FilterIndexCheck();
-            itemSetDelay = false;
+            DelaySetItem();
             return;
         }
 
         GameObject outObject = filter.outObj;
         outFactory = outObject.GetComponent<Structure>();
 
-        if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
+        if (outFactory.isFull == false)
         {
-            //ItemProps spawnItem = itemPool.Get();
-            if (beltCtrl.OnBeltItem(spawnItem))
+            if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
             {
-                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                sprite.sprite = sendItem.icon;
-                spawnItem.item = sendItem;
-                spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
-                spawnItem.amount = 1;
-                spawnItem.transform.position = transform.position;
-                spawnItem.isOnBelt = true;
-                spawnItem.setOnBelt = beltCtrl;
-            }
-            else
-            {
-                //OnDestroyItem(spawnItem);
-                FilterIndexCheck();
-                itemSetDelay = false;
-                return;
-            }
-        }
-        else if (outObject.GetComponent<LogisticsCtrl>())
-        {
-            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
-        }
-        else if (outObject.TryGetComponent(out Production production) && production.CanTakeItem(sendItem))
-        {
-            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
-        }
+                var itemPool = ItemPoolManager.instance.Pool.Get();
+                spawnItem = itemPool.GetComponent<ItemProps>();
 
+                if (beltCtrl.OnBeltItem(spawnItem))
+                {
+                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                    sprite.sprite = sendItem.icon;
+                    spawnItem.item = sendItem;
+                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
+                    spawnItem.amount = 1;
+                    spawnItem.transform.position = transform.position;
+                    spawnItem.isOnBelt = true;
+                    spawnItem.setOnBelt = beltCtrl;
+                }
+                else
+                {
+                    FilterIndexCheck();
+                    DelaySetItem();
+                    return;
+                }
+            }
+            else if (outObject.GetComponent<LogisticsCtrl>())
+            {
+                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
+            }
+            else if (outObject.TryGetComponent(out Production production) && production.CanTakeItem(sendItem))
+            {
+                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
+            }
+        }
         itemList.RemoveAt(0);
         ItemNumCheck();
 
         FilterIndexCheck();
-        itemSetDelay = false;
+        Invoke("DelaySetItem", structureData.SendDelay);
     }
 
     bool ItemFilterFullCheck(Item item)
@@ -354,13 +357,13 @@ public class SplitterCtrl : LogisticsCtrl
 
     public override void ResetCheckObj(GameObject game)
     {
-        for (int i = 0; i < arrFilter.Length; i++)
-        {
-            if (arrFilter[i].outObj == game)
-            {
-                FilterReset(i);
-            }
-        }
+        //for (int i = 0; i < arrFilter.Length; i++)
+        //{
+        //    if (arrFilter[i].outObj == game)
+        //    {
+        //        FilterReset(i);
+        //    }
+        //}
         base.ResetCheckObj(game);
     }
 }

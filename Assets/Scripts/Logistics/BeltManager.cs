@@ -82,7 +82,6 @@ public class BeltManager : MonoBehaviour
         }
         beltGroup.Reconfirm();
         beltGroup.nextCheck = true;
-        //beltGroup.preCheck = true;
 
         if (beltGroup.beltList.Count == 1)
         {

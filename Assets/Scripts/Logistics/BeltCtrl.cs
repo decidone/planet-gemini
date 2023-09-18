@@ -501,10 +501,9 @@ public class BeltCtrl : LogisticsCtrl
         FactoryModelSet();
     }
 
-    public List<ItemProps> PlayerRootItem()
+    public List<ItemProps> PlayerRootItemCheck()
     {
         List<ItemProps> sendItemList = new List<ItemProps>(itemObjList);
-        itemObjList.Clear();
         
         if (itemObjList.Count >= structureData.MaxItemStorageLimit)
             isFull = true;
@@ -512,5 +511,14 @@ public class BeltCtrl : LogisticsCtrl
             isFull = false;
 
         return sendItemList;
+    }
+
+    public void PlayerRootFunc(ItemProps item)
+    {
+        if (itemObjList.Contains(item))
+        {
+            itemObjList.Remove(item);
+            item.Pool.Release(item.gameObject);
+        }
     }
 }

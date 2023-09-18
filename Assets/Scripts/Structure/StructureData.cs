@@ -45,4 +45,8 @@ public class StructureData : ScriptableObject
     [SerializeField]
     private float colliderRadius;//타겟 탐색 범위
     public float ColliderRadius { get { return colliderRadius; } }
+
+    [SerializeField]
+    private int maxLevel;//타겟 탐색 범위
+    public int MaxLevel { get { return maxLevel; } }
 }

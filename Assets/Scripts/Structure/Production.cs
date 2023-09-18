@@ -177,7 +177,7 @@ public abstract class Production : Structure
                     if (getItemIndex >= inObj.Count)
                         getItemIndex = 0;
 
-                    itemGetDelay = false;
+                    DelayGetItem();
                     return;
                 }
             }
@@ -187,7 +187,7 @@ public abstract class Production : Structure
                 if (getItemIndex >= inObj.Count)
                     getItemIndex = 0;
 
-                itemGetDelay = false;
+                DelayGetItem();
                 return;
             }
         }

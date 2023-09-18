@@ -17,6 +17,13 @@ public class Refinery : FluidFactoryCtrl
         repairBar.fillAmount = 0;
 
         #endregion
+        #region FluidFactoryAwake
+        GameManager gameManager = GameManager.instance;
+        myFluidScript = GetComponent<FluidFactoryCtrl>();
+        playerInven = gameManager.GetComponent<Inventory>();
+        mainSource = null;
+        howFarSource = -1;
+        #endregion
     }
 
     protected override void Start()
@@ -109,12 +116,9 @@ public class Refinery : FluidFactoryCtrl
 
     void CheckOutObjScript(GameObject game)
     {
-        if (game.GetComponent<PipeCtrl>())
-        {
-            game.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
-            return;
-        }
-        StartCoroutine(SetOutObjCoroutine(game));        
+        StartCoroutine(SetOutObjCoroutine(game));
+        if (game.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
+            StartCoroutine("MainSourceCheck", factoryCtrl);
     }
 
     public override void OpenUI()
@@ -231,6 +235,7 @@ public class Refinery : FluidFactoryCtrl
             }
         }
     }
+
     protected override void AddInvenItem()
     {
         var slot = inventory.SlotCheck(0);

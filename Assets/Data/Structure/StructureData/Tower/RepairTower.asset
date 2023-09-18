@@ -22,3 +22,4 @@ MonoBehaviour:
   maxBuildingGauge: 100
   maxRepairGauge: 70
   colliderRadius: 10
+  maxLevel: 1

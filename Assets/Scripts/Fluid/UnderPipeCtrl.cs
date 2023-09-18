@@ -140,17 +140,19 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     void UnderPipeSetInObj(GameObject obj)
     {
-        if (obj.GetComponent<FluidFactoryCtrl>() != null)
+        if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
         {
             if (obj.TryGetComponent(out UnderPipeCtrl othUnderPipe))
             {
                 connectUnderPipe = obj;
+                outObj.Add(obj);
                 if (othUnderPipe.connectUnderPipe != this.gameObject)
                 {
                     if(othUnderPipe.connectUnderPipe != null)
                         othUnderPipe.connectUnderPipe.GetComponent<UnderPipeCtrl>().DisCntObj();
                     othUnderPipe.DisCntObj();
                 }
+                StartCoroutine("MainSourceCheck", factoryCtrl);
             }
         }
     }
@@ -163,46 +165,46 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     void UnderPipeSetOutObj(GameObject obj)
     {
-        if (obj.GetComponent<FluidFactoryCtrl>() != null)
+        if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
         {
+            if (obj.TryGetComponent(out UnderPipeCtrl othUnderPipe))
+            {
+                if (!CanConnectUnderPipe(othUnderPipe))
+                    return;
+            }
+
             otherPipe = obj;
+            outObj.Add(obj);
             if (obj.GetComponent<PipeCtrl>() != null)
             {
-                otherPipe.GetComponent<PipeCtrl>().FactoryVecCheck(this.transform.position);
-                otherPipe.GetComponentInParent<PipeGroupMgr>().FactoryListAdd(this.gameObject);
+                otherPipe.GetComponent<PipeCtrl>().FactoryVecCheck(this.gameObject);
             }
+            StartCoroutine("MainSourceCheck", factoryCtrl);
         }
     }
 
-    protected override void SendFluid()
+    public override void ResetCheckObj(GameObject game)
     {
-        if (otherPipe != null && otherPipe.TryGetComponent(out FluidFactoryCtrl othObj) && otherPipe.GetComponent<PumpCtrl>() == null)
-        {
-            if (othObj.structureData.MaxFulidStorageLimit > othObj.saveFluidNum)
-            {
-                float currentFillRatio = (float)othObj.structureData.MaxFulidStorageLimit / othObj.saveFluidNum;
-                float targetFillRatio = (float)structureData.MaxFulidStorageLimit / saveFluidNum;
+        checkObj = false;
 
-                if (currentFillRatio > targetFillRatio)
-                {
-                    saveFluidNum -= structureData.SendFluidAmount;
-                    othObj.SendFluidFunc(structureData.SendFluidAmount);
-                }
+        if(otherPipe == game)
+        {
+            otherPipe = null;
+        }
+        else if(connectUnderPipe == game)
+        {
+            connectUnderPipe = null;
+        }
+        outObj.Remove(game);
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] != null && nearObj[i] == game)
+            {
+                nearObj[i] = null;
             }
         }
-        if (connectUnderPipe != null && connectUnderPipe.TryGetComponent(out FluidFactoryCtrl underPipe))
-        {
-            if (underPipe.structureData.MaxFulidStorageLimit > underPipe.saveFluidNum)
-            {
-                float currentFillRatio = (float)underPipe.structureData.MaxFulidStorageLimit / underPipe.saveFluidNum;
-                float targetFillRatio = (float)structureData.MaxFulidStorageLimit / saveFluidNum;
 
-                if (currentFillRatio > targetFillRatio)
-                {
-                    saveFluidNum -= structureData.SendFluidAmount;
-                    underPipe.SendFluidFunc(structureData.SendFluidAmount);
-                }
-            }
-        }
+        checkObj = true;
     }
 }
