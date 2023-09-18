@@ -95,4 +95,12 @@ public class Slot : MonoBehaviour
 
         onSlotChangedCallback?.Invoke();
     }
+
+    public void SetItemAmount(int _amount) //디스플레이 슬롯용
+    {
+        amount = _amount;
+        amountText.text = _amount + "";
+
+        onSlotChangedCallback?.Invoke();
+    }
 }
