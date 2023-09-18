@@ -5,9 +5,9 @@ using UnityEngine;
 // UTF-8 설정
 public class FluidFactoryCtrl : Production
 {
-    [HideInInspector]
+    //[HideInInspector]
     public string fluidName;
-    [HideInInspector]
+    //[HideInInspector]
     public float saveFluidNum;
     [HideInInspector]
     public float sendDelayTimer = 0.0f;

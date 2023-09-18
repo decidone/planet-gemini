@@ -39,9 +39,9 @@
         {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[1,1,1,1],"cooldown":3}
     ],
     "Refinery":[
-        {"name":"Fuel","items":["CrudeOil","Fuel"],"amounts":[1,1],"cooldown":3},
-        {"name":"Naphtha","items":["CrudeOil","Naphtha"],"amounts":[1,1],"cooldown":3},
-        {"name":"Sulfur","items":["CrudeOil","Sulfur"],"amounts":[1,1],"cooldown":3}
+        {"name":"Fuel","items":["CrudeOil","Fuel"],"amounts":[20,1],"cooldown":3},
+        {"name":"Naphtha","items":["CrudeOil","Naphtha"],"amounts":[20,1],"cooldown":3},
+        {"name":"Sulfur","items":["CrudeOil","Sulfur"],"amounts":[20,1],"cooldown":3}
     ],
     "ChemicalPlant":[
         {"name":"Plastic","items":["Naphtha","Plastic"],"amounts":[1,1],"cooldown":3},

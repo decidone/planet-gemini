@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 // UTF-8 설정
 public class ItemSpManager : InventoryManager
@@ -8,8 +9,11 @@ public class ItemSpManager : InventoryManager
     List<Item> itemsList;
     ItemSpawner itemSpawner = null;
     //int slotIndex = -1;
+    [SerializeField]
+    private GameObject itemTagsPanel;
+    private Button[] itemTagsBtn;
+    private List<List<Item>> itemsTierList;
 
-    // Start is called before the first frame update
     protected override void Start()
     {
         gameManager = GameManager.instance;
@@ -19,7 +23,18 @@ public class ItemSpManager : InventoryManager
         {
             slots[i].amountText.gameObject.SetActive(false);
         }
+
+        itemsTierList = new List<List<Item>>();
+        SortItemTier();
+
+        itemTagsBtn = itemTagsPanel.GetComponentsInChildren<Button>();
+        for (int i = 0; i < itemTagsBtn.Length; i++)
+        {
+            int buttonIndex = i;
+            itemTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
+        }
     }
+
     protected override void InputCheck()
     {
         if (Input.GetMouseButtonDown(0))
@@ -30,15 +45,48 @@ public class ItemSpManager : InventoryManager
                 {
                     SetItem(focusedSlot.item);
                     focusedSlot = null;
+                    CloseUI();
                 }
             }
         }
+    }
+
+    void SortItemTier()
+    {
+        for (int i = 0; i < 6; i++) //6은 -1을 제외한 아이템 Tier분류 수
+        {
+            List<Item> list = new List<Item>();
+            for (int j = 0; j < itemsList.Count; j++)
+            {
+                if (itemsList[j].tier == i)
+                {
+                    list.Add(itemsList[j]);
+                }
+            }
+            itemsTierList.Add(list);
+        }
+    }
+
+    void SetItemList(int tier)
+    {
+        inventory.ResetInven();
+        for (int i = 0; i < itemsTierList[tier].Count; i++)
+        {
+            inventory.Add(itemsTierList[tier][i], 1);
+        }
+        SetInven(inventory, inventoryUI);
     }
 
     public void SetItemSp(ItemSpawner _itemSp)
     {
         itemSpawner = _itemSp;
     }
+
+    private void ButtonClicked(int buttonIndex)
+    {
+        SetItemList(buttonIndex);
+    }
+
     public void ReleaseInven()
     {
         ResetInvenOption();
@@ -53,6 +101,7 @@ public class ItemSpManager : InventoryManager
             slot.ResetOption();
         }
     }
+
     public void InvenInit()
     {
         for (int i = 0; i < slots.Length; i++)
@@ -67,21 +116,9 @@ public class ItemSpManager : InventoryManager
         itemSpawner.itemData = _item;
     }
 
-    void SetItemList()
-    {
-        inventory.ResetInven();
-        for (int i = 0; i < itemsList.Count; i++)
-        {
-            if (itemsList[i].name == "FullFilter")
-                continue;
-            inventory.Add(itemsList[i], 1);
-        }
-        SetInven(inventory, inventoryUI);
-    }
-
     public override void OpenUI()
     {
-        SetItemList();
+        SetItemList(0);
         inventoryUI.SetActive(true);
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
@@ -91,5 +128,4 @@ public class ItemSpManager : InventoryManager
         inventoryUI.SetActive(false);
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
-
 }

@@ -49,7 +49,6 @@ public class ExtractorCtrl : FluidFactoryCtrl
                 saveFluidNum += pumpFluid;
         }
 
-
         if (outObj.Count > 0)
         {
             foreach (GameObject obj in outObj)

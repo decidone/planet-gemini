@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: IronOre
   icon: {fileID: 21300000, guid: 0671f32df74b23246851aae58a1e0465, type: 3}
+  tier: 0

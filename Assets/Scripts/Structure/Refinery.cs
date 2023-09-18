@@ -15,7 +15,6 @@ public class Refinery : FluidFactoryCtrl
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
-
         #endregion
     }
 
@@ -32,7 +31,6 @@ public class Refinery : FluidFactoryCtrl
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
         nearObj = new GameObject[4];
-
         CheckPos();
         #endregion
     }
@@ -75,7 +73,7 @@ public class Refinery : FluidFactoryCtrl
 
             if (recipe.name != null)
             {
-                if (slot.amount >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                if (saveFluidNum >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                 {
                     output = itemDic[recipe.items[recipe.items.Count - 1]];
 
@@ -84,7 +82,7 @@ public class Refinery : FluidFactoryCtrl
                         prodTimer += Time.deltaTime;
                         if (prodTimer > cooldown)
                         {
-                            inventory.Sub(0, recipe.amounts[0]);
+                            saveFluidNum -= recipe.amounts[0];
                             inventory.SlotAdd(1, output, recipe.amounts[recipe.amounts.Count - 1]);
                             prodTimer = 0;
                         }
@@ -179,6 +177,7 @@ public class Refinery : FluidFactoryCtrl
 
         base.OnFactoryItem(itemProps);
     }
+
     public override void OnFactoryItem(Item item)
     {
         if (itemDic[recipe.items[0]] == item)
