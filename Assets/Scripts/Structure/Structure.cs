@@ -195,7 +195,7 @@ public class Structure : MonoBehaviour
         }
     }
 
-    public void SetBuild()
+    public virtual void SetBuild()
     {
         unitCanvas.SetActive(true);
         hpBar.enabled = false;
@@ -242,6 +242,7 @@ public class Structure : MonoBehaviour
                 inObj.Remove(game);
             }
         }
+        checkObj = true;
     }
 
     protected virtual void GetItem()
@@ -391,7 +392,7 @@ public class Structure : MonoBehaviour
             if (sendItemIndex >= outObj.Count)
                 sendItemIndex = 0;
 
-                    DelaySetItem();
+            DelaySetItem();
         }
     }
 
@@ -644,7 +645,8 @@ public class Structure : MonoBehaviour
     }
 
     protected virtual IEnumerator SetInObjCoroutine(GameObject obj) 
-    { 
+    {
+        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<Structure>() != null)
@@ -653,6 +655,7 @@ public class Structure : MonoBehaviour
             {
                 if (belt.GetComponentInParent<BeltGroupMgr>().nextObj != this.gameObject)
                 {
+                    checkObj = true;
                     yield break;
                 }
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
@@ -664,14 +667,24 @@ public class Structure : MonoBehaviour
 
     protected virtual IEnumerator SetOutObjCoroutine(GameObject obj)
     {
+        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<Structure>() != null)
         {
+            if (obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
+            {
+                checkObj = true;
+                yield break;
+            }
+
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
+                {
+                    checkObj = true;
                     yield break;
+                }
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
@@ -757,7 +770,7 @@ public class Structure : MonoBehaviour
 
         if(TryGetComponent(out FluidFactoryCtrl fluid))
         {
-            fluid.RemoveMainSorce();
+            fluid.RemoveMainSource(true);
         }
 
         if (repairTower != null)
@@ -804,6 +817,8 @@ public class Structure : MonoBehaviour
     {
         itemGetDelay = false;
     }
+
+    public virtual Dictionary<Item, int> PopUpItemCheck() { return null; }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

@@ -37,7 +37,7 @@ public class UnitDrag : DragFunc
     bool isPKeyPressed = false;
     bool isAKeyPressed = false;
 
-    void Start()
+    protected override void Start()
     {
         unitLayer = LayerMask.NameToLayer("Unit");
         monsterLayer = LayerMask.NameToLayer("Monster");
@@ -103,17 +103,15 @@ public class UnitDrag : DragFunc
         ReSetBool();
     }
 
-    public void RightMouseUp()
+    public override void RightMouseUp(Vector2 startPos, Vector2 endPos)
     {
         SetTargetPosition(false);
         ReSetBool();
     }
 
-    protected override List<GameObject> GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
+    protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
     {
-        List<GameObject> List = base.GroupSelectedObjects(startPosition, endPosition, layer);
-        selectedObjects = List.ToArray();
-
+        base.GroupSelectedObjects(startPosition, endPosition, layer);
         removeUnit?.Invoke();
 
         if (selectedObjects.Length > 0)
@@ -124,8 +122,6 @@ public class UnitDrag : DragFunc
             }
             isSelectingUnits = true;
         }
-
-        return null;
     }
 
     private void SelectedObjects(RaycastHit2D ray)

@@ -59,7 +59,7 @@ public class SplitterCtrl : LogisticsCtrl
 
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
-                    if (filterOn)
+                    if (filterOn && level > 0) 
                     {
                         FilterSetItem(filterindex);
                     }
@@ -217,9 +217,9 @@ public class SplitterCtrl : LogisticsCtrl
             {
                 setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
             }
+            itemList.RemoveAt(0);
+            ItemNumCheck();
         }
-        itemList.RemoveAt(0);
-        ItemNumCheck();
 
         FilterIndexCheck();
         Invoke("DelaySetItem", structureData.SendDelay);
@@ -261,6 +261,7 @@ public class SplitterCtrl : LogisticsCtrl
 
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)
     {
+        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<Structure>() != null)
@@ -297,7 +298,7 @@ public class SplitterCtrl : LogisticsCtrl
                 {
                     if (arrFilter[i].outObj == otherObj)
                     {
-                        FilterReset(i);
+                        FilterArr(null, i);
                     }
                 }
                 outObj.Remove(otherObj);
@@ -313,29 +314,18 @@ public class SplitterCtrl : LogisticsCtrl
 
         if (game.TryGetComponent(out GetUnderBeltCtrl getUnder))
         {
-            if (!getUnder.outObj.Contains(this.gameObject))
+            if (!getUnder.outObj.Contains(this.gameObject) && inObj.Contains(game))
             {
                 inObj.Remove(game);
-                isReomveFilter = true;
-            }
-            if (!getUnder.inObj.Contains(this.gameObject))
-            {
-                outObj.Remove(game);
-                outSameList.Remove(game);
                 isReomveFilter = true;
             }
         }
         else if (game.TryGetComponent(out SendUnderBeltCtrl sendUnder))
         {
-            if (!sendUnder.inObj.Contains(this.gameObject))
+            if (!sendUnder.inObj.Contains(this.gameObject) && outObj.Contains(game))
             {
                 outObj.Remove(game);
                 outSameList.Remove(game);
-                isReomveFilter = true;
-            }
-            if (!sendUnder.outObj.Contains(this.gameObject))
-            {
-                inObj.Remove(game);
                 isReomveFilter = true;
             }
         }
@@ -346,24 +336,11 @@ public class SplitterCtrl : LogisticsCtrl
             {
                 if (arrFilter[i].outObj == game)
                 {
-                    FilterReset(i);
+                    FilterArr(null, i);
                 }
             }
-            outObj.Remove(game);
-            Invoke("RemoveSameOutList", 0.1f);
-            StopCoroutine("SendFacDelay");
         }
-    }
 
-    public override void ResetCheckObj(GameObject game)
-    {
-        //for (int i = 0; i < arrFilter.Length; i++)
-        //{
-        //    if (arrFilter[i].outObj == game)
-        //    {
-        //        FilterReset(i);
-        //    }
-        //}
-        base.ResetCheckObj(game);
+        checkObj = true;
     }
 }

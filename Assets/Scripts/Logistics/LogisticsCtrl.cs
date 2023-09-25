@@ -137,4 +137,27 @@ public class LogisticsCtrl : Structure
             }
         }
     }
+
+    public override Dictionary<Item, int> PopUpItemCheck() 
+    { 
+        if(itemList.Count > 0)
+        {
+            Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
+            foreach (Item item in itemList)
+            {
+                if(!returnDic.ContainsKey(item))
+                    returnDic.Add(item, 1);
+                else
+                {
+                    int currentValue = returnDic[item];
+                    int newValue = currentValue + 1;
+                    returnDic[item] = newValue;
+                }
+            }
+
+            return returnDic;
+        }
+        else
+            return null; 
+    }
 }

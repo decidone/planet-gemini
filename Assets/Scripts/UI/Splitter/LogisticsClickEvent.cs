@@ -16,31 +16,36 @@ public class LogisticsClickEvent : MonoBehaviour
 
     LogisticsCtrl logisticsCtrl;
 
-    public void LogisticsCheck()
+    public bool LogisticsCheck()
     {
+        bool canOpen = false;
         gameManager = GameManager.instance;
         GameObject canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
 
         logisticsCtrl = GetComponent<LogisticsCtrl>();
 
-        foreach (GameObject list in inventoryList.InventoryArr)
+        foreach (GameObject obj in inventoryList.InventoryArr)
         {
-            if (logisticsCtrl.GetComponent<SplitterCtrl>() && list.name == "SplitterMenu")
+            if (logisticsCtrl.TryGetComponent(out SplitterCtrl splitterCtrl) && splitterCtrl.level > 0 && obj.name == "SplitterMenu")
             {
-                LogisticsUI = list;
+                LogisticsUI = obj;
                 splittercloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
                 splittercloseBtn.onClick.AddListener(CloseUI);
                 sFilterManager = canvas.GetComponent<SplitterFilterManager>();
+                canOpen = true;
             }
-            else if (logisticsCtrl.GetComponent<ItemSpawner>() && list.name == "ItemSpwanerFilter")
+            else if (logisticsCtrl.GetComponent<ItemSpawner>() && obj.name == "ItemSpwanerFilter")
             {
-                LogisticsUI = list;
+                LogisticsUI = obj;
                 splittercloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
                 splittercloseBtn.onClick.AddListener(CloseUI);
                 itemSpManager = canvas.GetComponent<ItemSpManager>();
+                canOpen = true;
             }
         }
+
+        return canOpen;
     }
 
     public void OpenUI()

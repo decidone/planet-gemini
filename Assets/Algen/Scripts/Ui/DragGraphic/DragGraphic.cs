@@ -10,7 +10,6 @@ public class DragGraphic : MonoBehaviour
     Vector2 endPosition;
     SpriteRenderer sprite;
     bool clickCheck = false;
-    bool holdAnyKey = false;
 
     public GameObject preBuilding;
 
@@ -47,7 +46,8 @@ public class DragGraphic : MonoBehaviour
 
     private void Update()
     {
-        bool ctrlKeyHeld = Input.GetKey(KeyCode.LeftControl);
+        bool ctrlKeyHold = Input.GetKey(KeyCode.LeftControl);
+        bool shiftKeyHold = Input.GetKey(KeyCode.LeftShift);
         bool isMouseOverUI = EventSystem.current.IsPointerOverGameObject();
         bool isLeftMouseButtonDown = Input.GetMouseButtonDown(0);
         bool isLeftMouseButtonUp = Input.GetMouseButtonUp(0);
@@ -56,12 +56,7 @@ public class DragGraphic : MonoBehaviour
 
         if (!preBuilding.activeSelf)
         {
-            if (ctrlKeyHeld)
-                holdAnyKey = true;
-            else
-                holdAnyKey = false;
-
-            if ((isLeftMouseButtonDown || isRightMouseButtonDown) && !isMouseOverUI)
+            if ((isLeftMouseButtonDown || (isRightMouseButtonDown && shiftKeyHold)) && !isMouseOverUI)
             {
                 startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 clickCheck = true;
@@ -72,35 +67,36 @@ public class DragGraphic : MonoBehaviour
             {
                 if (Input.GetMouseButton(0))
                 {
-                    if (!holdAnyKey)
+                    if (!ctrlKeyHold)
                         ColorSet(Color.green);
-                    else if (ctrlKeyHeld)
+                    else if (ctrlKeyHold)
                         ColorSet(Color.blue);
                 }
                 else if (Input.GetMouseButton(1))
-                    ColorSet(Color.red);
+                {
+                    if (shiftKeyHold)
+                        ColorSet(Color.red);
+                }
 
                 endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 BoxSizeChange();
+            }
 
-                if (isLeftMouseButtonUp)
-                {
-                    if (!holdAnyKey)
-                        unitDrag.LeftMouseUp(startPosition, endPosition);
-                    else if (ctrlKeyHeld)
-                        UpgradeBuild.LeftMouseUp(startPosition, endPosition);
-                    DisableFunc();
-                }
-                else if (isRightMouseButtonUp)
-                {
-                    if (unitDrag.isSelectingUnits && startPosition == endPosition)
-                    {
-                        unitDrag.RightMouseUp();
-                    }
-                    else
-                        removeBuild.LeftMouseUp(startPosition, endPosition);
-                    DisableFunc();
-                }
+            if (isLeftMouseButtonUp)
+            {
+                if (!ctrlKeyHold)
+                    unitDrag.LeftMouseUp(startPosition, endPosition);
+                else if (ctrlKeyHold)
+                    UpgradeBuild.LeftMouseUp(startPosition, endPosition);
+                DisableFunc();
+            }
+            else if (isRightMouseButtonUp)
+            {
+                if (unitDrag.isSelectingUnits && !shiftKeyHold)                
+                    unitDrag.RightMouseUp(startPosition, endPosition);                
+                else if(shiftKeyHold)
+                    removeBuild.RightMouseUp(startPosition, endPosition);
+                DisableFunc();
             }
         }
     }

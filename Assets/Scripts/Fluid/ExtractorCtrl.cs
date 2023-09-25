@@ -9,6 +9,8 @@ public class ExtractorCtrl : FluidFactoryCtrl
 
     protected override void Start()
     {
+        mainSource = myFluidScript;
+        fluidName = "CrudeOil";
         CheckPos();
     }
 
@@ -18,7 +20,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            if (!isPreBuilding)
+            if (!isPreBuilding && checkObj)
             {
                 for (int i = 0; i < nearObj.Length; i++)
                 {
@@ -55,11 +57,15 @@ public class ExtractorCtrl : FluidFactoryCtrl
             {
                 if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)
                 {
-                    if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum)
+                    if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum && fluidFactory.CanTake() && fluidFactory.fluidName == fluidName)
                     {
                         fluidFactory.SendFluidFunc(structureData.SendFluidAmount);
                         saveFluidNum -= structureData.SendFluidAmount;
                     }
+                    else
+                        Debug.Log("el");
+                    if(fluidFactory.mainSource == null && !fluidFactory.reFindMain)
+                        RemoveMainSource(false);
                 }
             }
         }

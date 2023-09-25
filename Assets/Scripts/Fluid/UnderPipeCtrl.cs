@@ -23,7 +23,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         if (!removeState)
         {
             SetDirNum();
-            if (!isPreBuilding)
+            if (!isPreBuilding && checkObj)
             {
                 for (int i = 0; i < nearObj.Length; i++)
                 {
@@ -36,7 +36,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                     }
                 }
 
-                if (otherPipe != null)
+                if (outObj.Count > 0)
                 {
                     sendDelayTimer += Time.deltaTime;
 
@@ -159,8 +159,9 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     public void DisCntObj()
     {
+        outObj.Remove(connectUnderPipe);
         connectUnderPipe = null;
-        nearObj = new GameObject[2];
+        nearObj[0] = null;
     }
 
     void UnderPipeSetOutObj(GameObject obj)
@@ -195,7 +196,10 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         {
             connectUnderPipe = null;
         }
-        outObj.Remove(game);
+        if (outObj.Contains(game))
+        {
+            outObj.Remove(game);
+        }
 
         for (int i = 0; i < nearObj.Length; i++)
         {

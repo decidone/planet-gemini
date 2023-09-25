@@ -18,7 +18,7 @@ MonoBehaviour:
   maxFulidStorageLimit: 50
   sendSpeed: []
   sendFluidAmount: 1
-  sendDelay: 0.06
+  sendDelay: 0.07
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

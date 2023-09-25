@@ -125,4 +125,20 @@ public class Miner : Production
             playerInven.Add(slot.item, slot.amount);
         }
     }
+    public override Dictionary<Item, int> PopUpItemCheck()
+    {
+        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
+
+        var slot = inventory.SlotCheck(0);
+
+        if (slot.item != null && slot.amount > 0)
+            returnDic.Add(slot.item, slot.amount);
+
+        if (returnDic.Count > 0)
+        {
+            return returnDic;
+        }
+        else
+            return null;
+    }
 }

@@ -12,7 +12,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            if (!isPreBuilding)
+            if (!isPreBuilding && checkObj)
             {
                 for (int i = 0; i < nearObj.Length; i++)
                 {

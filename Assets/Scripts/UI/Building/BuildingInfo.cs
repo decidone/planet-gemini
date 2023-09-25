@@ -47,6 +47,8 @@ public class BuildingInfo : MonoBehaviour
     {
         for (int i = 0; i < buildingNeedList.Length; i++) 
         {
+            buildingNeedList[i].item = null;
+            buildingNeedList[i].amount = 0;
             buildingNeedList[i].gameObject.SetActive(false);
         }
         ResetBuildingData();
@@ -104,7 +106,9 @@ public class BuildingInfo : MonoBehaviour
         for (int i = 0; i < buildingNeedList.Length; i++)
         {
             if(buildingNeedList[i].item != null)
+            {
                 inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount);
+            }
         }
         GameManager.instance.BuildAndSciUiReset();
         SetItemSlot();

@@ -27,6 +27,8 @@ public abstract class Production : Structure
     protected Item output;
     protected Recipe recipe;
     protected List<Recipe> recipes;
+    protected int invenCount;
+    protected Dictionary<Item, int> invenSlotDic;
 
     public virtual void OpenUI() { }
     public virtual void CloseUI() { }
@@ -102,6 +104,7 @@ public abstract class Production : Structure
 
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)
     {
+        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<Structure>() != null && !obj.GetComponent<Miner>() && !obj.GetComponent<ItemSpawner>())
@@ -191,22 +194,5 @@ public abstract class Production : Structure
                 return;
             }
         }
-    }
-
-    public override void ResetCheckObj(GameObject game)
-    {
-        base.ResetCheckObj(game);
-
-        for (int i = 0; i < outObj.Count; i++)
-        {
-            if (outObj[i] == game)
-                outObj.Remove(game);
-        }
-        for (int i = 0; i < inObj.Count; i++)
-        {
-            if (inObj[i] == game)
-                inObj.Remove(game);
-        }
-        sendItemIndex = 0;
     }
 }

@@ -88,6 +88,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
 
     protected override IEnumerator SetInObjCoroutine(GameObject obj)
     {
+        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         SendUnderBeltCtrl sendUnderbelt = obj.GetComponent<SendUnderBeltCtrl>();

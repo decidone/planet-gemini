@@ -221,4 +221,30 @@ public class Manufacturer : Production
             playerInven.Add(slot3.item, slot3.amount);
         }
     }
+
+    public override Dictionary<Item, int> PopUpItemCheck()
+    {
+        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
+
+        var slot = inventory.SlotCheck(0);
+        var slot1 = inventory.SlotCheck(1);
+        var slot2 = inventory.SlotCheck(2);
+        var slot3 = inventory.SlotCheck(3);
+
+        if (slot.item != null && slot.amount > 0)
+            returnDic.Add(slot.item, slot.amount);
+        if (slot1.item != null && slot1.amount > 0)
+            returnDic.Add(slot1.item, slot1.amount);
+        if (slot2.item != null && slot2.amount > 0)
+            returnDic.Add(slot2.item, slot2.amount);        
+        if (slot3.item != null && slot3.amount > 0)
+            returnDic.Add(slot3.item, slot3.amount);
+
+        if (returnDic.Count > 0)
+        {
+            return returnDic;
+        }
+        else
+            return null;
+    }
 }

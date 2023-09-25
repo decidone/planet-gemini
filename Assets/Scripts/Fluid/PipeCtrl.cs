@@ -21,7 +21,7 @@ public class PipeCtrl : FluidFactoryCtrl
         if (!removeState)
         {
             SetDirNum();
-            if (!isPreBuilding)
+            if (!isPreBuilding && checkObj)
             {
                 for (int i = 0; i < nearObj.Length; i++)
                 {
@@ -59,7 +59,18 @@ public class PipeCtrl : FluidFactoryCtrl
 
     protected void FluidSetOutObj(GameObject obj, Vector3 vec)
     {
-        base.FluidSetOutObj(obj);
+        if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
+        {
+            if (!factoryCtrl.GetComponent<UnderPipeCtrl>())
+            {
+                outObj.Add(obj);
+            }
+            if (obj.GetComponent<UnderPipeCtrl>() != null)
+            {
+                StartCoroutine("UnderPipeConnectCheck", obj);
+            }
+            StartCoroutine("MainSourceCheck", factoryCtrl);
+        }
         ObjCheck(obj, vec);
     }
 
@@ -153,7 +164,9 @@ public class PipeCtrl : FluidFactoryCtrl
             nearObj[0] = factory;
             isUp = true;
         }
-        outObj.Add(factory);
+        if(!outObj.Contains(factory))
+            outObj.Add(factory);
+
         ChangeModel();
     }
 

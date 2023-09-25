@@ -9,6 +9,8 @@ public class PumpCtrl : FluidFactoryCtrl
 
     protected override void Start()
     {
+        mainSource = myFluidScript;
+        fluidName = "Water";
         CheckPos();
     }
 
@@ -18,7 +20,7 @@ public class PumpCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            if (!isPreBuilding)
+            if (!isPreBuilding && checkObj)
             {
                 for (int i = 0; i < nearObj.Length; i++)
                 {
@@ -57,11 +59,13 @@ public class PumpCtrl : FluidFactoryCtrl
             {
                 if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)
                 {
-                    if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum)
+                    if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum && fluidFactory.CanTake() && fluidFactory.fluidName == fluidName)
                     {
                         fluidFactory.SendFluidFunc(structureData.SendFluidAmount);
                         saveFluidNum -= structureData.SendFluidAmount;
                     }
+                    if (fluidFactory.mainSource == null && !fluidFactory.reFindMain)
+                        RemoveMainSource(false);
                 }
             }
         }

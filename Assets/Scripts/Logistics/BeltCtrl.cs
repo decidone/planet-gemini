@@ -38,6 +38,8 @@ public class BeltCtrl : LogisticsCtrl
     public bool isDown = false;
     public bool isLeft = false;
 
+    public RuntimeAnimatorController[] animControl;
+
     void Start()
     {
         beltManager = GameObject.Find("BeltManager");
@@ -55,6 +57,7 @@ public class BeltCtrl : LogisticsCtrl
         {
             anim.SetFloat("DirNum", dirNum);
             anim.SetFloat("ModelNum", modelMotion);
+            anim.SetFloat("Level", level);
 
             anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
             ModelSet();
@@ -520,5 +523,30 @@ public class BeltCtrl : LogisticsCtrl
             itemObjList.Remove(item);
             item.Pool.Release(item.gameObject);
         }
+    }
+
+    public override Dictionary<Item, int> PopUpItemCheck()
+    {
+        if (itemObjList.Count > 0) 
+        {
+            Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
+            foreach (ItemProps itemProps in itemObjList)
+            {
+                Item item = itemProps.item;
+                int amounts = itemProps.amount;
+
+                if (!returnDic.ContainsKey(item))
+                    returnDic.Add(item, amounts);
+                else
+                {
+                    int currentValue = returnDic[item];
+                    int newValue = currentValue + amounts;
+                    returnDic[item] = newValue;
+                }
+            }
+            return returnDic;
+        }                
+        else
+            return null;
     }
 }

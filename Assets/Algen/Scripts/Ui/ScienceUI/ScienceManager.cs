@@ -74,8 +74,6 @@ public class ScienceManager : MonoBehaviour
         {
             Vector3 mousePosition = Input.mousePosition;
 
-            float popupWidth = 495f;
-
             if (mousePosition.x + popupWidth > Screen.width)
             {
                 mousePosition.x = Screen.width - popupWidth - 10.0f;

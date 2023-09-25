@@ -163,10 +163,18 @@ public class GameManager : MonoBehaviour
                             clickEvent.CloseUI();
                         }
 
-                        logisticsClickEvent = newLogisticsClickEvent;
-                        logisticsClickEvent.LogisticsCheck();
-                        logisticsClickEvent.OpenUI();
-                        break;
+                        logisticsClickEvent = newLogisticsClickEvent;                        
+
+                        if (logisticsClickEvent.LogisticsCheck())
+                        {
+                            logisticsClickEvent.OpenUI();
+                            break;
+                        }
+                        else
+                        {
+                            logisticsClickEvent = null;
+                            break;
+                        }
                     }
                 }
             }
