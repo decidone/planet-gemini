@@ -6,6 +6,10 @@ using UnityEngine.Pool;
 // UTF-8 설정
 public class Refinery : FluidFactoryCtrl
 {
+    public Slot displaySlot;
+    int preSaveFluidNum;
+    bool uiOpened;
+
     protected override void Awake()
     {
         #region ProductionAwake
@@ -22,6 +26,11 @@ public class Refinery : FluidFactoryCtrl
         playerInven = gameManager.GetComponent<Inventory>();
         mainSource = null;
         howFarSource = -1;
+        preSaveFluidNum = 0;
+        uiOpened = false;
+        Debug.Log(GameObject.Find("Canvas"));
+        displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
+            .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();
         #endregion
     }
 
@@ -40,6 +49,9 @@ public class Refinery : FluidFactoryCtrl
         nearObj = new GameObject[4];
         CheckPos();
         #endregion
+
+        displaySlot.SetInputItem(ItemList.instance.itemDic["CrudeOil"]);
+        displaySlot.AddItem(ItemList.instance.itemDic["CrudeOil"], 0);
     }
 
     protected override void Update()
@@ -75,6 +87,8 @@ public class Refinery : FluidFactoryCtrl
 
         if (!isPreBuilding)
         {
+            FluidChangeCheck();
+
             var slot = inventory.SlotCheck(0);
             var slot1 = inventory.SlotCheck(1);
 
@@ -119,8 +133,21 @@ public class Refinery : FluidFactoryCtrl
             StartCoroutine("MainSourceCheck", factoryCtrl);
     }
 
+    void FluidChangeCheck()
+    {
+        if (preSaveFluidNum != (int)saveFluidNum)
+        {
+            preSaveFluidNum = (int)saveFluidNum;
+            if (uiOpened)
+                displaySlot.SetItemAmount((int)saveFluidNum);
+        }
+    }
+
     public override void OpenUI()
     {
+        uiOpened = true;
+        displaySlot.SetItemAmount((int)saveFluidNum);
+
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
@@ -136,6 +163,8 @@ public class Refinery : FluidFactoryCtrl
 
     public override void CloseUI()
     {
+        uiOpened = false;
+
         sInvenManager.ReleaseInven();
 
         rManager.recipeBtn.onClick.RemoveAllListeners();
