@@ -12,11 +12,12 @@ public class CameraController : MonoBehaviour
     Vector3 offset;
 
     PixelPerfectCamera pixelPerfectCamera;
-    int zoomLevel = 1;
+    int zoomLevel;
 
     void Awake()
     {
         pixelPerfectCamera = Camera.main.GetComponent<PixelPerfectCamera>();
+        zoomLevel = 1;
     }
 
     void Update()

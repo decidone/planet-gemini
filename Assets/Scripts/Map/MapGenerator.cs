@@ -12,14 +12,13 @@ public class MapGenerator : MonoBehaviour
     public int width;
     public int height;
     public float magnification;
-    //public float oreMagnification;
-    //public float oreSize;
     public bool hostMap;
 
     [Space]
     public Tilemap tilemap;
     public Tilemap lakeTilemap;
     public Tilemap resourcesTilemap;
+    public Tilemap resourcesIconTilemap;
     public GameObject objects;
     public Map map;
 
@@ -35,19 +34,24 @@ public class MapGenerator : MonoBehaviour
 
     [Space]
     public List<Resource> resources = new List<Resource>();
+    public List<Tile> resourcesIcon = new List<Tile>();
+
+    void Awake()
+    {
+        map.width = width;
+        map.height = height;
+        map.mapData = new List<List<Cell>>();
+    }
 
     void Start()
     {
         Init();
         Generate();
+        SetSpawnPos();
     }
 
     void Init()
     {
-        map.width = width;
-        map.height = height;
-        map.mapData = new List<List<Cell>>();
-
         if (hostMap)
         {
             biomes = new List<List<Biome>>() {
@@ -80,6 +84,75 @@ public class MapGenerator : MonoBehaviour
     {
         SetRandomSeed();
         GenerateMap();
+    }
+
+    void SetSpawnPos()
+    {
+        int x = Mathf.FloorToInt(width / 2);
+        int y = Mathf.FloorToInt(height / 2);
+
+        if (map.mapData[x][y].biome.biome == "lake")
+        {
+            string dir = "";
+            int dist = 0;
+
+            for (int i = 1; i < y; i++) //상
+            {
+                if (map.mapData[x][y + i].biome.biome != "lake")
+                {
+                    dir = "up";
+                    dist = i;
+                    break;
+                }
+            }
+            for (int i = 1; i < y; i++) //하
+            {
+                if (map.mapData[x][y - i].biome.biome != "lake")
+                {
+                    if (dist > i)
+                    {
+                        dir = "down";
+                        dist = i;
+                    }
+                    break;
+                }
+            }
+            for (int i = 1; i < x; i++) //좌
+            {
+                if (map.mapData[x - i][y].biome.biome != "lake")
+                {
+                    if (dist > i)
+                    {
+                        dir = "left";
+                        dist = i;
+                    }
+                    break;
+                }
+            }
+            for (int i = 1; i < x; i++) //우
+            {
+                if (map.mapData[x + i][y].biome.biome != "lake")
+                {
+                    if (dist > i)
+                    {
+                        dir = "right";
+                        dist = i;
+                    }
+                    break;
+                }
+            }
+            dist++;
+
+            switch (dir)
+            {
+                case "up": y += dist; break;
+                case "down": y -= dist; break;
+                case "left": x -= dist; break;
+                case "right": x += dist; break;
+            }
+        }
+
+        GameManager.instance.SetPlayerPos(x, y);
     }
 
     void SetRandomSeed()
@@ -205,6 +278,7 @@ public class MapGenerator : MonoBehaviour
                         {
                             Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
                             resourcesTilemap.SetTile(new Vector3Int(x, y, 0), resourceTile);
+                            resourcesIconTilemap.SetTile(new Vector3Int(x, y, 0), resourcesIcon[i]);
                             cell.resource = resource;
 
                             if (resource.type == "ore")

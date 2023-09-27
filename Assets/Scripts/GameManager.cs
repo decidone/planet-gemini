@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     public GameObject inventoryUiCanvas;
     public Map map;
     public GameObject player;
+    [HideInInspector]
+    public bool isMapOpened;
+
     [SerializeField]
     PlayerInvenManager pInvenManager;
     [SerializeField]
@@ -50,9 +53,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        isMapOpened = false;
         openedUI = new List<GameObject>();
         dragSlot = DragSlot.instance;
         onUIChangedCallback += UIChanged;
+
+        Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
+        player.transform.position = playerSpawnPos;
     }
 
     void Update()
@@ -308,5 +315,11 @@ public class GameManager : MonoBehaviour
         {
             InfoWindow.instance.SetNeedItem();
         }
+    }
+
+    public void SetPlayerPos(float x, float y)
+    {
+        Vector3 playerSpawnPos = new Vector3(x, y, 0);
+        player.transform.position = playerSpawnPos;
     }
 }
