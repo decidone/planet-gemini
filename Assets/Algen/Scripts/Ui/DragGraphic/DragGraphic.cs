@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 public class DragGraphic : MonoBehaviour
 {
     Transform boxVisual;
-    Vector2 startPosition;
-    Vector2 endPosition;
+    Vector3 startPosition;
+    Vector3 endPosition;
     SpriteRenderer sprite;
     bool clickCheck = false;
 
@@ -16,6 +16,13 @@ public class DragGraphic : MonoBehaviour
     UnitDrag unitDrag;
     RemoveBuild removeBuild;
     UpgradeBuild UpgradeBuild;
+
+    bool isLineDrawing;
+
+    [SerializeField]
+    GameObject lineObj;
+    LineRenderer lineRenderer;
+    GameObject transportBuild;
 
     #region Singleton
     public static DragGraphic instance;
@@ -42,6 +49,7 @@ public class DragGraphic : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         sprite.enabled = false;
         startPosition = Vector2.zero;
+        isLineDrawing = false;
     }
 
     private void Update()
@@ -60,10 +68,37 @@ public class DragGraphic : MonoBehaviour
             {
                 startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 clickCheck = true;
+                isLineDrawing = false;
                 sprite.enabled = true;
+                if (lineRenderer != null)
+                    Destroy(lineRenderer.gameObject);
+            }
+            else if (isRightMouseButtonDown && !isMouseOverUI && !isLineDrawing)
+            {
+                startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                RaycastHit2D[] hits = Physics2D.RaycastAll(startPosition, Vector2.zero);
+
+                if (hits.Length > 0)
+                {
+                    foreach (RaycastHit2D hit in hits)
+                    {
+                        if(hit.collider.TryGetComponent(out TransportBuild trBuild))
+                        {
+                            transportBuild = trBuild.gameObject;
+                            Vector3 pos = new Vector3(transportBuild.transform.position.x, transportBuild.transform.position.y, -1);
+                            if(trBuild.takeBuild != null)
+                                trBuild.ResetTakeBuild();
+                            LineDrawStart(pos);
+                            isLineDrawing = true;
+                            clickCheck = false;
+                            break;
+                        }    
+                    }
+                }
             }
 
-            if (clickCheck)
+            if (clickCheck && !isLineDrawing)
             {
                 if (Input.GetMouseButton(0))
                 {
@@ -81,6 +116,12 @@ public class DragGraphic : MonoBehaviour
                 endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 BoxSizeChange();
             }
+            else if (!clickCheck && isLineDrawing)
+            {
+                Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                endPosition = new Vector3(mousePosition.x, mousePosition.y, -1f);
+                lineRenderer.SetPosition(1, endPosition);
+            }
 
             if (isLeftMouseButtonUp)
             {
@@ -90,13 +131,43 @@ public class DragGraphic : MonoBehaviour
                     UpgradeBuild.LeftMouseUp(startPosition, endPosition);
                 DisableFunc();
             }
-            else if (isRightMouseButtonUp)
+            else if (isRightMouseButtonUp && clickCheck)
             {
-                if (unitDrag.isSelectingUnits && !shiftKeyHold)                
-                    unitDrag.RightMouseUp(startPosition, endPosition);                
+                if (unitDrag.isSelectingUnits && !shiftKeyHold)
+                    unitDrag.RightMouseUp(startPosition, endPosition);
                 else if(shiftKeyHold)
                     removeBuild.RightMouseUp(startPosition, endPosition);
                 DisableFunc();
+            }
+            else if (isRightMouseButtonUp && isLineDrawing)
+            {
+                RaycastHit2D[] hits = Physics2D.RaycastAll(endPosition, Vector2.zero);
+
+                if (hits.Length > 0)
+                {
+                    bool isSameObj = false;
+                    bool isOnStructure = false;
+                    foreach (RaycastHit2D hit in hits)
+                    {
+                        if (hit.collider.GetComponent<Structure>())
+                        {
+                            isOnStructure = true;
+                            if (hit.collider.TryGetComponent(out TransportBuild othTrans) && transportBuild != hit.collider.gameObject)
+                            {
+                                transportBuild.GetComponent<TransportBuild>().takeBuild = othTrans;
+                                break;
+                            }
+                            else if (transportBuild == hit.collider.gameObject)
+                            {
+                                isSameObj = true;
+                            }
+                        }
+                    }
+                    if(!isSameObj || !isOnStructure)
+                        EndDrawLine();
+                }
+                else
+                    EndDrawLine();
             }
         }
     }
@@ -124,5 +195,20 @@ public class DragGraphic : MonoBehaviour
         endPosition = Vector2.zero;
         sprite.enabled = false;
         clickCheck = false;
+    }
+
+    public void LineDrawStart(Vector2 startPos)
+    {
+        GameObject currentLine = Instantiate(lineObj, startPos, Quaternion.identity);
+        lineRenderer = currentLine.GetComponent<LineRenderer>();
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, startPos);
+        lineRenderer.SetPosition(1, startPos);
+    }
+
+    void EndDrawLine()
+    {
+        isLineDrawing = false;    
+        Destroy(lineRenderer.gameObject);
     }
 }

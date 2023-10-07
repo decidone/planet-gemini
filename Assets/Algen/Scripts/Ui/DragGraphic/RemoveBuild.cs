@@ -111,6 +111,11 @@ public class RemoveBuild : DragFunc
                     structureClickEvent.sInvenManager.CloseUI();
                 }
             }
+            if(obj.TryGetComponent(out TransportBuild trBuild))
+            {
+                if (trBuild.lineRenderer != null)
+                    Destroy(trBuild.lineRenderer);
+            }
         }
     }
 }

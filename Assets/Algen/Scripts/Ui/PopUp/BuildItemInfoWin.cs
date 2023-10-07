@@ -10,7 +10,9 @@ public class BuildItemInfoWin : MonoBehaviour
     GameObject panel;
     List<GameObject> icon = new List<GameObject>();
     public RectTransform rectTransform;
-    int[] wideSize = { 105, 160, 215, 270 };
+    public GameObject elsePrefab;
+    bool isOverIndex = false;
+    int[] wideSize = { 105, 160, 215, 270, 325 };
 
     public void UiSetting(Dictionary<Item, int> getDic)
     {
@@ -29,8 +31,6 @@ public class BuildItemInfoWin : MonoBehaviour
                         Destroy(obj);
                         icon.Remove(obj);
                     }
-                    float newWidth = wideSize[getDic.Count - 1];
-                    rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
                 }
             }
             else
@@ -39,12 +39,21 @@ public class BuildItemInfoWin : MonoBehaviour
 
                 for (int i = 0; i < n; i++) 
                 {
-                    GameObject itemSlot = Instantiate(itemImg);
-                    icon.Add(itemSlot);
-                    itemSlot.transform.SetParent(panel.transform, false);
+                    if (icon.Count < 5)
+                    {
+                        GameObject itemSlot = Instantiate(itemImg);
+                        icon.Add(itemSlot);
+                        itemSlot.transform.SetParent(panel.transform, false);
+                    }
+                    else
+                        break;
                 }
-
             }
+        }
+        if(getDic.Count > 0 && getDic.Count < 5 && isOverIndex)
+        {
+            elsePrefab.SetActive(false);
+            isOverIndex = false;
         }
 
         UIItemSet(getDic);
@@ -54,17 +63,34 @@ public class BuildItemInfoWin : MonoBehaviour
     {
         if (getDic.Count > 0)
         {
-            float newWidth = wideSize[getDic.Count - 1];
-            rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
+            if(getDic.Count < 5)
+            {
+                float newWidth = wideSize[getDic.Count - 1];
+                rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
+            }
+            else
+            {
+                float newWidth = wideSize[4];
+                rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
+            }
 
             int index = 0;
-
             foreach (var data in getDic)
             {
-                Item item = data.Key;
-                int amount = data.Value;
-                icon[index].GetComponent<BuildingImgCtrl>().AddItem(item, amount, true);
-                icon[index].SetActive(true);
+                if(index >= 0 && index < 4)
+                {
+                    Item item = data.Key;
+                    int amount = data.Value;
+                    icon[index].GetComponent<BuildingImgCtrl>().AddItem(item, amount, true);
+                    icon[index].SetActive(true);
+                } 
+                else if(index >= 4)
+                {
+                    isOverIndex = true;
+                    elsePrefab.transform.SetAsLastSibling();
+                    elsePrefab.SetActive(true);
+                    break;
+                }                    
                 index++;
             }
         }

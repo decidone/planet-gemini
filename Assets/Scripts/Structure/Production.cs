@@ -48,6 +48,7 @@ public abstract class Production : Structure
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
+        canInsertItem = false;
     }
 
     protected virtual void Start()
@@ -56,7 +57,7 @@ public abstract class Production : Structure
         recipe = new Recipe();
         output = null;
 
-        if(sizeOneByOne)
+        if (sizeOneByOne)
             nearObj = new GameObject[4];
         else
             nearObj = new GameObject[8];

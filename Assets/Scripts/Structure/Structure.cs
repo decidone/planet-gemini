@@ -103,6 +103,8 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public RepairTower repairTower;
 
+    public bool canInsertItem;
+
     public virtual bool CheckOutItemNum()  { return new bool(); }
 
     public void BuildingSetting(int _level, int _height, int _width, int _dirCount)

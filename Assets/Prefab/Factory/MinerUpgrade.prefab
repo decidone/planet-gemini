@@ -193,7 +193,6 @@ GameObject:
   - component: {fileID: 2359874169441961874}
   - component: {fileID: 2359874169441961876}
   - component: {fileID: 2359874169441961875}
-  - component: {fileID: 5578666564477954337}
   - component: {fileID: 8224777291930825977}
   - component: {fileID: 7486228035820775271}
   - component: {fileID: 3883913979261858583}
@@ -288,7 +287,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0.46}
     oldSize: {x: 2, y: 2.1875}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -327,7 +326,6 @@ MonoBehaviour:
   space: 1
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  player: {fileID: 0}
 --- !u!114 &2359874169441961875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,22 +381,6 @@ MonoBehaviour:
   rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
---- !u!114 &5578666564477954337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2359874169441961886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 1508046654787058426
-  updateError: 1
-  checkTime: 0.2
 --- !u!50 &8224777291930825977
 Rigidbody2D:
   serializedVersion: 4

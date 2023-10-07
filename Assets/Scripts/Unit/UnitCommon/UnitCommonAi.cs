@@ -85,7 +85,7 @@ public class UnitCommonAi : MonoBehaviour
         searchInterval = 0.3f;
         tarDisCheckInterval = 0.3f;
         patrolStartPos = Vector3.zero;
-        hp = 100.0f;
+        //hp = 100.0f;
         aIState = AIState.AI_Idle;
         attackState = AttackState.Waiting;
     }
@@ -153,8 +153,6 @@ public class UnitCommonAi : MonoBehaviour
     }
 
     protected virtual IEnumerator CheckPath(Vector3 targetPos, string moveFunc) { yield return null; }
-
-
     protected virtual void AnimSetFloat(Vector3 direction, bool isNotLast) { }
     protected virtual void NormalTrace() { }
 

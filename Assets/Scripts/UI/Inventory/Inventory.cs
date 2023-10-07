@@ -226,7 +226,18 @@ public class Inventory : MonoBehaviour
     {
         int slotNum = FindItemSlot(item);
         if (slotNum != -1)
-            Sub(slotNum, amount);
+        {
+            var slotData = SlotCheck(slotNum);
+            if(slotData.amount >= amount)
+            {
+                Sub(slotNum, amount);
+            }
+            else
+            {
+                Sub(slotNum, slotData.amount);
+                Sub(item, amount - slotData.amount);
+            }
+        }
     }
 
     int FindItemSlot(Item item)
@@ -351,5 +362,21 @@ public class Inventory : MonoBehaviour
         }
 
         onItemChangedCallback?.Invoke();
+    }
+
+    public bool TotalItemsAmountLimitCheck(int amountLimit)
+    {
+        int amounts = 0;
+
+        foreach (var itemDic in totalItems)
+        {
+            amounts += itemDic.Value;
+            if (amounts > amountLimit)
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
