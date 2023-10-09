@@ -23,8 +23,8 @@ public class BeltCtrl : LogisticsCtrl
 
     public BeltState beltState;
 
-    public bool isTurn = false;
-    public bool isRightTurn = true;
+    bool isTurn = false;
+    bool isRightTurn = true;
 
     public BeltCtrl nextBelt;
     public BeltCtrl preBelt;
@@ -33,12 +33,10 @@ public class BeltCtrl : LogisticsCtrl
 
     public bool isItemStop = false;
 
-    public bool isUp = false;
-    public bool isRight = false;
-    public bool isDown = false;
-    public bool isLeft = false;
-
-    public RuntimeAnimatorController[] animControl;
+    bool isUp = false;
+    bool isRight = false;
+    bool isDown = false;
+    bool isLeft = false;
 
     void Start()
     {
@@ -282,10 +280,8 @@ public class BeltCtrl : LogisticsCtrl
 
     public void BeltModelSet()
     {
-        if (preBelt == null)
-        {
-            isTurn = false;
-        }
+        if (preBelt == null)        
+            return;
         else if (preBelt.dirNum != dirNum)
         {
             isTurn = true;
@@ -501,7 +497,7 @@ public class BeltCtrl : LogisticsCtrl
                 }
             }
         }
-        FactoryModelSet();
+        BeltModelSet();
     }
 
     public List<ItemProps> PlayerRootItemCheck()

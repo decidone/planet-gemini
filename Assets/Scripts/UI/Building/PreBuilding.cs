@@ -1048,10 +1048,15 @@ public class PreBuilding : MonoBehaviour
                     return false;
                 }
 
-                if (obj.GetComponent<Miner>() || obj.GetComponent<PumpCtrl>())
+                Miner miner = null;
+                PumpCtrl pump = null;
+                ExtractorCtrl extractor = null;
+
+                if (obj.TryGetComponent(out miner) || obj.TryGetComponent(out pump) || obj.TryGetComponent(out extractor))
                 {
-                    if ((obj.GetComponent<Miner>() && gameManager.map.mapData[newX][newY].BuildCheck("miner")) ||
-                        (obj.GetComponent<PumpCtrl>() && gameManager.map.mapData[newX][newY].BuildCheck("pump")))
+                    if ((miner && gameManager.map.mapData[newX][newY].BuildCheck("miner")) ||
+                        (pump && gameManager.map.mapData[newX][newY].BuildCheck("pump")) ||
+                        (extractor && gameManager.map.mapData[newX][newY].BuildCheck("extractor")))
                     {
                         return true;
                     }

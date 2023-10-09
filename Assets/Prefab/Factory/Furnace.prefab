@@ -345,7 +345,6 @@ GameObject:
   - component: {fileID: 6768119425636190065}
   - component: {fileID: 2233973952794387984}
   - component: {fileID: 2933665410225861189}
-  - component: {fileID: 6309344173794642405}
   - component: {fileID: -2819984684848976233}
   - component: {fileID: 5950252673430294717}
   m_Layer: 8
@@ -439,7 +438,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0.42}
     oldSize: {x: 1, y: 1.1875}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -478,7 +477,6 @@ MonoBehaviour:
   space: 3
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-  player: {fileID: 0}
 --- !u!114 &2933665410225861189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,6 +495,9 @@ MonoBehaviour:
   dirCount: 0
   level: 0
   buildName: 
+  height: 0
+  width: 0
+  sizeOneByOne: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 7151233568437708852}
@@ -507,6 +508,17 @@ MonoBehaviour:
   itemList: []
   itemObjList: []
   canBuilding: 1
+  nearObj:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  checkPos:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  checkObj: 1
   inObj: []
   outObj: []
   outSameList: []
@@ -520,22 +532,6 @@ MonoBehaviour:
   rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
---- !u!114 &6309344173794642405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8759284699072132164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 318039314851059914
-  updateError: 1
-  checkTime: 0.2
 --- !u!50 &-2819984684848976233
 Rigidbody2D:
   serializedVersion: 4

@@ -311,6 +311,8 @@ public class FluidFactoryCtrl : Production
             StartCoroutine(MainSourceFunc());
     }
 
+    protected override void AddInvenItem() { }
+
     public override Dictionary<Item, int> PopUpItemCheck()
     {
         if(saveFluidNum > 0 && fluidName != "")  

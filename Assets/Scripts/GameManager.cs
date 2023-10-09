@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
                     case "SplitterFillterMenu":
                         logisticsClickEvent.CloseUI();
                         break;
-                    case "SplitterMenu":
+                    case "LogisticsMenu":
                         logisticsClickEvent.CloseUI();
                         break;
                     case "ItemSpwanerFilter":

@@ -8,6 +8,8 @@ public class SplitterFilterRecipe : InventoryManager
 {
     List<Item> itemsList;
     public SplitterFilterManager splitter;
+    public UnloaderManager unloader;
+    string selectManager;
     int slotIndex = -1;
     [SerializeField]
     private GameObject itemTagsPanel;
@@ -37,7 +39,11 @@ public class SplitterFilterRecipe : InventoryManager
             {
                 if (focusedSlot.item != null)
                 {
-                    splitter.SetItem(focusedSlot.item, slotIndex);
+                    if(selectManager == "SplitterFilterManager")
+                        splitter.SetItem(focusedSlot.item, slotIndex);
+                    else if (selectManager == "UnloaderManager")
+                        unloader.SetItem(focusedSlot.item);
+
                     focusedSlot = null;
                     CloseUI();
                 }
@@ -71,9 +77,10 @@ public class SplitterFilterRecipe : InventoryManager
         SetInven(inventory, inventoryUI);
     }
 
-    public void GetFillterNum(int buttonIndex)
+    public void GetFillterNum(int buttonIndex, string manager)
     {
         slotIndex = buttonIndex;
+        selectManager = manager;
     }
 
     private void ButtonClicked(int buttonIndex)

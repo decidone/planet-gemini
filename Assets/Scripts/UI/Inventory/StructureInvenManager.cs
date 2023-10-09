@@ -13,7 +13,13 @@ public class StructureInvenManager : InventoryManager
     public ProgressBar progressBar;
     public ProgressBar energyBar;
     public bool isOpened;
-    Production prod;
+    [HideInInspector]
+    public Production prod;
+
+    //TransportBuild UI 전용
+    public Toggle toggle;
+    public InputField inputField;
+    public Button subBtn;
 
     protected override void Update()
     {
@@ -96,10 +102,15 @@ public class StructureInvenManager : InventoryManager
     {
         // input 슬롯으로 지정된 칸에 아이템을 넣을 때 사용
         int containable = 0;
+        bool canInsertItem = false;
+
+        if (prod != null)
+            canInsertItem = prod.isStorageBuild;
+
         for (int i = 0; i < slots.Length; i++)
         {
             Slot slot = slots[i];
-            if (slot.inputItem.Contains(item) && (slot.item == item || slot.item == null))
+            if ((slot.inputItem.Contains(item) || canInsertItem) && (slot.item == item || slot.item == null)) 
             {
                 if (amount + slot.amount > inventory.maxAmount)
                 {
@@ -110,6 +121,7 @@ public class StructureInvenManager : InventoryManager
                     containable = amount;
                 }
                 inventory.SlotAdd(slot.slotNum, item, containable);
+                break;
             }
         }
 
@@ -128,6 +140,42 @@ public class StructureInvenManager : InventoryManager
             }
         }
     }
+
+    //TransportBuild UI 전용
+    public void ToggleControl()
+    {
+        if (prod != null && prod.TryGetComponent(out TransportBuild trBuild))
+        {
+            int parsedValue;
+
+            if (int.TryParse(inputField.text, out parsedValue))
+            {
+                trBuild.SendFuncSet(toggle.isOn, parsedValue);
+            }
+            else if(inputField.text == "")
+            {
+                trBuild.SendFuncSet(toggle.isOn, 0);
+            }
+        }
+    }
+
+    public void TransportBuildSetting(bool toggleOn, int amount)
+    {
+        if (toggleOn)
+        {
+            toggle.SetIsOnWithoutNotify(true);
+        }
+        else
+        {
+            toggle.SetIsOnWithoutNotify(false);
+        }
+
+        if (amount > 0)
+            inputField.text = amount.ToString();
+        else
+            inputField.text = "";
+    }
+    //TransportBuild UI 전용
 
     public override void OpenUI()
     {

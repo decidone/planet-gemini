@@ -9,6 +9,7 @@ public class Miner : Production
     {
         base.Start();
         Init();
+        isMainSource = true;
     }
 
     protected override void Update()
@@ -72,38 +73,6 @@ public class Miner : Production
         output = item;
     }
 
-    protected override void SubFromInventory()
-    {
-        inventory.Sub(0, 1);
-    }
-
-    public override bool CheckOutItemNum() 
-    {
-        var slot = inventory.SlotCheck(0);
-        if (slot.amount > 0)
-            return true;
-        else
-            return false;
-    }
-
-    public override void ItemNumCheck()
-    {
-        var slot = inventory.SlotCheck(0);
-
-        if (slot.amount < maxAmount)
-            isFull = false;        
-        else
-            isFull = true;
-    }
-
-    public override (Item, int) QuickPullOut()
-    {
-        var slot = inventory.SlotCheck(0);
-        if(slot.amount > 0)
-            inventory.Sub(0, slot.amount);
-        return slot;
-    }
-
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
@@ -115,30 +84,5 @@ public class Miner : Production
                 ui = list;
             }
         }
-    }
-    protected override void AddInvenItem()
-    {
-        var slot = inventory.SlotCheck(0);
-
-        if (slot.item != null)
-        {
-            playerInven.Add(slot.item, slot.amount);
-        }
-    }
-    public override Dictionary<Item, int> PopUpItemCheck()
-    {
-        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
-
-        var slot = inventory.SlotCheck(0);
-
-        if (slot.item != null && slot.amount > 0)
-            returnDic.Add(slot.item, slot.amount);
-
-        if (returnDic.Count > 0)
-        {
-            return returnDic;
-        }
-        else
-            return null;
     }
 }

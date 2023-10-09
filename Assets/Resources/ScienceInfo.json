@@ -77,6 +77,11 @@
       "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
     }
   },
+  "TransportBuild":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+    }
+  },
   "Pump":{
     "Build":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a facility installed near a water source to distribute water."},
@@ -180,6 +185,16 @@
   },
   "Wall":{
     "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+    }
+  },
+  "Storage":{
+    "Etc":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+    }
+  },
+  "Unloader":{
+    "Etc":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
     }
   }

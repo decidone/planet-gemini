@@ -89,66 +89,6 @@ public class ChemicalPlant : Production
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }
 
-    public override bool CanTakeItem(Item item)
-    {
-        if (recipe.name != null && itemDic[recipe.items[0]] == item)
-        {
-            var slot = inventory.SlotCheck(0);
-            return slot.amount < 99;
-        }
-
-        return false;
-    }
-
-    public override void OnFactoryItem(ItemProps itemProps)
-    {
-        if (itemDic[recipe.items[0]] == itemProps.item)
-        {
-            inventory.SlotAdd(0, itemProps.item, itemProps.amount);
-        }
-
-        base.OnFactoryItem(itemProps);
-    }
-    public override void OnFactoryItem(Item item)
-    {
-        if (itemDic[recipe.items[0]] == item)
-        {
-            inventory.SlotAdd(0, item, 1);
-        }
-    }
-
-    protected override void SubFromInventory()
-    {
-        inventory.Sub(1, 1);
-    }
-
-    public override bool CheckOutItemNum()
-    {
-        var slot1 = inventory.SlotCheck(1);
-        if (slot1.amount > 0)
-            return true;
-        else
-            return false;
-    }
-
-    public override void ItemNumCheck()
-    {
-        var slot1 = inventory.SlotCheck(1);
-
-        if (slot1.amount < maxAmount)
-            isFull = false;
-        else
-            isFull = true;
-    }
-
-    public override (Item, int) QuickPullOut()
-    {
-        var slot1 = inventory.SlotCheck(1);
-        if (slot1.amount > 0)
-            inventory.Sub(1, slot1.amount);
-        return slot1;
-    }
-
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
@@ -160,40 +100,5 @@ public class ChemicalPlant : Production
                 ui = list;
             }
         }
-    }
-
-    protected override void AddInvenItem()
-    {
-        var slot = inventory.SlotCheck(0);
-        var slot1 = inventory.SlotCheck(1);
-
-        if (slot.item != null)
-        {
-            playerInven.Add(slot.item, slot.amount);
-        }
-        if (slot1.item != null)
-        {
-            playerInven.Add(slot1.item, slot1.amount);
-        }
-    }
-
-    public override Dictionary<Item, int> PopUpItemCheck()
-    {
-        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
-
-        var slot = inventory.SlotCheck(0);
-        var slot1 = inventory.SlotCheck(1);
-
-        if (slot.item != null && slot.amount > 0)
-            returnDic.Add(slot.item, slot.amount);
-        if (slot1.item != null && slot1.amount > 0)
-            returnDic.Add(slot1.item, slot1.amount);
-
-        if (returnDic.Count > 0)
-        {
-            return returnDic;
-        }
-        else
-            return null;
     }
 }

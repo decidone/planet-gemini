@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButton("Loot"))
             Loot();
 
-        if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl))
         {
             Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);

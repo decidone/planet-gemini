@@ -15,8 +15,8 @@ public class StructureData : ScriptableObject
     public int[] MaxHp { get { return maxHp; } }
 
     [SerializeField]
-    private float maxItemStorageLimit;
-    public float MaxItemStorageLimit { get { return maxItemStorageLimit; } }
+    private int maxItemStorageLimit;
+    public int MaxItemStorageLimit { get { return maxItemStorageLimit; } }
 
     [SerializeField]
     private float maxFulidStorageLimit;

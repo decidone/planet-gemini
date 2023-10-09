@@ -209,8 +209,6 @@ public class MonsterAi : UnitCommonAi
     IEnumerator IdleTime()
     {
         idleTimeStart = false;
-
-        Debug.Log("idle");
         int RandomTime = Random.Range(5, 8);
         yield return new WaitForSeconds(RandomTime);
         idle = -1;

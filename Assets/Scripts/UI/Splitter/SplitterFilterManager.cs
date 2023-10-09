@@ -56,7 +56,7 @@ public class SplitterFilterManager : MonoBehaviour
     void OpenSplitterFillterMenu(int buttonIndex)
     {
         splitterFilterRecipe.OpenUI();
-        splitterFilterRecipe.GetFillterNum(buttonIndex);
+        splitterFilterRecipe.GetFillterNum(buttonIndex, "SplitterFilterManager");
     }
 
     private void Function_Toggle(int toggleIndex)
@@ -84,14 +84,14 @@ public class SplitterFilterManager : MonoBehaviour
         }
     }
 
-    public void InvenInit()
-    {
-        for (int i = 0; i < slots.Length; i++)
-        {
-            Slot slot = slots[i];
-            slot.outputSlot = true;
-        }
-    }
+    //public void InvenInit()
+    //{
+    //    for (int i = 0; i < slots.Length; i++)
+    //    {
+    //        Slot slot = slots[i];
+    //        slot.outputSlot = true;
+    //    }
+    //}
 
     public void SetItem(Item _item, int slotIndex)
     {

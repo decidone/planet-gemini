@@ -29,18 +29,31 @@ public class SendUnderBeltCtrl : LogisticsCtrl
                     SendItem(itemList[0]);
                 }
 
-                for (int i = 1; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        if (i == 0)
-                            CheckNearObj(checkPos[0], 0, obj => { });
-                        if (i == 2)
-                            CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
-                    }
-                }
+                if (nearObj[2] == null)
+                    CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
             }
         } 
+    }
+
+    protected override IEnumerator SetInObjCoroutine(GameObject obj)
+    {
+        checkObj = false;
+        yield return new WaitForSeconds(0.1f);
+
+        if (obj.GetComponent<Structure>() != null)
+        {
+            if (obj.TryGetComponent(out BeltCtrl belt))
+            {
+                if (belt.GetComponentInParent<BeltGroupMgr>().nextObj != this.gameObject)
+                {
+                    checkObj = true;
+                    yield break;
+                }
+                belt.FactoryPosCheck(GetComponentInParent<Structure>());
+            }
+            inObj.Add(obj);
+        }
+        checkObj = true;
     }
 
     protected override void SendItem(Item item)
@@ -69,7 +82,8 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             outObj[0].GetComponent<GetUnderBeltCtrl>().ResetInObj();
             outObj.Remove(outObj[0]);
         }
-
+        nearObj[0] = Obj;
         outObj.Add(Obj);
+        Debug.Log("newSend");
     }
 }
