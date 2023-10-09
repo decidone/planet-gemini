@@ -103,7 +103,8 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public RepairTower repairTower;
 
-    public bool canInsertItem;
+    public bool isStorageBuild;
+    public bool isMainSource;
 
     public virtual bool CheckOutItemNum()  { return new bool(); }
 
@@ -120,7 +121,7 @@ public class Structure : MonoBehaviour
     protected virtual void SetDirNum()
     {
         setModel.sprite = modelNum[dirNum];
-        CheckPos();        
+        CheckPos();
     }
 
     // 건물의 방향 설정
@@ -208,9 +209,9 @@ public class Structure : MonoBehaviour
     }
     // 건물 설치 기능
 
-    public virtual void OnFactoryItem(ItemProps itemObj) 
+    public virtual void OnFactoryItem(ItemProps itemProps) 
     {
-        itemObj.Pool.Release(itemObj.gameObject);
+        itemProps.Pool.Release(itemProps.gameObject);
     }
 
     public virtual void OnFactoryItem(Item item) { }
@@ -297,6 +298,7 @@ public class Structure : MonoBehaviour
             return;
         }
     }
+
     protected virtual void SendItem(Item item) 
     {
         if (setFacDelayCoroutine != null)
@@ -341,7 +343,7 @@ public class Structure : MonoBehaviour
                     {
                         SubFromInventory();
                     }
-                    else if(GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
+                    else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
                     {
                         itemList.RemoveAt(0);
                         ItemNumCheck();
@@ -353,33 +355,20 @@ public class Structure : MonoBehaviour
                     return;
                 }
             }
-            else if (outObj[sendItemIndex].GetComponent<LogisticsCtrl>())
+            else if (outFactory.isMainSource)
             {
-                if (outObj[sendItemIndex].GetComponent<ItemSpawner>()) 
-                {
-                    sendItemIndex++;
-                    if (sendItemIndex >= outObj.Count)
-                        sendItemIndex = 0;
+                sendItemIndex++;
+                if (sendItemIndex >= outObj.Count)
+                    sendItemIndex = 0;
 
-                    DelaySetItem();
-                }
-                else
-                    setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
+                DelaySetItem();
             }
-            else if (outObj[sendItemIndex].TryGetComponent(out Production production))
+            else if (!outFactory.isMainSource)
             {
-                if (outObj[sendItemIndex].GetComponent<Miner>())
-                {
-                    sendItemIndex++;
-                    if (sendItemIndex >= outObj.Count)
-                        sendItemIndex = 0;
-
-                    DelaySetItem();
-                }
-                else if (production.CanTakeItem(item))
-                {
+                if (outObj[sendItemIndex].GetComponent<LogisticsCtrl>())                
                     setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
-                }
+                else if (outObj[sendItemIndex].TryGetComponent(out Production production) && production.CanTakeItem(item))
+                    setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
             }
 
             sendItemIndex++;
@@ -674,7 +663,8 @@ public class Structure : MonoBehaviour
 
         if (obj.GetComponent<Structure>() != null)
         {
-            if (obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
+            if ((obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
+                || obj.GetComponent<Unloader>())
             {
                 checkObj = true;
                 yield break;
@@ -762,6 +752,8 @@ public class Structure : MonoBehaviour
                 }
             }
         }
+        if (repairTower != null) 
+            repairTower.RemoveObjectsOutOfRange(this.gameObject);
 
         if (GetComponent<BeltCtrl>() && GetComponentInParent<BeltManager>() && GetComponentInParent<BeltGroupMgr>())
         {
@@ -769,14 +761,14 @@ public class Structure : MonoBehaviour
             BeltGroupMgr beltGroup = GetComponentInParent<BeltGroupMgr>();
             beltManager.BeltDivide(beltGroup, this.gameObject);
         }
-
-        if(TryGetComponent(out FluidFactoryCtrl fluid))
+        else if (TryGetComponent(out FluidFactoryCtrl fluid))
         {
             fluid.RemoveMainSource(true);
         }
-
-        if (repairTower != null)
-            repairTower.RemoveObjectsOutOfRange(this.gameObject);
+        else if (TryGetComponent(out TransportBuild trBuild))
+        {
+            trBuild.RemoveFunc();
+        }
 
         AddInvenItem();
 

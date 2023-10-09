@@ -154,7 +154,7 @@ public class DragGraphic : MonoBehaviour
                             isOnStructure = true;
                             if (hit.collider.TryGetComponent(out TransportBuild othTrans) && transportBuild != hit.collider.gameObject)
                             {
-                                transportBuild.GetComponent<TransportBuild>().takeBuild = othTrans;
+                                transportBuild.GetComponent<TransportBuild>().TakeBuildSet(othTrans);
                                 break;
                             }
                             else if (transportBuild == hit.collider.gameObject)
@@ -208,7 +208,7 @@ public class DragGraphic : MonoBehaviour
 
     void EndDrawLine()
     {
-        isLineDrawing = false;    
+        isLineDrawing = false;
         Destroy(lineRenderer.gameObject);
     }
 }

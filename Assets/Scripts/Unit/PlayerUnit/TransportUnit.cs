@@ -61,6 +61,7 @@ public class TransportUnit : UnitCommonAi
         {
             trUnitState = TrUnitState.idle;
             othTrBuild.TakeTransportItem(this, itemDic);
+            itemDic.Clear();
         }
     }
 
@@ -77,7 +78,10 @@ public class TransportUnit : UnitCommonAi
         tr.position = Vector3.MoveTowards(tr.position, startPos, Time.deltaTime * unitCommonData.MoveSpeed * 2);
         if (tr.position == startPos)
         {
-            mainTrBuild.RemoveUnit(this.gameObject);
+            if(itemDic.Count > 0)
+                mainTrBuild.TakeTransportItem(this, itemDic);
+            else
+                mainTrBuild.RemoveUnit(this.gameObject);
         }
 
         if(mainBuildRemove)

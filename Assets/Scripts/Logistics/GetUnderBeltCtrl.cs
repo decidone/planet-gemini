@@ -85,6 +85,38 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             }
         }
     }
+    protected override IEnumerator SetOutObjCoroutine(GameObject obj)
+    {
+        checkObj = false;
+        yield return new WaitForSeconds(0.1f);
+
+        if (obj.GetComponent<Structure>() != null)
+        {
+            if ((obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
+                || obj.GetComponent<Unloader>())
+            {
+                checkObj = true;
+                yield break;
+            }
+
+            if (obj.TryGetComponent(out BeltCtrl belt))
+            {
+                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
+                {
+                    checkObj = true;
+                    yield break;
+                }
+                belt.FactoryPosCheck(GetComponentInParent<Structure>());
+            }
+            else
+            {
+                outSameList.Add(obj);
+                StartCoroutine(OutCheck(obj));
+            }
+            outObj.Add(obj);
+        }
+        checkObj = true;
+    }
 
     protected override IEnumerator SetInObjCoroutine(GameObject obj)
     {
@@ -92,18 +124,19 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         yield return new WaitForSeconds(0.1f);
 
         SendUnderBeltCtrl sendUnderbelt = obj.GetComponent<SendUnderBeltCtrl>();
+
         if (sendUnderbelt.dirNum == dirNum)
         {
             inObj.Add(obj);
+            Debug.Log("newGet");
             sendUnderbelt.SetOutObj(this.gameObject);
         }
-        else
-            yield break;
+        checkObj = true;
     }
 
     public void ResetInObj()
     {
-        nearObj[0] = null;
+        nearObj[2] = null;
         inObj.Clear();
     }
 }

@@ -133,7 +133,7 @@ public class Furnace : Production
             }
         }
 
-        base.OnFactoryItem(itemProps);
+        itemProps.Pool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)
@@ -150,38 +150,6 @@ public class Furnace : Production
         }
     }
 
-    protected override void SubFromInventory()
-    {
-        inventory.Sub(2, 1);
-    }
-
-    public override bool CheckOutItemNum()
-    {
-        var slot2 = inventory.SlotCheck(2);
-        if (slot2.amount > 0)
-            return true;
-        else
-            return false;
-    }
-
-    public override void ItemNumCheck()
-    {
-        var slot2 = inventory.SlotCheck(2);
-
-        if (slot2.amount < maxAmount)
-            isFull = false;
-        else
-            isFull = true;
-    }
-
-    public override (Item, int) QuickPullOut()
-    {
-        var slot2 = inventory.SlotCheck(2);
-        if (slot2.amount > 0)
-            inventory.Sub(2, slot2.amount);
-        return slot2;
-    }
-
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
@@ -193,47 +161,5 @@ public class Furnace : Production
                 ui = list;
             }
         }
-    }
-    protected override void AddInvenItem()
-    {
-        var slot = inventory.SlotCheck(0);
-        var slot1 = inventory.SlotCheck(1);
-        var slot2 = inventory.SlotCheck(2);
-
-        if (slot.item != null)
-        {
-            playerInven.Add(slot.item, slot.amount);
-        }
-        if (slot1.item != null)
-        {
-            playerInven.Add(slot1.item, slot1.amount);
-        }
-        if (slot2.item != null)
-        {
-            playerInven.Add(slot2.item, slot2.amount);
-        }
-    }
-
-    public override Dictionary<Item, int> PopUpItemCheck()
-    {
-        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
-
-        var slot = inventory.SlotCheck(0);
-        var slot1 = inventory.SlotCheck(1);
-        var slot2 = inventory.SlotCheck(2);
-
-        if (slot.item != null && slot.amount > 0)
-            returnDic.Add(slot.item, slot.amount);
-        if (slot1.item != null && slot1.amount > 0)
-            returnDic.Add(slot1.item, slot1.amount);
-        if (slot2.item != null && slot2.amount > 0)
-            returnDic.Add(slot2.item, slot2.amount);
-
-        if (returnDic.Count > 0)
-        {
-            return returnDic;
-        }
-        else
-            return null;
     }
 }

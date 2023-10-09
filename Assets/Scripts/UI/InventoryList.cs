@@ -7,4 +7,5 @@ public class InventoryList : MonoBehaviour
 {
     public GameObject[] InventoryArr = null;
     public GameObject[] StructureStorageArr = null;
+    public GameObject[] LogisticsArr = null;
 }

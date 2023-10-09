@@ -15,6 +15,7 @@ public class LogisticsCtrl : Structure
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
+        isMainSource = false;
     }
 
     protected virtual void Update()

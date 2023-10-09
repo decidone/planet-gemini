@@ -40,6 +40,7 @@ public class Refinery : FluidFactoryCtrl
         itemDic = ItemList.instance.itemDic;
         recipe = new Recipe();
         output = null;
+        fluidName = "CrudeOil";
 
         GameManager gameManager = GameManager.instance;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
@@ -190,67 +191,6 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }
 
-    public override bool CanTakeItem(Item item)
-    {
-        if (recipe.name != null && itemDic[recipe.items[0]] == item)
-        {
-            var slot = inventory.SlotCheck(0);
-            return slot.amount < 99;
-        }
-
-        return false;
-    }
-
-    public override void OnFactoryItem(ItemProps itemProps)
-    {
-        if (itemDic[recipe.items[0]] == itemProps.item)
-        {
-            inventory.SlotAdd(0, itemProps.item, itemProps.amount);
-        }
-
-        base.OnFactoryItem(itemProps);
-    }
-
-    public override void OnFactoryItem(Item item)
-    {
-        if (itemDic[recipe.items[0]] == item)
-        {
-            inventory.SlotAdd(0, item, 1);
-        }
-    }
-
-    protected override void SubFromInventory()
-    {
-        inventory.Sub(1, 1);
-    }
-
-    public override bool CheckOutItemNum()
-    {
-        var slot1 = inventory.SlotCheck(1);
-        if (slot1.amount > 0)
-            return true;
-        else
-            return false;
-    }
-
-    public override void ItemNumCheck()
-    {
-        var slot1 = inventory.SlotCheck(1);
-
-        if (slot1.amount < maxAmount)
-            isFull = false;
-        else
-            isFull = true;
-    }
-
-    public override (Item, int) QuickPullOut()
-    {
-        var slot1 = inventory.SlotCheck(1);
-        if (slot1.amount > 0)
-            inventory.Sub(1, slot1.amount);
-        return slot1;
-    }
-
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
@@ -266,13 +206,8 @@ public class Refinery : FluidFactoryCtrl
 
     protected override void AddInvenItem()
     {
-        var slot = inventory.SlotCheck(0);
         var slot1 = inventory.SlotCheck(1);
 
-        if (slot.item != null)
-        {
-            playerInven.Add(slot.item, slot.amount);
-        }
         if (slot1.item != null)
         {
             playerInven.Add(slot1.item, slot1.amount);

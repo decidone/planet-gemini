@@ -13,7 +13,8 @@ public class StructureInvenManager : InventoryManager
     public ProgressBar progressBar;
     public ProgressBar energyBar;
     public bool isOpened;
-    Production prod;
+    [HideInInspector]
+    public Production prod;
 
     //TransportBuild UI 전용
     public Toggle toggle;
@@ -104,7 +105,7 @@ public class StructureInvenManager : InventoryManager
         bool canInsertItem = false;
 
         if (prod != null)
-            canInsertItem = prod.canInsertItem;
+            canInsertItem = prod.isStorageBuild;
 
         for (int i = 0; i < slots.Length; i++)
         {

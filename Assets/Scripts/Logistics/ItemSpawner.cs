@@ -12,6 +12,7 @@ public class ItemSpawner : LogisticsCtrl
     void Start()
     {
         CheckPos();
+        isMainSource = true;
     }
 
     protected override void Update()

@@ -11,6 +11,7 @@ public class TransportBuild : Production
     public LineRenderer lineRenderer;
 
     public TransportBuild takeBuild;
+    public List<TransportBuild> sendBuildList = new List<TransportBuild>();
 
     [SerializeField]
     GameObject trUnit;
@@ -27,16 +28,13 @@ public class TransportBuild : Production
 
     float exTimer;
     float exTimeSet;
-
-    int invenIndex;
     
     protected override void Start()
     {
         base.Start();
         maxFuel = 100;
         exTimeSet = 1.0f;
-        invenIndex = 0;
-        canInsertItem = true;
+        isStorageBuild = true;
     }
 
     protected override void Update()
@@ -82,20 +80,8 @@ public class TransportBuild : Production
             else
                 exTimer = 0;
 
-            if (outObj.Count > 0 && !itemSetDelay && checkObj)
-            {
-                for (int i = 0; i < 18; i++)
-                {
-                    var invenItem = inventory.SlotCheck(i);
-
-                    if (invenItem.item != null)
-                    {
-                        invenIndex = i;
-                        SendItem(invenItem.item);
-                        break;
-                    }
-                }
-            }
+            if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>())
+                LineRendererSet();
         }
     }
 
@@ -106,7 +92,12 @@ public class TransportBuild : Production
         sInvenManager.progressBar.SetMaxProgress(cooldown);
         sInvenManager.TransportBuildSetting(isToggleOn, sendAmount);
 
-        if (takeBuild != null)
+        LineRendererSet();
+    }
+
+    public void LineRendererSet()
+    {
+        if (takeBuild != null && lineRenderer == null)
         {
             startLine = new Vector3(transform.position.x, transform.position.y, -1);
             endLine = new Vector3(takeBuild.transform.position.x, takeBuild.transform.position.y, -1);
@@ -119,6 +110,7 @@ public class TransportBuild : Production
         }
     }
 
+
     public override void CloseUI()
     {
         sInvenManager.ReleaseInven();
@@ -126,6 +118,7 @@ public class TransportBuild : Production
         if (lineRenderer != null)
             Destroy(lineRenderer.gameObject);
     }
+
     void SendTransportItemDicCheck(TransportBuild othBuild)
     {
         if (!isToggleOn)
@@ -202,17 +195,12 @@ public class TransportBuild : Production
     public override void OnFactoryItem(ItemProps itemProps)
     {
         inventory.Add(itemProps.item, itemProps.amount);
-        base.OnFactoryItem(itemProps);
+        itemProps.Pool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)
     {
         inventory.Add(item, 1);
-    }
-
-    protected override void SubFromInventory()
-    {
-        inventory.Sub(invenIndex, 1);
     }
 
     public override (Item, int) QuickPullOut()
@@ -235,11 +223,6 @@ public class TransportBuild : Production
 
     protected override void AddInvenItem()
     {
-        foreach(GameObject trUnit in sendItemUnit)
-        {
-            trUnit.GetComponent<TransportUnit>().MainTrBuildRemove();
-        }
-
         for (int i = 0; i < 18; i++)
         {
             var invenItem = inventory.SlotCheck(i);
@@ -337,5 +320,28 @@ public class TransportBuild : Production
             Destroy(lineRenderer.gameObject);
 
         takeBuild = null;
+    }
+
+    public void TakeBuildSet(TransportBuild trBuild)
+    {
+        takeBuild = trBuild;
+        trBuild.sendBuildList.Add(this);
+    }
+
+    public void RemoveFunc()
+    {
+        foreach (GameObject trUnit in sendItemUnit)
+        {
+            trUnit.GetComponent<TransportUnit>().MainTrBuildRemove();
+        }
+
+        foreach (TransportBuild transport in sendBuildList)
+        {
+            transport.ResetTakeBuild();
+            foreach (GameObject trUnit in transport.sendItemUnit)
+            {
+                trUnit.GetComponent<TransportUnit>().TakeItemEnd();
+            }
+        }
     }
 }

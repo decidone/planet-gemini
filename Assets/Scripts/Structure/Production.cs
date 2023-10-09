@@ -48,7 +48,8 @@ public abstract class Production : Structure
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
-        canInsertItem = false;
+        isStorageBuild = false;
+        isMainSource = false;
     }
 
     protected virtual void Start()
@@ -83,9 +84,9 @@ public abstract class Production : Structure
                 RepairFunc(true);
             }
         }
-        if (!isPreBuilding)
+        if (!isPreBuilding && checkObj)
         {
-            if (inObj.Count > 0 && !itemGetDelay && checkObj)
+            if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
                 GetItem();
 
             for (int i = 0; i < nearObj.Length; i++)
@@ -108,7 +109,7 @@ public abstract class Production : Structure
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<Structure>() != null && !obj.GetComponent<Miner>() && !obj.GetComponent<ItemSpawner>())
+        if (obj.TryGetComponent(out Structure structure) && !structure.isMainSource)
         {
             if (obj.TryGetComponent(out BeltCtrl belt))
             {
@@ -127,6 +128,8 @@ public abstract class Production : Structure
             outObj.Add(obj);
             StartCoroutine(UnderBeltConnectCheck(obj));
         }
+        else
+            checkObj = true;
     }
 
     protected override IEnumerator OutCheck(GameObject otherObj)
@@ -148,42 +151,85 @@ public abstract class Production : Structure
         }
     }
 
-    public virtual bool CanTakeItem(Item item) { return new bool(); }
+    public override void OnFactoryItem(ItemProps itemProps)
+    {
+        for (int i = 0; i < inventory.space; i++)
+        {
+            if (itemDic[recipe.items[i]] == itemProps.item)
+            {
+                inventory.SlotAdd(i, itemProps.item, itemProps.amount);
+            }
+        }
+        base.OnFactoryItem(itemProps);
+    }
 
-    public virtual (Item, int) QuickPullOut() { return (new Item(), new int()); }
+    public override void OnFactoryItem(Item item)
+    {
+        for (int i = 0; i < inventory.space; i++)
+        {
+            if (itemDic[recipe.items[i]] == item)
+            {
+                inventory.SlotAdd(i, item, 1);
+            }
+        }
+    }
+
+    protected override void SubFromInventory()
+    {
+        inventory.Sub(inventory.space - 1, 1);
+    }
+
+    public virtual bool CanTakeItem(Item item) 
+    {
+        if (recipe.name == null)
+            return false;
+
+        for (int i = 0; i < inventory.space - 1; i++)
+        {
+            var slot = inventory.SlotCheck(i);
+            if (itemDic[recipe.items[i]] == item && slot.amount < 99)
+                return true;
+        }
+        return false;
+    }
+
+    public override bool CheckOutItemNum()
+    {
+        var slot = inventory.SlotCheck(inventory.space - 1);
+        if (slot.amount > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public virtual (Item, int) QuickPullOut()
+    {
+        var slot = inventory.SlotCheck(inventory.space - 1);
+        if (slot.amount > 0)
+            inventory.Sub(inventory.space - 1, slot.amount);
+        return slot;
+    }
 
     protected override void GetItem()
     {
         itemGetDelay = true;
 
-        if (!GetComponentInChildren<Miner>())
+        if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
         {
-            if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
+            if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
             {
-                if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
-                {
-                    OnFactoryItem(belt.itemObjList[0]);
-                    belt.itemObjList[0].transform.position = this.transform.position;
-                    belt.isItemStop = false;
-                    belt.itemObjList.RemoveAt(0);
-                    belt.beltGroupMgr.groupItem.RemoveAt(0);
-                    belt.ItemNumCheck();
+                OnFactoryItem(belt.itemObjList[0]);
+                belt.itemObjList[0].transform.position = this.transform.position;
+                belt.isItemStop = false;
+                belt.itemObjList.RemoveAt(0);
+                belt.beltGroupMgr.groupItem.RemoveAt(0);
+                belt.ItemNumCheck();
 
-                    getItemIndex++;
-                    if (getItemIndex >= inObj.Count)
-                        getItemIndex = 0;
+                getItemIndex++;
+                if (getItemIndex >= inObj.Count)
+                    getItemIndex = 0;
 
-                    Invoke("DelayGetItem", structureData.SendDelay);
-                }
-                else
-                {
-                    getItemIndex++;
-                    if (getItemIndex >= inObj.Count)
-                        getItemIndex = 0;
-
-                    DelayGetItem();
-                    return;
-                }
+                Invoke("DelayGetItem", structureData.SendDelay);
             }
             else
             {
@@ -195,5 +241,77 @@ public abstract class Production : Structure
                 return;
             }
         }
+        else
+        {
+            getItemIndex++;
+            if (getItemIndex >= inObj.Count)
+                getItemIndex = 0;
+
+            DelayGetItem();
+            return;
+        }        
+    }
+
+    protected override void AddInvenItem()
+    { 
+        for (int i = 0; i < inventory.space; i++)
+        {
+            var invenItem = inventory.SlotCheck(i);
+
+            if (invenItem.item != null && invenItem.amount > 0)
+            {
+                playerInven.Add(invenItem.item, invenItem.amount);
+            }
+        }
+    }
+
+    public override Dictionary<Item, int> PopUpItemCheck()
+    {
+        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
+
+        int itemsCount = 0;
+        //다른 슬롯의 같은 아이템도 개수 추가하도록
+        for (int i = 0; i < inventory.space; i++)
+        {
+            var invenItem = inventory.SlotCheck(i);
+
+            if (invenItem.item != null && invenItem.amount > 0)
+            {
+                if (!returnDic.ContainsKey(invenItem.item))
+                {
+                    returnDic.Add(invenItem.item, invenItem.amount);
+                }
+                else
+                {
+                    returnDic[invenItem.item] += invenItem.amount;
+                }
+                itemsCount++;
+                if (itemsCount > 5)
+                    break;
+            }
+        }
+
+        if (returnDic.Count > 0)
+        {
+            return returnDic;
+        }
+        else
+            return null;
+    }
+
+    public bool UnloadItem(Item item)
+    {
+        bool canUnload = false;
+        for (int i = 0; i < inventory.space; i++)
+        {
+            var invenItem = inventory.SlotCheck(i);
+            if (invenItem.item == item && invenItem.amount > 0)
+            {
+                canUnload = true;
+                inventory.Sub(i, 1);
+                break;
+            }
+        }
+        return canUnload;
     }
 }

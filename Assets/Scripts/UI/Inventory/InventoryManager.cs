@@ -52,6 +52,34 @@ public abstract class InventoryManager : MonoBehaviour
         inventory.Refresh();
     }
 
+    public void SetSizeInven(Inventory inven, GameObject invenUI, int invenSize)
+    {
+        inventory = inven;
+        inventoryUI = invenUI;
+        inventory.onItemChangedCallback += UpdateUI;
+        Slot[] slotObjects = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<Slot>();
+        slots = new Slot[invenSize];
+
+        for (int i = 0; i < slotObjects.Length; i++)
+        {
+            if (i < invenSize)
+            {
+                Slot slot = slots[i] = slotObjects[i];
+                slot.GetComponentInChildren<Image>().enabled = true;
+                slot.slotNum = i;
+
+                AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
+                AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+            }
+            else
+            {
+                slotObjects[i].GetComponentInChildren<Image>().enabled = false;
+            }
+        }
+
+        inventory.Refresh();
+    }
+
     protected virtual void InputCheck()
     {
         if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))

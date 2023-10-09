@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class Storage : Production
 {
-    int invenIndex;
+    int [] invenSize;
+
     protected override void Start()
     {
         base.Start();
-        invenIndex = 0;
-        canInsertItem = true;
+        isStorageBuild = true;
+        invenSize = new int[5] { 6, 12, 18, 24, 30 };
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        inventory.space = invenSize[level];
     }
 
     public override void OpenUI()
     {
-        sInvenManager.SetInven(inventory, ui);
+        //sInvenManager.SetInven(inventory, ui);
+        sInvenManager.SetSizeInven(inventory, ui, invenSize[level]);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.gameObject.SetActive(false);
         sInvenManager.energyBar.gameObject.SetActive(false);
@@ -50,17 +58,12 @@ public class Storage : Production
     public override void OnFactoryItem(ItemProps itemProps)
     {
         inventory.Add(itemProps.item, itemProps.amount);
-        base.OnFactoryItem(itemProps);
+        itemProps.Pool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)
     {
         inventory.Add(item, 1);
-    }
-
-    protected override void SubFromInventory()
-    {
-        inventory.Sub(invenIndex, 1);
     }
 
     public override (Item, int) QuickPullOut()
@@ -79,52 +82,5 @@ public class Storage : Production
                 ui = list;
             }
         }
-    }
-
-    protected override void AddInvenItem()
-    {
-        for (int i = 0; i < 18; i++)
-        {
-            var invenItem = inventory.SlotCheck(i);
-
-            if (invenItem.item != null && invenItem.amount > 0)
-            {
-                playerInven.Add(invenItem.item, invenItem.amount);
-            }
-        }
-    }
-
-    public override Dictionary<Item, int> PopUpItemCheck()
-    {
-        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
-
-        int itemsCount = 0;
-        //다른 슬롯의 같은 아이템도 개수 추가하도록
-        for (int i = 0; i < 18; i++)
-        {
-            var invenItem = inventory.SlotCheck(i);
-
-            if (invenItem.item != null && invenItem.amount > 0)
-            {
-                if (!returnDic.ContainsKey(invenItem.item))
-                {
-                    returnDic.Add(invenItem.item, invenItem.amount);
-                }
-                else
-                {
-                    returnDic[invenItem.item] += invenItem.amount;
-                }
-                itemsCount++;
-                if (itemsCount > 5)
-                    break;
-            }
-        }
-
-        if (returnDic.Count > 0)
-        {
-            return returnDic;
-        }
-        else
-            return null;
     }
 }
