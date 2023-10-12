@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     LogisticsClickEvent logisticsClickEvent;
     LogisticsClickEvent newLogisticsClickEvent;
 
+    InputManager inputManager;
+
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
@@ -60,207 +62,211 @@ public class GameManager : MonoBehaviour
 
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
         player.transform.position = playerSpawnPos;
+
+        inputManager = InputManager.instance;
+        inputManager.controls.Structure.StrClick.performed += ctx => StrClick();
+        inputManager.controls.HotKey.Debug.performed += ctx => DebugMode();
+        inputManager.controls.HotKey.Supply.performed += ctx => Supply();
+        inputManager.controls.HotKey.Escape.performed += ctx => CloseOpenedUI();
+        inputManager.controls.Inventory.PlayerInven.performed += ctx => Inven();
+        inputManager.controls.HotKey.Building.performed += ctx => Building();
+        inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
     }
 
     void Update()
     {
-        InputCheck();
-
         if (dragSlot.slot.item != null)
         {
             dragSlot.GetComponent<RectTransform>().position = Input.mousePosition;
         }
     }
 
-    void InputCheck()
+    void StrClick()
     {
-        if (Input.GetKeyDown(KeyCode.F3))
+        if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
+            return;
+        if (rManager.isOpened)
+            return;
+
+        //건물 위 오브젝트가 있을때 클릭이 안되서 Raycast > RaycastAll로 변경
+        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
+
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+        if (debug && map.IsOnMap(x, y))
         {
-            debug = !debug;
-            Debug.Log("debug : " + debug);
+            string buildable = "";
+            foreach (string str in map.mapData[x][y].buildable)
+            {
+                buildable = buildable + " " + str;
+            }
+
+            if (map.mapData[x][y].obj == null)
+            {
+                Debug.Log("x : " + x + ",   y : " + y +
+                ",   biome : " + map.mapData[x][y].biome +
+                ",   resource : " + map.mapData[x][y].resource +
+                ",   buildable : " + buildable +
+                ",   structure : " + map.mapData[x][y].structure
+                );
+            }
+            else
+            {
+                Debug.Log("x : " + x + ",   y : " + y +
+                ",   biome : " + map.mapData[x][y].biome +
+                ",   resource : " + map.mapData[x][y].resource +
+                ",   obj : " + map.mapData[x][y].obj.name +
+                ",   buildable : " + buildable +
+                ",   structure : " + map.mapData[x][y].structure
+                );
+            }
         }
 
+        if (hits.Length > 0)
+        {
+            foreach (RaycastHit2D hit in hits)
+            {
+                newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
+                newLogisticsClickEvent = hit.collider.GetComponent<LogisticsClickEvent>();
+
+                if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+                {
+                    if (clickEvent != null)
+                    {
+                        clickEvent.CloseUI();
+                    }
+                    if (logisticsClickEvent != null)
+                    {
+                        logisticsClickEvent.CloseUI();
+                    }
+
+                    clickEvent = newClickEvent;
+                    clickEvent.StructureClick();
+                    clickEvent.OpenUI();
+                    break;
+                }
+                else if (newLogisticsClickEvent != null && !newLogisticsClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+                {
+                    if (logisticsClickEvent != null)
+                    {
+                        logisticsClickEvent.CloseUI();
+                    }
+                    if (clickEvent != null)
+                    {
+                        clickEvent.CloseUI();
+                    }
+
+                    logisticsClickEvent = newLogisticsClickEvent;
+
+                    if (logisticsClickEvent.LogisticsCheck())
+                    {
+                        logisticsClickEvent.OpenUI();
+                        break;
+                    }
+                    else
+                    {
+                        logisticsClickEvent = null;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    void DebugMode()
+    {
+        debug = !debug;
+        Debug.Log("debug : " + debug);
+    }
+
+    void Supply()
+    {
         if (debug)
         {
-            if (Input.GetKeyDown(KeyCode.Equals))
+            Inventory inven = this.GetComponent<Inventory>();
+            foreach (Item item in ItemList.instance.itemList)
             {
-                Inventory inven = this.GetComponent<Inventory>();
-                foreach (Item item in ItemList.instance.itemList)
-                {
-                    if (item.name != "EmptyFilter" && item.name != "FullFilter" && item.name != "Water" && item.name != "CrudeOil")
-                        inven.Add(item, 99);
-                }
-                BuildAndSciUiReset();
+                if (item.name != "EmptyFilter" && item.name != "FullFilter" && item.name != "Water" && item.name != "CrudeOil")
+                    inven.Add(item, 99);
+            }
+            BuildAndSciUiReset();
+        }
+    }
+
+    void CloseOpenedUI()
+    {
+        if (openedUI.Count > 0)
+        {
+            switch (openedUI[openedUI.Count - 1].gameObject.name)
+            {
+                case "Inventory":
+                    pInvenManager.CloseUI();
+                    break;
+                case "StructureInfo":
+                    clickEvent.CloseUI();
+                    break;
+                case "RecipeMenu":
+                    rManager.CloseUI();
+                    break;
+                case "BuildingInven":
+                    bManager.CloseUI();
+                    break;
+                case "SplitterFillterMenu":
+                    logisticsClickEvent.CloseUI();
+                    break;
+                case "LogisticsMenu":
+                    logisticsClickEvent.CloseUI();
+                    break;
+                case "ItemSpwanerFilter":
+                    logisticsClickEvent.CloseUI();
+                    break;
+                case "ScienceTree":
+                    sTreeManager.CloseUI();
+                    break;
+                default:
+                    break;
             }
         }
+    }
 
-        if (Input.GetMouseButtonDown(0))
+    void Inven()
+    {
+        if (!pInvenManager.inventoryUI.activeSelf)
         {
-            if (EventSystem.current.IsPointerOverGameObject())
-                return;
-            if (rManager.isOpened)
-                return;
-
-            //건물 위 오브젝트가 있을때 클릭이 안되서 Raycast > RaycastAll로 변경
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
-
-            int x = Mathf.FloorToInt(pos.x);
-            int y = Mathf.FloorToInt(pos.y);
-            if (debug && map.IsOnMap(x, y))
-            {
-                string buildable = "";
-                foreach(string str in map.mapData[x][y].buildable)
-                {
-                    buildable = buildable + " " + str;
-                }
-
-                if (map.mapData[x][y].obj == null)
-                {
-                    Debug.Log("x : " + x + ",   y : " + y +
-                    ",   biome : " + map.mapData[x][y].biome +
-                    ",   resource : " + map.mapData[x][y].resource +
-                    ",   buildable : " + buildable +
-                    ",   structure : " + map.mapData[x][y].structure
-                    );
-                }
-                else
-                {
-                    Debug.Log("x : " + x + ",   y : " + y +
-                    ",   biome : " + map.mapData[x][y].biome +
-                    ",   resource : " + map.mapData[x][y].resource +
-                    ",   obj : " + map.mapData[x][y].obj.name +
-                    ",   buildable : " + buildable +
-                    ",   structure : " + map.mapData[x][y].structure
-                    );
-                }
-            }
-
-            if (hits.Length > 0)
-            {
-                foreach (RaycastHit2D hit in hits)
-                {
-                    newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
-                    newLogisticsClickEvent = hit.collider.GetComponent<LogisticsClickEvent>();
-
-                    if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
-                    {
-                        if (clickEvent != null)
-                        {
-                            clickEvent.CloseUI();
-                        }
-                        if (logisticsClickEvent != null)
-                        {
-                            logisticsClickEvent.CloseUI();
-                        }
-
-                        clickEvent = newClickEvent;
-                        clickEvent.StructureClick();
-                        clickEvent.OpenUI();
-                        break;
-                    }
-                    else if (newLogisticsClickEvent != null && !newLogisticsClickEvent.GetComponentInParent<Structure>().isPreBuilding)
-                    {
-                        if (logisticsClickEvent != null)
-                        {
-                            logisticsClickEvent.CloseUI();
-                        }
-                        if (clickEvent != null)
-                        {
-                            clickEvent.CloseUI();
-                        }
-
-                        logisticsClickEvent = newLogisticsClickEvent;                        
-
-                        if (logisticsClickEvent.LogisticsCheck())
-                        {
-                            logisticsClickEvent.OpenUI();
-                            break;
-                        }
-                        else
-                        {
-                            logisticsClickEvent = null;
-                            break;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                return;
-            }
+            pInvenManager.OpenUI();
         }
+        else
+        {
+            pInvenManager.CloseUI();
+        }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+    void Building()
+    {
+        if (!bManager.buildingInventoryUI.activeSelf)
         {
-            if (openedUI.Count > 0)
-            {
-                switch (openedUI[openedUI.Count - 1].gameObject.name)
-                {
-                    case "Inventory":
-                        pInvenManager.CloseUI();
-                        break;
-                    case "StructureInfo":
-                        clickEvent.CloseUI();
-                        break;
-                    case "RecipeMenu":
-                        rManager.CloseUI();
-                        break;
-                    case "BuildingInven":
-                        bManager.CloseUI();
-                        break;
-                    case "SplitterFillterMenu":
-                        logisticsClickEvent.CloseUI();
-                        break;
-                    case "LogisticsMenu":
-                        logisticsClickEvent.CloseUI();
-                        break;
-                    case "ItemSpwanerFilter":
-                        logisticsClickEvent.CloseUI();
-                        break;
-                    case "ScienceTree":
-                        sTreeManager.CloseUI();
-                        break;
-                    default:
-                        break;
-                }
-            }
+            bManager.OpenUI();
         }
+        else
+        {
+            bManager.CloseUI();
+        }
+    }
 
-        if (Input.GetButtonDown("Inventory"))
+    void ScienceTree()
+    {
+        if (!sTreeManager.scienceTreeUI.activeSelf)
         {
-            if (!pInvenManager.inventoryUI.activeSelf)
-            {
-                pInvenManager.OpenUI();
-            }
-            else
-            {
-                pInvenManager.CloseUI();
-            }
+            sTreeManager.OpenUI();
         }
-        
-        if (Input.GetButtonDown("Building"))
+        else
         {
-            if (!bManager.buildingInventoryUI.activeSelf)
-            {
-                bManager.OpenUI();
-            }
-            else
-            {
-                bManager.CloseUI();
-            }
-        }
-        
-        if (Input.GetButtonDown("ScienceTree"))
-        {
-            if (!sTreeManager.scienceTreeUI.activeSelf)
-            {
-                sTreeManager.OpenUI();
-            }
-            else
-            {
-                sTreeManager.CloseUI();
-            }
+            sTreeManager.CloseUI();
         }
     }
 

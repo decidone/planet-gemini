@@ -12,14 +12,14 @@ public class PlayerController : MonoBehaviour
 
     public Collider2D circleColl;
 
-    private void Awake()
+    void Awake()
     {
         circleColl = GetComponent<CircleCollider2D>();
     }
 
     void Update()
     {
-        if (Input.GetButton("Loot"))
+        if (Input.GetKeyDown(KeyCode.F))
             Loot();
 
         if (Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl))
