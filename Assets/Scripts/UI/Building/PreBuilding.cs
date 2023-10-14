@@ -20,7 +20,6 @@ public class PreBuilding : MonoBehaviour
     GameObject gameObj;
 
     public GameObject beltMgr;
-    public GameObject pipeMgr;
 
     bool isNeedSetPos = false;
     Vector3 setPos;
@@ -57,7 +56,11 @@ public class PreBuilding : MonoBehaviour
     bool isDrag = false;
     Coroutine setBuild;
 
+    bool isTempBuild;
+
     GameManager gameManager;
+    PlayerController playerController;
+
 
     #region Singleton
     public static PreBuilding instance;
@@ -74,6 +77,9 @@ public class PreBuilding : MonoBehaviour
 
         instance = this;
         gameManager = GameManager.instance;
+
+        isTempBuild = false;
+        playerController = gameManager.player.GetComponent<PlayerController>();
     }
     #endregion
 
@@ -132,7 +138,7 @@ public class PreBuilding : MonoBehaviour
             }
             if (!EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton && isMouseLeft)//Input.GetMouseButton(0))
             {
-                if(BuildingInfo.instance.AmountsEnoughCheck())
+                if((!isTempBuild && BuildingInfo.instance.AmountsEnoughCheck()) || (isTempBuild && playerController.TempMinerCountCheck()))
                 {
                     tempPos = transform.position;
                     float tempDeltaX = tempPos.x - endBuildPos.x;
@@ -734,59 +740,89 @@ public class PreBuilding : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (BuildingInfo.instance.AmountsEnoughCheck())
+        if (!isTempBuild)
         {
-            SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
-            obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = layNumTemp;
-            if (obj.TryGetComponent(out Structure structure))
+            if (BuildingInfo.instance.AmountsEnoughCheck())
             {
-                if (structure.canBuilding)
+                SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
+                obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = layNumTemp;
+                if (obj.TryGetComponent(out Structure structure))
                 {
-                    structure.SetBuild();
-                    structure.ColliderTriggerOnOff(false);
-                    obj.AddComponent<DynamicGridObstacle>();
+                    if (structure.canBuilding)
+                    {
+                        structure.SetBuild();
+                        structure.ColliderTriggerOnOff(false);
+                        obj.AddComponent<DynamicGridObstacle>();
+                    }
                 }
-            }
-            else if (obj.TryGetComponent(out BeltGroupMgr belt))
-            {
-                if (belt.beltList[0].canBuilding)
+                else if (obj.TryGetComponent(out BeltGroupMgr belt))
                 {
-                    obj.transform.parent = beltMgr.transform;
-                    belt.isPreBuilding = false;
-                    belt.beltList[0].SetBuild();
-                    belt.beltList[0].ColliderTriggerOnOff(false);
-                    belt.beltList[0].gameObject.AddComponent<DynamicGridObstacle>();
+                    if (belt.beltList[0].canBuilding)
+                    {
+                        obj.transform.parent = beltMgr.transform;
+                        belt.isPreBuilding = false;
+                        belt.beltList[0].SetBuild();
+                        belt.beltList[0].ColliderTriggerOnOff(false);
+                        belt.beltList[0].gameObject.AddComponent<DynamicGridObstacle>();
+                    }
                 }
-            }
-            else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
-            {
-                if (underBelt.beltScipt.canBuilding)
+                else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
                 {
-                    underBelt.beltScipt.SetBuild();
-                    underBelt.ColliderTriggerOnOff(false);
-                    underBelt.RemoveObj();
-                    underBelt.beltScipt.gameObject.AddComponent<DynamicGridObstacle>();
+                    if (underBelt.beltScipt.canBuilding)
+                    {
+                        underBelt.beltScipt.SetBuild();
+                        underBelt.ColliderTriggerOnOff(false);
+                        underBelt.RemoveObj();
+                        underBelt.beltScipt.gameObject.AddComponent<DynamicGridObstacle>();
+                    }
                 }
+                else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+                {
+                    if (underPipe.pipeScipt.canBuilding)
+                    {                    
+                        underPipe.pipeScipt.SetBuild();
+                        underPipe.ColliderTriggerOnOff(false);
+                        underPipe.RemoveObj();
+                        underPipe.pipeScipt.gameObject.AddComponent<DynamicGridObstacle>();
+                    }
+                }
+                BuildingInfo.instance.BuildingEnd();
             }
-            else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+            else
             {
-                if (underPipe.pipeScipt.canBuilding)
-                {                    
-                    underPipe.pipeScipt.SetBuild();
-                    underPipe.ColliderTriggerOnOff(false);
-                    underPipe.RemoveObj();
-                    underPipe.pipeScipt.gameObject.AddComponent<DynamicGridObstacle>();
-                }
+                Destroy(obj);
             }
-            BuildingInfo.instance.BuildingEnd();
+            isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+            setBuild = null;
         }
         else
         {
-            Destroy(obj);
+            bool canBuild = playerController.TempMinerCountCheck();
+            if (canBuild)
+            {
+                SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
+                obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = layNumTemp;
+                if (obj.TryGetComponent(out Structure structure))
+                {
+                    if (structure.canBuilding)
+                    {
+                        structure.SetBuild();
+                        structure.isTempBuild = true;
+                        structure.TempBuilCooldownSet();
+                        structure.ColliderTriggerOnOff(false);
+                        obj.AddComponent<DynamicGridObstacle>();
+                    }
+                }
+                playerController.TempBuildSet();
+            }
+            else
+            {
+                Destroy(obj);
+            }
+            isEnough = canBuild;
+            setBuild = null;
         }
-        isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-        setBuild = null;
-    }
+    } 
 
     void CreateObj(Vector3 pos)
     {
@@ -855,8 +891,15 @@ public class PreBuilding : MonoBehaviour
         buildingList.Add(obj);
     }
 
-    public void SetImage(GameObject game, int level, int height, int width, int dirCount)
+    public void SetImage(Building build, bool _isTempbuild)
     {
+        GameObject game = build.gameObj;
+        int level = build.level;
+        int height = build.height;
+        int width = build.width;
+        int dirCount = build.dirCount;
+        isTempBuild = _isTempbuild;
+
         if (this.transform.childCount > 0)
         {
             GameObject temp = transform.GetChild(0).gameObject;

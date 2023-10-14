@@ -179,6 +179,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9792efe6cecebdc48a972c88dae62797, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ctrl: 0
+  shift: 0
+  alt: 0
+  mousePos: {x: 0, y: 0}
 --- !u!114 &7738165226129024440
 MonoBehaviour:
   m_ObjectHideFlags: 0

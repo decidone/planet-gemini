@@ -18,8 +18,6 @@ MonoBehaviour:
   maxFulidStorageLimit: 100
   sendSpeed:
   - 1
-  - 1.5
-  - 2
   sendFluidAmount: 0
   sendDelay: 0.5
   maxBuildingGauge: 10

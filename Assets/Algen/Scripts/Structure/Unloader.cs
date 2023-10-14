@@ -21,14 +21,9 @@ public class Unloader : LogisticsCtrl
         {
             if (!isPreBuilding && checkObj)
             {
-                if (inObj.Count > 0 && !isFull && !itemGetDelay)
+                if (inObj.Count > 0 && outObj.Count > 0 && !itemGetDelay)
                 {
                     GetItem();
-                }
-
-                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
-                {
-                    SendItem(itemList[0]);
                 }
 
                 for (int i = 0; i < nearObj.Length; i++)
@@ -97,7 +92,7 @@ public class Unloader : LogisticsCtrl
         {
             if (production.UnloadItem(selectItem))
             {
-                OnFactoryItem(selectItem);
+                SendItem(selectItem);
             }
             getItemIndex++;
             if (getItemIndex >= inObj.Count)
