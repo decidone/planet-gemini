@@ -105,6 +105,7 @@ public class Structure : MonoBehaviour
 
     public bool isStorageBuild;
     public bool isMainSource;
+    public bool isTempBuild = false;
 
     public virtual bool CheckOutItemNum()  { return new bool(); }
 
@@ -343,7 +344,7 @@ public class Structure : MonoBehaviour
                     {
                         SubFromInventory();
                     }
-                    else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
+                    else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>() && !GetComponent<Unloader>())
                     {
                         itemList.RemoveAt(0);
                         ItemNumCheck();
@@ -411,7 +412,7 @@ public class Structure : MonoBehaviour
         while (spawnItem != null && spawnItem.transform.position != targetPos)
         {
             var elapsed = Time.time - startTime;
-            var t = Mathf.Clamp01(elapsed / (distance / structureData.SendSpeed[level]));
+            var t = Mathf.Clamp01(elapsed / (distance / structureData.SendSpeed[0]));
 
             spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
 
@@ -798,6 +799,9 @@ public class Structure : MonoBehaviour
 
          Destroy(this.gameObject);
     }
+
+    public virtual void TempBuilCooldownSet() { }
+
 
     protected virtual void AddInvenItem() { }
 

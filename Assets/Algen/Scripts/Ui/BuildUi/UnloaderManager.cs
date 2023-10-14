@@ -17,7 +17,6 @@ public class UnloaderManager : MonoBehaviour
     
     [SerializeField]
     Button fillterMenuBtn;
-    InventoryList inventoryList;
 
     // Start is called before the first frame update
     void Start()

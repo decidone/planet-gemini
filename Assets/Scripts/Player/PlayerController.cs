@@ -11,10 +11,17 @@ public class PlayerController : MonoBehaviour
     List<GameObject> beltList = new List<GameObject>();
 
     public Collider2D circleColl;
+    GameObject preBuilding;
+    [SerializeField]
+    Building tempMiner = null;
+
+    int tempMinerCount;
 
     private void Awake()
     {
         circleColl = GetComponent<CircleCollider2D>();
+        preBuilding = BuildingInfo.instance.preBuilding;
+        tempMinerCount = 5;
     }
 
     void Update()
@@ -40,6 +47,13 @@ public class PlayerController : MonoBehaviour
                 if(item.Item1 != null && item.Item2 > 0)
                     inventory.Add(item.Item1, item.Item2);
             }
+        }
+
+        if (Input.GetKey(KeyCode.Z) && tempMinerCount > 0)
+        {
+            preBuilding.SetActive(true);
+            PreBuilding.instance.SetImage(tempMiner, true);
+            PreBuilding.instance.isEnough = true;
         }
     }
 
@@ -122,5 +136,28 @@ public class PlayerController : MonoBehaviour
             }
         }
         GameManager.instance.BuildAndSciUiReset();
+    }
+
+    public bool TempMinerCountCheck()
+    {
+        if (tempMinerCount > 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void TempBuildSet()
+    {
+        if (tempMinerCount > 0) 
+        {
+            tempMinerCount--;
+        }
+    }
+
+    public void RemoveTempBuild()
+    {
+        tempMinerCount++;
     }
 }

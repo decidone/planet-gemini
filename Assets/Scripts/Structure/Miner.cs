@@ -38,18 +38,87 @@ public class Miner : Production
     void Init()
     {
         Map map = GameManager.instance.map;
-        int x = Mathf.FloorToInt(this.gameObject.transform.position.x);
-        int y = Mathf.FloorToInt(this.gameObject.transform.position.y);
-        if (map.IsOnMap(x, y))
+        int x;
+        int y;
+
+        if (sizeOneByOne)
         {
-            Resource resource = map.mapData[x][y].resource;
-            if (resource != null && resource.type == "ore")
+            x = Mathf.FloorToInt(this.gameObject.transform.position.x);
+            y = Mathf.FloorToInt(this.gameObject.transform.position.y);
+
+            if (map.IsOnMap(x, y))
             {
-                Item item = resource.item;
-                if (item != null)
+                Resource resource = map.mapData[x][y].resource;
+                if (resource != null && resource.type == "ore")
                 {
-                    SetResource(item);
+                    Item item = resource.item;
+                    if (item != null)
+                    {
+                        SetResource(item, resource.level, resource.efficiency);
+                    }
                 }
+            }
+        }
+        else
+        {
+            x = Mathf.FloorToInt(this.gameObject.transform.position.x - 0.5f);
+            y = Mathf.FloorToInt(this.gameObject.transform.position.y - 0.5f);
+
+            Dictionary<Item, (int, float, int)> mapItems = new Dictionary<Item, (int, float, int)>();
+
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    if (map.IsOnMap(x, y))
+                    {
+                        Resource resource = map.mapData[x + j][y + i].resource;
+                        if (resource != null && resource.type == "ore")
+                        {
+                            Item item = resource.item;
+                            if (item != null)
+                            {
+                                if(!mapItems.ContainsKey(item))
+                                    mapItems.Add(item, (1, resource.efficiency, resource.level));
+                                else
+                                {
+                                    var existingValue = mapItems[item];
+                                    var updatedValue = (existingValue.Item1 + 1, existingValue.Item2, existingValue.Item3);
+                                    mapItems[item] = updatedValue;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(mapItems.Count > 0)
+            {
+                Item highestItem = null;
+                int highestQuantity = 0;
+                float highestEfficiency = 0;
+                int highestLevel = 0;
+
+                foreach (var data in mapItems)
+                {
+                    Item itemData = data.Key;
+                    int countData = data.Value.Item1;
+                    float efficiencyData = data.Value.Item2;
+                    int levelData = data.Value.Item3;
+
+                    if (highestQuantity < countData || (highestQuantity == countData && highestEfficiency < efficiencyData))
+                    {
+                        highestItem = itemData;
+                        highestQuantity = countData;
+                        highestEfficiency = efficiencyData;
+                        highestLevel = levelData;
+
+                        Debug.Log(highestQuantity);
+                    }
+                }
+
+                if(highestItem != null)
+                    SetResource(highestItem, highestLevel, highestEfficiency);
             }
         }
     }
@@ -68,9 +137,18 @@ public class Miner : Production
         sInvenManager.ReleaseInven();
     }
 
-    void SetResource(Item item)
+    void SetResource(Item item, int _level, float _efficiency)
     {
-        output = item;
+        if(level >= _level)
+        {
+            output = item;
+            cooldown = _efficiency + 3 - level;
+        }
+    }
+
+    public override void TempBuilCooldownSet() 
+    {
+        cooldown += 3;
     }
 
     public override void GetUIFunc()

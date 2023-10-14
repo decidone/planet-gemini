@@ -10,6 +10,7 @@ public class RemoveBuild : DragFunc
     Inventory inventory;
     int structureLayer;
     public bool isRemovePopUpOn = false;
+    PlayerController playerController;
 
     protected override void Start()
     {
@@ -17,6 +18,7 @@ public class RemoveBuild : DragFunc
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         inventory = gameManager.GetComponent<Inventory>();
         structureLayer = LayerMask.NameToLayer("Obj");
+        playerController = gameManager.player.GetComponent<PlayerController>();
     }
 
     public override void RightMouseUp(Vector2 startPos, Vector2 endPos)
@@ -78,11 +80,18 @@ public class RemoveBuild : DragFunc
 
     void refundCost(Structure obj)
     {
-        buildingData = new BuildingData();
-        buildingData = BuildingDataGet.instance.GetBuildingName(obj.buildName, obj.level + 1);
-        for (int i = 0; i < buildingData.GetItemCount(); i++)
+        if (!obj.isTempBuild)
         {
-            inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
+            buildingData = new BuildingData();
+            buildingData = BuildingDataGet.instance.GetBuildingName(obj.buildName, obj.level + 1);
+            for (int i = 0; i < buildingData.GetItemCount(); i++)
+            {
+                inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
+            }
+        }
+        else
+        {
+            playerController.RemoveTempBuild();
         }
     }
 
