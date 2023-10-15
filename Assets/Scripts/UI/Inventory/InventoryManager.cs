@@ -19,20 +19,29 @@ public abstract class InventoryManager : MonoBehaviour
     float splitCooldown;
     float splitTimer;
 
+    protected InputManager inputManager;
+    protected bool slotRightClickHold;
+
     public abstract void OpenUI();
     public abstract void CloseUI();
 
     protected virtual void Start()
     {
         splitCooldown = 0.12f;
+        slotRightClickHold = false;
         gameManager = GameManager.instance;
         dragSlot = DragSlot.instance;
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotLeftClick();
+        inputManager.controls.Inventory.SlotRightClickHold.performed += ctx => SlotRightClickHold();
     }
 
     protected virtual void Update()
     {
         splitTimer += Time.deltaTime;
-        InputCheck();
+
+        if (slotRightClickHold)
+            SlotRightClick();
     }
 
     public void SetInven(Inventory inven, GameObject invenUI)
@@ -80,79 +89,82 @@ public abstract class InventoryManager : MonoBehaviour
         inventory.Refresh();
     }
 
-    protected virtual void InputCheck()
+    protected void SlotLeftClick()
     {
-        if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
+        if (inventory == null) return;
+        if (inputManager.shift) return;
+        if (dragSlot == null) return;
+
+        if (dragSlot.slot.item == null)
         {
-            if (dragSlot.slot.item == null)
+            if (focusedSlot != null)
             {
-                if (focusedSlot != null)
+                if (focusedSlot.item != null)
                 {
-                    if (focusedSlot.item != null)
-                    {
-                        inventory.Swap(focusedSlot);
-                    }
+                    inventory.Swap(focusedSlot);
                 }
             }
-            else
+        }
+        else
+        {
+            if (focusedSlot != null)
             {
-                if (focusedSlot != null)
+                if (!focusedSlot.outputSlot)
                 {
-                    if (!focusedSlot.outputSlot)
+                    if (dragSlot.slot.item != focusedSlot.item)
                     {
-                        if (dragSlot.slot.item != focusedSlot.item)
+                        if (focusedSlot.inputSlot)
                         {
-                            if (focusedSlot.inputSlot)
+                            foreach (Item _item in focusedSlot.inputItem)
                             {
-                                foreach (Item _item in focusedSlot.inputItem)
+                                if (dragSlot.slot.item == _item)
                                 {
-                                    if (dragSlot.slot.item == _item)
-                                    {
-                                        inventory.Swap(focusedSlot);
-                                        break;
-                                    }
+                                    inventory.Swap(focusedSlot);
+                                    break;
                                 }
-                            }
-                            else
-                            {
-                                inventory.Swap(focusedSlot);
                             }
                         }
                         else
                         {
-                            inventory.Merge(focusedSlot);
+                            inventory.Swap(focusedSlot);
                         }
                     }
-                } else if (!EventSystem.current.IsPointerOverGameObject() && dragSlot.gameObject.activeSelf)
-                {
-                    // 인벤토리 UI 바깥
-                    inventory.DragDrop();
-                }
-                else
-                {
-                    // 인벤토리 UI 내부, 선택된 슬롯 없는 경우
+                    else
+                    {
+                        inventory.Merge(focusedSlot);
+                    }
                 }
             }
-        }
-
-        if (Input.GetMouseButton(1))
-        {
-            if (splitTimer <= splitCooldown)
-                return;
-
-            if (focusedSlot == null)
-                return;
-
-            if (focusedSlot.item == null)
-                return;
-
-            if (dragSlot.slot.item == null || dragSlot.slot.item == focusedSlot.item)
+            else if (!RaycastUtility.IsPointerOverUI(Input.mousePosition) && dragSlot.gameObject.activeSelf)
             {
-                inventory.Split(focusedSlot);
+                // 인벤토리 UI 바깥
+                inventory.DragDrop();
             }
-
-            splitTimer = 0;
+            else
+            {
+                // 인벤토리 UI 내부, 선택된 슬롯 없는 경우
+            }
         }
+    }
+
+    protected void SlotRightClickHold()
+    {
+        slotRightClickHold = !slotRightClickHold;
+    }
+
+    protected void SlotRightClick()
+    {
+        if (inventory == null) return;
+        if (splitTimer <= splitCooldown) return;
+        if (focusedSlot == null) return;
+        if (focusedSlot.item == null) return;
+
+        if (dragSlot.slot.item == null || dragSlot.slot.item == focusedSlot.item)
+        {
+            inventory.Split(focusedSlot);
+        }
+
+        splitTimer = 0;
     }
 
     void UpdateUI()

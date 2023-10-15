@@ -21,6 +21,12 @@ public class StructureInvenManager : InventoryManager
     public InputField inputField;
     public Button subBtn;
 
+    protected override void Start()
+    {
+        base.Start();
+        inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotShiftClick();
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -34,34 +40,29 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
-    protected override void InputCheck()
+    void SlotShiftClick()
     {
-        if (inventory != null)
-        {
-            base.InputCheck();
+        if (inventory == null) return;
+        if (!inputManager.shift) return;
 
-            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
+        if (focusedSlot != null)
+        {
+            if (focusedSlot.item != null)
             {
-                if (focusedSlot != null)
+                int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
+                if (focusedSlot.amount <= containableAmount)
                 {
-                    if (focusedSlot.item != null)
-                    {
-                        int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
-                        if (focusedSlot.amount <= containableAmount)
-                        {
-                            playerInven.Add(focusedSlot.item, focusedSlot.amount);
-                            inventory.Remove(focusedSlot);
-                        }
-                        else if (containableAmount != 0)
-                        {
-                            playerInven.Add(focusedSlot.item, containableAmount);
-                            inventory.Sub(focusedSlot.slotNum, containableAmount);
-                        }
-                        else
-                        {
-                            Debug.Log("not enough space");
-                        }
-                    }
+                    playerInven.Add(focusedSlot.item, focusedSlot.amount);
+                    inventory.Remove(focusedSlot);
+                }
+                else if (containableAmount != 0)
+                {
+                    playerInven.Add(focusedSlot.item, containableAmount);
+                    inventory.Sub(focusedSlot.slotNum, containableAmount);
+                }
+                else
+                {
+                    Debug.Log("not enough space");
                 }
             }
         }

@@ -18,7 +18,6 @@ public class UnloaderManager : MonoBehaviour
     [SerializeField]
     Button fillterMenuBtn;
 
-    // Start is called before the first frame update
     void Start()
     {
         gameManager = GameManager.instance;

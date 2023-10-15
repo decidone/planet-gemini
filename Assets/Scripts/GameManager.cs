@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     ScienceManager sTreeManager;
 
-    bool debug;
+    public bool debug;
     DragSlot dragSlot;
     List<GameObject> openedUI;
     StructureClickEvent clickEvent;
@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         isMapOpened = false;
+        debug = false;
         openedUI = new List<GameObject>();
         dragSlot = DragSlot.instance;
         onUIChangedCallback += UIChanged;

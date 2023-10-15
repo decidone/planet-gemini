@@ -37,30 +37,42 @@ public class UnitDrag : DragFunc
     bool isPKeyPressed = false;
     bool isAKeyPressed = false;
 
+    InputManager inputManager;
+
     protected override void Start()
     {
         unitLayer = LayerMask.NameToLayer("Unit");
         monsterLayer = LayerMask.NameToLayer("Monster");
+
+        inputManager = InputManager.instance;
+        inputManager.controls.Unit.Attack.performed += ctx => Attack();
+        inputManager.controls.Unit.Patrol.performed += ctx => Patrol();
+        inputManager.controls.Unit.Hold.performed += ctx => Hold();
     }
 
-    void Update()
+    void Attack()
     {
         if (selectedObjects.Length > 0)
         {
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                isPKeyPressed = true;
-                unitCtrlKeyPressed = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.A))
-            {
-                isAKeyPressed = true;
-                unitCtrlKeyPressed = true;
-            }
-            else if (Input.GetKeyDown(KeyCode.H))
-            {
-                unitHoldSet?.Invoke();
-            }
+            isAKeyPressed = true;
+            unitCtrlKeyPressed = true;
+        }
+    }
+
+    void Patrol()
+    {
+        if (selectedObjects.Length > 0)
+        {
+            isPKeyPressed = true;
+            unitCtrlKeyPressed = true;
+        }
+    }
+
+    void Hold()
+    {
+        if (selectedObjects.Length > 0)
+        {
+            unitHoldSet?.Invoke();
         }
     }
 

@@ -8,7 +8,7 @@ public class ItemSpManager : InventoryManager
 {
     List<Item> itemsList;
     ItemSpawner itemSpawner = null;
-    //int slotIndex = -1;
+
     [SerializeField]
     private GameObject itemTagsPanel;
     private Button[] itemTagsBtn;
@@ -33,20 +33,20 @@ public class ItemSpManager : InventoryManager
             int buttonIndex = i;
             itemTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
         }
+
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.ItemSpawner.performed += ctx => InvenClick();
     }
 
-    protected override void InputCheck()
+    void InvenClick()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (focusedSlot != null)
         {
-            if (focusedSlot != null)
+            if (focusedSlot.item != null)
             {
-                if (focusedSlot.item != null)
-                {
-                    SetItem(focusedSlot.item);
-                    focusedSlot = null;
-                    CloseUI();
-                }
+                SetItem(focusedSlot.item);
+                focusedSlot = null;
+                CloseUI();
             }
         }
     }

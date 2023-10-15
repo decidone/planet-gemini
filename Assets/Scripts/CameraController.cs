@@ -13,6 +13,9 @@ public class CameraController : MonoBehaviour
 
     PixelPerfectCamera pixelPerfectCamera;
     int zoomLevel;
+    float scrollWheelInput;
+
+    InputManager inputManager;
 
     void Awake()
     {
@@ -20,12 +23,27 @@ public class CameraController : MonoBehaviour
         zoomLevel = 1;
     }
 
+    void Start()
+    {
+        inputManager = InputManager.instance;
+    }
+
     void Update()
     {
-        float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
-        if (scrollWheelInput != 0)
+        scrollWheelInput = inputManager.controls.MainCamera.Zoom.ReadValue<float>();
+        if (scrollWheelInput == 0)
+            return;
+
+        if (scrollWheelInput < 0)
         {
-            zoomLevel += Mathf.RoundToInt(scrollWheelInput * 10);
+            zoomLevel -= 1;
+            zoomLevel = Mathf.Clamp(zoomLevel, 1, 7);
+            pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
+            pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
+        }
+        else if(scrollWheelInput > 0)
+        {
+            zoomLevel += 1;
             zoomLevel = Mathf.Clamp(zoomLevel, 1, 7);
             pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
             pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);

@@ -15,7 +15,10 @@ public class MapCameraController : MonoBehaviour
 
     PixelPerfectCamera pixelPerfectCamera;
     GameManager gameManager;
+    InputManager inputManager;
+
     int zoomLevel;
+    float scrollWheelInput;
 
     void Awake()
     {
@@ -26,33 +29,40 @@ public class MapCameraController : MonoBehaviour
     void Start()
     {
         gameManager = GameManager.instance;
+        inputManager = InputManager.instance;
+        inputManager.controls.MapCamera.ToggleMap.performed += ctx => ToggleMap();
+    }
+
+    void ToggleMap()
+    {
+        if (!gameManager.isMapOpened)
+            OpenUI();
+        else
+            CloseUI();
     }
 
     void Update()
     {
-        InputCheck();
-    }
+        if (!gameManager.isMapOpened)
+            return;
 
-    void InputCheck()
-    {
-        if (Input.GetKeyDown(KeyCode.M))
+        scrollWheelInput = inputManager.controls.MapCamera.Zoom.ReadValue<float>();
+        if (scrollWheelInput == 0)
+            return;
+
+        if (scrollWheelInput < 0)
         {
-            if (!gameManager.isMapOpened)
-                OpenUI();
-            else
-                CloseUI();
+            zoomLevel -= 1;
+            zoomLevel = Mathf.Clamp(zoomLevel, 1, 7);
+            pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
+            pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
         }
-
-        if (gameManager.isMapOpened)
+        else if (scrollWheelInput > 0)
         {
-            float scrollWheelInput = Input.GetAxis("Mouse ScrollWheel");
-            if (scrollWheelInput != 0)
-            {
-                zoomLevel += Mathf.RoundToInt(scrollWheelInput * 10);
-                zoomLevel = Mathf.Clamp(zoomLevel, 1, 7);
-                pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
-                pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
-            }
+            zoomLevel += 1;
+            zoomLevel = Mathf.Clamp(zoomLevel, 1, 7);
+            pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
+            pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
         }
     }
 

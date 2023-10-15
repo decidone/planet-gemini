@@ -13,7 +13,6 @@ public class MonsterAi : UnitCommonAi
     List<string> targetTags = new List<string> { "Player", "Unit", "Tower", "Factory" };    
     bool idleTimeStart = true;
 
-    // Start is called before the first frame update
     void Start()
     {
         spawnPos = GetComponentInParent<MonsterSpawner>().gameObject.transform;

@@ -16,7 +16,8 @@ public class BuildingInven : MonoBehaviour
     public static BuildingInven instance;
     [SerializeField]
     private GameObject buildingTagsPanel;
-    public bool debugMode = false;
+    GameManager gameManager;
+    InputManager inputManager;
 
     void Awake()
     {
@@ -31,6 +32,7 @@ public class BuildingInven : MonoBehaviour
 
     private void Start()
     {
+        gameManager = GameManager.instance;
         scienceDb = TempScienceDb.instance;
         buildingDataList = BuildingList.instance.buildingDataList;
         buildingTagsBtn = buildingTagsPanel.GetComponentsInChildren<Button>();
@@ -40,17 +42,15 @@ public class BuildingInven : MonoBehaviour
             int buttonIndex = i;
             buildingTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
         }
-
         ButtonClicked(0);
+
+        inputManager = InputManager.instance;
+        inputManager.controls.HotKey.Debug.performed += ctx => DebugMode();
     }
 
-    private void Update()
+    void DebugMode()
     {
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            debugMode = !debugMode;
-            Refresh();
-        }
+        Refresh();
     }
 
     private void ButtonClicked(int buttonIndex)
@@ -87,7 +87,7 @@ public class BuildingInven : MonoBehaviour
         int index = 0;
         for (int i = 0; i < buildingDataList.Count; i++)
         {
-            if (!debugMode)
+            if (!gameManager.debug)
             {
                 for (int a = 0; a < scienceDb.scienceNameDb.Count; a++)
                 {

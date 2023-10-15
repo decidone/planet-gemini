@@ -18,20 +18,20 @@ public class RecipeManager : InventoryManager
     {
         base.Start();
         itemDic = ItemList.instance.itemDic;
+
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.Recipe.performed += ctx => SlotClick();
     }
 
-    protected override void InputCheck()
+    void SlotClick()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (focusedSlot != null)
         {
-            if (focusedSlot != null)
+            if (focusedSlot.item != null)
             {
-                if (focusedSlot.item != null)
-                {
-                    prod.SetRecipe(recipes[focusedSlot.slotNum]);
-                    focusedSlot = null;
-                    CloseUI();
-                }
+                prod.SetRecipe(recipes[focusedSlot.slotNum]);
+                focusedSlot = null;
+                CloseUI();
             }
         }
     }

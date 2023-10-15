@@ -2,14 +2,14 @@
     "name": "InputControls",
     "maps": [
         {
-            "name": "Player",
-            "id": "a2754b26-8fe1-4f5f-87ba-cc86b9bfdfd4",
+            "name": "MainCamera",
+            "id": "9b28ec48-def5-4f4a-8a60-0032b1aa50d4",
             "actions": [
                 {
-                    "name": "New action",
-                    "type": "Button",
-                    "id": "550e0b53-e7fa-41f3-bc64-28ef132b3a67",
-                    "expectedControlType": "Button",
+                    "name": "Zoom",
+                    "type": "PassThrough",
+                    "id": "7623d1a4-7a76-44b0-a2ab-45a6d3795ad0",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -18,12 +18,240 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "dc26588a-78f3-4114-8c30-b42cc4bc8a00",
-                    "path": "",
+                    "id": "a1198663-4583-4dfc-baeb-b14b3010325a",
+                    "path": "<Mouse>/scroll/y",
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
-                    "action": "New action",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "MapCamera",
+            "id": "c7e04b48-94a0-475d-976c-a48ced853672",
+            "actions": [
+                {
+                    "name": "ToggleMap",
+                    "type": "Button",
+                    "id": "ea472bbc-2aca-4ad9-9b1c-bdabf0afba75",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Zoom",
+                    "type": "PassThrough",
+                    "id": "ecface99-8aab-4b33-95f6-ef9dd73dd416",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d6f605d5-c9bf-43c9-8fa6-5beaaa7f1635",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "ToggleMap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "186a3b88-39f6-41ba-afb0-03e1f990af92",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Player",
+            "id": "a2754b26-8fe1-4f5f-87ba-cc86b9bfdfd4",
+            "actions": [
+                {
+                    "name": "Loot",
+                    "type": "Button",
+                    "id": "550e0b53-e7fa-41f3-bc64-28ef132b3a67",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Miner",
+                    "type": "Button",
+                    "id": "db4ff845-3250-4d68-a45a-6055e5e20fdf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Movement",
+                    "type": "Value",
+                    "id": "bef394ae-2f70-4783-aba3-9d4fe8d8616e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "dc26588a-78f3-4114-8c30-b42cc4bc8a00",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Loot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "45318716-ac32-457f-956c-1335cb5b516c",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Miner",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "WASD",
+                    "id": "01efdc58-bb1d-4a04-9124-28aa8069fb31",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "13d68cef-9ce1-4f74-901b-638e30a32abc",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "e68c4e1f-6a3e-4db1-8e92-c44b94699108",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "b29d5a30-284a-4a05-aac7-f35da731588e",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "f015a196-780a-436a-8aa4-a9cd83fd9ce6",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "Unit",
+            "id": "1ff26e3a-a6af-4a87-89ef-dd3fb429f05f",
+            "actions": [
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "edee8a39-cded-4377-bdae-fa751373f8a0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Patrol",
+                    "type": "Button",
+                    "id": "b5052db8-a1a6-4591-90e5-cbd6ee385c76",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hold",
+                    "type": "Button",
+                    "id": "b1d0fc87-5c86-4ce0-9c4f-e1221eff88be",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "378ea5ce-3b52-419a-96ce-ad15ef981a45",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3b5292bf-4e4e-410c-8e2f-850fed5def7a",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Patrol",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1717916a-4f75-43ee-9035-8f7fd552d29b",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Hold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -69,6 +297,60 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ItemSpawner",
+                    "type": "Button",
+                    "id": "8f8924c4-d6a3-4160-a00d-5c521c008d0e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BuildingInven",
+                    "type": "Button",
+                    "id": "0eed8e9b-4e7f-48b6-9c23-f7f238d5a27f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SplitterFilter",
+                    "type": "Button",
+                    "id": "f9d51da5-cb26-4fa1-b981-6debef4908a5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Recipe",
+                    "type": "Button",
+                    "id": "05362b0e-82de-413e-9d52-d9576116c676",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SlotLeftClick",
+                    "type": "Button",
+                    "id": "b34e0754-005a-4379-a287-75acff3245e1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SlotRightClickHold",
+                    "type": "Button",
+                    "id": "e875a3d9-d19b-48cf-a8c6-59438caa92ee",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -82,100 +364,70 @@
                     "action": "PlayerInven",
                     "isComposite": false,
                     "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Map",
-            "id": "c7e04b48-94a0-475d-976c-a48ced853672",
-            "actions": [
-                {
-                    "name": "New action",
-                    "type": "Button",
-                    "id": "ea472bbc-2aca-4ad9-9b1c-bdabf0afba75",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
+                },
                 {
                     "name": "",
-                    "id": "d6f605d5-c9bf-43c9-8fa6-5beaaa7f1635",
-                    "path": "",
+                    "id": "30662629-be72-4c8b-9547-291f91b444c8",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
-                    "action": "New action",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Hold",
-            "id": "79f4d7cb-6226-48af-9791-91e0bbb68927",
-            "actions": [
-                {
-                    "name": "Ctrl",
-                    "type": "Button",
-                    "id": "5459cd3e-18a4-4cc2-94fa-5e331ba856c1",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Shift",
-                    "type": "Button",
-                    "id": "bc63a25e-a3de-4fd7-a958-7bc5dba409e1",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Alt",
-                    "type": "Button",
-                    "id": "fcfcaa82-b8a8-47f9-b7c7-d177ac1eab21",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "4fb41eee-f32e-4b9d-8495-66bd0007b7f3",
-                    "path": "<Keyboard>/leftCtrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Ctrl",
+                    "action": "ItemSpawner",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "0d64ae89-9ed7-4faa-8aaa-d7bf48b64b71",
-                    "path": "<Keyboard>/leftShift",
+                    "id": "3488d781-49af-4ba3-a1c4-80d288567ef7",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
-                    "action": "Shift",
+                    "action": "BuildingInven",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "ea8d7275-24e0-4c5e-8e5b-a89e954186e5",
-                    "path": "<Keyboard>/alt",
+                    "id": "0efb9578-6793-43f1-99a7-b67ac8ad1328",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
-                    "action": "Alt",
+                    "action": "SplitterFilter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cab868a5-cf13-490b-8e3c-a36c834f6100",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Recipe",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0cfc30c8-2651-43dd-abc5-9f6d5be60972",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "SlotLeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7156d74-9125-41e3-9c3f-6252e0fc9d76",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "SlotRightClickHold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -284,6 +536,74 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "ScienceTree",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Hold",
+            "id": "79f4d7cb-6226-48af-9791-91e0bbb68927",
+            "actions": [
+                {
+                    "name": "Ctrl",
+                    "type": "Button",
+                    "id": "5459cd3e-18a4-4cc2-94fa-5e331ba856c1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Shift",
+                    "type": "Button",
+                    "id": "bc63a25e-a3de-4fd7-a958-7bc5dba409e1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Alt",
+                    "type": "Button",
+                    "id": "fcfcaa82-b8a8-47f9-b7c7-d177ac1eab21",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4fb41eee-f32e-4b9d-8495-66bd0007b7f3",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Ctrl",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0d64ae89-9ed7-4faa-8aaa-d7bf48b64b71",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Shift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ea8d7275-24e0-4c5e-8e5b-a89e954186e5",
+                    "path": "<Keyboard>/alt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Alt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

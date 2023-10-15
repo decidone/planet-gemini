@@ -29,24 +29,25 @@ public class SplitterFilterRecipe : InventoryManager
             int buttonIndex = i;
             itemTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
         }
+
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.SplitterFilter.performed += ctx => FilterItemClick();
     }
 
-    protected override void InputCheck()
+    void FilterItemClick()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (focusedSlot != null)
         {
-            if (focusedSlot != null)
+            if (focusedSlot.item != null)
             {
-                if (focusedSlot.item != null)
-                {
-                    if(selectManager == "SplitterFilterManager")
-                        splitter.SetItem(focusedSlot.item, slotIndex);
-                    else if (selectManager == "UnloaderManager")
-                        unloader.SetItem(focusedSlot.item);
+                Debug.Log("here");
+                if (selectManager == "SplitterFilterManager")
+                    splitter.SetItem(focusedSlot.item, slotIndex);
+                else if (selectManager == "UnloaderManager")
+                    unloader.SetItem(focusedSlot.item);
 
-                    focusedSlot = null;
-                    CloseUI();
-                }
+                focusedSlot = null;
+                CloseUI();
             }
         }
     }

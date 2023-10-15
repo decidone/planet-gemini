@@ -15,21 +15,18 @@ public class BuildingInvenManager : MonoBehaviour
     public Slot[] slots;
     protected GameManager gameManager;
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
-
     protected Slot selectSlot;
 
     BuildingData buildingData;
+    InputManager inputManager;
 
     void Start()
     {
         gameManager = GameManager.instance;
         SetInven(buildingInventory, buildingInventoryUI);
-        //dragSlot = DragSlot.instance;
-    }
-
-    void Update()
-    {
-        InputCheck();
+        
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.BuildingInven.performed += ctx => BuildingInfo();
     }
 
     public void SetInven(BuildingInven inven, GameObject invenUI)
@@ -51,16 +48,13 @@ public class BuildingInvenManager : MonoBehaviour
         buildingInventory.Refresh();
     }
 
-    protected virtual void InputCheck()
+    void BuildingInfo()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (focusedSlot != null)
         {
-            if (focusedSlot != null)
+            if (focusedSlot.item != null)
             {
-                if (focusedSlot.item != null)
-                {
-                    BuildingInfoCheck();
-                }
+                BuildingInfoCheck();
             }
         }
     }
@@ -74,7 +68,7 @@ public class BuildingInvenManager : MonoBehaviour
         {
             if (buildingInventory.buildingDic[i].item == focusedSlot.item && buildingInventory.buildingDic[i].level == focusedSlot.amount)
             {
-                BuildingInfo.instance.SetItemSlot(buildingData, buildingInventory.buildingDic[i]);
+                global::BuildingInfo.instance.SetItemSlot(buildingData, buildingInventory.buildingDic[i]);
             }
         }
 
@@ -94,7 +88,7 @@ public class BuildingInvenManager : MonoBehaviour
             SetSlotColor(currSlotImage, Color.red, 0.5f);
         }
 
-        BuildingInfo.instance.BuildingClick();
+        global::BuildingInfo.instance.BuildingClick();
     }
 
     void SetSlotColor(Image image, Color color, float alpha)
@@ -112,7 +106,7 @@ public class BuildingInvenManager : MonoBehaviour
             Image slotImage = selectSlot.GetComponentInChildren<Image>();
             SetSlotColor(slotImage, Color.white, 1.0f);
 
-            BuildingInfo.instance.ClearArr();
+            global::BuildingInfo.instance.ClearArr();
             selectSlot = null;
         }
 

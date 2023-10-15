@@ -12,25 +12,21 @@ public class PlayerInvenManager : InventoryManager
     {
         base.Start();
         SetInven(inventory, inventoryUI);
+        inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotShiftClick();
     }
 
-    protected override void InputCheck()
+    void SlotShiftClick()
     {
-        base.InputCheck();
+        if (!sManager.isOpened) return;
+        if (!inputManager.shift) return;
 
-        if (sManager.isOpened)
+        if (focusedSlot != null)
         {
-            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
+            if (focusedSlot.item != null)
             {
-                if (focusedSlot != null)
-                {
-                    if (focusedSlot.item != null)
-                    {
-                        int amount = sManager.InsertItem(focusedSlot.item, focusedSlot.amount);
-                        if (amount > 0)
-                            inventory.Sub(focusedSlot.slotNum, amount);
-                    }
-                }
+                int amount = sManager.InsertItem(focusedSlot.item, focusedSlot.amount);
+                if (amount > 0)
+                    inventory.Sub(focusedSlot.slotNum, amount);
             }
         }
     }

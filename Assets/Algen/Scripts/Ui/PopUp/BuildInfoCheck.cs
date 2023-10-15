@@ -10,15 +10,19 @@ public class BuildInfoCheck : MonoBehaviour
     Vector2 mousePos;
     bool isMouseOnBuild = false;
 
-    // Start is called before the first frame update
+    InputManager inputManager;
+
     void Start()
     {
         buildItemInfoWin = GameManager.instance.inventoryUiCanvas.GetComponent<PopUpManager>().buildItemInfo;
+        inputManager = InputManager.instance;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        //Input State Control
+        if (!inputManager.hoverInfo) return;
+
         mousePos = Input.mousePosition;
 
         if (!EventSystem.current.IsPointerOverGameObject())

@@ -13,12 +13,16 @@ public class PlayerMovement : MonoBehaviour
     Animator animator;
     public Vector2 movement;
     float animTimer;
-    
+    InputManager inputManager;
+
+    private void Start()
+    {
+        inputManager = InputManager.instance;
+    }
+
     void Update()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-
+        movement = inputManager.controls.Player.Movement.ReadValue<Vector2>();
         animator.SetFloat("Horizontal", movement.x);
         animator.SetFloat("Vertical", movement.y);
         animator.SetFloat("Speed", movement.sqrMagnitude);
@@ -39,6 +43,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * movement.normalized);
     }
 }

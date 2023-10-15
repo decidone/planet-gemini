@@ -33,6 +33,7 @@ public class ScienceManager : MonoBehaviour
     TempScienceDb scienceDb;
 
     float popupWidth;
+    Vector3 mousePos;
 
     private void Awake()
     {
@@ -72,22 +73,22 @@ public class ScienceManager : MonoBehaviour
     {
         if (infoWindow[0].activeSelf)
         {
-            Vector3 mousePosition = Input.mousePosition;
+            mousePos = Input.mousePosition;
 
-            if (mousePosition.x + popupWidth > Screen.width)
+            if (mousePos.x + popupWidth > Screen.width)
             {
-                mousePosition.x = Screen.width - popupWidth - 10.0f;
+                mousePos.x = Screen.width - popupWidth - 10.0f;
             }
-            else if (mousePosition.x < 0)
+            else if (mousePos.x < 0)
             {
-                mousePosition.x = 0;
+                mousePos.x = 0;
             }
-            infoWindow[0].transform.position = mousePosition;
+            infoWindow[0].transform.position = mousePos;
         }
         else if (infoWindow[1].activeSelf)
         {
-            Vector3 mousePosition = Input.mousePosition;
-            infoWindow[1].transform.position = mousePosition;
+            mousePos = Input.mousePosition;
+            infoWindow[1].transform.position = mousePos;
         }
     }
 

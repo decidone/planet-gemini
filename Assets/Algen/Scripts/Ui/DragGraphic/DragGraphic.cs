@@ -39,7 +39,6 @@ public class DragGraphic : MonoBehaviour
     }
     #endregion
 
-    // Start is called before the first frame update
     void Start()
     {
         unitDrag = GameManager.instance.GetComponent<UnitDrag>();
@@ -54,6 +53,9 @@ public class DragGraphic : MonoBehaviour
 
     private void Update()
     {
+        //Input State Control
+        //드래그 시작에 메서드, 드래그 중 bool값으로 update체크 하면 될 듯
+
         bool ctrlKeyHold = Input.GetKey(KeyCode.LeftControl);
         bool shiftKeyHold = Input.GetKey(KeyCode.LeftShift);
         bool isMouseOverUI = EventSystem.current.IsPointerOverGameObject();

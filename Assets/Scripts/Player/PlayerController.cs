@@ -14,19 +14,29 @@ public class PlayerController : MonoBehaviour
     GameObject preBuilding;
     [SerializeField]
     Building tempMiner = null;
-
     int tempMinerCount;
+
+    InputManager inputManager;
+    bool isLoot;
 
     void Awake()
     {
         circleColl = GetComponent<CircleCollider2D>();
         preBuilding = BuildingInfo.instance.preBuilding;
         tempMinerCount = 5;
+        isLoot = false;
+    }
+
+    void Start()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Player.Loot.performed += ctx => LootCheck();
+        inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (isLoot)
             Loot();
 
         if (Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl))
@@ -47,13 +57,6 @@ public class PlayerController : MonoBehaviour
                 if(item.Item1 != null && item.Item2 > 0)
                     inventory.Add(item.Item1, item.Item2);
             }
-        }
-
-        if (Input.GetKey(KeyCode.Z) && tempMinerCount > 0)
-        {
-            preBuilding.SetActive(true);
-            PreBuilding.instance.SetImage(tempMiner, true);
-            PreBuilding.instance.isEnough = true;
         }
     }
 
@@ -78,6 +81,8 @@ public class PlayerController : MonoBehaviour
         else if (belt && beltList.Contains(collision.gameObject))
             beltList.Remove(collision.gameObject);
     }
+
+    void LootCheck() { isLoot = !isLoot; }
 
     void Loot()
     {
@@ -136,6 +141,16 @@ public class PlayerController : MonoBehaviour
             }
         }
         GameManager.instance.BuildAndSciUiReset();
+    }
+
+    void DeployMiner()
+    {
+        if (tempMinerCount > 0)
+        {
+            preBuilding.SetActive(true);
+            PreBuilding.instance.SetImage(tempMiner, true);
+            PreBuilding.instance.isEnough = true;
+        }
     }
 
     public bool TempMinerCountCheck()
