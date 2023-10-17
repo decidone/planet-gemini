@@ -35,6 +35,42 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouseButtonDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""02873271-613f-4961-9680-b4ae49e212e8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouseButtonUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""357aa058-b1c8-428e-b74f-b5a4c4194361"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightMouseButtonDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""730142c6-cd25-4a1e-8c11-79feef3c0a09"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightMouseButtonUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""3724448e-0014-4f65-b433-1bc1d2896d9b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -46,6 +82,50 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""59a04677-4e55-4605-a772-dcacd7e55a5e"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""LeftMouseButtonDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6f5126c3-041d-45c3-bf3f-c50e94e5f66b"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""LeftMouseButtonUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""810c3c34-7d90-4810-a0c6-e0e388fe8b3d"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""RightMouseButtonDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3017406b-2f30-434b-b0c0-230d06f0c6cb"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""RightMouseButtonUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1170,6 +1250,10 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         // MainCamera
         m_MainCamera = asset.FindActionMap("MainCamera", throwIfNotFound: true);
         m_MainCamera_Zoom = m_MainCamera.FindAction("Zoom", throwIfNotFound: true);
+        m_MainCamera_LeftMouseButtonDown = m_MainCamera.FindAction("LeftMouseButtonDown", throwIfNotFound: true);
+        m_MainCamera_LeftMouseButtonUp = m_MainCamera.FindAction("LeftMouseButtonUp", throwIfNotFound: true);
+        m_MainCamera_RightMouseButtonDown = m_MainCamera.FindAction("RightMouseButtonDown", throwIfNotFound: true);
+        m_MainCamera_RightMouseButtonUp = m_MainCamera.FindAction("RightMouseButtonUp", throwIfNotFound: true);
         // MapCamera
         m_MapCamera = asset.FindActionMap("MapCamera", throwIfNotFound: true);
         m_MapCamera_ToggleMap = m_MapCamera.FindAction("ToggleMap", throwIfNotFound: true);
@@ -1280,11 +1364,19 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_MainCamera;
     private IMainCameraActions m_MainCameraActionsCallbackInterface;
     private readonly InputAction m_MainCamera_Zoom;
+    private readonly InputAction m_MainCamera_LeftMouseButtonDown;
+    private readonly InputAction m_MainCamera_LeftMouseButtonUp;
+    private readonly InputAction m_MainCamera_RightMouseButtonDown;
+    private readonly InputAction m_MainCamera_RightMouseButtonUp;
     public struct MainCameraActions
     {
         private @InputControls m_Wrapper;
         public MainCameraActions(@InputControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Zoom => m_Wrapper.m_MainCamera_Zoom;
+        public InputAction @LeftMouseButtonDown => m_Wrapper.m_MainCamera_LeftMouseButtonDown;
+        public InputAction @LeftMouseButtonUp => m_Wrapper.m_MainCamera_LeftMouseButtonUp;
+        public InputAction @RightMouseButtonDown => m_Wrapper.m_MainCamera_RightMouseButtonDown;
+        public InputAction @RightMouseButtonUp => m_Wrapper.m_MainCamera_RightMouseButtonUp;
         public InputActionMap Get() { return m_Wrapper.m_MainCamera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1297,6 +1389,18 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Zoom.started -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnZoom;
                 @Zoom.performed -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnZoom;
                 @Zoom.canceled -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnZoom;
+                @LeftMouseButtonDown.started -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonDown;
+                @LeftMouseButtonDown.performed -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonDown;
+                @LeftMouseButtonDown.canceled -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonDown;
+                @LeftMouseButtonUp.started -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonUp;
+                @LeftMouseButtonUp.performed -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonUp;
+                @LeftMouseButtonUp.canceled -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonUp;
+                @RightMouseButtonDown.started -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonDown;
+                @RightMouseButtonDown.performed -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonDown;
+                @RightMouseButtonDown.canceled -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonDown;
+                @RightMouseButtonUp.started -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonUp;
+                @RightMouseButtonUp.performed -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonUp;
+                @RightMouseButtonUp.canceled -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonUp;
             }
             m_Wrapper.m_MainCameraActionsCallbackInterface = instance;
             if (instance != null)
@@ -1304,6 +1408,18 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
+                @LeftMouseButtonDown.started += instance.OnLeftMouseButtonDown;
+                @LeftMouseButtonDown.performed += instance.OnLeftMouseButtonDown;
+                @LeftMouseButtonDown.canceled += instance.OnLeftMouseButtonDown;
+                @LeftMouseButtonUp.started += instance.OnLeftMouseButtonUp;
+                @LeftMouseButtonUp.performed += instance.OnLeftMouseButtonUp;
+                @LeftMouseButtonUp.canceled += instance.OnLeftMouseButtonUp;
+                @RightMouseButtonDown.started += instance.OnRightMouseButtonDown;
+                @RightMouseButtonDown.performed += instance.OnRightMouseButtonDown;
+                @RightMouseButtonDown.canceled += instance.OnRightMouseButtonDown;
+                @RightMouseButtonUp.started += instance.OnRightMouseButtonUp;
+                @RightMouseButtonUp.performed += instance.OnRightMouseButtonUp;
+                @RightMouseButtonUp.canceled += instance.OnRightMouseButtonUp;
             }
         }
     }
@@ -1792,6 +1908,10 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     public interface IMainCameraActions
     {
         void OnZoom(InputAction.CallbackContext context);
+        void OnLeftMouseButtonDown(InputAction.CallbackContext context);
+        void OnLeftMouseButtonUp(InputAction.CallbackContext context);
+        void OnRightMouseButtonDown(InputAction.CallbackContext context);
+        void OnRightMouseButtonUp(InputAction.CallbackContext context);
     }
     public interface IMapCameraActions
     {

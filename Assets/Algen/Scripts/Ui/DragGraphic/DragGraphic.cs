@@ -10,6 +10,7 @@ public class DragGraphic : MonoBehaviour
     Vector3 endPosition;
     SpriteRenderer sprite;
     bool clickCheck = false;
+    Vector2 mousePos;
 
     public GameObject preBuilding;
 
@@ -23,6 +24,8 @@ public class DragGraphic : MonoBehaviour
     GameObject lineObj;
     LineRenderer lineRenderer;
     GameObject transportBuild;
+
+    InputManager inputManager;
 
     #region Singleton
     public static DragGraphic instance;
@@ -49,128 +52,151 @@ public class DragGraphic : MonoBehaviour
         sprite.enabled = false;
         startPosition = Vector2.zero;
         isLineDrawing = false;
+
+        inputManager = InputManager.instance;
+        inputManager.controls.MainCamera.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
+        inputManager.controls.MainCamera.LeftMouseButtonUp.performed += ctx => LeftMouseButtonUp();
+        inputManager.controls.MainCamera.RightMouseButtonDown.performed += ctx => RightMouseButtonDown();
+        inputManager.controls.MainCamera.RightMouseButtonUp.performed += ctx => RightMouseButtonUp();
     }
 
     private void Update()
     {
-        //Input State Control
-        //드래그 시작에 메서드, 드래그 중 bool값으로 update체크 하면 될 듯
-
-        bool ctrlKeyHold = Input.GetKey(KeyCode.LeftControl);
-        bool shiftKeyHold = Input.GetKey(KeyCode.LeftShift);
-        bool isMouseOverUI = EventSystem.current.IsPointerOverGameObject();
-        bool isLeftMouseButtonDown = Input.GetMouseButtonDown(0);
-        bool isLeftMouseButtonUp = Input.GetMouseButtonUp(0);
-        bool isRightMouseButtonDown = Input.GetMouseButtonDown(1);
-        bool isRightMouseButtonUp = Input.GetMouseButtonUp(1);
-
         if (!preBuilding.activeSelf)
         {
-            if ((isLeftMouseButtonDown || (isRightMouseButtonDown && shiftKeyHold)) && !isMouseOverUI)
-            {
-                startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                clickCheck = true;
-                isLineDrawing = false;
-                sprite.enabled = true;
-                if (lineRenderer != null)
-                    Destroy(lineRenderer.gameObject);
-            }
-            else if (isRightMouseButtonDown && !isMouseOverUI && !isLineDrawing)
-            {
-                startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-                RaycastHit2D[] hits = Physics2D.RaycastAll(startPosition, Vector2.zero);
-
-                if (hits.Length > 0)
-                {
-                    foreach (RaycastHit2D hit in hits)
-                    {
-                        if(hit.collider.TryGetComponent(out TransportBuild trBuild))
-                        {
-                            transportBuild = trBuild.gameObject;
-                            Vector3 pos = new Vector3(transportBuild.transform.position.x, transportBuild.transform.position.y, -1);
-                            if(trBuild.takeBuild != null)
-                                trBuild.ResetTakeBuild();
-                            LineDrawStart(pos);
-                            isLineDrawing = true;
-                            clickCheck = false;
-                            break;
-                        }    
-                    }
-                }
-            }
-
             if (clickCheck && !isLineDrawing)
             {
-                if (Input.GetMouseButton(0))
-                {
-                    if (!ctrlKeyHold)
-                        ColorSet(Color.green);
-                    else if (ctrlKeyHold)
-                        ColorSet(Color.blue);
-                }
-                else if (Input.GetMouseButton(1))
-                {
-                    if (shiftKeyHold)
-                        ColorSet(Color.red);
-                }
-
                 endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 BoxSizeChange();
             }
             else if (!clickCheck && isLineDrawing)
             {
-                Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                endPosition = new Vector3(mousePosition.x, mousePosition.y, -1f);
+                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                endPosition = new Vector3(mousePos.x, mousePos.y, -1f);
                 lineRenderer.SetPosition(1, endPosition);
             }
+        }
+    }
 
-            if (isLeftMouseButtonUp)
-            {
-                if (!ctrlKeyHold)
-                    unitDrag.LeftMouseUp(startPosition, endPosition);
-                else if (ctrlKeyHold)
-                    UpgradeBuild.LeftMouseUp(startPosition, endPosition);
-                DisableFunc();
-            }
-            else if (isRightMouseButtonUp && clickCheck)
-            {
-                if (unitDrag.isSelectingUnits && !shiftKeyHold)
-                    unitDrag.RightMouseUp(startPosition, endPosition);
-                else if(shiftKeyHold)
-                    removeBuild.RightMouseUp(startPosition, endPosition);
-                DisableFunc();
-            }
-            else if (isRightMouseButtonUp && isLineDrawing)
-            {
-                RaycastHit2D[] hits = Physics2D.RaycastAll(endPosition, Vector2.zero);
+    void LeftMouseButtonDown()
+    {
+        if (preBuilding.activeSelf) return;
 
-                if (hits.Length > 0)
+        if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
+        {
+            startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            clickCheck = true;
+            isLineDrawing = false;
+            sprite.enabled = true;
+            if (lineRenderer != null)
+                Destroy(lineRenderer.gameObject);
+        }
+
+        if (clickCheck && !isLineDrawing)
+        {
+            if (!inputManager.ctrl)
+                ColorSet(Color.green);
+            else if (inputManager.ctrl)
+                ColorSet(Color.blue);
+        }
+    }
+
+    void LeftMouseButtonUp()
+    {
+        if (preBuilding.activeSelf) return;
+
+        if (!inputManager.ctrl)
+            unitDrag.LeftMouseUp(startPosition, endPosition);
+        else if (inputManager.ctrl)
+            UpgradeBuild.LeftMouseUp(startPosition, endPosition);
+        DisableFunc();
+    }
+
+    void RightMouseButtonDown()
+    {
+        if (preBuilding.activeSelf) return;
+
+        if (inputManager.shift && !RaycastUtility.IsPointerOverUI(Input.mousePosition))
+        {
+            startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            clickCheck = true;
+            isLineDrawing = false;
+            sprite.enabled = true;
+            if (lineRenderer != null)
+                Destroy(lineRenderer.gameObject);
+        }
+        else if (!RaycastUtility.IsPointerOverUI(Input.mousePosition) && !isLineDrawing)
+        {
+            startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D[] hits = Physics2D.RaycastAll(startPosition, Vector2.zero);
+
+            if (hits.Length > 0)
+            {
+                foreach (RaycastHit2D hit in hits)
                 {
-                    bool isSameObj = false;
-                    bool isOnStructure = false;
-                    foreach (RaycastHit2D hit in hits)
+                    if (hit.collider.TryGetComponent(out TransportBuild trBuild))
                     {
-                        if (hit.collider.GetComponent<Structure>())
+                        transportBuild = trBuild.gameObject;
+                        Vector3 pos = new Vector3(transportBuild.transform.position.x, transportBuild.transform.position.y, -1);
+                        if (trBuild.takeBuild != null)
+                            trBuild.ResetTakeBuild();
+                        LineDrawStart(pos);
+                        isLineDrawing = true;
+                        clickCheck = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (clickCheck && !isLineDrawing)
+        {
+            if (inputManager.shift)
+                ColorSet(Color.red);
+        }
+    }
+
+    void RightMouseButtonUp()
+    {
+        if (preBuilding.activeSelf) return;
+
+        if (clickCheck)
+        {
+            if (unitDrag.isSelectingUnits && !inputManager.shift)
+                unitDrag.RightMouseUp(startPosition, endPosition);
+            else if (inputManager.shift)
+                removeBuild.RightMouseUp(startPosition, endPosition);
+            DisableFunc();
+        }
+        else if (isLineDrawing)
+        {
+            RaycastHit2D[] hits = Physics2D.RaycastAll(endPosition, Vector2.zero);
+
+            if (hits.Length > 0)
+            {
+                bool isSameObj = false;
+                bool isOnStructure = false;
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider.GetComponent<Structure>())
+                    {
+                        isOnStructure = true;
+                        if (hit.collider.TryGetComponent(out TransportBuild othTrans) && transportBuild != hit.collider.gameObject)
                         {
-                            isOnStructure = true;
-                            if (hit.collider.TryGetComponent(out TransportBuild othTrans) && transportBuild != hit.collider.gameObject)
-                            {
-                                transportBuild.GetComponent<TransportBuild>().TakeBuildSet(othTrans);
-                                break;
-                            }
-                            else if (transportBuild == hit.collider.gameObject)
-                            {
-                                isSameObj = true;
-                            }
+                            transportBuild.GetComponent<TransportBuild>().TakeBuildSet(othTrans);
+                            break;
+                        }
+                        else if (transportBuild == hit.collider.gameObject)
+                        {
+                            isSameObj = true;
                         }
                     }
-                    if(!isSameObj || !isOnStructure)
-                        EndDrawLine();
                 }
-                else
+                if (!isSameObj || !isOnStructure)
                     EndDrawLine();
             }
+            else
+                EndDrawLine();
         }
     }
 
