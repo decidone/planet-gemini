@@ -8,6 +8,7 @@ public class InputManager : MonoBehaviour
     public bool ctrl;
     public bool shift;
     public bool alt;
+    public bool mouseLeft;
 
     //Input State Control <- 따로 인풋 제어가 필요한 경우 해당 주석으로 표시
     public bool isMapOpened;    //여기로 옮기기
@@ -33,6 +34,7 @@ public class InputManager : MonoBehaviour
         ctrl = false;
         shift = false;
         alt = false;
+        mouseLeft = false;
 
         isMapOpened = false;
         hoverInfo = true;
@@ -40,6 +42,7 @@ public class InputManager : MonoBehaviour
         controls.Hold.Ctrl.performed += ctx => CtrlHold();
         controls.Hold.Shift.performed += ctx => ShiftHold();
         controls.Hold.Alt.performed += ctx => AltHold();
+        controls.Hold.MouseLeft.performed += ctx => MouseLeftHold();
     }
 
     void OnEnable() { controls.Enable(); }
@@ -48,4 +51,5 @@ public class InputManager : MonoBehaviour
     void CtrlHold() { ctrl = !ctrl; }
     void ShiftHold() { shift = !shift; }
     void AltHold() { alt = !alt; }
+    void MouseLeftHold() { mouseLeft = !mouseLeft; }
 }

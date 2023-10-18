@@ -180,9 +180,106 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""Building"",
+            ""id"": ""046a5523-3032-48c2-893d-6507dd2800d8"",
+            ""actions"": [
+                {
+                    ""name"": ""LeftMouseButtonDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""93fc001f-7297-4a90-9b44-035b56fa45fd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouseButtonUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""8e60e949-0512-4641-a108-20fe737bf8df"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightMouseButtonDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""b9b8670f-6000-4c4a-998f-5cad6054ab14"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""0cc79e69-5c0d-4387-bf26-2bad487637eb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""2057eb2a-f3b4-4d5b-b12e-c324640535b8"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""LeftMouseButtonDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9f974adc-867b-4a20-956f-a3facb74b59b"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""RightMouseButtonDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""71515b7a-b64f-4ed8-b82a-bb479278efb7"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""LeftMouseButtonUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0f9d9ecd-1dbb-4b00-8703-08f7c2b58301"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""Player"",
             ""id"": ""a2754b26-8fe1-4f5f-87ba-cc86b9bfdfd4"",
             ""actions"": [
+                {
+                    ""name"": ""Movement"",
+                    ""type"": ""Value"",
+                    ""id"": ""bef394ae-2f70-4783-aba3-9d4fe8d8616e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
                 {
                     ""name"": ""Loot"",
                     ""type"": ""Button"",
@@ -202,38 +299,16 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Movement"",
-                    ""type"": ""Value"",
-                    ""id"": ""bef394ae-2f70-4783-aba3-9d4fe8d8616e"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""name"": ""RightClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""b184b0b1-98f6-4769-8eb8-80bba2e7a09f"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""dc26588a-78f3-4114-8c30-b42cc4bc8a00"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""Loot"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""45318716-ac32-457f-956c-1335cb5b516c"",
-                    ""path"": ""<Keyboard>/z"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""Miner"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": ""WASD"",
                     ""id"": ""01efdc58-bb1d-4a04-9124-28aa8069fb31"",
@@ -288,6 +363,39 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dceab05a-76ff-4260-a48c-26c8c3d3a400"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""RightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dc26588a-78f3-4114-8c30-b42cc4bc8a00"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Loot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""45318716-ac32-457f-956c-1335cb5b516c"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Miner"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -673,6 +781,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""ae194fab-828d-4964-a278-8464699ccbe8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -706,6 +823,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Alt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""febbaa78-4f77-455d-a803-47b68124fd98"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""MouseLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1258,11 +1386,18 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_MapCamera = asset.FindActionMap("MapCamera", throwIfNotFound: true);
         m_MapCamera_ToggleMap = m_MapCamera.FindAction("ToggleMap", throwIfNotFound: true);
         m_MapCamera_Zoom = m_MapCamera.FindAction("Zoom", throwIfNotFound: true);
+        // Building
+        m_Building = asset.FindActionMap("Building", throwIfNotFound: true);
+        m_Building_LeftMouseButtonDown = m_Building.FindAction("LeftMouseButtonDown", throwIfNotFound: true);
+        m_Building_LeftMouseButtonUp = m_Building.FindAction("LeftMouseButtonUp", throwIfNotFound: true);
+        m_Building_RightMouseButtonDown = m_Building.FindAction("RightMouseButtonDown", throwIfNotFound: true);
+        m_Building_Rotate = m_Building.FindAction("Rotate", throwIfNotFound: true);
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
+        m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Loot = m_Player.FindAction("Loot", throwIfNotFound: true);
         m_Player_Miner = m_Player.FindAction("Miner", throwIfNotFound: true);
-        m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
+        m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
         // Unit
         m_Unit = asset.FindActionMap("Unit", throwIfNotFound: true);
         m_Unit_Attack = m_Unit.FindAction("Attack", throwIfNotFound: true);
@@ -1292,6 +1427,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
         m_Hold_Shift = m_Hold.FindAction("Shift", throwIfNotFound: true);
         m_Hold_Alt = m_Hold.FindAction("Alt", throwIfNotFound: true);
+        m_Hold_MouseLeft = m_Hold.FindAction("MouseLeft", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
@@ -1466,19 +1602,78 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     }
     public MapCameraActions @MapCamera => new MapCameraActions(this);
 
+    // Building
+    private readonly InputActionMap m_Building;
+    private IBuildingActions m_BuildingActionsCallbackInterface;
+    private readonly InputAction m_Building_LeftMouseButtonDown;
+    private readonly InputAction m_Building_LeftMouseButtonUp;
+    private readonly InputAction m_Building_RightMouseButtonDown;
+    private readonly InputAction m_Building_Rotate;
+    public struct BuildingActions
+    {
+        private @InputControls m_Wrapper;
+        public BuildingActions(@InputControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @LeftMouseButtonDown => m_Wrapper.m_Building_LeftMouseButtonDown;
+        public InputAction @LeftMouseButtonUp => m_Wrapper.m_Building_LeftMouseButtonUp;
+        public InputAction @RightMouseButtonDown => m_Wrapper.m_Building_RightMouseButtonDown;
+        public InputAction @Rotate => m_Wrapper.m_Building_Rotate;
+        public InputActionMap Get() { return m_Wrapper.m_Building; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(BuildingActions set) { return set.Get(); }
+        public void SetCallbacks(IBuildingActions instance)
+        {
+            if (m_Wrapper.m_BuildingActionsCallbackInterface != null)
+            {
+                @LeftMouseButtonDown.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnLeftMouseButtonDown;
+                @LeftMouseButtonDown.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnLeftMouseButtonDown;
+                @LeftMouseButtonDown.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnLeftMouseButtonDown;
+                @LeftMouseButtonUp.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnLeftMouseButtonUp;
+                @LeftMouseButtonUp.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnLeftMouseButtonUp;
+                @LeftMouseButtonUp.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnLeftMouseButtonUp;
+                @RightMouseButtonDown.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRightMouseButtonDown;
+                @RightMouseButtonDown.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRightMouseButtonDown;
+                @RightMouseButtonDown.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRightMouseButtonDown;
+                @Rotate.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRotate;
+                @Rotate.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRotate;
+                @Rotate.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRotate;
+            }
+            m_Wrapper.m_BuildingActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @LeftMouseButtonDown.started += instance.OnLeftMouseButtonDown;
+                @LeftMouseButtonDown.performed += instance.OnLeftMouseButtonDown;
+                @LeftMouseButtonDown.canceled += instance.OnLeftMouseButtonDown;
+                @LeftMouseButtonUp.started += instance.OnLeftMouseButtonUp;
+                @LeftMouseButtonUp.performed += instance.OnLeftMouseButtonUp;
+                @LeftMouseButtonUp.canceled += instance.OnLeftMouseButtonUp;
+                @RightMouseButtonDown.started += instance.OnRightMouseButtonDown;
+                @RightMouseButtonDown.performed += instance.OnRightMouseButtonDown;
+                @RightMouseButtonDown.canceled += instance.OnRightMouseButtonDown;
+                @Rotate.started += instance.OnRotate;
+                @Rotate.performed += instance.OnRotate;
+                @Rotate.canceled += instance.OnRotate;
+            }
+        }
+    }
+    public BuildingActions @Building => new BuildingActions(this);
+
     // Player
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
+    private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Loot;
     private readonly InputAction m_Player_Miner;
-    private readonly InputAction m_Player_Movement;
+    private readonly InputAction m_Player_RightClick;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
         public PlayerActions(@InputControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Loot => m_Wrapper.m_Player_Loot;
         public InputAction @Miner => m_Wrapper.m_Player_Miner;
-        public InputAction @Movement => m_Wrapper.m_Player_Movement;
+        public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1488,28 +1683,34 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
+                @Movement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Movement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @Movement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
                 @Loot.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLoot;
                 @Loot.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLoot;
                 @Loot.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLoot;
                 @Miner.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiner;
                 @Miner.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiner;
                 @Miner.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiner;
-                @Movement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
-                @Movement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
-                @Movement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
+                @RightClick.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
+                @RightClick.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
+                @RightClick.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
+                @Movement.started += instance.OnMovement;
+                @Movement.performed += instance.OnMovement;
+                @Movement.canceled += instance.OnMovement;
                 @Loot.started += instance.OnLoot;
                 @Loot.performed += instance.OnLoot;
                 @Loot.canceled += instance.OnLoot;
                 @Miner.started += instance.OnMiner;
                 @Miner.performed += instance.OnMiner;
                 @Miner.canceled += instance.OnMiner;
-                @Movement.started += instance.OnMovement;
-                @Movement.performed += instance.OnMovement;
-                @Movement.canceled += instance.OnMovement;
+                @RightClick.started += instance.OnRightClick;
+                @RightClick.performed += instance.OnRightClick;
+                @RightClick.canceled += instance.OnRightClick;
             }
         }
     }
@@ -1749,6 +1950,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Hold_Ctrl;
     private readonly InputAction m_Hold_Shift;
     private readonly InputAction m_Hold_Alt;
+    private readonly InputAction m_Hold_MouseLeft;
     public struct HoldActions
     {
         private @InputControls m_Wrapper;
@@ -1756,6 +1958,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Ctrl => m_Wrapper.m_Hold_Ctrl;
         public InputAction @Shift => m_Wrapper.m_Hold_Shift;
         public InputAction @Alt => m_Wrapper.m_Hold_Alt;
+        public InputAction @MouseLeft => m_Wrapper.m_Hold_MouseLeft;
         public InputActionMap Get() { return m_Wrapper.m_Hold; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1774,6 +1977,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Alt.started -= m_Wrapper.m_HoldActionsCallbackInterface.OnAlt;
                 @Alt.performed -= m_Wrapper.m_HoldActionsCallbackInterface.OnAlt;
                 @Alt.canceled -= m_Wrapper.m_HoldActionsCallbackInterface.OnAlt;
+                @MouseLeft.started -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseLeft;
+                @MouseLeft.performed -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseLeft;
+                @MouseLeft.canceled -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseLeft;
             }
             m_Wrapper.m_HoldActionsCallbackInterface = instance;
             if (instance != null)
@@ -1787,6 +1993,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Alt.started += instance.OnAlt;
                 @Alt.performed += instance.OnAlt;
                 @Alt.canceled += instance.OnAlt;
+                @MouseLeft.started += instance.OnMouseLeft;
+                @MouseLeft.performed += instance.OnMouseLeft;
+                @MouseLeft.canceled += instance.OnMouseLeft;
             }
         }
     }
@@ -1918,11 +2127,19 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnToggleMap(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
     }
+    public interface IBuildingActions
+    {
+        void OnLeftMouseButtonDown(InputAction.CallbackContext context);
+        void OnLeftMouseButtonUp(InputAction.CallbackContext context);
+        void OnRightMouseButtonDown(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
+    }
     public interface IPlayerActions
     {
+        void OnMovement(InputAction.CallbackContext context);
         void OnLoot(InputAction.CallbackContext context);
         void OnMiner(InputAction.CallbackContext context);
-        void OnMovement(InputAction.CallbackContext context);
+        void OnRightClick(InputAction.CallbackContext context);
     }
     public interface IUnitActions
     {
@@ -1957,6 +2174,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnCtrl(InputAction.CallbackContext context);
         void OnShift(InputAction.CallbackContext context);
         void OnAlt(InputAction.CallbackContext context);
+        void OnMouseLeft(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

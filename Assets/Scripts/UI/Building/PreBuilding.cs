@@ -6,14 +6,6 @@ using UnityEngine.Tilemaps;
 using Pathfinding;
 
 // UTF-8 설정
-enum MouseBtnFunc
-{
-    None,
-    MouseButtonDown,
-    MouseButton,
-    MouseButtonUp
-}
-
 public class PreBuilding : MonoBehaviour
 {
     SpriteRenderer spriteRenderer;
@@ -50,24 +42,22 @@ public class PreBuilding : MonoBehaviour
     bool moveDir;
     bool tempMoveDir;
     bool isPreBeltSend;
-    Vector3 mousePosition;
-    MouseBtnFunc mouseBtnFunc = MouseBtnFunc.None;
-    bool isMouseLeft = true;
+    Vector3 mousePos;
     bool isDrag = false;
     Coroutine setBuild;
 
     bool isTempBuild;
+    bool mouseHoldCheck;   //기존 isLeftMouse기능 대체 + a 역할이라 실제 hold감지는 InputManager의 hold를 사용할 것
 
     GameManager gameManager;
     PlayerController playerController;
+    InputManager inputManager;
 
     #region Singleton
     public static PreBuilding instance;
 
     void Awake()
     {
-        tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
-
         if (instance != null)
         {
             Debug.LogWarning("More than one instance of PreBuilding found!");
@@ -75,67 +65,42 @@ public class PreBuilding : MonoBehaviour
         }
 
         instance = this;
-        gameManager = GameManager.instance;
-
-        isTempBuild = false;
-        playerController = gameManager.player.GetComponent<PlayerController>();
     }
     #endregion
 
+    void Start()
+    {
+        mouseHoldCheck = false;
+        isTempBuild = false;
+        tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
+
+        gameManager = GameManager.instance;
+        playerController = gameManager.player.GetComponent<PlayerController>();
+        
+        inputManager = InputManager.instance;
+        inputManager.controls.Building.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
+        inputManager.controls.Building.LeftMouseButtonUp.performed += ctx => LeftMouseButtonUp();
+        inputManager.controls.Building.RightMouseButtonDown.performed += ctx => RightMouseButtonDown();
+        inputManager.controls.Building.Rotate.performed += ctx => Rotate();
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R) && gameObj != null && !Input.GetMouseButton(0))
-        {
-            RotationImg(gameObj);
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            startBuildPos = transform.position;
-            endBuildPos = transform.position;
-            if (!EventSystem.current.IsPointerOverGameObject())
-            {
-                isMouseLeft = true;
-                mouseBtnFunc = MouseBtnFunc.MouseButtonDown;
-            }
-        }
-        else if (Input.GetMouseButton(0))
-        {
-            isMouseLeft = true;
-            mouseBtnFunc = MouseBtnFunc.MouseButton;
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            isMouseLeft = true;
-            mouseBtnFunc = MouseBtnFunc.MouseButtonUp;
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            isMouseLeft = false;
-            mouseBtnFunc = MouseBtnFunc.MouseButtonUp;
-        }
-
-        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3Int cellPosition = tilemap.WorldToCell(mousePosition);
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int cellPosition = tilemap.WorldToCell(mousePos);
         Vector3 cellCenter = tilemap.GetCellCenterWorld(cellPosition);
         cellCenter.z = transform.position.z;
         transform.position = cellCenter;
 
-        InputCheck();
         if(spriteRenderer != null)
             BuildingListSetColor();
     }
 
     void FixedUpdate()
     {
-        if(isEnough)
+        if(isEnough && mouseHoldCheck && this.gameObject.activeSelf)
         {
-            if(EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton)
-            {
-                mouseBtnFunc = MouseBtnFunc.None;
-            }
-            if (!EventSystem.current.IsPointerOverGameObject() && mouseBtnFunc == MouseBtnFunc.MouseButton && isMouseLeft)//Input.GetMouseButton(0))
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
                 if((!isTempBuild && BuildingInfo.instance.AmountsEnoughCheck()) || (isTempBuild && playerController.TempMinerCountCheck()))
                 {
@@ -167,86 +132,97 @@ public class PreBuilding : MonoBehaviour
         }
     }
 
-    protected void InputCheck()
+    void LeftMouseButtonDown()
     {
-        if (mouseBtnFunc != MouseBtnFunc.MouseButtonUp)        
-            return;
+        startBuildPos = transform.position;
+        endBuildPos = transform.position;
+        if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
+            mouseHoldCheck = true;
+    }
 
-        if (isMouseLeft)
+    void LeftMouseButtonUp()
+    {
+        if (isEnough && mouseHoldCheck && this.gameObject.activeSelf)
         {
-            if (isEnough)
+            if (!isDrag && !RaycastUtility.IsPointerOverUI(Input.mousePosition))
+                CheckPos();
+
+            bool canBuild = false;
+            int index = 0;
+            foreach (GameObject obj in buildingList)
             {
-                if (!isDrag && !EventSystem.current.IsPointerOverGameObject())
-                {
-                    CheckPos();
-                }
-
-                bool canBuild = false;
-                int index = 0;
-                foreach (GameObject obj in buildingList)
-                {
-                    if (GroupBuildCheck(obj, posList[index]))
-                        canBuild = true;
-                    else
-                    {
-                        canBuild = false;
-                        break;
-                    }
-                    index++;
-                }
-
-                if (canBuild)
-                {
-                    int posIndex = 0;
-                    foreach (GameObject obj in buildingList)
-                    {
-                        setBuild = StartCoroutine("SetBuilding", obj);
-                        if(obj.TryGetComponent(out UnderBeltCtrl underBelt))
-                        {
-                            underBelt.buildEnd = true;
-                        }
-                        else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
-                        {
-                            underPipe.buildEnd = true;
-                        }
-                        if(!isUnderObj)
-                            MapDataCheck(obj,posList[posIndex]);
-                        else if (isUnderObj)
-                            MapDataCheck(obj, obj.transform.position);
-                        posIndex++;
-                    }
-                }
+                if (GroupBuildCheck(obj, posList[index]))
+                    canBuild = true;
                 else
                 {
-                    foreach (GameObject build in buildingList)
-                    {
-                        Destroy(build);
-                    }
+                    canBuild = false;
+                    break;
                 }
-
-                buildingList.Clear();
-                gameObj.SetActive(true);
-                posList.Clear();
-                isDrag = false;
+                index++;
             }
-        }
-        else
-        {
-            if(setBuild == null)
+
+            if (canBuild)
+            {
+                int posIndex = 0;
+                foreach (GameObject obj in buildingList)
+                {
+                    setBuild = StartCoroutine("SetBuilding", obj);
+                    if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
+                    {
+                        underBelt.buildEnd = true;
+                    }
+                    else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
+                    {
+                        underPipe.buildEnd = true;
+                    }
+                    if (!isUnderObj)
+                        MapDataCheck(obj, posList[posIndex]);
+                    else if (isUnderObj)
+                        MapDataCheck(obj, obj.transform.position);
+                    posIndex++;
+                }
+            }
+            else
             {
                 foreach (GameObject build in buildingList)
                 {
                     Destroy(build);
                 }
-
-                buildingList.Clear();
-                ReSetImage();
-                posList.Clear();
-                isDrag = false;
             }
-            
+
+            buildingList.Clear();
+            gameObj.SetActive(true);
+            posList.Clear();
+            isDrag = false;
         }
-        mouseBtnFunc = MouseBtnFunc.None;
+
+        mouseHoldCheck = false;
+    }
+
+    void RightMouseButtonDown()
+    {
+        mouseHoldCheck = false;
+
+        if (setBuild == null)
+        {
+            foreach (GameObject build in buildingList)
+            {
+                Destroy(build);
+            }
+
+            buildingList.Clear();
+            ReSetImage();
+            posList.Clear();
+            isDrag = false;
+        }
+    }
+
+    void Rotate()
+    {
+        if (gameObj != null && !inputManager.mouseLeft)
+        {
+            RotationImg(gameObj);
+        }
     }
 
     void MapDataCheck(GameObject obj, Vector2 pos)
@@ -1020,7 +996,7 @@ public class PreBuilding : MonoBehaviour
         {
             if(gameObj != null)
             {
-                if (isBuildingOk && isEnough && GroupBuildCheck(gameObj, mousePosition))
+                if (isBuildingOk && isEnough && GroupBuildCheck(gameObj, mousePos))
                 {
                     if (!gameObj.GetComponent<UnderBeltCtrl>())
                         SetColor(spriteRenderer, Color.green, 0.35f);
@@ -1029,7 +1005,7 @@ public class PreBuilding : MonoBehaviour
                         gameObj.GetComponent<UnderBeltCtrl>().SetColor(Color.green);
                     }
                 }
-                else if (!isBuildingOk || !isEnough || !GroupBuildCheck(gameObj, mousePosition))
+                else if (!isBuildingOk || !isEnough || !GroupBuildCheck(gameObj, mousePos))
                 {
                     if (!gameObj.GetComponent<UnderBeltCtrl>())
                         SetColor(spriteRenderer, Color.red, 0.35f);

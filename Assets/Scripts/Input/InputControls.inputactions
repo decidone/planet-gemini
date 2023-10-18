@@ -158,9 +158,106 @@
             ]
         },
         {
+            "name": "Building",
+            "id": "046a5523-3032-48c2-893d-6507dd2800d8",
+            "actions": [
+                {
+                    "name": "LeftMouseButtonDown",
+                    "type": "Button",
+                    "id": "93fc001f-7297-4a90-9b44-035b56fa45fd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftMouseButtonUp",
+                    "type": "Button",
+                    "id": "8e60e949-0512-4641-a108-20fe737bf8df",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightMouseButtonDown",
+                    "type": "Button",
+                    "id": "b9b8670f-6000-4c4a-998f-5cad6054ab14",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Button",
+                    "id": "0cc79e69-5c0d-4387-bf26-2bad487637eb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2057eb2a-f3b4-4d5b-b12e-c324640535b8",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "LeftMouseButtonDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9f974adc-867b-4a20-956f-a3facb74b59b",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "RightMouseButtonDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71515b7a-b64f-4ed8-b82a-bb479278efb7",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "LeftMouseButtonUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f9d9ecd-1dbb-4b00-8703-08f7c2b58301",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Player",
             "id": "a2754b26-8fe1-4f5f-87ba-cc86b9bfdfd4",
             "actions": [
+                {
+                    "name": "Movement",
+                    "type": "Value",
+                    "id": "bef394ae-2f70-4783-aba3-9d4fe8d8616e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
                 {
                     "name": "Loot",
                     "type": "Button",
@@ -180,38 +277,16 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Movement",
-                    "type": "Value",
-                    "id": "bef394ae-2f70-4783-aba3-9d4fe8d8616e",
-                    "expectedControlType": "Vector2",
+                    "name": "RightClick",
+                    "type": "Button",
+                    "id": "b184b0b1-98f6-4769-8eb8-80bba2e7a09f",
+                    "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
+                    "interactions": "Tap",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "dc26588a-78f3-4114-8c30-b42cc4bc8a00",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Loot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "45318716-ac32-457f-956c-1335cb5b516c",
-                    "path": "<Keyboard>/z",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Miner",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "WASD",
                     "id": "01efdc58-bb1d-4a04-9124-28aa8069fb31",
@@ -266,6 +341,39 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "dceab05a-76ff-4260-a48c-26c8c3d3a400",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "RightClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dc26588a-78f3-4114-8c30-b42cc4bc8a00",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Loot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "45318716-ac32-457f-956c-1335cb5b516c",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Miner",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -651,6 +759,15 @@
                     "processors": "",
                     "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "MouseLeft",
+                    "type": "Button",
+                    "id": "ae194fab-828d-4964-a278-8464699ccbe8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -684,6 +801,17 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Alt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "febbaa78-4f77-455d-a803-47b68124fd98",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "MouseLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

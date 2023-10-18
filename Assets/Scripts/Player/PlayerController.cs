@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
         inputManager = InputManager.instance;
         inputManager.controls.Player.Loot.performed += ctx => LootCheck();
         inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
+        inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
         tempFullAmount = 5;
         tempMinerCount = tempFullAmount;
     }
@@ -44,34 +45,6 @@ public class PlayerController : MonoBehaviour
     {
         if (isLoot)
             Loot();
-
-        if (Input.GetMouseButtonDown(1) && Input.GetKey(KeyCode.LeftControl))
-        {
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
-            if (hit.collider != null && hit.collider.TryGetComponent(out LogisticsCtrl factoryCtrl))
-            {
-                List<Item> factItemList = factoryCtrl.PlayerGetItemList();
-                for (int i = 0; i < factItemList.Count; i++) 
-                {
-                    inventory.Add(factItemList[i], 1);
-                }
-            }
-            else if (hit.collider != null && hit.collider.TryGetComponent(out Production production))
-            {
-                var item = production.QuickPullOut();
-                if(item.Item1 != null && item.Item2 > 0)
-                    inventory.Add(item.Item1, item.Item2);
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Z) && tempMinerCount > 0)
-        {
-            preBuilding.SetActive(true);
-            PreBuilding.instance.SetImage(tempMiner, true);
-            PreBuilding.instance.isEnough = true;
-            TempBuildUI(true);
-        }
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -164,9 +137,33 @@ public class PlayerController : MonoBehaviour
             preBuilding.SetActive(true);
             PreBuilding.instance.SetImage(tempMiner, true);
             PreBuilding.instance.isEnough = true;
+            TempBuildUI(true);
         }
     }
     
+    void GetStrItem()
+    {
+        if (inputManager.ctrl)
+        {
+            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
+            if (hit.collider != null && hit.collider.TryGetComponent(out LogisticsCtrl factoryCtrl))
+            {
+                List<Item> factItemList = factoryCtrl.PlayerGetItemList();
+                for (int i = 0; i < factItemList.Count; i++)
+                {
+                    inventory.Add(factItemList[i], 1);
+                }
+            }
+            else if (hit.collider != null && hit.collider.TryGetComponent(out Production production))
+            {
+                var item = production.QuickPullOut();
+                if (item.Item1 != null && item.Item2 > 0)
+                    inventory.Add(item.Item1, item.Item2);
+            }
+        }
+    }
+
     public void TempBuildUI(bool isOn)
     {
         tempMinerUI.StartMoveUIElementCoroutine(isOn, tempFullAmount, tempMinerCount);
