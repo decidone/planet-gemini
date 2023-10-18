@@ -14,14 +14,18 @@ public class PlayerController : MonoBehaviour
     GameObject preBuilding;
     [SerializeField]
     Building tempMiner = null;
+    [SerializeField]
+    TempMinerUi tempMinerUI;
 
+    int tempFullAmount;
     int tempMinerCount;
 
     void Awake()
     {
         circleColl = GetComponent<CircleCollider2D>();
         preBuilding = BuildingInfo.instance.preBuilding;
-        tempMinerCount = 5;
+        tempFullAmount = 5;
+        tempMinerCount = tempFullAmount;
     }
 
     void Update()
@@ -49,11 +53,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.Z) && tempMinerCount > 0)
+        if (Input.GetKeyDown(KeyCode.Z) && tempMinerCount > 0)
         {
             preBuilding.SetActive(true);
             PreBuilding.instance.SetImage(tempMiner, true);
             PreBuilding.instance.isEnough = true;
+            TempBuildUI(true);
         }
     }
 
@@ -138,8 +143,15 @@ public class PlayerController : MonoBehaviour
         GameManager.instance.BuildAndSciUiReset();
     }
 
+    public void TempBuildUI(bool isOn)
+    {
+        tempMinerUI.StartMoveUIElementCoroutine(isOn, tempFullAmount, tempMinerCount);
+    }
+
     public bool TempMinerCountCheck()
     {
+        tempMinerUI.AmountTextSet(tempFullAmount, tempMinerCount);
+
         if (tempMinerCount > 0)
         {
             return true;
@@ -154,10 +166,12 @@ public class PlayerController : MonoBehaviour
         {
             tempMinerCount--;
         }
+        TempMinerCountCheck();
     }
 
     public void RemoveTempBuild()
     {
         tempMinerCount++;
+        TempMinerCountCheck();
     }
 }

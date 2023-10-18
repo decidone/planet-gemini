@@ -162,10 +162,8 @@ public class AttackTower : TowerAi
         isDelayAfterAttackCoroutine = false;
     }
 
-    protected virtual void AttackStart()
-    {
+    protected virtual void AttackStart()  { }
 
-    }
     protected override void DieFunc()
     {
         base.DieFunc();
