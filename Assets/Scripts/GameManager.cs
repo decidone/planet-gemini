@@ -72,6 +72,8 @@ public class GameManager : MonoBehaviour
         inputManager.controls.Inventory.PlayerInven.performed += ctx => Inven();
         inputManager.controls.HotKey.Building.performed += ctx => Building();
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
+
+        //Cursor.lockState = CursorLockMode.Confined;
     }
 
     void Update()

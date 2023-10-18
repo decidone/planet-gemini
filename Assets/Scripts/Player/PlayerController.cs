@@ -14,6 +14,10 @@ public class PlayerController : MonoBehaviour
     GameObject preBuilding;
     [SerializeField]
     Building tempMiner = null;
+    [SerializeField]
+    TempMinerUi tempMinerUI;
+
+    int tempFullAmount;
     int tempMinerCount;
 
     InputManager inputManager;
@@ -32,6 +36,8 @@ public class PlayerController : MonoBehaviour
         inputManager = InputManager.instance;
         inputManager.controls.Player.Loot.performed += ctx => LootCheck();
         inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
+        tempFullAmount = 5;
+        tempMinerCount = tempFullAmount;
     }
 
     void Update()
@@ -57,6 +63,14 @@ public class PlayerController : MonoBehaviour
                 if(item.Item1 != null && item.Item2 > 0)
                     inventory.Add(item.Item1, item.Item2);
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z) && tempMinerCount > 0)
+        {
+            preBuilding.SetActive(true);
+            PreBuilding.instance.SetImage(tempMiner, true);
+            PreBuilding.instance.isEnough = true;
+            TempBuildUI(true);
         }
     }
 
@@ -152,9 +166,16 @@ public class PlayerController : MonoBehaviour
             PreBuilding.instance.isEnough = true;
         }
     }
+    
+    public void TempBuildUI(bool isOn)
+    {
+        tempMinerUI.StartMoveUIElementCoroutine(isOn, tempFullAmount, tempMinerCount);
+    }
 
     public bool TempMinerCountCheck()
     {
+        tempMinerUI.AmountTextSet(tempFullAmount, tempMinerCount);
+
         if (tempMinerCount > 0)
         {
             return true;
@@ -169,10 +190,12 @@ public class PlayerController : MonoBehaviour
         {
             tempMinerCount--;
         }
+        TempMinerCountCheck();
     }
 
     public void RemoveTempBuild()
     {
         tempMinerCount++;
+        TempMinerCountCheck();
     }
 }

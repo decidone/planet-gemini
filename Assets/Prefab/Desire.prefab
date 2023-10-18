@@ -282,6 +282,7 @@ MonoBehaviour:
   inventory: {fileID: 0}
   circleColl: {fileID: 0}
   tempMiner: {fileID: 11400000, guid: fc3c0374a9087634c8a3120bbde7188d, type: 2}
+  tempMinerUI: {fileID: 0}
 --- !u!114 &7093100876002410941
 MonoBehaviour:
   m_ObjectHideFlags: 0

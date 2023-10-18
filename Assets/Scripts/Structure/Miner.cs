@@ -5,6 +5,8 @@ using UnityEngine;
 // UTF-8 설정
 public class Miner : Production
 {
+    int minerCellCount;
+
     protected override void Start()
     {
         base.Start();
@@ -23,8 +25,17 @@ public class Miner : Production
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    inventory.Add(output, 1);
-                    prodTimer = 0;
+                    if(slot.amount + minerCellCount <= maxAmount)
+                    {
+                        inventory.Add(output, minerCellCount);
+                        prodTimer = 0;
+                    }
+                    else
+                    {
+                        int addAmount = maxAmount - slot.amount;
+                        inventory.Add(output, addAmount);
+                        prodTimer = 0;
+                    }
                 }
             }
 
@@ -54,7 +65,7 @@ public class Miner : Production
                     Item item = resource.item;
                     if (item != null)
                     {
-                        SetResource(item, resource.level, resource.efficiency);
+                        SetResource(item, resource.level, resource.efficiency, 1);
                     }
                 }
             }
@@ -112,13 +123,11 @@ public class Miner : Production
                         highestQuantity = countData;
                         highestEfficiency = efficiencyData;
                         highestLevel = levelData;
-
-                        Debug.Log(highestQuantity);
                     }
                 }
 
                 if(highestItem != null)
-                    SetResource(highestItem, highestLevel, highestEfficiency);
+                    SetResource(highestItem, highestLevel, highestEfficiency, highestQuantity);
             }
         }
     }
@@ -137,12 +146,13 @@ public class Miner : Production
         sInvenManager.ReleaseInven();
     }
 
-    void SetResource(Item item, int _level, float _efficiency)
+    void SetResource(Item item, int _level, float _efficiency, int _minerCellCount)
     {
         if(level >= _level)
         {
             output = item;
-            cooldown = _efficiency + 3 - level;
+            cooldown = _efficiency;
+            minerCellCount = _minerCellCount;
         }
     }
 

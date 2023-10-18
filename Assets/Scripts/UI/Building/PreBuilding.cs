@@ -61,7 +61,6 @@ public class PreBuilding : MonoBehaviour
     GameManager gameManager;
     PlayerController playerController;
 
-
     #region Singleton
     public static PreBuilding instance;
 
@@ -173,15 +172,9 @@ public class PreBuilding : MonoBehaviour
         if (mouseBtnFunc != MouseBtnFunc.MouseButtonUp)        
             return;
 
-        if (!isEnough && mouseBtnFunc == MouseBtnFunc.MouseButtonUp && !isMouseLeft)
+        if (isMouseLeft)
         {
-            ReSetImage();
-            return;
-        }
-
-        if (isEnough)
-        {
-            if (isMouseLeft)
+            if (isEnough)
             {
                 if (!isDrag && !EventSystem.current.IsPointerOverGameObject())
                 {
@@ -236,21 +229,22 @@ public class PreBuilding : MonoBehaviour
                 posList.Clear();
                 isDrag = false;
             }
-            else
+        }
+        else
+        {
+            if(setBuild == null)
             {
-                if(setBuild == null)
+                foreach (GameObject build in buildingList)
                 {
-                    foreach (GameObject build in buildingList)
-                    {
-                        Destroy(build);
-                    }
-
-                    buildingList.Clear();
-                    ReSetImage();
-                    posList.Clear();
-                    isDrag = false;
+                    Destroy(build);
                 }
+
+                buildingList.Clear();
+                ReSetImage();
+                posList.Clear();
+                isDrag = false;
             }
+            
         }
         mouseBtnFunc = MouseBtnFunc.None;
     }
@@ -900,10 +894,9 @@ public class PreBuilding : MonoBehaviour
         int dirCount = build.dirCount;
         isTempBuild = _isTempbuild;
 
-        if (this.transform.childCount > 0)
+        if (gameObj != null)
         {
-            GameObject temp = transform.GetChild(0).gameObject;
-            Destroy(temp);
+            Destroy(gameObj);
         }
 
         gameObj = Instantiate(game);
@@ -1126,16 +1119,16 @@ public class PreBuilding : MonoBehaviour
 
     public void ReSetImage()
     {
-        if (this.transform.childCount > 0)
+        if (gameObj != null)
         {
-            GameObject temp = transform.GetChild(0).gameObject;
-            Destroy(temp);
+            Destroy(gameObj);
         }
 
         if(spriteRenderer)
             spriteRenderer.sprite = null;
         gameObj = null;
         gameObject.SetActive(false);
+        playerController.TempBuildUI(false);
     }
 
 

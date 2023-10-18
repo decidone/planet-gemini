@@ -42,12 +42,13 @@ public class RepairTower : TowerAi
             GameObject tower = collider.gameObject;
             if (tower == this.gameObject)
                 continue;
-            if (tower.GetComponent<Structure>())
+            if (tower.TryGetComponent(out Structure structure))
             {
-                if (!TowerList.Contains(tower))
+                if (structure.repairTower == null && !structure.isPreBuilding 
+                    && !TowerList.Contains(tower) && !tower.GetComponent<RepairTower>())
                 {
                     TowerList.Add(tower);
-                    tower.GetComponent<Structure>().repairTower = gameObject.GetComponent<RepairTower>();
+                    structure.repairTower = this;
                 }
             }
         }
