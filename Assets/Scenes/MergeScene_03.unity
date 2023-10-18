@@ -477,6 +477,10 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 219787472492811319}
+    - target: {fileID: 2369682121264992854, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
+      propertyPath: tempMinerUI
+      value: 
+      objectReference: {fileID: 1601891631}
     - target: {fileID: 2369682121264992856, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
       propertyPath: m_Name
       value: Desire
@@ -667,6 +671,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30fb03d4f5333974dbfc1a85400c4d85, type: 3}
+--- !u!114 &1601891631 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5317558884792932963, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd7fa8761429b7748aac70a50c4a4aee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1798222437
 PrefabInstance:
   m_ObjectHideFlags: 0
