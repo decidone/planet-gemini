@@ -109,7 +109,7 @@ public class UnitDrag : DragFunc
             }
             else
             {
-                SetTargetPosition(true);
+                SetTargetPosition(true, endPos);
             }
         }
         ReSetBool();
@@ -117,7 +117,7 @@ public class UnitDrag : DragFunc
 
     public override void RightMouseUp(Vector2 startPos, Vector2 endPos)
     {
-        SetTargetPosition(false);
+        SetTargetPosition(false, endPos);
         ReSetBool();
     }
 
@@ -143,19 +143,10 @@ public class UnitDrag : DragFunc
         isSelectingUnits = true;
     }
 
-    void SetTargetPosition(bool isAttack)
+    void SetTargetPosition(bool isAttack, Vector2 targetPos)
     {
-        Plane plane = new Plane(Vector3.back, transform.position);
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (plane.Raycast(ray, out float distance))
-        {
-            Vector3 hitPoint = ray.GetPoint(distance);
-            targetPosition = new Vector2(hitPoint.x, hitPoint.y);
-        }
         groupCenterSet?.Invoke();
-
-        targetSet?.Invoke(targetPosition, isAttack);
+        targetSet?.Invoke(targetPos, isAttack);
     }
 
     void ReSetBool()

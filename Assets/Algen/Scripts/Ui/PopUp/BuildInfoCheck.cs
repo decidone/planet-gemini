@@ -78,5 +78,7 @@ public class BuildInfoCheck : MonoBehaviour
             BuildItemInfoPopUpOn();
             buildItemInfoWin.UiSetting(getDic);
         }
+        else
+            BuildItemInfoPopUpOff();
     }
 }
