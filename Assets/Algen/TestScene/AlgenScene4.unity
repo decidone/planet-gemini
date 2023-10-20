@@ -478,6 +478,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 219787472492811319}
     - target: {fileID: 2369682121264992854, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
+      propertyPath: preBuilding
+      value: 
+      objectReference: {fileID: 774915813}
+    - target: {fileID: 2369682121264992854, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
       propertyPath: tempMinerUI
       value: 
       objectReference: {fileID: 1095768246952270823}
@@ -845,6 +849,14 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 7525422399260504464}
+    - target: {fileID: 2798780337950601494, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: testText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3708228166959310970, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5315094254524996675, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 

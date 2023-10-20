@@ -7,7 +7,6 @@ using UnityEngine;
 public class BuildingDataGet : MonoBehaviour
 {
     Dictionary<string, Dictionary<int, BuildingData>> buildingDataDic;
-    BuildingData buildingData;
 
     #region Singleton
     public static BuildingDataGet instance;

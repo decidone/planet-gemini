@@ -1069,7 +1069,8 @@ public class PreBuilding : MonoBehaviour
 
                 if (obj.TryGetComponent(out miner) || obj.TryGetComponent(out pump) || obj.TryGetComponent(out extractor))
                 {
-                    if ((miner && gameManager.map.mapData[newX][newY].BuildCheck("miner")) ||
+                    if ((miner && gameManager.map.mapData[newX][newY].BuildCheck("miner") &&
+                        miner.level >= gameManager.map.mapData[newX][newY].resource.level) ||
                         (pump && gameManager.map.mapData[newX][newY].BuildCheck("pump")) ||
                         (extractor && gameManager.map.mapData[newX][newY].BuildCheck("extractor")))
                     {

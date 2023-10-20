@@ -19,6 +19,7 @@ public class ScienceManager : MonoBehaviour
     GameObject[] infoWindow;
 
     public GameObject coreLvUI;
+    [HideInInspector]
     public ScienceBtn[] scienceBtns;
 
     ScienceCoreLvCtrl[] buildContent = new ScienceCoreLvCtrl[5];
@@ -35,13 +36,10 @@ public class ScienceManager : MonoBehaviour
     float popupWidth;
     Vector3 mousePos;
 
-    private void Awake()
-    {
-        UISetting();
-    }
-
     void Start()
     {
+        UISetting();
+
         gameManager = GameManager.instance;
         scienceDb = TempScienceDb.instance;
 

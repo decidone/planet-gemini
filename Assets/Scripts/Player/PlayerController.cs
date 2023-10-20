@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     List<GameObject> beltList = new List<GameObject>();
 
     public Collider2D circleColl;
+    [SerializeField]
     GameObject preBuilding;
     [SerializeField]
     Building tempMiner = null;
@@ -26,7 +27,6 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         circleColl = GetComponent<CircleCollider2D>();
-        preBuilding = BuildingInfo.instance.preBuilding;
         tempMinerCount = 5;
         isLoot = false;
     }

@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,8 +18,9 @@ public class ScienceInfoGet : MonoBehaviour
             Debug.LogWarning("More than one instance of recipeList found!");
             return;
         }
-
         instance = this;
+        scienceInfoDataDic = new Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>>();
+
         string json = Resources.Load<TextAsset>("ScienceInfo").ToString();
         scienceInfoDataDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Dictionary<int, ScienceInfoData>>>>(json);
     }
@@ -73,4 +75,40 @@ public class ScienceInfoGet : MonoBehaviour
 
         return matchingData;
     }
+
+
+    //string myLog;
+    //Queue myLogQueue = new Queue();
+
+    //void OnEnable()
+    //{
+    //    Application.logMessageReceived += HandleLog;
+    //}
+
+    //void OnDisable()
+    //{
+    //    Application.logMessageReceived -= HandleLog;
+    //}
+
+    //void HandleLog(string logString, string stackTrace, LogType type)
+    //{
+    //    myLog = logString;
+    //    string newString = "\n [" + type + "] : " + myLog;
+    //    myLogQueue.Enqueue(newString);
+    //    if (type == LogType.Exception)
+    //    {
+    //        newString = "\n" + stackTrace;
+    //        myLogQueue.Enqueue(newString);
+    //    }
+    //    myLog = string.Empty;
+    //    foreach (string mylog in myLogQueue)
+    //    {
+    //        myLog += mylog;
+    //    }
+    //}
+
+    //void OnGUI()
+    //{
+    //    GUILayout.Label(myLog);
+    //}
 }

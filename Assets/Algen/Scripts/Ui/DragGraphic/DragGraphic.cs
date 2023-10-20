@@ -9,7 +9,6 @@ public class DragGraphic : MonoBehaviour
     Vector3 startPosition;
     Vector3 endPosition;
     SpriteRenderer sprite;
-    bool clickCheck = false;
     Vector2 mousePos;
 
     public GameObject preBuilding;
@@ -26,6 +25,9 @@ public class DragGraphic : MonoBehaviour
     GameObject transportBuild;
 
     InputManager inputManager;
+    bool isClick = false;
+    bool isLeftClick;
+
 
     #region Singleton
     public static DragGraphic instance;
@@ -62,20 +64,40 @@ public class DragGraphic : MonoBehaviour
 
     private void Update()
     {
-        if (!preBuilding.activeSelf)
+        if (!preBuilding.activeSelf && isClick)
         {
-            if (clickCheck && !isLineDrawing)
+            if (!isLineDrawing)
             {
                 endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 BoxSizeChange();
+
+                if (isLeftClick)
+                {
+                    if (!inputManager.ctrl)
+                        ColorSet(Color.green);
+                    else if (inputManager.ctrl)
+                        ColorSet(Color.blue);
+                }
+                else
+                {
+                    if (inputManager.shift)
+                    {
+                        ColorSet(Color.red);
+                        if(sprite.enabled == false)
+                            sprite.enabled = true;
+                    }
+                    else
+                        sprite.enabled = false;
+                }
             }
-            else if (!clickCheck && isLineDrawing)
+            else if (isLineDrawing)
             {
                 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 endPosition = new Vector3(mousePos.x, mousePos.y, -1f);
                 lineRenderer.SetPosition(1, endPosition);
             }
         }
+
     }
 
     void LeftMouseButtonDown()
@@ -85,19 +107,12 @@ public class DragGraphic : MonoBehaviour
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
         {
             startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            clickCheck = true;
             isLineDrawing = false;
             sprite.enabled = true;
+            isClick = true;
+            isLeftClick = true;
             if (lineRenderer != null)
                 Destroy(lineRenderer.gameObject);
-        }
-
-        if (clickCheck && !isLineDrawing)
-        {
-            if (!inputManager.ctrl)
-                ColorSet(Color.green);
-            else if (inputManager.ctrl)
-                ColorSet(Color.blue);
         }
     }
 
@@ -116,43 +131,40 @@ public class DragGraphic : MonoBehaviour
     {
         if (preBuilding.activeSelf) return;
 
-        if (inputManager.shift && !RaycastUtility.IsPointerOverUI(Input.mousePosition))
+        if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
         {
             startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            clickCheck = true;
-            isLineDrawing = false;
-            sprite.enabled = true;
-            if (lineRenderer != null)
-                Destroy(lineRenderer.gameObject);
-        }
-        else if (!RaycastUtility.IsPointerOverUI(Input.mousePosition) && !isLineDrawing)
-        {
-            startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D[] hits = Physics2D.RaycastAll(startPosition, Vector2.zero);
+            isClick = true;
+            isLeftClick = false;
 
-            if (hits.Length > 0)
+            if (inputManager.shift)
             {
-                foreach (RaycastHit2D hit in hits)
+                isLineDrawing = false;
+                sprite.enabled = true;
+                if (lineRenderer != null)
+                    Destroy(lineRenderer.gameObject);
+            }
+            else if (!isLineDrawing)
+            {
+                RaycastHit2D[] hits = Physics2D.RaycastAll(startPosition, Vector2.zero);
+
+                if (hits.Length > 0)
                 {
-                    if (hit.collider.TryGetComponent(out TransportBuild trBuild))
+                    foreach (RaycastHit2D hit in hits)
                     {
-                        transportBuild = trBuild.gameObject;
-                        Vector3 pos = new Vector3(transportBuild.transform.position.x, transportBuild.transform.position.y, -1);
-                        if (trBuild.takeBuild != null)
-                            trBuild.ResetTakeBuild();
-                        LineDrawStart(pos);
-                        isLineDrawing = true;
-                        clickCheck = false;
-                        break;
+                        if (hit.collider.TryGetComponent(out TransportBuild trBuild))
+                        {
+                            transportBuild = trBuild.gameObject;
+                            Vector3 pos = new Vector3(transportBuild.transform.position.x, transportBuild.transform.position.y, -1);
+                            if (trBuild.takeBuild != null)
+                                trBuild.ResetTakeBuild();
+                            LineDrawStart(pos);
+                            isLineDrawing = true;
+                            break;
+                        }
                     }
                 }
             }
-        }
-
-        if (clickCheck && !isLineDrawing)
-        {
-            if (inputManager.shift)
-                ColorSet(Color.red);
         }
     }
 
@@ -160,7 +172,7 @@ public class DragGraphic : MonoBehaviour
     {
         if (preBuilding.activeSelf) return;
 
-        if (clickCheck)
+        if (!isLineDrawing)
         {
             if (unitDrag.isSelectingUnits && !inputManager.shift)
                 unitDrag.RightMouseUp(startPosition, endPosition);
@@ -222,7 +234,7 @@ public class DragGraphic : MonoBehaviour
         startPosition = Vector2.zero;
         endPosition = Vector2.zero;
         sprite.enabled = false;
-        clickCheck = false;
+        isClick = false;
     }
 
     public void LineDrawStart(Vector2 startPos)
@@ -236,6 +248,7 @@ public class DragGraphic : MonoBehaviour
 
     void EndDrawLine()
     {
+        isClick = false;
         isLineDrawing = false;
         Destroy(lineRenderer.gameObject);
     }
