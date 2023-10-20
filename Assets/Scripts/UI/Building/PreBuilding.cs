@@ -47,7 +47,7 @@ public class PreBuilding : MonoBehaviour
     Coroutine setBuild;
 
     bool isTempBuild;
-    bool mouseHoldCheck;   //기존 isLeftMouse기능 대체 + a 역할이라 실제 hold감지는 InputManager의 hold를 사용할 것
+    bool mouseHoldCheck;   //기존 isLeftMouse기능 대체+a 역할이라 실제 hold감지는 InputManager의 hold를 사용
 
     GameManager gameManager;
     PlayerController playerController;
@@ -80,7 +80,7 @@ public class PreBuilding : MonoBehaviour
         inputManager = InputManager.instance;
         inputManager.controls.Building.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
         inputManager.controls.Building.LeftMouseButtonUp.performed += ctx => LeftMouseButtonUp();
-        inputManager.controls.Building.RightMouseButtonDown.performed += ctx => RightMouseButtonDown();
+        inputManager.controls.Building.RightMouseButtonDown.performed += ctx => CancelBuild();
         inputManager.controls.Building.Rotate.performed += ctx => Rotate();
     }
 
@@ -100,33 +100,30 @@ public class PreBuilding : MonoBehaviour
     {
         if(isEnough && mouseHoldCheck && this.gameObject.activeSelf)
         {
-            if (!EventSystem.current.IsPointerOverGameObject())
+            if((!isTempBuild && BuildingInfo.instance.AmountsEnoughCheck()) || (isTempBuild && playerController.TempMinerCountCheck()))
             {
-                if((!isTempBuild && BuildingInfo.instance.AmountsEnoughCheck()) || (isTempBuild && playerController.TempMinerCountCheck()))
+                tempPos = transform.position;
+                float tempDeltaX = tempPos.x - endBuildPos.x;
+                float tempDeltaY = tempPos.y - endBuildPos.y;
+                float tempAbsDeltaX = Mathf.Abs(tempDeltaX);
+                float tempAbsDeltaY = Mathf.Abs(tempDeltaY);
+
+                if (tempAbsDeltaX >= 1 || tempAbsDeltaY >= 1)
                 {
-                    tempPos = transform.position;
-                    float tempDeltaX = tempPos.x - endBuildPos.x;
-                    float tempDeltaY = tempPos.y - endBuildPos.y;
-                    float tempAbsDeltaX = Mathf.Abs(tempDeltaX);
-                    float tempAbsDeltaY = Mathf.Abs(tempDeltaY);
+                    endBuildPos = tempPos;
 
-                    if (tempAbsDeltaX >= 1 || tempAbsDeltaY >= 1)
-                    {
-                        endBuildPos = tempPos;
+                    float deltaX = endBuildPos.x - startBuildPos.x;
+                    float deltaY = endBuildPos.y - startBuildPos.y;
+                    float absDeltaX = Mathf.Abs(deltaX);
+                    float absDeltaY = Mathf.Abs(deltaY);
 
-                        float deltaX = endBuildPos.x - startBuildPos.x;
-                        float deltaY = endBuildPos.y - startBuildPos.y;
-                        float absDeltaX = Mathf.Abs(deltaX);
-                        float absDeltaY = Mathf.Abs(deltaY);
+                    if (absDeltaX >= absDeltaY)
+                        isMoveX = true;
+                    else
+                        isMoveX = false;
 
-                        if (absDeltaX >= absDeltaY)
-                            isMoveX = true;
-                        else
-                            isMoveX = false;
-
-                        CheckPos();
-                        isDrag = true;
-                    }
+                    CheckPos();
+                    isDrag = true;
                 }
             }
         }
@@ -144,6 +141,12 @@ public class PreBuilding : MonoBehaviour
     {
         if (isEnough && mouseHoldCheck && this.gameObject.activeSelf)
         {
+            if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
+            {
+                CancelBuild();
+                return;
+            }
+
             if (!isDrag && !RaycastUtility.IsPointerOverUI(Input.mousePosition))
                 CheckPos();
 
@@ -199,7 +202,7 @@ public class PreBuilding : MonoBehaviour
         mouseHoldCheck = false;
     }
 
-    void RightMouseButtonDown()
+    void CancelBuild()
     {
         mouseHoldCheck = false;
 
