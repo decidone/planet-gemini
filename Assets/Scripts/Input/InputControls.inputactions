@@ -114,15 +114,6 @@
             "id": "c7e04b48-94a0-475d-976c-a48ced853672",
             "actions": [
                 {
-                    "name": "ToggleMap",
-                    "type": "Button",
-                    "id": "ea472bbc-2aca-4ad9-9b1c-bdabf0afba75",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Tap",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Zoom",
                     "type": "PassThrough",
                     "id": "ecface99-8aab-4b33-95f6-ef9dd73dd416",
@@ -130,20 +121,18 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Mouse",
+                    "type": "Button",
+                    "id": "b107bf43-333f-40ad-8eea-307e6ee00f61",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "d6f605d5-c9bf-43c9-8fa6-5beaaa7f1635",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "ToggleMap",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "186a3b88-39f6-41ba-afb0-03e1f990af92",
@@ -152,6 +141,17 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "41209aec-0ec1-4d48-84ce-57cdcbfacbe2",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Mouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -768,6 +768,15 @@
                     "processors": "",
                     "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "MouseRight",
+                    "type": "Button",
+                    "id": "33cbeb75-a63a-4c31-8ed2-f9627c898744",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -812,6 +821,45 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "MouseLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "74ce0754-9495-4646-bd54-ce7521794a48",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "MouseRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "State",
+            "id": "5e883f74-3828-46bb-a4ed-62b9380cf114",
+            "actions": [
+                {
+                    "name": "ToggleMap",
+                    "type": "Button",
+                    "id": "8b4643aa-c69c-4608-87d1-4643d58b5d44",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "35c133e4-8ee3-47c3-ac08-ac810d8cb6f5",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "ToggleMap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

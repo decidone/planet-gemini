@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     Vector3 offset;
 
     PixelPerfectCamera pixelPerfectCamera;
-    int zoomLevel;
+    public int zoomLevel;
     float scrollWheelInput;
 
     InputManager inputManager;
@@ -37,14 +37,14 @@ public class CameraController : MonoBehaviour
         if (scrollWheelInput < 0)
         {
             zoomLevel -= 1;
-            zoomLevel = Mathf.Clamp(zoomLevel, 1, 7);
+            zoomLevel = Mathf.Clamp(zoomLevel, 1, 6);
             pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
             pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
         }
         else if(scrollWheelInput > 0)
         {
             zoomLevel += 1;
-            zoomLevel = Mathf.Clamp(zoomLevel, 1, 7);
+            zoomLevel = Mathf.Clamp(zoomLevel, 1, 6);
             pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
             pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
         }
@@ -53,5 +53,12 @@ public class CameraController : MonoBehaviour
     void LateUpdate()
     {
         transform.position = target.position - offset;
+    }
+
+    public void ChangeZoomLv(int lv)
+    {
+        zoomLevel = Mathf.Clamp(lv, 1, 6);
+        pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
+        pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
     }
 }

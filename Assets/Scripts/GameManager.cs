@@ -9,8 +9,6 @@ public class GameManager : MonoBehaviour
     public GameObject inventoryUiCanvas;
     public Map map;
     public GameObject player;
-    [HideInInspector]
-    public bool isMapOpened;
 
     [SerializeField]
     PlayerInvenManager pInvenManager;
@@ -55,7 +53,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        isMapOpened = false;
         debug = false;
         openedUI = new List<GameObject>();
         dragSlot = DragSlot.instance;

@@ -20,9 +20,6 @@ public class BuildInfoCheck : MonoBehaviour
 
     void Update()
     {
-        //Input State Control
-        if (!inputManager.hoverInfo) return;
-
         mousePos = Input.mousePosition;
 
         if (!EventSystem.current.IsPointerOverGameObject())

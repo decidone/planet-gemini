@@ -136,15 +136,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
             ""id"": ""c7e04b48-94a0-475d-976c-a48ced853672"",
             ""actions"": [
                 {
-                    ""name"": ""ToggleMap"",
-                    ""type"": ""Button"",
-                    ""id"": ""ea472bbc-2aca-4ad9-9b1c-bdabf0afba75"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Tap"",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Zoom"",
                     ""type"": ""PassThrough"",
                     ""id"": ""ecface99-8aab-4b33-95f6-ef9dd73dd416"",
@@ -152,20 +143,18 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Mouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""b107bf43-333f-40ad-8eea-307e6ee00f61"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""d6f605d5-c9bf-43c9-8fa6-5beaaa7f1635"",
-                    ""path"": ""<Keyboard>/m"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""ToggleMap"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""186a3b88-39f6-41ba-afb0-03e1f990af92"",
@@ -174,6 +163,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""41209aec-0ec1-4d48-84ce-57cdcbfacbe2"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Mouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -790,6 +790,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""33cbeb75-a63a-4c31-8ed2-f9627c898744"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -834,6 +843,45 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""MouseLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""74ce0754-9495-4646-bd54-ce7521794a48"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""MouseRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""State"",
+            ""id"": ""5e883f74-3828-46bb-a4ed-62b9380cf114"",
+            ""actions"": [
+                {
+                    ""name"": ""ToggleMap"",
+                    ""type"": ""Button"",
+                    ""id"": ""8b4643aa-c69c-4608-87d1-4643d58b5d44"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""35c133e4-8ee3-47c3-ac08-ac810d8cb6f5"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""ToggleMap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1384,8 +1432,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_MainCamera_RightMouseButtonUp = m_MainCamera.FindAction("RightMouseButtonUp", throwIfNotFound: true);
         // MapCamera
         m_MapCamera = asset.FindActionMap("MapCamera", throwIfNotFound: true);
-        m_MapCamera_ToggleMap = m_MapCamera.FindAction("ToggleMap", throwIfNotFound: true);
         m_MapCamera_Zoom = m_MapCamera.FindAction("Zoom", throwIfNotFound: true);
+        m_MapCamera_Mouse = m_MapCamera.FindAction("Mouse", throwIfNotFound: true);
         // Building
         m_Building = asset.FindActionMap("Building", throwIfNotFound: true);
         m_Building_LeftMouseButtonDown = m_Building.FindAction("LeftMouseButtonDown", throwIfNotFound: true);
@@ -1428,6 +1476,10 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Hold_Shift = m_Hold.FindAction("Shift", throwIfNotFound: true);
         m_Hold_Alt = m_Hold.FindAction("Alt", throwIfNotFound: true);
         m_Hold_MouseLeft = m_Hold.FindAction("MouseLeft", throwIfNotFound: true);
+        m_Hold_MouseRight = m_Hold.FindAction("MouseRight", throwIfNotFound: true);
+        // State
+        m_State = asset.FindActionMap("State", throwIfNotFound: true);
+        m_State_ToggleMap = m_State.FindAction("ToggleMap", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
@@ -1564,14 +1616,14 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     // MapCamera
     private readonly InputActionMap m_MapCamera;
     private IMapCameraActions m_MapCameraActionsCallbackInterface;
-    private readonly InputAction m_MapCamera_ToggleMap;
     private readonly InputAction m_MapCamera_Zoom;
+    private readonly InputAction m_MapCamera_Mouse;
     public struct MapCameraActions
     {
         private @InputControls m_Wrapper;
         public MapCameraActions(@InputControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @ToggleMap => m_Wrapper.m_MapCamera_ToggleMap;
         public InputAction @Zoom => m_Wrapper.m_MapCamera_Zoom;
+        public InputAction @Mouse => m_Wrapper.m_MapCamera_Mouse;
         public InputActionMap Get() { return m_Wrapper.m_MapCamera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1581,22 +1633,22 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_MapCameraActionsCallbackInterface != null)
             {
-                @ToggleMap.started -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnToggleMap;
-                @ToggleMap.performed -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnToggleMap;
-                @ToggleMap.canceled -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnToggleMap;
                 @Zoom.started -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnZoom;
                 @Zoom.performed -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnZoom;
                 @Zoom.canceled -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnZoom;
+                @Mouse.started -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouse;
+                @Mouse.performed -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouse;
+                @Mouse.canceled -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouse;
             }
             m_Wrapper.m_MapCameraActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @ToggleMap.started += instance.OnToggleMap;
-                @ToggleMap.performed += instance.OnToggleMap;
-                @ToggleMap.canceled += instance.OnToggleMap;
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
+                @Mouse.started += instance.OnMouse;
+                @Mouse.performed += instance.OnMouse;
+                @Mouse.canceled += instance.OnMouse;
             }
         }
     }
@@ -1951,6 +2003,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Hold_Shift;
     private readonly InputAction m_Hold_Alt;
     private readonly InputAction m_Hold_MouseLeft;
+    private readonly InputAction m_Hold_MouseRight;
     public struct HoldActions
     {
         private @InputControls m_Wrapper;
@@ -1959,6 +2012,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Shift => m_Wrapper.m_Hold_Shift;
         public InputAction @Alt => m_Wrapper.m_Hold_Alt;
         public InputAction @MouseLeft => m_Wrapper.m_Hold_MouseLeft;
+        public InputAction @MouseRight => m_Wrapper.m_Hold_MouseRight;
         public InputActionMap Get() { return m_Wrapper.m_Hold; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1980,6 +2034,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @MouseLeft.started -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseLeft;
                 @MouseLeft.performed -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseLeft;
                 @MouseLeft.canceled -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseLeft;
+                @MouseRight.started -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseRight;
+                @MouseRight.performed -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseRight;
+                @MouseRight.canceled -= m_Wrapper.m_HoldActionsCallbackInterface.OnMouseRight;
             }
             m_Wrapper.m_HoldActionsCallbackInterface = instance;
             if (instance != null)
@@ -1996,10 +2053,46 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @MouseLeft.started += instance.OnMouseLeft;
                 @MouseLeft.performed += instance.OnMouseLeft;
                 @MouseLeft.canceled += instance.OnMouseLeft;
+                @MouseRight.started += instance.OnMouseRight;
+                @MouseRight.performed += instance.OnMouseRight;
+                @MouseRight.canceled += instance.OnMouseRight;
             }
         }
     }
     public HoldActions @Hold => new HoldActions(this);
+
+    // State
+    private readonly InputActionMap m_State;
+    private IStateActions m_StateActionsCallbackInterface;
+    private readonly InputAction m_State_ToggleMap;
+    public struct StateActions
+    {
+        private @InputControls m_Wrapper;
+        public StateActions(@InputControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ToggleMap => m_Wrapper.m_State_ToggleMap;
+        public InputActionMap Get() { return m_Wrapper.m_State; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(StateActions set) { return set.Get(); }
+        public void SetCallbacks(IStateActions instance)
+        {
+            if (m_Wrapper.m_StateActionsCallbackInterface != null)
+            {
+                @ToggleMap.started -= m_Wrapper.m_StateActionsCallbackInterface.OnToggleMap;
+                @ToggleMap.performed -= m_Wrapper.m_StateActionsCallbackInterface.OnToggleMap;
+                @ToggleMap.canceled -= m_Wrapper.m_StateActionsCallbackInterface.OnToggleMap;
+            }
+            m_Wrapper.m_StateActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @ToggleMap.started += instance.OnToggleMap;
+                @ToggleMap.performed += instance.OnToggleMap;
+                @ToggleMap.canceled += instance.OnToggleMap;
+            }
+        }
+    }
+    public StateActions @State => new StateActions(this);
 
     // UI
     private readonly InputActionMap m_UI;
@@ -2124,8 +2217,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     }
     public interface IMapCameraActions
     {
-        void OnToggleMap(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
+        void OnMouse(InputAction.CallbackContext context);
     }
     public interface IBuildingActions
     {
@@ -2175,6 +2268,11 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnShift(InputAction.CallbackContext context);
         void OnAlt(InputAction.CallbackContext context);
         void OnMouseLeft(InputAction.CallbackContext context);
+        void OnMouseRight(InputAction.CallbackContext context);
+    }
+    public interface IStateActions
+    {
+        void OnToggleMap(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

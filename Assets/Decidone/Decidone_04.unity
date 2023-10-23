@@ -239,22 +239,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
-      propertyPath: width
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
-      propertyPath: height
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
-      propertyPath: tilemap
-      value: 
-      objectReference: {fileID: 432346250}
-    - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
-      propertyPath: lakeTile
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2480601898731471735, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
       propertyPath: m_Name
       value: Map
@@ -329,11 +313,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6348e8a7e512e2b45bb7a3a411e754c8, type: 3}
---- !u!1839735485 &432346250 stripped
-Tilemap:
-  m_CorrespondingSourceObject: {fileID: 200245074, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
-  m_PrefabInstance: {fileID: 298971887}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &455235296
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -477,6 +456,10 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 219787472492811319}
+    - target: {fileID: 2369682121264992854, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
+      propertyPath: preBuilding
+      value: 
+      objectReference: {fileID: 774915813}
     - target: {fileID: 2369682121264992854, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
       propertyPath: tempMinerUI
       value: 
@@ -678,6 +661,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4708077714128161396, guid: 57347a3a92b4cc5499df71ca878c426f, type: 3}
+      propertyPath: canvas
+      value: 
+      objectReference: {fileID: 8603474882824653221}
     - target: {fileID: 4708077714128161396, guid: 57347a3a92b4cc5499df71ca878c426f, type: 3}
       propertyPath: target
       value: 
@@ -1210,6 +1197,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfe2f2ee71ba0f242b64c3ad09d562f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &8603474882824653221 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 8669813805128897141, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8820302178443478640
 PrefabInstance:
   m_ObjectHideFlags: 0
