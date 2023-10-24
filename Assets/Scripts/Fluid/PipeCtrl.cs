@@ -21,8 +21,8 @@ public class PipeCtrl : FluidFactoryCtrl
         if (!removeState)
         {
             SetDirNum();
-            if (!isPreBuilding && checkObj)
-            {
+            if (isSetBuildingOk)
+            {                
                 for (int i = 0; i < nearObj.Length; i++)
                 {
                     if (nearObj[i] == null)
@@ -30,7 +30,10 @@ public class PipeCtrl : FluidFactoryCtrl
                         CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj, checkPos[i]));
                     }
                 }
+            }
 
+            if (!isPreBuilding && checkObj)
+            {
                 if (outObj.Count > 0)
                 {
                     sendDelayTimer += Time.deltaTime;

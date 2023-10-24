@@ -48,5 +48,10 @@
         {"name":"Rubber","items":["Naphtha","Rubber"],"amounts":[1,1],"cooldown":3},
         {"name":"Rubber","items":["SlimyPlant","Rubber"],"amounts":[1,1],"cooldown":3},
         {"name":"Sulfur","items":["ToxicPlant","Sulfur"],"amounts":[1,1],"cooldown":3}
+    ],
+    "UnitFactory":[
+        {"name":"SentryCopter","items":["IronPlate","IronBar","SteelBar","SentryCopter"],"amounts":[1,1,1,1],"cooldown":3},
+        {"name":"BounceRobot","items":["IronPlate","IronBar","SteelBar","BounceRobot"],"amounts":[1,1,1,1],"cooldown":3},
+        {"name":"SpinRobot","items":["IronPlate","IronBar","SteelBar","SpinRobot"],"amounts":[1,1,1,1],"cooldown":3}
     ]
 }

@@ -20,8 +20,8 @@ public class PumpCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            if (!isPreBuilding && checkObj)
-            {
+            if (isSetBuildingOk)
+            {                
                 for (int i = 0; i < nearObj.Length; i++)
                 {
                     if (nearObj[i] == null)
@@ -29,7 +29,10 @@ public class PumpCtrl : FluidFactoryCtrl
                         CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
                     }
                 }
+            }
 
+            if (!isPreBuilding && checkObj)
+            {
                 sendDelayTimer += Time.deltaTime;
 
                 if (sendDelayTimer > structureData.SendDelay)

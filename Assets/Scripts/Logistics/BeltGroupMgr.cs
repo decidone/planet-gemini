@@ -17,11 +17,11 @@ public class BeltGroupMgr : MonoBehaviour
     public bool nextCheck = true;
     public bool preCheck = true;
 
-    public bool isPreBuilding = false;
+    public bool isSetBuildingOk = false;
 
     void Update()
     {
-        if (!isPreBuilding)
+        if (isSetBuildingOk)
         {
             if(nextCheck)
             {
@@ -76,7 +76,7 @@ public class BeltGroupMgr : MonoBehaviour
         {
             Collider2D collider = raycastHits[a].collider;
 
-            if (collider.CompareTag("Factory") && !collider.GetComponent<Structure>().isPreBuilding &&
+            if (collider.CompareTag("Factory") && collider.GetComponent<Structure>().isSetBuildingOk &&
                 collider.GetComponent<BeltCtrl>() != belt)
             {
                 if (collider.TryGetComponent(out BeltCtrl otherBelt))
@@ -155,7 +155,7 @@ public class BeltGroupMgr : MonoBehaviour
         {
             Collider2D collider = raycastHits[a].collider;
 
-            if (collider.CompareTag("Factory") && !collider.GetComponent<Structure>().isPreBuilding && 
+            if (collider.CompareTag("Factory") && collider.GetComponent<Structure>().isSetBuildingOk && 
                 collider.GetComponent<BeltCtrl>() != belt)
             {
                 if (collider.TryGetComponent(out BeltCtrl otherBelt))

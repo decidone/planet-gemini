@@ -19,18 +19,8 @@ public class MergerCtrl : LogisticsCtrl
         if (!removeState)
         {
             SetDirNum();
-            if (!isPreBuilding && checkObj)
+            if (isSetBuildingOk)
             {
-                if (inObj.Count > 0 && !isFull && !itemGetDelay)
-                {
-                    GetItem();
-                }
-
-                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
-                {
-                    SendItem(itemList[0]);    
-                }
-
                 for (int i = 0; i < nearObj.Length; i++)
                 {
                     if (nearObj[i] == null)
@@ -44,6 +34,19 @@ public class MergerCtrl : LogisticsCtrl
                         else if (i == 3)
                             CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetInObjCoroutine(obj)));
                     }
+                }
+            }
+
+            if (!isPreBuilding && checkObj)
+            {
+                if (inObj.Count > 0 && !isFull && !itemGetDelay)
+                {
+                    GetItem();
+                }
+
+                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+                {
+                    SendItem(itemList[0]);
                 }
             }
         }

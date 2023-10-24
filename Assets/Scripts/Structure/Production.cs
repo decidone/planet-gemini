@@ -84,11 +84,9 @@ public abstract class Production : Structure
                 RepairFunc(true);
             }
         }
-        if (!isPreBuilding && checkObj)
-        {
-            if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
-                GetItem();
 
+        if (isSetBuildingOk)
+        {
             for (int i = 0; i < nearObj.Length; i++)
             {
                 if (nearObj[i] == null && sizeOneByOne)
@@ -101,6 +99,12 @@ public abstract class Production : Structure
                     CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
             }
+        }
+
+        if (!isPreBuilding && checkObj)
+        {
+            if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
+                GetItem();
         }
     }
 

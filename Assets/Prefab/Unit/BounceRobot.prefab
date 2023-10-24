@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 268944303165065398}
   - component: {fileID: -5276272417291999577}
   m_Layer: 6
-  m_Name: BouncRobot
+  m_Name: BounceRobot
   m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -430,6 +430,8 @@ MonoBehaviour:
   unitSprite: {fileID: 8598225404917607299}
   unitCanvas: {fileID: 4756777200039858359}
   hpBar: {fileID: 4091917225622394909}
+  aIState: 0
+  attackState: 0
   unitSelImg: {fileID: 4471495155955281645}
   attackFX: {fileID: 6504030904359307953, guid: 40bd9cdc15d5f9240b0890356a39b38b, type: 3}
 --- !u!114 &3784004604832727098

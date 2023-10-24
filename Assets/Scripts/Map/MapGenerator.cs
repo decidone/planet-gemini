@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Pathfinding;
 
 // UTF-8 설정
 public class MapGenerator : MonoBehaviour
@@ -35,6 +36,8 @@ public class MapGenerator : MonoBehaviour
     [Space]
     public List<Resource> resources = new List<Resource>();
     public List<Tile> resourcesIcon = new List<Tile>();
+
+    public AstarPath astar;
 
     void Awake()
     {
@@ -170,6 +173,7 @@ public class MapGenerator : MonoBehaviour
         CreateTile();
         CreateResource();
         CreateObj();
+        astar.Scan();
     }
 
     void SetBiome()
@@ -248,6 +252,8 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+        
+        //Invoke("AstarScan", 0.5f);
     }
 
     void CreateResource()
@@ -318,5 +324,10 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    void AstarScan()
+    {
+        astar.Scan();
     }
 }

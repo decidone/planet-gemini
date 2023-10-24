@@ -12,8 +12,8 @@ public class FluidTankCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            if (!isPreBuilding && checkObj)
-            {
+            if (isSetBuildingOk)
+            {                
                 for (int i = 0; i < nearObj.Length; i++)
                 {
                     if (nearObj[i] == null)
@@ -22,6 +22,10 @@ public class FluidTankCtrl : FluidFactoryCtrl
                         CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => FluidSetOutObj(obj));
                     }
                 }
+            }
+
+            if (!isPreBuilding && checkObj)
+            {
 
                 if (outObj.Count > 0)
                 {

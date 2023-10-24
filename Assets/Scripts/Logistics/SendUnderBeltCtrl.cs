@@ -17,6 +17,9 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         if (!removeState)
         {
             SetDirNum();
+            if (isSetBuildingOk && nearObj[2] == null)
+                CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+
             if (!isPreBuilding && checkObj)
             {
 
@@ -29,8 +32,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
                     SendItem(itemList[0]);
                 }
 
-                if (nearObj[2] == null)
-                    CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
             }
         } 
     }

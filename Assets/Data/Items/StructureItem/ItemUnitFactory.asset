@@ -9,16 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7649eee2cce166345b3adb9b43376fcd, type: 3}
-  m_Name: BouncRobot
+  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
+  m_Name: ItemUnitFactory
   m_EditorClassIdentifier: 
-  unitName: BouncRobot
-  maxHp: 150
-  damage: 30
-  moveSpeed: 8
-  attackDist: 4
-  attDelayTime: 1.5
-  colliderRadius: 10
-  patrolRad: 0
-  attackNum: 0
-  defense: 0
+  name: UnitFactory
+  icon: {fileID: 6712827, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  tier: -1

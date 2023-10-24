@@ -9,8 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: ItemBouncRobot
+  m_Script: {fileID: 11500000, guid: 7649eee2cce166345b3adb9b43376fcd, type: 3}
+  m_Name: BounceRobot
   m_EditorClassIdentifier: 
-  name: BouncRobot
-  icon: {fileID: -844809101, guid: 25c745159b16ea84f9d6a4ab97367837, type: 3}
+  unitName: BounceRobot
+  maxHp: 150
+  damage: 30
+  moveSpeed: 8
+  attackDist: 4
+  attDelayTime: 1.5
+  colliderRadius: 10
+  patrolRad: 0
+  attackNum: 0
+  defense: 0

@@ -58,6 +58,8 @@ public class UnitCommonAi : MonoBehaviour
 
     protected CapsuleCollider2D capsule2D;
 
+    public string unitName;
+
     public SpriteRenderer unitSprite;
     public GameObject unitCanvas;
     public Image hpBar;
@@ -85,6 +87,7 @@ public class UnitCommonAi : MonoBehaviour
         searchInterval = 0.3f;
         tarDisCheckInterval = 0.3f;
         patrolStartPos = Vector3.zero;
+        unitName = unitCommonData.UnitName;
         //hp = 100.0f;
         aIState = AIState.AI_Idle;
         attackState = AttackState.Waiting;

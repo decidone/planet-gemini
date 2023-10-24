@@ -20,7 +20,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            if (!isPreBuilding && checkObj)
+            if (isSetBuildingOk)
             {
                 for (int i = 0; i < nearObj.Length; i++)
                 {
@@ -29,7 +29,10 @@ public class ExtractorCtrl : FluidFactoryCtrl
                         CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
                     }
                 }
+            }
 
+            if (!isPreBuilding && checkObj)
+            {
                 sendDelayTimer += Time.deltaTime;
 
                 if (sendDelayTimer > structureData.SendDelay)

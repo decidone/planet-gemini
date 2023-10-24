@@ -37,11 +37,9 @@ public class SplitterCtrl : LogisticsCtrl
         if (!removeState)
         {
             SetDirNum();
-            if (!isPreBuilding && checkObj)
-            { 
-                if (inObj.Count > 0 && !isFull && !itemGetDelay)
-                    GetItem();
-        
+
+            if (isSetBuildingOk)
+            {
                 for (int i = 0; i < nearObj.Length; i++)
                 {
                     if (nearObj[i] == null)
@@ -56,7 +54,12 @@ public class SplitterCtrl : LogisticsCtrl
                             CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
                     }
                 }
+            }               
 
+            if (!isPreBuilding && checkObj)
+            { 
+                if (inObj.Count > 0 && !isFull && !itemGetDelay)
+                    GetItem();
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
                     if (filterOn && level > 0) 

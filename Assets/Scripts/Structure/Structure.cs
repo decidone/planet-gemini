@@ -36,7 +36,7 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public bool isPreBuilding = false;
     [HideInInspector]
-    public bool isSetBuildingOk = false;
+    public bool isSetBuildingOk = false;    
 
     protected bool removeState = false;
 
@@ -171,7 +171,7 @@ public class Structure : MonoBehaviour
                 }
             }
 
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
+            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
                 hits[i].collider.gameObject != this.gameObject)
             {
                 nearObj[index] = hits[i].collider.gameObject;
@@ -189,7 +189,7 @@ public class Structure : MonoBehaviour
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
+            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
                 hits[i].collider.gameObject != this.gameObject)
             {
                 nearObj[index] = hits[i].collider.gameObject;
@@ -596,7 +596,7 @@ public class Structure : MonoBehaviour
                 {
                     unitCanvas.SetActive(false);
                 }
-
+                 
                 ColliderTriggerOnOff(false);
             }
         }

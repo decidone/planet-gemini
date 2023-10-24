@@ -28,7 +28,15 @@ public class Refinery : FluidFactoryCtrl
         howFarSource = -1;
         preSaveFluidNum = 0;
         uiOpened = false;
+
         Debug.Log(GameObject.Find("Canvas"));
+        Debug.Log(GameObject.Find("Canvas").transform.Find("StructureInfo"));
+        Debug.Log(GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage"));
+        Debug.Log(GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
+            .transform.Find("Refinery"));
+        Debug.Log(GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
+            .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>());
+
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();
         #endregion
@@ -69,11 +77,8 @@ public class Refinery : FluidFactoryCtrl
                 RepairFunc(true);
             }
         }
-        if (!isPreBuilding)
+        if (isSetBuildingOk)
         {
-            if (inObj.Count > 0 && !itemGetDelay && checkObj)
-                GetItem();
-
             for (int i = 0; i < nearObj.Length; i++)
             {
                 if (nearObj[i] == null)
@@ -81,6 +86,13 @@ public class Refinery : FluidFactoryCtrl
                     CheckNearObj(checkPos[i], i, obj => CheckOutObjScript(obj));
                 }
             }
+        }
+            
+
+        if (!isPreBuilding)
+        {
+            if (inObj.Count > 0 && !itemGetDelay && checkObj)
+                GetItem();
         }
         #endregion
 
