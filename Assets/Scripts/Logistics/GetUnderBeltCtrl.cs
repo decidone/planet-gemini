@@ -17,14 +17,9 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         base.Update();
         if (!removeState)
         {
-           SetDirNum();
-            if (!isPreBuilding && checkObj)
+            SetDirNum();
+            if (isSetBuildingOk)
             {
-                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
-                {
-                    SendItem(itemList[0]);
-                }
-
                 for (int i = 0; i < nearObj.Length; i++)
                 {
                     if (nearObj[i] == null)
@@ -34,6 +29,14 @@ public class GetUnderBeltCtrl : LogisticsCtrl
                         else if (i == 2) 
                             CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
                     }
+                }
+            }                
+
+            if (!isPreBuilding && checkObj)
+            {
+                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+                {
+                    SendItem(itemList[0]);
                 }
             }
         }
@@ -56,7 +59,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             {
                 Collider2D hitCollider = hits[i].collider;
                 if (hitCollider.CompareTag("Factory") &&
-                    !hitCollider.GetComponent<Structure>().isPreBuilding &&
+                    hitCollider.GetComponent<Structure>().isSetBuildingOk &&
                     hits[i].collider.gameObject != this.gameObject)
                 {
                     nearObj[index] = hits[i].collider.gameObject;
@@ -68,7 +71,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             {
                 Collider2D hitCollider = hits[i].collider;
                 if (hitCollider.CompareTag("Factory") &&
-                    !hitCollider.GetComponent<Structure>().isPreBuilding &&
+                    hitCollider.GetComponent<Structure>().isSetBuildingOk &&
                     hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
                 {
                     if (hitCollider.GetComponent<GetUnderBeltCtrl>())                    

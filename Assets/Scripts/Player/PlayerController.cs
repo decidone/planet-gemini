@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     TempMinerUi tempMinerUI;
 
     int tempFullAmount;
-    int tempMinerCount;
+    public int tempMinerCount;
 
     InputManager inputManager;
     bool isLoot;
@@ -135,8 +135,9 @@ public class PlayerController : MonoBehaviour
         if (tempMinerCount > 0)
         {
             preBuilding.SetActive(true);
-            PreBuilding.instance.SetImage(tempMiner, true);
-            PreBuilding.instance.isEnough = true;
+            PreBuilding pre = preBuilding.GetComponent<PreBuilding>();
+            pre.SetImage(tempMiner, true, tempMinerCount);
+            pre.isEnough = true;
             TempBuildUI(true);
         }
     }
@@ -186,6 +187,15 @@ public class PlayerController : MonoBehaviour
         if (tempMinerCount > 0) 
         {
             tempMinerCount--;
+        }
+        TempMinerCountCheck();
+    }
+
+    public void TempBuildSet(int amount)
+    {
+        if (tempMinerCount > 0)
+        {
+            tempMinerCount -= amount;
         }
         TempMinerCountCheck();
     }

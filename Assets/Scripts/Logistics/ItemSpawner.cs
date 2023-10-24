@@ -20,6 +20,18 @@ public class ItemSpawner : LogisticsCtrl
         base.Update();
         if (!removeState)
         {
+            if (isSetBuildingOk)
+            {
+                for (int i = 0; i < nearObj.Length; i++)
+                {
+                    if (nearObj[i] == null)
+                    {
+                        CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    }
+                }
+            }
+                
+
             if (!isPreBuilding && checkObj)
             {
                 if (outObj.Count > 0 && !itemSetDelay)
@@ -28,13 +40,6 @@ public class ItemSpawner : LogisticsCtrl
                         SendItem(itemData);
                 }
 
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    }
-                }
             }
         } 
     }

@@ -22,6 +22,8 @@ public abstract class InventoryManager : MonoBehaviour
     protected InputManager inputManager;
     protected bool slotRightClickHold;
 
+    PreBuilding preBuilding;
+
     public abstract void OpenUI();
     public abstract void CloseUI();
 
@@ -95,6 +97,7 @@ public abstract class InventoryManager : MonoBehaviour
         if (inputManager.shift) return;
         if (dragSlot == null) return;
 
+
         if (dragSlot.slot.item == null)
         {
             if (focusedSlot != null)
@@ -102,6 +105,7 @@ public abstract class InventoryManager : MonoBehaviour
                 if (focusedSlot.item != null)
                 {
                     inventory.Swap(focusedSlot);
+                    PreBuildEnable();
                 }
             }
         }
@@ -162,6 +166,7 @@ public abstract class InventoryManager : MonoBehaviour
         if (dragSlot.slot.item == null || dragSlot.slot.item == focusedSlot.item)
         {
             inventory.Split(focusedSlot);
+            PreBuildEnable();
         }
 
         splitTimer = 0;
@@ -192,6 +197,24 @@ public abstract class InventoryManager : MonoBehaviour
                 dragSlot.slot.ClearSlot();
             }
         }
+    }
+
+    public void DragItemToInven()
+    {
+        if (dragSlot.slot.item != null)
+        {
+            inventory.Add(dragSlot.slot.item, dragSlot.slot.amount);
+            dragSlot.slot.ClearSlot();
+        }
+    }
+
+    void PreBuildEnable()
+    {
+        if (preBuilding == null)
+            preBuilding = PreBuilding.instance;
+
+        if (preBuilding != null && preBuilding.gameObject.activeSelf)
+            preBuilding.CancelBuild();
     }
 
     void AddEvent(Slot slot, EventTriggerType type, UnityAction<BaseEventData> action)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // UTF-8 설정
-public class BouncRobot : UnitAi
+public class BounceRobot : UnitAi
 {
     public GameObject attackFX;
 

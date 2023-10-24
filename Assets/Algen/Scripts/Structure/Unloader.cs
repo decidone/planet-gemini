@@ -19,6 +19,14 @@ public class Unloader : LogisticsCtrl
 
         if (!removeState)
         {
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null)
+                {
+                    CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                }
+            }
+
             if (!isPreBuilding && checkObj)
             {
                 if (inObj.Count > 0 && outObj.Count > 0 && !itemGetDelay)
@@ -26,13 +34,7 @@ public class Unloader : LogisticsCtrl
                     GetItem();
                 }
 
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    }
-                }
+
             }
         }
     }

@@ -683,6 +683,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4708077714128161396, guid: 57347a3a92b4cc5499df71ca878c426f, type: 3}
+      propertyPath: canvas
+      value: 
+      objectReference: {fileID: 1095768246952270824}
+    - target: {fileID: 4708077714128161396, guid: 57347a3a92b4cc5499df71ca878c426f, type: 3}
       propertyPath: target
       value: 
       objectReference: {fileID: 637932704}
@@ -985,6 +989,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd7fa8761429b7748aac70a50c4a4aee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &1095768246952270824 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 8669813805128897141, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4986222680251417366 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3268826976656388761, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}

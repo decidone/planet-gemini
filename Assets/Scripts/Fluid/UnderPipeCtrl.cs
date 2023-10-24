@@ -23,7 +23,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         if (!removeState)
         {
             SetDirNum();
-            if (!isPreBuilding && checkObj)
+            if (isSetBuildingOk)
             {
                 for (int i = 0; i < nearObj.Length; i++)
                 {
@@ -35,7 +35,10 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                             CheckNearObj(checkPos[1], 1,  obj => UnderPipeSetOutObj(obj));
                     }
                 }
+            }
 
+            if (!isPreBuilding && checkObj)
+            {
                 if (outObj.Count > 0)
                 {
                     sendDelayTimer += Time.deltaTime;
@@ -89,7 +92,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isPreBuilding &&
+            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isSetBuildingOk &&
                 hits[i].collider.gameObject != this.gameObject)
             {
                 if (index == 0)

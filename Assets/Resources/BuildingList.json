@@ -120,5 +120,8 @@
   },
   "Unloader":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "UnitFactory":{
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   }
 }
