@@ -722,6 +722,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3014c5a237450f44fb8750cf482525c7, type: 2}
   - {fileID: 11400000, guid: f2e8519c9f817c74783b8e4acba6865f, type: 2}
   astar: {fileID: 7378487733200588626}
+  comp: {fileID: 0}
 --- !u!114 &875718241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1217,7 +1218,7 @@ CompositeCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0.5
   m_ColliderPaths:

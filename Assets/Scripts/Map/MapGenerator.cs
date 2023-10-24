@@ -38,12 +38,16 @@ public class MapGenerator : MonoBehaviour
     public List<Tile> resourcesIcon = new List<Tile>();
 
     public AstarPath astar;
+    public CompositeCollider2D comp;
+    bool isCompositeDone;
 
     void Awake()
     {
         map.width = width;
         map.height = height;
         map.mapData = new List<List<Cell>>();
+        isCompositeDone = false;
+        comp = lakeTilemap.GetComponent<CompositeCollider2D>();
     }
 
     void Start()
@@ -51,6 +55,18 @@ public class MapGenerator : MonoBehaviour
         Init();
         Generate();
         SetSpawnPos();
+    }
+
+    void Update()
+    {
+        if (!isCompositeDone)
+        {
+            if (comp.shapeCount != 0)
+            {
+                astar.Scan();
+                isCompositeDone = true;
+            }
+        }
     }
 
     void Init()
@@ -173,7 +189,6 @@ public class MapGenerator : MonoBehaviour
         CreateTile();
         CreateResource();
         CreateObj();
-        astar.Scan();
     }
 
     void SetBiome()
@@ -252,8 +267,6 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
-        
-        //Invoke("AstarScan", 0.5f);
     }
 
     void CreateResource()
@@ -324,10 +337,5 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
-    }
-
-    void AstarScan()
-    {
-        astar.Scan();
     }
 }
