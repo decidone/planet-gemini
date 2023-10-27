@@ -30,6 +30,14 @@ public abstract class Production : Structure
     protected int invenCount;
     protected Dictionary<Item, int> invenSlotDic;
 
+    [SerializeField]
+    protected GameObject lineObj;
+    [HideInInspector]
+    public LineRenderer lineRenderer;
+    protected Vector3 startLine;
+    protected Vector3 endLine;
+    public bool isGetLine;
+
     public virtual void OpenUI() { }
     public virtual void CloseUI() { }
     public virtual void SetRecipe(Recipe _recipe) { }
@@ -50,6 +58,7 @@ public abstract class Production : Structure
         repairBar.fillAmount = 0;
         isStorageBuild = false;
         isMainSource = false;
+        isGetLine = false;
     }
 
     protected virtual void Start()
@@ -185,7 +194,7 @@ public abstract class Production : Structure
 
     public virtual bool CanTakeItem(Item item) 
     {
-        if (recipe.name == null)
+        if (recipe == null || recipe.items == null)
             return false;
 
         for (int i = 0; i < inventory.space - 1; i++)
@@ -317,5 +326,26 @@ public abstract class Production : Structure
             }
         }
         return canUnload;
+    }
+
+    public virtual void LineRendererSet(Vector2 endPos)
+    {
+        if (endPos != Vector2.zero && lineRenderer == null)
+        {
+            startLine = new Vector3(transform.position.x, transform.position.y, -1);
+            endLine = new Vector3(endPos.x, endPos.y, -1);
+
+            GameObject currentLine = Instantiate(lineObj, startLine, Quaternion.identity);
+            lineRenderer = currentLine.GetComponent<LineRenderer>();
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0, startLine);
+            lineRenderer.SetPosition(1, endLine);
+        }
+    }
+
+    public virtual void ResetLineRenderer()
+    {
+        if (lineRenderer != null)
+            Destroy(lineRenderer.gameObject);
     }
 }

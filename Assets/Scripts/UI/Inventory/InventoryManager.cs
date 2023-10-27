@@ -199,15 +199,6 @@ public abstract class InventoryManager : MonoBehaviour
         }
     }
 
-    public void DragItemToInven()
-    {
-        if (dragSlot.slot.item != null)
-        {
-            inventory.Add(dragSlot.slot.item, dragSlot.slot.amount);
-            dragSlot.slot.ClearSlot();
-        }
-    }
-
     void PreBuildEnable()
     {
         if (preBuilding == null)

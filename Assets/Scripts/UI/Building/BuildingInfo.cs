@@ -42,10 +42,8 @@ public class BuildingInfo : MonoBehaviour
 
     public void BuildingClick()
     {
-        if(dragSlot.slot.item != null) 
-        {
-            playerInvenManager.DragItemToInven();
-        }
+        if (dragSlot.slot.item != null) return;
+        
         if (selectBuildingData != null)
         {
             preBuilding.SetActive(true);

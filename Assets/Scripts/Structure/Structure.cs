@@ -334,7 +334,7 @@ public class Structure : MonoBehaviour
                     spawnItem.col.enabled = false;
                     sprite.sprite = item.icon;
                     spawnItem.item = item;
-                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 2;
+                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 3;
                     spawnItem.amount = 1;
                     spawnItem.transform.position = transform.position;
                     spawnItem.isOnBelt = true;
