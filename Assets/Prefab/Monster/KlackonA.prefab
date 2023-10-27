@@ -91,7 +91,6 @@ GameObject:
   - component: {fileID: 7038860482242949868}
   - component: {fileID: 5794467203413403170}
   - component: {fileID: 5910734465314056952}
-  - component: {fileID: -7971249789050543182}
   m_Layer: 7
   m_Name: KlackonA
   m_TagString: Monster
@@ -156,7 +155,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: -1083238384, guid: 7757fa130d4333345b0d997bfb9e8685, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -166,7 +165,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!95 &2581482827578224821
 Animator:
@@ -224,6 +223,7 @@ MonoBehaviour:
   unitCommonData: {fileID: 11400000, guid: 1999298f7547d784cb2a896f4aa27468, type: 2}
   targetList: []
   animator: {fileID: 0}
+  unitName: 
   unitSprite: {fileID: 1302712818724626728}
   unitCanvas: {fileID: 5894639996944755368}
   hpBar: {fileID: 2424318885714129051}
@@ -273,17 +273,6 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!210 &-7971249789050543182
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4548960195778844340}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
 --- !u!1 &5894639996944755368
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,7 +457,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!1 &7108349332178169630
 GameObject:

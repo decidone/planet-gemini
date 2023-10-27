@@ -167,7 +167,6 @@ GameObject:
   - component: {fileID: 293481600424882334}
   - component: {fileID: 8051527625688539190}
   - component: {fileID: -9044928422796286906}
-  - component: {fileID: -3060893478362932590}
   m_Layer: 7
   m_Name: EarthA
   m_TagString: Monster
@@ -232,7 +231,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 57939659, guid: b5098e7748d250e459a5a50df45424fa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -242,7 +241,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!95 &4266575292539597394
 Animator:
@@ -300,6 +299,7 @@ MonoBehaviour:
   unitCommonData: {fileID: 11400000, guid: 828465b374c99a94eb14697b450620ce, type: 2}
   targetList: []
   animator: {fileID: 0}
+  unitName: 
   unitSprite: {fileID: 3940087546727930379}
   unitCanvas: {fileID: 5521661009913444406}
   hpBar: {fileID: 3491043276253065021}
@@ -349,17 +349,6 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!210 &-3060893478362932590
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2081385084214852163}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
 --- !u!1 &5521661009913444406
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,5 +533,5 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0

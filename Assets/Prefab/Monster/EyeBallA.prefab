@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 1450568532970988622}
   - component: {fileID: 5880749345680461039}
   - component: {fileID: -5391303991977901780}
-  - component: {fileID: -6555227398596483091}
   m_Layer: 7
   m_Name: EyeBallA
   m_TagString: Monster
@@ -80,7 +79,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: -1217678027, guid: bb9db706fb1829346b6a002117baedfa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -90,7 +89,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!95 &512913033364989004
 Animator:
@@ -148,6 +147,7 @@ MonoBehaviour:
   unitCommonData: {fileID: 11400000, guid: ddcf475f576ddc1439f3e2bc0f75da4c, type: 2}
   targetList: []
   animator: {fileID: 0}
+  unitName: 
   unitSprite: {fileID: 8764067453451268578}
   unitCanvas: {fileID: 5114462088892852843}
   hpBar: {fileID: 2162016875480982016}
@@ -197,17 +197,6 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!210 &-6555227398596483091
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 566702070184392467}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
 --- !u!1 &3274007058921652405
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,7 +355,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!1 &5114462088892852843
 GameObject:

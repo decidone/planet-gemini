@@ -117,7 +117,6 @@ GameObject:
   - component: {fileID: -2800277750444707200}
   - component: {fileID: 2670242036717598348}
   - component: {fileID: 8069855517818854939}
-  - component: {fileID: -3157412281534217091}
   m_Layer: 7
   m_Name: SlimeA
   m_TagString: Monster
@@ -182,7 +181,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: -1861585033, guid: 35e3babb785e0b848b20936bb03ccf86, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -192,7 +191,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!95 &5569583402175240809
 Animator:
@@ -250,6 +249,7 @@ MonoBehaviour:
   unitCommonData: {fileID: 11400000, guid: 665461547895cee4fa3748609b0e7917, type: 2}
   targetList: []
   animator: {fileID: 0}
+  unitName: 
   unitSprite: {fileID: 2513333780984211948}
   unitCanvas: {fileID: 3601067226965773963}
   hpBar: {fileID: 6790299174317825909}
@@ -299,17 +299,6 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!210 &-3157412281534217091
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3833707180777084228}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
 --- !u!1 &7160648917966982213
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,7 +381,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!1 &8673130859240096355
 GameObject:

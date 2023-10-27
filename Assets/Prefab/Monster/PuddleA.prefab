@@ -82,7 +82,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!1 &3908555752763132303
 GameObject:
@@ -353,7 +353,6 @@ GameObject:
   - component: {fileID: -5951166985654509526}
   - component: {fileID: 4212981719435381732}
   - component: {fileID: -829912202593715563}
-  - component: {fileID: 2757137471436515161}
   m_Layer: 7
   m_Name: PuddleA
   m_TagString: Monster
@@ -418,7 +417,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: -1503909092, guid: 642a344aefe3ee14e8f7d85737b85b9a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -428,7 +427,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!95 &7747646451308163776
 Animator:
@@ -486,6 +485,7 @@ MonoBehaviour:
   unitCommonData: {fileID: 11400000, guid: b5198616e1983e844a6dcf5bf0b6c56c, type: 2}
   targetList: []
   animator: {fileID: 0}
+  unitName: 
   unitSprite: {fileID: 9217993813879950706}
   unitCanvas: {fileID: 8052036765479633786}
   hpBar: {fileID: 7092454365295638152}
@@ -535,14 +535,3 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!210 &2757137471436515161
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540606857463043856}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3

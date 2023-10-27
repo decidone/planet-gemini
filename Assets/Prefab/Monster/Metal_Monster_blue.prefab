@@ -269,7 +269,6 @@ GameObject:
   - component: {fileID: -3184883611660089522}
   - component: {fileID: 5456661407106365054}
   - component: {fileID: -3064197337266411453}
-  - component: {fileID: 7901716026315626604}
   m_Layer: 7
   m_Name: Metal_Monster_blue
   m_TagString: Monster
@@ -334,7 +333,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: -861039232, guid: a32a0f9b4398a7b4591bdd7066467392, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
@@ -344,7 +343,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!95 &3943188774784533397
 Animator:
@@ -402,6 +401,7 @@ MonoBehaviour:
   unitCommonData: {fileID: 11400000, guid: 1682f2fee90d77e479512842b3435b99, type: 2}
   targetList: []
   animator: {fileID: 0}
+  unitName: 
   unitSprite: {fileID: 3943188774784533396}
   unitCanvas: {fileID: 1541301859813256904}
   hpBar: {fileID: 6784941349017499749}
@@ -451,17 +451,6 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!210 &7901716026315626604
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3943188774784533394}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
 --- !u!1 &3963666578307807840
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,5 +533,5 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0

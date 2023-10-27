@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 131646313625141334}
   - component: {fileID: 2828805631436647886}
   - component: {fileID: 4631580394372675255}
-  - component: {fileID: 2852061979350724046}
   m_Layer: 0
   m_Name: FireTower_Fx
   m_TagString: Untagged
@@ -76,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 37117122, guid: d1574da87efa1ec40a23536da56f8ebb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -137,14 +136,3 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: -0.6}
   m_Size: {x: 4.15, y: 2.4}
   m_Direction: 1
---- !u!210 &2852061979350724046
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 131646313625141333}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
