@@ -198,8 +198,8 @@ public class SplitterCtrl : LogisticsCtrl
                 {
                     SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
                     sprite.sprite = sendItem.icon;
+                    sprite.sortingOrder = 2;
                     spawnItem.item = sendItem;
-                    spawnItem.GetComponent<SortingGroup>().sortingOrder = 3;
                     spawnItem.amount = 1;
                     spawnItem.transform.position = transform.position;
                     spawnItem.isOnBelt = true;

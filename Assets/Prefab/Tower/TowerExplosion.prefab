@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1599892527247610536}
   - component: {fileID: 1599892527247610535}
   - component: {fileID: 3245038636278794887}
-  - component: {fileID: -1856023077815415146}
   m_Layer: 0
   m_Name: TowerExplosion
   m_TagString: Untagged
@@ -75,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: -1890172050, guid: bfb7e78d071a2e04eaa41a9de6961247, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -120,14 +119,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1599892527247610535}
---- !u!210 &-1856023077815415146
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1599892527247610534}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3

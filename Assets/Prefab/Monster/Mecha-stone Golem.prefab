@@ -260,7 +260,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!1 &3200930217413261185
 GameObject:
@@ -277,7 +277,6 @@ GameObject:
   - component: {fileID: 2984219195707197509}
   - component: {fileID: 7765666989520418348}
   - component: {fileID: -7323413020101550112}
-  - component: {fileID: -7801250375221784977}
   m_Layer: 7
   m_Name: Mecha-stone Golem
   m_TagString: Monster
@@ -342,7 +341,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: -310752606, guid: a1e5881dd64e6104584d1462af684e5c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -352,7 +351,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 1
   m_SpriteSortPoint: 0
 --- !u!95 &1348046023968233562
 Animator:
@@ -410,6 +409,7 @@ MonoBehaviour:
   unitCommonData: {fileID: 11400000, guid: 2d32356a19dfa694381a81cd2fc4b6a0, type: 2}
   targetList: []
   animator: {fileID: 0}
+  unitName: 
   unitSprite: {fileID: 3559846934866174847}
   unitCanvas: {fileID: 2946684130723949949}
   hpBar: {fileID: 1048474051912329510}
@@ -459,17 +459,6 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!210 &-7801250375221784977
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3200930217413261185}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
 --- !u!1 &9077968973470161356
 GameObject:
   m_ObjectHideFlags: 0

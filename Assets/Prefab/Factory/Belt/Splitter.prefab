@@ -1,5 +1,88 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1172078359036234998
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7752106054730673202}
+  - component: {fileID: 6191363098512434456}
+  m_Layer: 10
+  m_Name: Vision
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7752106054730673202
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172078359036234998}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 50, y: 50, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5043839874347049426}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!331 &6191363098512434456
+SpriteMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1172078359036234998}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10758, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_MaskAlphaCutoff: 0.2
+  m_FrontSortingLayerID: 0
+  m_BackSortingLayerID: 0
+  m_FrontSortingLayer: 0
+  m_BackSortingLayer: 0
+  m_FrontSortingOrder: 0
+  m_BackSortingOrder: 0
+  m_IsCustomRangeActive: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &3026482398367123645
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,7 +351,6 @@ GameObject:
   - component: {fileID: 5043839874347049424}
   - component: {fileID: 5043839874347049425}
   - component: {fileID: 6522629440870445346}
-  - component: {fileID: 4855410685162119447}
   - component: {fileID: 7801653508956483264}
   m_Layer: 8
   m_Name: Splitter
@@ -290,6 +372,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 781234425180805191}
+  - {fileID: 7752106054730673202}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -333,7 +416,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -361,7 +444,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0.42}
     oldSize: {x: 1, y: 1.1875}
     newSize: {x: 1, y: 1.1875}
     adaptiveTilingThreshold: 0.5
@@ -410,6 +493,9 @@ MonoBehaviour:
   dirCount: 0
   level: 0
   buildName: 
+  height: 0
+  width: 0
+  sizeOneByOne: 0
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 3026482398367123645}
@@ -417,10 +503,20 @@ MonoBehaviour:
   isRuin: 0
   isRepair: 0
   repairBar: {fileID: 40968013195264733}
-  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   itemList: []
   itemObjList: []
   canBuilding: 1
+  nearObj:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  checkPos:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  checkObj: 1
   inObj: []
   outObj: []
   outSameList: []
@@ -430,7 +526,12 @@ MonoBehaviour:
   - {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1234653658, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   spawnItem: {fileID: 0}
-  solidFactoryData: {fileID: 11400000, guid: a0c1ce887778bc141997a82195866e51, type: 2}
+  monsterList: []
+  col: {fileID: 0}
+  repairTower: {fileID: 0}
+  isStorageBuild: 0
+  isMainSource: 0
+  isTempBuild: 0
   arrFilter:
   - outObj: {fileID: 0}
     isFilterOn: 0
@@ -450,17 +551,6 @@ MonoBehaviour:
     isItemFilterOn: 0
     isReverseFilterOn: 0
     selItem: {fileID: 0}
---- !u!210 &4855410685162119447
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5043839874347049428}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 3
 --- !u!114 &7801653508956483264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -475,6 +565,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LogisticsUI: {fileID: 0}
   sFilterManager: {fileID: 0}
+  unloaderManager: {fileID: 0}
   itemSpManager: {fileID: 0}
 --- !u!1 &7656740688557692711
 GameObject:
