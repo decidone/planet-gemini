@@ -11,14 +11,15 @@ public class StructureClickEvent : MonoBehaviour
     GameManager gameManager;
     Button closeBtn;
     Production prod;
+    DragGraphic drag;
 
     public void StructureClick()
     {
         gameManager = GameManager.instance;
         GameObject canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
-
         prod = this.transform.GetComponent<Production>();
+        drag = DragGraphic.instance;
 
         foreach (GameObject list in inventoryList.InventoryArr)
         {
@@ -35,12 +36,16 @@ public class StructureClickEvent : MonoBehaviour
     public void OpenUI()
     {
         prod.OpenUI();
+        if(prod.isGetLine)
+            drag.SelectBuild(this.gameObject);
         sInvenManager.OpenUI();
     }
 
     public void CloseUI()
     {
         prod.CloseUI();
+        if (prod.isGetLine)
+            drag.cancelBuild();
         sInvenManager.CloseUI();
     }
 }

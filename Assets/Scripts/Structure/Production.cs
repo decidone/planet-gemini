@@ -328,7 +328,7 @@ public abstract class Production : Structure
         return canUnload;
     }
 
-    public virtual void LineRendererSet(Vector2 endPos)
+    public void LineRendererSet(Vector2 endPos)
     {
         if (endPos != Vector2.zero && lineRenderer == null)
         {
@@ -343,9 +343,18 @@ public abstract class Production : Structure
         }
     }
 
-    public virtual void ResetLineRenderer()
+    public virtual void DestroyLineRenderer()
     {
         if (lineRenderer != null)
+        {
             Destroy(lineRenderer.gameObject);
+            lineRenderer = null;
+        }
+    }
+
+    public void ResetLine(Vector2 endPos)
+    {
+        DestroyLineRenderer();
+        LineRendererSet(endPos);
     }
 }

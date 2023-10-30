@@ -188,6 +188,7 @@ public class StructureInvenManager : InventoryManager
 
     public override void CloseUI()
     {
+        Debug.Log(structureInfoUI.name);
         structureInfoUI.SetActive(false);
         inventoryUI.SetActive(false);
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);

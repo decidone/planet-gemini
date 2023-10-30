@@ -125,6 +125,11 @@ public class RemoveBuild : DragFunc
                 if (trBuild.lineRenderer != null)
                     Destroy(trBuild.lineRenderer);
             }
+            else if (obj.TryGetComponent(out UnitFactory unitFactory))
+            {
+                if (unitFactory.lineRenderer != null)
+                    Destroy(unitFactory.lineRenderer);
+            }
         }
     }
 }

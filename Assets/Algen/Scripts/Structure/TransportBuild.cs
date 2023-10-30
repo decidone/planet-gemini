@@ -73,8 +73,8 @@ public class TransportBuild : Production
             else
                 exTimer = 0;
 
-            if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>() && takeBuild != null)
-                LineRendererSet(takeBuild.transform.position);
+            //if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>() && takeBuild != null)
+            //    LineRendererSet(takeBuild.transform.position);
         }
     }
 
@@ -93,7 +93,7 @@ public class TransportBuild : Production
     {
         sInvenManager.ReleaseInven();
 
-        base.ResetLineRenderer();
+        base.DestroyLineRenderer();
     }
 
     void SendTransportItemDicCheck(TransportBuild othBuild)
@@ -291,9 +291,9 @@ public class TransportBuild : Production
         sendAmount = amount;
     }
 
-    public override void ResetLineRenderer()
+    public override void DestroyLineRenderer()
     {
-        base.ResetLineRenderer();
+        base.DestroyLineRenderer();
         takeBuild = null;
     }
 
@@ -312,7 +312,7 @@ public class TransportBuild : Production
 
         foreach (TransportBuild transport in sendBuildList)
         {
-            transport.ResetLineRenderer();
+            transport.DestroyLineRenderer();
             foreach (GameObject trUnit in transport.sendItemUnit)
             {
                 trUnit.GetComponent<TransportUnit>().TakeItemEnd();

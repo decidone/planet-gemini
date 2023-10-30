@@ -60,10 +60,10 @@ public class UnitFactory : Production
                 }
             }
 
-            if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>() && isSetPos)
-            {
-                LineRendererSet(spawnPos);
-            }
+            //if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>() && isSetPos)
+            //{
+            //    LineRendererSet(spawnPos);
+            //}
         }
     }
 
@@ -92,7 +92,7 @@ public class UnitFactory : Production
         rManager.recipeBtn.onClick.RemoveAllListeners();
         rManager.recipeBtn.gameObject.SetActive(false);
 
-        base.ResetLineRenderer();
+        base.DestroyLineRenderer();
     }
 
     public override void OpenRecipe()
@@ -199,9 +199,9 @@ public class UnitFactory : Production
         unitAi.MovePosSet(spawnPos, 0, true);
     }
 
-    public override void ResetLineRenderer()
+    public override void DestroyLineRenderer()
     {
-        base.ResetLineRenderer();
+        base.DestroyLineRenderer();
         isSetPos = false;
     }
 }

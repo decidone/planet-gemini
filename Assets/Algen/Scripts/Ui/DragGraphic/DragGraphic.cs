@@ -17,11 +17,6 @@ public class DragGraphic : MonoBehaviour
     RemoveBuild removeBuild;
     UpgradeBuild UpgradeBuild;
 
-    bool isLineDrawing;
-
-    [SerializeField]
-    GameObject lineObj;
-    LineRenderer lineRenderer;
     GameObject selectedBuild;
 
     InputManager inputManager;
@@ -54,7 +49,6 @@ public class DragGraphic : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         sprite.enabled = false;
         startPosition = Vector2.zero;
-        isLineDrawing = false;
         dragSlot = DragSlot.instance;
 
         inputManager = InputManager.instance;
@@ -67,39 +61,29 @@ public class DragGraphic : MonoBehaviour
     private void Update()
     {
         if (!preBuilding.activeSelf && isClick)
-        {
-            if (!isLineDrawing)
-            {
-                endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                BoxSizeChange();
+        {            
+            endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            BoxSizeChange();
 
-                if (isLeftClick)
+            if (isLeftClick)
+            {
+                if (!inputManager.ctrl)
+                    ColorSet(Color.green);
+                else if (inputManager.ctrl)
+                    ColorSet(Color.blue);
+            }
+            else
+            {
+                if (inputManager.shift)
                 {
-                    if (!inputManager.ctrl)
-                        ColorSet(Color.green);
-                    else if (inputManager.ctrl)
-                        ColorSet(Color.blue);
+                    ColorSet(Color.red);
+                    if(sprite.enabled == false)
+                        sprite.enabled = true;
                 }
                 else
-                {
-                    if (inputManager.shift)
-                    {
-                        ColorSet(Color.red);
-                        if(sprite.enabled == false)
-                            sprite.enabled = true;
-                    }
-                    else
-                        sprite.enabled = false;
-                }
-            }
-            else if (isLineDrawing)
-            {
-                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                endPosition = new Vector3(mousePos.x, mousePos.y, -1f);
-                lineRenderer.SetPosition(1, endPosition);
-            }
+                    sprite.enabled = false;
+            }            
         }
-
     }
 
     void LeftMouseButtonDown()
@@ -110,12 +94,9 @@ public class DragGraphic : MonoBehaviour
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
         {
             startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            isLineDrawing = false;
             sprite.enabled = true;
             isClick = true;
             isLeftClick = true;
-            if (lineRenderer != null)
-                Destroy(lineRenderer.gameObject);
         }
     }
 
@@ -144,32 +125,7 @@ public class DragGraphic : MonoBehaviour
 
             if (inputManager.shift)
             {
-                isLineDrawing = false;
                 sprite.enabled = true;
-                if (lineRenderer != null)
-                    Destroy(lineRenderer.gameObject);
-            }
-            else if (!isLineDrawing)
-            {
-                RaycastHit2D[] hits = Physics2D.RaycastAll(startPosition, Vector2.zero);
-
-                if (hits.Length > 0)
-                {
-                    foreach (RaycastHit2D hit in hits)
-                    {
-                        if (hit.collider.TryGetComponent(out Production pro) && pro.isGetLine)
-                        {
-                            selectedBuild = hit.collider.gameObject;
-                            pro.ResetLineRenderer();
-
-                            Vector3 pos = new Vector3(selectedBuild.transform.position.x, selectedBuild.transform.position.y, -1);
-
-                            LineDrawStart(pos);
-                            isLineDrawing = true;
-                            break;
-                        }
-                    }
-                }
             }
         }
     }
@@ -179,50 +135,61 @@ public class DragGraphic : MonoBehaviour
         if (preBuilding.activeSelf) return;
         if (dragSlot.slot.item != null) return;
 
-        if (!isLineDrawing)
+
+        if (!inputManager.shift)
         {
-            if (unitDrag.isSelectingUnits && !inputManager.shift)
+            if (unitDrag.isSelectingUnits)
                 unitDrag.RightMouseUp(startPosition, endPosition);
-            else if (inputManager.shift)
-                removeBuild.RightMouseUp(startPosition, endPosition);
-            DisableFunc();
-        }
-        else if (isLineDrawing)
-        {
-            RaycastHit2D[] hits = Physics2D.RaycastAll(endPosition, Vector2.zero);
-
-            selectedBuild.TryGetComponent(out UnitFactory unitFactory);
-            selectedBuild.TryGetComponent(out TransportBuild transport);
-
-            if (hits.Length > 0)
-            {
-                foreach (RaycastHit2D hit in hits)
-                {
-                    if(selectedBuild == hit.collider.gameObject)
-                    {
-                        break;
-                    }
-                    else if (unitFactory)
-                    {
-                        unitFactory.UnitSpawnPosSet(endPosition);
-                        EndDrawLine();
-                    }
-                    else if (transport && hit.collider.TryGetComponent(out TransportBuild othTrans))
-                    {
-                        transport.TakeBuildSet(othTrans);
-                        EndDrawLine();
-                    }
-                }
-            }
             else
             {
-                if (unitFactory)
+                if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
                 {
-                    unitFactory.UnitSpawnPosSet(endPosition);
+                    if (selectedBuild)
+                    {
+                        RaycastHit2D[] hits = Physics2D.RaycastAll(endPosition, Vector2.zero);
+
+                        selectedBuild.TryGetComponent(out UnitFactory unitFactory);
+                        selectedBuild.TryGetComponent(out TransportBuild transport);
+
+                        if (hits.Length > 0)
+                        {
+                            foreach (RaycastHit2D hit in hits)
+                            {
+                                if (selectedBuild == hit.collider.gameObject)
+                                {
+                                    if (unitFactory)
+                                        unitFactory.DestroyLineRenderer();
+                                    else if(transport)
+                                        transport.DestroyLineRenderer();
+                                    break;
+                                }
+                                else if (unitFactory)
+                                {
+                                    unitFactory.ResetLine(endPosition);
+                                    unitFactory.UnitSpawnPosSet(endPosition);
+                                }
+                                else if (transport && hit.collider.TryGetComponent(out TransportBuild othTrans))
+                                {
+                                    transport.ResetLine(othTrans.transform.position);
+                                    transport.TakeBuildSet(othTrans);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (unitFactory)
+                            {
+                                unitFactory.ResetLine(endPosition);
+                                unitFactory.UnitSpawnPosSet(endPosition);
+                            }
+                        }
+                    }
                 }
-                EndDrawLine();
             }
         }
+        else
+            removeBuild.RightMouseUp(startPosition, endPosition);
+        DisableFunc();        
     }
 
     public void ColorSet(Color color)
@@ -250,20 +217,13 @@ public class DragGraphic : MonoBehaviour
         isClick = false;
     }
 
-    public void LineDrawStart(Vector2 startPos)
+    public void SelectBuild(GameObject obj)
     {
-        GameObject currentLine = Instantiate(lineObj, startPos, Quaternion.identity);
-        lineRenderer = currentLine.GetComponent<LineRenderer>();
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, startPos);
-        lineRenderer.SetPosition(1, startPos);
+        selectedBuild = obj;
     }
 
-    void EndDrawLine()
+    public void cancelBuild()
     {
-        isClick = false;
-        isLineDrawing = false;
         selectedBuild = null;
-        Destroy(lineRenderer.gameObject);
     }
 }
