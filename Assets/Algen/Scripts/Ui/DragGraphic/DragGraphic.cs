@@ -22,12 +22,13 @@ public class DragGraphic : MonoBehaviour
     [SerializeField]
     GameObject lineObj;
     LineRenderer lineRenderer;
-    GameObject transportBuild;
+    GameObject selectedBuild;
 
     InputManager inputManager;
     bool isClick = false;
     bool isLeftClick;
 
+    DragSlot dragSlot;
 
     #region Singleton
     public static DragGraphic instance;
@@ -54,6 +55,7 @@ public class DragGraphic : MonoBehaviour
         sprite.enabled = false;
         startPosition = Vector2.zero;
         isLineDrawing = false;
+        dragSlot = DragSlot.instance;
 
         inputManager = InputManager.instance;
         inputManager.controls.MainCamera.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
@@ -103,6 +105,7 @@ public class DragGraphic : MonoBehaviour
     void LeftMouseButtonDown()
     {
         if (preBuilding.activeSelf) return;
+        if (dragSlot.slot.item != null) return;
 
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
         {
@@ -119,6 +122,7 @@ public class DragGraphic : MonoBehaviour
     void LeftMouseButtonUp()
     {
         if (preBuilding.activeSelf) return;
+        if (dragSlot.slot.item != null) return;
 
         if (!inputManager.ctrl)
             unitDrag.LeftMouseUp(startPosition, endPosition);
@@ -130,6 +134,7 @@ public class DragGraphic : MonoBehaviour
     void RightMouseButtonDown()
     {
         if (preBuilding.activeSelf) return;
+        if (dragSlot.slot.item != null) return;
 
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
         {
@@ -152,12 +157,13 @@ public class DragGraphic : MonoBehaviour
                 {
                     foreach (RaycastHit2D hit in hits)
                     {
-                        if (hit.collider.TryGetComponent(out TransportBuild trBuild))
+                        if (hit.collider.TryGetComponent(out Production pro) && pro.isGetLine)
                         {
-                            transportBuild = trBuild.gameObject;
-                            Vector3 pos = new Vector3(transportBuild.transform.position.x, transportBuild.transform.position.y, -1);
-                            if (trBuild.takeBuild != null)
-                                trBuild.ResetTakeBuild();
+                            selectedBuild = hit.collider.gameObject;
+                            pro.ResetLineRenderer();
+
+                            Vector3 pos = new Vector3(selectedBuild.transform.position.x, selectedBuild.transform.position.y, -1);
+
                             LineDrawStart(pos);
                             isLineDrawing = true;
                             break;
@@ -171,6 +177,7 @@ public class DragGraphic : MonoBehaviour
     void RightMouseButtonUp()
     {
         if (preBuilding.activeSelf) return;
+        if (dragSlot.slot.item != null) return;
 
         if (!isLineDrawing)
         {
@@ -184,31 +191,37 @@ public class DragGraphic : MonoBehaviour
         {
             RaycastHit2D[] hits = Physics2D.RaycastAll(endPosition, Vector2.zero);
 
+            selectedBuild.TryGetComponent(out UnitFactory unitFactory);
+            selectedBuild.TryGetComponent(out TransportBuild transport);
+
             if (hits.Length > 0)
             {
-                bool isSameObj = false;
-                bool isOnStructure = false;
                 foreach (RaycastHit2D hit in hits)
                 {
-                    if (hit.collider.GetComponent<Structure>())
+                    if(selectedBuild == hit.collider.gameObject)
                     {
-                        isOnStructure = true;
-                        if (hit.collider.TryGetComponent(out TransportBuild othTrans) && transportBuild != hit.collider.gameObject)
-                        {
-                            transportBuild.GetComponent<TransportBuild>().TakeBuildSet(othTrans);
-                            break;
-                        }
-                        else if (transportBuild == hit.collider.gameObject)
-                        {
-                            isSameObj = true;
-                        }
+                        break;
+                    }
+                    else if (unitFactory)
+                    {
+                        unitFactory.UnitSpawnPosSet(endPosition);
+                        EndDrawLine();
+                    }
+                    else if (transport && hit.collider.TryGetComponent(out TransportBuild othTrans))
+                    {
+                        transport.TakeBuildSet(othTrans);
+                        EndDrawLine();
                     }
                 }
-                if (!isSameObj || !isOnStructure)
-                    EndDrawLine();
             }
             else
+            {
+                if (unitFactory)
+                {
+                    unitFactory.UnitSpawnPosSet(endPosition);
+                }
                 EndDrawLine();
+            }
         }
     }
 
@@ -250,6 +263,7 @@ public class DragGraphic : MonoBehaviour
     {
         isClick = false;
         isLineDrawing = false;
+        selectedBuild = null;
         Destroy(lineRenderer.gameObject);
     }
 }

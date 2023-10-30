@@ -65,8 +65,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
                         fluidFactory.SendFluidFunc(structureData.SendFluidAmount);
                         saveFluidNum -= structureData.SendFluidAmount;
                     }
-                    else
-                        Debug.Log("el");
+
                     if(fluidFactory.mainSource == null && !fluidFactory.reFindMain)
                         RemoveMainSource(false);
                 }

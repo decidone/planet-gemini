@@ -5,20 +5,12 @@ using UnityEngine;
 
 public class TransportBuild : Production
 {
-    [SerializeField]
-    GameObject lineObj;
-    [HideInInspector]
-    public LineRenderer lineRenderer;
-
     public TransportBuild takeBuild;
     public List<TransportBuild> sendBuildList = new List<TransportBuild>();
 
     [SerializeField]
     GameObject trUnit;
     List<GameObject> sendItemUnit = new List<GameObject>();
-
-    Vector3 startLine;
-    Vector3 endLine;
 
     int maxSendAmount;
     public bool isToggleOn = false;
@@ -35,6 +27,7 @@ public class TransportBuild : Production
         maxFuel = 100;
         exTimeSet = 1.0f;
         isStorageBuild = true;
+        isGetLine = true;
     }
 
     protected override void Update()
@@ -80,8 +73,8 @@ public class TransportBuild : Production
             else
                 exTimer = 0;
 
-            if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>())
-                LineRendererSet();
+            if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>() && takeBuild != null)
+                LineRendererSet(takeBuild.transform.position);
         }
     }
 
@@ -92,31 +85,15 @@ public class TransportBuild : Production
         sInvenManager.progressBar.SetMaxProgress(cooldown);
         sInvenManager.TransportBuildSetting(isToggleOn, sendAmount);
 
-        LineRendererSet();
+        if(takeBuild != null)
+            LineRendererSet(takeBuild.transform.position);
     }
-
-    public void LineRendererSet()
-    {
-        if (takeBuild != null && lineRenderer == null)
-        {
-            startLine = new Vector3(transform.position.x, transform.position.y, -1);
-            endLine = new Vector3(takeBuild.transform.position.x, takeBuild.transform.position.y, -1);
-
-            GameObject currentLine = Instantiate(lineObj, startLine, Quaternion.identity);
-            lineRenderer = currentLine.GetComponent<LineRenderer>();
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0, startLine);
-            lineRenderer.SetPosition(1, endLine);
-        }
-    }
-
 
     public override void CloseUI()
     {
         sInvenManager.ReleaseInven();
 
-        if (lineRenderer != null)
-            Destroy(lineRenderer.gameObject);
+        base.ResetLineRenderer();
     }
 
     void SendTransportItemDicCheck(TransportBuild othBuild)
@@ -314,11 +291,9 @@ public class TransportBuild : Production
         sendAmount = amount;
     }
 
-    public void ResetTakeBuild()
+    public override void ResetLineRenderer()
     {
-        if(lineRenderer != null)        
-            Destroy(lineRenderer.gameObject);
-
+        base.ResetLineRenderer();
         takeBuild = null;
     }
 
@@ -337,7 +312,7 @@ public class TransportBuild : Production
 
         foreach (TransportBuild transport in sendBuildList)
         {
-            transport.ResetTakeBuild();
+            transport.ResetLineRenderer();
             foreach (GameObject trUnit in transport.sendItemUnit)
             {
                 trUnit.GetComponent<TransportUnit>().TakeItemEnd();

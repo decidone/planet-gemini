@@ -5,14 +5,22 @@ using UnityEngine;
 
 public class UnitFactory : Production
 {
-    public Vector2[] nearObjPos = new Vector2[8];
+    public Vector2[] nearPos = new Vector2[8];
     public Vector2 spawnPos;
+    bool isSetPos;
 
     [SerializeField]
     GameObject[] UnitList;
 
     GameObject spawnUnit;
     string setUnitName;
+
+    protected override void Start()
+    {
+        base.Start();
+        isSetPos = false;
+        isGetLine = true;
+    }
 
     // Update is called once per frame
     protected override void Update()
@@ -32,18 +40,29 @@ public class UnitFactory : Production
                     prodTimer += Time.deltaTime;
                     if (prodTimer > recipe.cooldown)
                     {
-                        inventory.Sub(0, recipe.amounts[0]);
-                        inventory.Sub(1, recipe.amounts[1]);
-                        inventory.Sub(2, recipe.amounts[2]);
-                        SetUnit();
-                        SpawnUnit();
-                        prodTimer = 0;
+                        bool spawnPosExist = UnitSpawnPosFind();
+
+                        if (spawnPosExist)
+                        {
+                            inventory.Sub(0, recipe.amounts[0]);
+                            inventory.Sub(1, recipe.amounts[1]);
+                            inventory.Sub(2, recipe.amounts[2]);
+
+                            SetUnit();
+                            SpawnUnit();
+                            prodTimer = 0;
+                        }
                     }
                 }
                 else
                 {
                     prodTimer = 0;
                 }
+            }
+
+            if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>() && isSetPos)
+            {
+                LineRendererSet(spawnPos);
             }
         }
     }
@@ -59,8 +78,11 @@ public class UnitFactory : Production
         rManager.recipeBtn.onClick.AddListener(OpenRecipe);
 
         sInvenManager.InvenInit();
-        if (recipe.name != null)        
-            SetRecipe(recipe);        
+        if (recipe.name != null)
+            SetRecipe(recipe);
+
+        if (isSetPos)
+            LineRendererSet(spawnPos);
     }
 
     public override void CloseUI()
@@ -69,6 +91,8 @@ public class UnitFactory : Production
 
         rManager.recipeBtn.onClick.RemoveAllListeners();
         rManager.recipeBtn.gameObject.SetActive(false);
+
+        base.ResetLineRenderer();
     }
 
     public override void OpenRecipe()
@@ -110,6 +134,9 @@ public class UnitFactory : Production
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
 
+        if (nearPos[index] != null)
+            nearPos[index] = this.transform.position + startVec + endVec;
+
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
@@ -117,28 +144,35 @@ public class UnitFactory : Production
                 hits[i].collider.gameObject != this.gameObject)
             {
                 nearObj[index] = hits[i].collider.gameObject;
-                nearObjPos[index] = hits[i].collider.transform.position;
-                UnitSpawnPosSet();
                 callback(hitCollider.gameObject);
                 break;
             }
         }
     }
 
-    void UnitSpawnPosSet()
+    public bool UnitSpawnPosFind()
     {
-        foreach(Vector2 pos in nearObjPos)
+        bool spawnPosExist = false;
+        for (int i = 0; i < nearPos.Length; i++)
         {
-            if(pos == new Vector2(0, 0))
+            if (nearObj[i] != null)
+                continue;
+            else
             {
-                UnitSpawnPosSet(pos);
+                spawnPosExist = true;
+                if(!isSetPos)
+                    spawnPos = nearPos[i];
+                break;
             }
         }
+
+        return spawnPosExist;
     }
 
-    void UnitSpawnPosSet(Vector2 pos)
+    public void UnitSpawnPosSet(Vector2 _spawnPos)
     {
-        spawnPos = pos;
+        isSetPos = true;
+        spawnPos = _spawnPos;
     }
 
     void SetUnit()
@@ -163,5 +197,11 @@ public class UnitFactory : Production
         unit.transform.position = this.transform.position;
         UnitAi unitAi = unit.GetComponent<UnitAi>();
         unitAi.MovePosSet(spawnPos, 0, true);
+    }
+
+    public override void ResetLineRenderer()
+    {
+        base.ResetLineRenderer();
+        isSetPos = false;
     }
 }

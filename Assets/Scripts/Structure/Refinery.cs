@@ -29,14 +29,6 @@ public class Refinery : FluidFactoryCtrl
         preSaveFluidNum = 0;
         uiOpened = false;
 
-        Debug.Log(GameObject.Find("Canvas"));
-        Debug.Log(GameObject.Find("Canvas").transform.Find("StructureInfo"));
-        Debug.Log(GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage"));
-        Debug.Log(GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
-            .transform.Find("Refinery"));
-        Debug.Log(GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
-            .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>());
-
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();
         #endregion
@@ -103,21 +95,20 @@ public class Refinery : FluidFactoryCtrl
             FluidChangeCheck();
 
             var slot = inventory.SlotCheck(0);
-            var slot1 = inventory.SlotCheck(1);
 
             if (recipe.name != null)
             {
-                if (saveFluidNum >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                if (saveFluidNum >= recipe.amounts[0] && (slot.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                 {
                     output = itemDic[recipe.items[recipe.items.Count - 1]];
 
-                    if (slot1.item == output || slot1.item == null)
+                    if (slot.item == output || slot.item == null)
                     {
                         prodTimer += Time.deltaTime;
                         if (prodTimer > cooldown)
                         {
                             saveFluidNum -= recipe.amounts[0];
-                            inventory.SlotAdd(1, output, recipe.amounts[recipe.amounts.Count - 1]);
+                            inventory.SlotAdd(0, output, recipe.amounts[recipe.amounts.Count - 1]);
                             prodTimer = 0;
                         }
                     }
@@ -132,7 +123,7 @@ public class Refinery : FluidFactoryCtrl
                 }
             }
 
-            if (slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 SendItem(output);
             }
@@ -198,8 +189,7 @@ public class Refinery : FluidFactoryCtrl
         }
         recipe = _recipe;
         sInvenManager.ResetInvenOption();
-        sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
-        sInvenManager.slots[1].outputSlot = true;
+        sInvenManager.slots[0].outputSlot = true;
         sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }
 
@@ -218,11 +208,11 @@ public class Refinery : FluidFactoryCtrl
 
     protected override void AddInvenItem()
     {
-        var slot1 = inventory.SlotCheck(1);
+        var slot = inventory.SlotCheck(0);
 
-        if (slot1.item != null)
+        if (slot.item != null)
         {
-            playerInven.Add(slot1.item, slot1.amount);
+            playerInven.Add(slot.item, slot.amount);
         }
     }
 
@@ -233,9 +223,9 @@ public class Refinery : FluidFactoryCtrl
             Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
             returnDic.Add(ItemList.instance.itemDic[fluidName], (int)saveFluidNum);
 
-            var slot1 = inventory.SlotCheck(1);
-            if (slot1.item != null && slot1.amount > 0)
-                returnDic.Add(slot1.item, slot1.amount);
+            var slot = inventory.SlotCheck(0);
+            if (slot.item != null && slot.amount > 0)
+                returnDic.Add(slot.item, slot.amount);
 
             return returnDic;
         }
