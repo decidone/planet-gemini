@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Algen/TestScene/AlgenScene4.unity
+    path: Assets/Algen/AlgenScene/AlgenScene4.unity
     guid: 402ff796161468e42b4b7e8ca8560fe6
   m_configObjects: {}

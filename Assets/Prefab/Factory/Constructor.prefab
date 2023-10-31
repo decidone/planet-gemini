@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 375400609723545137}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9, y: -5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -205,6 +205,9 @@ MonoBehaviour:
   rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
+  lineObj: {fileID: 0}
+  lineRenderer: {fileID: 0}
+  isGetLine: 0
 --- !u!50 &4895866325520528144
 Rigidbody2D:
   serializedVersion: 4
