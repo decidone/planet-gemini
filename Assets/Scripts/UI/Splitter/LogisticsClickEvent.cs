@@ -63,17 +63,20 @@ public class LogisticsClickEvent : MonoBehaviour
         {
             sFilterManager.SetSplitter(splitter);
             inventoryList.LogisticsArr[0].gameObject.SetActive(true);
+            gameManager.SelectPointSpawn(splitter.gameObject);
             sFilterManager.OpenUI();
         }
         else if (logisticsCtrl.TryGetComponent(out Unloader unloader))
         {
             unloaderManager.SetUnloader(unloader);
             inventoryList.LogisticsArr[1].gameObject.SetActive(true);
+            gameManager.SelectPointSpawn(unloader.gameObject);
             unloaderManager.OpenUI();
         }
         else if (logisticsCtrl.TryGetComponent(out ItemSpawner itemSpawner))
         {
             itemSpManager.SetItemSp(itemSpawner);
+            gameManager.SelectPointSpawn(itemSpawner.gameObject);
             itemSpManager.OpenUI();
         }
     }
@@ -84,17 +87,20 @@ public class LogisticsClickEvent : MonoBehaviour
         {
             sFilterManager.ReleaseInven();
             inventoryList.LogisticsArr[0].gameObject.SetActive(false);
+            gameManager.SelectPointRemove();
             sFilterManager.CloseUI();
         }
         else if (logisticsCtrl.GetComponent<Unloader>())
         {
             unloaderManager.ReleaseInven();
             inventoryList.LogisticsArr[1].gameObject.SetActive(false);
+            gameManager.SelectPointRemove();
             unloaderManager.CloseUI();
         }
         else if (logisticsCtrl.GetComponent<ItemSpawner>())
         {
             itemSpManager.ReleaseInven();
+            gameManager.SelectPointRemove();
             itemSpManager.CloseUI();
         }
     }

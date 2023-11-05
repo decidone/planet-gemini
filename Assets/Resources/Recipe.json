@@ -53,5 +53,12 @@
         {"name":"SentryCopter","items":["IronPlate","IronBar","SteelBar","SentryCopter"],"amounts":[1,1,1,1],"cooldown":3},
         {"name":"BounceRobot","items":["IronPlate","IronBar","SteelBar","BounceRobot"],"amounts":[1,1,1,1],"cooldown":3},
         {"name":"SpinRobot","items":["IronPlate","IronBar","SteelBar","SpinRobot"],"amounts":[1,1,1,1],"cooldown":3}
+    ],
+    "Tower":[
+        {"name":"FireTower","items":["IronBullet","SteelBullet","ExplosiveBullet"],"amounts":[0,0,0],"cooldown":0},
+        {"name":"PoisonTower","items":["IronBullet","SteelBullet","ExplosiveBullet"],"amounts":[0,0,0],"cooldown":0},
+        {"name":"IceTower","items":["SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0],"cooldown":0},        
+        {"name":"SunTower","items":["SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0],"cooldown":0},
+        {"name":"StormTower","items":["SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0],"cooldown":0}
     ]
 }

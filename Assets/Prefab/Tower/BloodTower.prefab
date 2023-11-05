@@ -90,7 +90,6 @@ GameObject:
   - component: {fileID: 1886033591091936635}
   - component: {fileID: 1886033591091936629}
   - component: {fileID: 1284971482448793063}
-  - component: {fileID: 3966696439935025594}
   m_Layer: 8
   m_Name: BloodTower
   m_TagString: Tower
@@ -282,22 +281,6 @@ MonoBehaviour:
   animator: {fileID: 1886033591091936630}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   attackFX: {fileID: 3832536798139642931, guid: b3f85c014934a084ea6db9bddeba8932, type: 3}
---- !u!114 &3966696439935025594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1886033591091936625}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 2917493597924776373
-  updateError: 1
-  checkTime: 0.2
 --- !u!1 &2238690319974426419
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,7 +320,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2238690319974426419}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

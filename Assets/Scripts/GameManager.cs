@@ -31,6 +31,10 @@ public class GameManager : MonoBehaviour
     LogisticsClickEvent logisticsClickEvent;
     LogisticsClickEvent newLogisticsClickEvent;
 
+    [SerializeField]
+    GameObject selectPointPrefab;
+    GameObject selectPoint;
+
     InputManager inputManager;
 
     public delegate void OnUIChanged(GameObject ui);
@@ -327,5 +331,20 @@ public class GameManager : MonoBehaviour
     {
         Vector3 playerSpawnPos = new Vector3(x, y, 0);
         player.transform.position = playerSpawnPos;
+    }
+
+    public void SelectPointSpawn(GameObject build)
+    {
+        selectPoint = Instantiate(selectPointPrefab);
+        Vector3 spawnPos = new Vector3(build.transform.position.x, build.transform.position.y + 0.7f, 0);
+        selectPoint.transform.parent = build.transform;
+        selectPoint.transform.position = spawnPos;
+
+        selectPoint.GetComponent<SelectPointMovement>().initialPosition = spawnPos;
+    }
+
+    public void SelectPointRemove()
+    {
+        Destroy(selectPoint);
     }
 }

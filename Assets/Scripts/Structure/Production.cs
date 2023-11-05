@@ -67,11 +67,6 @@ public abstract class Production : Structure
         recipe = new Recipe();
         output = null;
 
-        if (sizeOneByOne)
-            nearObj = new GameObject[4];
-        else
-            nearObj = new GameObject[8];
-
         GameManager gameManager = GameManager.instance;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
@@ -104,8 +99,34 @@ public abstract class Production : Structure
                 }
                 else if (nearObj[i] == null && !sizeOneByOne) 
                 {
-                    int dirIndex = i / 2;
-                    CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    if(width == 2 && height == 1)
+                    {
+                        int dirIndex = 0;
+                        if (i >= 0 && i <= 1)
+                        {
+                            dirIndex = 0;
+                        }
+                        else if (i == 2)
+                        {
+                            dirIndex = 1;
+                        }
+                        else if (i >= 3 && i <= 4)
+                        {
+                            dirIndex = 2;
+                        }
+                        else if (i == 5)
+                        {
+                            dirIndex = 3;
+                        }
+
+                        CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    }
+                    else if (width == 2 && height == 2)
+                    {
+                        int dirIndex = i / 2;
+                        CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    }
+
                 }
             }
         }

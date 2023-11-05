@@ -469,6 +469,9 @@ MonoBehaviour:
   rManager: {fileID: 0}
   maxAmount: 99
   cooldown: 3
+  lineObj: {fileID: 0}
+  lineRenderer: {fileID: 0}
+  isGetLine: 0
 --- !u!50 &8224777291930825977
 Rigidbody2D:
   serializedVersion: 4
@@ -549,7 +552,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4889686687370465346}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

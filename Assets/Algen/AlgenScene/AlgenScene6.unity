@@ -1119,10 +1119,6 @@ PrefabInstance:
       propertyPath: inventoryUiCanvas
       value: 
       objectReference: {fileID: 8603474882824653205}
-    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: selectPointPrefab
-      value: 
-      objectReference: {fileID: 2420153466432160886, guid: df5c2e478c2b2cc45ac8d544fbe8953f, type: 3}
     - target: {fileID: 3986364635626952760, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: m_RootOrder
       value: 1

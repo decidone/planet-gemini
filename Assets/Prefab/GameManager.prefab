@@ -160,7 +160,6 @@ MonoBehaviour:
   inventoryUiCanvas: {fileID: 0}
   map: {fileID: 0}
   player: {fileID: 0}
-  isMapOpened: 0
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -168,6 +167,7 @@ MonoBehaviour:
   iSpManager: {fileID: 0}
   sTreeManager: {fileID: 0}
   debug: 0
+  selectPointPrefab: {fileID: 2420153466432160886, guid: df5c2e478c2b2cc45ac8d544fbe8953f, type: 3}
 --- !u!114 &8121268344323043989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,8 +184,8 @@ MonoBehaviour:
   shift: 0
   alt: 0
   mouseLeft: 0
+  mouseRight: 0
   isMapOpened: 0
-  hoverInfo: 0
 --- !u!114 &7738165226129024440
 MonoBehaviour:
   m_ObjectHideFlags: 0

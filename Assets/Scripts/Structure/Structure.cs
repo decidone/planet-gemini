@@ -68,9 +68,9 @@ public class Structure : MonoBehaviour
     public Vector2[] checkPos = new Vector2[4];
     public bool checkObj = true;
 
-    protected Vector2[] startTransform = new Vector2[4];
-    protected Vector3[] directions = new Vector3[4];
-    protected int[] indices = new int[6];
+    protected Vector2[] startTransform;
+    protected Vector3[] directions;
+    protected int[] indices;
 
     protected Inventory playerInven = null;
 
@@ -131,6 +131,7 @@ public class Structure : MonoBehaviour
         if (width == 1 && height == 1)
         {
             sizeOneByOne = true;
+            nearObj = new GameObject[4];
             Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
 
             for (int i = 0; i < 4; i++)
@@ -138,9 +139,19 @@ public class Structure : MonoBehaviour
                 checkPos[i] = dirs[(dirNum + i) % 4];
             }
         }
+        else if (width == 2 && height == 1)
+        {
+            sizeOneByOne = false;
+            nearObj = new GameObject[6];
+            indices = new int[] { 1, 0, 0, 0, 1, 1 };
+            startTransform = new Vector2[] { new Vector2(0.5f, -1f), new Vector2(-0.5f, -1f) };
+            directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };
+
+        }
         else if (width == 2 && height == 2)
         {
             sizeOneByOne = false;
+            nearObj = new GameObject[8];
             indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
             startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
             directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };

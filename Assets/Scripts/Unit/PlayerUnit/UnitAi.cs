@@ -32,9 +32,33 @@ public class UnitAi : UnitCommonAi
     bool isTargetSet = false;
     bool isAttackMove = true;
 
+    public float selfHealingAmount;
+    public float selfHealInterval;
+    float selfHealTimer;
+
     void Start()
     {
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
+        selfHealInterval = 5;
+        selfHealingAmount = 5f;
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        if (hp != unitCommonData.MaxHp && aIState != AIState.AI_Die)
+        {
+            selfHealTimer += Time.deltaTime;
+
+            if (selfHealTimer >= selfHealInterval)
+            {
+                hp += selfHealingAmount;
+                hpBar.fillAmount = hp / unitCommonData.MaxHp;
+                if(hp >= unitCommonData.MaxHp)                
+                    unitCanvas.SetActive(false);                
+                selfHealTimer = 0f;
+            }
+        }
     }
 
     protected override void UnitAiCtrl()
@@ -367,14 +391,17 @@ public class UnitAi : UnitCommonAi
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
 
-        foreach (Collider2D collider in colliders)
+        if(colliders.Length > 0)
         {
-            GameObject monster = collider.gameObject;
-            if (monster.CompareTag("Monster"))
+            foreach (Collider2D collider in colliders)
             {
-                if (!targetList.Contains(monster))
+                GameObject monster = collider.gameObject;
+                if (monster.CompareTag("Monster"))
                 {
-                    targetList.Add(monster);
+                    if (!targetList.Contains(monster))
+                    {
+                        targetList.Add(monster);
+                    }
                 }
             }
         }
@@ -454,7 +481,11 @@ public class UnitAi : UnitCommonAi
             }
         }
     }
-
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+        selfHealTimer = 0;
+    }
     protected override void DieFunc()
     {
         base.DieFunc();

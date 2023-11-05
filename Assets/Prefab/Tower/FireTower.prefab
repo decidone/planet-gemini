@@ -115,7 +115,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 910833644595497711}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -173,7 +173,6 @@ GameObject:
   - component: {fileID: 1929914461128864775}
   - component: {fileID: 1929914461128864777}
   - component: {fileID: 505774869806293970}
-  - component: {fileID: -5483542174312113062}
   m_Layer: 8
   m_Name: FireTower
   m_TagString: Tower
@@ -365,22 +364,6 @@ MonoBehaviour:
   animator: {fileID: 1929914461128864778}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   attackFX: {fileID: 131646313625141333, guid: b31d241b0c0f49b4583ae09c0b61542c, type: 3}
---- !u!114 &-5483542174312113062
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1929914461128864781}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 6604552128431321110
-  updateError: 1
-  checkTime: 0.2
 --- !u!1 &2538830438076231368
 GameObject:
   m_ObjectHideFlags: 0
