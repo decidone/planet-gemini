@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 90368467031128414}
   - component: {fileID: 90368467031128400}
   - component: {fileID: 7182665562401536423}
-  - component: {fileID: -2374467523713113879}
   m_Layer: 8
   m_Name: RepairTower
   m_TagString: Tower
@@ -206,22 +205,6 @@ MonoBehaviour:
   animator: {fileID: 90368467031128403}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   TowerList: []
---- !u!114 &-2374467523713113879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 90368467031128404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 1799744147323901882
-  updateError: 1
-  checkTime: 0.2
 --- !u!1 &1317787849305595216
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,7 +472,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5212540339750907508}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

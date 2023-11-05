@@ -115,7 +115,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 203330016224500494}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -325,7 +325,6 @@ GameObject:
   - component: {fileID: 4304459724202878728}
   - component: {fileID: 4304459724202878726}
   - component: {fileID: -5745141633721722988}
-  - component: {fileID: 4479695996821480989}
   m_Layer: 8
   m_Name: StormTower
   m_TagString: Tower
@@ -517,22 +516,6 @@ MonoBehaviour:
   animator: {fileID: 4304459724202878725}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   attackFX: {fileID: 3832536798139642931, guid: dbd38acb8484d144c8515c998e13240d, type: 3}
---- !u!114 &4479695996821480989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4304459724202878722}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 7048850569086664272
-  updateError: 1
-  checkTime: 0.2
 --- !u!1 &8492843390990340007
 GameObject:
   m_ObjectHideFlags: 0

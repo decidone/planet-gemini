@@ -703,6 +703,7 @@ public class PreBuilding : MonoBehaviour
                         structure.SetBuild();
                         structure.ColliderTriggerOnOff(false);
                         obj.AddComponent<DynamicGridObstacle>();
+                        obj.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
                 else if (obj.TryGetComponent(out BeltGroupMgr belt))
@@ -714,6 +715,7 @@ public class PreBuilding : MonoBehaviour
                         belt.beltList[0].SetBuild();
                         belt.beltList[0].ColliderTriggerOnOff(false);
                         belt.beltList[0].gameObject.AddComponent<DynamicGridObstacle>();
+                        belt.beltList[0].gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
                 else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
@@ -724,6 +726,7 @@ public class PreBuilding : MonoBehaviour
                         underBelt.ColliderTriggerOnOff(false);
                         underBelt.RemoveObj();
                         underBelt.beltScipt.gameObject.AddComponent<DynamicGridObstacle>();
+                        underBelt.beltScipt.gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
                 else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
@@ -734,6 +737,7 @@ public class PreBuilding : MonoBehaviour
                         underPipe.ColliderTriggerOnOff(false);
                         underPipe.RemoveObj();
                         underPipe.pipeScipt.gameObject.AddComponent<DynamicGridObstacle>();
+                        underPipe.pipeScipt.gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
             }
@@ -755,12 +759,13 @@ public class PreBuilding : MonoBehaviour
                         structure.TempBuilCooldownSet();
                         structure.ColliderTriggerOnOff(false);
                         obj.AddComponent<DynamicGridObstacle>();
+                        obj.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
             }
             setBuild = null;
         }
-    } 
+    }
 
     void CreateObj(Vector3 pos)
     {

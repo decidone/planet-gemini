@@ -142,7 +142,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4194355934249796236}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -276,7 +276,6 @@ GameObject:
   - component: {fileID: 7592073746180229614}
   - component: {fileID: 7592073746180229600}
   - component: {fileID: 4499044516474926020}
-  - component: {fileID: 4217045939000031503}
   m_Layer: 8
   m_Name: PoisonTower
   m_TagString: Tower
@@ -468,22 +467,6 @@ MonoBehaviour:
   animator: {fileID: 7592073746180229603}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   attackFX: {fileID: 3832536798139642931, guid: fdb8544d40d9b5e4a92423109023958f, type: 3}
---- !u!114 &4217045939000031503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7592073746180229604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 2138985781139890718
-  updateError: 1
-  checkTime: 0.2
 --- !u!1 &8011384680271846714
 GameObject:
   m_ObjectHideFlags: 0

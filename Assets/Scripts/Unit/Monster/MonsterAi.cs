@@ -26,7 +26,7 @@ public class MonsterAi : UnitCommonAi
                 if(idle == 0)
                 {
                     if (idleTimeStart)
-                        StartCoroutine("IdleTime");
+                        StartCoroutine(nameof(IdleTime));
                 }
                 else
                     PatrolRandomPosSet();
@@ -210,6 +210,8 @@ public class MonsterAi : UnitCommonAi
         idleTimeStart = false;
         int RandomTime = Random.Range(5, 8);
         yield return new WaitForSeconds(RandomTime);
+        if (unitCanvas.activeSelf)
+            unitCanvas.SetActive(false);
         idle = -1;
         idleTimeStart = true;
     }

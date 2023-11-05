@@ -270,6 +270,9 @@ MonoBehaviour:
   rManager: {fileID: 0}
   maxAmount: 0
   cooldown: 0
+  lineObj: {fileID: 0}
+  lineRenderer: {fileID: 0}
+  isGetLine: 0
   fluidName: 
   saveFluidNum: 0
   sendDelayTimer: 0
@@ -572,7 +575,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9118506163771575108}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

@@ -524,7 +524,7 @@ PrefabInstance:
     - target: {fileID: 2369682121264992854, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
       propertyPath: preBuilding
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 710024497}
     - target: {fileID: 2369682121264992854, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
       propertyPath: tempMinerUI
       value: 

@@ -131,7 +131,6 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         if (sendUnderbelt.dirNum == dirNum)
         {
             inObj.Add(obj);
-            Debug.Log("newGet");
             sendUnderbelt.SetOutObj(this.gameObject);
         }
         checkObj = true;

@@ -63,7 +63,7 @@ public class UnitCommonAi : MonoBehaviour
     public SpriteRenderer unitSprite;
     public GameObject unitCanvas;
     public Image hpBar;
-    protected float hp;
+    public float hp;
 
     protected bool isFlip;
     protected bool isDelayAfterAttackCoroutine = false;
@@ -81,6 +81,7 @@ public class UnitCommonAi : MonoBehaviour
 
         hp = unitCommonData.MaxHp;
         hpBar.fillAmount = hp / unitCommonData.MaxHp;
+        unitCanvas.SetActive(false);
 
         isFlip = unitSprite.flipX;
 
@@ -217,8 +218,10 @@ public class UnitCommonAi : MonoBehaviour
 
     public virtual void TakeDamage(float damage)
     {
-        if (hp <= 0f)
-            return;
+        //if (hp <= 0f)
+        //    return;
+        if (!unitCanvas.activeSelf)
+            unitCanvas.SetActive(true);
 
         float reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
 

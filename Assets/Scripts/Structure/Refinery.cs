@@ -47,7 +47,6 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        nearObj = new GameObject[4];
         CheckPos();
         #endregion
 

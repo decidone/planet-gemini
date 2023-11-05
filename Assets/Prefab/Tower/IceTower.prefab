@@ -142,7 +142,7 @@ SpriteMask:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3270177554714978355}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -200,7 +200,8 @@ GameObject:
   - component: {fileID: 5088120821849387762}
   - component: {fileID: 5088120821849387772}
   - component: {fileID: 5101119551645714666}
-  - component: {fileID: -9021604783637356113}
+  - component: {fileID: 4375176220273537540}
+  - component: {fileID: 827040559634150025}
   m_Layer: 8
   m_Name: IceTower
   m_TagString: Tower
@@ -387,12 +388,20 @@ MonoBehaviour:
   isStorageBuild: 0
   isMainSource: 0
   isTempBuild: 0
+  ui: {fileID: 0}
+  sInvenManager: {fileID: 0}
+  rManager: {fileID: 0}
+  maxAmount: 0
+  cooldown: 0
+  lineObj: {fileID: 0}
+  lineRenderer: {fileID: 0}
+  isGetLine: 0
   towerData: {fileID: 11400000, guid: d63a1354048524c4db6cef6738baa67d, type: 2}
   towerState: 0
   animator: {fileID: 5088120821849387775}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   attackFX: {fileID: 3832536798139642931, guid: 22067a6743dd85943ac66ba5c3c774f6, type: 3}
---- !u!114 &-9021604783637356113
+--- !u!114 &4375176220273537540
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -401,13 +410,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 5088120821849387768}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
+  m_Script: {fileID: 11500000, guid: 75c16f7278f4e2a448cead0d6ec8787c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 1607646607832735825
-  updateError: 1
-  checkTime: 0.2
+  structureInfoUI: {fileID: 0}
+  sInvenManager: {fileID: 0}
+--- !u!114 &827040559634150025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5088120821849387768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8612a3248f1ad04197ab52610640ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  space: 1
+  maxAmount: 99
+  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
 --- !u!1 &6166578359405844220
 GameObject:
   m_ObjectHideFlags: 0

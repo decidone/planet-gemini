@@ -47,3 +47,5 @@ MonoBehaviour:
   beltMgr: {fileID: 0}
   isBuildingOk: 1
   isEnough: 1
+  posList: []
+  vision: {fileID: 3296495686965111697, guid: d1ed435ae6c7af943bf911833fbb48f8, type: 3}

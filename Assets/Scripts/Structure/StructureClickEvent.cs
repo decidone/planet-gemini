@@ -38,6 +38,7 @@ public class StructureClickEvent : MonoBehaviour
         prod.OpenUI();
         if(prod.isGetLine)
             drag.SelectBuild(this.gameObject);
+        gameManager.SelectPointSpawn(prod.gameObject);
         sInvenManager.OpenUI();
     }
 
@@ -46,6 +47,7 @@ public class StructureClickEvent : MonoBehaviour
         prod.CloseUI();
         if (prod.isGetLine)
             drag.cancelBuild();
+        gameManager.SelectPointRemove();
         sInvenManager.CloseUI();
     }
 }
