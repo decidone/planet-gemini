@@ -13,6 +13,7 @@ public class TowerSingleAttack : AttackTower
             Vector3 dir = aggroTarget.transform.position - transform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             attackFXSpwan = Instantiate(attackFX, new Vector2(this.transform.position.x, this.transform.position.y + 0.7f), this.transform.rotation);
+            inventory.Sub(0, 1);
             if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
                 attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
             else

@@ -133,7 +133,7 @@ public class Furnace : Production
             }
         }
 
-        itemProps.Pool.Release(itemProps.gameObject);
+        base.OnFactoryItem(itemProps);
     }
 
     public override void OnFactoryItem(Item item)

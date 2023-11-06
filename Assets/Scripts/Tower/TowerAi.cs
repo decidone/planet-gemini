@@ -29,8 +29,7 @@ public class TowerAi : Production
 
     public GameObject RuinExplo;
 
-    public string test;
-    public List<Item> bulletRecipe;
+    List<Item> bulletRecipe;
 
     protected override void Awake()
     {
@@ -43,27 +42,19 @@ public class TowerAi : Production
         base.Start();
         recipes = rManager.GetRecipeList("Tower", this);
 
-        test = "test";
-        if (bulletRecipe.Count == 0)
+        bulletRecipe = new List<Item>();
+
+        foreach (Recipe recipeData in recipes)
         {
-            foreach (Recipe recipe in recipes)
+            if(recipeData.name == structureData.FactoryName)
             {
-                if(recipe.name == structureData.FactoryName)
+                recipe = recipeData;
+                foreach (string itemsName in recipe.items)
                 {
-                    foreach(string itemsName in recipe.items)
-                    {
-                        bulletRecipe.Add(itemDic[itemsName]);
-                    }
+                    bulletRecipe.Add(itemDic[itemsName]);
                 }
             }
         }
-
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-        Debug.Log(test);
     }
 
     public override void OpenUI()
@@ -149,6 +140,36 @@ public class TowerAi : Production
             }
         }
     }
+
+    public override bool CanTakeItem(Item item)
+    {
+        var slot = inventory.SlotCheck(0);
+
+        if (slot.item == null)
+        {
+            foreach (Item _recipe in bulletRecipe)
+            {
+                if (item == _recipe)
+                    return true;                
+            }
+        }
+        else if (slot.item == item && slot.amount < 99)
+            return true;
+
+        return false;
+    }
+
+    public override void OnFactoryItem(ItemProps itemProps)
+    {
+        foreach (Item _recipe in bulletRecipe)
+        {
+            if(itemProps.item == _recipe)
+                inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+        }
+
+        base.OnFactoryItem(itemProps);
+    }
+
     public override Dictionary<Item, int> PopUpItemCheck()
     {
         Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
