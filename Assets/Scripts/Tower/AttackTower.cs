@@ -13,6 +13,14 @@ public class AttackTower : TowerAi
     bool isTargetSet = false; 
     bool isDelayAfterAttackCoroutine = false;
 
+    public TwBulletDataManager bulletDataManager;
+
+    protected override void Start()
+    {
+        base.Start();
+        bulletDataManager = TwBulletDataManager.instance;
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -29,7 +37,10 @@ public class AttackTower : TowerAi
                     searchTimer = 0f; // 탐색 후 타이머 초기화
                 }
 
-                AttackTowerAiCtrl();
+                var slot = inventory.SlotCheck(0);
+                if(slot.item != null && slot.amount > 0)
+                    AttackTowerAiCtrl();
+
                 if (monsterList.Count > 0)
                 {
                     mstDisCheckTime += Time.deltaTime;
@@ -37,7 +48,7 @@ public class AttackTower : TowerAi
                     {
                         mstDisCheckTime = 0f;
                         AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
-                        RemoveObjectsOutOfRange();                        
+                        RemoveObjectsOutOfRange();
                     }
                     AttackTargetDisCheck();
                 }
@@ -63,8 +74,6 @@ public class AttackTower : TowerAi
         }
     }
     
-    //void Attack()
-
     void AttackTowerAiCtrl()
     {
         switch (towerState)

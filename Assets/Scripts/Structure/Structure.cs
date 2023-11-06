@@ -95,7 +95,7 @@ public class Structure : MonoBehaviour
 
     public ItemProps spawnItem;
 
-    [HideInInspector]
+    //[HideInInspector]
     public List<GameObject> monsterList = new List<GameObject>();
 
     [HideInInspector]
@@ -216,7 +216,7 @@ public class Structure : MonoBehaviour
         hpBar.enabled = false;
         repairBar.enabled = true;
         repairGauge = 0;
-        repairBar.fillAmount = repairGauge / structureData.MaxRepairGauge;
+        repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         isSetBuildingOk = true;
     }
     // 건물 설치 기능
@@ -593,7 +593,7 @@ public class Structure : MonoBehaviour
         if (isBuilding)
         {
             repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
-            if (repairGauge >= structureData.MaxRepairGauge)
+            if (repairGauge >= structureData.MaxBuildingGauge)
             {
                 isPreBuilding = false;
                 repairGauge = 0.0f;

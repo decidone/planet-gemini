@@ -91,7 +91,9 @@ public class Slot : MonoBehaviour
     public void SetInputItem(List<Item> items)
     {
         inputSlot = true;
-        inputItem = items;
+
+        List<Item> itemTemp = new List<Item>(items);
+        inputItem = itemTemp;
 
         onSlotChangedCallback?.Invoke();
     }

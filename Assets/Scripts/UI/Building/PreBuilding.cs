@@ -54,6 +54,8 @@ public class PreBuilding : MonoBehaviour
     PlayerController playerController;
     InputManager inputManager;
 
+    public TowerGroupManager towerGroupManager;
+
     #region Singleton
     public static PreBuilding instance;
 
@@ -704,6 +706,11 @@ public class PreBuilding : MonoBehaviour
                         structure.ColliderTriggerOnOff(false);
                         obj.AddComponent<DynamicGridObstacle>();
                         obj.GetComponentInChildren<SpriteMask>().enabled = true;
+                        if (obj.TryGetComponent(out TowerAi towerAi))
+                        {
+                            GameObject groupGameObj = towerGroupManager.TowerGroupSet(towerAi.buildName);
+                            obj.transform.parent = groupGameObj.transform;
+                        }
                     }
                 }
                 else if (obj.TryGetComponent(out BeltGroupMgr belt))
