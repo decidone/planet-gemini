@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5817459143549894089}
   - component: {fileID: 5817459143549894090}
-  m_Layer: 10
-  m_Name: Fog
+  m_Layer: 9
+  m_Name: MapFog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
