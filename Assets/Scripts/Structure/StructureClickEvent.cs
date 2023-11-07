@@ -46,7 +46,7 @@ public class StructureClickEvent : MonoBehaviour
     {
         prod.CloseUI();
         if (prod.isGetLine)
-            drag.cancelBuild();
+            drag.CancelBuild();
         gameManager.SelectPointRemove();
         sInvenManager.CloseUI();
     }

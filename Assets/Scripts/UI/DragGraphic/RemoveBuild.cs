@@ -21,7 +21,7 @@ public class RemoveBuild : DragFunc
         playerController = gameManager.player.GetComponent<PlayerController>();
     }
 
-    public override void RightMouseUp(Vector2 startPos, Vector2 endPos)
+    public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
     {
         if (startPos != endPos)
             GroupSelectedObjects(startPos, endPos, structureLayer);
@@ -61,7 +61,7 @@ public class RemoveBuild : DragFunc
         {
             UiCheck(structure);
             structure.RemoveObj();
-            refundCost(structure);
+            RefundCost(structure);
         }
     }
 
@@ -78,7 +78,7 @@ public class RemoveBuild : DragFunc
         selectedObjects = new GameObject[0];
     }
 
-    void refundCost(Structure obj)
+    void RefundCost(Structure obj)
     {
         if (!obj.isTempBuild)
         {

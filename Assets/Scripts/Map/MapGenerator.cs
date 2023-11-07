@@ -22,6 +22,7 @@ public class MapGenerator : MonoBehaviour
     public Tilemap resourcesIconTilemap;
     public GameObject objects;
     public Map map;
+    public GameObject mapFog;
 
     [Space]
     [Header("Biomes")]
@@ -55,6 +56,9 @@ public class MapGenerator : MonoBehaviour
         Init();
         Generate();
         SetSpawnPos();
+
+        mapFog.transform.position = new Vector3(width / 2, height / 2, 0);
+        mapFog.transform.localScale = new Vector3(width, height, 1);
     }
 
     void Update()

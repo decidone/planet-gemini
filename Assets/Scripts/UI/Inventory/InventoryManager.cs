@@ -56,7 +56,8 @@ public abstract class InventoryManager : MonoBehaviour
         {
             Slot slot = slots[i];
             slot.slotNum = i;
-
+            EventTrigger trigger = slot.GetComponent<EventTrigger>();
+            trigger.triggers.RemoveRange(0, trigger.triggers.Count);
             AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
             AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
         }
@@ -78,7 +79,8 @@ public abstract class InventoryManager : MonoBehaviour
                 Slot slot = slots[i] = slotObjects[i];
                 slot.GetComponentInChildren<Image>().enabled = true;
                 slot.slotNum = i;
-
+                EventTrigger trigger = slot.GetComponent<EventTrigger>();
+                trigger.triggers.RemoveRange(0, trigger.triggers.Count);
                 AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
                 AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
             }

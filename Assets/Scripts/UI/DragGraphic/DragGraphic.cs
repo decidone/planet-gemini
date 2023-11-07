@@ -61,28 +61,23 @@ public class DragGraphic : MonoBehaviour
     private void Update()
     {
         if (!preBuilding.activeSelf && isClick)
-        {            
+        {
             endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             BoxSizeChange();
 
             if (isLeftClick)
             {
-                if (!inputManager.ctrl)
-                    ColorSet(Color.green);
-                else if (inputManager.ctrl)
+                if (inputManager.ctrl && !inputManager.shift)
                     ColorSet(Color.blue);
+                else if (inputManager.shift && !inputManager.ctrl)
+                    ColorSet(Color.red);
+                else
+                    ColorSet(Color.green);
             }
             else
             {
-                if (inputManager.shift)
-                {
-                    ColorSet(Color.red);
-                    if(sprite.enabled == false)
-                        sprite.enabled = true;
-                }
-                else
-                    sprite.enabled = false;
-            }            
+                sprite.enabled = false;
+            }
         }
     }
 
@@ -105,10 +100,13 @@ public class DragGraphic : MonoBehaviour
         if (preBuilding.activeSelf) return;
         if (dragSlot.slot.item != null) return;
 
-        if (!inputManager.ctrl)
-            unitDrag.LeftMouseUp(startPosition, endPosition);
-        else if (inputManager.ctrl)
+        if (inputManager.ctrl && !inputManager.shift)
             UpgradeBuild.LeftMouseUp(startPosition, endPosition);
+        else if (inputManager.shift && !inputManager.ctrl)
+            removeBuild.LeftMouseUp(startPosition, endPosition);
+        else
+            unitDrag.LeftMouseUp(startPosition, endPosition);
+
         DisableFunc();
     }
 
@@ -122,11 +120,6 @@ public class DragGraphic : MonoBehaviour
             startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             isClick = true;
             isLeftClick = false;
-
-            if (inputManager.shift)
-            {
-                sprite.enabled = true;
-            }
         }
     }
 
@@ -134,7 +127,6 @@ public class DragGraphic : MonoBehaviour
     {
         if (preBuilding.activeSelf) return;
         if (dragSlot.slot.item != null) return;
-
 
         if (!inputManager.shift)
         {
@@ -187,9 +179,7 @@ public class DragGraphic : MonoBehaviour
                 }
             }
         }
-        else
-            removeBuild.RightMouseUp(startPosition, endPosition);
-        DisableFunc();        
+        DisableFunc();
     }
 
     public void ColorSet(Color color)
@@ -222,7 +212,7 @@ public class DragGraphic : MonoBehaviour
         selectedBuild = obj;
     }
 
-    public void cancelBuild()
+    public void CancelBuild()
     {
         selectedBuild = null;
     }
