@@ -323,6 +323,7 @@ MonoBehaviour:
   isStorageBuild: 0
   isMainSource: 0
   isTempBuild: 0
+  myVision: {fileID: 528245509680818411}
   itemData: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
 --- !u!61 &4372891051652484693
 BoxCollider2D:
@@ -680,6 +681,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d99885253b6798043a8074b439eb521f, type: 3}
+--- !u!1 &528245509680818411 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2693073941241950949, guid: d99885253b6798043a8074b439eb521f, type: 3}
+  m_PrefabInstance: {fileID: 2453067638237960718}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4575813276938951683 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2128938097886905869, guid: d99885253b6798043a8074b439eb521f, type: 3}

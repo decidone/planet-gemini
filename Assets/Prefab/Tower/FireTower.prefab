@@ -276,6 +276,7 @@ MonoBehaviour:
   isStorageBuild: 0
   isMainSource: 0
   isTempBuild: 0
+  myVision: {fileID: 2807490437504837445}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -288,8 +289,7 @@ MonoBehaviour:
   towerState: 0
   animator: {fileID: 1929914461128864778}
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
-  test: 
-  bulletRecipe: []
+  bulletDataManager: {fileID: 0}
   attackFX: {fileID: 131646313625141333, guid: b31d241b0c0f49b4583ae09c0b61542c, type: 3}
 --- !u!1 &2538830438076231368
 GameObject:
@@ -606,5 +606,10 @@ PrefabInstance:
 --- !u!4 &2171311426898367405 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2128938097886905869, guid: d99885253b6798043a8074b439eb521f, type: 3}
+  m_PrefabInstance: {fileID: 263898006533592480}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2807490437504837445 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2693073941241950949, guid: d99885253b6798043a8074b439eb521f, type: 3}
   m_PrefabInstance: {fileID: 263898006533592480}
   m_PrefabAsset: {fileID: 0}

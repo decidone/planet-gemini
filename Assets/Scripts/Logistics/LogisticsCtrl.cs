@@ -6,16 +6,9 @@ using UnityEngine.Pool;
 // UTF-8 설정
 public class LogisticsCtrl : Structure
 {
-    protected void Awake()
+    protected override void Awake()
     {
-        GameManager gameManager = GameManager.instance;
-        playerInven = gameManager.GetComponent<Inventory>();
-        buildName = structureData.FactoryName;
-        col = GetComponent<BoxCollider2D>();
-        hp = structureData.MaxHp[level];
-        hpBar.fillAmount = hp / structureData.MaxHp[level];
-        repairBar.fillAmount = 0;
-        isMainSource = false;
+        base.Awake();
     }
 
     protected virtual void Update()

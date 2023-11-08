@@ -448,6 +448,7 @@ MonoBehaviour:
   isStorageBuild: 0
   isMainSource: 0
   isTempBuild: 0
+  myVision: {fileID: 7252123736918734742}
 --- !u!1 &6554100838646963673
 GameObject:
   m_ObjectHideFlags: 0
@@ -584,5 +585,10 @@ PrefabInstance:
 --- !u!4 &6660966291521012606 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2128938097886905869, guid: 92baa7e7a1edf2547b9c2039172aac86, type: 3}
+  m_PrefabInstance: {fileID: 4754394272452461939}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7252123736918734742 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2693073941241950949, guid: 92baa7e7a1edf2547b9c2039172aac86, type: 3}
   m_PrefabInstance: {fileID: 4754394272452461939}
   m_PrefabAsset: {fileID: 0}
