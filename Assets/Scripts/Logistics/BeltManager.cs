@@ -111,5 +111,6 @@ public class BeltManager : MonoBehaviour
             newBeltGroup.beltList[0].beltState = BeltState.SoloBelt;
             newBeltGroup.beltList[0].FactoryModelSet();
         }
+        newBeltGroup.isSetBuildingOk = true;
     }
 }

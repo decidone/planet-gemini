@@ -46,19 +46,12 @@ public abstract class Production : Structure
     public virtual void OpenRecipe() { }
     public virtual void GetUIFunc() { }
 
-    protected virtual void Awake()
+    protected override void Awake()
     {
-        GameManager gameManager = GameManager.instance;
-        playerInven = gameManager.GetComponent<Inventory>();
+        base.Awake();
         inventory = this.GetComponent<Inventory>();
-        buildName = structureData.FactoryName;
-        col = GetComponent<BoxCollider2D>();
-        hp = structureData.MaxHp[level];
-        hpBar.fillAmount = hp / structureData.MaxHp[level];
-        repairBar.fillAmount = 0;
-        isStorageBuild = false;
-        isMainSource = false;
         isGetLine = false;
+        isStorageBuild = false;
     }
 
     protected virtual void Start()

@@ -705,7 +705,8 @@ public class PreBuilding : MonoBehaviour
                         structure.SetBuild();
                         structure.ColliderTriggerOnOff(false);
                         obj.AddComponent<DynamicGridObstacle>();
-                        obj.GetComponentInChildren<SpriteMask>().enabled = true;
+                        //obj.GetComponentInChildren<SpriteMask>().enabled = true;
+                        structure.myVision.SetActive(true);
                         if (obj.TryGetComponent(out TowerAi towerAi))
                         {
                             GameObject groupGameObj = towerGroupManager.TowerGroupSet(towerAi.buildName);
@@ -722,7 +723,8 @@ public class PreBuilding : MonoBehaviour
                         belt.beltList[0].SetBuild();
                         belt.beltList[0].ColliderTriggerOnOff(false);
                         belt.beltList[0].gameObject.AddComponent<DynamicGridObstacle>();
-                        belt.beltList[0].gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
+                        belt.beltList[0].GetComponent<Structure>().myVision.SetActive(true);
+                        //belt.beltList[0].gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
                 else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
@@ -733,7 +735,8 @@ public class PreBuilding : MonoBehaviour
                         underBelt.ColliderTriggerOnOff(false);
                         underBelt.RemoveObj();
                         underBelt.beltScipt.gameObject.AddComponent<DynamicGridObstacle>();
-                        underBelt.beltScipt.gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
+                        underBelt.beltScipt.myVision.SetActive(true);
+                        //underBelt.beltScipt.gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
                 else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
@@ -744,7 +747,8 @@ public class PreBuilding : MonoBehaviour
                         underPipe.ColliderTriggerOnOff(false);
                         underPipe.RemoveObj();
                         underPipe.pipeScipt.gameObject.AddComponent<DynamicGridObstacle>();
-                        underPipe.pipeScipt.gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
+                        underPipe.pipeScipt.myVision.SetActive(true);
+                        //underPipe.pipeScipt.gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
             }
@@ -766,7 +770,8 @@ public class PreBuilding : MonoBehaviour
                         structure.TempBuilCooldownSet();
                         structure.ColliderTriggerOnOff(false);
                         obj.AddComponent<DynamicGridObstacle>();
-                        obj.GetComponentInChildren<SpriteMask>().enabled = true;
+                        structure.myVision.SetActive(true);
+                        //obj.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
             }
@@ -1044,7 +1049,7 @@ public class PreBuilding : MonoBehaviour
                     continue;
                 }
 
-                if (gameManager.map.mapData[newX][newY].structure != null)
+                if (gameManager.map.mapData[newX][newY].structure != null || gameManager.map.mapData[newX][newY].obj != null)
                 {
                     return false;
                 }
@@ -1060,12 +1065,13 @@ public class PreBuilding : MonoBehaviour
                         (pump && gameManager.map.mapData[newX][newY].BuildCheck("pump")) ||
                         (extractor && gameManager.map.mapData[newX][newY].BuildCheck("extractor")))
                     {
-                        return true;
+                        if (!canBuild)
+                            canBuild = true;
                     }
                 }
                 else
                 {
-                    if (gameManager.map.mapData[newX][newY].buildable.Count == 0 && gameManager.map.mapData[newX][newY].obj == null)
+                    if (gameManager.map.mapData[newX][newY].buildable.Count == 0 && gameManager.map.mapData[newX][newY].structure == null)
                     {
                         canBuild = true;
                     }
@@ -1077,10 +1083,7 @@ public class PreBuilding : MonoBehaviour
             }
         }
 
-        if (canBuild)
-            return true;
-        else
-            return false;
+        return canBuild;
     }
 
     public void ReSetImage()

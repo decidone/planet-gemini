@@ -67,13 +67,13 @@ public class BuildingInven : MonoBehaviour
             case 0:
                 return "Factory";
             case 1:
-                return "Transport";
+                return "Logistics";
             case 2:
-                return "Energy";
+                return "Fluid";
             case 3:
-                return "Tower";
+                return "Energy";
             case 4:
-                return "Wall";
+                return "Battle";
             case 5:
                 return "Etc";
             default:

@@ -107,6 +107,22 @@ public class Structure : MonoBehaviour
     public bool isMainSource;
     public bool isTempBuild = false;
 
+    public GameObject myVision;
+
+    protected virtual void Awake()
+    {
+        GameManager gameManager = GameManager.instance;
+        playerInven = gameManager.GetComponent<Inventory>();
+        buildName = structureData.FactoryName;
+        col = GetComponent<BoxCollider2D>();
+        hp = structureData.MaxHp[level];
+        hpBar.fillAmount = hp / structureData.MaxHp[level];
+        repairBar.fillAmount = 0;
+        isStorageBuild = false;
+        isMainSource = false;
+        myVision.SetActive(false);
+    }
+
     public virtual bool CheckOutItemNum()  { return new bool(); }
 
     public void BuildingSetting(int _level, int _height, int _width, int _dirCount)
@@ -131,7 +147,6 @@ public class Structure : MonoBehaviour
         if (width == 1 && height == 1)
         {
             sizeOneByOne = true;
-            nearObj = new GameObject[4];
             Vector2[] dirs = { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
 
             for (int i = 0; i < 4; i++)

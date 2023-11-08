@@ -28,6 +28,7 @@ public class Refinery : FluidFactoryCtrl
         howFarSource = -1;
         preSaveFluidNum = 0;
         uiOpened = false;
+        myVision.SetActive(false);
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();

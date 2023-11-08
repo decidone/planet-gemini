@@ -34,6 +34,7 @@ public class FluidFactoryCtrl : Production
         repairBar.fillAmount = 0;
         mainSource = null;
         howFarSource = -1;
+        myVision.SetActive(false);
     }
 
     protected override void Update()
@@ -324,5 +325,10 @@ public class FluidFactoryCtrl : Production
         }
         else
             return null;
+    }
+
+    public override (Item, int) QuickPullOut()
+    {
+        return (null, 0);
     }
 }

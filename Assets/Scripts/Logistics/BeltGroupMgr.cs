@@ -273,7 +273,7 @@ public class BeltGroupMgr : MonoBehaviour
             beltManager.BeltCombine(otherBelt.beltGroupMgr, beltGroupMgr);
             belt.preBelt = otherBelt;
             otherBelt.nextBelt = belt;
-            int tempDir = otherBelt.dirNum;
+            //int tempDir = otherBelt.dirNum;
             otherBelt.dirNum = belt.dirNum;
             otherBelt.BeltModelSet();
         }

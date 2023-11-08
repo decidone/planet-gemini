@@ -43,7 +43,6 @@ public class BeltCtrl : LogisticsCtrl
         beltManager = GameObject.Find("BeltManager");
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
-        beltState = BeltState.SoloBelt;
         BeltModelSet();
     }
 

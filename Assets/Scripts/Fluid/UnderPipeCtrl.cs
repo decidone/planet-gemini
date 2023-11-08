@@ -92,7 +92,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && !hitCollider.GetComponent<Structure>().isSetBuildingOk &&
+            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
                 hits[i].collider.gameObject != this.gameObject)
             {
                 if (index == 0)
