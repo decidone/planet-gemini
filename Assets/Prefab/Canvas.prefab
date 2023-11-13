@@ -8985,7 +8985,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1253551811256879973}
   m_Layer: 5
-  m_Name: StorageBuild
+  m_Name: Storage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10632,7 +10632,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5099497385801919132}
   m_Layer: 5
-  m_Name: TransportBuild
+  m_Name: Transporter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

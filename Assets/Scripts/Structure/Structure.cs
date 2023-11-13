@@ -103,7 +103,7 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public RepairTower repairTower;
 
-    public bool isStorageBuild;
+    public bool isStorageBuilding;
     public bool isMainSource;
     public bool isTempBuild = false;
 
@@ -118,7 +118,7 @@ public class Structure : MonoBehaviour
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
-        isStorageBuild = false;
+        isStorageBuilding = false;
         isMainSource = false;
         myVision.SetActive(false);
     }
@@ -792,7 +792,7 @@ public class Structure : MonoBehaviour
         {
             fluid.RemoveMainSource(true);
         }
-        else if (TryGetComponent(out TransportBuild trBuild))
+        else if (TryGetComponent(out Transporter trBuild))
         {
             trBuild.RemoveFunc();
         }

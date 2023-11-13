@@ -144,7 +144,7 @@ public class DragGraphic : MonoBehaviour
                     RaycastHit2D[] hits = Physics2D.RaycastAll(endPosition, Vector2.zero);
 
                     selectedBuild.TryGetComponent(out UnitFactory unitFactory);
-                    selectedBuild.TryGetComponent(out TransportBuild transport);
+                    selectedBuild.TryGetComponent(out Transporter transport);
 
                     if (hits.Length > 0)
                     {
@@ -163,7 +163,7 @@ public class DragGraphic : MonoBehaviour
                                 unitFactory.ResetLine(endPosition);
                                 unitFactory.UnitSpawnPosSet(endPosition);
                             }
-                            else if (transport && hit.collider.TryGetComponent(out TransportBuild othTrans))
+                            else if (transport && hit.collider.TryGetComponent(out Transporter othTrans))
                             {
                                 transport.ResetLine(othTrans.transform.position);
                                 transport.TakeBuildSet(othTrans);

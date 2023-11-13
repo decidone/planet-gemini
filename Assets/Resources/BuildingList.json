@@ -52,7 +52,13 @@
     "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
     "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
-  "TransportBuild":{
+  "Storage":{
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "Unloader":{
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "Transporter":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "Pump":{
@@ -89,6 +95,9 @@
     "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
     "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
   },
+  "Wall":{
+    "1":{"items":["Stone"],"amounts":[1],"cooldown":3}
+  },
   "FireTower":{
     "1":{"items":["Brick","Coal","ManaStone"],"amounts":[1,1,1],"cooldown":3}
   },
@@ -111,15 +120,6 @@
     "1":{"items":["Brick","ManaStone"],"amounts":[1,1],"cooldown":3},
     "2":{"items":["SteelPlate","ManaStone"],"amounts":[2,2],"cooldown":3},
     "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
-  },
-  "Wall":{
-    "1":{"items":["Stone"],"amounts":[1],"cooldown":3}
-  },
-  "Storage":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
-  },
-  "Unloader":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "UnitFactory":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}

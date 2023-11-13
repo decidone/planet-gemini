@@ -50,7 +50,7 @@ public class Unloader : LogisticsCtrl
             {
                 checkObj = true;
             }
-            else if (structure.isStorageBuild)
+            else if (structure.isStorageBuilding)
             {
                 inObj.Add(obj);
                 checkObj = true;

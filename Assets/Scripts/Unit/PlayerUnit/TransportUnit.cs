@@ -12,10 +12,10 @@ public enum TrUnitState
 public class TransportUnit : UnitCommonAi
 {
     [HideInInspector]
-    public TransportBuild mainTrBuild;
+    public Transporter mainTrBuild;
     Vector3 startPos;
     [HideInInspector]
-    public TransportBuild othTrBuild;
+    public Transporter othTrBuild;
     Vector3 endPos;
 
     Dictionary<Item, int> itemDic = new Dictionary<Item, int>();
@@ -43,7 +43,7 @@ public class TransportUnit : UnitCommonAi
         }
     }
 
-    public void MovePosSet(TransportBuild _mainTrBuild, TransportBuild _othTrBuild, Dictionary<Item, int> _itemDic)
+    public void MovePosSet(Transporter _mainTrBuild, Transporter _othTrBuild, Dictionary<Item, int> _itemDic)
     {
         mainTrBuild = _mainTrBuild;
         startPos = mainTrBuild.transform.position;

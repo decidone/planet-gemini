@@ -16,7 +16,7 @@ public class StructureInvenManager : InventoryManager
     [HideInInspector]
     public Production prod;
 
-    //TransportBuild UI 전용
+    //Transporter UI 전용
     public Toggle toggle;
     public InputField inputField;
     public Button subBtn;
@@ -106,7 +106,7 @@ public class StructureInvenManager : InventoryManager
         bool canInsertItem = false;
 
         if (prod != null)
-            canInsertItem = prod.isStorageBuild;
+            canInsertItem = prod.isStorageBuilding;
 
         for (int i = 0; i < slots.Length; i++)
         {
@@ -142,10 +142,10 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
-    //TransportBuild UI 전용
+    //Transporter UI 전용
     public void ToggleControl()
     {
-        if (prod != null && prod.TryGetComponent(out TransportBuild trBuild))
+        if (prod != null && prod.TryGetComponent(out Transporter trBuild))
         {
             int parsedValue;
 
@@ -160,7 +160,7 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
-    public void TransportBuildSetting(bool toggleOn, int amount)
+    public void TransporterSetting(bool toggleOn, int amount)
     {
         if (toggleOn)
         {
@@ -176,7 +176,7 @@ public class StructureInvenManager : InventoryManager
         else
             inputField.text = "";
     }
-    //TransportBuild UI 전용
+    //Transporter UI 전용
 
     public override void OpenUI()
     {

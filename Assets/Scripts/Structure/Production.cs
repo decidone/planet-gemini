@@ -51,7 +51,7 @@ public abstract class Production : Structure
         base.Awake();
         inventory = this.GetComponent<Inventory>();
         isGetLine = false;
-        isStorageBuild = false;
+        isStorageBuilding = false;
     }
 
     protected virtual void Start()

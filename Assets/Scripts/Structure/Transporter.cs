@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TransportBuild : Production
+public class Transporter : Production
 {
-    public TransportBuild takeBuild;
-    public List<TransportBuild> sendBuildList = new List<TransportBuild>();
+    public Transporter takeBuild;
+    public List<Transporter> sendBuildList = new List<Transporter>();
 
     [SerializeField]
     GameObject trUnit;
@@ -26,7 +26,7 @@ public class TransportBuild : Production
         base.Start();
         maxFuel = 100;
         exTimeSet = 1.0f;
-        isStorageBuild = true;
+        isStorageBuilding = true;
         isGetLine = true;
     }
 
@@ -35,7 +35,7 @@ public class TransportBuild : Production
         base.Update();
         if (!isPreBuilding)
         {
-            if (takeBuild != null && sendItemUnit.Count <= 3 && takeBuild.TryGetComponent(out TransportBuild othBuild) && othBuild.unitItemList.Count == 0)
+            if (takeBuild != null && sendItemUnit.Count <= 3 && takeBuild.TryGetComponent(out Transporter othBuild) && othBuild.unitItemList.Count == 0)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
@@ -83,7 +83,7 @@ public class TransportBuild : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
-        sInvenManager.TransportBuildSetting(isToggleOn, sendAmount);
+        sInvenManager.TransporterSetting(isToggleOn, sendAmount);
 
         if(takeBuild != null)
             LineRendererSet(takeBuild.transform.position);
@@ -96,7 +96,7 @@ public class TransportBuild : Production
         base.DestroyLineRenderer();
     }
 
-    void SendTransportItemDicCheck(TransportBuild othBuild)
+    void SendTransportItemDicCheck(Transporter othBuild)
     {
         if (!isToggleOn)
             maxSendAmount = 99;
@@ -191,7 +191,7 @@ public class TransportBuild : Production
 
         foreach (GameObject list in inventoryList.StructureStorageArr)
         {
-            if (list.name == "TransportBuild")
+            if (list.name == "Transporter")
             {
                 ui = list;
             }
@@ -297,7 +297,7 @@ public class TransportBuild : Production
         takeBuild = null;
     }
 
-    public void TakeBuildSet(TransportBuild trBuild)
+    public void TakeBuildSet(Transporter trBuild)
     {
         takeBuild = trBuild;
         trBuild.sendBuildList.Add(this);
@@ -310,7 +310,7 @@ public class TransportBuild : Production
             trUnit.GetComponent<TransportUnit>().MainTrBuildRemove();
         }
 
-        foreach (TransportBuild transport in sendBuildList)
+        foreach (Transporter transport in sendBuildList)
         {
             transport.DestroyLineRenderer();
             foreach (GameObject trUnit in transport.sendItemUnit)
