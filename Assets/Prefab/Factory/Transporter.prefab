@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 5999188213166003495}
   - component: {fileID: 5197040497763038552}
   m_Layer: 8
-  m_Name: TransportBuild
+  m_Name: Transporter
   m_TagString: Factory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

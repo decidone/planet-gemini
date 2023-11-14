@@ -9,193 +9,167 @@
   },
   "Miner":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a building that automatically mines resources by placing them on a resource node."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":2,"Info":"Produces faster than conventional Miners."},
-      "3":{"items":["Coal","IronBar"],"amounts":[1,1],"coreLv":4,"Info":"It can be mined much faster than conventional Miners, but it requires a lot of power to operate."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When placed on an ore vein, it mines ore slowly."},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":2,"Info":"It can mine 2x2 area, produces faster than basic Miner."},
+      "3":{"items":["Coal","IronBar"],"amounts":[1,1],"coreLv":4,"Info":"It can mine adamantite ore, produces much faster than basic Miners."}
     }
   },
   "Furnace":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a building that melts ore and smelts it into a ingot."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":2,"Info":"It melts ore faster than the conventional furnace."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":4,"Info":"It can melt gemstones much faster than a conventional furnace, but it requires a lot of power to operate."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Furnace is a building used to smelt raw ores into ingots."}
     }
   },
   "Smelter":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a building that smelting two ore resources into alloy ingots."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Smelter is a building used to smelts two ores into alloy ingots."}
     }
   },
   "Constructor":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a component manufacturing building that consumes one material to produce parts."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Constructor is a building that automate the production of one ingredient parts."}
     }
   },
   "Assembler":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a component manufacturing building that consumes two materials and assembles them into one parts."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Assembler is a building that automate the production of two ingredient parts."}
     }
   },
   "Manufacturer":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a component manufacturing building that consumes three materials and assembles them into one parts."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Manufacturer is a building that automate the production of three ingredient parts."}
     }
   },
   "Belt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"A conveyor belt is a facility for moving items from building to building."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Conveyor belts are structures used to transport items between buildings."},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"Faster than basic belts."},
+      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"Much faster than basic belts."}
     }
   },
   "UnderBelt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Transporting items underground beyond terrain or buildings with a maximum distance of 10 squares."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Underbelts are structures used to transport items through the underground connection."},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"Faster than basic underbelts."},
+      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"Much faster than basic underbelts."}
     }
   },
   "Splitter":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"A facility comprises three input ports and one output port, with incoming items from the input ports directed to the connected output port."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Splitter is a structure used to split an input into three outputs."},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"Faster than basic splitter."},
+      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"Much faster than basic splitter."}
     }
   },
   "Merger":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"A facility comprises one input ports and three output port, with incoming items from the input ports directed to the connected output port."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "TransportBuild":{
-    "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "Pump":{
-    "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a facility installed near a water source to distribute water."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "Pipe":{
-    "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Used for transporting fluids."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "UnderPipe":{
-    "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Transporting fluids underground beyond terrain or buildings up to a maximum distance of 10 squares."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "FluidTank":{
-    "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Stores a substantial amount of liquid and can output from all sides."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "Extractor":{
-    "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"It's a facility installed at an oil node to extract crude oil."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "Refinery":{
-    "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "ChemicalPlant":{
-    "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "FireTower":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "IceTower":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "PoisonTower":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "StormTower":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "SunTower":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "RepairTower":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"When installed on a resource tile, it produces resources slowly without stopping."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "BounceRobot":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "SpinRobot":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "SentryCopter":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
-    }
-  },
-  "Wall":{
-    "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Merger is a structure used to merge three inputs into one output."},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"Faster than basic merger."},
+      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"Much faster than basic merger."}
     }
   },
   "Storage":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"Info":"Storage is a Building used to store items."}
     }
   },
   "Unloader":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"Info":"Unloader is a structure used to pick items out from storage."}
+    }
+  },
+  "Transporter":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"Transporter is a Building used for long-distance transportation."}
+    }
+  },
+  "Pump":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Pump is a building used to pump water out of lake."}
+    }
+  },
+  "Pipe":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Pipes are structures used to transport fluids."}
+    }
+  },
+  "UnderPipe":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Underpipes are structures used to transport fluids through the underground connection."}
+    }
+  },
+  "FluidTank":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Fluid tank is a Building used to store liquids."}
+    }
+  },
+  "Extractor":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Extractor is a building used to extract crude oil out of oil nodes."}
+    }
+  },
+  "Refinery":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Refinery is a building used to refine crude oil."}
+    }
+  },
+  "ChemicalPlant":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
+    }
+  },
+  "Wall":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"TBD"}
+    }
+  },
+  "FireTower":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"Info":"TBD"}
+    }
+  },
+  "IceTower":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"TBD"}
+    }
+  },
+  "PoisonTower":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"TBD"}
+    }
+  },
+  "StormTower":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"Info":"TBD"}
+    }
+  },
+  "SunTower":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":5,"Info":"TBD"}
+    }
+  },
+  "RepairTower":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"TBD"}
     }
   },
   "UnitFactory":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"When installed on a resource tile, it produces resources slowly without stopping."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"TBD"}
+    }
+  },
+  "BounceRobot":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"TBD"}
+    }
+  },
+  "SpinRobot":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"TBD"}
+    }
+  },
+  "SentryCopter":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"Info":"TBD"}
     }
   }
 }

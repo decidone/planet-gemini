@@ -9,7 +9,7 @@ public class Storage : Production
     protected override void Start()
     {
         base.Start();
-        isStorageBuild = true;
+        isStorageBuilding = true;
         invenSize = new int[5] { 6, 12, 18, 24, 30 };
     }
 
@@ -76,7 +76,7 @@ public class Storage : Production
 
         foreach (GameObject list in inventoryList.StructureStorageArr)
         {
-            if (list.name == "StorageBuild")
+            if (list.name == "Storage")
             {
                 ui = list;
             }
