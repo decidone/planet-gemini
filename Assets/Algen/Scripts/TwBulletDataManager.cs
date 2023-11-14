@@ -21,7 +21,7 @@ public class BulletData
 
 public class TwBulletDataManager : MonoBehaviour
 {
-    public Dictionary<string, BulletData> BulletDic;
+    public Dictionary<string, BulletData> bulletDic;
 
     #region Singleton
     public static TwBulletDataManager instance;
@@ -40,18 +40,13 @@ public class TwBulletDataManager : MonoBehaviour
 
     private void Start()
     {
-        BulletDic = new Dictionary<string, BulletData>();
+        bulletDic = new Dictionary<string, BulletData>();
         SetBulletData(); // 탄환 데이터 초기화
-
-        foreach (var data in BulletDic)
-        {
-            Debug.Log(data.Key + " : " + data.Value.damage + " : " + data.Value.fireRate + " : " + data.Value.range);
-        }
     }
 
     void SaveBulletData(BulletData data)
     {
-        BulletDic.Add(data.bulletName, data);
+        bulletDic.Add(data.bulletName, data);
     }
 
     void SetBulletData()
@@ -64,7 +59,7 @@ public class TwBulletDataManager : MonoBehaviour
         new BulletData("ExplosiveBullet", 20, 2, 2),
         new BulletData("ManablastBullet", 25, 1, 1)
         };
-
+        // 이름, 데미지, 공격속도, 범위 순으로 넣어주면됨
         foreach (BulletData data in bulletArray)
         {
             SaveBulletData(data);

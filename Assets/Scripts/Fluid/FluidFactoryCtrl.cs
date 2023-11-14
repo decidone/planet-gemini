@@ -59,9 +59,9 @@ public class FluidFactoryCtrl : Production
             outObj.Add(obj);
             if (obj.GetComponent<UnderPipeCtrl>() != null)
             {
-                StartCoroutine("UnderPipeConnectCheck", obj);
+                StartCoroutine(nameof(UnderPipeConnectCheck), obj);
             }
-            StartCoroutine("MainSourceCheck", factoryCtrl);
+            StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
         }
     }
 
@@ -234,19 +234,17 @@ public class FluidFactoryCtrl : Production
         if (ShouldUpdate(_mainSource, dis))
         {
             UpdateFluidProperties(_mainSource, dis);
-        }
-        else
-        {
-            return;
-        }
-        foreach (GameObject obj in outObj)
-        {
-            if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl) 
-                && (factoryCtrl.mainSource == null || factoryCtrl.howFarSource > dis) 
-                && (factoryCtrl.fluidName == fluidName || (factoryCtrl.fluidName == "" && factoryCtrl.saveFluidNum == 0)))
-            {
-                factoryCtrl.CheckFarSource(dis + 1, _mainSource);
-            }
+
+            if(!GetComponent<Refinery>())
+                foreach (GameObject obj in outObj)
+                {
+                    if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl)
+                        && (factoryCtrl.mainSource == null || factoryCtrl.howFarSource > dis)
+                        && (factoryCtrl.fluidName == fluidName || (factoryCtrl.fluidName == "" && factoryCtrl.saveFluidNum == 0)))
+                    {
+                        factoryCtrl.CheckFarSource(dis + 1, _mainSource);
+                    }
+                }
         }
     }
 

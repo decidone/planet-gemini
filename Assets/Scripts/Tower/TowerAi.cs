@@ -76,23 +76,23 @@ public class TowerAi : Production
     }
 
 
-    protected override void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback)
-    {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
+    //protected override void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback)
+    //{
+    //    RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
 
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Collider2D hitCollider = hits[i].collider;
+    //    for (int i = 0; i < hits.Length; i++)
+    //    {
+    //        Collider2D hitCollider = hits[i].collider;
 
-            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-                hits[i].collider.gameObject != this.gameObject)
-            {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
-            }
-        }
-    }
+    //        if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
+    //            hits[i].collider.gameObject != this.gameObject)
+    //        {
+    //            nearObj[index] = hits[i].collider.gameObject;
+    //            callback(hitCollider.gameObject);
+    //            break;
+    //        }
+    //    }
+    //}
 
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)
     {
@@ -108,15 +108,7 @@ public class TowerAi : Production
                     StartCoroutine(SetInObjCoroutine(obj));
                     yield break;
                 }
-                belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
-            else
-            {
-                outSameList.Add(obj);
-                StartCoroutine(OutCheck(obj));
-            }
-            outObj.Add(obj);
-            StartCoroutine(UnderBeltConnectCheck(obj));
         }
         else
             checkObj = true;

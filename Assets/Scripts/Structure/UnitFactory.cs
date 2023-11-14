@@ -59,11 +59,6 @@ public class UnitFactory : Production
                     prodTimer = 0;
                 }
             }
-
-            //if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>() && isSetPos)
-            //{
-            //    LineRendererSet(spawnPos);
-            //}
         }
     }
 

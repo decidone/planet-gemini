@@ -307,7 +307,7 @@ public class MonsterAi : UnitCommonAi
             }
         }
 
-        if(aIState == AIState.AI_NormalTrace && targetList.Count == 0)
+        if((aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack) && targetList.Count == 0)
         {
             idle = 0;
             aIState = AIState.AI_Idle;

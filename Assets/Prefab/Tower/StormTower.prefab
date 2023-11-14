@@ -241,7 +241,9 @@ GameObject:
   - component: {fileID: 4304459724202878725}
   - component: {fileID: 4304459724202878728}
   - component: {fileID: 4304459724202878726}
-  - component: {fileID: -5745141633721722988}
+  - component: {fileID: 5220286993905049905}
+  - component: {fileID: -1144340580722799882}
+  - component: {fileID: 2710839796850220873}
   m_Layer: 8
   m_Name: StormTower
   m_TagString: Tower
@@ -372,10 +374,10 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.8}
-  m_Size: {x: 1.5, y: 0.75}
-  m_Direction: 1
---- !u!114 &-5745141633721722988
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1.5, y: 1.5}
+  m_Direction: 0
+--- !u!114 &5220286993905049905
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -384,7 +386,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4304459724202878722}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca02a8664a226a14fbaf8f630c899b4f, type: 3}
+  m_Script: {fileID: 11500000, guid: dbee83cf66c4270429d231aab17d86a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   structureData: {fileID: 11400000, guid: 559aa166aa90fa541a7654865694e4ac, type: 2}
@@ -443,6 +445,36 @@ MonoBehaviour:
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   bulletDataManager: {fileID: 0}
   attackFX: {fileID: 3832536798139642931, guid: dbd38acb8484d144c8515c998e13240d, type: 3}
+  isSingleAttack: 1
+--- !u!114 &-1144340580722799882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304459724202878722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75c16f7278f4e2a448cead0d6ec8787c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structureInfoUI: {fileID: 0}
+  sInvenManager: {fileID: 0}
+--- !u!114 &2710839796850220873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304459724202878722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8612a3248f1ad04197ab52610640ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  space: 1
+  maxAmount: 99
+  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
 --- !u!1 &8492843390990340007
 GameObject:
   m_ObjectHideFlags: 0

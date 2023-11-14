@@ -46,6 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   beltMgr: {fileID: 0}
   isBuildingOk: 1
+  startBuildPos: {x: 0, y: 0, z: 0}
+  endBuildPos: {x: 0, y: 0, z: 0}
   isEnough: 1
   posList: []
-  vision: {fileID: 3296495686965111697, guid: d1ed435ae6c7af943bf911833fbb48f8, type: 3}
+  towerGroupManager: {fileID: 0}
+  maxBuildDist: 17.5

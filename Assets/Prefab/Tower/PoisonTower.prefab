@@ -192,7 +192,9 @@ GameObject:
   - component: {fileID: 7592073746180229603}
   - component: {fileID: 7592073746180229614}
   - component: {fileID: 7592073746180229600}
-  - component: {fileID: 4499044516474926020}
+  - component: {fileID: 3071676049119730513}
+  - component: {fileID: 4459362913623488001}
+  - component: {fileID: -5059511813135756795}
   m_Layer: 8
   m_Name: PoisonTower
   m_TagString: Tower
@@ -323,10 +325,10 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.8}
-  m_Size: {x: 1.5, y: 0.75}
-  m_Direction: 1
---- !u!114 &4499044516474926020
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1.5, y: 1.5}
+  m_Direction: 0
+--- !u!114 &3071676049119730513
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -335,7 +337,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7592073746180229604}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca02a8664a226a14fbaf8f630c899b4f, type: 3}
+  m_Script: {fileID: 11500000, guid: dbee83cf66c4270429d231aab17d86a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   structureData: {fileID: 11400000, guid: 4cac73d60444fb44b9442e355bfd9445, type: 2}
@@ -394,6 +396,36 @@ MonoBehaviour:
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   bulletDataManager: {fileID: 0}
   attackFX: {fileID: 3832536798139642931, guid: fdb8544d40d9b5e4a92423109023958f, type: 3}
+  isSingleAttack: 1
+--- !u!114 &4459362913623488001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7592073746180229604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75c16f7278f4e2a448cead0d6ec8787c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structureInfoUI: {fileID: 0}
+  sInvenManager: {fileID: 0}
+--- !u!114 &-5059511813135756795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7592073746180229604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8612a3248f1ad04197ab52610640ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  space: 1
+  maxAmount: 99
+  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
 --- !u!1 &8011384680271846714
 GameObject:
   m_ObjectHideFlags: 0

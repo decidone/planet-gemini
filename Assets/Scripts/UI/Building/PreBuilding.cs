@@ -42,7 +42,7 @@ public class PreBuilding : MonoBehaviour
     bool tempMoveX;
     bool moveDir;
     bool tempMoveDir;
-    bool isPreBeltSend;
+    public bool isPreBeltSend;
     Vector3 mousePos;
     bool isDrag = false;
     Coroutine setBuild;
@@ -55,6 +55,8 @@ public class PreBuilding : MonoBehaviour
     InputManager inputManager;
 
     public TowerGroupManager towerGroupManager;
+    [SerializeField]
+    float maxBuildDist;
 
     #region Singleton
     public static PreBuilding instance;
@@ -705,7 +707,6 @@ public class PreBuilding : MonoBehaviour
                         structure.SetBuild();
                         structure.ColliderTriggerOnOff(false);
                         obj.AddComponent<DynamicGridObstacle>();
-                        //obj.GetComponentInChildren<SpriteMask>().enabled = true;
                         structure.myVision.SetActive(true);
                         if (obj.TryGetComponent(out TowerAi towerAi))
                         {
@@ -724,7 +725,6 @@ public class PreBuilding : MonoBehaviour
                         belt.beltList[0].ColliderTriggerOnOff(false);
                         belt.beltList[0].gameObject.AddComponent<DynamicGridObstacle>();
                         belt.beltList[0].GetComponent<Structure>().myVision.SetActive(true);
-                        //belt.beltList[0].gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
                 else if (obj.TryGetComponent(out UnderBeltCtrl underBelt))
@@ -736,7 +736,6 @@ public class PreBuilding : MonoBehaviour
                         underBelt.RemoveObj();
                         underBelt.beltScipt.gameObject.AddComponent<DynamicGridObstacle>();
                         underBelt.beltScipt.myVision.SetActive(true);
-                        //underBelt.beltScipt.gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
                 else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
@@ -747,8 +746,7 @@ public class PreBuilding : MonoBehaviour
                         underPipe.ColliderTriggerOnOff(false);
                         underPipe.RemoveObj();
                         underPipe.pipeScipt.gameObject.AddComponent<DynamicGridObstacle>();
-                        underPipe.pipeScipt.myVision.SetActive(true);
-                        //underPipe.pipeScipt.gameObject.GetComponentInChildren<SpriteMask>().enabled = true;
+                        underPipe.pipeScipt.myVision.SetActive(true);                   
                     }
                 }
             }
@@ -771,7 +769,6 @@ public class PreBuilding : MonoBehaviour
                         structure.ColliderTriggerOnOff(false);
                         obj.AddComponent<DynamicGridObstacle>();
                         structure.myVision.SetActive(true);
-                        //obj.GetComponentInChildren<SpriteMask>().enabled = true;
                     }
                 }
             }
@@ -827,7 +824,6 @@ public class PreBuilding : MonoBehaviour
                             Destroy(buildingList[buildingList.Count - 1]);
                             buildingList.RemoveAt(buildingList.Count - 1);
                             AddBuildingToList(pos);
-
                         }
                     }
                     else
@@ -908,12 +904,6 @@ public class PreBuilding : MonoBehaviour
         {
             isNeedSetPos = false;
             gameObj.transform.position = this.transform.position;
-        }
-        else if (height == 1 && width == 2)
-        {
-            setPos = new Vector3(-0.5f, -1);
-            isNeedSetPos = true;
-            gameObj.transform.position = this.transform.position - setPos;
         }
         else if (height == 2 && width == 2)
         {
@@ -1014,8 +1004,12 @@ public class PreBuilding : MonoBehaviour
 
     bool CellCheck(GameObject obj, Vector2 pos)
     {
+        if (isUnderObj)
+            pos = obj.transform.position;
+
         int x = Mathf.FloorToInt(pos.x);
         int y = Mathf.FloorToInt(pos.y);
+
 
         List<int> xList = new List<int>();
         List<int> yList = new List<int>();
@@ -1023,12 +1017,6 @@ public class PreBuilding : MonoBehaviour
         if (objHeight == 1 && objWidth == 1)
         {
             xList.Add(x);
-            yList.Add(y);
-        }
-        else if (objHeight == 1 && objWidth == 2)
-        {
-            xList.Add(x);
-            xList.Add(x + 1);
             yList.Add(y);
         }
         else if (objHeight == 2 && objWidth == 2)
@@ -1040,47 +1028,67 @@ public class PreBuilding : MonoBehaviour
         }
 
         bool canBuild = false;
-        foreach (int newX in xList)
+
+        if (DistCheck(obj.transform.position))
         {
-            foreach (int newY in yList)
+            foreach (int newX in xList)
             {
-                if (!gameManager.map.IsOnMap(newX, newY))
+                foreach (int newY in yList)
                 {
-                    continue;
-                }
-
-                if (gameManager.map.mapData[newX][newY].structure != null || gameManager.map.mapData[newX][newY].obj != null)
-                {
-                    return false;
-                }
-
-                Miner miner = null;
-                PumpCtrl pump = null;
-                ExtractorCtrl extractor = null;
-
-                if (obj.TryGetComponent(out miner) || obj.TryGetComponent(out pump) || obj.TryGetComponent(out extractor))
-                {
-                    if ((miner && gameManager.map.mapData[newX][newY].BuildCheck("miner") &&
-                        miner.level >= gameManager.map.mapData[newX][newY].resource.level) ||
-                        (pump && gameManager.map.mapData[newX][newY].BuildCheck("pump")) ||
-                        (extractor && gameManager.map.mapData[newX][newY].BuildCheck("extractor")))
+                    if (!gameManager.map.IsOnMap(newX, newY))
                     {
-                        if (!canBuild)
-                            canBuild = true;
+                        continue;
                     }
-                }
-                else
-                {
-                    if (gameManager.map.mapData[newX][newY].buildable.Count == 0 && gameManager.map.mapData[newX][newY].structure == null)
-                    {
-                        canBuild = true;
-                    }
-                    else
+
+                    if (gameManager.map.mapData[newX][newY].structure != null || gameManager.map.mapData[newX][newY].obj != null)
                     {
                         return false;
                     }
+
+                    Miner miner = null;
+                    PumpCtrl pump = null;
+                    ExtractorCtrl extractor = null;
+
+                    if (obj.TryGetComponent(out miner) || obj.TryGetComponent(out pump) || obj.TryGetComponent(out extractor))
+                    {
+                        if ((miner && gameManager.map.mapData[newX][newY].BuildCheck("miner") &&
+                            miner.level >= gameManager.map.mapData[newX][newY].resource.level) ||
+                            (pump && gameManager.map.mapData[newX][newY].BuildCheck("pump")) ||
+                            (extractor && gameManager.map.mapData[newX][newY].BuildCheck("extractor")))
+                        {
+                            if (!canBuild)
+                                canBuild = true;
+                        }
+                    }
+                    else
+                    {
+                        if (gameManager.map.mapData[newX][newY].buildable.Count == 0 && gameManager.map.mapData[newX][newY].structure == null)
+                        {
+                            canBuild = true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
+        }
+
+        return canBuild;
+    }
+
+    bool DistCheck(Vector3 pos)
+    {
+        bool canBuild = false;
+
+        Vector3 playerPos = playerController.gameObject.transform.position;
+        playerPos = new Vector3(playerPos.x, playerPos.y + 1, 0);
+        float dist = Vector3.Distance(pos, playerPos);
+
+        if (dist < maxBuildDist)
+        {
+            canBuild = true;
         }
 
         return canBuild;

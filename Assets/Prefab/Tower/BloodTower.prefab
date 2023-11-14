@@ -87,9 +87,11 @@ GameObject:
   - component: {fileID: 1886033591091936628}
   - component: {fileID: 1886033591091936631}
   - component: {fileID: 1886033591091936630}
+  - component: {fileID: 4160459754521078670}
   - component: {fileID: 1886033591091936635}
-  - component: {fileID: 1886033591091936629}
-  - component: {fileID: 1284971482448793063}
+  - component: {fileID: 4358637142042107256}
+  - component: {fileID: -5580005005730672984}
+  - component: {fileID: 1908523262386043206}
   m_Layer: 8
   m_Name: BloodTower
   m_TagString: Tower
@@ -186,6 +188,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!70 &4160459754521078670
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886033591091936625}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1.5, y: 1.5}
+  m_Direction: 0
 --- !u!50 &1886033591091936635
 Rigidbody2D:
   serializedVersion: 4
@@ -207,23 +225,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!70 &1886033591091936629
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1886033591091936625}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.8}
-  m_Size: {x: 1.5, y: 0.75}
-  m_Direction: 1
---- !u!114 &1284971482448793063
+--- !u!114 &4358637142042107256
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -232,7 +234,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1886033591091936625}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca02a8664a226a14fbaf8f630c899b4f, type: 3}
+  m_Script: {fileID: 11500000, guid: dbee83cf66c4270429d231aab17d86a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   structureData: {fileID: 11400000, guid: 6d20efb0ada19b244bf8daed2b638d13, type: 2}
@@ -291,6 +293,36 @@ MonoBehaviour:
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   bulletDataManager: {fileID: 0}
   attackFX: {fileID: 3832536798139642931, guid: b3f85c014934a084ea6db9bddeba8932, type: 3}
+  isSingleAttack: 1
+--- !u!114 &-5580005005730672984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886033591091936625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75c16f7278f4e2a448cead0d6ec8787c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structureInfoUI: {fileID: 0}
+  sInvenManager: {fileID: 0}
+--- !u!114 &1908523262386043206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886033591091936625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8612a3248f1ad04197ab52610640ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  space: 1
+  maxAmount: 99
+  itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
 --- !u!1 &2584885461931468724
 GameObject:
   m_ObjectHideFlags: 0

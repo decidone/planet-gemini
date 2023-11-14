@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 5088120821849387775}
   - component: {fileID: 5088120821849387762}
   - component: {fileID: 5088120821849387772}
-  - component: {fileID: 5101119551645714666}
+  - component: {fileID: -1321581560317501541}
   - component: {fileID: 4375176220273537540}
   - component: {fileID: 827040559634150025}
   m_Layer: 8
@@ -249,10 +249,10 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.8}
-  m_Size: {x: 1.5, y: 0.75}
-  m_Direction: 1
---- !u!114 &5101119551645714666
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1.5, y: 1.5}
+  m_Direction: 0
+--- !u!114 &-1321581560317501541
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5088120821849387768}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca02a8664a226a14fbaf8f630c899b4f, type: 3}
+  m_Script: {fileID: 11500000, guid: dbee83cf66c4270429d231aab17d86a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   structureData: {fileID: 11400000, guid: 1491e26ad5fc7e9498ee0983d8f64ea9, type: 2}
@@ -320,6 +320,7 @@ MonoBehaviour:
   RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   bulletDataManager: {fileID: 0}
   attackFX: {fileID: 3832536798139642931, guid: 22067a6743dd85943ac66ba5c3c774f6, type: 3}
+  isSingleAttack: 1
 --- !u!114 &4375176220273537540
 MonoBehaviour:
   m_ObjectHideFlags: 0

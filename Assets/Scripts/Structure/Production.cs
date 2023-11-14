@@ -92,34 +92,8 @@ public abstract class Production : Structure
                 }
                 else if (nearObj[i] == null && !sizeOneByOne) 
                 {
-                    if(width == 2 && height == 1)
-                    {
-                        int dirIndex = 0;
-                        if (i >= 0 && i <= 1)
-                        {
-                            dirIndex = 0;
-                        }
-                        else if (i == 2)
-                        {
-                            dirIndex = 1;
-                        }
-                        else if (i >= 3 && i <= 4)
-                        {
-                            dirIndex = 2;
-                        }
-                        else if (i == 5)
-                        {
-                            dirIndex = 3;
-                        }
-
-                        CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    }
-                    else if (width == 2 && height == 2)
-                    {
-                        int dirIndex = i / 2;
-                        CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    }
-
+                    int dirIndex = i / 2;
+                    CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
             }
         }

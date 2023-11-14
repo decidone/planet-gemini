@@ -14,11 +14,18 @@ public class AttackTower : TowerAi
     bool isDelayAfterAttackCoroutine = false;
 
     public TwBulletDataManager bulletDataManager;
+    public Dictionary<string, BulletData> bulletDic;
+    BulletData loadedBullet;
+
+    public GameObject attackFX;
+    [SerializeField]
+    bool isSingleAttack;
 
     protected override void Start()
     {
         base.Start();
         bulletDataManager = TwBulletDataManager.instance;
+        bulletDic = bulletDataManager.bulletDic;
     }
 
     protected override void Update()
@@ -39,7 +46,17 @@ public class AttackTower : TowerAi
 
                 var slot = inventory.SlotCheck(0);
                 if(slot.item != null && slot.amount > 0)
+                {
+                    if (loadedBullet == null)
+                    {
+                        BulletCheck();
+                    }
                     AttackTowerAiCtrl();
+                }
+                else if (slot.item == null && loadedBullet != null)
+                {
+                    loadedBullet = null;
+                }
 
                 if (monsterList.Count > 0)
                 {
@@ -64,11 +81,12 @@ public class AttackTower : TowerAi
     {
         if (targetDist == 0)
             return;
-        else if (targetDist > towerData.AttackDist)  // 공격 범위 밖으로 나갈 때
+
+        else if (targetDist > towerData.AttackDist + loadedBullet.range)  // 공격 범위 밖으로 나갈 때
         {
             towerState = TowerState.Waiting;
         }
-        else if (targetDist <= towerData.AttackDist)  // 공격 범위 내로 들어왔을 때        
+        else if (targetDist <= towerData.AttackDist + loadedBullet.range)  // 공격 범위 내로 들어왔을 때        
         {
             towerState = TowerState.Attack;
         }
@@ -156,7 +174,17 @@ public class AttackTower : TowerAi
         if (!isDelayAfterAttackCoroutine)
         {
             towerState = TowerState.AttackDelay;
-            StartCoroutine(DelayAfterAttack(towerData.AttDelayTime)); // 1.5초 후 딜레이 적용            
+            StartCoroutine(DelayAfterAttack(towerData.AttDelayTime + loadedBullet.fireRate)); // 1.5초 후 딜레이 적용            
+        }
+    }
+
+    void BulletCheck()
+    {
+        var slot = inventory.SlotCheck(0);
+
+        if (bulletDic.ContainsKey(slot.item.name))
+        {
+            loadedBullet = bulletDic[slot.item.name];
         }
     }
 
@@ -171,7 +199,41 @@ public class AttackTower : TowerAi
         isDelayAfterAttackCoroutine = false;
     }
 
-    protected virtual void AttackStart()  { }
+    protected void AttackStart()  
+    {
+        if (aggroTarget != null)
+        {
+            if (isSingleAttack)
+            {
+                if (aggroTarget != null)
+                {
+                    GameObject attackFXSpwan;
+                    Vector3 dir = aggroTarget.transform.position - transform.position;
+                    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                    attackFXSpwan = Instantiate(attackFX, new Vector2(this.transform.position.x, this.transform.position.y + 0.7f), this.transform.rotation);
+                    inventory.Sub(0, 1);
+                    if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
+                        attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
+                    else
+                        attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+                    attackFXSpwan.GetComponent<TowerSingleAttackFx>().GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage);
+                }
+            }
+            else
+            {
+                GameObject attackFXSpwan;
+                attackFXSpwan = Instantiate(attackFX, new Vector2(aggroTarget.transform.position.x, aggroTarget.transform.position.y + 0.5f), aggroTarget.transform.rotation);
+                inventory.Sub(0, 1);
+                attackFXSpwan.GetComponent<TowerAreaAttackFx>().GetTarget(towerData.Damage + loadedBullet.damage);
+            }            
+        }
+
+        Debug.Log("BulletName" + loadedBullet.bulletName);
+        Debug.Log("damage" + loadedBullet.damage);
+        Debug.Log("fireRate" + loadedBullet.fireRate);
+        Debug.Log("range" + loadedBullet.range);
+    }
 
     protected override void DieFunc()
     {

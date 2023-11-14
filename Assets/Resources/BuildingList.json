@@ -95,9 +95,6 @@
   "IceTower":{
     "1":{"items":["AdamantitePlate","ManaStone"],"amounts":[1,1],"cooldown":3}
   },
-  "BloodTower":{
-    "1":{"items":["AdamantitePlate","ManaStone"],"amounts":[1,1],"cooldown":3}
-  },
   "PoisonTower":{
     "1":{"items":["Brick","ToxicPlant","ManaStone"],"amounts":[1,1,1],"cooldown":3}
   },

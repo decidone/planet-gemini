@@ -16,7 +16,6 @@ public class UnderPipeBuild : MonoBehaviour
     Vector2[] checkPos = new Vector2[4];
     Vector2[] dirs = { Vector2.down, Vector2.left, Vector2.up, Vector2.right };
     public int dirNum = 0;
-    int tempDir = 0;
     UnderPipeCtrl underpipeCtrl;
     PreBuilding preBuilding;
     public bool buildEnd = false;
@@ -25,7 +24,6 @@ public class UnderPipeBuild : MonoBehaviour
     {
         SetSlotColor(underPipe.GetComponent<SpriteRenderer>(), Color.green, 0.35f);
         preBuilding = PreBuilding.instance;
-        tempDir = pipeScipt.dirNum;
     }
 
     void Update()
@@ -64,18 +62,13 @@ public class UnderPipeBuild : MonoBehaviour
             if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != underPipeObj && factoryCollider.gameObject.transform.position != underPipeObj.transform.position)
             {
                 underpipeCtrl = factoryCollider.GetComponent<UnderPipeCtrl>();
-                if (underpipeCtrl != null && underpipeCtrl.isPreBuilding)
+                if (underpipeCtrl != null && !underpipeCtrl.isSetBuildingOk)
                 {
                     if (underpipeCtrl != null)
                     {
                         TurnDir(underpipeCtrl.dirNum);
                         return;
                     }
-                    else if (underpipeCtrl != null)
-                    {
-                        isSendPipe = true;
-                        return;
-                    }    
                 }            
             }
         }
@@ -114,10 +107,8 @@ public class UnderPipeBuild : MonoBehaviour
                 pipeScipt.dirNum = 1;
             }
         }
-        if (tempDir == pipeScipt.dirNum)
-            isSendPipe = true;
-        else
-            isSendPipe = false;
+
+        isSendPipe = false;
 
         dirNum = pipeScipt.dirNum;
     }
