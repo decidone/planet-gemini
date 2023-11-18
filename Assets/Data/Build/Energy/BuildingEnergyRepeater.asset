@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
+  m_Name: BuildingEnergyRepeater
+  m_EditorClassIdentifier: 
+  type: Energy
+  scienceName: EnergyRepeater
+  item: {fileID: 11400000, guid: 457237ac037c171478817a6196ffd765, type: 2}
+  gameObj: {fileID: 7372674185409712110, guid: df8fff9de755be244ba5cb1e3d7dce01, type: 3}
+  level: 1
+  height: 1
+  width: 1
+  dirCount: 0
