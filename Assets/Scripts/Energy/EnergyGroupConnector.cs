@@ -38,4 +38,74 @@ public class EnergyGroupConnector : MonoBehaviour
      *      작업번호보다 더 좋고 확실한 방법이 있는지는 생각
      */
     #endregion
+
+    [HideInInspector]
+    public Structure structure;
+    public bool isBuildDone;
+    public int group;
+    public int transmissionCode;
+    EnergyGroupManager groupManager;
+    List<EnergyGroupConnector> tempConnectors;
+    public List<EnergyGroupConnector> connectors;   //인스펙터 확인용 public
+    
+    void Awake()
+    {
+        isBuildDone = false;
+        transmissionCode = 0;
+        groupManager = EnergyGroupManager.instance;
+        structure = this.GetComponentInParent<Structure>();
+        tempConnectors = new List<EnergyGroupConnector>();
+        connectors = new List<EnergyGroupConnector>();
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Energy"))
+        {
+            EnergyGroupConnector connector = collision.GetComponent<EnergyGroupConnector>();
+            if (connector)
+            {
+                tempConnectors.Add(connector);
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Energy"))
+        {
+            EnergyGroupConnector connector = collision.GetComponent<EnergyGroupConnector>();
+            if (connector)
+            {
+                tempConnectors.Remove(connector);
+            }
+        }
+    }
+
+    public void Init()
+    {
+        isBuildDone = true;
+        for (int i = 0; i < tempConnectors.Count; i++)
+        {
+            if (tempConnectors[i].isBuildDone)
+            {
+                connectors.Add(tempConnectors[i]);
+                tempConnectors[i].CheckAndAdd(this);
+            }
+        }
+        groupManager.AddToGroup(this, connectors);
+    }
+
+    public void CheckAndAdd(EnergyGroupConnector conn)
+    {
+        if (!connectors.Contains(conn))
+        {
+            connectors.Add(conn);
+        }
+    }
+
+    public void RemoveFromGroup()
+    {
+
+    }
 }

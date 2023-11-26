@@ -25,6 +25,9 @@ public class EnergyGroupManager : MonoBehaviour
     #endregion
 
     public float energy;
+    public List<List<EnergyGroupConnector>> connectorsList;
+    List<int> energyGroups;
+    List<int> tempGroups;
 
     #region Singleton
     public static EnergyGroupManager instance;
@@ -41,5 +44,57 @@ public class EnergyGroupManager : MonoBehaviour
     }
     #endregion
 
+    void Start()
+    {
+        connectorsList = new List<List<EnergyGroupConnector>>();
+        energyGroups = new List<int>();
+        tempGroups = new List<int>();
+    }
 
+    public void AddToGroup(EnergyGroupConnector conn, List<EnergyGroupConnector> connectors)
+    {
+        if (connectors.Count == 0)
+        {
+            List<EnergyGroupConnector> tempList = new List<EnergyGroupConnector>();
+            tempList.Add(conn);
+            connectorsList.Add(tempList);
+        }
+        else
+        {
+            for (int i = 0; i < connectors.Count; i++)
+            {
+                for (int j = 0; j < connectorsList.Count; j++)
+                {
+                    if (connectorsList[j].Contains(connectors[i]))
+                    {
+                        if (!tempGroups.Contains(j))
+                            tempGroups.Add(j);
+                    }
+                }
+            }
+            
+            if (tempGroups.Count == 1)
+            {
+                connectorsList[tempGroups[0]].Add(conn);
+            }
+            else
+            {
+                connectorsList[tempGroups[0]].Add(conn);
+                for (int i = 0; i < tempGroups.Count; i++)
+                {
+                    connectorsList[tempGroups[0]].AddRange(connectorsList[tempGroups[i]]);
+                    connectorsList.RemoveAt(tempGroups[i]);
+                }
+            }
+            tempGroups.Clear();
+        }
+
+        for (int i = 0; i < connectorsList.Count ; i++)
+        {
+            for (int j = 0; j < connectorsList[i].Count ; j++)
+            {
+                connectorsList[i][j].group = i;
+            }
+        }
+    }
 }
