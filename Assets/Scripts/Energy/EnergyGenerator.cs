@@ -25,7 +25,6 @@ public class EnergyGenerator : Production
     #endregion
 
     float prodDelay;
-    EnergyGroupManager groupManager;
     public EnergyGroupConnector connector;
     [SerializeField]
     SpriteRenderer view;
@@ -35,7 +34,6 @@ public class EnergyGenerator : Production
     protected override void Start()
     {
         base.Start();
-        groupManager = EnergyGroupManager.instance;
         prodDelay = 0.1f;
         maxFuel = 100;
         isBuildDone = false;
@@ -65,7 +63,7 @@ public class EnergyGenerator : Production
             prodTimer += Time.deltaTime;
             if (prodTimer > prodDelay)
             {
-                groupManager.energy += 1;
+                connector.group.AddEnergy(1);   //에너지 가용량으로 바꿀 것
                 prodTimer = 0;
             }
         }
@@ -74,6 +72,8 @@ public class EnergyGenerator : Production
     public override void RemoveObj()
     {
         //여기서 건물 철거 전 처리(삭제가 아니여도 비활성화가 필요하니 그거 생각해서 만들 것)
+        connector.RemoveFromGroup();
+
         base.RemoveObj();
     }
 

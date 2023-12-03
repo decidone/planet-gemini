@@ -42,16 +42,17 @@ public class EnergyGroupConnector : MonoBehaviour
     [HideInInspector]
     public Structure structure;
     public bool isBuildDone;
-    public int group;
-    public int transmissionCode;
     EnergyGroupManager groupManager;
     List<EnergyGroupConnector> tempConnectors;
-    public List<EnergyGroupConnector> connectors;   //인스펙터 확인용 public
-    
+    public List<EnergyGroupConnector> connectors;
+    [HideInInspector]
+    public EnergyGroup group;   //속한 에너지 그룹. 그룹매니저랑 구분
+    public int signal;
+
     void Awake()
     {
         isBuildDone = false;
-        transmissionCode = 0;
+        signal = 0;
         groupManager = EnergyGroupManager.instance;
         structure = this.GetComponentInParent<Structure>();
         tempConnectors = new List<EnergyGroupConnector>();
@@ -93,7 +94,16 @@ public class EnergyGroupConnector : MonoBehaviour
                 tempConnectors[i].CheckAndAdd(this);
             }
         }
-        groupManager.AddToGroup(this, connectors);
+
+        if (connectors.Count == 0)
+        {
+            group = new EnergyGroup(groupManager, this);
+        }
+        else
+        {
+            group = connectors[0].group;
+            group.AddConnector(this, connectors);
+        }
     }
 
     public void CheckAndAdd(EnergyGroupConnector conn)
@@ -106,6 +116,38 @@ public class EnergyGroupConnector : MonoBehaviour
 
     public void RemoveFromGroup()
     {
+        for (int i = 0; i < connectors.Count; i++)
+        {
+            connectors[i].SubtractConnector(this);
+        }
 
+        group.RemoveConnector(this);
+    }
+
+    public void SubtractConnector(EnergyGroupConnector conn)
+    {
+        connectors.Remove(conn);
+    }
+
+    public void SendSignal(int code)
+    {
+        if (signal == 0)
+        {
+            signal = code;
+            for (int i = 0; i < connectors.Count; i++)
+            {
+                connectors[i].SendSignal(code);
+            }
+        }
+    }
+
+    public void ResetSignal()
+    {
+        signal = 0;
+    }
+
+    public void ChangeGroup(EnergyGroup _group)
+    {
+        group = _group;
     }
 }
