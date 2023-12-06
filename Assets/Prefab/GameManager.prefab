@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 4059864358883353247}
   - component: {fileID: 5450049282960680587}
   - component: {fileID: 4153718066960112512}
+  - component: {fileID: 1973152735125268217}
   - component: {fileID: 3729439446491037180}
   - component: {fileID: 7150366280860555239}
   m_Layer: 0
@@ -480,8 +481,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultCapacity: 10
-  maxPoolSize: 10000
+  maxPoolSize: 100
   itemPrefab: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+--- !u!114 &1973152735125268217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f4e33cc8c39a194fade189ce973aae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 10
+  maxPoolSize: 100
+  itemPrefab: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!114 &3729439446491037180
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -337,12 +337,11 @@ MonoBehaviour:
   unitSprite: {fileID: 2995091061736811076}
   unitCanvas: {fileID: 1270813421812540995}
   hpBar: {fileID: 8107538234141501341}
+  hp: 0
   aIState: 0
   attackState: 0
-  golemAttackFX:
-  - {fileID: 3455073265877218510, guid: cd93eff768044de4eba4c9eb476f1bb8, type: 3}
-  - {fileID: 5287082994259688682, guid: a922473a0f716a446bf9822c0af6dcee, type: 3}
-  - {fileID: 2495903882393676707, guid: 15c3cf877d897544badcff13e74c4cba, type: 3}
+  maxSpawnDist: 40
+  golemAttackFX: {fileID: 3455073265877218510, guid: cd93eff768044de4eba4c9eb476f1bb8, type: 3}
 --- !u!70 &7454456902833923465
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

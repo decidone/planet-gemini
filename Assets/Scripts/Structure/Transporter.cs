@@ -172,7 +172,7 @@ public class Transporter : Production
     public override void OnFactoryItem(ItemProps itemProps)
     {
         inventory.Add(itemProps.item, itemProps.amount);
-        itemProps.Pool.Release(itemProps.gameObject);
+        itemProps.itemPool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)

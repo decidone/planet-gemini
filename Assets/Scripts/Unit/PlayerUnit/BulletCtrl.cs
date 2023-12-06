@@ -1,36 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 // UTF-8 설정
 public class BulletCtrl : MonoBehaviour
 {
+    public IObjectPool<GameObject> bulletPool { get; set; }
+
     float damage = 0;
     public Transform aggroTarget = null;    // 타겟
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
+    GameObject attackUnit;
+
+    bool isRelease = false;
 
     void Update()
     {
-        transform.position += moveNextStep * 2 * Time.fixedDeltaTime;
-        Destroy(this.gameObject, 3f);
+        transform.position += moveNextStep * 5 * Time.fixedDeltaTime;
     }
 
-    public void GetTarget(Vector3 target, float GetDamage)
+    public void DestroyBullet()
+    {
+        if (!isRelease)
+            bulletPool.Release(gameObject);
+        else
+            isRelease = false;
+    }
+
+    public void GetTarget(Vector3 target, float GetDamage, GameObject obj)
     {
         moveNextStep = (target - transform.position).normalized;
         damage = GetDamage;
+        attackUnit = obj;
+        Invoke(nameof(DestroyBullet), 5f);
     }
-
+     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Monster"))
+        if (collision.CompareTag("Monster") && !collision.isTrigger)
         {
-            if (!collision.isTrigger)
+            if (collision.TryGetComponent(out MonsterAi monster))
             {
-                collision.GetComponent<MonsterAi>().TakeDamage(damage);
-                Destroy(this.gameObject, 0.1f);
+                monster.TakeDamage(damage);
             }
+            else if (collision.TryGetComponent(out MonsterSpawner spawner))
+            {
+                spawner.GetComponent<MonsterSpawner>().TakeDamage(damage, attackUnit);
+            }
+            DestroyBullet();
+            isRelease = true;
         }
-        //if (collision.CompareTag("Player"))
     }
 }

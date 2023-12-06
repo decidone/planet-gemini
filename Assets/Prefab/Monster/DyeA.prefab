@@ -468,8 +468,10 @@ MonoBehaviour:
   unitSprite: {fileID: 5009158862103463290}
   unitCanvas: {fileID: 61381033163008437}
   hpBar: {fileID: 3182610173967690890}
+  hp: 0
   aIState: 0
   attackState: 0
+  maxSpawnDist: 40
 --- !u!50 &6876622670015851553
 Rigidbody2D:
   serializedVersion: 4

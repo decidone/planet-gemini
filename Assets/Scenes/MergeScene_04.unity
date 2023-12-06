@@ -130,6 +130,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3613212761563754259, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4746401571730464259, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
+      propertyPath: mapGen
+      value: 
+      objectReference: {fileID: 1842857608}
+    - target: {fileID: 4746401571730464259, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7839168820769692788, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
+      propertyPath: mapGen
+      value: 
+      objectReference: {fileID: 1842857608}
+    - target: {fileID: 7839168820769692788, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9113408284949583410, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: spawnNum
       value: 13
@@ -140,11 +160,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9113408284949583420, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: m_Name
-      value: SpawnPos
+      value: MonsterSpawnManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 9113408284949583420, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9113408284949583421, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9113408284949583421, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -533,7 +557,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2369682121264992852, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2369682121264992852, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -910,6 +934,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d70a8f4e456ddd94b96397d2f52b11c8, type: 3}
+--- !u!114 &1842857608 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
+  m_PrefabInstance: {fileID: 298971887}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24090398a40ca294c8c73b53314c8274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &219787472492811319 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7738165226129024440, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}

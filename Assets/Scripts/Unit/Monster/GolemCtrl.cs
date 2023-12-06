@@ -6,74 +6,20 @@ using UnityEngine;
 public class GolemCtrl : MonsterAi
 {
     [SerializeField]
-    private GameObject[] golemAttackFX;
+    private GameObject golemAttackFX;
 
     GameObject golemFX;
     Transform getTargetTr;
-    bool checkTarget = false;
 
-    protected override void RandomAttackNum(int attackNum, Transform targetTr)
+    protected override void RandomAttackNum(Transform targetTr)
     {
-        attackState = AttackState.Attacking;
-
-        attackMotion = Random.Range(0, attackNum);
+        base.RandomAttackNum(targetTr);
         getTargetTr = targetTr;
-        animator.SetBool("isAttack", true);
-        animator.SetFloat("attackMotion", attackMotion);
-        animator.Play("Attack", -1, 0);
-    }
-
-    protected override void AttackEnd(string str)
-    {
-        base.AttackEnd(str);
-        if (str == "false")
-        {
-            if(attackMotion != 2)
-            {
-                if (aggroTarget != null)
-                    AttackObjCheck(aggroTarget);
-            }
-            checkTarget = false;
-        }
-    }
-
-    protected override void AttackMove()
-    {   
-        if (!checkTarget)
-        {
-            if (getTargetTr != null)
-            {
-                targetVec = (new Vector3(getTargetTr.position.x, getTargetTr.position.y, 0) - this.transform.position).normalized;
-            }
-            checkTarget = true;
-        }
-        if (attackMotion == 1)
-        {
-            transform.position += targetVec * 15 * Time.fixedDeltaTime;
-        }
     }
 
     public void FXSpawn()
     {
-        if (attackMotion == 0)
-        {
-            golemFX = Instantiate(golemAttackFX[0], new Vector2(getTargetTr.position.x, getTargetTr.position.y - 0.5f), getTargetTr.rotation);
-        }
-        else if (attackMotion == 1)
-        {
-            golemFX = Instantiate(golemAttackFX[1], new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
-            golemFX.transform.SetParent(this.transform, true);
-        }
-        else if (attackMotion == 2)
-        {
-            Vector3 dir = getTargetTr.position - transform.position;
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            golemFX = Instantiate(golemAttackFX[2], new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
-            if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
-                golemFX.transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-            else
-                golemFX.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        }
-        golemFX.GetComponentInChildren<GolemFXCtrl>().GetTarget(getTargetTr.position, attackMotion, unitCommonData.Damage);
+        golemFX = Instantiate(golemAttackFX, new Vector2(getTargetTr.position.x, getTargetTr.position.y), getTargetTr.rotation);
+        golemFX.GetComponentInChildren<GolemFXCtrl>().TargetPosAndDamage(unitCommonData.Damage);
     }
 }

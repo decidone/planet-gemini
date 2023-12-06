@@ -238,7 +238,7 @@ public class Structure : MonoBehaviour
 
     public virtual void OnFactoryItem(ItemProps itemProps) 
     {
-        itemProps.Pool.Release(itemProps.gameObject);
+        itemProps.itemPool.Release(itemProps.gameObject);
     }
 
     public virtual void OnFactoryItem(Item item) { }
@@ -460,7 +460,7 @@ public class Structure : MonoBehaviour
                 {
                     sprite.color = new Color(1f, 1f, 1f, 1f);
                     coll.enabled = true;
-                    spawnItem.Pool.Release(itemPool);
+                    spawnItem.itemPool.Release(itemPool);
                     spawnItem = null;
                 }
                 if(GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
@@ -480,7 +480,7 @@ public class Structure : MonoBehaviour
             sprite.color = new Color(1f, 1f, 1f, 1f);
             coll.enabled = true;
             setFacDelayCoroutine = null;
-            spawnItem.Pool.Release(itemPool);
+            spawnItem.itemPool.Release(itemPool);
         }
         else
         {
@@ -524,7 +524,7 @@ public class Structure : MonoBehaviour
         hp -= damage;
         hpBar.fillAmount = hp / structureData.MaxHp[level];
 
-        if (hp <= 0f)
+        if (hp <= 0f && !isRuin)
         {
             hp = 0f;
             DieFunc();

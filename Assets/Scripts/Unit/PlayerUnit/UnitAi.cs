@@ -90,11 +90,6 @@ public class UnitAi : UnitCommonAi
                     AttackCheck();
                 }
                 break;
-            case AIState.AI_AggroTrace:
-                {
-
-                }
-                break;
         }
     }
 
@@ -391,12 +386,12 @@ public class UnitAi : UnitCommonAi
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
 
-        if(colliders.Length > 0)
+        if (colliders.Length > 0)
         {
             foreach (Collider2D collider in colliders)
             {
                 GameObject monster = collider.gameObject;
-                if (monster.CompareTag("Monster"))
+                if (monster.CompareTag("Monster") && !collider.isTrigger)
                 {
                     if (!targetList.Contains(monster))
                     {
@@ -505,7 +500,7 @@ public class UnitAi : UnitCommonAi
             unitGroupCtrl.DieUnitCheck(this.gameObject);
         }
 
-        Destroy(this.gameObject, 1f);
+        Destroy(this.gameObject);
     }
 
     public override void RemoveTarget(GameObject target)

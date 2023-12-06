@@ -10,7 +10,7 @@ public enum AIState   // 몬스터 상태 관리
     AI_Idle,
     AI_Move,
     AI_Patrol,
-    AI_AggroTrace,
+    AI_GuardianAggro,
     AI_NormalTrace,
     AI_ReturnPos,
     AI_Attack,
@@ -70,6 +70,8 @@ public class UnitCommonAi : MonoBehaviour
 
     public AIState aIState;
     public AttackState attackState;
+
+    bool dieCheck = false;
 
     private void Awake()
     {
@@ -147,7 +149,7 @@ public class UnitCommonAi : MonoBehaviour
         }
     }
 
-    protected void AttackTargetDisCheck()
+    protected virtual void AttackTargetDisCheck()
     {
         if (aggroTarget)
         {
@@ -228,10 +230,11 @@ public class UnitCommonAi : MonoBehaviour
         hp -= reducedDamage;
         hpBar.fillAmount = hp / unitCommonData.MaxHp;
 
-        if (hp <= 0f)
+        if (hp <= 0f && !dieCheck)
         {
             aIState = AIState.AI_Die;
             hp = 0f;
+            dieCheck = true;
             DieFunc();
         }
     }
