@@ -109,6 +109,9 @@ public class Structure : MonoBehaviour
 
     public GameObject myVision;
 
+    public List<EnergyGroupConnector> connectors;
+    public EnergyGroup group;
+
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -121,6 +124,7 @@ public class Structure : MonoBehaviour
         isStorageBuilding = false;
         isMainSource = false;
         myVision.SetActive(false);
+        connectors = new List<EnergyGroupConnector>();
     }
 
     public virtual bool CheckOutItemNum()  { return new bool(); }
@@ -887,6 +891,51 @@ public class Structure : MonoBehaviour
                         preBuilding.isBuildingOk = true;
                 }
             }
+        }
+    }
+
+    public void AddConnector(EnergyGroupConnector connector)
+    {
+        if (!connectors.Contains(connector))
+        {
+            connectors.Add(connector);
+            SetGroup();
+        }
+    }
+
+    public void RemoveConnector(EnergyGroupConnector connector)
+    {
+        if (connectors.Contains(connector))
+        {
+            connectors.Remove(connector);
+            SetGroup();
+        }
+    }
+
+    public void SetGroup()
+    {
+        for (int i = 0; i < connectors.Count; i++)
+        {
+            if (connectors[i].isBuildDone && connectors[i].group != null)
+            {
+                group = connectors[i].group;
+                break;
+            }
+        }
+        group = null;
+    }
+
+    public IEnumerator UseEnergy(float energyAmount)
+    {
+        while (true)
+        {
+            if (group != null)
+            {
+                Debug.Log("use " + energyAmount);
+                group.UseEnergy(energyAmount);
+            }
+            
+            yield return new WaitForSeconds(1f);
         }
     }
 }

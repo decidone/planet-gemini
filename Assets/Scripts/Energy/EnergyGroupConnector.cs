@@ -45,6 +45,7 @@ public class EnergyGroupConnector : MonoBehaviour
     EnergyGroupManager groupManager;
     List<EnergyGroupConnector> tempConnectors;
     public List<EnergyGroupConnector> connectors;
+    public List<Structure> nearbyStr;
     [HideInInspector]
     public EnergyGroup group;   //속한 에너지 그룹. 그룹매니저랑 구분
     public int signal;
@@ -69,6 +70,14 @@ public class EnergyGroupConnector : MonoBehaviour
                 tempConnectors.Add(connector);
             }
         }
+        if (collision.TryGetComponent(out Structure structure))
+        {
+            if (!nearbyStr.Contains(structure))
+            {
+                nearbyStr.Add(structure);
+                structure.AddConnector(this);
+            }
+        }
     }
 
     void OnTriggerExit2D(Collider2D collision)
@@ -81,11 +90,27 @@ public class EnergyGroupConnector : MonoBehaviour
                 tempConnectors.Remove(connector);
             }
         }
+        if (collision.TryGetComponent(out Structure structure))
+        {
+            if (nearbyStr.Contains(structure))
+            {
+                nearbyStr.Remove(structure);
+                structure.RemoveConnector(this);
+            }
+        }
     }
 
     public void Init()
     {
         isBuildDone = true;
+        for (int i = 0; i < nearbyStr.Count; i++)
+        {
+            if (nearbyStr[i].TryGetComponent(out Structure structure))
+            {
+                structure.AddConnector(this);
+            }
+        }
+
         for (int i = 0; i < tempConnectors.Count; i++)
         {
             if (tempConnectors[i].isBuildDone)

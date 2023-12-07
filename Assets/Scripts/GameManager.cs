@@ -98,7 +98,7 @@ public class GameManager : MonoBehaviour
 
         int x = Mathf.FloorToInt(pos.x);
         int y = Mathf.FloorToInt(pos.y);
-        if (debug && map.IsOnMap(x, y))
+        if (debug && inputManager.alt && map.IsOnMap(x, y))
         {
             string buildable = "";
             foreach (string str in map.mapData[x][y].buildable)

@@ -58,12 +58,13 @@ public class EnergyGenerator : Production
             {
                 connector.Init();
                 isBuildDone = true;
+                StartCoroutine(nameof(ChargeEnergy), 1f);
             }
 
             prodTimer += Time.deltaTime;
             if (prodTimer > prodDelay)
             {
-                connector.group.AddEnergy(1);   //에너지 가용량으로 바꿀 것
+                //connector.group.AddEnergy(1);   //에너지 가용량으로 바꿀 것
                 prodTimer = 0;
             }
         }
@@ -101,6 +102,20 @@ public class EnergyGenerator : Production
             {
                 ui = list;
             }
+        }
+    }
+
+    public IEnumerator ChargeEnergy(float energyAmount)
+    {
+        while (true)
+        {
+            if (connector.group != null)
+            {
+                Debug.Log("charge " + connector.group.energy);
+                connector.group.AddEnergy(energyAmount);
+            }
+
+            yield return new WaitForSeconds(1f);
         }
     }
 }

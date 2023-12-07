@@ -31,7 +31,8 @@ public class EnergyGroup
     List<EnergyGroupConnector> tempConnectors;
     List<EnergyGroupConnector> splitConnectors;
 
-    float energy;   //생산량, 저장량 나눠야 할 듯
+    public float energy;   //생산량, 저장량 나눠야 할 듯
+    float efficiency;   //에너지 생산량, 사용량 비율로 충분하면 1, 아니면 비율만큼 생산 효율 감소
 
     public EnergyGroup(EnergyGroupManager _groupManager, EnergyGroupConnector conn)
     {
@@ -163,5 +164,10 @@ public class EnergyGroup
     public void AddEnergy(float _energy)
     {
         energy += _energy;
+    }
+
+    public void UseEnergy(float _energy)
+    {
+        energy -= _energy;
     }
 }
