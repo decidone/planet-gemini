@@ -148,3 +148,4 @@ MonoBehaviour:
   dragSpeed: 15
   borderX: 60
   borderY: 34
+  cam: {fileID: 0}

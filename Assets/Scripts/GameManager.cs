@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public GameObject inventoryUiCanvas;
     public Map map;
     public GameObject player;
+    public MapCameraController mapCameraController;
 
     [SerializeField]
     PlayerInvenManager pInvenManager;

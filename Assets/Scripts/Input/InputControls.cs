@@ -145,12 +145,30 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Mouse"",
+                    ""name"": ""MouseHold"",
                     ""type"": ""Button"",
                     ""id"": ""b107bf43-333f-40ad-8eea-307e6ee00f61"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""81edef1b-bf46-45ff-a415-0afd027851c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""4e12213e-ce24-477a-b148-7991a1d73726"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -173,7 +191,29 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PC"",
-                    ""action"": ""Mouse"",
+                    ""action"": ""MouseHold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""478e4246-59d9-490b-bc91-3349fc72be15"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""LeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""da45d16b-cd67-4a63-97a9-255bdca99ff0"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""RightClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1433,7 +1473,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         // MapCamera
         m_MapCamera = asset.FindActionMap("MapCamera", throwIfNotFound: true);
         m_MapCamera_Zoom = m_MapCamera.FindAction("Zoom", throwIfNotFound: true);
-        m_MapCamera_Mouse = m_MapCamera.FindAction("Mouse", throwIfNotFound: true);
+        m_MapCamera_MouseHold = m_MapCamera.FindAction("MouseHold", throwIfNotFound: true);
+        m_MapCamera_LeftClick = m_MapCamera.FindAction("LeftClick", throwIfNotFound: true);
+        m_MapCamera_RightClick = m_MapCamera.FindAction("RightClick", throwIfNotFound: true);
         // Building
         m_Building = asset.FindActionMap("Building", throwIfNotFound: true);
         m_Building_LeftMouseButtonDown = m_Building.FindAction("LeftMouseButtonDown", throwIfNotFound: true);
@@ -1617,13 +1659,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_MapCamera;
     private IMapCameraActions m_MapCameraActionsCallbackInterface;
     private readonly InputAction m_MapCamera_Zoom;
-    private readonly InputAction m_MapCamera_Mouse;
+    private readonly InputAction m_MapCamera_MouseHold;
+    private readonly InputAction m_MapCamera_LeftClick;
+    private readonly InputAction m_MapCamera_RightClick;
     public struct MapCameraActions
     {
         private @InputControls m_Wrapper;
         public MapCameraActions(@InputControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Zoom => m_Wrapper.m_MapCamera_Zoom;
-        public InputAction @Mouse => m_Wrapper.m_MapCamera_Mouse;
+        public InputAction @MouseHold => m_Wrapper.m_MapCamera_MouseHold;
+        public InputAction @LeftClick => m_Wrapper.m_MapCamera_LeftClick;
+        public InputAction @RightClick => m_Wrapper.m_MapCamera_RightClick;
         public InputActionMap Get() { return m_Wrapper.m_MapCamera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1636,9 +1682,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Zoom.started -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnZoom;
                 @Zoom.performed -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnZoom;
                 @Zoom.canceled -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnZoom;
-                @Mouse.started -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouse;
-                @Mouse.performed -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouse;
-                @Mouse.canceled -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouse;
+                @MouseHold.started -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouseHold;
+                @MouseHold.performed -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouseHold;
+                @MouseHold.canceled -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnMouseHold;
+                @LeftClick.started -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnLeftClick;
+                @LeftClick.performed -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnLeftClick;
+                @LeftClick.canceled -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnLeftClick;
+                @RightClick.started -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnRightClick;
+                @RightClick.performed -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnRightClick;
+                @RightClick.canceled -= m_Wrapper.m_MapCameraActionsCallbackInterface.OnRightClick;
             }
             m_Wrapper.m_MapCameraActionsCallbackInterface = instance;
             if (instance != null)
@@ -1646,9 +1698,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Zoom.started += instance.OnZoom;
                 @Zoom.performed += instance.OnZoom;
                 @Zoom.canceled += instance.OnZoom;
-                @Mouse.started += instance.OnMouse;
-                @Mouse.performed += instance.OnMouse;
-                @Mouse.canceled += instance.OnMouse;
+                @MouseHold.started += instance.OnMouseHold;
+                @MouseHold.performed += instance.OnMouseHold;
+                @MouseHold.canceled += instance.OnMouseHold;
+                @LeftClick.started += instance.OnLeftClick;
+                @LeftClick.performed += instance.OnLeftClick;
+                @LeftClick.canceled += instance.OnLeftClick;
+                @RightClick.started += instance.OnRightClick;
+                @RightClick.performed += instance.OnRightClick;
+                @RightClick.canceled += instance.OnRightClick;
             }
         }
     }
@@ -2218,7 +2276,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     public interface IMapCameraActions
     {
         void OnZoom(InputAction.CallbackContext context);
-        void OnMouse(InputAction.CallbackContext context);
+        void OnMouseHold(InputAction.CallbackContext context);
+        void OnLeftClick(InputAction.CallbackContext context);
+        void OnRightClick(InputAction.CallbackContext context);
     }
     public interface IBuildingActions
     {

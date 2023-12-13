@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c4d9e85b9867914baa3e672dcce18e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  energy: 0
 --- !u!1 &2852855281402203645
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,6 +206,7 @@ MonoBehaviour:
   inventoryUiCanvas: {fileID: 0}
   map: {fileID: 0}
   player: {fileID: 0}
+  mapCameraController: {fileID: 0}
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -313,6 +313,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b76fd339b5389fb4aa411a0395b028a9, type: 2}
   - {fileID: 11400000, guid: 00dbc501d2310014fb63dcd391e5012d, type: 2}
   - {fileID: 11400000, guid: fc096fe07d4ae634c84a6a17bb7ea55f, type: 2}
+  - {fileID: 11400000, guid: cafbca9f933611145864e3342444c584, type: 2}
 --- !u!114 &3986364633838151513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,6 +413,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ca1f84517c112664296ab16f1c0a1fa2, type: 2}
   - {fileID: 11400000, guid: 1eccbc744d352cb498255e7dc4185f52, type: 2}
   - {fileID: 11400000, guid: 457237ac037c171478817a6196ffd765, type: 2}
+  - {fileID: 11400000, guid: 67ca53489ae51cf45811d0ee8a60c0be, type: 2}
 --- !u!114 &762871311885926061
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -123,12 +123,30 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Mouse",
+                    "name": "MouseHold",
                     "type": "Button",
                     "id": "b107bf43-333f-40ad-8eea-307e6ee00f61",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftClick",
+                    "type": "Button",
+                    "id": "81edef1b-bf46-45ff-a415-0afd027851c4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RightClick",
+                    "type": "Button",
+                    "id": "4e12213e-ce24-477a-b148-7991a1d73726",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
                     "initialStateCheck": false
                 }
             ],
@@ -151,7 +169,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
-                    "action": "Mouse",
+                    "action": "MouseHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "478e4246-59d9-490b-bc91-3349fc72be15",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "LeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "da45d16b-cd67-4a63-97a9-255bdca99ff0",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "RightClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

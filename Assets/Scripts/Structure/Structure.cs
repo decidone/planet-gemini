@@ -931,7 +931,7 @@ public class Structure : MonoBehaviour
         {
             if (group != null)
             {
-                Debug.Log("use " + energyAmount);
+                //Debug.Log("use " + energyAmount);
                 group.UseEnergy(energyAmount);
             }
             

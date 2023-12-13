@@ -557,6 +557,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: gemini_sprite_21
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7514bf46fe4464249b3ae2bb438c9601
+      internalID: -1277555555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -573,6 +594,7 @@ TextureImporter:
       gemini_sprite_5: -480284180
       gemini_sprite_10: 1561624191
       gemini_sprite_14: -1805025018
+      gemini_sprite_21: -1277555555
       gemini_sprite_2: 2049815217
       gemini_sprite_4: -871590020
       gemini_sprite_3: -2059006354

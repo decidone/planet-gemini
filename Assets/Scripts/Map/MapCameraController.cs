@@ -22,6 +22,8 @@ public class MapCameraController : MonoBehaviour
     float borderY;
 
     PixelPerfectCamera pixelPerfectCamera;
+    [HideInInspector]
+    public Camera cam;
     GameManager gameManager;
     InputManager inputManager;
     CameraController mainCamController;
@@ -36,12 +38,19 @@ public class MapCameraController : MonoBehaviour
     float mapWidth;
     float mapHeight;
 
+    MapClickEvent focusedEvent;
+    MapClickEvent tempEvent;
+    bool isLineRendered;
+
     void Awake()
     {
         mouseHold = false;
         zoomLevel = 1;
         mainCamZoom = 1;
         pixelPerfectCamera = CameraObj.GetComponent<PixelPerfectCamera>();
+        cam = CameraObj.GetComponent<Camera>();
+        focusedEvent = new MapClickEvent();
+        tempEvent = new MapClickEvent();
     }
 
     void Start()
@@ -49,7 +58,9 @@ public class MapCameraController : MonoBehaviour
         gameManager = GameManager.instance;
         inputManager = InputManager.instance;
         inputManager.controls.State.ToggleMap.performed += ctx => ToggleMap();
-        inputManager.controls.MapCamera.Mouse.performed += ctx => MouseClick();
+        inputManager.controls.MapCamera.MouseHold.performed += ctx => ToggleMouse();
+        inputManager.controls.MapCamera.LeftClick.performed += ctx => LeftClick();
+        inputManager.controls.MapCamera.RightClick.performed += ctx => RightClick();
 
         mainCamController = Camera.main.GetComponent<CameraController>();
 
@@ -122,7 +133,7 @@ public class MapCameraController : MonoBehaviour
         }
     }
 
-    void MouseClick()
+    void ToggleMouse()
     {
         if (!mouseHold)
         {
@@ -136,6 +147,106 @@ public class MapCameraController : MonoBehaviour
             //button up
             mouseHold = false;
         }
+    }
+
+    void LeftClick()
+    {
+        if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
+            return;
+
+        Vector2 pos = cam.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].collider.TryGetComponent(out MapClickEvent _mapClickEvent))
+            {
+                tempEvent = _mapClickEvent;
+            }
+        }
+
+        if (focusedEvent == null)   //첫 클릭
+        {
+            if (tempEvent != null)
+            {
+                focusedEvent = tempEvent;
+            }
+        }
+        else if (focusedEvent != null && !isLineRendered)   //두 번째 클릭
+        {
+            if (tempEvent == null)
+            {
+                CancelFocus();
+            }
+            else
+            {
+                if (tempEvent == focusedEvent)
+                {
+                    // 라인 생성
+                    isLineRendered = true;
+                    focusedEvent.StartRenderer();   //기존 라인 끊는거는 클릭이벤트쪽에서 처리
+                }
+                else
+                {
+                    focusedEvent = tempEvent;
+                }
+            }
+        }
+        else //세 번째 클릭
+        {
+            if (focusedEvent == tempEvent)
+            {
+                //자기 자신 클릭
+                CancelRender();
+            }
+            else
+            {
+                if (tempEvent == null)
+                {
+                    //건물이 없는 곳 클릭
+                    CancelRender();
+                    CancelFocus();
+                }
+                else
+                {
+                    if (focusedEvent.strType == tempEvent.strType)
+                    {
+                        //연결 가능한 건물
+                        focusedEvent.EndRenderer(tempEvent);
+                        isLineRendered = false;
+                    }
+                    else
+                    {
+                        //연결 불가능한 건물
+                        CancelRender();
+                        CancelFocus();
+                        focusedEvent = tempEvent;
+                    }
+                }
+            }
+        }
+
+        tempEvent = null;
+    }
+
+    void RightClick()
+    {
+        CancelRender();
+        CancelFocus();
+    }
+
+    void CancelRender()
+    {
+        isLineRendered = false;
+        if (focusedEvent != null)
+        {
+            focusedEvent.DestroyLineRenderer();
+        }
+    }
+
+    void CancelFocus()
+    {
+        focusedEvent = null;
     }
 
     void OpenUI()
