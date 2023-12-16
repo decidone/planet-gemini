@@ -60,7 +60,6 @@ public class MapCameraController : MonoBehaviour
         inputManager.controls.State.ToggleMap.performed += ctx => ToggleMap();
         inputManager.controls.MapCamera.MouseHold.performed += ctx => ToggleMouse();
         inputManager.controls.MapCamera.LeftClick.performed += ctx => LeftClick();
-        inputManager.controls.MapCamera.RightClick.performed += ctx => RightClick();
 
         mainCamController = Camera.main.GetComponent<CameraController>();
 
@@ -169,7 +168,7 @@ public class MapCameraController : MonoBehaviour
         {
             if (tempEvent != null)
             {
-                focusedEvent = tempEvent;
+                SetFocus();
             }
         }
         else if (focusedEvent != null && !isLineRendered)   //두 번째 클릭
@@ -183,12 +182,17 @@ public class MapCameraController : MonoBehaviour
                 if (tempEvent == focusedEvent)
                 {
                     // 라인 생성
-                    isLineRendered = true;
-                    focusedEvent.StartRenderer();   //기존 라인 끊는거는 클릭이벤트쪽에서 처리
+                    //기존 라인 끊는거는 클릭이벤트쪽에서 처리
+                    if (focusedEvent.StartRenderer())
+                        isLineRendered = true;
                 }
                 else
                 {
-                    focusedEvent = tempEvent;
+                    if (!focusedEvent.RemoveRenderer(tempEvent))
+                    {
+                        CancelFocus();
+                        SetFocus();
+                    }
                 }
             }
         }
@@ -212,15 +216,15 @@ public class MapCameraController : MonoBehaviour
                     if (focusedEvent.strType == tempEvent.strType)
                     {
                         //연결 가능한 건물
-                        focusedEvent.EndRenderer(tempEvent);
-                        isLineRendered = false;
+                        if (focusedEvent.EndRenderer(tempEvent))
+                            isLineRendered = false;
                     }
                     else
                     {
                         //연결 불가능한 건물
                         CancelRender();
                         CancelFocus();
-                        focusedEvent = tempEvent;
+                        SetFocus();
                     }
                 }
             }
@@ -229,10 +233,17 @@ public class MapCameraController : MonoBehaviour
         tempEvent = null;
     }
 
-    void RightClick()
+    void SetFocus()
     {
-        CancelRender();
-        CancelFocus();
+        focusedEvent = tempEvent;
+        GameObject point = gameManager.SelectPointSpawn(focusedEvent.gameObject);
+        point.layer = LayerMask.NameToLayer("MapUI");
+    }
+
+    void CancelFocus()
+    {
+        focusedEvent = null;
+        gameManager.SelectPointRemove();
     }
 
     void CancelRender()
@@ -242,11 +253,6 @@ public class MapCameraController : MonoBehaviour
         {
             focusedEvent.DestroyLineRenderer();
         }
-    }
-
-    void CancelFocus()
-    {
-        focusedEvent = null;
     }
 
     void OpenUI()

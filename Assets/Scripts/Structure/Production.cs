@@ -68,19 +68,9 @@ public abstract class Production : Structure
         CheckPos();
     }
 
-    protected virtual void Update()
+    protected override void Update()
     {
-        if (!removeState)
-        {
-            if (isRuin && isRepair)
-            {
-                RepairFunc(false);
-            }
-            else if (isPreBuilding && isSetBuildingOk && !isRuin)
-            {
-                RepairFunc(true);
-            }
-        }
+        base.Update();
 
         if (isSetBuildingOk)
         {

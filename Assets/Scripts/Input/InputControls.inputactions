@@ -139,15 +139,6 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "RightClick",
-                    "type": "Button",
-                    "id": "4e12213e-ce24-477a-b148-7991a1d73726",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Tap",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -181,17 +172,6 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "LeftClick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "da45d16b-cd67-4a63-97a9-255bdca99ff0",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "RightClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

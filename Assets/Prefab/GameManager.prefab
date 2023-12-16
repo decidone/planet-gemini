@@ -207,6 +207,7 @@ MonoBehaviour:
   map: {fileID: 0}
   player: {fileID: 0}
   mapCameraController: {fileID: 0}
+  preBuildingObj: {fileID: 0}
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
   rManager: {fileID: 0}

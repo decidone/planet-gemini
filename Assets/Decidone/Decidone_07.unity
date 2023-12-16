@@ -1184,6 +1184,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1067319956694990678}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: preBuildingObj
+      value: 
+      objectReference: {fileID: 774915813}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: inventoryUiCanvas
       value: 
       objectReference: {fileID: 8603474882824653205}

@@ -9,25 +9,32 @@ public class LDConnector : Structure
     SpriteRenderer view;
     bool isBuildDone;
     bool isPlaced;
+    GameManager gameManager;
+    [HideInInspector]
+    public GameObject preBuildingObj;
+    [HideInInspector]
+    public MapClickEvent clickEvent;
 
     protected void Start()
     {
         isBuildDone = false;
         isPlaced = false;
+        clickEvent = GetComponent<MapClickEvent>();
+        gameManager = GameManager.instance;
+        preBuildingObj = gameManager.preBuildingObj;
     }
 
-    protected void Update()
+    protected override void Update()
     {
-        if (!removeState)
+        base.Update();
+
+        if (preBuildingObj.activeSelf)
         {
-            if (isRuin && isRepair)
-            {
-                RepairFunc(false);
-            }
-            else if (isPreBuilding && isSetBuildingOk && !isRuin)
-            {
-                RepairFunc(true);
-            }
+            view.enabled = true;
+        }
+        else
+        {
+            view.enabled = false;
         }
 
         if (!isPlaced)
@@ -53,7 +60,7 @@ public class LDConnector : Structure
     {
         //여기서 건물 철거 전 처리(삭제가 아니여도 비활성화가 필요하니 그거 생각해서 만들 것)
         connector.RemoveFromGroup();
-
+        clickEvent.RemoveAllLines();
         base.RemoveObj();
     }
 }

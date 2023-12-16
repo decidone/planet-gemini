@@ -127,6 +127,21 @@ public class Structure : MonoBehaviour
         connectors = new List<EnergyGroupConnector>();
     }
 
+    protected virtual void Update()
+    {
+        if (!removeState)
+        {
+            if (isRuin && isRepair)
+            {
+                RepairFunc(false);
+            }
+            else if (isPreBuilding && isSetBuildingOk && !isRuin)
+            {
+                RepairFunc(true);
+            }
+        }
+    }
+
     public virtual bool CheckOutItemNum()  { return new bool(); }
 
     public void BuildingSetting(int _level, int _height, int _width, int _dirCount)

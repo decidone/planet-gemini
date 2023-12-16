@@ -699,6 +699,7 @@ MonoBehaviour:
   resourcesIconTilemap: {fileID: 1784946216}
   objects: {fileID: 2480601899221957862}
   map: {fileID: 875718241}
+  mapFog: {fileID: 0}
   plain: {fileID: 2480601898745360442}
   desert: {fileID: 2480601898082089276}
   forest: {fileID: 2480601897812969366}

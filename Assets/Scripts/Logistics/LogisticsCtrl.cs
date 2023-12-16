@@ -6,26 +6,6 @@ using UnityEngine.Pool;
 // UTF-8 설정
 public class LogisticsCtrl : Structure
 {
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
-    protected virtual void Update()
-    {
-        if(!removeState)
-        {
-            if (isRuin && isRepair)
-            {
-                RepairFunc(false);
-            }
-            else if (isPreBuilding && isSetBuildingOk && !isRuin)
-            {
-                RepairFunc(true);
-            }
-        }
-    }
-
     public List<Item> PlayerGetItemList()
     {
         List<Item> itemListCopy = new List<Item>(itemList);

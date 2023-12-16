@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public Map map;
     public GameObject player;
     public MapCameraController mapCameraController;
+    public GameObject preBuildingObj;
 
     [SerializeField]
     PlayerInvenManager pInvenManager;
@@ -334,7 +335,7 @@ public class GameManager : MonoBehaviour
         player.transform.position = playerSpawnPos;
     }
 
-    public void SelectPointSpawn(GameObject build)
+    public GameObject SelectPointSpawn(GameObject build)
     {
         selectPoint = Instantiate(selectPointPrefab);
         Vector3 spawnPos = new Vector3(build.transform.position.x, build.transform.position.y + 0.7f, 0);
@@ -342,10 +343,13 @@ public class GameManager : MonoBehaviour
         selectPoint.transform.position = spawnPos;
 
         selectPoint.GetComponent<SelectPointMovement>().initialPosition = spawnPos;
+
+        return selectPoint;
     }
 
     public void SelectPointRemove()
     {
-        Destroy(selectPoint);
+        if (selectPoint != null)
+            Destroy(selectPoint);
     }
 }

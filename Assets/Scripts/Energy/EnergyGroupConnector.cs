@@ -134,9 +134,7 @@ public class EnergyGroupConnector : MonoBehaviour
     public void CheckAndAdd(EnergyGroupConnector conn)
     {
         if (!connectors.Contains(conn))
-        {
             connectors.Add(conn);
-        }
     }
 
     public void RemoveFromGroup()
@@ -151,7 +149,8 @@ public class EnergyGroupConnector : MonoBehaviour
 
     public void SubtractConnector(EnergyGroupConnector conn)
     {
-        connectors.Remove(conn);
+        if (connectors.Contains(conn))
+            connectors.Remove(conn);
     }
 
     public void SendSignal(int code)

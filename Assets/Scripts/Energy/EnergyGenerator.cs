@@ -30,6 +30,9 @@ public class EnergyGenerator : Production
     SpriteRenderer view;
     bool isBuildDone;
     bool isPlaced;
+    GameManager gameManager;
+    [HideInInspector]
+    public GameObject preBuildingObj;
 
     protected override void Start()
     {
@@ -38,6 +41,8 @@ public class EnergyGenerator : Production
         maxFuel = 100;
         isBuildDone = false;
         isPlaced = false;
+        gameManager = GameManager.instance;
+        preBuildingObj = gameManager.preBuildingObj;
     }
 
     protected override void Update()
@@ -50,6 +55,15 @@ public class EnergyGenerator : Production
                 view.enabled = false;
                 isPlaced = true;
             }
+        }
+
+        if (preBuildingObj.activeSelf)
+        {
+            view.enabled = true;
+        }
+        else
+        {
+            view.enabled = false;
         }
 
         if (!isPreBuilding)
@@ -111,7 +125,7 @@ public class EnergyGenerator : Production
         {
             if (connector.group != null)
             {
-                Debug.Log("charge " + connector.group.energy);
+                //Debug.Log("charge " + connector.group.energy);
                 connector.group.AddEnergy(energyAmount);
             }
 
