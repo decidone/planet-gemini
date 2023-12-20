@@ -89,10 +89,9 @@ GameObject:
   - component: {fileID: 4751259464911499681}
   - component: {fileID: 5546485786390217281}
   - component: {fileID: 2809424200808404707}
-  - component: {fileID: 2604077989542469090}
-  m_Layer: 7
+  m_Layer: 14
   m_Name: MonsterSpawner
-  m_TagString: Monster
+  m_TagString: Spawner
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -186,11 +185,11 @@ MonoBehaviour:
   currentStrongSpawn: 0
   totalMonsterList: []
   guardianList: []
-  inObjList: []
   unitSprite: {fileID: 4028291071532341099}
   unitCanvas: {fileID: 5496904829296565877}
   hpBar: {fileID: 4936597692029941388}
   hp: 0
+  waveStart: 0
 --- !u!50 &5546485786390217281
 Rigidbody2D:
   serializedVersion: 4
@@ -238,22 +237,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!58 &2604077989542469090
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2587231014279578894}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 50
 --- !u!1 &4582274715098405497
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,7 +510,7 @@ GameObject:
   - component: {fileID: 6196931549670887389}
   - component: {fileID: 3972117393261562213}
   - component: {fileID: 1820112874045990246}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: 'SearchCollider '
   m_TagString: Untagged
   m_Icon: {fileID: 0}

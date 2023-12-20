@@ -558,7 +558,7 @@ public class Structure : MonoBehaviour
             foreach (Collider2D collider in colliders)
             {
                 GameObject monster = collider.gameObject;
-                if (monster.CompareTag("Monster"))
+                if (monster.CompareTag("Monster") || monster.CompareTag("Spawner"))
                 {
                     if (!monsterList.Contains(monster))
                     {

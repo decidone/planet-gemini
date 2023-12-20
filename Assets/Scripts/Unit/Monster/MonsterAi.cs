@@ -21,10 +21,18 @@ public class MonsterAi : UnitCommonAi
     protected bool isScriptActive = false;
     protected int monsterType;    // 0 : 노멀, 1 : 강함, 2 : 가디언
 
+    protected bool waveState = false;
+    bool goingBase = false;
+    Vector3 wavePos; // 나중에 웨이브 대상으로 변경해야함 (현 맵 중심으로 이동하게)
+
+    bool goalPathBlocked = false;
+
     protected override void FixedUpdate()
     {
         if (isScriptActive)
+        {
             base.FixedUpdate();
+        }   
         else
             ReturnPos();
     }
@@ -54,7 +62,8 @@ public class MonsterAi : UnitCommonAi
             case AIState.AI_Attack:
                 if (attackState == AttackState.Waiting)
                 {
-                    AttackCheck();
+                    if (aggroTarget)
+                        AttackCheck();
                 }
                 else if (attackState == AttackState.AttackStart)
                 {
@@ -64,12 +73,14 @@ public class MonsterAi : UnitCommonAi
             case AIState.AI_NormalTrace:
                 {
                     NormalTrace();
-                    AttackCheck();
+                    if (aggroTarget)
+                        AttackCheck();
                 }
                 break;
             case AIState.AI_ReturnPos:
                 {
-                    ReturnPos();
+                    if(waveState)
+                        ReturnPos();
                 }
                 break;
         }
@@ -142,7 +153,6 @@ public class MonsterAi : UnitCommonAi
         {
             aIState = AIState.AI_Idle;
             AnimSetFloat(lastMoveDirection, false);
-            SwBodyType(false);
         }
         if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
         {
@@ -152,7 +162,6 @@ public class MonsterAi : UnitCommonAi
             {
                 aIState = AIState.AI_Idle;
                 AnimSetFloat(lastMoveDirection, false);
-                SwBodyType(false);
             }
         }
 
@@ -252,7 +261,7 @@ public class MonsterAi : UnitCommonAi
 
     protected override void NormalTrace()
     {
-        if (aggroTarget == null)
+        if (!waveState && aggroTarget == null)
         {
             animator.SetBool("isMove", false);
             aIState = AIState.AI_Idle;
@@ -260,25 +269,59 @@ public class MonsterAi : UnitCommonAi
         }
 
         animator.SetBool("isMove", true);
-        AnimSetFloat(targetVec, true);
 
-        if (targetDist > unitCommonData.AttackDist)
+        if (aggroTarget)
         {
-            if (currentWaypointIndex >= movePath.Count)
-                return;
-
-            Vector3 targetWaypoint = movePath[currentWaypointIndex];
-            direction = targetWaypoint - tr.position;
-            direction.Normalize();
-
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
-
-            if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+            if (targetDist > unitCommonData.AttackDist)
             {
-                currentWaypointIndex++;
-
                 if (currentWaypointIndex >= movePath.Count)
                     return;
+
+                Vector3 targetWaypoint = movePath[currentWaypointIndex];
+                direction = targetWaypoint - tr.position;
+                direction.Normalize();
+                AnimSetFloat(direction, true);
+
+                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+
+                if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+                {
+                    currentWaypointIndex++;
+
+                    if (currentWaypointIndex >= movePath.Count)
+                        return;
+                }
+            }
+        }
+        else if(waveState)
+        {
+            float basePosDist = Vector3.Distance(tr.position, wavePos);
+            if (basePosDist > unitCommonData.AttackDist)
+            {
+                if (currentWaypointIndex >= movePath.Count)
+                    return;
+
+                Vector3 targetWaypoint = movePath[currentWaypointIndex];
+                direction = targetWaypoint - tr.position;
+                direction.Normalize();
+                AnimSetFloat(direction, true);
+
+                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+
+                if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+                {
+                    currentWaypointIndex++;
+
+                    if (currentWaypointIndex >= movePath.Count)
+                    {
+                        if (goalPathBlocked)
+                        {
+                            goalPathBlocked = true;
+                            DestroyMapObject(wavePos);
+                        }
+                        return;
+                    }
+                }                
             }
         }
     }
@@ -353,9 +396,14 @@ public class MonsterAi : UnitCommonAi
 
         if((aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack) && targetList.Count == 0)
         {
-            idle = 0;
-            aIState = AIState.AI_Idle;
-            attackState = AttackState.Waiting;
+            if (!waveState)
+            {
+                idle = 0;
+                aIState = AIState.AI_Idle;
+                attackState = AttackState.Waiting;
+            }
+            else if (!goingBase)
+                WaveStart(wavePos);
         }
     }
 
@@ -375,6 +423,7 @@ public class MonsterAi : UnitCommonAi
                 {
                     closestDistance = distance;
                     aggroTarget = target;
+                    goingBase = false;
                 }
             }
         }
@@ -420,17 +469,37 @@ public class MonsterAi : UnitCommonAi
         else if (moveFunc == "NormalTrace")
         {
             aIState = AIState.AI_NormalTrace;
+            if (waveState && movePath.Count > 0 && wavePos != movePath[movePath.Count - 1])
+                goalPathBlocked = true;
         }
         else if (moveFunc == "ReturnPos")
         {
             aIState = AIState.AI_ReturnPos;
         }
 
-        SwBodyType(true);
+
         direction = targetPos - tr.position;
         checkPathCoroutine = null;
     }
 
+    void DestroyMapObject(Vector2 targetPos)
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(targetPos, 5);
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider2D collider = colliders[i];
+            GameObject target = collider.gameObject;
+            string targetTag = target.tag;
+
+            if (targetTag == "MapObj")
+            {
+                targetList.Add(target);
+                Debug.Log(target.name);
+            }
+        }
+        WaveStart(wavePos);
+    }
 
     protected virtual void RandomAttackNum(Transform targetTr)
     {
@@ -509,5 +578,18 @@ public class MonsterAi : UnitCommonAi
                 capsule2D.enabled = false;
             }
         }
+    }
+
+    public void WaveStart(Vector3 _wavePos)
+    {
+        waveState = true;
+        wavePos = _wavePos;
+        Invoke(nameof(WaveInvoke), 0.5f);
+        goingBase = true;
+    }
+
+    void WaveInvoke()
+    {
+        checkPathCoroutine = StartCoroutine(CheckPath(wavePos, "NormalTrace"));
     }
 }

@@ -38,7 +38,7 @@ public class BulletCtrl : MonoBehaviour
      
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Monster") && !collision.isTrigger)
+        if (collision.CompareTag("Monster"))
         {
             if (collision.TryGetComponent(out MonsterAi monster))
             {

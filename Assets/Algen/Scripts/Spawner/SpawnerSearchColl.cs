@@ -6,7 +6,7 @@ public class SpawnerSearchColl : MonoBehaviour
 {
     MonsterSpawner monsterSpawner;
     public List<GameObject> inObjList = new List<GameObject>();
-    bool nearUserObjExist;
+    bool nearUserObjExist = false;
 
     private void Awake()
     {
@@ -15,11 +15,12 @@ public class SpawnerSearchColl : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!inObjList.Contains(collision.gameObject) && !collision.CompareTag("Monster") && !collision.CompareTag("Untagged") && !collision.CompareTag("Bullet"))
+        if (!inObjList.Contains(collision.gameObject))
         {
             inObjList.Add(collision.gameObject);
             if (!nearUserObjExist && inObjList.Count > 0)
             {
+                nearUserObjExist = true;
                 monsterSpawner.SearchObj(true);
             }
         }
@@ -27,11 +28,12 @@ public class SpawnerSearchColl : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (inObjList.Contains(collision.gameObject) && !collision.CompareTag("Monster") && !collision.CompareTag("Untagged") && !collision.CompareTag("Bullet"))
+        if (inObjList.Contains(collision.gameObject))
         {
             inObjList.Remove(collision.gameObject);
             if (nearUserObjExist && inObjList.Count == 0)
             {
+                nearUserObjExist = false;
                 monsterSpawner.SearchObj(false);
             }
         }

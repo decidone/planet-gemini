@@ -127,7 +127,7 @@ public class InfoWindow : MonoBehaviour
         SetNeedItem(preSciInfoData, preSciName, preSciLevel, isCoreSel);
     }
 
-    public void SciUpgradeEnd()
+    public void SciUpgradeStart()
     {
         List<NeedItem> itemsCopy = new List<NeedItem>(needItems);
 
@@ -139,13 +139,6 @@ public class InfoWindow : MonoBehaviour
             }
         }
         SetNeedItem();
-
-        if(preSciName == "Core")
-        {
-            scienceDb.coreLevel = preSciLevel;
-        }
-        scienceDb.SaveSciDb(preSciName, preSciLevel);
-        buildingInven.Refresh();
         totalAmountsEnough = false;
     }
 }

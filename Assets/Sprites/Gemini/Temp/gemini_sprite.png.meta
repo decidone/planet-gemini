@@ -515,6 +515,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: gemini_sprite_19
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7ae4c390991e7d4dbb30fc60fb86e53
+      internalID: 1049510168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gemini_sprite_20
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb76891e7caf4f5448dc0b7e80552321
+      internalID: -714002745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gemini_sprite_21
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94f93155b99b4d84eaad3590e1154a45
+      internalID: -1712138490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gemini_sprite_22
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3d6cc518ab2df8644ae9a601df04d171
+      internalID: -629079084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -526,20 +610,24 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      gemini_sprite_19: 1049510168
       gemini_sprite_1: 2050382993
       gemini_sprite_5: -480284180
       gemini_sprite_10: 1561624191
       gemini_sprite_14: -1805025018
+      gemini_sprite_21: -1712138490
       gemini_sprite_2: 2049815217
       gemini_sprite_4: -871590020
       gemini_sprite_3: -2059006354
       gemini_sprite_13: 1333808858
       gemini_sprite_15: -767707425
+      gemini_sprite_22: -629079084
       gemini_sprite_8: 1908595495
       gemini_sprite_11: 1830172192
       gemini_sprite_0: 1380747942
       gemini_sprite_16: -1674936102
       gemini_sprite_12: 345904814
+      gemini_sprite_20: -714002745
       gemini_sprite_9: 464322378
       gemini_sprite_17: 2139102105
       gemini_sprite_6: 807909680

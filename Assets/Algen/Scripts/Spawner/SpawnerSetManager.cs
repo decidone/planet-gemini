@@ -27,6 +27,8 @@ public class SpawnerSetManager : MonoBehaviour
     [SerializeField]
     AreaLevelData[] arealevelData;
 
+    Vector3 basePos;
+
     #region Singleton
     public static SpawnerSetManager instance;
 
@@ -63,7 +65,10 @@ public class SpawnerSetManager : MonoBehaviour
                 int y = Math.Abs(centerNum - j);
 
                 if (x == 0 && y == 0)
+                {
+                    basePos = centerPos;
                     continue;
+                }
 
                 areaPosLevel.Add(centerPos, Math.Max(x, y));    // 구역의 중앙 좌표 + 구역 레벨
             }
@@ -130,7 +135,7 @@ public class SpawnerSetManager : MonoBehaviour
                 }
                 spawnObj.GetComponent<SpawnerGroupManager>().SpawnerSet(spawnerObj);
                 spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);
-                monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome);
+                monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos);
                 index++;
             }
         }

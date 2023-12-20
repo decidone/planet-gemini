@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3832536798139642928}
   - component: {fileID: 8411309729273021137}
   - component: {fileID: 269795649541123606}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: StormTower_Fx
   m_TagString: Bullet
   m_Icon: {fileID: 0}

@@ -157,7 +157,6 @@ public class UnitAi : UnitCommonAi
             aIState = AIState.AI_NormalTrace;
         }
 
-        SwBodyType(true);
         direction = targetPos - tr.position;
         checkPathCoroutine = null;
     }
@@ -246,7 +245,6 @@ public class UnitAi : UnitCommonAi
                     AnimSetFloat(lastMoveDirection, false);
                     isAttackMove = true;
                     aIState = AIState.AI_Idle;
-                    SwBodyType(false);
                 }
             }
 
@@ -391,7 +389,7 @@ public class UnitAi : UnitCommonAi
             foreach (Collider2D collider in colliders)
             {
                 GameObject monster = collider.gameObject;
-                if (monster.CompareTag("Monster") && !collider.isTrigger)
+                if (monster.CompareTag("Monster") || monster.CompareTag("Spawner"))
                 {
                     if (!targetList.Contains(monster))
                     {
@@ -509,7 +507,13 @@ public class UnitAi : UnitCommonAi
         if (targetList.Count == 0 && isLastStateOn)
         {
             aIState = unitLastState;
-            isLastStateOn = false;          
+
+            if (aIState == AIState.AI_Move)
+            {
+                checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
+            }
+
+            isLastStateOn = false;
         } 
     }
 }

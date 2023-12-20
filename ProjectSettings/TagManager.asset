@@ -10,6 +10,8 @@ TagManager:
   - Monster
   - Tower
   - Bullet
+  - Spawner
+  - MapObj
   layers:
   - Default
   - TransparentFX
@@ -22,10 +24,10 @@ TagManager:
   - Obj
   - MapUI
   - Fog
-  - 
-  - 
-  - 
-  - 
+  - MapObj
+  - SpawnerSearch
+  - Bullet
+  - Spawner
   - 
   - 
   - 

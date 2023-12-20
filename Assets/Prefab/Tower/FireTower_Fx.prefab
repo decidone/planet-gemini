@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 131646313625141334}
   - component: {fileID: 2828805631436647886}
   - component: {fileID: 4631580394372675255}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: FireTower_Fx
   m_TagString: Bullet
   m_Icon: {fileID: 0}

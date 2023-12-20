@@ -15,11 +15,11 @@ public class SpawnerGroupManager : MonoBehaviour
         }
     }
 
-    public void GroupMonsterScriptSet(bool scriptState)
-    {
-        foreach (GameObject spawner in spawnerList)
-        {
-            spawner.GetComponent<MonsterSpawner>().MonsterScriptSet(scriptState);
-        }
-    }
+    //public void GroupMonsterScriptSet(bool scriptState)
+    //{
+    //    foreach (GameObject spawner in spawnerList)
+    //    {
+    //        spawner.GetComponent<MonsterSpawner>().MonsterScriptSet(scriptState);
+    //    }
+    //}
 }

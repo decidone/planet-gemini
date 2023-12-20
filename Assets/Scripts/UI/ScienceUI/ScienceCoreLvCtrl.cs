@@ -27,29 +27,30 @@ public class ScienceCoreLvCtrl : MonoBehaviour
     {
         coreLv = level + 1;
         coreLvTx.text = "Lv." + coreLv;
+        sciClass = getSciClass;
+        SciTreeInst();
+        float time = ScienceInfoGet.instance.CoreUpgradeTime(coreLv);
         if (coreLv == 1)
             LockBtnObj.SetActive(false);
         else
         {
             ScienceBtn scienceBtn = coreBtnObj.AddComponent<ScienceBtn>();
-            scienceBtn.SetInfo("Core", coreLv, true);
+            scienceBtn.SetInfo("Core", coreLv, time, true);
         }
-        sciClass = getSciClass;
-        SciTreeInst();
     }
 
     void SciTreeInst()
     {
-        Dictionary<string, int> getSciData = new Dictionary<string, int>(ScienceInfoGet.instance.GetSciLevelData(sciClass, coreLv));
+        var data = ScienceInfoGet.instance.GetSciLevelData(sciClass, coreLv);
 
-        foreach (var sciData in getSciData)
+        for (int i = 0; i < data.Item1.Count; i++) 
         {
             GameObject iconUI = Instantiate(sciTreeIcon);
             iconUI.transform.SetParent(panel.transform, false);
             SciTreeIconCtrl sciTreeIconCtrl = iconUI.GetComponent<SciTreeIconCtrl>();
-            Item itemData = itemList.FindData(sciData.Key);
+            Item itemData = itemList.FindData(data.Item1[i]);
             sciTreeIconCtrl.icon.sprite = itemData.icon;
-            sciTreeIconCtrl.SetIcon(sciData.Key, sciData.Value);
+            sciTreeIconCtrl.SetIcon(data.Item1[i], data.Item2[i], data.Item3[i]);   //이름, 레벨, 시간
         }
     }
 }

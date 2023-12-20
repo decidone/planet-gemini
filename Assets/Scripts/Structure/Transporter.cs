@@ -18,14 +18,14 @@ public class Transporter : Production
     List<Dictionary<Item, int>> unitItemList = new List<Dictionary<Item, int>>();
     List<TransportUnit> getItemUnit = new List<TransportUnit>();
 
-    float exTimer;
-    float exTimeSet;
+    float transportInterval;
+    float transportTimeer;
     
     protected override void Start()
     {
         base.Start();
         maxFuel = 100;
-        exTimeSet = 1.0f;
+        transportTimeer = 1.0f;
         isStorageBuilding = true;
         isGetLine = true;
     }
@@ -63,18 +63,16 @@ public class Transporter : Production
 
             if (unitItemList.Count > 0)
             {
-                exTimer += Time.deltaTime;
-                if (exTimer > exTimeSet)
+                transportInterval += Time.deltaTime;
+                if (transportInterval > transportTimeer)
                 {
                     ExStorageCheck();
-                    exTimer = 0;
+                    transportInterval = 0;
                 }
             }
             else
-                exTimer = 0;
+                transportInterval = 0;
 
-            //if (sInvenManager.isOpened && sInvenManager.prod == GetComponent<Production>() && takeBuild != null)
-            //    LineRendererSet(takeBuild.transform.position);
         }
     }
 

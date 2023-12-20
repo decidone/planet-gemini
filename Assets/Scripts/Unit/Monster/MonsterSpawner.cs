@@ -45,9 +45,6 @@ public class MonsterSpawner : MonoBehaviour
 
     bool nearUserObjExist;
 
-    public List<GameObject> inObjList = new List<GameObject>();
-    //List<Structure> inObjBuilding;  // 전력 사용 확인용
-
     public SpriteRenderer unitSprite;
     public GameObject unitCanvas;
     public Image hpBar;
@@ -58,6 +55,10 @@ public class MonsterSpawner : MonoBehaviour
     bool takeDamageCheck;
     float guardianCallInterval;
     float guardianCallTimer;
+
+    Vector3 wavePos;
+    [SerializeField]
+    bool waveStart = false;
 
     void Start()
     {
@@ -109,9 +110,15 @@ public class MonsterSpawner : MonoBehaviour
                 takeDamageCheck = false;
             }
         }
+
+        if(waveStart)
+        {
+            WaveStart();
+            waveStart = false;
+        }
     }
 
-    public void SpawnerSetting(AreaLevelData levelData, string _biome)
+    public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos)
     {
         areaLevel = levelData.areaLevel;
         biome = _biome;
@@ -120,6 +127,8 @@ public class MonsterSpawner : MonoBehaviour
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
         maxGuardianSpawn = levelData.maxGuardianSpawn;
+
+        wavePos = _basePos;
     }
 
     public void InitializeMonsterSpawn()
@@ -339,36 +348,24 @@ public class MonsterSpawner : MonoBehaviour
     {
         takeDamageCheck = true;
 
-        Debug.Log("coll");
         foreach (GuardianAi guardian in guardianList)
         {
             guardian.SpawnerCollCheck(attackObj);
         }
     }
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (!inObjList.Contains(collision.gameObject) && !collision.CompareTag("Monster") && !collision.CompareTag("Untagged") && !collision.CompareTag("Bullet"))
-    //    {
-    //        inObjList.Add(collision.gameObject);
-    //        if (!nearUserObjExist && inObjList.Count > 0)
-    //        {
-    //            MonsterScriptSet(true);
-    //            nearUserObjExist = true;
-    //        }
-    //    }
-    //}
+    void WaveStart()
+    {
+        MonsterScriptSet(true);
+        foreach (GameObject monster in totalMonsterList)
+        {
+            MonsterAi monsterAi = monster.GetComponent<MonsterAi>();
+            monsterAi.WaveStart(wavePos);
+        }
 
-    //private void OnTriggerExit2D(Collider2D collision)
-    //{
-    //    if (inObjList.Contains(collision.gameObject) && !collision.CompareTag("Monster") && !collision.CompareTag("Untagged") && !collision.CompareTag("Bullet"))
-    //    {
-    //        inObjList.Remove(collision.gameObject);
-    //        if (nearUserObjExist && inObjList.Count == 0)
-    //        {
-    //            MonsterScriptSet(false);
-    //            nearUserObjExist = false;
-    //        }
-    //    }
-    //}
+        totalMonsterList.Clear();
+        currentWeakSpawn = 0;
+        currentNormalSpawn = 0;
+        currentStrongSpawn = 0;
+    }
 }

@@ -32,9 +32,12 @@ public class ScienceManager : MonoBehaviour
     protected ScienceBtn focusedSciBtn;
 
     TempScienceDb scienceDb;
+    BuildingInven buildingInven;
 
     float popupWidth;
     Vector3 mousePos;
+
+    PortalSciManager portalSciManager;
 
     void Start()
     {
@@ -42,6 +45,8 @@ public class ScienceManager : MonoBehaviour
 
         gameManager = GameManager.instance;
         scienceDb = TempScienceDb.instance;
+        buildingInven = gameManager.GetComponent<BuildingInven>();
+        portalSciManager = PortalSciManager.instance;
 
         contents[0].SetActive(true);
         contents[1].SetActive(false);
@@ -165,6 +170,20 @@ public class ScienceManager : MonoBehaviour
                 infoWindow[0].SetActive(true);
             }
         }
+    }
+
+    public void SciUpgradeEnd(string sciName, int sciLevel)
+    {
+        if (sciName == "Core")
+        {
+            scienceDb.coreLevel = sciLevel;
+        }
+        if (sciName.Contains("Portal"))
+        {
+            portalSciManager.PortalSciUpgrade(sciName);
+        }
+        scienceDb.SaveSciDb(sciName, sciLevel);
+        buildingInven.Refresh();
     }
 
     void OnExit()

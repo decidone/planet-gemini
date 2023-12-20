@@ -193,7 +193,7 @@ public class UnitCommonAi : MonoBehaviour
     {
         isDelayAfterAttackCoroutine = true;
         AttackStart();
-        SwBodyType(false);
+        //SwBodyType(false);
 
         while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f)
         {
@@ -256,18 +256,6 @@ public class UnitCommonAi : MonoBehaviour
         if (targetList.Count == 0)
         {
             aggroTarget = null;
-        }
-    }
-
-    protected virtual void SwBodyType(bool isMove)
-    {
-        if (isMove)
-        {
-            rg.bodyType = RigidbodyType2D.Kinematic;
-        }
-        else
-        {
-            rg.bodyType = RigidbodyType2D.Dynamic;
         }
     }
 }
