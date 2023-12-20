@@ -522,7 +522,7 @@ MonoBehaviour:
   unitSelImg: {fileID: 4471495155955281645}
   selfHealingAmount: 0
   selfHealInterval: 0
-  attackFX: {fileID: 6504030904359307953, guid: 40bd9cdc15d5f9240b0890356a39b38b, type: 3}
+  attackFX: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!114 &3784004604832727098
 MonoBehaviour:
   m_ObjectHideFlags: 0

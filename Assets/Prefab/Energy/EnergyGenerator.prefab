@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 180068444103987528}
   - component: {fileID: 1571619966280148387}
   - component: {fileID: 7265358927153795667}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Territory
   m_TagString: Energy
   m_Icon: {fileID: 0}
@@ -318,9 +318,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structure: {fileID: 0}
   isBuildDone: 0
-  group: 0
-  transmissionCode: 0
   connectors: []
+  nearbyStr: []
+  signal: 0
 --- !u!1 &2075445432134139083
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,7 +394,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 236025313, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  m_Sprite: {fileID: 1804894915, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -648,7 +648,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 236025313, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  m_Sprite: {fileID: 1804894915, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -742,6 +742,7 @@ MonoBehaviour:
   isMainSource: 0
   isTempBuild: 0
   myVision: {fileID: 868971455955703356}
+  connectors: []
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -752,6 +753,7 @@ MonoBehaviour:
   isGetLine: 0
   connector: {fileID: 7265358927153795667}
   view: {fileID: 6363363537288611314}
+  preBuildingObj: {fileID: 0}
 --- !u!61 &5564630921721189503
 BoxCollider2D:
   m_ObjectHideFlags: 0

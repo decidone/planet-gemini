@@ -235,8 +235,10 @@ MonoBehaviour:
   unitSprite: {fileID: 2589093502875389040}
   unitCanvas: {fileID: 3456046097214474780}
   hpBar: {fileID: 6349790761103010388}
+  hp: 0
   aIState: 0
   attackState: 0
+  maxSpawnDist: 40
 --- !u!70 &1462048544358157173
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

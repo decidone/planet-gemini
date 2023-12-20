@@ -516,7 +516,7 @@ public class BeltCtrl : LogisticsCtrl
         if (itemObjList.Contains(item))
         {
             itemObjList.Remove(item);
-            item.Pool.Release(item.gameObject);
+            item.itemPool.Release(item.gameObject);
         }
     }
 

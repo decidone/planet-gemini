@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &944752648
+--- !u!1 &1462144189
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 944752649}
-  - component: {fileID: 944752650}
+  - component: {fileID: 1462144190}
+  - component: {fileID: 1462144191}
   m_Layer: 0
   m_Name: Energy
   m_TagString: Untagged
@@ -17,13 +17,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &944752649
+--- !u!4 &1462144190
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944752648}
+  m_GameObject: {fileID: 1462144189}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,13 +32,13 @@ Transform:
   m_Father: {fileID: 3986364635626952760}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &944752650
+--- !u!114 &1462144191
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944752648}
+  m_GameObject: {fileID: 1462144189}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4d9e85b9867914baa3e672dcce18e5, type: 3}
@@ -162,6 +162,7 @@ GameObject:
   - component: {fileID: 4059864358883353247}
   - component: {fileID: 5450049282960680587}
   - component: {fileID: 4153718066960112512}
+  - component: {fileID: 1973152735125268217}
   - component: {fileID: 3729439446491037180}
   - component: {fileID: 7150366280860555239}
   m_Layer: 0
@@ -187,7 +188,7 @@ Transform:
   - {fileID: 7525422398918600960}
   - {fileID: 6940893202774860597}
   - {fileID: 497237978663882095}
-  - {fileID: 944752649}
+  - {fileID: 1462144190}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -412,6 +413,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cd0905f64f4f9b340938ad44ddd6f3c1, type: 2}
   - {fileID: 11400000, guid: 6d4b51c5e38f1b346ab22ecd118f4934, type: 2}
   - {fileID: 11400000, guid: ca1f84517c112664296ab16f1c0a1fa2, type: 2}
+  - {fileID: 11400000, guid: 80739a12b2335474a97e22a2e634bbcf, type: 2}
+  - {fileID: 11400000, guid: 24b014fcedec8ee43a0c248f5334a7d9, type: 2}
+  - {fileID: 11400000, guid: 2d10fd7c00517014cad7e36aa3d700e2, type: 2}
+  - {fileID: 11400000, guid: 8bbd8a9d671f14b4fa509950447d3bb9, type: 2}
   - {fileID: 11400000, guid: 1eccbc744d352cb498255e7dc4185f52, type: 2}
   - {fileID: 11400000, guid: 457237ac037c171478817a6196ffd765, type: 2}
   - {fileID: 11400000, guid: 67ca53489ae51cf45811d0ee8a60c0be, type: 2}
@@ -533,8 +538,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultCapacity: 10
-  maxPoolSize: 10000
+  maxPoolSize: 100
   itemPrefab: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+--- !u!114 &1973152735125268217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f4e33cc8c39a194fade189ce973aae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapacity: 10
+  maxPoolSize: 100
+  itemPrefab: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!114 &3729439446491037180
 MonoBehaviour:
   m_ObjectHideFlags: 0

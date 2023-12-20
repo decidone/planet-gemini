@@ -46,9 +46,11 @@ public class ScienceInfoGet : MonoBehaviour
         return null;
     }
 
-    public Dictionary<string, int> GetSciLevelData(string desiredClass, int desiredLevel)
+    public (List<string>, List<int>, List<float>) GetSciLevelData(string desiredClass, int desiredLevel)
     {
-        Dictionary<string, int> matchingData = new Dictionary<string, int>();
+        List<string> name = new List<string>();
+        List<int> level = new List<int>();
+        List<float> time = new List<float>();
 
         foreach (var scienceCategory in scienceInfoDataDic)
         {
@@ -66,16 +68,43 @@ public class ScienceInfoGet : MonoBehaviour
 
                         if (scienceInfo.coreLv == desiredLevel)
                         {
-                            matchingData.Add(scienceCategory.Key, levelEntry.Key);
+                            name.Add(scienceCategory.Key);
+                            level.Add(levelEntry.Key);
+                            time.Add(levelEntry.Value.time);
                         }
                     }
                 }
             }
         }
 
-        return matchingData;
+        return (name, level, time);
     }
 
+    public float CoreUpgradeTime(int level)
+    {
+        float time = 0;
+        foreach (var scienceCategory in scienceInfoDataDic)
+        {
+            if(scienceCategory.Key == "Core")
+            {
+                var categoryData = scienceCategory.Value;
+
+                foreach (var classData in categoryData)
+                {
+                    var levelData = classData.Value;
+                    foreach (var levelEntry in levelData)
+                    {
+                        if(levelEntry.Key == level)
+                        {
+                            time = levelEntry.Value.time;
+                        }
+                    }
+                }
+            }
+        }
+
+        return time;
+    }
 
     //string myLog;
     //Queue myLogQueue = new Queue();

@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 156776068}
   - component: {fileID: 5887671158153573086}
   - component: {fileID: 3756013868385972511}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Gold_01
-  m_TagString: Untagged
+  m_TagString: MapObj
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

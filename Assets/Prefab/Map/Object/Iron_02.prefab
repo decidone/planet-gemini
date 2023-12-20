@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 5473532703085465885}
   - component: {fileID: 5520647277885114320}
   - component: {fileID: 5758438470290895056}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Iron_02
-  m_TagString: Untagged
+  m_TagString: MapObj
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

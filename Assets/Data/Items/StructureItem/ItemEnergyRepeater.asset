@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ItemEnergyRepeater
   m_EditorClassIdentifier: 
   name: EnergyRepeater
-  icon: {fileID: 1582511706, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  icon: {fileID: -992468698, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
   tier: -1

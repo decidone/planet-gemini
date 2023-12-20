@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 180068444103987528}
   - component: {fileID: 1571619966280148387}
   - component: {fileID: 7265358927153795667}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Territory
   m_TagString: Energy
   m_Icon: {fileID: 0}
@@ -394,7 +394,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: -1277555555, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  m_Sprite: {fileID: 699020614, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -648,7 +648,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1277555555, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  m_Sprite: {fileID: 699020614, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

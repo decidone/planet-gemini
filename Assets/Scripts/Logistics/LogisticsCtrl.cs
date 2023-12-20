@@ -96,7 +96,7 @@ public class LogisticsCtrl : Structure
                 foreach (ItemProps itemProps in itemObjList)
                 {
                     playerInven.Add(itemProps.item, itemProps.amount);
-                    itemProps.Pool.Release(itemProps.gameObject);
+                    itemProps.itemPool.Release(itemProps.gameObject);
                 }
             }
         }

@@ -9,6 +9,9 @@ TagManager:
   - Unit
   - Monster
   - Tower
+  - Bullet
+  - Spawner
+  - MapObj
   - Energy
   layers:
   - Default
@@ -22,11 +25,11 @@ TagManager:
   - Obj
   - MapUI
   - Fog
+  - MapObj
+  - SpawnerSearch
+  - Bullet
+  - Spawner
   - Energy
-  - 
-  - 
-  - 
-  - 
   - 
   - 
   - 

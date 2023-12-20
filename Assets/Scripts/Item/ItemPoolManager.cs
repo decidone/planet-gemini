@@ -7,7 +7,7 @@ public class ItemPoolManager : MonoBehaviour
     public static ItemPoolManager instance;
 
     public int defaultCapacity = 10;
-    public int maxPoolSize = 10000;
+    public int maxPoolSize = 100;
     public GameObject itemPrefab;
 
     public IObjectPool<GameObject> Pool { get; private set; }
@@ -31,7 +31,7 @@ public class ItemPoolManager : MonoBehaviour
         for (int i = 0; i < defaultCapacity; i++)
         {
             ItemProps item = CreatePooledItem().GetComponent<ItemProps>();
-            item.Pool.Release(item.gameObject);
+            item.itemPool.Release(item.gameObject);
         }
     }
 
@@ -39,7 +39,7 @@ public class ItemPoolManager : MonoBehaviour
     private GameObject CreatePooledItem()
     {
         GameObject poolGo = Instantiate(itemPrefab);
-        poolGo.GetComponent<ItemProps>().Pool = this.Pool;
+        poolGo.GetComponent<ItemProps>().itemPool = this.Pool;
         return poolGo;
     }
 

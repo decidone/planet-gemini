@@ -14,16 +14,18 @@ public class SentryCopterCtrl : UnitAi
 
         if (aggroTarget != null)
         {
-            GameObject attackFXSpwan;
             Vector3 dir = aggroTarget.transform.position - transform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            attackFXSpwan = Instantiate(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
-            if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
-                attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-            else
-                attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            var bulletPool = BulletPoolManager.instance.Pool.Get();
+            bulletPool.transform.position = new Vector2(this.transform.position.x, this.transform.position.y);
 
-            attackFXSpwan.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, unitCommonData.Damage);
+            //bulletPool = Instantiate(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
+            if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
+                bulletPool.transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
+            else
+                bulletPool.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            bulletPool.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, unitCommonData.Damage, gameObject);
         }
     }
 }

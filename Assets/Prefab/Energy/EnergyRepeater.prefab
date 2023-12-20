@@ -334,7 +334,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1582511706, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  m_Sprite: {fileID: -992468698, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -399,14 +399,7 @@ MonoBehaviour:
   isMainSource: 0
   isTempBuild: 0
   myVision: {fileID: 7865794785333776810}
-  ui: {fileID: 0}
-  sInvenManager: {fileID: 0}
-  rManager: {fileID: 0}
-  maxAmount: 0
-  cooldown: 0
-  lineObj: {fileID: 0}
-  lineRenderer: {fileID: 0}
-  isGetLine: 0
+  connectors: []
 --- !u!61 &78957181825646357
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -527,7 +520,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 1582511706, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  m_Sprite: {fileID: -992468698, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

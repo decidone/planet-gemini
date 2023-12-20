@@ -42,6 +42,8 @@ public class MapGenerator : MonoBehaviour
     public CompositeCollider2D comp;
     bool isCompositeDone;
 
+    SpawnerSetManager spawnerPosSet;
+
     void Awake()
     {
         map.width = width;
@@ -56,7 +58,9 @@ public class MapGenerator : MonoBehaviour
         Init();
         Generate();
         SetSpawnPos();
-
+        spawnerPosSet = SpawnerSetManager.instance;
+        if(spawnerPosSet)
+            spawnerPosSet.AreaMapSet();
         mapFog.transform.position = new Vector3(width / 2, height / 2, 0);
         mapFog.transform.localScale = new Vector3(width, height, 1);
     }

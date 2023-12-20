@@ -6,9 +6,7 @@ using UnityEngine;
 public class GolemFXCtrl : MonoBehaviour
 {
     public Animator animator;
-    Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
     public Transform aggroTarget = null;   // 타겟
-    int attackMotionNum;
     bool isAnimEnd = false;
     float damage = 0;
 
@@ -21,46 +19,18 @@ public class GolemFXCtrl : MonoBehaviour
 
     void AttackFunc()
     {
-        if (attackMotionNum == 0)
+        if (isAnimEnd)
         {
-            ImgMrror();
-            if (isAnimEnd)
-            {
-                Destroy(this.gameObject, 0.1f);
-            }
-        }
-        else if (attackMotionNum == 1)
-        {
-            if (isAnimEnd)
-            {
-                Destroy(this.gameObject, 0.1f);
-            }
-        }
-        else if (attackMotionNum == 2)
-        {
-            transform.position += moveNextStep * 2 * Time.fixedDeltaTime;
-            Destroy(this.gameObject, 3f);
-        }
+            Destroy(this.gameObject);
+        }        
     }
 
     public void FXMove() { }
 
-    void ImgMrror()
+    public void TargetPosAndDamage(float getDamage)
     {
-        if (moveNextStep.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);
-        else if (moveNextStep.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
-    }
-    
-    public void GetTarget(Vector3 target, int attackMotion, float getDamage)
-    {
-        moveNextStep = (target - transform.position).normalized;
         damage = getDamage;
-        attackMotionNum = attackMotion;
     }
-
-    public void CollOn() { }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -84,10 +54,6 @@ public class GolemFXCtrl : MonoBehaviour
             {
                 collision.GetComponent<TowerAi>().TakeDamage(damage);
             }
-        }
-        if (attackMotionNum == 2)
-        {
-            Destroy(this.gameObject, 0.2f);
         }
     }
 }
