@@ -106,11 +106,13 @@ public class Structure : MonoBehaviour
     public bool isStorageBuilding;
     public bool isMainSource;
     public bool isTempBuild = false;
+    public bool isUIOpened;
 
     public GameObject myVision;
 
     public List<EnergyGroupConnector> connectors;
     public EnergyGroup group;
+    public bool energyUse;
 
     protected virtual void Awake()
     {
@@ -123,6 +125,7 @@ public class Structure : MonoBehaviour
         repairBar.fillAmount = 0;
         isStorageBuilding = false;
         isMainSource = false;
+        isUIOpened = false;
         myVision.SetActive(false);
         connectors = new List<EnergyGroupConnector>();
     }
@@ -141,6 +144,10 @@ public class Structure : MonoBehaviour
             }
         }
     }
+
+    public virtual void Focused() { }
+
+    public virtual void DisableFocused() { }
 
     public virtual bool CheckOutItemNum()  { return new bool(); }
 

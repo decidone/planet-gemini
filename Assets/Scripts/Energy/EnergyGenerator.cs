@@ -33,6 +33,8 @@ public class EnergyGenerator : Production
     GameManager gameManager;
     [HideInInspector]
     public GameObject preBuildingObj;
+    Structure preBuildingStr;
+    bool preBuildingCheck;
 
     protected override void Start()
     {
@@ -41,6 +43,7 @@ public class EnergyGenerator : Production
         maxFuel = 100;
         isBuildDone = false;
         isPlaced = false;
+        preBuildingCheck = false;
         gameManager = GameManager.instance;
         preBuildingObj = gameManager.preBuildingObj;
     }
@@ -48,6 +51,7 @@ public class EnergyGenerator : Production
     protected override void Update()
     {
         base.Update();
+
         if (!isPlaced)
         {
             if (isSetBuildingOk)
@@ -56,16 +60,29 @@ public class EnergyGenerator : Production
                 isPlaced = true;
             }
         }
-
-        if (preBuildingObj.activeSelf)
+        if (gameManager.focusedStructure == null)
         {
-            view.enabled = true;
+            if (preBuildingObj.activeSelf)
+            {
+                if (!preBuildingCheck)
+                {
+                    preBuildingCheck = true;
+                    preBuildingStr = preBuildingObj.GetComponentInChildren<Structure>();
+                    if (preBuildingStr != null && preBuildingStr.energyUse)
+                    {
+                        view.enabled = true;
+                    }
+                }
+            }
+            else
+            {
+                if (preBuildingCheck)
+                {
+                    preBuildingCheck = false;
+                    view.enabled = false;
+                }
+            }
         }
-        else
-        {
-            view.enabled = false;
-        }
-
         if (!isPreBuilding)
         {
             if (!isBuildDone)
@@ -84,6 +101,22 @@ public class EnergyGenerator : Production
         }
     }
 
+    public override void Focused()
+    {
+        if (connector.group != null)
+        {
+            connector.group.TerritoryViewOn();
+        }
+    }
+
+    public override void DisableFocused()
+    {
+        if (connector.group != null)
+        {
+            connector.group.TerritoryViewOff();
+        }
+    }
+
     public override void RemoveObj()
     {
         //여기서 건물 철거 전 처리(삭제가 아니여도 비활성화가 필요하니 그거 생각해서 만들 것)
@@ -94,6 +127,7 @@ public class EnergyGenerator : Production
 
     public override void OpenUI()
     {
+        base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
@@ -103,6 +137,7 @@ public class EnergyGenerator : Production
 
     public override void CloseUI()
     {
+        base.CloseUI();
         sInvenManager.ReleaseInven();
     }
 

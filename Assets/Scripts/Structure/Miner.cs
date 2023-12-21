@@ -134,6 +134,7 @@ public class Miner : Production
 
     public override void OpenUI()
     {
+        base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
@@ -143,6 +144,7 @@ public class Miner : Production
 
     public override void CloseUI()
     {
+        base.CloseUI();
         sInvenManager.ReleaseInven();
     }
 

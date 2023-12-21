@@ -39,6 +39,10 @@ public class GameManager : MonoBehaviour
 
     InputManager inputManager;
 
+    Structure newStructure;
+    [HideInInspector]
+    public Structure focusedStructure;
+
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
@@ -133,6 +137,8 @@ public class GameManager : MonoBehaviour
         {
             foreach (RaycastHit2D hit in hits)
             {
+                if (hit.collider.TryGetComponent(out Structure str))
+                    newStructure = str;
                 newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
                 newLogisticsClickEvent = hit.collider.GetComponent<LogisticsClickEvent>();
 
@@ -150,7 +156,6 @@ public class GameManager : MonoBehaviour
                     clickEvent = newClickEvent;
                     clickEvent.StructureClick();
                     clickEvent.OpenUI();
-                    break;
                 }
                 else if (newLogisticsClickEvent != null && !newLogisticsClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                 {
@@ -168,19 +173,49 @@ public class GameManager : MonoBehaviour
                     if (logisticsClickEvent.LogisticsCheck())
                     {
                         logisticsClickEvent.OpenUI();
-                        break;
                     }
                     else
                     {
                         logisticsClickEvent = null;
-                        break;
                     }
                 }
             }
         }
-        else
+
+        if (focusedStructure == null)
         {
-            return;
+            if (newStructure != null && !newStructure.isPreBuilding)
+            {
+                focusedStructure = newStructure;
+                focusedStructure.Focused();
+            }
+        }
+        else if (!focusedStructure.isUIOpened)
+        {
+            if (newStructure == null)
+            {
+                focusedStructure.DisableFocused();
+                focusedStructure = null;
+            }
+            else
+            {
+                if (newStructure != focusedStructure && !newStructure.isPreBuilding)
+                {
+                    focusedStructure.DisableFocused();
+                    focusedStructure = newStructure;
+                    focusedStructure.Focused();
+                }
+            }
+        }
+        newStructure = null;
+    }
+
+    public void CheckAndCancelFocus(Structure str)
+    {
+        if (focusedStructure == str)
+        {
+            focusedStructure.DisableFocused();
+            focusedStructure = null;
         }
     }
 

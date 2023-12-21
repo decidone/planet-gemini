@@ -48,6 +48,8 @@ public class EnergyGroupConnector : MonoBehaviour
     public List<Structure> nearbyStr;
     [HideInInspector]
     public EnergyGroup group;   //속한 에너지 그룹. 그룹매니저랑 구분
+    [SerializeField]
+    SpriteRenderer view;
     public int signal;
 
     void Awake()
@@ -173,5 +175,15 @@ public class EnergyGroupConnector : MonoBehaviour
     public void ChangeGroup(EnergyGroup _group)
     {
         group = _group;
+    }
+
+    public void ViewOn()
+    {
+        view.enabled = true;
+    }
+
+    public void ViewOff()
+    {
+        view.enabled = false;
     }
 }

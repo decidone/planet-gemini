@@ -59,6 +59,7 @@ public class TowerAi : Production
 
     public override void OpenUI()
     {
+        base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
 
@@ -70,6 +71,7 @@ public class TowerAi : Production
 
     public override void CloseUI()
     {
+        base.CloseUI();
         sInvenManager.progressBar.gameObject.SetActive(true);
         sInvenManager.energyBar.gameObject.SetActive(true);
         sInvenManager.ReleaseInven();

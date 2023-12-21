@@ -12,6 +12,8 @@ public class LDConnector : Structure
     GameManager gameManager;
     [HideInInspector]
     public GameObject preBuildingObj;
+    Structure preBuildingStr;
+    bool preBuildingCheck;
     [HideInInspector]
     public MapClickEvent clickEvent;
 
@@ -28,15 +30,6 @@ public class LDConnector : Structure
     {
         base.Update();
 
-        if (preBuildingObj.activeSelf)
-        {
-            view.enabled = true;
-        }
-        else
-        {
-            view.enabled = false;
-        }
-
         if (!isPlaced)
         {
             if (isSetBuildingOk)
@@ -45,7 +38,29 @@ public class LDConnector : Structure
                 isPlaced = true;
             }
         }
-
+        if (gameManager.focusedStructure == null)
+        {
+            if (preBuildingObj.activeSelf)
+            {
+                if (!preBuildingCheck)
+                {
+                    preBuildingCheck = true;
+                    preBuildingStr = preBuildingObj.GetComponentInChildren<Structure>();
+                    if (preBuildingStr != null && preBuildingStr.energyUse)
+                    {
+                        view.enabled = true;
+                    }
+                }
+            }
+            else
+            {
+                if (preBuildingCheck)
+                {
+                    preBuildingCheck = false;
+                    view.enabled = false;
+                }
+            }
+        }
         if (!isPreBuilding)
         {
             if (!isBuildDone)
@@ -53,6 +68,22 @@ public class LDConnector : Structure
                 connector.Init();
                 isBuildDone = true;
             }
+        }
+    }
+
+    public override void Focused()
+    {
+        if (connector.group != null)
+        {
+            connector.group.TerritoryViewOn();
+        }
+    }
+
+    public override void DisableFocused()
+    {
+        if (connector.group != null)
+        {
+            connector.group.TerritoryViewOff();
         }
     }
 

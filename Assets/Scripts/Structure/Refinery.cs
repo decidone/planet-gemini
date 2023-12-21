@@ -149,6 +149,7 @@ public class Refinery : FluidFactoryCtrl
 
     public override void OpenUI()
     {
+        base.OpenUI();
         uiOpened = true;
         displaySlot.SetItemAmount((int)saveFluidNum);
 
@@ -167,6 +168,7 @@ public class Refinery : FluidFactoryCtrl
 
     public override void CloseUI()
     {
+        base.CloseUI();
         uiOpened = false;
 
         sInvenManager.ReleaseInven();

@@ -320,6 +320,7 @@ MonoBehaviour:
   isBuildDone: 0
   connectors: []
   nearbyStr: []
+  view: {fileID: 6363363537288611314}
   signal: 0
 --- !u!1 &2075445432134139083
 GameObject:
@@ -576,7 +577,6 @@ GameObject:
   - component: {fileID: 8443811425746112161}
   - component: {fileID: 3482520925639487623}
   - component: {fileID: 8766733720164450368}
-  - component: {fileID: 7078076216128219974}
   - component: {fileID: 6205530278785347607}
   - component: {fileID: 5564630921721189503}
   - component: {fileID: 9062751277686904368}
@@ -677,20 +677,6 @@ MonoBehaviour:
   lineCountLimit: 3
   strType: 
   Connector: {fileID: 7265358927153795667}
---- !u!114 &7078076216128219974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8506304485128044753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75c16f7278f4e2a448cead0d6ec8787c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  structureInfoUI: {fileID: 0}
-  sInvenManager: {fileID: 0}
 --- !u!114 &6205530278785347607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -744,8 +730,10 @@ MonoBehaviour:
   isStorageBuilding: 0
   isMainSource: 0
   isTempBuild: 0
+  isUIOpened: 0
   myVision: {fileID: 868971455955703356}
   connectors: []
+  energyUse: 1
   connector: {fileID: 7265358927153795667}
   view: {fileID: 6363363537288611314}
   preBuildingObj: {fileID: 0}

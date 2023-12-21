@@ -38,8 +38,6 @@ public abstract class Production : Structure
     protected Vector3 endLine;
     public bool isGetLine;
 
-    public virtual void OpenUI() { }
-    public virtual void CloseUI() { }
     public virtual void SetRecipe(Recipe _recipe) { }
     public virtual float GetProgress() { return prodTimer; }
     public virtual float GetFuel() { return fuel; }
@@ -93,6 +91,17 @@ public abstract class Production : Structure
             if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
                 GetItem();
         }
+    }
+
+    public virtual void OpenUI()
+    {
+        isUIOpened = true;
+    }
+
+    public virtual void CloseUI()
+    {
+        isUIOpened = false;
+        GameManager.instance.CheckAndCancelFocus(this);
     }
 
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)

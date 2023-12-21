@@ -55,6 +55,7 @@ public class Manufacturer : Production
 
     public override void OpenUI()
     {
+        base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
@@ -70,6 +71,7 @@ public class Manufacturer : Production
 
     public override void CloseUI()
     {
+        base.CloseUI();
         sInvenManager.ReleaseInven();
 
         rManager.recipeBtn.onClick.RemoveAllListeners();
