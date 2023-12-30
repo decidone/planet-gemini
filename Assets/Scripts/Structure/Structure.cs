@@ -111,8 +111,14 @@ public class Structure : MonoBehaviour
     public GameObject myVision;
 
     public List<EnergyGroupConnector> connectors;
-    public EnergyGroup group;
+    public EnergyGroupConnector conn;
     public bool energyUse;
+    public bool isEnergyStr;
+    public bool isOperate;
+    public float energyProduction;
+    public float energyConsumption;
+    public float efficiency;
+    public float effiCooldown;
 
     protected virtual void Awake()
     {
@@ -128,6 +134,9 @@ public class Structure : MonoBehaviour
         isUIOpened = false;
         myVision.SetActive(false);
         connectors = new List<EnergyGroupConnector>();
+        conn = null;
+        efficiency = 0;
+        effiCooldown = 0;
     }
 
     protected virtual void Update()
@@ -916,48 +925,34 @@ public class Structure : MonoBehaviour
         }
     }
 
-    public void AddConnector(EnergyGroupConnector connector)
+    public virtual void AddConnector(EnergyGroupConnector connector)
     {
         if (!connectors.Contains(connector))
         {
             connectors.Add(connector);
-            SetGroup();
+            if (conn == null)
+            {
+                conn = connector;
+                conn.AddConsumption(this);
+            }
         }
     }
 
-    public void RemoveConnector(EnergyGroupConnector connector)
+    public virtual void RemoveConnector(EnergyGroupConnector connector)
     {
         if (connectors.Contains(connector))
         {
             connectors.Remove(connector);
-            SetGroup();
-        }
-    }
-
-    public void SetGroup()
-    {
-        for (int i = 0; i < connectors.Count; i++)
-        {
-            if (connectors[i].isBuildDone && connectors[i].group != null)
+            if (conn == connector)
             {
-                group = connectors[i].group;
-                break;
+                conn.RemoveConsumption(this);
+                conn = null;
+                if (connectors.Count > 0)
+                {
+                    conn = connectors[0];
+                    conn.AddConsumption(this);
+                }
             }
-        }
-        group = null;
-    }
-
-    public IEnumerator UseEnergy(float energyAmount)
-    {
-        while (true)
-        {
-            if (group != null)
-            {
-                //Debug.Log("use " + energyAmount);
-                group.UseEnergy(energyAmount);
-            }
-            
-            yield return new WaitForSeconds(1f);
         }
     }
 }

@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour
         inputManager.controls.Inventory.PlayerInven.performed += ctx => Inven();
         inputManager.controls.HotKey.Building.performed += ctx => Building();
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
+        inputManager.controls.HotKey.EnergyCheck.performed += ctx => EnergyCheck();
 
         //Cursor.lockState = CursorLockMode.Confined;
     }
@@ -104,7 +105,7 @@ public class GameManager : MonoBehaviour
 
         int x = Mathf.FloorToInt(pos.x);
         int y = Mathf.FloorToInt(pos.y);
-        if (debug && inputManager.alt && map.IsOnMap(x, y))
+        if (debug && inputManager.ctrl && map.IsOnMap(x, y))
         {
             string buildable = "";
             foreach (string str in map.mapData[x][y].buildable)
@@ -386,5 +387,11 @@ public class GameManager : MonoBehaviour
     {
         if (selectPoint != null)
             Destroy(selectPoint);
+    }
+
+    void EnergyCheck()
+    {
+        if (debug)
+            EnergyGroupManager.instance.CheckGroups();
     }
 }

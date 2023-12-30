@@ -320,6 +320,7 @@ MonoBehaviour:
   isBuildDone: 0
   connectors: []
   nearbyStr: []
+  consumptions: []
   view: {fileID: 6363363537288611314}
   signal: 0
 --- !u!1 &2075445432134139083
@@ -733,7 +734,9 @@ MonoBehaviour:
   isUIOpened: 0
   myVision: {fileID: 868971455955703356}
   connectors: []
-  energyUse: 1
+  conn: {fileID: 0}
+  energyUse: 0
+  isEnergyStr: 1
   connector: {fileID: 7265358927153795667}
   view: {fileID: 6363363537288611314}
   preBuildingObj: {fileID: 0}

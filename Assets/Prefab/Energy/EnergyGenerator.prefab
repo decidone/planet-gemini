@@ -320,8 +320,10 @@ MonoBehaviour:
   isBuildDone: 0
   connectors: []
   nearbyStr: []
+  consumptions: []
   view: {fileID: 6363363537288611314}
   signal: 0
+  energyGenerator: {fileID: 0}
 --- !u!1 &2075445432134139083
 GameObject:
   m_ObjectHideFlags: 0
@@ -745,7 +747,12 @@ MonoBehaviour:
   isUIOpened: 0
   myVision: {fileID: 868971455955703356}
   connectors: []
-  energyUse: 1
+  conn: {fileID: 0}
+  energyUse: 0
+  isEnergyStr: 1
+  isOperate: 0
+  energyProduction: 50
+  energyConsumption: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}

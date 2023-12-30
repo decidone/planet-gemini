@@ -733,6 +733,15 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "EnergyCheck",
+                    "type": "Button",
+                    "id": "3b290ded-a785-4591-9401-85ea4bd564b1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -788,6 +797,17 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "ScienceTree",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d1ecdea-1a9d-4b62-96d1-b0ea2ed1d0d6",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "EnergyCheck",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -46,7 +46,7 @@ public class LDConnector : Structure
                 {
                     preBuildingCheck = true;
                     preBuildingStr = preBuildingObj.GetComponentInChildren<Structure>();
-                    if (preBuildingStr != null && preBuildingStr.energyUse)
+                    if (preBuildingStr != null && (preBuildingStr.energyUse || preBuildingStr.isEnergyStr))
                     {
                         view.enabled = true;
                     }

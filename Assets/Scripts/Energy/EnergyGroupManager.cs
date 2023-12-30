@@ -24,6 +24,7 @@ public class EnergyGroupManager : MonoBehaviour
     */
     #endregion
 
+    public float syncFrequency;
     List<EnergyGroup> energyGroups;
 
     #region Singleton
@@ -44,6 +45,7 @@ public class EnergyGroupManager : MonoBehaviour
     void Start()
     {
         energyGroups = new List<EnergyGroup>();
+        StartCoroutine(nameof(CalculateGroupsEnergy));
     }
 
     public void AddGroup(EnergyGroup group)
@@ -62,5 +64,28 @@ public class EnergyGroupManager : MonoBehaviour
             energyGroups.Remove(group);
         }
         Debug.Log("subtract group: " + energyGroups.Count);
+    }
+
+    public void CheckGroups()
+    {
+        for (int i = 0; i < energyGroups.Count; i++)
+        {
+            EnergyGroup group = energyGroups[i];
+            Debug.Log(i + " group energy: " + group.energy + ", consumption: " + group.consumption
+                + ", efficiency: " + group.efficiency);
+        }
+    }
+
+    public IEnumerator CalculateGroupsEnergy()
+    {
+        while (true)
+        {
+            for (int i =0; i < energyGroups.Count; i++)
+            {
+                energyGroups[i].EnergyCheck();
+            }
+
+            yield return new WaitForSeconds(syncFrequency);
+        }
     }
 }

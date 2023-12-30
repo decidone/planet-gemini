@@ -36,10 +36,12 @@ public class EnergyGenerator : Production
     Structure preBuildingStr;
     bool preBuildingCheck;
 
+    //연료 시스템으로 가동, 석탄같은 연료 하나에 연료 게이지를 일정량 채우고 0이 되지 않도록 유지. 0이되면 off
+
     protected override void Start()
     {
         base.Start();
-        prodDelay = 0.1f;
+        prodDelay = 3f;
         maxFuel = 100;
         isBuildDone = false;
         isPlaced = false;
@@ -68,7 +70,7 @@ public class EnergyGenerator : Production
                 {
                     preBuildingCheck = true;
                     preBuildingStr = preBuildingObj.GetComponentInChildren<Structure>();
-                    if (preBuildingStr != null && preBuildingStr.energyUse)
+                    if (preBuildingStr != null && (preBuildingStr.energyUse || preBuildingStr.isEnergyStr))
                     {
                         view.enabled = true;
                     }
@@ -89,14 +91,27 @@ public class EnergyGenerator : Production
             {
                 connector.Init();
                 isBuildDone = true;
-                StartCoroutine(nameof(ChargeEnergy), 1f);
+            }
+            if (isOperate && fuel <= 0)
+            {
+                isOperate = false;
             }
 
-            prodTimer += Time.deltaTime;
-            if (prodTimer > prodDelay)
+            var slot = inventory.SlotCheck(0);
+            if (fuel <= 50 && slot.item == itemDic["Coal"] && slot.amount > 0)
             {
-                //connector.group.AddEnergy(1);   //에너지 가용량으로 바꿀 것
-                prodTimer = 0;
+                inventory.Sub(0, 1);
+                fuel += 50;
+                isOperate = true;
+            }
+            if (isOperate)
+            {
+                prodTimer += Time.deltaTime;
+                if (prodTimer > prodDelay)
+                {
+                    fuel -= 10;
+                    prodTimer = 0;
+                }
             }
         }
     }
@@ -130,8 +145,7 @@ public class EnergyGenerator : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
-        sInvenManager.energyBar.SetMaxProgress(maxFuel);
+        sInvenManager.progressBar.SetMaxProgress(100);
         sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
     }
 
@@ -140,6 +154,8 @@ public class EnergyGenerator : Production
         base.CloseUI();
         sInvenManager.ReleaseInven();
     }
+
+    public override float GetProgress() { return fuel; }
 
     public override void GetUIFunc()
     {
@@ -151,20 +167,6 @@ public class EnergyGenerator : Production
             {
                 ui = list;
             }
-        }
-    }
-
-    public IEnumerator ChargeEnergy(float energyAmount)
-    {
-        while (true)
-        {
-            if (connector.group != null)
-            {
-                //Debug.Log("charge " + connector.group.energy);
-                connector.group.AddEnergy(energyAmount);
-            }
-
-            yield return new WaitForSeconds(1f);
         }
     }
 }

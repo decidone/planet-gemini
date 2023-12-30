@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c4d9e85b9867914baa3e672dcce18e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncFrequency: 0.2
 --- !u!1 &2852855281402203645
 GameObject:
   m_ObjectHideFlags: 0
@@ -217,6 +218,7 @@ MonoBehaviour:
   sTreeManager: {fileID: 0}
   debug: 0
   selectPointPrefab: {fileID: 2420153466432160886, guid: df5c2e478c2b2cc45ac8d544fbe8953f, type: 3}
+  focusedStructure: {fileID: 0}
 --- !u!114 &8121268344323043989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -316,6 +318,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 00dbc501d2310014fb63dcd391e5012d, type: 2}
   - {fileID: 11400000, guid: fc096fe07d4ae634c84a6a17bb7ea55f, type: 2}
   - {fileID: 11400000, guid: cafbca9f933611145864e3342444c584, type: 2}
+  - {fileID: 11400000, guid: c9104649264ed644699019bb4ffa771b, type: 2}
 --- !u!114 &3986364633838151513
 MonoBehaviour:
   m_ObjectHideFlags: 0

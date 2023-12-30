@@ -32,7 +32,9 @@ public class EnergyGroup
     List<EnergyGroupConnector> splitConnectors;
 
     public float energy;   //생산량, 저장량 나눠야 할 듯
-    float efficiency;   //에너지 생산량, 사용량 비율로 충분하면 1, 아니면 비율만큼 생산 효율 감소
+    public float consumption;
+    public float efficiency;   //에너지 생산량, 사용량 비율로 충분하면 1, 아니면 비율만큼 생산 효율 감소
+    float syncFrequency;
 
     public EnergyGroup(EnergyGroupManager _groupManager, EnergyGroupConnector conn)
     {
@@ -60,6 +62,7 @@ public class EnergyGroup
         connectors = new List<EnergyGroupConnector>();
         tempConnectors = new List<EnergyGroupConnector>();
         splitConnectors = new List<EnergyGroupConnector>();
+        syncFrequency = EnergyGroupManager.instance.syncFrequency;
         energy = 0;
     }
 
@@ -85,7 +88,7 @@ public class EnergyGroup
         {
             connectors.Remove(conn);
         }
-        
+
         if (connectors.Count == 0)
         {
             RemoveGroup();
@@ -163,9 +166,8 @@ public class EnergyGroup
 
     public void TerritoryViewOn()
     {
-        Debug.Log("connectors in group: " + connectors.Count);
-        Debug.Log("group energy: " + energy);
-        for (int i =0; i < connectors.Count; i++)
+        Debug.Log("connectors in group: " + connectors.Count + ", group energy: " + energy);
+        for (int i = 0; i < connectors.Count; i++)
         {
             connectors[i].ViewOn();
         }
@@ -179,13 +181,103 @@ public class EnergyGroup
         }
     }
 
-    public void AddEnergy(float _energy)
+    public void EnergyCheck()
     {
-        energy += _energy;
+        Charge();
+        Consume();
+        EfficiencyCheck();
     }
 
-    public void UseEnergy(float _energy)
+    public void Charge()
     {
-        energy -= _energy;
+        float temp = 0f;
+        for (int i = 0; i < connectors.Count; i++)
+        {
+            if (connectors[i].energyGenerator != null && connectors[i].energyGenerator.isOperate)
+            {
+                temp += connectors[i].energyGenerator.energyProduction;
+            }
+        }
+        energy = temp;
+    }
+
+    public void Consume()
+    {
+        float temp = 0f;
+        for (int i = 0; i < connectors.Count; i++)
+        {
+            for (int j = 0; j < connectors[i].consumptions.Count; j++)
+            {
+                if (connectors[i].consumptions[j].isOperate)
+                {
+                    temp += connectors[i].consumptions[j].energyConsumption;
+                }
+            }
+        }
+        consumption = temp;
+    }
+
+    public void EfficiencyCheck()
+    {
+        if (consumption == 0f)
+        {
+            if (energy == 0f)
+            {
+                efficiency = 0f;
+            }
+            else
+            {
+                StoreEnergy(energy);
+                efficiency = 1f;
+            }
+        }
+        else
+        {
+            BatteryCheck();
+        }
+    }
+
+    void BatteryCheck()
+    {
+        if (energy >= consumption)
+        {
+            StoreEnergy(energy - consumption);
+            efficiency = 1;
+        }
+        else
+        {
+            float lack = (consumption - energy) * syncFrequency;
+            for (int i = 0; i < connectors.Count; i++)
+            {
+                for (int j = 0; j < connectors[i].batterys.Count; j++)
+                {
+                    lack = connectors[i].batterys[j].PullEnergy(lack);
+
+                    if (lack == 0)
+                    {
+                        efficiency = 1;
+                        return;
+                    }
+                }
+            }
+
+            float pulled = (consumption - energy) - (lack / syncFrequency);
+            efficiency = Mathf.Clamp(((energy + pulled) / consumption), 0, 1);
+        }
+    }
+
+    void StoreEnergy(float surplus)
+    {
+        surplus *= syncFrequency;
+        for (int i = 0; i < connectors.Count; i++)
+        {
+            for (int j = 0; j < connectors[i].batterys.Count; j++)
+            {
+                surplus = connectors[i].batterys[j].StoreEnergy(surplus);
+
+                if (surplus == 0)
+                    return;
+            }
+        }
     }
 }

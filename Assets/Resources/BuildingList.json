@@ -129,5 +129,8 @@
   },
   "LDConnector":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "EnergyBattery":{
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   }
 }

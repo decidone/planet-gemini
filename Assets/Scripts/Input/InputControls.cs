@@ -755,6 +755,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EnergyCheck"",
+                    ""type"": ""Button"",
+                    ""id"": ""3b290ded-a785-4591-9401-85ea4bd564b1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -810,6 +819,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""ScienceTree"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6d1ecdea-1a9d-4b62-96d1-b0ea2ed1d0d6"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""EnergyCheck"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1535,6 +1555,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_Escape = m_HotKey.FindAction("Escape", throwIfNotFound: true);
         m_HotKey_Building = m_HotKey.FindAction("Building", throwIfNotFound: true);
         m_HotKey_ScienceTree = m_HotKey.FindAction("ScienceTree", throwIfNotFound: true);
+        m_HotKey_EnergyCheck = m_HotKey.FindAction("EnergyCheck", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -2012,6 +2033,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_Escape;
     private readonly InputAction m_HotKey_Building;
     private readonly InputAction m_HotKey_ScienceTree;
+    private readonly InputAction m_HotKey_EnergyCheck;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2021,6 +2043,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Escape => m_Wrapper.m_HotKey_Escape;
         public InputAction @Building => m_Wrapper.m_HotKey_Building;
         public InputAction @ScienceTree => m_Wrapper.m_HotKey_ScienceTree;
+        public InputAction @EnergyCheck => m_Wrapper.m_HotKey_EnergyCheck;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2045,6 +2068,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @ScienceTree.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnScienceTree;
                 @ScienceTree.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnScienceTree;
                 @ScienceTree.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnScienceTree;
+                @EnergyCheck.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnergyCheck;
+                @EnergyCheck.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnergyCheck;
+                @EnergyCheck.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnergyCheck;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2064,6 +2090,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @ScienceTree.started += instance.OnScienceTree;
                 @ScienceTree.performed += instance.OnScienceTree;
                 @ScienceTree.canceled += instance.OnScienceTree;
+                @EnergyCheck.started += instance.OnEnergyCheck;
+                @EnergyCheck.performed += instance.OnEnergyCheck;
+                @EnergyCheck.canceled += instance.OnEnergyCheck;
             }
         }
     }
@@ -2335,6 +2364,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnEscape(InputAction.CallbackContext context);
         void OnBuilding(InputAction.CallbackContext context);
         void OnScienceTree(InputAction.CallbackContext context);
+        void OnEnergyCheck(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

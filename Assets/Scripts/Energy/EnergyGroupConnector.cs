@@ -46,20 +46,28 @@ public class EnergyGroupConnector : MonoBehaviour
     List<EnergyGroupConnector> tempConnectors;
     public List<EnergyGroupConnector> connectors;
     public List<Structure> nearbyStr;
+    public List<Structure> consumptions;
+    public List<EnergyBattery> nearbyBat;
+    public List<EnergyBattery> batterys;
     [HideInInspector]
     public EnergyGroup group;   //속한 에너지 그룹. 그룹매니저랑 구분
     [SerializeField]
     SpriteRenderer view;
     public int signal;
+    [HideInInspector]
+    public EnergyGenerator energyGenerator;
 
     void Awake()
     {
         isBuildDone = false;
         signal = 0;
         groupManager = EnergyGroupManager.instance;
-        structure = this.GetComponentInParent<Structure>();
+        structure = GetComponentInParent<Structure>();
         tempConnectors = new List<EnergyGroupConnector>();
         connectors = new List<EnergyGroupConnector>();
+        nearbyStr = new List<Structure>();
+        consumptions = new List<Structure>();
+        energyGenerator = GetComponentInParent<EnergyGenerator>();
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -74,10 +82,18 @@ public class EnergyGroupConnector : MonoBehaviour
         }
         if (collision.TryGetComponent(out Structure structure))
         {
-            if (!nearbyStr.Contains(structure))
+            if (!nearbyStr.Contains(structure) && structure.energyUse)
             {
                 nearbyStr.Add(structure);
                 structure.AddConnector(this);
+            }
+            if (structure.TryGetComponent(out EnergyBattery bat))
+            {
+                if (!nearbyBat.Contains(bat))
+                {
+                    nearbyBat.Add(bat);
+                    bat.AddConnector(this);
+                }
             }
         }
     }
@@ -99,6 +115,13 @@ public class EnergyGroupConnector : MonoBehaviour
                 nearbyStr.Remove(structure);
                 structure.RemoveConnector(this);
             }
+            if (structure.TryGetComponent(out EnergyBattery bat)){
+                if (nearbyBat.Contains(bat))
+                {
+                    nearbyBat.Remove(bat);
+                    bat.RemoveConnector(this);
+                }
+            }
         }
     }
 
@@ -109,7 +132,15 @@ public class EnergyGroupConnector : MonoBehaviour
         {
             if (nearbyStr[i].TryGetComponent(out Structure structure))
             {
-                structure.AddConnector(this);
+                if (structure.energyUse)
+                    structure.AddConnector(this);
+            }
+        }
+        for (int i = 0; i < nearbyBat.Count; i++)
+        {
+            if (nearbyBat[i].TryGetComponent(out EnergyBattery bat))
+            {
+                bat.AddConnector(this);
             }
         }
 
@@ -170,6 +201,38 @@ public class EnergyGroupConnector : MonoBehaviour
     public void ResetSignal()
     {
         signal = 0;
+    }
+
+    public void AddConsumption(Structure str)
+    {
+        if (!consumptions.Contains(str))
+        {
+            consumptions.Add(str);
+        }
+    }
+
+    public void RemoveConsumption(Structure str)
+    {
+        if (consumptions.Contains(str))
+        {
+            consumptions.Remove(str);
+        }
+    }
+
+    public void AddBattery(EnergyBattery bat)
+    {
+        if (!batterys.Contains(bat))
+        {
+            batterys.Add(bat);
+        }
+    }
+
+    public void RemoveBattery(EnergyBattery bat)
+    {
+        if (batterys.Contains(bat))
+        {
+            batterys.Remove(bat);
+        }
     }
 
     public void ChangeGroup(EnergyGroup _group)
