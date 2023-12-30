@@ -178,6 +178,17 @@ public class StructureInvenManager : InventoryManager
     }
     //Transporter UI 전용
 
+    //Portal UI 전용
+    public void PortalProductionSet()
+    {
+        PortalSciManager portalSciManager = PortalSciManager.instance;
+        foreach(var data in portalSciManager.UIBtnData)
+        {
+            data.Value.SetProduction(prod);
+        }
+    }
+    //Portal UI 전용
+
     public override void OpenUI()
     {
         structureInfoUI.SetActive(true);

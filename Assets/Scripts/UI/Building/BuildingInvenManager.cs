@@ -41,7 +41,8 @@ public class BuildingInvenManager : MonoBehaviour
             slot.slotNum = i;
 
             slot.amountText.gameObject.SetActive(false);
-
+            EventTrigger trigger = slot.GetComponent<EventTrigger>();
+            trigger.triggers.RemoveRange(0, trigger.triggers.Count);
             AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
             AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
         }

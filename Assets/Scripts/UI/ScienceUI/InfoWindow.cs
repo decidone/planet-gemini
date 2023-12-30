@@ -13,7 +13,7 @@ public class InfoWindow : MonoBehaviour
     public List<GameObject> needItemObj = new List<GameObject>();
     public GameObject needItemUI;
     public GameObject needItemRoot;
-
+    ScienceBtn scienceBtn;
     GameManager gameManager;
     List<Item> itemsList = new List<Item>();
 
@@ -49,7 +49,7 @@ public class InfoWindow : MonoBehaviour
         inventory = gameManager.GetComponent<Inventory>();
     }
 
-    public void SetNeedItem(ScienceInfoData scienceInfoData, string name, int level ,bool isCore)
+    public void SetNeedItem(ScienceInfoData scienceInfoData, string name, int level ,bool isCore , ScienceBtn sciBtn)
     {
         instance = this;
 
@@ -57,6 +57,7 @@ public class InfoWindow : MonoBehaviour
         isCoreSel = isCore;
         preSciLevel = level;
         preSciName = name;
+        scienceBtn = sciBtn;
         if (itemsList.Count == 0)
         {
             gameManager = GameManager.instance;
@@ -108,8 +109,11 @@ public class InfoWindow : MonoBehaviour
                     if(needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
                     {
                         itemUi.icon.sprite = item.icon;
-                        itemUi.amount.text = scienceInfoData.amounts[index].ToString();
-                        itemUi.amount.color = isEnough ? Color.white : Color.red;
+                        itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
+                        if(value == 0)
+                            itemUi.amount.color = Color.red;
+                        else
+                            itemUi.amount.color = isEnough ? Color.white : Color.yellow;
                         needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
                     }
                 }
@@ -124,7 +128,7 @@ public class InfoWindow : MonoBehaviour
 
     public void SetNeedItem()
     {
-        SetNeedItem(preSciInfoData, preSciName, preSciLevel, isCoreSel);
+        SetNeedItem(preSciInfoData, preSciName, preSciLevel, isCoreSel, scienceBtn);
     }
 
     public void SciUpgradeStart()

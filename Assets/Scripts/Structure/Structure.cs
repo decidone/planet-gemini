@@ -106,6 +106,7 @@ public class Structure : MonoBehaviour
     public bool isStorageBuilding;
     public bool isMainSource;
     public bool isTempBuild = false;
+    public bool isPortalBuild = false;
 
     public GameObject myVision;
 
@@ -814,6 +815,10 @@ public class Structure : MonoBehaviour
         else if (TryGetComponent(out Transporter trBuild))
         {
             trBuild.RemoveFunc();
+        }
+        else if (TryGetComponent(out PortalObj portalObj))
+        {
+            portalObj.RemovePortalData();
         }
 
         AddInvenItem();

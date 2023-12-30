@@ -9,8 +9,7 @@ public class UnitFactory : Production
     public Vector2 spawnPos;
     bool isSetPos;
 
-    [SerializeField]
-    GameObject[] UnitList;
+    List<GameObject> unitObjList;
 
     GameObject spawnUnit;
     string setUnitName;
@@ -20,6 +19,7 @@ public class UnitFactory : Production
         base.Start();
         isSetPos = false;
         isGetLine = true;
+        unitObjList = UnitList.instance.unitList;
     }
 
     // Update is called once per frame
@@ -174,7 +174,7 @@ public class UnitFactory : Production
     {
         if (spawnUnit == null || (spawnUnit != null && (setUnitName != itemDic[recipe.items[3]].name)))
         {
-            foreach (GameObject obj in UnitList)
+            foreach (GameObject obj in unitObjList)
             {
                 obj.TryGetComponent(out UnitAi unitAi);
                 if (itemDic[recipe.items[3]].name == obj.name)

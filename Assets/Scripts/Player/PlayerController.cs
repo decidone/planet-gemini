@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     List<GameObject> beltList = new List<GameObject>();
 
     public Collider2D circleColl;
-    [SerializeField]
     GameObject preBuilding;
     [SerializeField]
     Building tempMiner = null;
@@ -134,6 +133,7 @@ public class PlayerController : MonoBehaviour
     {
         if (tempMinerCount > 0)
         {
+            preBuilding = GameManager.instance.preBuildingObj;
             preBuilding.SetActive(true);
             PreBuilding pre = preBuilding.GetComponent<PreBuilding>();
             pre.SetImage(tempMiner, true, tempMinerCount);

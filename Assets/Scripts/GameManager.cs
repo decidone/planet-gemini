@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
 
     InputManager inputManager;
 
+    public Portal[] portal;
+
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviour
         inputManager.controls.Inventory.PlayerInven.performed += ctx => Inven();
         inputManager.controls.HotKey.Building.performed += ctx => Building();
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
-
+        OtherPortalSet();
         //Cursor.lockState = CursorLockMode.Confined;
     }
 
@@ -351,5 +353,11 @@ public class GameManager : MonoBehaviour
     {
         if (selectPoint != null)
             Destroy(selectPoint);
+    }
+
+    void OtherPortalSet()
+    {
+        portal[0].OtherPortalSet(portal[1]);
+        portal[1].OtherPortalSet(portal[0]);
     }
 }

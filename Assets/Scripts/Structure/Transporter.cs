@@ -20,7 +20,11 @@ public class Transporter : Production
 
     float transportInterval;
     float transportTimeer;
-    
+
+    Animator animator;
+    Transporter othBuildAni;
+    Dictionary<Item, int> invItemCheckDicAni = new Dictionary<Item, int>();
+
     protected override void Start()
     {
         base.Start();
@@ -28,6 +32,7 @@ public class Transporter : Production
         transportTimeer = 1.0f;
         isStorageBuilding = true;
         isGetLine = true;
+        animator = GetComponent<Animator>();
     }
 
     protected override void Update()
@@ -128,22 +133,31 @@ public class Transporter : Production
             }
         }
 
-        if (invItemCheckDic != null && invItemCheckDic.Count > 0)
-        {
-            GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
-            sendItemUnit.Add(unit);
-            unit.GetComponent<TransportUnit>().MovePosSet(this, othBuild, invItemCheckDic);
-            foreach (var dicData in invItemCheckDic)
-            {
-                inventory.Sub(dicData.Key, dicData.Value);
-            }
-        }
+        othBuildAni = othBuild;
+        invItemCheckDicAni = invItemCheckDic;
+
+        animator.Play("Open", -1, 0);
     }
 
     public void RemoveUnit(GameObject returnUnit)
     {
         sendItemUnit.Remove(returnUnit);
         Destroy(returnUnit);
+        animator.Play("ItemGetOpen", -1, 0);
+    }
+
+    public void UnitSendOpen()
+    {
+        if (invItemCheckDicAni != null && invItemCheckDicAni.Count > 0)
+        {
+            GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
+            sendItemUnit.Add(unit);
+            unit.GetComponent<TransportUnit>().MovePosSet(this, othBuildAni, invItemCheckDicAni);
+            foreach (var dicData in invItemCheckDicAni)
+            {
+                inventory.Sub(dicData.Key, dicData.Value);
+            }
+        }
     }
 
     public override bool CanTakeItem(Item item)
@@ -250,6 +264,7 @@ public class Transporter : Production
             unitItemList.Add(_itemDic);
             getItemUnit.Add(takeUnit);
             ExStorageCheck();
+            animator.Play("ItemGetOpen", -1, 0);
         }
     }
 

@@ -17,6 +17,6 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 07d1d7098f5d32d40b451106ecf1072a, type: 2}
   gameObj: {fileID: 5999188213166003493, guid: 3008cde4c6a95884abcf0896c6bb43d5, type: 3}
   level: 1
-  height: 1
-  width: 1
+  height: 2
+  width: 2
   dirCount: 0
