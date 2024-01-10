@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: ItemEnergyGenerator
+  m_Name: ItemManaGenerator
   m_EditorClassIdentifier: 
-  name: EnergyGenerator
-  icon: {fileID: 1804894915, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  name: ManaGenerator
+  icon: {fileID: 21300000, guid: 36550992f62a1e8438cdbeccff6a2f50, type: 3}
   tier: -1

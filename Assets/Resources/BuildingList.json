@@ -121,9 +121,6 @@
   "UnitFactory":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
-  "EnergyGenerator":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
-  },
   "EnergyRepeater":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
@@ -131,6 +128,15 @@
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "EnergyBattery":{
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "CoalGenerator":{
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "SteamGenerator":{
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "ManaGenerator":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   }
 }

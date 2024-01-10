@@ -24,8 +24,8 @@ public class EnergyGenerator : Production
     */
     #endregion
 
-    float prodDelay;
     public EnergyGroupConnector connector;
+    public Item FuelItem;
     [SerializeField]
     SpriteRenderer view;
     bool isBuildDone;
@@ -36,12 +36,9 @@ public class EnergyGenerator : Production
     Structure preBuildingStr;
     bool preBuildingCheck;
 
-    //연료 시스템으로 가동, 석탄같은 연료 하나에 연료 게이지를 일정량 채우고 0이 되지 않도록 유지. 0이되면 off
-
     protected override void Start()
     {
         base.Start();
-        prodDelay = 3f;
         maxFuel = 100;
         isBuildDone = false;
         isPlaced = false;
@@ -98,7 +95,7 @@ public class EnergyGenerator : Production
             }
 
             var slot = inventory.SlotCheck(0);
-            if (fuel <= 50 && slot.item == itemDic["Coal"] && slot.amount > 0)
+            if (fuel <= 50 && slot.item == FuelItem && slot.amount > 0)
             {
                 inventory.Sub(0, 1);
                 fuel += 50;
@@ -107,7 +104,7 @@ public class EnergyGenerator : Production
             if (isOperate)
             {
                 prodTimer += Time.deltaTime;
-                if (prodTimer > prodDelay)
+                if (prodTimer > cooldown)
                 {
                     fuel -= 10;
                     prodTimer = 0;
@@ -115,6 +112,8 @@ public class EnergyGenerator : Production
             }
         }
     }
+
+    public override float GetProgress() { return fuel; }
 
     public override void Focused()
     {
@@ -146,7 +145,7 @@ public class EnergyGenerator : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(100);
-        sInvenManager.slots[0].SetInputItem(ItemList.instance.itemDic["Coal"]);
+        sInvenManager.slots[0].SetInputItem(FuelItem);
     }
 
     public override void CloseUI()
@@ -155,7 +154,28 @@ public class EnergyGenerator : Production
         sInvenManager.ReleaseInven();
     }
 
-    public override float GetProgress() { return fuel; }
+    public override bool CanTakeItem(Item item)
+    {
+        var slot = inventory.SlotCheck(0);
+        if (FuelItem == item && slot.amount < 99)
+            return true;
+
+        return false;
+    }
+
+    public override void OnFactoryItem(ItemProps itemProps)
+    {
+        if (FuelItem == itemProps.item)
+            inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+
+        itemProps.itemPool.Release(itemProps.gameObject);
+    }
+
+    public override void OnFactoryItem(Item item)
+    {
+        if (FuelItem == item)
+            inventory.SlotAdd(0, item, 1);
+    }
 
     public override void GetUIFunc()
     {

@@ -321,6 +321,8 @@ MonoBehaviour:
   connectors: []
   nearbyStr: []
   consumptions: []
+  nearbyBat: []
+  batterys: []
   view: {fileID: 6363363537288611314}
   signal: 0
   energyGenerator: {fileID: 0}
@@ -584,7 +586,7 @@ GameObject:
   - component: {fileID: 5564630921721189503}
   - component: {fileID: 9062751277686904368}
   m_Layer: 8
-  m_Name: EnergyGenerator
+  m_Name: CoalGenerator
   m_TagString: Factory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -651,7 +653,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1804894915, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fe493a99ce2a1554b825afa397f9824e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -703,7 +705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed5d5b7176d49be41b49dfc091de04f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  structureData: {fileID: 11400000, guid: 7d5132a43a5e90348b8c7af133d4e2c3, type: 2}
+  structureData: {fileID: 11400000, guid: ba99df9a78efb39498f03728c568e039, type: 2}
   isFull: 0
   dirNum: 0
   dirCount: 0
@@ -745,6 +747,7 @@ MonoBehaviour:
   isMainSource: 0
   isTempBuild: 0
   isUIOpened: 0
+  isPortalBuild: 0
   myVision: {fileID: 868971455955703356}
   connectors: []
   conn: {fileID: 0}
@@ -753,15 +756,18 @@ MonoBehaviour:
   isOperate: 0
   energyProduction: 50
   energyConsumption: 0
+  efficiency: 0
+  effiCooldown: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
-  maxAmount: 0
-  cooldown: 0
+  maxAmount: 99
+  cooldown: 2
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
   connector: {fileID: 7265358927153795667}
+  FuelItem: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   view: {fileID: 6363363537288611314}
   preBuildingObj: {fileID: 0}
 --- !u!61 &5564630921721189503
