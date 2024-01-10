@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     Structure newStructure;
     [HideInInspector]
     public Structure focusedStructure;
+    public Portal[] portal;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -81,6 +82,7 @@ public class GameManager : MonoBehaviour
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
         inputManager.controls.HotKey.EnergyCheck.performed += ctx => EnergyCheck();
 
+        OtherPortalSet();
         //Cursor.lockState = CursorLockMode.Confined;
     }
 
@@ -393,5 +395,11 @@ public class GameManager : MonoBehaviour
     {
         if (debug)
             EnergyGroupManager.instance.CheckGroups();
+    }
+    
+    void OtherPortalSet()
+    {
+        portal[0].OtherPortalSet(portal[1]);
+        portal[1].OtherPortalSet(portal[0]);
     }
 }

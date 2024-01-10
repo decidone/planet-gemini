@@ -1,10 +1,10 @@
 {
   "Core":{
     "Core":{
-      "2":{"items":["Coal","CopperBar","IronBar"],"amounts":[1,1,1],"coreLv":1,"time":10},
-      "3":{"items":["Coal","CopperBar","IronBar","SteelBar"],"amounts":[1,1,1,1],"coreLv":2,"time":10},
-      "4":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic"],"amounts":[1,1,1,1,1],"coreLv":3,"time":10},
-      "5":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic","ControlUnit"],"amounts":[1,1,1,1,1,1],"coreLv":4,"time":10}
+      "2":{"items":["Coal","CopperBar","IronBar"],"amounts":[5,4,3],"coreLv":1,"time":1},
+      "3":{"items":["Coal","CopperBar","IronBar","SteelBar"],"amounts":[1,1,1,1],"coreLv":2,"time":1},
+      "4":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic"],"amounts":[1,1,1,1,1],"coreLv":3,"time":1},
+      "5":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic","ControlUnit"],"amounts":[1,1,1,1,1,1],"coreLv":4,"time":1}
     }
   },
   "Miner":{
@@ -119,22 +119,22 @@
   },
   "PortalItemIn":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
     }
   },
   "PortalItemOut":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
     }
   },
   "PortalUnitIn":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
     }
   },
   "PortalUnitOut":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
     }
   },  
   "Wall":{

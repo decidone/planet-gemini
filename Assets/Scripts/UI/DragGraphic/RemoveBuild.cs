@@ -80,7 +80,11 @@ public class RemoveBuild : DragFunc
 
     void RefundCost(Structure obj)
     {
-        if (!obj.isTempBuild)
+        if (obj.isTempBuild)
+        {
+            playerController.RemoveTempBuild();
+        }
+        else
         {
             buildingData = new BuildingData();
             buildingData = BuildingDataGet.instance.GetBuildingName(obj.buildName, obj.level + 1);
@@ -88,10 +92,6 @@ public class RemoveBuild : DragFunc
             {
                 inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
             }
-        }
-        else
-        {
-            playerController.RemoveTempBuild();
         }
     }
 

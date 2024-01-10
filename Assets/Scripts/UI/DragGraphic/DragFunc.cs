@@ -25,6 +25,8 @@ public class DragFunc : MonoBehaviour
         {
             if (layer == LayerMask.NameToLayer("Obj") && collider.GetComponent<Structure>() == null)
                 continue;
+            if (collider.GetComponent<Portal>())
+                continue;
             selectedObjectsList.Add(collider.gameObject);
         }
 

@@ -724,6 +724,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f2e8519c9f817c74783b8e4acba6865f, type: 2}
   astar: {fileID: 7378487733200588626}
   comp: {fileID: 0}
+  portal:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &875718241
 MonoBehaviour:
   m_ObjectHideFlags: 0

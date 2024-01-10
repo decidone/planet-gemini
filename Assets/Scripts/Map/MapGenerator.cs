@@ -61,6 +61,7 @@ public class MapGenerator : MonoBehaviour
         spawnerPosSet = SpawnerSetManager.instance;
         if(spawnerPosSet)
             spawnerPosSet.AreaMapSet();
+        PortalSet();
         mapFog.transform.position = new Vector3(width / 2, height / 2, 0);
         mapFog.transform.localScale = new Vector3(width, height, 1);
     }
@@ -344,6 +345,15 @@ public class MapGenerator : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    public void PortalSet()
+    {
+        Portal[] portal = GameManager.instance.portal;
+        for (int i = 0; i < portal.Length; i++)
+        {
+            portal[i].MapDataSet();
         }
     }
 }

@@ -17,6 +17,10 @@ public class ScienceManager : MonoBehaviour
     ScrollRect scrollRect;
     [SerializeField]
     GameObject[] infoWindow;
+    [SerializeField]
+    GameObject itemInputWindow;
+    SciItemSetWindow sciItemSetWindow;
+    bool itemInputWinOpen = false;
 
     public GameObject coreLvUI;
     [HideInInspector]
@@ -46,6 +50,7 @@ public class ScienceManager : MonoBehaviour
         gameManager = GameManager.instance;
         scienceDb = TempScienceDb.instance;
         buildingInven = gameManager.GetComponent<BuildingInven>();
+        sciItemSetWindow = itemInputWindow.GetComponent<SciItemSetWindow>();
         portalSciManager = PortalSciManager.instance;
 
         contents[0].SetActive(true);
@@ -109,6 +114,11 @@ public class ScienceManager : MonoBehaviour
             battleContent[i] = battleUI.GetComponent<ScienceCoreLvCtrl>();
             battleContent[i].UISetting(i, "Battle");
         }
+
+        for (int i = 1; i < 5; i++)
+        {
+            buildContent[i].scienceBtn.itemAmountList = battleContent[i].scienceBtn.itemAmountList;
+        }
     }
 
     void SciDbGet(int index)
@@ -133,6 +143,7 @@ public class ScienceManager : MonoBehaviour
     void SwContent(int index)
     {
         scrollRect.content = contents[index].GetComponent<RectTransform>();
+        sciItemSetWindow.CloseUI();
 
         for (int i = 0; i < contents.Length; i++)
         {
@@ -157,19 +168,39 @@ public class ScienceManager : MonoBehaviour
         if (focusedSciBtn.sciName != "")
         {
             scienceInfoData = new ScienceInfoData();
-            scienceInfoData = ScienceInfoGet.instance.GetBuildingName(focusedSciBtn.sciName, focusedSciBtn.level);
+            scienceInfoData = focusedSciBtn.scienceInfoData;
 
             if (focusedSciBtn.isCore)
             {
-                infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore);
+                infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
                 infoWindow[1].SetActive(true);
             }
             else
             {
-                infoWindow[0].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore);
+                infoWindow[0].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
                 infoWindow[0].SetActive(true);
             }
         }
+    }
+
+    public void OpenItemSetWindow()
+    {
+        if (scienceInfoData.coreLv > scienceDb.coreLevel)
+            return;
+
+        mousePos = Input.mousePosition;
+        if (mousePos.x + popupWidth > Screen.width)
+        {
+            mousePos.x = Screen.width - popupWidth - 10.0f;
+        }
+        else if (mousePos.x < 0)
+        {
+            mousePos.x = 0;
+        }
+        itemInputWindow.transform.position = mousePos;
+        itemInputWindow.SetActive(true);
+        itemInputWinOpen = true;
+        sciItemSetWindow.SetUI(focusedSciBtn);
     }
 
     public void SciUpgradeEnd(string sciName, int sciLevel)
@@ -202,6 +233,7 @@ public class ScienceManager : MonoBehaviour
     public void CloseUI()
     {
         scienceTreeUI.SetActive(false);
+        sciItemSetWindow.CloseUI();
         gameManager.onUIChangedCallback?.Invoke(scienceTreeUI);
     }
 }

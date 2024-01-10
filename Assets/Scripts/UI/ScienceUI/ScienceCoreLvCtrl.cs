@@ -17,6 +17,7 @@ public class ScienceCoreLvCtrl : MonoBehaviour
     [SerializeField]
     GameObject LockBtnObj;
     ItemList itemList;
+    public ScienceBtn scienceBtn;
 
     private void Awake()
     {
@@ -34,7 +35,7 @@ public class ScienceCoreLvCtrl : MonoBehaviour
             LockBtnObj.SetActive(false);
         else
         {
-            ScienceBtn scienceBtn = coreBtnObj.AddComponent<ScienceBtn>();
+            scienceBtn = coreBtnObj.AddComponent<ScienceBtn>();
             scienceBtn.SetInfo("Core", coreLv, time, true);
         }
     }

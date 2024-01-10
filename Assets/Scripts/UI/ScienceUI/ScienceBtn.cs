@@ -18,6 +18,8 @@ public class ScienceBtn : MonoBehaviour
     public bool isCore = false;
     ScienceManager scienceManager;
     SciUpgradeFunc upgradeFunc;
+    public ScienceInfoData scienceInfoData;
+    public List<(int, int)> itemAmountList = new List<(int, int)>();    // 저장량 / 최대량
 
     void Start()
     {
@@ -37,18 +39,9 @@ public class ScienceBtn : MonoBehaviour
 
     void ButtonFunc()
     {
-        if (!upgradeStart && !upgrade)
+        if (!upgradeStart && !upgrade && isLock)
         {
-            if (isLock && InfoWindow.instance.enabled)
-            {
-                if (InfoWindow.instance.totalAmountsEnough)
-                {
-                    upgradeStart = true;
-                    InfoWindow.instance.SciUpgradeStart();
-                    upgradeImg.enabled = true;
-                    upgradeFunc.CoroutineSet(this, upgradeTime);
-                }
-            }
+            scienceManager.OpenItemSetWindow();
         }
     }
 
@@ -58,7 +51,6 @@ public class ScienceBtn : MonoBehaviour
         LockUiActiveFalse();
         upgrade = true;
     }
-
 
     public void LockUiActiveFalse()
     {
@@ -82,5 +74,33 @@ public class ScienceBtn : MonoBehaviour
         level = coreLv;
         upgradeTime = time;
         isCore = core;
+        scienceInfoData = new ScienceInfoData();
+        scienceInfoData = ScienceInfoGet.instance.GetBuildingName(sciName, level);
+
+        foreach(var data in scienceInfoData.amounts)
+        {
+            itemAmountList.Add((0, data));
+        }
+    }
+
+    public void ItemAddAmount(int index, int amount)
+    {
+        itemAmountList[index] = (itemAmountList[index].Item1 + amount, itemAmountList[index].Item2);
+        ItemSaveEnd();
+    }
+
+    public void ItemSaveEnd()
+    {
+        foreach(var itemAmount in itemAmountList)
+        {
+            if(itemAmount.Item1 != itemAmount.Item2)
+            {
+                return;
+            }
+        }
+
+        upgradeStart = true;
+        upgradeImg.enabled = true;
+        upgradeFunc.CoroutineSet(this, upgradeTime);
     }
 }

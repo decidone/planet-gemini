@@ -58,6 +58,9 @@ public class PreBuilding : MonoBehaviour
     [SerializeField]
     float maxBuildDist;
 
+    bool isPortalObj = false;
+    Portal portalScript;
+
     #region Singleton
     public static PreBuilding instance;
 
@@ -189,17 +192,23 @@ public class PreBuilding : MonoBehaviour
                     posIndex++;
                 }
 
-                if (!isTempBuild)
-                {
-                    BuildingInfo.instance.BuildingEnd(buildingList.Count);
-                    isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-                    canBuildCount = BuildingInfo.instance.CanBuildAmount();
-                }
-                else
+                if (isTempBuild)
                 {
                     playerController.TempBuildSet(buildingList.Count);
                     isEnough = playerController.TempMinerCountCheck();
                     canBuildCount = playerController.tempMinerCount;
+                }
+                else if (isPortalObj)
+                {
+                    portalScript.SetPortalObjEnd(buildingList[0].GetComponent<Production>().buildName, buildingList[0]);
+                    isEnough = false;
+                    canBuildCount = 0;
+                }
+                else
+                {
+                    BuildingInfo.instance.BuildingEnd(buildingList.Count);
+                    isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+                    canBuildCount = BuildingInfo.instance.CanBuildAmount();
                 }
             }
             else
@@ -694,7 +703,47 @@ public class PreBuilding : MonoBehaviour
 
     void SetBuilding(GameObject obj)
     {
-        if (!isTempBuild)
+        if (isTempBuild)
+        {
+            bool canBuild = playerController.TempMinerCountCheck();
+            if (canBuild)
+            {
+                SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
+                obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = layNumTemp;
+                if (obj.TryGetComponent(out Structure structure))
+                {
+                    if (structure.canBuilding)
+                    {
+                        structure.SetBuild();
+                        structure.isTempBuild = true;
+                        structure.TempBuilCooldownSet();
+                        structure.ColliderTriggerOnOff(false);
+                        obj.AddComponent<DynamicGridObstacle>();
+                        structure.myVision.SetActive(true);
+                    }
+                }
+            }
+            setBuild = null;
+        }
+        else if (isPortalObj)
+        {
+            SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
+            obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = layNumTemp;
+            if (obj.TryGetComponent(out Structure structure))
+            {
+                if (structure.canBuilding)
+                {
+                    structure.SetBuild();
+                    structure.isTempBuild = true;
+                    structure.TempBuilCooldownSet();
+                    structure.ColliderTriggerOnOff(false);
+                    obj.AddComponent<DynamicGridObstacle>();
+                    structure.myVision.SetActive(true);
+                }
+            }
+            setBuild = null;
+        }
+        else
         {
             if (BuildingInfo.instance.AmountsEnoughCheck())
             {
@@ -741,34 +790,12 @@ public class PreBuilding : MonoBehaviour
                 else if (obj.TryGetComponent(out UnderPipeBuild underPipe))
                 {
                     if (underPipe.pipeScipt.canBuilding)
-                    {                    
+                    {
                         underPipe.pipeScipt.SetBuild();
                         underPipe.ColliderTriggerOnOff(false);
                         underPipe.RemoveObj();
                         underPipe.pipeScipt.gameObject.AddComponent<DynamicGridObstacle>();
-                        underPipe.pipeScipt.myVision.SetActive(true);                   
-                    }
-                }
-            }
-            setBuild = null;
-        }
-        else
-        {
-            bool canBuild = playerController.TempMinerCountCheck();
-            if (canBuild)
-            {
-                SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
-                obj.GetComponentInChildren<SpriteRenderer>().sortingOrder = layNumTemp;
-                if (obj.TryGetComponent(out Structure structure))
-                {
-                    if (structure.canBuilding)
-                    {
-                        structure.SetBuild();
-                        structure.isTempBuild = true;
-                        structure.TempBuilCooldownSet();
-                        structure.ColliderTriggerOnOff(false);
-                        obj.AddComponent<DynamicGridObstacle>();
-                        structure.myVision.SetActive(true);
+                        underPipe.pipeScipt.myVision.SetActive(true);
                     }
                 }
             }
@@ -857,7 +884,7 @@ public class PreBuilding : MonoBehaviour
         int width = build.width;
         int dirCount = build.dirCount;
         isTempBuild = _isTempbuild;
-
+        isPortalObj = false;
         canBuildCount = _canBuildAmount;
 
         if (gameObj != null)
@@ -937,6 +964,52 @@ public class PreBuilding : MonoBehaviour
         {
             gameObj.GetComponent<UnderBeltCtrl>().SetColor(Color.green);
         }
+        startBuildPos = transform.position;
+        endBuildPos = transform.position;
+    }
+
+    public void SetPortalImage(GameObject build, Portal prod)
+    {
+        GameObject game = build;
+        int height = 2;
+        int width = 2;
+        isPortalObj = true;
+        canBuildCount = 1;
+        portalScript = prod;
+
+        if (gameObj != null)
+        {
+            Destroy(gameObj);
+        }
+
+        gameObj = Instantiate(game);
+
+        isUnderObj = false;
+
+        objHeight = height;
+        objWidth = width;
+
+        if (gameObj.TryGetComponent(out Structure factory))
+        {
+            factory.BuildingSetting(1, height, width, 0);
+            dirNum = factory.dirNum;
+        }
+
+        setPos = new Vector3(-0.5f, -0.5f);
+        isNeedSetPos = true;
+        gameObj.transform.position = this.transform.position - setPos;
+  
+        gameObj.transform.parent = this.transform;
+
+        if (gameObj.GetComponentInChildren<SpriteRenderer>() != null)
+        {
+            spriteRenderer = gameObj.GetComponentInChildren<SpriteRenderer>();
+            layNumTemp = spriteRenderer.sortingOrder;
+        }
+
+        spriteRenderer.sortingOrder = 50;
+        SetColor(spriteRenderer, Color.green, 0.35f);
+
         startBuildPos = transform.position;
         endBuildPos = transform.position;
     }
@@ -1031,44 +1104,73 @@ public class PreBuilding : MonoBehaviour
 
         if (DistCheck(obj.transform.position))
         {
-            foreach (int newX in xList)
+            if (isPortalObj)
             {
-                foreach (int newY in yList)
+                foreach (int newX in xList)
                 {
-                    if (!gameManager.map.IsOnMap(newX, newY))
+                    foreach (int newY in yList)
                     {
-                        continue;
-                    }
-
-                    if (gameManager.map.mapData[newX][newY].structure != null || gameManager.map.mapData[newX][newY].obj != null)
-                    {
-                        return false;
-                    }
-
-                    Miner miner = null;
-                    PumpCtrl pump = null;
-                    ExtractorCtrl extractor = null;
-
-                    if (obj.TryGetComponent(out miner) || obj.TryGetComponent(out pump) || obj.TryGetComponent(out extractor))
-                    {
-                        if ((miner && gameManager.map.mapData[newX][newY].BuildCheck("miner") &&
-                            miner.level >= gameManager.map.mapData[newX][newY].resource.level) ||
-                            (pump && gameManager.map.mapData[newX][newY].BuildCheck("pump")) ||
-                            (extractor && gameManager.map.mapData[newX][newY].BuildCheck("extractor")))
+                        if (!gameManager.map.IsOnMap(newX, newY))
                         {
-                            if (!canBuild)
-                                canBuild = true;
+                            continue;
                         }
-                    }
-                    else
-                    {
-                        if (gameManager.map.mapData[newX][newY].buildable.Count == 0 && gameManager.map.mapData[newX][newY].structure == null)
+
+                        if (gameManager.map.mapData[newX][newY].structure != null || gameManager.map.mapData[newX][newY].obj != null)
                         {
+                            return false;
+                        }
+
+                        if (!gameManager.map.mapData[newX][newY].BuildCheck("PortalObj"))
+                        {
+                            return false;
+                        }
+                        else
                             canBuild = true;
+                    }
+                }
+            }
+
+            else
+            {
+                foreach (int newX in xList)
+                {
+                    foreach (int newY in yList)
+                    {
+                        if (!gameManager.map.IsOnMap(newX, newY))
+                        {
+                            continue;
+                        }
+
+                        if (gameManager.map.mapData[newX][newY].structure != null || gameManager.map.mapData[newX][newY].obj != null)
+                        {
+                            return false;
+                        }
+
+                        Miner miner = null;
+                        PumpCtrl pump = null;
+                        ExtractorCtrl extractor = null;
+                        
+                        if (obj.TryGetComponent(out miner) || obj.TryGetComponent(out pump) || obj.TryGetComponent(out extractor))
+                        {
+                            if ((miner && gameManager.map.mapData[newX][newY].BuildCheck("miner") &&
+                                miner.level >= gameManager.map.mapData[newX][newY].resource.level) ||
+                                (pump && gameManager.map.mapData[newX][newY].BuildCheck("pump")) ||
+                                (extractor && gameManager.map.mapData[newX][newY].BuildCheck("extractor")))
+                            {
+                                if (!canBuild)
+                                    canBuild = true;
+                            }
                         }
                         else
                         {
-                            return false;
+                            if (gameManager.map.mapData[newX][newY].buildable.Count == 0 && gameManager.map.mapData[newX][newY].structure == null)
+                            {
+                                canBuild = true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
                         }
                     }
                 }

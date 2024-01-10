@@ -7,4 +7,9 @@ public class InfoNeedItemUi : MonoBehaviour
 {
     public Image icon;
     public Text amount;
+
+    public void AmountSet(int saveAmount, int fullAmount)
+    {
+        amount.text = saveAmount + " / " + fullAmount;
+    }
 }

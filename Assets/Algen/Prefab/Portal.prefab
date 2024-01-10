@@ -457,7 +457,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 1.375}
@@ -517,6 +517,7 @@ MonoBehaviour:
   isMainSource: 0
   isTempBuild: 0
   myVision: {fileID: 3413289764151136508}
+  connectors: []
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -525,6 +526,11 @@ MonoBehaviour:
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
+  portalTile:
+  - {fileID: 721077935472781495}
+  - {fileID: 721077936004993818}
+  - {fileID: 721077934532301732}
+  - {fileID: 721077935555031510}
 --- !u!114 &721077935684597044
 MonoBehaviour:
   m_ObjectHideFlags: 0
