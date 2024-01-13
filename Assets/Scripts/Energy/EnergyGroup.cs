@@ -197,6 +197,10 @@ public class EnergyGroup
             {
                 temp += connectors[i].energyGenerator.energyProduction;
             }
+            else if (connectors[i].steamGenerator != null && connectors[i].steamGenerator.isOperate)
+            {
+                temp += connectors[i].steamGenerator.energyProduction;
+            }
         }
         energy = temp;
     }

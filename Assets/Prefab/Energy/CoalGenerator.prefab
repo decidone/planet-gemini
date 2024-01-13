@@ -326,6 +326,7 @@ MonoBehaviour:
   view: {fileID: 6363363537288611314}
   signal: 0
   energyGenerator: {fileID: 0}
+  steamGenerator: {fileID: 0}
 --- !u!1 &2075445432134139083
 GameObject:
   m_ObjectHideFlags: 0
@@ -770,6 +771,7 @@ MonoBehaviour:
   FuelItem: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   view: {fileID: 6363363537288611314}
   preBuildingObj: {fileID: 0}
+  fuelRequirement: 10
 --- !u!61 &5564630921721189503
 BoxCollider2D:
   m_ObjectHideFlags: 0

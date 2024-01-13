@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: SteamGenerator
   maxHp: 320000003c00000046000000
-  maxItemStorageLimit: 0
-  maxFulidStorageLimit: 0
-  sendSpeed: []
+  maxItemStorageLimit: 99
+  maxFulidStorageLimit: 100
+  sendSpeed:
+  - 1
   sendFluidAmount: 0
-  sendDelay: 0
+  sendDelay: 0.5
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

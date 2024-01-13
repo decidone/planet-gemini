@@ -1148,34 +1148,14 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 219787472492811319}
-    - target: {fileID: 142728372057670182, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 142728372679589277, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 142728372691071551, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 792990450431671789, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 7525422399260504464}
-    - target: {fileID: 3708228166959310970, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5315094254524996675, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
       objectReference: {fileID: 219787472492811319}
-    - target: {fileID: 7512793977593324813, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8388844543318902407, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 

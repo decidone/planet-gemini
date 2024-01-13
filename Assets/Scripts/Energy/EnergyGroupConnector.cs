@@ -56,6 +56,8 @@ public class EnergyGroupConnector : MonoBehaviour
     public int signal;
     [HideInInspector]
     public EnergyGenerator energyGenerator;
+    [HideInInspector]
+    public SteamGenerator steamGenerator;
 
     void Awake()
     {
@@ -68,6 +70,7 @@ public class EnergyGroupConnector : MonoBehaviour
         nearbyStr = new List<Structure>();
         consumptions = new List<Structure>();
         energyGenerator = GetComponentInParent<EnergyGenerator>();
+        steamGenerator = GetComponentInParent<SteamGenerator>();
     }
 
     void OnTriggerEnter2D(Collider2D collision)

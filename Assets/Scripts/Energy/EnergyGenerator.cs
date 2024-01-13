@@ -35,6 +35,7 @@ public class EnergyGenerator : Production
     public GameObject preBuildingObj;
     Structure preBuildingStr;
     bool preBuildingCheck;
+    public int fuelRequirement;
 
     protected override void Start()
     {
@@ -89,25 +90,26 @@ public class EnergyGenerator : Production
                 connector.Init();
                 isBuildDone = true;
             }
-            if (isOperate && fuel <= 0)
-            {
-                isOperate = false;
-            }
 
             var slot = inventory.SlotCheck(0);
             if (fuel <= 50 && slot.item == FuelItem && slot.amount > 0)
             {
                 inventory.Sub(0, 1);
                 fuel += 50;
-                isOperate = true;
             }
-            if (isOperate)
+
+            prodTimer += Time.deltaTime;
+            if (prodTimer > cooldown)
             {
-                prodTimer += Time.deltaTime;
-                if (prodTimer > cooldown)
+                if (fuel >= fuelRequirement)
                 {
-                    fuel -= 10;
+                    fuel -= fuelRequirement;
+                    isOperate = true;
                     prodTimer = 0;
+                }
+                else
+                {
+                    isOperate = false;
                 }
             }
         }
@@ -133,9 +135,7 @@ public class EnergyGenerator : Production
 
     public override void RemoveObj()
     {
-        //여기서 건물 철거 전 처리(삭제가 아니여도 비활성화가 필요하니 그거 생각해서 만들 것)
         connector.RemoveFromGroup();
-
         base.RemoveObj();
     }
 

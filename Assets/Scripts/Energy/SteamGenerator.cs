@@ -4,9 +4,23 @@ using UnityEngine;
 
 public class SteamGenerator : FluidFactoryCtrl
 {
+    GameManager gameManager;
     public Slot displaySlot;
     int preSaveFluidNum;
     bool uiOpened;
+
+    public EnergyGroupConnector connector;
+    public Item FuelItem;
+    [SerializeField]
+    SpriteRenderer view;
+    bool isBuildDone;
+    bool isPlaced;
+    [HideInInspector]
+    public GameObject preBuildingObj;
+    Structure preBuildingStr;
+    bool preBuildingCheck;
+    public float waterRequirement;
+    public int fuelRequirement;
 
     protected override void Awake()
     {
@@ -19,7 +33,7 @@ public class SteamGenerator : FluidFactoryCtrl
         repairBar.fillAmount = 0;
         #endregion
         #region FluidFactoryAwake
-        GameManager gameManager = GameManager.instance;
+        gameManager = GameManager.instance;
         myFluidScript = GetComponent<FluidFactoryCtrl>();
         playerInven = gameManager.GetComponent<Inventory>();
         mainSource = null;
@@ -29,7 +43,7 @@ public class SteamGenerator : FluidFactoryCtrl
         myVision.SetActive(false);
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
-            .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();
+            .transform.Find("SteamGenerator").transform.Find("DisplaySlot").GetComponent<Slot>();
         #endregion
     }
 
@@ -39,9 +53,8 @@ public class SteamGenerator : FluidFactoryCtrl
         itemDic = ItemList.instance.itemDic;
         recipe = new Recipe();
         output = null;
-        fluidName = "CrudeOil";
+        fluidName = "Water";
 
-        GameManager gameManager = GameManager.instance;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
@@ -49,8 +62,15 @@ public class SteamGenerator : FluidFactoryCtrl
         CheckPos();
         #endregion
 
-        displaySlot.SetInputItem(ItemList.instance.itemDic["CrudeOil"]);
-        displaySlot.AddItem(ItemList.instance.itemDic["CrudeOil"], 0);
+        maxFuel = 100;
+        isBuildDone = false;
+        isPlaced = false;
+        preBuildingCheck = false;
+        preBuildingObj = gameManager.preBuildingObj;
+        prodTimer = cooldown;
+
+        displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
+        displaySlot.AddItem(ItemList.instance.itemDic["Water"], 0);
     }
 
     protected override void Update()
@@ -88,43 +108,88 @@ public class SteamGenerator : FluidFactoryCtrl
 
         base.Update();
 
+        if (!isPlaced)
+        {
+            if (isSetBuildingOk)
+            {
+                view.enabled = false;
+                isPlaced = true;
+            }
+        }
+        if (gameManager.focusedStructure == null)
+        {
+            if (preBuildingObj.activeSelf)
+            {
+                if (!preBuildingCheck)
+                {
+                    preBuildingCheck = true;
+                    preBuildingStr = preBuildingObj.GetComponentInChildren<Structure>();
+                    if (preBuildingStr != null && (preBuildingStr.energyUse || preBuildingStr.isEnergyStr))
+                    {
+                        view.enabled = true;
+                    }
+                }
+            }
+            else
+            {
+                if (preBuildingCheck)
+                {
+                    preBuildingCheck = false;
+                    view.enabled = false;
+                }
+            }
+        }
+
         if (!isPreBuilding)
         {
             FluidChangeCheck();
 
-            var slot = inventory.SlotCheck(0);
-
-            if (recipe.name != null)
+            if (!isBuildDone)
             {
-                if (saveFluidNum >= recipe.amounts[0] && (slot.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
-                {
-                    output = itemDic[recipe.items[recipe.items.Count - 1]];
+                connector.Init();
+                isBuildDone = true;
+            }
 
-                    if (slot.item == output || slot.item == null)
-                    {
-                        prodTimer += Time.deltaTime;
-                        if (prodTimer > cooldown)
-                        {
-                            saveFluidNum -= recipe.amounts[0];
-                            inventory.SlotAdd(0, output, recipe.amounts[recipe.amounts.Count - 1]);
-                            prodTimer = 0;
-                        }
-                    }
-                    else
-                    {
-                        prodTimer = 0;
-                    }
+            var slot = inventory.SlotCheck(0);
+            if (fuel <= 50 && slot.item == FuelItem && slot.amount > 0)
+            {
+                inventory.Sub(0, 1);
+                fuel += 50;
+            }
+
+            prodTimer += Time.deltaTime;
+            if (prodTimer > cooldown)
+            {
+                if (saveFluidNum >= waterRequirement && fuel >= fuelRequirement)
+                {
+                    saveFluidNum -= waterRequirement;
+                    fuel -= fuelRequirement;
+                    isOperate = true;
+                    prodTimer = 0;
                 }
                 else
                 {
-                    prodTimer = 0;
+                    isOperate = false;
                 }
             }
+        }
+    }
 
-            if (slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
-            {
-                SendItem(output);
-            }
+    public override float GetProgress() { return fuel; }
+
+    public override void Focused()
+    {
+        if (connector.group != null)
+        {
+            connector.group.TerritoryViewOn();
+        }
+    }
+
+    public override void DisableFocused()
+    {
+        if (connector.group != null)
+        {
+            connector.group.TerritoryViewOff();
         }
     }
 
@@ -145,6 +210,35 @@ public class SteamGenerator : FluidFactoryCtrl
         }
     }
 
+    public override void RemoveObj()
+    {
+        connector.RemoveFromGroup();
+        base.RemoveObj();
+    }
+
+    public override bool CanTakeItem(Item item)
+    {
+        var slot = inventory.SlotCheck(0);
+        if (FuelItem == item && slot.amount < 99)
+            return true;
+
+        return false;
+    }
+
+    public override void OnFactoryItem(ItemProps itemProps)
+    {
+        if (FuelItem == itemProps.item)
+            inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+
+        itemProps.itemPool.Release(itemProps.gameObject);
+    }
+
+    public override void OnFactoryItem(Item item)
+    {
+        if (FuelItem == item)
+            inventory.SlotAdd(0, item, 1);
+    }
+
     public override void OpenUI()
     {
         base.OpenUI();
@@ -153,44 +247,16 @@ public class SteamGenerator : FluidFactoryCtrl
 
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
-
-        rManager.recipeBtn.gameObject.SetActive(true);
-        rManager.recipeBtn.onClick.RemoveAllListeners();
-        rManager.recipeBtn.onClick.AddListener(OpenRecipe);
-
-        sInvenManager.InvenInit();
-        if (recipe.name != null)
-            SetRecipe(recipe);
+        sInvenManager.progressBar.SetMaxProgress(100);
+        sInvenManager.slots[0].SetInputItem(FuelItem);
+        //sInvenManager.InvenInit();
     }
 
     public override void CloseUI()
     {
         base.CloseUI();
         uiOpened = false;
-
         sInvenManager.ReleaseInven();
-
-        rManager.recipeBtn.onClick.RemoveAllListeners();
-        rManager.recipeBtn.gameObject.SetActive(false);
-    }
-
-    public override void OpenRecipe()
-    {
-        rManager.OpenUI();
-        rManager.SetRecipeUI("Refinery", this);
-    }
-
-    public override void SetRecipe(Recipe _recipe)
-    {
-        if (recipe.name != null && recipe != _recipe)
-        {
-            sInvenManager.EmptySlot();
-        }
-        recipe = _recipe;
-        sInvenManager.ResetInvenOption();
-        sInvenManager.slots[0].outputSlot = true;
-        sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
     }
 
     public override void GetUIFunc()
@@ -199,7 +265,7 @@ public class SteamGenerator : FluidFactoryCtrl
 
         foreach (GameObject list in inventoryList.StructureStorageArr)
         {
-            if (list.name == "Refinery")
+            if (list.name == "SteamGenerator")
             {
                 ui = list;
             }
@@ -209,7 +275,6 @@ public class SteamGenerator : FluidFactoryCtrl
     protected override void AddInvenItem()
     {
         var slot = inventory.SlotCheck(0);
-
         if (slot.item != null)
         {
             playerInven.Add(slot.item, slot.amount);

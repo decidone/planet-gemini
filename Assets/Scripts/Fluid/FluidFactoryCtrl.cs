@@ -235,7 +235,7 @@ public class FluidFactoryCtrl : Production
         {
             UpdateFluidProperties(_mainSource, dis);
 
-            if(!GetComponent<Refinery>())
+            if(!GetComponent<Refinery>() && !GetComponent<SteamGenerator>())
                 foreach (GameObject obj in outObj)
                 {
                     if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl)

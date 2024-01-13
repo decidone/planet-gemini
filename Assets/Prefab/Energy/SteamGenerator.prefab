@@ -582,7 +582,7 @@ GameObject:
   - component: {fileID: 3482520925639487623}
   - component: {fileID: 7078076216128219974}
   - component: {fileID: 3997455454960074348}
-  - component: {fileID: 2431378430203015452}
+  - component: {fileID: 8635020009690308098}
   - component: {fileID: 5564630921721189503}
   - component: {fileID: 9062751277686904368}
   m_Layer: 8
@@ -693,7 +693,7 @@ MonoBehaviour:
   space: 1
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
---- !u!114 &2431378430203015452
+--- !u!114 &8635020009690308098
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -702,7 +702,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8506304485128044753}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed5d5b7176d49be41b49dfc091de04f2, type: 3}
+  m_Script: {fileID: 11500000, guid: d645e737caad5414c9e644c4ec3b7ece, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   structureData: {fileID: 11400000, guid: 54d92d45ced04b041b49e5175d0d70d0, type: 2}
@@ -766,10 +766,21 @@ MonoBehaviour:
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
+  fluidName: 
+  saveFluidNum: 0
+  sendDelayTimer: 0
+  howFarSource: 0
+  mainSource: {fileID: 0}
+  isPreventingDuplicate: 0
+  reFindMain: 0
+  fluidList: []
+  displaySlot: {fileID: 0}
   connector: {fileID: 7265358927153795667}
   FuelItem: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   view: {fileID: 6363363537288611314}
   preBuildingObj: {fileID: 0}
+  waterRequirement: 5
+  fuelRequirement: 10
 --- !u!61 &5564630921721189503
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -220,12 +220,12 @@ public class Structure : MonoBehaviour
 
             if(GetComponent<LogisticsCtrl>() || (GetComponent<Production>() && !GetComponent<FluidFactoryCtrl>()))
             {
-                if(hitCollider.GetComponent<FluidFactoryCtrl>() && !hitCollider.GetComponent<Refinery>())
+                if(hitCollider.GetComponent<FluidFactoryCtrl>() && !hitCollider.GetComponent<Refinery>() && !hitCollider.GetComponent<SteamGenerator>())
                 {
                     continue;
                 }
             }
-            else if (GetComponent<FluidFactoryCtrl>() && !GetComponent<Refinery>())
+            else if (GetComponent<FluidFactoryCtrl>() && !GetComponent<Refinery>() && !GetComponent<SteamGenerator>())
             {
                 if (hitCollider.GetComponent<LogisticsCtrl>())
                 {
