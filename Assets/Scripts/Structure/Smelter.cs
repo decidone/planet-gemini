@@ -16,29 +16,42 @@ public class Smelter : Production
 
             if (recipe.name != null)
             {
-                if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
-                    && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    output = itemDic[recipe.items[recipe.items.Count - 1]];
+                    EfficiencyCheck();
 
-                    if (slot2.item == output || slot2.item == null)
+                    if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
+                    && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        prodTimer += Time.deltaTime;
-                        if (prodTimer > cooldown)
+                        output = itemDic[recipe.items[recipe.items.Count - 1]];
+
+                        if (slot2.item == output || slot2.item == null)
                         {
-                            inventory.Sub(0, recipe.amounts[0]);
-                            inventory.Sub(1, recipe.amounts[1]);
-                            inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                            isOperate = true;
+                            prodTimer += Time.deltaTime;
+                            if (prodTimer > effiCooldown)
+                            {
+                                inventory.Sub(0, recipe.amounts[0]);
+                                inventory.Sub(1, recipe.amounts[1]);
+                                inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                prodTimer = 0;
+                            }
+                        }
+                        else
+                        {
+                            isOperate = false;
                             prodTimer = 0;
                         }
                     }
                     else
                     {
+                        isOperate = false;
                         prodTimer = 0;
                     }
                 }
                 else
                 {
+                    isOperate = false;
                     prodTimer = 0;
                 }
             }
@@ -92,7 +105,8 @@ public class Smelter : Production
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
         sInvenManager.slots[2].outputSlot = true;
-        sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
+        cooldown = recipe.cooldown;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void GetUIFunc()

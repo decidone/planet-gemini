@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: ManaGenerator
   maxHp: 320000003c00000046000000
-  maxItemStorageLimit: 0
+  maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
   sendSpeed: []
   sendFluidAmount: 0
@@ -23,3 +23,8 @@ MonoBehaviour:
   maxRepairGauge: 10
   colliderRadius: 10
   maxLevel: 3
+  cooldown: 5
+  isEnergyStr: 1
+  production: 1000
+  energyUse: 0
+  consumption: 0

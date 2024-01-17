@@ -49,4 +49,24 @@ public class StructureData : ScriptableObject
     [SerializeField]
     private int maxLevel;//타겟 탐색 범위
     public int MaxLevel { get { return maxLevel; } }
+
+    [SerializeField]
+    private float cooldown;
+    public float Cooldown { get { return cooldown; } }
+
+    [SerializeField]
+    private bool isEnergyStr;
+    public bool IsEnergyStr { get { return isEnergyStr; } }
+
+    [SerializeField]
+    private float production;
+    public float Production { get { return production; } }
+
+    [SerializeField]
+    private bool energyUse;
+    public bool EnergyUse { get { return energyUse; } }
+
+    [SerializeField]
+    private float consumption;
+    public float Consumption { get { return consumption; } }
 }

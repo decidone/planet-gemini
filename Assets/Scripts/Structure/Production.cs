@@ -13,10 +13,6 @@ public abstract class Production : Structure
     protected StructureInvenManager sInvenManager;
     [SerializeField]
     protected RecipeManager rManager;
-    [SerializeField]
-    protected int maxAmount;
-    [SerializeField]
-    protected float cooldown;
 
     protected GameObject canvas;
     protected Inventory inventory;
@@ -343,5 +339,26 @@ public abstract class Production : Structure
     {
         DestroyLineRenderer();
         LineRendererSet(endPos);
+    }
+
+    public override void EfficiencyCheck()
+    {
+        // conn != null && conn.group != null && conn.group.efficiency > 0
+        // 인 경우에만 사용할 것. 조건 검사를 여러번 반복하는걸 방지하기 위해서 여기에서는 뺌
+        if (efficiency != conn.group.efficiency)
+        {
+            efficiency = conn.group.efficiency;
+            if (efficiency != 0)
+            {
+                effiCooldown = cooldown / efficiency;
+            }
+            else
+            {
+                effiCooldown = cooldown;
+            }
+
+            if (isUIOpened)
+                sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        }
     }
 }

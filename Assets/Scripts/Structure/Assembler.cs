@@ -18,19 +18,16 @@ public class Assembler : Production
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    if (efficiency != conn.group.efficiency)
-                    {
-                        efficiency = conn.group.efficiency;
-                        effiCooldown = cooldown / efficiency;
-                        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
-                    }
+                    EfficiencyCheck();
+
                     if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
                     && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
                         output = itemDic[recipe.items[recipe.items.Count - 1]];
-                        isOperate = true;
+
                         if (slot2.item == output || slot2.item == null)
                         {
+                            isOperate = true;
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown)
                             {
@@ -42,6 +39,7 @@ public class Assembler : Production
                         }
                         else
                         {
+                            isOperate = false;
                             prodTimer = 0;
                         }
                     }

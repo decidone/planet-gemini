@@ -111,16 +111,26 @@ public class Structure : MonoBehaviour
 
     public GameObject myVision;
 
+    [HideInInspector]
+    public int maxAmount;
+    [HideInInspector]
+    public float cooldown;
+
     public List<EnergyGroupConnector> connectors;
     public EnergyGroupConnector conn;
+    [HideInInspector]
     public bool energyUse;
+    [HideInInspector]
     public bool isEnergyStr;
-    public bool isOperate;
+    [HideInInspector]
     public float energyProduction;
+    [HideInInspector]
     public float energyConsumption;
+
+    public bool isOperate;
     public float efficiency;
     public float effiCooldown;
-
+    
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -134,10 +144,16 @@ public class Structure : MonoBehaviour
         isMainSource = false;
         isUIOpened = false;
         myVision.SetActive(false);
+        maxAmount = structureData.MaxItemStorageLimit;
+        cooldown = structureData.Cooldown;
         connectors = new List<EnergyGroupConnector>();
         conn = null;
         efficiency = 0;
         effiCooldown = 0;
+        energyUse = structureData.EnergyUse;
+        isEnergyStr = structureData.IsEnergyStr;
+        energyProduction = structureData.Production;
+        energyConsumption = structureData.Consumption;
     }
 
     protected virtual void Update()
@@ -960,4 +976,6 @@ public class Structure : MonoBehaviour
             }
         }
     }
+
+    public virtual void EfficiencyCheck() { }
 }

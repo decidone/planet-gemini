@@ -562,12 +562,14 @@ MonoBehaviour:
   connectors: []
   conn: {fileID: 0}
   energyUse: 0
-  isEnergyStr: 1
+  isEnergyStr: 0
   isOperate: 0
   energyProduction: 0
   energyConsumption: 0
   efficiency: 0
   effiCooldown: 0
+  maxAmount: 0
+  cooldown: 0
   connector: {fileID: 3796074299410655006}
   view: {fileID: 8889250720948334388}
   preBuildingObj: {fileID: 0}

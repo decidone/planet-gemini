@@ -20,6 +20,7 @@ public class Refinery : FluidFactoryCtrl
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
         #endregion
+
         #region FluidFactoryAwake
         GameManager gameManager = GameManager.instance;
         myFluidScript = GetComponent<FluidFactoryCtrl>();
@@ -29,6 +30,15 @@ public class Refinery : FluidFactoryCtrl
         preSaveFluidNum = 0;
         uiOpened = false;
         myVision.SetActive(false);
+
+        connectors = new List<EnergyGroupConnector>();
+        conn = null;
+        efficiency = 0;
+        effiCooldown = 0;
+        energyUse = structureData.EnergyUse;
+        isEnergyStr = structureData.IsEnergyStr;
+        energyProduction = structureData.Production;
+        energyConsumption = structureData.Consumption;
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();
@@ -98,27 +108,40 @@ public class Refinery : FluidFactoryCtrl
 
             if (recipe.name != null)
             {
-                if (saveFluidNum >= recipe.amounts[0] && (slot.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    output = itemDic[recipe.items[recipe.items.Count - 1]];
+                    EfficiencyCheck();
 
-                    if (slot.item == output || slot.item == null)
+                    if (saveFluidNum >= recipe.amounts[0] && (slot.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        prodTimer += Time.deltaTime;
-                        if (prodTimer > cooldown)
+                        output = itemDic[recipe.items[recipe.items.Count - 1]];
+
+                        if (slot.item == output || slot.item == null)
                         {
-                            saveFluidNum -= recipe.amounts[0];
-                            inventory.SlotAdd(0, output, recipe.amounts[recipe.amounts.Count - 1]);
+                            isOperate = true;
+                            prodTimer += Time.deltaTime;
+                            if (prodTimer > effiCooldown)
+                            {
+                                saveFluidNum -= recipe.amounts[0];
+                                inventory.SlotAdd(0, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                prodTimer = 0;
+                            }
+                        }
+                        else
+                        {
+                            isOperate = false;
                             prodTimer = 0;
                         }
                     }
                     else
                     {
+                        isOperate = false;
                         prodTimer = 0;
                     }
                 }
                 else
                 {
+                    isOperate = false;
                     prodTimer = 0;
                 }
             }
@@ -192,7 +215,8 @@ public class Refinery : FluidFactoryCtrl
         recipe = _recipe;
         sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].outputSlot = true;
-        sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
+        cooldown = recipe.cooldown;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void GetUIFunc()

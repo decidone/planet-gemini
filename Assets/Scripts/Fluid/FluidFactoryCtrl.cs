@@ -35,6 +35,15 @@ public class FluidFactoryCtrl : Production
         mainSource = null;
         howFarSource = -1;
         myVision.SetActive(false);
+
+        connectors = new List<EnergyGroupConnector>();
+        conn = null;
+        efficiency = 0;
+        effiCooldown = 0;
+        energyUse = structureData.EnergyUse;
+        isEnergyStr = structureData.IsEnergyStr;
+        energyProduction = structureData.Production;
+        energyConsumption = structureData.Consumption;
     }
 
     protected override void Update()

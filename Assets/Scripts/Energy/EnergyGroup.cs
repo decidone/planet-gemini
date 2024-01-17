@@ -265,6 +265,12 @@ public class EnergyGroup
                 }
             }
 
+            if (energy == 0)
+            {
+                efficiency = 0;
+                return;
+            }
+
             float pulled = (consumption - energy) - (lack / syncFrequency);
             efficiency = Mathf.Clamp(((energy + pulled) / consumption), 0, 1);
         }

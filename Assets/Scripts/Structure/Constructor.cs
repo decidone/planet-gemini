@@ -15,27 +15,40 @@ public class Constructor : Production
 
             if (recipe.name != null)
             {
-                if (slot.amount >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    output = itemDic[recipe.items[recipe.items.Count - 1]];
+                    EfficiencyCheck();
 
-                    if (slot1.item == output || slot1.item == null)
+                    if (slot.amount >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        prodTimer += Time.deltaTime;
-                        if (prodTimer > cooldown)
+                        output = itemDic[recipe.items[recipe.items.Count - 1]];
+                        
+                        if (slot1.item == output || slot1.item == null)
                         {
-                            inventory.Sub(0, recipe.amounts[0]);
-                            inventory.SlotAdd(1, output, recipe.amounts[recipe.amounts.Count - 1]);
+                            isOperate = true;
+                            prodTimer += Time.deltaTime;
+                            if (prodTimer > effiCooldown)
+                            {
+                                inventory.Sub(0, recipe.amounts[0]);
+                                inventory.SlotAdd(1, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                prodTimer = 0;
+                            }
+                        }
+                        else
+                        {
+                            isOperate = false;
                             prodTimer = 0;
                         }
                     }
                     else
                     {
+                        isOperate = false;
                         prodTimer = 0;
                     }
                 }
                 else
                 {
+                    isOperate = false;
                     prodTimer = 0;
                 }
             }
@@ -88,7 +101,8 @@ public class Constructor : Production
         sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].outputSlot = true;
-        sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
+        cooldown = recipe.cooldown;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void GetUIFunc()

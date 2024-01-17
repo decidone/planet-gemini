@@ -22,7 +22,6 @@ public class UnitFactory : Production
         unitObjList = UnitList.instance.unitList;
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
@@ -34,28 +33,40 @@ public class UnitFactory : Production
 
             if (recipe.name != null)
             {
-                if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
-                    && slot2.amount >= recipe.amounts[2])
+                if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    prodTimer += Time.deltaTime;
-                    if (prodTimer > recipe.cooldown)
+                    EfficiencyCheck();
+
+                    if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
+                    && slot2.amount >= recipe.amounts[2])
                     {
-                        bool spawnPosExist = UnitSpawnPosFind();
-
-                        if (spawnPosExist)
+                        isOperate = true;
+                        prodTimer += Time.deltaTime;
+                        if (prodTimer > effiCooldown)
                         {
-                            inventory.Sub(0, recipe.amounts[0]);
-                            inventory.Sub(1, recipe.amounts[1]);
-                            inventory.Sub(2, recipe.amounts[2]);
+                            bool spawnPosExist = UnitSpawnPosFind();
 
-                            SetUnit();
-                            SpawnUnit();
-                            prodTimer = 0;
+                            if (spawnPosExist)
+                            {
+                                inventory.Sub(0, recipe.amounts[0]);
+                                inventory.Sub(1, recipe.amounts[1]);
+                                inventory.Sub(2, recipe.amounts[2]);
+
+                                SetUnit();
+                                SpawnUnit();
+                                prodTimer = 0;
+                            }
                         }
+                    }
+                    else
+                    {
+                        isOperate = false;
+                        prodTimer = 0;
                     }
                 }
                 else
                 {
+                    isOperate = false;
                     prodTimer = 0;
                 }
             }
@@ -111,7 +122,8 @@ public class UnitFactory : Production
         sInvenManager.slots[2].SetInputItem(itemDic[recipe.items[2]]);
         sInvenManager.slots[3].SetInputItem(itemDic[recipe.items[3]]);
         sInvenManager.slots[3].outputSlot = true;
-        sInvenManager.progressBar.SetMaxProgress(recipe.cooldown);
+        cooldown = recipe.cooldown;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void GetUIFunc()
