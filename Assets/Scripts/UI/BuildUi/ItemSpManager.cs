@@ -18,6 +18,7 @@ public class ItemSpManager : InventoryManager
     {
         gameManager = GameManager.instance;
         itemsList = gameManager.GetComponent<ItemList>().itemList;
+        itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
 
         for (int i = 0; i < slots.Length; i++)
         {
