@@ -201,6 +201,7 @@ public class StructureInvenManager : InventoryManager
     {
         structureInfoUI.SetActive(false);
         inventoryUI.SetActive(false);
+        itemInfoWindow.CloseWindow();
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
         isOpened = false;
     }

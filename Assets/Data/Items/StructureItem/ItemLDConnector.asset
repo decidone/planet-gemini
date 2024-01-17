@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ItemLDConnector
   m_EditorClassIdentifier: 
   name: LDConnector
-  icon: {fileID: 699020614, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  icon: {fileID: 21300000, guid: 1f79bed072526394dbda305047f24fea, type: 3}
   tier: -1

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1c66ff0d0adab054b94104945a3106ba
+guid: 53a19990cdf87b34a82f80ed8e33716c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,253 +105,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Structure2x2_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f4e270d68adf6a34ab5a21351a601007
-      internalID: -1932201936
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8eeb0238d0e3d0d4ebe59e378e3aa4e8
-      internalID: 1789975643
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_2
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0643c0cab37ec934c90040e0d79cfd1b
-      internalID: 1828273114
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_3
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 04af348077904f442a6b2cd835a0666a
-      internalID: 1701051910
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_4
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 616babe68fc153440afc5f192b15c502
-      internalID: 471881988
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_5
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 79
-        width: 32
-        height: 38
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 778162152f64d884fb14b400377d475e
-      internalID: -797419743
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 44
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2a84dfd82f390e5489f7e8866c04fbc5
-      internalID: -1504127690
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_7
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 44
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b46c083a0b82dae4cb7dce4a435ff648
-      internalID: 1852048951
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_8
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 44
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c37e69fcd4fc8604fa63bb01dbd23f48
-      internalID: -1880682169
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_9
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 44
-        width: 32
-        height: 37
-      alignment: 9
-      pivot: {x: 0.5, y: 0.43}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: edafcd3524138254781ad7b30880b27f
-      internalID: -606412521
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_10
+      name: LDConnector_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 44
+        width: 16
+        height: 59
       alignment: 9
-      pivot: {x: 0.5, y: 0.43}
+      pivot: {x: 0.5, y: 0.135}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 132828068a9a7d6409250eaa6211ee16
-      internalID: -1012359957
+      spriteID: 47a264f8aa971b0429f7dd40e2bcc1c1
+      internalID: 237773114
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Structure2x2_11
+      name: LDConnector_1
       rect:
         serializedVersion: 2
-        x: 32
+        x: 16
         y: 0
-        width: 32
-        height: 44
+        width: 16
+        height: 59
       alignment: 9
-      pivot: {x: 0.5, y: 0.43}
+      pivot: {x: 0.5, y: 0.135}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 76aa4c6fbf5a9a7488b6f0197b49991f
-      internalID: 1595258527
+      spriteID: b96ed814bb027ef409f22291e7ba155a
+      internalID: -2050972342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LDConnector_2
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 16
+        height: 59
+      alignment: 9
+      pivot: {x: 0.5, y: 0.135}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b7b60e5d0262bd489a1abb70e656464
+      internalID: 204380963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LDConnector_3
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 59
+      alignment: 9
+      pivot: {x: 0.5, y: 0.135}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 963bb290628c2af47b4b80a67b4d329e
+      internalID: 26834263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LDConnector_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 59
+      alignment: 9
+      pivot: {x: 0.5, y: 0.135}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67030cab786b50946a839c0d71cb8d7c
+      internalID: -1720014928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LDConnector_5
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 16
+        height: 59
+      alignment: 9
+      pivot: {x: 0.5, y: 0.135}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c43c92f89b70d224c8d59f3f97e40a29
+      internalID: -768262736
       vertices: []
       indices: 
       edges: []
@@ -367,18 +241,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Structure2x2_5: -797419743
-      Structure2x2_9: -606412521
-      Structure2x2_7: 1852048951
-      Structure2x2_11: 1595258527
-      Structure2x2_1: 1789975643
-      Structure2x2_4: 471881988
-      Structure2x2_2: 1828273114
-      Structure2x2_8: -1880682169
-      Structure2x2_3: 1701051910
-      Structure2x2_6: -1504127690
-      Structure2x2_0: -1932201936
-      Structure2x2_10: -1012359957
+      LDConnector_2: 204380963
+      LDConnector_4: -1720014928
+      LDConnector_3: 26834263
+      LDConnector_0: 237773114
+      LDConnector_1: -2050972342
+      LDConnector_5: -768262736
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

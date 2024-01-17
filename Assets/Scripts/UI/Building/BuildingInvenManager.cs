@@ -20,6 +20,23 @@ public class BuildingInvenManager : MonoBehaviour
     BuildingData buildingData;
     InputManager inputManager;
 
+    public ItemInfoWindow itemInfoWindow;
+
+    #region Singleton
+    public static BuildingInvenManager instance;
+
+    void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogWarning("More than one instance of PreBuilding found!");
+            return;
+        }
+
+        instance = this;
+    }
+    #endregion
+
     void Start()
     {
         gameManager = GameManager.instance;
@@ -27,6 +44,7 @@ public class BuildingInvenManager : MonoBehaviour
         
         inputManager = InputManager.instance;
         inputManager.controls.Inventory.BuildingInven.performed += ctx => BuildingInfo();
+        itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
     }
 
     public void SetInven(BuildingInven inven, GameObject invenUI)
@@ -92,6 +110,12 @@ public class BuildingInvenManager : MonoBehaviour
         global::BuildingInfo.instance.BuildingClick();
     }
 
+    public void PreBuildingCancel()
+    {
+        Image prevSlotImage = selectSlot.GetComponentInChildren<Image>();
+        SetSlotColor(prevSlotImage, Color.white, 1.0f);
+    }
+
     void SetSlotColor(Image image, Color color, float alpha)
     {
         Color slotColor = image.color;
@@ -140,11 +164,13 @@ public class BuildingInvenManager : MonoBehaviour
     void OnEnter(Slot slot)
     {
         focusedSlot = slot;
+        itemInfoWindow.OpenWindow(slot);
     }
 
     void OnExit(Slot slot)
     {
         focusedSlot = null;
+        itemInfoWindow.CloseWindow();
     }
 
     public void OpenUI()
@@ -156,6 +182,7 @@ public class BuildingInvenManager : MonoBehaviour
     public void CloseUI()
     {
         buildingInventoryUI.SetActive(false);
+        itemInfoWindow.CloseWindow();
         gameManager.onUIChangedCallback?.Invoke(buildingInventoryUI);
     }
 }

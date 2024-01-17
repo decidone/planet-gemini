@@ -24,6 +24,8 @@ public abstract class InventoryManager : MonoBehaviour
 
     PreBuilding preBuilding;
 
+    public ItemInfoWindow itemInfoWindow;
+
     public abstract void OpenUI();
     public abstract void CloseUI();
 
@@ -36,6 +38,7 @@ public abstract class InventoryManager : MonoBehaviour
         inputManager = InputManager.instance;
         inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotLeftClick();
         inputManager.controls.Inventory.SlotRightClickHold.performed += ctx => SlotRightClickHold();
+        itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
     }
 
     protected virtual void Update()
@@ -223,10 +226,12 @@ public abstract class InventoryManager : MonoBehaviour
     void OnEnter(Slot slot)
     {
         focusedSlot = slot;
+        itemInfoWindow.OpenWindow(slot);
     }
 
     void OnExit(Slot slot)
     {
         focusedSlot = null;
+        itemInfoWindow.CloseWindow();
     }
 }

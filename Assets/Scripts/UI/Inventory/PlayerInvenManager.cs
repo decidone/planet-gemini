@@ -48,6 +48,7 @@ public class PlayerInvenManager : InventoryManager
     public override void CloseUI()
     {
         inventoryUI.SetActive(false);
+        itemInfoWindow.CloseWindow();
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 }
