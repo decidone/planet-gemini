@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ItemCoalGenerator
   m_EditorClassIdentifier: 
   name: CoalGenerator
-  icon: {fileID: 21300000, guid: fe493a99ce2a1554b825afa397f9824e, type: 3}
+  icon: {fileID: -1880186251, guid: 1270e414be996b94cacfa2e284bb8fc2, type: 3}
   tier: -1
