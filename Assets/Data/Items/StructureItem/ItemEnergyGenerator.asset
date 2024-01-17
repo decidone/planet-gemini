@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ItemEnergyGenerator
   m_EditorClassIdentifier: 
   name: EnergyGenerator
-  icon: {fileID: 1804894915, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  icon: {fileID: -1880186251, guid: 1270e414be996b94cacfa2e284bb8fc2, type: 3}
   tier: -1

@@ -384,6 +384,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bebfec2a0e4cd2e448a5ff22bba1d79f, type: 2}
   - {fileID: 11400000, guid: 08e82537e64fc2a469cb83ad46819f1e, type: 2}
   - {fileID: 11400000, guid: a1a65b5ba5102924bb2f1b80504a99f3, type: 2}
+  - {fileID: 11400000, guid: 110a23f8bb2ed324199e63a28f60743d, type: 2}
+  - {fileID: 11400000, guid: 17ab3098301b53e40862ddaa6517ee00, type: 2}
+  - {fileID: 11400000, guid: 692da0934e48dee4a88f732cb82bccab, type: 2}
   uiItemList:
   - {fileID: 11400000, guid: 46cb706fd7d0ec84c9d9a042249929ea, type: 2}
   - {fileID: 11400000, guid: 985f5e4be857e9a4da34efbcfad6dc19, type: 2}

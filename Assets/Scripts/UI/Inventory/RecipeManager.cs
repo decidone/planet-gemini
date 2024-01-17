@@ -47,6 +47,7 @@ public class RecipeManager : InventoryManager
     public override void CloseUI()
     {
         inventoryUI.SetActive(false);
+        itemInfoWindow.CloseWindow();
         structureInfoUI.SetActive(true);
         isOpened = false;
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);

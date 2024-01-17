@@ -61,6 +61,8 @@ public class PreBuilding : MonoBehaviour
     bool isPortalObj = false;
     Portal portalScript;
 
+    BuildingInvenManager buildingInven;
+
     #region Singleton
     public static PreBuilding instance;
 
@@ -83,7 +85,7 @@ public class PreBuilding : MonoBehaviour
 
         gameManager = GameManager.instance;
         playerController = gameManager.player.GetComponent<PlayerController>();
-        
+        buildingInven = BuildingInvenManager.instance;
         inputManager = InputManager.instance;
         inputManager.controls.Building.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
         inputManager.controls.Building.LeftMouseButtonUp.performed += ctx => LeftMouseButtonUp();
@@ -244,6 +246,7 @@ public class PreBuilding : MonoBehaviour
             posList.Clear();
             isDrag = false;
         }
+        buildingInven.PreBuildingCancel();
     }
 
     void Rotate()

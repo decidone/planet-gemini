@@ -32,6 +32,7 @@ public class SplitterFilterRecipe : InventoryManager
 
         inputManager = InputManager.instance;
         inputManager.controls.Inventory.SplitterFilter.performed += ctx => FilterItemClick();
+        itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
     }
 
     void FilterItemClick()
@@ -100,6 +101,7 @@ public class SplitterFilterRecipe : InventoryManager
     public override void CloseUI()
     {
         inventoryUI.SetActive(false);
+        itemInfoWindow.CloseWindow();
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
         slotIndex = -1;
     }

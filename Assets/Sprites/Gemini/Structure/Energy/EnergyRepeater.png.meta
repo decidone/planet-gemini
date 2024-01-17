@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1c66ff0d0adab054b94104945a3106ba
+guid: b24b57563ad857e4c804e173ce530158
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,253 +105,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Structure2x2_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f4e270d68adf6a34ab5a21351a601007
-      internalID: -1932201936
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8eeb0238d0e3d0d4ebe59e378e3aa4e8
-      internalID: 1789975643
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_2
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0643c0cab37ec934c90040e0d79cfd1b
-      internalID: 1828273114
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_3
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 04af348077904f442a6b2cd835a0666a
-      internalID: 1701051910
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_4
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 117
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 616babe68fc153440afc5f192b15c502
-      internalID: 471881988
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_5
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 79
-        width: 32
-        height: 38
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 778162152f64d884fb14b400377d475e
-      internalID: -797419743
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 44
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2a84dfd82f390e5489f7e8866c04fbc5
-      internalID: -1504127690
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_7
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 44
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b46c083a0b82dae4cb7dce4a435ff648
-      internalID: 1852048951
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_8
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 44
-        width: 32
-        height: 35
-      alignment: 9
-      pivot: {x: 0.5, y: 0.46}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c37e69fcd4fc8604fa63bb01dbd23f48
-      internalID: -1880682169
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_9
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 44
-        width: 32
-        height: 37
-      alignment: 9
-      pivot: {x: 0.5, y: 0.43}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: edafcd3524138254781ad7b30880b27f
-      internalID: -606412521
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Structure2x2_10
+      name: EnergyRepeater_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 44
+        width: 26
+        height: 35
       alignment: 9
-      pivot: {x: 0.5, y: 0.43}
+      pivot: {x: 0.5, y: 0.23}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 132828068a9a7d6409250eaa6211ee16
-      internalID: -1012359957
+      spriteID: bc74c1335f7677846b48ff8dbad1f8a6
+      internalID: 630274527
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Structure2x2_11
+      name: EnergyRepeater_1
       rect:
         serializedVersion: 2
-        x: 32
+        x: 26
         y: 0
-        width: 32
-        height: 44
+        width: 26
+        height: 35
       alignment: 9
-      pivot: {x: 0.5, y: 0.43}
+      pivot: {x: 0.5, y: 0.23}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 76aa4c6fbf5a9a7488b6f0197b49991f
-      internalID: 1595258527
+      spriteID: f8b15943f1eab574e9485e85e498eda2
+      internalID: -2071619004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnergyRepeater_2
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 0
+        width: 26
+        height: 35
+      alignment: 9
+      pivot: {x: 0.5, y: 0.23}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bbfe44a4e5361548a63732d5e720d04
+      internalID: 1708891500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnergyRepeater_3
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 0
+        width: 26
+        height: 35
+      alignment: 9
+      pivot: {x: 0.5, y: 0.23}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52b51056267a8454eb87bb22a8c9fe55
+      internalID: -467471025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnergyRepeater_4
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 0
+        width: 26
+        height: 35
+      alignment: 9
+      pivot: {x: 0.5, y: 0.23}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f8be14c747b9754d9478820c325f56c
+      internalID: 647486744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: EnergyRepeater_5
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 0
+        width: 26
+        height: 35
+      alignment: 9
+      pivot: {x: 0.5, y: 0.23}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 686d70c4e44d3254d969fcb455cf1d43
+      internalID: -1544914516
       vertices: []
       indices: 
       edges: []
@@ -367,18 +241,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Structure2x2_5: -797419743
-      Structure2x2_9: -606412521
-      Structure2x2_7: 1852048951
-      Structure2x2_11: 1595258527
-      Structure2x2_1: 1789975643
-      Structure2x2_4: 471881988
-      Structure2x2_2: 1828273114
-      Structure2x2_8: -1880682169
-      Structure2x2_3: 1701051910
-      Structure2x2_6: -1504127690
-      Structure2x2_0: -1932201936
-      Structure2x2_10: -1012359957
+      EnergyRepeater_3: -467471025
+      EnergyRepeater_0: 630274527
+      EnergyRepeater_1: -2071619004
+      EnergyRepeater_4: 647486744
+      EnergyRepeater_5: -1544914516
+      EnergyRepeater_2: 1708891500
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

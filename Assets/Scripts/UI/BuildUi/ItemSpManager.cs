@@ -126,6 +126,7 @@ public class ItemSpManager : InventoryManager
     public override void CloseUI()
     {
         inventoryUI.SetActive(false);
+        itemInfoWindow.CloseWindow();
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 }
