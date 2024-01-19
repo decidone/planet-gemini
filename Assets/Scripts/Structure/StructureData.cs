@@ -63,10 +63,10 @@ public class StructureData : ScriptableObject
     public float Production { get { return production; } }
 
     [SerializeField]
-    private bool energyUse;
-    public bool EnergyUse { get { return energyUse; } }
+    private bool[] energyUse;
+    public bool[] EnergyUse { get { return energyUse; } }
 
     [SerializeField]
-    private float consumption;
-    public float Consumption { get { return consumption; } }
+    private float[] consumption;
+    public float[] Consumption { get { return consumption; } }
 }

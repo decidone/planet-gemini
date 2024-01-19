@@ -150,10 +150,10 @@ public class Structure : MonoBehaviour
         conn = null;
         efficiency = 0;
         effiCooldown = 0;
-        energyUse = structureData.EnergyUse;
+        energyUse = structureData.EnergyUse[level];
         isEnergyStr = structureData.IsEnergyStr;
         energyProduction = structureData.Production;
-        energyConsumption = structureData.Consumption;
+        energyConsumption = structureData.Consumption[level];
     }
 
     protected virtual void Update()

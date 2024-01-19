@@ -24,7 +24,8 @@ MonoBehaviour:
   colliderRadius: 10
   maxLevel: 3
   cooldown: 0
-  energyUse: 0
   isEnergyStr: 1
   production: 0
-  consumption: 0
+  energyUse: 00
+  consumption:
+  - 0

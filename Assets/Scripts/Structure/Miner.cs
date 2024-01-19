@@ -20,21 +20,62 @@ public class Miner : Production
         if (!isPreBuilding)
         {
             var slot = inventory.SlotCheck(0);
-            if (output != null && slot.amount < maxAmount)
+
+            if (energyUse)
             {
-                prodTimer += Time.deltaTime;
-                if (prodTimer > cooldown)
+                if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    if(slot.amount + minerCellCount <= maxAmount)
+                    EfficiencyCheck();
+
+                    if (output != null && slot.amount < maxAmount)
                     {
-                        inventory.Add(output, minerCellCount);
-                        prodTimer = 0;
+                        isOperate = true;
+                        prodTimer += Time.deltaTime;
+                        if (prodTimer > effiCooldown)
+                        {
+                            if (slot.amount + minerCellCount <= maxAmount)
+                            {
+                                inventory.Add(output, minerCellCount);
+                                prodTimer = 0;
+                            }
+                            else
+                            {
+                                int addAmount = maxAmount - slot.amount;
+                                inventory.Add(output, addAmount);
+                                prodTimer = 0;
+                            }
+                        }
                     }
                     else
                     {
-                        int addAmount = maxAmount - slot.amount;
-                        inventory.Add(output, addAmount);
+                        isOperate = false;
                         prodTimer = 0;
+                    }
+                }
+                else
+                {
+                    isOperate = false;
+                    prodTimer = 0;
+                }
+            }
+            else
+            {
+                if (output != null && slot.amount < maxAmount)
+                {
+                    prodTimer += Time.deltaTime;
+                    if (prodTimer > effiCooldown)
+                    {
+                        if (slot.amount + minerCellCount <= maxAmount)
+                        {
+                            inventory.Add(output, minerCellCount);
+                            prodTimer = 0;
+                        }
+                        else
+                        {
+                            int addAmount = maxAmount - slot.amount;
+                            inventory.Add(output, addAmount);
+                            prodTimer = 0;
+                        }
                     }
                 }
             }
@@ -154,6 +195,7 @@ public class Miner : Production
         {
             output = item;
             cooldown = _efficiency;
+            effiCooldown = cooldown;
             minerCellCount = _minerCellCount;
         }
     }

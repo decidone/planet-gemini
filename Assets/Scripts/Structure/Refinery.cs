@@ -35,10 +35,10 @@ public class Refinery : FluidFactoryCtrl
         conn = null;
         efficiency = 0;
         effiCooldown = 0;
-        energyUse = structureData.EnergyUse;
+        energyUse = structureData.EnergyUse[level];
         isEnergyStr = structureData.IsEnergyStr;
         energyProduction = structureData.Production;
-        energyConsumption = structureData.Consumption;
+        energyConsumption = structureData.Consumption[level];
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();

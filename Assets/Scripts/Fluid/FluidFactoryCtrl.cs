@@ -40,10 +40,10 @@ public class FluidFactoryCtrl : Production
         conn = null;
         efficiency = 0;
         effiCooldown = 0;
-        energyUse = structureData.EnergyUse;
+        energyUse = structureData.EnergyUse[level];
         isEnergyStr = structureData.IsEnergyStr;
         energyProduction = structureData.Production;
-        energyConsumption = structureData.Consumption;
+        energyConsumption = structureData.Consumption[level];
     }
 
     protected override void Update()

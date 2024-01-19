@@ -23,3 +23,9 @@ MonoBehaviour:
   maxRepairGauge: 10
   colliderRadius: 10
   maxLevel: 3
+  cooldown: 0
+  isEnergyStr: 0
+  production: 0
+  energyUse: 00
+  consumption:
+  - 0
