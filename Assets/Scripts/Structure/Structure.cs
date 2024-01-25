@@ -45,7 +45,7 @@ public class Structure : MonoBehaviour
 
     [SerializeField]
     protected Image hpBar;
-    protected float hp = 200.0f;
+    protected float hp;
     [HideInInspector]
     public bool isRuin = false;
 
@@ -130,7 +130,9 @@ public class Structure : MonoBehaviour
     public bool isOperate;
     public float efficiency;
     public float effiCooldown;
-    
+
+    public bool isMainEnergyColony;
+
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -627,6 +629,8 @@ public class Structure : MonoBehaviour
             }
         }
         monsterList.Clear();
+
+        RemoveObj();
     }
 
     public void HealFunc(float heal)

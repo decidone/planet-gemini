@@ -368,4 +368,19 @@ public class MonsterSpawner : MonoBehaviour
         currentNormalSpawn = 0;
         currentStrongSpawn = 0;
     }
+
+    public void ColonyCall(EnergyColony colony)
+    {
+        MonsterScriptSet(true);
+        foreach (GameObject monster in totalMonsterList)
+        {
+            MonsterAi monsterAi = monster.GetComponent<MonsterAi>();
+            monsterAi.WaveStart(colony.transform.position);
+        }
+
+        totalMonsterList.Clear();
+        currentWeakSpawn = 0;
+        currentNormalSpawn = 0;
+        currentStrongSpawn = 0;
+    }
 }

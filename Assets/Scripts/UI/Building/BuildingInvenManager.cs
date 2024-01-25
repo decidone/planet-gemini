@@ -95,7 +95,7 @@ public class BuildingInvenManager : MonoBehaviour
         {
             selectSlot = focusedSlot;
             Image slotImage = selectSlot.GetComponentInChildren<Image>();
-            SetSlotColor(slotImage, Color.red, 0.5f);
+            SetSlotColor(slotImage, Color.blue, 0.5f);
         }
         else if (selectSlot != focusedSlot)
         {
@@ -104,7 +104,7 @@ public class BuildingInvenManager : MonoBehaviour
 
             selectSlot = focusedSlot;
             Image currSlotImage = selectSlot.GetComponentInChildren<Image>();
-            SetSlotColor(currSlotImage, Color.red, 0.5f);
+            SetSlotColor(currSlotImage, Color.blue, 0.5f);
         }
 
         global::BuildingInfo.instance.BuildingClick();
@@ -112,8 +112,13 @@ public class BuildingInvenManager : MonoBehaviour
 
     public void PreBuildingCancel()
     {
-        Image prevSlotImage = selectSlot.GetComponentInChildren<Image>();
-        SetSlotColor(prevSlotImage, Color.white, 1.0f);
+        if (selectSlot)
+        {
+            Image prevSlotImage = selectSlot.GetComponentInChildren<Image>();
+            SetSlotColor(prevSlotImage, Color.white, 1.0f);
+            global::BuildingInfo.instance.ClearArr();
+            selectSlot = null;
+        }
     }
 
     void SetSlotColor(Image image, Color color, float alpha)

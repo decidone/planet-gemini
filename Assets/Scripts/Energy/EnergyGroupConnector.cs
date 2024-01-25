@@ -59,6 +59,8 @@ public class EnergyGroupConnector : MonoBehaviour
     [HideInInspector]
     public SteamGenerator steamGenerator;
 
+    public EnergyColony mainEnergyColony;
+
     void Awake()
     {
         isBuildDone = false;
@@ -71,6 +73,8 @@ public class EnergyGroupConnector : MonoBehaviour
         consumptions = new List<Structure>();
         energyGenerator = GetComponentInParent<EnergyGenerator>();
         steamGenerator = GetComponentInParent<SteamGenerator>();
+        if (structure.isMainEnergyColony)
+            mainEnergyColony = GetComponent<EnergyColony>();
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -170,7 +174,9 @@ public class EnergyGroupConnector : MonoBehaviour
     public void CheckAndAdd(EnergyGroupConnector conn)
     {
         if (!connectors.Contains(conn))
+        {
             connectors.Add(conn);
+        }
     }
 
     public void RemoveFromGroup()
@@ -186,7 +192,9 @@ public class EnergyGroupConnector : MonoBehaviour
     public void SubtractConnector(EnergyGroupConnector conn)
     {
         if (connectors.Contains(conn))
+        {
             connectors.Remove(conn);
+        }
     }
 
     public void SendSignal(int code)

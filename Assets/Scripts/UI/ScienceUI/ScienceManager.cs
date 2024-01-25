@@ -20,7 +20,6 @@ public class ScienceManager : MonoBehaviour
     [SerializeField]
     GameObject itemInputWindow;
     SciItemSetWindow sciItemSetWindow;
-    bool itemInputWinOpen = false;
 
     public GameObject coreLvUI;
     [HideInInspector]
@@ -199,7 +198,6 @@ public class ScienceManager : MonoBehaviour
         }
         itemInputWindow.transform.position = mousePos;
         itemInputWindow.SetActive(true);
-        itemInputWinOpen = true;
         sciItemSetWindow.SetUI(focusedSciBtn);
     }
 

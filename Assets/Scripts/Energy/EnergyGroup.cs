@@ -35,6 +35,8 @@ public class EnergyGroup
     public float consumption;
     public float efficiency;   //에너지 생산량, 사용량 비율로 충분하면 1, 아니면 비율만큼 생산 효율 감소
     float syncFrequency;
+    EnergyColony mainColony;
+    bool getTempColony = false;
 
     public EnergyGroup(EnergyGroupManager _groupManager, EnergyGroupConnector conn)
     {
@@ -54,6 +56,13 @@ public class EnergyGroup
         {
             connectors[i].ChangeGroup(this);
         }
+        if (mainColony == null || getTempColony)
+            MainColonySet();
+        else if(mainColony)
+        {
+            MainColonyDataSet();
+        }
+
         groupManager.AddGroup(this);
     }
 
@@ -80,6 +89,15 @@ public class EnergyGroup
                 MergeGroup(connList[i].group);
             }
         }
+
+        if (mainColony == null || getTempColony)
+        {
+            MainColonySet();
+        }
+        else if (mainColony)
+        {
+            MainColonyDataSet();
+        }        
     }
 
     public void RemoveConnector(EnergyGroupConnector conn)
@@ -112,6 +130,10 @@ public class EnergyGroup
 
     public void RemoveGroup()
     {
+        if (getTempColony)
+        {
+            mainColony.DestoryThisScipt();
+        }
         groupManager.RemoveGroup(this);
     }
 
@@ -149,6 +171,9 @@ public class EnergyGroup
             {
                 connectors.Remove(splitConnectors[i]);
             }
+
+            MainColonySet();
+
             EnergyGroup splitGroup = new EnergyGroup(groupManager, splitConnectors);
             splitGroup.ConnectionCheck(code);
             splitConnectors.Clear();
@@ -289,5 +314,56 @@ public class EnergyGroup
                     return;
             }
         }
+    }
+
+    void MainColonySet()
+    {
+        bool hasMainColony = false;
+        for (int i = 0; i < connectors.Count; i++)
+        {
+            if (connectors[i].structure.isMainEnergyColony)
+            {
+                if (getTempColony)
+                {
+                    mainColony.DestoryThisScipt();
+                    getTempColony = false;
+                }
+                mainColony = connectors[i].mainEnergyColony;
+                mainColony.mainColony = true;
+                hasMainColony = true;
+            }
+        }
+
+        if(!hasMainColony && !getTempColony)
+        {
+            EnergyColony temp = connectors[0].gameObject.AddComponent<EnergyColony>();
+            mainColony = connectors[0].mainEnergyColony = temp;
+            mainColony.mainColony = true;
+            getTempColony = true;
+        }
+
+        MainColonyDataSet();
+    }
+
+    void MainColonyDataSet()
+    {
+        //List<EnergyColony> othMain = new List<EnergyColony>();
+
+        for (int i = 0; i < connectors.Count; i++)
+        {
+            if (connectors[i].structure.isMainEnergyColony && mainColony != connectors[i].mainEnergyColony)
+            {
+                //othMain.Add(connectors[i].mainEnergyColony);
+                connectors[i].mainEnergyColony.DataClear();
+                connectors[i].mainEnergyColony.mainColony = false;
+            }
+        }
+
+        if (mainColony)
+        {
+            mainColony.connectors = new List<EnergyGroupConnector>(connectors);
+        }
+        //mainColony.OthColonyListAdd(othMain);
+        mainColony.energyGroup = this;
     }
 }

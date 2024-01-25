@@ -102,7 +102,7 @@ public class SpawnerSetManager : MonoBehaviour
                 yRadius = areaHSize / 2 - 10;
             }
 
-            float minDistance = 20 ; // 오브젝트간 최소 거리
+            float minDistance = 10 ; // 오브젝트간 최소 거리
 
             Vector2 newPoint;
 

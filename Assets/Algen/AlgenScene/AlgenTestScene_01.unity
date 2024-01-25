@@ -221,7 +221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9113408284949583420, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9113408284949583421, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: m_RootOrder
@@ -321,6 +321,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
+      propertyPath: width
+      value: 1100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
+      propertyPath: height
+      value: 1100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
       propertyPath: mapFog
       value: 
       objectReference: {fileID: 896358557}
@@ -342,7 +350,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7378487733200588626, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
       propertyPath: data.dataString
-      value: UEsDBBQAAAgIAABIIewRLPWWcgIAACsFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVE1z2jAQ/SuMziVjMImht9YhpIckTEgnF1+EtcYaZMmjjwDJ8N+7km3s0BPL27e7bz/kL8KlqSG3Sq80Z0+KAfk5It4mP0a98xGOdKfkhn9Cx3nnzJaeRAPnlVquEJ/4MKMqsJrnv+ROeHKEoJO8ULpash2kyliDcEGFAXRpZX20ROhrRI74M174kBNa08Rbn2gtotEZzRykBd1TJ9F01nJb05MbrpO5oFUNzAvvQ6bRbN6lRzNQJbbVsnwLuRKCm1YTsac69JzS2jjsCAmMU+wxCPH8EviutD7hMPilKAzYdgCanu65xlE1Wclv1cyvombfaPugwvk689k0ngZVTdqn/xjjSXAXWlWPXeVJ5KvYkuf7V3rKqbGDEQ/h++/SnTxQsadbAe8lyGe10spJhk6rnQ91Bqb3/d9Lc2kJ+b7HG6lXoKv7qXcbndwk8/kkXiTJchwl7b58Q+cwjGMqeLX1/JtZA2yECuMPNwEaF/UH1YeLMW1eRL2kvwbe6G54Wq3jgWtj0dW2LL3WrXLaU8kyDNC35myqtIQAtx3UIKmwpzWmsdcbvfINyl55Hqh/RG3x1te9jauQAPf8KLpyrdXhsjlTqsMTmPLFWcEl9KK94xnnlCopm4MbzqQL2zhd0HwQtnOcfb8zEt9uYwqUMhYlszyGMU1u7+bJ3SKB+G6RxzEJh8gl9knFuhHajge3JvvkEo+u+7aMVprW4fiZpocV/6zUYORcFmqTawD50mS4CAeNRfCRsiXjOKANWMtl2Df5yohQ+R5YdkmUhU6XR6tp1mfJSM0/lPVIRtLwMcmIhy+HvdbwweHgi3fJzuT8D1BLAwQUAAAICAAASCHsVxUx/20AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNdRUEovSizIKAaKGII4pZkpIHa0krFpknFiamJiSoqBuUmycapuormpmYW5maV5qrGZZbKxsVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAASCHsESz1lnICAAArBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAASCHsVxUx/20AAAB4AAAACQAkAAAAAAAAAAAAAAC/AgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAHcDAAAAAA==
+      value: UEsDBBQAAAgIAABIIexgDercbgIAACkFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVE1z2jAQ/SuMziVjcIiht9YhpIckTEgnF1+EtcYaZMmjjwDJ8N+7km3s0BPL27er91YrfxEuTQ25VXqlOXtSDMjPEfEx+THqk49wpDslN/wTOs47Z7b0JBo4r9RyhfjElxlVgdU8/yV3wpMjBJ3khdLVku0gVcYahAsqDGBKK+urJUJfI3LEn/HCl5wwmiY++sRoEY3OGOYgLeieOpt11Cby1IbpZC5oVQPzsvuCySTqKnwYqBJNtSxvIFdCcNMqIvZUB8cprY1DP0hgnKLDIMPzS+C70nq1w+KXojBgW/uanu65xkE1Xclv1UyvombfaPugwvlz5rfTeBpUNW2f/mOMJyFdaFU9dic3pmzJ8/0rPeXU2MGAh/D9d+lOHqjY062A9xLks1pp5STDpNXOlzoD0/v+78VcWkK+7/FG6hXo6n7ql5HfJPP5JF4kyXIcJe19eUPnMIxjKni19fyb2wbYCBXGHzYCNF7UH1Qf9sW0fRH1kv4aeKO74WK1iQeujcVUa1l6rVvltKeSZRigt+ZsqrSEALcOapBU2NMa29jrG73KDY69yjxQ/4Taw9tc9zKuSgLc86PoKrVWh8vNmVIdnsCUL84KLqEX7RPPOKdUSdks3HAmXdnG6YLmg7Kd4+z7npF4to0pUMpYlNzmMYxpMrubJ3eLBOK7RR7HJCwil+iTinUjtB0P3prsm0tcuu7LMlppWoflZ5oeVvyzUoORc1moTa4B5EvT4SIcNB6Cj5QtGccBbcBaLsN9k6+MCJXvgWWXRllwujxaTbO+S0Zq/qGsRzKShk9JRjx8Wey1hg8OB3941+xMzv8AUEsDBBQAAAgIAABIIexXFTH/bQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrSSsWmScWJqYmJKioG5SbJxqm6iuamZhbmZpXmqsZllsrGxUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAABIIexgDercbgIAACkFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAABIIexXFTH/bQAAAHgAAAAJACQAAAAAAAAAAAAAALsCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAcwMAAAAA
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}

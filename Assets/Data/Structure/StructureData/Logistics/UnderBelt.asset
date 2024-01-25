@@ -27,6 +27,8 @@ MonoBehaviour:
   cooldown: 0
   isEnergyStr: 0
   production: 0
-  energyUse: 00
+  energyUse: 000000
   consumption:
+  - 0
+  - 0
   - 0

@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 180068444103987528}
   - component: {fileID: 1571619966280148387}
   - component: {fileID: 7265358927153795667}
+  - component: {fileID: 3530530698051617989}
   m_Layer: 15
   m_Name: Territory
   m_TagString: Energy
@@ -326,6 +327,26 @@ MonoBehaviour:
   view: {fileID: 6363363537288611314}
   signal: 0
   energyGenerator: {fileID: 0}
+  steamGenerator: {fileID: 0}
+  mainEnergyColony: {fileID: 0}
+--- !u!114 &3530530698051617989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334310971520450765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57cc21318390de0499e5aae976c927a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  othColonyList: []
+  connectors: []
+  monsterSpawners: []
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 16384
 --- !u!1 &2075445432134139083
 GameObject:
   m_ObjectHideFlags: 0
@@ -738,15 +759,18 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 868971455955703356}
+  maxAmount: 0
+  cooldown: 0
   connectors: []
   conn: {fileID: 0}
   energyUse: 0
   isEnergyStr: 1
-  isOperate: 0
   energyProduction: 0
   energyConsumption: 0
+  isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  isMainEnergyColony: 1
   connector: {fileID: 7265358927153795667}
   view: {fileID: 6363363537288611314}
   preBuildingObj: {fileID: 0}
@@ -767,7 +791,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.085}
+    pivot: {x: 0.5, y: 0.135}
     oldSize: {x: 1, y: 3.6875}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
