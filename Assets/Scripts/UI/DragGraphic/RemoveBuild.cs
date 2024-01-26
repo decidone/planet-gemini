@@ -10,7 +10,6 @@ public class RemoveBuild : DragFunc
     Inventory inventory;
     int structureLayer;
     public bool isRemovePopUpOn = false;
-    PlayerController playerController;
 
     protected override void Start()
     {
@@ -18,7 +17,6 @@ public class RemoveBuild : DragFunc
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         inventory = gameManager.GetComponent<Inventory>();
         structureLayer = LayerMask.NameToLayer("Obj");
-        playerController = gameManager.player.GetComponent<PlayerController>();
     }
 
     public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
@@ -82,7 +80,7 @@ public class RemoveBuild : DragFunc
     {
         if (obj.isTempBuild)
         {
-            playerController.RemoveTempBuild();
+            gameManager.playerController.RemoveTempBuild();
         }
         else
         {

@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public GameObject inventoryUiCanvas;
     public Map map;
     public GameObject player;
+    public PlayerController playerController;
+    CameraController mainCam;
     public MapCameraController mapCameraController;
     public GameObject preBuildingObj;
 
@@ -44,6 +46,8 @@ public class GameManager : MonoBehaviour
     public Structure focusedStructure;
     public Portal[] portal;
 
+    Vector3 playerSpawnPos;
+
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
@@ -70,7 +74,6 @@ public class GameManager : MonoBehaviour
         onUIChangedCallback += UIChanged;
 
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
-        player.transform.position = playerSpawnPos;
 
         inputManager = InputManager.instance;
         inputManager.controls.Structure.StrClick.performed += ctx => StrClick();
@@ -367,10 +370,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SetPlayer(GameObject playerObj)
+    {
+        player = playerObj;
+        playerController = player.GetComponent<PlayerController>();
+        player.transform.position = playerSpawnPos;
+        mainCam = Camera.main.gameObject.GetComponent<CameraController>();
+        mainCam.target = player.transform;
+        mapCameraController.target = player.transform;
+        GameObject fogOfWar = ResourcesManager.instance.fogOfWar;
+        FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
+        followTransform.SetTargetTransform(player.transform);
+    }
+
     public void SetPlayerPos(float x, float y)
     {
-        Vector3 playerSpawnPos = new Vector3(x, y, 0);
-        player.transform.position = playerSpawnPos;
+        playerSpawnPos = new Vector3(x, y, 0);
+        //player.transform.position = playerSpawnPos;
     }
 
     public GameObject SelectPointSpawn(GameObject build)

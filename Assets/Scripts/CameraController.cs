@@ -6,8 +6,7 @@ using UnityEngine.U2D;
 // UTF-8 설정
 public class CameraController : MonoBehaviour
 {
-    [SerializeField]
-    Transform target;
+    public Transform target;
     [SerializeField]
     Vector3 offset;
 
@@ -52,7 +51,8 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        transform.position = target.position - offset;
+        if (target != null)
+            transform.position = target.position - offset;
     }
 
     public void ChangeZoomLv(int lv)
