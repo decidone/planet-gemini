@@ -12,7 +12,6 @@ public class Inventory : MonoBehaviour
     public int maxAmount;   // 한 슬롯 당 최대 수량
     [SerializeField]
     GameObject itemPref;
-    GameObject player;
     Slot dragSlot;
 
     // 인벤토리에 표시되는 아이템
@@ -31,7 +30,6 @@ public class Inventory : MonoBehaviour
             totalItems.Add(item, 0);
         }
         dragSlot = DragSlot.instance.slot;
-        player = GameManager.instance.player;
     }
 
     public int SpaceCheck(Item item)
@@ -310,7 +308,7 @@ public class Inventory : MonoBehaviour
         ItemProps itemProps = dropItem.GetComponent<ItemProps>();
         itemProps.item = item;
         itemProps.amount = amount;
-        dropItem.transform.position = player.transform.position;
+        dropItem.transform.position = GameManager.instance.player.transform.position;
     }
 
     public void ResetInven()

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 // UTF-8 설정
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     public Inventory inventory;
 
@@ -12,16 +13,24 @@ public class PlayerController : MonoBehaviour
 
     public Collider2D circleColl;
     GameObject preBuilding;
-    [SerializeField]
-    Building tempMiner = null;
-    [SerializeField]
+    Building tempMiner;
     TempMinerUi tempMinerUI;
-
     int tempFullAmount;
     public int tempMinerCount;
 
     InputManager inputManager;
     bool isLoot;
+
+    [Space]
+    [Header ("Movement")]
+    [SerializeField]
+    float moveSpeed;
+    [SerializeField]
+    Rigidbody2D rb;
+    [SerializeField]
+    Animator animator;
+    public Vector2 movement;
+    float animTimer;
 
     void Awake()
     {
@@ -32,18 +41,54 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        
+        tempFullAmount = 5;
+        tempMinerCount = tempFullAmount;
+        tempMiner = ResourcesManager.instance.tempMiner;
+        tempMinerUI = ResourcesManager.instance.tempMinerUI;
+
+        inventory = GameManager.instance.GetComponent<Inventory>();
+        
+
         inputManager = InputManager.instance;
+        if (!IsOwner) { return; }
+        GameManager.instance.SetPlayer(this.gameObject);
         inputManager.controls.Player.Loot.performed += ctx => LootCheck();
         inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
         inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
-        tempFullAmount = 5;
-        tempMinerCount = tempFullAmount;
     }
 
     void Update()
     {
+        if (!IsOwner) { return; }
+
         if (isLoot)
             Loot();
+
+        movement = inputManager.controls.Player.Movement.ReadValue<Vector2>();
+        animator.SetFloat("Horizontal", movement.x);
+        animator.SetFloat("Vertical", movement.y);
+        animator.SetFloat("Speed", movement.sqrMagnitude);
+
+        // idle 모션 방향을 위해 마지막 움직인 방향을 저장
+        animTimer += Time.deltaTime;
+        if (Mathf.Abs(movement.x) == 1 || Mathf.Abs(movement.y) == 1)
+        {
+            // 0.1초마다 입력 상태를 저장
+            if (animTimer > 0.1)
+            {
+                animator.SetFloat("lastMoveX", movement.x);
+                animator.SetFloat("lastMoveY", movement.y);
+                animTimer = 0;
+            }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (!IsOwner) { return; }
+
+        rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * movement.normalized);
     }
 
     void OnTriggerEnter2D(Collider2D collision)

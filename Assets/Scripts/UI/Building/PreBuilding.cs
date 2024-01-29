@@ -51,7 +51,6 @@ public class PreBuilding : MonoBehaviour
     bool mouseHoldCheck;   //기존 isLeftMouse기능 대체+a 역할이라 실제 hold감지는 InputManager의 hold를 사용
 
     GameManager gameManager;
-    PlayerController playerController;
     InputManager inputManager;
 
     public TowerGroupManager towerGroupManager;
@@ -84,7 +83,6 @@ public class PreBuilding : MonoBehaviour
         tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
 
         gameManager = GameManager.instance;
-        playerController = gameManager.player.GetComponent<PlayerController>();
         buildingInven = BuildingInvenManager.instance;
         inputManager = InputManager.instance;
         inputManager.controls.Building.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
@@ -109,7 +107,7 @@ public class PreBuilding : MonoBehaviour
     {
         if(isEnough && mouseHoldCheck && this.gameObject.activeSelf)
         {
-            if((!isTempBuild && BuildingInfo.instance.AmountsEnoughCheck()) || (isTempBuild && playerController.TempMinerCountCheck()))
+            if((!isTempBuild && BuildingInfo.instance.AmountsEnoughCheck()) || (isTempBuild && gameManager.playerController.TempMinerCountCheck()))
             {
                 tempPos = transform.position;
                 float tempDeltaX = tempPos.x - endBuildPos.x;
@@ -196,9 +194,9 @@ public class PreBuilding : MonoBehaviour
 
                 if (isTempBuild)
                 {
-                    playerController.TempBuildSet(buildingList.Count);
-                    isEnough = playerController.TempMinerCountCheck();
-                    canBuildCount = playerController.tempMinerCount;
+                    gameManager.playerController.TempBuildSet(buildingList.Count);
+                    isEnough = gameManager.playerController.TempMinerCountCheck();
+                    canBuildCount = gameManager.playerController.tempMinerCount;
                 }
                 else if (isPortalObj)
                 {
@@ -708,7 +706,7 @@ public class PreBuilding : MonoBehaviour
     {
         if (isTempBuild)
         {
-            bool canBuild = playerController.TempMinerCountCheck();
+            bool canBuild = gameManager.playerController.TempMinerCountCheck();
             if (canBuild)
             {
                 SetColor(obj.GetComponentInChildren<SpriteRenderer>(), Color.white, 1f);
@@ -1187,7 +1185,7 @@ public class PreBuilding : MonoBehaviour
     {
         bool canBuild = false;
 
-        Vector3 playerPos = playerController.gameObject.transform.position;
+        Vector3 playerPos = gameManager.playerController.gameObject.transform.position;
         playerPos = new Vector3(playerPos.x, playerPos.y + 1, 0);
         float dist = Vector3.Distance(pos, playerPos);
 
@@ -1210,7 +1208,7 @@ public class PreBuilding : MonoBehaviour
             spriteRenderer.sprite = null;
         gameObj = null;
         gameObject.SetActive(false);
-        playerController.TempBuildUI(false);
+        gameManager.playerController.TempBuildUI(false);
     }
 
 

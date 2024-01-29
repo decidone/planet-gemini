@@ -6,8 +6,7 @@ using UnityEngine.U2D;
 // UTF-8 설정
 public class MapCameraController : MonoBehaviour
 {
-    [SerializeField]
-    Transform target;
+    public Transform target;
     [SerializeField]
     Vector3 offset;
     [SerializeField]

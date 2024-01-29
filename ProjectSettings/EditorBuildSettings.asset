@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/MergeScene_06_Network.unity
+    guid: e393bd8be00565d429646b5a33ba066a
   m_configObjects: {}
