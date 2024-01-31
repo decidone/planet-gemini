@@ -41,17 +41,14 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
-        
-        tempFullAmount = 5;
-        tempMinerCount = tempFullAmount;
         tempMiner = ResourcesManager.instance.tempMiner;
         tempMinerUI = ResourcesManager.instance.tempMinerUI;
-
+        inputManager = InputManager.instance;
         inventory = GameManager.instance.GetComponent<Inventory>();
         
-
-        inputManager = InputManager.instance;
         if (!IsOwner) { return; }
+        tempFullAmount = 5;
+        tempMinerCount = tempFullAmount;
         GameManager.instance.SetPlayer(this.gameObject);
         inputManager.controls.Player.Loot.performed += ctx => LootCheck();
         inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
