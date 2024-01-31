@@ -27,6 +27,12 @@ public class MonsterAi : UnitCommonAi
     Vector3 wavePos; // 나중에 웨이브 대상으로 변경해야함 (현 맵 중심으로 이동하게)
 
     //bool goalPathBlocked = false;
+    SoundManager soundManager;
+
+    private void Start()
+    {
+        soundManager = SoundManager.Instance;
+    }
 
     protected override void FixedUpdate()
     {
@@ -542,6 +548,7 @@ public class MonsterAi : UnitCommonAi
     protected override void AttackEnd(string str)
     {
         base.AttackEnd(str);
+        soundManager.PlaySFX(gameObject, "MonsterAttack");
         if (str == "false")
         {
             if (aggroTarget != null)
