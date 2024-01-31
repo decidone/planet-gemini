@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/MergeScene_06_Network.unity
     guid: e393bd8be00565d429646b5a33ba066a
   - enabled: 1
-    path: Assets/Decidone/Decidone_10.unity
-    guid: 2c47dff45c8b57a4aa2b0fda71083add
+    path: Assets/Algen/AlgenScene/AlgenScene_02_Network.unity
+    guid: 4303a63be946cd74fb7ed7ac2937374e
   m_configObjects: {}

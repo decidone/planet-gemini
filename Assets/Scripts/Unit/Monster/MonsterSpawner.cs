@@ -43,7 +43,7 @@ public class MonsterSpawner : MonoBehaviour
     float spawnInterval;
     float spawnTimer;
 
-    bool nearUserObjExist;
+    public bool nearUserObjExist;
 
     public SpriteRenderer unitSprite;
     public GameObject unitCanvas;
