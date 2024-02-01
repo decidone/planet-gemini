@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -238,7 +239,7 @@ public class GameManager : MonoBehaviour
             Inventory inven = this.GetComponent<Inventory>();
             foreach (Item item in ItemList.instance.itemList)
             {
-                if (item.name != "EmptyFilter" && item.name != "FullFilter" && item.name != "Water" && item.name != "CrudeOil")
+                if (item.tier >= 0)
                     inven.Add(item, 99);
             }
             BuildAndSciUiReset();
@@ -368,6 +369,31 @@ public class GameManager : MonoBehaviour
         {
             InfoWindow.instance.SetNeedItem();
         }
+    }
+
+    public void HostConnected()
+    {
+        GeminiNetworkManager.instance.HostSpawnServerRPC();
+    }
+
+    public void ClientConnected()
+    {
+        StartCoroutine(WaitForNetworkConnection());
+    }
+
+    private IEnumerator WaitForNetworkConnection()
+    {
+        Debug.Log("Wait for Network connection");
+
+        while (!NetworkManager.Singleton.IsConnectedClient)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        //ulong id = NetworkManager.Singleton.LocalClientId;
+        GeminiNetworkManager.instance.ClientSpawnServerRPC();
+
+        Debug.Log("Connected to Network");
     }
 
     public void SetPlayer(GameObject playerObj)

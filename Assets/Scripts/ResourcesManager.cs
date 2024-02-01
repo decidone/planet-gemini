@@ -22,5 +22,5 @@ public class ResourcesManager : MonoBehaviour
     public Building tempMiner = null;
     public TempMinerUi tempMinerUI;
     public GameObject fogOfWar;
-
+    
 }

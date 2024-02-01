@@ -4,25 +4,27 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TestingNetcodeUI : MonoBehaviour
+public class TestingNetcodeUI : NetworkBehaviour
 {
     [SerializeField]
     private Button startHostButton;
     [SerializeField]
     private Button startClientButton;
 
-    private void Awake()
+    void Awake()
     {
         startHostButton.onClick.AddListener(() =>
         {
             Debug.Log("Host");
             NetworkManager.Singleton.StartHost();
+            GameManager.instance.HostConnected();
             Hide();
         });
         startClientButton.onClick.AddListener(() =>
         {
             Debug.Log("Client");
             NetworkManager.Singleton.StartClient();
+            GameManager.instance.ClientConnected();
             Hide();
         });
     }

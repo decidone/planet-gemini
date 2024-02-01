@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 // UTF-8 설정
-public class Inventory : MonoBehaviour
+public class Inventory : NetworkBehaviour
 {
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
@@ -55,6 +56,19 @@ public class Inventory : MonoBehaviour
 
     public void Add(Item item, int amount)
     {
+        AddServerRpc(GeminiNetworkManager.instance.GetItemSOIndex(item), amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void AddServerRpc(int itemSOIndex, int amount)
+    {
+        AddClientRpc(itemSOIndex, amount);
+    }
+
+    [ClientRpc]
+    void AddClientRpc(int itemSOIndex, int amount)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemSOIndex);
         int containableAmount = SpaceCheck(item);
         int tempAmount = amount;
 
@@ -119,35 +133,47 @@ public class Inventory : MonoBehaviour
 
     public void Swap(Slot slot)
     {
-        if (!items.ContainsKey(slot.slotNum))
+        SwapServerRpc(slot.slotNum);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void SwapServerRpc(int slotNum)
+    {
+        SwapClientRpc(slotNum);
+    }
+
+    [ClientRpc]
+    void SwapClientRpc(int slotNum)
+    {
+        if (!items.ContainsKey(slotNum))
         {
             // 타겟 슬롯이 비어있는 경우
-            items.Add(slot.slotNum, dragSlot.item);
-            amounts.Add(slot.slotNum, dragSlot.amount);
+            items.Add(slotNum, dragSlot.item);
+            amounts.Add(slotNum, dragSlot.amount);
             totalItems[dragSlot.item] += dragSlot.amount;
             dragSlot.ClearSlot();
         }
         else if (dragSlot.item == null)
         {
             // 드래그 슬롯이 비어있는 경우
-            dragSlot.item = items[slot.slotNum];
-            dragSlot.amount = amounts[slot.slotNum];
+            dragSlot.item = items[slotNum];
+            dragSlot.amount = amounts[slotNum];
             totalItems[dragSlot.item] -= dragSlot.amount;
-            items.Remove(slot.slotNum);
-            amounts.Remove(slot.slotNum);
+            items.Remove(slotNum);
+            amounts.Remove(slotNum);
         }
         else
         {
             totalItems[dragSlot.item] += dragSlot.amount;
-            totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
+            totalItems[items[slotNum]] -= amounts[slotNum];
 
-            Item tempItem = items[slot.slotNum];
-            int tempAmount = amounts[slot.slotNum];
+            Item tempItem = items[slotNum];
+            int tempAmount = amounts[slotNum];
 
-            items[slot.slotNum] = dragSlot.item;
+            items[slotNum] = dragSlot.item;
             dragSlot.item = tempItem;
 
-            amounts[slot.slotNum] = dragSlot.amount;
+            amounts[slotNum] = dragSlot.amount;
             dragSlot.amount = tempAmount;
         }
 
@@ -156,19 +182,31 @@ public class Inventory : MonoBehaviour
 
     public void Merge(Slot mergeSlot)
     {
+        MergeServerRpc(mergeSlot.slotNum);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void MergeServerRpc(int slotNum)
+    {
+        MergeClientRpc(slotNum);
+    }
+
+    [ClientRpc]
+    void MergeClientRpc(int slotNum)
+    {
         // 드래그 중인 슬롯이 첫 번째 인자
-        int mergeAmount = dragSlot.amount + amounts[mergeSlot.slotNum];
+        int mergeAmount = dragSlot.amount + amounts[slotNum];
 
         if (mergeAmount > maxAmount)
         {
-            totalItems[dragSlot.item] += (maxAmount - amounts[mergeSlot.slotNum]);
-            amounts[mergeSlot.slotNum] = maxAmount;
+            totalItems[dragSlot.item] += (maxAmount - amounts[slotNum]);
+            amounts[slotNum] = maxAmount;
             dragSlot.amount = mergeAmount - maxAmount;
         }
         else
         {
             totalItems[dragSlot.item] += dragSlot.amount;
-            amounts[mergeSlot.slotNum] = mergeAmount;
+            amounts[slotNum] = mergeAmount;
             dragSlot.ClearSlot();
         }
 

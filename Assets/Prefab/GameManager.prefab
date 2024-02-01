@@ -210,6 +210,7 @@ MonoBehaviour:
   inventoryUiCanvas: {fileID: 0}
   map: {fileID: 0}
   player: {fileID: 0}
+  playerController: {fileID: 0}
   mapCameraController: {fileID: 0}
   preBuildingObj: {fileID: 0}
   pInvenManager: {fileID: 0}
@@ -667,6 +668,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f85b80bc13fdab249b0fb770655a8ffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tempMiner: {fileID: 11400000, guid: fc3c0374a9087634c8a3120bbde7188d, type: 2}
+  tempMinerUI: {fileID: 0}
+  fogOfWar: {fileID: 0}
 --- !u!1 &7525422398918600961
 GameObject:
   m_ObjectHideFlags: 0
