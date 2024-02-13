@@ -33,9 +33,9 @@ public class Manufacturer : Production
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown)
                             {
-                                inventory.Sub(0, recipe.amounts[0]);
-                                inventory.Sub(1, recipe.amounts[1]);
-                                inventory.Sub(2, recipe.amounts[2]);
+                                inventory.SubServerRpc(0, recipe.amounts[0]);
+                                inventory.SubServerRpc(1, recipe.amounts[1]);
+                                inventory.SubServerRpc(2, recipe.amounts[2]);
                                 inventory.SlotAdd(3, output, recipe.amounts[recipe.amounts.Count - 1]);
                                 prodTimer = 0;
                             }

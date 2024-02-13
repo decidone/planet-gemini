@@ -24,8 +24,6 @@ public class DragGraphic : MonoBehaviour
     bool isCtrlDrag;
     bool isShiftDrag;
 
-    DragSlot dragSlot;
-
     #region Singleton
     public static DragGraphic instance;
 
@@ -50,7 +48,6 @@ public class DragGraphic : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         sprite.enabled = false;
         startPosition = Vector2.zero;
-        dragSlot = DragSlot.instance;
         isDrag = false;
         isCtrlDrag = false;
         isShiftDrag = false;
@@ -77,7 +74,7 @@ public class DragGraphic : MonoBehaviour
     void LeftMouseButtonDown()
     {
         if (preBuilding.activeSelf) return;
-        if (dragSlot.slot.item != null) return;
+        if (ItemDragManager.instance.isDrag) return;
 
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
         {
@@ -105,7 +102,7 @@ public class DragGraphic : MonoBehaviour
     void LeftMouseButtonUp()
     {
         if (preBuilding.activeSelf) return;
-        if (dragSlot.slot.item != null) return;
+        if (ItemDragManager.instance.isDrag) return;
         if (!isDrag) return;
 
         if (isCtrlDrag)
@@ -121,7 +118,7 @@ public class DragGraphic : MonoBehaviour
     void RightMouseButtonDown()
     {
         if (preBuilding.activeSelf) return;
-        if (dragSlot.slot.item != null) return;
+        if (ItemDragManager.instance.isDrag) return;
 
         DisableFunc();
     }
@@ -129,7 +126,7 @@ public class DragGraphic : MonoBehaviour
     void RightMouseButtonUp()
     {
         if (preBuilding.activeSelf) return;
-        if (dragSlot.slot.item != null) return;
+        if (ItemDragManager.instance.isDrag) return;
 
         endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 

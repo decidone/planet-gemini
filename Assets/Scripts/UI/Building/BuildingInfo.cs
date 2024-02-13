@@ -19,7 +19,6 @@ public class BuildingInfo : MonoBehaviour
 
     public PlayerInvenManager playerInvenManager;
     public Inventory inventory;
-    DragSlot dragSlot;
 
     #region Singleton
     public static BuildingInfo instance;
@@ -35,14 +34,9 @@ public class BuildingInfo : MonoBehaviour
     }
     #endregion
 
-    private void Start()
-    {
-        dragSlot = DragSlot.instance;
-    }
-
     public void BuildingClick()
     {
-        if (dragSlot.slot.item != null) return;
+        if (ItemDragManager.instance.isDrag) return;
         
         if (selectBuildingData != null)
         {

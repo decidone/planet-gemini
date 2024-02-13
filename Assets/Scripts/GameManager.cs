@@ -29,7 +29,10 @@ public class GameManager : MonoBehaviour
     ScienceManager sTreeManager;
 
     public bool debug;
-    DragSlot dragSlot;
+    public bool isHost;
+    public Inventory hostDragInven;
+    public Inventory clientDragInven;
+
     List<GameObject> openedUI;
     StructureClickEvent clickEvent;
     StructureClickEvent newClickEvent;
@@ -70,8 +73,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         debug = false;
+        isHost = false;
         openedUI = new List<GameObject>();
-        dragSlot = DragSlot.instance;
         onUIChangedCallback += UIChanged;
 
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
@@ -88,14 +91,6 @@ public class GameManager : MonoBehaviour
 
         OtherPortalSet();
         //Cursor.lockState = CursorLockMode.Confined;
-    }
-
-    void Update()
-    {
-        if (dragSlot.slot.item != null)
-        {
-            dragSlot.GetComponent<RectTransform>().position = Input.mousePosition;
-        }
     }
 
     void StrClick()
@@ -349,11 +344,11 @@ public class GameManager : MonoBehaviour
 
         if (isOpened)
         {
-            dragSlot.gameObject.SetActive(true);
+            ItemDragManager.instance.slotObj.SetActive(true);
         }
         else
         {
-            dragSlot.gameObject.SetActive(false);
+            ItemDragManager.instance.slotObj.SetActive(false);
         }
     }
 
@@ -373,11 +368,14 @@ public class GameManager : MonoBehaviour
 
     public void HostConnected()
     {
+        isHost = true;
+        ItemDragManager.instance.SetInven(hostDragInven);
         GeminiNetworkManager.instance.HostSpawnServerRPC();
     }
 
     public void ClientConnected()
     {
+        ItemDragManager.instance.SetInven(clientDragInven);
         StartCoroutine(WaitForNetworkConnection());
     }
 

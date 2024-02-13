@@ -26,16 +26,16 @@ public class PlayerInvenManager : InventoryManager
             {
                 int amount = sManager.InsertItem(focusedSlot.item, focusedSlot.amount);
                 if (amount > 0)
-                    inventory.Sub(focusedSlot.slotNum, amount);
+                    inventory.SubServerRpc(focusedSlot.slotNum, amount);
             }
         }
     }
 
     public void SortBtn()
     {
-        if (dragSlot.slot.item == null)
+        if (!ItemDragManager.instance.isDrag)
         {
-            inventory.Sort();
+            inventory.SortServerRpc();
         }
     }
 

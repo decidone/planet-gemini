@@ -94,7 +94,7 @@ public class EnergyGenerator : Production
             var slot = inventory.SlotCheck(0);
             if (fuel <= 50 && slot.item == FuelItem && slot.amount > 0)
             {
-                inventory.Sub(0, 1);
+                inventory.SubServerRpc(0, 1);
                 fuel += 50;
             }
 

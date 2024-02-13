@@ -23,7 +23,7 @@ public class Furnace : Production
 
             if (fuel == 0 && slot1.item == itemDic["Coal"] && slot1.amount > 0)
             {
-                inventory.Sub(1, 1);
+                inventory.SubServerRpc(1, 1);
                 fuel = maxFuel;
             }
 
@@ -46,7 +46,7 @@ public class Furnace : Production
                         if (prodTimer > cooldown)
                         {
                             fuel -= 25;
-                            inventory.Sub(0, recipe.amounts[0]);
+                            inventory.SubServerRpc(0, recipe.amounts[0]);
                             inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
                             prodTimer = 0;
                         }

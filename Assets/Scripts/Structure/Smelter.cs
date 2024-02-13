@@ -31,8 +31,8 @@ public class Smelter : Production
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown)
                             {
-                                inventory.Sub(0, recipe.amounts[0]);
-                                inventory.Sub(1, recipe.amounts[1]);
+                                inventory.SubServerRpc(0, recipe.amounts[0]);
+                                inventory.SubServerRpc(1, recipe.amounts[1]);
                                 inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
                                 prodTimer = 0;
                             }

@@ -172,7 +172,7 @@ public abstract class Production : Structure
 
     protected override void SubFromInventory()
     {
-        inventory.Sub(inventory.space - 1, 1);
+        inventory.SubServerRpc(inventory.space - 1, 1);
     }
 
     public virtual bool CanTakeItem(Item item) 
@@ -202,7 +202,7 @@ public abstract class Production : Structure
     {
         var slot = inventory.SlotCheck(inventory.space - 1);
         if (slot.amount > 0)
-            inventory.Sub(inventory.space - 1, slot.amount);
+            inventory.SubServerRpc(inventory.space - 1, slot.amount);
         return slot;
     }
 
@@ -304,7 +304,7 @@ public abstract class Production : Structure
             if (invenItem.item == item && invenItem.amount > 0)
             {
                 canUnload = true;
-                inventory.Sub(i, 1);
+                inventory.SubServerRpc(i, 1);
                 break;
             }
         }

@@ -53,12 +53,12 @@ public class StructureInvenManager : InventoryManager
                 if (focusedSlot.amount <= containableAmount)
                 {
                     playerInven.Add(focusedSlot.item, focusedSlot.amount);
-                    inventory.Remove(focusedSlot);
+                    inventory.RemoveServerRpc(focusedSlot.slotNum);
                 }
                 else if (containableAmount != 0)
                 {
                     playerInven.Add(focusedSlot.item, containableAmount);
-                    inventory.Sub(focusedSlot.slotNum, containableAmount);
+                    inventory.SubServerRpc(focusedSlot.slotNum, containableAmount);
                 }
                 else
                 {
@@ -90,6 +90,7 @@ public class StructureInvenManager : InventoryManager
         for (int i = 0; i < slots.Length; i++)
         {
             Slot slot = slots[i];
+            slot.slotNum = i;
             slot.outputSlot = true;
         }
     }
@@ -137,7 +138,7 @@ public class StructureInvenManager : InventoryManager
             if (slot.item != null)
             {
                 playerInven.Add(slot.item, slot.amount);
-                inventory.Remove(slot);
+                inventory.RemoveServerRpc(slot.slotNum);
             }
         }
     }

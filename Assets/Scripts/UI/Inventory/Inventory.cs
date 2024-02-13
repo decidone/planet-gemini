@@ -13,7 +13,6 @@ public class Inventory : NetworkBehaviour
     public int maxAmount;   // 한 슬롯 당 최대 수량
     [SerializeField]
     GameObject itemPref;
-    Slot dragSlot;
 
     // 인벤토리에 표시되는 아이템
     public Dictionary<int, Item> items = new Dictionary<int, Item>();
@@ -30,7 +29,6 @@ public class Inventory : NetworkBehaviour
         {
             totalItems.Add(item, 0);
         }
-        dragSlot = DragSlot.instance.slot;
     }
 
     public int SpaceCheck(Item item)
@@ -56,19 +54,14 @@ public class Inventory : NetworkBehaviour
 
     public void Add(Item item, int amount)
     {
-        AddServerRpc(GeminiNetworkManager.instance.GetItemSOIndex(item), amount);
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+        AddServerRpc(itemIndex, amount);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void AddServerRpc(int itemSOIndex, int amount)
+    public void AddServerRpc(int itemIndex, int amount)
     {
-        AddClientRpc(itemSOIndex, amount);
-    }
-
-    [ClientRpc]
-    void AddClientRpc(int itemSOIndex, int amount)
-    {
-        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemSOIndex);
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         int containableAmount = SpaceCheck(item);
         int tempAmount = amount;
 
@@ -78,7 +71,7 @@ public class Inventory : NetworkBehaviour
             int dropAmount = amount - containableAmount;
             Drop(item, dropAmount);
         }
-        totalItems[item] += tempAmount;
+        //totalItems[item] += tempAmount;
 
         // 2. 이미 있던 칸에 수량 증가
         for (int i = 0; i < space; i++)
@@ -89,13 +82,16 @@ public class Inventory : NetworkBehaviour
                 {
                     if (amounts[i] + tempAmount <= maxAmount)
                     {
-                        amounts[i] += tempAmount;
+                        //amounts[i] += tempAmount;
+                        SlotAdd(i, item, tempAmount);
                         tempAmount = 0;
                     }
                     else
                     {
+                        SlotAdd(i, item, maxAmount - amounts[i]);
                         tempAmount -= (maxAmount - amounts[i]);
-                        amounts[i] = maxAmount;
+
+                        //amounts[i] = maxAmount;
                     }
                 }
             }
@@ -112,102 +108,106 @@ public class Inventory : NetworkBehaviour
                 {
                     if (tempAmount <= maxAmount)
                     {
-                        items[i] = item;
-                        amounts[i] = tempAmount;
+                        //items[i] = item;
+                        //amounts[i] = tempAmount;
+                        SlotAdd(i, item, tempAmount);
                         tempAmount = 0;
                     }
                     else
                     {
-                        items[i] = item;
-                        amounts[i] = maxAmount;
+                        //items[i] = item;
+                        //amounts[i] = maxAmount;
+                        SlotAdd(i, item, maxAmount);
                         tempAmount -= maxAmount;
                     }
                 }
                 if (tempAmount <= 0)
                     break;
             }
+
+            if (tempAmount > 0)
+            {
+                Drop(item, tempAmount);
+            }
         }
 
         onItemChangedCallback?.Invoke();
     }
 
-    public void Swap(Slot slot)
+    public void Swap(int slotNum)
     {
-        SwapServerRpc(slot.slotNum);
+        SwapServerRpc(slotNum, GameManager.instance.isHost);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void SwapServerRpc(int slotNum)
+    public void SwapServerRpc(int slotNum, bool isHost)
     {
-        SwapClientRpc(slotNum);
-    }
+        Item dragItem = ItemDragManager.instance.GetItem(isHost);
+        int dragAmount = ItemDragManager.instance.GetAmount(isHost);
 
-    [ClientRpc]
-    void SwapClientRpc(int slotNum)
-    {
         if (!items.ContainsKey(slotNum))
         {
             // 타겟 슬롯이 비어있는 경우
-            items.Add(slotNum, dragSlot.item);
-            amounts.Add(slotNum, dragSlot.amount);
-            totalItems[dragSlot.item] += dragSlot.amount;
-            dragSlot.ClearSlot();
+            //items.Add(slotNum, dragItem);
+            //amounts.Add(slotNum, dragAmount);
+            //totalItems[dragItem] += dragAmount;
+            SlotAdd(slotNum, dragItem, dragAmount);
+            ItemDragManager.instance.Clear(isHost);
         }
-        else if (dragSlot.item == null)
+        else if ((!ItemDragManager.instance.IsDragging(isHost) && isHost) || (!ItemDragManager.instance.IsDragging(isHost) && !isHost))
         {
             // 드래그 슬롯이 비어있는 경우
-            dragSlot.item = items[slotNum];
-            dragSlot.amount = amounts[slotNum];
-            totalItems[dragSlot.item] -= dragSlot.amount;
-            items.Remove(slotNum);
-            amounts.Remove(slotNum);
+            ItemDragManager.instance.Add(items[slotNum], amounts[slotNum], isHost);
+            RemoveServerRpc(slotNum);
+            //totalItems[items[slotNum]] -= amounts[slotNum];
+            //items.Remove(slotNum);
+            //amounts.Remove(slotNum);
         }
         else
         {
-            totalItems[dragSlot.item] += dragSlot.amount;
-            totalItems[items[slotNum]] -= amounts[slotNum];
-
+            //totalItems[dragItem] += dragAmount;
+            //totalItems[items[slotNum]] -= amounts[slotNum];
             Item tempItem = items[slotNum];
             int tempAmount = amounts[slotNum];
-
-            items[slotNum] = dragSlot.item;
-            dragSlot.item = tempItem;
-
-            amounts[slotNum] = dragSlot.amount;
-            dragSlot.amount = tempAmount;
+            //items[slotNum] = dragItem;
+            //amounts[slotNum] = dragAmount;
+            RemoveServerRpc(slotNum);
+            SlotAdd(slotNum, dragItem, dragAmount);
+            ItemDragManager.instance.Clear(isHost);
+            ItemDragManager.instance.Add(tempItem, tempAmount, isHost);
         }
 
         onItemChangedCallback?.Invoke();
     }
 
-    public void Merge(Slot mergeSlot)
+    public void Merge(int slotNum)
     {
-        MergeServerRpc(mergeSlot.slotNum);
+        MergeServerRpc(slotNum, GameManager.instance.isHost);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void MergeServerRpc(int slotNum)
-    {
-        MergeClientRpc(slotNum);
-    }
-
-    [ClientRpc]
-    void MergeClientRpc(int slotNum)
+    public void MergeServerRpc(int slotNum, bool isHost)
     {
         // 드래그 중인 슬롯이 첫 번째 인자
-        int mergeAmount = dragSlot.amount + amounts[slotNum];
+        Item dragItem = ItemDragManager.instance.GetItem(isHost);
+        int dragAmount = ItemDragManager.instance.GetAmount(isHost);
+        int mergeAmount = dragAmount + amounts[slotNum];
 
         if (mergeAmount > maxAmount)
         {
-            totalItems[dragSlot.item] += (maxAmount - amounts[slotNum]);
-            amounts[slotNum] = maxAmount;
-            dragSlot.amount = mergeAmount - maxAmount;
+            Debug.Log("merge " + mergeAmount);
+            //totalItems[dragItem] += (maxAmount - amounts[slotNum]);
+            //amounts[slotNum] = maxAmount;
+            int tempAmount = amounts[slotNum];
+            SlotAdd(slotNum, dragItem, maxAmount - amounts[slotNum]);
+            ItemDragManager.instance.Sub(dragAmount - tempAmount, isHost);
         }
         else
         {
-            totalItems[dragSlot.item] += dragSlot.amount;
-            amounts[slotNum] = mergeAmount;
-            dragSlot.ClearSlot();
+            //totalItems[dragItem] += dragAmount;
+            //amounts[slotNum] = mergeAmount;
+            SlotAdd(slotNum, dragItem, dragAmount);
+            ItemDragManager.instance.Clear(isHost);
         }
 
         onItemChangedCallback?.Invoke();
@@ -229,6 +229,20 @@ public class Inventory : NetworkBehaviour
 
     public void SlotAdd(int slotNum, Item item, int amount)
     {
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+        SlotAddServerRpc(slotNum, itemIndex, amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SlotAddServerRpc(int slotNum, int itemIndex, int amount)
+    {
+        SlotAddClientRpc(slotNum, itemIndex, amount);
+    }
+
+    [ClientRpc]
+    public void SlotAddClientRpc(int slotNum, int itemIndex, int amount)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         if (!items.ContainsKey(slotNum))
         {
             items.Add(slotNum, item);
@@ -240,12 +254,25 @@ public class Inventory : NetworkBehaviour
             amounts[slotNum] += amount;
             totalItems[items[slotNum]] += amount;
         }
+        else
+        {
+            Debug.Log("SlotAdd Error");
+        }
 
         onItemChangedCallback?.Invoke();
     }
 
-    public void Sub(int slotNum, int amount)
+    
+    [ServerRpc(RequireOwnership = false)]
+    public void SubServerRpc(int slotNum, int amount)
     {
+        SubClientRpc(slotNum, amount);
+    }
+
+    [ClientRpc]
+    public void SubClientRpc(int slotNum, int amount)
+    {
+        Debug.Log("Sub " + slotNum + amounts[slotNum] + "   " + amount);
         totalItems[items[slotNum]] -= amount;
         amounts[slotNum] -= amount;
         if (amounts[slotNum] == 0)
@@ -265,11 +292,11 @@ public class Inventory : NetworkBehaviour
             var slotData = SlotCheck(slotNum);
             if(slotData.amount >= amount)
             {
-                Sub(slotNum, amount);
+                SubServerRpc(slotNum, amount);
             }
             else
             {
-                Sub(slotNum, slotData.amount);
+                SubServerRpc(slotNum, slotData.amount);
                 Sub(item, amount - slotData.amount);
             }
         }
@@ -290,24 +317,33 @@ public class Inventory : NetworkBehaviour
         return -1;
     }
 
-    public void Split(Slot slot)
+    public void Split(int slotNum)
     {
-        if (items.ContainsKey(slot.slotNum))
+        SplitServerRpc(slotNum, GameManager.instance.isHost);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SplitServerRpc(int slotNum, bool isHost)
+    {
+        int dragAmount = ItemDragManager.instance.GetAmount(isHost);
+
+        if (items.ContainsKey(slotNum))
         {
-            if (amounts[slot.slotNum] > 0)
+            if (amounts[slotNum] > 0)
             {
-                if (dragSlot.amount < maxAmount)
+                if (dragAmount < maxAmount)
                 {
-                    dragSlot.item = slot.item;
-                    dragSlot.amount++;
-                    totalItems[items[slot.slotNum]]--;
-                    amounts[slot.slotNum]--;
+                    ItemDragManager.instance.Add(items[slotNum], 1, isHost);
+                    //totalItems[items[slotNum]]--;
+                    //amounts[slotNum]--;
+                    SubServerRpc(slotNum, 1);
                 }
 
-                if (amounts[slot.slotNum] == 0)
+                if (amounts[slotNum] == 0)
                 {
-                    items.Remove(slot.slotNum);
-                    amounts.Remove(slot.slotNum);
+                    //items.Remove(slotNum);
+                    //amounts.Remove(slotNum);
+                    RemoveServerRpc(slotNum);
                 }
 
                 onItemChangedCallback?.Invoke();
@@ -320,25 +356,36 @@ public class Inventory : NetworkBehaviour
         onItemChangedCallback?.Invoke();
     }
 
-    public void Remove(Slot slot)
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveServerRpc(int slotNum)
     {
-        totalItems[items[slot.slotNum]] -= amounts[slot.slotNum];
-        items.Remove(slot.slotNum);
-        amounts.Remove(slot.slotNum);
+        RemoveClientRpc(slotNum);
+    }
+
+    [ClientRpc]
+    public void RemoveClientRpc(int slotNum)
+    {
+        totalItems[items[slotNum]] -= amounts[slotNum];
+        items.Remove(slotNum);
+        amounts.Remove(slotNum);
 
         onItemChangedCallback?.Invoke();
     }
 
     public void DragDrop()
     {
-        Drop(dragSlot.item, dragSlot.amount);
-        dragSlot.ClearSlot();
+        Item dragItem = ItemDragManager.instance.GetItem(GameManager.instance.isHost);
+        int dragAmount = ItemDragManager.instance.GetAmount(GameManager.instance.isHost);
+
+        Drop(dragItem, dragAmount);
+        ItemDragManager.instance.Clear(GameManager.instance.isHost);
 
         onItemChangedCallback?.Invoke();
     }
 
     public void Drop(Item item, int amount)
     {
+        // 서버
         Debug.Log("Drop : " + item.name + ", Amount : " + amount);
         GameObject dropItem = Instantiate(itemPref);
         SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
@@ -351,6 +398,7 @@ public class Inventory : NetworkBehaviour
 
     public void ResetInven()
     {
+        // 얜 로컬에서만 쓰는 듯? 일단 회의때 다시 확인
         items.Clear();
         amounts.Clear();
         totalItems.Clear();
@@ -360,7 +408,14 @@ public class Inventory : NetworkBehaviour
         }
     }
 
-    public void Sort()
+    [ServerRpc(RequireOwnership = false)]
+    public void SortServerRpc()
+    {
+        SortClientRpc();
+    }
+
+    [ClientRpc]
+    public void SortClientRpc()
     {
         items = new Dictionary<int, Item>();
         amounts = new Dictionary<int, int>();
@@ -413,5 +468,10 @@ public class Inventory : NetworkBehaviour
         }
         
         return false;
+    }
+
+    public bool HasItem()
+    {
+        return items.Count > 0;
     }
 }

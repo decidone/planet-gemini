@@ -14,7 +14,6 @@ public abstract class InventoryManager : MonoBehaviour
     [HideInInspector]
     public Slot[] slots;
     protected GameManager gameManager;
-    protected DragSlot dragSlot; // 드래그용 슬롯
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
     float splitCooldown;
     float splitTimer;
@@ -34,7 +33,6 @@ public abstract class InventoryManager : MonoBehaviour
         splitCooldown = 0.12f;
         slotRightClickHold = false;
         gameManager = GameManager.instance;
-        dragSlot = DragSlot.instance;
         inputManager = InputManager.instance;
         inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotLeftClick();
         inputManager.controls.Inventory.SlotRightClickHold.performed += ctx => SlotRightClickHold();
@@ -100,16 +98,17 @@ public abstract class InventoryManager : MonoBehaviour
     {
         if (inventory == null) return;
         if (inputManager.shift) return;
-        if (dragSlot == null) return;
+        if (ItemDragManager.instance.inventory == null) return;
 
+        Item dragItem = ItemDragManager.instance.GetItem(GameManager.instance.isHost);
 
-        if (dragSlot.slot.item == null)
+        if (dragItem == null)
         {
             if (focusedSlot != null)
             {
                 if (focusedSlot.item != null)
                 {
-                    inventory.Swap(focusedSlot);
+                    inventory.Swap(focusedSlot.slotNum);
                     PreBuildEnable();
                 }
             }
@@ -120,31 +119,31 @@ public abstract class InventoryManager : MonoBehaviour
             {
                 if (!focusedSlot.outputSlot)
                 {
-                    if (dragSlot.slot.item != focusedSlot.item)
+                    if (dragItem != focusedSlot.item)
                     {
                         if (focusedSlot.inputSlot)
                         {
                             foreach (Item _item in focusedSlot.inputItem)
                             {
-                                if (dragSlot.slot.item == _item)
+                                if (dragItem == _item)
                                 {
-                                    inventory.Swap(focusedSlot);
+                                    inventory.Swap(focusedSlot.slotNum);
                                     break;
                                 }
                             }
                         }
                         else
                         {
-                            inventory.Swap(focusedSlot);
+                            inventory.Swap(focusedSlot.slotNum);
                         }
                     }
                     else
                     {
-                        inventory.Merge(focusedSlot);
+                        inventory.Merge(focusedSlot.slotNum);
                     }
                 }
             }
-            else if (!RaycastUtility.IsPointerOverUI(Input.mousePosition) && dragSlot.gameObject.activeSelf)
+            else if (!RaycastUtility.IsPointerOverUI(Input.mousePosition) && ItemDragManager.instance.slotObj.activeSelf)
             {
                 // 인벤토리 UI 바깥
                 inventory.DragDrop();
@@ -168,9 +167,10 @@ public abstract class InventoryManager : MonoBehaviour
         if (focusedSlot == null) return;
         if (focusedSlot.item == null) return;
 
-        if (dragSlot.slot.item == null || dragSlot.slot.item == focusedSlot.item)
+        Item dragItem = ItemDragManager.instance.GetItem(GameManager.instance.isHost);
+        if (dragItem == null || dragItem == focusedSlot.item)
         {
-            inventory.Split(focusedSlot);
+            inventory.Split(focusedSlot.slotNum);
             PreBuildEnable();
         }
 
@@ -188,18 +188,6 @@ public abstract class InventoryManager : MonoBehaviour
             else
             {
                 slots[i].ClearSlot();
-            }
-        }
-
-        if (dragSlot != null)
-        {
-            if (dragSlot.slot.item != null)
-            {
-                dragSlot.slot.AddItem(dragSlot.slot.item, dragSlot.slot.amount);
-            }
-            else
-            {
-                dragSlot.slot.ClearSlot();
             }
         }
     }

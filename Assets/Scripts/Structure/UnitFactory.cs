@@ -48,9 +48,9 @@ public class UnitFactory : Production
 
                             if (spawnPosExist)
                             {
-                                inventory.Sub(0, recipe.amounts[0]);
-                                inventory.Sub(1, recipe.amounts[1]);
-                                inventory.Sub(2, recipe.amounts[2]);
+                                inventory.SubServerRpc(0, recipe.amounts[0]);
+                                inventory.SubServerRpc(1, recipe.amounts[1]);
+                                inventory.SubServerRpc(2, recipe.amounts[2]);
 
                                 SetUnit();
                                 SpawnUnit();
