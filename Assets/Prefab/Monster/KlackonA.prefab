@@ -231,6 +231,8 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   maxSpawnDist: 40
+  waveState: 0
+  waveArrivePos: 0
 --- !u!70 &5794467203413403170
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -245,7 +247,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.12, y: -0.12}
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.7, y: 0.7}
   m_Direction: 0
 --- !u!114 &5910734465314056952
 MonoBehaviour:
@@ -274,7 +276,7 @@ MonoBehaviour:
   traversableTags: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
-    value: -1
+    value: 1
 --- !u!1 &5894639996944755368
 GameObject:
   m_ObjectHideFlags: 0

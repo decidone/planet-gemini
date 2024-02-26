@@ -26,6 +26,8 @@ public abstract class InventoryManager : MonoBehaviour
 
     public ItemInfoWindow itemInfoWindow;
 
+    protected SoundManager soundManager;
+
     public abstract void OpenUI();
     public abstract void CloseUI();
 
@@ -39,6 +41,7 @@ public abstract class InventoryManager : MonoBehaviour
         inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotLeftClick();
         inputManager.controls.Inventory.SlotRightClickHold.performed += ctx => SlotRightClickHold();
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
+        soundManager = SoundManager.Instance;
     }
 
     protected virtual void Update()
@@ -110,6 +113,7 @@ public abstract class InventoryManager : MonoBehaviour
                 if (focusedSlot.item != null)
                 {
                     inventory.Swap(focusedSlot);
+                    soundManager.PlayUISFX("ItemSelect");
                     PreBuildEnable();
                 }
             }
@@ -129,6 +133,7 @@ public abstract class InventoryManager : MonoBehaviour
                                 if (dragSlot.slot.item == _item)
                                 {
                                     inventory.Swap(focusedSlot);
+                                    soundManager.PlayUISFX("ItemSelect");
                                     break;
                                 }
                             }
@@ -136,11 +141,13 @@ public abstract class InventoryManager : MonoBehaviour
                         else
                         {
                             inventory.Swap(focusedSlot);
+                            soundManager.PlayUISFX("ItemSelect");
                         }
                     }
                     else
                     {
                         inventory.Merge(focusedSlot);
+                        soundManager.PlayUISFX("ItemSelect");
                     }
                 }
             }

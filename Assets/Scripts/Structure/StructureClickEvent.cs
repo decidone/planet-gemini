@@ -13,6 +13,13 @@ public class StructureClickEvent : MonoBehaviour
     Production prod;
     DragGraphic drag;
 
+    SoundManager soundManager;
+
+    private void Start()
+    {
+        soundManager = SoundManager.Instance;
+    }
+
     public void StructureClick()
     {
         gameManager = GameManager.instance;
@@ -48,6 +55,7 @@ public class StructureClickEvent : MonoBehaviour
         if (prod.isGetLine)
             drag.CancelBuild();
         gameManager.SelectPointRemove();
+        soundManager.PlayUISFX("CloseUI");
         sInvenManager.CloseUI();
     }
 }

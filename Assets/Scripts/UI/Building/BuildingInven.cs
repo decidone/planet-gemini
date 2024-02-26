@@ -19,6 +19,7 @@ public class BuildingInven : MonoBehaviour
     GameManager gameManager;
     InputManager inputManager;
 
+    SoundManager soundManager;
     void Awake()
     {
         if (instance != null)
@@ -34,6 +35,7 @@ public class BuildingInven : MonoBehaviour
     {
         gameManager = GameManager.instance;
         scienceDb = TempScienceDb.instance;
+        soundManager = SoundManager.Instance;
         buildingDataList = BuildingList.instance.buildingDataList;
         buildingTagsBtn = buildingTagsPanel.GetComponentsInChildren<Button>();
 
@@ -113,6 +115,7 @@ public class BuildingInven : MonoBehaviour
             }
         }
 
+        soundManager.PlayUISFX("SidebarClick");
         onItemChangedCallback?.Invoke();
     }
 

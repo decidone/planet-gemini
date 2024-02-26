@@ -73,6 +73,9 @@ public class UnitCommonAi : MonoBehaviour
 
     bool dieCheck = false;
 
+    protected SoundManager soundManager;
+    protected BattleBGMCtrl battleBGM;
+
     private void Awake()
     {
         tr = GetComponent<Transform>();
@@ -94,6 +97,13 @@ public class UnitCommonAi : MonoBehaviour
         //hp = 100.0f;
         aIState = AIState.AI_Idle;
         attackState = AttackState.Waiting;
+        soundManager = SoundManager.Instance;
+    }
+
+    protected virtual void Start()
+    {
+        soundManager = SoundManager.Instance;
+        battleBGM = BattleBGMCtrl.instance;
     }
 
     protected virtual void FixedUpdate()

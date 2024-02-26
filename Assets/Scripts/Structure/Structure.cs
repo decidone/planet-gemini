@@ -132,6 +132,7 @@ public class Structure : MonoBehaviour
     public float effiCooldown;
 
     public bool isMainEnergyColony;
+    public SoundManager soundManager;
 
     protected virtual void Awake()
     {
@@ -156,6 +157,7 @@ public class Structure : MonoBehaviour
         isEnergyStr = structureData.IsEnergyStr;
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
+        soundManager = SoundManager.Instance;
     }
 
     protected virtual void Update()
@@ -629,6 +631,8 @@ public class Structure : MonoBehaviour
             }
         }
         monsterList.Clear();
+
+        soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
 
         RemoveObj();
     }

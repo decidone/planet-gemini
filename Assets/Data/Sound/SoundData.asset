@@ -15,5 +15,24 @@ MonoBehaviour:
   bgm:
   - {fileID: 8300000, guid: cde089fb60c66154eb4d973d48349c79, type: 3}
   - {fileID: 8300000, guid: f0782b7ec55f18045b0bed5b62261ba5, type: 3}
-  sfx:
-  - {fileID: 8300000, guid: 9d9bacd7cceb46346b014c160e89c3e2, type: 3}
+  battleBgm:
+  - {fileID: 8300000, guid: 106595ac96eaf784e8e955c09b69335f, type: 3}
+  waveBgm:
+  - {fileID: 8300000, guid: 5b51df0a72ba97d4fab192ab3a3b4f6a, type: 3}
+  structureSfx:
+  - {fileID: 8300000, guid: 1017ea009d76e304c84246b111fdf68d, type: 3}
+  - {fileID: 8300000, guid: 0792b4d4b4de2b440b628df901ee1e88, type: 3}
+  - {fileID: 8300000, guid: c48a972d3d024c2408a3331750786a29, type: 3}
+  - {fileID: 8300000, guid: c9386be4bffdcc94db5db884829ad052, type: 3}
+  - {fileID: 8300000, guid: 88a2068476d007843b76aa2df69e91d4, type: 3}
+  uiSfx:
+  - {fileID: 8300000, guid: 117ec4820734e0d48b4a5b14c5b73e59, type: 3}
+  - {fileID: 8300000, guid: 28c0d55c33ae1124d96dc26bb0fac685, type: 3}
+  - {fileID: 8300000, guid: dd70ce8fac6be7e4ab71273a559d8e0d, type: 3}
+  - {fileID: 8300000, guid: 42cef4f336ffb194d8c8cc980d081d8b, type: 3}
+  - {fileID: 8300000, guid: 2df3c43295654734ca217be95b9b74d1, type: 3}
+  - {fileID: 8300000, guid: de06dbebfbd42f64297de847153f5aa7, type: 3}
+  unitSfx:
+  - {fileID: 8300000, guid: e39ba8bd82bacb64db8ced9b6a1651a3, type: 3}
+  - {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
+  - {fileID: 8300000, guid: e78aff78368d32c4889a22263b3f2515, type: 3}

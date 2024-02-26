@@ -42,6 +42,8 @@ public class ScienceManager : MonoBehaviour
 
     PortalSciManager portalSciManager;
 
+    SoundManager soundManager;
+
     void Start()
     {
         UISetting();
@@ -51,6 +53,7 @@ public class ScienceManager : MonoBehaviour
         buildingInven = gameManager.GetComponent<BuildingInven>();
         sciItemSetWindow = itemInputWindow.GetComponent<SciItemSetWindow>();
         portalSciManager = PortalSciManager.instance;
+        soundManager = SoundManager.Instance;
 
         contents[0].SetActive(true);
         contents[1].SetActive(false);
@@ -232,6 +235,7 @@ public class ScienceManager : MonoBehaviour
     {
         scienceTreeUI.SetActive(false);
         sciItemSetWindow.CloseUI();
+        soundManager.PlayUISFX("CloseUI");
         gameManager.onUIChangedCallback?.Invoke(scienceTreeUI);
     }
 }

@@ -16,6 +16,15 @@ public class LogisticsClickEvent : MonoBehaviour
 
     LogisticsCtrl logisticsCtrl;
     InventoryList inventoryList;
+
+    SoundManager soundManager;
+
+    private void Start()
+    {
+        soundManager = SoundManager.Instance;
+    }
+
+
     public bool LogisticsCheck()
     {
         bool canOpen = false;
@@ -103,5 +112,6 @@ public class LogisticsClickEvent : MonoBehaviour
             gameManager.SelectPointRemove();
             itemSpManager.CloseUI();
         }
+        soundManager.PlayUISFX("CloseUI");
     }
 }

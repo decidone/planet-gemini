@@ -62,6 +62,8 @@ public class PreBuilding : MonoBehaviour
 
     BuildingInvenManager buildingInven;
 
+    SoundManager soundManager;
+
     #region Singleton
     public static PreBuilding instance;
 
@@ -85,6 +87,7 @@ public class PreBuilding : MonoBehaviour
         gameManager = GameManager.instance;
         buildingInven = BuildingInvenManager.instance;
         inputManager = InputManager.instance;
+        soundManager = SoundManager.Instance;
         inputManager.controls.Building.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
         inputManager.controls.Building.LeftMouseButtonUp.performed += ctx => LeftMouseButtonUp();
         inputManager.controls.Building.RightMouseButtonDown.performed += ctx => CancelBuild();
@@ -210,9 +213,11 @@ public class PreBuilding : MonoBehaviour
                     isEnough = BuildingInfo.instance.AmountsEnoughCheck();
                     canBuildCount = BuildingInfo.instance.CanBuildAmount();
                 }
+                soundManager.PlayUISFX("BuildingOk");
             }
             else
             {
+                soundManager.PlayUISFX("BuildingCancel");
                 foreach (GameObject build in buildingList)
                 {
                     Destroy(build);

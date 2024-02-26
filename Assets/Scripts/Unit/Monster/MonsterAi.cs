@@ -21,18 +21,14 @@ public class MonsterAi : UnitCommonAi
     protected bool isScriptActive = false;
     protected int monsterType;    // 0 : 노멀, 1 : 강함, 2 : 가디언
 
+    [SerializeField]
     protected bool waveState = false;
+    bool waveWaiting = false;
     public bool waveArrivePos = false;
     //bool goingBase = false;
     Vector3 wavePos; // 나중에 웨이브 대상으로 변경해야함 (현 맵 중심으로 이동하게)
-
+    bool waveFindObj = false;
     //bool goalPathBlocked = false;
-    SoundManager soundManager;
-
-    private void Start()
-    {
-        soundManager = SoundManager.Instance;
-    }
 
     protected override void FixedUpdate()
     {
@@ -86,7 +82,7 @@ public class MonsterAi : UnitCommonAi
                 break;
             case AIState.AI_ReturnPos:
                 {
-                    if(waveState)
+                    if(!waveState)
                         ReturnPos();
                 }
                 break;
@@ -194,6 +190,9 @@ public class MonsterAi : UnitCommonAi
             patrolMainPos = wavePos;
         }
 
+        if (waveWaiting)
+            return;
+
         float spawnDis = (tr.position - patrolMainPos).magnitude;
 
         if (spawnDis > maxSpawnDist)
@@ -249,7 +248,7 @@ public class MonsterAi : UnitCommonAi
         tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 7));
         if (Vector3.Distance(tr.position, targetPosition) <= 0.3f)
         {
-            MonsterScriptSet(false);
+            aIState = AIState.AI_Idle;
         }
         if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
         {
@@ -257,7 +256,7 @@ public class MonsterAi : UnitCommonAi
 
             if (currentWaypointIndex >= movePath.Count)
             {
-                MonsterScriptSet(false);
+                aIState = AIState.AI_Idle;
             }
         }
 
@@ -331,7 +330,8 @@ public class MonsterAi : UnitCommonAi
                 direction.Normalize();
                 AnimSetFloat(direction, true);
 
-                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
+                //tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
 
                 if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                 {
@@ -418,7 +418,14 @@ public class MonsterAi : UnitCommonAi
                     targetListSet.Add(target);
                     targetList.Add(target);
                 }
+
+                waveFindObj = true;
             }
+        }
+
+        if(targetList.Count > 0)
+        {
+            battleBGM.BattleAddMonster(gameObject);
         }
 
         if((aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack) && targetList.Count == 0)
@@ -428,15 +435,20 @@ public class MonsterAi : UnitCommonAi
                 idle = 0;
                 aIState = AIState.AI_Idle;
                 attackState = AttackState.Waiting;
+                battleBGM.BattleRemoveMonster(gameObject);
             }
-            else if(!waveArrivePos)
-                WaveStart(wavePos);
-            else if(waveState && waveArrivePos)
+            else if (!waveArrivePos && waveFindObj)
             {
+                WaveStart(wavePos);
+            }
+            else if (waveState && waveArrivePos && !waveWaiting)
+            {
+                battleBGM.BattleRemoveMonster(gameObject);
                 checkPathCoroutine = StartCoroutine(CheckPath(patrolStartPos, "Patrol"));
             }
             //else if (!goingBase)
             //    WaveStart(wavePos);
+            waveFindObj = false;
         }
     }
 
@@ -476,7 +488,10 @@ public class MonsterAi : UnitCommonAi
     protected override void AttackStart()
     {
         if(aggroTarget != null)
+        {
             RandomAttackNum(aggroTarget.transform);
+            soundManager.PlaySFX(gameObject, "unitSFX", "MonsterAttack");
+        }
     }
 
     protected override IEnumerator CheckPath(Vector3 targetPos, string moveFunc)
@@ -510,6 +525,7 @@ public class MonsterAi : UnitCommonAi
             aIState = AIState.AI_ReturnPos;
         }
 
+        Debug.Log(moveFunc);
 
         direction = targetPos - tr.position;
         checkPathCoroutine = null;
@@ -548,7 +564,6 @@ public class MonsterAi : UnitCommonAi
     protected override void AttackEnd(string str)
     {
         base.AttackEnd(str);
-        soundManager.PlaySFX(gameObject, "MonsterAttack");
         if (str == "false")
         {
             if (aggroTarget != null)
@@ -576,7 +591,7 @@ public class MonsterAi : UnitCommonAi
         }
 
         spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType);
-
+        battleBGM.BattleRemoveMonster(gameObject);
         Destroy(gameObject);
     }
 
@@ -603,7 +618,6 @@ public class MonsterAi : UnitCommonAi
             if (spawnDist > maxSpawnDist)
             {
                 checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
-                return;
             }
             else
             {
@@ -617,13 +631,46 @@ public class MonsterAi : UnitCommonAi
     public void WaveStart(Vector3 _wavePos)
     {
         waveState = true;
-        wavePos = _wavePos;
-        Invoke(nameof(WaveInvoke), 0.5f);
-        //goingBase = true;
+        waveWaiting = false;
+        int x = (int)Random.Range(-5, 5);
+        int y = (int)Random.Range(-5, 5);
+
+        wavePos = _wavePos + new Vector3(x, y);
+        checkPathCoroutine = StartCoroutine(CheckPath(_wavePos, "NormalTrace"));
     }
 
-    void WaveInvoke()
+    public void ColonyAttackStart(Vector3 _wavePos)
     {
+        waveState = true;
+
+        int x = (int)Random.Range(-5, 5);
+        int y = (int)Random.Range(-5, 5);
+
+        wavePos = _wavePos + new Vector3(x, y);
         checkPathCoroutine = StartCoroutine(CheckPath(wavePos, "NormalTrace"));
+    }
+
+    public void WaveSetMoveMonster(Vector3 pos)
+    {
+        if (checkPathCoroutine == null)
+        {
+            waveState = true;
+            checkPathCoroutine = StartCoroutine(CheckPath(pos, "NormalTrace"));
+        }
+    }
+
+    public void WaveTeleport(Vector3 _wavePos)
+    {
+        if(aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
+        {
+            //int x = (int)Random.Range(-15, 15);
+            //int y = (int)Random.Range(-15, 15);
+
+            //Vector3 newWavePos = wavePos + new Vector3(x, y);
+            waveState = true;
+            waveWaiting = true;
+            transform.position = _wavePos;
+            Debug.Log("Tele");
+        }
     }
 }

@@ -96,6 +96,7 @@ public class EnergyGenerator : Production
             {
                 inventory.Sub(0, 1);
                 fuel += 50;
+                soundManager.PlaySFX(gameObject, "structureSFX", "Flames");
             }
 
             prodTimer += Time.deltaTime;

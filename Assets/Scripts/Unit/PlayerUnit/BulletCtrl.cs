@@ -13,7 +13,14 @@ public class BulletCtrl : MonoBehaviour
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
     GameObject attackUnit;
 
-    bool isRelease = false;
+    bool alreadyHit;
+
+    Coroutine timerCoroutine;
+
+    private void Start()
+    {
+        alreadyHit = false;
+    }
 
     void Update()
     {
@@ -22,10 +29,7 @@ public class BulletCtrl : MonoBehaviour
 
     public void DestroyBullet()
     {
-        if (!isRelease)
-            bulletPool.Release(gameObject);
-        else
-            isRelease = false;
+        bulletPool.Release(gameObject);
     }
 
     public void GetTarget(Vector3 target, float GetDamage, GameObject obj)
@@ -33,13 +37,30 @@ public class BulletCtrl : MonoBehaviour
         moveNextStep = (target - transform.position).normalized;
         damage = GetDamage;
         attackUnit = obj;
-        Invoke(nameof(DestroyBullet), 5f);
+        alreadyHit = false;
+        timerCoroutine = StartCoroutine(nameof(RemoveTimer));
     }
-     
+
+    IEnumerator RemoveTimer()
+    {
+        yield return new WaitForSeconds(5.0f);
+        if(!alreadyHit)
+            DestroyBullet();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Monster"))
         {
+            if (!alreadyHit)
+            {
+                StopCoroutine(timerCoroutine);
+                DestroyBullet();
+                alreadyHit = true;
+            }
+            else
+                return;
+
             if (collision.TryGetComponent(out MonsterAi monster))
             {
                 monster.TakeDamage(damage);
@@ -48,8 +69,6 @@ public class BulletCtrl : MonoBehaviour
             {
                 spawner.GetComponent<MonsterSpawner>().TakeDamage(damage, attackUnit);
             }
-            DestroyBullet();
-            isRelease = true;
         }
     }
 }

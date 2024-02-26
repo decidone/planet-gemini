@@ -124,6 +124,7 @@ public class Refinery : FluidFactoryCtrl
                             {
                                 saveFluidNum -= recipe.amounts[0];
                                 inventory.SlotAdd(0, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
                                 prodTimer = 0;
                             }
                         }

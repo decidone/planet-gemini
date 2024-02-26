@@ -22,6 +22,8 @@ public class BuildingInvenManager : MonoBehaviour
 
     public ItemInfoWindow itemInfoWindow;
 
+    SoundManager soundManager;
+
     #region Singleton
     public static BuildingInvenManager instance;
 
@@ -45,6 +47,7 @@ public class BuildingInvenManager : MonoBehaviour
         inputManager = InputManager.instance;
         inputManager.controls.Inventory.BuildingInven.performed += ctx => BuildingInfo();
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
+        soundManager = SoundManager.Instance;
     }
 
     public void SetInven(BuildingInven inven, GameObject invenUI)
@@ -188,6 +191,7 @@ public class BuildingInvenManager : MonoBehaviour
     {
         buildingInventoryUI.SetActive(false);
         itemInfoWindow.CloseWindow();
+        soundManager.PlayUISFX("CloseUI");
         gameManager.onUIChangedCallback?.Invoke(buildingInventoryUI);
     }
 }

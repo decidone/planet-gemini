@@ -48,6 +48,7 @@ public class Furnace : Production
                             fuel -= 25;
                             inventory.Sub(0, recipe.amounts[0]);
                             inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                            soundManager.PlaySFX(gameObject, "structureSFX", "Flames");
                             prodTimer = 0;
                         }
                     }

@@ -6,10 +6,12 @@ public class DragFunc : MonoBehaviour
 {
     public GameObject[] selectedObjects;
     protected GameManager gameManager;
+    protected SoundManager soundManager;
 
     protected virtual void Start()
     {
         gameManager = GameManager.instance;
+        soundManager = SoundManager.Instance;
     }
 
     public virtual void LeftMouseUp(Vector2 startPos, Vector2 endPos) { }

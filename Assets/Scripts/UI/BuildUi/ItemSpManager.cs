@@ -37,6 +37,7 @@ public class ItemSpManager : InventoryManager
 
         inputManager = InputManager.instance;
         inputManager.controls.Inventory.ItemSpawner.performed += ctx => InvenClick();
+        soundManager = SoundManager.Instance;
     }
 
     void InvenClick()
@@ -86,6 +87,7 @@ public class ItemSpManager : InventoryManager
     private void ButtonClicked(int buttonIndex)
     {
         SetItemList(buttonIndex);
+        soundManager.PlayUISFX("SidebarClick");
     }
 
     public void ReleaseInven()
@@ -128,6 +130,7 @@ public class ItemSpManager : InventoryManager
     {
         inventoryUI.SetActive(false);
         itemInfoWindow.CloseWindow();
+        soundManager.PlayUISFX("CloseUI");
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 }

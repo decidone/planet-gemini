@@ -72,6 +72,7 @@ public class RemoveBuild : DragFunc
                 ObjRemoveFunc(obj);
             }
             gameManager.BuildAndSciUiReset();
+            soundManager.PlayUISFX("BuildingRemove");
         }
         selectedObjects = new GameObject[0];
     }

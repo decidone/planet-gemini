@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpawnerGroupManager : MonoBehaviour
 {
-    List<GameObject> spawnerList = new List<GameObject>();
+    public List<GameObject> spawnerList = new List<GameObject>();
 
     public void SpawnerSet(GameObject spawner)
     {
@@ -15,11 +15,11 @@ public class SpawnerGroupManager : MonoBehaviour
         }
     }
 
-    //public void GroupMonsterScriptSet(bool scriptState)
-    //{
-    //    foreach (GameObject spawner in spawnerList)
-    //    {
-    //        spawner.GetComponent<MonsterSpawner>().MonsterScriptSet(scriptState);
-    //    }
-    //}
+    public void WaveSet(Vector3 WaveCenterPos)
+    {
+        foreach (GameObject spawner in spawnerList)
+        {
+            spawner.GetComponent<MonsterSpawner>().WaveTeleport(WaveCenterPos);
+        }
+    }
 }

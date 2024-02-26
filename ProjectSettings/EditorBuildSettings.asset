@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Algen/AlgenScene/AlgenScene_02_Network.unity
     guid: 4303a63be946cd74fb7ed7ac2937374e
+  - enabled: 1
+    path: Assets/Algen/AlgenScene/AlgenScene_03_Network.unity
+    guid: 8dad95c2168467c4b94f65fad96e3d36
   m_configObjects: {}

@@ -31,6 +31,7 @@ public class Constructor : Production
                             {
                                 inventory.Sub(0, recipe.amounts[0]);
                                 inventory.SlotAdd(1, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
                                 prodTimer = 0;
                             }
                         }
