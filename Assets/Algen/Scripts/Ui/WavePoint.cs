@@ -35,7 +35,7 @@ public class WavePoint : MonoBehaviour
     {
         if (isWaveStart)
         {
-            indicator.DrawIndicator(gameObject, myIndicatorObj);            
+            indicator.DrawIndicator(gameObject, myIndicatorObj);
         }
     }
 

@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MergeScene_07.unity
     guid: d738a3adb2c9caf41a63f14bc9e584c0
+  - enabled: 1
+    path: Assets/Algen/AlgenScene/AlgenScene_03_Network.unity
+    guid: 8dad95c2168467c4b94f65fad96e3d36
+  - enabled: 1
+    path: Assets/Algen/AlgenScene/AlgenScene_04_Network.unity
+    guid: 6bd30ffae3897874292caf300d72129e
   m_configObjects: {}
