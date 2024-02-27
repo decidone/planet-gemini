@@ -54,6 +54,7 @@ public class UnitFactory : Production
 
                                 SetUnit();
                                 SpawnUnit();
+                                soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
                                 prodTimer = 0;
                             }
                         }

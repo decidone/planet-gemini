@@ -33,6 +33,8 @@ public class Miner : Production
                         prodTimer += Time.deltaTime;
                         if (prodTimer > effiCooldown)
                         {
+                            soundManager.PlaySFX(gameObject, "structureSFX", "Miner");
+
                             if (slot.amount + minerCellCount <= maxAmount)
                             {
                                 inventory.Add(output, minerCellCount);
@@ -65,6 +67,8 @@ public class Miner : Production
                     prodTimer += Time.deltaTime;
                     if (prodTimer > effiCooldown)
                     {
+                        soundManager.PlaySFX(gameObject, "structureSFX", "Miner");
+
                         if (slot.amount + minerCellCount <= maxAmount)
                         {
                             inventory.Add(output, minerCellCount);

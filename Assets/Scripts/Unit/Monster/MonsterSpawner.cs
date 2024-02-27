@@ -31,8 +31,6 @@ public class MonsterSpawner : MonoBehaviour
     public int currentNormalSpawn;
     public int currentStrongSpawn;
 
-    CircleCollider2D coll;
-
     public List<GameObject> totalMonsterList = new List<GameObject>(); // 가딘언을 제외한 몬스터 리스트
     public List<GuardianAi> guardianList = new List<GuardianAi>();
     // 가디언은 초기에 배치하고 그 이후로는 관리 안함
@@ -60,15 +58,19 @@ public class MonsterSpawner : MonoBehaviour
     [SerializeField]
     bool waveStart = false;
 
+    BattleBGMCtrl battleBGM;
+    MonsterSpawnerManager monsterSpawnerManager;
+
     void Start()
     {
         monsterSpawn = MonsterSpawnerManager.instance;
+        battleBGM = BattleBGMCtrl.instance;
+        monsterSpawnerManager = MonsterSpawnerManager.instance;
         weakMonster = monsterSpawn.weakMonsters;
         normalMonster = monsterSpawn.normalMonsters;
         strongMonster = monsterSpawn.strongMonsters;
         guardian = monsterSpawn.guardian;
         boxColl2D = GetComponent<BoxCollider2D>();
-        coll = GetComponent<CircleCollider2D>();
         spawnInterval = 20;
         guardianCallInterval = 2;
         maxExtraSpawn = 10;
@@ -265,6 +267,18 @@ public class MonsterSpawner : MonoBehaviour
         }
 
         newMonster.transform.SetParent(this.transform, false);
+
+        int x = 0;
+        int y = 0;
+        if (!nearUserObjExist)
+        {
+            x = (int)Random.Range(-5, 5);
+            y = (int)Random.Range(-5, 5);
+        }
+
+        Vector3 setPos = this.transform.position + new Vector3(x, y);
+        newMonster.transform.position = setPos;
+
         newMonster.GetComponent<MonsterAi>().MonsterSpawnerSet(this, monserType);
         if(!nearUserObjExist)
             newMonster.GetComponent<MonsterAi>().MonsterScriptSet(false);
@@ -274,15 +288,18 @@ public class MonsterSpawner : MonoBehaviour
         return newMonster;
     }
 
-    public void MonsterScriptSet(bool scriptState)
+    public void MonsterScriptSet(bool scriptState, bool guardianState)
     { 
         foreach (GameObject monster in totalMonsterList)
         {
             monster.GetComponent<MonsterAi>().MonsterScriptSet(scriptState);
         }
-        foreach (GuardianAi guardian in guardianList)
+        if (guardianState)
         {
-            guardian.GetComponent<MonsterAi>().MonsterScriptSet(scriptState);
+            foreach (GuardianAi guardian in guardianList)
+            {
+                guardian.GetComponent<MonsterAi>().MonsterScriptSet(scriptState);
+            }
         }
     }
 
@@ -334,13 +351,13 @@ public class MonsterSpawner : MonoBehaviour
     {
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
-
+        monsterSpawnerManager.AreaGroupRemove(this, areaLevel);
         boxColl2D.enabled = false;
     }
 
     public void SearchObj(bool find)
     {
-        MonsterScriptSet(find);
+        MonsterScriptSet(find, true);
         nearUserObjExist = find;
     }
 
@@ -354,14 +371,29 @@ public class MonsterSpawner : MonoBehaviour
         }
     }
 
-    void WaveStart()
+    public void WaveTeleport(Vector3 pos)
     {
-        MonsterScriptSet(true);
+        MonsterScriptSet(true, false);
+
+        foreach (GameObject monster in totalMonsterList)
+        {
+            MonsterAi monsterAi = monster.GetComponent<MonsterAi>();
+            monsterAi.WaveTeleport(pos);
+        }
+
+        Invoke(nameof(WaveStart), 40.0f);
+    }
+
+    public void WaveStart()
+    {
+        MonsterScriptSet(true, false);
         foreach (GameObject monster in totalMonsterList)
         {
             MonsterAi monsterAi = monster.GetComponent<MonsterAi>();
             monsterAi.WaveStart(wavePos);
         }
+
+        battleBGM.WaveAddMonster(totalMonsterList);
 
         totalMonsterList.Clear();
         currentWeakSpawn = 0;
@@ -371,12 +403,14 @@ public class MonsterSpawner : MonoBehaviour
 
     public void ColonyCall(EnergyColony colony)
     {
-        MonsterScriptSet(true);
+        MonsterScriptSet(true, false);
         foreach (GameObject monster in totalMonsterList)
         {
             MonsterAi monsterAi = monster.GetComponent<MonsterAi>();
-            monsterAi.WaveStart(colony.transform.position);
+            monsterAi.ColonyAttackStart(colony.transform.position);
         }
+
+        battleBGM.ColonyCallAddMonster(totalMonsterList);
 
         totalMonsterList.Clear();
         currentWeakSpawn = 0;

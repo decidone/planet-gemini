@@ -9,8 +9,7 @@ public class SpinRobot : UnitAi
     {
         animator.Play("Attack", -1, 0);
         animator.SetBool("isAttack", true);
-
-
+        soundManager.PlaySFX(gameObject, "unitSFX", "MeleeAttack");
     }
 
     protected override void AttackEnd(string str)

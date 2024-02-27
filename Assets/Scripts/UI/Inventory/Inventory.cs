@@ -195,7 +195,6 @@ public class Inventory : NetworkBehaviour
 
         if (mergeAmount > maxAmount)
         {
-            Debug.Log("merge " + mergeAmount);
             //totalItems[dragItem] += (maxAmount - amounts[slotNum]);
             //amounts[slotNum] = maxAmount;
             int tempAmount = amounts[slotNum];
@@ -272,7 +271,6 @@ public class Inventory : NetworkBehaviour
     [ClientRpc]
     public void SubClientRpc(int slotNum, int amount)
     {
-        Debug.Log("Sub " + slotNum + amounts[slotNum] + "   " + amount);
         totalItems[items[slotNum]] -= amount;
         amounts[slotNum] -= amount;
         if (amounts[slotNum] == 0)
@@ -337,13 +335,6 @@ public class Inventory : NetworkBehaviour
                     //totalItems[items[slotNum]]--;
                     //amounts[slotNum]--;
                     SubServerRpc(slotNum, 1);
-                }
-
-                if (amounts[slotNum] == 0)
-                {
-                    //items.Remove(slotNum);
-                    //amounts.Remove(slotNum);
-                    RemoveServerRpc(slotNum);
                 }
 
                 onItemChangedCallback?.Invoke();

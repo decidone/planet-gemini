@@ -215,7 +215,6 @@ GameObject:
   - component: {fileID: 7150366280860555239}
   - component: {fileID: 198327214828012134}
   - component: {fileID: 8119477237859809883}
-  - component: {fileID: 8890224232341223092}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -278,6 +277,8 @@ MonoBehaviour:
   portal:
   - {fileID: 0}
   - {fileID: 0}
+  playerSpawnPos: {x: 0, y: 0, z: 0}
+  tempOption: {fileID: 0}
 --- !u!114 &8121268344323043989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -677,22 +678,6 @@ MonoBehaviour:
   - {fileID: 8598225404917607298, guid: b51e05c41bd7d664aad1ca10a4dd19fd, type: 3}
   - {fileID: 1885955664131610326, guid: 15142411a933d1245b957f009a3493eb, type: 3}
   - {fileID: 248036444977090385, guid: d70a8f4e456ddd94b96397d2f52b11c8, type: 3}
---- !u!114 &8890224232341223092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3986364635626952762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!1 &6718229863374190987
 GameObject:
   m_ObjectHideFlags: 0

@@ -36,8 +36,9 @@ public class UnitAi : UnitCommonAi
     public float selfHealInterval;
     float selfHealTimer;
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
         selfHealInterval = 5;
         selfHealingAmount = 5f;
@@ -220,7 +221,9 @@ public class UnitAi : UnitCommonAi
 
     void MoveFunc()
     {
-        if (movePath.Count <= currentWaypointIndex)
+        if (movePath == null)
+            return;
+        else if (movePath.Count <= currentWaypointIndex)
             return;
 
         Vector3 targetWaypoint = movePath[currentWaypointIndex];
@@ -284,7 +287,9 @@ public class UnitAi : UnitCommonAi
 
     void PatrolFunc(bool isGo)
     {
-        if (movePath.Count <= currentWaypointIndex)
+        if (movePath == null)
+            return;
+        else if (movePath.Count <= currentWaypointIndex)
             return;
         else if (currentWaypointIndex < 0)
             return;

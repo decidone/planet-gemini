@@ -26,7 +26,10 @@ public class PlayerInvenManager : InventoryManager
             {
                 int amount = sManager.InsertItem(focusedSlot.item, focusedSlot.amount);
                 if (amount > 0)
+                {
                     inventory.SubServerRpc(focusedSlot.slotNum, amount);
+                    soundManager.PlayUISFX("ItemSelect");
+                }
             }
         }
     }
@@ -49,6 +52,7 @@ public class PlayerInvenManager : InventoryManager
     {
         inventoryUI.SetActive(false);
         itemInfoWindow.CloseWindow();
+        soundManager.PlayUISFX("CloseUI");
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 }

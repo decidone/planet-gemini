@@ -61,12 +61,11 @@ MonoBehaviour:
   - {fileID: 2995091061736811078, guid: 3263e7cbda774a247b10e86d3d51a117, type: 3}
   - {fileID: 3943188774784533394, guid: 65b52b6a34d304243a97b2927063e3d1, type: 3}
   guardian: {fileID: 3200930217413261185, guid: 3db027d1408a1944d9d7ea021faa8d72, type: 3}
-  spawnerDatas:
-  - {fileID: 11400000, guid: 68f063347fae41f44aa99630048e2196, type: 2}
-  - {fileID: 11400000, guid: 8964b5ce057bfe84b8a8b73c9446b7fa, type: 2}
-  - {fileID: 11400000, guid: e88fbf30dc518b643a67ec932cd912ae, type: 2}
-  - {fileID: 11400000, guid: 6ab8f4d1c6ff7f640a71e296dc3fea7c, type: 2}
-  - {fileID: 11400000, guid: 514fea0daf89cd544af70e8819b0a641, type: 2}
+  area1Group: []
+  area2Group: []
+  area3Group: []
+  area4Group: []
+  area5Group: []
 --- !u!114 &4746401571730464259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +73,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9113408284949583420}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27315cdbacccaca45859053d11134ce4, type: 3}
   m_Name: 
@@ -89,3 +88,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c63bfce06c86fb44e898f6047f954a2d, type: 2}
   - {fileID: 11400000, guid: 61eff04140685384dae89a66d4d9c891, type: 2}
   - {fileID: 11400000, guid: d217c1f5250224d44bb230f04dea5996, type: 2}
+  monsterSpawnerManager: {fileID: -3613212761563754259}

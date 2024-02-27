@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
     ItemSpManager iSpManager;
     [SerializeField]
     ScienceManager sTreeManager;
-
     public bool debug;
     public bool isHost;
     public Inventory hostDragInven;
@@ -50,10 +49,14 @@ public class GameManager : MonoBehaviour
     public Structure focusedStructure;
     public Portal[] portal;
 
-    Vector3 playerSpawnPos;
+    [HideInInspector]
+    public Vector3 playerSpawnPos;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
+
+    [SerializeField]
+    GameObject tempOption;
 
     #region Singleton
     public static GameManager instance;
@@ -275,6 +278,10 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
+        else
+        {
+            tempOption.SetActive(!tempOption.activeSelf);
+        }
     }
 
     void Inven()
@@ -405,6 +412,7 @@ public class GameManager : MonoBehaviour
         GameObject fogOfWar = ResourcesManager.instance.fogOfWar;
         FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
         followTransform.SetTargetTransform(player.transform);
+        Indicator.instance.PlayerSet(player);
     }
 
     public void SetPlayerPos(float x, float y)

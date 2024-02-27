@@ -6,6 +6,9 @@ using UnityEngine;
 public class AudioClipRefsSO : ScriptableObject
 {
     public AudioClip[] bgm;
-    public AudioClip[] sfx;
-
+    public AudioClip[] battleBgm;
+    public AudioClip[] waveBgm;
+    public AudioClip[] structureSfx;
+    public AudioClip[] uiSfx;
+    public AudioClip[] unitSfx;
 }

@@ -8,15 +8,16 @@ public class SpawnerSetManager : MonoBehaviour
 {
     [SerializeField]
     MapGenerator mapGen;
-    int width;
-    int height;
+    [HideInInspector]
+    public int width;
+    [HideInInspector]
+    public int height;
 
     float areaWSize;
     float areaHSize;
 
     [Header("홀수로 지정")]
-    [SerializeField]
-    int splitCount;
+    public int splitCount;
 
     Dictionary<Vector2, int> areaPosLevel = new Dictionary<Vector2, int>();
     [SerializeField]
@@ -28,6 +29,13 @@ public class SpawnerSetManager : MonoBehaviour
     AreaLevelData[] arealevelData;
 
     Vector3 basePos;
+
+    [SerializeField]
+    MonsterSpawnerManager monsterSpawnerManager;
+
+    public GameObject[,] spawnerMatrix;
+    int xIndex;
+    int yIndex;
 
     #region Singleton
     public static SpawnerSetManager instance;
@@ -42,6 +50,13 @@ public class SpawnerSetManager : MonoBehaviour
         instance = this;
     }
     #endregion
+
+    private void Start()
+    {
+        spawnerMatrix = new GameObject[splitCount, splitCount];
+        xIndex = 0;
+        yIndex = 0;
+    }
 
     public void AreaMapSet()
     {
@@ -67,7 +82,6 @@ public class SpawnerSetManager : MonoBehaviour
                 if (x == 0 && y == 0)
                 {
                     basePos = centerPos;
-                    continue;
                 }
 
                 areaPosLevel.Add(centerPos, Math.Max(x, y));    // 구역의 중앙 좌표 + 구역 레벨
@@ -81,6 +95,18 @@ public class SpawnerSetManager : MonoBehaviour
     {
         foreach (var data in areaPosLevel)
         {
+            if(basePos == (Vector3)data.Key)
+            {
+                xIndex++;
+                if (xIndex >= splitCount)
+                {
+                    xIndex = 0;
+                    yIndex++;
+                }
+
+                continue;
+            }
+
             Vector2 centerPos = data.Key;
             int areaLevel = data.Value;
 
@@ -91,7 +117,7 @@ public class SpawnerSetManager : MonoBehaviour
             float xRadius;
             float yRadius;
 
-            if(areaLevel == 5)
+            if(areaLevel == Mathf.RoundToInt(splitCount/2) || areaLevel == 1)
             {
                 xRadius = areaWSize / 2 - 30;
                 yRadius = areaHSize / 2 - 30;
@@ -121,8 +147,7 @@ public class SpawnerSetManager : MonoBehaviour
 
             int index = 0;
 
-            GameObject spawnObj = SpawnerGroupSet(centerPos);
-
+            GameObject spawnGroup = SpawnerGroupSet(centerPos);
             for (int i = 0; i < levelData.maxSpawner; i++)
             {
                 GameObject spawnerObj = Instantiate(spawner);
@@ -133,10 +158,19 @@ public class SpawnerSetManager : MonoBehaviour
                 {
                     Destroy(mapGen.map.mapData[(int)randomPoints[index].x][(int)randomPoints[index].y].obj);
                 }
-                spawnObj.GetComponent<SpawnerGroupManager>().SpawnerSet(spawnerObj);
+                spawnGroup.GetComponent<SpawnerGroupManager>().SpawnerSet(spawnerObj);
                 spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);
                 monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos);
+                monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel);
                 index++;
+            }
+
+            spawnerMatrix[xIndex, yIndex] = spawnGroup;
+            xIndex++;
+            if(xIndex >= splitCount)
+            {
+                xIndex = 0;
+                yIndex++;
             }
         }
     }

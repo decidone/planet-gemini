@@ -30,6 +30,7 @@ public class RecipeManager : InventoryManager
             if (focusedSlot.item != null)
             {
                 prod.SetRecipe(recipes[focusedSlot.slotNum]);
+
                 focusedSlot = null;
                 CloseUI();
             }
@@ -50,6 +51,7 @@ public class RecipeManager : InventoryManager
         itemInfoWindow.CloseWindow();
         structureInfoUI.SetActive(true);
         isOpened = false;
+        soundManager.PlayUISFX("CloseUI");
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 

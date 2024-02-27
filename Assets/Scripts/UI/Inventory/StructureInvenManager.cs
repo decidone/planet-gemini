@@ -54,11 +54,13 @@ public class StructureInvenManager : InventoryManager
                 {
                     playerInven.Add(focusedSlot.item, focusedSlot.amount);
                     inventory.RemoveServerRpc(focusedSlot.slotNum);
+                    soundManager.PlayUISFX("ItemSelect");
                 }
                 else if (containableAmount != 0)
                 {
                     playerInven.Add(focusedSlot.item, containableAmount);
                     inventory.SubServerRpc(focusedSlot.slotNum, containableAmount);
+                    soundManager.PlayUISFX("ItemSelect");
                 }
                 else
                 {
