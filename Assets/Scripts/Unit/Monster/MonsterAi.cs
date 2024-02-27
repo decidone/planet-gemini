@@ -525,8 +525,6 @@ public class MonsterAi : UnitCommonAi
             aIState = AIState.AI_ReturnPos;
         }
 
-        Debug.Log(moveFunc);
-
         direction = targetPos - tr.position;
         checkPathCoroutine = null;
     }

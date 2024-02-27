@@ -185,6 +185,7 @@ MonoBehaviour:
   currentStrongSpawn: 0
   totalMonsterList: []
   guardianList: []
+  nearUserObjExist: 0
   unitSprite: {fileID: 4028291071532341099}
   unitCanvas: {fileID: 5496904829296565877}
   hpBar: {fileID: 4936597692029941388}
