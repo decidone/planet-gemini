@@ -44,10 +44,11 @@ public abstract class InventoryManager : MonoBehaviour
 
     protected virtual void Update()
     {
-        splitTimer += Time.deltaTime;
-
         if (slotRightClickHold)
+        {
+            splitTimer += Time.deltaTime;
             SlotRightClick();
+        }
     }
 
     public void SetInven(Inventory inven, GameObject invenUI)

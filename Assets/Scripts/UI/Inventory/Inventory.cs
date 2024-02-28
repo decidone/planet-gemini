@@ -199,7 +199,7 @@ public class Inventory : NetworkBehaviour
             //amounts[slotNum] = maxAmount;
             int tempAmount = amounts[slotNum];
             SlotAdd(slotNum, dragItem, maxAmount - amounts[slotNum]);
-            ItemDragManager.instance.Sub(dragAmount - tempAmount, isHost);
+            ItemDragManager.instance.Sub(maxAmount - tempAmount, isHost);
         }
         else
         {
@@ -377,14 +377,41 @@ public class Inventory : NetworkBehaviour
     public void Drop(Item item, int amount)
     {
         // 서버
+        SpawnItemServerRpc(GeminiNetworkManager.instance.GetItemSOIndex(item), amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnItemServerRpc(int itemIndex, int amount)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+
         Debug.Log("Drop : " + item.name + ", Amount : " + amount);
         GameObject dropItem = Instantiate(itemPref);
-        SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
+        //SpriteRenderer sprite = dropItem.GetComponent<SpriteRenderer>();
+        //sprite.sprite = item.icon;
+        //ItemProps itemProps = dropItem.GetComponent<ItemProps>();
+        //itemProps.item = item;
+        //itemProps.amount = amount;
+
+        NetworkObject itemNetworkObject = dropItem.GetComponent<NetworkObject>();
+        itemNetworkObject.Spawn(true);
+
+        dropItem.transform.position = GameManager.instance.player.transform.position;
+
+        SpawnItemClientRpc(dropItem, itemIndex, amount);
+    }
+
+    [ClientRpc]
+    public void SpawnItemClientRpc(NetworkObjectReference networkObjectReference, int itemIndex, int amount)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        networkObjectReference.TryGet(out NetworkObject itemNetworkObject);
+
+        SpriteRenderer sprite = itemNetworkObject.GetComponent<SpriteRenderer>();
         sprite.sprite = item.icon;
-        ItemProps itemProps = dropItem.GetComponent<ItemProps>();
+        ItemProps itemProps = itemNetworkObject.GetComponent<ItemProps>();
         itemProps.item = item;
         itemProps.amount = amount;
-        dropItem.transform.position = GameManager.instance.player.transform.position;
     }
 
     public void ResetInven()
