@@ -162,7 +162,7 @@ public class MonsterSpawnerManager : MonoBehaviour
                 break;
         }
 
-        if(waveSpawner != null)
+        if (waveSpawner != null)
         {
             SpawnerGroupManager spawnerGroup = waveSpawner.GetComponentInParent<SpawnerGroupManager>();
             if (FindMatrix(spawnerGroup))
@@ -190,6 +190,7 @@ public class MonsterSpawnerManager : MonoBehaviour
                 }
                 Debug.Log("waveStart : " + waveTrPos + " : " + waveMainPos);
                 wavePoint.WaveStart(waveTrPos);
+                BattleBGMCtrl.instance.WaveStart();
             }
         }
     }

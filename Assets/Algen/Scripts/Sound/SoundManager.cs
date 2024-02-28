@@ -67,6 +67,7 @@ public class SoundManager : MonoBehaviour
         Instance = this;
         mainCamera = Camera.main;
         SFXPlayerSet();
+        UIVolumeSet();
     }
 
     void Update()
@@ -96,6 +97,16 @@ public class SoundManager : MonoBehaviour
     }
 
     #region VolumeSet
+
+    void UIVolumeSet()
+    {
+        musicMasterSlider.onValueChanged.AddListener(delegate { SetMasterVolume(); });
+        musicMasterToggle.onValueChanged.AddListener(delegate { SetMasterMute(); });
+        musicBGMSlider.onValueChanged.AddListener(delegate { SetBGMVolume(); });
+        musicBGMToggle.onValueChanged.AddListener(delegate { SetBGMMute(); });
+        musicSFXSlider.onValueChanged.AddListener(delegate { SetSFXVolume(); });
+        musicSFXToggle.onValueChanged.AddListener(delegate { SetSFXMute(); });
+    }
 
     public void SetMasterVolume()
     {

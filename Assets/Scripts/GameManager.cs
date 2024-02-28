@@ -412,7 +412,7 @@ public class GameManager : MonoBehaviour
         GameObject fogOfWar = ResourcesManager.instance.fogOfWar;
         FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
         followTransform.SetTargetTransform(player.transform);
-        WavePoint.instance.PlayerSet(player);
+        WavePoint.instance.PlayerSet(player, playerSpawnPos);
     }
 
     public void SetPlayerPos(float x, float y)

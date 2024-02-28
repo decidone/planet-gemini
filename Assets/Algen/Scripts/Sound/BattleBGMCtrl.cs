@@ -10,6 +10,7 @@ public class BattleBGMCtrl : MonoBehaviour
     public List<GameObject> waveMonsters = new List<GameObject>();
     bool battleBGMOn = false;
     bool waveState = false;
+
     #region Singleton
     public static BattleBGMCtrl instance;
 
@@ -54,16 +55,16 @@ public class BattleBGMCtrl : MonoBehaviour
         }
     }
 
+    public void WaveStart()
+    {
+        waveState = true;
+        battleBGMOn = true;
+        soundManager.BattleStateSet(battleBGMOn, true);        
+    }
+
     public void WaveAddMonster(List<GameObject> monsters)
     {
         waveMonsters.AddRange(monsters);
-
-        if (!waveState)
-        {
-            waveState = true;
-            battleBGMOn = true;
-            soundManager.BattleStateSet(battleBGMOn, true);
-        }
     }
 
     public void BattleRemoveMonster(GameObject monster)
@@ -103,6 +104,7 @@ public class BattleBGMCtrl : MonoBehaviour
                     soundManager.BattleStateSet(battleBGMOn, false);
                 }
                 waveState = false;
+                WavePoint.instance.WaveEnd();
             }
         }
         else if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0 && battleBGMOn)
