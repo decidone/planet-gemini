@@ -14,11 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: SlimeA
   maxHp: 80
-  damage: 13
+  damage: 6
   moveSpeed: 3
   attackDist: 2
   attDelayTime: 1
   colliderRadius: 10
   patrolRad: 3
-  attackNum: 1
   defense: 10

@@ -17,4 +17,11 @@ public class ItemProps : MonoBehaviour
     public BeltCtrl setOnBelt;
 
     public Collider2D col;
+
+    public void ResetItemProps()
+    {
+        isOnBelt = false;
+        setOnBelt = null;
+        col.enabled = true;
+    }
 }

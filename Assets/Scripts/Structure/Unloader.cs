@@ -98,7 +98,7 @@ public class Unloader : LogisticsCtrl
             if (getItemIndex >= inObj.Count)
                 getItemIndex = 0;
 
-            Invoke("DelayGetItem", structureData.SendDelay);
+            Invoke(nameof(DelayGetItem), structureData.SendDelay);
         }
         else
             DelayGetItem();

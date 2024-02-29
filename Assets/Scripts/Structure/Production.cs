@@ -142,7 +142,7 @@ public abstract class Production : Structure
                 StartCoroutine(SetInObjCoroutine(otherObj));
                 outObj.Remove(otherObj);
                 outSameList.Remove(otherObj);
-                Invoke("RemoveSameOutList", 0.1f);
+                Invoke(nameof(RemoveSameOutList), 0.1f);
             }
         }
     }
@@ -225,7 +225,7 @@ public abstract class Production : Structure
                 if (getItemIndex >= inObj.Count)
                     getItemIndex = 0;
 
-                Invoke("DelayGetItem", structureData.SendDelay);
+                Invoke(nameof(DelayGetItem), structureData.SendDelay);
             }
             else
             {
@@ -248,7 +248,7 @@ public abstract class Production : Structure
         }        
     }
 
-    protected override void AddInvenItem()
+    public override void AddInvenItem()
     { 
         for (int i = 0; i < inventory.space; i++)
         {
@@ -359,6 +359,19 @@ public abstract class Production : Structure
 
             if (isUIOpened)
                 sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        }
+    }
+
+    protected override void ItemDrop()
+    {
+        for (int i = 0; i < inventory.space; i++)
+        {
+            var invenItem = inventory.SlotCheck(i);
+
+            if (invenItem.item != null && invenItem.amount > 0)
+            {
+                ItemToItemProps(invenItem.item, invenItem.amount);
+            }
         }
     }
 }

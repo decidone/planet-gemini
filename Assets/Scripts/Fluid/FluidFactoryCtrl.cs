@@ -319,8 +319,6 @@ public class FluidFactoryCtrl : Production
             StartCoroutine(MainSourceFunc());
     }
 
-    protected override void AddInvenItem() { }
-
     public override Dictionary<Item, int> PopUpItemCheck()
     {
         if(saveFluidNum > 0 && fluidName != "")  
@@ -337,5 +335,24 @@ public class FluidFactoryCtrl : Production
     public override (Item, int) QuickPullOut()
     {
         return (null, 0);
+    }
+
+    protected override void ItemDrop()
+    {
+        if (itemList.Count > 0)
+        {
+            foreach (Item item in itemList)
+            {
+                ItemToItemProps(item, 1);
+            }
+        }
+
+        if (itemObjList.Count > 0)
+        {
+            foreach (ItemProps itemProps in itemObjList)
+            {
+                itemProps.ResetItemProps();
+            }
+        }
     }
 }

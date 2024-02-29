@@ -58,6 +58,7 @@ public class RemoveBuild : DragFunc
         if (obj.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
         {
             UiCheck(structure);
+            structure.AddInvenItem();
             structure.RemoveObj();
             RefundCost(structure);
         }
