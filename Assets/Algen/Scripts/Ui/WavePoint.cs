@@ -7,8 +7,14 @@ public class WavePoint : MonoBehaviour
 {
     GameObject player;
     public GameObject instanceObj;
+    public GameObject mapObj;
     private float defaultAngle;
     bool isWaveStart = false;
+
+    [SerializeField]
+    protected GameObject lineObj;
+    LineRenderer lineRenderer;
+    protected Vector3 basePos;
 
     #region Singleton
     public static WavePoint instance;
@@ -42,9 +48,10 @@ public class WavePoint : MonoBehaviour
         }
     }
 
-    public void PlayerSet(GameObject _player)
+    public void PlayerSet(GameObject _player, Vector3 _basePos)
     {
         player = _player;
+        basePos = _basePos;
     }
 
     public void WaveStart(Vector3 wavePos)
@@ -53,12 +60,25 @@ public class WavePoint : MonoBehaviour
         isWaveStart = true;
         SetIndicator();
         instanceObj.SetActive(true);
+        mapObj.SetActive(true);
+
+        if(lineRenderer != null)
+            Destroy(lineRenderer);
+
+        GameObject currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
+        lineRenderer = currentLine.GetComponent<LineRenderer>();
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, wavePos);
+        lineRenderer.SetPosition(1, basePos);
     }
 
     public void WaveEnd()
     {
         isWaveStart = false;
         instanceObj.SetActive(false);
+        mapObj.SetActive(false);
+
+        Destroy(lineRenderer);
     }
 
     public void SetIndicator()

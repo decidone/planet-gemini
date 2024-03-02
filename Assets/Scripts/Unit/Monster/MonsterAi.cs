@@ -661,14 +661,13 @@ public class MonsterAi : UnitCommonAi
     {
         if(aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
         {
-            //int x = (int)Random.Range(-15, 15);
-            //int y = (int)Random.Range(-15, 15);
+            int x = (int)Random.Range(-10, 10);
+            int y = (int)Random.Range(-10, 10);
 
-            //Vector3 newWavePos = wavePos + new Vector3(x, y);
+            Vector3 newWavePos = _wavePos + new Vector3(x, y);
             waveState = true;
             waveWaiting = true;
-            transform.position = _wavePos;
-            Debug.Log("Tele");
+            transform.position = newWavePos;
         }
     }
 }
