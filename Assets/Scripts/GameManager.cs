@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     public Map map;
     public GameObject player;
     public PlayerController playerController;
+    public Transform hostPlayerTransform;
+    public Transform clientPlayerTransform;
+
     CameraController mainCam;
     public MapCameraController mapCameraController;
     public GameObject preBuildingObj;
@@ -419,6 +422,14 @@ public class GameManager : MonoBehaviour
     {
         playerSpawnPos = new Vector3(x, y, 0);
         //player.transform.position = playerSpawnPos;
+    }
+
+    public Vector3 GetPlayerPos(bool isHostPlayer)
+    {
+        if (isHostPlayer)
+            return hostPlayerTransform.position;
+        else
+            return clientPlayerTransform.position;
     }
 
     public GameObject SelectPointSpawn(GameObject build)
