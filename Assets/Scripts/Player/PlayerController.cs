@@ -116,38 +116,6 @@ public class PlayerController : NetworkBehaviour
 
     void Loot()
     {
-        //foreach (GameObject item in items)
-        //{
-        //    ItemProps itemProps = item.GetComponent<ItemProps>();
-        //    if (itemProps)
-        //    {
-        //        inventory.LootItem(item);
-        //        //if (inventory.LootItem(item))
-        //        //{
-        //        //    items.Remove(item);
-        //        //    Destroy(item);
-        //        //}
-        //        //int containableAmount = inventory.SpaceCheck(itemProps.item);
-        //        //if (itemProps.amount <= containableAmount)
-        //        //{
-        //        //    inventory.Add(itemProps.item, itemProps.amount);
-        //        //    items.Remove(item);
-        //        //    Destroy(item);
-
-        //        //    break;
-        //        //}
-        //        //else if (containableAmount != 0)
-        //        //{
-        //        //    inventory.Add(itemProps.item, containableAmount);
-        //        //    itemProps.amount -= containableAmount;
-        //        //}
-        //        //else
-        //        //{
-        //        //    Debug.Log("not enough space");
-        //        //}
-        //    }
-        //}
-
         for (int i = 0; i < items.Count; i++)
         {
             if (items[i] != null)
@@ -195,7 +163,6 @@ public class PlayerController : NetworkBehaviour
     {
         // items에서 null 제거
         // items.RemoveAll( x => !x);
-        // 아이템 오브젝트 파괴해도 리스트에서 안 사라질까봐 넣은 콜백인데 기능을 안 넣어줘도 문제없음
         // 빈 콜백으로 둬도 클라이언트 아이템 복사버그가 해결 됨. 아마 컴포넌트를 리프레시 해주는 기능이 있는 듯
     }
 

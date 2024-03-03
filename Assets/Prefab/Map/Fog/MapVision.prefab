@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7657240475368427345}
   - component: {fileID: 7262420126983205447}
-  m_Layer: 9
+  m_Layer: 3
   m_Name: MapVision
   m_TagString: Untagged
   m_Icon: {fileID: 0}

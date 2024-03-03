@@ -166,6 +166,7 @@ public abstract class InventoryManager : MonoBehaviour
     protected void SlotRightClickHold()
     {
         slotRightClickHold = !slotRightClickHold;
+        splitTimer = splitCooldown;
     }
 
     protected void SlotRightClick()
