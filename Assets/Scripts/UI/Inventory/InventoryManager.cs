@@ -44,10 +44,11 @@ public abstract class InventoryManager : MonoBehaviour
 
     protected virtual void Update()
     {
-        splitTimer += Time.deltaTime;
-
         if (slotRightClickHold)
+        {
+            splitTimer += Time.deltaTime;
             SlotRightClick();
+        }
     }
 
     public void SetInven(Inventory inven, GameObject invenUI)
@@ -150,7 +151,7 @@ public abstract class InventoryManager : MonoBehaviour
                     }
                 }
             }
-            else if (!RaycastUtility.IsPointerOverUI(Input.mousePosition) && ItemDragManager.instance.slotObj.activeSelf)
+            else if (!RaycastUtility.IsPointerOverUI(Input.mousePosition) && ItemDragManager.instance.IsDragging(GameManager.instance.isHost))
             {
                 // 인벤토리 UI 바깥
                 inventory.DragDrop();

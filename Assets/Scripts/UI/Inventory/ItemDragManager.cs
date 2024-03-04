@@ -124,9 +124,6 @@ public class ItemDragManager : MonoBehaviour
 
     public void Clear(bool isHostTask)
     {
-        //if (inventory.items.Count > 0)
-        //    inventory.RemoveServerRpc(0);
-
         if (isHostTask)
         {
             if (hostInven.items.Count > 0)
@@ -141,9 +138,6 @@ public class ItemDragManager : MonoBehaviour
 
     public void Add(Item item, int amount, bool isHostTask)
     {
-        //if (inventory.items.Count == 0 || inventory.items[0] == item)
-        //    inventory.SlotAdd(0, item, amount);
-
         if (isHostTask)
         {
             if (hostInven.items.Count == 0 || hostInven.items[0] == item)
@@ -158,9 +152,6 @@ public class ItemDragManager : MonoBehaviour
 
     public void Sub(int amount, bool isHostTask)
     {
-        //if (inventory.items.Count > 0)
-        //    inventory.SubServerRpc(0, amount);
-
         if (isHostTask)
         {
             if (hostInven.items.Count > 0)
