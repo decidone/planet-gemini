@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Netcode;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
@@ -26,7 +27,7 @@ public enum AttackState
     AttackEnd,
 }
 
-public class UnitCommonAi : MonoBehaviour
+public class UnitCommonAi : NetworkBehaviour
 {
     [SerializeField]
     protected UnitCommonData unitCommonData;
@@ -65,7 +66,7 @@ public class UnitCommonAi : MonoBehaviour
     public Image hpBar;
     public float hp;
 
-    protected bool isFlip;
+    public bool isFlip;
     protected bool isDelayAfterAttackCoroutine = false;
 
     public AIState aIState;
@@ -108,12 +109,18 @@ public class UnitCommonAi : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
+        if (!IsServer)
+            return;
+
         if (aIState != AIState.AI_Die)
             UnitAiCtrl();
     }
 
     protected virtual void Update()
     {
+        if (!IsServer)
+            return;
+
         if (aIState != AIState.AI_Die)
         {
             searchTimer += Time.deltaTime;
@@ -139,7 +146,7 @@ public class UnitCommonAi : MonoBehaviour
     }
 
     protected virtual void UnitAiCtrl() { }
-    protected virtual void SearchObjectsInRange() { }    
+    protected virtual void SearchObjectsInRange() { }
     protected virtual void AttackTargetCheck() { }
 
     protected void RemoveObjectsOutOfRange()
@@ -267,5 +274,53 @@ public class UnitCommonAi : MonoBehaviour
         {
             aggroTarget = null;
         }
+    }
+
+    [ClientRpc]
+    protected void AnimatorBoolClientRpc(string parameter , bool data)
+    {
+        animator.SetBool(parameter, data);
+    }
+
+    [Command]
+    protected void AnimatorBoolCommand(string parameter, bool data)
+    {
+        AnimatorBoolClientRpc(parameter, data);
+    }
+
+    [ClientRpc]
+    protected void AnimatorFloatClientRpc(string parameter, float data)
+    {
+        animator.SetFloat(parameter, data);
+    }
+
+    [Command]
+    protected void AnimatorFloatCommand(string parameter, float data)
+    {
+        AnimatorFloatClientRpc(parameter, data);
+    }
+
+    [ClientRpc]
+    protected void AnimatorPlayClientRpc(string parameter)
+    {
+        animator.Play(parameter, -1, 0);
+    }
+
+    [Command]
+    protected void AnimatorPlayCommand(string parameter)
+    {
+        AnimatorPlayClientRpc(parameter);
+    }
+
+    [ClientRpc]
+    protected void FlipXDataClientRpc(bool data)
+    {
+        unitSprite.flipX = data;
+    }
+
+    [Command]
+    protected void FlipXDataCommand(bool data)
+    {
+        FlipXDataClientRpc(data);
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class UnitAi : UnitCommonAi
@@ -76,7 +77,7 @@ public class UnitAi : UnitCommonAi
                 PatrolFunc(isPatrolMove);
                 break;                     
             case AIState.AI_Attack:
-                if (attackState == AttackState.Waiting)  
+                if (attackState == AttackState.Waiting)
                 {
                     AttackCheck();
                 }
@@ -96,11 +97,17 @@ public class UnitAi : UnitCommonAi
 
     void IdleFunc()
     {
-        animator.SetBool("isMove", false);
+        //animator.SetBool("isMove", false);
+
+        if (IsServer)
+            AnimatorBoolClientRpc("isMove", false);
+        else
+            AnimatorBoolCommand("isMove", false);
         isMoveCheckCoroutine = false;
     }
 
-    public void MovePosSet(Vector2 dir, float radi, bool isAttack)
+    [ServerRpc(RequireOwnership = false)]
+    public void MovePosSetServerRpc(Vector2 dir, float radi, bool isAttack)
     {
         isNewPosSet = true;
         isHold = false;
@@ -176,27 +183,45 @@ public class UnitAi : UnitCommonAi
          
         if (isNotLast)
         {
-            animator.SetFloat("Vertical", verticalValue);
+            //animator.SetFloat("Vertical", verticalValue);
+            if (IsServer)
+                AnimatorFloatClientRpc("Vertical", verticalValue);
+            else
+                AnimatorFloatCommand("Vertical", verticalValue);
+
         }
         else
         {
-            animator.SetFloat("lastMoveY", verticalValue);
+            //animator.SetFloat("lastMoveY", verticalValue);
+            if (IsServer)
+                AnimatorFloatClientRpc("lastMoveY", verticalValue);
+            else
+                AnimatorFloatCommand("lastMoveY", verticalValue);
         }
 
-        if(isFlip)
+
+        if (isFlip)
         {
            if (direction.x > 0)
             {
                 if(!unitSprite.flipX)
                 {
-                    unitSprite.flipX = true;
+                    if (IsServer)
+                        FlipXDataClientRpc(true);
+                    else
+                        FlipXDataCommand(true);
+                    //unitSprite.flipX = true;
                 }
             }
             else if (direction.x < 0)
             {
                 if (unitSprite.flipX)
                 {
-                    unitSprite.flipX = false;
+                    if (IsServer)
+                        FlipXDataClientRpc(false);
+                    else
+                        FlipXDataCommand(false);
+                    //unitSprite.flipX = false;
                 }
             }
         }
@@ -206,14 +231,22 @@ public class UnitAi : UnitCommonAi
             {
                 if (unitSprite.flipX)
                 {
-                    unitSprite.flipX = false;
+                    if (IsServer)
+                        FlipXDataClientRpc(false);
+                    else
+                        FlipXDataCommand(false);
+                    //unitSprite.flipX = false;
                 }
             }
             else if (direction.x < 0)
             {
                 if (!unitSprite.flipX)
                 {
-                    unitSprite.flipX = true;
+                    if (IsServer)
+                        FlipXDataClientRpc(true);
+                    else
+                        FlipXDataCommand(true);
+                    //unitSprite.flipX = true;
                 }
             }
         } 
@@ -251,18 +284,29 @@ public class UnitAi : UnitCommonAi
                 }
             }
 
-            animator.SetBool("isMove", true);
-
+            //animator.SetBool("isMove", true);
+            if (IsServer)
+                AnimatorBoolClientRpc("isMove", true);
+            else
+                AnimatorBoolCommand("isMove", true);
             if (direction.magnitude > 0.5f)
             {
                 AnimSetFloat(direction, true);
             }
         }
         else
-            animator.SetBool("isMove", false);
+        {
+            if (IsServer)
+                AnimatorBoolClientRpc("isMove", false);
+            else
+                AnimatorBoolCommand("isMove", false);
+        }
+
+        //animator.SetBool("isMove", false);
     }
 
-    public void PatrolPosSet(Vector2 dir)
+    [ServerRpc(RequireOwnership = false)]
+    public void PatrolPosSetServerRpc(Vector2 dir)
     {
         isHold = false;
         isAttackMove = true;
@@ -325,14 +369,25 @@ public class UnitAi : UnitCommonAi
                 }
             }
 
-            animator.SetBool("isMove", true);
+            if (IsServer)
+                AnimatorBoolClientRpc("isMove", true);
+            else
+                AnimatorBoolCommand("isMove", true);
+            //animator.SetBool("isMove", true);
             if (direction.magnitude > 0.5f)
             {
                 AnimSetFloat(direction, true);
             }
         }
         else
-            animator.SetBool("isMove", false);
+        {
+            if (IsServer)
+                AnimatorBoolClientRpc("isMove", false);
+            else
+                AnimatorBoolCommand("isMove", false);
+        }
+
+        //animator.SetBool("isMove", false);
     }
 
     IEnumerator UnitMoveCheck()
@@ -452,11 +507,19 @@ public class UnitAi : UnitCommonAi
     {
         if (isHold || aggroTarget == null)
         {
-            animator.SetBool("isMove", false);
+            //animator.SetBool("isMove", false);
+            if (IsServer)
+                AnimatorBoolClientRpc("isMove", false);
+            else
+                AnimatorBoolCommand("isMove", false);
             return;
         }
 
-        animator.SetBool("isMove", true);
+        //animator.SetBool("isMove", true);
+        if (IsServer)
+            AnimatorBoolClientRpc("isMove", true);
+        else
+            AnimatorBoolCommand("isMove", true); 
         AnimSetFloat(targetVec, true);
 
         if (targetDist > unitCommonData.AttackDist)
@@ -521,4 +584,5 @@ public class UnitAi : UnitCommonAi
             isLastStateOn = false;
         } 
     }
+
 }

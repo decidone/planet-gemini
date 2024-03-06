@@ -206,7 +206,7 @@ public class UnitFactory : Production
         GameObject unit = Instantiate(spawnUnit);
         unit.transform.position = this.transform.position;
         UnitAi unitAi = unit.GetComponent<UnitAi>();
-        unitAi.MovePosSet(spawnPos, 0, true);
+        unitAi.MovePosSetServerRpc(spawnPos, 0, true);
     }
 
     public override void DestroyLineRenderer()

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ItemManaGenerator
   m_EditorClassIdentifier: 
   name: ManaGenerator
-  icon: {fileID: 21300000, guid: 36550992f62a1e8438cdbeccff6a2f50, type: 3}
+  icon: {fileID: 1595258527, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   tier: -1

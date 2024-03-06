@@ -65,7 +65,7 @@ public class UnitGroupCtrl : MonoBehaviour
 
         foreach (GameObject obj in unitList)
         {
-            obj.GetComponent<UnitAi>().MovePosSet(targetPos, minDiameter, isAttack);
+            obj.GetComponent<UnitAi>().MovePosSetServerRpc(targetPos, minDiameter, isAttack);
         }
     }
 
@@ -76,12 +76,12 @@ public class UnitGroupCtrl : MonoBehaviour
             for (int i = 0; i < unitList.Count; i++)
             {
                 Vector3 movePosition = patrolPos + unitVecList[i];
-                unitList[i].GetComponent<UnitAi>().PatrolPosSet(movePosition);
+                unitList[i].GetComponent<UnitAi>().PatrolPosSetServerRpc(movePosition);
             }
         }
         else if (unitList.Count == 1)
         {
-            unitList[0].GetComponent<UnitAi>().PatrolPosSet(patrolPos);
+            unitList[0].GetComponent<UnitAi>().PatrolPosSetServerRpc(patrolPos);
         }
     }
 

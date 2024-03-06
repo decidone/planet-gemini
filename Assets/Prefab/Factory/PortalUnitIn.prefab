@@ -242,6 +242,7 @@ GameObject:
   - component: {fileID: 941880205020935681}
   - component: {fileID: 941880205020935682}
   - component: {fileID: 3300190558683548961}
+  - component: {fileID: 287260045712215927}
   m_Layer: 16
   m_Name: PortalUnitIn
   m_TagString: Factory
@@ -258,7 +259,7 @@ Transform:
   m_GameObject: {fileID: 941880205020935685}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 941880205379144344}
@@ -307,7 +308,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 1582511706, guid: 6060db862052d9b4483000b2b23eb0f9, type: 3}
+  m_Sprite: {fileID: -401636961, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -334,15 +335,15 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.46}
+    oldSize: {x: 2, y: 2.3125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9, y: 0.9}
+  m_Size: {x: 1.8, y: 1.8}
   m_EdgeRadius: 0
 --- !u!114 &941880205020935681
 MonoBehaviour:
@@ -426,16 +427,29 @@ MonoBehaviour:
   isStorageBuilding: 0
   isMainSource: 0
   isTempBuild: 0
+  isUIOpened: 0
+  isPortalBuild: 0
   myVision: {fileID: 2716981238134243101}
+  maxAmount: 0
+  cooldown: 10
   connectors: []
+  conn: {fileID: 0}
+  energyUse: 0
+  isEnergyStr: 0
+  energyProduction: 0
+  energyConsumption: 0
+  isOperate: 0
+  efficiency: 0
+  effiCooldown: 0
+  isMainEnergyColony: 0
+  soundManager: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
-  maxAmount: 0
-  cooldown: 10
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
+  myPortal: {fileID: 0}
   nearPos:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
@@ -445,11 +459,27 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  unitItem:
-  - {fileID: 11400000, guid: 692da0934e48dee4a88f732cb82bccab, type: 2}
-  - {fileID: 11400000, guid: 17ab3098301b53e40862ddaa6517ee00, type: 2}
-  - {fileID: 11400000, guid: 110a23f8bb2ed324199e63a28f60743d, type: 2}
-  displaySlots: []
+  sendUnitList: []
+--- !u!95 &287260045712215927
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941880205020935685}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8afbccb2659997040938e3d725d7a735, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &941880205379144345
 GameObject:
   m_ObjectHideFlags: 0

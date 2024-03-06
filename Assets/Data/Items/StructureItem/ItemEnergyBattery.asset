@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ItemEnergyBattery
   m_EditorClassIdentifier: 
   name: EnergyBattery
-  icon: {fileID: 21300000, guid: 7c4e6c8af0903304dbe49947839d99ff, type: 3}
+  icon: {fileID: 817693365, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   tier: -1

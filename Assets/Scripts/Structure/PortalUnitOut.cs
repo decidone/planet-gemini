@@ -48,7 +48,7 @@ public class PortalUnitOut : PortalObj
         unit.SetActive(true);
         UnitAi unitAi = unit.GetComponent<UnitAi>();
         UnitSpawnPosFind();
-        unitAi.MovePosSet(spawnPos, 0, true);
+        unitAi.MovePosSetServerRpc(spawnPos, 0, true);
     }
 
     public void UnitSpawnPosFind()

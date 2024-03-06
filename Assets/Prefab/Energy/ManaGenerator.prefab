@@ -327,6 +327,7 @@ MonoBehaviour:
   signal: 0
   energyGenerator: {fileID: 0}
   steamGenerator: {fileID: 0}
+  mainEnergyColony: {fileID: 0}
 --- !u!1 &2075445432134139083
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,7 +655,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 36550992f62a1e8438cdbeccff6a2f50, type: 3}
+  m_Sprite: {fileID: 1595258527, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -750,20 +751,22 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 868971455955703356}
+  maxAmount: 99
+  cooldown: 2
   connectors: []
   conn: {fileID: 0}
   energyUse: 0
   isEnergyStr: 1
-  isOperate: 0
   energyProduction: 1000
   energyConsumption: 0
+  isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  isMainEnergyColony: 0
+  soundManager: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
-  maxAmount: 99
-  cooldown: 2
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
@@ -788,15 +791,15 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.43}
+    oldSize: {x: 2, y: 2.75}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9, y: 0.9}
+  m_Size: {x: 1.8, y: 1.8}
   m_EdgeRadius: 0
 --- !u!50 &9062751277686904368
 Rigidbody2D:
