@@ -212,7 +212,7 @@ public class Transporter : Production
         }
     }
 
-    protected override void AddInvenItem()
+    public override void AddInvenItem()
     {
         for (int i = 0; i < 18; i++)
         {
@@ -331,6 +331,25 @@ public class Transporter : Production
             foreach (GameObject trUnit in transport.sendItemUnit)
             {
                 trUnit.GetComponent<TransportUnit>().TakeItemEnd();
+            }
+        }
+    }
+
+    protected override void ItemDrop()
+    {
+        if (itemList.Count > 0)
+        {
+            foreach (Item item in itemList)
+            {
+                ItemToItemProps(item, 1);
+            }
+        }
+
+        if (itemObjList.Count > 0)
+        {
+            foreach (ItemProps itemProps in itemObjList)
+            {
+                itemProps.ResetItemProps();
             }
         }
     }

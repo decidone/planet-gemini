@@ -358,8 +358,8 @@ public class Structure : MonoBehaviour
                 getItemIndex++;
                 if (getItemIndex >= inObj.Count)
                     getItemIndex = 0;
-              
-                Invoke("DelayGetItem", structureData.SendDelay);
+
+                Invoke(nameof(DelayGetItem), structureData.SendDelay);
             }
             else if (belt.isItemStop == false)
             {
@@ -458,7 +458,7 @@ public class Structure : MonoBehaviour
             if (sendItemIndex >= outObj.Count)
                 sendItemIndex = 0;
 
-            Invoke("DelaySetItem", structureData.SendDelay);
+            Invoke(nameof(DelaySetItem), structureData.SendDelay);
         }
         else
         {
@@ -634,8 +634,25 @@ public class Structure : MonoBehaviour
 
         soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
 
+        ItemDrop();
         RemoveObj();
     }
+
+    protected void ItemToItemProps(Item item, int itemAmount)
+    {
+        var itemPool = ItemPoolManager.instance.Pool.Get();
+        ItemProps itemProps = itemPool.GetComponent<ItemProps>();
+
+        SpriteRenderer sprite = itemProps.GetComponent<SpriteRenderer>();
+        sprite.sprite = item.icon;
+        sprite.sortingOrder = 2;
+        itemProps.item = item;
+        itemProps.amount = itemAmount;
+        itemProps.transform.position = transform.position;
+        itemProps.ResetItemProps();
+    }
+
+    protected virtual void ItemDrop() { }
 
     public void HealFunc(float heal)
     {
@@ -789,7 +806,7 @@ public class Structure : MonoBehaviour
             {
                 StopCoroutine("SendFacDelay");
                 outObj.Remove(otherObj);
-                Invoke("RemoveSameOutList", 0.1f);
+                Invoke(nameof(RemoveSameOutList), 0.1f);
                 sendItemIndex = 0;
             }
         }
@@ -861,7 +878,7 @@ public class Structure : MonoBehaviour
             portalObj.RemovePortalData();
         }
 
-        AddInvenItem();
+        //AddInvenItem();
 
         GameManager gameManager = GameManager.instance;
         int x = Mathf.FloorToInt(transform.position.x);
@@ -893,7 +910,7 @@ public class Structure : MonoBehaviour
     public virtual void TempBuilCooldownSet() { }
 
 
-    protected virtual void AddInvenItem() { }
+    public virtual void AddInvenItem() { }
 
 
     protected void DelaySetItem()

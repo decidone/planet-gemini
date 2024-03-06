@@ -233,7 +233,7 @@ public class Refinery : FluidFactoryCtrl
         }
     }
 
-    protected override void AddInvenItem()
+    public override void AddInvenItem()
     {
         var slot = inventory.SlotCheck(0);
 
@@ -258,5 +258,18 @@ public class Refinery : FluidFactoryCtrl
         }
         else
             return null;
+    }
+
+    protected override void ItemDrop()
+    {
+        for (int i = 0; i < inventory.space; i++)
+        {
+            var invenItem = inventory.SlotCheck(i);
+
+            if (invenItem.item != null && invenItem.amount > 0)
+            {
+                ItemToItemProps(invenItem.item, invenItem.amount);
+            }
+        }
     }
 }

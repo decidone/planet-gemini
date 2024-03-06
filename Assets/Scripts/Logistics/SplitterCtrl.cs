@@ -225,7 +225,7 @@ public class SplitterCtrl : LogisticsCtrl
         }
 
         FilterIndexCheck();
-        Invoke("DelaySetItem", structureData.SendDelay);
+        Invoke(nameof(DelaySetItem), structureData.SendDelay);
     }
 
     bool ItemFilterFullCheck(Item item)
@@ -304,8 +304,8 @@ public class SplitterCtrl : LogisticsCtrl
                         FilterArr(null, i);
                     }
                 }
-                outObj.Remove(otherObj);
-                Invoke("RemoveSameOutList", 0.1f);
+                outObj.Remove(otherObj); 
+                Invoke(nameof(RemoveSameOutList), 0.1f);
                 StopCoroutine("SendFacDelay");
             }
         }

@@ -10,7 +10,6 @@ public class PortalUnitIn : PortalObj
     PortalUnitOut portalUnitOut;
     PortalUnitOut myPortalUnitOut;
     public Vector2[] nearPos = new Vector2[8];
-    bool isSetPos;
 
     public List<GameObject> sendUnitList = new List<GameObject>();
 
@@ -114,7 +113,6 @@ public class PortalUnitIn : PortalObj
     public override void DestroyLineRenderer()
     {
         base.DestroyLineRenderer();
-        isSetPos = false;
     }
 
     void DisplaySlotChange()

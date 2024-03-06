@@ -10,6 +10,10 @@ public class MapGenerator : MonoBehaviour
     System.Random random;
     public bool randomSeed;
     public int seed;
+
+    [SerializeField]
+    MapSizeData mapSizeData;
+
     public int width;
     public int height;
     public float magnification;
@@ -41,15 +45,34 @@ public class MapGenerator : MonoBehaviour
     public AstarPath astar;
     public CompositeCollider2D comp;
     bool isCompositeDone;
+    Vector3 mapCenterPos;
 
     SpawnerSetManager spawnerPosSet;
 
     void Awake()
     {
-        map.width = width;
-        map.height = height;
+        // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
+        // mapSizeData로만 세팅하도록
+        if (mapSizeData == null)
+        {
+            map.width = width;
+            map.height = height;
+        }
+        else
+        {
+            width = mapSizeData.MapSize;
+            height = mapSizeData.MapSize;
+            map.width = mapSizeData.MapSize;
+            map.height = mapSizeData.MapSize;
+        }
+
         map.mapData = new List<List<Cell>>();
+        mapCenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt(height / 2));
+
+        AddGridGraph(mapCenterPos);
+
         isCompositeDone = false;
+
         comp = lakeTilemap.GetComponent<CompositeCollider2D>();
     }
 
@@ -59,8 +82,13 @@ public class MapGenerator : MonoBehaviour
         Generate();
         SetSpawnPos();
         spawnerPosSet = SpawnerSetManager.instance;
-        if(spawnerPosSet)
-            spawnerPosSet.AreaMapSet();
+
+        // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
+        // mapSizeData로만 세팅하도록
+        if (spawnerPosSet && mapSizeData != null)
+        {
+            spawnerPosSet.AreaMapSet(mapCenterPos, mapSizeData.MapSplitCount);            
+        }
         PortalSet();
         mapFog.transform.position = new Vector3(width / 2, height / 2, 0);
         mapFog.transform.localScale = new Vector3(width, height, 1);
@@ -355,5 +383,20 @@ public class MapGenerator : MonoBehaviour
         {
             portal[i].MapDataSet();
         }
+    }
+
+    void AddGridGraph(Vector3 centerPos)
+    {
+        AstarData data = AstarPath.active.data;
+        GridGraph gg = data.AddGraph(typeof(GridGraph)) as GridGraph;
+        gg.center = centerPos;
+        gg.SetDimensions(width, height, 1);
+        gg.is2D = true;
+        gg.collision.use2D = true;
+        gg.collision.mask |= 1 << LayerMask.NameToLayer("Map");
+        gg.collision.mask |= 1 << LayerMask.NameToLayer("Obj");
+        gg.collision.mask |= 1 << LayerMask.NameToLayer("MapObj");
+        gg.collision.mask |= 1 << LayerMask.NameToLayer("Spawner");
+        gg.collision.mask |= 1 << LayerMask.NameToLayer("PortalUnit");
     }
 }

@@ -410,7 +410,7 @@ public class BeltCtrl : LogisticsCtrl
         }
 
         if (beltState == BeltState.StartBelt || beltState == BeltState.SoloBelt)
-            Invoke("FactoryModelSet", 0.1f);        
+            Invoke(nameof(FactoryModelSet), 0.1f);
     }
 
     public void FactoryModelSet()

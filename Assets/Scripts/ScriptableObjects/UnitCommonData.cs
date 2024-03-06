@@ -31,9 +31,7 @@ public class UnitCommonData : ScriptableObject
     [SerializeField]
     private float patrolRad;//패트롤 범위
     public float PatrolRad { get { return patrolRad; } }
-    [SerializeField]
-    private int attackNum;//공격 모션
-    public int AttackNum { get { return attackNum; } }    
+
     [SerializeField]
     private float defense;
     public float Defense { get { return defense; } }

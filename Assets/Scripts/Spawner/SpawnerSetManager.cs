@@ -58,12 +58,16 @@ public class SpawnerSetManager : MonoBehaviour
         yIndex = 0;
     }
 
-    public void AreaMapSet()
+    public void AreaMapSet(Vector2 centerPos, int mapSplitCount)
     {
         width = mapGen.width;
         height = mapGen.height;
+        splitCount = mapSplitCount;
         areaWSize = width / splitCount;
         areaHSize = height / splitCount;
+
+        float centerX = centerPos.x; // 맵의 중앙 x 좌표
+        float centerY = centerPos.y; // 맵의 중앙 y 좌표
 
         int centerNum = Mathf.FloorToInt(splitCount / 2);
 
@@ -71,23 +75,22 @@ public class SpawnerSetManager : MonoBehaviour
         {
             for (int j = 0; j < splitCount; j++)
             {
-                float centerX = i * areaWSize + areaWSize / 2;
-                float centerY = j * areaHSize + areaHSize / 2;
+                float areaCenterX = centerX + (i - ((float)splitCount / 2)) * areaWSize + areaWSize / 2;
+                float areaCenterY = centerY + (j - ((float)splitCount / 2)) * areaHSize + areaHSize / 2;
 
-                Vector2 centerPos = new Vector2(centerX, centerY);  // 구역의 중앙 좌표
+                Vector2 areaCenter = new Vector2(areaCenterX, areaCenterY);  // 구역의 중앙 좌표
 
                 int x = Math.Abs(centerNum - i);
                 int y = Math.Abs(centerNum - j);
 
                 if (x == 0 && y == 0)
                 {
-                    basePos = centerPos;
+                    basePos = areaCenter;
                 }
 
-                areaPosLevel.Add(centerPos, Math.Max(x, y));    // 구역의 중앙 좌표 + 구역 레벨
+                areaPosLevel.Add(areaCenter, Math.Max(x, y));    // 구역의 중앙 좌표 + 구역 레벨
             }
         }
-
         SpawnerSet();
     }
 
