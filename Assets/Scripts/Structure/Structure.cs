@@ -883,22 +883,25 @@ public class Structure : MonoBehaviour
         GameManager gameManager = GameManager.instance;
         int x = Mathf.FloorToInt(transform.position.x);
         int y = Mathf.FloorToInt(transform.position.y);
+        Cell cell = gameManager.map.GetCellDataFromPos(x, y);
+        bool isOnMap = gameManager.map.IsOnMap(x, y);
+
         if (sizeOneByOne)
         {
-            if (gameManager.map.IsOnMap(x, y) && gameManager.map.mapData[x][y].structure == gameObject)
+            if (isOnMap && cell.structure == gameObject)
             {
-                gameManager.map.mapData[x][y].structure = null;
+                cell.structure = null;
             }
         }
         else
         {
-            if (gameManager.map.IsOnMap(x, y) && gameManager.map.mapData[x][y].structure == gameObject)
+            if (isOnMap && cell.structure == gameObject)
             {
                 for (int i = 0; i < height; i++)
                 {
                     for (int j = 0; j < width; j++)
                     {
-                        gameManager.map.mapData[x + j][y + i].structure = null;
+                        gameManager.map.GetCellDataFromPos(x + j, y + i).structure = null;
                     }
                 }
             }

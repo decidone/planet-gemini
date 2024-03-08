@@ -53,9 +53,6 @@ public class MapCameraController : MonoBehaviour
         mainCamController = Camera.main.GetComponent<CameraController>();
         inputManager.controls.State.ToggleMap.performed += ctx => ToggleMap();
         inputManager.controls.MapCamera.LeftClick.performed += ctx => LeftClick();
-
-        mapWidth = gameManager.map.width;
-        mapHeight = gameManager.map.height;
     }
 
     void FixedUpdate()
@@ -95,6 +92,12 @@ public class MapCameraController : MonoBehaviour
                 pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
             }
         }
+    }
+
+    public void SetMapSize(int width, int height)
+    {
+        mapWidth = width;
+        mapHeight = height;
     }
 
     void ToggleMap()

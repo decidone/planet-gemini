@@ -6,8 +6,6 @@ using Random = UnityEngine.Random;
 
 public class SpawnerSetManager : MonoBehaviour
 {
-    [SerializeField]
-    MapGenerator mapGen;
     [HideInInspector]
     public int width;
     [HideInInspector]
@@ -60,8 +58,8 @@ public class SpawnerSetManager : MonoBehaviour
 
     public void AreaMapSet(Vector2 centerPos, int mapSplitCount)
     {
-        width = mapGen.width;
-        height = mapGen.height;
+        width = GameManager.instance.map.width;
+        height = GameManager.instance.map.height;
         splitCount = mapSplitCount;
         areaWSize = width / splitCount;
         areaHSize = height / splitCount;
@@ -143,7 +141,7 @@ public class SpawnerSetManager : MonoBehaviour
                     int y = (int)Random.Range(-yRadius, yRadius);
 
                     newPoint = centerPos + new Vector2(x, y);
-                } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || mapGen.map.mapData[(int)newPoint.x][(int)newPoint.y].biome.biome == "lake");    // 거리 체크하여 가까우면 다시 돌리기
+                } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || GameManager.instance.map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake");    // 거리 체크하여 가까우면 다시 돌리기
                 
                 randomPoints[i] = newPoint;
             }
@@ -156,10 +154,10 @@ public class SpawnerSetManager : MonoBehaviour
                 GameObject spawnerObj = Instantiate(spawner);
                 spawnerObj.transform.position = randomPoints[index];
 
-                Cell cellData = mapGen.map.mapData[(int)randomPoints[index].x][(int)randomPoints[index].y];
+                Cell cellData = GameManager.instance.map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y);
                 if (cellData.obj != null)
                 {
-                    Destroy(mapGen.map.mapData[(int)randomPoints[index].x][(int)randomPoints[index].y].obj);
+                    Destroy(GameManager.instance.map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y).obj);
                 }
                 spawnGroup.GetComponent<SpawnerGroupManager>().SpawnerSet(spawnerObj);
                 spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);

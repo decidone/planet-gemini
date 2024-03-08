@@ -648,7 +648,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2480601898731471625}
   - component: {fileID: 2480601898731471734}
-  - component: {fileID: 875718241}
   - component: {fileID: 7378487733200588626}
   m_Layer: 3
   m_Name: Map
@@ -689,16 +688,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomSeed: 0
   seed: 3
+  mapSizeData: {fileID: 0}
   width: 160
   height: 90
   magnification: 60
-  hostMap: 0
   tilemap: {fileID: 200245074}
   lakeTilemap: {fileID: 1358553897}
   resourcesTilemap: {fileID: 133983791}
   resourcesIconTilemap: {fileID: 1784946216}
   objects: {fileID: 2480601899221957862}
-  map: {fileID: 875718241}
+  isMultiPlay: 0
+  clientMapOffsetY: 20
   mapFog: {fileID: 0}
   plain: {fileID: 2480601898745360442}
   desert: {fileID: 2480601898082089276}
@@ -724,23 +724,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f2e8519c9f817c74783b8e4acba6865f, type: 2}
   astar: {fileID: 7378487733200588626}
   comp: {fileID: 0}
-  portal:
-  - {fileID: 0}
-  - {fileID: 0}
---- !u!114 &875718241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2480601898731471735}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bdcff9729832164191c6941898b9c65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  width: 0
-  height: 0
 --- !u!114 &7378487733200588626
 MonoBehaviour:
   m_ObjectHideFlags: 0

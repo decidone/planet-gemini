@@ -104,7 +104,7 @@ public class Miner : Production
 
             if (map.IsOnMap(x, y))
             {
-                Resource resource = map.mapData[x][y].resource;
+                Resource resource = map.GetCellDataFromPos(x, y).resource;
                 if (resource != null && resource.type == "ore")
                 {
                     Item item = resource.item;
@@ -128,7 +128,7 @@ public class Miner : Production
                 {
                     if (map.IsOnMap(x, y))
                     {
-                        Resource resource = map.mapData[x + j][y + i].resource;
+                        Resource resource = map.GetCellDataFromPos(x + j, y + i).resource;
                         if (resource != null && resource.type == "ore")
                         {
                             Item item = resource.item;

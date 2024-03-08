@@ -17,7 +17,6 @@ public class MapGenerator : MonoBehaviour
     public int width;
     public int height;
     public float magnification;
-    public bool hostMap;
 
     [Space]
     public Tilemap tilemap;
@@ -25,8 +24,11 @@ public class MapGenerator : MonoBehaviour
     public Tilemap resourcesTilemap;
     public Tilemap resourcesIconTilemap;
     public GameObject objects;
-    public Map map;
-    public GameObject mapFog;
+    //public Map map;
+    public Map hostMap;
+    public Map clientMap;
+    public bool isMultiPlay;
+    [SerializeField] int clientMapOffsetY;
 
     [Space]
     [Header("Biomes")]
@@ -51,36 +53,55 @@ public class MapGenerator : MonoBehaviour
 
     void Awake()
     {
+        hostMap = new Map();
+        if (isMultiPlay)
+            clientMap = new Map();
+
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         if (mapSizeData == null)
         {
-            map.width = width;
-            map.height = height;
+            hostMap.width = width;
+            hostMap.height = height;
+            if (isMultiPlay)
+            {
+                clientMap.width = width;
+                clientMap.height = height;
+            }
         }
         else
         {
             width = mapSizeData.MapSize;
             height = mapSizeData.MapSize;
-            map.width = mapSizeData.MapSize;
-            map.height = mapSizeData.MapSize;
+            hostMap.width = mapSizeData.MapSize;
+            hostMap.height = mapSizeData.MapSize;
+            if (isMultiPlay)
+            {
+                clientMap.width = mapSizeData.MapSize;
+                clientMap.height = mapSizeData.MapSize;
+            }
         }
 
-        map.mapData = new List<List<Cell>>();
+        hostMap.mapData = new List<List<Cell>>();
+        if (isMultiPlay)
+            clientMap.mapData = new List<List<Cell>>();
+
         mapCenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt(height / 2));
-
         AddGridGraph(mapCenterPos);
-
+        if (isMultiPlay)
+        {
+            mapCenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt((height / 2) + height + clientMapOffsetY));
+            AddGridGraph(mapCenterPos);
+        }
         isCompositeDone = false;
-
         comp = lakeTilemap.GetComponent<CompositeCollider2D>();
     }
 
     void Start()
     {
-        Init();
-        Generate();
-        SetSpawnPos();
+        SetRandomSeed();
+        GenerateMap();
+        SetSpawnPos(hostMap);
         spawnerPosSet = SpawnerSetManager.instance;
 
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
@@ -89,9 +110,7 @@ public class MapGenerator : MonoBehaviour
         {
             spawnerPosSet.AreaMapSet(mapCenterPos, mapSizeData.MapSplitCount);            
         }
-        PortalSet();
-        mapFog.transform.position = new Vector3(width / 2, height / 2, 0);
-        mapFog.transform.localScale = new Vector3(width, height, 1);
+        PortalSet(hostMap); // 스폰시키는 방식이 아니라 호스트/클라 맵 지정을 못 함. 나중에 다시 확인
     }
 
     void Update()
@@ -106,43 +125,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void Init()
-    {
-        if (hostMap)
-        {
-            biomes = new List<List<Biome>>() {
-                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
-                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
-                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-            };
-        }
-        else
-        {
-            biomes = new List<List<Biome>>() {
-                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
-                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
-                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
-                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
-                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
-                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
-                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
-                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
-            };
-        }
-    }
-
-    void Generate()
-    {
-        SetRandomSeed();
-        GenerateMap();
-    }
-
-    void SetSpawnPos()
+    void SetSpawnPos(Map map)
     {
         int x = Mathf.FloorToInt(width / 2);
         int y = Mathf.FloorToInt(height / 2);
@@ -197,7 +180,6 @@ public class MapGenerator : MonoBehaviour
                     break;
                 }
             }
-            dist++;
 
             switch (dir)
             {
@@ -207,8 +189,104 @@ public class MapGenerator : MonoBehaviour
                 case "right": x += dist; break;
             }
         }
+        var pos = PortalPosCheck(map, x, y);
+        GameManager.instance.SetPlayerPos(pos.x, pos.y);
+    }
 
-        GameManager.instance.SetPlayerPos(x, y);
+    public (int x, int y) PortalPosCheck(Map map, int x, int y)
+    {
+        // 11x11 범위를 검사해서 호수가 있는 방향을 체크 + 가중치 적용, 체크된 방향의 반대쪽으로 가중치만큼 이동
+        // 1번째 줄에 아무 곳이나 호수가 잡히면 가중치 1, 2번째 줄에 잡히면 2 이런 식으로 적용, 세로도 마찬가지
+        // 나무나 바위를 추가하면 스폰지역 주변 일정 구간은 철거하는 방식으로 둘 듯
+
+        int[] bias = new int[4];    // 0: 첫 x, 1: 마지막 x, 2: 첫 y, 3: 마지막 y
+        int biasX = 0;
+        int biasY = 0;
+        int tempX = x;
+        int tempY = y;
+        bool first = true;
+
+        tempX -= 5;
+        int startY = tempY - 5;
+        for (int i = 0; i < 11; i++)
+        {
+            tempY = startY;
+            for (int j = 0; j < 11; j++)
+            {
+                if (map.mapData[tempX][tempY].biome.biome == "lake")
+                {
+                    if (first)
+                    {
+                        bias[0] = i;
+                        first = false;
+                    }
+
+                    bias[1] = i;
+
+                    if (i < 5)
+                        biasX++;
+                    else if (i > 5)
+                        biasX--;
+
+                    if (j < 5)
+                        biasY++;
+                    else if (j > 5)
+                        biasY--;
+                }
+                tempY++;
+            }
+            tempX++;
+        }
+
+        tempX = x;
+        tempY = y;
+        first = true;
+
+        tempY -= 5;
+        int startX = tempX - 5;
+        for (int i = 0; i < 11; i++)
+        {
+            tempX = startX;
+            for (int j = 0; j < 11; j++)
+            {
+                if (map.mapData[tempX][tempY].biome.biome == "lake")
+                {
+                    if (first)
+                    {
+                        bias[2] = i;
+                        first = false;
+                    }
+
+                    bias[3] = i;
+                }
+                tempX++;
+            }
+            tempY++;
+        }
+
+        if (biasX < 0)
+        {
+            Debug.Log("left: " + (11 - bias[0]));
+            x -= (11 - bias[0]);
+        }
+        else
+        {
+            Debug.Log("right: " + (bias[1] + 1));
+            x += (bias[1] + 1);
+        }
+
+        if (biasY < 0)
+        {
+            Debug.Log("down: " + (11 - bias[2]));
+            y -= (11 - bias[2]);
+        }
+        else
+        {
+            Debug.Log("up: " + (bias[3] + 1));
+            y += (bias[3] + 1);
+        }
+
+        return (x, y);
     }
 
     void SetRandomSeed()
@@ -221,14 +299,57 @@ public class MapGenerator : MonoBehaviour
 
     void GenerateMap()
     {
-        SetBiome();
-        SmoothBiome();
-        CreateTile();
-        CreateResource();
-        CreateObj();
+        hostMap.SetOffsetY(0);
+        SetBiomeTable(true);
+        SetBiome(hostMap);
+        SmoothBiome(hostMap);
+        CreateTile(hostMap, true);
+        CreateResource(hostMap, true);
+        CreateObj(hostMap, true);
+
+        if (isMultiPlay)
+        {
+            clientMap.SetOffsetY(height + clientMapOffsetY);
+            SetBiomeTable(false);
+            SetBiome(clientMap);
+            SmoothBiome(clientMap);
+            CreateTile(clientMap, false);
+            CreateResource(clientMap, false);
+            CreateObj(clientMap, false);
+        }
     }
 
-    void SetBiome()
+    void SetBiomeTable(bool isHostMap)
+    {
+        if (isHostMap)
+        {
+            biomes = new List<List<Biome>>() {
+                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+            };
+        }
+        else
+        {
+            biomes = new List<List<Biome>>() {
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+                new List<Biome> { lake, forest, plain, plain, plain, desert, desert, desert },
+            };
+        }
+    }
+
+    void SetBiome(Map map)
     {
         int tempX = random.Next(0, 1000000);
         int tempY = random.Next(0, 1000000);
@@ -266,7 +387,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void SmoothBiome()
+    void SmoothBiome(Map map)
     {
         for (int x = 0; x < width; x++)
         {
@@ -279,8 +400,12 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void CreateTile()
+    void CreateTile(Map map, bool isHostMap)
     {
+        int offsetY = 0;
+        if (!isHostMap)
+            offsetY = height + clientMapOffsetY;
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -292,7 +417,7 @@ public class MapGenerator : MonoBehaviour
 
                 if (biome.biome == "lake")
                 {
-                    lakeTilemap.SetTile(new Vector3Int(x, y, 0), tile.tile);
+                    lakeTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile.tile);
                     if (tile.form == "side")
                         cell.buildable.Add("pump");
                     else
@@ -300,14 +425,18 @@ public class MapGenerator : MonoBehaviour
                 }
                 else
                 {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), tile.tile);
+                    tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile.tile);
                 }
             }
         }
     }
 
-    void CreateResource()
+    void CreateResource(Map map, bool isHostMap)
     {
+        int offsetY = 0;
+        if (!isHostMap)
+            offsetY = height + clientMapOffsetY;
+
         for (int i = 0; i < resources.Count; i++)
         {
             Resource resource = resources[i];
@@ -333,8 +462,8 @@ public class MapGenerator : MonoBehaviour
                             && biome.biome != "lake" && cell.resource == null)
                         {
                             Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
-                            resourcesTilemap.SetTile(new Vector3Int(x, y, 0), resourceTile);
-                            resourcesIconTilemap.SetTile(new Vector3Int(x, y, 0), resourcesIcon[i]);
+                            resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
+                            resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
                             cell.resource = resource;
 
                             if (resource.type == "ore")
@@ -352,8 +481,12 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void CreateObj()
+    void CreateObj(Map map, bool isHostMap)
     {
+        int offsetY = 0;
+        if (!isHostMap)
+            offsetY = height + clientMapOffsetY;
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -369,19 +502,19 @@ public class MapGenerator : MonoBehaviour
                         cell.obj = objInst;
 
                         objInst.name = string.Format("map_x{0}_y{1}", x, y);
-                        objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)(y + 0.5), 0);
+                        objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)((y + offsetY) + 0.5), 0);
                     }
                 }
             }
         }
     }
 
-    public void PortalSet()
+    public void PortalSet(Map map)
     {
         Portal[] portal = GameManager.instance.portal;
         for (int i = 0; i < portal.Length; i++)
         {
-            portal[i].MapDataSet();
+            portal[i].MapDataSet(map);
         }
     }
 

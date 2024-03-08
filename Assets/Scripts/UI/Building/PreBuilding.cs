@@ -271,7 +271,7 @@ public class PreBuilding : MonoBehaviour
         {
             for (int j = 0; j < objWidth; j++)
             {
-                gameManager.map.mapData[x + j][y + i].structure = buildObj;
+                gameManager.map.GetCellDataFromPos(x + j, y + i).structure = buildObj;
             }
         }
     }
@@ -1121,12 +1121,13 @@ public class PreBuilding : MonoBehaviour
                             continue;
                         }
 
-                        if (gameManager.map.mapData[newX][newY].structure != null || gameManager.map.mapData[newX][newY].obj != null)
+                        Cell cell = gameManager.map.GetCellDataFromPos(newX, newY);
+                        if (cell.structure != null || cell.obj != null)
                         {
                             return false;
                         }
 
-                        if (!gameManager.map.mapData[newX][newY].BuildCheck("PortalObj"))
+                        if (!cell.BuildCheck("PortalObj"))
                         {
                             return false;
                         }
@@ -1147,7 +1148,8 @@ public class PreBuilding : MonoBehaviour
                             continue;
                         }
 
-                        if (gameManager.map.mapData[newX][newY].structure != null || gameManager.map.mapData[newX][newY].obj != null)
+                        Cell cell = gameManager.map.GetCellDataFromPos(newX, newY);
+                        if (cell.structure != null || cell.obj != null)
                         {
                             return false;
                         }
@@ -1158,10 +1160,10 @@ public class PreBuilding : MonoBehaviour
                         
                         if (obj.TryGetComponent(out miner) || obj.TryGetComponent(out pump) || obj.TryGetComponent(out extractor))
                         {
-                            if ((miner && gameManager.map.mapData[newX][newY].BuildCheck("miner") &&
-                                miner.level >= gameManager.map.mapData[newX][newY].resource.level) ||
-                                (pump && gameManager.map.mapData[newX][newY].BuildCheck("pump")) ||
-                                (extractor && gameManager.map.mapData[newX][newY].BuildCheck("extractor")))
+                            if ((miner && cell.BuildCheck("miner") &&
+                                miner.level >= cell.resource.level) ||
+                                (pump && cell.BuildCheck("pump")) ||
+                                (extractor && cell.BuildCheck("extractor")))
                             {
                                 if (!canBuild)
                                     canBuild = true;
@@ -1169,7 +1171,7 @@ public class PreBuilding : MonoBehaviour
                         }
                         else
                         {
-                            if (gameManager.map.mapData[newX][newY].buildable.Count == 0 && gameManager.map.mapData[newX][newY].structure == null)
+                            if (cell.buildable.Count == 0 && cell.structure == null)
                             {
                                 canBuild = true;
                             }

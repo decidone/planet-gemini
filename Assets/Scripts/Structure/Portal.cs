@@ -62,7 +62,7 @@ public class Portal : Production
         }
     }
 
-    public void MapDataSet()
+    public void MapDataSet(Map map)
     {
         Vector2 pos = transform.position;
         int x = Mathf.FloorToInt(pos.x);
@@ -72,7 +72,7 @@ public class Portal : Production
         {
             for (int b = -1; b < 1; b++)
             {
-                gameManager.map.mapData[x + b][y + a].structure = this.gameObject;
+                map.GetCellDataFromPos(x + b, y + a).structure = this.gameObject;
             }
         }
 
@@ -86,8 +86,8 @@ public class Portal : Production
             {
                 for (int b = -1; b < 1; b++)
                 {
-                    gameManager.map.mapData[x + b][y + a].buildable.Clear();
-                    gameManager.map.mapData[x + b][y + a].buildable.Add("PortalObj");
+                    map.GetCellDataFromPos(x + b, y + a).buildable.Clear();
+                    map.GetCellDataFromPos(x + b, y + a).buildable.Add("PortalObj");
                 }
             }
         }

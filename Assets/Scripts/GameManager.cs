@@ -8,7 +8,12 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     public GameObject inventoryUiCanvas;
-    public Map map;
+
+    [SerializeField] MapGenerator mapGenerator;
+    [HideInInspector] public Map hostMap;
+    [HideInInspector] public Map clientMap;
+    [HideInInspector] public Map map;
+
     public GameObject player;
     public PlayerController playerController;
     public Transform hostPlayerTransform;
@@ -83,7 +88,11 @@ public class GameManager : MonoBehaviour
         openedUI = new List<GameObject>();
         onUIChangedCallback += UIChanged;
 
+        hostMap = mapGenerator.hostMap;
+        clientMap = mapGenerator.clientMap;
+        map = hostMap;
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
+        mapCameraController.SetMapSize(map.width, map.height);
 
         inputManager = InputManager.instance;
         inputManager.controls.Structure.StrClick.performed += ctx => StrClick();
@@ -94,9 +103,18 @@ public class GameManager : MonoBehaviour
         inputManager.controls.HotKey.Building.performed += ctx => Building();
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
         inputManager.controls.HotKey.EnergyCheck.performed += ctx => EnergyCheck();
+        inputManager.controls.Player.Teleport.performed += ctx => Teleport();
 
         OtherPortalSet();
         //Cursor.lockState = CursorLockMode.Confined;
+    }
+
+    void Teleport()
+    {
+        if (map == hostMap)
+            map = clientMap;
+        else
+            map = hostMap;
     }
 
     void StrClick()
@@ -115,28 +133,29 @@ public class GameManager : MonoBehaviour
         if (debug && inputManager.ctrl && map.IsOnMap(x, y))
         {
             string buildable = "";
-            foreach (string str in map.mapData[x][y].buildable)
+            Cell cell = map.GetCellDataFromPos(x, y);
+            foreach (string str in cell.buildable)
             {
                 buildable = buildable + " " + str;
             }
 
-            if (map.mapData[x][y].obj == null)
+            if (cell.obj == null)
             {
                 Debug.Log("x : " + x + ",   y : " + y +
-                ",   biome : " + map.mapData[x][y].biome +
-                ",   resource : " + map.mapData[x][y].resource +
+                ",   biome : " + cell.biome +
+                ",   resource : " + cell.resource +
                 ",   buildable : " + buildable +
-                ",   structure : " + map.mapData[x][y].structure
+                ",   structure : " + cell.structure
                 );
             }
             else
             {
                 Debug.Log("x : " + x + ",   y : " + y +
-                ",   biome : " + map.mapData[x][y].biome +
-                ",   resource : " + map.mapData[x][y].resource +
-                ",   obj : " + map.mapData[x][y].obj.name +
+                ",   biome : " + cell.biome +
+                ",   resource : " + cell.resource +
+                ",   obj : " + cell.obj.name +
                 ",   buildable : " + buildable +
-                ",   structure : " + map.mapData[x][y].structure
+                ",   structure : " + cell.structure
                 );
             }
         }
