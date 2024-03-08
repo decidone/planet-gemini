@@ -48,6 +48,7 @@ public class MapGenerator : MonoBehaviour
     Vector3 mapCenterPos;
 
     SpawnerSetManager spawnerPosSet;
+    public static MapGenerator instance;
 
     void Awake()
     {
@@ -74,6 +75,7 @@ public class MapGenerator : MonoBehaviour
         isCompositeDone = false;
 
         comp = lakeTilemap.GetComponent<CompositeCollider2D>();
+        instance = this;
     }
 
     void Start()
@@ -85,13 +87,21 @@ public class MapGenerator : MonoBehaviour
 
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
-        if (spawnerPosSet && mapSizeData != null)
-        {
-            spawnerPosSet.AreaMapSet(mapCenterPos, mapSizeData.MapSplitCount);            
-        }
+        //if (spawnerPosSet && mapSizeData != null)
+        //{
+        //    spawnerPosSet.AreaMapSet(mapCenterPos, mapSizeData.MapSplitCount);
+        //}
         PortalSet();
         mapFog.transform.position = new Vector3(width / 2, height / 2, 0);
         mapFog.transform.localScale = new Vector3(width, height, 1);
+    }
+
+    public void SpawnerAreaMapSet() // 임시로 호스트 선택 후 호스트쪽에만 진행 하도록 임시로 둠 
+    {
+        if (spawnerPosSet && mapSizeData != null)
+        {
+            spawnerPosSet.AreaMapSetServerRpc(mapCenterPos, mapSizeData.MapSplitCount);
+        }
     }
 
     void Update()

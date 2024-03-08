@@ -52,7 +52,7 @@ public class UnitCommonAi : NetworkBehaviour
     protected float targetDist;
     public List<GameObject> targetList = new List<GameObject>();
 
-    protected Vector3 patrolStartPos;
+    protected Vector3 patrolPos;
 
     [SerializeField]
     protected Animator animator;
@@ -74,9 +74,10 @@ public class UnitCommonAi : NetworkBehaviour
 
     bool dieCheck = false;
 
-    protected SoundManager soundManager;
+    public SoundManager soundManager;
     protected BattleBGMCtrl battleBGM;
 
+    protected NetworkObjectPool networkObjectPool;
     private void Awake()
     {
         tr = GetComponent<Transform>();
@@ -90,21 +91,20 @@ public class UnitCommonAi : NetworkBehaviour
         unitCanvas.SetActive(false);
 
         isFlip = unitSprite.flipX;
-
         searchInterval = 0.3f;
         tarDisCheckInterval = 0.3f;
-        patrolStartPos = Vector3.zero;
+        patrolPos = Vector3.zero;
         unitName = unitCommonData.UnitName;
         //hp = 100.0f;
         aIState = AIState.AI_Idle;
         attackState = AttackState.Waiting;
-        soundManager = SoundManager.Instance;
     }
 
     protected virtual void Start()
     {
         soundManager = SoundManager.Instance;
         battleBGM = BattleBGMCtrl.instance;
+        networkObjectPool = NetworkObjectPool.Singleton;
     }
 
     protected virtual void FixedUpdate()
@@ -224,18 +224,16 @@ public class UnitCommonAi : NetworkBehaviour
 
     protected virtual void AttackStart() { }
 
-    protected virtual void AttackEnd(string str)
+    protected virtual void AttackEnd()
     {
-        if (str == "false")
-        {
-            animator.SetBool("isAttack", false);
-            animator.SetBool("isMove", false);
-            AnimSetFloat(targetVec, false);
-            attackState = AttackState.Waiting;
-        }
+        animator.SetBool("isAttack", false);
+        animator.SetBool("isMove", false);
+        AnimSetFloat(targetVec, false);
+        attackState = AttackState.Waiting;        
     }
 
-    public virtual void TakeDamage(float damage)
+    [ClientRpc]
+    public virtual void TakeDamageClientRpc(float damage)
     {
         //if (hp <= 0f)
         //    return;
@@ -247,16 +245,17 @@ public class UnitCommonAi : NetworkBehaviour
         hp -= reducedDamage;
         hpBar.fillAmount = hp / unitCommonData.MaxHp;
 
-        if (hp <= 0f && !dieCheck)
+        if (IsServer && hp <= 0f && !dieCheck)
         {
             aIState = AIState.AI_Die;
             hp = 0f;
             dieCheck = true;
-            DieFunc();
+            DieFuncClientRpc();
         }
     }
 
-    protected virtual void DieFunc()
+    [ClientRpc]
+    protected virtual void DieFuncClientRpc()
     {
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
@@ -274,53 +273,5 @@ public class UnitCommonAi : NetworkBehaviour
         {
             aggroTarget = null;
         }
-    }
-
-    [ClientRpc]
-    protected void AnimatorBoolClientRpc(string parameter , bool data)
-    {
-        animator.SetBool(parameter, data);
-    }
-
-    [Command]
-    protected void AnimatorBoolCommand(string parameter, bool data)
-    {
-        AnimatorBoolClientRpc(parameter, data);
-    }
-
-    [ClientRpc]
-    protected void AnimatorFloatClientRpc(string parameter, float data)
-    {
-        animator.SetFloat(parameter, data);
-    }
-
-    [Command]
-    protected void AnimatorFloatCommand(string parameter, float data)
-    {
-        AnimatorFloatClientRpc(parameter, data);
-    }
-
-    [ClientRpc]
-    protected void AnimatorPlayClientRpc(string parameter)
-    {
-        animator.Play(parameter, -1, 0);
-    }
-
-    [Command]
-    protected void AnimatorPlayCommand(string parameter)
-    {
-        AnimatorPlayClientRpc(parameter);
-    }
-
-    [ClientRpc]
-    protected void FlipXDataClientRpc(bool data)
-    {
-        unitSprite.flipX = data;
-    }
-
-    [Command]
-    protected void FlipXDataCommand(bool data)
-    {
-        FlipXDataClientRpc(data);
     }
 }

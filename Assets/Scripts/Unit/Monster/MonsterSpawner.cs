@@ -2,13 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 // UTF-8 설정
-public class MonsterSpawner : MonoBehaviour
+public class MonsterSpawner : NetworkBehaviour
 {
     [SerializeField]
     public StructureData structureData; 
     protected StructureData StructureData { set { structureData = value; } }
+    public SpawnerGroupManager groupManager;
 
     MonsterSpawnerManager monsterSpawn;
     GameObject[] weakMonster;
@@ -36,6 +38,7 @@ public class MonsterSpawner : MonoBehaviour
     // 가디언은 초기에 배치하고 그 이후로는 관리 안함
 
     int areaLevel;
+    AreaLevelData areaLevelData;
     string biome;
 
     float spawnInterval;
@@ -61,6 +64,9 @@ public class MonsterSpawner : MonoBehaviour
     BattleBGMCtrl battleBGM;
     MonsterSpawnerManager monsterSpawnerManager;
 
+    [SerializeField]
+    GameObject searchColl;
+
     void Start()
     {
         monsterSpawn = MonsterSpawnerManager.instance;
@@ -75,11 +81,16 @@ public class MonsterSpawner : MonoBehaviour
         guardianCallInterval = 2;
         maxExtraSpawn = 10;
         extraSpawn = false;
+        if (!IsServer)
+            searchColl.SetActive(false);
         InitializeMonsterSpawn();
     }
 
     void Update()
     {
+        if (!IsServer)
+            return;
+
         if (totalSpawnNum > totalMonsterList.Count)
         {
             spawnTimer += Time.deltaTime;
@@ -114,7 +125,7 @@ public class MonsterSpawner : MonoBehaviour
         }
 
         if(waveStart)
-        {
+        { 
             WaveStart();
             waveStart = false;
         }
@@ -122,8 +133,14 @@ public class MonsterSpawner : MonoBehaviour
 
     public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos)
     {
+        areaLevelData = levelData;
         areaLevel = levelData.areaLevel;
         biome = _biome;
+
+        //maxWeakSpawn = 1;
+        //maxNormalSpawn = 0;
+        //maxStrongSpawn = 0;
+        //maxGuardianSpawn = 0;
 
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
@@ -266,6 +283,9 @@ public class MonsterSpawner : MonoBehaviour
             guardianList.Add(newMonster.GetComponent<GuardianAi>());
         }
 
+        NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
+        networkObject.Spawn();
+
         newMonster.transform.SetParent(this.transform, false);
 
         int x = 0;
@@ -280,27 +300,34 @@ public class MonsterSpawner : MonoBehaviour
         newMonster.transform.position = setPos;
 
         newMonster.GetComponent<MonsterAi>().MonsterSpawnerSet(this, monserType);
-        if(!nearUserObjExist)
-            newMonster.GetComponent<MonsterAi>().MonsterScriptSet(false);
-        else        
-            newMonster.GetComponent<MonsterAi>().MonsterScriptSet(true);
+        if (!nearUserObjExist)
+        {
+            if(IsServer)
+                newMonster.GetComponent<MonsterAi>().MonsterScriptSetClientRpc(false);
+        }
+        else
+        {
+            if (IsServer)
+                newMonster.GetComponent<MonsterAi>().MonsterScriptSetClientRpc(true);
+        }
         
         return newMonster;
     }
 
     public void MonsterScriptSet(bool scriptState, bool guardianState)
-    { 
+    {
         foreach (GameObject monster in totalMonsterList)
         {
-            monster.GetComponent<MonsterAi>().MonsterScriptSet(scriptState);
+            monster.GetComponent<MonsterAi>().MonsterScriptSetClientRpc(scriptState);
         }
         if (guardianState)
         {
             foreach (GuardianAi guardian in guardianList)
             {
-                guardian.GetComponent<MonsterAi>().MonsterScriptSet(scriptState);
+                guardian.GetComponent<MonsterAi>().MonsterScriptSetClientRpc(scriptState);
             }
         }
+
     }
 
     public void MonsterDieChcek(GameObject monster, int type)
@@ -374,7 +401,6 @@ public class MonsterSpawner : MonoBehaviour
     public void WaveTeleport(Vector3 pos)
     {
         MonsterScriptSet(true, false);
-
         foreach (GameObject monster in totalMonsterList)
         {
             MonsterAi monsterAi = monster.GetComponent<MonsterAi>();

@@ -12,14 +12,14 @@ public class SpinRobot : UnitAi
         soundManager.PlaySFX(gameObject, "unitSFX", "MeleeAttack");
     }
 
-    protected override void AttackEnd(string str)
+    protected override void AttackEnd()
     {
-        base.AttackEnd(str);
+        base.AttackEnd();
         if (aggroTarget != null)
         {
             if (aggroTarget.TryGetComponent(out MonsterAi monster))
             {
-                monster.TakeDamage(unitCommonData.Damage);
+                monster.TakeDamageClientRpc(unitCommonData.Damage);
             }
             else if (aggroTarget.TryGetComponent(out MonsterSpawner spawner))
             {

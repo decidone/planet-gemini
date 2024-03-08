@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 5318793044572955920}
   - component: {fileID: 78957181825646357}
   - component: {fileID: 7974139765598038871}
+  - component: {fileID: 8133989442730417983}
   m_Layer: 8
   m_Name: EnergyBattery
   m_TagString: Factory
@@ -463,6 +464,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &8133989442730417983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7372674185409712110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &8642782229161876310
 GameObject:
   m_ObjectHideFlags: 0

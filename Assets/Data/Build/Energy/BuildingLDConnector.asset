@@ -16,6 +16,12 @@ MonoBehaviour:
   scienceName: LDConnector
   item: {fileID: 11400000, guid: 67ca53489ae51cf45811d0ee8a60c0be, type: 2}
   gameObj: {fileID: 8506304485128044753, guid: 9803d29deab2b954e88fbe654c1c78dd, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites: []
+  animatorController:
+  - {fileID: 9100000, guid: 86c72e8ca77a95a4b88bbd28e0765c06, type: 2}
   level: 1
   height: 1
   width: 1

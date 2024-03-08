@@ -101,7 +101,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.48}
+    pivot: {x: 0.5, y: 0.63}
     oldSize: {x: 2, y: 1.6875}
     newSize: {x: 6, y: 6.0625}
     adaptiveTilingThreshold: 0.5
@@ -212,7 +212,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.48}
+    pivot: {x: 0.5, y: 0.63}
     oldSize: {x: 2, y: 1.6875}
     newSize: {x: 6, y: 6.0625}
     adaptiveTilingThreshold: 0.5
@@ -323,7 +323,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.48}
+    pivot: {x: 0.5, y: 0.63}
     oldSize: {x: 2, y: 1.6875}
     newSize: {x: 6, y: 6.0625}
     adaptiveTilingThreshold: 0.5
@@ -348,6 +348,7 @@ GameObject:
   - component: {fileID: 721077935684597045}
   - component: {fileID: 721077935684597044}
   - component: {fileID: 721077935684597035}
+  - component: {fileID: -2405381751144978377}
   m_Layer: 8
   m_Name: Portal
   m_TagString: Untagged
@@ -572,6 +573,22 @@ MonoBehaviour:
   space: 0
   maxAmount: 0
   itemPref: {fileID: 0}
+--- !u!114 &-2405381751144978377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721077935684597043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &721077936004993818
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,7 +690,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.48}
+    pivot: {x: 0.5, y: 0.63}
     oldSize: {x: 2, y: 1.6875}
     newSize: {x: 6, y: 6.0625}
     adaptiveTilingThreshold: 0.5

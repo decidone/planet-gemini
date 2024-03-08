@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using Unity.Netcode;
 
 // UTF-8 설정
-public class BulletCtrl : MonoBehaviour
+public class BulletCtrl : NetworkBehaviour
 {
     public IObjectPool<GameObject> bulletPool { get; set; }
 
@@ -17,8 +18,11 @@ public class BulletCtrl : MonoBehaviour
 
     Coroutine timerCoroutine;
 
+    NetworkObjectPool networkObjectPool;
+
     private void Start()
     {
+        networkObjectPool = NetworkObjectPool.Singleton;
         alreadyHit = false;
     }
 
@@ -27,9 +31,14 @@ public class BulletCtrl : MonoBehaviour
         transform.position += moveNextStep * 5 * Time.fixedDeltaTime;
     }
 
-    public void DestroyBullet()
+    [ClientRpc]
+    public void DestroyBulletClientRpc()
     {
-        bulletPool.Release(gameObject);
+        if(IsServer)
+        {
+            //NetworkObjectPool.Singleton.ReturnNetworkObject(NetworkObject, poolObj);
+            NetworkObject.Despawn();
+        }
     }
 
     public void GetTarget(Vector3 target, float GetDamage, GameObject obj)
@@ -45,17 +54,20 @@ public class BulletCtrl : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         if(!alreadyHit)
-            DestroyBullet();
+            DestroyBulletClientRpc();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!IsServer)
+            return;
         if (collision.CompareTag("Monster"))
         {
             if (!alreadyHit)
             {
                 StopCoroutine(timerCoroutine);
-                DestroyBullet();
+                DestroyBulletClientRpc();
+                Debug.Log("??");
                 alreadyHit = true;
             }
             else
@@ -63,7 +75,7 @@ public class BulletCtrl : MonoBehaviour
 
             if (collision.TryGetComponent(out MonsterAi monster))
             {
-                monster.TakeDamage(damage);
+                monster.TakeDamageClientRpc(damage);
             }
             else if (collision.TryGetComponent(out MonsterSpawner spawner))
             {

@@ -347,6 +347,7 @@ GameObject:
   - component: {fileID: 5999188213166003495}
   - component: {fileID: 5197040497763038552}
   - component: {fileID: 5141181565966273476}
+  - component: {fileID: -1600664430842138167}
   m_Layer: 8
   m_Name: Transporter
   m_TagString: Factory
@@ -523,14 +524,25 @@ MonoBehaviour:
   isStorageBuilding: 0
   isMainSource: 0
   isTempBuild: 0
+  isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 8306353818296990734}
+  maxAmount: 99
+  cooldown: 15
   connectors: []
+  conn: {fileID: 0}
+  energyUse: 0
+  isEnergyStr: 0
+  energyProduction: 0
+  energyConsumption: 0
+  isOperate: 0
+  efficiency: 0
+  effiCooldown: 0
+  isMainEnergyColony: 0
+  soundManager: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
-  maxAmount: 99
-  cooldown: 15
   lineObj: {fileID: 5696256792421437546, guid: cbdbe5c72a980ab48ae089d8e6293634, type: 3}
   lineRenderer: {fileID: 0}
   isGetLine: 0
@@ -588,6 +600,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-1600664430842138167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5999188213166003493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &6204166651464339179
 PrefabInstance:
   m_ObjectHideFlags: 0

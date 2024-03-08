@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 1597667644691574789}
   - component: {fileID: 1597667644691574814}
   - component: {fileID: 3808787349838589497}
+  - component: {fileID: 1952519229167123371}
   m_Layer: 8
   m_Name: Assembler
   m_TagString: Factory
@@ -277,19 +278,24 @@ MonoBehaviour:
   isMainSource: 0
   isTempBuild: 0
   isUIOpened: 0
+  isPortalBuild: 0
   myVision: {fileID: 3427196273101128623}
+  maxAmount: 99
+  cooldown: 3
   connectors: []
   conn: {fileID: 0}
   energyUse: 1
   isEnergyStr: 0
-  isOperate: 0
   energyProduction: 0
   energyConsumption: 7
+  isOperate: 0
+  efficiency: 0
+  effiCooldown: 0
+  isMainEnergyColony: 0
+  soundManager: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
-  maxAmount: 99
-  cooldown: 3
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
@@ -314,6 +320,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &1952519229167123371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597667644691574791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &2403284375177730568
 GameObject:
   m_ObjectHideFlags: 0

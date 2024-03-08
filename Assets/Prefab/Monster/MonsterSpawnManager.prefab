@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9113408284949583421}
   - component: {fileID: -3613212761563754259}
   - component: {fileID: 4746401571730464259}
+  - component: {fileID: -1332014289844536269}
   m_Layer: 0
   m_Name: MonsterSpawnManager
   m_TagString: Untagged
@@ -66,6 +67,11 @@ MonoBehaviour:
   area3Group: []
   area4Group: []
   area5Group: []
+  wave1Start: 0
+  wave2Start: 0
+  wave3Start: 0
+  wave4Start: 0
+  wave5Start: 0
 --- !u!114 &4746401571730464259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,12 +79,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9113408284949583420}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27315cdbacccaca45859053d11134ce4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mapGen: {fileID: 0}
+  width: 0
+  height: 0
   splitCount: 11
   spawner: {fileID: 2587231014279578894, guid: 1187c18a57db9f446aa4d74f7b910b9f, type: 3}
   spawnerGroup: {fileID: 1012050618565204687, guid: 641f1a6b77a778549bd9654e9d00725f, type: 3}
@@ -89,3 +97,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 61eff04140685384dae89a66d4d9c891, type: 2}
   - {fileID: 11400000, guid: d217c1f5250224d44bb230f04dea5996, type: 2}
   monsterSpawnerManager: {fileID: -3613212761563754259}
+--- !u!114 &-1332014289844536269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9113408284949583420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1

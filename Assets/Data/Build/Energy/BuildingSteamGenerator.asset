@@ -16,6 +16,11 @@ MonoBehaviour:
   scienceName: SteamGenerator
   item: {fileID: 11400000, guid: db690fbf05d11be48816a392b5f5b26a, type: 2}
   gameObj: {fileID: 8506304485128044753, guid: 2cb7d7fb83fbd5642bb6442d6721839a, type: 3}
+  isGetAnim: 0
+  isGetDirection: 0
+  sprites:
+  - {fileID: -1012359957, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  animations: []
   level: 1
   height: 1
   width: 1

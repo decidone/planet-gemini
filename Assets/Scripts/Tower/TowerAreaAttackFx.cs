@@ -29,7 +29,7 @@ public class TowerAreaAttackFx : MonoBehaviour
         {
             if (!collision.isTrigger)
             {
-                collision.GetComponent<MonsterAi>().TakeDamage(damage);
+                collision.GetComponent<MonsterAi>().TakeDamageClientRpc(damage);
             }
         }
     }

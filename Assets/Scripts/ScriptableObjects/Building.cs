@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // UTF-8 설정
@@ -9,6 +10,11 @@ public class Building : ScriptableObject
     public string scienceName = "basic";
     public Item item = null;
     public GameObject gameObj = null;
+    public bool isGetAnim;
+    public bool isGetDirection;
+    public bool isUnderObj;
+    public List<Sprite> sprites = new List<Sprite>();
+    public List<RuntimeAnimatorController> animatorController = new List<RuntimeAnimatorController>();
     public int level = 0;
 
     public int height = 0;

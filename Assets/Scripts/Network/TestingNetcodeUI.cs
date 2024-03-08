@@ -18,6 +18,7 @@ public class TestingNetcodeUI : NetworkBehaviour
             Debug.Log("Host");
             NetworkManager.Singleton.StartHost();
             GameManager.instance.HostConnected();
+            MapGenerator.instance.SpawnerAreaMapSet();
             Hide();
         });
         startClientButton.onClick.AddListener(() =>

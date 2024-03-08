@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7931006461449339347}
   - component: {fileID: 4313036500327750273}
+  - component: {fileID: 5354344509248515156}
   m_Layer: 0
   m_Name: UnderBelt
   m_TagString: Factory
@@ -54,6 +55,22 @@ MonoBehaviour:
   beltScipt: {fileID: 0}
   dirNum: 0
   buildEnd: 0
+--- !u!114 &5354344509248515156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5450028805572291566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &63708887233787281
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -109,6 +126,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SendUnderBelt
       objectReference: {fileID: 0}
+    - target: {fileID: 977231970767049882, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
+      objectReference: {fileID: 0}
     - target: {fileID: 2346018906326954991, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
       propertyPath: space
       value: 0
@@ -148,6 +169,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7931006461449339347}
     m_Modifications:
+    - target: {fileID: 717895800371076390, guid: 3028c2927e9496945b4209cab7935378, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
+      objectReference: {fileID: 0}
     - target: {fileID: 4111370274523885645, guid: 3028c2927e9496945b4209cab7935378, type: 3}
       propertyPath: m_SortingOrder
       value: 3

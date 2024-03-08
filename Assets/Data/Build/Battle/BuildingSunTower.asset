@@ -16,6 +16,13 @@ MonoBehaviour:
   scienceName: SunTower
   item: {fileID: 11400000, guid: af022b03362f07345b54ec333d8cf7a7, type: 2}
   gameObj: {fileID: 1280046767442360781, guid: 54be1ccacdcc8d740b876877f44560e6, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites:
+  - {fileID: 39167055, guid: b1ef8a7f4330a37428ac74a64fd1692a, type: 3}
+  animatorController:
+  - {fileID: 9100000, guid: 7e7cea2b069a0c6429d038df3b738055, type: 2}
   level: 1
   height: 2
   width: 2

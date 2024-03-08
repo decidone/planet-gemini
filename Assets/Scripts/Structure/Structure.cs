@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Pool;
 using UnityEngine.Rendering;
+using Unity.Netcode;
 using System;
+using Pathfinding;
 
 // UTF-8 설정
-public class Structure : MonoBehaviour
+public class Structure : NetworkBehaviour
 {
     // 건물 공용 스크립트
     // Update처럼 함수 호출하는 부분은 다 하위 클래스에 넣을 것
@@ -33,8 +35,8 @@ public class Structure : MonoBehaviour
     [HideInInspector]
     public bool sizeOneByOne;
 
-    [HideInInspector]
-    public bool isPreBuilding = false;
+    //[HideInInspector]
+    public bool isPreBuilding = true;
     [HideInInspector]
     public bool isSetBuildingOk = false;    
 
@@ -175,6 +177,14 @@ public class Structure : MonoBehaviour
         }
     }
 
+    protected virtual void DataSet()
+    {
+        hp = structureData.MaxHp[level];
+        hpBar.fillAmount = hp / structureData.MaxHp[level];
+        energyUse = structureData.EnergyUse[level];
+        energyConsumption = structureData.Consumption[level];
+    }
+
     public virtual void Focused() { }
 
     public virtual void DisableFocused() { }
@@ -283,6 +293,7 @@ public class Structure : MonoBehaviour
 
     public virtual void SetBuild()
     {
+        isPreBuilding = true;
         unitCanvas.SetActive(true);
         hpBar.enabled = false;
         repairBar.enabled = true;
@@ -927,7 +938,7 @@ public class Structure : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>())
+        if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
         {
             if (isPreBuilding)
             {
@@ -952,7 +963,7 @@ public class Structure : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>())
+        if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
         {
             if (isPreBuilding)
             {
@@ -1003,4 +1014,16 @@ public class Structure : MonoBehaviour
     }
 
     public virtual void EfficiencyCheck() { }
+
+    [ClientRpc]
+    public virtual void SettingClientRpc(int _level, int _beltDir)
+    {
+        level = _level;
+        dirNum = _beltDir;
+        SetBuild();
+        ColliderTriggerOnOff(false);
+        gameObject.AddComponent<DynamicGridObstacle>();
+        myVision.SetActive(true);
+        DataSet();
+    }
 }

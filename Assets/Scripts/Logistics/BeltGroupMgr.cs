@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
+using Pathfinding;
 
 // UTF-8 설정
-public class BeltGroupMgr : MonoBehaviour
+public class BeltGroupMgr : NetworkBehaviour
 {
     [SerializeField]
     GameObject beltObj;
@@ -19,9 +21,11 @@ public class BeltGroupMgr : MonoBehaviour
 
     public bool isSetBuildingOk = false;
 
+    NetworkObject netBelt;
+
     void Update()
     {
-        if (isSetBuildingOk)
+        if (IsServer && isSetBuildingOk)
         {
             if(nextCheck)
             {
@@ -36,17 +40,29 @@ public class BeltGroupMgr : MonoBehaviour
         }
     }
 
-    public void SetBelt(int beltDir, int level, int height, int width, int dirCount)
+    public void SetBelt(int level, int beltDir)
     {
         GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
+        belt.TryGetComponent(out NetworkObject netObj);
+        netBelt = netObj;
+        if (!netObj.IsSpawned) belt.GetComponent<NetworkObject>().Spawn();
         belt.transform.parent = this.transform;
-        BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
-        beltCtrl.beltGroupMgr = this.GetComponent<BeltGroupMgr>();
+        BeltCtrl beltCtrl = netObj.GetComponent<BeltCtrl>();
         beltList.Add(beltCtrl);
-        beltCtrl.dirNum = beltDir;
-        beltCtrl.beltState = BeltState.SoloBelt;
-        beltCtrl.BuildingSetting(level, height, width, dirCount);
+        beltCtrl.SettingClientRpc(level, beltDir);
     }
+
+    //public void SetBelt(int beltDir, int level, int height, int width, int dirCount)
+    //{
+    //    GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
+    //    belt.transform.parent = this.transform;
+    //    BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
+    //    beltCtrl.beltGroupMgr = this.GetComponent<BeltGroupMgr>();
+    //    beltList.Add(beltCtrl);
+    //    beltCtrl.dirNum = beltDir;
+    //    beltCtrl.beltState = BeltState.SoloBelt;
+    //    beltCtrl.BuildingSetting(level, height, width, dirCount);
+    //}
 
     private GameObject PreObjCheck()
     {
@@ -98,11 +114,18 @@ public class BeltGroupMgr : MonoBehaviour
     void BeltModelSet(BeltCtrl preBelt, BeltCtrl nextBelt)
     {
         if(preBelt == beltList[0])
-            preBelt.beltState = BeltState.StartBelt;
-        else if (preBelt != beltList[0])        
-            preBelt.beltState = BeltState.RepeaterBelt;
+        {
+            //preBelt.beltState = BeltState.StartBelt;
+            preBelt.BeltStateSetClientRpc((int)BeltState.StartBelt);
+        }
+        else if (preBelt != beltList[0])
+        {
+            //preBelt.beltState = BeltState.RepeaterBelt;
+            preBelt.BeltStateSetClientRpc((int)BeltState.RepeaterBelt);
+        }
 
-        nextBelt.beltState = BeltState.EndBelt;
+        nextBelt.BeltStateSetClientRpc((int)BeltState.EndBelt);
+        //nextBelt.beltState = BeltState.EndBelt;
     }
 
     //벨트 그룹 병합
@@ -274,7 +297,8 @@ public class BeltGroupMgr : MonoBehaviour
             belt.preBelt = otherBelt;
             otherBelt.nextBelt = belt;
             //int tempDir = otherBelt.dirNum;
-            otherBelt.dirNum = belt.dirNum;
+            otherBelt.BeltDirSetClientRpc(belt.dirNum);
+            //otherBelt.dirNum = belt.dirNum;
             otherBelt.BeltModelSet();
         }
     }

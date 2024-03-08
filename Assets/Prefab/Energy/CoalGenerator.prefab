@@ -327,6 +327,7 @@ MonoBehaviour:
   signal: 0
   energyGenerator: {fileID: 0}
   steamGenerator: {fileID: 0}
+  mainEnergyColony: {fileID: 0}
 --- !u!1 &2075445432134139083
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,6 +587,7 @@ GameObject:
   - component: {fileID: 2431378430203015452}
   - component: {fileID: 5564630921721189503}
   - component: {fileID: 9062751277686904368}
+  - component: {fileID: -8412945414677573462}
   m_Layer: 8
   m_Name: CoalGenerator
   m_TagString: Factory
@@ -761,6 +763,8 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  isMainEnergyColony: 0
+  soundManager: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -819,6 +823,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &-8412945414677573462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8506304485128044753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &2977033922277795033
 PrefabInstance:
   m_ObjectHideFlags: 0

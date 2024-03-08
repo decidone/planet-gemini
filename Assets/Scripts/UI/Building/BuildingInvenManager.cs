@@ -143,8 +143,8 @@ public class BuildingInvenManager : MonoBehaviour
             selectSlot = null;
         }
 
-        if(PreBuilding.instance)
-            PreBuilding.instance.ReSetImage();
+        //if(PreBuilding.instance)
+        //    PreBuilding.instance.ReSetImage();
 
         for (int i = 0; i < slots.Length; i++)
         {

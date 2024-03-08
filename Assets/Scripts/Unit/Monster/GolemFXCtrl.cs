@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 // UTF-8 설정
-public class GolemFXCtrl : MonoBehaviour
+public class GolemFXCtrl : NetworkBehaviour
 {
     public Animator animator;
     public Transform aggroTarget = null;   // 타겟
@@ -45,7 +46,7 @@ public class GolemFXCtrl : MonoBehaviour
         {
             if (!collision.isTrigger)
             {
-                collision.GetComponent<UnitAi>().TakeDamage(damage);
+                collision.GetComponent<UnitAi>().TakeDamageClientRpc(damage);
             }
         }
         else if (collision.GetComponent<TowerAi>())

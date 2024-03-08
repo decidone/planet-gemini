@@ -40,6 +40,7 @@ public abstract class InventoryManager : MonoBehaviour
         inputManager.controls.Inventory.SlotRightClickHold.performed += ctx => SlotRightClickHold();
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
         soundManager = SoundManager.Instance;
+        preBuilding = PreBuilding.instance;
     }
 
     protected virtual void Update()
@@ -203,10 +204,7 @@ public abstract class InventoryManager : MonoBehaviour
 
     void PreBuildEnable()
     {
-        if (preBuilding == null)
-            preBuilding = PreBuilding.instance;
-
-        if (preBuilding != null && preBuilding.gameObject.activeSelf)
+        if (preBuilding.isBuildingOn)
             preBuilding.CancelBuild();
     }
 

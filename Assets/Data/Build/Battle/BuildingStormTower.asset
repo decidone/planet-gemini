@@ -16,6 +16,13 @@ MonoBehaviour:
   scienceName: StormTower
   item: {fileID: 11400000, guid: 24cdf57e31fc0eb41ac7256e04e1003d, type: 2}
   gameObj: {fileID: 4304459724202878722, guid: a506a26d6d864fb46b597f5614181749, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites:
+  - {fileID: 1982505566, guid: f4cc5f20c8d9dd542b850fb65989b400, type: 3}
+  animatorController:
+  - {fileID: 9100000, guid: 3341db9ebf002584d8d1163f4c9feb4c, type: 2}
   level: 1
   height: 2
   width: 2

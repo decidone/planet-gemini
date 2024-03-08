@@ -39,7 +39,9 @@ public class UnitAi : UnitCommonAi
 
     protected override void Start()
     {
-        base.Start();
+        base.Start();   // 테스트용 위치 변경 해야함
+        if (!IsServer)
+            return;
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
         selfHealInterval = 5;
         selfHealingAmount = 5f;
@@ -47,6 +49,8 @@ public class UnitAi : UnitCommonAi
 
     protected override void Update()
     {
+        if (!IsServer)
+            return;
         base.Update();
         if (hp != unitCommonData.MaxHp && aIState != AIState.AI_Die)
         {
@@ -67,9 +71,6 @@ public class UnitAi : UnitCommonAi
     {
         switch (aIState)
         {
-            case AIState.AI_Idle:
-                IdleFunc();
-                break;            
             case AIState.AI_Move:
                 MoveFunc();
                 break;
@@ -97,28 +98,23 @@ public class UnitAi : UnitCommonAi
 
     void IdleFunc()
     {
-        //animator.SetBool("isMove", false);
+        aIState = AIState.AI_Idle;
+        animator.SetBool("isMove", false);
 
-        if (IsServer)
-            AnimatorBoolClientRpc("isMove", false);
-        else
-            AnimatorBoolCommand("isMove", false);
         isMoveCheckCoroutine = false;
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void MovePosSetServerRpc(Vector2 dir, float radi, bool isAttack)
     {
-        isNewPosSet = true;
         isHold = false;
         isAttackMove = isAttack;
-        currentWaypointIndex = 0;
         isMoveCheckCoroutine = false;
         isTargetSet = false;
         targetPosition = dir;
         moveRadi = radi;
-
         lastMoveDirection = (targetPosition - tr.position).normalized;
+        //aIState = AIState.AI_Move;
 
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
@@ -127,7 +123,6 @@ public class UnitAi : UnitCommonAi
             StopCoroutine(checkPathCoroutine);
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
         }
-        aIState = AIState.AI_Move;
     }
 
     protected override IEnumerator CheckPath(Vector3 targetPos, string moveFunc)
@@ -165,91 +160,44 @@ public class UnitAi : UnitCommonAi
             aIState = AIState.AI_NormalTrace;
         }
 
-        direction = targetPos - tr.position;
+        //direction = targetPos - tr.position;
         checkPathCoroutine = null;
     }
 
     protected override void AnimSetFloat(Vector3 direction, bool isNotLast)
     {
-        float verticalValue = 0f;
+        float verticalValueY = 0f;
+        float verticalValueX = 0f;
         if (direction.y > 0)
         {
-            verticalValue = 1f;
+            verticalValueY = 1f;
         }
         else if (direction.y < 0)
         {
-            verticalValue = -1f;
+            verticalValueY = -1f;
         }
-         
+
+        if (direction.x > 0)
+        {
+            verticalValueX = 1f;
+        }
+        else if (direction.x < 0)
+        {
+            verticalValueX = -1f;
+        }
+
         if (isNotLast)
         {
-            //animator.SetFloat("Vertical", verticalValue);
-            if (IsServer)
-                AnimatorFloatClientRpc("Vertical", verticalValue);
-            else
-                AnimatorFloatCommand("Vertical", verticalValue);
-
+            animator.SetFloat("Horizontal", verticalValueX);
+            animator.SetFloat("Vertical", verticalValueY);
         }
         else
         {
-            //animator.SetFloat("lastMoveY", verticalValue);
-            if (IsServer)
-                AnimatorFloatClientRpc("lastMoveY", verticalValue);
-            else
-                AnimatorFloatCommand("lastMoveY", verticalValue);
+            animator.SetFloat("lastMoveX", verticalValueX);
+            animator.SetFloat("lastMoveY", verticalValueY);
         }
 
-
-        if (isFlip)
-        {
-           if (direction.x > 0)
-            {
-                if(!unitSprite.flipX)
-                {
-                    if (IsServer)
-                        FlipXDataClientRpc(true);
-                    else
-                        FlipXDataCommand(true);
-                    //unitSprite.flipX = true;
-                }
-            }
-            else if (direction.x < 0)
-            {
-                if (unitSprite.flipX)
-                {
-                    if (IsServer)
-                        FlipXDataClientRpc(false);
-                    else
-                        FlipXDataCommand(false);
-                    //unitSprite.flipX = false;
-                }
-            }
-        }
-        else
-        {
-            if (direction.x > 0)
-            {
-                if (unitSprite.flipX)
-                {
-                    if (IsServer)
-                        FlipXDataClientRpc(false);
-                    else
-                        FlipXDataCommand(false);
-                    //unitSprite.flipX = false;
-                }
-            }
-            else if (direction.x < 0)
-            {
-                if (!unitSprite.flipX)
-                {
-                    if (IsServer)
-                        FlipXDataClientRpc(true);
-                    else
-                        FlipXDataCommand(true);
-                    //unitSprite.flipX = true;
-                }
-            }
-        } 
+        //Debug.Log("x : " + verticalValueX + " : y : "+ verticalValueY);
     }
 
     void MoveFunc()
@@ -257,6 +205,8 @@ public class UnitAi : UnitCommonAi
         if (movePath == null)
             return;
         else if (movePath.Count <= currentWaypointIndex)
+            return;
+        else if (currentWaypointIndex < 0)
             return;
 
         Vector3 targetWaypoint = movePath[currentWaypointIndex];
@@ -267,11 +217,7 @@ public class UnitAi : UnitCommonAi
         if (!isHold)
         {
             tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
-            if (Vector3.Distance(tr.position, targetPosition) <= moveRadi / 2)
-            {
-                if (!isMoveCheckCoroutine)
-                    StartCoroutine(UnitMoveCheck());
-            }
+
             if (Vector3.Distance(tr.position, targetWaypoint) <= moveRadi / 2)
             {
                 currentWaypointIndex++;
@@ -280,15 +226,13 @@ public class UnitAi : UnitCommonAi
                 {
                     AnimSetFloat(lastMoveDirection, false);
                     isAttackMove = true;
-                    aIState = AIState.AI_Idle;
+                    IdleFunc();
+                    return;
                 }
             }
 
-            //animator.SetBool("isMove", true);
-            if (IsServer)
-                AnimatorBoolClientRpc("isMove", true);
-            else
-                AnimatorBoolCommand("isMove", true);
+            animator.SetBool("isMove", true);
+
             if (direction.magnitude > 0.5f)
             {
                 AnimSetFloat(direction, true);
@@ -296,13 +240,8 @@ public class UnitAi : UnitCommonAi
         }
         else
         {
-            if (IsServer)
-                AnimatorBoolClientRpc("isMove", false);
-            else
-                AnimatorBoolCommand("isMove", false);
+            animator.SetBool("isMove", false);
         }
-
-        //animator.SetBool("isMove", false);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -314,10 +253,10 @@ public class UnitAi : UnitCommonAi
         isTargetSet = false;
 
         targetPosition = dir;
-        patrolStartPos = tr.position;
+        patrolPos = tr.position;
 
         lastMoveDirection = (targetPosition - tr.position).normalized;
-        aIState = AIState.AI_Patrol;
+        //aIState = AIState.AI_Patrol;
 
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Patrol"));
@@ -326,7 +265,7 @@ public class UnitAi : UnitCommonAi
             StopCoroutine(checkPathCoroutine);
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Patrol"));
         }
-        direction = targetPosition - tr.position;
+        //direction = targetPosition - tr.position;
     }
 
     void PatrolFunc(bool isGo)
@@ -346,7 +285,6 @@ public class UnitAi : UnitCommonAi
         if (!isHold)
         {
             tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
-
             if (Vector3.Distance(tr.position, targetWaypoint) <= 0.5f)
             {
                 if (isGo)
@@ -369,11 +307,7 @@ public class UnitAi : UnitCommonAi
                 }
             }
 
-            if (IsServer)
-                AnimatorBoolClientRpc("isMove", true);
-            else
-                AnimatorBoolCommand("isMove", true);
-            //animator.SetBool("isMove", true);
+            animator.SetBool("isMove", true);
             if (direction.magnitude > 0.5f)
             {
                 AnimSetFloat(direction, true);
@@ -381,42 +315,8 @@ public class UnitAi : UnitCommonAi
         }
         else
         {
-            if (IsServer)
-                AnimatorBoolClientRpc("isMove", false);
-            else
-                AnimatorBoolCommand("isMove", false);
-        }
-
-        //animator.SetBool("isMove", false);
-    }
-
-    IEnumerator UnitMoveCheck()
-    {
-        isMoveCheckCoroutine = true;
-        yield return new WaitForSeconds(0.05f);
-
-        movedDistance = Vector3.Distance(tr.position, lastPosition);
-        lastPosition = tr.position;
-
-        if (movedDistance < 0.1f)
-        {
-            if (!isNewPosSet)
-            {
-                if(aIState == AIState.AI_Move)
-                    aIState = AIState.AI_Idle;
-                isAttackMove = true;
-                AnimSetFloat(lastMoveDirection, false);
-                isMoveCheckCoroutine = false;
-                yield break;        
-            }
-            else if (isNewPosSet)
-            {
-                isNewPosSet = false;
-                isMoveCheckCoroutine = false;
-                yield break;
-            }
-        }
-        isMoveCheckCoroutine = false;
+            animator.SetBool("isMove", false);
+        }       
     }
 
     public void UnitSelImg(bool isOn)
@@ -432,7 +332,8 @@ public class UnitAi : UnitCommonAi
         unitSelect = isOn;
     }
 
-    public void HoldFunc()
+    [ServerRpc(RequireOwnership = false)]
+    public void HoldFuncServerRpc()
     {
         isHold = true;
         isAttackMove = true;
@@ -489,7 +390,7 @@ public class UnitAi : UnitCommonAi
                 else
                 {
                     StopCoroutine(checkPathCoroutine);
-                    checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+                    checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "Norm alTrace"));
                 }
             }
         }
@@ -507,19 +408,11 @@ public class UnitAi : UnitCommonAi
     {
         if (isHold || aggroTarget == null)
         {
-            //animator.SetBool("isMove", false);
-            if (IsServer)
-                AnimatorBoolClientRpc("isMove", false);
-            else
-                AnimatorBoolCommand("isMove", false);
+            animator.SetBool("isMove", false);
             return;
         }
 
-        //animator.SetBool("isMove", true);
-        if (IsServer)
-            AnimatorBoolClientRpc("isMove", true);
-        else
-            AnimatorBoolCommand("isMove", true); 
+        animator.SetBool("isMove", true);
         AnimSetFloat(targetVec, true);
 
         if (targetDist > unitCommonData.AttackDist)
@@ -542,16 +435,23 @@ public class UnitAi : UnitCommonAi
             }
         }
     }
-    public override void TakeDamage(float damage)
+
+    [ClientRpc]
+    public override void TakeDamageClientRpc(float damage)
     {
-        base.TakeDamage(damage);
+        base.TakeDamageClientRpc(damage);
         selfHealTimer = 0;
     }
-    protected override void DieFunc()
+
+    [ClientRpc]
+    protected override void DieFuncClientRpc()
     {
-        base.DieFunc();
+        base.DieFuncClientRpc();
 
         unitSelImg.color = new Color(1f, 1f, 1f, 0f);
+
+        if (!IsServer)
+            return;
 
         foreach (GameObject monster in targetList)
         {

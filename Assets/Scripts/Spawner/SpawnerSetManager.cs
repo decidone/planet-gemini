@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Unity.Netcode;
 
-public class SpawnerSetManager : MonoBehaviour
+public class SpawnerSetManager : NetworkBehaviour
 {
     [SerializeField]
     MapGenerator mapGen;
@@ -58,7 +59,8 @@ public class SpawnerSetManager : MonoBehaviour
         yIndex = 0;
     }
 
-    public void AreaMapSet(Vector2 centerPos, int mapSplitCount)
+    [ServerRpc]
+    public void AreaMapSetServerRpc(Vector2 centerPos, int mapSplitCount)
     {
         width = mapGen.width;
         height = mapGen.height;
@@ -91,6 +93,7 @@ public class SpawnerSetManager : MonoBehaviour
                 areaPosLevel.Add(areaCenter, Math.Max(x, y));    // 구역의 중앙 좌표 + 구역 레벨
             }
         }
+
         SpawnerSet();
     }
 
@@ -154,6 +157,9 @@ public class SpawnerSetManager : MonoBehaviour
             for (int i = 0; i < levelData.maxSpawner; i++)
             {
                 GameObject spawnerObj = Instantiate(spawner);
+                NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
+                networkObject.Spawn();
+
                 spawnerObj.transform.position = randomPoints[index];
 
                 Cell cellData = mapGen.map.mapData[(int)randomPoints[index].x][(int)randomPoints[index].y];
@@ -163,6 +169,7 @@ public class SpawnerSetManager : MonoBehaviour
                 }
                 spawnGroup.GetComponent<SpawnerGroupManager>().SpawnerSet(spawnerObj);
                 spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);
+                monsterSpawner.groupManager = spawnGroup.GetComponent<SpawnerGroupManager>();
                 monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos);
                 monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel);
                 index++;
@@ -183,6 +190,9 @@ public class SpawnerSetManager : MonoBehaviour
         GameObject spawnObj;
 
         spawnObj = Instantiate(spawnerGroup);
+        NetworkObject networkObject = spawnObj.GetComponent<NetworkObject>();
+        networkObject.Spawn();
+
         spawnObj.transform.position = pos;
         spawnObj.transform.parent = gameObject.transform;
 

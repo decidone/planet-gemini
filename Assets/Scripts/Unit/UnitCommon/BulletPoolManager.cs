@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.Pool;
+using Unity.Netcode;
 
-public class BulletPoolManager : MonoBehaviour
+public class BulletPoolManager : NetworkBehaviour
 {
     public static BulletPoolManager instance;
 

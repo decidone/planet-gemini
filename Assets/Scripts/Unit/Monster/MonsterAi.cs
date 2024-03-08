@@ -7,7 +7,7 @@ using Unity.Netcode;
 // UTF-8 설정
 public class MonsterAi : UnitCommonAi
 {
-    GameObject spawner;
+    public GameObject spawner;
     Transform spawnPos;
     float spawnDist;
     [SerializeField]
@@ -31,12 +31,19 @@ public class MonsterAi : UnitCommonAi
     bool waveFindObj = false;
     //bool goalPathBlocked = false;
 
+    protected override void Start()
+    {
+        base.Start();
+        spawner = GetComponentInParent<MonsterSpawner>().gameObject;
+        spawnPos = spawner.transform;
+    }
+
     protected override void FixedUpdate()
     {
         if (isScriptActive)
         {
             base.FixedUpdate();
-        }   
+        }
         else
             ReturnPos();
     }
@@ -54,11 +61,14 @@ public class MonsterAi : UnitCommonAi
             case AIState.AI_Idle:                
                 if(idle == 0)
                 {
-                    if (idleTimeStart)
+                    if (IsServer && idleTimeStart)
                         StartCoroutine(nameof(IdleTime));
                 }
                 else
-                    PatrolRandomPosSet();
+                {
+                    if (IsServer)
+                        PatrolRandomPosSet();
+                }
                 break;
             case AIState.AI_Patrol:
                 PatrolFunc();
@@ -66,18 +76,19 @@ public class MonsterAi : UnitCommonAi
             case AIState.AI_Attack:
                 if (attackState == AttackState.Waiting)
                 {
-                    if (aggroTarget)
+                    if (IsServer && aggroTarget)
                         AttackCheck();
                 }
                 else if (attackState == AttackState.AttackStart)
                 {
-                    Attack();
+                    if(IsServer)
+                        Attack();
                 }
                 break;
             case AIState.AI_NormalTrace:
                 {
                     NormalTrace();
-                    if (aggroTarget)
+                    if (IsServer && aggroTarget)
                         AttackCheck();
                 }
                 break;
@@ -144,38 +155,56 @@ public class MonsterAi : UnitCommonAi
 
     protected void PatrolFunc()
     {
-        if (movePath == null)
-            return;
-        if (movePath.Count <= currentWaypointIndex)
-            return;
-
-        Vector3 targetWaypoint = movePath[currentWaypointIndex];
-
-        direction = targetWaypoint - tr.position;
-        direction.Normalize();
-
-        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
-        if (Vector3.Distance(tr.position, targetPosition) <= 0.3f)
+        if (IsServer)
         {
-            aIState = AIState.AI_Idle;
-            AnimSetFloat(lastMoveDirection, false);
+            if (movePath == null)
+                return;
+            if (movePath.Count <= currentWaypointIndex)
+                return;
+
+            Vector3 targetWaypoint = movePath[currentWaypointIndex];
+
+            direction = targetWaypoint - tr.position;
+            direction.Normalize();
+
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+            if (Vector3.Distance(tr.position, patrolPos) <= 0.3f)
+            {
+                aIState = AIState.AI_Idle;
+                AnimSetFloat(lastMoveDirection, false);
+                return;
+            }
+            if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+            {
+                currentWaypointIndex++;
+
+                if (currentWaypointIndex >= movePath.Count)
+                {
+                    aIState = AIState.AI_Idle;
+                    AnimSetFloat(lastMoveDirection, false);
+                    return;
+                }
+            }
+
+            animator.SetBool("isMove", true);
+
+            if (direction.magnitude > 0.5f)
+            {
+                AnimSetFloat(direction, true);
+            }
         }
-        if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+        else
         {
-            currentWaypointIndex++;
+            direction = patrolPos - tr.position;
+            direction.Normalize();
+            animator.SetBool("isMove", true);
+            AnimSetFloat(direction, true);
 
-            if (currentWaypointIndex >= movePath.Count)
+            if (Vector3.Distance(tr.position, patrolPos) <= 0.5f)
             {
                 aIState = AIState.AI_Idle;
                 AnimSetFloat(lastMoveDirection, false);
             }
-        }
-
-        animator.SetBool("isMove", true);
-
-        if (direction.magnitude > 0.5f)
-        {
-            AnimSetFloat(direction, true);
         }
     }
 
@@ -202,12 +231,10 @@ public class MonsterAi : UnitCommonAi
             float randomDistance = Random.Range(0f, unitCommonData.PatrolRad);
             Vector3 randomPosition = patrolMainPos + new Vector3(Mathf.Cos(randomAngle), Mathf.Sin(randomAngle)) * randomDistance;
 
-            patrolStartPos = randomPosition;
-
-
+            patrolPos = randomPosition;
             if (checkPathCoroutine == null)
             {
-                checkPathCoroutine = StartCoroutine(CheckPath(patrolStartPos, "Patrol"));
+                checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
             }
         }
         else
@@ -215,20 +242,20 @@ public class MonsterAi : UnitCommonAi
             idle = Random.Range(0, 3);
             if (idle == 0)
             {
-                patrolStartPos = tr.position;
+                patrolPos = tr.position;
                 animator.SetBool("isMove", false);
                 aIState = AIState.AI_Idle;
+                return;
             }
             else
             {
-                patrolStartPos = Vector3.zero;
+                patrolPos = Vector3.zero;
 
                 patRandomPos = Random.insideUnitCircle * unitCommonData.PatrolRad * Random.Range(5, 10);
-                patrolStartPos = tr.position + patRandomPos;
-
+                patrolPos = tr.position + patRandomPos;
                 if (checkPathCoroutine == null)
                 {
-                    checkPathCoroutine = StartCoroutine(CheckPath(patrolStartPos, "Patrol"));
+                    checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
                 }
             }
         }
@@ -250,6 +277,7 @@ public class MonsterAi : UnitCommonAi
         if (Vector3.Distance(tr.position, targetPosition) <= 0.3f)
         {
             aIState = AIState.AI_Idle;
+            return;
         }
         if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
         {
@@ -258,6 +286,7 @@ public class MonsterAi : UnitCommonAi
             if (currentWaypointIndex >= movePath.Count)
             {
                 aIState = AIState.AI_Idle;
+                return;
             }
         }
 
@@ -305,7 +334,7 @@ public class MonsterAi : UnitCommonAi
                 Vector3 targetWaypoint = movePath[currentWaypointIndex];
                 direction = targetWaypoint - tr.position;
                 direction.Normalize();
-                AnimSetFloat(direction, true);
+                AnimSetFloat(targetVec, true);
 
                 tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
 
@@ -329,7 +358,7 @@ public class MonsterAi : UnitCommonAi
                 Vector3 targetWaypoint = movePath[currentWaypointIndex];
                 direction = targetWaypoint - tr.position;
                 direction.Normalize();
-                AnimSetFloat(direction, true);
+                AnimSetFloat(targetVec, true);
 
                 tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
                 //tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
@@ -376,7 +405,7 @@ public class MonsterAi : UnitCommonAi
                 if (Obj.GetComponent<PlayerStatus>())
                     Obj.GetComponent<PlayerStatus>().TakeDamage(unitCommonData.Damage);
                 else if (Obj.GetComponent<UnitAi>())
-                    Obj.GetComponent<UnitAi>().TakeDamage(unitCommonData.Damage);
+                    Obj.GetComponent<UnitAi>().TakeDamageClientRpc(unitCommonData.Damage);
                 else if (Obj.GetComponent<TowerAi>())
                     Obj.GetComponent<TowerAi>().TakeDamage(unitCommonData.Damage);
                 else if (Obj.GetComponent<Structure>())
@@ -437,6 +466,7 @@ public class MonsterAi : UnitCommonAi
                 aIState = AIState.AI_Idle;
                 attackState = AttackState.Waiting;
                 battleBGM.BattleRemoveMonster(gameObject);
+                return;
             }
             else if (!waveArrivePos && waveFindObj)
             {
@@ -445,7 +475,7 @@ public class MonsterAi : UnitCommonAi
             else if (waveState && waveArrivePos && !waveWaiting)
             {
                 battleBGM.BattleRemoveMonster(gameObject);
-                checkPathCoroutine = StartCoroutine(CheckPath(patrolStartPos, "Patrol"));
+                checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
             }
             //else if (!goingBase)
             //    WaveStart(wavePos);
@@ -490,7 +520,7 @@ public class MonsterAi : UnitCommonAi
     {
         if(aggroTarget != null)
         {
-            RandomAttackNum(aggroTarget.transform);
+            AttackSet(aggroTarget.transform);
             soundManager.PlaySFX(gameObject, "unitSFX", "MonsterAttack");
         }
     }
@@ -543,13 +573,12 @@ public class MonsterAi : UnitCommonAi
             if (targetTag == "MapObj")
             {
                 targetList.Add(target);
-                Debug.Log(target.name);
             }
         }
         WaveStart(wavePos);
     }
 
-    protected virtual void RandomAttackNum(Transform targetTr)
+    protected virtual void AttackSet(Transform targetTr)
     {
         attackState = AttackState.Attacking;
 
@@ -560,19 +589,20 @@ public class MonsterAi : UnitCommonAi
 
     protected virtual void AttackMove() { }
 
-    protected override void AttackEnd(string str)
+    protected override void AttackEnd()
     {
-        base.AttackEnd(str);
-        if (str == "false")
-        {
-            if (aggroTarget != null)
-                AttackObjCheck(aggroTarget);
-        }
+        base.AttackEnd();
+        if (aggroTarget != null)
+            AttackObjCheck(aggroTarget);        
     }
 
-    protected override void DieFunc()
+    [ClientRpc]
+    protected override void DieFuncClientRpc()
     {
-        base.DieFunc();
+        base.DieFuncClientRpc();
+
+        if (!IsServer)
+            return;
 
         foreach (GameObject target in targetList)
         {
@@ -592,7 +622,7 @@ public class MonsterAi : UnitCommonAi
         spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType);
         battleBGM.BattleRemoveMonster(gameObject);
         Destroy(gameObject);
-    }
+        }
 
     public void MonsterSpawnerSet(MonsterSpawner monsterSpawner, int type)
     {
@@ -601,28 +631,32 @@ public class MonsterAi : UnitCommonAi
         monsterType = type;
     }
 
-    public void MonsterScriptSet(bool scriptState)
+    [ClientRpc]
+    public void MonsterScriptSetClientRpc(bool scriptState)
     {
         isScriptActive = scriptState;
 
-        if(scriptState) //스크립트 애니메이션 콜라이더 세팅
+        if(scriptState)
         {
-            enabled = true;
+            //enabled = true;
             animator.enabled = true;
             capsule2D.enabled = true;
         }
         else
         {
-            spawnDist = Vector3.Distance(tr.position, spawnPos.position);
-            if (spawnDist > maxSpawnDist)
+            if (IsServer)
             {
-                checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
-            }
-            else
-            {
-                enabled = false;
-                animator.enabled = false;
-                capsule2D.enabled = false;
+                spawnDist = Vector3.Distance(tr.position, spawnPos.position);
+                if (spawnDist > maxSpawnDist)
+                {
+                    checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
+                }
+                else
+                {
+                    //enabled = false;
+                    animator.enabled = false;
+                    capsule2D.enabled = false;
+                }
             }
         }
     }

@@ -367,8 +367,12 @@ public class GameManager : MonoBehaviour
         if (BuildingInfo.instance != null && BuildingInfo.instance.gameObject.activeSelf)
         {
             BuildingInfo.instance.SetItemSlot();
-            if(PreBuilding.instance != null)
+
+            if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+
+            //if(PreBuilding.instance != null)
+            //    PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
         }
         if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
         {

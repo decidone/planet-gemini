@@ -61,7 +61,9 @@ public class GuardianAi : MonsterAi
 
     void GuardianAggro() 
     {
+        //AnimBoolCtrl("isMove", true);
         animator.SetBool("isMove", true);
+
         AnimSetFloat(targetVec, true);
 
         targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
