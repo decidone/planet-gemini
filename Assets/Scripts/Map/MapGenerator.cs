@@ -101,16 +101,17 @@ public class MapGenerator : MonoBehaviour
     {
         SetRandomSeed();
         GenerateMap();
-        SetSpawnPos(hostMap);
-        spawnerPosSet = SpawnerSetManager.instance;
+        SetSpawnPos(hostMap, true);
+        if (isMultiPlay)
+            SetSpawnPos(clientMap, false);
 
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
+        spawnerPosSet = SpawnerSetManager.instance;
         if (spawnerPosSet && mapSizeData != null)
         {
             spawnerPosSet.AreaMapSet(mapCenterPos, mapSizeData.MapSplitCount);            
         }
-        PortalSet(hostMap); // 스폰시키는 방식이 아니라 호스트/클라 맵 지정을 못 함. 나중에 다시 확인
     }
 
     void Update()
@@ -125,8 +126,12 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void SetSpawnPos(Map map)
+    void SetSpawnPos(Map map, bool isHostMap)
     {
+        int offsetY = 0;
+        if (!isHostMap)
+            offsetY = height + clientMapOffsetY;
+
         int x = Mathf.FloorToInt(width / 2);
         int y = Mathf.FloorToInt(height / 2);
 
@@ -189,8 +194,24 @@ public class MapGenerator : MonoBehaviour
                 case "right": x += dist; break;
             }
         }
+
+        // 아래 -> 플레이어, 포탈 스폰포인트 지정, 스폰 시 데이터 설정
         var pos = PortalPosCheck(map, x, y);
-        GameManager.instance.SetPlayerPos(pos.x, pos.y);
+        GameManager.instance.SetPlayerPos(pos.x, (pos.y + offsetY), isHostMap);
+
+        Portal[] portal = GameManager.instance.portal;
+        if (isHostMap)
+        {
+            portal[0].transform.position = new Vector3(pos.x, (pos.y + offsetY), 0);
+            portal[0].MapDataSet(map);
+
+            // 솔로 플레이일 경우 포탈이 다른 설정값을 가져야 함
+        }
+        else
+        {
+            portal[1].transform.position = new Vector3(pos.x, (pos.y + offsetY), 0);
+            portal[1].MapDataSet(map);
+        }
     }
 
     public (int x, int y) PortalPosCheck(Map map, int x, int y)
@@ -269,7 +290,7 @@ public class MapGenerator : MonoBehaviour
             Debug.Log("left: " + (11 - bias[0]));
             x -= (11 - bias[0]);
         }
-        else
+        else if (biasX > 0)
         {
             Debug.Log("right: " + (bias[1] + 1));
             x += (bias[1] + 1);
@@ -280,7 +301,7 @@ public class MapGenerator : MonoBehaviour
             Debug.Log("down: " + (11 - bias[2]));
             y -= (11 - bias[2]);
         }
-        else
+        else if (biasY > 0)
         {
             Debug.Log("up: " + (bias[3] + 1));
             y += (bias[3] + 1);
@@ -506,15 +527,6 @@ public class MapGenerator : MonoBehaviour
                     }
                 }
             }
-        }
-    }
-
-    public void PortalSet(Map map)
-    {
-        Portal[] portal = GameManager.instance.portal;
-        for (int i = 0; i < portal.Length; i++)
-        {
-            portal[i].MapDataSet(map);
         }
     }
 

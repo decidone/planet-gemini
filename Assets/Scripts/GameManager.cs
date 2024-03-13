@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 public class GameManager : MonoBehaviour
 {
     public GameObject inventoryUiCanvas;
+    public bool isMultiPlay;
 
     [SerializeField] MapGenerator mapGenerator;
     [HideInInspector] public Map hostMap;
@@ -58,7 +59,9 @@ public class GameManager : MonoBehaviour
     public Portal[] portal;
 
     [HideInInspector]
-    public Vector3 playerSpawnPos;
+    public Vector3 hostPlayerSpawnPos;
+    [HideInInspector]
+    public Vector3 clientPlayerSpawnPos;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -103,18 +106,23 @@ public class GameManager : MonoBehaviour
         inputManager.controls.HotKey.Building.performed += ctx => Building();
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
         inputManager.controls.HotKey.EnergyCheck.performed += ctx => EnergyCheck();
-        inputManager.controls.Player.Teleport.performed += ctx => Teleport();
-
+        
         OtherPortalSet();
         //Cursor.lockState = CursorLockMode.Confined;
     }
 
-    void Teleport()
+    public Vector3 Teleport()
     {
         if (map == hostMap)
+        {
             map = clientMap;
+            return clientPlayerSpawnPos;
+        }
         else
+        {
             map = hostMap;
+            return hostPlayerSpawnPos;
+        }
     }
 
     void StrClick()
@@ -427,19 +435,34 @@ public class GameManager : MonoBehaviour
     {
         player = playerObj;
         playerController = player.GetComponent<PlayerController>();
-        player.transform.position = playerSpawnPos;
+        if (isHost)
+        {
+            player.transform.position = hostPlayerSpawnPos;
+            map = hostMap;
+        }
+        else
+        {
+            player.transform.position = clientPlayerSpawnPos;
+            map = clientMap;
+        }
         mainCam = Camera.main.gameObject.GetComponent<CameraController>();
         mainCam.target = player.transform;
         mapCameraController.target = player.transform;
         GameObject fogOfWar = ResourcesManager.instance.fogOfWar;
         FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
         followTransform.SetTargetTransform(player.transform);
-        WavePoint.instance.PlayerSet(player, playerSpawnPos);
+        if (isHost)
+            WavePoint.instance.PlayerSet(player, hostPlayerSpawnPos);
+        else
+            WavePoint.instance.PlayerSet(player, clientPlayerSpawnPos);
     }
 
-    public void SetPlayerPos(float x, float y)
+    public void SetPlayerPos(float x, float y, bool isHostPos)
     {
-        playerSpawnPos = new Vector3(x, y, 0);
+        if (isHostPos)
+            hostPlayerSpawnPos = new Vector3(x, y, 0);
+        else
+            clientPlayerSpawnPos = new Vector3(x, y, 0);
         //player.transform.position = playerSpawnPos;
     }
 

@@ -224,7 +224,7 @@ public class MonsterSpawnerManager : MonoBehaviour
 
     Vector3 WavePointSet(Vector3 wavePoint)
     {
-        Vector3 mapCenter = GameManager.instance.playerSpawnPos;
+        Vector3 mapCenter = GameManager.instance.hostPlayerSpawnPos;
 
         Vector3 mapCornerA = new Vector3(0, 0, 0); // 좌측 하단
         Vector3 mapCornerB = new Vector3(spawnerSetManager.width, 0, 0); // 우측 하단

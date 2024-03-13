@@ -20,6 +20,7 @@ public class PlayerController : NetworkBehaviour
 
     InputManager inputManager;
     bool isLoot;
+    bool isTeleportable;
 
     [Space]
     [Header ("Movement")]
@@ -37,6 +38,7 @@ public class PlayerController : NetworkBehaviour
         circleColl = GetComponent<CircleCollider2D>();
         tempMinerCount = 5;
         isLoot = false;
+        isTeleportable = false;
     }
 
     void Start()
@@ -53,6 +55,7 @@ public class PlayerController : NetworkBehaviour
         inputManager.controls.Player.Loot.performed += ctx => LootCheck();
         inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
         inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
+        inputManager.controls.Player.Teleport.performed += ctx => Teleport();
 
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
     }
@@ -94,22 +97,39 @@ public class PlayerController : NetworkBehaviour
     {
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
+        Portal portal = collision.GetComponent<Portal>();
 
         if (itemProps && !items.Contains(collision.gameObject))
             items.Add(collision.gameObject);
         else if (belt && !beltList.Contains(collision.gameObject))
             beltList.Add(collision.gameObject);
+
+        if (portal)
+            isTeleportable = true;
     }
 
     void OnTriggerExit2D(Collider2D collision)
     {
         ItemProps itemProps = collision.GetComponent<ItemProps>(); 
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
+        Portal portal = collision.GetComponent<Portal>();
 
         if (itemProps && items.Contains(collision.gameObject))
             items.Remove(collision.gameObject);
         else if (belt && beltList.Contains(collision.gameObject))
             beltList.Remove(collision.gameObject);
+
+        if (portal)
+            isTeleportable = false;
+    }
+
+    void Teleport()
+    {
+        if (isTeleportable && GameManager.instance.isMultiPlay)
+        {
+            Vector3 pos = GameManager.instance.Teleport();
+            this.transform.position = pos;
+        }
     }
 
     void LootCheck() { isLoot = !isLoot; }
