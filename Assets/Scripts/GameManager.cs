@@ -9,12 +9,15 @@ public class GameManager : MonoBehaviour
 {
     public GameObject inventoryUiCanvas;
     public bool isMultiPlay;
+    public Inventory inventory;
+    public Inventory hostMapInven;
+    public Inventory clientMapInven;
 
     [SerializeField] MapGenerator mapGenerator;
     [HideInInspector] public Map hostMap;
     [HideInInspector] public Map clientMap;
     [HideInInspector] public Map map;
-
+    
     public GameObject player;
     public PlayerController playerController;
     public Transform hostPlayerTransform;
@@ -111,16 +114,32 @@ public class GameManager : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Confined;
     }
 
+    public void SetMapInven(bool isHostMap)
+    {
+        if (isHostMap)
+        {
+            inventory = hostMapInven;
+            pInvenManager.SetInven(hostMapInven);
+        }
+        else
+        {
+            inventory = clientMapInven;
+            pInvenManager.SetInven(clientMapInven);
+        }
+    }
+
     public Vector3 Teleport()
     {
         if (map == hostMap)
         {
             map = clientMap;
+            SetMapInven(false);
             return clientPlayerSpawnPos;
         }
         else
         {
             map = hostMap;
+            SetMapInven(true);
             return hostPlayerSpawnPos;
         }
     }
@@ -264,11 +283,10 @@ public class GameManager : MonoBehaviour
     {
         if (debug)
         {
-            Inventory inven = this.GetComponent<Inventory>();
             foreach (Item item in ItemList.instance.itemList)
             {
                 if (item.tier >= 0)
-                    inven.Add(item, 99);
+                    inventory.Add(item, 99);
             }
             BuildAndSciUiReset();
         }
@@ -438,11 +456,13 @@ public class GameManager : MonoBehaviour
         if (isHost)
         {
             player.transform.position = hostPlayerSpawnPos;
+            SetMapInven(true);
             map = hostMap;
         }
         else
         {
             player.transform.position = clientPlayerSpawnPos;
+            SetMapInven(false);
             map = clientMap;
         }
         mainCam = Camera.main.gameObject.GetComponent<CameraController>();

@@ -11,6 +11,7 @@ public class PlayerInvenManager : InventoryManager
     protected override void Start()
     {
         base.Start();
+        inventory = GameManager.instance.inventory;
         SetInven(inventory, inventoryUI);
         inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotShiftClick();
     }

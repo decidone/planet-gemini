@@ -15,7 +15,7 @@ public class RemoveBuild : DragFunc
     {
         base.Start();
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
-        inventory = gameManager.GetComponent<Inventory>();
+        inventory = gameManager.inventory;
         structureLayer = LayerMask.NameToLayer("Obj");
     }
 

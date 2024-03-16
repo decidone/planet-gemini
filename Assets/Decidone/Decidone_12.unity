@@ -1927,17 +1927,6 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
---- !u!114 &219787472492811319 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7738165226129024440, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-  m_PrefabInstance: {fileID: 7525422399260504463}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1291549547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8612a3248f1ad04197ab52610640ff4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1067319956694990678 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 142728372055925939, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
@@ -1970,7 +1959,7 @@ PrefabInstance:
     - target: {fileID: 142728371453078230, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: playerInven
       value: 
-      objectReference: {fileID: 219787472492811319}
+      objectReference: {fileID: 0}
     - target: {fileID: 142728371907706431, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
@@ -1978,7 +1967,7 @@ PrefabInstance:
     - target: {fileID: 142728372055925939, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
-      objectReference: {fileID: 219787472492811319}
+      objectReference: {fileID: 0}
     - target: {fileID: 792990450431671789, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
@@ -1986,11 +1975,11 @@ PrefabInstance:
     - target: {fileID: 5315094254524996675, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
-      objectReference: {fileID: 219787472492811319}
+      objectReference: {fileID: 0}
     - target: {fileID: 8388844543318902407, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
-      objectReference: {fileID: 219787472492811319}
+      objectReference: {fileID: 0}
     - target: {fileID: 8669813805128897136, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -2002,7 +1991,7 @@ PrefabInstance:
     - target: {fileID: 8669813805128897139, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
-      objectReference: {fileID: 219787472492811319}
+      objectReference: {fileID: 0}
     - target: {fileID: 8669813805128897139, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: preBuilding
       value: 

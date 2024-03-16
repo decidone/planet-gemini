@@ -46,7 +46,7 @@ public class PlayerController : NetworkBehaviour
         tempMiner = ResourcesManager.instance.tempMiner;
         tempMinerUI = ResourcesManager.instance.tempMinerUI;
         inputManager = InputManager.instance;
-        inventory = GameManager.instance.GetComponent<Inventory>();
+        inventory = GameManager.instance.inventory;
         
         if (!IsOwner) { return; }
         tempFullAmount = 5;

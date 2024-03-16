@@ -137,7 +137,7 @@ public class Structure : MonoBehaviour
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
-        playerInven = gameManager.GetComponent<Inventory>();
+        playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         hp = structureData.MaxHp[level];

@@ -46,7 +46,7 @@ public class InfoWindow : MonoBehaviour
     private void Start()
     {
         buildingInven = gameManager.GetComponent<BuildingInven>();
-        inventory = gameManager.GetComponent<Inventory>();
+        inventory = gameManager.inventory;
     }
 
     public void SetNeedItem(ScienceInfoData scienceInfoData, string name, int level ,bool isCore , ScienceBtn sciBtn)

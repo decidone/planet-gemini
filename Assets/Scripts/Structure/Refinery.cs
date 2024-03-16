@@ -24,7 +24,7 @@ public class Refinery : FluidFactoryCtrl
         #region FluidFactoryAwake
         GameManager gameManager = GameManager.instance;
         myFluidScript = GetComponent<FluidFactoryCtrl>();
-        playerInven = gameManager.GetComponent<Inventory>();
+        playerInven = gameManager.inventory;
         mainSource = null;
         howFarSource = -1;
         preSaveFluidNum = 0;

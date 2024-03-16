@@ -45,7 +45,7 @@ public class SciItemSetWindow : MonoBehaviour
     {
         gameManager = GameManager.instance;
         itemsList = gameManager.GetComponent<ItemList>().itemList;
-        inventory = gameManager.GetComponent<Inventory>();
+        inventory = gameManager.inventory;
 
         CloseUI();
     }

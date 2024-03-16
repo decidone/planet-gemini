@@ -35,7 +35,7 @@ public class SteamGenerator : FluidFactoryCtrl
         #region FluidFactoryAwake
         gameManager = GameManager.instance;
         myFluidScript = GetComponent<FluidFactoryCtrl>();
-        playerInven = gameManager.GetComponent<Inventory>();
+        playerInven = gameManager.inventory;
         mainSource = null;
         howFarSource = -1;
         preSaveFluidNum = 0;
