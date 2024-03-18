@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Unity.Netcode;
+using Pathfinding;
 
 // UTF-8 설정
 public enum BeltState
@@ -14,7 +16,7 @@ public enum BeltState
 public class BeltCtrl : LogisticsCtrl
 {
     int modelMotion = 0;  // 모션
-
+    int preMotion = -1;
     public BeltGroupMgr beltGroupMgr;
     GameObject beltManager = null;
 
@@ -57,12 +59,16 @@ public class BeltCtrl : LogisticsCtrl
             anim.SetFloat("Level", level);
 
             anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-            ModelSet();
+            if(IsServer)
+                ModelSet();
         }
     }
 
     private void FixedUpdate()
     {
+        if (!IsServer)
+            return;
+
         if (itemObjList.Count > 0)
             ItemMove();
         else if(itemObjList.Count == 0 && isItemStop)
@@ -101,6 +107,13 @@ public class BeltCtrl : LogisticsCtrl
                 modelMotion = 4;
             }
         }
+
+        if (preMotion != modelMotion)
+        {
+            BeltModelMotionSetClientRpc(modelMotion);
+            preMotion = modelMotion;
+        }
+
         SetItemDir();
     }
 
@@ -543,5 +556,36 @@ public class BeltCtrl : LogisticsCtrl
         }                
         else
             return null;
+    }
+
+    [ClientRpc]
+    public override void SettingClientRpc(int _level, int _beltDir)
+    {
+        beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+        level = _level;
+        dirNum = _beltDir;
+        beltState = BeltState.SoloBelt;
+        SetBuild();
+        ColliderTriggerOnOff(false);
+        gameObject.AddComponent<DynamicGridObstacle>();
+        myVision.SetActive(true);
+    }
+
+    [ClientRpc]
+    public void BeltStateSetClientRpc(int beltStateNum)
+    {
+        beltState = (BeltState)beltStateNum;
+    }
+
+    [ClientRpc]
+    public void BeltDirSetClientRpc(int num)
+    {
+        dirNum = num;
+    }
+
+    [ClientRpc]
+    public void BeltModelMotionSetClientRpc(int modelNum)
+    {
+        modelMotion = modelNum;
     }
 }

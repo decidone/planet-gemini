@@ -195,6 +195,7 @@ GameObject:
   - component: {fileID: 2359874169441961875}
   - component: {fileID: 8224777291930825977}
   - component: {fileID: 3883913979261858583}
+  - component: {fileID: -2208987044199762054}
   m_Layer: 8
   m_Name: MinerUpgrade
   m_TagString: Factory
@@ -377,15 +378,28 @@ MonoBehaviour:
   monsterList: []
   col: {fileID: 0}
   repairTower: {fileID: 0}
-  isStorageBuild: 0
+  isStorageBuilding: 0
   isMainSource: 0
   isTempBuild: 0
+  isUIOpened: 0
+  isPortalBuild: 0
   myVision: {fileID: 6101421379128917892}
+  maxAmount: 99
+  cooldown: 3
+  connectors: []
+  conn: {fileID: 0}
+  energyUse: 0
+  isEnergyStr: 0
+  energyProduction: 0
+  energyConsumption: 0
+  isOperate: 0
+  efficiency: 0
+  effiCooldown: 0
+  isMainEnergyColony: 0
+  soundManager: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
-  maxAmount: 99
-  cooldown: 3
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
@@ -430,6 +444,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-2208987044199762054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359874169441961886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &3950523507292349362
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,10 +20,11 @@ public class PortalUIBtn : MonoBehaviour
 
     bool isLock;
 
-    GameObject preBuilding;
+    PreBuilding preBuilding;
 
     private void Start()
     {
+        preBuilding = PreBuilding.instance;
         btn.onClick.AddListener(() => ButtonFunc());
     }
 
@@ -31,11 +32,11 @@ public class PortalUIBtn : MonoBehaviour
     {
         if (!isLock && !portal.PortalObjFind(objName))
         {
-            preBuilding = GameManager.instance.preBuildingObj;
-            preBuilding.SetActive(true);
-            PreBuilding pre = preBuilding.GetComponent<PreBuilding>();
-            pre.SetPortalImage(obj, portal);
-            pre.isEnough = true;
+            //preBuilding = GameManager.instance.preBuildingObj;
+            //preBuilding.SetActive(true);
+            //PreBuilding pre = preBuilding.GetComponent<PreBuilding>();
+            preBuilding.SetPortalImage(obj, portal);
+            preBuilding.isEnough = true;
         }
     }
 

@@ -341,12 +341,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57cc21318390de0499e5aae976c927a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  othColonyList: []
   connectors: []
-  monsterSpawners: []
   targetLayer:
     serializedVersion: 2
     m_Bits: 16384
+  mainColony: 0
+  energy: 0
+  consumption: 0
 --- !u!1 &2075445432134139083
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,6 +607,7 @@ GameObject:
   - component: {fileID: 5564630921721189503}
   - component: {fileID: 9062751277686904368}
   - component: {fileID: 4778428970195188463}
+  - component: {fileID: 4830190462784604241}
   m_Layer: 8
   m_Name: LDConnector
   m_TagString: Factory
@@ -771,6 +773,7 @@ MonoBehaviour:
   efficiency: 0
   effiCooldown: 0
   isMainEnergyColony: 1
+  soundManager: {fileID: 0}
   connector: {fileID: 7265358927153795667}
   view: {fileID: 6363363537288611314}
   preBuildingObj: {fileID: 0}
@@ -842,6 +845,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4830190462784604241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8506304485128044753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &2977033922277795033
 PrefabInstance:
   m_ObjectHideFlags: 0

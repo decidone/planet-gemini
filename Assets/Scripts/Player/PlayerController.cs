@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
     List<GameObject> beltList = new List<GameObject>();
 
     public Collider2D circleColl;
-    GameObject preBuilding;
+    PreBuilding preBuilding;
     Building tempMiner;
     TempMinerUi tempMinerUI;
     int tempFullAmount;
@@ -57,6 +57,7 @@ public class PlayerController : NetworkBehaviour
         inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
         inputManager.controls.Player.Teleport.performed += ctx => Teleport();
 
+        preBuilding = PreBuilding.instance;
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
     }
 
@@ -190,11 +191,11 @@ public class PlayerController : NetworkBehaviour
     {
         if (tempMinerCount > 0)
         {
-            preBuilding = GameManager.instance.preBuildingObj;
-            preBuilding.SetActive(true);
-            PreBuilding pre = preBuilding.GetComponent<PreBuilding>();
-            pre.SetImage(tempMiner, true, tempMinerCount);
-            pre.isEnough = true;
+            //preBuilding = GameManager.instance.preBuildingObj;
+            //preBuilding.SetActive(true);
+            //PreBuilding pre = preBuilding.GetComponent<PreBuilding>();
+            preBuilding.SetImage(tempMiner, true, tempMinerCount);
+            preBuilding.isEnough = true;
             TempBuildUI(true);
         }
     }

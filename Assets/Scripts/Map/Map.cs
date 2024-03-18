@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // UTF-8 설정
-public class Map
+public class Map : MonoBehaviour
 {
     public int width;
     public int height;

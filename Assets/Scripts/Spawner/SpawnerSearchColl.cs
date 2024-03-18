@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class SpawnerSearchColl : MonoBehaviour
+public class SpawnerSearchColl : NetworkBehaviour
 {
     MonsterSpawner monsterSpawner;
     public List<GameObject> inObjList = new List<GameObject>();
@@ -15,7 +16,7 @@ public class SpawnerSearchColl : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!inObjList.Contains(collision.gameObject))
+        if (!inObjList.Contains(collision.gameObject) && IsServer)
         {
             inObjList.Add(collision.gameObject);
             if (!nearUserObjExist && inObjList.Count > 0)
@@ -28,7 +29,7 @@ public class SpawnerSearchColl : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (inObjList.Contains(collision.gameObject))
+        if (inObjList.Contains(collision.gameObject) && IsServer)
         {
             inObjList.Remove(collision.gameObject);
             if (nearUserObjExist && inObjList.Count == 0)

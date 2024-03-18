@@ -11,9 +11,9 @@ public class GolemCtrl : MonsterAi
     GameObject golemFX;
     Transform getTargetTr;
 
-    protected override void RandomAttackNum(Transform targetTr)
+    protected override void AttackSet(Transform targetTr)
     {
-        base.RandomAttackNum(targetTr);
+        base.AttackSet(targetTr);
         getTargetTr = targetTr;
     }
 

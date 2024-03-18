@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 // UTF-8 설정
-public class BeltManager : MonoBehaviour
+public class BeltManager : NetworkBehaviour
 {
     [SerializeField]
     GameObject beltGroupMgrObj;

@@ -12,6 +12,8 @@ public class GeminiNetworkManager : NetworkBehaviour
     [SerializeField]
     public ItemListSO itemListSO;
     [SerializeField]
+    public BuildingListSO buildingListSO;
+    [SerializeField]
     GameObject itemPref;
 
     public delegate void OnItemDestroyed();
@@ -56,6 +58,16 @@ public class GeminiNetworkManager : NetworkBehaviour
     }
 
     public Item GetItemSOFromIndex(int itemSOIndex)
+    {
+        return itemListSO.itemSOList[itemSOIndex];
+    }
+
+    public int GetBuildingSOIndex(Item item)
+    {
+        return itemListSO.itemSOList.IndexOf(item);
+    }
+
+    public Item GetBuildingSOFromIndex(int itemSOIndex)
     {
         return itemListSO.itemSOList[itemSOIndex];
     }

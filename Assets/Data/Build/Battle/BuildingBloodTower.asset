@@ -16,6 +16,13 @@ MonoBehaviour:
   scienceName: BloodTower
   item: {fileID: 11400000, guid: 767f0066598cd5b4c8260cd8ca5e2b1d, type: 2}
   gameObj: {fileID: 1886033591091936625, guid: b905a48784adc434a9301f9e7fc4ca96, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites:
+  - {fileID: 1327075591, guid: 0f7613d40829b744f9aa659014c56eca, type: 3}
+  animatorController:
+  - {fileID: 9100000, guid: 4fb404c0c0eb6cc488ace68f15de8bd3, type: 2}
   level: 1
   height: 2
   width: 2

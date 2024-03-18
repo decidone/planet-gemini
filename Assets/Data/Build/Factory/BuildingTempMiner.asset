@@ -16,6 +16,12 @@ MonoBehaviour:
   scienceName: Miner
   item: {fileID: 11400000, guid: 71ffee1754cdcdd49ba94f8203f28333, type: 2}
   gameObj: {fileID: 2359874169441961886, guid: 45c7b3abc311c2d41a919ab926ef2cc9, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites: []
+  animatorController:
+  - {fileID: 9100000, guid: ddc99314c89959a4d8d0fdad4ba79016, type: 2}
   level: 1
   height: 1
   width: 1

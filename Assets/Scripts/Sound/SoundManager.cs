@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using Unity.Netcode;
 
-public class SoundManager : MonoBehaviour
+public class SoundManager : NetworkBehaviour
 {
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 
@@ -350,7 +351,6 @@ public class SoundManager : MonoBehaviour
                     {
                         audioList[j].clip = audioClips[i];
                         audioList[j].volume = sfxVolume / soundValue;
-                        Debug.Log(sfxName + " : " + soundValue);
                         audioList[j].Play();
                         return;
                     }

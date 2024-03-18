@@ -16,6 +16,19 @@ MonoBehaviour:
   scienceName: UnderBelt
   item: {fileID: 11400000, guid: 374fa9089cb1cae428bb1eae3d06c339, type: 2}
   gameObj: {fileID: 5450028805572291566, guid: 3aa577b5efa670948934d124df78d958, type: 3}
+  isGetAnim: 0
+  isGetDirection: 1
+  isUnderObj: 1
+  sprites:
+  - {fileID: -220168426, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -627380388, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 878528353, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -1788641530, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -2051148247, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 1704090391, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -1587426880, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -1031399349, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  animations: []
   level: 3
   height: 1
   width: 1

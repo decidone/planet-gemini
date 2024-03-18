@@ -6,7 +6,7 @@ using UnityEngine;
 public class BuildingList : MonoBehaviour
 {
     public List<Building> buildingDataList = new List<Building>();
-    public Dictionary<string, Building> itemDic = new Dictionary<string, Building>();
+    public Dictionary<string, (int, Building)> itemDic = new Dictionary<string, (int, Building)>();
 
     #region Singleton
     public static BuildingList instance;
@@ -21,10 +21,29 @@ public class BuildingList : MonoBehaviour
 
         instance = this;
 
+        int dicIndex = 0;
         foreach (Building item in buildingDataList)
         {
-            itemDic.Add(item.name, item);
+            itemDic.Add(item.name, (dicIndex, item));
+            dicIndex++;
         }
     }
     #endregion
+
+    public int FindBuildingListIndex(string name)
+    {
+        int index = -1;
+
+        if(itemDic.TryGetValue(name, out (int, Building) data))
+        {
+            return data.Item1;
+        }
+
+        return index;
+    }
+
+    public GameObject FindBuildingListObj(int index)
+    {
+        return buildingDataList[index].gameObj;
+    }
 }

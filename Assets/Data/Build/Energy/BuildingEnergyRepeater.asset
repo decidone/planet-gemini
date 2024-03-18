@@ -16,6 +16,12 @@ MonoBehaviour:
   scienceName: EnergyRepeater
   item: {fileID: 11400000, guid: 457237ac037c171478817a6196ffd765, type: 2}
   gameObj: {fileID: 7372674185409712110, guid: df8fff9de755be244ba5cb1e3d7dce01, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites: []
+  animatorController:
+  - {fileID: 9100000, guid: a5b4d18cbc3b8b048affd1a281ad3c72, type: 2}
   level: 1
   height: 1
   width: 1

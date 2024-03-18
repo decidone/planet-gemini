@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
+using QFSW.QC;
 
-public class MonsterSpawnerManager : MonoBehaviour
+public class MonsterSpawnerManager : NetworkBehaviour
 {
     public GameObject[] weakMonsters;
     public GameObject[] normalMonsters;
@@ -138,7 +140,8 @@ public class MonsterSpawnerManager : MonoBehaviour
         }
     }
 
-    void WavePointSet(int waveLevel)
+    [QFSW.QC.Command()]
+    private void WavePointSet(int waveLevel)
     {
         MonsterSpawner waveSpawner = null; 
         switch (waveLevel)
@@ -164,7 +167,7 @@ public class MonsterSpawnerManager : MonoBehaviour
 
         if (waveSpawner != null)
         {
-            SpawnerGroupManager spawnerGroup = waveSpawner.GetComponentInParent<SpawnerGroupManager>();
+            SpawnerGroupManager spawnerGroup = waveSpawner.groupManager;
             if (FindMatrix(spawnerGroup))
             {
                 Vector3 waveMainPos = spawnerMatrix[xIndex, yIndex].GetComponent<SpawnerGroupManager>().spawnerList[0].transform.position;
@@ -189,10 +192,16 @@ public class MonsterSpawnerManager : MonoBehaviour
                     }
                 }
                 Debug.Log("waveStart : " + waveTrPos + " : " + waveMainPos);
-                wavePoint.WaveStart(waveTrPos);
-                BattleBGMCtrl.instance.WaveStart();
+                WaveStartClientRpc(waveTrPos);
             }
         }
+    }
+
+    [ClientRpc]
+    void WaveStartClientRpc(Vector3 waveTrPos)
+    {
+        wavePoint.WaveStart(waveTrPos);
+        BattleBGMCtrl.instance.WaveStart();
     }
 
     bool FindMatrix(SpawnerGroupManager spawnerGroup)

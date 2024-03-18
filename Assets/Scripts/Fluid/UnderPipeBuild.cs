@@ -31,7 +31,7 @@ public class UnderPipeBuild : MonoBehaviour
         if (isPreBuilding)
         {
             CheckPos();
-            if (preBuilding != null)
+            if (preBuilding.isBuildingOn)
             {
                 if (!buildEnd)
                 {

@@ -109,7 +109,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 90
+        y: 198
         width: 22
         height: 18
       alignment: 0
@@ -130,7 +130,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 22
-        y: 90
+        y: 198
         width: 22
         height: 18
       alignment: 0
@@ -151,7 +151,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 44
-        y: 90
+        y: 198
         width: 22
         height: 18
       alignment: 0
@@ -172,7 +172,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 66
-        y: 90
+        y: 198
         width: 22
         height: 18
       alignment: 0
@@ -193,7 +193,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 72
+        y: 180
         width: 22
         height: 18
       alignment: 0
@@ -214,7 +214,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 22
-        y: 72
+        y: 180
         width: 22
         height: 18
       alignment: 0
@@ -235,7 +235,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 44
-        y: 72
+        y: 180
         width: 22
         height: 18
       alignment: 0
@@ -256,7 +256,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 66
-        y: 72
+        y: 180
         width: 22
         height: 18
       alignment: 0
@@ -277,7 +277,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 54
+        y: 162
         width: 22
         height: 18
       alignment: 0
@@ -298,7 +298,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 22
-        y: 54
+        y: 162
         width: 22
         height: 18
       alignment: 0
@@ -319,7 +319,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 44
-        y: 54
+        y: 162
         width: 22
         height: 18
       alignment: 0
@@ -340,7 +340,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 66
-        y: 54
+        y: 162
         width: 22
         height: 18
       alignment: 0
@@ -361,7 +361,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 36
+        y: 144
         width: 22
         height: 18
       alignment: 0
@@ -382,7 +382,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 22
-        y: 36
+        y: 144
         width: 22
         height: 18
       alignment: 0
@@ -403,7 +403,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 44
-        y: 36
+        y: 144
         width: 22
         height: 18
       alignment: 0
@@ -424,7 +424,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 66
-        y: 36
+        y: 144
         width: 22
         height: 18
       alignment: 0
@@ -445,7 +445,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 18
+        y: 126
         width: 22
         height: 18
       alignment: 0
@@ -466,7 +466,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 22
-        y: 18
+        y: 126
         width: 22
         height: 18
       alignment: 0
@@ -487,7 +487,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 44
-        y: 18
+        y: 126
         width: 22
         height: 18
       alignment: 0
@@ -508,7 +508,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 66
-        y: 18
+        y: 126
         width: 22
         height: 18
       alignment: 0
@@ -528,8 +528,8 @@ TextureImporter:
       name: SpinRobot_20
       rect:
         serializedVersion: 2
-        x: 88
-        y: 18
+        x: 0
+        y: 108
         width: 22
         height: 18
       alignment: 0
@@ -549,8 +549,8 @@ TextureImporter:
       name: SpinRobot_21
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 22
+        y: 108
         width: 22
         height: 18
       alignment: 0
@@ -570,8 +570,8 @@ TextureImporter:
       name: SpinRobot_22
       rect:
         serializedVersion: 2
-        x: 22
-        y: 0
+        x: 44
+        y: 108
         width: 22
         height: 18
       alignment: 0
@@ -591,8 +591,8 @@ TextureImporter:
       name: SpinRobot_23
       rect:
         serializedVersion: 2
-        x: 44
-        y: 0
+        x: 66
+        y: 108
         width: 22
         height: 18
       alignment: 0
@@ -612,8 +612,8 @@ TextureImporter:
       name: SpinRobot_24
       rect:
         serializedVersion: 2
-        x: 66
-        y: 0
+        x: 0
+        y: 90
         width: 22
         height: 18
       alignment: 0
@@ -633,8 +633,8 @@ TextureImporter:
       name: SpinRobot_25
       rect:
         serializedVersion: 2
-        x: 88
-        y: 0
+        x: 22
+        y: 90
         width: 22
         height: 18
       alignment: 0
@@ -650,6 +650,552 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: SpinRobot_26
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 90
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fad8e69feefdf734d94d8a72b7594de1
+      internalID: -1298167585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_27
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 90
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b2cd383f7943724fae740c86052b2ea
+      internalID: -989860931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_28
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 72
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74161de6b21e7874f9010a1aa629657a
+      internalID: 2103262409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_29
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 72
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a5b53599d9ff7841af67067b70ba988
+      internalID: 596997909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_30
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 72
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc1962ee934f7c94893a734c467453bf
+      internalID: -2111038714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_31
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 72
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7aef45c3fb103304ca701dfee8a04db1
+      internalID: -1102890634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 54
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a7088d5681b9104184ae9a06df3b9cb
+      internalID: -1495491032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_33
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 54
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1884c3d3c78ab9b4792f5af5903022e2
+      internalID: 843439019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_34
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 54
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b70c7313afee6fb4f950942f7b3a0512
+      internalID: -654690127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_35
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 54
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d5ca13ffd09e5d48aa0cb604bb5cfee
+      internalID: -1102976590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_36
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 54
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 080bb66f3573aa44b866fe7b790e5ef8
+      internalID: 686247195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_37
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 36
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d09b9a0c5d5de504ab4b791618c58942
+      internalID: -693835649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_38
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 36
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e2dd7a8128e04e4e9df686a45aee880
+      internalID: -2071773432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_39
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 36
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a834374180982ad419e13825bf026d49
+      internalID: -191347060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_40
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 36
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 831c7c5fc48c91048b163674d24bad37
+      internalID: 1605483041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_41
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 36
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee8f8f0993449114d9d10ae0fad87f84
+      internalID: 960950985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_42
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 18
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b8adc0d929785c4eb05c83a80e390cd
+      internalID: -1171232221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_43
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 18
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6321febfa211c5e4e95c034b48ea849e
+      internalID: -1780149546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_44
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 18
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01c8d01eba8fa6840885590a20eaa058
+      internalID: -2009328207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_45
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 18
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40f6a80544b53324baba073796451c75
+      internalID: 1545994678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_46
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 18
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9bf56a32aa5bf8408d97ad57906d530
+      internalID: 1904418436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_47
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce57ac359a373d249a9f02ae7c5b01be
+      internalID: 10575583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_48
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 0
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55cbc521d1aca9441a1244156adea915
+      internalID: 460954111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_49
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 0
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb7181b49d4aa294699bb3c012de24fb
+      internalID: 647427898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_50
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 0
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09f862145ebe56e469f0a80da53d9481
+      internalID: -1866054367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpinRobot_51
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 0
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92467f8b11ea0794e90dcecb4acca843
+      internalID: 1216478854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -661,32 +1207,58 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      SpinRobot_20: 820913478
-      SpinRobot_21: -1708863841
-      SpinRobot_8: 477533278
+      SpinRobot_0: -1393652103
+      SpinRobot_46: 1904418436
+      SpinRobot_30: -2111038714
+      SpinRobot_26: -1298167585
       SpinRobot_4: 1645460794
+      SpinRobot_34: -654690127
+      SpinRobot_32: -1495491032
+      SpinRobot_39: -191347060
+      SpinRobot_18: 1116130732
+      SpinRobot_40: 1605483041
+      SpinRobot_2: -196377004
+      SpinRobot_1: 1584067020
+      SpinRobot_33: 843439019
+      SpinRobot_17: -190484651
+      SpinRobot_48: 460954111
+      SpinRobot_7: -1712040099
+      SpinRobot_45: 1545994678
+      SpinRobot_41: 960950985
+      SpinRobot_9: -456152241
+      SpinRobot_43: -1780149546
+      SpinRobot_5: 245878079
+      SpinRobot_49: 647427898
+      SpinRobot_35: -1102976590
+      SpinRobot_8: 477533278
+      SpinRobot_51: 1216478854
+      SpinRobot_42: -1171232221
+      SpinRobot_28: 2103262409
+      SpinRobot_47: 10575583
       SpinRobot_19: -1836083759
       SpinRobot_12: 951616104
       SpinRobot_25: -1639899894
-      SpinRobot_18: 1116130732
+      SpinRobot_31: -1102890634
       SpinRobot_22: -640996032
+      SpinRobot_50: -1866054367
       SpinRobot_10: 1371324145
       SpinRobot_16: -1849676987
+      SpinRobot_37: -693835649
+      SpinRobot_44: -2009328207
       SpinRobot_3: 1600924207
-      SpinRobot_2: -196377004
-      SpinRobot_1: 1584067020
-      SpinRobot_17: -190484651
+      SpinRobot_29: 596997909
+      SpinRobot_38: -2071773432
+      SpinRobot_36: 686247195
       SpinRobot_14: 1966235314
       SpinRobot_6: 482172565
-      SpinRobot_7: -1712040099
       SpinRobot_13: -1701544245
-      SpinRobot_9: -456152241
+      SpinRobot_27: -989860931
       SpinRobot_15: -557727915
       SpinRobot_11: -1320338098
       SpinRobot_23: 2141295928
-      SpinRobot_0: -1393652103
+      SpinRobot_20: 820913478
       SpinRobot_24: 477376437
-      SpinRobot_5: 245878079
+      SpinRobot_21: -1708863841
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

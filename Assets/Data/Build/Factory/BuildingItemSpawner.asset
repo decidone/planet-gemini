@@ -16,6 +16,8 @@ MonoBehaviour:
   scienceName: ItemSpawner
   item: {fileID: 11400000, guid: 43e0a4daa27c9584f905f4da53f994ee, type: 2}
   gameObj: {fileID: 4372891051652484718, guid: c98f0f44068db264aacfe3cee3f94b37, type: 3}
+  sprites:
+  - {fileID: 1129706821, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
   level: 1
   height: 1
   width: 1

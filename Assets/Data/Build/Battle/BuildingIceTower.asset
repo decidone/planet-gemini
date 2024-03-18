@@ -16,6 +16,13 @@ MonoBehaviour:
   scienceName: IceTower
   item: {fileID: 11400000, guid: 224dc1111156a564d9f99ea643fc5db6, type: 2}
   gameObj: {fileID: 5088120821849387768, guid: 12d4bd6b2addd384bb8f7089b7d4c311, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites:
+  - {fileID: 889249314, guid: 5fe3928c7ac686345b96ded44c202ff8, type: 3}
+  animatorController:
+  - {fileID: 9100000, guid: dd94682f22522d748a3d1bfba96df109, type: 2}
   level: 1
   height: 2
   width: 2

@@ -109,7 +109,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 96
+        y: 192
         width: 16
         height: 16
       alignment: 0
@@ -130,7 +130,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 16
-        y: 96
+        y: 192
         width: 16
         height: 16
       alignment: 0
@@ -151,7 +151,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 32
-        y: 96
+        y: 192
         width: 16
         height: 16
       alignment: 0
@@ -172,7 +172,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 48
-        y: 96
+        y: 192
         width: 16
         height: 16
       alignment: 0
@@ -193,7 +193,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 64
-        y: 96
+        y: 192
         width: 16
         height: 16
       alignment: 0
@@ -214,7 +214,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 80
-        y: 96
+        y: 192
         width: 16
         height: 16
       alignment: 0
@@ -235,7 +235,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 80
+        y: 176
         width: 16
         height: 16
       alignment: 0
@@ -256,7 +256,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 16
-        y: 80
+        y: 176
         width: 16
         height: 16
       alignment: 0
@@ -277,7 +277,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 32
-        y: 80
+        y: 176
         width: 16
         height: 16
       alignment: 0
@@ -298,7 +298,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 48
-        y: 80
+        y: 176
         width: 16
         height: 16
       alignment: 0
@@ -319,7 +319,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 64
-        y: 80
+        y: 176
         width: 16
         height: 16
       alignment: 0
@@ -340,7 +340,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 80
-        y: 80
+        y: 176
         width: 16
         height: 16
       alignment: 0
@@ -361,7 +361,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 64
+        y: 160
         width: 16
         height: 16
       alignment: 0
@@ -382,7 +382,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 16
-        y: 64
+        y: 160
         width: 16
         height: 16
       alignment: 0
@@ -403,7 +403,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 32
-        y: 64
+        y: 160
         width: 16
         height: 16
       alignment: 0
@@ -424,7 +424,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 48
-        y: 64
+        y: 160
         width: 16
         height: 16
       alignment: 0
@@ -444,8 +444,8 @@ TextureImporter:
       name: SentryCopter_16
       rect:
         serializedVersion: 2
-        x: 0
-        y: 48
+        x: 64
+        y: 160
         width: 16
         height: 16
       alignment: 0
@@ -465,8 +465,8 @@ TextureImporter:
       name: SentryCopter_17
       rect:
         serializedVersion: 2
-        x: 16
-        y: 48
+        x: 80
+        y: 160
         width: 16
         height: 16
       alignment: 0
@@ -486,8 +486,8 @@ TextureImporter:
       name: SentryCopter_18
       rect:
         serializedVersion: 2
-        x: 32
-        y: 48
+        x: 0
+        y: 144
         width: 16
         height: 16
       alignment: 0
@@ -507,8 +507,8 @@ TextureImporter:
       name: SentryCopter_19
       rect:
         serializedVersion: 2
-        x: 48
-        y: 48
+        x: 16
+        y: 144
         width: 16
         height: 16
       alignment: 0
@@ -528,8 +528,8 @@ TextureImporter:
       name: SentryCopter_20
       rect:
         serializedVersion: 2
-        x: 0
-        y: 32
+        x: 32
+        y: 144
         width: 16
         height: 16
       alignment: 0
@@ -549,8 +549,8 @@ TextureImporter:
       name: SentryCopter_21
       rect:
         serializedVersion: 2
-        x: 16
-        y: 32
+        x: 48
+        y: 144
         width: 16
         height: 16
       alignment: 0
@@ -570,8 +570,8 @@ TextureImporter:
       name: SentryCopter_22
       rect:
         serializedVersion: 2
-        x: 32
-        y: 32
+        x: 64
+        y: 144
         width: 16
         height: 16
       alignment: 0
@@ -591,8 +591,8 @@ TextureImporter:
       name: SentryCopter_23
       rect:
         serializedVersion: 2
-        x: 48
-        y: 32
+        x: 80
+        y: 144
         width: 16
         height: 16
       alignment: 0
@@ -612,8 +612,8 @@ TextureImporter:
       name: SentryCopter_24
       rect:
         serializedVersion: 2
-        x: 64
-        y: 32
+        x: 0
+        y: 128
         width: 16
         height: 16
       alignment: 0
@@ -633,8 +633,8 @@ TextureImporter:
       name: SentryCopter_25
       rect:
         serializedVersion: 2
-        x: 80
-        y: 32
+        x: 16
+        y: 128
         width: 16
         height: 16
       alignment: 0
@@ -654,8 +654,8 @@ TextureImporter:
       name: SentryCopter_26
       rect:
         serializedVersion: 2
-        x: 0
-        y: 16
+        x: 32
+        y: 128
         width: 16
         height: 16
       alignment: 0
@@ -675,8 +675,8 @@ TextureImporter:
       name: SentryCopter_27
       rect:
         serializedVersion: 2
-        x: 16
-        y: 16
+        x: 48
+        y: 128
         width: 16
         height: 16
       alignment: 0
@@ -696,8 +696,8 @@ TextureImporter:
       name: SentryCopter_28
       rect:
         serializedVersion: 2
-        x: 32
-        y: 16
+        x: 0
+        y: 112
         width: 16
         height: 16
       alignment: 0
@@ -717,8 +717,8 @@ TextureImporter:
       name: SentryCopter_29
       rect:
         serializedVersion: 2
-        x: 48
-        y: 16
+        x: 16
+        y: 112
         width: 16
         height: 16
       alignment: 0
@@ -738,8 +738,8 @@ TextureImporter:
       name: SentryCopter_30
       rect:
         serializedVersion: 2
-        x: 64
-        y: 16
+        x: 32
+        y: 112
         width: 16
         height: 16
       alignment: 0
@@ -759,8 +759,8 @@ TextureImporter:
       name: SentryCopter_31
       rect:
         serializedVersion: 2
-        x: 80
-        y: 16
+        x: 48
+        y: 112
         width: 16
         height: 16
       alignment: 0
@@ -781,7 +781,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
+        y: 96
         width: 16
         height: 16
       alignment: 0
@@ -797,6 +797,678 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: SentryCopter_33
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4ea04bb7673e594cbf2b80a26f025a7
+      internalID: -61939642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_34
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 315cf41554c6e9844a73fe019709e3a7
+      internalID: 1808332591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_35
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1feefca124001974ea537aa932104365
+      internalID: -1229440870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d684ffca72e38e489fef7e28420e085
+      internalID: 1192547343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_37
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 938bbb0c4c0e95145811017b12bdab1e
+      internalID: 1963044137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_38
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 393cadf139597fa4eb1e36ec6edc0d32
+      internalID: -389216444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_39
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a23c345d4f98fa418c3c5ef1e79e781
+      internalID: -1647118984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc4cf98caaef8cd449d6699a4957ffdd
+      internalID: 873747865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_41
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a91a915ba927f64eb5dcac7e2cbbbc9
+      internalID: -40885516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_42
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 928e8ea47339fa542b99d56033062cad
+      internalID: 318496987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_43
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c154a35480eba9649a38424f5e3ca6d4
+      internalID: -754437892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_44
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0624b1ae540e06e41833ae9974a8a0c5
+      internalID: 709093543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_45
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e771520e3cc15644791feb12e5276d08
+      internalID: 862780576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_46
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71ced7d34f227a54fb44f657c42f37cb
+      internalID: -1472116816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_47
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6caaec604a8d068448a033ba85c924cb
+      internalID: -1818185546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_48
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a07af0dfe6415ff4bb0c7f6df8b8415a
+      internalID: 1884819092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_49
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e180843d81b40164aad2c386d6c4b082
+      internalID: 503086545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_50
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e27b992b20e64d34bbd2652d9cd78367
+      internalID: 165998522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_51
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 48
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e91efdb968017ca42b024cdb46c54b46
+      internalID: -204348946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_52
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2afee607021be5f4d885a3a2e8888f0a
+      internalID: 2059442269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_53
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac4e95278b95c534da366eee6db86177
+      internalID: 1007538117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_54
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6aafe6cc7ed85f44ab620d595d28fd00
+      internalID: 1515384790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_55
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fccfd0d77d8d61c499a61d7ca7cac5a9
+      internalID: -1963406525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_56
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f56ccce00b475440aa545ae3936a266
+      internalID: -1632646499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_57
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 32
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 471473828ab85fa4cbf2c4f070aff957
+      internalID: 575683047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_58
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f6d6c77b43176e94a9deb2a8be10b172
+      internalID: -2088436714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_59
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8690a65297000a342a75c4d26d195d1f
+      internalID: -333535099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_60
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7545781486ab4804b9c8fc0b22d8f7a6
+      internalID: -877419602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_61
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4553a8e9b7b9fb46a6d50ebfa7da264
+      internalID: -1797414706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_62
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e873464b4a36c4447932b2af36c9ba10
+      internalID: 849765690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_63
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 16
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 800502956225f9247bc369061b826870
+      internalID: 129738364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SentryCopter_64
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 250648cbf62cd8944b94d6b10b383b8a
+      internalID: 515695105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -808,39 +1480,71 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      SentryCopter_20: 631976411
+      SentryCopter_52: 2059442269
       SentryCopter_3: -1819053277
       SentryCopter_28: -970429484
-      SentryCopter_8: 401661552
-      SentryCopter_22: -669730446
       SentryCopter_26: 1554025745
-      SentryCopter_5: -1067208972
-      SentryCopter_29: 1907399195
-      SentryCopter_11: -1413616258
+      SentryCopter_36: 1192547343
       SentryCopter_23: -353164061
-      SentryCopter_9: 1252874763
+      SentryCopter_39: -1647118984
       SentryCopter_0: 1448654439
       SentryCopter_25: -1348034867
-      SentryCopter_13: 759276066
-      SentryCopter_24: -1772237608
-      SentryCopter_15: -1797419585
-      SentryCopter_7: 281363181
+      SentryCopter_63: 129738364
+      SentryCopter_55: -1963406525
       SentryCopter_16: 466253043
-      SentryCopter_6: 261591796
-      SentryCopter_12: -844405473
+      SentryCopter_45: 862780576
       SentryCopter_17: -1887309567
       SentryCopter_31: 1342478473
+      SentryCopter_54: 1515384790
+      SentryCopter_38: -389216444
       SentryCopter_19: 93145747
       SentryCopter_2: 2025302678
       SentryCopter_10: 788482870
-      SentryCopter_14: 58291478
+      SentryCopter_50: 165998522
       SentryCopter_27: 1173582497
-      SentryCopter_21: -295233904
+      SentryCopter_34: 1808332591
       SentryCopter_1: 1305671683
       SentryCopter_4: 1130675696
       SentryCopter_18: 1851541174
       SentryCopter_32: -1074710982
+      SentryCopter_35: -1229440870
+      SentryCopter_60: -877419602
+      SentryCopter_43: -754437892
+      SentryCopter_48: 1884819092
+      SentryCopter_20: 631976411
+      SentryCopter_62: 849765690
+      SentryCopter_53: 1007538117
+      SentryCopter_59: -333535099
+      SentryCopter_8: 401661552
+      SentryCopter_22: -669730446
+      SentryCopter_5: -1067208972
+      SentryCopter_29: 1907399195
+      SentryCopter_11: -1413616258
+      SentryCopter_41: -40885516
+      SentryCopter_9: 1252874763
+      SentryCopter_13: 759276066
+      SentryCopter_24: -1772237608
+      SentryCopter_40: 873747865
+      SentryCopter_15: -1797419585
+      SentryCopter_33: -61939642
+      SentryCopter_47: -1818185546
+      SentryCopter_7: 281363181
+      SentryCopter_6: 261591796
+      SentryCopter_12: -844405473
+      SentryCopter_51: -204348946
+      SentryCopter_46: -1472116816
+      SentryCopter_58: -2088436714
+      SentryCopter_61: -1797414706
+      SentryCopter_14: 58291478
+      SentryCopter_44: 709093543
+      SentryCopter_56: -1632646499
+      SentryCopter_37: 1963044137
+      SentryCopter_21: -295233904
+      SentryCopter_49: 503086545
+      SentryCopter_42: 318496987
+      SentryCopter_64: 515695105
       SentryCopter_30: 1278099845
+      SentryCopter_57: 575683047
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

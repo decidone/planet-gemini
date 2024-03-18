@@ -13,7 +13,7 @@ public class BuildingInfo : MonoBehaviour
 
     Building selectBuilding = null;
     BuildingData selectBuildingData = null;
-    public GameObject preBuilding;
+    public PreBuilding preBuilding;
 
     bool totalAmountsEnough = false;
 
@@ -34,16 +34,21 @@ public class BuildingInfo : MonoBehaviour
     }
     #endregion
 
+    private void Start()
+    {
+        preBuilding = PreBuilding.instance;
+    }
+
     public void BuildingClick()
     {
         if (ItemDragManager.instance.isDrag) return;
         
         if (selectBuildingData != null)
         {
-            preBuilding.SetActive(true);
+            //preBuilding.SetActive(true);
             int sendAmount = CanBuildAmount();
-            PreBuilding.instance.SetImage(selectBuilding, false, sendAmount);
-            PreBuilding.instance.isEnough = AmountsEnoughCheck();
+            preBuilding.SetImage(selectBuilding, false, sendAmount);
+            preBuilding.isEnough = AmountsEnoughCheck();
         }
     }
 
@@ -61,11 +66,11 @@ public class BuildingInfo : MonoBehaviour
     public void SetItemSlot(BuildingData buildingDatas, Building select)
     {
         ClearArr();
-        if (preBuilding.activeSelf)
+        if (preBuilding.isBuildingOn)
         {
             if (selectBuilding != null && selectBuilding != select)
             {
-                PreBuilding.instance.ReSetImage();
+                preBuilding.ReSetImage();
             }
         }
 

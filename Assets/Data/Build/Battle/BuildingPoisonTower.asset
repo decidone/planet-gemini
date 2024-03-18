@@ -16,6 +16,13 @@ MonoBehaviour:
   scienceName: PoisonTower
   item: {fileID: 11400000, guid: b29131d9adf995843b19561299a1d8d9, type: 2}
   gameObj: {fileID: 7592073746180229604, guid: 91f03f0c9af544b4e8334b7f1a906103, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites:
+  - {fileID: 564150912, guid: 95f1a3c9e23c5f4428de964ae03bef3a, type: 3}
+  animatorController:
+  - {fileID: 9100000, guid: c644160f2a74bf64c8d6c0d9cd560053, type: 2}
   level: 1
   height: 2
   width: 2

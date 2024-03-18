@@ -138,7 +138,7 @@ public class UnitGroupCtrl : MonoBehaviour
     {
         for (int i = 0; i < unitList.Count; i++)
         {
-            unitList[i].GetComponent<UnitAi>().HoldFunc();
+            unitList[i].GetComponent<UnitAi>().HoldFuncServerRpc();
         }
     }
 

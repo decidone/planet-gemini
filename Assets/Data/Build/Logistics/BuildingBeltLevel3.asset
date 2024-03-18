@@ -16,6 +16,12 @@ MonoBehaviour:
   scienceName: Belt
   item: {fileID: 11400000, guid: 81e5137bd5628f24fbdfc5fe05893f49, type: 2}
   gameObj: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
+  isGetAnim: 1
+  isGetDirection: 1
+  isUnderObj: 0
+  sprites: []
+  animatorController:
+  - {fileID: 9100000, guid: a8996c8afa2599b43a07745e215c1311, type: 2}
   level: 3
   height: 1
   width: 1

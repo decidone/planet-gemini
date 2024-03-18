@@ -30,7 +30,7 @@ public class TowerSingleAttackFx : MonoBehaviour
         {
             if (!collision.isTrigger)
             {
-                collision.GetComponent<MonsterAi>().TakeDamage(damage);
+                collision.GetComponent<MonsterAi>().TakeDamageClientRpc(damage);
                 isHit = true;
                 Destroy(this.gameObject, 0.1f);
             }

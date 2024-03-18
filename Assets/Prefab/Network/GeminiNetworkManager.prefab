@@ -47,4 +47,5 @@ MonoBehaviour:
   hostChar: {fileID: 2369682121264992852, guid: 433575082aeadbc44a9ff8770ee04b3f, type: 3}
   clientChar: {fileID: 2369682121264992852, guid: ce39542ae7cd032428210f209d7d6980, type: 3}
   itemListSO: {fileID: 11400000, guid: fb7046e3030870743a8b20eb19bf8824, type: 2}
+  buildingListSO: {fileID: 11400000, guid: 5f71f353a6aca854794fb27df7475178, type: 2}
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}

@@ -16,6 +16,15 @@ MonoBehaviour:
   scienceName: Merger
   item: {fileID: 11400000, guid: d51119756f0b3684aaadbb5b95de7463, type: 2}
   gameObj: {fileID: 262180438270614842, guid: 97d33a0f590a6604db6635b18ae370be, type: 3}
+  isGetAnim: 0
+  isGetDirection: 1
+  isUnderObj: 0
+  sprites:
+  - {fileID: -588123693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
+  - {fileID: 1414011693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
+  - {fileID: -81441062, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
+  - {fileID: 2099103111, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
+  animations: []
   level: 3
   height: 1
   width: 1

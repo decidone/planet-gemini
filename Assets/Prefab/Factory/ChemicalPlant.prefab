@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 375400609723545135}
   - component: {fileID: -9124879248276961019}
   - component: {fileID: 4895866325520528144}
+  - component: {fileID: 5904096220508881126}
   m_Layer: 8
   m_Name: ChemicalPlant
   m_TagString: Factory
@@ -197,15 +198,28 @@ MonoBehaviour:
   monsterList: []
   col: {fileID: 0}
   repairTower: {fileID: 0}
-  isStorageBuild: 0
+  isStorageBuilding: 0
   isMainSource: 0
   isTempBuild: 0
+  isUIOpened: 0
+  isPortalBuild: 0
   myVision: {fileID: 2892574706496085529}
+  maxAmount: 99
+  cooldown: 3
+  connectors: []
+  conn: {fileID: 0}
+  energyUse: 0
+  isEnergyStr: 0
+  energyProduction: 0
+  energyConsumption: 0
+  isOperate: 0
+  efficiency: 0
+  effiCooldown: 0
+  isMainEnergyColony: 0
+  soundManager: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
-  maxAmount: 99
-  cooldown: 3
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
@@ -230,6 +244,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &5904096220508881126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375400609723545137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &500232594085181976
 GameObject:
   m_ObjectHideFlags: 0

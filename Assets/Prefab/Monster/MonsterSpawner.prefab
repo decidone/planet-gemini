@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 4751259464911499681}
   - component: {fileID: 5546485786390217281}
   - component: {fileID: 2809424200808404707}
+  - component: {fileID: 22343254510854376}
   m_Layer: 14
   m_Name: MonsterSpawner
   m_TagString: Spawner
@@ -179,6 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   structureData: {fileID: 11400000, guid: 1daea59d30eb91747a451135e9c59bda, type: 2}
+  groupManager: {fileID: 0}
   extraSpawnNum: 0
   currentWeakSpawn: 0
   currentNormalSpawn: 0
@@ -191,6 +193,7 @@ MonoBehaviour:
   hpBar: {fileID: 4936597692029941388}
   hp: 0
   waveStart: 0
+  searchColl: {fileID: 7283164378971898256}
 --- !u!50 &5546485786390217281
 Rigidbody2D:
   serializedVersion: 4
@@ -238,6 +241,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &22343254510854376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2587231014279578894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &4582274715098405497
 GameObject:
   m_ObjectHideFlags: 0

@@ -243,6 +243,7 @@ GameObject:
   - component: {fileID: 941880205020935682}
   - component: {fileID: 5088087670885047191}
   - component: {fileID: 5722770614758666436}
+  - component: {fileID: -617724156488333134}
   m_Layer: 8
   m_Name: PortalItemOut
   m_TagString: Factory
@@ -470,6 +471,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-617724156488333134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 941880205020935685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &941880205379144345
 GameObject:
   m_ObjectHideFlags: 0

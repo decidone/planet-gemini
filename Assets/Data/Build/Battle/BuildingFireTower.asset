@@ -16,6 +16,13 @@ MonoBehaviour:
   scienceName: FireTower
   item: {fileID: 11400000, guid: f2b78055ddfbef747a9477e7faeb451a, type: 2}
   gameObj: {fileID: 1929914461128864781, guid: d2d2b4b47c22f554aab56e5117c95d13, type: 3}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  sprites:
+  - {fileID: 410567388, guid: 8a54e4e51b5489544939a8cf717f12e0, type: 3}
+  animatorController:
+  - {fileID: 9100000, guid: 00ffc45367ce13e43bd05cc0710d2796, type: 2}
   level: 1
   height: 2
   width: 2
