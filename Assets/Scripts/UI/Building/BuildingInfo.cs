@@ -37,6 +37,7 @@ public class BuildingInfo : MonoBehaviour
     private void Start()
     {
         preBuilding = PreBuilding.instance;
+        inventory = GameManager.instance.inventory;
     }
 
     public void BuildingClick()
