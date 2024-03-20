@@ -485,4 +485,47 @@ public class Inventory : NetworkBehaviour
     {
         return items.Count > 0;
     }
+
+    public InventoryData SaveData()
+    {
+        InventoryData data = new InventoryData();
+        Dictionary<int, int> totalItemIndexes = new Dictionary<int, int>();
+        Dictionary<int, int> itemIndexes = new Dictionary<int, int>();
+
+        foreach (KeyValuePair<Item, int> kv in totalItems)
+        {
+            totalItemIndexes.Add(GeminiNetworkManager.instance.GetItemSOIndex(kv.Key), kv.Value);
+        }
+        foreach (KeyValuePair<int, Item> kv in items)
+        {
+            itemIndexes.Add(kv.Key, GeminiNetworkManager.instance.GetItemSOIndex(kv.Value));
+        }
+
+        data.totalItemIndexes = totalItemIndexes;
+        data.itemIndexes = itemIndexes;
+        data.amounts = amounts;
+
+        return data;
+    }
+
+    public void LoadData(InventoryData data)
+    {
+        Dictionary<Item, int> tempTotalItems = new Dictionary<Item, int>();
+        Dictionary<int, Item> tempItems = new Dictionary<int, Item>();
+        
+        foreach (KeyValuePair<int, int> kv in data.totalItemIndexes)
+        {
+            tempTotalItems.Add(GeminiNetworkManager.instance.GetItemSOFromIndex(kv.Key), kv.Value);
+        }
+        foreach (KeyValuePair<int, int> kv in data.itemIndexes)
+        {
+            tempItems.Add(kv.Key, GeminiNetworkManager.instance.GetItemSOFromIndex(kv.Value));
+        }
+
+        totalItems = tempTotalItems;
+        items = tempItems;
+        amounts = data.amounts;
+
+        Refresh();
+    }
 }

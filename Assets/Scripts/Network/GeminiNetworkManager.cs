@@ -111,4 +111,20 @@ public class GeminiNetworkManager : NetworkBehaviour
             onItemDestroyedCallback?.Invoke();
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RequestJsonServerRpc()
+    {
+        string json = DataManager.instance.Save();
+        RequestJsonClientRpc(json);
+    }
+
+    [ClientRpc]
+    public void RequestJsonClientRpc(string json)
+    {
+        if (IsServer)
+            return;
+
+        DataManager.instance.Load(json);
+    }
 }

@@ -473,7 +473,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""008efee7-f805-40e9-8824-6c15e1214839"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PC"",
@@ -784,6 +784,24 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Save"",
+                    ""type"": ""Button"",
+                    ""id"": ""14a8d2a1-4421-4b00-a300-c98f307057c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Load"",
+                    ""type"": ""Button"",
+                    ""id"": ""8acb3191-cee1-444a-a9fb-00ef45eab866"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -850,6 +868,28 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""EnergyCheck"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""91344c68-8d1e-4360-a0cc-926154d4031d"",
+                    ""path"": ""<Keyboard>/comma"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Save"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""caad1b1a-8e49-47a8-945b-f8b1428b9d06"",
+                    ""path"": ""<Keyboard>/period"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Load"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1577,6 +1617,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_Building = m_HotKey.FindAction("Building", throwIfNotFound: true);
         m_HotKey_ScienceTree = m_HotKey.FindAction("ScienceTree", throwIfNotFound: true);
         m_HotKey_EnergyCheck = m_HotKey.FindAction("EnergyCheck", throwIfNotFound: true);
+        m_HotKey_Save = m_HotKey.FindAction("Save", throwIfNotFound: true);
+        m_HotKey_Load = m_HotKey.FindAction("Load", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -2063,6 +2105,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_Building;
     private readonly InputAction m_HotKey_ScienceTree;
     private readonly InputAction m_HotKey_EnergyCheck;
+    private readonly InputAction m_HotKey_Save;
+    private readonly InputAction m_HotKey_Load;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2073,6 +2117,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Building => m_Wrapper.m_HotKey_Building;
         public InputAction @ScienceTree => m_Wrapper.m_HotKey_ScienceTree;
         public InputAction @EnergyCheck => m_Wrapper.m_HotKey_EnergyCheck;
+        public InputAction @Save => m_Wrapper.m_HotKey_Save;
+        public InputAction @Load => m_Wrapper.m_HotKey_Load;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2100,6 +2146,12 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @EnergyCheck.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnergyCheck;
                 @EnergyCheck.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnergyCheck;
                 @EnergyCheck.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnergyCheck;
+                @Save.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnSave;
+                @Save.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnSave;
+                @Save.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnSave;
+                @Load.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnLoad;
+                @Load.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnLoad;
+                @Load.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnLoad;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2122,6 +2174,12 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @EnergyCheck.started += instance.OnEnergyCheck;
                 @EnergyCheck.performed += instance.OnEnergyCheck;
                 @EnergyCheck.canceled += instance.OnEnergyCheck;
+                @Save.started += instance.OnSave;
+                @Save.performed += instance.OnSave;
+                @Save.canceled += instance.OnSave;
+                @Load.started += instance.OnLoad;
+                @Load.performed += instance.OnLoad;
+                @Load.canceled += instance.OnLoad;
             }
         }
     }
@@ -2395,6 +2453,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnBuilding(InputAction.CallbackContext context);
         void OnScienceTree(InputAction.CallbackContext context);
         void OnEnergyCheck(InputAction.CallbackContext context);
+        void OnSave(InputAction.CallbackContext context);
+        void OnLoad(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

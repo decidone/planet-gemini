@@ -449,6 +449,7 @@ public class GameManager : MonoBehaviour
 
         //ulong id = NetworkManager.Singleton.LocalClientId;
         GeminiNetworkManager.instance.ClientSpawnServerRPC();
+        GeminiNetworkManager.instance.RequestJsonServerRpc();
 
         Debug.Log("Connected to Network");
     }

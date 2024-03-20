@@ -451,7 +451,7 @@
                 {
                     "name": "",
                     "id": "008efee7-f805-40e9-8824-6c15e1214839",
-                    "path": "<Keyboard>/r",
+                    "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
@@ -762,6 +762,24 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Save",
+                    "type": "Button",
+                    "id": "14a8d2a1-4421-4b00-a300-c98f307057c4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Load",
+                    "type": "Button",
+                    "id": "8acb3191-cee1-444a-a9fb-00ef45eab866",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -828,6 +846,28 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "EnergyCheck",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "91344c68-8d1e-4360-a0cc-926154d4031d",
+                    "path": "<Keyboard>/comma",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Save",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "caad1b1a-8e49-47a8-945b-f8b1428b9d06",
+                    "path": "<Keyboard>/period",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Load",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
