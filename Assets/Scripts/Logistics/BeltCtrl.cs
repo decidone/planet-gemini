@@ -559,11 +559,13 @@ public class BeltCtrl : LogisticsCtrl
     }
 
     [ClientRpc]
-    public override void SettingClientRpc(int _level, int _beltDir)
+    public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth)
     {
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
         level = _level;
         dirNum = _beltDir;
+        height = objHeight;
+        width = objWidth;
         beltState = BeltState.SoloBelt;
         SetBuild();
         ColliderTriggerOnOff(false);

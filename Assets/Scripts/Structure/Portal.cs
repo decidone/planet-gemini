@@ -13,7 +13,7 @@ public class Portal : Production
     PortalSciManager portalSci;
     Dictionary<string, GameObject> portalObjList = new Dictionary<string, GameObject>();
 
-    Portal otherPortal;
+    public Portal otherPortal;
 
     protected override void Awake()
     {
@@ -101,9 +101,15 @@ public class Portal : Production
     public bool PortalObjFind(string objName)
     {
         bool find = false;
-        if(portalObjList.ContainsKey(objName))
+
+        Transform[] allChildren = GetComponentsInChildren<Transform>(true);
+
+        foreach (Transform child in allChildren)
         {
-            find = true;
+            if (child.name.Contains(objName))
+            {
+                find = true;
+            }
         }
 
         return find;
@@ -120,8 +126,11 @@ public class Portal : Production
 
     public void SetPortalObjEnd(string objName, GameObject obj)
     {
+        Debug.Log(objName);
         if (!portalObjList.ContainsKey(objName))
         {
+            Debug.Log("isNotContain");
+
             portalObjList.Add(objName, obj);
 
             if (objName == "PortalItemIn")

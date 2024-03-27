@@ -85,6 +85,5 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
         nearObj[0] = Obj;
         outObj.Add(Obj);
-        Debug.Log("newSend");
     }
 }

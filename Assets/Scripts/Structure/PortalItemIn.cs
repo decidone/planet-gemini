@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PortalItemIn : PortalObj
 {
-    PortalItemOut portalItemOut;
+    public PortalItemOut portalItemOut;
     int maxSendAmount;
 
     protected override void Start()
@@ -21,12 +21,13 @@ public class PortalItemIn : PortalObj
         base.Update();
         if (!isPreBuilding)
         {
-            if (portalItemOut != null)
+            if (CheckSendableItemExists())
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    SendItemDicCheck(portalItemOut);
+                    if(IsServer)
+                        SendItemDicCheck(portalItemOut);
                     prodTimer = 0;
                 }
             }
@@ -132,7 +133,24 @@ public class PortalItemIn : PortalObj
             else
                 inventory.Sub(dicData.Key, dicData.Value);
         }
-   }
+    }
+
+    bool CheckSendableItemExists()
+    {
+        bool exists = false;
+
+        for (int i = 0; i < 18; i++)
+        {
+            var invenItem = inventory.SlotCheck(i);
+            if (invenItem.item != null && invenItem.amount > 0)
+            {
+                exists = true;
+                return exists;
+            }
+        }
+
+        return exists;
+    }
 
     public override void ConnectObj(GameObject othObj)
     {

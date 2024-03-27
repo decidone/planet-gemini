@@ -40,7 +40,7 @@ public class BeltGroupMgr : NetworkBehaviour
         }
     }
 
-    public void SetBelt(int level, int beltDir)
+    public void SetBelt(int level, int beltDir, int objHeight, int objWidth)
     {
         GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
         belt.TryGetComponent(out NetworkObject netObj);
@@ -49,7 +49,7 @@ public class BeltGroupMgr : NetworkBehaviour
         belt.transform.parent = this.transform;
         BeltCtrl beltCtrl = netObj.GetComponent<BeltCtrl>();
         beltList.Add(beltCtrl);
-        beltCtrl.SettingClientRpc(level, beltDir);
+        beltCtrl.SettingClientRpc(level, beltDir, objHeight, objWidth);
     }
 
     //public void SetBelt(int beltDir, int level, int height, int width, int dirCount)

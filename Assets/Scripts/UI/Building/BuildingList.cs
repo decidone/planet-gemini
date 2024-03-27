@@ -5,7 +5,7 @@ using UnityEngine;
 // UTF-8 설정
 public class BuildingList : MonoBehaviour
 {
-    public List<Building> buildingDataList = new List<Building>();
+    public BuildingListSO buildingListSO;
     public Dictionary<string, (int, Building)> itemDic = new Dictionary<string, (int, Building)>();
 
     #region Singleton
@@ -22,7 +22,7 @@ public class BuildingList : MonoBehaviour
         instance = this;
 
         int dicIndex = 0;
-        foreach (Building item in buildingDataList)
+        foreach (Building item in buildingListSO.buildingSOList)
         {
             itemDic.Add(item.name, (dicIndex, item));
             dicIndex++;
@@ -44,6 +44,11 @@ public class BuildingList : MonoBehaviour
 
     public GameObject FindBuildingListObj(int index)
     {
-        return buildingDataList[index].gameObj;
+        return buildingListSO.buildingSOList[index].gameObj;
+    }
+
+    public GameObject FindSideBuildingListObj(int index)
+    {
+        return buildingListSO.buildingSOList[index].sideObj;
     }
 }

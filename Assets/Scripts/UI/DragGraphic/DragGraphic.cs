@@ -11,7 +11,7 @@ public class DragGraphic : MonoBehaviour
     SpriteRenderer sprite;
     Vector2 mousePos;
 
-    public GameObject preBuilding;
+    PreBuilding preBuilding;
 
     UnitDrag unitDrag;
     RemoveBuild removeBuild;
@@ -51,7 +51,7 @@ public class DragGraphic : MonoBehaviour
         isDrag = false;
         isCtrlDrag = false;
         isShiftDrag = false;
-
+        preBuilding = PreBuilding.instance;
         inputManager = InputManager.instance;
         inputManager.controls.MainCamera.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
         inputManager.controls.MainCamera.LeftMouseButtonUp.performed += ctx => LeftMouseButtonUp();
@@ -61,7 +61,7 @@ public class DragGraphic : MonoBehaviour
 
     private void Update()
     {
-        if (!preBuilding.activeSelf && isDrag)
+        if (!preBuilding.isBuildingOn && isDrag)
         {
             endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             BoxSizeChange();
@@ -73,7 +73,7 @@ public class DragGraphic : MonoBehaviour
 
     void LeftMouseButtonDown()
     {
-        if (preBuilding.activeSelf) return;
+        if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
 
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
@@ -101,7 +101,7 @@ public class DragGraphic : MonoBehaviour
 
     void LeftMouseButtonUp()
     {
-        if (preBuilding.activeSelf) return;
+        if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
         if (!isDrag) return;
 
@@ -117,7 +117,7 @@ public class DragGraphic : MonoBehaviour
 
     void RightMouseButtonDown()
     {
-        if (preBuilding.activeSelf) return;
+        if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
 
         DisableFunc();
@@ -125,7 +125,7 @@ public class DragGraphic : MonoBehaviour
 
     void RightMouseButtonUp()
     {
-        if (preBuilding.activeSelf) return;
+        if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
 
         endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

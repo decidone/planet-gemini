@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class PortalUIBtn : MonoBehaviour
 {
     [SerializeField]
+    Building building;
+    [SerializeField]
     GameObject obj;
     [SerializeField]
     Item objItem;
@@ -20,11 +22,14 @@ public class PortalUIBtn : MonoBehaviour
 
     bool isLock;
 
-    PreBuilding preBuilding;
+    public PreBuilding preBuilding;
+
+    GameManager gameManager;
 
     private void Start()
     {
         preBuilding = PreBuilding.instance;
+        gameManager = GameManager.instance;
         btn.onClick.AddListener(() => ButtonFunc());
     }
 
@@ -32,10 +37,7 @@ public class PortalUIBtn : MonoBehaviour
     {
         if (!isLock && !portal.PortalObjFind(objName))
         {
-            //preBuilding = GameManager.instance.preBuildingObj;
-            //preBuilding.SetActive(true);
-            //PreBuilding pre = preBuilding.GetComponent<PreBuilding>();
-            preBuilding.SetPortalImage(obj, portal);
+            preBuilding.SetPortalImage(building, portal, gameManager.isPlayerInHostMap);
             preBuilding.isEnough = true;
         }
     }

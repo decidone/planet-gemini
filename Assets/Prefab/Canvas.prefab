@@ -30484,6 +30484,10 @@ PrefabInstance:
       propertyPath: objItem
       value: 
       objectReference: {fileID: 11400000, guid: 8bbd8a9d671f14b4fa509950447d3bb9, type: 2}
+    - target: {fileID: 5764997030133286665, guid: ff8f57e42cdc1f443a74f2eb1c396ed3, type: 3}
+      propertyPath: building
+      value: 
+      objectReference: {fileID: 11400000, guid: e7cc50036ec616149885129581ae5598, type: 2}
     - target: {fileID: 5959875689986019918, guid: ff8f57e42cdc1f443a74f2eb1c396ed3, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
@@ -33298,6 +33302,10 @@ PrefabInstance:
       propertyPath: objItem
       value: 
       objectReference: {fileID: 11400000, guid: 2d10fd7c00517014cad7e36aa3d700e2, type: 2}
+    - target: {fileID: 5764997030133286665, guid: ff8f57e42cdc1f443a74f2eb1c396ed3, type: 3}
+      propertyPath: building
+      value: 
+      objectReference: {fileID: 11400000, guid: 3daa67ade152e034196003a9ec0a579f, type: 2}
     - target: {fileID: 5959875689986019918, guid: ff8f57e42cdc1f443a74f2eb1c396ed3, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
@@ -34978,6 +34986,10 @@ PrefabInstance:
       propertyPath: objItem
       value: 
       objectReference: {fileID: 11400000, guid: 24b014fcedec8ee43a0c248f5334a7d9, type: 2}
+    - target: {fileID: 5764997030133286665, guid: ff8f57e42cdc1f443a74f2eb1c396ed3, type: 3}
+      propertyPath: building
+      value: 
+      objectReference: {fileID: 11400000, guid: e2aa323413a850c418de7712eb03c641, type: 2}
     - target: {fileID: 5959875689986019918, guid: ff8f57e42cdc1f443a74f2eb1c396ed3, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
@@ -38968,6 +38980,10 @@ PrefabInstance:
       propertyPath: objItem
       value: 
       objectReference: {fileID: 11400000, guid: 80739a12b2335474a97e22a2e634bbcf, type: 2}
+    - target: {fileID: 5764997030133286665, guid: ff8f57e42cdc1f443a74f2eb1c396ed3, type: 3}
+      propertyPath: building
+      value: 
+      objectReference: {fileID: 11400000, guid: de3c0e1d2c6506a428a370d9013e8193, type: 2}
     - target: {fileID: 5959875689986019918, guid: ff8f57e42cdc1f443a74f2eb1c396ed3, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0

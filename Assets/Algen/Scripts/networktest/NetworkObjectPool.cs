@@ -185,6 +185,16 @@ public class NetworkObjectPool : NetworkBehaviour
         }
         pooledObjects.Clear();
     }
+
+    public GameObject PoolObjFind(string name)
+    {
+        foreach (var poolConfigObject in PooledPrefabsList)
+        {
+            if(poolConfigObject.Prefab.name == name)
+                return poolConfigObject.Prefab;
+        }
+        return null;
+    }
 }
 
 [Serializable]

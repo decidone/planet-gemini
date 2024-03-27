@@ -15,8 +15,7 @@ public class SteamGenerator : FluidFactoryCtrl
     SpriteRenderer view;
     bool isBuildDone;
     bool isPlaced;
-    [HideInInspector]
-    public GameObject preBuildingObj;
+    PreBuilding preBuilding;
     Structure preBuildingStr;
     bool preBuildingCheck;
     public float waterRequirement;
@@ -66,7 +65,7 @@ public class SteamGenerator : FluidFactoryCtrl
         isBuildDone = false;
         isPlaced = false;
         preBuildingCheck = false;
-        preBuildingObj = gameManager.preBuildingObj;
+        preBuilding = PreBuilding.instance;
         prodTimer = cooldown;
 
         displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
@@ -93,7 +92,8 @@ public class SteamGenerator : FluidFactoryCtrl
             {
                 if (nearObj[i] == null)
                 {
-                    CheckNearObj(checkPos[i], i, obj => CheckOutObjScript(obj));
+                    int dirIndex = i / 2;
+                    CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => FluidSetOutObj(obj));
                 }
             }
         }
@@ -118,13 +118,12 @@ public class SteamGenerator : FluidFactoryCtrl
         }
         if (gameManager.focusedStructure == null)
         {
-            if (preBuildingObj.activeSelf)
+            if (preBuilding.isBuildingOn)
             {
                 if (!preBuildingCheck)
                 {
                     preBuildingCheck = true;
-                    preBuildingStr = preBuildingObj.GetComponentInChildren<Structure>();
-                    if (preBuildingStr != null && (preBuildingStr.energyUse || preBuildingStr.isEnergyStr))
+                    if (preBuilding.isEnergyUse || preBuilding.isEnergyStr)
                     {
                         view.enabled = true;
                     }

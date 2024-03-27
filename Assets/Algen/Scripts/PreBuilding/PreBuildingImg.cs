@@ -43,16 +43,8 @@ public class PreBuildingImg : MonoBehaviour
 
             if (buildingPosUnit.Count > 0)
             {
-                if (!collision.GetComponentInParent<PreBuilding>())
-                {
-                    canBuilding = false;
-                }
-
-                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                if (preBuilding != null)
-                {
-                    preBuilding.isBuildingOk = false;
-                }
+                canBuilding = false;
+                PreBuilding.instance.isBuildingOk = false;                
             }            
         }
     }
@@ -67,10 +59,7 @@ public class PreBuildingImg : MonoBehaviour
             else
             {
                 canBuilding = true;
-
-                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                if (preBuilding != null)
-                    preBuilding.isBuildingOk = true;
+                PreBuilding.instance.isBuildingOk = true;
             }            
         }
     }

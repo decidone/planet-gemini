@@ -128,6 +128,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (isTeleportable && GameManager.instance.isMultiPlay)
         {
+            if (PreBuilding.instance.isBuildingOn)
+                PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.Teleport();
             this.transform.position = pos;
         }
@@ -191,10 +193,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (tempMinerCount > 0)
         {
-            //preBuilding = GameManager.instance.preBuildingObj;
-            //preBuilding.SetActive(true);
-            //PreBuilding pre = preBuilding.GetComponent<PreBuilding>();
-            preBuilding.SetImage(tempMiner, true, tempMinerCount);
+            preBuilding.SetImage(tempMiner, true, tempMinerCount, GameManager.instance.isPlayerInHostMap);
             preBuilding.isEnough = true;
             TempBuildUI(true);
         }

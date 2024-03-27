@@ -204,10 +204,10 @@ public class Miner : Production
         }
     }
 
-    public override void TempBuilCooldownSet() 
-    {
-        cooldown += 3;
-    }
+    //public override void TempBuilCooldownSet() 
+    //{
+    //    cooldown += 3;
+    //}
 
     public override void GetUIFunc()
     {

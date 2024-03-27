@@ -37,8 +37,8 @@ public class Structure : NetworkBehaviour
 
     //[HideInInspector]
     public bool isPreBuilding = true;
-    [HideInInspector]
-    public bool isSetBuildingOk = false;    
+    //[HideInInspector]
+    public bool isSetBuildingOk = false;
 
     protected bool removeState = false;
 
@@ -136,6 +136,7 @@ public class Structure : NetworkBehaviour
     public bool isMainEnergyColony;
     public SoundManager soundManager;
 
+    protected NetworkObjectPool networkObjectPool;
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -160,6 +161,7 @@ public class Structure : NetworkBehaviour
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
         soundManager = SoundManager.Instance;
+        networkObjectPool = NetworkObjectPool.Singleton;
     }
 
     protected virtual void Update()
@@ -189,7 +191,7 @@ public class Structure : NetworkBehaviour
 
     public virtual void DisableFocused() { }
 
-    public virtual bool CheckOutItemNum()  { return new bool(); }
+    public virtual bool CheckOutItemNum() { return new bool(); }
 
     public void BuildingSetting(int _level, int _height, int _width, int _dirCount)
     {
@@ -248,9 +250,9 @@ public class Structure : NetworkBehaviour
         {
             Collider2D hitCollider = hits[i].collider;
 
-            if(GetComponent<LogisticsCtrl>() || (GetComponent<Production>() && !GetComponent<FluidFactoryCtrl>()))
+            if (GetComponent<LogisticsCtrl>() || (GetComponent<Production>() && !GetComponent<FluidFactoryCtrl>()))
             {
-                if(hitCollider.GetComponent<FluidFactoryCtrl>() && !hitCollider.GetComponent<Refinery>() && !hitCollider.GetComponent<SteamGenerator>())
+                if (hitCollider.GetComponent<FluidFactoryCtrl>() && !hitCollider.GetComponent<Refinery>() && !hitCollider.GetComponent<SteamGenerator>())
                 {
                     continue;
                 }
@@ -274,7 +276,7 @@ public class Structure : NetworkBehaviour
     }
 
     // 2x2 사이즈 근처 오브젝트 찻는 위치(상하좌우) 설정
-    protected virtual void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback) 
+    protected virtual void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
 
@@ -303,7 +305,27 @@ public class Structure : NetworkBehaviour
     }
     // 건물 설치 기능
 
-    public virtual void OnFactoryItem(ItemProps itemProps) 
+    [ClientRpc]
+    public virtual void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth)
+    {
+        level = _level;
+        dirNum = _beltDir;
+        height = objHeight;
+        width = objWidth;
+        SetBuild();
+        ColliderTriggerOnOff(false);
+        gameObject.AddComponent<DynamicGridObstacle>();
+        myVision.SetActive(true);
+        DataSet();
+    }
+
+    [ClientRpc]
+    public void TempMinerSetClientRpc()
+    {
+        isTempBuild = true;
+    }
+
+    public virtual void OnFactoryItem(ItemProps itemProps)
     {
         itemProps.itemPool.Release(itemProps.gameObject);
     }
@@ -331,7 +353,7 @@ public class Structure : NetworkBehaviour
         {
             if (!sendUnder.inObj.Contains(this.gameObject))
             {
-                outObj.Remove(game); 
+                outObj.Remove(game);
                 outSameList.Remove(game);
             }
             if (!sendUnder.outObj.Contains(this.gameObject))
@@ -354,7 +376,7 @@ public class Structure : NetworkBehaviour
         {
             getItemIndex = 0;
             return;
-        }         
+        }
         else if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
         {
             if (belt.itemObjList.Count > 0)
@@ -393,13 +415,13 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    protected virtual void SendItem(Item item) 
+    protected virtual void SendItem(Item item)
     {
         if (setFacDelayCoroutine != null)
         {
             return;
-        }        
-        else if(sendItemIndex > outObj.Count)
+        }
+        else if (sendItemIndex > outObj.Count)
         {
             sendItemIndex = 0;
             return;
@@ -419,7 +441,7 @@ public class Structure : NetworkBehaviour
         {
             if (outObj[sendItemIndex].TryGetComponent(out BeltCtrl beltCtrl))
             {
-                var itemPool = ItemPoolManager.instance.Pool.Get();
+                var itemPool = ItemPoolManager.instance.Pool.Get(); //
                 spawnItem = itemPool.GetComponent<ItemProps>();
                 if (beltCtrl.OnBeltItem(spawnItem))
                 {
@@ -459,7 +481,7 @@ public class Structure : NetworkBehaviour
             }
             else if (!outFactory.isMainSource)
             {
-                if (outObj[sendItemIndex].GetComponent<LogisticsCtrl>())                
+                if (outObj[sendItemIndex].GetComponent<LogisticsCtrl>())
                     setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
                 else if (outObj[sendItemIndex].TryGetComponent(out Production production) && production.CanTakeItem(item))
                     setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
@@ -488,7 +510,7 @@ public class Structure : NetworkBehaviour
 
     protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
     {
-        var itemPool = ItemPoolManager.instance.Pool.Get();
+        var itemPool = ItemPoolManager.instance.Pool.Get(); //
         spawnItem = itemPool.GetComponent<ItemProps>();
         spawnItem.col.enabled = false;
         SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -530,7 +552,7 @@ public class Structure : NetworkBehaviour
                     spawnItem.itemPool.Release(itemPool);
                     spawnItem = null;
                 }
-                if(GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
+                if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
                 {
                     itemList.RemoveAt(0);
                     ItemNumCheck();
@@ -564,7 +586,7 @@ public class Structure : NetworkBehaviour
             else if (itemList.Count > 0)
                 return true;
         }
-        else if(GetComponent<Production>() && CheckOutItemNum())
+        else if (GetComponent<Production>() && CheckOutItemNum())
         {
             return true;
         }
@@ -651,7 +673,7 @@ public class Structure : NetworkBehaviour
 
     protected void ItemToItemProps(Item item, int itemAmount)
     {
-        var itemPool = ItemPoolManager.instance.Pool.Get();
+        var itemPool = ItemPoolManager.instance.Pool.Get(); //
         ItemProps itemProps = itemPool.GetComponent<ItemProps>();
 
         SpriteRenderer sprite = itemProps.GetComponent<SpriteRenderer>();
@@ -710,7 +732,7 @@ public class Structure : NetworkBehaviour
                 {
                     unitCanvas.SetActive(false);
                 }
-                 
+
                 ColliderTriggerOnOff(false);
             }
         }
@@ -750,7 +772,7 @@ public class Structure : NetworkBehaviour
         outSameList.Clear();
     }
 
-    protected virtual IEnumerator SetInObjCoroutine(GameObject obj) 
+    protected virtual IEnumerator SetInObjCoroutine(GameObject obj)
     {
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
@@ -840,7 +862,7 @@ public class Structure : NetworkBehaviour
 
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] != null && nearObj[i] == game) 
+            if (nearObj[i] != null && nearObj[i] == game)
             {
                 nearObj[i] = null;
             }
@@ -849,15 +871,15 @@ public class Structure : NetworkBehaviour
         checkObj = true;
     }
 
-    public virtual void RemoveObj() 
+    public virtual void RemoveObj()
     {
         removeState = true;
-        ColliderTriggerOnOff(true); 
+        ColliderTriggerOnOff(true);
         StopAllCoroutines();
 
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if(nearObj[i] != null && nearObj[i].TryGetComponent(out Structure structure))
+            if (nearObj[i] != null && nearObj[i].TryGetComponent(out Structure structure))
             {
                 structure.ResetCheckObj(this.gameObject);
                 if (structure.GetComponentInParent<BeltGroupMgr>())
@@ -867,7 +889,7 @@ public class Structure : NetworkBehaviour
                 }
             }
         }
-        if (repairTower != null) 
+        if (repairTower != null)
             repairTower.RemoveObjectsOutOfRange(this.gameObject);
 
         if (GetComponent<BeltCtrl>() && GetComponentInParent<BeltManager>() && GetComponentInParent<BeltGroupMgr>())
@@ -918,10 +940,10 @@ public class Structure : NetworkBehaviour
             }
         }
 
-         Destroy(this.gameObject);
+        Destroy(this.gameObject);
     }
 
-    public virtual void TempBuilCooldownSet() { }
+    //public virtual void TempBuilCooldownSet() { }
 
 
     public virtual void AddInvenItem() { }
@@ -1019,14 +1041,11 @@ public class Structure : NetworkBehaviour
     public virtual void EfficiencyCheck() { }
 
     [ClientRpc]
-    public virtual void SettingClientRpc(int _level, int _beltDir)
+    public void MapDataSaveClientRpc(int xPos, int yPos, bool isInHostMap)
     {
-        level = _level;
-        dirNum = _beltDir;
-        SetBuild();
-        ColliderTriggerOnOff(false);
-        gameObject.AddComponent<DynamicGridObstacle>();
-        myVision.SetActive(true);
-        DataSet();
+        if(isInHostMap)
+            GameManager.instance.hostMap.GetCellDataFromPos(xPos, yPos).structure = this.gameObject;
+        else
+            GameManager.instance.clientMap.GetCellDataFromPos(xPos, yPos).structure = this.gameObject;
     }
 }

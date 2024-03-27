@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class SplitterCtrl : LogisticsCtrl
@@ -191,7 +192,11 @@ public class SplitterCtrl : LogisticsCtrl
         {
             if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
             {
-                var itemPool = ItemPoolManager.instance.Pool.Get();
+                GameObject itemPoolObj = networkObjectPool.PoolObjFind("Item");
+                NetworkObject itemPool = networkObjectPool.GetNetworkObject(itemPoolObj);
+                if (!itemPool.IsSpawned) itemPool.Spawn();
+
+                //var itemPool = ItemPoolManager.instance.Pool.Get();
                 spawnItem = itemPool.GetComponent<ItemProps>();
 
                 if (beltCtrl.OnBeltItem(spawnItem))

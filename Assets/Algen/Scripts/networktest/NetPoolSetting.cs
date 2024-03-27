@@ -6,14 +6,7 @@ using Unity.Netcode;
 public class NetPoolSetting : NetworkBehaviour
 {
     NetworkObjectPool networkPool;
-    public GameObject bullet;
-    public NetworkObject netObj;
-
-    public bool getNetworkObject = false;
-    public bool returnNetworkObject = false;
-    public bool initializePool = false;
-    public bool clearPool = false;
-
+    public List<GameObject> findPoolObj = new List<GameObject>();
 
     #region Singleton
     public static NetPoolSetting instance;
@@ -32,73 +25,13 @@ public class NetPoolSetting : NetworkBehaviour
     void Start()
     {
         networkPool = NetworkObjectPool.Singleton;
+        TestGetPool();
     }
 
-    void Update()
+    void TestGetPool()
     {
-        if (getNetworkObject == true)
-        {
-            spServerRpc();
-            getNetworkObject = false;
-        }
-        if (returnNetworkObject == true)
-        {
-            diServerRpc();
-            returnNetworkObject = false;
-        }
-        if (initializePool == true)
-        {
-            inClientRpc();
-            initializePool = false;
-        }
-        if (clearPool == true)
-        {
-            crClientRpc();
-            clearPool = false;
-        }
-    }
+        findPoolObj.Add(networkPool.PoolObjFind("Item"));
+        findPoolObj.Add(networkPool.PoolObjFind("Bullet"));
 
-    [ServerRpc(RequireOwnership = false)]
-    void spServerRpc()
-    {
-        if (!IsServer)
-        {
-            return;
-        }
-        netObj = networkPool.GetNetworkObject(bullet, new Vector3(450, 450, 0), Quaternion.identity);
-        if (!netObj.IsSpawned)
-            netObj.Spawn();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    void diServerRpc()
-    {
-        if (!IsServer)
-        {
-            return;
-        }
-        diClientRpc();
-    }
-
-    [ClientRpc]
-    void diClientRpc()
-    {
-        if (IsServer)
-        {
-            netObj.GetComponent<BulletCtrl>().DestroyBulletClientRpc();
-        }
-
-        //networkPool.ReturnNetworkObject(netObj, item);
-    }
-
-    [ClientRpc]
-    void inClientRpc()
-    {
-        networkPool.InitializePool();
-    }
-    [ClientRpc]
-    void crClientRpc()
-    {
-        networkPool.ClearPool();
     }
 }

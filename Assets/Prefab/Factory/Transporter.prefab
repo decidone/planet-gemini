@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 5999188213166003495}
   - component: {fileID: 5197040497763038552}
   - component: {fileID: 5141181565966273476}
-  - component: {fileID: -1600664430842138167}
+  - component: {fileID: 7272727718341943578}
   m_Layer: 8
   m_Name: Transporter
   m_TagString: Factory
@@ -600,7 +600,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &-1600664430842138167
+--- !u!114 &7272727718341943578
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

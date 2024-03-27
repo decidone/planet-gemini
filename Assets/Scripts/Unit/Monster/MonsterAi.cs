@@ -631,6 +631,17 @@ public class MonsterAi : UnitCommonAi
         monsterType = type;
     }
 
+    public void MonsterAStarSet(bool isHostMap)
+    {
+        GraphMask mask;
+        if (isHostMap)
+            mask = GraphMask.FromGraphName("Map1");
+        else
+            mask = GraphMask.FromGraphName("Map2");
+
+        seeker.graphMask = mask;
+    }
+
     [ClientRpc]
     public void MonsterScriptSetClientRpc(bool scriptState)
     {
