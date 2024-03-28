@@ -340,9 +340,14 @@ public class Inventory : NetworkBehaviour
         if (itemObj != null)
         {
             ItemProps itemProps = itemObj.GetComponent<ItemProps>();
+            if (itemProps.waitingForDestroy)
+                return;
+
             int containableAmount = SpaceCheck(itemProps.item);
+
             if (itemProps.amount <= containableAmount)
             {
+                itemProps.waitingForDestroy = true;
                 Add(itemProps.item, itemProps.amount);
                 GeminiNetworkManager.instance.DestroyItem(itemObj);
             }

@@ -10,7 +10,8 @@ public class ItemProps : MonoBehaviour
 
     public Item item;
     public int amount;
-
+    [HideInInspector]
+    public bool waitingForDestroy = false;
     [HideInInspector]
     public bool isOnBelt = false;
     [HideInInspector]

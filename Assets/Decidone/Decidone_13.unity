@@ -2143,6 +2143,14 @@ PrefabInstance:
       propertyPath: portal.Array.data[1]
       value: 
       objectReference: {fileID: 359781442}
+    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: itemListSO
+      value: 
+      objectReference: {fileID: 11400000, guid: fb7046e3030870743a8b20eb19bf8824, type: 2}
+    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: itemList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3986364635626952760, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: m_RootOrder
       value: 3
