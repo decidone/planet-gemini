@@ -103,7 +103,6 @@ public class MapGenerator : MonoBehaviour
         SetSpawnPos(hostMap, true);
         if (isMultiPlay)
             SetSpawnPos(clientMap, false);
-        astar.Scan();
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         spawnerPosSet = SpawnerSetManager.instance;
@@ -121,7 +120,6 @@ public class MapGenerator : MonoBehaviour
     {
         if (spawnerPosSet && mapSizeData != null)
         {
-
             spawnerPosSet.AreaMapSetServerRpc(map1CenterPos, mapSizeData.MapSplitCount, true);
             if (isMultiPlay)
                 spawnerPosSet.AreaMapSetServerRpc(map2CenterPos, mapSizeData.MapSplitCount, false);
@@ -134,7 +132,7 @@ public class MapGenerator : MonoBehaviour
         {
             if (comp.shapeCount != 0)
             {
-                //astar.Scan();
+                astar.Scan();
                 isCompositeDone = true;
             }
         }
