@@ -25,7 +25,14 @@ public class BeltManager : NetworkBehaviour
 
         fstGroupMgr.Reconfirm();
         if (secGroupMgr.nextObj != null)
+        {
             fstGroupMgr.nextObj = secGroupMgr.nextObj;
+
+            ulong objID = secGroupMgr.networkObjManager.FindNetObjID(secGroupMgr.nextObj);
+            fstGroupMgr.NearObjSetClientRpc(objID, true);
+        }
+
+        NetworkObjManager.instance.NetObjRemove(secGroupMgr.GetComponent<NetworkObject>());
         Destroy(secGroupMgr.gameObject);
     }
 
@@ -33,6 +40,7 @@ public class BeltManager : NetworkBehaviour
     {
         if (beltGroup.beltList.Count <= 1)
         {
+            NetworkObjManager.instance.NetObjRemove(beltGroup.GetComponent<NetworkObject>());
             Destroy(beltGroup.gameObject);
             return;
         }

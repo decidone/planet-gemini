@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System;
-using Unity.Netcode;
 
 // UTF-8 설정
 public class SplitterCtrl : LogisticsCtrl
@@ -57,10 +56,10 @@ public class SplitterCtrl : LogisticsCtrl
                 }
             }               
 
-            if (!isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding && checkObj)
             { 
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
-                    GetItem();
+                    GetItemClientRpc();
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
                     if (filterOn && level > 0) 
@@ -69,7 +68,9 @@ public class SplitterCtrl : LogisticsCtrl
                     }
                     else
                     {
-                        SendItem(itemList[0]);
+                        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
+                        SendItemClientRpc(itemIndex);
+                        //SendItem(itemList[0]);
                     }
                 }
             }
@@ -192,11 +193,7 @@ public class SplitterCtrl : LogisticsCtrl
         {
             if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
             {
-                GameObject itemPoolObj = networkObjectPool.PoolObjFind("Item");
-                NetworkObject itemPool = networkObjectPool.GetNetworkObject(itemPoolObj);
-                if (!itemPool.IsSpawned) itemPool.Spawn();
-
-                //var itemPool = ItemPoolManager.instance.Pool.Get();
+                var itemPool = ItemPoolManager.instance.Pool.Get();
                 spawnItem = itemPool.GetComponent<ItemProps>();
 
                 if (beltCtrl.OnBeltItem(spawnItem))

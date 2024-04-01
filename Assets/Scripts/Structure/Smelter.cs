@@ -57,9 +57,11 @@ public class Smelter : Production
                 }
             }
 
-            if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
-                SendItem(output);
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
+                SendItemClientRpc(itemIndex);
+                //SendItem(output);
             }
         }
     }

@@ -54,9 +54,11 @@ public class ChemicalPlant : Production
                 }
             }
 
-            if (slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
-                SendItem(output);
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
+                SendItemClientRpc(itemIndex);
+                //SendItem(output);
             }
         }
     }

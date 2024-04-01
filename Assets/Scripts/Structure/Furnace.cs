@@ -23,7 +23,8 @@ public class Furnace : Production
 
             if (fuel == 0 && slot1.item == itemDic["Coal"] && slot1.amount > 0)
             {
-                inventory.SubServerRpc(1, 1);
+                if(IsServer)
+                    inventory.SubServerRpc(1, 1);
                 fuel = maxFuel;
             }
 
@@ -46,8 +47,11 @@ public class Furnace : Production
                         if (prodTimer > cooldown)
                         {
                             fuel -= 25;
-                            inventory.SubServerRpc(0, recipe.amounts[0]);
-                            inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                            if (IsServer)
+                            {
+                                inventory.SubServerRpc(0, recipe.amounts[0]);
+                                inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                            }
                             soundManager.PlaySFX(gameObject, "structureSFX", "Flames");
                             prodTimer = 0;
                         }
@@ -67,9 +71,11 @@ public class Furnace : Production
                 prodTimer = 0;
             }
 
-            if (slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
-                SendItem(output);
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
+                SendItemClientRpc(itemIndex);
+                //SendItem(output);
             }
         }
     }
@@ -125,30 +131,36 @@ public class Furnace : Production
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        if (itemDic["Coal"] == itemProps.item)
-            inventory.SlotAdd(1, itemProps.item, itemProps.amount);
-        else
+        if(IsServer)
         {
-            foreach (Recipe _recipe in recipes)
+            if (itemDic["Coal"] == itemProps.item)
+                inventory.SlotAdd(1, itemProps.item, itemProps.amount);
+            else
             {
-                if (itemProps.item == itemDic[_recipe.items[0]])
-                    inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+                foreach (Recipe _recipe in recipes)
+                {
+                    if (itemProps.item == itemDic[_recipe.items[0]])
+                        inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+                }
             }
         }
 
-        base.OnFactoryItem(itemProps);
+        itemProps.itemPool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)
     {
-        if (itemDic["Coal"] == item)
-            inventory.SlotAdd(1, item, 1);
-        else
+        if (IsServer)
         {
-            foreach (Recipe _recipe in recipes)
+            if (itemDic["Coal"] == item)
+                inventory.SlotAdd(1, item, 1);
+            else
             {
-                if (item == itemDic[_recipe.items[0]])
-                    inventory.SlotAdd(0, item, 1);
+                foreach (Recipe _recipe in recipes)
+                {
+                    if (item == itemDic[_recipe.items[0]])
+                        inventory.SlotAdd(0, item, 1);
+                }
             }
         }
     }

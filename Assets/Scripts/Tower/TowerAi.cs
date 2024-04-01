@@ -155,13 +155,16 @@ public class TowerAi : Production
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        foreach (Item _recipe in bulletRecipe)
+        if (IsServer)
         {
-            if(itemProps.item == _recipe)
-                inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+            foreach (Item _recipe in bulletRecipe)
+            {
+                if(itemProps.item == _recipe)
+                    inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+            }
         }
 
-        base.OnFactoryItem(itemProps);
+        itemProps.itemPool.Release(itemProps.gameObject);
     }
 
     public override Dictionary<Item, int> PopUpItemCheck()

@@ -91,10 +91,10 @@ public class Refinery : FluidFactoryCtrl
         }
             
 
-        if (!isPreBuilding)
+        if (IsServer && !isPreBuilding)
         {
             if (inObj.Count > 0 && !itemGetDelay && checkObj)
-                GetItem();
+                GetItemClientRpc();
         }
         #endregion
 
@@ -147,9 +147,11 @@ public class Refinery : FluidFactoryCtrl
                 }
             }
 
-            if (slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
-                SendItem(output);
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
+                SendItemClientRpc(itemIndex);
+                //SendItem(output);
             }
         }
     }

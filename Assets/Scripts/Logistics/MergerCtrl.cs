@@ -37,16 +37,18 @@ public class MergerCtrl : LogisticsCtrl
                 }
             }
 
-            if (!isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding && checkObj)
             {
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                 {
-                    GetItem();
+                    GetItemClientRpc();
                 }
 
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
-                    SendItem(itemList[0]);
+                    int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
+                    SendItemClientRpc(itemIndex);
+                    //SendItem(itemList[0]);
                 }
             }
         }

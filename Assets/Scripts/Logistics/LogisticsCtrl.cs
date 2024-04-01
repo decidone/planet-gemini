@@ -52,7 +52,7 @@ public class LogisticsCtrl : Structure
         {
             isFull = true;
         }
-        base.OnFactoryItem(itemProps);
+        itemProps.itemPool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)

@@ -99,10 +99,10 @@ public class SteamGenerator : FluidFactoryCtrl
         }
 
 
-        if (!isPreBuilding)
+        if (IsServer && !isPreBuilding)
         {
             if (inObj.Count > 0 && !itemGetDelay && checkObj)
-                GetItem();
+                GetItemClientRpc();
         }
         #endregion
 
@@ -226,7 +226,7 @@ public class SteamGenerator : FluidFactoryCtrl
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        if (FuelItem == itemProps.item)
+        if (IsServer && FuelItem == itemProps.item)
             inventory.SlotAdd(0, itemProps.item, itemProps.amount);
 
         itemProps.itemPool.Release(itemProps.gameObject);
@@ -234,7 +234,7 @@ public class SteamGenerator : FluidFactoryCtrl
 
     public override void OnFactoryItem(Item item)
     {
-        if (FuelItem == item)
+        if (IsServer && FuelItem == item)
             inventory.SlotAdd(0, item, 1);
     }
 

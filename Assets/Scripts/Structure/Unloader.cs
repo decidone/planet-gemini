@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class Unloader : LogisticsCtrl
 {
@@ -27,11 +28,11 @@ public class Unloader : LogisticsCtrl
                 }
             }
 
-            if (!isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding && checkObj)
             {
                 if (inObj.Count > 0 && outObj.Count > 0 && !itemGetDelay)
                 {
-                    GetItem();
+                    GetItemClientRpc();
                 }
             }
         }
@@ -75,7 +76,8 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-    protected override void GetItem()
+    [ClientRpc]
+    protected override void GetItemClientRpc()
     {
         itemGetDelay = true;
         if (getItemIndex > inObj.Count)
@@ -92,7 +94,9 @@ public class Unloader : LogisticsCtrl
         {
             if (production.UnloadItem(selectItem))
             {
-                SendItem(selectItem);
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
+                SendItemClientRpc(itemIndex);
+                //SendItem(selectItem);
             }
             getItemIndex++;
             if (getItemIndex >= inObj.Count)

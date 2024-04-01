@@ -43,6 +43,7 @@ public class BeltCtrl : LogisticsCtrl
     void Start()
     {
         beltManager = GameObject.Find("BeltManager");
+        beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
         BeltModelSet();
@@ -59,15 +60,15 @@ public class BeltCtrl : LogisticsCtrl
             anim.SetFloat("Level", level);
 
             anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-            if(IsServer)
+            //if (IsServer)
                 ModelSet();
         }
     }
 
     private void FixedUpdate()
     {
-        if (!IsServer)
-            return;
+        //if (!IsServer)
+        //    return;
 
         if (itemObjList.Count > 0)
             ItemMove();
@@ -562,6 +563,7 @@ public class BeltCtrl : LogisticsCtrl
     public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth)
     {
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+        beltGroupMgr.beltList.Add(this);
         level = _level;
         dirNum = _beltDir;
         height = objHeight;

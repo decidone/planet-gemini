@@ -32,14 +32,17 @@ public class ItemSpawner : LogisticsCtrl
             }
                 
 
-            if (!isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding && checkObj)
             {
                 if (outObj.Count > 0 && !itemSetDelay)
                 {
                     if (itemData.name != "EmptyFilter")
-                        SendItem(itemData);
+                    {
+                        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemData);
+                        SendItemClientRpc(itemIndex);
+                        //SendItem(itemData);
+                    }
                 }
-
             }
         } 
     }

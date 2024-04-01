@@ -71,13 +71,15 @@ public class PortalItemIn : PortalObj
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        inventory.Add(itemProps.item, itemProps.amount);
+        if(IsServer)
+            inventory.Add(itemProps.item, itemProps.amount);
         itemProps.itemPool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)
     {
-        inventory.Add(item, 1);
+        if (IsServer)
+            inventory.Add(item, 1);
     }
 
     public override void GetUIFunc()

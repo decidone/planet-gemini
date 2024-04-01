@@ -136,7 +136,6 @@ public class Structure : NetworkBehaviour
     public bool isMainEnergyColony;
     public SoundManager soundManager;
 
-    protected NetworkObjectPool networkObjectPool;
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -161,7 +160,6 @@ public class Structure : NetworkBehaviour
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
         soundManager = SoundManager.Instance;
-        networkObjectPool = NetworkObjectPool.Singleton;
     }
 
     protected virtual void Update()
@@ -317,6 +315,7 @@ public class Structure : NetworkBehaviour
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         DataSet();
+        NetworkObjManager.instance.NetObjAdd(gameObject.GetComponent<NetworkObject>());
     }
 
     [ClientRpc]
@@ -364,7 +363,8 @@ public class Structure : NetworkBehaviour
         checkObj = true;
     }
 
-    protected virtual void GetItem()
+    [ClientRpc]
+    protected virtual void GetItemClientRpc()
     {
         itemGetDelay = true;
         if (getItemIndex > inObj.Count)
@@ -385,7 +385,8 @@ public class Structure : NetworkBehaviour
                 belt.itemObjList[0].transform.position = this.transform.position;
                 belt.isItemStop = false;
                 belt.itemObjList.RemoveAt(0);
-                belt.beltGroupMgr.groupItem.RemoveAt(0);
+                if(IsServer)
+                    belt.beltGroupMgr.groupItem.RemoveAt(0);
                 belt.ItemNumCheck();
 
                 getItemIndex++;
@@ -415,6 +416,98 @@ public class Structure : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    protected virtual void SendItemClientRpc(int itemIndex)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        if (setFacDelayCoroutine != null)
+        {
+            return;
+        }
+        else if (sendItemIndex > outObj.Count)
+        {
+            sendItemIndex = 0;
+            return;
+        }
+        else if (outObj[sendItemIndex] == null)
+        {
+            sendItemIndex = 0;
+            return;
+        }
+
+
+        itemSetDelay = true;
+
+        Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
+
+        if (outFactory.isFull == false)
+        {
+            if (outObj[sendItemIndex].TryGetComponent(out BeltCtrl beltCtrl))
+            {
+                var itemPool = ItemPoolManager.instance.Pool.Get();
+                spawnItem = itemPool.GetComponent<ItemProps>();
+                if (beltCtrl.OnBeltItem(spawnItem))
+                {
+                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                    spawnItem.col.enabled = false;
+                    sprite.sprite = item.icon;
+                    sprite.sortingOrder = 2;
+                    spawnItem.item = item;
+                    spawnItem.amount = 1;
+                    spawnItem.transform.position = transform.position;
+                    spawnItem.isOnBelt = true;
+                    spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
+
+                    if (GetComponent<Production>())
+                    {
+                        SubFromInventory();
+                    }
+                    else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>() && !GetComponent<Unloader>())
+                    {
+                        itemList.RemoveAt(0);
+                        ItemNumCheck();
+                    }
+                }
+                else
+                {
+                    DelaySetItem();
+                    return;
+                }
+            }
+            else if (outFactory.isMainSource)
+            {
+                sendItemIndex++;
+                if (sendItemIndex >= outObj.Count)
+                    sendItemIndex = 0;
+
+                DelaySetItem();
+            }
+            else if (!outFactory.isMainSource)
+            {
+                if (outObj[sendItemIndex].GetComponent<LogisticsCtrl>())
+                    setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
+                else if (outObj[sendItemIndex].TryGetComponent(out Production production) && production.CanTakeItem(item))
+                    setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[sendItemIndex], item));
+            }
+
+            sendItemIndex++;
+            if (sendItemIndex >= outObj.Count)
+                sendItemIndex = 0;
+
+            Invoke(nameof(DelaySetItem), structureData.SendDelay);
+        }
+        else
+        {
+            sendItemIndex++;
+            if (sendItemIndex >= outObj.Count)
+                sendItemIndex = 0;
+
+            DelaySetItem();
+        }
+    }
+
+
+
     protected virtual void SendItem(Item item)
     {
         if (setFacDelayCoroutine != null)
@@ -441,7 +534,7 @@ public class Structure : NetworkBehaviour
         {
             if (outObj[sendItemIndex].TryGetComponent(out BeltCtrl beltCtrl))
             {
-                var itemPool = ItemPoolManager.instance.Pool.Get(); //
+                var itemPool = ItemPoolManager.instance.Pool.Get();
                 spawnItem = itemPool.GetComponent<ItemProps>();
                 if (beltCtrl.OnBeltItem(spawnItem))
                 {
@@ -510,7 +603,7 @@ public class Structure : NetworkBehaviour
 
     protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
     {
-        var itemPool = ItemPoolManager.instance.Pool.Get(); //
+        var itemPool = ItemPoolManager.instance.Pool.Get();
         spawnItem = itemPool.GetComponent<ItemProps>();
         spawnItem.col.enabled = false;
         SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
@@ -667,13 +760,15 @@ public class Structure : NetworkBehaviour
 
         soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
 
+        NetworkObjManager.instance.NetObjRemove(gameObject.GetComponent<NetworkObject>());
+
         ItemDrop();
         RemoveObj();
     }
 
     protected void ItemToItemProps(Item item, int itemAmount)
     {
-        var itemPool = ItemPoolManager.instance.Pool.Get(); //
+        var itemPool = ItemPoolManager.instance.Pool.Get();
         ItemProps itemProps = itemPool.GetComponent<ItemProps>();
 
         SpriteRenderer sprite = itemProps.GetComponent<SpriteRenderer>();

@@ -164,7 +164,7 @@ public class EnergyGenerator : Production
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        if (FuelItem == itemProps.item)
+        if (IsServer && FuelItem == itemProps.item)
             inventory.SlotAdd(0, itemProps.item, itemProps.amount);
 
         itemProps.itemPool.Release(itemProps.gameObject);
@@ -172,7 +172,7 @@ public class EnergyGenerator : Production
 
     public override void OnFactoryItem(Item item)
     {
-        if (FuelItem == item)
+        if (IsServer && FuelItem == item)
             inventory.SlotAdd(0, item, 1);
     }
 

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2426473708731700751}
   - component: {fileID: 2426473708731700744}
-  - component: {fileID: 868921877215465947}
   m_Layer: 0
   m_Name: NetworkPool
   m_TagString: Untagged
@@ -48,24 +47,3 @@ MonoBehaviour:
   PooledPrefabsList:
   - Prefab: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
     PrewarmCount: 10
-  - Prefab: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
-    PrewarmCount: 10
-  findPrefabs: []
---- !u!114 &868921877215465947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2426473708731700746}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c85562b41593534389832df40b6bcd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bullet: {fileID: 0}
-  netObj: {fileID: 0}
-  getNetworkObject: 0
-  returnNetworkObject: 0
-  initializePool: 0
-  clearPool: 0

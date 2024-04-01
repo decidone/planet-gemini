@@ -256,7 +256,6 @@ GameObject:
   - component: {fileID: 4059864358883353247}
   - component: {fileID: 5450049282960680587}
   - component: {fileID: 4153718066960112512}
-  - component: {fileID: 1973152735125268217}
   - component: {fileID: 3729439446491037180}
   - component: {fileID: 7150366280860555239}
   - component: {fileID: 198327214828012134}
@@ -313,6 +312,7 @@ MonoBehaviour:
   hostMap: {fileID: 0}
   clientMap: {fileID: 0}
   map: {fileID: 0}
+  isPlayerInHostMap: 0
   player: {fileID: 0}
   playerController: {fileID: 0}
   hostPlayerTransform: {fileID: 0}
@@ -378,56 +378,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5bb6ca4bd4ac3341b21699b6dd8d8f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildingDataList:
-  - {fileID: 11400000, guid: fa46f237aedd15e43b797c7d958c7cb4, type: 2}
-  - {fileID: 11400000, guid: 693f1580a1ede6a47a9cf387d3f93626, type: 2}
-  - {fileID: 11400000, guid: 78dd487befa84ed468fab2484596cfe2, type: 2}
-  - {fileID: 11400000, guid: 164efcaf3363cd24fbe6d3fa6d10a2d7, type: 2}
-  - {fileID: 11400000, guid: 8f46610d525dc4c4db1bed4dab235bb0, type: 2}
-  - {fileID: 11400000, guid: 904d2f7ef78eda54ebf4be8971b34115, type: 2}
-  - {fileID: 11400000, guid: 1f1ecca9e619acb498d909b4c0c1f0b0, type: 2}
-  - {fileID: 11400000, guid: 0118ab17a75004a48875f07716b3911a, type: 2}
-  - {fileID: 11400000, guid: 92bfc526bc551cf478629d315eadfe59, type: 2}
-  - {fileID: 11400000, guid: 3962deb67d7b2ec47975860e03ca1058, type: 2}
-  - {fileID: 11400000, guid: 15cb12c5d4c0a58418f13e24d05cdca2, type: 2}
-  - {fileID: 11400000, guid: 8c31eedb3fc551b47879c3ea1caa28ad, type: 2}
-  - {fileID: 11400000, guid: 2323b4f2938b35344b3d7dff8dc9873c, type: 2}
-  - {fileID: 11400000, guid: 2e18e7546658336488b14dd42c2c9ecd, type: 2}
-  - {fileID: 11400000, guid: 5eb21c2ad3f941440a09e1582c9bdfb0, type: 2}
-  - {fileID: 11400000, guid: 0e8c35ea21ee54b44ad7f150b7959d33, type: 2}
-  - {fileID: 11400000, guid: e939aa5cf7088a24a8de7f5554e8cb45, type: 2}
-  - {fileID: 11400000, guid: e9ae6ff10cc1f7941a7d63919e5d5824, type: 2}
-  - {fileID: 11400000, guid: f67a6fa40ec191e4eabfbcfa6f25fac6, type: 2}
-  - {fileID: 11400000, guid: 60ea69fac71748d4682f10abecfd4c33, type: 2}
-  - {fileID: 11400000, guid: 40d7a5e8f5659594293acb2a1880bfb0, type: 2}
-  - {fileID: 11400000, guid: 10b6ce2e82ea4b54a91f615cef63041e, type: 2}
-  - {fileID: 11400000, guid: 3292331e56947e94ea788e4c15074922, type: 2}
-  - {fileID: 11400000, guid: c06ccafcd217bf442bb9e5cc6303907f, type: 2}
-  - {fileID: 11400000, guid: 5405e7c6bb7b69144acf63d7e2d40166, type: 2}
-  - {fileID: 11400000, guid: aaecd11da8db6354fafafd7775eb442b, type: 2}
-  - {fileID: 11400000, guid: 8e58dc881cfa11049b1fb1b87e6257ca, type: 2}
-  - {fileID: 11400000, guid: 6a15a0fcd2bc36f4ea6cd98e9f23ff5e, type: 2}
-  - {fileID: 11400000, guid: e07253f443b5b3e49b409934a95799fb, type: 2}
-  - {fileID: 11400000, guid: 49a36106ddf5c9c40bdcd0327a40acc9, type: 2}
-  - {fileID: 11400000, guid: 4ed2fc918cd74774da44e28552fdca74, type: 2}
-  - {fileID: 11400000, guid: 7303a81e0c4ef2744863b0a533d9ce2e, type: 2}
-  - {fileID: 11400000, guid: 0bca4782f02e62d4c90aee46b2d278b5, type: 2}
-  - {fileID: 11400000, guid: d5422a6d997f3f04fa7928b66a1c1e3d, type: 2}
-  - {fileID: 11400000, guid: 5be79f39b89c41947b980aff36c64201, type: 2}
-  - {fileID: 11400000, guid: f6cfeecebac12454a9b580ba1fefe05d, type: 2}
-  - {fileID: 11400000, guid: 9a592dd15e590ab41a3088172aeae492, type: 2}
-  - {fileID: 11400000, guid: b76fd339b5389fb4aa411a0395b028a9, type: 2}
-  - {fileID: 11400000, guid: fc096fe07d4ae634c84a6a17bb7ea55f, type: 2}
-  - {fileID: 11400000, guid: cafbca9f933611145864e3342444c584, type: 2}
-  - {fileID: 11400000, guid: c9104649264ed644699019bb4ffa771b, type: 2}
-  - {fileID: 11400000, guid: 00dbc501d2310014fb63dcd391e5012d, type: 2}
-  - {fileID: 11400000, guid: 4a0d7142eb5ad2149b8bd72eac197e99, type: 2}
-  - {fileID: 11400000, guid: 690162a9a2291df4d8d2e57c06164436, type: 2}
-  - {fileID: 11400000, guid: fc3c0374a9087634c8a3120bbde7188d, type: 2}
-  - {fileID: 11400000, guid: de3c0e1d2c6506a428a370d9013e8193, type: 2}
-  - {fileID: 11400000, guid: e2aa323413a850c418de7712eb03c641, type: 2}
-  - {fileID: 11400000, guid: 3daa67ade152e034196003a9ec0a579f, type: 2}
-  - {fileID: 11400000, guid: e7cc50036ec616149885129581ae5598, type: 2}
   buildingListSO: {fileID: 11400000, guid: 5f71f353a6aca854794fb27df7475178, type: 2}
 --- !u!114 &3986364633838151513
 MonoBehaviour:
@@ -656,21 +606,6 @@ MonoBehaviour:
   defaultCapacity: 10
   maxPoolSize: 100
   itemPrefab: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
---- !u!114 &1973152735125268217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3986364635626952762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f4e33cc8c39a194fade189ce973aae5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultCapacity: 10
-  maxPoolSize: 100
-  itemPrefab: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!114 &3729439446491037180
 MonoBehaviour:
   m_ObjectHideFlags: 0
