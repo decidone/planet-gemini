@@ -40,13 +40,14 @@ public class InfoWindow : MonoBehaviour
             uI.transform.SetParent(needItemRoot.transform, false);
             needItemObj.Add(uI);
         }
-        this.gameObject.SetActive(false);
     }
 
     private void Start()
     {
+        gameManager = GameManager.instance;
         buildingInven = gameManager.GetComponent<BuildingInven>();
         inventory = gameManager.inventory;
+        this.gameObject.SetActive(false);
     }
 
     public void SetNeedItem(ScienceInfoData scienceInfoData, string name, int level ,bool isCore , ScienceBtn sciBtn)
@@ -60,7 +61,6 @@ public class InfoWindow : MonoBehaviour
         scienceBtn = sciBtn;
         if (itemsList.Count == 0)
         {
-            gameManager = GameManager.instance;
             itemsList = gameManager.GetComponent<ItemList>().itemList;
         }
         if(scienceDb == null)

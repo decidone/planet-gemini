@@ -18,10 +18,13 @@ MonoBehaviour:
   gameObj: {fileID: 8506304485128044753, guid: abfbe3ea3f6adbb4188877aabe77e243, type: 3}
   isGetAnim: 0
   isGetDirection: 0
+  isUnderObj: 0
+  isEnergyUse: 0
+  isEnergyStr: 1
   sprites:
   - {fileID: 1595258527, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
-  animations: []
+  animatorController: []
   level: 1
-  height: 1
-  width: 1
+  height: 2
+  width: 2
   dirCount: 0

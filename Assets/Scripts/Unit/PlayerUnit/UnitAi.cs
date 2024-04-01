@@ -10,8 +10,6 @@ public class UnitAi : UnitCommonAi
     // 이동 관련
     float moveRadi;
     Vector3 lastPosition;
-    bool isMoveCheckCoroutine = false;
-    bool isNewPosSet = false;
     float movedDistance;
 
     // 페트롤 관련
@@ -100,8 +98,6 @@ public class UnitAi : UnitCommonAi
     {
         aIState = AIState.AI_Idle;
         animator.SetBool("isMove", false);
-
-        isMoveCheckCoroutine = false;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -109,7 +105,6 @@ public class UnitAi : UnitCommonAi
     {
         isHold = false;
         isAttackMove = isAttack;
-        isMoveCheckCoroutine = false;
         isTargetSet = false;
         targetPosition = dir;
         moveRadi = radi;
@@ -249,7 +244,6 @@ public class UnitAi : UnitCommonAi
     {
         isHold = false;
         isAttackMove = true;
-        isMoveCheckCoroutine = false;
         isTargetSet = false;
 
         targetPosition = dir;

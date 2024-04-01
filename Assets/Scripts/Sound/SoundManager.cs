@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using Unity.Netcode;
 
-public class SoundManager : NetworkBehaviour
+public class SoundManager : MonoBehaviour
 {
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 

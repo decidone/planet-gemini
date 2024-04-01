@@ -60,9 +60,11 @@ public class Manufacturer : Production
                 }
             }
 
-            if (slot3.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot3.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
-                SendItem(output);
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
+                SendItemClientRpc(itemIndex);
+                //SendItem(output);
             }
         }
     }

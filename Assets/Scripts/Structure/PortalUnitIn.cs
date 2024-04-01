@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class PortalUnitIn : PortalObj
 {
-    PortalUnitOut portalUnitOut;
-    PortalUnitOut myPortalUnitOut;
+    public PortalUnitOut portalUnitOut;
+    public PortalUnitOut myPortalUnitOut;
     public Vector2[] nearPos = new Vector2[8];
 
     public List<GameObject> sendUnitList = new List<GameObject>();
@@ -50,12 +50,13 @@ public class PortalUnitIn : PortalObj
         base.Update();
         if (!isPreBuilding)
         {
-            if (portalUnitOut != null)
+            if (sendUnitList.Count > 0)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    SendUnitCheck(portalUnitOut);
+                    if (IsServer)
+                        SendUnitCheck(portalUnitOut);
                     prodTimer = 0;
                 }
             }

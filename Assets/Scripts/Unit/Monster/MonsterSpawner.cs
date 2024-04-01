@@ -67,6 +67,8 @@ public class MonsterSpawner : NetworkBehaviour
     [SerializeField]
     GameObject searchColl;
 
+    public bool isInHostMap;
+
     void Start()
     {
         monsterSpawn = MonsterSpawnerManager.instance;
@@ -131,16 +133,12 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos)
+    public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos, bool isHostMap)
     {
         areaLevelData = levelData;
         areaLevel = levelData.areaLevel;
         biome = _biome;
-
-        //maxWeakSpawn = 1;
-        //maxNormalSpawn = 0;
-        //maxStrongSpawn = 0;
-        //maxGuardianSpawn = 0;
+        isInHostMap = isHostMap;
 
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
@@ -300,6 +298,7 @@ public class MonsterSpawner : NetworkBehaviour
         newMonster.transform.position = setPos;
 
         newMonster.GetComponent<MonsterAi>().MonsterSpawnerSet(this, monserType);
+        newMonster.GetComponent<MonsterAi>().MonsterAStarSet(isInHostMap);
         if (!nearUserObjExist)
         {
             if(IsServer)
@@ -378,7 +377,7 @@ public class MonsterSpawner : NetworkBehaviour
     {
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
-        monsterSpawnerManager.AreaGroupRemove(this, areaLevel);
+        monsterSpawnerManager.AreaGroupRemove(this, areaLevel, isInHostMap);
         boxColl2D.enabled = false;
     }
 

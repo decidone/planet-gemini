@@ -19,6 +19,8 @@ MonoBehaviour:
   isGetAnim: 1
   isGetDirection: 0
   isUnderObj: 0
+  isEnergyUse: 1
+  isEnergyStr: 0
   sprites:
   - {fileID: 564150912, guid: 95f1a3c9e23c5f4428de964ae03bef3a, type: 3}
   animatorController:

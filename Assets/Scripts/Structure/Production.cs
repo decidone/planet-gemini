@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using Unity.Netcode;
 
 // UTF-8 설정
 public abstract class Production : Structure
@@ -82,10 +83,10 @@ public abstract class Production : Structure
             }
         }
 
-        if (!isPreBuilding && checkObj)
+        if (IsServer && !isPreBuilding && checkObj)
         {
             if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
-                GetItem();
+                GetItemClientRpc();
         }
     }
 
@@ -149,23 +150,30 @@ public abstract class Production : Structure
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        for (int i = 0; i < inventory.space; i++)
+        if (IsServer)
         {
-            if (itemDic[recipe.items[i]] == itemProps.item)
+            for (int i = 0; i < inventory.space; i++)
             {
-                inventory.SlotAdd(i, itemProps.item, itemProps.amount);
+                if (itemDic[recipe.items[i]] == itemProps.item)
+                {
+                    inventory.SlotAdd(i, itemProps.item, itemProps.amount);
+                }
             }
         }
+
         base.OnFactoryItem(itemProps);
     }
 
     public override void OnFactoryItem(Item item)
     {
-        for (int i = 0; i < inventory.space; i++)
+        if (IsServer)
         {
-            if (itemDic[recipe.items[i]] == item)
+            for (int i = 0; i < inventory.space; i++)
             {
-                inventory.SlotAdd(i, item, 1);
+                if (itemDic[recipe.items[i]] == item)
+                {
+                    inventory.SlotAdd(i, item, 1);
+                }
             }
         }
     }
@@ -206,7 +214,8 @@ public abstract class Production : Structure
         return slot;
     }
 
-    protected override void GetItem()
+    [ClientRpc]
+    protected override void GetItemClientRpc()
     {
         itemGetDelay = true;
 
@@ -218,7 +227,8 @@ public abstract class Production : Structure
                 belt.itemObjList[0].transform.position = this.transform.position;
                 belt.isItemStop = false;
                 belt.itemObjList.RemoveAt(0);
-                belt.beltGroupMgr.groupItem.RemoveAt(0);
+                if (IsServer)
+                    belt.beltGroupMgr.groupItem.RemoveAt(0);
                 belt.ItemNumCheck();
 
                 getItemIndex++;

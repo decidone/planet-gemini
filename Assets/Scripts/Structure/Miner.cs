@@ -84,9 +84,11 @@ public class Miner : Production
                 }
             }
 
-            if (slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
-                SendItem(output);
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
+                SendItemClientRpc(itemIndex);
+                //SendItem(output);
             }
         }
     }
@@ -204,10 +206,10 @@ public class Miner : Production
         }
     }
 
-    public override void TempBuilCooldownSet() 
-    {
-        cooldown += 3;
-    }
+    //public override void TempBuilCooldownSet() 
+    //{
+    //    cooldown += 3;
+    //}
 
     public override void GetUIFunc()
     {

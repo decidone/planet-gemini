@@ -394,6 +394,7 @@ MonoBehaviour:
   isFlip: 0
   aIState: 0
   attackState: 0
+  soundManager: {fileID: 0}
   spawner: {fileID: 0}
   maxSpawnDist: 40
   waveState: 0

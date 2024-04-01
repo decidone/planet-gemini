@@ -17,7 +17,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public Map hostMap;
     [HideInInspector] public Map clientMap;
     [HideInInspector] public Map map;
-    
+
+    public bool isPlayerInHostMap;
+
     public GameObject player;
     public PlayerController playerController;
     public Transform hostPlayerTransform;
@@ -25,7 +27,8 @@ public class GameManager : MonoBehaviour
 
     CameraController mainCam;
     public MapCameraController mapCameraController;
-    public GameObject preBuildingObj;
+    PreBuilding preBuilding;
+    //public GameObject preBuildingObj;
 
     [SerializeField]
     PlayerInvenManager pInvenManager;
@@ -97,9 +100,10 @@ public class GameManager : MonoBehaviour
         hostMap = mapGenerator.hostMap;
         clientMap = mapGenerator.clientMap;
         map = hostMap;
+        isPlayerInHostMap = true;
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
         mapCameraController.SetMapSize(map.width, map.height);
-
+        preBuilding = PreBuilding.instance;
         inputManager = InputManager.instance;
         inputManager.controls.Structure.StrClick.performed += ctx => StrClick();
         inputManager.controls.HotKey.Debug.performed += ctx => DebugMode();
@@ -133,12 +137,14 @@ public class GameManager : MonoBehaviour
         if (map == hostMap)
         {
             map = clientMap;
+            isPlayerInHostMap = false;
             SetMapInven(false);
             return clientPlayerSpawnPos;
         }
         else
         {
             map = hostMap;
+            isPlayerInHostMap = true;
             SetMapInven(true);
             return hostPlayerSpawnPos;
         }
@@ -149,6 +155,8 @@ public class GameManager : MonoBehaviour
         if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
             return;
         if (rManager.isOpened)
+            return;
+        if (preBuilding.isBuildingOn)
             return;
 
         //건물 위 오브젝트가 있을때 클릭이 안되서 Raycast > RaycastAll로 변경
@@ -463,12 +471,14 @@ public class GameManager : MonoBehaviour
             player.transform.position = hostPlayerSpawnPos;
             SetMapInven(true);
             map = hostMap;
+            isPlayerInHostMap = true;
         }
         else
         {
             player.transform.position = clientPlayerSpawnPos;
             SetMapInven(false);
             map = clientMap;
+            isPlayerInHostMap = false;
         }
         mainCam = Camera.main.gameObject.GetComponent<CameraController>();
         mainCam.target = player.transform;
@@ -477,9 +487,9 @@ public class GameManager : MonoBehaviour
         FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
         followTransform.SetTargetTransform(player.transform);
         if (isHost)
-            WavePoint.instance.PlayerSet(player, hostPlayerSpawnPos);
+            WavePoint.instance.PlayerSet(player);
         else
-            WavePoint.instance.PlayerSet(player, clientPlayerSpawnPos);
+            WavePoint.instance.PlayerSet(player);
     }
 
     public void SetPlayerPos(float x, float y, bool isHostPos)

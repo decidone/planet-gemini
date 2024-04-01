@@ -31,8 +31,7 @@ public class EnergyGenerator : Production
     bool isBuildDone;
     bool isPlaced;
     GameManager gameManager;
-    [HideInInspector]
-    public GameObject preBuildingObj;
+    PreBuilding preBuilding;
     Structure preBuildingStr;
     bool preBuildingCheck;
     public int fuelRequirement;
@@ -45,7 +44,7 @@ public class EnergyGenerator : Production
         isPlaced = false;
         preBuildingCheck = false;
         gameManager = GameManager.instance;
-        preBuildingObj = gameManager.preBuildingObj;
+        preBuilding = PreBuilding.instance;
     }
 
     protected override void Update()
@@ -62,13 +61,12 @@ public class EnergyGenerator : Production
         }
         if (gameManager.focusedStructure == null)
         {
-            if (preBuildingObj.activeSelf)
+            if (preBuilding.isBuildingOn)
             {
                 if (!preBuildingCheck)
                 {
                     preBuildingCheck = true;
-                    preBuildingStr = preBuildingObj.GetComponentInChildren<Structure>();
-                    if (preBuildingStr != null && (preBuildingStr.energyUse || preBuildingStr.isEnergyStr))
+                    if (preBuilding.isEnergyUse || preBuilding.isEnergyStr)
                     {
                         view.enabled = true;
                     }
@@ -166,7 +164,7 @@ public class EnergyGenerator : Production
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        if (FuelItem == itemProps.item)
+        if (IsServer && FuelItem == itemProps.item)
             inventory.SlotAdd(0, itemProps.item, itemProps.amount);
 
         itemProps.itemPool.Release(itemProps.gameObject);
@@ -174,7 +172,7 @@ public class EnergyGenerator : Production
 
     public override void OnFactoryItem(Item item)
     {
-        if (FuelItem == item)
+        if (IsServer && FuelItem == item)
             inventory.SlotAdd(0, item, 1);
     }
 

@@ -37,7 +37,7 @@ public class BuildingInfo : MonoBehaviour
     private void Start()
     {
         preBuilding = PreBuilding.instance;
-        inventory = GameManager.instance.inventory;
+        //inventory = GameManager.instance.inventory;
     }
 
     public void BuildingClick()
@@ -48,7 +48,7 @@ public class BuildingInfo : MonoBehaviour
         {
             //preBuilding.SetActive(true);
             int sendAmount = CanBuildAmount();
-            preBuilding.SetImage(selectBuilding, false, sendAmount);
+            preBuilding.SetImage(selectBuilding, false, sendAmount, GameManager.instance.isPlayerInHostMap);
             preBuilding.isEnough = AmountsEnoughCheck();
         }
     }
@@ -66,6 +66,7 @@ public class BuildingInfo : MonoBehaviour
 
     public void SetItemSlot(BuildingData buildingDatas, Building select)
     {
+        inventory = GameManager.instance.inventory;
         ClearArr();
         if (preBuilding.isBuildingOn)
         {

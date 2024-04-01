@@ -11,28 +11,48 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public GameObject[] strongMonsters;
     public GameObject guardian;
 
-    public List<MonsterSpawner> area1Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> area2Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> area3Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> area4Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> area5Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map1Area1Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map1Area2Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map1Area3Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map1Area4Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map1Area5Group = new List<MonsterSpawner>();
 
-    public GameObject[,] spawnerMatrix;
+    public List<MonsterSpawner> map2Area1Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map2Area2Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map2Area3Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map2Area4Group = new List<MonsterSpawner>();
+    public List<MonsterSpawner> map2Area5Group = new List<MonsterSpawner>();
+
+    public GameObject[,] spawnerMap1Matrix;
+    public GameObject[,] spawnerMap2Matrix;
     SpawnerSetManager spawnerSetManager;
     int splitCount;
     int xIndex;
     int yIndex;
 
+    bool isInHostMap;
+
     [SerializeField]
-    bool wave1Start = false;
+    bool map1Wave1Start = false;
     [SerializeField]
-    bool wave2Start = false;
+    bool map1Wave2Start = false;
     [SerializeField]
-    bool wave3Start = false;
+    bool map1Wave3Start = false;
     [SerializeField]
-    bool wave4Start = false;
+    bool map1Wave4Start = false;
     [SerializeField]
-    bool wave5Start = false;
+    bool map1Wave5Start = false;
+
+    [SerializeField]
+    bool map2Wave1Start = false;
+    [SerializeField]
+    bool map2Wave2Start = false;
+    [SerializeField]
+    bool map2Wave3Start = false;
+    [SerializeField]
+    bool map2Wave4Start = false;
+    [SerializeField]
+    bool map2Wave5Start = false;
 
     WavePoint wavePoint;
 
@@ -54,86 +74,138 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         spawnerSetManager = SpawnerSetManager.instance;
         wavePoint = WavePoint.instance;
-        spawnerMatrix = spawnerSetManager.spawnerMatrix;
+        spawnerMap1Matrix = spawnerSetManager.spawnerMap1Matrix;
+        spawnerMap2Matrix = spawnerSetManager.spawnerMap2Matrix;
         splitCount = spawnerSetManager.splitCount;
     }
 
     private void Update()
     {
-        if (wave1Start)
+        if (map1Wave1Start)
         {
-            WavePointSet(1);
-            wave1Start = false;
+            WavePointSet(1, true);
+            map1Wave1Start = false;
         }
-        if (wave2Start)
+        if (map1Wave2Start)
         {
-            WavePointSet(2);
-            wave2Start = false;
+            WavePointSet(2, true);
+            map1Wave2Start = false;
         }
-        if (wave3Start)
+        if (map1Wave3Start)
         {
-            WavePointSet(3);
-            wave3Start = false;
+            WavePointSet(3, true);
+            map1Wave3Start = false;
         }
-        if (wave4Start)
+        if (map1Wave4Start)
         {
-            WavePointSet(4);
-            wave4Start = false;
+            WavePointSet(4, true);
+            map1Wave4Start = false;
         }
-        if (wave5Start)
+        if (map1Wave5Start)
         {
-            WavePointSet(5);
-            wave5Start = false;
+            WavePointSet(5, true);
+            map1Wave5Start = false;
+        }
+        if (map2Wave1Start)
+        {
+            WavePointSet(1, false);
+            map2Wave1Start = false;
+        }
+        if (map2Wave2Start)
+        {
+            WavePointSet(2, false);
+            map2Wave2Start = false;
+        }
+        if (map2Wave3Start)
+        {
+            WavePointSet(3, false);
+            map2Wave3Start = false;
+        }
+        if (map2Wave4Start)
+        {
+            WavePointSet(4, false);
+            map2Wave4Start = false;
+        }
+        if (map2Wave5Start)
+        {
+            WavePointSet(5, false);
+            map2Wave5Start = false;
         }
     }
 
-    public void AreaGroupSet(MonsterSpawner spawner, int groupNum)
+    public void AreaGroupSet(MonsterSpawner spawner, int groupNum, bool isHostMap)
     {
+        isInHostMap = isHostMap;
         switch (groupNum)
         {
             case 1 :
-                area1Group.Add(spawner);
+                if(isInHostMap)
+                    map1Area1Group.Add(spawner);
+                else
+                    map2Area1Group.Add(spawner);
                 break;
             case 2 :
-                area2Group.Add(spawner);
+                if (isInHostMap)
+                    map1Area2Group.Add(spawner);
+                else
+                    map2Area2Group.Add(spawner);
                 break;
             case 3 :
-                area3Group.Add(spawner);
+                if (isInHostMap)
+                    map1Area3Group.Add(spawner);
+                else
+                    map2Area3Group.Add(spawner);
                 break;
             case 4 :
-                area4Group.Add(spawner);
+                if (isInHostMap)
+                    map1Area4Group.Add(spawner);
+                else
+                    map2Area4Group.Add(spawner);
                 break;
             case 5 :
-                area5Group.Add(spawner);
+                if (isInHostMap)
+                    map1Area5Group.Add(spawner);
+                else
+                    map2Area5Group.Add(spawner);
                 break;
             default :
                 break;
         }
     }
 
-    public void AreaGroupRemove(MonsterSpawner spawner, int groupNum)
+    public void AreaGroupRemove(MonsterSpawner spawner, int groupNum, bool isInHostMap)
     {
         switch (groupNum)
         {
             case 1:
-                if(area1Group.Contains(spawner))
-                    area1Group.Remove(spawner);
+                if(isInHostMap && map1Area1Group.Contains(spawner))
+                    map1Area1Group.Remove(spawner);
+                else if (!isInHostMap && map2Area1Group.Contains(spawner))
+                    map2Area1Group.Remove(spawner);        
                 break;
             case 2:
-                if (area2Group.Contains(spawner))
-                    area2Group.Remove(spawner);
+                if (isInHostMap && map1Area2Group.Contains(spawner))
+                    map1Area2Group.Remove(spawner);
+                else if (!isInHostMap && map2Area2Group.Contains(spawner))
+                    map2Area2Group.Remove(spawner);
                 break;
             case 3:
-                if (area3Group.Contains(spawner))
-                    area3Group.Remove(spawner);
+                if (isInHostMap && map1Area3Group.Contains(spawner))
+                    map1Area3Group.Remove(spawner);
+                else if (!isInHostMap && map2Area3Group.Contains(spawner))
+                    map2Area3Group.Remove(spawner);
                 break;
             case 4:
-                if (area4Group.Contains(spawner))
-                    area4Group.Remove(spawner);
+                if (isInHostMap && map1Area4Group.Contains(spawner))
+                    map1Area4Group.Remove(spawner);
+                else if (!isInHostMap && map2Area4Group.Contains(spawner))
+                    map2Area4Group.Remove(spawner);
                 break;
             case 5:
-                if (area5Group.Contains(spawner))
-                    area5Group.Remove(spawner);
+                if (isInHostMap && map1Area5Group.Contains(spawner))
+                    map1Area5Group.Remove(spawner);
+                else if (!isInHostMap && map2Area5Group.Contains(spawner))
+                    map2Area5Group.Remove(spawner);
                 break;
             default:
                 break;
@@ -141,25 +213,40 @@ public class MonsterSpawnerManager : NetworkBehaviour
     }
 
     [QFSW.QC.Command()]
-    private void WavePointSet(int waveLevel)
+    private void WavePointSet(int waveLevel, bool isInHostMap)
     {
         MonsterSpawner waveSpawner = null; 
         switch (waveLevel)
         {
             case 1:
-                waveSpawner = area1Group[Random.Range(0, area1Group.Count)];
+                if (isInHostMap)
+                    waveSpawner = map1Area1Group[Random.Range(0, map1Area1Group.Count)];
+                else
+                    waveSpawner = map2Area1Group[Random.Range(0, map2Area1Group.Count)];
                 break;
             case 2:
-                waveSpawner = area2Group[Random.Range(0, area2Group.Count)];
+                if (isInHostMap)
+                    waveSpawner = map1Area2Group[Random.Range(0, map1Area2Group.Count)];
+                else
+                    waveSpawner = map2Area2Group[Random.Range(0, map2Area2Group.Count)];
                 break;
             case 3:
-                waveSpawner = area3Group[Random.Range(0, area3Group.Count)];
+                if (isInHostMap)
+                    waveSpawner = map1Area3Group[Random.Range(0, map1Area3Group.Count)];
+                else
+                    waveSpawner = map2Area3Group[Random.Range(0, map2Area3Group.Count)];
                 break;
             case 4:
-                waveSpawner = area4Group[Random.Range(0, area4Group.Count)];
+                if (isInHostMap)
+                    waveSpawner = map1Area4Group[Random.Range(0, map1Area4Group.Count)];
+                else
+                    waveSpawner = map2Area4Group[Random.Range(0, map2Area4Group.Count)];
                 break;
             case 5:
-                waveSpawner = area5Group[Random.Range(0, area5Group.Count)];
+                if (isInHostMap)
+                    waveSpawner = map1Area5Group[Random.Range(0, map1Area5Group.Count)];
+                else
+                    waveSpawner = map2Area5Group[Random.Range(0, map2Area5Group.Count)];
                 break;
             default:
                 break;
@@ -168,10 +255,15 @@ public class MonsterSpawnerManager : NetworkBehaviour
         if (waveSpawner != null)
         {
             SpawnerGroupManager spawnerGroup = waveSpawner.groupManager;
-            if (FindMatrix(spawnerGroup))
+            if (FindMatrix(spawnerGroup, isInHostMap))
             {
-                Vector3 waveMainPos = spawnerMatrix[xIndex, yIndex].GetComponent<SpawnerGroupManager>().spawnerList[0].transform.position;
-                Vector3 waveTrPos = WavePointSet(waveMainPos);
+                Vector3 waveMainPos;
+                if (isInHostMap)
+                    waveMainPos = spawnerMap1Matrix[xIndex, yIndex].GetComponent<SpawnerGroupManager>().spawnerList[0].transform.position;
+                else
+                    waveMainPos = spawnerMap2Matrix[xIndex, yIndex].GetComponent<SpawnerGroupManager>().spawnerList[0].transform.position;
+
+                Vector3 waveTrPos = WavePointSetPos(waveMainPos, isInHostMap);
                 for (int i = xIndex - 1; i <= xIndex + 1; i++)
                 {
                     for (int j = yIndex - 1; j <= yIndex + 1; j++)
@@ -181,30 +273,42 @@ public class MonsterSpawnerManager : NetworkBehaviour
                             continue;
                         }
 
-                        // 배열의 경계를 벗어나지 않는지 확인합니다.
-                        if (i >= 0 && i < spawnerMatrix.GetLength(0) && j >= 0 && j < spawnerMatrix.GetLength(1))
+                        if(isInHostMap)
                         {
-                            if (spawnerMatrix[i, j] != null && spawnerMatrix[i, j].TryGetComponent(out SpawnerGroupManager group))
+                            if (i >= 0 && i < spawnerMap1Matrix.GetLength(0) && j >= 0 && j < spawnerMap1Matrix.GetLength(1))
                             {
-                                group.WaveSet(waveTrPos);
+                                if (spawnerMap1Matrix[i, j] != null && spawnerMap1Matrix[i, j].TryGetComponent(out SpawnerGroupManager group))
+                                {
+                                    group.WaveSet(waveTrPos);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (i >= 0 && i < spawnerMap2Matrix.GetLength(0) && j >= 0 && j < spawnerMap2Matrix.GetLength(1))
+                            {
+                                if (spawnerMap2Matrix[i, j] != null && spawnerMap2Matrix[i, j].TryGetComponent(out SpawnerGroupManager group))
+                                {
+                                    group.WaveSet(waveTrPos);
+                                }
                             }
                         }
                     }
                 }
                 Debug.Log("waveStart : " + waveTrPos + " : " + waveMainPos);
-                WaveStartClientRpc(waveTrPos);
+                WaveStartClientRpc(waveTrPos, isInHostMap);
             }
         }
     }
 
     [ClientRpc]
-    void WaveStartClientRpc(Vector3 waveTrPos)
+    void WaveStartClientRpc(Vector3 waveTrPos, bool isInHostMap)
     {
-        wavePoint.WaveStart(waveTrPos);
+        wavePoint.WaveStart(waveTrPos, isInHostMap);
         BattleBGMCtrl.instance.WaveStart();
     }
 
-    bool FindMatrix(SpawnerGroupManager spawnerGroup)
+    bool FindMatrix(SpawnerGroupManager spawnerGroup, bool isInHostMap)
     {
         bool find = false;
         xIndex = 0;
@@ -219,30 +323,49 @@ public class MonsterSpawnerManager : NetworkBehaviour
                     continue;
                 }
 
-                if (spawnerMatrix[i, j] != null && spawnerMatrix[i, j].TryGetComponent(out SpawnerGroupManager group) && spawnerGroup == group)
+                if(isInHostMap)
                 {
-                    xIndex = i;
-                    yIndex = j;
-                    find = true;
-                    return find;
+                    if (spawnerMap1Matrix[i, j] != null && spawnerMap1Matrix[i, j].TryGetComponent(out SpawnerGroupManager group) && spawnerGroup == group)
+                    {
+                        xIndex = i;
+                        yIndex = j;
+                        find = true;
+                        return find;
+                    }
+                }
+                else
+                {
+                    if (spawnerMap2Matrix[i, j] != null && spawnerMap2Matrix[i, j].TryGetComponent(out SpawnerGroupManager group) && spawnerGroup == group)
+                    {
+                        xIndex = i;
+                        yIndex = j;
+                        find = true;
+                        return find;
+                    }
                 }
             }
         }
         return find;
     }
 
-    Vector3 WavePointSet(Vector3 wavePoint)
+    Vector3 WavePointSetPos(Vector3 wavePoint, bool isHostMap)
     {
-        Vector3 mapCenter = GameManager.instance.hostPlayerSpawnPos;
+        Vector3 mapCenter;
+        if(isHostMap)
+            mapCenter = GameManager.instance.hostPlayerSpawnPos;
+        else
+            mapCenter = GameManager.instance.clientPlayerSpawnPos;
 
-        Vector3 mapCornerA = new Vector3(0, 0, 0); // 좌측 하단
-        Vector3 mapCornerB = new Vector3(spawnerSetManager.width, 0, 0); // 우측 하단
-        Vector3 mapCornerC = new Vector3(spawnerSetManager.width, spawnerSetManager.height, 0); // 우측 상단
-        Vector3 mapCornerD = new Vector3(0, spawnerSetManager.height, 0); // 좌측 상단
+        float mapHalfSize = (float)spawnerSetManager.width / 2;
+
+        Vector3 mapCornerA = new Vector3(mapCenter.x - mapHalfSize, mapCenter.y - mapHalfSize, 0); // 좌측 하단
+        Vector3 mapCornerB = new Vector3(mapCenter.x + mapHalfSize, mapCenter.y - mapHalfSize, 0); // 우측 하단
+        Vector3 mapCornerC = new Vector3(mapCenter.x + mapHalfSize, mapCenter.y + mapHalfSize, 0); // 우측 상단
+        Vector3 mapCornerD = new Vector3(mapCenter.x - mapHalfSize, mapCenter.y + mapHalfSize, 0); // 좌측 상단
 
         Vector3 intersectionPointA = CalculateIntersection(mapCenter, wavePoint, mapCornerA, mapCornerB);
         Vector3 intersectionPointB = CalculateIntersection(mapCenter, wavePoint, mapCornerB, mapCornerC);
-        Vector3 intersectionPointC = CalculateIntersection(mapCenter, wavePoint, mapCornerC, mapCornerD);
+        Vector3 intersectionPointC = CalculateIntersection(mapCenter, wavePoint, mapCornerC, mapCornerD); 
         Vector3 intersectionPointD = CalculateIntersection(mapCenter, wavePoint, mapCornerD, mapCornerA);
 
         Vector3 closestPoint = GetClosestPoint(wavePoint, new Vector3[] { intersectionPointA, intersectionPointB, intersectionPointC, intersectionPointD });
@@ -250,24 +373,24 @@ public class MonsterSpawnerManager : NetworkBehaviour
         float xPointSet = 0;
         float yPointSet = 0;
 
-        if (closestPoint.x <= 30)
+        if(closestPoint.x >= mapCenter.x + mapHalfSize - 30)
         {
-            xPointSet = 30;
+            xPointSet = closestPoint.x - 30;
         }
-        else if (closestPoint.x >= spawnerSetManager.width - 30)
+        else if(closestPoint.x <= mapCenter.x - mapHalfSize + 30)
         {
-            xPointSet = spawnerSetManager.width - 30;
+            xPointSet = closestPoint.x + 30;
         }
         else
             xPointSet = closestPoint.x;
 
-        if (closestPoint.y <= 30)
+        if (closestPoint.y >= mapCenter.y + mapHalfSize - 30)
         {
-            yPointSet = 30;
+            yPointSet = closestPoint.y - 30;
         }
-        else if (closestPoint.y >= spawnerSetManager.height - 30)
+        else if (closestPoint.y <= mapCenter.y - mapHalfSize + 30)
         {
-            yPointSet = spawnerSetManager.height - 30;
+            yPointSet = closestPoint.y + 30;
         }
         else
             yPointSet = closestPoint.y;

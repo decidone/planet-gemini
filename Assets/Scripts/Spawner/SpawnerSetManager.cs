@@ -32,9 +32,13 @@ public class SpawnerSetManager : NetworkBehaviour
     [SerializeField]
     MonsterSpawnerManager monsterSpawnerManager;
 
-    public GameObject[,] spawnerMatrix;
+    public GameObject[,] spawnerMap1Matrix;
+    public GameObject[,] spawnerMap2Matrix;
     int xIndex;
     int yIndex;
+
+    Map hostMap;
+    Map clientMap;
 
     #region Singleton
     public static SpawnerSetManager instance;
@@ -52,20 +56,25 @@ public class SpawnerSetManager : NetworkBehaviour
 
     private void Start()
     {
-        spawnerMatrix = new GameObject[splitCount, splitCount];
+        //hostMap = GameManager.instance.hostMap;
+        //clientMap = GameManager.instance.clientMap;
+        spawnerMap1Matrix = new GameObject[splitCount, splitCount];
+        spawnerMap2Matrix = new GameObject[splitCount, splitCount];
         xIndex = 0;
         yIndex = 0;
     }
 
     [ServerRpc]
-    public void AreaMapSetServerRpc(Vector2 centerPos, int mapSplitCount)
+    public void AreaMapSetServerRpc(Vector2 centerPos, int mapSplitCount, bool isHostMap)
     {
-        width = GameManager.instance.map.width;
-        height = GameManager.instance.map.height;
+        hostMap = GameManager.instance.hostMap;
+        clientMap = GameManager.instance.clientMap; 
+        width = hostMap.width;
+        height = hostMap.height;
         splitCount = mapSplitCount;
         areaWSize = width / splitCount;
         areaHSize = height / splitCount;
-
+        areaPosLevel.Clear();
         float centerX = centerPos.x; // 맵의 중앙 x 좌표
         float centerY = centerPos.y; // 맵의 중앙 y 좌표
 
@@ -92,11 +101,17 @@ public class SpawnerSetManager : NetworkBehaviour
             }
         }
 
-        SpawnerSet();
+        SpawnerSet(isHostMap);
     }
 
-    void SpawnerSet()
+    void SpawnerSet(bool isHostMap)
     {
+        Map map;
+        if (isHostMap )
+            map = hostMap;
+        else
+            map = clientMap;
+
         foreach (var data in areaPosLevel)
         {
             if(basePos == (Vector3)data.Key)
@@ -136,17 +151,35 @@ public class SpawnerSetManager : NetworkBehaviour
 
             Vector2 newPoint;
 
-            for (int i = 0; i < levelData.maxSpawner; i++)
+            if (isHostMap)
             {
-                do
+                for (int i = 0; i < levelData.maxSpawner; i++)
                 {
-                    int x = (int)Random.Range(-xRadius, xRadius);
-                    int y = (int)Random.Range(-yRadius, yRadius);
+                    do
+                    {
+                        int x = (int)Random.Range(-xRadius, xRadius);
+                        int y = (int)Random.Range(-yRadius, yRadius);
 
-                    newPoint = centerPos + new Vector2(x, y);
-                } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || GameManager.instance.map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake");    // 거리 체크하여 가까우면 다시 돌리기
-                
-                randomPoints[i] = newPoint;
+                        newPoint = centerPos + new Vector2(x, y);
+                    } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake");    // 거리 체크하여 가까우면 다시 돌리기
+
+                    randomPoints[i] = newPoint;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < levelData.maxSpawner; i++)
+                {
+                    do
+                    {
+                        int x = (int)Random.Range(-xRadius, xRadius);
+                        int y = (int)Random.Range(-yRadius, yRadius);
+
+                        newPoint = centerPos + new Vector2(x, y);
+                    } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake");    // 거리 체크하여 가까우면 다시 돌리기
+
+                    randomPoints[i] = newPoint;
+                }
             }
 
             int index = 0;
@@ -160,20 +193,24 @@ public class SpawnerSetManager : NetworkBehaviour
 
                 spawnerObj.transform.position = randomPoints[index];
 
-                Cell cellData = GameManager.instance.map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y);
+                Cell cellData = map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y);
                 if (cellData.obj != null)
                 {
-                    Destroy(GameManager.instance.map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y).obj);
+                    Destroy(map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y).obj);
                 }
                 spawnGroup.GetComponent<SpawnerGroupManager>().SpawnerSet(spawnerObj);
                 spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);
                 monsterSpawner.groupManager = spawnGroup.GetComponent<SpawnerGroupManager>();
-                monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos);
-                monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel);
+                monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos, isHostMap);
+                monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel, isHostMap);
                 index++;
             }
 
-            spawnerMatrix[xIndex, yIndex] = spawnGroup;
+            if (isHostMap)
+                spawnerMap1Matrix[xIndex, yIndex] = spawnGroup;
+            else
+                spawnerMap2Matrix[xIndex, yIndex] = spawnGroup;
+
             xIndex++;
             if(xIndex >= splitCount)
             {

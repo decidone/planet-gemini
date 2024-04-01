@@ -36,7 +36,7 @@ public class BuildingInven : MonoBehaviour
         gameManager = GameManager.instance;
         scienceDb = TempScienceDb.instance;
         soundManager = SoundManager.Instance;
-        buildingDataList = BuildingList.instance.buildingDataList;
+        buildingDataList = BuildingList.instance.buildingListSO.buildingSOList;
         buildingTagsBtn = buildingTagsPanel.GetComponentsInChildren<Button>();
 
         for (int i = 0; i < buildingTagsBtn.Length; i++)

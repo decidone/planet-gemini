@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class SendUnderBeltCtrl : LogisticsCtrl
@@ -20,16 +21,18 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             if (isSetBuildingOk && nearObj[2] == null)
                 CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
 
-            if (!isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding && checkObj)
             {
 
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                 {
-                    GetItem();
+                    GetItemClientRpc();
                 }
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
-                    SendItem(itemList[0]);
+                    int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
+                    SendItemClientRpc(itemIndex);
+                    //SendItem(itemList[0]);
                 }
 
             }
@@ -56,6 +59,29 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
         checkObj = true;
     }
+
+
+    [ClientRpc]
+    protected override void SendItemClientRpc(int itemIndex)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        if (setFacDelayCoroutine != null)
+        {
+            return;
+        }
+
+        itemSetDelay = true;
+
+        Structure outFactory = outObj[0].GetComponent<Structure>();
+
+        if (!outFactory.isFull)
+        {
+            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[0], item));
+        }
+
+        Invoke(nameof(DelaySetItem), structureData.SendDelay);
+    }
+
 
     protected override void SendItem(Item item)
     {
@@ -85,6 +111,5 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
         nearObj[0] = Obj;
         outObj.Add(Obj);
-        Debug.Log("newSend");
     }
 }

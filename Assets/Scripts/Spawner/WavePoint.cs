@@ -6,15 +6,25 @@ using UnityEngine.UI;
 public class WavePoint : MonoBehaviour
 {
     GameObject player;
-    public GameObject instanceObj;
+    public GameObject canvasObj;
     public GameObject mapObj;
     private float defaultAngle;
-    bool isWaveStart = false;
+
+    bool isMap1WaveStart = false;
+    bool isMap2WaveStart = false;
+    Vector2 map1WavePos;
+    Vector2 map2WavePos;
 
     [SerializeField]
-    protected GameObject lineObj;
-    LineRenderer lineRenderer;
-    protected Vector3 basePos;
+    GameObject lineObj;
+
+    LineRenderer map1LineRenderer;
+    LineRenderer map2LineRenderer;
+
+    Vector3 map1BasePos;
+    Vector3 map2BasePos;
+
+    GameManager gameManager;
 
     #region Singleton
     public static WavePoint instance;
@@ -33,56 +43,95 @@ public class WavePoint : MonoBehaviour
 
     private void Start()
     {
-        instanceObj.transform.localScale = new Vector3(1, 1, 1);
+        gameManager = GameManager.instance;
+        canvasObj.transform.localScale = new Vector3(1, 1, 1);
 
         Vector2 dir = new Vector2(Screen.width, Screen.height);
         defaultAngle = Vector2.Angle(new Vector2(0, 1), dir);
+
+        map1BasePos = gameManager.hostPlayerSpawnPos;
+        map2BasePos = gameManager.clientPlayerSpawnPos;
     }
 
 
     void Update()
     {
-        if (isWaveStart)
+        if (isMap1WaveStart && gameManager.isPlayerInHostMap)
         {
-            SetIndicator();
+            SetIndicator(true);
+        }
+        else if (isMap2WaveStart && !gameManager.isPlayerInHostMap)
+        {
+            SetIndicator(false);
+        }
+        else
+        {
+            canvasObj.SetActive(false);
+            mapObj.SetActive(false);
         }
     }
 
-    public void PlayerSet(GameObject _player, Vector3 _basePos)
+    public void PlayerSet(GameObject _player)
     {
         player = _player;
-        basePos = _basePos;
     }
 
-    public void WaveStart(Vector3 wavePos)
+    public void WaveStart(Vector3 wavePos, bool isInHostMap)
     {
-        transform.position = wavePos;
-        isWaveStart = true;
-        SetIndicator();
-        instanceObj.SetActive(true);
-        mapObj.SetActive(true);
+        if(isInHostMap)
+        {
+            map1WavePos = wavePos;
+            isMap1WaveStart = true;
 
-        if(lineRenderer != null)
-            Destroy(lineRenderer);
+            GameObject currentLine;
 
-        GameObject currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
-        lineRenderer = currentLine.GetComponent<LineRenderer>();
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, wavePos);
-        lineRenderer.SetPosition(1, basePos);
+            if (map1LineRenderer == null)
+            {
+                currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
+                map1LineRenderer = currentLine.GetComponent<LineRenderer>();
+            }
+
+            map1LineRenderer.positionCount = 2;
+            map1LineRenderer.SetPosition(0, map1WavePos);
+            map1LineRenderer.SetPosition(1, map1BasePos);
+        }
+        else
+        {
+            map2WavePos = wavePos;
+            isMap2WaveStart = true;
+            GameObject currentLine;
+
+            if (map2LineRenderer == null)
+            {
+                currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
+                map2LineRenderer = currentLine.GetComponent<LineRenderer>();
+            }
+
+            map2LineRenderer.positionCount = 2;
+            map2LineRenderer.SetPosition(0, map2WavePos);
+            map2LineRenderer.SetPosition(1, map2BasePos);
+        }
     }
 
     public void WaveEnd()
     {
-        isWaveStart = false;
-        instanceObj.SetActive(false);
+        isMap1WaveStart = false;
+        canvasObj.SetActive(false);
         mapObj.SetActive(false);
 
-        Destroy(lineRenderer);
+        Destroy(map1LineRenderer);
     }
 
-    public void SetIndicator()
+    public void SetIndicator(bool isInHostMap)
     {
+        if (isInHostMap)
+            transform.position = map1WavePos;
+        else
+            transform.position = map2WavePos;
+
+        canvasObj.SetActive(true);
+        mapObj.SetActive(true);
+
         if (!isOffScreen())
             return;
 
@@ -95,13 +144,11 @@ public class WavePoint : MonoBehaviour
         float x = target.x - 0.5f;
         float y = target.y - 0.5f;
 
-        RectTransform indicatorRect = instanceObj.GetComponent<RectTransform>();
+        RectTransform indicatorRect = canvasObj.GetComponent<RectTransform>();
 
         if (-defaultAngle <= angle && angle <= defaultAngle)
         {
-            //anchor minY, maxY 0.96
-
-            float anchorMinMaxY = 0.96f;
+            float anchorMinMaxY = 0.94f;
 
             float anchorMinMaxX = x * (anchorMinMaxY - 0.5f) / y + 0.5f;
 
@@ -113,8 +160,6 @@ public class WavePoint : MonoBehaviour
         }
         else if (defaultAngle <= angle && angle <= 180 - defaultAngle)
         {
-            //anchor minX, maxX 0.94
-
             float anchorMinMaxX = 0.94f;
 
             float anchorMinMaxY = y * (anchorMinMaxX - 0.5f) / x + 0.5f;
@@ -127,8 +172,6 @@ public class WavePoint : MonoBehaviour
         }
         else if (-180 + defaultAngle <= angle && angle <= -defaultAngle)
         {
-            //anchor minX, maxX 0.06
-
             float anchorMinMaxX = 0.06f;
 
             float anchorMinMaxY = (y * (anchorMinMaxX - 0.5f) / x) + 0.5f;
@@ -141,9 +184,7 @@ public class WavePoint : MonoBehaviour
         }
         else if (-180 <= angle && angle <= -180 + defaultAngle || 180 - defaultAngle <= angle && angle <= 180)
         {
-            //anchor minY, maxY 0.04
-
-            float anchorMinMaxY = 0.04f;
+            float anchorMinMaxY = 0.06f;
 
             float anchorMinMaxX = x * (anchorMinMaxY - 0.5f) / y + 0.5f;
 
@@ -163,12 +204,12 @@ public class WavePoint : MonoBehaviour
         Vector2 vec = Camera.main.WorldToViewportPoint(transform.position);
         if (vec.x >= 0 && vec.x <= 1 && vec.y >= 0 && vec.y <= 1)
         {
-            instanceObj.SetActive(false);
+            canvasObj.SetActive(false);
             return false;
         }
         else
         {
-            instanceObj.SetActive(true);
+            canvasObj.SetActive(true);
             return true;
         }
     }

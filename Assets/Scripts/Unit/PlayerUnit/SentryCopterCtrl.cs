@@ -26,7 +26,7 @@ public class SentryCopterCtrl : UnitAi
                 rot = Quaternion.AngleAxis(angle + 180, Vector3.forward);
             else
                 rot = Quaternion.AngleAxis(angle, Vector3.forward);
-            NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
+            NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
             if (!bulletPool.IsSpawned) bulletPool.Spawn();
 
             //bulletPool.transform.position = new Vector2(this.transform.position.x, this.transform.position.y);

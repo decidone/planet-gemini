@@ -74,7 +74,7 @@ public class UnderBeltCtrl : MonoBehaviour
                     SetGetUnderBelt();
                     return;
                 }
-            }            
+            }
         }
         ReturnSendBelt();
     }

@@ -47,7 +47,8 @@ public class MapGenerator : MonoBehaviour
     public AstarPath astar;
     public CompositeCollider2D comp;
     bool isCompositeDone;
-    Vector3 mapCenterPos;
+    Vector3 map1CenterPos;
+    Vector3 map2CenterPos;
 
     SpawnerSetManager spawnerPosSet;
     public static MapGenerator instance;
@@ -83,12 +84,12 @@ public class MapGenerator : MonoBehaviour
         if (isMultiPlay)
             clientMap.mapData = new List<List<Cell>>();
 
-        mapCenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt(height / 2));
-        AddGridGraph(mapCenterPos);
+        map1CenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt(height / 2));
+        AddGridGraph(map1CenterPos, true);
         if (isMultiPlay)
         {
-            mapCenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt((height / 2) + height + clientMapOffsetY));
-            AddGridGraph(mapCenterPos);
+            map2CenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt((height / 2) + height + clientMapOffsetY));
+            AddGridGraph(map2CenterPos, false);
         }
         isCompositeDone = false;
         comp = lakeTilemap.GetComponent<CompositeCollider2D>();
@@ -102,7 +103,6 @@ public class MapGenerator : MonoBehaviour
         SetSpawnPos(hostMap, true);
         if (isMultiPlay)
             SetSpawnPos(clientMap, false);
-
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         spawnerPosSet = SpawnerSetManager.instance;
@@ -120,7 +120,9 @@ public class MapGenerator : MonoBehaviour
     {
         if (spawnerPosSet && mapSizeData != null)
         {
-            spawnerPosSet.AreaMapSetServerRpc(mapCenterPos, mapSizeData.MapSplitCount);
+            spawnerPosSet.AreaMapSetServerRpc(map1CenterPos, mapSizeData.MapSplitCount, true);
+            if (isMultiPlay)
+                spawnerPosSet.AreaMapSetServerRpc(map2CenterPos, mapSizeData.MapSplitCount, false);
         }
     }
 
@@ -540,10 +542,15 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    void AddGridGraph(Vector3 centerPos)
+    void AddGridGraph(Vector3 centerPos, bool isHostMap)
     {
         AstarData data = AstarPath.active.data;
         GridGraph gg = data.AddGraph(typeof(GridGraph)) as GridGraph;
+        if(isHostMap)
+            gg.name = "Map1";
+        else
+            gg.name = "Map2";
+
         gg.center = centerPos;
         gg.SetDimensions(width, height, 1);
         gg.is2D = true;

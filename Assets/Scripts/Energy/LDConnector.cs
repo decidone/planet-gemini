@@ -10,8 +10,7 @@ public class LDConnector : Structure
     bool isBuildDone;
     bool isPlaced;
     GameManager gameManager;
-    [HideInInspector]
-    public GameObject preBuildingObj;
+    PreBuilding preBuilding;
     Structure preBuildingStr;
     bool preBuildingCheck;
     [HideInInspector]
@@ -23,7 +22,7 @@ public class LDConnector : Structure
         isPlaced = false;
         clickEvent = GetComponent<MapClickEvent>();
         gameManager = GameManager.instance;
-        preBuildingObj = gameManager.preBuildingObj;
+        preBuilding = PreBuilding.instance;
     }
 
     protected override void Update()
@@ -40,13 +39,12 @@ public class LDConnector : Structure
         }
         if (gameManager.focusedStructure == null)
         {
-            if (preBuildingObj.activeSelf)
+            if (preBuilding.isBuildingOn)
             {
                 if (!preBuildingCheck)
                 {
                     preBuildingCheck = true;
-                    preBuildingStr = preBuildingObj.GetComponentInChildren<Structure>();
-                    if (preBuildingStr != null && (preBuildingStr.energyUse || preBuildingStr.isEnergyStr))
+                    if (preBuilding.isEnergyUse || preBuilding.isEnergyStr)
                     {
                         view.enabled = true;
                     }
