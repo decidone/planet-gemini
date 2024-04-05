@@ -24,6 +24,7 @@ public class MapGenerator : MonoBehaviour
     public Tilemap resourcesTilemap;
     public Tilemap resourcesIconTilemap;
     public GameObject objects;
+    public Transform mapFog;
     //public Map map;
     public Map hostMap;
     public Map clientMap;
@@ -103,6 +104,7 @@ public class MapGenerator : MonoBehaviour
         SetSpawnPos(hostMap, true);
         if (isMultiPlay)
             SetSpawnPos(clientMap, false);
+
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         spawnerPosSet = SpawnerSetManager.instance;
@@ -350,6 +352,28 @@ public class MapGenerator : MonoBehaviour
             CreateResource(clientMap, false);
             CreateObj(clientMap, false);
         }
+
+        SetMapFog();
+    }
+
+    void SetMapFog()
+    {
+        float width;
+        float height;
+
+        if (!isMultiPlay)
+        {
+            width = hostMap.width;
+            height = hostMap.height;
+        }
+        else
+        {
+            width = hostMap.width;
+            height = hostMap.height + clientMap.height + clientMapOffsetY;
+        }
+
+        mapFog.localScale = new Vector3(width, height, 1);
+        mapFog.position = new Vector3(width / 2, height / 2, 1);
     }
 
     void SetBiomeTable(bool isHostMap)

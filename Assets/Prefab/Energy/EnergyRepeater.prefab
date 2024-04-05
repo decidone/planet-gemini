@@ -325,8 +325,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 618645769
+  m_SortingLayer: 1
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 8ae5dcf00ef1c154fb7cfc030cecb678, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -577,7 +577,6 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   connector: {fileID: 3796074299410655006}
   view: {fileID: 8889250720948334388}
-  preBuildingObj: {fileID: 0}
 --- !u!61 &78957181825646357
 BoxCollider2D:
   m_ObjectHideFlags: 0

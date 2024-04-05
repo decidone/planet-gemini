@@ -482,8 +482,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 618645769
+  m_SortingLayer: 1
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 8ae5dcf00ef1c154fb7cfc030cecb678, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -774,7 +774,6 @@ MonoBehaviour:
   connector: {fileID: 7265358927153795667}
   FuelItem: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   view: {fileID: 6363363537288611314}
-  preBuildingObj: {fileID: 0}
   fuelRequirement: 10
 --- !u!61 &5564630921721189503
 BoxCollider2D:

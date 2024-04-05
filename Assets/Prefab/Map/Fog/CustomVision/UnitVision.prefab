@@ -118,6 +118,18 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 7262420126983205447, guid: e45f026afbed4e44a8d646846a00c56c, type: 3}
+      propertyPath: m_BackSortingOrder
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7262420126983205447, guid: e45f026afbed4e44a8d646846a00c56c, type: 3}
+      propertyPath: m_FrontSortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7262420126983205447, guid: e45f026afbed4e44a8d646846a00c56c, type: 3}
+      propertyPath: m_IsCustomRangeActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7657240475368427345, guid: e45f026afbed4e44a8d646846a00c56c, type: 3}
       propertyPath: m_RootOrder
       value: 1

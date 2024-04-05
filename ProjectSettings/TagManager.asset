@@ -13,6 +13,7 @@ TagManager:
   - Spawner
   - MapObj
   - Energy
+  - PreBuildingImg
   layers:
   - Default
   - TransparentFX
@@ -49,4 +50,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Energy
+    uniqueID: 618645769
     locked: 0
