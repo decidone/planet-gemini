@@ -32,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 1784946214}
   m_Father: {fileID: 4936351438317866095}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &133983791
 Tilemap:
@@ -311,6 +311,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7ca60f5dca2b7924e8d3f743dc0ae8b6, type: 2}
   - {fileID: 11400000, guid: 8bc366509d358d84db77f2cb236239cd, type: 2}
   - {fileID: 11400000, guid: 5cbd13949784a1a47bb2cb6642454d89, type: 2}
+  cliffWall: []
+  cliffDarkWall: []
+  cliffLeftCornerWall: []
+  cliffRightCornerWall: []
+  cliffBottomLeftCornerWall: []
+  cliffBottomRightCornerWall: []
   objects: []
 --- !u!1 &1784946213
 GameObject:
@@ -531,6 +537,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 668e546b9e884354fb13d76f5964cd95, type: 2}
   - {fileID: 11400000, guid: 2ff7c3ee95307d744b7c79ae5299da40, type: 2}
   - {fileID: 11400000, guid: 4af4f58b6b7b23a4597d2cdc78d27111, type: 2}
+  cliffWall: []
+  cliffDarkWall: []
+  cliffLeftCornerWall: []
+  cliffRightCornerWall: []
+  cliffBottomLeftCornerWall: []
+  cliffBottomRightCornerWall: []
   objects: []
 --- !u!1 &2480601897858781117
 GameObject:
@@ -631,6 +643,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 842a27df0940c844c835cbbbf7b2911b, type: 2}
   - {fileID: 11400000, guid: 97fea4d51407bac42836a7aae7551a40, type: 2}
   - {fileID: 11400000, guid: 9cf575cd82660e641b9e3d9287ee246e, type: 2}
+  cliffWall: []
+  cliffDarkWall: []
+  cliffLeftCornerWall: []
+  cliffRightCornerWall: []
+  cliffBottomLeftCornerWall: []
+  cliffBottomRightCornerWall: []
   objects: []
 --- !u!1 &2480601898082089274
 GameObject:
@@ -731,6 +749,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1edc95299ee4ccb4aa28bce4a0429131, type: 2}
   - {fileID: 11400000, guid: d8531447cac6d4c4998152859ec11899, type: 2}
   - {fileID: 11400000, guid: b2b598ced2d60d049be7bbadb0a2e31a, type: 2}
+  cliffWall: []
+  cliffDarkWall: []
+  cliffLeftCornerWall: []
+  cliffRightCornerWall: []
+  cliffBottomLeftCornerWall: []
+  cliffBottomRightCornerWall: []
   objects: []
 --- !u!1 &2480601898731471735
 GameObject:
@@ -788,11 +812,15 @@ MonoBehaviour:
   width: 160
   height: 90
   magnification: 60
+  cliffMagnification: 20
+  cliffScale: 0.2
   tilemap: {fileID: 200245074}
   lakeTilemap: {fileID: 1358553897}
+  cliffTilemap: {fileID: 467678674252105336}
   resourcesTilemap: {fileID: 133983791}
   resourcesIconTilemap: {fileID: 1784946216}
   objects: {fileID: 2480601899221957862}
+  mapFog: {fileID: 0}
   hostMap: {fileID: 471910585}
   clientMap: {fileID: 1233895887}
   isMultiPlay: 1
@@ -803,6 +831,7 @@ MonoBehaviour:
   snow: {fileID: 2480601897858781119}
   frozen: {fileID: 2480601899821529544}
   lake: {fileID: 1272315146}
+  cliff: {fileID: 7272305282230657611}
   resources:
   - {fileID: 11400000, guid: 51582f1d0251b214d8a03053ae6d33b9, type: 2}
   - {fileID: 11400000, guid: fb13a8a9ab5affe4f983df53ee493fe6, type: 2}
@@ -910,6 +939,7 @@ Transform:
   - {fileID: 2480601897858781116}
   - {fileID: 2480601899821529545}
   - {fileID: 1272315145}
+  - {fileID: 3619270804415131161}
   m_Father: {fileID: 2480601898731471625}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -992,6 +1022,12 @@ MonoBehaviour:
   bottom: []
   corner: []
   innerCorner: []
+  cliffWall: []
+  cliffDarkWall: []
+  cliffLeftCornerWall: []
+  cliffRightCornerWall: []
+  cliffBottomLeftCornerWall: []
+  cliffBottomRightCornerWall: []
   objects:
   - {fileID: 2557397671702435269, guid: 0317abe437244da46846ca7f94deecd1, type: 3}
   - {fileID: 7020412104492794120, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
@@ -1127,6 +1163,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dd68c805f93afbb46aa2696eab88da1b, type: 2}
   - {fileID: 11400000, guid: 2fc2033348d523d48825c7f29f365c9f, type: 2}
   - {fileID: 11400000, guid: 472f2130d2a952644886964ef4e92fbc, type: 2}
+  cliffWall: []
+  cliffDarkWall: []
+  cliffLeftCornerWall: []
+  cliffRightCornerWall: []
+  cliffBottomLeftCornerWall: []
+  cliffBottomRightCornerWall: []
   objects: []
 --- !u!1 &4225482038413158493
 GameObject:
@@ -1312,6 +1354,106 @@ CompositeCollider2D:
     m_Paths: []
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0
+--- !u!1 &4338108008748518263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3619270804415131161}
+  - component: {fileID: 7272305282230657611}
+  m_Layer: 0
+  m_Name: Cliff
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3619270804415131161
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4338108008748518263}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2480601898737974143}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7272305282230657611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4338108008748518263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  biome: cliff
+  diffBiome: 
+  tiles:
+  - {fileID: 11400000, guid: aa51ab5e0960b8f4db980c435e8cff72, type: 2}
+  - {fileID: 11400000, guid: b94388a947b09dd4e996407b1d67f035, type: 2}
+  - {fileID: 11400000, guid: c36e0375bb19c5b44aac8b17651451c8, type: 2}
+  pointTiles: []
+  exceptionalTiles:
+  - {fileID: 11400000, guid: d873a043ffcfab141ba124c5dcef16a5, type: 2}
+  top:
+  - {fileID: 11400000, guid: 79d34a63df8a24843a47cec9134e2144, type: 2}
+  - {fileID: 11400000, guid: 0a50041000b57604d8aafcc6a9968ae6, type: 2}
+  - {fileID: 11400000, guid: 47d50155c0ac55f45852075a0d3f1c45, type: 2}
+  left:
+  - {fileID: 11400000, guid: 74374b0e748fc734c9a3ba1ec288c597, type: 2}
+  - {fileID: 11400000, guid: b7f1e95c706c0354fb0ee00fd1b09c4e, type: 2}
+  - {fileID: 11400000, guid: f20fee716cd578a4dad18b16e151e805, type: 2}
+  right:
+  - {fileID: 11400000, guid: 73771398fe01d4542b8ee8bf5d7e651a, type: 2}
+  - {fileID: 11400000, guid: 72daefc159c09fc4c95d0181b9e3a7bf, type: 2}
+  - {fileID: 11400000, guid: cb46af622fd18484093a795342b3816e, type: 2}
+  bottom:
+  - {fileID: 11400000, guid: db34b1fa50c8965469a78f2d6b81480b, type: 2}
+  - {fileID: 11400000, guid: b7672d0203f668c4890a8b58b7e2e282, type: 2}
+  - {fileID: 11400000, guid: bd1fb8f34a2b25143ada90ecbd1a4086, type: 2}
+  corner:
+  - {fileID: 11400000, guid: 305e800c6895071469406ef7be52fe7f, type: 2}
+  - {fileID: 11400000, guid: 76cfc998fa3f7bb458e100cba8150029, type: 2}
+  - {fileID: 11400000, guid: c2f3aff0d7372754897065e1c2249a55, type: 2}
+  - {fileID: 11400000, guid: 113d6146f3b6a184caaf9dc9c569d529, type: 2}
+  innerCorner:
+  - {fileID: 11400000, guid: e5a4c4b6aa6b3e546afac8ee686ea948, type: 2}
+  - {fileID: 11400000, guid: fcf67deb8577a954f89323801c67d9a6, type: 2}
+  - {fileID: 11400000, guid: 28a066b34031af24f98aabfa18d66949, type: 2}
+  - {fileID: 11400000, guid: 4efe610101840eb4da806ad96aef99de, type: 2}
+  cliffWall:
+  - {fileID: 11400000, guid: 248fcbc0ec8218b49a859491d3b1c898, type: 2}
+  - {fileID: 11400000, guid: bd8f6afa784f39840a233d5f7a351394, type: 2}
+  - {fileID: 11400000, guid: fa342e8e3477f6741930a76cd08d74ea, type: 2}
+  cliffDarkWall:
+  - {fileID: 11400000, guid: 7e6c6cce36fc05844a5f59960f0ba5fb, type: 2}
+  - {fileID: 11400000, guid: 8d6105539fe07444d93c2f5052211b72, type: 2}
+  - {fileID: 11400000, guid: b97c15c8700b3bc40af41d0b37796e03, type: 2}
+  cliffLeftCornerWall:
+  - {fileID: 11400000, guid: 4a071f5f5cab5a945b5374e0e1786f1b, type: 2}
+  - {fileID: 11400000, guid: 84814366d208edc4f8e41ff0999c0baf, type: 2}
+  cliffRightCornerWall:
+  - {fileID: 11400000, guid: 3b04e8a11657853499a7affa4d9be748, type: 2}
+  - {fileID: 11400000, guid: b222ffba9c3811d42b950dd6558f9a45, type: 2}
+  cliffBottomLeftCornerWall:
+  - {fileID: 11400000, guid: b17abc9b33e197142a2628a0ce507f45, type: 2}
+  - {fileID: 11400000, guid: 8af9cb3b8dd63b0478369de3e6ae38c1, type: 2}
+  cliffBottomRightCornerWall:
+  - {fileID: 11400000, guid: 52a20d09e9eb4e14d9857000b9be0797, type: 2}
+  - {fileID: 11400000, guid: caa0755f57957d44daf9e2e2c73f8807, type: 2}
+  objects: []
 --- !u!1 &4952291414298632577
 GameObject:
   m_ObjectHideFlags: 0
@@ -1595,6 +1737,7 @@ Transform:
   m_Children:
   - {fileID: 7666835660454286268}
   - {fileID: 7810427750797257854}
+  - {fileID: 4880341226294941210}
   - {fileID: 133983789}
   m_Father: {fileID: 2480601898731471625}
   m_RootOrder: 2
@@ -1611,3 +1754,187 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!1 &8854231146664896486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4880341226294941210}
+  - component: {fileID: 467678674252105336}
+  - component: {fileID: 3412352387998445149}
+  - component: {fileID: 3870708979608659143}
+  - component: {fileID: 7580353321187549395}
+  - component: {fileID: 7800899534123308696}
+  m_Layer: 3
+  m_Name: Cliff
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4880341226294941210
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8854231146664896486}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4936351438317866095}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1839735485 &467678674252105336
+Tilemap:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8854231146664896486}
+  m_Enabled: 1
+  m_Tiles: {}
+  m_AnimatedTiles: {}
+  m_TileAssetArray: []
+  m_TileSpriteArray: []
+  m_TileMatrixArray: []
+  m_TileColorArray: []
+  m_TileObjectToInstantiateArray: []
+  m_AnimationFrameRate: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Origin: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0, y: 0, z: 1}
+  m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
+  m_TileOrientation: 0
+  m_TileOrientationMatrix:
+    e00: 1
+    e01: 0
+    e02: 0
+    e03: 0
+    e10: 0
+    e11: 1
+    e12: 0
+    e13: 0
+    e20: 0
+    e21: 0
+    e22: 1
+    e23: 0
+    e30: 0
+    e31: 0
+    e32: 0
+    e33: 1
+--- !u!483693784 &3412352387998445149
+TilemapRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8854231146664896486}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: -4
+  m_ChunkSize: {x: 32, y: 32, z: 32}
+  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
+  m_MaxChunkCount: 16
+  m_MaxFrameAge: 16
+  m_SortOrder: 0
+  m_Mode: 0
+  m_DetectChunkCullingBounds: 0
+  m_MaskInteraction: 0
+--- !u!19719996 &3870708979608659143
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8854231146664896486}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 1
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0.00001
+--- !u!50 &7580353321187549395
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8854231146664896486}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!66 &7800899534123308696
+CompositeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8854231146664896486}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_GeometryType: 1
+  m_GenerationType: 0
+  m_EdgeRadius: 0.5
+  m_ColliderPaths:
+  - m_Collider: {fileID: 3870708979608659143}
+    m_ColliderPaths: []
+  m_CompositePaths:
+    m_Paths: []
+  m_VertexDistance: 0.0005
+  m_OffsetDistance: 0

@@ -12,7 +12,15 @@ public class Map : MonoBehaviour
 
     public bool IsOnMap(int x, int y)
     {
+        // pos
         bool isOnMap = (0 <= x && x < width) && (0 <= (y - offsetY) && (y - offsetY) < height);
+        return isOnMap;
+    }
+
+    public bool IsOnMapData(int x, int y)
+    {
+        // data
+        bool isOnMap = (0 <= x && x < width) && (0 <= y && y < height);
         return isOnMap;
     }
 

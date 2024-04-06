@@ -13,6 +13,9 @@ public class Cell
     public GameObject structure;
     public List<string> buildable = new List<string>();
 
+    //0: 기본, 1: 외곽, 2: 위쪽 경계, 3: 왼쪽 위 안쪽 코너, 4: 오른쪽 위 안쪽 코너, 5: 왼쪽 아래 안쪽 코너, 6: 오른쪽 아래 안쪽 코너
+    public int cliffType = -1;
+    
     public bool BuildCheck(string str)
     {
         bool build = false;

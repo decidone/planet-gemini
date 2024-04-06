@@ -17,10 +17,13 @@ public class MapGenerator : MonoBehaviour
     public int width;
     public int height;
     public float magnification;
+    public float cliffMagnification;
+    public float cliffScale;
 
     [Space]
     public Tilemap tilemap;
     public Tilemap lakeTilemap;
+    public Tilemap cliffTilemap;
     public Tilemap resourcesTilemap;
     public Tilemap resourcesIconTilemap;
     public GameObject objects;
@@ -39,6 +42,7 @@ public class MapGenerator : MonoBehaviour
     public Biome snow;
     public Biome frozen;
     public Biome lake;
+    public Biome cliff;
     List<List<Biome>> biomes;
 
     [Space]
@@ -101,10 +105,7 @@ public class MapGenerator : MonoBehaviour
     {
         SetRandomSeed();
         GenerateMap();
-        SetSpawnPos(hostMap, true);
-        if (isMultiPlay)
-            SetSpawnPos(clientMap, false);
-
+        
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         spawnerPosSet = SpawnerSetManager.instance;
@@ -149,14 +150,14 @@ public class MapGenerator : MonoBehaviour
         int x = Mathf.FloorToInt(width / 2);
         int y = Mathf.FloorToInt(height / 2);
 
-        if (map.mapData[x][y].biome.biome == "lake")
+        if (map.mapData[x][y].biome == lake)
         {
             string dir = "";
             int dist = 0;
 
             for (int i = 1; i < y; i++) //상
             {
-                if (map.mapData[x][y + i].biome.biome != "lake")
+                if (map.mapData[x][y + i].biome != lake)
                 {
                     dir = "up";
                     dist = i;
@@ -165,7 +166,7 @@ public class MapGenerator : MonoBehaviour
             }
             for (int i = 1; i < y; i++) //하
             {
-                if (map.mapData[x][y - i].biome.biome != "lake")
+                if (map.mapData[x][y - i].biome != lake)
                 {
                     if (dist > i)
                     {
@@ -177,7 +178,7 @@ public class MapGenerator : MonoBehaviour
             }
             for (int i = 1; i < x; i++) //좌
             {
-                if (map.mapData[x - i][y].biome.biome != "lake")
+                if (map.mapData[x - i][y].biome != lake)
                 {
                     if (dist > i)
                     {
@@ -189,7 +190,7 @@ public class MapGenerator : MonoBehaviour
             }
             for (int i = 1; i < x; i++) //우
             {
-                if (map.mapData[x + i][y].biome.biome != "lake")
+                if (map.mapData[x + i][y].biome != lake)
                 {
                     if (dist > i)
                     {
@@ -248,7 +249,7 @@ public class MapGenerator : MonoBehaviour
             tempY = startY;
             for (int j = 0; j < 11; j++)
             {
-                if (map.mapData[tempX][tempY].biome.biome == "lake")
+                if (map.mapData[tempX][tempY].biome == lake)
                 {
                     if (first)
                     {
@@ -284,7 +285,7 @@ public class MapGenerator : MonoBehaviour
             tempX = startX;
             for (int j = 0; j < 11; j++)
             {
-                if (map.mapData[tempX][tempY].biome.biome == "lake")
+                if (map.mapData[tempX][tempY].biome == lake)
                 {
                     if (first)
                     {
@@ -335,20 +336,36 @@ public class MapGenerator : MonoBehaviour
     void GenerateMap()
     {
         hostMap.SetOffsetY(0);
+
         SetBiomeTable(true);
         SetBiome(hostMap);
         SmoothBiome(hostMap);
         CreateTile(hostMap, true);
+        SetSpawnPos(hostMap, true);
+
+        SetCliff(hostMap);
+        SmoothCliff(hostMap);
+        CreateCliffTile(hostMap, true);
+        CreateCliffWallTile(hostMap, true);
+
         CreateResource(hostMap, true);
         CreateObj(hostMap, true);
 
         if (isMultiPlay)
         {
             clientMap.SetOffsetY(height + clientMapOffsetY);
+
             SetBiomeTable(false);
             SetBiome(clientMap);
             SmoothBiome(clientMap);
             CreateTile(clientMap, false);
+            SetSpawnPos(clientMap, false);
+
+            SetCliff(clientMap);
+            SmoothCliff(clientMap);
+            CreateCliffTile(clientMap, false);
+            CreateCliffWallTile(clientMap, false);
+
             CreateResource(clientMap, false);
             CreateObj(clientMap, false);
         }
@@ -444,6 +461,26 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    void SetCliff(Map map)
+    {
+        int tempX = random.Next(0, 1000000);
+        int tempY = random.Next(0, 1000000);
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                float tempNoise = Mathf.PerlinNoise(
+                    (x - tempX) / cliffMagnification,
+                    (y - tempY) / cliffMagnification
+                );
+
+                if (tempNoise < cliffScale && map.mapData[x][y].biome != lake)
+                    map.mapData[x][y].biome = cliff;
+            }
+        }
+    }
+
     void SmoothBiome(Map map)
     {
         for (int x = 0; x < width; x++)
@@ -452,7 +489,42 @@ public class MapGenerator : MonoBehaviour
             {
                 Cell cell = map.mapData[x][y];
                 Biome biome = cell.biome;
-                biome.BiomeSmoother(map, x, y);
+                biome.RoughBiomeSmoother(map, x, y, true);
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = map.mapData[x][y];
+                Biome biome = cell.biome;
+                biome.BiomeSmoother(map, x, y, true);
+            }
+        }
+    }
+
+    void SmoothCliff(Map map)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = map.mapData[x][y];
+                Biome biome = cell.biome;
+                if (biome == cliff)
+                    biome.RoughBiomeSmoother(map, x, y, false);
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = map.mapData[x][y];
+                Biome biome = cell.biome;
+                if (biome == cliff)
+                    biome.BiomeSmoother(map, x, y, false);
             }
         }
     }
@@ -472,7 +544,7 @@ public class MapGenerator : MonoBehaviour
                 var tile = biome.SetTile(random, map, x, y);
                 cell.tile = tile.tile;
 
-                if (biome.biome == "lake")
+                if (biome == lake)
                 {
                     lakeTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile.tile);
                     if (tile.form == "side")
@@ -483,6 +555,66 @@ public class MapGenerator : MonoBehaviour
                 else
                 {
                     tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile.tile);
+                }
+            }
+        }
+    }
+
+    void CreateCliffTile(Map map, bool isHostMap)
+    {
+        int offsetY = 0;
+        if (!isHostMap)
+            offsetY = height + clientMapOffsetY;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = map.mapData[x][y];
+                Biome biome = cell.biome;
+                
+                if (biome == cliff)
+                {
+                    Tile tile = biome.SetCliffTile(random, map, x, y);
+                    cell.tile = tile;
+                    cliffTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile);
+                }
+            }
+        }
+    }
+
+    void CreateCliffWallTile(Map map, bool isHostMap)
+    {
+        int offsetY = 0;
+        if (!isHostMap)
+            offsetY = height + clientMapOffsetY;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = map.mapData[x][y];
+                Biome biome = cell.biome;
+
+                if (biome == cliff && (2 <= cell.cliffType && cell.cliffType <= 4))
+                {
+                    Tile tile = null;
+
+                    if (map.IsOnMapData(x, y - 1)
+                        && (map.mapData[x][y - 1].cliffType == 0 || map.mapData[x][y - 1].cliffType == 5 || map.mapData[x][y - 1].cliffType == 6))
+                    {
+                        tile = biome.SetCliffWallTile(random, map, x, y, 1);
+                        map.mapData[x][y - 1].tile = tile;
+                        cliffTilemap.SetTile(new Vector3Int(x, (y - 1 + offsetY), 0), tile);
+
+                        if (map.IsOnMapData(x, y - 2)
+                            && (map.mapData[x][y - 2].cliffType == 0 || map.mapData[x][y - 2].cliffType == 5 || map.mapData[x][y - 2].cliffType == 6))
+                        {
+                            tile = biome.SetCliffWallTile(random, map, x, y, 2);
+                            map.mapData[x][y - 2].tile = tile;
+                            cliffTilemap.SetTile(new Vector3Int(x, (y - 2 + offsetY), 0), tile);
+                        }
+                    }
                 }
             }
         }
@@ -516,7 +648,7 @@ public class MapGenerator : MonoBehaviour
                         Biome biome = cell.biome;
 
                         if ((resource.biome == "all" || resource.biome == biome.biome)
-                            && biome.biome != "lake" && cell.resource == null)
+                            && biome != lake && biome != cliff && cell.resource == null)
                         {
                             Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
                             resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
