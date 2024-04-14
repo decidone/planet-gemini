@@ -9,6 +9,7 @@ public class Map : MonoBehaviour
     public int height;
     public List<List<Cell>> mapData;
     public int offsetY;
+    public (int x, int y) spawnTile;   // mapData의 x, y. 실제 pos와는 다름
 
     public bool IsOnMap(int x, int y)
     {
@@ -36,5 +37,10 @@ public class Map : MonoBehaviour
             return mapData[x][y - offsetY];
         else
             return null;
+    }
+
+    public void SetSpawnTile(int x, int y)
+    {
+        spawnTile = (x, y);
     }
 }

@@ -32,6 +32,7 @@ public class MapCameraController : MonoBehaviour
     float scrollWheelInput;
     float mapWidth;
     float mapHeight;
+    float mapOffsetY;
     Vector2 movement;
 
     MapClickEvent focusedEvent;
@@ -58,7 +59,7 @@ public class MapCameraController : MonoBehaviour
     void FixedUpdate()
     {
         camPos.x = Mathf.Clamp(camPos.x + ((movement.x * dragSpeed) / zoomLevel), borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
-        camPos.y = Mathf.Clamp(camPos.y + ((movement.y * dragSpeed) / zoomLevel), borderY / zoomLevel, mapHeight - (borderY / zoomLevel));
+        camPos.y = Mathf.Clamp(camPos.y + ((movement.y * dragSpeed) / zoomLevel), mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
         transform.position = camPos;
     }
 
@@ -81,7 +82,7 @@ public class MapCameraController : MonoBehaviour
                 pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
 
                 camPos.x = Mathf.Clamp(camPos.x, borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
-                camPos.y = Mathf.Clamp(camPos.y, borderY / zoomLevel, mapHeight - (borderY / zoomLevel));
+                camPos.y = Mathf.Clamp(camPos.y, mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
                 transform.position = camPos;
             }
             else if (scrollWheelInput > 0)
@@ -94,10 +95,11 @@ public class MapCameraController : MonoBehaviour
         }
     }
 
-    public void SetMapSize(int width, int height)
+    public void SetCamRange(Map map)
     {
-        mapWidth = width;
-        mapHeight = height;
+        mapWidth = map.width;
+        mapHeight = map.height;
+        mapOffsetY = map.offsetY;
     }
 
     void ToggleMap()
@@ -235,7 +237,7 @@ public class MapCameraController : MonoBehaviour
     {
         camPos = target.position - offset;
         camPos.x = Mathf.Clamp(camPos.x, borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
-        camPos.y = Mathf.Clamp(camPos.y, borderY / zoomLevel, mapHeight - (borderY / zoomLevel));
+        camPos.y = Mathf.Clamp(camPos.y, mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
         transform.position = camPos;
 
         //if (PreBuilding.instance != null)

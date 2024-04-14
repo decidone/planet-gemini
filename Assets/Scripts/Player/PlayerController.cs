@@ -6,8 +6,7 @@ using UnityEngine.EventSystems;
 // UTF-8 설정
 public class PlayerController : NetworkBehaviour
 {
-    public Inventory inventory;
-
+    GameManager gameManager;
     public List<GameObject> items = new List<GameObject>();
     List<GameObject> beltList = new List<GameObject>();
 
@@ -35,6 +34,7 @@ public class PlayerController : NetworkBehaviour
 
     void Awake()
     {
+        gameManager = GameManager.instance;
         circleColl = GetComponent<CircleCollider2D>();
         tempMinerCount = 5;
         isLoot = false;
@@ -46,7 +46,6 @@ public class PlayerController : NetworkBehaviour
         tempMiner = ResourcesManager.instance.tempMiner;
         tempMinerUI = ResourcesManager.instance.tempMinerUI;
         inputManager = InputManager.instance;
-        inventory = GameManager.instance.inventory;
         
         if (!IsOwner) { return; }
         tempFullAmount = 5;
@@ -146,7 +145,7 @@ public class PlayerController : NetworkBehaviour
                 ItemProps itemProps = items[i].GetComponent<ItemProps>();
                 if (itemProps)
                 {
-                    inventory.LootItem(items[i]);
+                    gameManager.inventory.LootItem(items[i]);
                 }
             }
         }
@@ -162,15 +161,15 @@ public class PlayerController : NetworkBehaviour
 
             foreach (ItemProps itemProps in beltItems)
             {
-                int containableAmount = inventory.SpaceCheck(itemProps.item);
+                int containableAmount = gameManager.inventory.SpaceCheck(itemProps.item);
                 if (itemProps.amount <= containableAmount)
                 {
-                    inventory.Add(itemProps.item, itemProps.amount);
+                    gameManager.inventory.Add(itemProps.item, itemProps.amount);
                     beltCtrl.PlayerRootFunc(itemProps);
                 }
                 else if (containableAmount != 0)
                 {
-                    inventory.Add(itemProps.item, containableAmount);
+                    gameManager.inventory.Add(itemProps.item, containableAmount);
                     itemProps.amount -= containableAmount;
                 }
                 else
@@ -210,14 +209,14 @@ public class PlayerController : NetworkBehaviour
                 List<Item> factItemList = factoryCtrl.PlayerGetItemList();
                 for (int i = 0; i < factItemList.Count; i++)
                 {
-                    inventory.Add(factItemList[i], 1);
+                    gameManager.inventory.Add(factItemList[i], 1);
                 }
             }
             else if (hit.collider != null && hit.collider.TryGetComponent(out Production production))
             {
                 var item = production.QuickPullOut();
                 if (item.Item1 != null && item.Item2 > 0)
-                    inventory.Add(item.Item1, item.Item2);
+                    gameManager.inventory.Add(item.Item1, item.Item2);
             }
         }
     }
@@ -241,7 +240,7 @@ public class PlayerController : NetworkBehaviour
 
     public void TempBuildSet()
     {
-        if (tempMinerCount > 0) 
+        if (tempMinerCount > 0)
         {
             tempMinerCount--;
         }

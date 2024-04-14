@@ -13,6 +13,7 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField]
     MapSizeData mapSizeData;
+    public float spawnAreaSize;
 
     public int width;
     public int height;
@@ -212,6 +213,7 @@ public class MapGenerator : MonoBehaviour
 
         // 아래 -> 플레이어, 포탈 스폰포인트 지정, 스폰 시 데이터 설정
         var pos = PortalPosCheck(map, x, y);
+        map.SetSpawnTile(pos.x, pos.y);
         GameManager.instance.SetPlayerPos(pos.x, (pos.y + offsetY), isHostMap);
 
         Portal[] portal = GameManager.instance.portal;
@@ -342,6 +344,7 @@ public class MapGenerator : MonoBehaviour
         SmoothBiome(hostMap);
         CreateTile(hostMap, true);
         SetSpawnPos(hostMap, true);
+        SetSpawnArea(hostMap);
 
         SetCliff(hostMap);
         SmoothCliff(hostMap);
@@ -360,6 +363,7 @@ public class MapGenerator : MonoBehaviour
             SmoothBiome(clientMap);
             CreateTile(clientMap, false);
             SetSpawnPos(clientMap, false);
+            SetSpawnArea(clientMap);
 
             SetCliff(clientMap);
             SmoothCliff(clientMap);
@@ -393,19 +397,36 @@ public class MapGenerator : MonoBehaviour
         mapFog.position = new Vector3(width / 2, height / 2, 1);
     }
 
+    void SetSpawnArea(Map map)
+    {
+        var spawnTile = map.spawnTile;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                float distance = Mathf.Sqrt(Mathf.Pow(spawnTile.x - x, 2) + Mathf.Pow(spawnTile.y - y, 2));
+                if (distance < spawnAreaSize)
+                {
+                    map.mapData[x][y].spawnArea = true;
+                }
+            }
+        }
+    }
+
     void SetBiomeTable(bool isHostMap)
     {
         if (isHostMap)
         {
             biomes = new List<List<Biome>>() {
-                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
-                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
-                new List<Biome> { lake, forest, plain, plain, plain, frozen, frozen, frozen },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
-                new List<Biome> { lake, forest, plain, plain, plain, snow, snow, snow },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, frozen, frozen },
+                new List<Biome> { lake, forest, plain, plain, plain, snow, frozen, frozen },
             };
         }
         else
@@ -475,7 +496,7 @@ public class MapGenerator : MonoBehaviour
                     (y - tempY) / cliffMagnification
                 );
 
-                if (tempNoise < cliffScale && map.mapData[x][y].biome != lake)
+                if (tempNoise < cliffScale && map.mapData[x][y].biome != lake && !map.mapData[x][y].spawnArea)
                     map.mapData[x][y].biome = cliff;
             }
         }

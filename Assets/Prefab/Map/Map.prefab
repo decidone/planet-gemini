@@ -809,6 +809,7 @@ MonoBehaviour:
   randomSeed: 0
   seed: 3
   mapSizeData: {fileID: 0}
+  spawnAreaSize: 20
   width: 160
   height: 90
   magnification: 60
@@ -1109,7 +1110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   biome: frozen
-  diffBiome: plain
+  diffBiome: snow
   tiles:
   - {fileID: 11400000, guid: 0d88f97814f67df4f881f094e2597f78, type: 2}
   - {fileID: 11400000, guid: c53d6a58930b0824a9030b8fd1fadb39, type: 2}

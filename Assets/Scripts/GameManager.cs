@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
         map = hostMap;
         isPlayerInHostMap = true;
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
-        mapCameraController.SetMapSize(map.width, map.height);
+        mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
         inputManager = InputManager.instance;
         inputManager.controls.Structure.StrClick.performed += ctx => StrClick();
@@ -139,6 +139,7 @@ public class GameManager : MonoBehaviour
             map = clientMap;
             isPlayerInHostMap = false;
             SetMapInven(false);
+            mapCameraController.SetCamRange(map);
             return clientPlayerSpawnPos;
         }
         else
@@ -146,6 +147,7 @@ public class GameManager : MonoBehaviour
             map = hostMap;
             isPlayerInHostMap = true;
             SetMapInven(true);
+            mapCameraController.SetCamRange(map);
             return hostPlayerSpawnPos;
         }
     }
@@ -180,7 +182,8 @@ public class GameManager : MonoBehaviour
                 ",   biome : " + cell.biome +
                 ",   resource : " + cell.resource +
                 ",   buildable : " + buildable +
-                ",   structure : " + cell.structure
+                ",   structure : " + cell.structure +
+                ",   spawn area : " + cell.spawnArea
                 );
             }
             else
@@ -190,7 +193,8 @@ public class GameManager : MonoBehaviour
                 ",   resource : " + cell.resource +
                 ",   obj : " + cell.obj.name +
                 ",   buildable : " + buildable +
-                ",   structure : " + cell.structure
+                ",   structure : " + cell.structure +
+                ",   spawn area : " + cell.spawnArea
                 );
             }
         }
@@ -483,6 +487,7 @@ public class GameManager : MonoBehaviour
         mainCam = Camera.main.gameObject.GetComponent<CameraController>();
         mainCam.target = player.transform;
         mapCameraController.target = player.transform;
+        mapCameraController.SetCamRange(map);
         GameObject fogOfWar = ResourcesManager.instance.fogOfWar;
         FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
         followTransform.SetTargetTransform(player.transform);
