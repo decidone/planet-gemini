@@ -6,8 +6,10 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    public List<PlayerData> playerDataList = new List<PlayerData>();
+    // 플레이어
+    public List<PlayerSaveData> playerDataList = new List<PlayerSaveData>();
 
-    public InventoryData HostMapInvenData = new InventoryData();
-    public InventoryData ClientMapInvenData = new InventoryData();
+    // 행성 인벤토리
+    public InventorySaveData HostMapInvenData = new InventorySaveData();
+    public InventorySaveData ClientMapInvenData = new InventorySaveData();
 }

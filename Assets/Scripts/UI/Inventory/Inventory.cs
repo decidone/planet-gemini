@@ -491,9 +491,9 @@ public class Inventory : NetworkBehaviour
         return items.Count > 0;
     }
 
-    public InventoryData SaveData()
+    public InventorySaveData SaveData()
     {
-        InventoryData data = new InventoryData();
+        InventorySaveData data = new InventorySaveData();
         Dictionary<int, int> totalItemIndexes = new Dictionary<int, int>();
         Dictionary<int, int> itemIndexes = new Dictionary<int, int>();
 
@@ -513,7 +513,7 @@ public class Inventory : NetworkBehaviour
         return data;
     }
 
-    public void LoadData(InventoryData data)
+    public void LoadData(InventorySaveData data)
     {
         Dictionary<Item, int> tempTotalItems = new Dictionary<Item, int>();
         Dictionary<int, Item> tempItems = new Dictionary<int, Item>();

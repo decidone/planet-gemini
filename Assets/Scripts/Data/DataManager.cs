@@ -39,15 +39,20 @@ public class DataManager : MonoBehaviour
 
     public string Save()
     {
-        //saveData = new SaveData();
-        PlayerData playerData = new PlayerData();
-        playerData.name = "test";
+        saveData = new SaveData();
+
+        // 플레이어
+        PlayerSaveData playerData = new PlayerSaveData();
+        playerData.isHostPlayer = true; // 임시
         saveData.playerDataList.Add(playerData);
-        InventoryData hostMapInventoryData = GameManager.instance.hostMapInven.SaveData();
+
+        // 행성 인벤토리
+        InventorySaveData hostMapInventoryData = GameManager.instance.hostMapInven.SaveData();
         saveData.HostMapInvenData = hostMapInventoryData;
-        InventoryData clientMapInventoryData = GameManager.instance.clientMapInven.SaveData();
+        InventorySaveData clientMapInventoryData = GameManager.instance.clientMapInven.SaveData();
         saveData.ClientMapInvenData = clientMapInventoryData;
 
+        // Json 저장
         Debug.Log("saved: " + path);
         string json = JsonConvert.SerializeObject(saveData);
         File.WriteAllText(path + selectedSlot.ToString() + ".json", json);
@@ -63,24 +68,30 @@ public class DataManager : MonoBehaviour
 
     public void Load()
     {
+        // 호스트가 파일로부터 json을 불러와서 동기화
         string json = GetJsonFromFile();
         saveData = JsonConvert.DeserializeObject<SaveData>(json);
-
-        GameManager.instance.hostMapInven.LoadData(saveData.HostMapInvenData);
-        GameManager.instance.clientMapInven.LoadData(saveData.ClientMapInvenData);
+        LoadData(saveData);
     }
 
     public void Load(string json)
     {
+        // 클라이언트가 접속 시 호스트로부터 json을 받아서 동기화
+        // 네트워크 오브젝트라서 스폰을 시킬 필요가 없는 경우 등등 호스트가 파일을 불러와서 동기화 하는 과정과는 좀 달라질 예정
         saveData = JsonConvert.DeserializeObject<SaveData>(json);
+        LoadData(saveData);
+    }
 
+    public void LoadData(SaveData saveData)
+    {
+        // 행성 인벤토리
         GameManager.instance.hostMapInven.LoadData(saveData.HostMapInvenData);
         GameManager.instance.clientMapInven.LoadData(saveData.ClientMapInvenData);
     }
 
     public void Clear()
     {
-        selectedSlot = -1;
+        //selectedSlot = -1;
         saveData = new SaveData();
     }
 }
