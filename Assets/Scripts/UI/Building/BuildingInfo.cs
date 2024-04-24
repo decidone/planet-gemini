@@ -13,7 +13,7 @@ public class BuildingInfo : MonoBehaviour
 
     Building selectBuilding = null;
     BuildingData selectBuildingData = null;
-    public PreBuilding preBuilding;
+    PreBuilding preBuilding;
 
     bool totalAmountsEnough = false;
 

@@ -19,15 +19,15 @@ public class LogisticsCtrl : Structure
     {
         itemObjList.Add(itemObj);
         itemObj.setOnBelt = GetComponent<BeltCtrl>();
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)        
-            isFull = true;        
+        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+            isFull = true;
         else
             isFull = false;
     }
 
     public bool OnBeltItem(ItemProps itemObj)
     {
-        if(itemObjList.Count < structureData.MaxItemStorageLimit)
+        if (itemObjList.Count < structureData.MaxItemStorageLimit)
         {
             itemObjList.Add(itemObj);
 
@@ -41,27 +41,27 @@ public class LogisticsCtrl : Structure
 
             return true;
         }
+
         return false;
     }
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        itemList.Add(itemProps.item);
-
-        if (itemList.Count >= structureData.MaxItemStorageLimit)
+        if (IsServer)
         {
-            isFull = true;
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemProps.item);
+            OnFactoryItemServerRpc(itemIndex);
         }
+
         itemProps.itemPool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)
     {
-        itemList.Add(item);
-
-        if (itemList.Count >= structureData.MaxItemStorageLimit)
+        if (IsServer)
         {
-            isFull = true;
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+            OnFactoryItemServerRpc(itemIndex);
         }
     }
 
@@ -89,6 +89,7 @@ public class LogisticsCtrl : Structure
 
     public override void AddInvenItem()
     {
+        base.AddInvenItem();
         if (GetComponent<BeltCtrl>())
         {
             if (itemObjList.Count > 0)

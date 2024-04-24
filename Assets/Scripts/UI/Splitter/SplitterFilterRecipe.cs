@@ -42,7 +42,6 @@ public class SplitterFilterRecipe : InventoryManager
         {
             if (focusedSlot.item != null)
             {
-                Debug.Log("here");
                 if (selectManager == "SplitterFilterManager")
                     splitter.SetItem(focusedSlot.item, slotIndex);
                 else if (selectManager == "UnloaderManager")
@@ -75,7 +74,8 @@ public class SplitterFilterRecipe : InventoryManager
         inventory.ResetInven();
         for (int i = 0; i < itemsTierList[tier].Count; i++)
         {
-            inventory.Add(itemsTierList[tier][i], 1);
+            inventory.RecipeInvenAdd(itemsTierList[tier][i], 1);
+            //inventory.Add(itemsTierList[tier][i], 1);
         }
         SetInven(inventory, inventoryUI);
     }

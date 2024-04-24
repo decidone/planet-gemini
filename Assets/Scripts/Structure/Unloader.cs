@@ -6,10 +6,12 @@ using Unity.Netcode;
 public class Unloader : LogisticsCtrl
 {
     public Item selectItem;
+    LogisticsClickEvent clickEvent;
 
     void Start()
     {
         setModel = GetComponent<SpriteRenderer>();
+        clickEvent = GetComponent<LogisticsClickEvent>();
         isMainSource = true;
         CheckPos();
     }
@@ -32,8 +34,12 @@ public class Unloader : LogisticsCtrl
             {
                 if (inObj.Count > 0 && outObj.Count > 0 && !itemGetDelay)
                 {
-                    GetItemClientRpc();
+                    GetItem();
                 }
+            }
+            if (DelayGetList.Count > 0 && inObj.Count > 0)
+            {
+                GetDelayFunc(DelayGetList[0], 0);
             }
         }
     }
@@ -76,35 +82,50 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-    [ClientRpc]
-    protected override void GetItemClientRpc()
+    //[ClientRpc]
+    //protected override void GetItemClientRpc(int inObjIndex)
+    //{
+    //    itemGetDelay = true;
+    //    if (inObj[inObjIndex].TryGetComponent(out Production production))
+    //    {
+    //        if (production.UnloadItem(selectItem))
+    //        {
+    //            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
+    //            SendItem(itemIndex);
+    //        }
+    //        DelayGetItem();
+    //    }
+    //}
+
+    protected override void GetItemFunc(int inObjIndex)
     {
-        itemGetDelay = true;
-        if (getItemIndex > inObj.Count)
-        {
-            getItemIndex = 0;
-            return;
-        }
-        else if (inObj[getItemIndex] == null)
-        {
-            getItemIndex = 0;
-            return;
-        }
-        else if (inObj[getItemIndex].TryGetComponent(out Production production))
+        if (inObj[inObjIndex].TryGetComponent(out Production production))
         {
             if (production.UnloadItem(selectItem))
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
-                SendItemClientRpc(itemIndex);
-                //SendItem(selectItem);
+                SendItem(itemIndex);
             }
-            getItemIndex++;
-            if (getItemIndex >= inObj.Count)
-                getItemIndex = 0;
-
-            Invoke(nameof(DelayGetItem), structureData.SendDelay);
-        }
-        else
             DelayGetItem();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SelectItemSetServerRpc(int itemIndex)
+    {
+        SelectItemSetClientRpc(itemIndex);
+    }
+
+    [ClientRpc]
+    public void SelectItemSetClientRpc(int itemIndex)
+    {
+        selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        UIReset();
+    }
+
+    void UIReset()
+    {
+        if (clickEvent.unloaderManager != null)
+            clickEvent.unloaderManager.UIReset();
     }
 }

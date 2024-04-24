@@ -35,4 +35,14 @@ public class RecipeList : MonoBehaviour
         recipes = recipeDic[str];
         return recipes;
     }
+
+    public Recipe GetRecipeIndex(string str, int index)
+    {
+        if (recipeDic.ContainsKey(str))
+        {
+            List<Recipe> recipes = recipeDic[str];
+            return recipes[index];
+        }
+        return null;
+    }
 }

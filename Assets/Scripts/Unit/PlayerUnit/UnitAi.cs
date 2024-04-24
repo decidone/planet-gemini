@@ -460,6 +460,8 @@ public class UnitAi : UnitCommonAi
             unitGroupCtrl.DieUnitCheck(this.gameObject);
         }
 
+        NetworkObjManager.instance.NetObjRemove(gameObject);
+
         Destroy(this.gameObject);
     }
 

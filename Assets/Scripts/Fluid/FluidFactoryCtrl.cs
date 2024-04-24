@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
+using System.Linq;
 
 // UTF-8 설정
 public class FluidFactoryCtrl : Production
@@ -21,6 +23,9 @@ public class FluidFactoryCtrl : Production
     public bool reFindMain = false;
 
     public List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>();
+
+    bool findNewObj = false;
+    public bool alredyCheck = false;
 
     protected override void Awake()
     {
@@ -70,7 +75,11 @@ public class FluidFactoryCtrl : Production
             {
                 StartCoroutine(nameof(UnderPipeConnectCheck), obj);
             }
-            StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
+            if (!findNewObj)
+            {
+                findNewObj = true;
+                StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
+            }
         }
     }
 
@@ -90,6 +99,7 @@ public class FluidFactoryCtrl : Production
                 factoryCtrl.mainSource.StartCoroutine(factoryCtrl.mainSource.MainSourceFunc());
             }
         }
+        findNewObj = false;
     }
 
     protected virtual IEnumerator UnderPipeConnectCheck(GameObject obj)
@@ -121,7 +131,7 @@ public class FluidFactoryCtrl : Production
                     lowestObj = obj;
                 }
 
-                if (fluidCtrl.mainSource == null && !fluidCtrl.reFindMain)
+                if (fluidCtrl.mainSource == null && !fluidCtrl.reFindMain && !fluidCtrl.isPreBuilding)
                 {
                     if (fluidName != "" && (fluidCtrl.fluidName == fluidName || fluidCtrl.fluidName == ""))
                     {
@@ -153,8 +163,6 @@ public class FluidFactoryCtrl : Production
                 {
                     canSendFluid = true;
                 }
-
-
             }
             else if (fluidFac.fluidName == fluidName)
             {
@@ -205,7 +213,18 @@ public class FluidFactoryCtrl : Production
     protected void SendFluidFunc(FluidFactoryCtrl othFluid)
     {
         saveFluidNum -= structureData.SendFluidAmount;
-        othFluid.SendFluidFunc(structureData.SendFluidAmount);
+
+        if (othFluid.GetComponent<Refinery>())
+        {
+            if (IsServer)
+            {
+                othFluid.SendFluidFuncServerRpc(structureData.SendFluidAmount);
+            }
+        }
+        else
+        {
+            othFluid.SendFluidFunc(structureData.SendFluidAmount);
+        }
     }
 
     public bool CanTake()
@@ -226,12 +245,35 @@ public class FluidFactoryCtrl : Production
         }
     }
 
+    [ServerRpc]
+    public void SendFluidFuncServerRpc(float getNum)
+    {
+        SendFluidFuncClientRpc(getNum);
+    }
+
+    [ClientRpc]
+    void SendFluidFuncClientRpc(float getNum)
+    {
+        saveFluidNum += getNum;
+
+        if (structureData.MaxFulidStorageLimit <= saveFluidNum)
+        {
+            saveFluidNum = structureData.MaxFulidStorageLimit;
+        }
+    }
+
     public IEnumerator MainSourceFunc()
     {
         isPreventingDuplicate = true;
-
         yield return new WaitForSeconds(0.5f);
+
+        foreach (FluidFactoryCtrl fluid in fluidList)
+        {
+            fluid.alredyCheck = false;
+        }
+
         fluidList.Clear();
+
         CheckFarSource(0, myFluidScript);
 
         isPreventingDuplicate = false;
@@ -243,17 +285,24 @@ public class FluidFactoryCtrl : Production
         if (ShouldUpdate(_mainSource, dis))
         {
             UpdateFluidProperties(_mainSource, dis);
+        }
 
-            if(!GetComponent<Refinery>() && !GetComponent<SteamGenerator>())
-                foreach (GameObject obj in outObj)
+        alredyCheck = true;
+
+        if (!GetComponent<Refinery>() && !GetComponent<SteamGenerator>())
+        {
+            List<GameObject> uniqueObjects = outObj.Distinct().ToList();
+
+            foreach (GameObject obj in uniqueObjects)
+            {
+                if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl)
+                    && (factoryCtrl.mainSource == null || (factoryCtrl.mainSource == _mainSource && !factoryCtrl.alredyCheck)
+                    || (factoryCtrl.mainSource != _mainSource && factoryCtrl.howFarSource > dis))
+                    && (factoryCtrl.fluidName == fluidName || (factoryCtrl.fluidName == "" && factoryCtrl.saveFluidNum == 0)))
                 {
-                    if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl)
-                        && (factoryCtrl.mainSource == null || factoryCtrl.howFarSource > dis)
-                        && (factoryCtrl.fluidName == fluidName || (factoryCtrl.fluidName == "" && factoryCtrl.saveFluidNum == 0)))
-                    {
-                        factoryCtrl.CheckFarSource(dis + 1, _mainSource);
-                    }
+                    factoryCtrl.CheckFarSource(dis + 1, _mainSource);
                 }
+            }
         }
     }
 
@@ -355,4 +404,6 @@ public class FluidFactoryCtrl : Production
             }
         }
     }
+
+    public override void AddInvenItem() { }
 }

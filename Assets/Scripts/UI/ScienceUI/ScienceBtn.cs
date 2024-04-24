@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class ScienceBtn : MonoBehaviour
 {
+    public int btnIndex;
     public string sciName;
     public int level;
     public float upgradeTime;
@@ -26,7 +28,7 @@ public class ScienceBtn : MonoBehaviour
         scienceManager = GameManager.instance.inventoryUiCanvas.GetComponent<ScienceManager>();
         upgradeFunc = SciUpgradeFunc.instance;
         scBtn = GetComponent<Button>();
-        if (isCore)        
+        if (isCore)
             lockUI = transform.parent.Find("LockUi").gameObject;        
         else
             lockUI = transform.Find("LockUi").gameObject;
@@ -84,6 +86,13 @@ public class ScienceBtn : MonoBehaviour
     }
 
     public void ItemAddAmount(int index, int amount)
+    {
+        if (amount == 0)
+            return;
+        scienceManager.SyncSciBtnItem(btnIndex, index, amount);
+    }
+
+    public void SyncItemAddAmount(int index, int amount)
     {
         itemAmountList[index] = (itemAmountList[index].Item1 + amount, itemAmountList[index].Item2);
         ItemSaveEnd();

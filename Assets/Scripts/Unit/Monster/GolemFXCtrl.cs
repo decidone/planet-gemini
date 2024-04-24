@@ -35,6 +35,8 @@ public class GolemFXCtrl : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!IsServer)
+            return;
         if (collision.GetComponent<PlayerStatus>())
         {            
             if (!collision.isTrigger)
@@ -53,7 +55,7 @@ public class GolemFXCtrl : NetworkBehaviour
         {
             if (!collision.isTrigger)
             {
-                collision.GetComponent<TowerAi>().TakeDamage(damage);
+                collision.GetComponent<TowerAi>().TakeDamageClientRpc(damage);
             }
         }
     }

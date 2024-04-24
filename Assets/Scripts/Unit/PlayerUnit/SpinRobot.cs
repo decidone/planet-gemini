@@ -15,7 +15,7 @@ public class SpinRobot : UnitAi
     protected override void AttackEnd()
     {
         base.AttackEnd();
-        if (aggroTarget != null)
+        if (IsServer && aggroTarget != null)
         {
             if (aggroTarget.TryGetComponent(out MonsterAi monster))
             {

@@ -31,9 +31,13 @@ public class Smelter : Production
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown)
                             {
-                                inventory.SubServerRpc(0, recipe.amounts[0]);
-                                inventory.SubServerRpc(1, recipe.amounts[1]);
-                                inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                if (IsServer)
+                                {
+                                    inventory.SubServerRpc(0, recipe.amounts[0]);
+                                    inventory.SubServerRpc(1, recipe.amounts[1]);
+                                    inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                }
+
                                 soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
                                 prodTimer = 0;
                             }
@@ -60,8 +64,12 @@ public class Smelter : Production
             if (IsServer && slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
-                SendItemClientRpc(itemIndex);
+                SendItem(itemIndex);
                 //SendItem(output);
+            }
+            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         }
     }
@@ -79,7 +87,7 @@ public class Smelter : Production
 
         sInvenManager.InvenInit();
         if (recipe.name != null)
-            SetRecipe(recipe);
+            SetRecipe(recipe, recipeIndex);
     }
 
     public override void CloseUI()
@@ -97,13 +105,14 @@ public class Smelter : Production
         rManager.SetRecipeUI("Smelter", this);
     }
 
-    public override void SetRecipe(Recipe _recipe)
+    public override void SetRecipe(Recipe _recipe, int index)
     {
         if (recipe.name != null && recipe != _recipe)
         {
             sInvenManager.EmptySlot();
         }
         recipe = _recipe;
+        recipeIndex = index;
         sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);

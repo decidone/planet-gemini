@@ -87,8 +87,12 @@ public class Miner : Production
             if (IsServer && slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
-                SendItemClientRpc(itemIndex);
+                SendItem(itemIndex);
                 //SendItem(output);
+            }
+            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         }
     }
@@ -201,15 +205,12 @@ public class Miner : Production
         {
             output = item;
             cooldown = _efficiency;
+            if (isTempBuild)
+                cooldown += 3;
             effiCooldown = cooldown;
             minerCellCount = _minerCellCount;
         }
     }
-
-    //public override void TempBuilCooldownSet() 
-    //{
-    //    cooldown += 3;
-    //}
 
     public override void GetUIFunc()
     {

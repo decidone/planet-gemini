@@ -31,6 +31,8 @@ public class TowerAi : Production
 
     List<Item> bulletRecipe;
 
+    protected NetworkObjectPool networkObjectPool;
+
     protected override void Awake()
     {
         base.Awake();
@@ -40,6 +42,7 @@ public class TowerAi : Production
     protected override void Start()
     {
         base.Start();
+        networkObjectPool = NetworkObjectPool.Singleton;
         recipes = rManager.GetRecipeList("Tower", this);
 
         bulletRecipe = new List<Item>();

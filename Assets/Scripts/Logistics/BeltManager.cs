@@ -32,7 +32,12 @@ public class BeltManager : NetworkBehaviour
             fstGroupMgr.NearObjSetClientRpc(objID, true);
         }
 
-        NetworkObjManager.instance.NetObjRemove(secGroupMgr.GetComponent<NetworkObject>());
+        NetworkObjManager.instance.NetObjRemove(secGroupMgr.gameObject);
+        NetworkObject destroyObj = secGroupMgr.GetComponent<NetworkObject>();
+        if (destroyObj != null && destroyObj.IsSpawned)
+        {
+            destroyObj.Despawn();
+        }
         Destroy(secGroupMgr.gameObject);
     }
 
@@ -40,7 +45,13 @@ public class BeltManager : NetworkBehaviour
     {
         if (beltGroup.beltList.Count <= 1)
         {
-            NetworkObjManager.instance.NetObjRemove(beltGroup.GetComponent<NetworkObject>());
+            beltGroup.beltList[0].transform.parent = null;
+            NetworkObjManager.instance.NetObjRemove(beltGroup.gameObject);
+            NetworkObject destroyObj = beltGroup.GetComponent<NetworkObject>();
+            if (destroyObj != null && destroyObj.IsSpawned)
+            {
+                destroyObj.Despawn();
+            }
             Destroy(beltGroup.gameObject);
             return;
         }
@@ -91,10 +102,11 @@ public class BeltManager : NetworkBehaviour
         }
         beltGroup.Reconfirm();
         beltGroup.nextCheck = true;
+        beltGroup.preCheck = true;
 
         if (beltGroup.beltList.Count == 1)
         {
-            beltGroup.beltList[0].beltState = BeltState.SoloBelt;
+            beltGroup.beltList[0].BeltStateSetClientRpc((int)BeltState.SoloBelt);
             beltGroup.beltList[0].FactoryModelSet();
         }
     }
@@ -102,9 +114,14 @@ public class BeltManager : NetworkBehaviour
     private void CreateNewBeltGroup(List<BeltCtrl> beltList)
     {
         GameObject newObj = Instantiate(beltGroupMgrObj);
+        newObj.TryGetComponent(out NetworkObject netObj);
+        if (!netObj.IsSpawned) newObj.GetComponent<NetworkObject>().Spawn();
+
         newObj.transform.parent = this.gameObject.transform;
 
         BeltGroupMgr newBeltGroup = newObj.GetComponent<BeltGroupMgr>();
+        //NetworkObjManager.instance.NetObjAdd(newObj);
+        //newBeltGroup.NetObjAddClientRpc();
         foreach (BeltCtrl belt in beltList)
         {
             belt.transform.parent = newBeltGroup.transform;
@@ -114,10 +131,11 @@ public class BeltManager : NetworkBehaviour
         }
         newBeltGroup.Reconfirm();
         newBeltGroup.nextCheck = true;
+        newBeltGroup.preCheck = true;
 
         if (newBeltGroup.beltList.Count == 1)
         {
-            newBeltGroup.beltList[0].beltState = BeltState.SoloBelt;
+            newBeltGroup.beltList[0].BeltStateSetClientRpc((int)BeltState.SoloBelt);
             newBeltGroup.beltList[0].FactoryModelSet();
         }
         newBeltGroup.isSetBuildingOk = true;

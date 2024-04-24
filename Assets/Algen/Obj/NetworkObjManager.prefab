@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec757d1005a35314a961bb840292bff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkObjects: []
+  networkObjListSO: {fileID: 11400000, guid: 7025760d0b6edd74b9ea27930c217e6e, type: 2}

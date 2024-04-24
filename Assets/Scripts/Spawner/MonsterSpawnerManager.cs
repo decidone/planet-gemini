@@ -32,6 +32,10 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     bool isInHostMap;
 
+    public List<MonsterSpawner> totalMonsterSpawnerList = new List<MonsterSpawner>();
+    public List<UnitCommonAi> totalMonsterList = new List<UnitCommonAi>();
+    public List<UnitCommonAi> totalWaveMonsterList = new List<UnitCommonAi>();
+
     [SerializeField]
     bool map1Wave1Start = false;
     [SerializeField]
@@ -448,5 +452,25 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
 
         return closestPoint;
+    }
+
+    public void MonsterDataGet()
+    {
+        totalMonsterSpawnerList.Clear();
+        int matrixLength = spawnerMap1Matrix.Length;
+
+        for (int x = 0; x < matrixLength; x++)
+        {
+            for(int y = 0; y < matrixLength; y++)
+            {
+                SpawnerGroupManager groupManager = spawnerMap1Matrix[x, y].GetComponent<SpawnerGroupManager>();
+                totalMonsterSpawnerList.AddRange(groupManager.MonsterSpawnerListData());
+                totalMonsterList.AddRange(groupManager.MonsterListData());
+
+                groupManager = spawnerMap2Matrix[x, y].GetComponent<SpawnerGroupManager>();
+                totalMonsterSpawnerList.AddRange(groupManager.MonsterSpawnerListData());
+                totalMonsterList.AddRange(groupManager.MonsterListData());
+            }
+        }
     }
 }

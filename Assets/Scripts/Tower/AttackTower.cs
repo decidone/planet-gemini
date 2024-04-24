@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class AttackTower : TowerAi
@@ -34,7 +35,7 @@ public class AttackTower : TowerAi
 
         if (!isPreBuilding)
         {
-            if (!isRuin)
+            if (IsServer && !isRuin)
             {
                 searchTimer += Time.deltaTime;
 
@@ -205,27 +206,31 @@ public class AttackTower : TowerAi
         {
             if (isSingleAttack)
             {
-                if (aggroTarget != null)
-                {
-                    GameObject attackFXSpwan;
-                    Vector3 dir = aggroTarget.transform.position - transform.position;
-                    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-                    attackFXSpwan = Instantiate(attackFX, new Vector2(this.transform.position.x, this.transform.position.y + 0.7f), this.transform.rotation);
-                    inventory.SubServerRpc(0, 1);
-                    if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
-                        attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-                    else
-                        attackFXSpwan.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                Vector3 dir = aggroTarget.transform.position - transform.position;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-                    attackFXSpwan.GetComponent<TowerSingleAttackFx>().GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage);
-                }
+                var rot = Quaternion.identity;
+                if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
+                    rot = Quaternion.AngleAxis(angle + 180, Vector3.forward);
+                else
+                    rot = Quaternion.AngleAxis(angle, Vector3.forward);
+
+                if (IsServer)
+                    inventory.SubServerRpc(0, 1);
+
+                NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
+                if (!bulletPool.IsSpawned) bulletPool.Spawn();
+
+                bulletPool.GetComponent<TowerSingleAttackFx>().GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject);                
             }
             else
             {
-                GameObject attackFXSpwan;
-                attackFXSpwan = Instantiate(attackFX, new Vector2(aggroTarget.transform.position.x, aggroTarget.transform.position.y + 0.5f), aggroTarget.transform.rotation);
-                inventory.SubServerRpc(0, 1);
-                attackFXSpwan.GetComponent<TowerAreaAttackFx>().GetTarget(towerData.Damage + loadedBullet.damage);
+                if (IsServer)
+                    inventory.SubServerRpc(0, 1);
+
+                NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(aggroTarget.transform.position.x, aggroTarget.transform.position.y + 0.5f), Quaternion.identity);
+                if (!bulletPool.IsSpawned) bulletPool.Spawn();
+                bulletPool.GetComponent<TowerAreaAttackFx>().GetTarget(towerData.Damage + loadedBullet.damage, gameObject);
             }            
         }
 
@@ -235,14 +240,15 @@ public class AttackTower : TowerAi
         Debug.Log("range" + loadedBullet.range);
     }
 
-    protected override void DieFunc()
-    {
-        base.DieFunc();
+    //[ClientRpc]
+    //protected override void DieFuncClientRpc()
+    //{
+    //    base.DieFuncClientRpc();
 
-        Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
+    //    Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
 
-        animator.SetBool("isDie", true);
-    }
+    //    animator.SetBool("isDie", true);
+    //}
 
     public void RemoveMonster(GameObject monster)
     {

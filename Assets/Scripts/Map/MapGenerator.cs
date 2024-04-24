@@ -732,6 +732,7 @@ public class MapGenerator : MonoBehaviour
         gg.SetDimensions(width, height, 1);
         gg.is2D = true;
         gg.collision.use2D = true;
+        gg.collision.diameter = 0.8f;
         gg.collision.mask |= 1 << LayerMask.NameToLayer("Map");
         gg.collision.mask |= 1 << LayerMask.NameToLayer("Obj");
         gg.collision.mask |= 1 << LayerMask.NameToLayer("MapObj");

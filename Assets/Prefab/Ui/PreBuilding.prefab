@@ -45,11 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beltMgr: {fileID: 0}
+  beltGroup: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
   isBuildingOk: 1
   isEnough: 1
   posList: []
-  isPreBeltSend: 0
+  isPreObjSend: 0
   towerGroupManager: {fileID: 0}
   maxBuildDist: 17.5
   isBuildingOn: 0
   preBuildingNonNet: {fileID: 1108220465007589583, guid: f2022845aee3f8f42a1be314a2ea6d11, type: 3}
+  isEnergyUse: 0
+  isEnergyStr: 0

@@ -7,7 +7,7 @@ using UnityEngine;
 public class StructureData : ScriptableObject
 {
     [SerializeField]
-    private string factoryName;
+    public string factoryName;
     public string FactoryName { get { return factoryName; } }
 
     [SerializeField]

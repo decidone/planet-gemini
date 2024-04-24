@@ -145,6 +145,13 @@ public class UnitCommonAi : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        NetworkObjManager.instance.NetObjAdd(gameObject);
+    }
+
     protected virtual void UnitAiCtrl() { }
     protected virtual void SearchObjectsInRange() { }
     protected virtual void AttackTargetCheck() { }
@@ -273,5 +280,16 @@ public class UnitCommonAi : NetworkBehaviour
         {
             aggroTarget = null;
         }
+    }
+
+    public void AStarSet(bool isHostMap)
+    {
+        GraphMask mask;
+        if (isHostMap)
+            mask = GraphMask.FromGraphName("Map1");
+        else
+            mask = GraphMask.FromGraphName("Map2");
+
+        seeker.graphMask = mask;
     }
 }

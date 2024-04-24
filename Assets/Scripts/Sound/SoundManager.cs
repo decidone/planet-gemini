@@ -69,6 +69,8 @@ public class SoundManager : MonoBehaviour
         mainCamera = Camera.main;
         SFXPlayerSet();
         UIVolumeSet();
+        //임시로 브금 끄기
+        musicBGMToggle.isOn = false;
     }
 
     void Update()

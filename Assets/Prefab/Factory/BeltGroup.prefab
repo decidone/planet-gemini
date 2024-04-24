@@ -53,6 +53,7 @@ MonoBehaviour:
   nextCheck: 1
   preCheck: 1
   isSetBuildingOk: 0
+  networkObjManager: {fileID: 0}
 --- !u!114 &-7485083713794732356
 MonoBehaviour:
   m_ObjectHideFlags: 0

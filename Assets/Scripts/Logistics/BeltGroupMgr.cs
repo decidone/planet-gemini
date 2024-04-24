@@ -10,6 +10,8 @@ public class BeltGroupMgr : NetworkBehaviour
     [SerializeField]
     GameObject beltObj;
 
+    public BeltManager beltManager;
+
     public List<BeltCtrl> beltList = new List<BeltCtrl>();
     public List<ItemProps> groupItem = new List<ItemProps>();
 
@@ -27,11 +29,13 @@ public class BeltGroupMgr : NetworkBehaviour
     void Start()
     {
         networkObjManager = NetworkObjManager.instance;
-        Debug.Log("start");
     }
 
     void Update()
     {
+        if (!IsServer)
+            return;
+
         if (isSetBuildingOk && beltList.Count > 0)
         {
             if (nextCheck)
@@ -40,13 +44,13 @@ public class BeltGroupMgr : NetworkBehaviour
                 if (!nextCheck)
                 {
                     var objID = networkObjManager.FindNetObjID(nextObj);
-                    NearObjSetClientRpc(objID, true);                    
+                    NearObjSetClientRpc(objID, true);
                 }
             }
             if (preCheck)
             {
                 preObj = PreObjCheck();
-                if (!preCheck)
+                if (! preCheck)
                 {
                     var objID = networkObjManager.FindNetObjID(preObj);
                     NearObjSetClientRpc(objID, false);                    
@@ -55,24 +59,115 @@ public class BeltGroupMgr : NetworkBehaviour
         }
     }
 
-    public void SetBelt(int level, int beltDir, int objHeight, int objWidth)
+    private void OnClientConnectedCallback(ulong clientId)
     {
-        GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
-        belt.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) belt.GetComponent<NetworkObject>().Spawn();
-        belt.transform.parent = this.transform;
-        BeltCtrl beltCtrl = netObj.GetComponent<BeltCtrl>();
-        beltList.Add(beltCtrl);
-        //BeltListAddClientRpc(netObj.NetworkObjectId);
-        beltCtrl.SettingClientRpc(level, beltDir, objHeight, objWidth);
-        NetObjAddClientRpc();
+        ClientConnectSyncServerRpc();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        NetworkObjManager.instance.NetObjAdd(gameObject);
+        if (IsServer)
+        {
+            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        // For this example, we always want to invoke the base
+        base.OnNetworkDespawn();
+
+        // Whether server or not, unregister this.
+        NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void ClientConnectSyncServerRpc()
+    {
+        for(int i = 0; i < beltList.Count; i ++)
+        {            
+            ulong mainId = beltList[i].GetComponent<NetworkObject>().NetworkObjectId;
+
+            if (i >= 1)
+            {
+                ulong preId = beltList[i - 1].GetComponent<NetworkObject>().NetworkObjectId;
+                PreBeltSetClientRpc(mainId, preId);
+            }           
+            if (i < beltList.Count - 1)
+            {
+                ulong nextId = beltList[i + 1].GetComponent<NetworkObject>().NetworkObjectId;
+                NextBeltSetClientRpc(mainId, nextId);
+            }
+        }
+
+        ClientConnectSyncClientRpc(isSetBuildingOk);
+
+        if(nextObj)
+        {
+            var objID = networkObjManager.FindNetObjID(nextObj);
+            NearObjSetClientRpc(objID, true);
+        }
+        else if (preObj)
+        {
+            var objID = networkObjManager.FindNetObjID(preObj);
+            NearObjSetClientRpc(objID, false);
+        }
     }
 
     [ClientRpc]
-    void NetObjAddClientRpc()
+    public virtual void ClientConnectSyncClientRpc(bool syncSetBuilding)
     {
-        NetworkObjManager.instance.NetObjAdd(GetComponent<NetworkObject>());
+        if (IsServer)
+            return;
+
+        isSetBuildingOk = syncSetBuilding;
+        //NetworkObjManager.instance.NetObjAdd(gameObject);
+        //ConnecTimeStop.instance.RemoveNetObj(gameObject);
     }
+
+    public void SetBelt(GameObject belt, int level, int beltDir, int objHeight, int objWidth, bool isHostMap)
+    {
+        //GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
+        //belt.TryGetComponent(out NetworkObject netObj);
+        //if (!netObj.IsSpawned) belt.GetComponent<NetworkObject>().Spawn();
+        belt.transform.parent = this.transform;
+        BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
+        beltList.Add(beltCtrl);
+        //BeltListAddClientRpc(netObj.NetworkObjectId);
+        beltCtrl.SettingClientRpc(level, beltDir, objHeight, objWidth, isHostMap);
+        //NetworkObjManager.instance.NetObjAdd(gameObject);
+        //NetObjAddClientRpc();
+    }
+
+    public void SetBeltData()
+    {
+        Reconfirm();
+        for (int i = 0; i < beltList.Count; i++)
+        {
+            ulong mainId = beltList[i].GetComponent<NetworkObject>().NetworkObjectId;
+
+            if (i >= 1)
+            {
+                ulong preId = beltList[i - 1].GetComponent<NetworkObject>().NetworkObjectId;
+                PreBeltSetClientRpc(mainId, preId);
+            }
+            if (i < beltList.Count - 1)
+            {
+                ulong nextId = beltList[i + 1].GetComponent<NetworkObject>().NetworkObjectId;
+                NextBeltSetClientRpc(mainId, nextId);
+            }
+        }
+    }
+
+
+    //[ClientRpc]
+    //public void NetObjAddClientRpc()
+    //{
+    //    NetworkObjManager.instance.NetObjAdd(gameObject);
+    //}
 
     //public void SetBelt(int beltDir, int level, int height, int width, int dirCount)
     //{
@@ -114,7 +209,7 @@ public class BeltGroupMgr : NetworkBehaviour
         {
             Collider2D collider = raycastHits[a].collider;
 
-            if (collider.CompareTag("Factory") && collider.GetComponent<Structure>().isSetBuildingOk &&
+            if ((collider.CompareTag("Factory") || collider.CompareTag("Tower")) && collider.GetComponent<Structure>().isSetBuildingOk &&
                 collider.GetComponent<BeltCtrl>() != belt)
             {
                 if (collider.TryGetComponent(out BeltCtrl otherBelt))
@@ -206,10 +301,13 @@ public class BeltGroupMgr : NetworkBehaviour
                 if (collider.TryGetComponent(out BeltCtrl otherBelt))
                 {
                     CheckGroup(belt, otherBelt, true);
+
                     if (otherBelt.beltGroupMgr.nextObj != null)
                     {
                         return otherBelt.beltGroupMgr.nextObj;
                     }
+
+                    return collider.gameObject;
                 }
                 else
                 {
@@ -257,7 +355,7 @@ public class BeltGroupMgr : NetworkBehaviour
                 if(otherBelt.beltState == BeltState.EndBelt || otherBelt.beltState == BeltState.SoloBelt)
                 {
                     if (otherBelt.beltGroupMgr.nextObj == null)
-                    {                        
+                    {
                         if (belt.dirNum != otherBelt.dirNum)
                         {
                             if (belt.dirNum % 2 == 0)
@@ -304,7 +402,6 @@ public class BeltGroupMgr : NetworkBehaviour
     void CombineFunc(BeltCtrl belt, BeltCtrl otherBelt, bool isNextFind)
     {
         BeltManager beltManager = this.GetComponentInParent<BeltManager>();
-
         if (isNextFind)
         {
             beltManager.BeltCombine(this, otherBelt.beltGroupMgr);
@@ -385,7 +482,6 @@ public class BeltGroupMgr : NetworkBehaviour
         if (IsServer)
             return;
 
-        Debug.Log(ObjID);
         NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(ObjID);
 
         if (!obj)
@@ -399,5 +495,20 @@ public class BeltGroupMgr : NetworkBehaviour
         {
             preObj = obj.gameObject;
         }
+    }
+
+    public ulong BeltFindId(BeltCtrl belt)
+    {
+        BeltCtrl FindBelt = null;
+
+        foreach (BeltCtrl beltCtrl in beltList)
+        {
+            if(beltCtrl == belt)
+            {
+                FindBelt = belt;
+            }
+        }
+
+        return FindBelt.GetComponent<NetworkObject>().NetworkObjectId;
     }
 }

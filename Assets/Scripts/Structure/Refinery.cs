@@ -94,7 +94,11 @@ public class Refinery : FluidFactoryCtrl
         if (IsServer && !isPreBuilding)
         {
             if (inObj.Count > 0 && !itemGetDelay && checkObj)
-                GetItemClientRpc();
+                GetItem();
+        }
+        if (DelayGetList.Count > 0 && inObj.Count > 0)
+        {
+            GetDelayFunc(DelayGetList[0], 0);
         }
         #endregion
 
@@ -150,8 +154,12 @@ public class Refinery : FluidFactoryCtrl
             if (IsServer && slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
-                SendItemClientRpc(itemIndex);
+                SendItem(itemIndex);
                 //SendItem(output);
+            }
+            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         }
     }
@@ -189,7 +197,7 @@ public class Refinery : FluidFactoryCtrl
 
         sInvenManager.InvenInit();
         if (recipe.name != null)
-            SetRecipe(recipe);
+            SetRecipe(recipe, recipeIndex);
     }
 
     public override void CloseUI()
@@ -209,13 +217,14 @@ public class Refinery : FluidFactoryCtrl
         rManager.SetRecipeUI("Refinery", this);
     }
 
-    public override void SetRecipe(Recipe _recipe)
+    public override void SetRecipe(Recipe _recipe, int index)
     {
         if (recipe.name != null && recipe != _recipe)
         {
             sInvenManager.EmptySlot();
         }
         recipe = _recipe;
+        recipeIndex = index;
         sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].outputSlot = true;
         cooldown = recipe.cooldown;
@@ -237,6 +246,7 @@ public class Refinery : FluidFactoryCtrl
 
     public override void AddInvenItem()
     {
+        base.AddInvenItem();
         var slot = inventory.SlotCheck(0);
 
         if (slot.item != null)

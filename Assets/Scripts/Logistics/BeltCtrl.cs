@@ -58,22 +58,78 @@ public class BeltCtrl : LogisticsCtrl
             anim.SetFloat("DirNum", dirNum);
             anim.SetFloat("ModelNum", modelMotion);
             anim.SetFloat("Level", level);
-
+             
             anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-            //if (IsServer)
                 ModelSet();
         }
     }
 
     private void FixedUpdate()
     {
-        //if (!IsServer)
-        //    return;
-
         if (itemObjList.Count > 0)
             ItemMove();
         else if(itemObjList.Count == 0 && isItemStop)
             isItemStop = false;
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        ClientConnectSyncServerRpc();
+        ItemSyncServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void ClientConnectSyncServerRpc()
+    {
+        base.ClientConnectSyncServerRpc();
+        ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void ItemSyncServerRpc()
+    {
+        for (int i = 0; i < itemObjList.Count; i++)
+        {
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemObjList[i].item);
+            ItemSyncClientRpc(itemIndex, itemObjList[i].transform.position);
+        }
+    }
+
+    [ClientRpc]
+    public void ClientConnectBeltSyncClientRpc(int syncMotion , bool syncTurn, bool syncRightTurn, int syncBeltState)
+    {
+        if (IsServer)
+            return;
+
+        modelMotion = syncMotion;
+        isTurn = syncTurn;
+        isRightTurn = syncRightTurn;
+        beltState = (BeltState)syncBeltState;
+    }
+
+    [ClientRpc]
+    public void ItemSyncClientRpc(int itemIndex, Vector3 tr)
+    {
+        if (IsServer)
+            return;
+
+        Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        var itemPool = ItemPoolManager.instance.Pool.Get();
+        ItemProps spawn = itemPool.GetComponent<ItemProps>();
+        SpriteRenderer sprite = spawn.GetComponent<SpriteRenderer>();
+        spawn.col.enabled = false;
+        sprite.sprite = sendItem.icon;
+        sprite.sortingOrder = 2;
+        spawn.item = sendItem;
+        spawn.amount = 1;
+        spawn.transform.position = tr;
+        spawn.isOnBelt = true;
+        spawn.setOnBelt = this;
+        itemObjList.Add(spawn);
+
+        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+            isFull = true;
     }
 
     void ModelSet()
@@ -560,14 +616,15 @@ public class BeltCtrl : LogisticsCtrl
     }
 
     [ClientRpc]
-    public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth)
+    public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap)
     {
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-        beltGroupMgr.beltList.Add(this);
         level = _level;
         dirNum = _beltDir;
         height = objHeight;
         width = objWidth;
+        isInHostMap = isHostMap;
+        settingEndCheck = true;
         beltState = BeltState.SoloBelt;
         SetBuild();
         ColliderTriggerOnOff(false);

@@ -113,24 +113,24 @@ public class RepairTower : TowerAi
         }
     }
 
-    protected override void DieFunc()
-    {
-        base.DieFunc();
+    //protected override void DieFuncClientRpc()
+    //{
+    //    base.DieFuncClientRpc();
 
-        Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
+    //    Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
                 
-        foreach (GameObject tower in TowerList)
-        {
-            if (tower.TryGetComponent(out TowerAi towerAi))
-            {
-                if (towerAi.isRuin)
-                {
-                    if (towerAi.isRepair)
-                    {
-                        towerAi.RepairSet(false);
-                    }
-                }
-            }
-        }
-    }
+    //    foreach (GameObject tower in TowerList)
+    //    {
+    //        if (tower.TryGetComponent(out TowerAi towerAi))
+    //        {
+    //            if (towerAi.isRuin)
+    //            {
+    //                if (towerAi.isRepair)
+    //                {
+    //                    towerAi.RepairSet(false);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 }

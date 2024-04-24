@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class UnitFactory : Production
 {
@@ -48,12 +49,16 @@ public class UnitFactory : Production
 
                             if (spawnPosExist)
                             {
-                                inventory.SubServerRpc(0, recipe.amounts[0]);
-                                inventory.SubServerRpc(1, recipe.amounts[1]);
-                                inventory.SubServerRpc(2, recipe.amounts[2]);
+                                if (IsServer)
+                                {
+                                    inventory.SubServerRpc(0, recipe.amounts[0]);
+                                    inventory.SubServerRpc(1, recipe.amounts[1]);
+                                    inventory.SubServerRpc(2, recipe.amounts[2]);
 
-                                SetUnit();
-                                SpawnUnit();
+                                    SetUnit();
+                                    SpawnUnit();
+                                }
+
                                 soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
                                 prodTimer = 0;
                             }
@@ -87,7 +92,7 @@ public class UnitFactory : Production
 
         sInvenManager.InvenInit();
         if (recipe.name != null)
-            SetRecipe(recipe);
+            SetRecipe(recipe, recipeIndex);
 
         if (isSetPos)
             LineRendererSet(spawnPos);
@@ -110,13 +115,14 @@ public class UnitFactory : Production
         rManager.SetRecipeUI("UnitFactory", this);
     }
 
-    public override void SetRecipe(Recipe _recipe)
+    public override void SetRecipe(Recipe _recipe, int index)
     {
         if (recipe.name != null && recipe != _recipe)
         {
             sInvenManager.EmptySlot();
         }
         recipe = _recipe;
+        recipeIndex = index;
         sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
@@ -205,7 +211,13 @@ public class UnitFactory : Production
     {
         GameObject unit = Instantiate(spawnUnit);
         unit.transform.position = this.transform.position;
+        NetworkObject networkObject = unit.GetComponent<NetworkObject>();
+        if (!networkObject.IsSpawned) networkObject.Spawn();
+
+        //NetworkObjManager.instance.NetObjAdd(unit);
         UnitAi unitAi = unit.GetComponent<UnitAi>();
+        unitAi.AStarSet(isInHostMap);
+        //unit.transform.position = this.transform.position;
         unitAi.MovePosSetServerRpc(spawnPos, 0, true);
     }
 

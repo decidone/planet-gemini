@@ -30,7 +30,8 @@ public class TestingNetcodeUI : NetworkBehaviour
         });
     }
 
-    void Hide() {
+    void Hide() 
+    {
         gameObject.SetActive(false);
     }
 }

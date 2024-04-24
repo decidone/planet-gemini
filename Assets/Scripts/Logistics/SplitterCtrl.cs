@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class SplitterCtrl : LogisticsCtrl
@@ -59,20 +60,27 @@ public class SplitterCtrl : LogisticsCtrl
             if (IsServer && !isPreBuilding && checkObj)
             { 
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
-                    GetItemClientRpc();
+                    GetItem();
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
                     if (filterOn && level > 0) 
                     {
-                        FilterSetItem(filterindex);
+                        FilterSendItem();
                     }
                     else
                     {
                         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
-                        SendItemClientRpc(itemIndex);
-                        //SendItem(itemList[0]);
+                        SendItem(itemIndex);
                     }
                 }
+            }
+            if (DelaySendList.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
+            }
+            if (DelayGetList.Count > 0 && inObj.Count > 0)
+            {
+                GetDelayFunc(DelayGetList[0], 0);
             }
         }
     }
@@ -98,37 +106,42 @@ public class SplitterCtrl : LogisticsCtrl
         arrFilter[num].outObj = obj;
     }
 
-    public void FilterSet(int num, bool filterOn, bool fullFilterOn, bool itemFilterOn, bool reverseFilterOn, Item itemNum)
+    [ServerRpc(RequireOwnership = false)]
+    public void FilterSetServerRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
     {
-        arrFilter[num].isFilterOn = filterOn;
-        arrFilter[num].isFullFilterOn = fullFilterOn;
-        arrFilter[num].isItemFilterOn = itemFilterOn;
-        arrFilter[num].isReverseFilterOn = reverseFilterOn;
-        arrFilter[num].selItem = itemNum;
+        FilterSetClientRpc(num, filterOn, reverseFilterOn, itemIndex);
     }
 
-    public void SlotReset(int num)
+    [ClientRpc]
+    public void FilterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
+    {
+        arrFilter[num].isFilterOn = filterOn;
+        arrFilter[num].isReverseFilterOn = reverseFilterOn;
+        arrFilter[num].selItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        ItemFilterCheck();
+        UIReset();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SlotResetServerRpc(int num)
+    {
+        SlotResetClientRpc(num);
+    }
+
+    [ClientRpc]
+    public void SlotResetClientRpc(int num)
     {
         arrFilter[num].isFilterOn = false;
-        arrFilter[num].isFullFilterOn = false;
-        arrFilter[num].isItemFilterOn = false;
         arrFilter[num].isReverseFilterOn = false;
         arrFilter[num].selItem = null;
         ItemFilterCheck();
+        UIReset();
     }
 
-    void FilterReset(int num)
+    void UIReset()
     {
-        arrFilter[num].outObj = null;
-        arrFilter[num].isFilterOn = false;
-        arrFilter[num].isFullFilterOn = false;
-        arrFilter[num].isItemFilterOn = false;
-        arrFilter[num].isReverseFilterOn = false;
-        arrFilter[num].selItem = null;
-        if (clickEvent.sFilterManager != null)
-        {
-            clickEvent.sFilterManager.UiReset();
-        }
+        if(clickEvent.sFilterManager != null)
+            clickEvent.sFilterManager.UIReset();
     }
 
     void FilterIndexCheck()
@@ -140,7 +153,57 @@ public class SplitterCtrl : LogisticsCtrl
         }
     }
 
-    void FilterSetItem(int index)
+    void FilterSendItem()
+    {
+        Filter filter = arrFilter[filterindex];
+        Item sendItem = itemList[0];
+        Item selectedFilterItem = filter.selItem;
+
+        if (filter.outObj == null || !filter.isFilterOn)
+        {
+            FilterindexSet();
+            return;
+        }
+
+        if (filter.isReverseFilterOn && selectedFilterItem == sendItem)
+        {
+            FilterindexSet();
+            return;
+        }
+
+        if (!filter.isReverseFilterOn && selectedFilterItem != sendItem)
+        {
+            FilterindexSet();
+            return;
+        }        
+
+        GameObject outObject = filter.outObj;
+        Structure outFactory = outObject.GetComponent<Structure>();
+
+        if (outFactory.isFull)
+        {
+            FilterindexSet();
+            return;
+        }
+        else if (outObject.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
+        {
+            FilterindexSet();
+            return;
+        }
+
+        FilterSetItemClientRpc(filterindex);
+        FilterindexSet();
+    }
+
+    void FilterindexSet()
+    {
+        filterindex++;
+        if (filterindex >= arrFilter.Length)
+            filterindex = 0;
+    }
+
+    [ClientRpc]
+    void FilterSetItemClientRpc(int index)
     {
         if (setFacDelayCoroutine != null)
         {
@@ -149,84 +212,39 @@ public class SplitterCtrl : LogisticsCtrl
 
         itemSetDelay = true;
         Item sendItem = itemList[0];
-        Structure outFactory = null;
 
         Filter filter = arrFilter[index];
 
-        if (filter.outObj == null)
-        {
-            FilterIndexCheck();
-            DelaySetItem();
-            return;
-        }
-
-        bool isReverseFilter = filter.isItemFilterOn && filter.isReverseFilterOn;
-        Item selectedFilterItem = filter.selItem;
-
-        if (!filter.isFullFilterOn)
-        {
-            if (isReverseFilter && selectedFilterItem == sendItem)
-            {
-                FilterIndexCheck();
-                DelaySetItem();
-                return;
-            }
-
-            if (!isReverseFilter && selectedFilterItem != sendItem)
-            {
-                FilterIndexCheck();
-                DelaySetItem();
-                return;
-            }
-        }
-        else if (!isReverseFilter && filter.isFullFilterOn && ItemFilterFullCheck(sendItem))
-        {
-            FilterIndexCheck();
-            DelaySetItem();
-            return;
-        }
-
         GameObject outObject = filter.outObj;
-        outFactory = outObject.GetComponent<Structure>();
 
-        if (outFactory.isFull == false)
+        if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
         {
-            if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
-            {
-                var itemPool = ItemPoolManager.instance.Pool.Get();
-                spawnItem = itemPool.GetComponent<ItemProps>();
+            var itemPool = ItemPoolManager.instance.Pool.Get();
+            spawnItem = itemPool.GetComponent<ItemProps>();
 
-                if (beltCtrl.OnBeltItem(spawnItem))
-                {
-                    SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                    sprite.sprite = sendItem.icon;
-                    sprite.sortingOrder = 2;
-                    spawnItem.item = sendItem;
-                    spawnItem.amount = 1;
-                    spawnItem.transform.position = transform.position;
-                    spawnItem.isOnBelt = true;
-                    spawnItem.setOnBelt = beltCtrl;
-                }
-                else
-                {
-                    FilterIndexCheck();
-                    DelaySetItem();
-                    return;
-                }
-            }
-            else if (outObject.GetComponent<LogisticsCtrl>())
+            if (beltCtrl.OnBeltItem(spawnItem))
             {
-                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
+                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                sprite.sprite = sendItem.icon;
+                sprite.sortingOrder = 2;
+                spawnItem.item = sendItem;
+                spawnItem.amount = 1;
+                spawnItem.transform.position = transform.position;
+                spawnItem.isOnBelt = true;
+                spawnItem.setOnBelt = beltCtrl;
             }
-            else if (outObject.TryGetComponent(out Production production) && production.CanTakeItem(sendItem))
-            {
-                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
-            }
-            itemList.RemoveAt(0);
-            ItemNumCheck();
         }
-
-        FilterIndexCheck();
+        else if (outObject.GetComponent<LogisticsCtrl>())
+        {
+            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
+        }
+        else if (outObject.TryGetComponent(out Production production) && production.CanTakeItem(sendItem))
+        {
+            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
+        }
+        itemListRemoveClientRpc();
+        ItemNumCheck();
+        
         Invoke(nameof(DelaySetItem), structureData.SendDelay);
     }
 

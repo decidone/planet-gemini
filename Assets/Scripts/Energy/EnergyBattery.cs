@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class EnergyBattery : Structure
 {
@@ -16,6 +17,26 @@ public class EnergyBattery : Structure
     {
         base.Awake();
         stored = 0;
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        StoredSyncServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void StoredSyncServerRpc()
+    {
+        StoredSyncClientRpc(stored);
+    }
+
+    [ClientRpc]
+    void StoredSyncClientRpc(float syncStored)
+    {
+        if (IsServer)
+            return;
+        stored = syncStored;
     }
 
     public float StoreEnergy(float energy)

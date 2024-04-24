@@ -24,6 +24,16 @@ public class Inventory : NetworkBehaviour
 
     void Start()
     {
+        //itemList = ItemList.instance.itemList;
+        //foreach (Item item in itemList)
+        //{
+        //    totalItems.Add(item, 0);
+        //}
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
         itemList = ItemList.instance.itemList;
         foreach (Item item in itemList)
         {
@@ -56,6 +66,65 @@ public class Inventory : NetworkBehaviour
     {
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
         AddServerRpc(itemIndex, amount);
+    }
+
+    public void RecipeInvenAdd(Item item, int amount)
+    {
+        int containableAmount = SpaceCheck(item);
+        int tempAmount = amount;
+
+        if (containableAmount < amount)
+        {
+            tempAmount = containableAmount;
+        }
+
+        // 2. 이미 있던 칸에 수량 증가
+        for (int i = 0; i < space; i++)
+        {
+            if (items.ContainsKey(i))
+            {
+                if (items[i] == item)
+                {
+                    if (amounts[i] + tempAmount <= maxAmount)
+                    {
+                        RecipeSlotAdd(i, item, tempAmount);
+                        tempAmount = 0;
+                    }
+                    else
+                    {
+                        RecipeSlotAdd(i, item, maxAmount - amounts[i]);
+                        tempAmount -= (maxAmount - amounts[i]);
+                    }
+                }
+            }
+            if (tempAmount == 0)
+                break;
+        }
+
+        // 3. 2를 처리하고 남은 수량만큼 빈 칸에 배정
+        if (tempAmount > 0)
+        {
+            for (int i = 0; i < space; i++)
+            {
+                if (!items.ContainsKey(i))
+                {
+                    if (tempAmount <= maxAmount)
+                    {
+                        RecipeSlotAdd(i, item, tempAmount);
+                        tempAmount = 0;
+                    }
+                    else
+                    {
+                        RecipeSlotAdd(i, item, maxAmount);
+                        tempAmount -= maxAmount;
+                    }
+                }
+                if (tempAmount <= 0)
+                    break;
+            }
+        }
+
+        onItemChangedCallback?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -227,7 +296,34 @@ public class Inventory : NetworkBehaviour
     [ClientRpc]
     public void SlotAddClientRpc(int slotNum, int itemIndex, int amount)
     {
+        if(TryGetComponent(out Structure structure))
+        {
+            if (!IsServer && !structure.settingEndCheck)
+                return;
+        }
+
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        if (!items.ContainsKey(slotNum))
+        {
+            items.Add(slotNum, item);
+            amounts.Add(slotNum, amount);
+            totalItems[item] += amount;
+        }
+        else if (items[slotNum] == item)
+        {
+            amounts[slotNum] += amount;
+            totalItems[items[slotNum]] += amount;
+        }
+        else
+        {
+            Debug.Log("Slot Add Error");
+        }
+
+        onItemChangedCallback?.Invoke();
+    }
+
+    public void RecipeSlotAdd(int slotNum, Item item, int amount)
+    {
         if (!items.ContainsKey(slotNum))
         {
             items.Add(slotNum, item);
@@ -256,6 +352,12 @@ public class Inventory : NetworkBehaviour
     [ClientRpc]
     public void SubClientRpc(int slotNum, int amount)
     {
+        if (TryGetComponent(out Structure structure))
+        {
+            if (!IsServer && !structure.settingEndCheck)
+                return;
+        }
+
         totalItems[items[slotNum]] -= amount;
         amounts[slotNum] -= amount;
         if (amounts[slotNum] == 0)
