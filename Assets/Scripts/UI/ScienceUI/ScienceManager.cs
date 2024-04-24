@@ -44,6 +44,17 @@ public class ScienceManager : MonoBehaviour
 
     SoundManager soundManager;
 
+    public static ScienceManager instance;
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogWarning("More than one instance of InfoWindow found!");
+            return;
+        }
+        instance = this;
+    }
+
     void Start()
     {
         UISetting();
@@ -73,10 +84,12 @@ public class ScienceManager : MonoBehaviour
         for (int i = 0; i < scienceBtns.Length; i++)
         {
             ScienceBtn btn = scienceBtns[i];
-
+            btn.btnIndex = i;
             AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
             AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(); });
         }
+
+        scienceDb.ScienceBtnArrGet(scienceBtns);
     }
 
     void Update()
@@ -237,5 +250,10 @@ public class ScienceManager : MonoBehaviour
         sciItemSetWindow.CloseUI();
         soundManager.PlayUISFX("CloseUI");
         gameManager.onUIChangedCallback?.Invoke(scienceTreeUI);
+    }
+
+    public void SyncSciBtnItem(int btnIndex, int index, int amount)
+    {
+        scienceDb.SyncSciBtnItemServerRpc(btnIndex, index, amount);
     }
 }

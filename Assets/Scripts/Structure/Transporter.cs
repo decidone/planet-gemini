@@ -216,6 +216,7 @@ public class Transporter : Production
 
     public override void AddInvenItem()
     {
+        base.AddInvenItem();
         for (int i = 0; i < 18; i++)
         {
             var invenItem = inventory.SlotCheck(i);

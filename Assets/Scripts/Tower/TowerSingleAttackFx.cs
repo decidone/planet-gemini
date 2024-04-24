@@ -1,16 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 // UTF-8 설정
-public class TowerSingleAttackFx : MonoBehaviour
+public class TowerSingleAttackFx : NetworkBehaviour
 {
     float damage = 0;
 
     [SerializeField]
     protected Animator animator;
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
-    bool isHit = false;
+    GameObject attackUnit;
+
+    bool alreadyHit;
+
+    Coroutine timerCoroutine;
+
+    NetworkObjectPool networkObjectPool;
+
+    private void Start()
+    {
+        networkObjectPool = NetworkObjectPool.Singleton;
+        alreadyHit = false;
+    }
 
     void Update()
     {
@@ -18,21 +31,53 @@ public class TowerSingleAttackFx : MonoBehaviour
         Destroy(this.gameObject, 3f);
     }
 
-    public void GetTarget(Vector3 target, float GetDamage)
+    [ClientRpc]
+    public void DestroyBulletClientRpc()
+    {
+        if (IsServer)
+        {
+            NetworkObject.Despawn();
+        }
+    }
+
+    public void GetTarget(Vector3 target, float GetDamage, GameObject obj)
     {
         moveNextStep = (target - transform.position).normalized;
         damage = GetDamage;
+        attackUnit = obj;
+        alreadyHit = false;
+        timerCoroutine = StartCoroutine(nameof(RemoveTimer));
+    }
+
+    IEnumerator RemoveTimer()
+    {
+        yield return new WaitForSeconds(5.0f);
+        if (!alreadyHit)
+            DestroyBulletClientRpc();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Monster") && !isHit)
+        if (!IsServer)
+            return;
+        if (collision.CompareTag("Monster") && !alreadyHit)
         {
-            if (!collision.isTrigger)
+            if (!alreadyHit)
             {
-                collision.GetComponent<MonsterAi>().TakeDamageClientRpc(damage);
-                isHit = true;
-                Destroy(this.gameObject, 0.1f);
+                StopCoroutine(timerCoroutine);
+                DestroyBulletClientRpc();
+                alreadyHit = true;
+            }
+            else
+                return;
+
+            if (collision.TryGetComponent(out MonsterAi monster))
+            {
+                monster.TakeDamageClientRpc(damage);
+            }
+            else if (collision.TryGetComponent(out MonsterSpawner spawner))
+            {
+                spawner.GetComponent<MonsterSpawner>().TakeDamage(damage, attackUnit);
             }
         }
     }

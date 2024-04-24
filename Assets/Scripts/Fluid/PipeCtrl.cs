@@ -180,7 +180,7 @@ public class PipeCtrl : FluidFactoryCtrl
         if (outObj.Contains(game))
         {
             outObj.Remove(game);
-            sendItemIndex = 0;
+            InOutObjIndexResetClientRpc(false);
         }
 
         for (int i = 0; i < nearObj.Length; i++)

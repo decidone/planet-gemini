@@ -37,9 +37,13 @@ public class GetUnderBeltCtrl : LogisticsCtrl
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
                     int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
-                    SendItemClientRpc(itemIndex);
+                    SendItem(itemIndex);
                     //SendItem(itemList[0]);
                 }
+            }
+            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         }
     }

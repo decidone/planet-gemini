@@ -47,3 +47,13 @@ MonoBehaviour:
   PooledPrefabsList:
   - Prefab: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
     PrewarmCount: 10
+  - Prefab: {fileID: 131646313625141333, guid: b31d241b0c0f49b4583ae09c0b61542c, type: 3}
+    PrewarmCount: 5
+  - Prefab: {fileID: 3832536798139642931, guid: 22067a6743dd85943ac66ba5c3c774f6, type: 3}
+    PrewarmCount: 5
+  - Prefab: {fileID: 3832536798139642931, guid: fdb8544d40d9b5e4a92423109023958f, type: 3}
+    PrewarmCount: 5
+  - Prefab: {fileID: 3832536798139642931, guid: dbd38acb8484d144c8515c998e13240d, type: 3}
+    PrewarmCount: 5
+  - Prefab: {fileID: 3832536798139642931, guid: 2a381dc075e0a8b449a23362a186b7da, type: 3}
+    PrewarmCount: 5

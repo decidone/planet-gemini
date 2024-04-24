@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class SteamGenerator : FluidFactoryCtrl
 {
@@ -102,7 +103,11 @@ public class SteamGenerator : FluidFactoryCtrl
         if (IsServer && !isPreBuilding)
         {
             if (inObj.Count > 0 && !itemGetDelay && checkObj)
-                GetItemClientRpc();
+                GetItem();
+        }
+        if (DelayGetList.Count > 0 && inObj.Count > 0)
+        {
+            GetDelayFunc(DelayGetList[0], 0);
         }
         #endregion
 
@@ -152,7 +157,8 @@ public class SteamGenerator : FluidFactoryCtrl
             var slot = inventory.SlotCheck(0);
             if (fuel <= 50 && slot.item == FuelItem && slot.amount > 0)
             {
-                inventory.SubServerRpc(0, 1);
+                if (IsServer)
+                    inventory.SubServerRpc(0, 1);
                 fuel += 50;
             }
 
@@ -209,10 +215,11 @@ public class SteamGenerator : FluidFactoryCtrl
         }
     }
 
-    public override void RemoveObj()
+    [ServerRpc(RequireOwnership = false)]
+    public override void RemoveObjServerRpc()
     {
         connector.RemoveFromGroup();
-        base.RemoveObj();
+        base.RemoveObjServerRpc();
     }
 
     public override bool CanTakeItem(Item item)
@@ -273,6 +280,7 @@ public class SteamGenerator : FluidFactoryCtrl
 
     public override void AddInvenItem()
     {
+        base.AddInvenItem();
         var slot = inventory.SlotCheck(0);
 
         if (slot.item != null)

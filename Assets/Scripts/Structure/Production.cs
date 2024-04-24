@@ -23,6 +23,7 @@ public abstract class Production : Structure
     protected int maxFuel;
     protected Item output;
     protected Recipe recipe;
+    protected int recipeIndex;
     protected List<Recipe> recipes;
     protected int invenCount;
     protected Dictionary<Item, int> invenSlotDic;
@@ -35,7 +36,72 @@ public abstract class Production : Structure
     protected Vector3 endLine;
     public bool isGetLine;
 
-    public virtual void SetRecipe(Recipe _recipe) { }
+    public virtual void SetRecipe(Recipe _recipe, int index) { }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetRecipeServerRpc(string buildingName, int index)
+    {
+        itemDic = ItemList.instance.itemDic;
+        SetRecipeClientRpc(buildingName, index);
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        ClientConnectSyncServerRpc();
+        SetRecipeServerRpc(structureData.factoryName, recipeIndex);
+        ItemSyncServerRpc();
+    }
+
+    [ClientRpc]
+    public void SetRecipeClientRpc(string buildingName, int index)
+    {
+        Recipe selectRecipe = RecipeList.instance.GetRecipeIndex(buildingName, index);
+
+        if(selectRecipe != null)
+        {
+            if (isUIOpened)
+                SetRecipe(selectRecipe, index);
+            else
+            {
+                recipe = selectRecipe;
+                recipeIndex = index;
+            } 
+        }       
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void ItemSyncServerRpc()
+    {
+        ItemListClearClientRpc();
+        for (int i = 0; i < inventory.space; i++)
+        {
+            var slot = inventory.SlotCheck(i);
+
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+            if(itemIndex != -1)
+                ItemSyncClientRpc(i ,itemIndex, slot.amount);
+        }
+    }
+
+
+    [ClientRpc]
+    protected override void ItemListClearClientRpc()
+    {
+        if (!IsServer)
+            inventory.ResetInven();
+    }
+
+
+    [ClientRpc]
+    protected void ItemSyncClientRpc(int slotNum, int itemIndex, int itemAmount, ClientRpcParams rpcParams = default)
+    {
+        if (IsServer)
+            return;
+
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        inventory.RecipeSlotAdd(slotNum, item, itemAmount);
+    }
+
     public virtual float GetProgress() { return prodTimer; }
     public virtual float GetFuel() { return fuel; }
     public virtual void OpenRecipe() { }
@@ -86,13 +152,34 @@ public abstract class Production : Structure
         if (IsServer && !isPreBuilding && checkObj)
         {
             if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
-                GetItemClientRpc();
+                GetItem();
+        }
+        if (DelayGetList.Count > 0 && inObj.Count > 0)
+        {
+            GetDelayFunc(DelayGetList[0], 0);
         }
     }
 
     public virtual void OpenUI()
     {
         isUIOpened = true;
+        ClientUISetServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    protected void ClientUISetServerRpc()
+    {
+        ClientUISetClientRpc(fuel, prodTimer);
+    }
+
+    [ClientRpc]
+    protected void ClientUISetClientRpc(int syncFuel, float syncTimer)
+    {
+        if (IsServer)
+            return;
+
+        fuel = syncFuel;
+        prodTimer = syncTimer;
     }
 
     public virtual void CloseUI()
@@ -180,7 +267,8 @@ public abstract class Production : Structure
 
     protected override void SubFromInventory()
     {
-        inventory.SubServerRpc(inventory.space - 1, 1);
+        if(IsServer)
+            inventory.SubServerRpc(inventory.space - 1, 1);
     }
 
     public virtual bool CanTakeItem(Item item) 
@@ -214,12 +302,34 @@ public abstract class Production : Structure
         return slot;
     }
 
-    [ClientRpc]
-    protected override void GetItemClientRpc()
-    {
-        itemGetDelay = true;
+    //[ClientRpc]
+    //protected override void GetItemClientRpc(int inObjIndex)
+    //{
+    //    itemGetDelay = true;
 
-        if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt) && belt.isItemStop)
+    //    if (inObj[inObjIndex].TryGetComponent(out BeltCtrl belt))
+    //    {
+    //        if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
+    //        {
+    //            OnFactoryItem(belt.itemObjList[0]);
+    //            belt.itemObjList[0].transform.position = this.transform.position;
+    //            belt.isItemStop = false;
+    //            belt.itemObjList.RemoveAt(0);
+    //            if (IsServer)
+    //                belt.beltGroupMgr.groupItem.RemoveAt(0);
+    //            belt.ItemNumCheck();
+
+    //            DelayGetItem();
+    //            //Invoke(nameof(DelayGetItem), structureData.SendDelay);
+    //        }
+    //        else
+    //            DelayGetItem();
+    //    }
+    //}
+
+    protected override void GetItemFunc(int inObjIndex)
+    {
+        if (inObj[inObjIndex].TryGetComponent(out BeltCtrl belt))
         {
             if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
             {
@@ -231,35 +341,17 @@ public abstract class Production : Structure
                     belt.beltGroupMgr.groupItem.RemoveAt(0);
                 belt.ItemNumCheck();
 
-                getItemIndex++;
-                if (getItemIndex >= inObj.Count)
-                    getItemIndex = 0;
-
-                Invoke(nameof(DelayGetItem), structureData.SendDelay);
+                DelayGetItem();
+                //Invoke(nameof(DelayGetItem), structureData.SendDelay);
             }
             else
-            {
-                getItemIndex++;
-                if (getItemIndex >= inObj.Count)
-                    getItemIndex = 0;
-
                 DelayGetItem();
-                return;
-            }
         }
-        else
-        {
-            getItemIndex++;
-            if (getItemIndex >= inObj.Count)
-                getItemIndex = 0;
-
-            DelayGetItem();
-            return;
-        }        
     }
 
     public override void AddInvenItem()
-    { 
+    {
+        base.AddInvenItem();
         for (int i = 0; i < inventory.space; i++)
         {
             var invenItem = inventory.SlotCheck(i);
@@ -314,7 +406,8 @@ public abstract class Production : Structure
             if (invenItem.item == item && invenItem.amount > 0)
             {
                 canUnload = true;
-                inventory.SubServerRpc(i, 1);
+                if(IsServer)
+                    inventory.SubServerRpc(i, 1);
                 break;
             }
         }

@@ -33,8 +33,9 @@ public class MonsterSpawner : NetworkBehaviour
     public int currentNormalSpawn;
     public int currentStrongSpawn;
 
-    public List<GameObject> totalMonsterList = new List<GameObject>(); // 가딘언을 제외한 몬스터 리스트
+    public List<MonsterAi> totalMonsterList = new List<MonsterAi>(); // 가딘언을 제외한 몬스터 리스트
     public List<GuardianAi> guardianList = new List<GuardianAi>();
+    public List<MonsterAi> waveMonsterList = new List<MonsterAi>();
     // 가디언은 초기에 배치하고 그 이후로는 관리 안함
 
     int areaLevel;
@@ -260,19 +261,19 @@ public class MonsterSpawner : NetworkBehaviour
         if (monserType == 0)
         {
             newMonster = Instantiate(weakMonster[monsterIndex]);
-            totalMonsterList.Add(newMonster);
+            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentWeakSpawn++;
         }
         else if (monserType == 1)
         {
             newMonster = Instantiate(normalMonster[monsterIndex]);
-            totalMonsterList.Add(newMonster);
+            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentNormalSpawn++;
         }
         else if (monserType == 2)
         {
             newMonster = Instantiate(strongMonster[monsterIndex]);
-            totalMonsterList.Add(newMonster);
+            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentStrongSpawn++;
         }
         else if (monserType == 3)
@@ -282,7 +283,7 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
-        networkObject.Spawn();
+        if(!networkObject.IsSpawned) networkObject.Spawn();
 
         newMonster.transform.SetParent(this.transform, false);
 
@@ -298,7 +299,7 @@ public class MonsterSpawner : NetworkBehaviour
         newMonster.transform.position = setPos;
 
         newMonster.GetComponent<MonsterAi>().MonsterSpawnerSet(this, monserType);
-        newMonster.GetComponent<MonsterAi>().MonsterAStarSet(isInHostMap);
+        newMonster.GetComponent<MonsterAi>().AStarSet(isInHostMap);
         if (!nearUserObjExist)
         {
             if(IsServer)
@@ -315,9 +316,9 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void MonsterScriptSet(bool scriptState, bool guardianState)
     {
-        foreach (GameObject monster in totalMonsterList)
+        foreach (MonsterAi monster in totalMonsterList)
         {
-            monster.GetComponent<MonsterAi>().MonsterScriptSetClientRpc(scriptState);
+            monster.MonsterScriptSetClientRpc(scriptState);
         }
         if (guardianState)
         {
@@ -329,7 +330,7 @@ public class MonsterSpawner : NetworkBehaviour
 
     }
 
-    public void MonsterDieChcek(GameObject monster, int type)
+    public void MonsterDieChcek(GameObject monster, int type, bool waveState)
     {
         if (type == 3)  // 가디언
         {
@@ -337,20 +338,27 @@ public class MonsterSpawner : NetworkBehaviour
             return;
         }
 
-        totalMonsterList.Remove(monster);
-        switch (type)
+        if (waveState)
         {
-            case 0:
-                currentWeakSpawn--;
-                break;
-            case 1:
-                currentNormalSpawn--;
-                break;
-            case 2:
-                currentStrongSpawn--;
-                break;
-            default:
-                break;
+            waveMonsterList.Remove(monster.GetComponent<MonsterAi>());
+        }
+        else
+        {
+            totalMonsterList.Remove(monster.GetComponent<MonsterAi>());
+            switch (type)
+            {
+                case 0:
+                    currentWeakSpawn--;
+                    break;
+                case 1:
+                    currentNormalSpawn--;
+                    break;
+                case 2:
+                    currentStrongSpawn--;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -400,10 +408,9 @@ public class MonsterSpawner : NetworkBehaviour
     public void WaveTeleport(Vector3 pos)
     {
         MonsterScriptSet(true, false);
-        foreach (GameObject monster in totalMonsterList)
+        foreach (MonsterAi monster in totalMonsterList)
         {
-            MonsterAi monsterAi = monster.GetComponent<MonsterAi>();
-            monsterAi.WaveTeleport(pos);
+            monster.WaveTeleport(pos);
         }
 
         Invoke(nameof(WaveStart), 40.0f);
@@ -412,13 +419,16 @@ public class MonsterSpawner : NetworkBehaviour
     public void WaveStart()
     {
         MonsterScriptSet(true, false);
-        foreach (GameObject monster in totalMonsterList)
+        List<GameObject> monsters = new List<GameObject>();
+        foreach (MonsterAi monster in totalMonsterList)
         {
-            MonsterAi monsterAi = monster.GetComponent<MonsterAi>();
-            monsterAi.WaveStart(wavePos);
+            monster.WaveStart(wavePos);
+            monsters.Add(monster.gameObject);
         }
 
-        battleBGM.WaveAddMonster(totalMonsterList);
+        battleBGM.WaveAddMonster(monsters);
+
+        waveMonsterList.AddRange(totalMonsterList);
 
         totalMonsterList.Clear();
         currentWeakSpawn = 0;
@@ -429,13 +439,16 @@ public class MonsterSpawner : NetworkBehaviour
     public void ColonyCall(EnergyColony colony)
     {
         MonsterScriptSet(true, false);
-        foreach (GameObject monster in totalMonsterList)
+        List<GameObject> monsters = new List<GameObject>();
+        foreach (MonsterAi monster in totalMonsterList)
         {
-            MonsterAi monsterAi = monster.GetComponent<MonsterAi>();
-            monsterAi.ColonyAttackStart(colony.transform.position);
+            monster.ColonyAttackStart(colony.transform.position);
+            monsters.Add(monster.gameObject);
         }
 
-        battleBGM.ColonyCallAddMonster(totalMonsterList);
+        battleBGM.ColonyCallAddMonster(monsters);
+
+        waveMonsterList.AddRange(totalMonsterList);
 
         totalMonsterList.Clear();
         currentWeakSpawn = 0;

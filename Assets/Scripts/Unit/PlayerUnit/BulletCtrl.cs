@@ -7,8 +7,6 @@ using Unity.Netcode;
 // UTF-8 설정
 public class BulletCtrl : NetworkBehaviour
 {
-    public IObjectPool<GameObject> bulletPool { get; set; }
-
     float damage = 0;
     public Transform aggroTarget = null;    // 타겟
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
@@ -36,7 +34,6 @@ public class BulletCtrl : NetworkBehaviour
     {
         if(IsServer)
         {
-            //NetworkObjectPool.Singleton.ReturnNetworkObject(NetworkObject, poolObj);
             NetworkObject.Despawn();
         }
     }
@@ -67,7 +64,6 @@ public class BulletCtrl : NetworkBehaviour
             {
                 StopCoroutine(timerCoroutine);
                 DestroyBulletClientRpc();
-                Debug.Log("??");
                 alreadyHit = true;
             }
             else

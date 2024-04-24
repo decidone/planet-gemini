@@ -398,7 +398,7 @@ public class MonsterAi : UnitCommonAi
         if (targetDist > unitCommonData.AttackDist)
             return;
 
-        else if (targetDist <= unitCommonData.AttackDist)
+        else if (IsServer && targetDist <= unitCommonData.AttackDist)
         {
             if (Obj != null)
             {
@@ -407,9 +407,9 @@ public class MonsterAi : UnitCommonAi
                 else if (Obj.GetComponent<UnitAi>())
                     Obj.GetComponent<UnitAi>().TakeDamageClientRpc(unitCommonData.Damage);
                 else if (Obj.GetComponent<TowerAi>())
-                    Obj.GetComponent<TowerAi>().TakeDamage(unitCommonData.Damage);
+                    Obj.GetComponent<TowerAi>().TakeDamageClientRpc(unitCommonData.Damage);
                 else if (Obj.GetComponent<Structure>())
-                    Obj.GetComponent<Structure>().TakeDamage(unitCommonData.Damage);
+                    Obj.GetComponent<Structure>().TakeDamageClientRpc(unitCommonData.Damage);
             }
         }
     }
@@ -619,27 +619,16 @@ public class MonsterAi : UnitCommonAi
             }
         }
 
-        spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType);
+        spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType, waveState);
         battleBGM.BattleRemoveMonster(gameObject);
         Destroy(gameObject);
-        }
+    }
 
     public void MonsterSpawnerSet(MonsterSpawner monsterSpawner, int type)
     {
         spawner = monsterSpawner.gameObject;
         spawnPos = spawner.transform;
         monsterType = type;
-    }
-
-    public void MonsterAStarSet(bool isHostMap)
-    {
-        GraphMask mask;
-        if (isHostMap)
-            mask = GraphMask.FromGraphName("Map1");
-        else
-            mask = GraphMask.FromGraphName("Map2");
-
-        seeker.graphMask = mask;
     }
 
     [ClientRpc]

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class EnergyGenerator : Production
 {
@@ -132,10 +133,11 @@ public class EnergyGenerator : Production
         }
     }
 
-    public override void RemoveObj()
+    [ServerRpc(RequireOwnership = false)]
+    public override void RemoveObjServerRpc()
     {
         connector.RemoveFromGroup();
-        base.RemoveObj();
+        base.RemoveObjServerRpc();
     }
 
     public override void OpenUI()

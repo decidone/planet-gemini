@@ -60,7 +60,7 @@ public class PumpCtrl : FluidFactoryCtrl
         {
             foreach (GameObject obj in outObj)
             {
-                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)
+                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null && !fluidFactory.isPreBuilding)
                 {
                     if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum && fluidFactory.CanTake() && fluidFactory.fluidName == fluidName)
                     {

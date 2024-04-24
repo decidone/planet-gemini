@@ -1,3 +1,4 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -193,6 +194,19 @@ public class GameManager : MonoBehaviour
                 ",   structure : " + cell.structure
                 );
             }
+        }
+        else if (debug && inputManager.alt && map.IsOnMap(x, y))
+        {
+            Vector3 vec = new Vector3(x + 0.5f, y + 0.5f, 0);
+            Bounds bounds = new Bounds(vec, new Vector3(0.4f, 0.4f, 0));
+
+            var guo = new GraphUpdateObject(bounds);
+
+            // Set some settings
+
+            guo.updatePhysics = true;
+
+            AstarPath.active.UpdateGraphs(guo);
         }
 
         if (hits.Length > 0)

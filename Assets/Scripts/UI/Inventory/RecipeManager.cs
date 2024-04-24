@@ -13,6 +13,7 @@ public class RecipeManager : InventoryManager
     List<Recipe> recipes;
     Production prod;
     public bool isOpened;
+    string buildingName;
 
     protected override void Start()
     {
@@ -29,8 +30,9 @@ public class RecipeManager : InventoryManager
         {
             if (focusedSlot.item != null)
             {
-                prod.SetRecipe(recipes[focusedSlot.slotNum]);
-
+                //prod.SetRecipe(recipes[focusedSlot.slotNum]);
+                prod.SetRecipeServerRpc(buildingName, focusedSlot.slotNum);
+                Debug.Log(prod.gameObject.name);
                 focusedSlot = null;
                 CloseUI();
             }
@@ -59,11 +61,13 @@ public class RecipeManager : InventoryManager
     {
         inventory.ResetInven();
         prod = _prod;
+        buildingName = str;
         recipes = new List<Recipe>();
         recipes = RecipeList.instance.GetRecipeInven(str);
         for (int i = 0; i < recipes.Count; i++)
         {
-            inventory.Add(itemDic[recipes[i].name], 1);
+            inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
+            //inventory.Add(itemDic[recipes[i].name], 1);
         }
         SetInven(inventory, inventoryUI);
     }

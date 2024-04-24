@@ -15,10 +15,13 @@ MonoBehaviour:
   type: Logistics
   scienceName: Belt
   item: {fileID: 11400000, guid: 985f5e4be857e9a4da34efbcfad6dc19, type: 2}
-  gameObj: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
+  gameObj: {fileID: 8826970519567855532, guid: b6ae0db23145322479ffbd03025b5357, type: 3}
+  sideObj: {fileID: 0}
   isGetAnim: 1
   isGetDirection: 1
   isUnderObj: 0
+  isEnergyUse: 0
+  isEnergyStr: 0
   sprites: []
   animatorController:
   - {fileID: 9100000, guid: a8996c8afa2599b43a07745e215c1311, type: 2}

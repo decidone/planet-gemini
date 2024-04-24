@@ -46,7 +46,7 @@ public class SplitterFilterManager : MonoBehaviour
             fillterOnOffBtns[i].onToggleOn.AddListener(() => SentFillterInfo(buttonIndex));
         }
 
-        for (int i = 0; i < fillterOnOffBtns.Length; i++)
+        for (int i = 0; i < reverseToggle.Length; i++)
         {
             int toggleIndex = i;
             reverseToggle[i].onValueChanged.AddListener(isOn => Function_Toggle(toggleIndex));
@@ -95,9 +95,9 @@ public class SplitterFilterManager : MonoBehaviour
 
     public void SetItem(Item _item, int slotIndex)
     {
-        if (_item.name == "EmptyFilter")
+        if (_item == splitter.arrFilter[slotIndex].selItem)
         {
-            splitter.SlotReset(slotIndex);
+            splitter.SlotResetServerRpc(slotIndex);
             fillterOnOffBtns[slotIndex].ButtonSetModle(false);
             reverseToggle[slotIndex].isOn = false;
             slots[slotIndex].ClearSlot();
@@ -143,6 +143,7 @@ public class SplitterFilterManager : MonoBehaviour
         for (int i = 0; i < splitter.arrFilter.Length; i++)
         {
             fillterOnOffBtns[i].OpenSetting(splitter.arrFilter[i].isFilterOn);
+            reverseToggle[i].isOn = splitter.arrFilter[i].isReverseFilterOn;
             if (splitter.arrFilter[i].selItem != null)
             {
                 slots[i].AddItem(splitter.arrFilter[i].selItem, 1);
@@ -156,21 +157,16 @@ public class SplitterFilterManager : MonoBehaviour
     {
         if (slots[i].item != null)
         {
-            if (slots[i].item.name != "FullFilter")
-            {
-                splitter.FilterSet(i, fillterOnOffBtns[i].isOn, false, true, reverseToggle[i].isOn, slots[i].item);
-            }
-            else if (slots[i].item.name == "FullFilter")
-            {
-                splitter.FilterSet(i, fillterOnOffBtns[i].isOn, true, false, false, slots[i].item);
-            }
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slots[i].item);
+            splitter.FilterSetServerRpc(i, fillterOnOffBtns[i].isOn, reverseToggle[i].isOn, itemIndex);
+            //splitter.FilterSetServerRpc(i, fillterOnOffBtns[i].isOn, false, true, reverseToggle[i].isOn, itemIndex);
             splitter.ItemFilterCheck();
         }
         else
             return;
     }
 
-    public void UiReset()
+    public void UIReset()
     {
         if (splitter != null)
         {

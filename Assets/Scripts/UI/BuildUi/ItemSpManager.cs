@@ -74,7 +74,8 @@ public class ItemSpManager : InventoryManager
         inventory.ResetInven();
         for (int i = 0; i < itemsTierList[tier].Count; i++)
         {
-            inventory.Add(itemsTierList[tier][i], 1);
+            inventory.RecipeInvenAdd(itemsTierList[tier][i], 1);
+            //inventory.Add(itemsTierList[tier][i], 1);
         }
         SetInven(inventory, inventoryUI);
     }
@@ -116,7 +117,8 @@ public class ItemSpManager : InventoryManager
 
     public void SetItem(Item _item)
     {
-        itemSpawner.itemData = _item;
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(_item);
+        itemSpawner.ItemSetServerRpc(itemIndex);
     }
 
     public override void OpenUI()

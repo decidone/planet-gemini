@@ -25,6 +25,7 @@ public class StructureInvenManager : InventoryManager
     {
         base.Start();
         inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotShiftClick();
+        playerInven = gameManager.inventory;
     }
 
     protected override void Update()

@@ -58,7 +58,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
         {
             foreach (GameObject obj in outObj)
             {
-                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null)
+                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null && !fluidFactory.isPreBuilding)
                 {
                     if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum && fluidFactory.CanTake() && fluidFactory.fluidName == fluidName)
                     {
@@ -66,7 +66,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
                         saveFluidNum -= structureData.SendFluidAmount;
                     }
 
-                    if(fluidFactory.mainSource == null && !fluidFactory.reFindMain)
+                    if (fluidFactory.mainSource == null && !fluidFactory.reFindMain)
                         RemoveMainSource(false);
                 }
             }

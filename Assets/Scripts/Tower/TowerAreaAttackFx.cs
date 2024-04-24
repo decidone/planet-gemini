@@ -1,35 +1,61 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 // UTF-8 설정
-public class TowerAreaAttackFx : MonoBehaviour
+public class TowerAreaAttackFx : NetworkBehaviour
 {
     float damage = 0;
 
     [SerializeField]
     protected Animator animator;
+    GameObject attackUnit;
 
-    public void GetTarget(float GetDamage)
+    NetworkObjectPool networkObjectPool;
+
+    private void Start()
+    {
+        networkObjectPool = NetworkObjectPool.Singleton;
+    }
+
+    [ClientRpc]
+    public void DestroyBulletClientRpc()
+    {
+        if (IsServer)
+        {
+            NetworkObject.Despawn();
+        }
+    }
+
+    public void GetTarget(float GetDamage, GameObject obj)
     {
         damage = GetDamage;
+        attackUnit = obj;
     }
 
     void FxEnd(string str)
     {
         if (str == "false")
         {
-            Destroy(this.gameObject, 0.1f);            
+            Invoke(nameof(DestroyBulletClientRpc), 0.1f);
+            //Destroy(this.gameObject, 0.1f);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!IsServer)
+            return;
         if (collision.CompareTag("Monster"))
         {
-            if (!collision.isTrigger)
+            if (collision.TryGetComponent(out MonsterAi monster))
             {
-                collision.GetComponent<MonsterAi>().TakeDamageClientRpc(damage);
+                monster.TakeDamageClientRpc(damage);
+            }
+            else if (collision.TryGetComponent(out MonsterSpawner spawner))
+            {
+                spawner.GetComponent<MonsterSpawner>().TakeDamage(damage, attackUnit);
             }
         }
     }

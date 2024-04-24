@@ -43,7 +43,7 @@ public class UnloaderManager : MonoBehaviour
 
     public void SetItem(Item _item)
     {
-        unloader.selectItem = _item;
+        //unloader.selectItem = _item;
 
         if (slot.item == null)
         {
@@ -56,6 +56,9 @@ public class UnloaderManager : MonoBehaviour
         }
         else if (slot.item == _item)
             return;
+
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(_item);
+        unloader.SelectItemSetServerRpc(itemIndex);
     }
 
     public void OpenUI()
@@ -76,6 +79,15 @@ public class UnloaderManager : MonoBehaviour
     {
         unloaderUI.SetActive(false);
         unloaderRecipe.CloseUI();
+        gameManager.onUIChangedCallback?.Invoke(unloaderUI);
+    }
+
+    public void UIReset()
+    {
+        if(unloader != null)
+        {
+            slot.AddItem(unloader.selectItem, 1);
+        }
         gameManager.onUIChangedCallback?.Invoke(unloaderUI);
     }
 }

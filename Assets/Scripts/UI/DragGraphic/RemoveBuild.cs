@@ -15,7 +15,6 @@ public class RemoveBuild : DragFunc
     {
         base.Start();
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
-        inventory = gameManager.inventory;
         structureLayer = LayerMask.NameToLayer("Obj");
     }
 
@@ -57,9 +56,9 @@ public class RemoveBuild : DragFunc
     {
         if (obj.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
         {
-            UiCheck(structure);
+            //UiCheck(structure);
             structure.AddInvenItem();
-            structure.RemoveObj();
+            structure.RemoveObjServerRpc();
             RefundCost(structure);
         }
     }
@@ -88,6 +87,11 @@ public class RemoveBuild : DragFunc
         {
             buildingData = new BuildingData();
             buildingData = BuildingDataGet.instance.GetBuildingName(obj.buildName, obj.level + 1);
+            if(obj.GetComponent<Structure>().isInHostMap)
+                inventory = gameManager.hostMapInven;
+            else
+                inventory = gameManager.clientMapInven;
+
             for (int i = 0; i < buildingData.GetItemCount(); i++)
             {
                 inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);

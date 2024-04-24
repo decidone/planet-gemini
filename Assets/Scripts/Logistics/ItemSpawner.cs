@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class ItemSpawner : LogisticsCtrl
@@ -30,7 +31,6 @@ public class ItemSpawner : LogisticsCtrl
                     }
                 }
             }
-                
 
             if (IsServer && !isPreBuilding && checkObj)
             {
@@ -39,11 +39,27 @@ public class ItemSpawner : LogisticsCtrl
                     if (itemData.name != "EmptyFilter")
                     {
                         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemData);
-                        SendItemClientRpc(itemIndex);
+                        SendItem(itemIndex);
                         //SendItem(itemData);
                     }
                 }
             }
+            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
+            }
         } 
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ItemSetServerRpc(int itemIndex)
+    {
+        ItemSetClientRpc(itemIndex);
+    }
+
+    [ClientRpc]
+    public void ItemSetClientRpc(int itemIndex)
+    {
+        itemData = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
     }
 }

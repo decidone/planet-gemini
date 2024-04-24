@@ -26,15 +26,23 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                 {
-                    GetItemClientRpc();
+                    GetItem();
                 }
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
                     int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
-                    SendItemClientRpc(itemIndex);
+                    SendItem(itemIndex);
                     //SendItem(itemList[0]);
                 }
 
+            }
+            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
+            }
+            if (DelayGetList.Count > 0 && inObj.Count > 0)
+            {
+                GetDelayFunc(DelayGetList[0], 0);
             }
         } 
     }
@@ -60,37 +68,22 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         checkObj = true;
     }
 
-
     [ClientRpc]
-    protected override void SendItemClientRpc(int itemIndex)
+    protected override void SendItemClientRpc(int itemIndex, int outObjIndex)
     {
-        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        if (setFacDelayCoroutine != null)
+        if (IsServer)
         {
-            return;
+            SendItemFunc(itemIndex, outObjIndex);
         }
-
-        itemSetDelay = true;
-
-        Structure outFactory = outObj[0].GetComponent<Structure>();
-
-        if (!outFactory.isFull)
+        else if (settingEndCheck)
         {
-            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[0], item));
+            SendDelaySet(itemIndex, outObjIndex);
         }
-
-        Invoke(nameof(DelaySetItem), structureData.SendDelay);
     }
 
-
-    protected override void SendItem(Item item)
+    protected override void SendItemFunc(int itemIndex, int outObjIndex)
     {
-        if (setFacDelayCoroutine != null)
-        {
-            return;
-        }
-
-        itemSetDelay = true;
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
         Structure outFactory = outObj[0].GetComponent<Structure>();
 

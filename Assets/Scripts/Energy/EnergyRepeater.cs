@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class EnergyRepeater : Structure
 {
@@ -82,9 +83,10 @@ public class EnergyRepeater : Structure
         }
     }
 
-    public override void RemoveObj()
+    [ServerRpc(RequireOwnership = false)]
+    public override void RemoveObjServerRpc()
     {
         connector.RemoveFromGroup();
-        base.RemoveObj();
+        base.RemoveObjServerRpc();
     }
 }

@@ -107,7 +107,7 @@ public class SpawnerSetManager : NetworkBehaviour
     void SpawnerSet(bool isHostMap)
     {
         Map map;
-        if (isHostMap )
+        if (isHostMap)
             map = hostMap;
         else
             map = clientMap;
@@ -185,6 +185,8 @@ public class SpawnerSetManager : NetworkBehaviour
             int index = 0;
 
             GameObject spawnGroup = SpawnerGroupSet(centerPos);
+            SpawnerGroupManager spawnerGroupManager = spawnGroup.GetComponent<SpawnerGroupManager>();
+
             for (int i = 0; i < levelData.maxSpawner; i++)
             {
                 GameObject spawnerObj = Instantiate(spawner);
@@ -198,9 +200,9 @@ public class SpawnerSetManager : NetworkBehaviour
                 {
                     Destroy(map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y).obj);
                 }
-                spawnGroup.GetComponent<SpawnerGroupManager>().SpawnerSet(spawnerObj);
+                spawnerGroupManager.SpawnerSet(spawnerObj);
                 spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);
-                monsterSpawner.groupManager = spawnGroup.GetComponent<SpawnerGroupManager>();
+                monsterSpawner.groupManager = spawnerGroupManager;
                 monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos, isHostMap);
                 monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel, isHostMap);
                 index++;
@@ -210,6 +212,8 @@ public class SpawnerSetManager : NetworkBehaviour
                 spawnerMap1Matrix[xIndex, yIndex] = spawnGroup;
             else
                 spawnerMap2Matrix[xIndex, yIndex] = spawnGroup;
+
+            spawnerGroupManager.SpawnerGroupStatsSet(isHostMap, areaLevel, (xIndex, yIndex));
 
             xIndex++;
             if(xIndex >= splitCount)
