@@ -379,6 +379,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Market"",
+                    ""type"": ""Button"",
+                    ""id"": ""8f6c7167-9150-45b4-93fe-c50074e8de95"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -451,7 +460,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""dc26588a-78f3-4114-8c30-b42cc4bc8a00"",
-                    ""path"": ""<Keyboard>/f"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PC"",
@@ -473,11 +482,22 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""008efee7-f805-40e9-8824-6c15e1214839"",
-                    ""path"": ""<Keyboard>/c"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Teleport"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44f54028-f4ff-479b-9b02-1c77a8dfbf3b"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Market"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1592,6 +1612,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Player_Miner = m_Player.FindAction("Miner", throwIfNotFound: true);
         m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
         m_Player_Teleport = m_Player.FindAction("Teleport", throwIfNotFound: true);
+        m_Player_Market = m_Player.FindAction("Market", throwIfNotFound: true);
         // Unit
         m_Unit = asset.FindActionMap("Unit", throwIfNotFound: true);
         m_Unit_Attack = m_Unit.FindAction("Attack", throwIfNotFound: true);
@@ -1876,6 +1897,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Miner;
     private readonly InputAction m_Player_RightClick;
     private readonly InputAction m_Player_Teleport;
+    private readonly InputAction m_Player_Market;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -1885,6 +1907,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Miner => m_Wrapper.m_Player_Miner;
         public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
         public InputAction @Teleport => m_Wrapper.m_Player_Teleport;
+        public InputAction @Market => m_Wrapper.m_Player_Market;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1909,6 +1932,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Teleport.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTeleport;
                 @Teleport.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTeleport;
                 @Teleport.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTeleport;
+                @Market.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
+                @Market.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
+                @Market.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1928,6 +1954,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Teleport.started += instance.OnTeleport;
                 @Teleport.performed += instance.OnTeleport;
                 @Teleport.canceled += instance.OnTeleport;
+                @Market.started += instance.OnMarket;
+                @Market.performed += instance.OnMarket;
+                @Market.canceled += instance.OnMarket;
             }
         }
     }
@@ -2424,6 +2453,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnMiner(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
         void OnTeleport(InputAction.CallbackContext context);
+        void OnMarket(InputAction.CallbackContext context);
     }
     public interface IUnitActions
     {

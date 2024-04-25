@@ -67,7 +67,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -2602,8 +2602,8 @@ TextureImporter:
         y: 432
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.47906113, y: 0.2173233}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -5962,8 +5962,8 @@ TextureImporter:
         y: 272
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.47906113, y: 0.3115492}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -7369,8 +7369,8 @@ TextureImporter:
         y: 176
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.46011925, y: 0.27066946}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -8188,8 +8188,8 @@ TextureImporter:
         y: 96
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.48006058, y: 0.27066946}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -8839,8 +8839,8 @@ TextureImporter:
         y: 0
         width: 16
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.4738779, y: 0.29102555}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -9160,8 +9160,8 @@ TextureImporter:
       CL_Crops_Mining_464: 814378564
       CL_Crops_Mining_727: 2011925107
       CL_Crops_Mining_433: -414535914
-      CL_Crops_Mining_240: 1797813711
       CL_Crops_Mining_263: 107081152
+      CL_Crops_Mining_752: 628918133
       CL_Crops_Mining_57: 1311353308
       CL_Crops_Mining_193: -1700112040
       CL_Crops_Mining_1: -1341452334
@@ -9171,10 +9171,10 @@ TextureImporter:
       CL_Crops_Mining_519: 1345288120
       CL_Crops_Mining_295: 278976465
       CL_Crops_Mining_83: 1789001721
-      CL_Crops_Mining_752: 628918133
+      CL_Crops_Mining_240: 1797813711
       CL_Crops_Mining_196: -736655994
-      CL_Crops_Mining_472: -619191570
       CL_Crops_Mining_651: 390044539
+      CL_Crops_Mining_472: -619191570
       CL_Crops_Mining_321: -816166941
       CL_Crops_Mining_111: -1743994558
       CL_Crops_Mining_719: 1669565123
@@ -9195,9 +9195,9 @@ TextureImporter:
       CL_Crops_Mining_54: -1312331366
       CL_Crops_Mining_932: 222519369
       CL_Crops_Mining_671: -1196708566
-      CL_Crops_Mining_426: 1892405465
-      CL_Crops_Mining_826: -910785417
       CL_Crops_Mining_966: -1310813861
+      CL_Crops_Mining_826: -910785417
+      CL_Crops_Mining_426: 1892405465
       CL_Crops_Mining_744: 1773564876
       CL_Crops_Mining_821: -1276267211
       CL_Crops_Mining_24: 2009214789
@@ -9449,8 +9449,8 @@ TextureImporter:
       CL_Crops_Mining_616: -155008557
       CL_Crops_Mining_927: 1768120028
       CL_Crops_Mining_836: 762681353
-      CL_Crops_Mining_697: -1507770247
       CL_Crops_Mining_330: 267350871
+      CL_Crops_Mining_697: -1507770247
       CL_Crops_Mining_289: 1376093711
       CL_Crops_Mining_345: -1089939806
       CL_Crops_Mining_171: -1735481111

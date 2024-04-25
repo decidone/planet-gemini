@@ -348,6 +348,7 @@ GameObject:
   - component: {fileID: 721077935684597045}
   - component: {fileID: 721077935684597044}
   - component: {fileID: 721077935684597035}
+  - component: {fileID: 8396903158391217390}
   m_Layer: 8
   m_Name: Portal
   m_TagString: Untagged
@@ -532,6 +533,9 @@ MonoBehaviour:
   effiCooldown: 0
   isMainEnergyColony: 0
   soundManager: {fileID: 0}
+  isInHostMap: 0
+  settingEndCheck: 0
+  DelayGetList: 
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -543,6 +547,7 @@ MonoBehaviour:
   - {fileID: 721077936004993818}
   - {fileID: 721077934532301732}
   - {fileID: 721077935555031510}
+  otherPortal: {fileID: 0}
 --- !u!114 &721077935684597044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,6 +577,21 @@ MonoBehaviour:
   space: 0
   maxAmount: 0
   itemPref: {fileID: 0}
+--- !u!114 &8396903158391217390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721077935684597043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97475fe15ad1df84398ef2111e31b634, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offsetX: 0.05
+  offsetY: 3.6
+  interactIconPref: {fileID: 6241834219993474235, guid: 0b1f40da6c14f7e459067eb56b480957, type: 3}
 --- !u!1 &721077936004993818
 GameObject:
   m_ObjectHideFlags: 0

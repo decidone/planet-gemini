@@ -20,11 +20,13 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public Map map;
 
     public bool isPlayerInHostMap;
+    public bool isPlayerInMarket;
 
     public GameObject player;
     public PlayerController playerController;
     public Transform hostPlayerTransform;
     public Transform clientPlayerTransform;
+    public Transform marketPortalTransform;
 
     CameraController mainCam;
     public MapCameraController mapCameraController;
@@ -102,6 +104,7 @@ public class GameManager : MonoBehaviour
         clientMap = mapGenerator.clientMap;
         map = hostMap;
         isPlayerInHostMap = true;
+        isPlayerInMarket = false;
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
@@ -135,7 +138,7 @@ public class GameManager : MonoBehaviour
 
     public Vector3 Teleport()
     {
-        if (map == hostMap)
+        if (isPlayerInHostMap)
         {
             map = clientMap;
             isPlayerInHostMap = false;
@@ -150,6 +153,27 @@ public class GameManager : MonoBehaviour
             SetMapInven(true);
             mapCameraController.SetCamRange(map);
             return hostPlayerSpawnPos;
+        }
+    }
+
+    public Vector3 TeleportMarket()
+    {
+        if (!isPlayerInMarket)
+        {
+            isPlayerInMarket = true;
+            return marketPortalTransform.position;
+        }
+        else
+        {
+            isPlayerInMarket = false;
+            if (isPlayerInHostMap)
+            {
+                return hostPlayerSpawnPos;
+            }
+            else
+            {
+                return clientPlayerSpawnPos;
+            }
         }
     }
 

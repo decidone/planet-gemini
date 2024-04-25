@@ -20,6 +20,7 @@ public class PlayerController : NetworkBehaviour
     InputManager inputManager;
     bool isLoot;
     bool isTeleportable;
+    bool isMarketTeleportable;
 
     [Space]
     [Header ("Movement")]
@@ -55,6 +56,7 @@ public class PlayerController : NetworkBehaviour
         inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
         inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
         inputManager.controls.Player.Teleport.performed += ctx => Teleport();
+        inputManager.controls.Player.Market.performed += ctx => TeleportMarket();
 
         preBuilding = PreBuilding.instance;
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
@@ -98,6 +100,11 @@ public class PlayerController : NetworkBehaviour
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Portal portal = collision.GetComponent<Portal>();
+        MarketPortal marketPortal = collision.GetComponent<MarketPortal>();
+        Interactable interactable = collision.GetComponent<Interactable>();
+
+        if (interactable && IsOwner)
+            interactable.SpawnIcon();
 
         if (itemProps && !items.Contains(collision.gameObject))
             items.Add(collision.gameObject);
@@ -105,7 +112,13 @@ public class PlayerController : NetworkBehaviour
             beltList.Add(collision.gameObject);
 
         if (portal)
+        {
             isTeleportable = true;
+            isMarketTeleportable = true;
+        }
+
+        if (marketPortal)
+            isMarketTeleportable = true;
     }
 
     void OnTriggerExit2D(Collider2D collision)
@@ -113,6 +126,11 @@ public class PlayerController : NetworkBehaviour
         ItemProps itemProps = collision.GetComponent<ItemProps>(); 
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Portal portal = collision.GetComponent<Portal>();
+        MarketPortal marketPortal = collision.GetComponent<MarketPortal>();
+        Interactable interactable = collision.GetComponent<Interactable>();
+
+        if (interactable && IsOwner)
+            interactable.DespawnIcon();
 
         if (itemProps && items.Contains(collision.gameObject))
             items.Remove(collision.gameObject);
@@ -120,7 +138,13 @@ public class PlayerController : NetworkBehaviour
             beltList.Remove(collision.gameObject);
 
         if (portal)
+        {
             isTeleportable = false;
+            isMarketTeleportable = false;
+        }
+
+        if (marketPortal)
+            isMarketTeleportable = false;
     }
 
     void Teleport()
@@ -130,6 +154,17 @@ public class PlayerController : NetworkBehaviour
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.Teleport();
+            this.transform.position = pos;
+        }
+    }
+
+    void TeleportMarket()
+    {
+        if (isMarketTeleportable)
+        {
+            if (PreBuilding.instance.isBuildingOn)
+                PreBuilding.instance.CancelBuild();
+            Vector3 pos = GameManager.instance.TeleportMarket();
             this.transform.position = pos;
         }
     }
