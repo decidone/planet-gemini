@@ -18,6 +18,7 @@ public class PlayerController : NetworkBehaviour
     public int tempMinerCount;
 
     InputManager inputManager;
+    ShopInteract nearShop;
     bool isLoot;
     bool isTeleportable;
     bool isMarketTeleportable;
@@ -38,8 +39,10 @@ public class PlayerController : NetworkBehaviour
         gameManager = GameManager.instance;
         circleColl = GetComponent<CircleCollider2D>();
         tempMinerCount = 5;
+        nearShop = null;
         isLoot = false;
         isTeleportable = false;
+        isMarketTeleportable = false;
     }
 
     void Start()
@@ -55,7 +58,7 @@ public class PlayerController : NetworkBehaviour
         inputManager.controls.Player.Loot.performed += ctx => LootCheck();
         inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
         inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
-        inputManager.controls.Player.Teleport.performed += ctx => Teleport();
+        inputManager.controls.Player.Interaction.performed += ctx => Interact();
         inputManager.controls.Player.Market.performed += ctx => TeleportMarket();
 
         preBuilding = PreBuilding.instance;
@@ -102,6 +105,7 @@ public class PlayerController : NetworkBehaviour
         Portal portal = collision.GetComponent<Portal>();
         MarketPortal marketPortal = collision.GetComponent<MarketPortal>();
         Interactable interactable = collision.GetComponent<Interactable>();
+        ShopInteract shop = collision.GetComponent<ShopInteract>();
 
         if (interactable && IsOwner)
             interactable.SpawnIcon();
@@ -119,15 +123,23 @@ public class PlayerController : NetworkBehaviour
 
         if (marketPortal)
             isMarketTeleportable = true;
+
+        if (shop && !GameManager.instance.isShopOpened)
+        {
+            nearShop = shop;
+            nearShop.OpenUI();
+            GameManager.instance.isShopOpened = true;
+        }
     }
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        ItemProps itemProps = collision.GetComponent<ItemProps>(); 
+        ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Portal portal = collision.GetComponent<Portal>();
         MarketPortal marketPortal = collision.GetComponent<MarketPortal>();
         Interactable interactable = collision.GetComponent<Interactable>();
+        ShopInteract shop = collision.GetComponent<ShopInteract>();
 
         if (interactable && IsOwner)
             interactable.DespawnIcon();
@@ -145,9 +157,16 @@ public class PlayerController : NetworkBehaviour
 
         if (marketPortal)
             isMarketTeleportable = false;
+
+        if (shop && GameManager.instance.isShopOpened)
+        {
+            nearShop.CloseUI();
+            nearShop = null;
+            GameManager.instance.isShopOpened = false;
+        }
     }
 
-    void Teleport()
+    void Interact()
     {
         if (isTeleportable && GameManager.instance.isMultiPlay)
         {
@@ -155,6 +174,11 @@ public class PlayerController : NetworkBehaviour
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.Teleport();
             this.transform.position = pos;
+        }
+
+        if (nearShop != null)
+        {
+            nearShop.OpenUI();
         }
     }
 

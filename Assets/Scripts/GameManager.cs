@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
     ScienceManager sTreeManager;
     public bool debug;
     public bool isHost;
+    public bool isShopOpened;
     public Inventory hostDragInven;
     public Inventory clientDragInven;
 
@@ -105,6 +106,7 @@ public class GameManager : MonoBehaviour
         map = hostMap;
         isPlayerInHostMap = true;
         isPlayerInMarket = false;
+        isShopOpened = false;
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;

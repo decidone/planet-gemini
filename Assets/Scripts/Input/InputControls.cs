@@ -372,7 +372,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Teleport"",
+                    ""name"": ""Interaction"",
                     ""type"": ""Button"",
                     ""id"": ""3f5ab9d8-2735-499a-bf5b-16541617d2f0"",
                     ""expectedControlType"": ""Button"",
@@ -486,7 +486,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PC"",
-                    ""action"": ""Teleport"",
+                    ""action"": ""Interaction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1611,7 +1611,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Player_Loot = m_Player.FindAction("Loot", throwIfNotFound: true);
         m_Player_Miner = m_Player.FindAction("Miner", throwIfNotFound: true);
         m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
-        m_Player_Teleport = m_Player.FindAction("Teleport", throwIfNotFound: true);
+        m_Player_Interaction = m_Player.FindAction("Interaction", throwIfNotFound: true);
         m_Player_Market = m_Player.FindAction("Market", throwIfNotFound: true);
         // Unit
         m_Unit = asset.FindActionMap("Unit", throwIfNotFound: true);
@@ -1896,7 +1896,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Loot;
     private readonly InputAction m_Player_Miner;
     private readonly InputAction m_Player_RightClick;
-    private readonly InputAction m_Player_Teleport;
+    private readonly InputAction m_Player_Interaction;
     private readonly InputAction m_Player_Market;
     public struct PlayerActions
     {
@@ -1906,7 +1906,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Loot => m_Wrapper.m_Player_Loot;
         public InputAction @Miner => m_Wrapper.m_Player_Miner;
         public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
-        public InputAction @Teleport => m_Wrapper.m_Player_Teleport;
+        public InputAction @Interaction => m_Wrapper.m_Player_Interaction;
         public InputAction @Market => m_Wrapper.m_Player_Market;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -1929,9 +1929,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @RightClick.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
                 @RightClick.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
                 @RightClick.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
-                @Teleport.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTeleport;
-                @Teleport.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTeleport;
-                @Teleport.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTeleport;
+                @Interaction.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteraction;
+                @Interaction.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteraction;
+                @Interaction.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteraction;
                 @Market.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
                 @Market.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
                 @Market.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
@@ -1951,9 +1951,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @RightClick.started += instance.OnRightClick;
                 @RightClick.performed += instance.OnRightClick;
                 @RightClick.canceled += instance.OnRightClick;
-                @Teleport.started += instance.OnTeleport;
-                @Teleport.performed += instance.OnTeleport;
-                @Teleport.canceled += instance.OnTeleport;
+                @Interaction.started += instance.OnInteraction;
+                @Interaction.performed += instance.OnInteraction;
+                @Interaction.canceled += instance.OnInteraction;
                 @Market.started += instance.OnMarket;
                 @Market.performed += instance.OnMarket;
                 @Market.canceled += instance.OnMarket;
@@ -2452,7 +2452,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnLoot(InputAction.CallbackContext context);
         void OnMiner(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
-        void OnTeleport(InputAction.CallbackContext context);
+        void OnInteraction(InputAction.CallbackContext context);
         void OnMarket(InputAction.CallbackContext context);
     }
     public interface IUnitActions
