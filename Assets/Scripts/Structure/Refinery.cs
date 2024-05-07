@@ -49,7 +49,8 @@ public class Refinery : FluidFactoryCtrl
     {
         #region ProductionStart
         itemDic = ItemList.instance.itemDic;
-        recipe = new Recipe();
+        if (recipe == null)
+            recipe = new Recipe();
         output = null;
         fluidName = "CrudeOil";
 
@@ -246,7 +247,10 @@ public class Refinery : FluidFactoryCtrl
 
     public override void AddInvenItem()
     {
-        base.AddInvenItem();
+        if (isInHostMap)
+            playerInven = GameManager.instance.hostMapInven;
+        else
+            playerInven = GameManager.instance.clientMapInven;
         var slot = inventory.SlotCheck(0);
 
         if (slot.item != null)

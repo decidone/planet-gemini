@@ -31,10 +31,7 @@ public class Portal : Production
         tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
     }
 
-    protected override void Update()
-    {
-
-    }
+    protected override void Update() { }
 
     public override void OpenUI()
     {

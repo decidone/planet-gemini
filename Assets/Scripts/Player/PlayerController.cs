@@ -16,6 +16,7 @@ public class PlayerController : NetworkBehaviour
     TempMinerUi tempMinerUI;
     int tempFullAmount;
     public int tempMinerCount;
+    int tempMinerMaxCount;
 
     InputManager inputManager;
     bool isLoot;
@@ -36,7 +37,8 @@ public class PlayerController : NetworkBehaviour
     {
         gameManager = GameManager.instance;
         circleColl = GetComponent<CircleCollider2D>();
-        tempMinerCount = 5;
+        tempMinerMaxCount = 5;
+        tempMinerCount = tempMinerMaxCount;
         isLoot = false;
         isTeleportable = false;
     }
@@ -258,7 +260,40 @@ public class PlayerController : NetworkBehaviour
 
     public void RemoveTempBuild()
     {
-        tempMinerCount++;
-        TempMinerCountCheck();
+        if(tempMinerCount + 1 > tempMinerMaxCount)
+        {
+            if(gameManager.hostPlayerTransform == transform)
+            {
+                if(gameManager.clientPlayerTransform != null)
+                {
+                    gameManager.clientPlayerTransform.GetComponent<PlayerController>().RemoveTempBuild();
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                gameManager.hostPlayerTransform.GetComponent<PlayerController>().RemoveTempBuild();
+            }
+        }
+        else
+        {
+            tempMinerCount++;
+            TempMinerCountCheck();
+        }
+    }
+
+    public PlayerSaveData SaveData()
+    {
+        PlayerSaveData data = new PlayerSaveData();
+        if (IsServer)
+            data.isHostPlayer = true;
+        else
+            data.isHostPlayer = false;
+
+        data.tempMinerCount = tempMinerCount;
+        return data;
     }
 }

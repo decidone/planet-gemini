@@ -25,6 +25,7 @@ public class ScienceBtn : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("SciBtnStart");
         scienceManager = GameManager.instance.inventoryUiCanvas.GetComponent<ScienceManager>();
         upgradeFunc = SciUpgradeFunc.instance;
         scBtn = GetComponent<Button>();
@@ -49,6 +50,9 @@ public class ScienceBtn : MonoBehaviour
 
     public void UpgradeFunc()
     {
+        if(scienceManager == null)
+            scienceManager = GameManager.instance.inventoryUiCanvas.GetComponent<ScienceManager>();
+
         scienceManager.SciUpgradeEnd(sciName, level);
         LockUiActiveFalse();
         upgrade = true;
@@ -109,6 +113,18 @@ public class ScienceBtn : MonoBehaviour
         }
 
         upgradeStart = true;
+        if (upgradeImg == null)
+        {
+            if (isCore)
+                lockUI = transform.parent.Find("LockUi").gameObject;
+            else
+                lockUI = transform.Find("LockUi").gameObject;
+            upgradeImg = lockUI.transform.Find("Upgrade").gameObject.GetComponent<Image>();
+        }
+        if(upgradeFunc == null)
+        {
+            upgradeFunc = SciUpgradeFunc.instance;
+        }
         upgradeImg.enabled = true;
         upgradeFunc.CoroutineSet(this, upgradeTime);
     }

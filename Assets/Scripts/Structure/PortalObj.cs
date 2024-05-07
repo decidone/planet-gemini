@@ -12,6 +12,8 @@ public class PortalObj : Production
 
     public virtual void RemovePortalData()
     {
+        if (myPortal == null)
+            myPortal = GetComponentInParent<Portal>();
         myPortal.RemovePortalObj(buildName);
     }
 

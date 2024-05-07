@@ -83,6 +83,10 @@ public class RemoveBuild : DragFunc
         {
             gameManager.playerController.RemoveTempBuild();
         }
+        else if (obj.isPortalBuild)
+        {
+            return;
+        }
         else
         {
             buildingData = new BuildingData();

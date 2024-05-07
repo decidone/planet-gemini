@@ -12,4 +12,7 @@ public class SaveData
     // 행성 인벤토리
     public InventorySaveData HostMapInvenData = new InventorySaveData();
     public InventorySaveData ClientMapInvenData = new InventorySaveData();
+
+    public List<StructureSaveData> structureData = new List<StructureSaveData>();
+    public List<BeltGroupSaveData> beltGroupData = new List<BeltGroupSaveData>();
 }

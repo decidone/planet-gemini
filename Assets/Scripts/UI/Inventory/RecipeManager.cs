@@ -31,8 +31,7 @@ public class RecipeManager : InventoryManager
             if (focusedSlot.item != null)
             {
                 //prod.SetRecipe(recipes[focusedSlot.slotNum]);
-                prod.SetRecipeServerRpc(buildingName, focusedSlot.slotNum);
-                Debug.Log(prod.gameObject.name);
+                prod.SetRecipeServerRpc(focusedSlot.slotNum);
                 focusedSlot = null;
                 CloseUI();
             }

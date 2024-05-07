@@ -8,6 +8,7 @@ public class NetworkObjManager : NetworkBehaviour
     public NetworkObjListSO networkObjListSO;
     public List<GameObject> networkObjects = new List<GameObject>();
 
+    public List<Portal> netPortals = new List<Portal>();
     public List<Structure> netStructures = new List<Structure>();
     public List<BeltGroupMgr> netBeltGroupMgrs = new List<BeltGroupMgr>();
     public List<UnitCommonAi> netUnitCommonAis = new List<UnitCommonAi>();
@@ -31,7 +32,12 @@ public class NetworkObjManager : NetworkBehaviour
     {
         networkObjects.Add(netObj);
 
-        if (netObj.TryGetComponent(out Structure structure) && !netObj.GetComponent<BeltCtrl>())
+
+        if(netObj.TryGetComponent(out Portal portal))
+        {
+            netPortals.Add(portal);
+        }
+        else if (netObj.TryGetComponent(out Structure structure) && !netObj.GetComponent<BeltCtrl>())
         {
             netStructures.Add(structure);
         }

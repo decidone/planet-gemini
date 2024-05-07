@@ -33,14 +33,17 @@ public class TransportUnit : UnitCommonAi
 
     protected override void UnitAiCtrl()
     {
-        switch (trUnitState)
+        if (IsServer)
         {
-            case TrUnitState.trMove:
-                MoveFunc();
-                break;
-            case TrUnitState.returnBuild:
-                ReturnToBuild();
-                break;
+            switch (trUnitState)
+            {
+                case TrUnitState.trMove:
+                    MoveFunc();
+                    break;
+                case TrUnitState.returnBuild:
+                    ReturnToBuild();
+                    break;
+            }
         }
     }
 

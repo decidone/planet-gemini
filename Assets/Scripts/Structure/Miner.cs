@@ -37,13 +37,15 @@ public class Miner : Production
 
                             if (slot.amount + minerCellCount <= maxAmount)
                             {
-                                inventory.Add(output, minerCellCount);
+                                if(IsServer)
+                                    inventory.Add(output, minerCellCount);
                                 prodTimer = 0;
                             }
                             else
                             {
                                 int addAmount = maxAmount - slot.amount;
-                                inventory.Add(output, addAmount);
+                                if (IsServer)
+                                    inventory.Add(output, addAmount);
                                 prodTimer = 0;
                             }
                         }
@@ -71,13 +73,15 @@ public class Miner : Production
 
                         if (slot.amount + minerCellCount <= maxAmount)
                         {
-                            inventory.Add(output, minerCellCount);
+                            if (IsServer)
+                                inventory.Add(output, minerCellCount);
                             prodTimer = 0;
                         }
                         else
                         {
                             int addAmount = maxAmount - slot.amount;
-                            inventory.Add(output, addAmount);
+                            if (IsServer)
+                                inventory.Add(output, addAmount);
                             prodTimer = 0;
                         }
                     }
@@ -99,7 +103,12 @@ public class Miner : Production
 
     void Init()
     {
-        Map map = GameManager.instance.map;
+        Map map;
+        if(isInHostMap)
+            map = GameManager.instance.hostMap;
+        else
+            map = GameManager.instance.clientMap;
+
         int x;
         int y;
 

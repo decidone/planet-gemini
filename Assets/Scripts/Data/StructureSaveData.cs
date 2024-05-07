@@ -15,14 +15,15 @@ public class StructureSaveData
      */
 
     public int index;               // 건물 인덱스 번호
-    public Vector3 pos;             // 좌표값
+    public SerializedVector3 pos = new SerializedVector3(); // 좌표값
+    public SerializedVector3 tileSetPos = new SerializedVector3(); // 좌표값
     public float hp;                // 현재 hp
     public int planet;              // 건물이 지어진 행성 0: 호스트, 1: 클라이언트
 
     public int level = 0;           // 건물 레벨
-    public int direction = -1;      // 방향 - 0: 위, 1: 오른쪽, 2: 아래, 3: 왼쪽, 방향 상관 없는 건물: -1
+    public int direction = 0;      // 방향 - 0: 위, 1: 오른쪽, 2: 아래, 3: 왼쪽, 방향 상관 없는 건물: 0
     public InventorySaveData inven = new InventorySaveData();   // 건물 인벤토리
-
+    public List<int> itemIndex = new List<int>();   // 물류 건물 아이템 저장
     public float storedEnergy = 0;  // 배터리 저장량
 
     public int fluidType = -1;      // -1: 기본, 0: 물, 1: 석유
@@ -32,7 +33,7 @@ public class StructureSaveData
 
     public int prodItemIndex = -1;  // 채굴기 - 생산 가능한 아이템 인덱스
 
-    public Vector3 connectedStrPos = new Vector3(); // 트랜스포터, 장거리 커넥터 등 라인 연결해야 하는 건물 좌표값
+    public List<SerializedVector3> connectedStrPos = new List<SerializedVector3>(); // 트랜스포터, 장거리 커넥터 등 라인 연결해야 하는 건물 좌표값
 
     // 필터 - 스플리터 같은 경우 3개의 필터 조건이 들어갈 수 있음
     public List<FilterSaveData> filters = new List<FilterSaveData>();

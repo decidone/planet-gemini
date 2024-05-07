@@ -11,5 +11,5 @@ public class BeltGroupSaveData
      * 벨트 위에 생성된 아이템은 자동이면 여기 넣을필요 없고 아니면 따로 벨트용 아이템 세이브 데이터를 만들어야 함
      */
 
-    public List<BeltSaveData> beltList = new List<BeltSaveData>();
+    public List<(BeltSaveData, StructureSaveData)> beltList = new List<(BeltSaveData, StructureSaveData)>();
 }

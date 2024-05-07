@@ -141,6 +141,9 @@ public class PortalItemIn : PortalObj
     {
         bool exists = false;
 
+        if (portalItemOut == null)
+            return false;
+
         for (int i = 0; i < 18; i++)
         {
             var invenItem = inventory.SlotCheck(i);

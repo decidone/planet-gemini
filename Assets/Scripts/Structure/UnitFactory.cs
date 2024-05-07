@@ -8,7 +8,7 @@ public class UnitFactory : Production
 {
     public Vector2[] nearPos = new Vector2[8];
     public Vector2 spawnPos;
-    bool isSetPos;
+    bool isSetPos = false;
 
     List<GameObject> unitObjList;
 
@@ -18,7 +18,6 @@ public class UnitFactory : Production
     protected override void Start()
     {
         base.Start();
-        isSetPos = false;
         isGetLine = true;
         unitObjList = UnitList.instance.unitList;
     }
@@ -107,6 +106,30 @@ public class UnitFactory : Production
         rManager.recipeBtn.gameObject.SetActive(false);
 
         base.DestroyLineRenderer();
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        ConnectedSetServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ConnectedSetServerRpc()
+    {
+        if (isSetPos)
+        {
+            ConnectedSetClientRpc(spawnPos);
+        }
+    }
+
+    [ClientRpc]
+    void ConnectedSetClientRpc(Vector3 pos)
+    {
+        if (IsServer)
+            return;
+
+        UnitSpawnPosSet(pos);
     }
 
     public override void OpenRecipe()
@@ -225,5 +248,17 @@ public class UnitFactory : Production
     {
         base.DestroyLineRenderer();
         isSetPos = false;
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        if (isSetPos)
+        {
+            data.connectedStrPos.Add(Vector3Extensions.FromVector3(spawnPos));
+        }
+
+        return data;
     }
 }

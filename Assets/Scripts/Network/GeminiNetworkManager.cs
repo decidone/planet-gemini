@@ -62,14 +62,14 @@ public class GeminiNetworkManager : NetworkBehaviour
         return itemListSO.itemSOList[itemSOIndex];
     }
 
-    public int GetBuildingSOIndex(Item item)
+    public int GetBuildingSOIndex(Building building)
     {
-        return itemListSO.itemSOList.IndexOf(item);
+        return buildingListSO.buildingSOList.IndexOf(building);
     }
 
-    public Item GetBuildingSOFromIndex(int itemSOIndex)
+    public Building GetBuildingSOFromIndex(int itemSOIndex)
     {
-        return itemListSO.itemSOList[itemSOIndex];
+        return buildingListSO.buildingSOList[itemSOIndex];
     }
 
     [ServerRpc(RequireOwnership = false)]
