@@ -62,6 +62,42 @@ public class Inventory : NetworkBehaviour
         return containableAmount;
     }
 
+    public bool MultipleSpaceCheck(Merch[] merchList)
+    {
+        // 각 상품들은 99개를 초과하지 않음
+        bool containable;
+        int emptySlots = space - items.Count;
+        int emptySlotsRequirement = 0;
+
+        foreach (Merch merch in merchList)
+        {
+            int merchItemSlotRemaining = 0;
+
+            for (int i = 0; i < space; i++)
+            {
+                if (items.ContainsKey(i))
+                {
+                    if (items[i] == merch.item)
+                    {
+                        merchItemSlotRemaining += (maxAmount - amounts[i]);
+
+                    }
+                }
+            }
+            if (merch.amount > merchItemSlotRemaining)
+            {
+                emptySlotsRequirement++;
+            }
+        }
+
+        if (emptySlots < emptySlotsRequirement)
+            containable = false;
+        else
+            containable = true;
+        
+        return containable;
+    }
+
     public void Add(Item item, int amount)
     {
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
@@ -591,6 +627,11 @@ public class Inventory : NetworkBehaviour
     public bool HasItem()
     {
         return items.Count > 0;
+    }
+
+    public int GetItemAmount(Item item)
+    {
+        return totalItems[item];
     }
 
     public InventorySaveData SaveData()

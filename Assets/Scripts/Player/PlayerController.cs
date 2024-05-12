@@ -100,6 +100,8 @@ public class PlayerController : NetworkBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!IsOwner) { return; }
+
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Portal portal = collision.GetComponent<Portal>();
@@ -107,7 +109,7 @@ public class PlayerController : NetworkBehaviour
         Interactable interactable = collision.GetComponent<Interactable>();
         ShopInteract shop = collision.GetComponent<ShopInteract>();
 
-        if (interactable && IsOwner)
+        if (interactable)
             interactable.SpawnIcon();
 
         if (itemProps && !items.Contains(collision.gameObject))
@@ -134,6 +136,8 @@ public class PlayerController : NetworkBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
+        if (!IsOwner) { return; }
+
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Portal portal = collision.GetComponent<Portal>();
@@ -141,7 +145,7 @@ public class PlayerController : NetworkBehaviour
         Interactable interactable = collision.GetComponent<Interactable>();
         ShopInteract shop = collision.GetComponent<ShopInteract>();
 
-        if (interactable && IsOwner)
+        if (interactable)
             interactable.DespawnIcon();
 
         if (itemProps && items.Contains(collision.gameObject))

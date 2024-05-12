@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 // UTF-8 설정
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public GameObject inventoryUiCanvas;
     public bool isMultiPlay;
@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public MapCameraController mapCameraController;
     PreBuilding preBuilding;
     //public GameObject preBuildingObj;
+    public Finance finance;
 
     [SerializeField]
     PlayerInvenManager pInvenManager;
@@ -340,6 +341,7 @@ public class GameManager : MonoBehaviour
                 if (item.tier >= 0)
                     inventory.Add(item, 99);
             }
+            AddFinanceServerRpc(100000);
             BuildAndSciUiReset();
         }
     }
@@ -582,5 +584,29 @@ public class GameManager : MonoBehaviour
     {
         portal[0].OtherPortalSet(portal[1]);
         portal[1].OtherPortalSet(portal[0]);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void AddFinanceServerRpc(int money)
+    {
+        AddFinanceClientRpc(money);
+    }
+
+    [ClientRpc]
+    public void AddFinanceClientRpc(int money)
+    {
+        finance.AddFinance(money);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SubFinanceServerRpc(int money)
+    {
+        SubFinanceClientRpc(money);
+    }
+
+    [ClientRpc]
+    public void SubFinanceClientRpc(int money)
+    {
+        finance.SubFinance(money);
     }
 }

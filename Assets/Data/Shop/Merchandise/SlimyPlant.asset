@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SlimyPlant
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 38a95a0070ae9994daec563c7687e12e, type: 2}
-  buyPrice: 301
+  buyPrice: 8989
   sellPrice: 2
