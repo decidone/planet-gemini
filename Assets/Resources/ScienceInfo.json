@@ -72,6 +72,11 @@
       "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Storage is a Building used to store items."}
     }
   },
+  "Disintegrator":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Storage is a Building used to store items."}
+    }
+  },
   "Unloader":{
     "Build":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Unloader is a structure used to pick items out from storage."}

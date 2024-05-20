@@ -516,11 +516,14 @@ public class Inventory : NetworkBehaviour
     [ClientRpc]
     public void RemoveClientRpc(int slotNum)
     {
-        totalItems[items[slotNum]] -= amounts[slotNum];
-        items.Remove(slotNum);
-        amounts.Remove(slotNum);
+        if (items.ContainsKey(slotNum))
+        {
+            totalItems[items[slotNum]] -= amounts[slotNum];
+            items.Remove(slotNum);
+            amounts.Remove(slotNum);
 
-        onItemChangedCallback?.Invoke();
+            onItemChangedCallback?.Invoke();
+        }
     }
 
     public void DragDrop()
