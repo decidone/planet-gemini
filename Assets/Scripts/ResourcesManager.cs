@@ -19,8 +19,5 @@ public class ResourcesManager : MonoBehaviour
     }
     #endregion
 
-    public Building tempMiner = null;
-    public TempMinerUi tempMinerUI;
     public GameObject fogOfWar;
-    
 }

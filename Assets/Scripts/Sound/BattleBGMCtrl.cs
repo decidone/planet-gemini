@@ -8,8 +8,10 @@ public class BattleBGMCtrl : MonoBehaviour
     public List<GameObject> battleMonsters = new List<GameObject>();
     public List<GameObject> colonyCallMonsters = new List<GameObject>();
     public List<GameObject> waveMonsters = new List<GameObject>();
-    bool battleBGMOn = false;
-    bool waveState = false;
+    bool isHostMapBattleBGMOn = false;
+    bool isHostMapWaveState = false;
+    bool isClientMapBattleBGMOn = false;
+    bool isClientMapWaveState = false;
 
     #region Singleton
     public static BattleBGMCtrl instance;
@@ -31,35 +33,86 @@ public class BattleBGMCtrl : MonoBehaviour
         soundManager = SoundManager.Instance;
     }
 
-    public void BattleAddMonster(GameObject monster)
+    public void BattleAddMonster(GameObject monster, bool isInHostMap)
     {
         if (!battleMonsters.Contains(monster))
         {
             battleMonsters.Add(monster);
-            if (!battleBGMOn)
+            if (isInHostMap)
             {
-                battleBGMOn = true;
-                soundManager.BattleStateSet(battleBGMOn, false);
+                if (!isHostMapBattleBGMOn)
+                {
+                    isHostMapBattleBGMOn = true;
+                    soundManager.BattleStateSetServerRpc(isHostMapBattleBGMOn, false, isInHostMap);
+                }
+            }
+            else
+            {
+                if (!isClientMapBattleBGMOn)
+                {
+                    isClientMapBattleBGMOn = true;
+                    soundManager.BattleStateSetServerRpc(isClientMapBattleBGMOn, false, isInHostMap);
+                }
             }
         }
     }
 
-    public void ColonyCallAddMonster(List<GameObject> monsters)
+    public void ColonyCallAddMonster(List<GameObject> monsters, bool isInHostMap)
     {
         colonyCallMonsters.AddRange(monsters);
-
-        if (!battleBGMOn)
+        if (isInHostMap)
         {
-            battleBGMOn = true;
-            soundManager.BattleStateSet(battleBGMOn, false);
+            if (!isHostMapBattleBGMOn)
+            {
+                isHostMapBattleBGMOn = true;
+                soundManager.BattleStateSetServerRpc(isHostMapBattleBGMOn, false, isInHostMap);
+            }
+        }
+        else
+        {
+            if (!isClientMapBattleBGMOn)
+            {
+                isClientMapBattleBGMOn = true;
+                soundManager.BattleStateSetServerRpc(isClientMapBattleBGMOn, false, isInHostMap);
+            }
         }
     }
 
-    public void WaveStart()
+    public void ColonyCallAddMonster(GameObject monster, bool isInHostMap)
     {
-        waveState = true;
-        battleBGMOn = true;
-        soundManager.BattleStateSet(battleBGMOn, true);        
+        colonyCallMonsters.Add(monster);
+        if (isInHostMap)
+        {
+            if (!isHostMapBattleBGMOn)
+            {
+                isHostMapBattleBGMOn = true;
+                soundManager.BattleStateSetServerRpc(isHostMapBattleBGMOn, false, isInHostMap);
+            }
+        }
+        else
+        {
+            if (!isClientMapBattleBGMOn)
+            {
+                isClientMapBattleBGMOn = true;
+                soundManager.BattleStateSetServerRpc(isClientMapBattleBGMOn, false, isInHostMap);
+            }
+        }
+    }
+
+    public void WaveStart(bool isInHostMap)
+    {
+        if (isInHostMap)
+        {
+            isHostMapWaveState = true;
+            isHostMapBattleBGMOn = true;
+            soundManager.BattleStateSetServerRpc(isHostMapBattleBGMOn, true, isInHostMap);
+        }
+        else
+        {
+            isClientMapWaveState = true;
+            isClientMapBattleBGMOn = true;
+            soundManager.BattleStateSetServerRpc(isClientMapBattleBGMOn, true, isInHostMap);
+        }      
     }
 
     public void WaveAddMonster(List<GameObject> monsters)
@@ -67,7 +120,12 @@ public class BattleBGMCtrl : MonoBehaviour
         waveMonsters.AddRange(monsters);
     }
 
-    public void BattleRemoveMonster(GameObject monster)
+    public void WaveAddMonster(GameObject monster)
+    {
+        waveMonsters.Add(monster);
+    }
+
+    public void BattleRemoveMonster(GameObject monster, bool isInHostMap)
     {
         if (battleMonsters.Contains(monster))
         {
@@ -84,33 +142,62 @@ public class BattleBGMCtrl : MonoBehaviour
             waveMonsters.Remove(monster);
         }
 
-        BattleBGMOffSet();
+        BattleBGMOffSet(isInHostMap);
     }
 
-    void BattleBGMOffSet()
+    void BattleBGMOffSet(bool isInHostMap)
     {
-        if (waveState)
+        if (isInHostMap)
         {
-            if (waveMonsters.Count == 0)
+            if (isHostMapWaveState)
             {
-                if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0)
+                if (waveMonsters.Count == 0)
                 {
-                    battleBGMOn = false;
-                    soundManager.BattleStateSet(battleBGMOn, false);
+                    if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0)
+                    {
+                        isHostMapBattleBGMOn = false;
+                        soundManager.BattleStateSetServerRpc(isHostMapBattleBGMOn, false, isInHostMap);
+                    }
+                    else
+                    {
+                        isHostMapBattleBGMOn = true;
+                        soundManager.BattleStateSetServerRpc(isHostMapBattleBGMOn, false, isInHostMap);
+                    }
+                    isHostMapWaveState = false;
+                    WavePoint.instance.WaveEnd(true);
                 }
-                else
-                {
-                    battleBGMOn = true;
-                    soundManager.BattleStateSet(battleBGMOn, false);
-                }
-                waveState = false;
-                WavePoint.instance.WaveEnd();
+            }
+            else if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0 && isHostMapBattleBGMOn)
+            {
+                isHostMapBattleBGMOn = false;
+                soundManager.BattleStateSetServerRpc(isHostMapBattleBGMOn, false, isInHostMap);
             }
         }
-        else if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0 && battleBGMOn)
+        else
         {
-            battleBGMOn = false;
-            soundManager.BattleStateSet(battleBGMOn, false);
+            if (isClientMapWaveState)
+            {
+                if (waveMonsters.Count == 0)
+                {
+                    if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0)
+                    {
+                        isClientMapBattleBGMOn = false;
+                        soundManager.BattleStateSetServerRpc(isClientMapBattleBGMOn, false, isInHostMap);
+                    }
+                    else
+                    {
+                        isClientMapBattleBGMOn = true;
+                        soundManager.BattleStateSetServerRpc(isClientMapBattleBGMOn, false, isInHostMap);
+                    }
+                    isClientMapWaveState = false;
+                    WavePoint.instance.WaveEnd(true);
+                }
+            }
+            else if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0 && isClientMapBattleBGMOn)
+            {
+                isClientMapBattleBGMOn = false;
+                soundManager.BattleStateSetServerRpc(isClientMapBattleBGMOn, false, isInHostMap);
+            }
         }
     }
 }

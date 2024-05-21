@@ -11,5 +11,4 @@ public class PlayerSaveData
      */
 
     public bool isHostPlayer;
-    public int tempMinerCount;
 }

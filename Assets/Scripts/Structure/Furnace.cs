@@ -88,7 +88,8 @@ public class Furnace : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
         List<Item> items = new List<Item>();

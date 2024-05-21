@@ -416,7 +416,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4b2a324de3cbb9458035f85207565b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obj: {fileID: 11400000, guid: 8bbd8a9d671f14b4fa509950447d3bb9, type: 2}
+  building: {fileID: 0}
+  obj: {fileID: 0}
+  objItem: {fileID: 0}
   icon: {fileID: 3097002618837471264}
   btn: {fileID: 459714364993204417}
   LockUi: {fileID: 3385842535888517844}
+  objName: 
+  portal: {fileID: 0}
+  preBuilding: {fileID: 0}

@@ -354,15 +354,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Miner"",
-                    ""type"": ""Button"",
-                    ""id"": ""db4ff845-3250-4d68-a45a-6055e5e20fdf"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Tap"",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""RightClick"",
                     ""type"": ""Button"",
                     ""id"": ""b184b0b1-98f6-4769-8eb8-80bba2e7a09f"",
@@ -456,17 +447,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Loot"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""45318716-ac32-457f-956c-1335cb5b516c"",
-                    ""path"": ""<Keyboard>/z"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""Miner"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1589,7 +1569,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Loot = m_Player.FindAction("Loot", throwIfNotFound: true);
-        m_Player_Miner = m_Player.FindAction("Miner", throwIfNotFound: true);
         m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
         m_Player_Teleport = m_Player.FindAction("Teleport", throwIfNotFound: true);
         // Unit
@@ -1873,7 +1852,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Loot;
-    private readonly InputAction m_Player_Miner;
     private readonly InputAction m_Player_RightClick;
     private readonly InputAction m_Player_Teleport;
     public struct PlayerActions
@@ -1882,7 +1860,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public PlayerActions(@InputControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Loot => m_Wrapper.m_Player_Loot;
-        public InputAction @Miner => m_Wrapper.m_Player_Miner;
         public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
         public InputAction @Teleport => m_Wrapper.m_Player_Teleport;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1900,9 +1877,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Loot.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLoot;
                 @Loot.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLoot;
                 @Loot.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLoot;
-                @Miner.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiner;
-                @Miner.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiner;
-                @Miner.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMiner;
                 @RightClick.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
                 @RightClick.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
                 @RightClick.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnRightClick;
@@ -1919,9 +1893,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Loot.started += instance.OnLoot;
                 @Loot.performed += instance.OnLoot;
                 @Loot.canceled += instance.OnLoot;
-                @Miner.started += instance.OnMiner;
-                @Miner.performed += instance.OnMiner;
-                @Miner.canceled += instance.OnMiner;
                 @RightClick.started += instance.OnRightClick;
                 @RightClick.performed += instance.OnRightClick;
                 @RightClick.canceled += instance.OnRightClick;
@@ -2421,7 +2392,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnLoot(InputAction.CallbackContext context);
-        void OnMiner(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
         void OnTeleport(InputAction.CallbackContext context);
     }

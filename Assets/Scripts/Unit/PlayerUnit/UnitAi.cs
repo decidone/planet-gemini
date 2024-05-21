@@ -21,7 +21,7 @@ public class UnitAi : UnitCommonAi
     // 유닛 상태 관련
     bool isLastStateOn = false;
 
-    AIState unitLastState = AIState.AI_Idle; // 시작 시 패트롤 상태
+    public AIState unitLastState = AIState.AI_Idle;
     public SpriteRenderer unitSelImg;
     bool unitSelect = false;
     UnitGroupCtrl unitGroupCtrl;
@@ -65,6 +65,17 @@ public class UnitAi : UnitCommonAi
         }
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if (IsServer)
+        {
+            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        }
+
+        NetworkObjManager.instance.NetObjAdd(gameObject);
+    }
+
     protected override void UnitAiCtrl()
     {
         switch (aIState)
@@ -73,7 +84,7 @@ public class UnitAi : UnitCommonAi
                 MoveFunc();
                 break;
             case AIState.AI_Patrol:
-                PatrolFunc(isPatrolMove);
+                PatrolFunc();
                 break;                     
             case AIState.AI_Attack:
                 if (attackState == AttackState.Waiting)
@@ -108,6 +119,7 @@ public class UnitAi : UnitCommonAi
         isTargetSet = false;
         targetPosition = dir;
         moveRadi = radi;
+        isPatrolMove = true;
         lastMoveDirection = (targetPosition - tr.position).normalized;
         //aIState = AIState.AI_Move;
 
@@ -139,7 +151,6 @@ public class UnitAi : UnitCommonAi
         else if (moveFunc == "Patrol")
         {
             movePath = path.vectorPath;
-            isPatrolMove = true;
             aIState = AIState.AI_Patrol;
         }
         else if (moveFunc == "NormalTrace")
@@ -262,7 +273,7 @@ public class UnitAi : UnitCommonAi
         //direction = targetPosition - tr.position;
     }
 
-    void PatrolFunc(bool isGo)
+    void PatrolFunc()
     {
         if (movePath == null)
             return;
@@ -281,23 +292,11 @@ public class UnitAi : UnitCommonAi
             tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
             if (Vector3.Distance(tr.position, targetWaypoint) <= 0.5f)
             {
-                if (isGo)
+                currentWaypointIndex++;
+                if (currentWaypointIndex >= movePath.Count)
                 {
-                    currentWaypointIndex++;
-                    if (currentWaypointIndex >= movePath.Count)
-                    {
-                        isPatrolMove = !isPatrolMove;
-                        currentWaypointIndex = movePath.Count - 1;
-                    }
-                }
-                else
-                {
-                    currentWaypointIndex--;
-                    if (currentWaypointIndex < 0)
-                    {
-                        isPatrolMove = !isPatrolMove;
-                        currentWaypointIndex = 0;
-                    }
+                    isPatrolMove = !isPatrolMove;
+                    PatrolPosSetServerRpc(patrolPos);
                 }
             }
 
@@ -332,6 +331,7 @@ public class UnitAi : UnitCommonAi
         isHold = true;
         isAttackMove = true;
         isTargetSet = false;
+        isPatrolMove = true;
         AnimSetFloat(direction, false);
     }
 
@@ -462,7 +462,10 @@ public class UnitAi : UnitCommonAi
 
         NetworkObjManager.instance.NetObjRemove(gameObject);
 
-        Destroy(this.gameObject);
+        if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
+        {
+            NetworkObject.Despawn();
+        }
     }
 
     public override void RemoveTarget(GameObject target)
@@ -478,7 +481,107 @@ public class UnitAi : UnitCommonAi
             }
 
             isLastStateOn = false;
-        } 
+            unitLastState = AIState.AI_Idle;
+        }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void PortalUnitInFuncServerRpc()
+    {
+        PortalUnitInFuncClientRpc();
+    }
+
+    [ClientRpc]
+    public void PortalUnitInFuncClientRpc()
+    {
+        UnitSelImg(false);
+        UnitGroupCtrl unitGroup = GameManager.instance.gameObject.GetComponent<UnitGroupCtrl>();
+        unitGroup.DieUnitCheck(gameObject);
+        gameObject.SetActive(false);
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PortalUnitOutFuncServerRpc(bool isInHostMap, Vector3 spawnPos)
+    {
+        PortalUnitOutFuncClientRpc(isInHostMap, spawnPos);
+    }
+
+    [ClientRpc]
+    public void PortalUnitOutFuncClientRpc(bool isInHostMap, Vector3 spawnPos)
+    {
+        transform.position = spawnPos;
+        gameObject.SetActive(true);
+        AStarSet(isInHostMap);
+    }
+
+    public override void GameStartSet(UnitSaveData unitSaveData)
+    {
+        base.GameStartSet(unitSaveData);
+
+        Vector3 targetPos = Vector3Extensions.ToVector3(unitSaveData.moveTragetPos);
+        Vector3 moveStartPos = Vector3Extensions.ToVector3(unitSaveData.moveStartPos);
+
+        if (unitSaveData.aiState == 1)   // Move 상태
+        {
+            MovePosSetServerRpc(targetPos, 0, true);
+        }
+        else if(unitSaveData.aiState == 2)  // patrol 상태
+        {
+            if (unitSaveData.patrolDir) // true 일때 targetPos로 이동
+            {
+                PatrolPosSetServerRpc(targetPos);
+                patrolPos = moveStartPos;
+                isPatrolMove = true;
+            }
+            else    // false 일때 moveStartPos로 이동
+            {
+                PatrolPosSetServerRpc(moveStartPos);
+                patrolPos = targetPos;
+                isPatrolMove = false;
+            }
+        }
+        else    // 이전 상태체크
+        {
+            if(unitSaveData.lastState == 1) 
+            {
+                MovePosSetServerRpc(targetPos, 0, true);
+            }
+            else if (unitSaveData.aiState == 2)
+            {
+                if (unitSaveData.patrolDir) // true 일때 targetPos로 이동
+                {
+                    PatrolPosSetServerRpc(targetPos);
+                    patrolPos = moveStartPos;
+                    isPatrolMove = true;
+                }
+                else    // false 일때 moveStartPos로 이동
+                {
+                    PatrolPosSetServerRpc(moveStartPos);
+                    patrolPos = targetPos;
+                                isPatrolMove = false;
+}
+            }
+        }
+
+        if (unitSaveData.holdState)
+        {
+            HoldFuncServerRpc();
+        }
+    }
+
+    public override UnitSaveData SaveData()
+    {
+        UnitSaveData data = base.SaveData();
+
+        data.unitIndex = GeminiNetworkManager.instance.GetMonsterSOIndex(this.gameObject, 0, true);
+        data.aiState = (int)aIState;
+        data.lastState = (int)unitLastState;
+        data.holdState = isHold;
+        data.patrolDir = isPatrolMove;
+        data.moveTragetPos = Vector3Extensions.FromVector3(targetPosition);
+        data.moveStartPos = Vector3Extensions.FromVector3(patrolPos);
+
+        return data;
+    }
 }

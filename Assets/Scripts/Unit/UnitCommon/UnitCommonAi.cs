@@ -30,7 +30,7 @@ public enum AttackState
 public class UnitCommonAi : NetworkBehaviour
 {
     [SerializeField]
-    protected UnitCommonData unitCommonData;
+    public UnitCommonData unitCommonData;
     protected UnitCommonData UnitCommonData { set { unitCommonData = value; } }
 
     protected Transform tr;
@@ -65,6 +65,9 @@ public class UnitCommonAi : NetworkBehaviour
     public GameObject unitCanvas;
     public Image hpBar;
     public float hp;
+    public bool isInHostMap;
+
+    public int unitIndex;
 
     public bool isFlip;
     protected bool isDelayAfterAttackCoroutine = false;
@@ -145,11 +148,45 @@ public class UnitCommonAi : NetworkBehaviour
         }
     }
 
+    protected virtual void OnClientConnectedCallback(ulong clientId)
+    {
+        ClientConnectSyncServerRpc();
+    }
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        if (IsServer)
+        {
+            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        }
+    }
 
-        NetworkObjManager.instance.NetObjAdd(gameObject);
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (IsServer)
+        {
+            NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void ClientConnectSyncServerRpc()
+    {
+        ClientConnectSyncClientRpc(hp);
+    }
+    
+    [ClientRpc]
+    public virtual void ClientConnectSyncClientRpc(float syncHp)
+    {
+        hp = syncHp;
+
+        if (hp < unitCommonData.MaxHp)
+        {
+            hpBar.fillAmount = hp / unitCommonData.MaxHp;
+            unitCanvas.SetActive(true);
+        }
     }
 
     protected virtual void UnitAiCtrl() { }
@@ -290,6 +327,29 @@ public class UnitCommonAi : NetworkBehaviour
         else
             mask = GraphMask.FromGraphName("Map2");
 
+        isInHostMap = isHostMap;
         seeker.graphMask = mask;
+    }
+
+    public virtual void GameStartSet(UnitSaveData unitSaveData)
+    {
+        unitIndex = unitSaveData.unitIndex;
+        hp = unitSaveData.hp;
+
+        if (hp < unitCommonData.MaxHp) 
+        {
+            hpBar.fillAmount = hp / unitCommonData.MaxHp;
+            unitCanvas.SetActive(true);
+        }
+    }
+
+    public virtual UnitSaveData SaveData()
+    {
+        UnitSaveData data = new UnitSaveData();
+
+        data.hp = hp;
+        data.pos = Vector3Extensions.FromVector3(transform.position);
+
+        return data;
     }
 }

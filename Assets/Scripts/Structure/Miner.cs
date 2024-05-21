@@ -197,8 +197,9 @@ public class Miner : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
-        
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
+
         sInvenManager.slots[0].outputSlot = true;
     }
 
@@ -214,8 +215,6 @@ public class Miner : Production
         {
             output = item;
             cooldown = _efficiency;
-            if (isTempBuild)
-                cooldown += 3;
             effiCooldown = cooldown;
             minerCellCount = _minerCellCount;
         }

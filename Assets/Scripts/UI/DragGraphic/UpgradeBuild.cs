@@ -7,7 +7,6 @@ public class UpgradeBuild : DragFunc
 {
     protected GameObject canvas;
     BuildingData buildingData;
-    Inventory inventory;
     int structureLayer;
 
     Dictionary<Item, int> upgradeItemDic = new Dictionary<Item, int>();
@@ -18,7 +17,6 @@ public class UpgradeBuild : DragFunc
     {
         base.Start();
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
-        inventory = gameManager.inventory;
         structureLayer = LayerMask.NameToLayer("Obj");
     }
 
@@ -153,7 +151,7 @@ public class UpgradeBuild : DragFunc
             int value = kvp.Value;
 
             int amount;
-            bool hasItem = inventory.totalItems.TryGetValue(key, out amount);
+            bool hasItem = gameManager.inventory.totalItems.TryGetValue(key, out amount);
             isEnough = hasItem && amount >= value;
 
             if (!isEnough)
@@ -227,7 +225,7 @@ public class UpgradeBuild : DragFunc
             for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
             {
                 int value;
-                bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[UpgradeCost.items[i]], out value);
+                bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[UpgradeCost.items[i]], out value);
                 isEnough = hasItem && value >= UpgradeCost.amounts[i];
 
                 if (isEnough && totalAmountsEnough)
@@ -240,12 +238,12 @@ public class UpgradeBuild : DragFunc
             {
                 for (int i = 0; i < ReturnUpgradeCost.GetItemCount(); i++)
                 {
-                    inventory.Add(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
+                    gameManager.inventory.Add(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
                 }
 
                 for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
                 {
-                    inventory.Sub(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
+                    gameManager.inventory.Sub(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
                 }
                 obj.GetComponent<LogisticsCtrl>().level++;
             }

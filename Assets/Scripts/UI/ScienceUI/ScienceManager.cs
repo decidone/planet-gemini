@@ -20,6 +20,8 @@ public class ScienceManager : MonoBehaviour
     [SerializeField]
     GameObject itemInputWindow;
     SciItemSetWindow sciItemSetWindow;
+    [SerializeField]
+    UpgradeWindow upgradeWindow;
 
     public GameObject coreLvUI;
     [HideInInspector]
@@ -87,6 +89,7 @@ public class ScienceManager : MonoBehaviour
             btn.btnIndex = i;
             AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
             AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(); });
+            btn.UiSetting();
         }
 
         scienceDb.ScienceBtnArrGet(scienceBtns);
@@ -133,6 +136,9 @@ public class ScienceManager : MonoBehaviour
         for (int i = 1; i < 5; i++)
         {
             buildContent[i].scienceBtn.itemAmountList = battleContent[i].scienceBtn.itemAmountList;
+            buildContent[i].scienceBtn.isMain = true;
+            buildContent[i].scienceBtn.CoreSet(battleContent[i].scienceBtn);
+            battleContent[i].scienceBtn.CoreSet(buildContent[i].scienceBtn);
         }
     }
 
@@ -159,7 +165,7 @@ public class ScienceManager : MonoBehaviour
     {
         scrollRect.content = contents[index].GetComponent<RectTransform>();
         sciItemSetWindow.CloseUI();
-
+        upgradeWindow.CloseUI();
         for (int i = 0; i < contents.Length; i++)
         {
             contents[i].SetActive(i == index);
@@ -217,6 +223,25 @@ public class ScienceManager : MonoBehaviour
         sciItemSetWindow.SetUI(focusedSciBtn);
     }
 
+    public void OpenUpgradeWindow()
+    {
+        mousePos = Input.mousePosition;
+        upgradeWindow.transform.position = mousePos;
+        upgradeWindow.gameObject.SetActive(true);
+        if (focusedSciBtn.isCore && !focusedSciBtn.isMain)
+        {
+            upgradeWindow.SetBtn(focusedSciBtn.othCoreBtn);
+        }
+        else
+            upgradeWindow.SetBtn(focusedSciBtn);
+    }
+
+    public void UpgradeStart(ScienceBtn btn)
+    {
+        //btn.ItemSaveEnd();
+        scienceDb.SciBtnUpgradeServerRpc(btn.btnIndex);
+    }
+
     public void SciUpgradeEnd(string sciName, int sciLevel)
     {
         if (sciName == "Core")
@@ -248,6 +273,7 @@ public class ScienceManager : MonoBehaviour
     {
         scienceTreeUI.SetActive(false);
         sciItemSetWindow.CloseUI();
+        upgradeWindow.CloseUI();
         soundManager.PlayUISFX("CloseUI");
         gameManager.onUIChangedCallback?.Invoke(scienceTreeUI);
     }
@@ -255,5 +281,17 @@ public class ScienceManager : MonoBehaviour
     public void SyncSciBtnItem(int btnIndex, int index, int amount)
     {
         scienceDb.SyncSciBtnItemServerRpc(btnIndex, index, amount);
+    }
+
+    public bool CoreSaveCheck(ScienceBtn btn)
+    {
+        for (int i = 1; i < 5; i++)
+        {
+            if (battleContent[i].scienceBtn == btn)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -711,10 +711,15 @@ MonoBehaviour:
     playerDataList: []
     structureData: []
     beltGroupData: []
+    spawnerManagerSaveData:
+      splitCount: 0
   path: 
   selectedSlot: 0
   beltGroup: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
   beltMgr: {fileID: 0}
+  MonsterSpawnMgr: {fileID: 0}
+  spawnerGroupMgr: {fileID: 1012050618565204687, guid: 641f1a6b77a778549bd9654e9d00725f, type: 3}
+  spawner: {fileID: 2587231014279578894, guid: 1187c18a57db9f446aa4d74f7b910b9f, type: 3}
 --- !u!1 &6718229863374190987
 GameObject:
   m_ObjectHideFlags: 0
@@ -759,8 +764,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f85b80bc13fdab249b0fb770655a8ffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempMiner: {fileID: 11400000, guid: fc3c0374a9087634c8a3120bbde7188d, type: 2}
-  tempMinerUI: {fileID: 0}
   fogOfWar: {fileID: 0}
 --- !u!1 &7414352785637535675
 GameObject:

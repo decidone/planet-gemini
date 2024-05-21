@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public class PortalItemIn : PortalObj
 {
@@ -40,7 +41,8 @@ public class PortalItemIn : PortalObj
     {
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void CloseUI()
@@ -157,8 +159,23 @@ public class PortalItemIn : PortalObj
         return exists;
     }
 
-    public override void ConnectObj(GameObject othObj)
+
+    [ServerRpc(RequireOwnership = false)]
+    protected override void PortalObjConnectServerRpc()
     {
-        portalItemOut = othObj.GetComponent<PortalItemOut>();
+        ulong objID = NetworkObjManager.instance.FindNetObjID(portalItemOut.gameObject);
+        ConnectObjClientRpc(objID);
+    }
+
+    [ServerRpc]
+    public override void ConnectObjServerRpc(ulong objId)
+    {
+        ConnectObjClientRpc(objId);
+    }
+
+    [ClientRpc]
+    public override void ConnectObjClientRpc(ulong objId)
+    {
+        portalItemOut = NetworkObjManager.instance.FindNetworkObj(objId).GetComponent<PortalItemOut>();
     }
 }

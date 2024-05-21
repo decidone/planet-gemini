@@ -332,15 +332,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Miner",
-                    "type": "Button",
-                    "id": "db4ff845-3250-4d68-a45a-6055e5e20fdf",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Tap",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "RightClick",
                     "type": "Button",
                     "id": "b184b0b1-98f6-4769-8eb8-80bba2e7a09f",
@@ -434,17 +425,6 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Loot",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "45318716-ac32-457f-956c-1335cb5b516c",
-                    "path": "<Keyboard>/z",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Miner",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

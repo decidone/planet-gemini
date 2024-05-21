@@ -5,13 +5,12 @@ using Unity.Netcode;
 
 public class NetworkObjManager : NetworkBehaviour
 {
-    public NetworkObjListSO networkObjListSO;
-    public List<GameObject> networkObjects = new List<GameObject>();
 
     public List<Portal> netPortals = new List<Portal>();
     public List<Structure> netStructures = new List<Structure>();
     public List<BeltGroupMgr> netBeltGroupMgrs = new List<BeltGroupMgr>();
     public List<UnitCommonAi> netUnitCommonAis = new List<UnitCommonAi>();
+    public List<BeltCtrl> networkBelts = new List<BeltCtrl>();
 
     #region Singleton
     public static NetworkObjManager instance;
@@ -30,8 +29,7 @@ public class NetworkObjManager : NetworkBehaviour
 
     public void NetObjAdd(GameObject netObj)
     {
-        networkObjects.Add(netObj);
-
+        //networkObjects.Add(netObj);
 
         if(netObj.TryGetComponent(out Portal portal))
         {
@@ -48,6 +46,10 @@ public class NetworkObjManager : NetworkBehaviour
         else if (netObj.TryGetComponent(out UnitCommonAi unitCommonAi))
         {
             netUnitCommonAis.Add(unitCommonAi);
+        }
+        else
+        {
+            networkBelts.Add(netObj.GetComponent<BeltCtrl>());
         }
     }
 
@@ -73,22 +75,80 @@ public class NetworkObjManager : NetworkBehaviour
         {
             netUnitCommonAis.Remove(unitCommonAi);
         }
-
-        networkObjects.Remove(netObj.gameObject);
+        else
+        {
+            networkBelts.Remove(netObj.GetComponent<BeltCtrl>());
+        }
     }
 
     public ulong FindNetObjID(GameObject obj)
     {
         ulong ObjID = 0;
 
-        foreach (GameObject networkObject in networkObjects)
+        if (obj.GetComponent<Portal>())
         {
-            if(obj == networkObject)
+            foreach (Portal networkObject in netPortals)
             {
-                ObjID = networkObject.GetComponent<NetworkObject>().NetworkObjectId;
-                break;
+                if (obj == networkObject.gameObject)
+                {
+                    ObjID = networkObject.GetComponent<NetworkObject>().NetworkObjectId;
+                    return ObjID;
+                }
             }
         }
+        else if (obj.GetComponent<Structure>() && !obj.GetComponent<BeltCtrl>())
+        {
+            foreach (Structure networkObject in netStructures)
+            {
+                if (obj == networkObject.gameObject)
+                {
+                    ObjID = networkObject.GetComponent<NetworkObject>().NetworkObjectId;
+                    return ObjID;
+                }
+            }
+        }
+        else if (obj.GetComponent<BeltGroupMgr>())
+        {
+            foreach (BeltGroupMgr networkObject in netBeltGroupMgrs)
+            {
+                if (obj == networkObject.gameObject)
+                {
+                    ObjID = networkObject.GetComponent<NetworkObject>().NetworkObjectId;
+                    return ObjID;
+                }
+            }
+        }
+        else if (obj.GetComponent<UnitCommonAi>())
+        {
+            foreach (UnitCommonAi networkObject in netUnitCommonAis)
+            {
+                if (obj == networkObject.gameObject)
+                {
+                    ObjID = networkObject.GetComponent<NetworkObject>().NetworkObjectId;
+                    return ObjID;
+                }
+            }
+        }
+        else
+        {
+            foreach (BeltCtrl networkObject in networkBelts)
+            {
+                if (obj == networkObject.gameObject)
+                {
+                    ObjID = networkObject.GetComponent<NetworkObject>().NetworkObjectId;
+                    return ObjID;
+                }
+            }
+        }
+
+        //foreach (GameObject networkObject in networkBelts)
+        //{
+        //    if(obj == networkObject)
+        //    {
+        //        ObjID = networkObject.GetComponent<NetworkObject>().NetworkObjectId;
+        //        return ObjID;
+        //    }
+        //}
 
         return ObjID;
     }
@@ -97,12 +157,44 @@ public class NetworkObjManager : NetworkBehaviour
     {
         NetworkObject netObj = null;
 
-        foreach (GameObject networkObjects in networkObjects)
+        foreach (Portal networkObjects in netPortals)
+        {
+            if (networkObjects.TryGetComponent(out NetworkObject networkObject) && networkObject.NetworkObjectId == netObjID)
+            {
+                netObj = networkObject;
+                return netObj;
+            }
+        }
+        foreach (Structure networkObjects in netStructures)
+        {
+            if (networkObjects.TryGetComponent(out NetworkObject networkObject) && networkObject.NetworkObjectId == netObjID)
+            {
+                netObj = networkObject;
+                return netObj;
+            }
+        }
+        foreach (BeltGroupMgr networkObjects in netBeltGroupMgrs)
+        {
+            if (networkObjects.TryGetComponent(out NetworkObject networkObject) && networkObject.NetworkObjectId == netObjID)
+            {
+                netObj = networkObject;
+                return netObj;
+            }
+        }
+        foreach (UnitCommonAi networkObjects in netUnitCommonAis)
+        {
+            if (networkObjects.TryGetComponent(out NetworkObject networkObject) && networkObject.NetworkObjectId == netObjID)
+            {
+                netObj = networkObject;
+                return netObj;
+            }
+        }
+        foreach (BeltCtrl networkObjects in networkBelts)
         {        
             if (networkObjects.TryGetComponent(out NetworkObject networkObject) && networkObject.NetworkObjectId == netObjID)
             {
                 netObj = networkObject;
-                break;
+                return netObj;
             }
         }
 

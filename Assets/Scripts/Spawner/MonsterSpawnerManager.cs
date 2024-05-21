@@ -6,11 +6,6 @@ using QFSW.QC;
 
 public class MonsterSpawnerManager : NetworkBehaviour
 {
-    public GameObject[] weakMonsters;
-    public GameObject[] normalMonsters;
-    public GameObject[] strongMonsters;
-    public GameObject guardian;
-
     public List<MonsterSpawner> map1Area1Group = new List<MonsterSpawner>();
     public List<MonsterSpawner> map1Area2Group = new List<MonsterSpawner>();
     public List<MonsterSpawner> map1Area3Group = new List<MonsterSpawner>();
@@ -59,6 +54,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
     bool map2Wave5Start = false;
 
     WavePoint wavePoint;
+    bool hostMapWave;
+    bool clientMapWave;
 
     #region Singleton
     public static MonsterSpawnerManager instance;
@@ -78,9 +75,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         spawnerSetManager = SpawnerSetManager.instance;
         wavePoint = WavePoint.instance;
-        spawnerMap1Matrix = spawnerSetManager.spawnerMap1Matrix;
-        spawnerMap2Matrix = spawnerSetManager.spawnerMap2Matrix;
-        splitCount = spawnerSetManager.splitCount;
     }
 
     private void Update()
@@ -135,6 +129,41 @@ public class MonsterSpawnerManager : NetworkBehaviour
             WavePointSet(5, false);
             map2Wave5Start = false;
         }
+    }
+
+    public void MatrixSet(int spCount, GameObject[,] map1Matrix, GameObject[,] map2Matrix, bool isHostMap)
+    {
+        splitCount = spCount;
+        Debug.Log(splitCount);
+        if (isHostMap)
+        {
+            spawnerMap1Matrix = new GameObject[splitCount, splitCount];
+            spawnerMap1Matrix = map1Matrix;
+        }
+        else
+        {
+            spawnerMap2Matrix = new GameObject[splitCount, splitCount];
+            spawnerMap2Matrix = map2Matrix;
+        }
+    }
+
+    public void MatrixSet(GameObject obj, (int, int) matrixIndex, bool isHostMap)
+    {
+        if (isHostMap)
+        {
+            spawnerMap1Matrix[matrixIndex.Item1, matrixIndex.Item2] = obj;
+        }
+        else
+        {
+            spawnerMap2Matrix[matrixIndex.Item1, matrixIndex.Item2] = obj;
+        }
+    }
+
+    public void SplitCountSet(int spCount)
+    {
+        splitCount = spCount;
+        spawnerMap1Matrix = new GameObject[spCount, spCount];
+        spawnerMap2Matrix = new GameObject[spCount, spCount];
     }
 
     public void AreaGroupSet(MonsterSpawner spawner, int groupNum, bool isHostMap)
@@ -262,6 +291,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
             if (FindMatrix(spawnerGroup, isInHostMap))
             {
                 Vector3 waveMainPos;
+                Debug.Log(xIndex + " : " + yIndex);
+
                 if (isInHostMap)
                     waveMainPos = spawnerMap1Matrix[xIndex, yIndex].GetComponent<SpawnerGroupManager>().spawnerList[0].transform.position;
                 else
@@ -299,7 +330,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
                         }
                     }
                 }
-                Debug.Log("waveStart : " + waveTrPos + " : " + waveMainPos);
                 WaveStartClientRpc(waveTrPos, isInHostMap);
             }
         }
@@ -308,8 +338,19 @@ public class MonsterSpawnerManager : NetworkBehaviour
     [ClientRpc]
     void WaveStartClientRpc(Vector3 waveTrPos, bool isInHostMap)
     {
+        Debug.Log("waveStart : " + waveTrPos);
         wavePoint.WaveStart(waveTrPos, isInHostMap);
-        BattleBGMCtrl.instance.WaveStart();
+        if(IsServer)
+            BattleBGMCtrl.instance.WaveStart(isInHostMap);
+        WaveStateSet(isInHostMap, true);
+    }
+
+    public void WaveStateSet(bool isInHostMap, bool waveState)
+    {
+        if (isInHostMap)
+            hostMapWave = waveState;
+        else
+            clientMapWave = waveState;
     }
 
     bool FindMatrix(SpawnerGroupManager spawnerGroup, bool isInHostMap)
@@ -360,8 +401,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         else
             mapCenter = GameManager.instance.clientPlayerSpawnPos;
 
-        float mapHalfSize = (float)spawnerSetManager.width / 2;
-
+        float mapHalfSize = (float)MapGenerator.instance.width / 2;
         Vector3 mapCornerA = new Vector3(mapCenter.x - mapHalfSize, mapCenter.y - mapHalfSize, 0); // 좌측 하단
         Vector3 mapCornerB = new Vector3(mapCenter.x + mapHalfSize, mapCenter.y - mapHalfSize, 0); // 우측 하단
         Vector3 mapCornerC = new Vector3(mapCenter.x + mapHalfSize, mapCenter.y + mapHalfSize, 0); // 우측 상단
@@ -457,11 +497,10 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public void MonsterDataGet()
     {
         totalMonsterSpawnerList.Clear();
-        int matrixLength = spawnerMap1Matrix.Length;
 
-        for (int x = 0; x < matrixLength; x++)
+        for (int x = 0; x < splitCount; x++)
         {
-            for(int y = 0; y < matrixLength; y++)
+            for(int y = 0; y < splitCount; y++)
             {
                 SpawnerGroupManager groupManager = spawnerMap1Matrix[x, y].GetComponent<SpawnerGroupManager>();
                 totalMonsterSpawnerList.AddRange(groupManager.MonsterSpawnerListData());
@@ -472,5 +511,30 @@ public class MonsterSpawnerManager : NetworkBehaviour
                 totalMonsterList.AddRange(groupManager.MonsterListData());
             }
         }
+    }
+
+    public SpawnerManagerSaveData SaveData()
+    {
+        SpawnerManagerSaveData data = new SpawnerManagerSaveData();
+
+        data.splitCount = splitCount;
+        SpawnerGroupData[,] group1Data = new SpawnerGroupData[splitCount, splitCount];
+        SpawnerGroupData[,] group2Data = new SpawnerGroupData[splitCount, splitCount];
+
+        for (int x = 0; x < splitCount; x++)
+        {
+            for (int y = 0; y < splitCount; y++)
+            {
+                if(spawnerMap1Matrix[x, y] != null)
+                    group1Data[x, y] = spawnerMap1Matrix[x, y].GetComponent<SpawnerGroupManager>().SaveData();
+                if (spawnerMap2Matrix[x, y] != null)
+                    group2Data[x, y] = spawnerMap2Matrix[x, y].GetComponent<SpawnerGroupManager>().SaveData();
+            }
+        }
+
+        data.spawnerMap1Matrix = group1Data;
+        data.spawnerMap2Matrix = group2Data;
+
+        return data;
     }
 }

@@ -48,9 +48,6 @@ public class WavePoint : MonoBehaviour
 
         Vector2 dir = new Vector2(Screen.width, Screen.height);
         defaultAngle = Vector2.Angle(new Vector2(0, 1), dir);
-
-        map1BasePos = gameManager.hostPlayerSpawnPos;
-        map2BasePos = gameManager.clientPlayerSpawnPos;
     }
 
 
@@ -74,6 +71,8 @@ public class WavePoint : MonoBehaviour
     public void PlayerSet(GameObject _player)
     {
         player = _player;
+        map1BasePos = gameManager.hostPlayerSpawnPos;
+        map2BasePos = gameManager.clientPlayerSpawnPos;
     }
 
     public void WaveStart(Vector3 wavePos, bool isInHostMap)
@@ -113,13 +112,18 @@ public class WavePoint : MonoBehaviour
         }
     }
 
-    public void WaveEnd()
+    public void WaveEnd(bool isInHostMap)
     {
-        isMap1WaveStart = false;
-        canvasObj.SetActive(false);
-        mapObj.SetActive(false);
-
-        Destroy(map1LineRenderer);
+        if (isInHostMap)
+        {
+            isMap1WaveStart = false;
+            Destroy(map1LineRenderer);
+        }
+        else
+        {
+            isMap2WaveStart = false;
+            Destroy(map2LineRenderer);
+        }
     }
 
     public void SetIndicator(bool isInHostMap)

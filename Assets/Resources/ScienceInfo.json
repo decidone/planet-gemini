@@ -1,7 +1,7 @@
 {
   "Core":{
     "Core":{
-      "2":{"items":["Coal","CopperBar","IronBar"],"amounts":[5,4,3],"coreLv":1,"time":1},
+      "2":{"items":["Coal","CopperBar","IronBar"],"amounts":[5,4,3],"coreLv":1,"time":10},
       "3":{"items":["Coal","CopperBar","IronBar","SteelBar"],"amounts":[1,1,1,1],"coreLv":2,"time":1},
       "4":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic"],"amounts":[1,1,1,1,1],"coreLv":3,"time":1},
       "5":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic","ControlUnit"],"amounts":[1,1,1,1,1,1],"coreLv":4,"time":1}

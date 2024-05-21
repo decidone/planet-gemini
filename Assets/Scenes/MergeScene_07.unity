@@ -227,7 +227,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -3613212761563754259, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4746401571730464259, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: mapGen
@@ -235,7 +235,7 @@ PrefabInstance:
       objectReference: {fileID: 1842857608}
     - target: {fileID: 4746401571730464259, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7839168820769692788, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
       propertyPath: mapGen
@@ -787,6 +787,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc581f39aeda425419d5f0027c910b01, type: 3}
+--- !u!1 &720648777 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3287065697107536712, guid: fc581f39aeda425419d5f0027c910b01, type: 3}
+  m_PrefabInstance: {fileID: 720648776}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &720648778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720648777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1238942879
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &745844382 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1932302118311834672, guid: 30fb03d4f5333974dbfc1a85400c4d85, type: 3}
@@ -1941,17 +1962,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef72268778249814b8152fd726003ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1095768246952270823 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5317558884792932963, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
-  m_PrefabInstance: {fileID: 1095768246952270821}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd7fa8761429b7748aac70a50c4a4aee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!223 &1095768246952270824 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 8669813805128897141, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
@@ -2193,6 +2203,10 @@ PrefabInstance:
       propertyPath: beltMgr
       value: 
       objectReference: {fileID: 745844382}
+    - target: {fileID: 3869690013111301403, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: MonsterSpawnMgr
+      value: 
+      objectReference: {fileID: 1012050618565204687, guid: 641f1a6b77a778549bd9654e9d00725f, type: 3}
     - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: itemListSO
       value: 
@@ -2252,7 +2266,7 @@ PrefabInstance:
     - target: {fileID: 6157640268969942913, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: tempMinerUI
       value: 
-      objectReference: {fileID: 1095768246952270823}
+      objectReference: {fileID: 0}
     - target: {fileID: 8129189935975276893, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 190450894

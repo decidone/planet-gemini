@@ -12,11 +12,15 @@ public class DataManager : MonoBehaviour
     public string path;
     public int selectedSlot;    // 저장 슬롯. 나중에 ui 넣을 때 지정
     NetworkObjManager netObjMgr;
-    public GameObject beltGroup;
+    [SerializeField]
+    GameObject beltGroup;
     [SerializeField]
     GameObject beltMgr;
     List<Transporter> transporters = new List<Transporter>();
     List<LDConnector> lDConnectors = new List<LDConnector>();
+    [SerializeField]
+    GameObject spawner;
+    AreaLevelData[] levelData;
 
     #region Singleton
     public static DataManager instance;
@@ -60,6 +64,12 @@ public class DataManager : MonoBehaviour
         InventorySaveData clientMapInventoryData = GameManager.instance.clientMapInven.SaveData();
         saveData.ClientMapInvenData = clientMapInventoryData;
 
+        foreach (ScienceBtn scienceBtn in TempScienceDb.instance.scienceBtns)
+        {
+            ScienceData scienceData = scienceBtn.SaveData();
+            saveData.ScienceData.Add(scienceData);
+        }
+
         foreach (Structure structure in netObjMgr.netStructures)
         {
             StructureSaveData structureSaveData = structure.SaveData();
@@ -71,6 +81,16 @@ public class DataManager : MonoBehaviour
             BeltGroupSaveData beltGroupSaveData = beltGroup.SaveData();
             saveData.beltGroupData.Add(beltGroupSaveData);
         }
+
+        foreach (UnitCommonAi unitAi in netObjMgr.netUnitCommonAis)
+        {
+            UnitSaveData unitSaveData = unitAi.SaveData();
+            saveData.unitData.Add(unitSaveData);
+        }
+
+        MonsterSpawnerManager monsterSpawner = MonsterSpawnerManager.instance;
+        SpawnerManagerSaveData spawnerManagerSaveData = monsterSpawner.SaveData();
+        saveData.spawnerManagerSaveData = spawnerManagerSaveData;
 
         // Json 저장
         Debug.Log("saved: " + path);
@@ -96,6 +116,8 @@ public class DataManager : MonoBehaviour
         transporters.Clear();
         lDConnectors.Clear();
 
+        //TempScienceDb.instance.LoadData(saveData.ScienceData);
+
         foreach (StructureSaveData structureSave in saveData.structureData)
         {
             SpawnStructure(structureSave);
@@ -105,6 +127,13 @@ public class DataManager : MonoBehaviour
         {
             SpawnBeltGroup(beltGroupSave);
         }
+
+        foreach(UnitSaveData unitSave in saveData.unitData)
+        {
+            SpawnUnit(unitSave);
+        }
+
+        SetSpawnerManager(saveData.spawnerManagerSaveData);
 
         SetConnectedFunc();
     }
@@ -122,6 +151,7 @@ public class DataManager : MonoBehaviour
         // 행성 인벤토리
         GameManager.instance.hostMapInven.LoadData(saveData.HostMapInvenData);
         GameManager.instance.clientMapInven.LoadData(saveData.ClientMapInvenData);
+        TempScienceDb.instance.LoadData(saveData.ScienceData);
     }
 
     public void Clear()
@@ -141,13 +171,7 @@ public class DataManager : MonoBehaviour
 
         if (netObj.TryGetComponent(out Structure structure))
         {
-            bool isInHostMap;
-            if (saveData.planet == 0)
-                isInHostMap = true;
-            else
-                isInHostMap = false;  
-
-            structure.GameStartSpawnSet(saveData.level, saveData.direction, building.height, building.width, isInHostMap, saveData.index);
+            structure.GameStartSpawnSet(saveData.level, saveData.direction, building.height, building.width, saveData.planet, saveData.index);
             structure.GameStartRecipeSet(saveData.recipeId);
             structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(saveData.tileSetPos));
 
@@ -177,14 +201,16 @@ public class DataManager : MonoBehaviour
                 prod.GameStartItemSet(saveData.inven);
                 if (prod.GetComponent<PortalObj>())
                 {
-                    if (isInHostMap)
+                    if (saveData.planet)
                     {
                         Portal portal = GameManager.instance.portal[0];
+                        spawnobj.transform.parent = portal.transform;
                         portal.SetPortalObjEnd(structure.structureData.FactoryName, spawnobj);
                     }
                     else
                     {
                         Portal portal = GameManager.instance.portal[1];
+                        spawnobj.transform.parent = portal.transform;
                         portal.SetPortalObjEnd(structure.structureData.FactoryName, spawnobj);
                     }
                 }
@@ -233,13 +259,7 @@ public class DataManager : MonoBehaviour
 
             if (netBeltObj.TryGetComponent(out Structure structure))
             {
-                bool isInHostMap;
-                if (beltData.Item2.planet == 0)
-                    isInHostMap = true;
-                else
-                    isInHostMap = false;
-
-                structure.GameStartSpawnSet(beltData.Item2.level, beltData.Item2.direction, building.height, building.width, isInHostMap, beltData.Item2.index);
+                structure.GameStartSpawnSet(beltData.Item2.level, beltData.Item2.direction, building.height, building.width, beltData.Item2.planet, beltData.Item2.index);
                 structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(beltData.Item2.tileSetPos));
             }
 
@@ -290,6 +310,104 @@ public class DataManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    void SpawnUnit(UnitSaveData unitSaveData)
+    {
+        GameObject spawnobj = Instantiate(GeminiNetworkManager.instance.unitListSO.userUnitList[unitSaveData.unitIndex]);
+        spawnobj.TryGetComponent(out NetworkObject netObj);
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn();
+
+        spawnobj.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
+        spawnobj.GetComponent<UnitAi>().GameStartSet(unitSaveData);
+    }
+
+    void SetSpawnerManager(SpawnerManagerSaveData spawnerManagerSaveData)
+    {
+        levelData = SpawnerSetManager.instance.arealevelData;
+        if(spawnerManagerSaveData.splitCount != 0)
+            MonsterSpawnerManager.instance.SplitCountSet(spawnerManagerSaveData.splitCount);
+
+        for (int i = 0; i < spawnerManagerSaveData.splitCount; i++)
+        {
+            for (int j = 0; j < spawnerManagerSaveData.splitCount; j++)
+            {
+                SpawnerGroupData spawner1GroupData = spawnerManagerSaveData.spawnerMap1Matrix[i, j];
+                if(spawner1GroupData != null)
+                {
+                    GameObject group = SetSpawnerGroupMgr(spawner1GroupData, true);
+                    MonsterSpawnerManager.instance.MatrixSet(group, (i, j), true);
+                }
+
+                SpawnerGroupData spawner2GroupData = spawnerManagerSaveData.spawnerMap2Matrix[i, j];
+                if (spawner2GroupData != null)
+                {
+                    GameObject group = SetSpawnerGroupMgr(spawner2GroupData, false);
+                    MonsterSpawnerManager.instance.MatrixSet(group, (i, j), false);
+                }
+            }
+        }
+    }
+
+    GameObject SetSpawnerGroupMgr(SpawnerGroupData spawnerGroupData, bool planet)
+    {
+        SpawnerSetManager spawnerSetManager = SpawnerSetManager.instance;
+        GameObject spawnerGroupObj = spawnerSetManager.SpawnerGroupSet(Vector3Extensions.ToVector3(spawnerGroupData.pos));
+        spawnerGroupObj.TryGetComponent(out SpawnerGroupManager spawnerGroup);
+        spawnerGroup.SpawnerGroupStatsSet(spawnerGroupData.spawnerMatrixIndex);
+        foreach (SpawnerSaveData spawnerSaveData in spawnerGroupData.spawnerSaveDataList)
+        {
+            GameObject spawner = SpawnSpawner(spawnerSaveData);
+            spawnerGroup.SpawnerSet(spawner);
+            spawner.TryGetComponent(out MonsterSpawner monsterSpawner);
+            MonsterSpawnerManager.instance.AreaGroupSet(monsterSpawner, spawnerSaveData.level, planet);
+            monsterSpawner.groupManager = spawnerGroup;
+            monsterSpawner.GameStartSet(spawnerSaveData, levelData[spawnerSaveData.level - 1], Vector3Extensions.ToVector3(spawnerSaveData.wavePos), planet);
+            if(spawnerSaveData.waveState)
+                monsterSpawner.GameStartWaveSet(spawnerSaveData.waveTimer);
+            SetSpawner(monsterSpawner, spawnerSaveData, planet, spawnerSaveData.waveState);
+        }
+
+        return spawnerGroupObj;
+    }
+
+    void SetSpawner(MonsterSpawner monsterSpawner, SpawnerSaveData spawnerSaveData, bool planet, bool waveState)
+    {
+        foreach (UnitSaveData unitSaveData in spawnerSaveData.monsterList)
+        {
+            GameObject monster = null;
+            if (!unitSaveData.waveState)
+            {
+                monster = monsterSpawner.SpawnMonster(unitSaveData.monsterType, unitSaveData.unitIndex, planet);
+                monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
+            }
+            else
+            {
+                if (waveState)
+                {
+                    monster = monsterSpawner.SpawnMonster(unitSaveData.monsterType, unitSaveData.unitIndex, planet);
+                    monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
+                }
+                else
+                {
+                    monster = monsterSpawner.WaveMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet, unitSaveData.isWaveColonyCallCheck);
+                    monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
+                    monster.GetComponent<MonsterAi>().WaveStart(Vector3Extensions.ToVector3(unitSaveData.wavePos));
+                }
+            }
+
+            monster.GetComponent<MonsterAi>().GameStartSet(unitSaveData);
+        }
+    }
+
+    GameObject SpawnSpawner(SpawnerSaveData spawnerSaveData)
+    {
+        GameObject spawnerObj = Instantiate(spawner);
+        NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
+        if (!networkObject.IsSpawned) networkObject.Spawn();
+        spawnerObj.transform.position = Vector3Extensions.ToVector3(spawnerSaveData.spawnerPos);
+
+        return spawnerObj;
     }
 
     public GameObject CellObjFind(Vector3 findPos, bool isInHostMap)

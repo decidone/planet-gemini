@@ -128,12 +128,10 @@ public class Portal : Production
 
     public void SetPortalObjEnd(string objName, GameObject obj)
     {
-        Debug.Log(objName);
         if (!portalObjList.ContainsKey(objName))
         {
-            Debug.Log("isNotContain");
-
             portalObjList.Add(objName, obj);
+            var objId = NetworkObjManager.instance.FindNetObjID(obj);
 
             if (objName == "PortalItemIn")
             {
@@ -143,7 +141,8 @@ public class Portal : Production
                 GameObject othObj = otherPortal.ReturnObj("PortalItemOut");
                 if (othObj)
                 {
-                    portalItemIn.ConnectObj(othObj);
+                    var othId = NetworkObjManager.instance.FindNetObjID(othObj);
+                    portalItemIn.ConnectObjServerRpc(othId);
                 }
             }
             else if (objName == "PortalItemOut")
@@ -154,7 +153,7 @@ public class Portal : Production
                 GameObject othObj = otherPortal.ReturnObj("PortalItemIn");
                 if (othObj)
                 {
-                    othObj.GetComponent<PortalItemIn>().ConnectObj(obj);
+                    othObj.GetComponent<PortalItemIn>().ConnectObjServerRpc(objId);
                 }
             }
             else if (objName == "PortalUnitIn")
@@ -165,13 +164,15 @@ public class Portal : Production
                 GameObject othObj = otherPortal.ReturnObj("PortalUnitOut");
                 if (othObj)
                 {
-                    portalUnitIn.ConnectObj(othObj);
+                    var othId = NetworkObjManager.instance.FindNetObjID(othObj);
+                    portalUnitIn.ConnectObjServerRpc(othId);
                 }
 
                 GameObject myObj = ReturnObj("PortalUnitOut");
                 if (myObj)
                 {
-                    portalUnitIn.ConnectMyObj(myObj);
+                    var othId = NetworkObjManager.instance.FindNetObjID(myObj);
+                    portalUnitIn.ConnectMyObjServerRpc(othId);
                 }
             }
             else if (objName == "PortalUnitOut")
@@ -182,13 +183,13 @@ public class Portal : Production
                 GameObject othObj = otherPortal.ReturnObj("PortalUnitIn");
                 if (othObj)
                 {
-                    othObj.GetComponent<PortalUnitIn>().ConnectObj(obj);
+                    othObj.GetComponent<PortalUnitIn>().ConnectObjServerRpc(objId);
                 }
 
                 GameObject myObj = ReturnObj("PortalUnitIn");
                 if (myObj)
                 {
-                    myObj.GetComponent<PortalUnitIn>().ConnectMyObj(obj);
+                    myObj.GetComponent<PortalUnitIn>().ConnectMyObjServerRpc(objId);
                 }
             }
         }

@@ -20,7 +20,6 @@ public class InfoWindow : MonoBehaviour
     List<NeedItem> needItems = new List<NeedItem>();
 
     public bool totalAmountsEnough = false;
-    public Inventory inventory;
 
     ScienceInfoData preSciInfoData;
     TempScienceDb scienceDb;
@@ -46,7 +45,6 @@ public class InfoWindow : MonoBehaviour
     {
         gameManager = GameManager.instance;
         buildingInven = gameManager.GetComponent<BuildingInven>();
-        inventory = gameManager.inventory;
         this.gameObject.SetActive(false);
     }
 
@@ -98,7 +96,7 @@ public class InfoWindow : MonoBehaviour
                 if (item != null)
                 {
                     int value;
-                    bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out value);
+                    bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out value);
                     bool isEnough = hasItem && value >= scienceInfoData.amounts[index];
 
                     if (isEnough && totalAmountsEnough)
@@ -139,7 +137,7 @@ public class InfoWindow : MonoBehaviour
         {
             if (needItem.item != null)
             {
-                inventory.Sub(needItem.item, needItem.amount);
+                gameManager.inventory.Sub(needItem.item, needItem.amount);
             }
         }
         SetNeedItem();

@@ -51,7 +51,7 @@ public class PreBuilding : NetworkBehaviour
     bool isDrag = false;
     Coroutine setBuild;
 
-    bool isTempBuild;
+    //bool isTempBuild;
     bool mouseHoldCheck;   //기존 isLeftMouse기능 대체+a 역할이라 실제 hold감지는 InputManager의 hold를 사용
 
     GameManager gameManager;
@@ -138,7 +138,7 @@ public class PreBuilding : NetworkBehaviour
     {
         if(isEnough && mouseHoldCheck && isBuildingOn)
         {
-            if((!isTempBuild && BuildingInfo.instance.AmountsEnoughCheck()) || (isTempBuild && gameManager.playerController.TempMinerCountCheck()))
+            if(BuildingInfo.instance.AmountsEnoughCheck())
             {
                 tempPos = transform.position;
                 float tempDeltaX = tempPos.x - endBuildPos.x;
@@ -247,13 +247,7 @@ public class PreBuilding : NetworkBehaviour
                         }
                     }
            
-                    if (isTempBuild)
-                    {
-                        gameManager.playerController.TempBuildSet(buildingList.Count);
-                        isEnough = gameManager.playerController.TempMinerCountCheck();
-                        canBuildCount = gameManager.playerController.tempMinerCount;
-                    }
-                    else if (isPortalObj)
+                    if (isPortalObj)
                     {
                         //portalScript.SetPortalObjEnd(buildData.name, buildingList[0]);
                         isEnough = false;
@@ -796,11 +790,7 @@ public class PreBuilding : NetworkBehaviour
 
     void SetBuilding(GameObject obj, Vector3 spawnPos)
     {
-        if(isTempBuild)
-        {
-            ServerBuildConfirmServerRpc(spawnPos, setPos, isTempBuild, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, buildingIndex);
-        }
-        else if (isPortalObj)
+        if (isPortalObj)
         {
             ServerPortalObjBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, portalIndex, buildingIndex);
         }
@@ -810,7 +800,7 @@ public class PreBuilding : NetworkBehaviour
             {
                 if (!isUnderObj)
                 {
-                    ServerBuildConfirmServerRpc(spawnPos, setPos, isTempBuild, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, buildingIndex);
+                    ServerBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, buildingIndex);
                 }
                 else
                 {
@@ -826,7 +816,7 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ServerBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, bool isTempMiner, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int buildingIndex)
+    public void ServerBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int buildingIndex)
     {
         GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
 
@@ -836,7 +826,7 @@ public class PreBuilding : NetworkBehaviour
 
         if (netObj.TryGetComponent(out Structure structure))
         {
-            if(netObj.TryGetComponent(out BeltCtrl belt))
+            if(netObj.GetComponent<BeltCtrl>())
             {
                 BeltGroupMgr beltGroupMgr = beltGroupSet.GetComponent<BeltGroupMgr>();
                 beltGroupMgr.SetBelt(spawnobj, level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
@@ -846,18 +836,8 @@ public class PreBuilding : NetworkBehaviour
             {
                 structure.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
                 MapDataCheck(spawnobj, spawnPos);
-                if (isTempMiner)
-                    structure.TempMinerSetClientRpc();
             }
-
         }
-        //else if (netObj.TryGetComponent(out BeltGroupMgr beltGroupMgr))
-        //{
-        //    netObj.transform.parent = beltMgr.transform;
-        //    beltGroupMgr.isSetBuildingOk = true;
-        //    beltGroupMgr.SetBelt(level, dirNum, objHeight, objWidth, isInHostMap);
-        //    MapDataCheck(beltGroupMgr.beltList[0].gameObject, spawnPos, objHeight, objWidth, isInHostMap);
-        //}
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -990,7 +970,7 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    public void SetImage(Building build, bool _isTempbuild, int _canBuildAmount, bool _isInHostMap)
+    public void SetImage(Building build, int _canBuildAmount, bool _isInHostMap)
     {
         isBuildingOn = true;
         buildData = build;
@@ -998,7 +978,6 @@ public class PreBuilding : NetworkBehaviour
         level = buildData.level - 1;
         int height = buildData.height;
         int width = buildData.width;
-        isTempBuild = _isTempbuild;
         if (buildData.gameObj.GetComponent<BeltCtrl>())
             isBeltObj = true;
         isPortalObj = false;
@@ -1324,7 +1303,6 @@ public class PreBuilding : NetworkBehaviour
             spriteRenderer.sprite = null;
         dirNum = 0;
         nonNetObj = null;
-        gameManager.playerController.TempBuildUI(false);
     }
 
 

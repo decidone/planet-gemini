@@ -24,8 +24,7 @@ public class SpawnerSetManager : NetworkBehaviour
     [SerializeField]
     GameObject spawnerGroup;
 
-    [SerializeField]
-    AreaLevelData[] arealevelData;
+    public AreaLevelData[] arealevelData;
 
     Vector3 basePos;
 
@@ -34,8 +33,8 @@ public class SpawnerSetManager : NetworkBehaviour
 
     public GameObject[,] spawnerMap1Matrix;
     public GameObject[,] spawnerMap2Matrix;
-    int xIndex;
-    int yIndex;
+    //int xIndex;
+    //int yIndex;
 
     Map hostMap;
     Map clientMap;
@@ -58,10 +57,10 @@ public class SpawnerSetManager : NetworkBehaviour
     {
         //hostMap = GameManager.instance.hostMap;
         //clientMap = GameManager.instance.clientMap;
-        spawnerMap1Matrix = new GameObject[splitCount, splitCount];
-        spawnerMap2Matrix = new GameObject[splitCount, splitCount];
-        xIndex = 0;
-        yIndex = 0;
+        //spawnerMap1Matrix = new GameObject[splitCount, splitCount];
+        //spawnerMap2Matrix = new GameObject[splitCount, splitCount];
+        //xIndex = 0;
+        //yIndex = 0;
     }
 
     [ServerRpc]
@@ -72,6 +71,9 @@ public class SpawnerSetManager : NetworkBehaviour
         width = hostMap.width;
         height = hostMap.height;
         splitCount = mapSplitCount;
+        spawnerMap1Matrix = new GameObject[splitCount, splitCount];
+        spawnerMap2Matrix = new GameObject[splitCount, splitCount];
+
         areaWSize = width / splitCount;
         areaHSize = height / splitCount;
         areaPosLevel.Clear();
@@ -111,6 +113,9 @@ public class SpawnerSetManager : NetworkBehaviour
             map = hostMap;
         else
             map = clientMap;
+
+        int xIndex = 0;
+        int yIndex = 0;
 
         foreach (var data in areaPosLevel)
         {
@@ -191,7 +196,7 @@ public class SpawnerSetManager : NetworkBehaviour
             {
                 GameObject spawnerObj = Instantiate(spawner);
                 NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
-                networkObject.Spawn();
+                if(!networkObject.IsSpawned) networkObject.Spawn();
 
                 spawnerObj.transform.position = randomPoints[index];
 
@@ -213,7 +218,7 @@ public class SpawnerSetManager : NetworkBehaviour
             else
                 spawnerMap2Matrix[xIndex, yIndex] = spawnGroup;
 
-            spawnerGroupManager.SpawnerGroupStatsSet(isHostMap, areaLevel, (xIndex, yIndex));
+            spawnerGroupManager.SpawnerGroupStatsSet((xIndex, yIndex));
 
             xIndex++;
             if(xIndex >= splitCount)
@@ -222,15 +227,16 @@ public class SpawnerSetManager : NetworkBehaviour
                 yIndex++;
             }
         }
+        monsterSpawnerManager.MatrixSet(splitCount, spawnerMap1Matrix, spawnerMap2Matrix, isHostMap);
     }
 
-    GameObject SpawnerGroupSet(Vector2 pos)
+    public GameObject SpawnerGroupSet(Vector2 pos)
     {
         GameObject spawnObj;
 
         spawnObj = Instantiate(spawnerGroup);
         NetworkObject networkObject = spawnObj.GetComponent<NetworkObject>();
-        networkObject.Spawn();
+        if (!networkObject.IsSpawned) networkObject.Spawn();
 
         spawnObj.transform.position = pos;
         spawnObj.transform.parent = gameObject.transform;

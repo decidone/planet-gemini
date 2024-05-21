@@ -35,9 +35,9 @@ public class Structure : NetworkBehaviour
     [HideInInspector]
     public bool sizeOneByOne;
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool isPreBuilding = true;
-    //[HideInInspector]
+    [HideInInspector]
     public bool isSetBuildingOk = false;
 
     protected bool removeState = false;
@@ -79,9 +79,9 @@ public class Structure : NetworkBehaviour
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> inObj = new List<GameObject>();
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> outObj = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> outSameList = new List<GameObject>();
@@ -97,7 +97,7 @@ public class Structure : NetworkBehaviour
 
     public ItemProps spawnItem;
 
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> monsterList = new List<GameObject>();
 
     [HideInInspector]
@@ -107,7 +107,6 @@ public class Structure : NetworkBehaviour
 
     public bool isStorageBuilding;
     public bool isMainSource;
-    public bool isTempBuild = false;
     public bool isUIOpened;
     public bool isPortalBuild = false;
 
@@ -219,7 +218,7 @@ public class Structure : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public virtual void ClientConnectSyncServerRpc()
     {
-        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, isTempBuild, isSetBuildingOk, isPreBuilding);
+        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, isSetBuildingOk, isPreBuilding);
         for (int i = 0; i < nearObj.Length; i++)
         {
             if (nearObj[i] == null)
@@ -262,7 +261,7 @@ public class Structure : NetworkBehaviour
     }
      
     [ClientRpc]
-    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, bool syncTemp, bool syncSetBuilding, bool syncPreBuilding)
+    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, bool syncSetBuilding, bool syncPreBuilding)
     {
         if (IsServer)
             return;
@@ -272,7 +271,6 @@ public class Structure : NetworkBehaviour
         height = syncHeight;
         width = syncWidth;
         isInHostMap = syncMap;
-        isTempBuild = syncTemp;
         isSetBuildingOk = syncSetBuilding;
         isPreBuilding = syncPreBuilding;
         ColliderTriggerOnOff(false);
@@ -500,11 +498,11 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    public void TempMinerSetClientRpc()
-    {
-        isTempBuild = true;
-    }
+    //[ClientRpc]
+    //public void TempMinerSetClientRpc()
+    //{
+    //    isTempBuild = true;
+    //}
 
     public virtual void OnFactoryItem(ItemProps itemProps)
     {
@@ -738,13 +736,9 @@ public class Structure : NetworkBehaviour
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
         Structure outFactory = outObj[outObjIndex].GetComponent<Structure>();
-        if(GetComponent<Unloader>())
-            Debug.Log(outObj[outObjIndex].GetComponent<BeltCtrl>() + " : " + outObjIndex);
 
         if (outObj[outObjIndex].TryGetComponent(out BeltCtrl beltCtrl))
         {
-            Debug.Log(itemIndex + " : " + outObjIndex);
-
             var itemPool = ItemPoolManager.instance.Pool.Get();
             ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
             if (beltCtrl.OnBeltItem(spawnItem))
@@ -1281,7 +1275,10 @@ public class Structure : NetworkBehaviour
                 if (structureClickEvent.structureInfoUI.activeSelf)
                 {
                     if (structureClickEvent.sInvenManager != null)
+                    {
+                        structureClickEvent.sInvenManager.ClearInvenOption();
                         structureClickEvent.sInvenManager.CloseUI();
+                    }
                 }
             }
             if (TryGetComponent(out Transporter trBuild))
@@ -1423,10 +1420,7 @@ public class Structure : NetworkBehaviour
         data.pos = Vector3Extensions.FromVector3(transform.position);
         data.tileSetPos = Vector3Extensions.FromVector3(tileSetPos);
         data.hp = hp;
-        if(isInHostMap)
-            data.planet = 0;
-        else
-            data.planet = 1;
+        data.planet = isInHostMap;
         data.level = level;
         data.direction = dirNum;
         foreach (Item items in itemList)

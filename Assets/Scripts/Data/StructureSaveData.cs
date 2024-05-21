@@ -16,12 +16,12 @@ public class StructureSaveData
 
     public int index;               // 건물 인덱스 번호
     public SerializedVector3 pos = new SerializedVector3(); // 좌표값
-    public SerializedVector3 tileSetPos = new SerializedVector3(); // 좌표값
+    public SerializedVector3 tileSetPos = new SerializedVector3(); // 설치 위치 좌표값
     public float hp;                // 현재 hp
-    public int planet;              // 건물이 지어진 행성 0: 호스트, 1: 클라이언트
+    public bool planet;             // 건물이 지어진 행성 true: 호스트, false: 클라이언트
 
     public int level = 0;           // 건물 레벨
-    public int direction = 0;      // 방향 - 0: 위, 1: 오른쪽, 2: 아래, 3: 왼쪽, 방향 상관 없는 건물: 0
+    public int direction = 0;       // 방향 - 0: 위, 1: 오른쪽, 2: 아래, 3: 왼쪽, 방향 상관 없는 건물: 0
     public InventorySaveData inven = new InventorySaveData();   // 건물 인벤토리
     public List<int> itemIndex = new List<int>();   // 물류 건물 아이템 저장
     public float storedEnergy = 0;  // 배터리 저장량

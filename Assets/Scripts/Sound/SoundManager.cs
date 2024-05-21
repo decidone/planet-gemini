@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using Unity.Netcode;
 
-public class SoundManager : MonoBehaviour
+public class SoundManager : NetworkBehaviour
 {
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 
@@ -55,8 +55,10 @@ public class SoundManager : MonoBehaviour
     float unitDelayTimer = 0.0f;
     float unitDelayInterval = 0.05f;
 
-    bool isBattleOn = false;
-    bool isWaveOn = false;
+    public bool isHostMapBattleOn = false;
+    public bool isClientMapBattleOn = false;
+    public bool isHostMapWaveOn = false;
+    public bool isClientMapWaveOn = false;
 
     float fadeSeconds = 1.0f;
 
@@ -77,7 +79,7 @@ public class SoundManager : MonoBehaviour
     {
         if (!bgmPlayer.isPlaying)
         {
-            PlayBGM(isBattleOn, isWaveOn);
+            PlayBgmMapCheck();
         }
 
         if (structureSfxPlay)
@@ -187,10 +189,22 @@ public class SoundManager : MonoBehaviour
         UIPlayerSet();
     }
 
+    public void PlayBgmMapCheck()
+    {
+        if (GameManager.instance.isPlayerInHostMap)
+        {
+            PlayBGM(isHostMapBattleOn, isHostMapWaveOn);
+        }
+        else
+        {
+            PlayBGM(isClientMapBattleOn, isClientMapWaveOn);
+        }
+    }
+
     void BgmPlayerSet()
     {
         bgmPlayer = PlayerBaseSet("BGM");
-        PlayBGM(isBattleOn, isWaveOn);
+        bgmPlayer.clip = audioClipRefsSO.bgm[Random.Range(0, audioClipRefsSO.bgm.Length)];
     }
 
     void StructureSFXPlayerSet()
@@ -255,11 +269,28 @@ public class SoundManager : MonoBehaviour
         StartCoroutine(nameof(SoundFadeIn));
     }
 
-    public void BattleStateSet(bool isBattle, bool isWave)
+    [ServerRpc]
+    public void BattleStateSetServerRpc(bool isBattle, bool isWave, bool isHostMap)
     {
-        isBattleOn = isBattle;
-        isWaveOn = isWave;
-        StartCoroutine(nameof(SoundFadeOut));
+        BattleStateSetClientRpc(isBattle, isWave, isHostMap);
+    }
+
+    [ClientRpc]
+    public void BattleStateSetClientRpc(bool isBattle, bool isWave, bool isHostMap)
+    {
+        if (GameManager.instance.isPlayerInHostMap && isHostMap)
+        {
+            isHostMapBattleOn = isBattle;
+            isHostMapWaveOn = isWave;
+            StartCoroutine(nameof(SoundFadeOut));
+
+        }
+        else if(!GameManager.instance.isPlayerInHostMap && !isHostMap)
+        {
+            isClientMapBattleOn = isBattle;
+            isClientMapWaveOn = isWave;
+            StartCoroutine(nameof(SoundFadeOut));
+        }
     }
 
     IEnumerator SoundFadeIn() // 점점 커지는
@@ -292,7 +323,7 @@ public class SoundManager : MonoBehaviour
         }
 
         bgmPlayer.volume = 0;
-        PlayBGM(isBattleOn, isWaveOn);
+        PlayBgmMapCheck();
     }
 
     public void PlaySFX(GameObject obj, string sfxGroupName, string sfxName)
@@ -370,7 +401,6 @@ public class SoundManager : MonoBehaviour
             {
                 uiSfxPlayer.clip = audioClipRefsSO.uiSfx[i];
                 uiSfxPlayer.volume = sfxVolume;
-                Debug.Log(p_sfxName);
                 uiSfxPlayer.Play();
                 return;
             }

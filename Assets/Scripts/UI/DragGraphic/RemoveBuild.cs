@@ -79,11 +79,7 @@ public class RemoveBuild : DragFunc
 
     void RefundCost(Structure obj)
     {
-        if (obj.isTempBuild)
-        {
-            gameManager.playerController.RemoveTempBuild();
-        }
-        else if (obj.isPortalBuild)
+        if (obj.isPortalBuild)
         {
             return;
         }
@@ -99,44 +95,6 @@ public class RemoveBuild : DragFunc
             for (int i = 0; i < buildingData.GetItemCount(); i++)
             {
                 inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
-            }
-        }
-    }
-
-    void UiCheck(Structure obj)
-    {
-        if(obj.TryGetComponent(out LogisticsClickEvent solidFacClickEvent))
-        {
-            if(solidFacClickEvent.LogisticsUI != null)
-            {
-                if (solidFacClickEvent.LogisticsUI.activeSelf)
-                {
-                    if(solidFacClickEvent.sFilterManager != null)
-                        solidFacClickEvent.sFilterManager.CloseUI();
-                    else if (solidFacClickEvent.itemSpManager != null)
-                        solidFacClickEvent.itemSpManager.CloseUI();
-                }
-            }
-        }
-        else if (obj.TryGetComponent(out StructureClickEvent structureClickEvent))
-        {
-            if (structureClickEvent.structureInfoUI != null)
-            {
-                if (structureClickEvent.structureInfoUI.activeSelf)
-                {
-                    if (structureClickEvent.sInvenManager != null)
-                    structureClickEvent.sInvenManager.CloseUI();
-                }
-            }
-            if(obj.TryGetComponent(out Transporter trBuild))
-            {
-                if (trBuild.lineRenderer != null)
-                    Destroy(trBuild.lineRenderer);
-            }
-            else if (obj.TryGetComponent(out UnitFactory unitFactory))
-            {
-                if (unitFactory.lineRenderer != null)
-                    Destroy(unitFactory.lineRenderer);
             }
         }
     }

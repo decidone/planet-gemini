@@ -35,7 +35,16 @@ public abstract class Production : Structure
     protected Vector3 endLine;
     public bool isGetLine;
 
-    public virtual void SetRecipe(Recipe _recipe, int index) { }
+    public virtual void SetRecipe(Recipe _recipe, int index)
+    {
+        recipe = _recipe;
+        recipeIndex = index;
+        sInvenManager.ResetInvenOption();
+        cooldown = recipe.cooldown;
+        effiCooldown = cooldown;
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public void SetRecipeServerRpc(int index)
@@ -56,8 +65,22 @@ public abstract class Production : Structure
     public void SetRecipeClientRpc(int index)
     {
         Recipe selectRecipe = RecipeList.instance.GetRecipeIndex(structureData.factoryName, index);
+        if (recipe != null && recipe != selectRecipe)
+        {
+            if (IsServer)
+            {
+                AddInvenItem();
+            }
 
-        if(selectRecipe != null)
+            inventory.ResetInven();
+
+            if (isUIOpened)
+            {
+                sInvenManager.ClearInvenOption();
+            }
+        }
+
+        if (selectRecipe != null)
         {
             if (isUIOpened)
                 SetRecipe(selectRecipe, index);
@@ -182,17 +205,19 @@ public abstract class Production : Structure
     [ServerRpc(RequireOwnership = false)]
     protected void ClientUISetServerRpc()
     {
-        ClientUISetClientRpc(fuel, prodTimer);
+        ClientUISetClientRpc(fuel, prodTimer, cooldown, effiCooldown);
     }
 
     [ClientRpc]
-    protected void ClientUISetClientRpc(int syncFuel, float syncTimer)
+    protected void ClientUISetClientRpc(int syncFuel, float syncTimer, float syncCooldown, float syncEfficiency)
     {
         if (IsServer)
             return;
 
         fuel = syncFuel;
         prodTimer = syncTimer;
+        cooldown = syncCooldown;
+        effiCooldown = syncEfficiency;
     }
 
     public virtual void CloseUI()

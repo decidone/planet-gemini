@@ -30,8 +30,15 @@ public class RecipeManager : InventoryManager
         {
             if (focusedSlot.item != null)
             {
-                //prod.SetRecipe(recipes[focusedSlot.slotNum]);
-                prod.SetRecipeServerRpc(focusedSlot.slotNum);
+                for (int i = 0; i < recipes.Count; i++)
+                {
+                    if(recipes[i].name == focusedSlot.item.name)
+                    {
+                        prod.SetRecipeServerRpc(i);
+                        break;
+                    }
+                }
+
                 focusedSlot = null;
                 CloseUI();
             }
@@ -63,11 +70,25 @@ public class RecipeManager : InventoryManager
         buildingName = str;
         recipes = new List<Recipe>();
         recipes = RecipeList.instance.GetRecipeInven(str);
-        for (int i = 0; i < recipes.Count; i++)
+        if (_prod.GetComponent<UnitFactory>())
         {
-            inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
-            //inventory.Add(itemDic[recipes[i].name], 1);
+            TempScienceDb scienceDb = TempScienceDb.instance;
+            for (int i = 0; i < recipes.Count; i++)
+            {
+                if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))
+                {
+                    inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
+                }
+            }
         }
+        else
+        {
+            for (int i = 0; i < recipes.Count; i++)
+            {
+                inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
+            }
+        }
+
         SetInven(inventory, inventoryUI);
     }
 
