@@ -56,6 +56,8 @@ public class MapGenerator : MonoBehaviour
     Vector3 map1CenterPos;
     Vector3 map2CenterPos;
 
+    [SerializeField]
+    bool spawnerSet;
     SpawnerSetManager spawnerPosSet;
     public static MapGenerator instance;
 
@@ -122,7 +124,7 @@ public class MapGenerator : MonoBehaviour
 
     public void SpawnerAreaMapSet() // 임시로 호스트 선택 후 호스트쪽에만 진행 하도록 임시로 둠 
     {
-        if (spawnerPosSet && mapSizeData != null)
+        if (spawnerSet && spawnerPosSet && mapSizeData != null)
         {
             spawnerPosSet.AreaMapSetServerRpc(map1CenterPos, mapSizeData.MapSplitCount, true);
             if (isMultiPlay)

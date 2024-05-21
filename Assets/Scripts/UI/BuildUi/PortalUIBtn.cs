@@ -35,7 +35,8 @@ public class PortalUIBtn : MonoBehaviour
 
     void ButtonFunc()
     {
-        if (!isLock && !portal.PortalObjFind(objName))
+        if (!portal.PortalObjFind(objName))
+        //if (!isLock && !portal.PortalObjFind(objName))
         {
             preBuilding.SetPortalImage(building, portal, gameManager.isPlayerInHostMap);
             preBuilding.isEnough = true;

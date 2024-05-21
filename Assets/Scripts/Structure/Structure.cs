@@ -35,9 +35,9 @@ public class Structure : NetworkBehaviour
     [HideInInspector]
     public bool sizeOneByOne;
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool isPreBuilding = true;
-    //[HideInInspector]
+    [HideInInspector]
     public bool isSetBuildingOk = false;
 
     protected bool removeState = false;
@@ -79,9 +79,9 @@ public class Structure : NetworkBehaviour
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> inObj = new List<GameObject>();
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> outObj = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> outSameList = new List<GameObject>();
@@ -97,7 +97,7 @@ public class Structure : NetworkBehaviour
 
     public ItemProps spawnItem;
 
-    //[HideInInspector]
+    [HideInInspector]
     public List<GameObject> monsterList = new List<GameObject>();
 
     [HideInInspector]
@@ -107,7 +107,6 @@ public class Structure : NetworkBehaviour
 
     public bool isStorageBuilding;
     public bool isMainSource;
-    public bool isTempBuild = false;
     public bool isUIOpened;
     public bool isPortalBuild = false;
 
@@ -137,10 +136,13 @@ public class Structure : NetworkBehaviour
     public SoundManager soundManager;
 
     public bool isInHostMap;
+    public Vector3 tileSetPos;
 
     public bool settingEndCheck = false;
     public List<(int, int)> DelaySendList = new List<(int, int)>();
     public List<int> DelayGetList = new List<int>();
+    protected int buildingIndex;
+    public List<Vector3> connectedPosList = new List<Vector3>();
 
     protected virtual void Awake()
     {
@@ -216,7 +218,7 @@ public class Structure : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public virtual void ClientConnectSyncServerRpc()
     {
-        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, isTempBuild, isSetBuildingOk, isPreBuilding);
+        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, isSetBuildingOk, isPreBuilding);
         for (int i = 0; i < nearObj.Length; i++)
         {
             if (nearObj[i] == null)
@@ -237,7 +239,7 @@ public class Structure : NetworkBehaviour
             ulong objID = inObj[i].GetComponent<Structure>().ObjFindId();
             InOutObjSyncClientRpc(objID, true);
         }
-
+        MapDataSaveClientRpc(tileSetPos);
         ConnectCheckClientRpc(true);
     }
 
@@ -252,7 +254,6 @@ public class Structure : NetworkBehaviour
         }
     }
 
-
     [ClientRpc]
     public void ConnectCheckClientRpc(bool isEnd)
     {
@@ -260,7 +261,7 @@ public class Structure : NetworkBehaviour
     }
      
     [ClientRpc]
-    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, bool syncTemp, bool syncSetBuilding, bool syncPreBuilding)
+    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, bool syncSetBuilding, bool syncPreBuilding)
     {
         if (IsServer)
             return;
@@ -270,7 +271,6 @@ public class Structure : NetworkBehaviour
         height = syncHeight;
         width = syncWidth;
         isInHostMap = syncMap;
-        isTempBuild = syncTemp;
         isSetBuildingOk = syncSetBuilding;
         isPreBuilding = syncPreBuilding;
         ColliderTriggerOnOff(false);
@@ -448,12 +448,13 @@ public class Structure : NetworkBehaviour
     // 건물 설치 기능
 
     [ClientRpc]
-    public virtual void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap)
+    public virtual void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         level = _level;
         dirNum = _beltDir;
         height = objHeight;
         width = objWidth;
+        buildingIndex = index;
         isInHostMap = isHostMap;
         settingEndCheck = true;
         SetBuild();
@@ -463,11 +464,45 @@ public class Structure : NetworkBehaviour
         DataSet();
     }
 
-    [ClientRpc]
-    public void TempMinerSetClientRpc()
+    public virtual void GameStartSpawnSet(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
-        isTempBuild = true;
+        level = _level;
+        dirNum = _beltDir;
+        height = objHeight;
+        width = objWidth;
+        buildingIndex = index;
+        isInHostMap = isHostMap;
+        settingEndCheck = true;
+        isPreBuilding = true;
+        isSetBuildingOk = true;
+        ColliderTriggerOnOff(false);
+        gameObject.AddComponent<DynamicGridObstacle>();
+        myVision.SetActive(true);
+        DataSet();
     }
+
+    public void ConnectedPosListPosSet(Vector3 pos)
+    {
+        connectedPosList.Add(pos);
+    }
+
+    public virtual void GameStartRecipeSet(int recipeId) { }
+
+    public void GameStartItemSet(int itemIndex)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        itemList.Add(item);
+        if (itemList.Count >= structureData.MaxItemStorageLimit)
+        {
+            isFull = true;
+        }
+    }
+
+    //[ClientRpc]
+    //public void TempMinerSetClientRpc()
+    //{
+    //    isTempBuild = true;
+    //}
 
     public virtual void OnFactoryItem(ItemProps itemProps)
     {
@@ -561,43 +596,49 @@ public class Structure : NetworkBehaviour
             if (!belt.isItemStop)
             {
                 GetItemIndexSet();
-                itemGetDelay = false;
+                Invoke(nameof(DelayGetItem), structureData.SendDelay);
                 return;
             }
             else if (TryGetComponent(out Production production) && belt.itemObjList.Count > 0 && !production.CanTakeItem(belt.itemObjList[0].item))
             {
                 GetItemIndexSet();
-                itemGetDelay = false;
+                Invoke(nameof(DelayGetItem), structureData.SendDelay);
                 return;
             }
         }
         else if (inObj[getItemIndex].TryGetComponent(out Production inObjScript)
-                && !inObjScript.UnloadItem(GetComponent<Unloader>().selectItem))
+                && !inObjScript.UnloadItemCheck(GetComponent<Unloader>().selectItem))
         {
             GetItemIndexSet();
-            itemGetDelay = false;
+            Invoke(nameof(DelayGetItem), structureData.SendDelay);
             return;
         }
-        else if (inObj[getItemIndex].GetComponent<Structure>())
+        else if (!GetComponent<Unloader>() && inObj[getItemIndex].GetComponent<Structure>())
         {
             GetItemIndexSet();
-            itemGetDelay = false;
+            Invoke(nameof(DelayGetItem), structureData.SendDelay);
             return;
         }
 
-        GetItemClientRpc(getItemIndex);
+        GetItemServerRpc(getItemIndex);
         GetItemIndexSet();
     }
 
 
+    [ServerRpc]
+    protected virtual void GetItemServerRpc(int inObjIndex)
+    {
+        GetItemClientRpc(inObjIndex);
+    }
+
     [ClientRpc]
     protected virtual void GetItemClientRpc(int inObjIndex)
     {
-        if(IsServer)
+        if (IsServer)
         {
             GetItemFunc(inObjIndex);
         }
-        else if(settingEndCheck)
+        else if (settingEndCheck)
         {
             GetDelaySet(inObjIndex);
         }
@@ -635,6 +676,7 @@ public class Structure : NetworkBehaviour
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
+
         if (outFactory.isFull)
         {
             SendItemIndexSet();
@@ -658,7 +700,7 @@ public class Structure : NetworkBehaviour
             return;
         }
 
-        SendItemClientRpc(itemIndex, sendItemIndex);
+        SendItemServerRpc(itemIndex, sendItemIndex);
 
         SendItemIndexSet();
     }
@@ -670,6 +712,12 @@ public class Structure : NetworkBehaviour
             sendItemIndex = 0;
     }
 
+    [ServerRpc]
+    protected virtual void SendItemServerRpc(int itemIndex, int outObjIndex)
+    {
+        SendItemClientRpc(itemIndex, outObjIndex);
+    }
+
     [ClientRpc]
     protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex)
     {
@@ -677,7 +725,7 @@ public class Structure : NetworkBehaviour
         {
             SendItemFunc(itemIndex, outObjIndex);
         }
-        else if(settingEndCheck)
+        else if (settingEndCheck)
         {
             SendDelaySet(itemIndex, outObjIndex);
         }
@@ -1038,6 +1086,13 @@ public class Structure : NetworkBehaviour
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
+        if (obj.GetComponent<WallCtrl>())
+        {
+            Debug.Log("wall");
+            yield break;
+
+        }
+
         if (obj.GetComponent<Structure>() != null)
         {
             if ((obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
@@ -1220,7 +1275,10 @@ public class Structure : NetworkBehaviour
                 if (structureClickEvent.structureInfoUI.activeSelf)
                 {
                     if (structureClickEvent.sInvenManager != null)
+                    {
+                        structureClickEvent.sInvenManager.ClearInvenOption();
                         structureClickEvent.sInvenManager.CloseUI();
+                    }
                 }
             }
             if (TryGetComponent(out Transporter trBuild))
@@ -1336,11 +1394,41 @@ public class Structure : NetworkBehaviour
     public virtual void EfficiencyCheck() { }
 
     [ClientRpc]
-    public void MapDataSaveClientRpc(int xPos, int yPos, bool isInHostMap)
+    public void MapDataSaveClientRpc(Vector3 pos)
     {
-        if(isInHostMap)
-            GameManager.instance.hostMap.GetCellDataFromPos(xPos, yPos).structure = this.gameObject;
-        else
-            GameManager.instance.clientMap.GetCellDataFromPos(xPos, yPos).structure = this.gameObject;
+        tileSetPos = pos;
+
+        int x = Mathf.FloorToInt(tileSetPos.x);
+        int y = Mathf.FloorToInt(tileSetPos.y);
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                if (isInHostMap)
+                    GameManager.instance.hostMap.GetCellDataFromPos(x + j, y + i).structure = this.gameObject;
+                else
+                    GameManager.instance.clientMap.GetCellDataFromPos(x + j, y + i).structure = this.gameObject;
+            }
+        }
+    }
+
+    public virtual StructureSaveData SaveData()
+    {
+        StructureSaveData data = new StructureSaveData();
+        data.index = buildingIndex;
+
+        data.pos = Vector3Extensions.FromVector3(transform.position);
+        data.tileSetPos = Vector3Extensions.FromVector3(tileSetPos);
+        data.hp = hp;
+        data.planet = isInHostMap;
+        data.level = level;
+        data.direction = dirNum;
+        foreach (Item items in itemList)
+        {
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(items);
+            data.itemIndex.Add(itemIndex);
+        }
+
+        return data;
     }
 }

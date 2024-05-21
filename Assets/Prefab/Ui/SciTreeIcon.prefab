@@ -212,9 +212,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8cf8689d7fbc044afae13afd7ef987, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  btnIndex: 0
   sciName: Miner
   level: 1
   upgradeTime: 0
+  btnImage: {fileID: 3014564168085229263}
   upgradeImg: {fileID: 0}
   isCore: 0
 --- !u!114 &3014564168085229258

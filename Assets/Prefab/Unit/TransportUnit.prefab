@@ -176,6 +176,7 @@ GameObject:
   - component: {fileID: 526863797049509123}
   - component: {fileID: -6754138625246379473}
   - component: {fileID: 1370861021348599480}
+  - component: {fileID: 435375303516100113}
   m_Layer: 6
   m_Name: TransportUnit
   m_TagString: Unit
@@ -333,6 +334,7 @@ MonoBehaviour:
   isFlip: 0
   aIState: 0
   attackState: 0
+  soundManager: {fileID: 0}
   mainTrBuild: {fileID: 0}
   othTrBuild: {fileID: 0}
   trUnitState: 0
@@ -378,6 +380,19 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &435375303516100113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4728483135223444395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Animator: {fileID: 4728483135223444392}
 --- !u!1 &5740636266888414635
 GameObject:
   m_ObjectHideFlags: 0

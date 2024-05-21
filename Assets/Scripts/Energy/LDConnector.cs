@@ -8,7 +8,8 @@ public class LDConnector : Structure
     public EnergyGroupConnector connector;
     [SerializeField]
     SpriteRenderer view;
-    bool isBuildDone;
+    [HideInInspector]
+    public bool isBuildDone;
     bool isPlaced;
     GameManager gameManager;
     PreBuilding preBuilding;
@@ -17,9 +18,14 @@ public class LDConnector : Structure
     [HideInInspector]
     public MapClickEvent clickEvent;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        isBuildDone = false;
+    }
+
     protected void Start()
     {
-        isBuildDone = false;
         isPlaced = false;
         clickEvent = GetComponent<MapClickEvent>();
         gameManager = GameManager.instance;
@@ -70,6 +76,59 @@ public class LDConnector : Structure
         }
     }
 
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        LDConnectedSetServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void LDConnectedSetServerRpc()
+    {
+        for (int i = 0; i < clickEvent.lines.Count; i++)
+        {
+            LineRenderer lineRenderer = clickEvent.lines[i];
+            MapLine lineProps = lineRenderer.GetComponent<MapLine>();
+            LDConnectedSetClientRpc(lineProps.lineTarget.transform.position);
+        }
+    }
+
+    [ClientRpc]
+    void LDConnectedSetClientRpc(Vector3 pos)
+    {
+        if (IsServer)
+            return;
+
+        StartCoroutine(SetInvoke(pos));
+    }
+
+    IEnumerator SetInvoke(Vector3 pos)
+    {
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+        Map map;
+        if (isInHostMap)
+            map = gameManager.hostMap;
+        else
+            map = gameManager.clientMap;
+
+        Cell cell = map.GetCellDataFromPos(x, y);
+
+        while (cell.structure == null)
+        {
+            yield return null;
+        }
+
+        GameObject findObj = cell.structure;
+        if (findObj != null && findObj.TryGetComponent(out LDConnector othLDConnector))
+        {
+            if (TryGetComponent(out MapClickEvent mapClick) && othLDConnector.TryGetComponent(out MapClickEvent othMapClick))
+            {
+                mapClick.GameStartSetRenderer(othMapClick);
+            }
+        }
+    }
+
     public override void Focused()
     {
         if (connector.group != null)
@@ -93,5 +152,19 @@ public class LDConnector : Structure
         connector.RemoveFromGroup();
         clickEvent.RemoveAllLines();
         base.RemoveObjServerRpc();
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        for (int i = 0; i < clickEvent.lines.Count; i++)
+        {
+            LineRenderer lineRenderer = clickEvent.lines[i];
+            MapLine lineProps = lineRenderer.GetComponent<MapLine>();
+            data.connectedStrPos.Add(Vector3Extensions.FromVector3(lineProps.lineTarget.gameObject.transform.position));
+        }
+
+        return data;
     }
 }

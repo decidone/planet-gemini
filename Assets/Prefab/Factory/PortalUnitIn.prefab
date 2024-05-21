@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 3300190558683548961}
   - component: {fileID: 287260045712215927}
   - component: {fileID: 8708395646068422144}
-  m_Layer: 16
+  m_Layer: 8
   m_Name: PortalUnitIn
   m_TagString: Factory
   m_Icon: {fileID: 0}
@@ -444,6 +444,9 @@ MonoBehaviour:
   effiCooldown: 0
   isMainEnergyColony: 0
   soundManager: {fileID: 0}
+  isInHostMap: 0
+  settingEndCheck: 0
+  DelayGetList: 
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -451,6 +454,8 @@ MonoBehaviour:
   lineRenderer: {fileID: 0}
   isGetLine: 0
   myPortal: {fileID: 0}
+  portalUnitOut: {fileID: 0}
+  myPortalUnitOut: {fileID: 0}
   nearPos:
   - {x: 0, y: 0}
   - {x: 0, y: 0}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PortalUnitOut : PortalObj
@@ -44,9 +45,14 @@ public class PortalUnitOut : PortalObj
 
     public void SpawnUnitCheck(GameObject unit)
     {
-        unit.transform.position = this.transform.position;
-        unit.SetActive(true);
+        if (IsServer)
+        {
+            unit.TryGetComponent(out NetworkObject netObj);
+            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn();
+        }
+
         UnitAi unitAi = unit.GetComponent<UnitAi>();
+        unitAi.PortalUnitOutFuncServerRpc(isInHostMap, this.transform.position);
         UnitSpawnPosFind();
         unitAi.MovePosSetServerRpc(spawnPos, 0, true);
     }

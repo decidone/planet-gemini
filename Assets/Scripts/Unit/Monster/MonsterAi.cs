@@ -20,7 +20,7 @@ public class MonsterAi : UnitCommonAi
     protected bool idleTimeStart = true;
 
     protected bool isScriptActive = false;
-    protected int monsterType;    // 0 : 노멀, 1 : 강함, 2 : 가디언
+    protected int monsterType;    // 0 : 약한, 1 : 노멀, 2 : 강함, 3 : 가디언
 
     [SerializeField]
     protected bool waveState = false;
@@ -29,6 +29,7 @@ public class MonsterAi : UnitCommonAi
     //bool goingBase = false;
     Vector3 wavePos; // 나중에 웨이브 대상으로 변경해야함 (현 맵 중심으로 이동하게)
     bool waveFindObj = false;
+    bool isWaveColonyCallCheck = true;
     //bool goalPathBlocked = false;
 
     protected override void Start()
@@ -455,7 +456,7 @@ public class MonsterAi : UnitCommonAi
 
         if(targetList.Count > 0)
         {
-            battleBGM.BattleAddMonster(gameObject);
+            battleBGM.BattleAddMonster(gameObject, isInHostMap);
         }
 
         if((aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack) && targetList.Count == 0)
@@ -465,7 +466,7 @@ public class MonsterAi : UnitCommonAi
                 idle = 0;
                 aIState = AIState.AI_Idle;
                 attackState = AttackState.Waiting;
-                battleBGM.BattleRemoveMonster(gameObject);
+                battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
                 return;
             }
             else if (!waveArrivePos && waveFindObj)
@@ -474,7 +475,7 @@ public class MonsterAi : UnitCommonAi
             }
             else if (waveState && waveArrivePos && !waveWaiting)
             {
-                battleBGM.BattleRemoveMonster(gameObject);
+                battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
                 checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
             }
             //else if (!goingBase)
@@ -620,8 +621,11 @@ public class MonsterAi : UnitCommonAi
         }
 
         spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType, waveState);
-        battleBGM.BattleRemoveMonster(gameObject);
-        Destroy(gameObject);
+        battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
+        if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
+        {
+            NetworkObject.Despawn();
+        }
     }
 
     public void MonsterSpawnerSet(MonsterSpawner monsterSpawner, int type)
@@ -665,16 +669,19 @@ public class MonsterAi : UnitCommonAi
     {
         waveState = true;
         waveWaiting = false;
+
         int x = (int)Random.Range(-5, 5);
         int y = (int)Random.Range(-5, 5);
 
         wavePos = _wavePos + new Vector3(x, y);
+
         checkPathCoroutine = StartCoroutine(CheckPath(_wavePos, "NormalTrace"));
     }
 
     public void ColonyAttackStart(Vector3 _wavePos)
     {
         waveState = true;
+        isWaveColonyCallCheck = false;
 
         int x = (int)Random.Range(-5, 5);
         int y = (int)Random.Range(-5, 5);
@@ -692,17 +699,37 @@ public class MonsterAi : UnitCommonAi
         }
     }
 
-    public void WaveTeleport(Vector3 _wavePos)
+    public void WaveTeleport(Vector3 teleportPos, Vector3 setWavePos)
     {
         if(aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
         {
             int x = (int)Random.Range(-10, 10);
             int y = (int)Random.Range(-10, 10);
 
-            Vector3 newWavePos = _wavePos + new Vector3(x, y);
+            Vector3 newWavePos = teleportPos + new Vector3(x, y);
+            wavePos = setWavePos;
             waveState = true;
             waveWaiting = true;
             transform.position = newWavePos;
         }
+    }
+
+    public override void GameStartSet(UnitSaveData unitSaveData)
+    {
+        base.GameStartSet(unitSaveData);
+
+        monsterType = unitSaveData.monsterType;
+    }
+
+    public override UnitSaveData SaveData()
+    {
+        UnitSaveData data = base.SaveData();
+
+        data.unitIndex = GeminiNetworkManager.instance.GetMonsterSOIndex(this.gameObject, monsterType, false);
+        data.monsterType = monsterType;
+        data.wavePos = Vector3Extensions.FromVector3(wavePos);
+        data.waveState = waveState;
+        data.isWaveColonyCallCheck = isWaveColonyCallCheck;
+        return data;
     }
 }

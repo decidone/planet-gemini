@@ -11,11 +11,12 @@ public class PlayerController : NetworkBehaviour
     List<GameObject> beltList = new List<GameObject>();
 
     public Collider2D circleColl;
-    PreBuilding preBuilding;
-    Building tempMiner;
-    TempMinerUi tempMinerUI;
-    int tempFullAmount;
-    public int tempMinerCount;
+    //PreBuilding preBuilding;
+    //Building tempMiner;
+    //TempMinerUi tempMinerUI;
+    //int tempFullAmount;
+    //public int tempMinerCount;
+    //int tempMinerMaxCount;
 
     InputManager inputManager;
     ShopInteract nearShop;
@@ -38,7 +39,6 @@ public class PlayerController : NetworkBehaviour
     {
         gameManager = GameManager.instance;
         circleColl = GetComponent<CircleCollider2D>();
-        tempMinerCount = 5;
         nearShop = null;
         isLoot = false;
         isTeleportable = false;
@@ -47,21 +47,16 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
-        tempMiner = ResourcesManager.instance.tempMiner;
-        tempMinerUI = ResourcesManager.instance.tempMinerUI;
         inputManager = InputManager.instance;
         
         if (!IsOwner) { return; }
-        tempFullAmount = 5;
-        tempMinerCount = tempFullAmount;
+
         GameManager.instance.SetPlayer(this.gameObject);
         inputManager.controls.Player.Loot.performed += ctx => LootCheck();
-        inputManager.controls.Player.Miner.performed += ctx => DeployMiner();
         inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
         inputManager.controls.Player.Interaction.performed += ctx => Interact();
         inputManager.controls.Player.Market.performed += ctx => TeleportMarket();
 
-        preBuilding = PreBuilding.instance;
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
     }
 
@@ -178,6 +173,7 @@ public class PlayerController : NetworkBehaviour
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.Teleport();
             this.transform.position = pos;
+            SoundManager.Instance.PlayBgmMapCheck();
         }
 
         if (nearShop != null)
@@ -251,16 +247,6 @@ public class PlayerController : NetworkBehaviour
         // 빈 콜백으로 둬도 클라이언트 아이템 복사버그가 해결 됨. 아마 컴포넌트를 리프레시 해주는 기능이 있는 듯
     }
 
-    void DeployMiner()
-    {
-        if (tempMinerCount > 0)
-        {
-            preBuilding.SetImage(tempMiner, true, tempMinerCount, GameManager.instance.isPlayerInHostMap);
-            preBuilding.isEnough = true;
-            TempBuildUI(true);
-        }
-    }
-    
     void GetStrItem()
     {
         if (inputManager.ctrl)
@@ -282,46 +268,5 @@ public class PlayerController : NetworkBehaviour
                     gameManager.inventory.Add(item.Item1, item.Item2);
             }
         }
-    }
-
-    public void TempBuildUI(bool isOn)
-    {
-        tempMinerUI.StartMoveUIElementCoroutine(isOn, tempFullAmount, tempMinerCount);
-    }
-
-    public bool TempMinerCountCheck()
-    {
-        tempMinerUI.AmountTextSet(tempFullAmount, tempMinerCount);
-
-        if (tempMinerCount > 0)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public void TempBuildSet()
-    {
-        if (tempMinerCount > 0)
-        {
-            tempMinerCount--;
-        }
-        TempMinerCountCheck();
-    }
-
-    public void TempBuildSet(int amount)
-    {
-        if (tempMinerCount > 0)
-        {
-            tempMinerCount -= amount;
-        }
-        TempMinerCountCheck();
-    }
-
-    public void RemoveTempBuild()
-    {
-        tempMinerCount++;
-        TempMinerCountCheck();
     }
 }

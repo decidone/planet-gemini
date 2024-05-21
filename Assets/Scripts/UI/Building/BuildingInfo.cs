@@ -17,9 +17,6 @@ public class BuildingInfo : MonoBehaviour
 
     bool totalAmountsEnough = false;
 
-    public PlayerInvenManager playerInvenManager;
-    public Inventory inventory;
-
     #region Singleton
     public static BuildingInfo instance;
 
@@ -37,7 +34,6 @@ public class BuildingInfo : MonoBehaviour
     private void Start()
     {
         preBuilding = PreBuilding.instance;
-        //inventory = GameManager.instance.inventory;
     }
 
     public void BuildingClick()
@@ -48,7 +44,7 @@ public class BuildingInfo : MonoBehaviour
         {
             //preBuilding.SetActive(true);
             int sendAmount = CanBuildAmount();
-            preBuilding.SetImage(selectBuilding, false, sendAmount, GameManager.instance.isPlayerInHostMap);
+            preBuilding.SetImage(selectBuilding, sendAmount, GameManager.instance.isPlayerInHostMap);
             preBuilding.isEnough = AmountsEnoughCheck();
         }
     }
@@ -66,7 +62,6 @@ public class BuildingInfo : MonoBehaviour
 
     public void SetItemSlot(BuildingData buildingDatas, Building select)
     {
-        inventory = GameManager.instance.inventory;
         ClearArr();
         if (preBuilding.isBuildingOn)
         {
@@ -87,7 +82,7 @@ public class BuildingInfo : MonoBehaviour
         for (int i = 0; i < selectBuildingData.GetItemCount(); i++)
         {
             int value;
-            bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[selectBuildingData.items[i]], out value);
+            bool hasItem = GameManager.instance.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[selectBuildingData.items[i]], out value);
             isEnough = hasItem && value >= selectBuildingData.amounts[i];
 
             if (isEnough && totalAmountsEnough)
@@ -118,7 +113,7 @@ public class BuildingInfo : MonoBehaviour
         {
             if(buildingNeedList[i].item != null)
             {
-                inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount);
+                GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount);
             }
         }
         GameManager.instance.BuildAndSciUiReset();
@@ -131,7 +126,7 @@ public class BuildingInfo : MonoBehaviour
         {
             if (buildingNeedList[i].item != null)
             {
-                inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
+                GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
             }
         }
         GameManager.instance.BuildAndSciUiReset();
@@ -155,7 +150,7 @@ public class BuildingInfo : MonoBehaviour
             for (int i = 0; i < selectBuildingData.GetItemCount(); i++)
             {
                 int value;
-                bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[selectBuildingData.items[i]], out value);
+                bool hasItem = GameManager.instance.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[selectBuildingData.items[i]], out value);
                 isEnough = hasItem && value >= selectBuildingData.amounts[i];
 
                 if (isEnough)

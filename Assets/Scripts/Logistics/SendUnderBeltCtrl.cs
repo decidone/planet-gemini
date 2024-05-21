@@ -68,8 +68,8 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         checkObj = true;
     }
 
-    [ClientRpc]
-    protected override void SendItemClientRpc(int itemIndex, int outObjIndex)
+    [ServerRpc]
+    protected override void SendItemServerRpc(int itemIndex, int outObjIndex)
     {
         if (IsServer)
         {

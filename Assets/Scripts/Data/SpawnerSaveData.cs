@@ -14,4 +14,13 @@ public class SpawnerSaveData
      * 몹 인덱스와 세이브 데이터를 분리해둔건 몹을 스폰시키지 않고 리스트로만 가지고 있는 상태와 몹이 이미 스폰돼서 전투 등 변동이 생겼을 경우를 분리하기 위해 넣음
      * 이건 얼마든지 변동사항이 생길 수 있음
      */
+
+    public float hp;    // 스포너 Hp
+    public int level;   // 스포너 레벨
+    public int extraSpawnNum;   // 임시 저장 소환 수
+    public bool waveState;      // 웨이브 상태 저장
+    public float waveTimer;     // 웨이브 시간 저장
+    public SerializedVector3 wavePos = new SerializedVector3();
+    public SerializedVector3 spawnerPos = new SerializedVector3();      // 스포너 위치
+    public List<UnitSaveData> monsterList = new List<UnitSaveData>();   // 몬스터 데이터
 }

@@ -12,4 +12,11 @@ public class SaveData
     // 행성 인벤토리
     public InventorySaveData HostMapInvenData = new InventorySaveData();
     public InventorySaveData ClientMapInvenData = new InventorySaveData();
+
+    public List<ScienceData> ScienceData = new List<ScienceData>();
+
+    public List<StructureSaveData> structureData = new List<StructureSaveData>();
+    public List<BeltGroupSaveData> beltGroupData = new List<BeltGroupSaveData>();
+    public List<UnitSaveData> unitData = new List<UnitSaveData>();
+    public SpawnerManagerSaveData spawnerManagerSaveData = new SpawnerManagerSaveData();
 }

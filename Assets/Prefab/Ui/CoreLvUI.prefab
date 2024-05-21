@@ -235,6 +235,7 @@ MonoBehaviour:
   coreLvTx: {fileID: 3134461432773151782}
   coreBtnObj: {fileID: 3134461432437631115}
   LockBtnObj: {fileID: 5512931599326536408}
+  scienceBtn: {fileID: 0}
 --- !u!1 &3134461432437631115
 GameObject:
   m_ObjectHideFlags: 0

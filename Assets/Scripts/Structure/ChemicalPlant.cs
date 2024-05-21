@@ -62,7 +62,6 @@ public class ChemicalPlant : Production
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
-                //SendItem(output);
             }
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
@@ -76,7 +75,8 @@ public class ChemicalPlant : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);
         rManager.recipeBtn.onClick.RemoveAllListeners();
@@ -104,17 +104,9 @@ public class ChemicalPlant : Production
 
     public override void SetRecipe(Recipe _recipe, int index)
     {
-        if (recipe.name != null && recipe != _recipe)
-        {
-            sInvenManager.EmptySlot();
-        }
-        recipe = _recipe;
-        recipeIndex = index;
-        sInvenManager.ResetInvenOption();
+        base.SetRecipe(_recipe, index);
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].outputSlot = true;
-        cooldown = recipe.cooldown;
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void GetUIFunc()

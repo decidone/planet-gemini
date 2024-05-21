@@ -247,7 +247,6 @@ GameObject:
   - component: {fileID: 762871311885926033}
   - component: {fileID: 762871311885926060}
   - component: {fileID: 3986364633838151513}
-  - component: {fileID: 762871311885926061}
   - component: {fileID: 762871311885926062}
   - component: {fileID: 762871311885926063}
   - component: {fileID: 762871311885926032}
@@ -260,6 +259,7 @@ GameObject:
   - component: {fileID: 7150366280860555239}
   - component: {fileID: 198327214828012134}
   - component: {fileID: 8119477237859809883}
+  - component: {fileID: 1592428971395791709}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -314,11 +314,14 @@ MonoBehaviour:
   clientMap: {fileID: 0}
   map: {fileID: 0}
   isPlayerInHostMap: 0
+  isPlayerInMarket: 0
   player: {fileID: 0}
   playerController: {fileID: 0}
   hostPlayerTransform: {fileID: 0}
   clientPlayerTransform: {fileID: 0}
+  marketPortalTransform: {fileID: 0}
   mapCameraController: {fileID: 0}
+  finance: {fileID: 0}
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -327,6 +330,7 @@ MonoBehaviour:
   sTreeManager: {fileID: 0}
   debug: 0
   isHost: 0
+  isShopOpened: 0
   hostDragInven: {fileID: 4772606037921836923}
   clientDragInven: {fileID: 5938487978584807929}
   selectPointPrefab: {fileID: 2420153466432160886, guid: df5c2e478c2b2cc45ac8d544fbe8953f, type: 3}
@@ -392,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21dc58c4efa98514ca4300772c93f074, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemListSO: {fileID: 0}
+  itemListSO: {fileID: 11400000, guid: fb7046e3030870743a8b20eb19bf8824, type: 2}
   itemList:
   - {fileID: 11400000, guid: 4e710a6640863d14da083b6088bc9a69, type: 2}
   - {fileID: 11400000, guid: 0d7eb2a16fce87f48be517ed30d8cbe9, type: 2}
@@ -476,6 +480,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e5b61a4c5a526844e85a9f253fac2880, type: 2}
   - {fileID: 11400000, guid: 07d1d7098f5d32d40b451106ecf1072a, type: 2}
   - {fileID: 11400000, guid: cd0905f64f4f9b340938ad44ddd6f3c1, type: 2}
+  - {fileID: 11400000, guid: 1b9237df4afe0994f9d8c5bef19d8023, type: 2}
   - {fileID: 11400000, guid: 6d4b51c5e38f1b346ab22ecd118f4934, type: 2}
   - {fileID: 11400000, guid: ca1f84517c112664296ab16f1c0a1fa2, type: 2}
   - {fileID: 11400000, guid: 80739a12b2335474a97e22a2e634bbcf, type: 2}
@@ -488,19 +493,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1eccbc744d352cb498255e7dc4185f52, type: 2}
   - {fileID: 11400000, guid: db690fbf05d11be48816a392b5f5b26a, type: 2}
   - {fileID: 11400000, guid: 9b986cc7c784666408e8668286f8a19b, type: 2}
---- !u!114 &762871311885926061
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3986364635626952762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be822e472399be042ae6d921ad408428, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  beltGroupMgrObj: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,6 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48473663dbf9a8941958b0db0c2cecf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scienceBtns: []
   coreLevel: 1
 --- !u!114 &4059864358883353247
 MonoBehaviour:
@@ -663,6 +656,18 @@ MonoBehaviour:
   - {fileID: 8598225404917607298, guid: b51e05c41bd7d664aad1ca10a4dd19fd, type: 3}
   - {fileID: 1885955664131610326, guid: 15142411a933d1245b957f009a3493eb, type: 3}
   - {fileID: 248036444977090385, guid: d70a8f4e456ddd94b96397d2f52b11c8, type: 3}
+--- !u!114 &1592428971395791709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4effaa8a51221c5458a96473a35673db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4287165206276915524
 GameObject:
   m_ObjectHideFlags: 0
@@ -709,8 +714,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveData:
     playerDataList: []
+    ScienceData: []
+    structureData: []
+    beltGroupData: []
+    unitData: []
+    spawnerManagerSaveData:
+      splitCount: 0
   path: 
   selectedSlot: 0
+  beltGroup: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
+  beltMgr: {fileID: 0}
+  spawner: {fileID: 2587231014279578894, guid: 1187c18a57db9f446aa4d74f7b910b9f, type: 3}
 --- !u!1 &6718229863374190987
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,8 +769,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f85b80bc13fdab249b0fb770655a8ffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempMiner: {fileID: 11400000, guid: fc3c0374a9087634c8a3120bbde7188d, type: 2}
-  tempMinerUI: {fileID: 0}
   fogOfWar: {fileID: 0}
 --- !u!1 &7414352785637535675
 GameObject:

@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Pool;
 using Unity.Netcode;
+using UnityEngine;
 
 // UTF-8 설정
 public abstract class Production : Structure
@@ -23,7 +22,7 @@ public abstract class Production : Structure
     protected int maxFuel;
     protected Item output;
     protected Recipe recipe;
-    protected int recipeIndex;
+    protected int recipeIndex = -1;
     protected List<Recipe> recipes;
     protected int invenCount;
     protected Dictionary<Item, int> invenSlotDic;
@@ -36,28 +35,52 @@ public abstract class Production : Structure
     protected Vector3 endLine;
     public bool isGetLine;
 
-    public virtual void SetRecipe(Recipe _recipe, int index) { }
+    public virtual void SetRecipe(Recipe _recipe, int index)
+    {
+        recipe = _recipe;
+        recipeIndex = index;
+        sInvenManager.ResetInvenOption();
+        cooldown = recipe.cooldown;
+        effiCooldown = cooldown;
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
+    }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SetRecipeServerRpc(string buildingName, int index)
+    public void SetRecipeServerRpc(int index)
     {
         itemDic = ItemList.instance.itemDic;
-        SetRecipeClientRpc(buildingName, index);
+        SetRecipeClientRpc(index);
     }
 
     protected override void OnClientConnectedCallback(ulong clientId)
     {
         ClientConnectSyncServerRpc();
-        SetRecipeServerRpc(structureData.factoryName, recipeIndex);
+        if(recipeIndex != -1)
+            SetRecipeServerRpc(recipeIndex);
         ItemSyncServerRpc();
     }
 
     [ClientRpc]
-    public void SetRecipeClientRpc(string buildingName, int index)
+    public void SetRecipeClientRpc(int index)
     {
-        Recipe selectRecipe = RecipeList.instance.GetRecipeIndex(buildingName, index);
+        Recipe selectRecipe = RecipeList.instance.GetRecipeIndex(structureData.factoryName, index);
+        if (recipe != null && recipe != selectRecipe)
+        {
+            if (IsServer)
+            {
+                AddInvenItem();
+            }
 
-        if(selectRecipe != null)
+            inventory.ResetInven();
+
+            if (isUIOpened)
+            {
+                sInvenManager.ClearInvenOption();
+            }
+        }
+
+        if (selectRecipe != null)
         {
             if (isUIOpened)
                 SetRecipe(selectRecipe, index);
@@ -65,8 +88,14 @@ public abstract class Production : Structure
             {
                 recipe = selectRecipe;
                 recipeIndex = index;
-            } 
-        }       
+            }
+        }
+    }
+
+    public override void GameStartRecipeSet(int recipeId) 
+    {
+        if(recipeId != -1)
+            SetRecipeClientRpc(recipeId);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -102,6 +131,12 @@ public abstract class Production : Structure
         inventory.RecipeSlotAdd(slotNum, item, itemAmount);
     }
 
+    public void GameStartItemSet(InventorySaveData data)
+    {
+        if(inventory != null)
+            inventory.LoadData(data);
+    }
+
     public virtual float GetProgress() { return prodTimer; }
     public virtual float GetFuel() { return fuel; }
     public virtual void OpenRecipe() { }
@@ -118,7 +153,8 @@ public abstract class Production : Structure
     protected virtual void Start()
     {
         itemDic = ItemList.instance.itemDic;
-        recipe = new Recipe();
+        if(recipe == null)
+            recipe = new Recipe();
         output = null;
 
         GameManager gameManager = GameManager.instance;
@@ -169,17 +205,19 @@ public abstract class Production : Structure
     [ServerRpc(RequireOwnership = false)]
     protected void ClientUISetServerRpc()
     {
-        ClientUISetClientRpc(fuel, prodTimer);
+        ClientUISetClientRpc(fuel, prodTimer, cooldown, effiCooldown);
     }
 
     [ClientRpc]
-    protected void ClientUISetClientRpc(int syncFuel, float syncTimer)
+    protected void ClientUISetClientRpc(int syncFuel, float syncTimer, float syncCooldown, float syncEfficiency)
     {
         if (IsServer)
             return;
 
         fuel = syncFuel;
         prodTimer = syncTimer;
+        cooldown = syncCooldown;
+        effiCooldown = syncEfficiency;
     }
 
     public virtual void CloseUI()
@@ -192,6 +230,9 @@ public abstract class Production : Structure
     {
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
+        
+        if (obj.GetComponent<WallCtrl>())
+            yield break;
 
         if (obj.TryGetComponent(out Structure structure) && !structure.isMainSource)
         {
@@ -397,7 +438,7 @@ public abstract class Production : Structure
             return null;
     }
 
-    public bool UnloadItem(Item item)
+    public bool UnloadItemCheck(Item item)
     {
         bool canUnload = false;
         for (int i = 0; i < inventory.space; i++)
@@ -406,12 +447,18 @@ public abstract class Production : Structure
             if (invenItem.item == item && invenItem.amount > 0)
             {
                 canUnload = true;
-                if(IsServer)
-                    inventory.SubServerRpc(i, 1);
+                //if(IsServer)
+                //    inventory.SubServerRpc(i, 1);
                 break;
             }
         }
         return canUnload;
+    }
+
+    public void UnloadItem(Item item)
+    {
+        if (IsServer)
+            inventory.Sub(item, 1);
     }
 
     public void LineRendererSet(Vector2 endPos)
@@ -476,5 +523,19 @@ public abstract class Production : Structure
                 ItemToItemProps(invenItem.item, invenItem.amount);
             }
         }
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        if(TryGetComponent(out Inventory inventory))
+        {
+            data.inven = inventory.SaveData();
+        }
+
+        data.recipeId = recipeIndex;
+
+        return data;
     }
 }

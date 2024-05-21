@@ -49,7 +49,8 @@ public class Refinery : FluidFactoryCtrl
     {
         #region ProductionStart
         itemDic = ItemList.instance.itemDic;
-        recipe = new Recipe();
+        if (recipe == null)
+            recipe = new Recipe();
         output = null;
         fluidName = "CrudeOil";
 
@@ -189,7 +190,8 @@ public class Refinery : FluidFactoryCtrl
 
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);
         rManager.recipeBtn.onClick.RemoveAllListeners();
@@ -219,16 +221,8 @@ public class Refinery : FluidFactoryCtrl
 
     public override void SetRecipe(Recipe _recipe, int index)
     {
-        if (recipe.name != null && recipe != _recipe)
-        {
-            sInvenManager.EmptySlot();
-        }
-        recipe = _recipe;
-        recipeIndex = index;
-        sInvenManager.ResetInvenOption();
+        base.SetRecipe(_recipe, index);
         sInvenManager.slots[0].outputSlot = true;
-        cooldown = recipe.cooldown;
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void GetUIFunc()
@@ -246,7 +240,10 @@ public class Refinery : FluidFactoryCtrl
 
     public override void AddInvenItem()
     {
-        base.AddInvenItem();
+        if (isInHostMap)
+            playerInven = GameManager.instance.hostMapInven;
+        else
+            playerInven = GameManager.instance.clientMapInven;
         var slot = inventory.SlotCheck(0);
 
         if (slot.item != null)

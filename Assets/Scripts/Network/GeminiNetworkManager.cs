@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -13,6 +14,8 @@ public class GeminiNetworkManager : NetworkBehaviour
     public ItemListSO itemListSO;
     [SerializeField]
     public BuildingListSO buildingListSO;
+    [SerializeField]
+    public UnitListSO unitListSO;
     [SerializeField]
     GameObject itemPref;
 
@@ -62,14 +65,93 @@ public class GeminiNetworkManager : NetworkBehaviour
         return itemListSO.itemSOList[itemSOIndex];
     }
 
-    public int GetBuildingSOIndex(Item item)
+    public int GetBuildingSOIndex(Building building)
     {
-        return itemListSO.itemSOList.IndexOf(item);
+        return buildingListSO.buildingSOList.IndexOf(building);
     }
 
-    public Item GetBuildingSOFromIndex(int itemSOIndex)
+    public Building GetBuildingSOFromIndex(int itemSOIndex)
     {
-        return itemListSO.itemSOList[itemSOIndex];
+        return buildingListSO.buildingSOList[itemSOIndex];
+    }
+
+    public int GetMonsterSOIndex(GameObject obj, int monsterType, bool isUserUnit)
+    {
+        int index = -1;
+
+        if (isUserUnit)
+        {
+            index = GameObjFindIndex(unitListSO.userUnitList, obj);
+        }
+        else
+        {
+            if(monsterType == 0)
+            {
+                index = GameObjFindIndex(unitListSO.weakMonsterList, obj);
+            }
+            else if (monsterType == 1)
+            {
+                index = GameObjFindIndex(unitListSO.normalMonsterList, obj);
+            }
+            else if (monsterType == 2)
+            {
+                index = GameObjFindIndex(unitListSO.strongMonsterList, obj);
+            }
+            else if (monsterType == 3)
+            {
+                index = GameObjFindIndex(unitListSO.guardian, obj);
+            }
+        }
+
+        return index;
+    }
+
+    int GameObjFindIndex(List<GameObject> objList, GameObject obj)
+    {
+        int index = -1;
+        UnitCommonData objData = obj.GetComponent<UnitCommonAi>().unitCommonData;
+
+        for (int i = 0; i < objList.Count; i++)
+        {
+            UnitCommonData findData = objList[i].GetComponent<UnitCommonAi>().unitCommonData;
+            if(objData == findData)
+            {
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
+    public GameObject GetMonsterSOFromIndex(int itemSOIndex, int monsterType, bool isUserUnit)
+    {
+        GameObject obj = null;
+
+        if (isUserUnit)
+        {
+            obj = unitListSO.userUnitList[itemSOIndex];
+        }
+        else
+        {
+            if (monsterType == 0)
+            {
+                obj = unitListSO.weakMonsterList[itemSOIndex];
+            }
+            else if (monsterType == 1)
+            {
+                obj = unitListSO.normalMonsterList[itemSOIndex];
+            }
+            else if (monsterType == 2)
+            {
+                obj = unitListSO.strongMonsterList[itemSOIndex];
+            }
+            else if (monsterType == 3)
+            {
+                obj = unitListSO.guardian[itemSOIndex];
+            }
+        }
+
+        return obj;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -116,7 +198,17 @@ public class GeminiNetworkManager : NetworkBehaviour
     public void RequestJsonServerRpc()
     {
         string json = DataManager.instance.Save();
-        RequestJsonClientRpc(json);
+        SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
+        SaveData clientData = new SaveData();
+
+        clientData.playerDataList = saveData.playerDataList;
+        clientData.HostMapInvenData = saveData.HostMapInvenData;
+        clientData.ClientMapInvenData = saveData.ClientMapInvenData;
+        clientData.ScienceData = saveData.ScienceData;
+
+        string clientJson = JsonConvert.SerializeObject(clientData);
+
+        RequestJsonClientRpc(clientJson);
     }
 
     [ClientRpc]

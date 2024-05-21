@@ -25,7 +25,6 @@ public class StructureInvenManager : InventoryManager
     {
         base.Start();
         inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotShiftClick();
-        playerInven = gameManager.inventory;
     }
 
     protected override void Update()
@@ -50,6 +49,8 @@ public class StructureInvenManager : InventoryManager
         {
             if (focusedSlot.item != null)
             {
+                playerInven = gameManager.inventory;
+
                 int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
                 if (focusedSlot.amount <= containableAmount)
                 {
@@ -81,10 +82,20 @@ public class StructureInvenManager : InventoryManager
 
     public void ResetInvenOption()
     {
+        for (int i = 0; i < slots.Length; i++)  
+        {
+            Slot slot = slots[i];
+            slot.ResetOption();
+        }
+    }
+
+    public void ClearInvenOption()
+    {
         for (int i = 0; i < slots.Length; i++)
         {
             Slot slot = slots[i];
             slot.ResetOption();
+            slot.ClearSlot();
         }
     }
 
@@ -135,6 +146,9 @@ public class StructureInvenManager : InventoryManager
 
     public void EmptySlot()
     {
+        Debug.Log("EmptySlot");
+        playerInven = gameManager.inventory;
+
         for (int i = 0; i < slots.Length; i++)
         {
             Slot slot = slots[i];

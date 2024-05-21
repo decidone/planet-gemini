@@ -34,9 +34,21 @@ public class TempScienceDb : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void SyncSciBtnItemClientRpc(int btnIndex, int index, int itemAmount)
+    void SyncSciBtnItemClientRpc(int btnIndex, int index, int itemAmount)
     {
         scienceBtns[btnIndex].SyncItemAddAmount(index, itemAmount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SciBtnUpgradeServerRpc(int btnIndex)
+    {
+        SciBtnUpgradeClientRpc(btnIndex);
+    }
+
+    [ClientRpc]
+    public void SciBtnUpgradeClientRpc(int btnIndex)
+    {
+        scienceBtns[btnIndex].ItemSaveEnd();
     }
 
     public void SaveSciDb(string sciName, int sciLv)
@@ -64,5 +76,20 @@ public class TempScienceDb : NetworkBehaviour
         }
 
         return false;
+    }
+
+    public void LoadData(List<ScienceData> data)
+    {
+        for (int i = 0; i < scienceBtns.Length; i++)
+        {
+            if (scienceBtns[i].isCore && ScienceManager.instance.CoreSaveCheck(scienceBtns[i]))
+                continue;
+            for (int j = 0; j < data[i].saveItemCount.Count; j++)
+            {
+                scienceBtns[i].LoadItemAddAmount(j, data[i].saveItemCount[j]);
+            }
+
+            scienceBtns[i].LoadEnd(data[i].upgradeState, data[i].lockCheck, data[i].upgradeTime);
+        }
     }
 }

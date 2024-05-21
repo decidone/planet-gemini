@@ -119,11 +119,8 @@ public class EnergyColony : MonoBehaviour
     public void MonsterSpawnerCheck()
     {
         EnergyCheck();
-        //monsterSpawners.Clear();
         float scanDist = ConvergeFunction(energy);
-        Debug.Log("ScanDist : " + scanDist + " , energy : " + energy);
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, scanDist, targetLayer);
-        Debug.Log(colliders.Length);
         for (int i = 0; i < colliders.Length; i++)
         {
             GameObject obj = colliders[i].gameObject;
@@ -132,10 +129,6 @@ public class EnergyColony : MonoBehaviour
             {
                 spawner.ColonyCall(this);
             }
-            //if (obj.TryGetComponent(out MonsterSpawner spawner) && !monsterSpawners.Contains(spawner))
-            //{
-            //    monsterSpawners.Add(spawner);
-            //}
         }
     }
 

@@ -5,12 +5,12 @@ using Unity.Netcode;
 
 public class SpawnerGroupManager : NetworkBehaviour
 {
-    SpawnerGroupStats spawnerGroupStats;
+    (int, int) matrixIndex;
     public List<MonsterSpawner> spawnerList = new List<MonsterSpawner>();
 
-    public void SpawnerGroupStatsSet(bool inHostMap, int areaGroup, (int, int) spawnerMatrixIndex)
+    public void SpawnerGroupStatsSet((int, int) spawnerMatrixIndex)
     {
-        spawnerGroupStats = new SpawnerGroupStats(inHostMap, areaGroup, spawnerMatrixIndex);
+        matrixIndex = spawnerMatrixIndex;
     }
 
     public void SpawnerSet(GameObject spawner)
@@ -49,19 +49,19 @@ public class SpawnerGroupManager : NetworkBehaviour
 
         return monster; 
     }
-}
 
-public struct SpawnerGroupStats
-{
-    public bool isHostMap;
-    public int areaGroup;
-    public (int, int) spawnerMatrixIndex;
-
-    // 생성자 정의
-    public SpawnerGroupStats(bool _inHostMap, int _areaGroup, (int, int) _spawnerMatrixIndex)
+    public SpawnerGroupData SaveData()
     {
-        isHostMap = _inHostMap;
-        areaGroup = _areaGroup;
-        spawnerMatrixIndex = _spawnerMatrixIndex;
+        SpawnerGroupData data = new SpawnerGroupData();
+
+        data.spawnerMatrixIndex = matrixIndex;
+        data.pos = Vector3Extensions.FromVector3(transform.position);
+
+        foreach (MonsterSpawner spawner in spawnerList)
+        {
+            data.spawnerSaveDataList.Add(spawner.SaveData());
+        }
+
+        return data;
     }
 }

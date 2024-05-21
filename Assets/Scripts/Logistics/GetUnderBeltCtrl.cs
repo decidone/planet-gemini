@@ -98,6 +98,9 @@ public class GetUnderBeltCtrl : LogisticsCtrl
     {
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
+        
+        if (obj.GetComponent<WallCtrl>())
+            yield break;
 
         if (obj.GetComponent<Structure>() != null)
         {

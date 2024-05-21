@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Unity.Netcode;
 
 public class Transporter : Production
 {
@@ -31,7 +32,6 @@ public class Transporter : Production
         maxFuel = 100;
         transportTimeer = 1.0f;
         isStorageBuilding = true;
-        isGetLine = true;
         animator = GetComponent<Animator>();
     }
 
@@ -40,44 +40,76 @@ public class Transporter : Production
         base.Update();
         if (!isPreBuilding)
         {
-            if (takeBuild != null && sendItemUnit.Count <= 3 && takeBuild.TryGetComponent(out Transporter othBuild) && othBuild.unitItemList.Count == 0)
+            if (takeBuild != null)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    if(sendItemUnit.Count < 3)
+                    if (!isToggleOn)
                     {
-                       if (!isToggleOn)
+                        if (IsServer && sendItemUnit.Count < 3 && takeBuild.TryGetComponent(out Transporter othBuild) && othBuild.unitItemList.Count == 0)
                         {
                             SendTransportItemDicCheck(othBuild);
-                            prodTimer = 0;
                         }
-                        else
+                        prodTimer = 0;
+                    }
+                    else
+                    {
+                        if (sendAmount != 0 && inventory.TotalItemsAmountLimitCheck(sendAmount))
                         {
-                            if (sendAmount != 0 && inventory.TotalItemsAmountLimitCheck(sendAmount))
+                            if (IsServer && sendItemUnit.Count < 3 && takeBuild.TryGetComponent(out Transporter othBuild) && othBuild.unitItemList.Count == 0)
                             {
                                 SendTransportItemDicCheck(othBuild);
-                                prodTimer = 0;
                             }
+                            prodTimer = 0;
                         }
                     }
                 }
             }
+            //if (takeBuild != null && sendItemUnit.Count <= 3 && takeBuild.TryGetComponent(out Transporter othBuild) && othBuild.unitItemList.Count == 0)
+            //{
+            //    prodTimer += Time.deltaTime;
+            //    if (prodTimer > cooldown)
+            //    {
+            //        if (sendItemUnit.Count < 3)
+            //        {
+            //            if (!isToggleOn)
+            //            {
+            //                if(IsServer)
+            //                    SendTransportItemDicCheck(othBuild);
+            //                prodTimer = 0;
+            //            }
+            //            else
+            //            {
+            //                if (sendAmount != 0 && inventory.TotalItemsAmountLimitCheck(sendAmount))
+            //                {
+            //                    if (IsServer)
+            //                        SendTransportItemDicCheck(othBuild);
+            //                    prodTimer = 0;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
             else
                 prodTimer = 0;
 
-            if (unitItemList.Count > 0)
-            {
-                transportInterval += Time.deltaTime;
-                if (transportInterval > transportTimeer)
-                {
-                    ExStorageCheck();
-                    transportInterval = 0;
-                }
-            }
-            else
-                transportInterval = 0;
 
+            if (IsServer) 
+            {
+                if (unitItemList.Count > 0)
+                {
+                    transportInterval += Time.deltaTime;
+                    if (transportInterval > transportTimeer)
+                    {
+                        if (IsServer)
+                            ExStorageCheck();
+                        transportInterval = 0;
+                    }
+                }
+                else
+                    transportInterval = 0;
+            }
         }
     }
 
@@ -86,11 +118,12 @@ public class Transporter : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
         sInvenManager.TransporterSetting(isToggleOn, sendAmount);
 
-        if(takeBuild != null)
-            LineRendererSet(takeBuild.transform.position);
+        //if (takeBuild != null)
+        //    LineRendererSet(takeBuild.transform.position);
     }
 
     public override void CloseUI()
@@ -99,6 +132,58 @@ public class Transporter : Production
         sInvenManager.ReleaseInven();
 
         base.DestroyLineRenderer();
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        ConnectedSetServerRpc();
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    void ConnectedSetServerRpc()
+    {
+        if (takeBuild != null)
+        {
+            ConnectedSetClientRpc(takeBuild.transform.position);
+        }
+    }
+
+    [ClientRpc]
+    void ConnectedSetClientRpc(Vector3 pos)
+    {
+        if (IsServer)
+            return;
+
+        StartCoroutine(SetInvoke(pos));
+    }
+
+    IEnumerator SetInvoke(Vector3 pos)
+    {
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+        Map map;
+        if (isInHostMap)
+            map = GameManager.instance.hostMap;
+        else
+            map = GameManager.instance.clientMap;
+
+        Cell cell = map.GetCellDataFromPos(x, y);
+
+        while (cell.structure == null)
+        {
+            yield return null;
+        }
+
+        GameObject findObj = cell.structure;
+        if (findObj != null && findObj.TryGetComponent(out Transporter takeTransporter))
+        {
+            if (TryGetComponent(out MapClickEvent mapClick) && takeTransporter.TryGetComponent(out MapClickEvent othMapClick))
+            {
+                mapClick.GameStartSetRenderer(othMapClick);
+            } 
+        }
     }
 
     void SendTransportItemDicCheck(Transporter othBuild)
@@ -153,6 +238,9 @@ public class Transporter : Production
         if (invItemCheckDicAni != null && invItemCheckDicAni.Count > 0)
         {
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
+            unit.TryGetComponent(out NetworkObject netObj);
+            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn();
+            
             sendItemUnit.Add(unit);
             unit.GetComponent<TransportUnit>().MovePosSet(this, othBuildAni, invItemCheckDicAni);
             foreach (var dicData in invItemCheckDicAni)
@@ -185,7 +273,7 @@ public class Transporter : Production
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        if(IsServer)
+        if (IsServer)
             inventory.Add(itemProps.item, itemProps.amount);
         itemProps.itemPool.Release(itemProps.gameObject);
     }
@@ -266,7 +354,7 @@ public class Transporter : Production
     {
         if (_itemDic != null && _itemDic.Count > 0)
         {
-            unitItemList.Add(_itemDic);
+            unitItemList.Add(new Dictionary<Item, int>(_itemDic));
             getItemUnit.Add(takeUnit);
             ExStorageCheck();
             animator.Play("ItemGetOpen", -1, 0);
@@ -295,6 +383,8 @@ public class Transporter : Production
             }
         }
 
+        Debug.Log(unitItemList[0].Count);
+
         if (unitItemList[0].Count == 0)
         {
             unitItemList.RemoveAt(0);
@@ -312,6 +402,11 @@ public class Transporter : Production
     public override void DestroyLineRenderer()
     {
         base.DestroyLineRenderer();
+        takeBuild = null;
+    }
+
+    public void TakeBuildReset()
+    {
         takeBuild = null;
     }
 
@@ -355,5 +450,17 @@ public class Transporter : Production
                 itemProps.ResetItemProps();
             }
         }
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        if(takeBuild != null)
+        {
+            data.connectedStrPos.Add(Vector3Extensions.FromVector3(takeBuild.tileSetPos));
+        }
+
+        return data;
     }
 }

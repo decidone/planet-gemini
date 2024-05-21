@@ -128,7 +128,7 @@ public class BeltGroupMgr : NetworkBehaviour
         //ConnecTimeStop.instance.RemoveNetObj(gameObject);
     }
 
-    public void SetBelt(GameObject belt, int level, int beltDir, int objHeight, int objWidth, bool isHostMap)
+    public void SetBelt(GameObject belt, int level, int beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         //GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
         //belt.TryGetComponent(out NetworkObject netObj);
@@ -137,7 +137,7 @@ public class BeltGroupMgr : NetworkBehaviour
         BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
         beltList.Add(beltCtrl);
         //BeltListAddClientRpc(netObj.NetworkObjectId);
-        beltCtrl.SettingClientRpc(level, beltDir, objHeight, objWidth, isHostMap);
+        beltCtrl.SettingClientRpc(level, beltDir, objHeight, objWidth, isHostMap, index);
         //NetworkObjManager.instance.NetObjAdd(gameObject);
         //NetObjAddClientRpc();
     }
@@ -510,5 +510,21 @@ public class BeltGroupMgr : NetworkBehaviour
         }
 
         return FindBelt.GetComponent<NetworkObject>().NetworkObjectId;
+    }
+
+    public BeltGroupSaveData SaveData()
+    {
+        BeltGroupSaveData data = new BeltGroupSaveData();
+
+        foreach (BeltCtrl beltCtrl in beltList)
+        {
+            BeltSaveData beltData = new BeltSaveData();
+            beltData = beltCtrl.BeltSaveData();
+            StructureSaveData structureData = new StructureSaveData();
+            structureData = beltCtrl.SaveData();
+            data.beltList.Add((beltData, structureData));
+        }
+
+        return data;
     }
 }

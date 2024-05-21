@@ -21,7 +21,6 @@ public class SciItemSetWindow : MonoBehaviour
     public List<GameObject> itemObjList = new List<GameObject>();
     ScienceBtn scienceBtn;
     ScienceInfoData scienceInfoData;
-    public Inventory inventory;
 
     private void Awake()
     {
@@ -45,7 +44,6 @@ public class SciItemSetWindow : MonoBehaviour
     {
         gameManager = GameManager.instance;
         itemsList = gameManager.GetComponent<ItemList>().itemList;
-        inventory = gameManager.inventory;
 
         CloseUI();
     }
@@ -72,7 +70,7 @@ public class SciItemSetWindow : MonoBehaviour
                         itemUi.icon.sprite = item.icon;
                         itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
                         int maxAmount = scienceBtn.itemAmountList[index].Item2 - scienceBtn.itemAmountList[index].Item1;
-                        bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out int value);
+                        bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out int value);
                         bool isEnough = hasItem && value >= scienceInfoData.amounts[index];
 
                         if (value == 0)
@@ -105,7 +103,7 @@ public class SciItemSetWindow : MonoBehaviour
                 }
 
                 scienceBtn.ItemAddAmount(i, textInt);
-                inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
+                gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
                 itemObjList[i].GetComponent<InfoNeedItemUi>().AmountSet(scienceBtn.itemAmountList[i].Item1, scienceBtn.itemAmountList[i].Item2);
             }
         }

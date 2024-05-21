@@ -85,6 +85,36 @@ public class SplitterCtrl : LogisticsCtrl
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public override void ClientConnectSyncServerRpc()
+    {
+        base.ClientConnectSyncServerRpc();
+        for (int a = 0; a < arrFilter.Length; a++)
+        {
+            if (arrFilter[a].selItem == null)
+                continue;
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(arrFilter[a].selItem);
+            ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex);
+        }
+    }
+
+    [ClientRpc]
+    void ClientFillterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
+    {
+        if (IsServer)
+            return;
+
+        GameStartFillterSet(num, filterOn, reverseFilterOn, itemIndex);
+    }
+
+    public void GameStartFillterSet(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
+    {
+        arrFilter[num].isFilterOn = filterOn;
+        arrFilter[num].isReverseFilterOn = reverseFilterOn;
+        arrFilter[num].selItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        ItemFilterCheck();
+    }
+
     bool FilterCheck()
     {
         for (int a = 0; a < arrFilter.Length; a++)
@@ -106,6 +136,8 @@ public class SplitterCtrl : LogisticsCtrl
         arrFilter[num].outObj = obj;
     }
 
+
+
     [ServerRpc(RequireOwnership = false)]
     public void FilterSetServerRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
     {
@@ -118,6 +150,7 @@ public class SplitterCtrl : LogisticsCtrl
         arrFilter[num].isFilterOn = filterOn;
         arrFilter[num].isReverseFilterOn = reverseFilterOn;
         arrFilter[num].selItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        Debug.Log(arrFilter[num].selItem);
         ItemFilterCheck();
         UIReset();
     }
@@ -287,6 +320,9 @@ public class SplitterCtrl : LogisticsCtrl
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
+        if (obj.GetComponent<WallCtrl>())
+            yield break;
+
         if (obj.GetComponent<Structure>() != null)
         {
             if (obj.TryGetComponent(out BeltCtrl belt))
@@ -365,5 +401,20 @@ public class SplitterCtrl : LogisticsCtrl
         }
 
         checkObj = true;
+    }
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        for (int a = 0; a < arrFilter.Length; a++)
+        {
+            FilterSaveData filterSaveData = new FilterSaveData();
+            filterSaveData.filterItemIndex = GeminiNetworkManager.instance.GetItemSOIndex(arrFilter[a].selItem);
+            filterSaveData.filterOn = arrFilter[a].isFilterOn;
+            filterSaveData.filterInvert = arrFilter[a].isReverseFilterOn;
+            data.filters.Add(filterSaveData);
+        }
+
+        return data;
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class LogisticsCtrl : Structure
@@ -94,11 +95,7 @@ public class LogisticsCtrl : Structure
         {
             if (itemObjList.Count > 0)
             {
-                foreach (ItemProps itemProps in itemObjList)
-                {
-                    playerInven.Add(itemProps.item, itemProps.amount);
-                    itemProps.itemPool.Release(itemProps.gameObject);
-                }
+                ItemPoolReleaseServerRpc();
             }
         }
         else
@@ -112,6 +109,24 @@ public class LogisticsCtrl : Structure
             }
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ItemPoolReleaseServerRpc()
+    {
+        ItemPoolReleaseClientRpc();
+    }
+
+    [ClientRpc]
+    void ItemPoolReleaseClientRpc()
+    {
+        foreach (ItemProps itemProps in itemObjList)
+        {
+            if(IsServer)
+                playerInven.Add(itemProps.item, itemProps.amount);
+            itemProps.itemPool.Release(itemProps.gameObject);
+        }
+    }
+    
 
     public override Dictionary<Item, int> PopUpItemCheck() 
     { 

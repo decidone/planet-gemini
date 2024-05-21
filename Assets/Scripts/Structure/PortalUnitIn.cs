@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 public class PortalUnitIn : PortalObj
 {
@@ -96,21 +97,41 @@ public class PortalUnitIn : PortalObj
         if(sendUnitList.Count > 0)
         {
             portalUnitOut.SpawnUnitCheck(sendUnitList[0]);
-            sendUnitList.RemoveAt(0);
-            DisplaySlotChange();
+            UnitListRemoveServerRpc(0);
         }
     }
 
-    public override void ConnectObj(GameObject othObj)
+
+    [ServerRpc(RequireOwnership = false)]
+    protected override void PortalObjConnectServerRpc()
     {
-        portalUnitOut = othObj.GetComponent<PortalUnitOut>();
+        ulong objID = NetworkObjManager.instance.FindNetObjID(portalUnitOut.gameObject);
+        ConnectObjClientRpc(objID);
+        ulong myObjID = NetworkObjManager.instance.FindNetObjID(myPortalUnitOut.gameObject);
+        ConnectMyObjClientRpc(myObjID);
     }
 
-    public override void ConnectMyObj(GameObject myObj)
+    [ServerRpc]
+    public override void ConnectObjServerRpc(ulong objId)
     {
-        myPortalUnitOut = myObj.GetComponent<PortalUnitOut>();
+        ConnectObjClientRpc(objId);
+    }
+    [ClientRpc]
+    public override void ConnectObjClientRpc(ulong objId)
+    {
+        portalUnitOut = NetworkObjManager.instance.FindNetworkObj(objId).GetComponent<PortalUnitOut>();
+    }
+    [ServerRpc]
+    public override void ConnectMyObjServerRpc(ulong objId)
+    {
+        ConnectMyObjClientRpc(objId);
     }
 
+    [ClientRpc]
+    public override void ConnectMyObjClientRpc(ulong objId)
+    {
+        myPortalUnitOut = NetworkObjManager.instance.FindNetworkObj(objId).GetComponent<PortalUnitOut>();
+    }
     public override void DestroyLineRenderer()
     {
         base.DestroyLineRenderer();
@@ -134,11 +155,10 @@ public class PortalUnitIn : PortalObj
 
     void UnitWithdraw(Slot slot)
     {
-        if (sInvenManager.prod == this && myPortalUnitOut != null)
+        if (sInvenManager.prod == this && myPortalUnitOut != null && slot.item != null)
         {
             myPortalUnitOut.SpawnUnitCheck(sendUnitList[slot.slotNum]);
-            sendUnitList.RemoveAt(slot.slotNum);
-            DisplaySlotChange();
+            UnitListRemoveServerRpc(slot.slotNum);
         }
     }
 
@@ -150,8 +170,7 @@ public class PortalUnitIn : PortalObj
             {
                 myPortalUnitOut.SpawnUnitCheck(sendUnitList[i]);
             }
-            sendUnitList.Clear();
-            DisplaySlotChange();
+            UnitListClearServerRpc();
         }
     }
 
@@ -161,16 +180,56 @@ public class PortalUnitIn : PortalObj
         WithdrawBtnFunc();
     }
 
+    [ServerRpc]
+    public void UnitListAddServerRpc(ulong unitId)
+    {
+        UnitListAddClientRpc(unitId);
+    }
+
+    [ClientRpc]
+    public void UnitListAddClientRpc(ulong unitId)
+    {
+        GameObject unit = NetworkObjManager.instance.FindNetworkObj(unitId).gameObject;
+        sendUnitList.Add(unit);
+        DisplaySlotChange();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UnitListRemoveServerRpc(int slotNum)
+    {
+        UnitListRemoveClientRpc(slotNum);
+    }
+
+    [ClientRpc]
+    public void UnitListRemoveClientRpc(int slotNum)
+    {
+        sendUnitList.RemoveAt(slotNum);
+        DisplaySlotChange();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UnitListClearServerRpc()
+    {
+        UnitListClearClientRpc();
+    }
+
+    [ClientRpc]
+    public void UnitListClearClientRpc()
+    {
+        sendUnitList.Clear();
+        DisplaySlotChange();
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!IsServer)
+            return;
+
         if (collision.collider.TryGetComponent(out UnitAi unitAi) && !sendUnitList.Contains(collision.gameObject) && sendUnitList.Count < 18)
         {
-            sendUnitList.Add(collision.gameObject);
-            unitAi.UnitSelImg(false);
-            UnitGroupCtrl unitGroup = GameManager.instance.gameObject.GetComponent<UnitGroupCtrl>();
-            unitGroup.DieUnitCheck(collision.gameObject);
-            DisplaySlotChange();
-            collision.gameObject.SetActive(false);
+            var objID = NetworkObjManager.instance.FindNetObjID(collision.gameObject);
+            UnitListAddServerRpc(objID);
+            unitAi.PortalUnitInFuncServerRpc();
         }
     }
 }

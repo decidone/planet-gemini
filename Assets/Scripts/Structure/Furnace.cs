@@ -75,7 +75,6 @@ public class Furnace : Production
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
-                //SendItem(output);
             }
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
@@ -89,7 +88,8 @@ public class Furnace : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
         List<Item> items = new List<Item>();

@@ -37,13 +37,15 @@ public class Miner : Production
 
                             if (slot.amount + minerCellCount <= maxAmount)
                             {
-                                inventory.Add(output, minerCellCount);
+                                if(IsServer)
+                                    inventory.Add(output, minerCellCount);
                                 prodTimer = 0;
                             }
                             else
                             {
                                 int addAmount = maxAmount - slot.amount;
-                                inventory.Add(output, addAmount);
+                                if (IsServer)
+                                    inventory.Add(output, addAmount);
                                 prodTimer = 0;
                             }
                         }
@@ -71,13 +73,15 @@ public class Miner : Production
 
                         if (slot.amount + minerCellCount <= maxAmount)
                         {
-                            inventory.Add(output, minerCellCount);
+                            if (IsServer)
+                                inventory.Add(output, minerCellCount);
                             prodTimer = 0;
                         }
                         else
                         {
                             int addAmount = maxAmount - slot.amount;
-                            inventory.Add(output, addAmount);
+                            if (IsServer)
+                                inventory.Add(output, addAmount);
                             prodTimer = 0;
                         }
                     }
@@ -99,7 +103,12 @@ public class Miner : Production
 
     void Init()
     {
-        Map map = GameManager.instance.map;
+        Map map;
+        if(isInHostMap)
+            map = GameManager.instance.hostMap;
+        else
+            map = GameManager.instance.clientMap;
+
         int x;
         int y;
 
@@ -188,8 +197,9 @@ public class Miner : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
-        
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
+
         sInvenManager.slots[0].outputSlot = true;
     }
 
@@ -205,8 +215,6 @@ public class Miner : Production
         {
             output = item;
             cooldown = _efficiency;
-            if (isTempBuild)
-                cooldown += 3;
             effiCooldown = cooldown;
             minerCellCount = _minerCellCount;
         }

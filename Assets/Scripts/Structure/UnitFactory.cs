@@ -8,7 +8,7 @@ public class UnitFactory : Production
 {
     public Vector2[] nearPos = new Vector2[8];
     public Vector2 spawnPos;
-    bool isSetPos;
+    bool isSetPos = false;
 
     List<GameObject> unitObjList;
 
@@ -18,7 +18,6 @@ public class UnitFactory : Production
     protected override void Start()
     {
         base.Start();
-        isSetPos = false;
         isGetLine = true;
         unitObjList = UnitList.instance.unitList;
     }
@@ -84,7 +83,8 @@ public class UnitFactory : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);
         rManager.recipeBtn.onClick.RemoveAllListeners();
@@ -109,6 +109,30 @@ public class UnitFactory : Production
         base.DestroyLineRenderer();
     }
 
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        ConnectedSetServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ConnectedSetServerRpc()
+    {
+        if (isSetPos)
+        {
+            ConnectedSetClientRpc(spawnPos);
+        }
+    }
+
+    [ClientRpc]
+    void ConnectedSetClientRpc(Vector3 pos)
+    {
+        if (IsServer)
+            return;
+
+        UnitSpawnPosSet(pos);
+    }
+
     public override void OpenRecipe()
     {
         rManager.OpenUI();
@@ -117,20 +141,12 @@ public class UnitFactory : Production
 
     public override void SetRecipe(Recipe _recipe, int index)
     {
-        if (recipe.name != null && recipe != _recipe)
-        {
-            sInvenManager.EmptySlot();
-        }
-        recipe = _recipe;
-        recipeIndex = index;
-        sInvenManager.ResetInvenOption();
+        base.SetRecipe(_recipe, index);
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
         sInvenManager.slots[2].SetInputItem(itemDic[recipe.items[2]]);
         sInvenManager.slots[3].SetInputItem(itemDic[recipe.items[3]]);
         sInvenManager.slots[3].outputSlot = true;
-        cooldown = recipe.cooldown;
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void GetUIFunc()
@@ -225,5 +241,17 @@ public class UnitFactory : Production
     {
         base.DestroyLineRenderer();
         isSetPos = false;
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        if (isSetPos)
+        {
+            data.connectedStrPos.Add(Vector3Extensions.FromVector3(spawnPos));
+        }
+
+        return data;
     }
 }

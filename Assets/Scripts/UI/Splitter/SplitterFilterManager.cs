@@ -71,8 +71,8 @@ public class SplitterFilterManager : MonoBehaviour
 
     public void ReleaseInven()
     {
-        ResetInvenOption();
         splitter = null;
+        ResetInvenOption();
     }
 
     public void ResetInvenOption()
@@ -81,17 +81,9 @@ public class SplitterFilterManager : MonoBehaviour
         {
             Slot slot = slots[i];
             slot.ResetOption();
+            slot.ClearSlot();
         }
     }
-
-    //public void InvenInit()
-    //{
-    //    for (int i = 0; i < slots.Length; i++)
-    //    {
-    //        Slot slot = slots[i];
-    //        slot.outputSlot = true;
-    //    }
-    //}
 
     public void SetItem(Item _item, int slotIndex)
     {
@@ -136,6 +128,7 @@ public class SplitterFilterManager : MonoBehaviour
         spliterFilterUI.SetActive(false);
         splitterFilterRecipe.CloseUI();
         gameManager.onUIChangedCallback?.Invoke(spliterFilterUI);
+        ReleaseInven();
     }
 
     void GetFillterInfo()

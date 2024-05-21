@@ -406,4 +406,20 @@ public class FluidFactoryCtrl : Production
     }
 
     public override void AddInvenItem() { }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        if (fluidName == "")
+            data.fluidType = -1;
+        else if(fluidName == "Water")
+            data.fluidType = 0;
+        else if (fluidName == "CrudeOil")
+            data.fluidType = 1;
+
+        data.storedFluid = saveFluidNum;
+
+        return data;
+    }
 }

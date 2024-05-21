@@ -41,13 +41,39 @@ public class Unloader : LogisticsCtrl
             {
                 GetDelayFunc(DelayGetList[0], 0);
             }
+            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
+            }
         }
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void ClientConnectSyncServerRpc()
+    {
+        base.ClientConnectSyncServerRpc();
+
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
+        ClientFillterSetClientRpc(itemIndex);
+    }
+
+    [ClientRpc]
+    void ClientFillterSetClientRpc(int itemIndex)
+    {
+        if (IsServer)
+            return;
+
+        SelectItemSetClientRpc(itemIndex);
     }
 
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)
     {
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
+
+        if (obj.GetComponent<WallCtrl>())
+            yield break;
 
         if (obj.TryGetComponent(out Structure structure))
         {
@@ -82,31 +108,38 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-    //[ClientRpc]
-    //protected override void GetItemClientRpc(int inObjIndex)
-    //{
-    //    itemGetDelay = true;
-    //    if (inObj[inObjIndex].TryGetComponent(out Production production))
-    //    {
-    //        if (production.UnloadItem(selectItem))
-    //        {
-    //            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
-    //            SendItem(itemIndex);
-    //        }
-    //        DelayGetItem();
-    //    }
-    //}
+    protected override void GetItem()
+    {
+        itemGetDelay = true;
+        Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
+
+        if ((inObj[getItemIndex].TryGetComponent(out Production inObjScript)
+                && !inObjScript.UnloadItemCheck(GetComponent<Unloader>().selectItem))
+                || outFactory.isFull)
+        {
+            GetItemIndexSet();
+            Invoke(nameof(DelayGetItem), structureData.SendDelay);
+            return;
+        }
+
+        GetItemServerRpc(getItemIndex);
+        GetItemIndexSet();
+    }
 
     protected override void GetItemFunc(int inObjIndex)
     {
         if (inObj[inObjIndex].TryGetComponent(out Production production))
         {
-            if (production.UnloadItem(selectItem))
+            if (production.UnloadItemCheck(selectItem))
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
-                SendItem(itemIndex);
+                if (IsServer)
+                {
+                    production.UnloadItem(selectItem);
+                    SendItem(itemIndex);
+                }
             }
-            DelayGetItem();
+            Invoke(nameof(DelayGetItem), structureData.SendDelay);
         }
     }
 
@@ -127,5 +160,21 @@ public class Unloader : LogisticsCtrl
     {
         if (clickEvent.unloaderManager != null)
             clickEvent.unloaderManager.UIReset();
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        FilterSaveData filterSaveData = new FilterSaveData();
+        filterSaveData.filterItemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
+        data.filters.Add(filterSaveData);        
+
+        return data;
+    }
+
+    public void GameStartFillterSet(int itemIndex)
+    {
+        selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
     }
 }
