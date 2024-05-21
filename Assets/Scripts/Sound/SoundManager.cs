@@ -71,8 +71,12 @@ public class SoundManager : NetworkBehaviour
         mainCamera = Camera.main;
         SFXPlayerSet();
         UIVolumeSet();
-        //임시로 브금 끄기
-        musicBGMToggle.isOn = false;
+    }
+
+    private void Start()
+    {
+        //임시로 소리끄기
+        audioMixer.SetFloat("Master", -80);
     }
 
     void Update()
