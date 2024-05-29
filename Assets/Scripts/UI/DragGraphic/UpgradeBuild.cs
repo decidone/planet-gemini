@@ -239,11 +239,13 @@ public class UpgradeBuild : DragFunc
                 for (int i = 0; i < ReturnUpgradeCost.GetItemCount(); i++)
                 {
                     gameManager.inventory.Add(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
+                    Overall.instance.OverallConsumptionCancel(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
                 }
 
                 for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
                 {
                     gameManager.inventory.Sub(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
+                    Overall.instance.OverallConsumption(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
                 }
                 obj.GetComponent<LogisticsCtrl>().level++;
             }

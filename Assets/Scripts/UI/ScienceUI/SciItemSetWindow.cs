@@ -104,6 +104,7 @@ public class SciItemSetWindow : MonoBehaviour
 
                 scienceBtn.ItemAddAmount(i, textInt);
                 gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
+                Overall.instance.OverallConsumption(ItemList.instance.itemDic[itemName], textInt);
                 itemObjList[i].GetComponent<InfoNeedItemUi>().AmountSet(scienceBtn.itemAmountList[i].Item1, scienceBtn.itemAmountList[i].Item2);
             }
         }

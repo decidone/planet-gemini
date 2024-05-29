@@ -39,6 +39,11 @@ public class Manufacturer : Production
                                     inventory.SubServerRpc(1, recipe.amounts[1]);
                                     inventory.SubServerRpc(2, recipe.amounts[2]);
                                     inventory.SlotAdd(3, output, recipe.amounts[recipe.amounts.Count - 1]);
+
+                                    Overall.instance.OverallConsumption(slot.item, recipe.amounts[0]);
+                                    Overall.instance.OverallConsumption(slot1.item, recipe.amounts[1]);
+                                    Overall.instance.OverallConsumption(slot2.item, recipe.amounts[2]);
+                                    Overall.instance.OverallProd(output, recipe.amounts[recipe.amounts.Count - 1]);
                                 }
 
                                 soundManager.PlaySFX(gameObject, "structureSFX", "Machine");

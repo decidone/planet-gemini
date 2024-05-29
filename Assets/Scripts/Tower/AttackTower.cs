@@ -216,7 +216,11 @@ public class AttackTower : TowerAi
                     rot = Quaternion.AngleAxis(angle, Vector3.forward);
 
                 if (IsServer)
+                {
                     inventory.SubServerRpc(0, 1);
+                    var slot = inventory.SlotCheck(0);
+                    Overall.instance.OverallConsumption(slot.item, 1);
+                }
 
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
                 if (!bulletPool.IsSpawned) bulletPool.Spawn();
@@ -226,7 +230,11 @@ public class AttackTower : TowerAi
             else
             {
                 if (IsServer)
+                {
                     inventory.SubServerRpc(0, 1);
+                    var slot = inventory.SlotCheck(0);
+                    Overall.instance.OverallConsumption(slot.item, 1);
+                }
 
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(aggroTarget.transform.position.x, aggroTarget.transform.position.y + 0.5f), Quaternion.identity);
                 if (!bulletPool.IsSpawned) bulletPool.Spawn();

@@ -93,7 +93,11 @@ public class EnergyGenerator : Production
             var slot = inventory.SlotCheck(0);
             if (fuel <= 50 && slot.item == FuelItem && slot.amount > 0)
             {
-                inventory.SubServerRpc(0, 1);
+                if (IsServer)
+                {
+                    inventory.SubServerRpc(0, 1);
+                    Overall.instance.OverallConsumption(slot.item, 1);
+                }
                 fuel += 50;
                 soundManager.PlaySFX(gameObject, "structureSFX", "Flames");
             }

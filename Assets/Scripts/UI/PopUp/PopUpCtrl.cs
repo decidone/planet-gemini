@@ -37,10 +37,12 @@ public class PopUpCtrl : MonoBehaviour
     public virtual void OpenUI() 
     { 
         gameObject.SetActive(true);
+        GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
     }
 
     public virtual void CloseUI()
     {
         gameObject.SetActive(false);
+        GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
     }
 }

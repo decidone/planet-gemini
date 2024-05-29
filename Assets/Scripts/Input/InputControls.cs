@@ -802,6 +802,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Overall"",
+                    ""type"": ""Button"",
+                    ""id"": ""b6f12cc3-4e90-45b3-8a33-29fe864a060e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -890,6 +899,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Load"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dc06ff96-9bc8-4a0e-a1fd-92f8e9667bf9"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Overall"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1619,6 +1639,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_EnergyCheck = m_HotKey.FindAction("EnergyCheck", throwIfNotFound: true);
         m_HotKey_Save = m_HotKey.FindAction("Save", throwIfNotFound: true);
         m_HotKey_Load = m_HotKey.FindAction("Load", throwIfNotFound: true);
+        m_HotKey_Overall = m_HotKey.FindAction("Overall", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -2107,6 +2128,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_EnergyCheck;
     private readonly InputAction m_HotKey_Save;
     private readonly InputAction m_HotKey_Load;
+    private readonly InputAction m_HotKey_Overall;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2119,6 +2141,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @EnergyCheck => m_Wrapper.m_HotKey_EnergyCheck;
         public InputAction @Save => m_Wrapper.m_HotKey_Save;
         public InputAction @Load => m_Wrapper.m_HotKey_Load;
+        public InputAction @Overall => m_Wrapper.m_HotKey_Overall;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2152,6 +2175,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Load.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnLoad;
                 @Load.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnLoad;
                 @Load.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnLoad;
+                @Overall.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnOverall;
+                @Overall.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnOverall;
+                @Overall.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnOverall;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2180,6 +2206,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Load.started += instance.OnLoad;
                 @Load.performed += instance.OnLoad;
                 @Load.canceled += instance.OnLoad;
+                @Overall.started += instance.OnOverall;
+                @Overall.performed += instance.OnOverall;
+                @Overall.canceled += instance.OnOverall;
             }
         }
     }
@@ -2455,6 +2484,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnEnergyCheck(InputAction.CallbackContext context);
         void OnSave(InputAction.CallbackContext context);
         void OnLoad(InputAction.CallbackContext context);
+        void OnOverall(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

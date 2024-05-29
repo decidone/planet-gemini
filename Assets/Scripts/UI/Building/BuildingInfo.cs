@@ -114,6 +114,7 @@ public class BuildingInfo : MonoBehaviour
             if(buildingNeedList[i].item != null)
             {
                 GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount);
+                Overall.instance.OverallConsumption(buildingNeedList[i].item, buildingNeedList[i].amount);
             }
         }
         GameManager.instance.BuildAndSciUiReset();
@@ -127,6 +128,7 @@ public class BuildingInfo : MonoBehaviour
             if (buildingNeedList[i].item != null)
             {
                 GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
+                Overall.instance.OverallConsumption(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
             }
         }
         GameManager.instance.BuildAndSciUiReset();

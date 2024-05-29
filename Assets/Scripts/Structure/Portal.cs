@@ -9,6 +9,8 @@ public class Portal : Production
     GameManager gameManager;
     [SerializeField]
     GameObject[] portalTile;
+    [SerializeField]
+    bool isHostPortal;
 
     PortalSciManager portalSci;
     Dictionary<string, GameObject> portalObjList = new Dictionary<string, GameObject>();
@@ -137,6 +139,7 @@ public class Portal : Production
             {
                 PortalItemIn portalItemIn = obj.GetComponent<PortalItemIn>();
                 portalItemIn.myPortal = this;
+                portalItemIn.isHostPortalObj = isHostPortal;
 
                 GameObject othObj = otherPortal.ReturnObj("PortalItemOut");
                 if (othObj)
@@ -149,6 +152,7 @@ public class Portal : Production
             {
                 PortalItemOut portalItemOut = obj.GetComponent<PortalItemOut>();
                 portalItemOut.myPortal = this;
+                portalItemOut.isHostPortalObj = isHostPortal;
 
                 GameObject othObj = otherPortal.ReturnObj("PortalItemIn");
                 if (othObj)

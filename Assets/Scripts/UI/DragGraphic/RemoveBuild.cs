@@ -95,6 +95,7 @@ public class RemoveBuild : DragFunc
             for (int i = 0; i < buildingData.GetItemCount(); i++)
             {
                 inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
+                Overall.instance.OverallConsumptionCancel(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
             }
         }
     }
