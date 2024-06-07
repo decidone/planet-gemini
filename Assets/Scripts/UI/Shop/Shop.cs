@@ -39,8 +39,10 @@ public class Shop : MonoBehaviour
         }
     }
 
-    public void UIOpened()
+    public void OpenUI()
     {
+        this.gameObject.SetActive(true);
+        GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
         if (!isPurchase)
         {
             SetUIAmount();
@@ -48,12 +50,14 @@ public class Shop : MonoBehaviour
         }
     }
 
-    public void UIClosed()
+    public void CloseUI()
     {
         if (!isPurchase)
         {
             GameManager.instance.inventory.onItemChangedCallback -= SetUIAmount;
         }
+        this.gameObject.SetActive(false);
+        GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
     }
 
     public void SetUIAmount()
@@ -85,6 +89,7 @@ public class Shop : MonoBehaviour
             {
                 foreach (Merch merch in merchList)
                 {
+                    Overall.instance.OverallPurchased(merch.item, merch.amount);
                     GameManager.instance.SubFinanceServerRpc(merch.price * merch.amount);
                     GameManager.instance.inventory.Add(merch.item, merch.amount);
                     merch.ResetValue();
@@ -105,6 +110,7 @@ public class Shop : MonoBehaviour
     {
         foreach (Merch merch in merchList)
         {
+            Overall.instance.OverallSold(merch.item, merch.amount);
             GameManager.instance.AddFinanceServerRpc(merch.price * merch.amount);
             GameManager.instance.inventory.Sub(merch.item, merch.amount);
             merch.ResetValue();

@@ -139,6 +139,51 @@ MonoBehaviour:
   space: 60
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+--- !u!1 &2820965660845355685
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8307041161557813293}
+  - component: {fileID: 4112712858064721748}
+  m_Layer: 0
+  m_Name: QuestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8307041161557813293
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2820965660845355685}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3986364635626952760}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4112712858064721748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2820965660845355685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fb5595e42bd56c47b865372a6d1a177, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  questListSO: {fileID: 0}
 --- !u!1 &2852855281402203645
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,6 +305,7 @@ GameObject:
   - component: {fileID: 198327214828012134}
   - component: {fileID: 8119477237859809883}
   - component: {fileID: 1592428971395791709}
+  - component: {fileID: 6855278147112794435}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -289,6 +335,7 @@ Transform:
   - {fileID: 1462144190}
   - {fileID: 7750293451702881428}
   - {fileID: 3975456454962030654}
+  - {fileID: 8307041161557813293}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -333,6 +380,7 @@ MonoBehaviour:
   isShopOpened: 0
   hostDragInven: {fileID: 4772606037921836923}
   clientDragInven: {fileID: 5938487978584807929}
+  openedUI: []
   selectPointPrefab: {fileID: 2420153466432160886, guid: df5c2e478c2b2cc45ac8d544fbe8953f, type: 3}
   focusedStructure: {fileID: 0}
   portal:
@@ -668,6 +716,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4effaa8a51221c5458a96473a35673db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6855278147112794435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ec769bd4216e9e438a3721a917415e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemListSO: {fileID: 11400000, guid: fb7046e3030870743a8b20eb19bf8824, type: 2}
+  unitListSO: {fileID: 11400000, guid: ad85e3b8314ca824cb42be9f056ee28a, type: 2}
 --- !u!1 &4287165206276915524
 GameObject:
   m_ObjectHideFlags: 0

@@ -780,6 +780,15 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Overall",
+                    "type": "Button",
+                    "id": "b6f12cc3-4e90-45b3-8a33-29fe864a060e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -868,6 +877,17 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Load",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dc06ff96-9bc8-4a0e-a1fd-92f8e9667bf9",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Overall",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

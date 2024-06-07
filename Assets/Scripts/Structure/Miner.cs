@@ -37,15 +37,21 @@ public class Miner : Production
 
                             if (slot.amount + minerCellCount <= maxAmount)
                             {
-                                if(IsServer)
+                                if (IsServer)
+                                {
                                     inventory.Add(output, minerCellCount);
+                                    Overall.instance.OverallProd(output, minerCellCount);
+                                }
                                 prodTimer = 0;
                             }
                             else
                             {
                                 int addAmount = maxAmount - slot.amount;
                                 if (IsServer)
+                                {
                                     inventory.Add(output, addAmount);
+                                    Overall.instance.OverallProd(output, addAmount);
+                                }
                                 prodTimer = 0;
                             }
                         }
@@ -74,14 +80,20 @@ public class Miner : Production
                         if (slot.amount + minerCellCount <= maxAmount)
                         {
                             if (IsServer)
+                            {
                                 inventory.Add(output, minerCellCount);
+                                Overall.instance.OverallProd(output, minerCellCount);
+                            }
                             prodTimer = 0;
                         }
                         else
                         {
                             int addAmount = maxAmount - slot.amount;
                             if (IsServer)
+                            {
                                 inventory.Add(output, addAmount);
+                                Overall.instance.OverallProd(output, addAmount);
+                            }
                             prodTimer = 0;
                         }
                     }

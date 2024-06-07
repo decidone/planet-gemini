@@ -14,13 +14,13 @@ public class ShopInteract : MonoBehaviour
 
     public void OpenUI()
     {
-        shopUI.SetActive(true);
-        shop.UIOpened();
+        //shopUI.SetActive(true);
+        shop.OpenUI();
     }
 
     public void CloseUI()
     {
-        shop.UIClosed();
-        shopUI.SetActive(false);
+        shop.CloseUI();
+        //shopUI.SetActive(false);
     }
 }

@@ -63,6 +63,7 @@ public class InputManager : MonoBehaviour
         isMapOpened = true;
         DisableControls();
         controls.MapCamera.Enable();
+        controls.HotKey.Escape.Enable();
     }
 
     public void CloseMap()
@@ -74,6 +75,8 @@ public class InputManager : MonoBehaviour
 
     void EnableControls()
     {
+        controls.HotKey.Escape.Disable();
+
         controls.MainCamera.Enable();
         controls.MapCamera.Enable();
         controls.Building.Enable();

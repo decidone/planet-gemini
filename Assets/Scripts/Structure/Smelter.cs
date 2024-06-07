@@ -36,6 +36,10 @@ public class Smelter : Production
                                     inventory.SubServerRpc(0, recipe.amounts[0]);
                                     inventory.SubServerRpc(1, recipe.amounts[1]);
                                     inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+
+                                    Overall.instance.OverallConsumption(slot.item, recipe.amounts[0]);
+                                    Overall.instance.OverallConsumption(slot1.item, recipe.amounts[1]);
+                                    Overall.instance.OverallProd(output, recipe.amounts[recipe.amounts.Count - 1]);
                                 }
 
                                 soundManager.PlaySFX(gameObject, "structureSFX", "Machine");

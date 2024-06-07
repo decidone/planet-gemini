@@ -52,7 +52,7 @@ public class GameManager : NetworkBehaviour
     public Inventory hostDragInven;
     public Inventory clientDragInven;
 
-    List<GameObject> openedUI;
+    public List<GameObject> openedUI;
     StructureClickEvent clickEvent;
     StructureClickEvent newClickEvent;
     LogisticsClickEvent logisticsClickEvent;
@@ -115,7 +115,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.Structure.StrClick.performed += ctx => StrClick();
         inputManager.controls.HotKey.Debug.performed += ctx => DebugMode();
         inputManager.controls.HotKey.Supply.performed += ctx => Supply();
-        inputManager.controls.HotKey.Escape.performed += ctx => CloseOpenedUI();
+        inputManager.controls.HotKey.Escape.performed += ctx => Escape();
         inputManager.controls.Inventory.PlayerInven.performed += ctx => Inven();
         inputManager.controls.HotKey.Building.performed += ctx => Building();
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
@@ -141,6 +141,8 @@ public class GameManager : NetworkBehaviour
 
     public Vector3 Teleport()
     {
+        CloseAllOpenedUI();
+
         if (isPlayerInHostMap)
         {
             map = clientMap;
@@ -161,6 +163,8 @@ public class GameManager : NetworkBehaviour
 
     public Vector3 TeleportMarket()
     {
+        CloseAllOpenedUI();
+
         if (!isPlayerInMarket)
         {
             isPlayerInMarket = true;
@@ -346,43 +350,66 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void CloseOpenedUI()
+    void Escape()
     {
         if (openedUI.Count > 0)
         {
-            switch (openedUI[openedUI.Count - 1].gameObject.name)
-            {
-                case "Inventory":
-                    pInvenManager.CloseUI();
-                    break;
-                case "StructureInfo":
-                    clickEvent.CloseUI();
-                    break;
-                case "RecipeMenu":
-                    rManager.CloseUI();
-                    break;
-                case "BuildingInven":
-                    bManager.CloseUI();
-                    break;
-                case "SplitterFillterMenu":
-                    logisticsClickEvent.CloseUI();
-                    break;
-                case "LogisticsMenu":
-                    logisticsClickEvent.CloseUI();
-                    break;
-                case "ItemSpwanerFilter":
-                    logisticsClickEvent.CloseUI();
-                    break;
-                case "ScienceTree":
-                    sTreeManager.CloseUI();
-                    break;
-                default:
-                    break;
-            }
+            CloseOpenedUI(openedUI.Count - 1);
         }
         else
         {
             tempOption.SetActive(!tempOption.activeSelf);
+        }
+    }
+
+    void CloseOpenedUI(int order)
+    {
+        switch (openedUI[order].gameObject.name)
+        {
+            case "Inventory":
+                pInvenManager.CloseUI();
+                break;
+            case "StructureInfo":
+                clickEvent.CloseUI();
+                break;
+            case "RecipeMenu":
+                rManager.CloseUI();
+                break;
+            case "BuildingInven":
+                bManager.CloseUI();
+                break;
+            case "SplitterFillterMenu":
+                logisticsClickEvent.CloseUI();
+                break;
+            case "LogisticsMenu":
+                logisticsClickEvent.CloseUI();
+                break;
+            case "ItemSpwanerFilter":
+                logisticsClickEvent.CloseUI();
+                break;
+            case "ScienceTree":
+                sTreeManager.CloseUI();
+                break;
+            case "Camera":
+                mapCameraController.ToggleMap();
+                break;
+            case "OverallDisplay":
+                OverallDisplay.instance.CloseUI();
+                break;
+            default:
+                if (openedUI[order].gameObject.TryGetComponent<Shop>(out Shop shop))
+                    shop.CloseUI();
+                else if (openedUI[order].gameObject.TryGetComponent<PopUpCtrl>(out PopUpCtrl popup))
+                    popup.CloseUI();
+                break;
+        }
+    }
+
+    public void CloseAllOpenedUI()
+    {
+        for (int i = openedUI.Count - 1; i >= 0; i--)
+        {
+            CloseOpenedUI(i);
         }
     }
 

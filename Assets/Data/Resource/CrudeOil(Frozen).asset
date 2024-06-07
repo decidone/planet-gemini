@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CrudeOil
   type: oil
-  distribution: 10
-  scale: 0.05
+  distribution: 1
+  scale: 0
   tiles:
   - {fileID: 11400000, guid: 7196423eadf1e8a4c8e60a1be5addf69, type: 2}
   item: {fileID: 11400000, guid: d3b8f380fcbbed94687a7cb8b0c806ac, type: 2}
   efficiency: 0
   level: 0
   biome: frozen
+  value: 0

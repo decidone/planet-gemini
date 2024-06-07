@@ -81,12 +81,12 @@ public class UpgradeConfirm : PopUpCtrl
 
     public override void OpenUI()
     {
-        gameObject.SetActive(true);
+        base.OpenUI();
     }
 
     public override void CloseUI()
     {
         ResetUi();
-        gameObject.SetActive(false);
+        base.CloseUI();
     }
 }

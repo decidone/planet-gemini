@@ -128,7 +128,11 @@ public class Refinery : FluidFactoryCtrl
                             if (prodTimer > effiCooldown)
                             {
                                 saveFluidNum -= recipe.amounts[0];
-                                inventory.SlotAdd(0, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                if (IsServer)
+                                {
+                                    inventory.SlotAdd(0, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                    Overall.instance.OverallProd(output, recipe.amounts[recipe.amounts.Count - 1]);
+                                }
                                 soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
                                 prodTimer = 0;
                             }

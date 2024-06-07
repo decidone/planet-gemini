@@ -102,7 +102,7 @@ public class MapCameraController : MonoBehaviour
         mapOffsetY = map.offsetY;
     }
 
-    void ToggleMap()
+    public void ToggleMap()
     {
         if (inputManager.mouseLeft || inputManager.mouseRight)
             return;
@@ -124,6 +124,8 @@ public class MapCameraController : MonoBehaviour
             CloseUI();
             inputManager.CloseMap();
         }
+
+        GameManager.instance.onUIChangedCallback?.Invoke(CameraObj);
     }
 
     void LeftClick()
