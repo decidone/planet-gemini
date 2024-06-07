@@ -38,8 +38,6 @@ public class UnitAi : UnitCommonAi
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
-        if (!IsServer)
-            return;
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
         selfHealInterval = 5;
         selfHealingAmount = 5f;
@@ -430,11 +428,32 @@ public class UnitAi : UnitCommonAi
         }
     }
 
+
     [ClientRpc]
     public override void TakeDamageClientRpc(float damage)
     {
-        base.TakeDamageClientRpc(damage);
+        if (!unitCanvas.activeSelf)
+            unitCanvas.SetActive(true);
+
+        float reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
+
+        hp -= reducedDamage;
+        hpBar.fillAmount = hp / unitCommonData.MaxHp;
         selfHealTimer = 0;
+
+        if(hp <= 0f && !dieCheck)
+        {
+            aIState = AIState.AI_Die;
+            hp = 0f;
+            dieCheck = true;
+
+            if (unitSelect)
+                unitGroupCtrl.DieUnitCheck(this.gameObject);
+            if (IsServer)
+            {
+                DieFuncServerRpc();
+            }
+        }
     }
 
     [ClientRpc]
@@ -453,11 +472,6 @@ public class UnitAi : UnitCommonAi
             {
                 monsterAi.RemoveTarget(this.gameObject);
             }
-        }
-
-        if (unitSelect)
-        {
-            unitGroupCtrl.DieUnitCheck(this.gameObject);
         }
 
         NetworkObjManager.instance.NetObjRemove(gameObject);
@@ -494,9 +508,11 @@ public class UnitAi : UnitCommonAi
     [ClientRpc]
     public void PortalUnitInFuncClientRpc()
     {
-        UnitSelImg(false);
-        UnitGroupCtrl unitGroup = GameManager.instance.gameObject.GetComponent<UnitGroupCtrl>();
-        unitGroup.DieUnitCheck(gameObject);
+        if (unitSelect)
+        {
+            UnitSelImg(false);
+            unitGroupCtrl.DieUnitCheck(gameObject);
+        }
         gameObject.SetActive(false);
     }
 

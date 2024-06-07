@@ -32,13 +32,6 @@ public class MonsterAi : UnitCommonAi
     bool isWaveColonyCallCheck = true;
     //bool goalPathBlocked = false;
 
-    protected override void Start()
-    {
-        base.Start();
-        spawner = GetComponentInParent<MonsterSpawner>().gameObject;
-        spawnPos = spawner.transform;
-    }
-
     protected override void FixedUpdate()
     {
         if (isScriptActive)
@@ -390,7 +383,8 @@ public class MonsterAi : UnitCommonAi
         {
             targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
             targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
-            spawnDist = Vector3.Distance(tr.position, spawnPos.position);
+            if(spawner != null)
+                spawnDist = Vector3.Distance(tr.position, spawnPos.position);
         }
     }
 
@@ -406,11 +400,11 @@ public class MonsterAi : UnitCommonAi
                 if (Obj.GetComponent<PlayerStatus>())
                     Obj.GetComponent<PlayerStatus>().TakeDamage(unitCommonData.Damage);
                 else if (Obj.GetComponent<UnitAi>())
-                    Obj.GetComponent<UnitAi>().TakeDamageClientRpc(unitCommonData.Damage);
+                    Obj.GetComponent<UnitAi>().TakeDamage(unitCommonData.Damage);
                 else if (Obj.GetComponent<TowerAi>())
-                    Obj.GetComponent<TowerAi>().TakeDamageClientRpc(unitCommonData.Damage);
+                    Obj.GetComponent<TowerAi>().TakeDamage(unitCommonData.Damage);
                 else if (Obj.GetComponent<Structure>())
-                    Obj.GetComponent<Structure>().TakeDamageClientRpc(unitCommonData.Damage);
+                    Obj.GetComponent<Structure>().TakeDamage(unitCommonData.Damage);
             }
         }
     }
@@ -620,7 +614,10 @@ public class MonsterAi : UnitCommonAi
             }
         }
 
-        spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType, waveState);
+        if(spawner != null)
+        {
+            spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType, waveState);
+        }
         battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {

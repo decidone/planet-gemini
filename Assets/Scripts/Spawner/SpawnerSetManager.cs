@@ -39,6 +39,9 @@ public class SpawnerSetManager : NetworkBehaviour
     Map hostMap;
     Map clientMap;
 
+    [SerializeField]
+    Sprite[] spawnerSprite;
+
     #region Singleton
     public static SpawnerSetManager instance;
 
@@ -156,35 +159,17 @@ public class SpawnerSetManager : NetworkBehaviour
 
             Vector2 newPoint;
 
-            if (isHostMap)
+            for (int i = 0; i < levelData.maxSpawner; i++)
             {
-                for (int i = 0; i < levelData.maxSpawner; i++)
+                do
                 {
-                    do
-                    {
-                        int x = (int)Random.Range(-xRadius, xRadius);
-                        int y = (int)Random.Range(-yRadius, yRadius);
+                    int x = (int)Random.Range(-xRadius, xRadius);
+                    int y = (int)Random.Range(-yRadius, yRadius);
 
-                        newPoint = centerPos + new Vector2(x, y);
-                    } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake");    // 거리 체크하여 가까우면 다시 돌리기
+                    newPoint = centerPos + new Vector2(x, y);
+                } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake" || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "Cliff");    // 거리 체크하여 가까우면 다시 돌리기
 
-                    randomPoints[i] = newPoint;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < levelData.maxSpawner; i++)
-                {
-                    do
-                    {
-                        int x = (int)Random.Range(-xRadius, xRadius);
-                        int y = (int)Random.Range(-yRadius, yRadius);
-
-                        newPoint = centerPos + new Vector2(x, y);
-                    } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake");    // 거리 체크하여 가까우면 다시 돌리기
-
-                    randomPoints[i] = newPoint;
-                }
+                randomPoints[i] = newPoint;
             }
 
             int index = 0;
@@ -210,6 +195,19 @@ public class SpawnerSetManager : NetworkBehaviour
                 monsterSpawner.groupManager = spawnerGroupManager;
                 monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos, isHostMap);
                 monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel, isHostMap);
+
+                if(areaLevel == 1)
+                {
+                    spawnerObj.GetComponent<SpriteRenderer>().sprite = spawnerSprite[0];
+                }
+                else if (areaLevel == 2 || areaLevel == 3)
+                {
+                    spawnerObj.GetComponent<SpriteRenderer>().sprite = spawnerSprite[1];
+                }
+                else if (areaLevel == 4 || areaLevel == 5)
+                {
+                    spawnerObj.GetComponent<SpriteRenderer>().sprite = spawnerSprite[2];
+                }
                 index++;
             }
 

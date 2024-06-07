@@ -75,7 +75,7 @@ public class UnitCommonAi : NetworkBehaviour
     public AIState aIState;
     public AttackState attackState;
 
-    bool dieCheck = false;
+    protected bool dieCheck = false;
 
     public SoundManager soundManager;
     protected BattleBGMCtrl battleBGM;
@@ -276,6 +276,20 @@ public class UnitCommonAi : NetworkBehaviour
         attackState = AttackState.Waiting;        
     }
 
+    public virtual void TakeDamage(float damage)
+    {
+        if (!dieCheck)
+        {
+            TakeDamageServerRpc(damage);
+        }
+    }
+
+    [ServerRpc]
+    public virtual void TakeDamageServerRpc(float damage)
+    {
+        TakeDamageClientRpc(damage);
+    }
+
     [ClientRpc]
     public virtual void TakeDamageClientRpc(float damage)
     {
@@ -294,8 +308,14 @@ public class UnitCommonAi : NetworkBehaviour
             aIState = AIState.AI_Die;
             hp = 0f;
             dieCheck = true;
-            DieFuncClientRpc();
+            DieFuncServerRpc();
         }
+    }
+
+    [ServerRpc]
+    protected virtual void DieFuncServerRpc()
+    {
+        DieFuncClientRpc();
     }
 
     [ClientRpc]
@@ -308,10 +328,13 @@ public class UnitCommonAi : NetworkBehaviour
     }
 
     public virtual void RemoveTarget(GameObject target) 
-    {
+    {            
+        if (target.GetComponent<MonsterSpawner>())
+            Debug.Log("MonsterSpawner");
         if (targetList.Contains(target))
         {
             targetList.Remove(target);
+
         }
         if (targetList.Count == 0)
         {

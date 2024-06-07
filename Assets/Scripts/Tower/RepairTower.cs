@@ -14,22 +14,15 @@ public class RepairTower : TowerAi
 
         if (!isPreBuilding)
         {
-            if (!isRuin)
+            searchTimer += Time.deltaTime;
+
+            if (searchTimer >= searchInterval)
             {
-                searchTimer += Time.deltaTime;
-
-                if (searchTimer >= searchInterval)
-                {
-                    SearchObjectsInRange();
-                    searchTimer = 0f; // 탐색 후 타이머 초기화
-                }
-
-                RepairTowerAiCtrl();
+                SearchObjectsInRange();
+                searchTimer = 0f; // 탐색 후 타이머 초기화
             }
-        }
-        if (isRuin && isRepair)
-        {
-            RepairFunc(false);
+
+            RepairTowerAiCtrl();            
         }
     }
 
@@ -40,12 +33,12 @@ public class RepairTower : TowerAi
         foreach (Collider2D collider in colliders)
         {
             GameObject tower = collider.gameObject;
-            if (tower == this.gameObject)
-                continue;
+            //if (tower == this.gameObject)
+            //    continue;
             if (tower.TryGetComponent(out Structure structure))
             {
-                if (structure.repairTower == null && !structure.isPreBuilding 
-                    && !TowerList.Contains(tower) && !tower.GetComponent<RepairTower>())
+                if (structure.repairTower == null && !structure.isPreBuilding
+                    && !TowerList.Contains(tower) && !structure.GetComponent<Portal>())
                 {
                     TowerList.Add(tower);
                     structure.repairTower = this;
@@ -90,25 +83,11 @@ public class RepairTower : TowerAi
 
             if (towerAi != null)
             {
-                if (!towerAi.isRuin)
-                {
-                    towerAi.HealFunc(towerData.Damage);
-                }
-                else if (!towerAi.isRepair)
-                {
-                    towerAi.RepairSet(true);
-                }
+                towerAi.HealFunc(towerData.Damage);
             }
             else if (factory != null)
             {
-                if (!factory.isRuin)
-                {
-                    factory.HealFunc(towerData.Damage);
-                }
-                else if (!factory.isRepair)
-                {
-                    factory.RepairSet(true);
-                }
+                factory.HealFunc(towerData.Damage);
             }
         }
     }

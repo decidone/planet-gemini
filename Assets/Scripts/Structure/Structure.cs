@@ -48,8 +48,8 @@ public class Structure : NetworkBehaviour
     [SerializeField]
     protected Image hpBar;
     protected float hp;
-    [HideInInspector]
-    public bool isRuin = false;
+    //[HideInInspector]
+    //public bool isRuin = false;
 
     [HideInInspector]
     public bool isRepair = false;
@@ -174,11 +174,11 @@ public class Structure : NetworkBehaviour
     {
         if (!removeState)
         {
-            if (isRuin && isRepair)
+            if (isRepair)
             {
                 RepairFunc(false);
             }
-            else if (isPreBuilding && isSetBuildingOk && !isRuin)
+            else if (isPreBuilding && isSetBuildingOk)
             {
                 RepairFunc(true);
             }
@@ -879,6 +879,17 @@ public class Structure : NetworkBehaviour
 
     protected virtual void SubFromInventory() { }
 
+    public void TakeDamage(float damage)
+    {
+        TakeDamageServerRpc(damage);
+    }
+
+    [ServerRpc]
+    public void TakeDamageServerRpc(float damage)
+    {
+        TakeDamageClientRpc(damage);
+    }
+
     [ClientRpc]
     public void TakeDamageClientRpc(float damage)
     {
@@ -897,7 +908,7 @@ public class Structure : NetworkBehaviour
         hp -= damage;
         hpBar.fillAmount = hp / structureData.MaxHp[level];
 
-        if (IsServer && hp <= 0f && !isRuin)
+        if (IsServer && hp <= 0f)
         {
             hp = 0f;
             DieFuncClientRpc();
@@ -913,7 +924,6 @@ public class Structure : NetworkBehaviour
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         ColliderTriggerOnOff(true);
-        isRuin = true;
 
         soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
 
@@ -971,6 +981,9 @@ public class Structure : NetworkBehaviour
         itemProps.amount = itemAmount;
         itemProps.transform.position = transform.position;
         itemProps.ResetItemProps();
+
+        NetworkObject itemNetworkObject = itemProps.GetComponent<NetworkObject>();
+        itemNetworkObject.Spawn(true);        
     }
 
     protected virtual void ItemDrop() { }
@@ -1042,7 +1055,6 @@ public class Structure : NetworkBehaviour
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.enabled = false;
         repairGauge = 0.0f;
-        isRuin = false;
         isPreBuilding = false;
         ColliderTriggerOnOff(false);
     }

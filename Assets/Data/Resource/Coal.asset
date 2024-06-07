@@ -17,7 +17,17 @@ MonoBehaviour:
   distribution: 10
   scale: 0.05
   tiles:
-  - {fileID: 11400000, guid: 168587af6b1bf264e970f725f36f82c5, type: 2}
+  - {fileID: 11400000, guid: a67de68cb5922eb4891fca16de49990a, type: 2}
+  - {fileID: 11400000, guid: 389d20000d5c29e4e8fa0bfb9b86b366, type: 2}
+  - {fileID: 11400000, guid: 2b58d7b0492fa2a4c8d4f879f6d164c5, type: 2}
+  - {fileID: 11400000, guid: 012c8652db2ed154ea6badaa03cd36aa, type: 2}
+  - {fileID: 11400000, guid: 6bbe57fbade41d74397dfb938f99ca21, type: 2}
+  - {fileID: 11400000, guid: 0be4e1597d2b4c641bd2c06ca504aa5d, type: 2}
+  - {fileID: 11400000, guid: 39fe32e7c66146f4ba5e989375c753a0, type: 2}
+  - {fileID: 11400000, guid: c96168ca348b6d942abb814d7acc6c52, type: 2}
+  - {fileID: 11400000, guid: d36a604483604ff4293c34a666b02cfa, type: 2}
+  - {fileID: 11400000, guid: 841cfd98934310949a456d5aced93b73, type: 2}
+  - {fileID: 11400000, guid: 7c73eb7e248611941bc6d04fed2ab432, type: 2}
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   efficiency: 3
   level: 0

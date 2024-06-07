@@ -41,8 +41,7 @@ public class PortalItemIn : PortalObj
     {
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
-        //sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
     public override void CloseUI()

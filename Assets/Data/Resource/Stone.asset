@@ -17,8 +17,19 @@ MonoBehaviour:
   distribution: 10
   scale: 0.05
   tiles:
-  - {fileID: 11400000, guid: 3759a893bc0c58a41971fd4107f967c7, type: 2}
+  - {fileID: 11400000, guid: cb119cb934b53d043a0bf578855f7181, type: 2}
+  - {fileID: 11400000, guid: 1bd50395d705ac84eb8af01cc0369b05, type: 2}
+  - {fileID: 11400000, guid: 664816093f1c25d45a1c38eb2b242a45, type: 2}
+  - {fileID: 11400000, guid: f5f9c957e7204ff48879889764f2acdb, type: 2}
+  - {fileID: 11400000, guid: 32266c6e8cbfff144861012c857bf06b, type: 2}
+  - {fileID: 11400000, guid: 43ff4285a94a68d49a58787e68b93a94, type: 2}
+  - {fileID: 11400000, guid: e86a2aed9f135884485229377c3281b9, type: 2}
+  - {fileID: 11400000, guid: 97c9a0e1627866c43bdf3e580fc81388, type: 2}
+  - {fileID: 11400000, guid: 90e2a4d45e620a84a8180ac00651eae8, type: 2}
+  - {fileID: 11400000, guid: 838a1959270adc24ca898808ede9bdeb, type: 2}
+  - {fileID: 11400000, guid: 3635a4a36eede2b4e8bde7637d70bd80, type: 2}
   item: {fileID: 11400000, guid: c5a82ea7dfa96c24893abe127b74a61c, type: 2}
   efficiency: 3
   level: 0
   biome: all
+  value: 0

@@ -60,7 +60,7 @@ public class TowerSingleAttackFx : NetworkBehaviour
     {
         if (!IsServer)
             return;
-        if (collision.CompareTag("Monster") && !alreadyHit)
+        if (collision.CompareTag("Monster") || collision.CompareTag("Spawner"))
         {
             if (!alreadyHit)
             {
@@ -73,11 +73,11 @@ public class TowerSingleAttackFx : NetworkBehaviour
 
             if (collision.TryGetComponent(out MonsterAi monster))
             {
-                monster.TakeDamageClientRpc(damage);
+                monster.TakeDamage(damage);
             }
             else if (collision.TryGetComponent(out MonsterSpawner spawner))
             {
-                spawner.GetComponent<MonsterSpawner>().TakeDamage(damage, attackUnit);
+                spawner.TakeDamage(damage, attackUnit);
             }
         }
     }

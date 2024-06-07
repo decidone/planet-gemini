@@ -79,11 +79,11 @@ public class SteamGenerator : FluidFactoryCtrl
         #region ProductionUpdate
         if (!removeState)
         {
-            if (isRuin && isRepair)
+            if (isRepair)
             {
                 RepairFunc(false);
             }
-            else if (isPreBuilding && isSetBuildingOk && !isRuin)
+            else if (isPreBuilding && isSetBuildingOk)
             {
                 RepairFunc(true);
             }

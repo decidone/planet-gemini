@@ -95,24 +95,78 @@ public class InfoWindow : MonoBehaviour
 
                 if (item != null)
                 {
-                    int value;
-                    bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out value);
-                    bool isEnough = hasItem && value >= scienceInfoData.amounts[index];
-
-                    if (isEnough && totalAmountsEnough)
-                        totalAmountsEnough = true;
-                    else
-                        totalAmountsEnough = false;
-
-                    if(needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
+                    if (item.tier != -1)
                     {
-                        itemUi.icon.sprite = item.icon;
-                        itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
-                        if(value == 0)
-                            itemUi.amount.color = Color.red;
+                        int value;
+                        bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out value);
+                        bool isEnough = hasItem && value >= scienceInfoData.amounts[index];
+
+                        if (isEnough && totalAmountsEnough)
+                            totalAmountsEnough = true;
                         else
-                            itemUi.amount.color = isEnough ? Color.white : Color.yellow;
-                        needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
+                            totalAmountsEnough = false;
+
+                        if (needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
+                        {
+                            itemUi.icon.sprite = item.icon;
+                            itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
+                            if (scienceBtn.ItemFullCheck())
+                            {
+                                itemUi.amount.color = Color.white;
+                            }
+                            else
+                            {
+                                if (value == 0)
+                                    itemUi.amount.color = Color.red;
+                                else
+                                    itemUi.amount.color = isEnough ? Color.white : Color.yellow;
+                            }
+
+                            needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
+                        }
+                    }
+                    else
+                    {
+                        int useAmount = 0;
+
+                        if (itemName == "Diamond")
+                        {
+                            useAmount = 10000 * scienceInfoData.amounts[index];
+                        }
+                        else if (itemName == "Ruby")
+                        {
+                            useAmount = 100 * scienceInfoData.amounts[index];
+                        }
+                        else if (itemName == "Amethyst")
+                        {
+                            useAmount = 1 * scienceInfoData.amounts[index];
+                        }
+
+                        bool isEnough = gameManager.finance.finance >= useAmount;  // 앞에서 사용하고 남은 금액 보다 많은지
+
+                        if (isEnough && totalAmountsEnough)
+                            totalAmountsEnough = true;
+                        else
+                            totalAmountsEnough = false;
+
+                        if (needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
+                        {
+                            itemUi.icon.sprite = item.icon;
+                            itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
+                            if (scienceBtn.ItemFullCheck())
+                            {
+                                itemUi.amount.color = Color.white;
+                            }
+                            else
+                            {
+                                if (!isEnough)
+                                    itemUi.amount.color = Color.red;
+                                else
+                                    itemUi.amount.color = isEnough ? Color.white : Color.yellow;
+                            }
+
+                            needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
+                        }
                     }
                 }
             }

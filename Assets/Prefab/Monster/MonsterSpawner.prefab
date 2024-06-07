@@ -62,14 +62,14 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b60bf740eeec96541ad4d27c544f778a, type: 3}
-  m_Type: 3
+  m_Sprite: {fileID: 21300000, guid: b80f3fe12832da9428c0b96ac5dd466c, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
-  m_FillCenter: 1
+  m_FillCenter: 0
   m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
@@ -156,12 +156,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 846619681, guid: 5e106a86825938f4cb02fd6ad417b413, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.875, y: 1.875}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -181,19 +181,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureData: {fileID: 11400000, guid: 1daea59d30eb91747a451135e9c59bda, type: 2}
   groupManager: {fileID: 0}
-  extraSpawnNum: 0
   currentWeakSpawn: 0
   currentNormalSpawn: 0
   currentStrongSpawn: 0
   totalMonsterList: []
   guardianList: []
+  waveMonsterList: []
   nearUserObjExist: 0
   unitSprite: {fileID: 4028291071532341099}
   unitCanvas: {fileID: 5496904829296565877}
   hpBar: {fileID: 4936597692029941388}
   hp: 0
-  waveStart: 0
+  dieCheck: 0
+  waveTimer: 0
   searchColl: {fileID: 7283164378971898256}
+  isInHostMap: 0
 --- !u!50 &5546485786390217281
 Rigidbody2D:
   serializedVersion: 4
@@ -232,8 +234,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1.875, y: 1.875}
+    newSize: {x: 1.875, y: 1.875}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

@@ -601,12 +601,14 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SubFinanceServerRpc(int money)
     {
+        Debug.Log("SubFinanceServerRpc");
         SubFinanceClientRpc(money);
     }
 
     [ClientRpc]
     public void SubFinanceClientRpc(int money)
     {
+        Debug.Log("SubFinanceClientRpc");
         finance.SubFinance(money);
     }
 }

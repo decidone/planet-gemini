@@ -19,11 +19,11 @@ public class SpinRobot : UnitAi
         {
             if (aggroTarget.TryGetComponent(out MonsterAi monster))
             {
-                monster.TakeDamageClientRpc(unitCommonData.Damage);
+                monster.TakeDamage(unitCommonData.Damage);
             }
             else if (aggroTarget.TryGetComponent(out MonsterSpawner spawner))
             {
-                spawner.GetComponent<MonsterSpawner>().TakeDamage(unitCommonData.Damage, gameObject);
+                spawner.TakeDamage(unitCommonData.Damage, gameObject);
             }
         }
     }

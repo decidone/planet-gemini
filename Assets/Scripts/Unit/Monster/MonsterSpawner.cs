@@ -38,7 +38,7 @@ public class MonsterSpawner : NetworkBehaviour
     public List<MonsterAi> waveMonsterList = new List<MonsterAi>();
     // 가디언은 초기에 배치하고 그 이후로는 관리 안함
 
-    int areaLevel;
+    public int areaLevel;
     AreaLevelData areaLevelData;
     string biome;
 
@@ -51,7 +51,7 @@ public class MonsterSpawner : NetworkBehaviour
     public GameObject unitCanvas;
     public Image hpBar;
     public float hp;
-    bool dieCheck = false;
+    public bool dieCheck = false;
     protected BoxCollider2D boxColl2D;
     bool extraSpawn;
     bool takeDamageCheck;
@@ -85,10 +85,6 @@ public class MonsterSpawner : NetworkBehaviour
 
     void Start()
     {
-        //weakMonster = monsterSpawn.weakMonsters;
-        //normalMonster = monsterSpawn.normalMonsters;
-        //strongMonster = monsterSpawn.strongMonsters;
-        //guardian = monsterSpawn.guardian;
         boxColl2D = GetComponent<BoxCollider2D>();
         spawnInterval = 20;
         guardianCallInterval = 2;
@@ -102,7 +98,7 @@ public class MonsterSpawner : NetworkBehaviour
 
     void Update()
     {
-        if (!IsServer)
+        if (!IsServer || dieCheck)
             return;
 
         if (totalSpawnNum > totalMonsterList.Count)
@@ -146,13 +142,6 @@ public class MonsterSpawner : NetworkBehaviour
                 WaveStart();
             }
         }
-
-
-        //if(waveStart)
-        //{ 
-        //    WaveStart();
-        //    waveStart = false;
-        //}
     }
 
     public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos, bool isHostMap)
@@ -161,6 +150,7 @@ public class MonsterSpawner : NetworkBehaviour
         areaLevel = levelData.areaLevel;
         biome = _biome;
         isInHostMap = isHostMap;
+        hp = structureData.MaxHp[levelData.areaLevel -1];
 
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
@@ -308,15 +298,7 @@ public class MonsterSpawner : NetworkBehaviour
 
         newMonster.transform.SetParent(this.transform, false);
 
-        int x = 0;
-        int y = 0;
-        if (!nearUserObjExist)
-        {
-            x = (int)Random.Range(-5, 5);
-            y = (int)Random.Range(-5, 5);
-        }
-
-        Vector3 setPos = this.transform.position + new Vector3(x, y);
+        Vector3 setPos = this.transform.position;
         newMonster.transform.position = setPos;
 
         MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
@@ -384,22 +366,32 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public virtual void TakeDamage(float damage, GameObject attackObj)
+    public void TakeDamage(float damage, GameObject attackObj)
+    {
+        if (!takeDamageCheck)
+            GuardianCall(attackObj);
+        TakeDamageServerRpc(damage);
+    }
+
+    [ServerRpc]
+    void TakeDamageServerRpc(float damage)
+    {
+        TakeDamageClientRpc(damage);
+    }
+
+    [ClientRpc]
+    void TakeDamageClientRpc(float damage)
     {
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
 
-        if (!takeDamageCheck)
-            GuardianCall(attackObj);
-
         hp -= damage;
         hpBar.fillAmount = hp / structureData.MaxHp[areaLevel - 1];
-
         if (hp <= 0f && !dieCheck)
         {
             hp = 0f;
             dieCheck = true;
-            //DieFunc();
+            DieFunc();
         }
     }
 
@@ -409,6 +401,12 @@ public class MonsterSpawner : NetworkBehaviour
         unitCanvas.SetActive(false);
         monsterSpawnerManager.AreaGroupRemove(this, areaLevel, isInHostMap);
         boxColl2D.enabled = false;
+
+        if (!IsServer)
+            return;
+
+        GetComponentInChildren<SpawnerSearchColl>().DieFunc();
+        WaveStart();
     }
 
     public void SearchObj(bool find)
@@ -560,6 +558,7 @@ public class MonsterSpawner : NetworkBehaviour
         data.extraSpawnNum = extraSpawnNum;
         data.waveState = waveState;
         data.waveTimer = waveTimer;
+        data.dieCheck = dieCheck;
         Debug.Log(waveTimer + " : " + waveState);
          
         foreach (MonsterAi monster in totalMonsterList)

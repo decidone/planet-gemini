@@ -23,6 +23,14 @@ public class SpawnerGroupManager : NetworkBehaviour
         }
     }
 
+    public void SpawnerDie(MonsterSpawner spawner)
+    {
+        if (spawnerList.Contains(spawner))
+        {
+            spawnerList.Remove(spawner);
+        }
+    }
+
     public void WaveSet(Vector3 WaveCenterPos)
     {
         foreach (MonsterSpawner spawner in spawnerList)

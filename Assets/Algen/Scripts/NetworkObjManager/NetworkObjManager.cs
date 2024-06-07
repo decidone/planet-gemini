@@ -29,8 +29,6 @@ public class NetworkObjManager : NetworkBehaviour
 
     public void NetObjAdd(GameObject netObj)
     {
-        //networkObjects.Add(netObj);
-
         if(netObj.TryGetComponent(out Portal portal))
         {
             netPortals.Add(portal);
@@ -55,30 +53,44 @@ public class NetworkObjManager : NetworkBehaviour
 
     public void NetObjRemove(GameObject netObj)
     {
-        NetObjRemoveClientRpc(FindNetObjID(netObj));
+        NetObjRemove(FindNetObjID(netObj));
     }
 
-    [ClientRpc]
-    public void NetObjRemoveClientRpc(ulong netObjID)
+    public void NetObjRemove(ulong netObjID)
     {
         NetworkObject netObj = FindNetworkObj(netObjID);
 
-        if (netObj.TryGetComponent(out Structure structure))
+        if(netObj.GetComponent<BeltCtrl>())
+        {
+            networkBelts.Remove(netObj.GetComponent<BeltCtrl>());
+        }
+        else if (netObj.TryGetComponent(out Structure structure))
         {
             netStructures.Remove(structure);
         }
-        else if (netObj.TryGetComponent(out BeltGroupMgr beltGroupMgr))
+        else if (netObj.GetComponent<BeltGroupMgr>())
         {
-            netBeltGroupMgrs.Remove(beltGroupMgr);
+            BeltGroupRemoveServerRpc(netObjID);
+            //netBeltGroupMgrs.Remove(beltGroupMgr);
         }
         else if (netObj.TryGetComponent(out UnitCommonAi unitCommonAi))
         {
             netUnitCommonAis.Remove(unitCommonAi);
         }
-        else
-        {
-            networkBelts.Remove(netObj.GetComponent<BeltCtrl>());
-        }
+    }
+
+    [ServerRpc]
+    void BeltGroupRemoveServerRpc(ulong netObjID)
+    {
+        BeltGroupRemoveClientRpc(netObjID);
+    }
+
+    [ClientRpc]
+    void BeltGroupRemoveClientRpc(ulong netObjID)
+    {
+        NetworkObject netObj = FindNetworkObj(netObjID);
+        netObj.TryGetComponent(out BeltGroupMgr beltGroupMgr);
+        netBeltGroupMgrs.Remove(beltGroupMgr);
     }
 
     public ulong FindNetObjID(GameObject obj)

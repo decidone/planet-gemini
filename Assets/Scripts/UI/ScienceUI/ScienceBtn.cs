@@ -135,7 +135,7 @@ public class ScienceBtn : MonoBehaviour
         }
     }
 
-    bool ItemFullCheck()
+    public bool ItemFullCheck()
     {
         foreach (var itemAmount in itemAmountList)
         {

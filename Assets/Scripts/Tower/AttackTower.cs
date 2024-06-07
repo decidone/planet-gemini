@@ -35,7 +35,7 @@ public class AttackTower : TowerAi
 
         if (!isPreBuilding)
         {
-            if (IsServer && !isRuin)
+            if (IsServer)
             {
                 searchTimer += Time.deltaTime;
 
@@ -71,10 +71,6 @@ public class AttackTower : TowerAi
                     AttackTargetDisCheck();
                 }
             }
-        }
-        if (isRuin && isRepair)
-        {
-            RepairFunc(false);
         }
     }
 

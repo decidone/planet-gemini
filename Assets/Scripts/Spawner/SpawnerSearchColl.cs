@@ -14,6 +14,28 @@ public class SpawnerSearchColl : NetworkBehaviour
         monsterSpawner = GetComponentInParent<MonsterSpawner>();
     }
 
+    public void DieFunc()
+    {
+        Debug.Log(inObjList.Count);
+        foreach (GameObject target in inObjList)
+        {
+            if (target != null)
+            {
+                Debug.Log(target.name);
+                if (target.TryGetComponent(out UnitAi unit))
+                {
+                    unit.RemoveTarget(monsterSpawner.gameObject);
+                    Debug.Log("unitCall");
+                }
+                else if (target.TryGetComponent(out AttackTower tower))
+                {
+                    tower.RemoveMonster(monsterSpawner.gameObject);
+                }
+            }
+        }
+        GetComponent<CircleCollider2D>().enabled = false;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!inObjList.Contains(collision.gameObject) && IsServer)
