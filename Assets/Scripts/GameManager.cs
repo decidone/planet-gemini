@@ -347,10 +347,6 @@ public class GameManager : NetworkBehaviour
             }
             AddFinanceServerRpc(100000);
             BuildAndSciUiReset();
-
-            //Overall.instance.OverallProd(ItemList.instance.itemList[0], 199999);
-            //Overall.instance.OverallConsumption(ItemList.instance.itemList[0], 399999);
-            //Overall.instance.OverallPurchased(ItemList.instance.itemList[0], 299999);
         }
     }
 

@@ -478,6 +478,8 @@ public class MapGenerator : MonoBehaviour
                     scaledHeight = (biomes.Count - 1);
 
                 Cell cell = new Cell();
+                cell.x = x;
+                cell.y = y;
                 cell.biome = biomes[Mathf.FloorToInt(scaledHeight)][Mathf.FloorToInt(scaledTemp)];
                 map.mapData[x].Add(cell);
             }
@@ -660,31 +662,90 @@ public class MapGenerator : MonoBehaviour
             {
                 for (int y = 0; y < height; y++)
                 {
-                    float oreNoise = Mathf.PerlinNoise(
+                    if (resource.type == "oil")
+                    {
+                        int randomNum = random.Next(1, 1000);
+                        if (randomNum <= resource.distribution)
+                        {
+                            // 해당 메서드는 사막, 빙하 리소스에서 각각 1번씩 2번 돌아감. 따라서 여기서 정한 확률의 2배 확률로 석유자원이 젠 됨
+                            Cell cell = map.mapData[x][y];
+                            Biome biome = cell.biome;
+
+                            if (resource.biome == biome.biome)
+                            {
+                                if (map.IsOnMapData(x + 1, y) && map.IsOnMapData(x, y + 1) && map.IsOnMapData(x + 1, y + 1))
+                                {
+                                    // 해당하는 바이옴인 경우 2x2 젠
+                                    List<Cell> cellList = new List<Cell>();
+                                    cellList.Add(map.mapData[x][y]);
+                                    cellList.Add(map.mapData[x + 1][y]);
+                                    cellList.Add(map.mapData[x][y + 1]);
+                                    cellList.Add(map.mapData[x + 1][y + 1]);
+                                    bool canSetResource = true;
+
+                                    foreach (Cell tempCell in cellList)
+                                    {
+                                        if (tempCell.biome == lake || tempCell.biome == cliff || tempCell.resource != null)
+                                        {
+                                            canSetResource = false;
+                                        }
+                                    }
+
+                                    if (canSetResource)
+                                    {
+                                        foreach (Cell tempCell in cellList)
+                                        {
+                                            Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
+                                            resourcesTilemap.SetTile(new Vector3Int(tempCell.x, (tempCell.y + offsetY), 0), resourceTile);
+                                            resourcesIconTilemap.SetTile(new Vector3Int(tempCell.x, (tempCell.y + offsetY), 0), resourcesIcon[i]);
+                                            tempCell.resource = resource;
+
+                                            tempCell.buildable.Add("extractor");
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // 사막, 빙하 바이옴이 아닌 경우 사막, 빙하 바이옴의 1/10 확률로 1칸 젠
+                                int diffBiomeRandomNum = random.Next(1, 10);
+                                if (diffBiomeRandomNum <= 1)
+                                {
+                                    if (biome != lake && biome != cliff && cell.resource == null)
+                                    {
+                                        Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
+                                        resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
+                                        resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
+                                        cell.resource = resource;
+
+                                        cell.buildable.Add("extractor");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        float oreNoise = Mathf.PerlinNoise(
                         (x - oreX) / resource.distribution,
                         (y - oreY) / resource.distribution
                     );
 
-                    if (oreNoise < resource.scale)
-                    {
-                        Cell cell = map.mapData[x][y];
-                        Biome biome = cell.biome;
-
-                        if ((resource.biome == "all" || resource.biome == biome.biome)
-                            && biome != lake && biome != cliff && cell.resource == null)
+                        if (oreNoise < resource.scale)
                         {
-                            Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
-                            resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
-                            resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
-                            cell.resource = resource;
+                            Cell cell = map.mapData[x][y];
+                            Biome biome = cell.biome;
 
-                            if (resource.type == "ore")
+                            if ((resource.biome == "all" || resource.biome == biome.biome)
+                                && biome != lake && biome != cliff && cell.resource == null)
                             {
-                                cell.buildable.Add("miner");
-                            }
-                            else if (resource.type == "oil")
-                            {
-                                cell.buildable.Add("extractor");
+                                Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
+                                resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
+                                resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
+                                cell.resource = resource;
+
+                                if (resource.type == "ore")
+                                    cell.buildable.Add("miner");
                             }
                         }
                     }
