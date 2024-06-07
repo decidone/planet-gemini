@@ -5,7 +5,6 @@ public class PortalObj : Production
 {
     // Start is called before the first frame update
     public Portal myPortal;
-    public bool isHostPortalObj;
 
     [ServerRpc]
     public virtual void ConnectObjServerRpc(ulong objId) { }

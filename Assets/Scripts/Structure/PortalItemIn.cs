@@ -133,7 +133,7 @@ public class PortalItemIn : PortalObj
             if(overGetItem.TryGetValue(dicData.Key, out int overCount))
             {
                 inventory.Sub(dicData.Key, dicData.Value - overCount);
-                if (isHostPortalObj)
+                if (isInHostMap)
                     Overall.instance.OverallSent(dicData.Key, dicData.Value - overCount);
                 else
                     Overall.instance.OverallReceived(dicData.Key, dicData.Value - overCount);
@@ -141,7 +141,7 @@ public class PortalItemIn : PortalObj
             else
             {
                 inventory.Sub(dicData.Key, dicData.Value);
-                if (isHostPortalObj)
+                if (isInHostMap)
                     Overall.instance.OverallSent(dicData.Key, dicData.Value);
                 else
                     Overall.instance.OverallReceived(dicData.Key, dicData.Value);

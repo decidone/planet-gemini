@@ -179,6 +179,10 @@ PrefabInstance:
       value: HostMapPortal
       objectReference: {fileID: 0}
     - target: {fileID: 721077935684597045, guid: 8938373553f45164fb7e9c6f7aa44135, type: 3}
+      propertyPath: isInHostMap
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 721077935684597045, guid: 8938373553f45164fb7e9c6f7aa44135, type: 3}
       propertyPath: isHostPortal
       value: 1
       objectReference: {fileID: 0}
