@@ -1225,7 +1225,6 @@ public class PreBuilding : NetworkBehaviour
                     }
                 }
             }
-
             else
             {
                 foreach (int newX in xList)
@@ -1238,7 +1237,7 @@ public class PreBuilding : NetworkBehaviour
                         }
 
                         Cell cell = gameManager.map.GetCellDataFromPos(newX, newY);
-                        if (cell.structure != null || cell.obj != null)
+                        if (cell.structure != null || cell.obj != null || cell.isCorrupted)
                         {
                             return false;
                         }

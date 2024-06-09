@@ -167,7 +167,7 @@ public class SpawnerSetManager : NetworkBehaviour
                     int y = (int)Random.Range(-yRadius, yRadius);
 
                     newPoint = centerPos + new Vector2(x, y);
-                } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake" || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "Cliff");    // 거리 체크하여 가까우면 다시 돌리기
+                } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake" || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "cliff");    // 거리 체크하여 가까우면 다시 돌리기
 
                 randomPoints[i] = newPoint;
             }
@@ -184,6 +184,8 @@ public class SpawnerSetManager : NetworkBehaviour
                 if(!networkObject.IsSpawned) networkObject.Spawn();
 
                 spawnerObj.transform.position = randomPoints[index];
+                MapGenerator.instance.SetCorruption(map, randomPoints[index], 1);
+                //MapGenerator.instance.ClearCorruption(map, randomPoints[index], 1);
 
                 Cell cellData = map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y);
                 if (cellData.obj != null)

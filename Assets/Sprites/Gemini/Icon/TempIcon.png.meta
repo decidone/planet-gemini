@@ -326,6 +326,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: TempIcon_10
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f91ee8de91a9fdf4ca9eb1dac56f6e6f
+      internalID: -856915574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -345,6 +366,7 @@ TextureImporter:
       TempIcon_1: -820309343
       TempIcon_7: 1071097347
       TempIcon_2: 349033925
+      TempIcon_10: -856915574
       TempIcon_4: 359511969
       TempIcon_9: 1133645308
   spritePackingTag: 
