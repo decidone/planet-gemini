@@ -74,6 +74,10 @@ public class GameManager : NetworkBehaviour
     [HideInInspector]
     public Vector3 clientPlayerSpawnPos;
 
+    [SerializeField]
+    GameObject consoleUI;
+    bool isConsoleOpened;
+
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
@@ -99,6 +103,7 @@ public class GameManager : NetworkBehaviour
     {
         debug = false;
         isHost = false;
+        isConsoleOpened = false;
         openedUI = new List<GameObject>();
         onUIChangedCallback += UIChanged;
 
@@ -117,12 +122,32 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.Supply.performed += ctx => Supply();
         inputManager.controls.HotKey.Escape.performed += ctx => Escape();
         inputManager.controls.Inventory.PlayerInven.performed += ctx => Inven();
-        inputManager.controls.HotKey.Building.performed += ctx => Building();
+        //inputManager.controls.HotKey.Building.performed += ctx => Building();
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
         inputManager.controls.HotKey.EnergyCheck.performed += ctx => EnergyCheck();
         
         OtherPortalSet();
         //Cursor.lockState = CursorLockMode.Confined;
+    }
+
+    private void Update()
+    {
+        if (!isConsoleOpened)
+        {
+            if (consoleUI.activeSelf)
+            {
+                inputManager.OpenConsole();
+                isConsoleOpened = true;
+            }
+        }
+        else
+        {
+            if (!consoleUI.activeSelf)
+            {
+                inputManager.CloseConsole();
+                isConsoleOpened = false;
+            }
+        }
     }
 
     public void SetMapInven(bool isHostMap)
@@ -332,6 +357,7 @@ public class GameManager : NetworkBehaviour
 
     void DebugMode()
     {
+        Debug.Log(EventSystem.current.currentSelectedGameObject);
         debug = !debug;
         Debug.Log("debug : " + debug);
     }
@@ -425,17 +451,17 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void Building()
-    {
-        if (!bManager.buildingInventoryUI.activeSelf)
-        {
-            bManager.OpenUI();
-        }
-        else
-        {
-            bManager.CloseUI();
-        }
-    }
+    //void Building()
+    //{
+    //    if (!bManager.buildingInventoryUI.activeSelf)
+    //    {
+    //        bManager.OpenUI();
+    //    }
+    //    else
+    //    {
+    //        bManager.CloseUI();
+    //    }
+    //}
 
     void ScienceTree()
     {

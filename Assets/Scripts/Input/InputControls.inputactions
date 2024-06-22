@@ -1002,6 +1002,34 @@
             ]
         },
         {
+            "name": "Chat",
+            "id": "e122bf59-26e0-4f0b-8f26-f353959317c4",
+            "actions": [
+                {
+                    "name": "Enter",
+                    "type": "Button",
+                    "id": "b44c3cf2-d423-4da4-ac89-d71f84dc73da",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "20a43e39-8c5f-4277-9d42-c41814139b57",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "State",
             "id": "5e883f74-3828-46bb-a4ed-62b9380cf114",
             "actions": [
