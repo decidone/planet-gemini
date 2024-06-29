@@ -7,6 +7,7 @@ using Unity.Netcode;
 // UTF-8 설정
 public class MonsterAi : UnitCommonAi
 {
+    public new string name;
     public GameObject spawner;
     Transform spawnPos;
     float spawnDist;

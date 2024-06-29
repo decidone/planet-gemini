@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: UnderPipe
   m_EditorClassIdentifier: 
   factoryName: UnderPipe
-  maxHp: 320000003c00000046000000
+  maxLevel: 1
+  maxHp: 32000000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 50
   sendSpeed: []
@@ -22,7 +23,6 @@ MonoBehaviour:
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  maxLevel: 3
   cooldown: 0
   isEnergyStr: 0
   production: 0

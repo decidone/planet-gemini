@@ -65,6 +65,7 @@ public class UnitCommonAi : NetworkBehaviour
     public GameObject unitCanvas;
     public Image hpBar;
     public float hp;
+    public float maxHp;
     public bool isInHostMap;
 
     public int unitIndex;
@@ -90,7 +91,8 @@ public class UnitCommonAi : NetworkBehaviour
         animator = GetComponent<Animator>();
 
         hp = unitCommonData.MaxHp;
-        hpBar.fillAmount = hp / unitCommonData.MaxHp;
+        maxHp = unitCommonData.MaxHp;
+        hpBar.fillAmount = hp / maxHp;
         unitCanvas.SetActive(false);
 
         isFlip = unitSprite.flipX;
@@ -182,9 +184,9 @@ public class UnitCommonAi : NetworkBehaviour
     {
         hp = syncHp;
 
-        if (hp < unitCommonData.MaxHp)
+        if (hp < maxHp)
         {
-            hpBar.fillAmount = hp / unitCommonData.MaxHp;
+            hpBar.fillAmount = hp / maxHp;
             unitCanvas.SetActive(true);
         }
     }
@@ -301,7 +303,7 @@ public class UnitCommonAi : NetworkBehaviour
         float reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
 
         hp -= reducedDamage;
-        hpBar.fillAmount = hp / unitCommonData.MaxHp;
+        hpBar.fillAmount = hp / maxHp;
 
         if (IsServer && hp <= 0f && !dieCheck)
         {
@@ -359,9 +361,9 @@ public class UnitCommonAi : NetworkBehaviour
         unitIndex = unitSaveData.unitIndex;
         hp = unitSaveData.hp;
 
-        if (hp < unitCommonData.MaxHp) 
+        if (hp < maxHp) 
         {
-            hpBar.fillAmount = hp / unitCommonData.MaxHp;
+            hpBar.fillAmount = hp / maxHp;
             unitCanvas.SetActive(true);
         }
     }

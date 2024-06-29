@@ -45,9 +45,12 @@ public class Structure : NetworkBehaviour
     [SerializeField]
     protected GameObject unitCanvas;
 
+    public int maxLevel;
+
     [SerializeField]
     protected Image hpBar;
-    protected float hp;
+    public float maxHp;
+    public float hp;
     //[HideInInspector]
     //public bool isRuin = false;
 
@@ -144,14 +147,19 @@ public class Structure : NetworkBehaviour
     protected int buildingIndex;
     public List<Vector3> connectedPosList = new List<Vector3>();
 
+    public delegate void OnHpChanged();
+    public OnHpChanged onHpChangedCallback;
+
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
+        maxLevel = structureData.MaxLevel;
+        maxHp = structureData.MaxHp[level];
         hp = structureData.MaxHp[level];
-        hpBar.fillAmount = hp / structureData.MaxHp[level];
+        hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         isStorageBuilding = false;
         isMainSource = false;
@@ -906,6 +914,9 @@ public class Structure : NetworkBehaviour
             return;
 
         hp -= damage;
+        if (hp < 0f)
+            hp = 0f;
+        onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / structureData.MaxHp[level];
 
         if (IsServer && hp <= 0f)
@@ -1001,8 +1012,11 @@ public class Structure : NetworkBehaviour
                 unitCanvas.SetActive(false);
         }
         else
+        {
             hp += heal;
+        }
 
+        onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / structureData.MaxHp[level];
     }
 
@@ -1191,6 +1205,9 @@ public class Structure : NetworkBehaviour
         removeState = true;
         ColliderTriggerOnOff(true);
         StopAllCoroutines();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
 
         for (int i = 0; i < nearObj.Length; i++)
         {

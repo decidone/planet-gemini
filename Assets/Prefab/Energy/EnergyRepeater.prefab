@@ -1,5 +1,77 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &650028784756265703
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1087903919170525644}
+  - component: {fileID: 1738771745460639865}
+  - component: {fileID: 7953929098247362598}
+  m_Layer: 17
+  m_Name: InteractCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1087903919170525644
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650028784756265703}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1805444139051069706}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1738771745460639865
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650028784756265703}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.5}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2}
+  m_EdgeRadius: 0
+--- !u!114 &7953929098247362598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650028784756265703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a7408b7cd5a83d45a6a391241147e8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
 --- !u!1 &1293997206289363340
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,6 +523,7 @@ Transform:
   - {fileID: 6196059451456136514}
   - {fileID: 2902458925758711594}
   - {fileID: 7288515557318077861}
+  - {fileID: 1087903919170525644}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -494,7 +567,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 630274527, guid: b24b57563ad857e4c804e173ce530158, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -530,8 +603,10 @@ MonoBehaviour:
   isPreBuilding: 0
   isSetBuildingOk: 0
   unitCanvas: {fileID: 1293997206289363340}
+  maxLevel: 0
   hpBar: {fileID: 2815434081121098401}
-  isRuin: 0
+  maxHp: 0
+  hp: 0
   isRepair: 0
   repairBar: {fileID: 5769637539421819238}
   itemList: []
@@ -558,7 +633,6 @@ MonoBehaviour:
   repairTower: {fileID: 0}
   isStorageBuilding: 0
   isMainSource: 0
-  isTempBuild: 0
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 7865794785333776810}
@@ -575,6 +649,11 @@ MonoBehaviour:
   effiCooldown: 0
   isMainEnergyColony: 0
   soundManager: {fileID: 0}
+  isInHostMap: 0
+  tileSetPos: {x: 0, y: 0, z: 0}
+  settingEndCheck: 0
+  DelayGetList: 
+  connectedPosList: []
   connector: {fileID: 3796074299410655006}
   view: {fileID: 8889250720948334388}
 --- !u!61 &78957181825646357

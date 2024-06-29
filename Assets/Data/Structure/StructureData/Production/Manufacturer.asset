@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Manufacturer
   m_EditorClassIdentifier: 
   factoryName: Manufacturer
-  maxHp: 320000003c00000046000000
+  maxLevel: 1
+  maxHp: 32000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
   sendSpeed:
@@ -23,7 +24,6 @@ MonoBehaviour:
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  maxLevel: 3
   cooldown: 5
   isEnergyStr: 0
   production: 0

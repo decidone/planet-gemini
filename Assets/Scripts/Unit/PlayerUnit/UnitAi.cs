@@ -7,6 +7,8 @@ using Unity.Netcode;
 // UTF-8 설정
 public class UnitAi : UnitCommonAi
 {
+    public new string name;
+
     // 이동 관련
     float moveRadi;
     Vector3 lastPosition;
@@ -35,6 +37,9 @@ public class UnitAi : UnitCommonAi
     public float selfHealInterval;
     float selfHealTimer;
 
+    public delegate void OnHpChanged();
+    public OnHpChanged onHpChangedCallback;
+
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
@@ -48,15 +53,18 @@ public class UnitAi : UnitCommonAi
         if (!IsServer)
             return;
         base.Update();
-        if (hp != unitCommonData.MaxHp && aIState != AIState.AI_Die)
+        if (hp != maxHp && aIState != AIState.AI_Die)
         {
             selfHealTimer += Time.deltaTime;
 
             if (selfHealTimer >= selfHealInterval)
             {
                 hp += selfHealingAmount;
-                hpBar.fillAmount = hp / unitCommonData.MaxHp;
-                if(hp >= unitCommonData.MaxHp)                
+                if (hp > maxHp)
+                    hp = maxHp;
+                onHpChangedCallback?.Invoke();
+                hpBar.fillAmount = hp / maxHp;
+                if(hp >= maxHp)                
                     unitCanvas.SetActive(false);                
                 selfHealTimer = 0f;
             }
@@ -438,7 +446,10 @@ public class UnitAi : UnitCommonAi
         float reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
 
         hp -= reducedDamage;
-        hpBar.fillAmount = hp / unitCommonData.MaxHp;
+        if (hp < 0f)
+            hp = 0f;
+        onHpChangedCallback?.Invoke();
+        hpBar.fillAmount = hp / maxHp;
         selfHealTimer = 0;
 
         if(hp <= 0f && !dieCheck)
@@ -460,6 +471,9 @@ public class UnitAi : UnitCommonAi
     protected override void DieFuncClientRpc()
     {
         base.DieFuncClientRpc();
+
+        if (InfoUI.instance.unit == this)
+            InfoUI.instance.SetDefault();
 
         unitSelImg.color = new Color(1f, 1f, 1f, 0f);
 

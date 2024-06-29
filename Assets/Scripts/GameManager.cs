@@ -77,6 +77,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField]
     GameObject consoleUI;
     bool isConsoleOpened;
+    InfoInteract info;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -271,12 +272,17 @@ public class GameManager : NetworkBehaviour
 
         if (hits.Length > 0)
         {
-            foreach (RaycastHit2D hit in hits)
+            List<InfoInteract> infoList = new List<InfoInteract>();
+            bool isSamePosClicked = false;
+            int focusedBefore = -1;
+
+            //foreach (RaycastHit2D hit in hits)
+            for (int i = 0; i < hits.Length; i++)
             {
-                if (hit.collider.TryGetComponent(out Structure str))
+                if (hits[i].collider.TryGetComponent(out Structure str))
                     newStructure = str;
-                newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
-                newLogisticsClickEvent = hit.collider.GetComponent<LogisticsClickEvent>();
+                newClickEvent = hits[i].collider.GetComponent<StructureClickEvent>();
+                newLogisticsClickEvent = hits[i].collider.GetComponent<LogisticsClickEvent>();
 
                 if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                 {
@@ -315,7 +321,49 @@ public class GameManager : NetworkBehaviour
                         logisticsClickEvent = null;
                     }
                 }
+
+                if (hits[i].collider.TryGetComponent(out InfoInteract _info))
+                {
+                    infoList.Add(_info);
+                }
             }
+
+            if (infoList.Count > 0)
+            {
+                for (int i = 0; i < infoList.Count; i++)
+                {
+                    if (info == infoList[i])
+                    {
+                        isSamePosClicked = true;
+                        focusedBefore = i;
+                    }
+                }
+
+                if (isSamePosClicked)
+                {
+                    int infoIndex = focusedBefore + 1;
+                    if (infoIndex >= infoList.Count)
+                        infoIndex = 0;
+
+                    info = infoList[infoIndex];
+                    info.Clicked();
+                }
+                else
+                {
+                    info = infoList[0];
+                    info.Clicked();
+                }
+            }
+            else
+            {
+                info = null;
+                InfoUI.instance.SetDefault();
+            }
+        }
+        else
+        {
+            info = null;
+            InfoUI.instance.SetDefault();
         }
 
         if (focusedStructure == null)
@@ -439,7 +487,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void Inven()
+    public void Inven()
     {
         if (!pInvenManager.inventoryUI.activeSelf)
         {
@@ -463,7 +511,7 @@ public class GameManager : NetworkBehaviour
     //    }
     //}
 
-    void ScienceTree()
+    public void ScienceTree()
     {
         if (!sTreeManager.scienceTreeUI.activeSelf)
         {
