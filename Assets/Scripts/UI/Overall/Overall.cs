@@ -78,7 +78,7 @@ public class Overall : NetworkBehaviour
         }
     }
 
-    void DisplayOverall()
+    public void DisplayOverall()
     {
         display.ToggleUI();
     }

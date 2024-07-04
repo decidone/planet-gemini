@@ -20,5 +20,4 @@ MonoBehaviour:
   attDelayTime: 1.5
   colliderRadius: 10
   patrolRad: 0
-  attackNum: 0
   defense: 0

@@ -25,6 +25,7 @@ public class MapGenerator : MonoBehaviour
     public Tilemap tilemap;
     public Tilemap lakeTilemap;
     public Tilemap cliffTilemap;
+    public Tilemap corruptionTilemap;
     public Tilemap resourcesTilemap;
     public Tilemap resourcesIconTilemap;
     public GameObject objects;
@@ -44,6 +45,9 @@ public class MapGenerator : MonoBehaviour
     public Biome frozen;
     public Biome lake;
     public Biome cliff;
+    public Biome EasyCorruption;
+    public Biome NormalCorruption;
+    public Biome HardCorruption;
     List<List<Biome>> biomes;
 
     [Space]
@@ -59,6 +63,9 @@ public class MapGenerator : MonoBehaviour
     [SerializeField]
     bool spawnerSet;
     SpawnerSetManager spawnerPosSet;
+    [SerializeField] float corruptionRadius;
+    [SerializeField] float corruptionClearRadius;
+
     public static MapGenerator instance;
 
     void Awake()
@@ -568,9 +575,13 @@ public class MapGenerator : MonoBehaviour
                 Biome biome = cell.biome;
                 var tile = biome.SetTile(random, map, x, y);
                 cell.tile = tile.tile;
+                cell.tileType = tile.form;
 
                 if (biome == lake)
                 {
+                    Tile backgroundTile = forest.SetNormalTile(random);
+                    tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), backgroundTile);
+
                     lakeTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile.tile);
                     if (tile.form == "side")
                         cell.buildable.Add("pump");
@@ -706,6 +717,12 @@ public class MapGenerator : MonoBehaviour
 
                                         foreach (Cell tempCell in cellList)
                                         {
+                                            if (tempCell.tileType == "normal")
+                                            {
+                                                Tile mapTile = tempCell.biome.SetNormalTile(random);
+                                                tilemap.SetTile(new Vector3Int(tempCell.x, (tempCell.y + offsetY), 0), mapTile);
+                                            }
+
                                             //Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
                                             Tile resourceTile = resource.tiles[spriteIndex + cellListIndex];
                                             cellListIndex++;
@@ -727,6 +744,13 @@ public class MapGenerator : MonoBehaviour
                                 {
                                     if (biome != lake && biome != cliff && cell.resource == null)
                                     {
+                                        if (cell.tileType == "normal")
+                                        {
+                                            Tile mapTile = cell.biome.SetNormalTile(random);
+                                            tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), mapTile);
+                                        }
+
+                                        //Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
                                         Tile resourceTile = resource.tiles[random.Next(0, 3)];
                                         resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
                                         resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
@@ -753,6 +777,12 @@ public class MapGenerator : MonoBehaviour
                             if ((resource.biome == "all" || resource.biome == biome.biome)
                                 && biome != lake && biome != cliff && cell.resource == null)
                             {
+                                if (cell.tileType == "normal")
+                                {
+                                    Tile mapTile = cell.biome.SetNormalTile(random);
+                                    tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), mapTile);
+                                }
+
                                 Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
                                 resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
                                 resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
@@ -780,9 +810,9 @@ public class MapGenerator : MonoBehaviour
             {
                 Cell cell = map.mapData[x][y];
                 Biome biome = cell.biome;
-                if (cell.obj == null)
+                if (cell.obj == null && cell.resource == null)
                 {
-                    GameObject obj = biome.SetObject(random);
+                    GameObject obj = biome.SetRandomObject(random);
                     if (obj != null)
                     {
                         GameObject objInst = Instantiate(obj, objects.transform);
@@ -815,5 +845,147 @@ public class MapGenerator : MonoBehaviour
         gg.collision.mask |= 1 << LayerMask.NameToLayer("MapObj");
         gg.collision.mask |= 1 << LayerMask.NameToLayer("Spawner");
         gg.collision.mask |= 1 << LayerMask.NameToLayer("PortalUnit");
+    }
+
+    public void SetCorruption(Map map, Vector2 spawnerPos, int level)
+    {
+        SetCorruption(map, spawnerPos, corruptionRadius, level);
+    }
+
+    public void SetCorruption(Map map, Vector2 spawnerPos, float radius, int level)
+    {
+        int offsetY = 0;
+        if (map == clientMap)
+            offsetY = height + clientMapOffsetY;
+
+        Biome biome;
+        switch (level)
+        {
+            case 1: biome = EasyCorruption;
+                break;
+            case 2: biome = NormalCorruption;
+                break;
+            case 3: biome = HardCorruption;
+                break;
+            default: biome = NormalCorruption;
+                break;
+        }
+
+        Vector2 tempPos;
+        for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)
+        {
+            for (int y = Mathf.FloorToInt(spawnerPos.y - radius); y <= (spawnerPos.y + radius); y++)
+            {
+                if (map.IsOnMapData(x, y))
+                {
+                    tempPos = new Vector2(x, y);
+                    float dist = Vector2.Distance(tempPos, spawnerPos);
+                    if (dist < radius)
+                    {
+                        map.mapData[x][y].isCorrupted = true;
+
+                        Cell cell = map.mapData[x][y];
+                        if (cell.obj != null)
+                        {
+                            Destroy(cell.obj);
+                            GameObject obj = biome.SetObject(random);
+                            if (obj != null)
+                            {
+                                GameObject objInst = Instantiate(obj, objects.transform);
+                                cell.corruptionObj = objInst;
+
+                                objInst.name = string.Format("map_x{0}_y{1}", x, y);
+                                objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)((y + offsetY) + 0.5), 0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)
+        {
+            for (int y = Mathf.FloorToInt(spawnerPos.y - radius); y <= (spawnerPos.y + radius); y++)
+            {
+                if (map.IsOnMapData(x, y))
+                {
+                    Cell cell = map.mapData[x][y];
+                    if (cell.isCorrupted)
+                    {
+                        Tile tile = biome.SetCorruptionTile(random, map, x, y);
+                        corruptionTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile);
+                    }
+                }
+            }
+        }
+    }
+
+    public void ClearCorruption(Map map, Vector2 spawnerPos, int level)
+    {
+        StartCoroutine(ClearCorruptionCoroutine(map, spawnerPos, corruptionRadius, level));
+    }
+
+    void ClearCorruptionTiles(Map map, Vector2 spawnerPos, float radius)
+    {
+        for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)
+        {
+            for (int y = Mathf.FloorToInt(spawnerPos.y - radius); y <= (spawnerPos.y + radius); y++)
+            {
+                if (map.IsOnMapData(x, y))
+                {
+                    map.mapData[x][y].isCorrupted = false;
+                    corruptionTilemap.SetTile(new Vector3Int(x, y , 0), null);
+                }
+            }
+        }
+    }
+
+    IEnumerator ClearCorruptionCoroutine(Map map, Vector2 spawnerPos, float _radius, int level)
+    {
+        float radius = _radius;
+
+        while (true)
+        {
+            //yield return new WaitForSeconds(random.Next(2, 10));
+            yield return new WaitForSeconds(2f);
+
+            ClearCorruptionTiles(map, spawnerPos, radius);
+            RemoveMushrooms(map, spawnerPos, radius, radius - corruptionClearRadius);
+            radius -= corruptionClearRadius;
+            if (radius <= corruptionClearRadius)
+                yield break;
+
+            SetCorruption(map, spawnerPos, radius, level);
+        }
+    }
+
+    void RemoveMushrooms(Map map, Vector2 spawnerPos, float before, float after)
+    {
+        Vector2 tempPos;
+        for (int x = Mathf.FloorToInt(spawnerPos.x - before); x <= (spawnerPos.x + before); x++)
+        {
+            for (int y = Mathf.FloorToInt(spawnerPos.y - before); y <= (spawnerPos.y + before); y++)
+            {
+                if (map.IsOnMapData(x, y))
+                {
+                    Cell cell = map.mapData[x][y];
+                    if (after <= corruptionClearRadius)
+                    {
+                        if (cell.corruptionObj != null)
+                            Destroy(cell.corruptionObj);
+                    }
+                    else
+                    {
+                        tempPos = new Vector2(x, y);
+                        float dist = Vector2.Distance(tempPos, spawnerPos);
+                        if (dist < before && dist >= after)
+                        {
+                            if (cell.corruptionObj != null)
+                                Destroy(cell.corruptionObj);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

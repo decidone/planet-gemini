@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // UTF-8 설정
-public class ObjData : MonoBehaviour
+public class MapObject : MonoBehaviour
 {
-    public string type;
-    public Item item;
+    public new string name;
 }

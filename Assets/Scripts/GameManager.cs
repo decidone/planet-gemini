@@ -74,6 +74,11 @@ public class GameManager : NetworkBehaviour
     [HideInInspector]
     public Vector3 clientPlayerSpawnPos;
 
+    [SerializeField]
+    GameObject consoleUI;
+    bool isConsoleOpened;
+    InfoInteract info;
+
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
@@ -99,6 +104,7 @@ public class GameManager : NetworkBehaviour
     {
         debug = false;
         isHost = false;
+        isConsoleOpened = false;
         openedUI = new List<GameObject>();
         onUIChangedCallback += UIChanged;
 
@@ -117,12 +123,32 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.Supply.performed += ctx => Supply();
         inputManager.controls.HotKey.Escape.performed += ctx => Escape();
         inputManager.controls.Inventory.PlayerInven.performed += ctx => Inven();
-        inputManager.controls.HotKey.Building.performed += ctx => Building();
+        //inputManager.controls.HotKey.Building.performed += ctx => Building();
         inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
         inputManager.controls.HotKey.EnergyCheck.performed += ctx => EnergyCheck();
         
         OtherPortalSet();
         //Cursor.lockState = CursorLockMode.Confined;
+    }
+
+    private void Update()
+    {
+        if (!isConsoleOpened)
+        {
+            if (consoleUI.activeSelf)
+            {
+                inputManager.OpenConsole();
+                isConsoleOpened = true;
+            }
+        }
+        else
+        {
+            if (!consoleUI.activeSelf)
+            {
+                inputManager.CloseConsole();
+                isConsoleOpened = false;
+            }
+        }
     }
 
     public void SetMapInven(bool isHostMap)
@@ -246,12 +272,17 @@ public class GameManager : NetworkBehaviour
 
         if (hits.Length > 0)
         {
-            foreach (RaycastHit2D hit in hits)
+            List<InfoInteract> infoList = new List<InfoInteract>();
+            bool isSamePosClicked = false;
+            int focusedBefore = -1;
+
+            //foreach (RaycastHit2D hit in hits)
+            for (int i = 0; i < hits.Length; i++)
             {
-                if (hit.collider.TryGetComponent(out Structure str))
+                if (hits[i].collider.TryGetComponent(out Structure str))
                     newStructure = str;
-                newClickEvent = hit.collider.GetComponent<StructureClickEvent>();
-                newLogisticsClickEvent = hit.collider.GetComponent<LogisticsClickEvent>();
+                newClickEvent = hits[i].collider.GetComponent<StructureClickEvent>();
+                newLogisticsClickEvent = hits[i].collider.GetComponent<LogisticsClickEvent>();
 
                 if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                 {
@@ -290,7 +321,49 @@ public class GameManager : NetworkBehaviour
                         logisticsClickEvent = null;
                     }
                 }
+
+                if (hits[i].collider.TryGetComponent(out InfoInteract _info))
+                {
+                    infoList.Add(_info);
+                }
             }
+
+            if (infoList.Count > 0)
+            {
+                for (int i = 0; i < infoList.Count; i++)
+                {
+                    if (info == infoList[i])
+                    {
+                        isSamePosClicked = true;
+                        focusedBefore = i;
+                    }
+                }
+
+                if (isSamePosClicked)
+                {
+                    int infoIndex = focusedBefore + 1;
+                    if (infoIndex >= infoList.Count)
+                        infoIndex = 0;
+
+                    info = infoList[infoIndex];
+                    info.Clicked();
+                }
+                else
+                {
+                    info = infoList[0];
+                    info.Clicked();
+                }
+            }
+            else
+            {
+                info = null;
+                InfoUI.instance.SetDefault();
+            }
+        }
+        else
+        {
+            info = null;
+            InfoUI.instance.SetDefault();
         }
 
         if (focusedStructure == null)
@@ -332,6 +405,7 @@ public class GameManager : NetworkBehaviour
 
     void DebugMode()
     {
+        Debug.Log(EventSystem.current.currentSelectedGameObject);
         debug = !debug;
         Debug.Log("debug : " + debug);
     }
@@ -413,7 +487,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void Inven()
+    public void Inven()
     {
         if (!pInvenManager.inventoryUI.activeSelf)
         {
@@ -425,19 +499,19 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void Building()
-    {
-        if (!bManager.buildingInventoryUI.activeSelf)
-        {
-            bManager.OpenUI();
-        }
-        else
-        {
-            bManager.CloseUI();
-        }
-    }
+    //void Building()
+    //{
+    //    if (!bManager.buildingInventoryUI.activeSelf)
+    //    {
+    //        bManager.OpenUI();
+    //    }
+    //    else
+    //    {
+    //        bManager.CloseUI();
+    //    }
+    //}
 
-    void ScienceTree()
+    public void ScienceTree()
     {
         if (!sTreeManager.scienceTreeUI.activeSelf)
         {

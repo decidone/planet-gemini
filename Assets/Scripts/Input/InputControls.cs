@@ -1024,6 +1024,34 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""Chat"",
+            ""id"": ""e122bf59-26e0-4f0b-8f26-f353959317c4"",
+            ""actions"": [
+                {
+                    ""name"": ""Enter"",
+                    ""type"": ""Button"",
+                    ""id"": ""b44c3cf2-d423-4da4-ac89-d71f84dc73da"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""20a43e39-8c5f-4277-9d42-c41814139b57"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""Enter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""State"",
             ""id"": ""5e883f74-3828-46bb-a4ed-62b9380cf114"",
             ""actions"": [
@@ -1647,6 +1675,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Hold_Alt = m_Hold.FindAction("Alt", throwIfNotFound: true);
         m_Hold_MouseLeft = m_Hold.FindAction("MouseLeft", throwIfNotFound: true);
         m_Hold_MouseRight = m_Hold.FindAction("MouseRight", throwIfNotFound: true);
+        // Chat
+        m_Chat = asset.FindActionMap("Chat", throwIfNotFound: true);
+        m_Chat_Enter = m_Chat.FindAction("Enter", throwIfNotFound: true);
         // State
         m_State = asset.FindActionMap("State", throwIfNotFound: true);
         m_State_ToggleMap = m_State.FindAction("ToggleMap", throwIfNotFound: true);
@@ -2279,6 +2310,39 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     }
     public HoldActions @Hold => new HoldActions(this);
 
+    // Chat
+    private readonly InputActionMap m_Chat;
+    private IChatActions m_ChatActionsCallbackInterface;
+    private readonly InputAction m_Chat_Enter;
+    public struct ChatActions
+    {
+        private @InputControls m_Wrapper;
+        public ChatActions(@InputControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Enter => m_Wrapper.m_Chat_Enter;
+        public InputActionMap Get() { return m_Wrapper.m_Chat; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ChatActions set) { return set.Get(); }
+        public void SetCallbacks(IChatActions instance)
+        {
+            if (m_Wrapper.m_ChatActionsCallbackInterface != null)
+            {
+                @Enter.started -= m_Wrapper.m_ChatActionsCallbackInterface.OnEnter;
+                @Enter.performed -= m_Wrapper.m_ChatActionsCallbackInterface.OnEnter;
+                @Enter.canceled -= m_Wrapper.m_ChatActionsCallbackInterface.OnEnter;
+            }
+            m_Wrapper.m_ChatActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Enter.started += instance.OnEnter;
+                @Enter.performed += instance.OnEnter;
+                @Enter.canceled += instance.OnEnter;
+            }
+        }
+    }
+    public ChatActions @Chat => new ChatActions(this);
+
     // State
     private readonly InputActionMap m_State;
     private IStateActions m_StateActionsCallbackInterface;
@@ -2493,6 +2557,10 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnAlt(InputAction.CallbackContext context);
         void OnMouseLeft(InputAction.CallbackContext context);
         void OnMouseRight(InputAction.CallbackContext context);
+    }
+    public interface IChatActions
+    {
+        void OnEnter(InputAction.CallbackContext context);
     }
     public interface IStateActions
     {

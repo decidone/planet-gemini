@@ -7,13 +7,17 @@ using Unity.Netcode;
 // UTF-8 설정
 public class PlayerStatus : NetworkBehaviour
 {
+    public new string name;
     public Image hpBar;
     public float hp = 100.0f;
-    float maxHP = 100.0f;
+    public float maxHp = 100.0f;
+
+    public delegate void OnHpChanged();
+    public OnHpChanged onHpChangedCallback;
 
     void Start()
     {
-        hpBar.fillAmount = hp / maxHP;
+        hpBar.fillAmount = hp / maxHp;
     }
 
     public void TakeDamage(float damage)
@@ -34,10 +38,9 @@ public class PlayerStatus : NetworkBehaviour
             return;
 
         hp -= damage;
-        hpBar.fillAmount = hp / maxHP;
-        if (hp <= 0f)
-        {
+        if (hp < 0f)
             hp = 0f;
-        }
+        onHpChangedCallback?.Invoke();
+        hpBar.fillAmount = hp / maxHp;
     }
 }

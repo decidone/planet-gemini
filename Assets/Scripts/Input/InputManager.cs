@@ -58,25 +58,8 @@ public class InputManager : MonoBehaviour
     void MouseLeftHold() { mouseLeft = !mouseLeft; }
     void MouseRightHold() { mouseRight = !mouseRight; }
 
-    public void OpenMap()
-    {
-        isMapOpened = true;
-        DisableControls();
-        controls.MapCamera.Enable();
-        controls.HotKey.Escape.Enable();
-    }
-
-    public void CloseMap()
-    {
-        isMapOpened = false;
-        EnableControls();
-        controls.MapCamera.Disable();
-    }
-
     void EnableControls()
     {
-        controls.HotKey.Escape.Disable();
-
         controls.MainCamera.Enable();
         controls.MapCamera.Enable();
         controls.Building.Enable();
@@ -85,6 +68,7 @@ public class InputManager : MonoBehaviour
         controls.Structure.Enable();
         controls.Inventory.Enable();
         controls.HotKey.Enable();
+        controls.State.Enable();
     }
 
     void DisableControls()
@@ -97,5 +81,48 @@ public class InputManager : MonoBehaviour
         controls.Structure.Disable();
         controls.Inventory.Disable();
         controls.HotKey.Disable();
+        controls.State.Disable();
+    }
+
+    public void OpenMap()
+    {
+        isMapOpened = true;
+        DisableControls();
+
+        controls.State.Enable();
+        controls.MapCamera.Enable();
+        controls.HotKey.Escape.Enable();
+    }
+
+    public void CloseMap()
+    {
+        isMapOpened = false;
+        controls.State.Disable();
+        controls.HotKey.Escape.Disable();
+
+        EnableControls();
+        controls.MapCamera.Disable();
+    }
+
+    public void OpenChat()
+    {
+        DisableControls();
+    }
+
+    public void CloseChat()
+    {
+        EnableControls();
+    }
+
+    public void OpenConsole()
+    {
+        DisableControls();
+        controls.Chat.Disable();
+    }
+
+    public void CloseConsole()
+    {
+        EnableControls();
+        controls.Chat.Enable();
     }
 }

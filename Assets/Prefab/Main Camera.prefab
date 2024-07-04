@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8033250253418668035}
   - component: {fileID: 8033250253418668037}
   - component: {fileID: 8033250253418668034}
+  - component: {fileID: 5745257049298284171}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -66,7 +67,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 27135
+    m_Bits: 92671
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -121,3 +122,18 @@ MonoBehaviour:
   target: {fileID: 0}
   offset: {x: 0, y: -1, z: 10}
   zoomLevel: 0
+--- !u!114 &5745257049298284171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8033250253418668036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c83badb83feaf48aa99c834703a0b7f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  _sampleDistance: 1
+  shader: {fileID: 4800000, guid: 832eb2012bb8d4b559dd13b098d55b1e, type: 3}
