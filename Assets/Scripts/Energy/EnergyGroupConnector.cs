@@ -49,7 +49,7 @@ public class EnergyGroupConnector : MonoBehaviour
     public List<Structure> consumptions;
     public List<EnergyBattery> nearbyBat;
     public List<EnergyBattery> batterys;
-    [HideInInspector]
+    //[HideInInspector]
     public EnergyGroup group;   //속한 에너지 그룹. 그룹매니저랑 구분
     [SerializeField]
     SpriteRenderer view;

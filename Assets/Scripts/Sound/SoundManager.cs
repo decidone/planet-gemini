@@ -120,10 +120,13 @@ public class SoundManager : NetworkBehaviour
     public void SetMasterVolume()
     {
         float sound = musicMasterSlider.value;
-        if (sound == -40f)
-            audioMixer.SetFloat("Master", -80);
-        else
-            audioMixer.SetFloat("Master", sound);
+        if (musicMasterToggle.isOn)
+        {
+            if (sound == -40f)
+                audioMixer.SetFloat("Master", -80);
+            else
+                audioMixer.SetFloat("Master", sound);
+        }
     }
 
     public void SetMasterMute()
@@ -142,10 +145,13 @@ public class SoundManager : NetworkBehaviour
     public void SetBGMVolume()
     {
         float sound = musicBGMSlider.value;
-        if (sound == -40f)
-            audioMixer.SetFloat("BGM", -80);
-        else
-            audioMixer.SetFloat("BGM", sound);
+        if (musicBGMToggle.isOn)
+        {
+            if (sound == -40f)
+                audioMixer.SetFloat("BGM", -80);
+            else
+                audioMixer.SetFloat("BGM", sound);
+        }
     }
 
     public void SetBGMMute()
@@ -164,10 +170,13 @@ public class SoundManager : NetworkBehaviour
     public void SetSFXVolume()
     {
         float sound = musicSFXSlider.value;
-        if (sound == -40f)
-            audioMixer.SetFloat("SFX", -80);
-        else
-            audioMixer.SetFloat("SFX", sound);
+        if (musicSFXToggle.isOn)
+        {
+            if (sound == -40f)
+                audioMixer.SetFloat("SFX", -80);
+            else
+                audioMixer.SetFloat("SFX", sound);
+        }
     }
 
     public void SetSFXMute()

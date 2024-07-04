@@ -29,7 +29,7 @@ public class Assembler : Production
                         {
                             isOperate = true;
                             prodTimer += Time.deltaTime;
-                            if (prodTimer > effiCooldown)
+                            if (prodTimer > effiCooldown - effiOverclock)
                             {
                                 if(IsServer)
                                 {
@@ -82,7 +82,7 @@ public class Assembler : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);

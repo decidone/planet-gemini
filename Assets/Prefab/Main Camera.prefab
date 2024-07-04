@@ -103,8 +103,8 @@ MonoBehaviour:
   m_RefResolutionY: 1080
   m_UpscaleRT: 1
   m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
+  m_CropFrameX: 1
+  m_CropFrameY: 1
   m_StretchFill: 0
 --- !u!114 &8033250253418668034
 MonoBehaviour:

@@ -57,6 +57,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
     bool hostMapWave;
     bool clientMapWave;
 
+    public Sprite[] spawnerSprite;
+
     #region Singleton
     public static MonsterSpawnerManager instance;
 
@@ -351,6 +353,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
             hostMapWave = waveState;
         else
             clientMapWave = waveState;
+
+        WarningWindow.instance.WarningTextSet("Wave detected on", isInHostMap);
     }
 
     bool FindMatrix(SpawnerGroupManager spawnerGroup, bool isInHostMap)

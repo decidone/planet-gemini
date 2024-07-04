@@ -31,7 +31,7 @@ public class Miner : Production
                     {
                         isOperate = true;
                         prodTimer += Time.deltaTime;
-                        if (prodTimer > effiCooldown)
+                        if (prodTimer > effiCooldown - effiOverclock)
                         {
                             soundManager.PlaySFX(gameObject, "structureSFX", "Miner");
 
@@ -73,7 +73,7 @@ public class Miner : Production
                 if (output != null && slot.amount < maxAmount)
                 {
                     prodTimer += Time.deltaTime;
-                    if (prodTimer > effiCooldown)
+                    if (prodTimer > effiCooldown - effiOverclock)
                     {
                         soundManager.PlaySFX(gameObject, "structureSFX", "Miner");
 
@@ -161,13 +161,16 @@ public class Miner : Production
                             Item item = resource.item;
                             if (item != null)
                             {
-                                if(!mapItems.ContainsKey(item))
-                                    mapItems.Add(item, (1, resource.efficiency, resource.level));
-                                else
+                                if(level + 1 >= resource.level)
                                 {
-                                    var existingValue = mapItems[item];
-                                    var updatedValue = (existingValue.Item1 + 1, existingValue.Item2, existingValue.Item3);
-                                    mapItems[item] = updatedValue;
+                                    if(!mapItems.ContainsKey(item))
+                                        mapItems.Add(item, (1, resource.efficiency, resource.level));
+                                    else
+                                    {
+                                        var existingValue = mapItems[item];
+                                        var updatedValue = (existingValue.Item1 + 1, existingValue.Item2, existingValue.Item3);
+                                        mapItems[item] = updatedValue;
+                                    }
                                 }
                             }
                         }
@@ -209,7 +212,7 @@ public class Miner : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         sInvenManager.slots[0].outputSlot = true;
@@ -223,7 +226,7 @@ public class Miner : Production
 
     void SetResource(Item item, int _level, float _efficiency, int _minerCellCount)
     {
-        if(level >= _level)
+        if(level + 1 >= _level)
         {
             output = item;
             cooldown = _efficiency;

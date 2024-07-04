@@ -111,12 +111,4 @@ public class EnergyBattery : Structure
             }
         }
     }
-
-    public override StructureSaveData SaveData()
-    {
-        StructureSaveData data = base.SaveData();
-
-
-        return data;
-    }
 }

@@ -52,7 +52,7 @@ public class MonsterSpawner : NetworkBehaviour
     public Image hpBar;
     public float hp;
     public bool dieCheck = false;
-    protected BoxCollider2D boxColl2D;
+    protected CapsuleCollider2D capsuleCollider2D;
     bool extraSpawn;
     bool takeDamageCheck;
     float guardianCallInterval;
@@ -85,7 +85,7 @@ public class MonsterSpawner : NetworkBehaviour
 
     void Start()
     {
-        boxColl2D = GetComponent<BoxCollider2D>();
+        capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         spawnInterval = 20;
         guardianCallInterval = 2;
         maxExtraSpawn = 10;
@@ -94,6 +94,23 @@ public class MonsterSpawner : NetworkBehaviour
             searchColl.SetActive(false);
         if(!gameLodeSet)
             InitializeMonsterSpawn();
+
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        if (areaLevel == 1)
+        {
+            sprite.sprite = monsterSpawnerManager.spawnerSprite[0];
+            capsuleCollider2D.size = new Vector2(2.6f, 0.9f);
+        }
+        else if (areaLevel == 2 || areaLevel == 3)
+        {
+            sprite.sprite = monsterSpawnerManager.spawnerSprite[1];
+            capsuleCollider2D.size = new Vector2(3.5f, 1f);
+        }
+        else if (areaLevel == 4 || areaLevel == 5)
+        {
+            sprite.sprite = monsterSpawnerManager.spawnerSprite[2];
+            capsuleCollider2D.size = new Vector2(5f, 1.8f);
+        }
     }
 
     void Update()
@@ -370,7 +387,9 @@ public class MonsterSpawner : NetworkBehaviour
     {
         if (!takeDamageCheck)
             GuardianCall(attackObj);
-        TakeDamageServerRpc(damage);
+        
+        if(!dieCheck)
+            TakeDamageServerRpc(damage);
     }
 
     [ServerRpc]
@@ -400,13 +419,12 @@ public class MonsterSpawner : NetworkBehaviour
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
         monsterSpawnerManager.AreaGroupRemove(this, areaLevel, isInHostMap);
-        boxColl2D.enabled = false;
+        capsuleCollider2D.enabled = false;
 
         if (!IsServer)
             return;
 
         GetComponentInChildren<SpawnerSearchColl>().DieFunc();
-        WaveStart();
     }
 
     public void SearchObj(bool find)
@@ -478,6 +496,8 @@ public class MonsterSpawner : NetworkBehaviour
         currentWeakSpawn = 0;
         currentNormalSpawn = 0;
         currentStrongSpawn = 0;
+
+        WarningWindow.instance.WarningTextSet("Attack detected on", isInHostMap);
     }
 
     public void GameStartSet(SpawnerSaveData spawnerSaveData, AreaLevelData levelData, Vector3 _basePos, bool isHostMap)

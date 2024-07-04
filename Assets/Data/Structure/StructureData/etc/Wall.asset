@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wall
   m_EditorClassIdentifier: 
   factoryName: Wall
-  maxHp: 640000006e00000078000000
+  maxHp: 6400000096000000c8000000fa0000002c010000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed: []
@@ -26,6 +26,10 @@ MonoBehaviour:
   cooldown: 0
   isEnergyStr: 0
   production: 0
-  energyUse: 00
+  energyUse: 0000000000
   consumption:
+  - 0
+  - 0
+  - 0
+  - 0
   - 0

@@ -16,15 +16,16 @@ MonoBehaviour:
   scienceName: RepairTower
   item: {fileID: 11400000, guid: 92718ba4d78b2b443bc25484597da3d3, type: 2}
   gameObj: {fileID: 90368467031128404, guid: 189c0709a23868347a99325d5713de72, type: 3}
+  sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 0
   isUnderObj: 0
   isEnergyUse: 1
   isEnergyStr: 0
   sprites:
-  - {fileID: 1032211035, guid: 3af8c35f8259cc74bb1f51de4b4da3bc, type: 3}
+  - {fileID: 948837558, guid: c27fd7bb14654074d93e8c8137514dca, type: 3}
   animatorController: []
   level: 1
-  height: 1
-  width: 1
+  height: 2
+  width: 2
   dirCount: 0

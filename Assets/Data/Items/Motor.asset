@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Motor
   m_EditorClassIdentifier: 
   name: Motor
-  icon: {fileID: 21300000, guid: c68e42d8006d5ed4c821f6ab234adaf6, type: 3}
+  icon: {fileID: -854994825, guid: 1eb9a79a201e2354fafbe7378c528136, type: 3}
   tier: 2

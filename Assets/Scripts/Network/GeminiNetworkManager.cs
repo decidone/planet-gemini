@@ -197,7 +197,7 @@ public class GeminiNetworkManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RequestJsonServerRpc()
     {
-        string json = DataManager.instance.Save();
+        string json = DataManager.instance.Save(0);
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
         SaveData clientData = new SaveData();
 

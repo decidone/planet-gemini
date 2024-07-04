@@ -68,6 +68,10 @@ MonoBehaviour:
   map2Wave3Start: 0
   map2Wave4Start: 0
   map2Wave5Start: 0
+  spawnerSprite:
+  - {fileID: 846619681, guid: 5e106a86825938f4cb02fd6ad417b413, type: 3}
+  - {fileID: 111823750, guid: ce129a5ecbb5580458afc70f4401c1e1, type: 3}
+  - {fileID: 1330350005, guid: 72d8f35b4a1f29d4cb6325fc19466f60, type: 3}
 --- !u!114 &4746401571730464259
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: -2575623707125964746}
   - component: {fileID: -5723864671123927742}
   - component: {fileID: -4736505518822015374}
+  - component: {fileID: -7222479920273723933}
   m_Layer: 6
   m_Name: SentryCopter
   m_TagString: Unit
@@ -249,9 +250,13 @@ MonoBehaviour:
   unitCanvas: {fileID: 3421677391031086563}
   hpBar: {fileID: 6176163336920458569}
   hp: 0
+  isInHostMap: 0
+  unitIndex: 0
   isFlip: 0
   aIState: 0
   attackState: 0
+  soundManager: {fileID: 0}
+  unitLastState: 0
   unitSelImg: {fileID: 6013075139773666233}
   selfHealingAmount: 0
   selfHealInterval: 0
@@ -348,6 +353,19 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &-7222479920273723933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1885955664131610326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Animator: {fileID: 1885955664131610325}
 --- !u!1 &3421677391031086563
 GameObject:
   m_ObjectHideFlags: 0

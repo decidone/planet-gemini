@@ -693,9 +693,23 @@ public class MapGenerator : MonoBehaviour
 
                                     if (canSetResource)
                                     {
+                                        
+                                        int randomSprite = Random.Range(0, 2);
+                                        int spriteIndex = 0;
+
+                                        if(randomSprite == 0)                                        
+                                            spriteIndex = 3;                                        
+                                        else
+                                            spriteIndex = 7;
+                                        
+                                        int cellListIndex = 0;
+
                                         foreach (Cell tempCell in cellList)
                                         {
-                                            Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
+                                            //Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
+                                            Tile resourceTile = resource.tiles[spriteIndex + cellListIndex];
+                                            cellListIndex++;
+
                                             resourcesTilemap.SetTile(new Vector3Int(tempCell.x, (tempCell.y + offsetY), 0), resourceTile);
                                             resourcesIconTilemap.SetTile(new Vector3Int(tempCell.x, (tempCell.y + offsetY), 0), resourcesIcon[i]);
                                             tempCell.resource = resource;
@@ -713,7 +727,7 @@ public class MapGenerator : MonoBehaviour
                                 {
                                     if (biome != lake && biome != cliff && cell.resource == null)
                                     {
-                                        Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
+                                        Tile resourceTile = resource.tiles[random.Next(0, 3)];
                                         resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
                                         resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
                                         cell.resource = resource;

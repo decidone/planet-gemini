@@ -39,8 +39,8 @@ public class SpawnerSetManager : NetworkBehaviour
     Map hostMap;
     Map clientMap;
 
-    [SerializeField]
-    Sprite[] spawnerSprite;
+    //[SerializeField]
+    //Sprite[] spawnerSprite;
 
     #region Singleton
     public static SpawnerSetManager instance;
@@ -196,18 +196,6 @@ public class SpawnerSetManager : NetworkBehaviour
                 monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos, isHostMap);
                 monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel, isHostMap);
 
-                if(areaLevel == 1)
-                {
-                    spawnerObj.GetComponent<SpriteRenderer>().sprite = spawnerSprite[0];
-                }
-                else if (areaLevel == 2 || areaLevel == 3)
-                {
-                    spawnerObj.GetComponent<SpriteRenderer>().sprite = spawnerSprite[1];
-                }
-                else if (areaLevel == 4 || areaLevel == 5)
-                {
-                    spawnerObj.GetComponent<SpriteRenderer>().sprite = spawnerSprite[2];
-                }
                 index++;
             }
 

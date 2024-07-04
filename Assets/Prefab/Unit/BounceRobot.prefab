@@ -364,6 +364,7 @@ GameObject:
   - component: {fileID: 268944303165065398}
   - component: {fileID: 827395701944253524}
   - component: {fileID: -2916593883973233907}
+  - component: {fileID: 3717718224404974650}
   m_Layer: 6
   m_Name: BounceRobot
   m_TagString: Unit
@@ -519,9 +520,13 @@ MonoBehaviour:
   unitCanvas: {fileID: 4756777200039858359}
   hpBar: {fileID: 4091917225622394909}
   hp: 0
+  isInHostMap: 0
+  unitIndex: 0
   isFlip: 0
   aIState: 0
   attackState: 0
+  soundManager: {fileID: 0}
+  unitLastState: 0
   unitSelImg: {fileID: 4471495155955281645}
   selfHealingAmount: 0
   selfHealInterval: 0
@@ -618,6 +623,19 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &3717718224404974650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8598225404917607298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Animator: {fileID: 8598225404917607297}
 --- !u!1 &8748009650792340866
 GameObject:
   m_ObjectHideFlags: 0

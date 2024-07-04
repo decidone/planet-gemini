@@ -21,6 +21,10 @@ public class EnergyColony : MonoBehaviour
     protected float spawnerCheckTime;
     protected float spawnerCheckInterval;
 
+    bool colonyCallStart;
+    protected float colonyCallTime;
+    protected float colonyCallInterval;
+
     void Start()
     {
         targetLayer = 1 << LayerMask.NameToLayer("Spawner");
@@ -29,7 +33,7 @@ public class EnergyColony : MonoBehaviour
 
     void Update()
     {
-        if (energyGroup != null && mainColony)
+        if (energyGroup != null && mainColony && !colonyCallStart)
         {
             spawnerCheckTime += Time.deltaTime;
             if (spawnerCheckTime > spawnerCheckInterval)
@@ -38,6 +42,16 @@ public class EnergyColony : MonoBehaviour
                 MonsterSpawnerCheck();
                 //MonsterSpawnerWaveChcek();
                 spawnerCheckTime = 0f;
+            }
+        }
+
+        if (colonyCallStart)
+        {
+            colonyCallTime += Time.deltaTime;
+            if (colonyCallTime > colonyCallInterval)
+            {
+                colonyCallStart = false;
+                colonyCallTime = 0;
             }
         }
     }
@@ -121,6 +135,10 @@ public class EnergyColony : MonoBehaviour
         EnergyCheck();
         float scanDist = ConvergeFunction(energy);
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, scanDist, targetLayer);
+        
+        if (colliders.Length > 0)
+            colonyCallStart = true;
+        
         for (int i = 0; i < colliders.Length; i++)
         {
             GameObject obj = colliders[i].gameObject;

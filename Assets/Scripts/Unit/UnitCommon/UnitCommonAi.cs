@@ -272,7 +272,8 @@ public class UnitCommonAi : NetworkBehaviour
     {
         animator.SetBool("isAttack", false);
         animator.SetBool("isMove", false);
-        AnimSetFloat(targetVec, false);
+        if(IsServer)
+            AnimSetFloat(targetVec, false);
         attackState = AttackState.Waiting;        
     }
 

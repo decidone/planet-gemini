@@ -56,7 +56,7 @@ public class TempScienceDb : NetworkBehaviour
         if (scienceNameDb.ContainsKey(sciName))
         {
             if (!IsLevelExists(sciName, sciLv))
-            {            
+            {
                 scienceNameDb[sciName].Add(sciLv);
             }
         }
