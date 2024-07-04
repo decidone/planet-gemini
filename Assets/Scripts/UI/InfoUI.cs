@@ -26,6 +26,11 @@ public class InfoUI : MonoBehaviour
     [SerializeField] Text firstBattleText;
     [SerializeField] Text secondBattleText;
 
+    [Space]
+    public Material outlintMat;
+    public Material noOutlineMat;
+
+    [Space]
     public PlayerStatus player = null;
     public MapObject obj = null;
     public Structure str = null;
@@ -47,6 +52,8 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         player = _player;
+        SpriteRenderer spriteRenderer = player.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = outlintMat;
         nameText.text = player.name;
         SetPlayerHp();
         player.onHpChangedCallback += SetPlayerHp;
@@ -64,6 +71,8 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         obj = _obj;
+        SpriteRenderer spriteRenderer = obj.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = outlintMat;
         nameText.text = obj.name;
     }
 
@@ -71,6 +80,8 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         str = _str;
+        SpriteRenderer spriteRenderer = str.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = outlintMat;
         nameText.text = str.buildName;
         if (str.maxLevel > 1)
             nameText.text += " Level " + str.level;
@@ -98,6 +109,8 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         unit = _unit;
+        SpriteRenderer spriteRenderer = unit.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = outlintMat;
         nameText.text = unit.name;
         SetUnitHp();
         unit.onHpChangedCallback += SetUnitHp;
@@ -117,6 +130,8 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         spawner = _spawner;
+        SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = outlintMat;
         nameText.text = "Spawner Level " + spawner.areaLevel;
     }
 
@@ -124,6 +139,8 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         monster = _monster;
+        SpriteRenderer spriteRenderer = monster.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = outlintMat;
         nameText.text = monster.name;
     }
 
@@ -131,30 +148,47 @@ public class InfoUI : MonoBehaviour
     {
         if (player != null)
         {
-            // 플레이어는 디스폰이 없으니까 디스폰 시 릴리즈는 넣지 않음
+            SpriteRenderer spriteRenderer = player.gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.material = noOutlineMat;
+
             player.onHpChangedCallback -= SetPlayerHp;
             player = null;
         }
         else if (obj != null)
         {
+            SpriteRenderer spriteRenderer = obj.gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.material = noOutlineMat;
+
             obj = null;
         }
         else if (str != null)
         {
+            SpriteRenderer spriteRenderer = str.gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.material = noOutlineMat;
+
             str.onHpChangedCallback -= SetStructureHp;
             str = null;
         }
         else if (unit != null)
         {
+            SpriteRenderer spriteRenderer = unit.gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.material = noOutlineMat;
+
             unit.onHpChangedCallback -= SetUnitHp;
             unit = null;
         }
         else if (spawner != null)
         {
+            SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.material = noOutlineMat;
+
             spawner = null;
         }
         else if (monster != null)
         {
+            SpriteRenderer spriteRenderer = monster.gameObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.material = noOutlineMat;
+
             monster = null;
         }
     }

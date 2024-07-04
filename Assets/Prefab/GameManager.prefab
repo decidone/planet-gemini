@@ -306,6 +306,7 @@ GameObject:
   - component: {fileID: 8119477237859809883}
   - component: {fileID: 1592428971395791709}
   - component: {fileID: 6855278147112794435}
+  - component: {fileID: 7131987286442069813}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -352,7 +353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryUiCanvas: {fileID: 0}
-  isMultiPlay: 0
+  isMultiPlay: 1
   inventory: {fileID: 7207882295930772508}
   hostMapInven: {fileID: 7207882295930772508}
   clientMapInven: {fileID: 477784653606117902}
@@ -388,6 +389,7 @@ MonoBehaviour:
   - {fileID: 0}
   hostPlayerSpawnPos: {x: 0, y: 0, z: 0}
   clientPlayerSpawnPos: {x: 0, y: 0, z: 0}
+  consoleUI: {fileID: 0}
   tempOption: {fileID: 0}
 --- !u!114 &8121268344323043989
 MonoBehaviour:
@@ -540,7 +542,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ad6f3fc4b10c08b4caa6a19413a61414, type: 2}
   - {fileID: 11400000, guid: 1eccbc744d352cb498255e7dc4185f52, type: 2}
   - {fileID: 11400000, guid: db690fbf05d11be48816a392b5f5b26a, type: 2}
-  - {fileID: 11400000, guid: 9b986cc7c784666408e8668286f8a19b, type: 2}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -729,7 +730,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemListSO: {fileID: 11400000, guid: fb7046e3030870743a8b20eb19bf8824, type: 2}
-  unitListSO: {fileID: 11400000, guid: ad85e3b8314ca824cb42be9f056ee28a, type: 2}
+--- !u!114 &7131987286442069813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &4287165206276915524
 GameObject:
   m_ObjectHideFlags: 0

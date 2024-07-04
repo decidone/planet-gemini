@@ -1157,6 +1157,8 @@ MonoBehaviour:
   energyText: {fileID: 870124356}
   firstBattleText: {fileID: 6670763874391289603}
   secondBattleText: {fileID: 124154565}
+  outlintMat: {fileID: 2100000, guid: 2eaf895611ce8f6438c10f04172f98a2, type: 2}
+  noOutlineMat: {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
   player: {fileID: 0}
   obj: {fileID: 0}
   str: {fileID: 0}
