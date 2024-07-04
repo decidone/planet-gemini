@@ -8,11 +8,14 @@ public class Disintegrator : Production
     [SerializeField] MerchandiseListSO merchandiseList;
     Button confirmBtn;
     public Finance finance;
+    [SerializeField]
+    Animator animator;
 
     protected override void Start()
     {
         base.Start();
         isStorageBuilding = true;
+        animator = GetComponent<Animator>();
     }
 
     protected override void Update()
@@ -54,6 +57,7 @@ public class Disintegrator : Production
                     {
                         GameManager.instance.AddFinanceServerRpc(merchandiseList.MerchandiseSOList[j].sellPrice * inventory.amounts[i]);
                         inventory.RemoveServerRpc(i);
+                        animator.Play("StartAction", -1, 0);
                         break;
                     }
                 }

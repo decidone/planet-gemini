@@ -49,6 +49,7 @@ public class FluidFactoryCtrl : Production
         isEnergyStr = structureData.IsEnergyStr;
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
     }
 
     protected override void Update()

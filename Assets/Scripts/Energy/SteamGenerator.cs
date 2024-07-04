@@ -31,6 +31,7 @@ public class SteamGenerator : FluidFactoryCtrl
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
         #endregion
         #region FluidFactoryAwake
         gameManager = GameManager.instance;
@@ -324,5 +325,15 @@ public class SteamGenerator : FluidFactoryCtrl
                 ItemToItemProps(invenItem.item, invenItem.amount);
             }
         }
+    }
+
+    public override (bool, bool, EnergyGroup) PopUpEnergyCheck()
+    {
+        if (connector != null && connector.group != null)
+        {
+            return (energyUse, isEnergyStr, connector.group);
+        }
+
+        return (false, false, null);
     }
 }

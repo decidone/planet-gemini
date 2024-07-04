@@ -118,7 +118,7 @@ public class Transporter : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
         sInvenManager.TransporterSetting(isToggleOn, sendAmount);
 

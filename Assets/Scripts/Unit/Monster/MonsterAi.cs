@@ -56,13 +56,12 @@ public class MonsterAi : UnitCommonAi
             case AIState.AI_Idle:                
                 if(idle == 0)
                 {
-                    if (IsServer && idleTimeStart)
+                    if (idleTimeStart)
                         StartCoroutine(nameof(IdleTime));
                 }
                 else
                 {
-                    if (IsServer)
-                        PatrolRandomPosSet();
+                    PatrolRandomPosSet();
                 }
                 break;
             case AIState.AI_Patrol:
@@ -71,19 +70,18 @@ public class MonsterAi : UnitCommonAi
             case AIState.AI_Attack:
                 if (attackState == AttackState.Waiting)
                 {
-                    if (IsServer && aggroTarget)
+                    if (aggroTarget)
                         AttackCheck();
                 }
                 else if (attackState == AttackState.AttackStart)
                 {
-                    if(IsServer)
-                        Attack();
+                    Attack();
                 }
                 break;
             case AIState.AI_NormalTrace:
                 {
                     NormalTrace();
-                    if (IsServer && aggroTarget)
+                    if (aggroTarget)
                         AttackCheck();
                 }
                 break;
@@ -103,14 +101,38 @@ public class MonsterAi : UnitCommonAi
         Vector3 moveNextStep = moveDir * moveStep;
 
         if (moveNextStep.y > 0)
-            animator.SetFloat("moveNextStepY", 1.0f);
+        {
+            if(animator.GetFloat("moveNextStepY") != 1.0f)
+            {
+                UnitAnimNextStepSetServerRpc("moveNextStepY", 1.0f);
+                //animator.SetFloat("moveNextStepY", 1.0f);
+            }
+        }
         else if (moveNextStep.y <= 0)
-            animator.SetFloat("moveNextStepY", -1.0f);
+        {
+            if (animator.GetFloat("moveNextStepY") != -1.0f)
+            {
+                UnitAnimNextStepSetServerRpc("moveNextStepY", -1.0f);
+                //animator.SetFloat("moveNextStepY", -1.0f);
+            }
+        }
 
         if (moveDir.x > 0.75f || moveDir.x < -0.75f)
-            animator.SetFloat("moveNextStepX", 1.0f);
+        {
+            if (animator.GetFloat("moveNextStepX") != 1.0f)
+            {
+                UnitAnimNextStepSetServerRpc("moveNextStepX", 1.0f);
+                //animator.SetFloat("moveNextStepX", 1.0f);
+            }
+        }
         else if (moveDir.x <= 0.75f && moveDir.x >= -0.75f)
-            animator.SetFloat("moveNextStepX", 0.0f);
+        {
+            if (animator.GetFloat("moveNextStepX") != 0.0f)
+            {
+                UnitAnimNextStepSetServerRpc("moveNextStepX", 0.0f);
+                //animator.SetFloat("moveNextStepX", 0.0f);
+            }
+        }
 
         if (isFlip)
         {
@@ -118,14 +140,16 @@ public class MonsterAi : UnitCommonAi
             {
                 if (!unitSprite.flipX)
                 {
-                    unitSprite.flipX = true;
+                    //unitSprite.flipX = true;
+                    UnitFlipSetServerRpc(true);
                 }
             }
             else if (direction.x < 0)
             {
                 if (unitSprite.flipX)
                 {
-                    unitSprite.flipX = false;
+                    //unitSprite.flipX = false;
+                    UnitFlipSetServerRpc(false);
                 }
             }
         }
@@ -135,17 +159,50 @@ public class MonsterAi : UnitCommonAi
             {
                 if (unitSprite.flipX)
                 {
-                    unitSprite.flipX = false;
+                    //unitSprite.flipX = false;
+                    UnitFlipSetServerRpc(false);
                 }
             }
             else if (direction.x < 0)
             {
                 if (!unitSprite.flipX)
                 {
-                    unitSprite.flipX = true;
+                    //unitSprite.flipX = true;
+                    UnitFlipSetServerRpc(true);
                 }
             }
         }
+    }
+
+    [ServerRpc]
+    void UnitAnimNextStepSetServerRpc(string parameter, float num)
+    {
+        UnitAnimNextStepSetClientRpc(parameter, num);
+    }
+
+    [ClientRpc]
+    void UnitAnimNextStepSetClientRpc(string parameter, float num)
+    {
+        if(parameter == "moveNextStepX")
+        {
+            animator.SetFloat("moveNextStepX", num); 
+        }
+        else
+        {
+            animator.SetFloat("moveNextStepY", num);
+        }
+    }
+
+    [ServerRpc]
+    void UnitFlipSetServerRpc(bool flipX)
+    {
+        UnitFlipSetClientRpc(flipX);
+    }
+
+    [ClientRpc]
+    void UnitFlipSetClientRpc(bool flipX)
+    {
+        unitSprite.flipX = flipX;
     }
 
     protected void PatrolFunc()

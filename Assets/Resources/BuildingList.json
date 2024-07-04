@@ -5,32 +5,22 @@
   "Miner":{
     "1":{"items":["IronPlate","Brick"],"amounts":[1,1],"cooldown":3},
     "2":{"items":["IronPlate","Brick"],"amounts":[2,2],"cooldown":3},
-    "3":{"items":["Motor","SteelPlate","SteelBeam"],"amounts":[3,3,3],"cooldown":3}
+    "3":{"items":["IronPlate","Brick"],"amounts":[3,3],"cooldown":3}
   },
   "Furnace":{
-    "1":{"items":["Stone"],"amounts":[1],"cooldown":3},
-    "2":{"items":["SteelBeam","Brick"],"amounts":[2,2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Stone"],"amounts":[1],"cooldown":3}
   },
   "Smelter":{
-    "1":{"items":["Brick"],"amounts":[1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Brick"],"amounts":[1],"cooldown":3}
   },
   "Constructor":{
-    "1":{"items":["IronPlate","IronRod","Brick"],"amounts":[1,1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["IronPlate","IronRod","Brick"],"amounts":[1,1,1],"cooldown":3}
   },
   "Assembler":{
-    "1":{"items":["SteelPlate","Screw"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["SteelPlate","Screw"],"amounts":[1,1],"cooldown":3}
   },
   "Manufacturer":{
-    "1":{"items":["Module","SteelPlate","SteelBeam"],"amounts":[1,1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Module","SteelPlate","SteelBeam"],"amounts":[1,1,1],"cooldown":3}
   },
   "Belt":{
     "1":{"items":["IronPlate"],"amounts":[1],"cooldown":3},
@@ -38,22 +28,18 @@
     "3":{"items":["Rubber","SteelBeam"],"amounts":[3,3],"cooldown":3}
   },
   "UnderBelt":{
-    "1":{"items":["IronPlate"],"amounts":[1],"cooldown":3},
-    "2":{"items":["Screw","IronPlate","IronRod"],"amounts":[2,2,2],"cooldown":3},
-    "3":{"items":["Rubber","SteelBeam"],"amounts":[3,3],"cooldown":3}
+    "1":{"items":["IronPlate"],"amounts":[1],"cooldown":3}
   },
   "Splitter":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "Merger":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "Storage":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+    "1":{"items":["Screw","Brick"],"amounts":[1,1],"cooldown":3},
+    "2":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3},
+    "3":{"items":["Screw","SteelPlate"],"amounts":[1,1],"cooldown":3}
   },
   "Disintegrator":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
@@ -65,41 +51,38 @@
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "Pump":{
-    "1":{"items":["Motor","Brick"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Motor","Brick"],"amounts":[1,1],"cooldown":3}
   },
   "Pipe":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "UnderPipe":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "FluidTank":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3}
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "Extractor":{
-    "1":{"items":["Motor","SteelBeam"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Motor","SteelBeam"],"amounts":[1,1],"cooldown":3}
   },
   "Refinery":{
-    "1":{"items":["SteelPlate","SteelBeam"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["SteelPlate","SteelBeam"],"amounts":[1,1],"cooldown":3}
   },
   "ChemicalPlant":{
-    "1":{"items":["SteelPlate","SteelBeam"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["Coal"],"amounts":[2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["SteelPlate","SteelBeam"],"amounts":[1,1],"cooldown":3}
+  },
+  "Overclock":{
+    "1":{"items":["SteelPlate","SteelBeam"],"amounts":[1,1],"cooldown":3}
   },
   "Wall":{
-    "1":{"items":["Stone"],"amounts":[1],"cooldown":3}
+    "1":{"items":["Brick"],"amounts":[1],"cooldown":3},
+    "2":{"items":["CopperBar"],"amounts":[1],"cooldown":3},
+    "3":{"items":["IronBar"],"amounts":[1],"cooldown":3},
+    "4":{"items":["SteelBar"],"amounts":[1],"cooldown":3},
+    "5":{"items":["AdamantiteAlloy"],"amounts":[1],"cooldown":3}
+  },
+  "BasicTower":{
+    "1":{"items":["Brick","Coal","ManaStone"],"amounts":[1,1,1],"cooldown":3}
   },
   "FireTower":{
     "1":{"items":["Brick","Coal","ManaStone"],"amounts":[1,1,1],"cooldown":3}
@@ -117,9 +100,7 @@
     "1":{"items":["AdamantitePlate","ManaStone"],"amounts":[1,1],"cooldown":3}
   },
   "RepairTower":{
-    "1":{"items":["Brick","ManaStone"],"amounts":[1,1],"cooldown":3},
-    "2":{"items":["SteelPlate","ManaStone"],"amounts":[2,2],"cooldown":3},
-    "3":{"items":["Coal"],"amounts":[3],"cooldown":3}
+    "1":{"items":["Brick","ManaStone"],"amounts":[1,1],"cooldown":3}
   },
   "UnitFactory":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}

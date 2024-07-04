@@ -42,7 +42,7 @@ public class UnitFactory : Production
                     {
                         isOperate = true;
                         prodTimer += Time.deltaTime;
-                        if (prodTimer > effiCooldown)
+                        if (prodTimer > effiCooldown - effiOverclock)
                         {
                             bool spawnPosExist = UnitSpawnPosFind();
 
@@ -87,7 +87,7 @@ public class UnitFactory : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);
@@ -230,7 +230,8 @@ public class UnitFactory : Production
     void SpawnUnit()
     {
         GameObject unit = Instantiate(spawnUnit);
-        unit.transform.position = this.transform.position;
+        Vector3 spawnSet = transform.position + ((Vector3)spawnPos - transform.position).normalized * 1.5f;
+        unit.transform.position = spawnSet;
         NetworkObject networkObject = unit.GetComponent<NetworkObject>();
         if (!networkObject.IsSpawned) networkObject.Spawn();
 

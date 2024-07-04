@@ -51,6 +51,8 @@ public class Structure : NetworkBehaviour
     protected Image hpBar;
     public float maxHp;
     public float hp;
+    protected RepairEffectFunc repairEffect;
+    protected bool dieCheck = false;
     //[HideInInspector]
     //public bool isRuin = false;
 
@@ -105,8 +107,12 @@ public class Structure : NetworkBehaviour
 
     [HideInInspector]
     public Collider2D col;
-    [HideInInspector]
+    //[HideInInspector]
     public RepairTower repairTower;
+    [HideInInspector]
+    public Overclock overclockTower;
+    protected float effiOverclock;
+    public float overclockAmount;
 
     public bool isStorageBuilding;
     public bool isMainSource;
@@ -176,6 +182,7 @@ public class Structure : NetworkBehaviour
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
         soundManager = SoundManager.Instance;
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
     }
 
     protected virtual void Update()
@@ -614,8 +621,7 @@ public class Structure : NetworkBehaviour
                 return;
             }
         }
-        else if (inObj[getItemIndex].TryGetComponent(out Production inObjScript)
-                && !inObjScript.UnloadItemCheck(GetComponent<Unloader>().selectItem))
+        else if (TryGetComponent(out Unloader unloader) && inObj[getItemIndex].TryGetComponent(out Production inObjScript) && !inObjScript.UnloadItemCheck(unloader.selectItem))
         {
             GetItemIndexSet();
             Invoke(nameof(DelayGetItem), structureData.SendDelay);
@@ -889,7 +895,8 @@ public class Structure : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        TakeDamageServerRpc(damage);
+        if(!dieCheck)
+            TakeDamageServerRpc(damage);
     }
 
     [ServerRpc]
@@ -929,11 +936,12 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     protected virtual void DieFuncClientRpc()
     {
-        hp = structureData.MaxHp[level];
-        repairBar.enabled = true;
+        //hp = structureData.MaxHp[level];
+        //repairBar.enabled = true;
         hpBar.enabled = false;
-        repairGauge = 0;
-        repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
+        dieCheck = true;
+        //repairGauge = 0;
+        //repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         ColliderTriggerOnOff(true);
 
         soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
@@ -999,7 +1007,7 @@ public class Structure : NetworkBehaviour
 
     protected virtual void ItemDrop() { }
 
-    public void HealFunc(float heal)
+    public void RepairFunc(float heal)
     {
         if (hp == structureData.MaxHp[level])
         {
@@ -1014,10 +1022,24 @@ public class Structure : NetworkBehaviour
         else
         {
             hp += heal;
+            RepairServerRpc(hp);
         }
 
         onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / structureData.MaxHp[level];
+    }
+
+    [ServerRpc]
+    void RepairServerRpc(float currentHp)
+    {
+        RepairClientRpc(currentHp);
+    }
+
+    [ClientRpc]
+    void RepairClientRpc(float currentHp)
+    {
+        hp = currentHp;
+        repairEffect.EffectStart();
     }
 
     public void RepairSet(bool repair)
@@ -1065,6 +1087,7 @@ public class Structure : NetworkBehaviour
     {
         hpBar.enabled = true;
         hp = structureData.MaxHp[level];
+        Debug.Log("DataSet : " + hp);
         unitCanvas.SetActive(false);
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.enabled = false;
@@ -1224,6 +1247,8 @@ public class Structure : NetworkBehaviour
         }
         if (repairTower != null)
             repairTower.RemoveObjectsOutOfRange(gameObject);
+        if(overclockTower != null)
+            overclockTower.RemoveObjectsOutOfRange(this);
 
         CloseUI();
 
@@ -1343,6 +1368,16 @@ public class Structure : NetworkBehaviour
 
     public virtual Dictionary<Item, int> PopUpItemCheck() { return null; }
 
+    public virtual (bool, bool , EnergyGroup) PopUpEnergyCheck()
+    {
+        if (energyUse && conn != null && conn.group != null)
+        {
+            return (energyUse, isEnergyStr, conn.group);
+        }
+
+        return (false, false, null);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
@@ -1417,6 +1452,18 @@ public class Structure : NetworkBehaviour
                     conn.AddConsumption(this);
                 }
             }
+        }
+    }
+
+    public void OverclockSet(bool isOn)
+    {
+        if (isOn)
+        {
+            effiOverclock = effiCooldown * overclockAmount / 100;
+        }
+        else
+        {
+            effiOverclock = 0;
         }
     }
 

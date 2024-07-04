@@ -44,4 +44,22 @@ public class ItemList : MonoBehaviour
 
         return null;
     }
+
+    public Item FindDataGetLevel(string getBuildName, int level)
+    {
+        int findLevel = 1;
+        foreach (var itemData in uiItemList)
+        {
+            if (itemData.name == getBuildName)
+            {
+                if(findLevel == level)
+                {
+                    return itemData;
+                }
+                findLevel ++;
+            }
+        }
+        Debug.Log("null");
+        return null;
+    }
 }

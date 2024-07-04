@@ -89,4 +89,14 @@ public class EnergyRepeater : Structure
         connector.RemoveFromGroup();
         base.RemoveObjServerRpc();
     }
+
+    public override (bool, bool, EnergyGroup) PopUpEnergyCheck()
+    {
+        if (connector != null && connector.group != null)
+        {
+            return (energyUse, isEnergyStr, connector.group);
+        }
+
+        return (false, false, null);
+    }
 }

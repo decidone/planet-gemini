@@ -5,14 +5,14 @@ using UnityEngine;
 // UTF-8 설정
 public class RepairTower : TowerAi
 {
-    public List<GameObject> TowerList = new List<GameObject>();
+    public List<GameObject> BuildingList = new List<GameObject>();
     bool isDelayRepairCoroutine = false;
 
     protected override void Update()
     {
         base.Update();
 
-        if (!isPreBuilding)
+        if (!isPreBuilding && IsServer)
         {
             searchTimer += Time.deltaTime;
 
@@ -32,15 +32,15 @@ public class RepairTower : TowerAi
 
         foreach (Collider2D collider in colliders)
         {
-            GameObject tower = collider.gameObject;
+            GameObject building = collider.gameObject;
             //if (tower == this.gameObject)
             //    continue;
-            if (tower.TryGetComponent(out Structure structure))
+            if (building.TryGetComponent(out Structure structure))
             {
                 if (structure.repairTower == null && !structure.isPreBuilding
-                    && !TowerList.Contains(tower) && !structure.GetComponent<Portal>())
+                    && !BuildingList.Contains(building) && !structure.GetComponent<Portal>())
                 {
-                    TowerList.Add(tower);
+                    BuildingList.Add(building);
                     structure.repairTower = this;
                 }
             }
@@ -49,9 +49,9 @@ public class RepairTower : TowerAi
 
     public void RemoveObjectsOutOfRange(GameObject obj)//근쳐 타워 삭제시 발동되게
     {
-        if (TowerList.Contains(obj))
+        if (BuildingList.Contains(obj))
         {
-            TowerList.Remove(obj);
+            BuildingList.Remove(obj);
         }
     }
 
@@ -76,18 +76,18 @@ public class RepairTower : TowerAi
 
     void RepairStart()
     {
-        foreach (GameObject tower in TowerList)
+        foreach (GameObject tower in BuildingList)
         {
             TowerAi towerAi = tower.GetComponent<TowerAi>();
             Structure factory = tower.GetComponent<Structure>();
 
             if (towerAi != null)
             {
-                towerAi.HealFunc(towerData.Damage);
+                towerAi.RepairFunc(towerData.Damage);
             }
             else if (factory != null)
             {
-                factory.HealFunc(towerData.Damage);
+                factory.RepairFunc(towerData.Damage);
             }
         }
     }

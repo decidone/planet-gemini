@@ -57,6 +57,17 @@ public class BuildingImgCtrl : MonoBehaviour
         onSlotChangedCallback?.Invoke();
     }
 
+    public void AddItem(Item newItem)
+    {
+        item = newItem;
+
+        icon.sprite = item.icon;
+        icon.enabled = true;
+        amountText.enabled = false;
+
+        onSlotChangedCallback?.Invoke();
+    }
+
     public void Refresh()
     {
         onSlotChangedCallback?.Invoke();

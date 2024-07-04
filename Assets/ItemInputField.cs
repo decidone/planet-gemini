@@ -11,6 +11,7 @@ public class ItemInputField : MonoBehaviour
     int amount;
     bool hasItem;
     SciItemSetWindow setWindow;
+    public bool isFinance;
     int index;
 
     public void InputFieldFGetData(int amount, int invenAmount, bool invenHasItem)
@@ -18,7 +19,9 @@ public class ItemInputField : MonoBehaviour
         fullAmount = amount;
         invenItemAmount = invenAmount;
         hasItem = invenHasItem;
+        isFinance = false;
         inputField = GetComponent<InputField>();
+        inputField.onValueChanged.RemoveAllListeners();
         inputField.onValueChanged.AddListener(OnValueChanged);
     }
 
@@ -29,7 +32,9 @@ public class ItemInputField : MonoBehaviour
         hasItem = invenHasItem;
         setWindow = sciItem;
         index = inputIndex;
+        isFinance = true;
         inputField = GetComponent<InputField>();
+        inputField.onValueChanged.RemoveAllListeners();
         inputField.onValueChanged.AddListener(FinanceOnValueChanged);
     }
 

@@ -19,6 +19,7 @@ public class Refinery : FluidFactoryCtrl
         hp = structureData.MaxHp[level];
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         repairBar.fillAmount = 0;
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
         #endregion
 
         #region FluidFactoryAwake
@@ -125,7 +126,7 @@ public class Refinery : FluidFactoryCtrl
                         {
                             isOperate = true;
                             prodTimer += Time.deltaTime;
-                            if (prodTimer > effiCooldown)
+                            if (prodTimer > effiCooldown - effiOverclock)
                             {
                                 saveFluidNum -= recipe.amounts[0];
                                 if (IsServer)
@@ -194,7 +195,7 @@ public class Refinery : FluidFactoryCtrl
 
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);

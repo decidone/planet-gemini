@@ -689,6 +689,7 @@ public class BeltCtrl : LogisticsCtrl
         settingEndCheck = true;
         beltState = BeltState.SoloBelt;
         SetBuild();
+        DataSet();
         ColliderTriggerOnOff(false);
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);

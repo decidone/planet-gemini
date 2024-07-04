@@ -43,13 +43,12 @@ public class ScienceCoreLvCtrl : MonoBehaviour
     void SciTreeInst()
     {
         var data = ScienceInfoGet.instance.GetSciLevelData(sciClass, coreLv);
-
-        for (int i = 0; i < data.Item1.Count; i++) 
+        for (int i = 0; i < data.Item1.Count; i++)
         {
             GameObject iconUI = Instantiate(sciTreeIcon);
             iconUI.transform.SetParent(panel.transform, false);
             SciTreeIconCtrl sciTreeIconCtrl = iconUI.GetComponent<SciTreeIconCtrl>();
-            Item itemData = itemList.FindData(data.Item1[i]);
+            Item itemData = itemList.FindDataGetLevel(data.Item1[i], data.Item2[i]);
             sciTreeIconCtrl.icon.sprite = itemData.icon;
             sciTreeIconCtrl.SetIcon(data.Item1[i], data.Item2[i], data.Item3[i]);   //이름, 레벨, 시간
         }

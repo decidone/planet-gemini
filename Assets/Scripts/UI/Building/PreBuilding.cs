@@ -1249,7 +1249,7 @@ public class PreBuilding : NetworkBehaviour
                         if (buildData.gameObj.TryGetComponent(out miner) || buildData.gameObj.TryGetComponent(out pump) || buildData.gameObj.TryGetComponent(out extractor))
                         {
                             if ((miner && cell.BuildCheck("miner") &&
-                                level >= cell.resource.level) ||
+                                level + 1 >= cell.resource.level) ||
                                 (pump && cell.BuildCheck("pump")) ||
                                 (extractor && cell.BuildCheck("extractor")))
                             {

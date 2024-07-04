@@ -6,6 +6,9 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
+    public string fileName;
+    public string saveDate;
+
     // 플레이어
     public List<PlayerSaveData> playerDataList = new List<PlayerSaveData>();
 

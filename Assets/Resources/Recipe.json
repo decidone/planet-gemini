@@ -50,6 +50,7 @@
         {"name":"Sulfur","items":["ToxicPlant","Sulfur"],"amounts":[1,1],"cooldown":3}
     ],
     "Tower":[
+        {"name":"BasicTower","items":["CopperBullet","IronBullet","SteelBullet"],"amounts":[0,0,0],"cooldown":0},
         {"name":"FireTower","items":["IronBullet","SteelBullet","ExplosiveBullet"],"amounts":[0,0,0],"cooldown":0},
         {"name":"PoisonTower","items":["IronBullet","SteelBullet","ExplosiveBullet"],"amounts":[0,0,0],"cooldown":0},
         {"name":"IceTower","items":["SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0],"cooldown":0},        

@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,13 +46,26 @@ public class DataManager : MonoBehaviour
 
         inputManager = InputManager.instance;
         netObjMgr = NetworkObjManager.instance;
-        inputManager.controls.HotKey.Save.performed += ctx => Save();
-        inputManager.controls.HotKey.Load.performed += ctx => Load();
+        inputManager.controls.HotKey.Save.performed += ctx => Save(selectedSlot);
+        inputManager.controls.HotKey.Load.performed += ctx => Load(selectedSlot);
     }
 
-    public string Save()
+    public string Save(int saveSlotNum)
+    {
+        return Save(saveSlotNum, null);
+    }
+
+    public string Save(int saveSlotNum, string fileName)
     {
         saveData = new SaveData();
+
+        // 저장 시간
+        DateTime currentDateTime = DateTime.Now;
+        string formattedDateTime = currentDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+        saveData.saveDate = formattedDateTime;
+
+        // 파일 이름
+        saveData.fileName = fileName;
 
         // 플레이어
         PlayerSaveData playerData = new PlayerSaveData();
@@ -95,21 +109,22 @@ public class DataManager : MonoBehaviour
         // Json 저장
         Debug.Log("saved: " + path);
         string json = JsonConvert.SerializeObject(saveData);
-        File.WriteAllText(path + selectedSlot.ToString() + ".json", json);
-
+        File.WriteAllText(path + saveSlotNum.ToString() + ".json", json);
+        selectedSlot = saveSlotNum;
         return json;
     }
 
-    public string GetJsonFromFile()
+    public string GetJsonFromFile(int saveSlotNum)
     {
-        string json = File.ReadAllText(path + selectedSlot.ToString() + ".json");
+        string json = File.ReadAllText(path + saveSlotNum.ToString() + ".json");
         return json;
     }
 
-    public void Load()
+    public void Load(int saveSlotNum)
     {
         // 호스트가 파일로부터 json을 불러와서 동기화
-        string json = GetJsonFromFile();
+        string json = GetJsonFromFile(saveSlotNum);
+        selectedSlot = saveSlotNum;
         saveData = JsonConvert.DeserializeObject<SaveData>(json);
         LoadData(saveData);
 
