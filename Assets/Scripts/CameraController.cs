@@ -16,8 +16,8 @@ public class CameraController : MonoBehaviour
 
     InputManager inputManager;
 
-    int width;
-    int height;
+    int width = 1920;
+    int height = 1080;
 
     #region Singleton
     public static CameraController instance;

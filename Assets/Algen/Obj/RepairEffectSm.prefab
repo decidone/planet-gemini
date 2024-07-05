@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6107177134524113068}
   - component: {fileID: 6107177134524113071}
   m_Layer: 0
-  m_Name: RepairEffect
+  m_Name: RepairEffectSm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
