@@ -408,6 +408,8 @@ public class GameManager : NetworkBehaviour
         Debug.Log(EventSystem.current.currentSelectedGameObject);
         debug = !debug;
         Debug.Log("debug : " + debug);
+
+        QuestManager.instance.SetQuest(0);
     }
 
     void Supply()

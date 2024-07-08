@@ -95,6 +95,12 @@ public class InfoUI : MonoBehaviour
         {
             energyText.text = "Energy Produce: " + str.energyProduction;
         }
+
+        if (str.gameObject.TryGetComponent<AttackTower>(out AttackTower tower))
+        {
+            firstBattleText.text = "ATK " + tower.towerData.Damage;
+            secondBattleText.text = "ATK Delay " + tower.towerData.AttDelayTime + " ATK Range " + tower.towerData.AttackDist;
+        }
     }
 
     public void SetStructureHp()
@@ -133,6 +139,16 @@ public class InfoUI : MonoBehaviour
         SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
         nameText.text = "Spawner Level " + spawner.areaLevel;
+        SetSpawnerHp();
+        spawner.onHpChangedCallback += SetSpawnerHp;
+    }
+
+    public void SetSpawnerHp()
+    {
+        if (spawner != null)
+        {
+            hpText.text = spawner.hp + "/" + spawner.maxHp;
+        }
     }
 
     public void SetMonsterInfo(MonsterAi _monster)
@@ -142,6 +158,18 @@ public class InfoUI : MonoBehaviour
         SpriteRenderer spriteRenderer = monster.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
         nameText.text = monster.name;
+        SetMonsterHp();
+        monster.onHpChangedCallback += SetMonsterHp;
+        firstBattleText.text = "ATK " + monster.unitCommonData.Damage + " DEF " + monster.unitCommonData.Defense;
+        secondBattleText.text = "ATK Delay " + monster.unitCommonData.AttDelayTime + " ATK Range " + monster.unitCommonData.AttackDist;
+    }
+
+    public void SetMonsterHp()
+    {
+        if (monster != null)
+        {
+            hpText.text = monster.hp + "/" + monster.maxHp;
+        }
     }
 
     public void ReleaseInfo()
@@ -182,6 +210,7 @@ public class InfoUI : MonoBehaviour
             SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
             spriteRenderer.material = noOutlineMat;
 
+            spawner.onHpChangedCallback -= SetSpawnerHp;
             spawner = null;
         }
         else if (monster != null)
@@ -189,6 +218,7 @@ public class InfoUI : MonoBehaviour
             SpriteRenderer spriteRenderer = monster.gameObject.GetComponent<SpriteRenderer>();
             spriteRenderer.material = noOutlineMat;
 
+            monster.onHpChangedCallback -= SetMonsterHp;
             monster = null;
         }
     }

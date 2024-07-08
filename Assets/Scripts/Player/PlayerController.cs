@@ -35,6 +35,9 @@ public class PlayerController : NetworkBehaviour
     public Vector2 movement;
     float animTimer;
 
+    public delegate void OnTeleported(int type);
+    public OnTeleported onTeleportedCallback;
+
     void Awake()
     {
         gameManager = GameManager.instance;
@@ -174,12 +177,13 @@ public class PlayerController : NetworkBehaviour
             Vector3 pos = GameManager.instance.Teleport();
             this.transform.position = pos;
             SoundManager.Instance.PlayBgmMapCheck();
+            onTeleportedCallback?.Invoke(0);
         }
 
-        if (nearShop != null)
-        {
-            nearShop.OpenUI();
-        }
+        //if (nearShop != null)
+        //{
+        //    nearShop.OpenUI();
+        //}
     }
 
     void TeleportMarket()
@@ -190,6 +194,7 @@ public class PlayerController : NetworkBehaviour
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.TeleportMarket();
             this.transform.position = pos;
+            onTeleportedCallback?.Invoke(1);
         }
     }
 

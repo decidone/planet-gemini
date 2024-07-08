@@ -82,6 +82,10 @@ public class UnitCommonAi : NetworkBehaviour
     protected BattleBGMCtrl battleBGM;
 
     protected NetworkObjectPool networkObjectPool;
+
+    public delegate void OnHpChanged();
+    public OnHpChanged onHpChangedCallback;
+
     private void Awake()
     {
         tr = GetComponent<Transform>();
@@ -304,6 +308,9 @@ public class UnitCommonAi : NetworkBehaviour
         float reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
 
         hp -= reducedDamage;
+        if (hp < 0f)
+            hp = 0f;
+        onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / maxHp;
 
         if (IsServer && hp <= 0f && !dieCheck)

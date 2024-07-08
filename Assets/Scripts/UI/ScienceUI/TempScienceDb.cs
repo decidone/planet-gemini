@@ -90,6 +90,9 @@ public class TempScienceDb : NetworkBehaviour
             }
 
             scienceBtns[i].LoadEnd(data[i].upgradeState, data[i].lockCheck, data[i].upgradeTime);
+
+            if (data[i].upgradeState == 2)
+                ScienceManager.instance.isAnyUpgradeCompleted = true;
         }
     }
 }

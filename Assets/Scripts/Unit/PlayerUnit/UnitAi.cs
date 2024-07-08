@@ -37,9 +37,6 @@ public class UnitAi : UnitCommonAi
     public float selfHealInterval;
     float selfHealTimer;
 
-    public delegate void OnHpChanged();
-    public OnHpChanged onHpChangedCallback;
-
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함

@@ -12,6 +12,12 @@ public class NetworkObjManager : NetworkBehaviour
     public List<UnitCommonAi> netUnitCommonAis = new List<UnitCommonAi>();
     public List<BeltCtrl> networkBelts = new List<BeltCtrl>();
 
+    public delegate void OnStructureChanged(int type);
+    public OnStructureChanged onStructureChangedCallback;
+
+    public delegate void OnUnitChanged(int type);
+    public OnUnitChanged onUnitChangedCallback;
+
     #region Singleton
     public static NetworkObjManager instance;
 
@@ -36,6 +42,7 @@ public class NetworkObjManager : NetworkBehaviour
         else if (netObj.TryGetComponent(out Structure structure) && !netObj.GetComponent<BeltCtrl>())
         {
             netStructures.Add(structure);
+            onStructureChangedCallback?.Invoke(20);
         }
         else if (netObj.TryGetComponent(out BeltGroupMgr beltGroupMgr))
         {
@@ -44,6 +51,7 @@ public class NetworkObjManager : NetworkBehaviour
         else if (netObj.TryGetComponent(out UnitCommonAi unitCommonAi))
         {
             netUnitCommonAis.Add(unitCommonAi);
+            onUnitChangedCallback?.Invoke(22);
         }
         else
         {
@@ -211,5 +219,31 @@ public class NetworkObjManager : NetworkBehaviour
         }
 
         return netObj;
+    }
+
+    public bool StructureCheck(StructureData strData)
+    {
+        for (int i = 0; i < netStructures.Count; i++)
+        {
+            if (netStructures[i].structureData == strData)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool UnitCheck(UnitCommonData unitData)
+    {
+        for (int i = 0; i < netUnitCommonAis.Count; i++)
+        {
+            if (netUnitCommonAis[i].unitCommonData == unitData)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

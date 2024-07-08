@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3653b061648824b41b385336c0fac079, type: 3}
+  m_Name: Unit_01
+  m_EditorClassIdentifier: 
+  type: 22
+  title: Unit
+  description: Make bounce robot at a unit factory
+  isCompleted: 0
+  item: {fileID: 0}
+  strData: {fileID: 0}
+  unitData: {fileID: 11400000, guid: d4523c5fa7df1244998568cd8862e84a, type: 2}
+  amount: -1
+  destination: -1
+  scienceTech: -1

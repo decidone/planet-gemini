@@ -46,6 +46,10 @@ public class ScienceManager : MonoBehaviour
 
     SoundManager soundManager;
 
+    public bool isAnyUpgradeCompleted = false;
+    public delegate void OnUpgradeCompleted(int type);
+    public OnUpgradeCompleted onUpgradeCompletedCallback;
+
     public static ScienceManager instance;
     private void Awake()
     {
@@ -252,6 +256,10 @@ public class ScienceManager : MonoBehaviour
         {
             portalSciManager.PortalSciUpgrade(sciName);
         }
+
+        isAnyUpgradeCompleted = true;
+        onUpgradeCompletedCallback?.Invoke(40);
+
         scienceDb.SaveSciDb(sciName, sciLevel);
         buildingInven.Refresh();
     }

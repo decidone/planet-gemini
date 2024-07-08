@@ -13,9 +13,8 @@ public class TowerAi : Production
         AttackDelay
     }
 
-    [SerializeField]
-    protected TowerData towerData;
-    protected TowerData TowerData { set { towerData = value; } }
+    public TowerData towerData;
+    //protected TowerData TowerData { set { towerData = value; } }
 
     // 유닛 상태 관련
     [HideInInspector]

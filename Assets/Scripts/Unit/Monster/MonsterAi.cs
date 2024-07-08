@@ -654,6 +654,9 @@ public class MonsterAi : UnitCommonAi
     {
         base.DieFuncClientRpc();
 
+        if (InfoUI.instance.monster == this)
+            InfoUI.instance.SetDefault();
+
         if (!IsServer)
             return;
 
@@ -680,6 +683,7 @@ public class MonsterAi : UnitCommonAi
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
             NetworkObject.Despawn();
+            Overall.instance.OverallCount(1);
         }
     }
 

@@ -51,6 +51,7 @@ public class MonsterSpawner : NetworkBehaviour
     public GameObject unitCanvas;
     public Image hpBar;
     public float hp;
+    public float maxHp;
     public bool dieCheck = false;
     protected CapsuleCollider2D capsuleCollider2D;
     bool extraSpawn;
@@ -71,6 +72,9 @@ public class MonsterSpawner : NetworkBehaviour
 
     public bool isInHostMap;
     bool gameLodeSet = false;
+
+    public delegate void OnHpChanged();
+    public OnHpChanged onHpChangedCallback;
 
     void Awake()
     {
@@ -168,6 +172,7 @@ public class MonsterSpawner : NetworkBehaviour
         biome = _biome;
         isInHostMap = isHostMap;
         hp = structureData.MaxHp[levelData.areaLevel -1];
+        maxHp = structureData.MaxHp[levelData.areaLevel -1];
 
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
@@ -405,7 +410,10 @@ public class MonsterSpawner : NetworkBehaviour
             unitCanvas.SetActive(true);
 
         hp -= damage;
-        hpBar.fillAmount = hp / structureData.MaxHp[areaLevel - 1];
+        if (hp < 0f)
+            hp = 0f;
+        onHpChangedCallback?.Invoke();
+        hpBar.fillAmount = hp / maxHp;
         if (hp <= 0f && !dieCheck)
         {
             hp = 0f;
@@ -421,9 +429,13 @@ public class MonsterSpawner : NetworkBehaviour
         monsterSpawnerManager.AreaGroupRemove(this, areaLevel, isInHostMap);
         capsuleCollider2D.enabled = false;
 
+        if (InfoUI.instance.spawner == this)
+            InfoUI.instance.SetDefault();
+
         if (!IsServer)
             return;
 
+        Overall.instance.OverallCount(0);
         GetComponentInChildren<SpawnerSearchColl>().DieFunc();
     }
 

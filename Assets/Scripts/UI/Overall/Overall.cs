@@ -18,7 +18,7 @@ public class Overall : NetworkBehaviour
      * 
      */
 
-    public delegate void OnOverallChanged();
+    public delegate void OnOverallChanged(int type);
     public OnOverallChanged onOverallChangedCallback;
 
     [SerializeField] ItemListSO itemListSO;
@@ -26,13 +26,13 @@ public class Overall : NetworkBehaviour
 
     // 아래 딕셔너리들 key 값은 매칭되는 listSO의 순번
     Dictionary<int, int> itemsProduction = new Dictionary<int, int>();          // 생산한 아이템 종류별 총합
-    Dictionary<int, int> itemsConsumption = new Dictionary<int, int>();          // 소모한 아이템 종류별 총합
+    Dictionary<int, int> itemsConsumption = new Dictionary<int, int>();         // 소모한 아이템 종류별 총합
     Dictionary<int, int> purchasedItems = new Dictionary<int, int>();           // 구매한 아이템 종류별 총합
     Dictionary<int, int> soldItems = new Dictionary<int, int>();                // 판매/분해한 아이템 종류별 총합
     Dictionary<int, int> itemsFromHostToClient = new Dictionary<int, int>();    // 호스트 행성에서 클라이언트 행성으로 전송한 아이템 종류별 총합
     Dictionary<int, int> itemsFromClientToHost = new Dictionary<int, int>();    // 클라이언트 행성에서 호스트 행성으로 전송한 아이템 종류별 총합
-    int spawnerDestroyCount;   // 스포너 파괴 카운트 (스포너 단계에 따른 분류는 따로 하지 않음)
-    int monsterKillCount;      // 몬스터 킬 카운트 (마찬가지로 몬스터 종류에 따른 분류는 따로 하지 않음)
+    public int spawnerDestroyCount;   // 스포너 파괴 카운트 (스포너 단계에 따른 분류는 따로 하지 않음)
+    public int monsterKillCount;      // 몬스터 킬 카운트 (마찬가지로 몬스터 종류에 따른 분류는 따로 하지 않음)
 
     OverallDisplay display;
 
@@ -107,6 +107,8 @@ public class Overall : NetworkBehaviour
                 {
                     itemsProduction[i] += amount;
                     display.SetProdAmount(i, itemsProduction[i]);
+
+                    onOverallChangedCallback?.Invoke(21);
                 }
                 break;
             }
@@ -197,6 +199,8 @@ public class Overall : NetworkBehaviour
                 {
                     purchasedItems[i] += amount;
                     display.SetPurchasedAmount(i, purchasedItems[i]);
+
+                    onOverallChangedCallback?.Invoke(10);
                 }
                 break;
             }
@@ -228,6 +232,8 @@ public class Overall : NetworkBehaviour
                 {
                     soldItems[i] += amount;
                     display.SetSoldAmount(i, soldItems[i]);
+
+                    onOverallChangedCallback?.Invoke(11);
                 }
                 break;
             }
@@ -263,6 +269,8 @@ public class Overall : NetworkBehaviour
                         display.SetSentAmount(i, itemsFromHostToClient[i]);
                     else
                         display.SetReceivedAmount(i, itemsFromHostToClient[i]);
+
+                    onOverallChangedCallback?.Invoke(1);
                 }
                 break;
             }
@@ -297,6 +305,8 @@ public class Overall : NetworkBehaviour
                         display.SetReceivedAmount(i, itemsFromClientToHost[i]);
                     else
                         display.SetSentAmount(i, itemsFromClientToHost[i]);
+
+                    onOverallChangedCallback?.Invoke(1);
                 }
                 break;
             }
@@ -321,9 +331,11 @@ public class Overall : NetworkBehaviour
         {
             case 0: // spawnerDestroyCount
                 spawnerDestroyCount++;
+                onOverallChangedCallback?.Invoke(30);
                 break;
             case 1: // monsterKillCount
                 monsterKillCount++;
+                onOverallChangedCallback?.Invoke(31);
                 break;
             default:
                 Debug.Log("Wrong task id");
@@ -331,46 +343,67 @@ public class Overall : NetworkBehaviour
         }
     }
 
-    //public void AddOverallItem(int taskId, Item item, int amount)
-    //{
-    //    Dictionary<int, int> tempDic;
+    public bool OverallSentCheck()
+    {
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            if (itemsFromHostToClient[i] != 0)
+                return true;
+        }
 
-    //    switch (taskId)
-    //    {
-    //        case 0: // itemsProduction
-    //            tempDic = itemsProduction;
-    //            break;
-    //        case 1: // purchasedItems
-    //            tempDic = purchasedItems;
-    //            break;
-    //        case 2: // soldItems
-    //            tempDic = soldItems;
-    //            break;
-    //        case 3: // itemsFromHostToClient
-    //            tempDic = itemsFromHostToClient;
-    //            break;
-    //        case 4: // itemsFromClientToHost
-    //            tempDic = itemsFromClientToHost;
-    //            break;
-    //        default:
-    //            tempDic = null;
-    //            Debug.Log("Wrong task id");
-    //            break;
-    //    }
+        return false;
+    }
 
-    //    if (tempDic != null)
-    //    {
-    //        for (int i = 0; i < itemList.Count; i++)
-    //        {
-    //            if (itemList[i] == item)
-    //            {
-    //                if (tempDic.ContainsKey(i))
-    //                {
-    //                    tempDic[i] += amount;
-    //                }
-    //                break;
-    //            }
-    //        }
-    //    }
-    //}
+    public bool OverallReceivedCheck()
+    {
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            if (itemsFromClientToHost[i] != 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    public int OverallPurchasedItemCheck(Item item)
+    {
+        int amout = 0;
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            if (itemList[i] == item)
+            {
+                amout = purchasedItems[i];
+            }
+        }
+
+        return amout;
+    }
+
+    public int OverallSoldItemCheck(Item item)
+    {
+        int amout = 0;
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            if (itemList[i] == item)
+            {
+                amout = soldItems[i];
+            }
+        }
+
+        return amout;
+    }
+
+    public int OverallProdItemCheck(Item item)
+    {
+        int amout = 0;
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            if (itemList[i] == item)
+            {
+                amout = itemsProduction[i];
+            }
+        }
+
+        return amout;
+    }
 }
