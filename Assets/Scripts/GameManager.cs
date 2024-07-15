@@ -83,7 +83,7 @@ public class GameManager : NetworkBehaviour
     public OnUIChanged onUIChangedCallback;
 
     [SerializeField]
-    GameObject tempOption;
+    GameObject optionPanel;
 
     #region Singleton
     public static GameManager instance;
@@ -432,7 +432,7 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            tempOption.SetActive(!tempOption.activeSelf);
+            optionPanel.SetActive(!optionPanel.activeSelf);
         }
     }
 
@@ -469,6 +469,15 @@ public class GameManager : NetworkBehaviour
                 break;
             case "OverallDisplay":
                 OverallDisplay.instance.CloseUI();
+                break;
+            case "SettingsPanel":
+                SettingsMenu.instance.MenuClose();
+                break;
+            case "SaveLoadPanel":
+                SaveLoadMenu.instance.MenuClose();
+                break;
+            case "ConfirmPanel":
+                ConfirmPanel.instance.UIClose();
                 break;
             default:
                 if (openedUI[order].gameObject.TryGetComponent<Shop>(out Shop shop))

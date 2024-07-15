@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PortalUnitOut
   m_EditorClassIdentifier: 
   factoryName: PortalUnitOut
+  maxLevel: 1
   maxHp: 2c010000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
@@ -23,10 +24,10 @@ MonoBehaviour:
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  maxLevel: 1
   cooldown: 10
   isEnergyStr: 0
   production: 0
   energyUse: 00
   consumption:
   - 0
+  removeGauge: 10

@@ -30,3 +30,4 @@ MonoBehaviour:
   energyUse: 01
   consumption:
   - 3
+  removeGauge: 10

@@ -21,8 +21,13 @@ public class SettingsMenu : MonoBehaviour
     GameObject keyBindingsPanel;
     [SerializeField]
     GameObject keyBindingPanel;
+    [SerializeField]
+    Button resetBtn;
     List<KeyBindingsBtn> keyBindingsBtn = new List<KeyBindingsBtn>();
-    Dictionary<InputAction, (string, string)> inputActions = new Dictionary<InputAction, (string, string)>();
+    Dictionary<int, (string, int, int, bool, bool)> windowSize = new Dictionary<int, (string, int, int, bool, bool)>();
+    Dictionary<string, (InputAction, string)> inputActions = new Dictionary<string, (InputAction, string)>();
+
+    int windowSizeIndex;
 
     #region Singleton
     public static SettingsMenu instance;
@@ -36,137 +41,75 @@ public class SettingsMenu : MonoBehaviour
         }
 
         instance = this;
-
-        //Camera camera = Camera.main;
-        //Rect rect = camera.rect;
-        //float scaleheight = ((float)Screen.width / Screen.height) / ((float)16 / 9); // (가로 / 세로)
-        //float scalewidth = 1f / scaleheight;
-        //if (scaleheight < 1)
-        //{
-        //    rect.height = scaleheight;
-        //    fixedWidth = Screen.width;
-        //    fixedHeight = fixedWidth * 9 / 16;
-        //    rect.y = (1f - scaleheight) / 2f;
-        //}
-        //else
-        //{
-        //    rect.width = scalewidth;
-        //    fixedHeight = Screen.height;
-        //    fixedWidth = fixedHeight * 16 / 9;
-        //    rect.x = (1f - scalewidth) / 2f;
-        //}
-        //camera.rect = rect;
-
-        //Debug.Log(fixedWidth + " : " + fixedWidth); 
     }
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
-        CameraController.instance.WindowSizeSet(1, fixedWidth, fixedHeight);
-
         backBtn.onClick.AddListener(() => BackBtnFunc());
-        WindowModeDropdownSet();
-        KeyBindingSetting();
-        Screen.SetResolution(fixedWidth, fixedHeight, false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        resetBtn.onClick.AddListener(()=> ResetToDefault());
     }
 
     public void MenuOpen()
     {
         settingsPanel.SetActive(true);
+        GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
     }
 
     public void MenuClose()
     {
+        OptionDataManager.instance.Save();
         settingsPanel.SetActive(false);
+        GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
     }
 
     #region WindowMode
     void WindowModeDropdownSet()
     {
         windowModeDropdown.ClearOptions();
-        windowModeDropdown.options.Add(new Dropdown.OptionData("FullScreen"));
-        windowModeDropdown.options.Add(new Dropdown.OptionData("BorderLess"));
-        windowModeDropdown.options.Add(new Dropdown.OptionData("Window : 960 x 540"));
-        windowModeDropdown.options.Add(new Dropdown.OptionData("Window : 1100 x 540"));
+        foreach (var winSize in windowSize)
+        {
+            windowModeDropdown.options.Add(new Dropdown.OptionData(winSize.Value.Item1));
+        }
         WindowModeDropdownFunc(windowModeDropdown);
         windowModeDropdown.onValueChanged.AddListener(delegate { WindowModeDropdownFunc(windowModeDropdown); });
     }
 
     void WindowModeDropdownFunc(Dropdown dropdown)
     {
-        switch (dropdown.value)
+        WindowSettset(dropdown.value);
+    }
+
+    void WindowSettset(int dropdownIndex)
+    {
+        var data = windowSize[dropdownIndex];
+        if (data.Item4)
         {
-            case 0:
-                FullScreenSet();
-                break;
-            case 1:
-                BorderlessSet();
-                break;
-            case 2:
-                WindowSettset(960, 540);
-                break;
-            case 3:
-                WindowSettset(1100, 540);
-                break;
-            default:
-                Debug.Log("Unhandled dropdown option");
-                break;
+            Screen.SetResolution(data.Item2, data.Item3, FullScreenMode.FullScreenWindow);
+            Screen.fullScreen = true;
         }
-    }
+        else
+        {
+            Screen.SetResolution(data.Item2, data.Item3, FullScreenMode.Windowed);
+            Screen.fullScreen = false;
+        }
+        if (data.Item5)
+        {
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
 
-    void FullScreenSet()
-    {
-        Screen.SetResolution(fixedWidth, fixedHeight, FullScreenMode.FullScreenWindow);
-        Screen.fullScreen = true;
-        Cursor.lockState = CursorLockMode.Confined;
-        CameraController.instance.WindowSizeSet(CameraController.instance.zoomLevel, fixedWidth, fixedHeight);
-        Debug.Log("FullScreenSet : " + fixedWidth + " : " + fixedHeight);
-    }
-
-    void BorderlessSet()
-    {
-        Screen.SetResolution(fixedWidth, fixedHeight, FullScreenMode.FullScreenWindow);
-        Cursor.lockState = CursorLockMode.None;
-        CameraController.instance.WindowSizeSet(CameraController.instance.zoomLevel, fixedWidth, fixedHeight);
-        Debug.Log("BorderlessSet : " + fixedWidth + " : " + fixedHeight);
-    }
-
-    void WindowSettset(int width, int height)
-    {
-        Screen.SetResolution(width, height, FullScreenMode.Windowed);
-        Screen.fullScreen = false;
-        Cursor.lockState = CursorLockMode.None;
-        CameraController.instance.WindowSizeSet(CameraController.instance.zoomLevel, 960, 540);// 삭제요망
-        Debug.Log("WindowSet");
+        CameraController.instance.WindowSizeSet(CameraController.instance.zoomLevel, data.Item2, data.Item3);
+        windowSizeIndex = dropdownIndex;
     }
 
     #endregion
 
     #region KeyBindings
-    void KeyBindingSetting()
-    {
-        inputActions.Add(InputManager.instance.controls.Inventory.PlayerInven, ("Inventory", "E"));
-        inputActions.Add(InputManager.instance.controls.Player.Loot, ("Loot", "C"));
-        inputActions.Add(InputManager.instance.controls.Player.Interaction, ("Interaction", "F"));
-        inputActions.Add(InputManager.instance.controls.Player.Market, ("Market", "V"));
-        inputActions.Add(InputManager.instance.controls.State.ToggleMap, ("Map", "M"));
-        inputActions.Add(InputManager.instance.controls.HotKey.ScienceTree, ("ScienceTree", "T"));
-        inputActions.Add(InputManager.instance.controls.HotKey.Overall, ("Overall", "O"));
-        inputActions.Add(InputManager.instance.controls.Building.Rotate, ("Rotate", "R"));
-        inputActions.Add(InputManager.instance.controls.Unit.Patrol, ("Unit Patrol", "P"));
-        inputActions.Add(InputManager.instance.controls.Unit.Hold, ("Unit Hold", "H"));
-
-        KeyBindingPanelSet();
-    }
-
     void KeyBindingPanelSet()
     {
         foreach (var action in inputActions)
@@ -175,7 +118,37 @@ public class SettingsMenu : MonoBehaviour
             keyBindPanel.transform.SetParent(keyBindingsPanel.transform, false);
             KeyBindingsBtn btn = keyBindPanel.GetComponentInChildren<KeyBindingsBtn>();
             keyBindingsBtn.Add(btn);
-            btn.BtnSetting(action.Key, action.Value.Item1, action.Value.Item2); // 현제는 초기값만 넣게 하는데 저장 기능 추가되면 저장된 값을 불러오도록(덮어씌우기 하도록)
+            btn.BtnSetting(action.Value.Item1, action.Key, action.Value.Item2); // 현제는 초기값만 넣게 하는데 저장 기능 추가되면 저장된 값을 불러오도록(덮어씌우기 하도록)
+        }
+    }
+
+    private void LoadRebindings()
+    {
+        foreach (var inputAction in inputActions)
+        {
+            InputAction action = inputAction.Value.Item1;
+            string name = inputAction.Key;
+            // 저장된 리바인딩 데이터를 로드
+            if (PlayerPrefs.HasKey(name))
+            {
+                string rebinds = PlayerPrefs.GetString(name);
+                Debug.Log(rebinds);
+                action.LoadBindingOverridesFromJson(rebinds);
+                Debug.Log("Rebindings loaded.");
+            }
+        }
+
+        foreach (var btn in keyBindingsBtn)
+        {
+            btn.InputTextSet();
+        }
+    }
+
+    void ResetToDefault()
+    {
+        foreach (var btn in keyBindingsBtn)
+        {
+            btn.ResetToDefault();
         }
     }
 
@@ -184,5 +157,29 @@ public class SettingsMenu : MonoBehaviour
     void BackBtnFunc()
     {
         MenuClose();
+    }
+
+    public void SaveData()
+    {
+        PlayerPrefs.SetInt("WindowIndex", windowSizeIndex);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadData()
+    {
+        WindowModeDropdownSet();
+        KeyBindingPanelSet();
+
+        int winIndex = PlayerPrefs.GetInt("WindowIndex", 0);
+        WindowSettset(winIndex);
+        windowModeDropdown.value = winIndex;
+
+        LoadRebindings();
+    }
+
+    public void GetSettingData(Dictionary<int, (string, int, int, bool, bool)> winSize, Dictionary<string, (InputAction, string)> inputs)
+    {
+        windowSize = new Dictionary<int, (string, int, int, bool, bool)>(winSize);
+        inputActions = new Dictionary<string, (InputAction, string)>(inputs);
     }
 }

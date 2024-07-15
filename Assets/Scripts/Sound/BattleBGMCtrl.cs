@@ -165,6 +165,7 @@ public class BattleBGMCtrl : MonoBehaviour
                     }
                     isHostMapWaveState = false;
                     WavePoint.instance.WaveEnd(true);
+                    MonsterSpawnerManager.instance.WaveEnd();
                 }
             }
             else if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0 && isHostMapBattleBGMOn)
@@ -191,6 +192,7 @@ public class BattleBGMCtrl : MonoBehaviour
                     }
                     isClientMapWaveState = false;
                     WavePoint.instance.WaveEnd(true);
+                    MonsterSpawnerManager.instance.WaveEnd();
                 }
             }
             else if (battleMonsters.Count == 0 && colonyCallMonsters.Count == 0 && isClientMapBattleBGMOn)

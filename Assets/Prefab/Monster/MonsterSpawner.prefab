@@ -62,12 +62,12 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: b80f3fe12832da9428c0b96ac5dd466c, type: 3}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 0
   m_FillMethod: 0
@@ -259,6 +259,8 @@ MonoBehaviour:
   dieCheck: 0
   waveTimer: 0
   searchColl: {fileID: 7283164378971898256}
+  energyAggroValue: 50
+  energyAggroInterval: 30
   isInHostMap: 0
 --- !u!50 &5546485786390217281
 Rigidbody2D:
@@ -621,6 +623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inObjList: []
+  structures: []
 --- !u!58 &1820112874045990246
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -636,4 +639,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 50
+  m_Radius: 150

@@ -8,7 +8,7 @@ public class GuardianAi : MonsterAi
 {
     protected override void Update()
     {
-        if (aIState != AIState.AI_GuardianAggro)
+        if (aIState != AIState.AI_SpawnerCall)
         {
             base.Update();
         }
@@ -51,15 +51,15 @@ public class GuardianAi : MonsterAi
                     ReturnPos();
                 }
                 break;
-            case AIState.AI_GuardianAggro:
+            case AIState.AI_SpawnerCall:
                 {
-                    GuardianAggro();
+                    SpawnerCall();
                 }
                 break;
         }
     }
 
-    void GuardianAggro() 
+    public override void SpawnerCall()
     {
         //AnimBoolCtrl("isMove", true);
         animator.SetBool("isMove", true);
@@ -93,14 +93,14 @@ public class GuardianAi : MonsterAi
         }
     } 
 
-    public void SpawnerCollCheck(GameObject obj)
+    public void SpawnerCallCheck(GameObject obj)
     {
         if (obj == null)
             return;
         aggroTarget = obj;
         targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
 
-        checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, ""));
-        aIState = AIState.AI_GuardianAggro;
+        checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
+        aIState = AIState.AI_SpawnerCall;
     }
 }

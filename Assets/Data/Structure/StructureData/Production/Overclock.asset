@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Overclock
   m_EditorClassIdentifier: 
   factoryName: Overclock
+  maxLevel: 3
   maxHp: 320000003c00000046000000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
@@ -23,10 +24,10 @@ MonoBehaviour:
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  maxLevel: 3
   cooldown: 3
   isEnergyStr: 0
   production: 0
   energyUse: 01
   consumption:
   - 3
+  removeGauge: 10

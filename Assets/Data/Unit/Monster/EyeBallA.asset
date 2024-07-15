@@ -18,6 +18,6 @@ MonoBehaviour:
   moveSpeed: 3
   attackDist: 4
   attDelayTime: 1
-  colliderRadius: 10
+  colliderRadius: 20
   patrolRad: 3
   defense: 10

@@ -107,7 +107,7 @@ public class Structure : NetworkBehaviour
 
     [HideInInspector]
     public Collider2D col;
-    //[HideInInspector]
+    [HideInInspector]
     public RepairTower repairTower;
     [HideInInspector]
     public Overclock overclockTower;
@@ -123,7 +123,7 @@ public class Structure : NetworkBehaviour
 
     [HideInInspector]
     public int maxAmount;
-    //[HideInInspector]
+    [HideInInspector]
     public float cooldown;
 
     public List<EnergyGroupConnector> connectors;
@@ -141,11 +141,15 @@ public class Structure : NetworkBehaviour
     public float efficiency;
     public float effiCooldown;
 
-    public bool isMainEnergyColony;
+    //public bool isMainEnergyColony;
     public SoundManager soundManager;
 
     public bool isInHostMap;
     public Vector3 tileSetPos;
+
+    bool destroyStart;
+    float destroyInterval;
+    float destroyTimer;
 
     public bool settingEndCheck = false;
     public List<(int, int)> DelaySendList = new List<(int, int)>();
@@ -181,8 +185,10 @@ public class Structure : NetworkBehaviour
         isEnergyStr = structureData.IsEnergyStr;
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
+        destroyInterval = structureData.RemoveGauge;
         soundManager = SoundManager.Instance;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
+        destroyTimer = destroyInterval;
     }
 
     protected virtual void Update()
@@ -196,6 +202,63 @@ public class Structure : NetworkBehaviour
             else if (isPreBuilding && isSetBuildingOk)
             {
                 RepairFunc(true);
+            }
+        }
+
+        if (destroyStart)
+        {
+            destroyTimer -= Time.deltaTime;
+            repairBar.fillAmount = destroyTimer / destroyInterval;
+
+            if (destroyTimer <= 0)
+            {
+                ObjRemoveFunc();
+                destroyStart = false;
+            }
+        }
+    }
+
+    public void DestroyStart()
+    {
+        if (!destroyStart && !isPreBuilding && destroyTimer > 0) 
+        {
+            destroyStart = true;
+            unitCanvas.SetActive(true);
+            repairBar.enabled = true;
+        }
+    }
+
+    void ObjRemoveFunc()
+    {
+        AddInvenItem();
+        RemoveObjServerRpc();
+        RefundCost();
+        soundManager.PlayUISFX("BuildingRemove");
+        GameManager.instance.BuildAndSciUiReset();        
+    }
+
+    void RefundCost()
+    {
+        if (isPortalBuild)
+        {
+            return;
+        }
+        else
+        {
+            BuildingData buildingData = new BuildingData();
+            buildingData = BuildingDataGet.instance.GetBuildingName(buildName, level + 1);
+            Inventory inventory;
+            GameManager gameManager = GameManager.instance;
+
+            if (isInHostMap)
+                inventory = gameManager.hostMapInven;
+            else
+                inventory = gameManager.clientMapInven;
+
+            for (int i = 0; i < buildingData.GetItemCount(); i++)
+            {
+                inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
+                Overall.instance.OverallConsumptionCancel(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
             }
         }
     }

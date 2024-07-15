@@ -27,10 +27,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     bool isInHostMap;
 
-    public List<MonsterSpawner> totalMonsterSpawnerList = new List<MonsterSpawner>();
-    public List<UnitCommonAi> totalMonsterList = new List<UnitCommonAi>();
-    public List<UnitCommonAi> totalWaveMonsterList = new List<UnitCommonAi>();
-
     [SerializeField]
     bool map1Wave1Start = false;
     [SerializeField]
@@ -332,17 +328,19 @@ public class MonsterSpawnerManager : NetworkBehaviour
                         }
                     }
                 }
-                WaveStartClientRpc(waveTrPos, isInHostMap);
+                WaveStart(waveTrPos, isInHostMap);
             }
         }
     }
 
-    [ClientRpc]
-    void WaveStartClientRpc(Vector3 waveTrPos, bool isInHostMap)
+    void WaveStart(Vector3 waveTrPos, bool isInHostMap)
     {
         Debug.Log("waveStart : " + waveTrPos);
         wavePoint.WaveStart(waveTrPos, isInHostMap);
-        if(IsServer)
+
+        GlobalWaveSet(true);
+
+        if (IsServer)
             BattleBGMCtrl.instance.WaveStart(isInHostMap);
         WaveStateSet(isInHostMap, true);
     }
@@ -355,6 +353,55 @@ public class MonsterSpawnerManager : NetworkBehaviour
             clientMapWave = waveState;
 
         WarningWindow.instance.WarningTextSet("Wave detected on", isInHostMap);
+    }
+
+    public void WaveEnd()
+    {
+        GlobalWaveSet(false);
+    }
+
+    void GlobalWaveSet(bool state)
+    {
+        foreach (MonsterSpawner spawner in map1Area1Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map1Area2Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map1Area3Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map1Area4Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map1Area5Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map2Area1Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map2Area2Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map2Area3Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map2Area4Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
+        foreach (MonsterSpawner spawner in map2Area5Group)
+        {
+            spawner.GlobalWaveState(state);
+        }
     }
 
     bool FindMatrix(SpawnerGroupManager spawnerGroup, bool isInHostMap)
@@ -496,25 +543,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
 
         return closestPoint;
-    }
-
-    public void MonsterDataGet()
-    {
-        totalMonsterSpawnerList.Clear();
-
-        for (int x = 0; x < splitCount; x++)
-        {
-            for(int y = 0; y < splitCount; y++)
-            {
-                SpawnerGroupManager groupManager = spawnerMap1Matrix[x, y].GetComponent<SpawnerGroupManager>();
-                totalMonsterSpawnerList.AddRange(groupManager.MonsterSpawnerListData());
-                totalMonsterList.AddRange(groupManager.MonsterListData());
-
-                groupManager = spawnerMap2Matrix[x, y].GetComponent<SpawnerGroupManager>();
-                totalMonsterSpawnerList.AddRange(groupManager.MonsterSpawnerListData());
-                totalMonsterList.AddRange(groupManager.MonsterListData());
-            }
-        }
     }
 
     public SpawnerManagerSaveData SaveData()

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: UnitFactory
   m_EditorClassIdentifier: 
   factoryName: UnitFactory
+  maxLevel: 1
   maxHp: 320000003c00000046000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
@@ -23,10 +24,10 @@ MonoBehaviour:
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  maxLevel: 1
   cooldown: 20
   isEnergyStr: 0
   production: 0
   energyUse: 01
   consumption:
   - 3
+  removeGauge: 10

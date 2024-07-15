@@ -90,11 +90,14 @@ public class SaveLoadMenu : MonoBehaviour
         {
             btn.BtnStateSet(state);
         }
+        GameManager.instance.onUIChangedCallback?.Invoke(saveLoadPanel);
+
     }
 
     public void MenuClose()
     {
         saveLoadPanel.SetActive(false);
+        GameManager.instance.onUIChangedCallback?.Invoke(saveLoadPanel);
     }
 
     public (bool, string) GetJsonFromFile(int saveSlotNum)

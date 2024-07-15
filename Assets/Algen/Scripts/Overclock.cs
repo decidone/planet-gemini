@@ -80,6 +80,12 @@ public class Overclock : Production
 
     public override void AddInvenItem() { }
 
+    public override void SetBuild()
+    {
+        base.SetBuild();
+        view.enabled = false;
+    }
+
     public override void Focused()
     {
         view.enabled = true;

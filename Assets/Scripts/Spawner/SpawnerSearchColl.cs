@@ -7,6 +7,7 @@ public class SpawnerSearchColl : NetworkBehaviour
 {
     MonsterSpawner monsterSpawner;
     public List<GameObject> inObjList = new List<GameObject>();
+    public List<Structure> structures = new List<Structure>();
     bool nearUserObjExist = false;
 
     private void Awake()
@@ -16,16 +17,13 @@ public class SpawnerSearchColl : NetworkBehaviour
 
     public void DieFunc()
     {
-        Debug.Log(inObjList.Count);
         foreach (GameObject target in inObjList)
         {
             if (target != null)
             {
-                Debug.Log(target.name);
                 if (target.TryGetComponent(out UnitAi unit))
                 {
                     unit.RemoveTarget(monsterSpawner.gameObject);
-                    Debug.Log("unitCall");
                 }
                 else if (target.TryGetComponent(out AttackTower tower))
                 {
@@ -38,27 +36,41 @@ public class SpawnerSearchColl : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!inObjList.Contains(collision.gameObject) && IsServer)
+        if (!inObjList.Contains(collision.gameObject) && IsServer &&
+            (collision.GetComponent<TowerAi>() || collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>()))
         {
             inObjList.Add(collision.gameObject);
-            if (!nearUserObjExist && inObjList.Count > 0)
-            {
-                nearUserObjExist = true;
-                monsterSpawner.SearchObj(true);
-            }
+        }
+        else if (IsServer && collision.TryGetComponent(out Structure structure))
+        {
+            if(!structures.Contains(structure))
+                structures.Add(structure);
+        }
+
+        if (!nearUserObjExist && (inObjList.Count > 0 || structures.Count > 0))
+        {
+            nearUserObjExist = true;
+            monsterSpawner.SearchObj(true);
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (inObjList.Contains(collision.gameObject) && IsServer)
+        if (inObjList.Contains(collision.gameObject) && IsServer &&
+            (collision.GetComponent<TowerAi>() || collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>()))
         {
             inObjList.Remove(collision.gameObject);
-            if (nearUserObjExist && inObjList.Count == 0)
-            {
-                nearUserObjExist = false;
-                monsterSpawner.SearchObj(false);
-            }
+        }
+        else if (IsServer && collision.TryGetComponent(out Structure structure))
+        {
+            if (structures.Contains(structure))
+                structures.Remove(structure);
+        }
+
+        if (nearUserObjExist && inObjList.Count == 0 && structures.Count == 0)
+        {
+            nearUserObjExist = false;
+            monsterSpawner.SearchObj(false);
         }
     }
 }

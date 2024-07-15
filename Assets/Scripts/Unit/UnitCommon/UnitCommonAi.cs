@@ -11,7 +11,7 @@ public enum AIState   // 몬스터 상태 관리
     AI_Idle,
     AI_Move,
     AI_Patrol,
-    AI_GuardianAggro,
+    AI_SpawnerCall,
     AI_NormalTrace,
     AI_ReturnPos,
     AI_Attack,
