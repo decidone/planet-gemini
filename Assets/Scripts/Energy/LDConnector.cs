@@ -46,7 +46,7 @@ public class LDConnector : Structure
         }
         if (gameManager.focusedStructure == null)
         {
-            if (preBuilding.isBuildingOn)
+            if (preBuilding.isBuildingOn && !removeState)
             {
                 if (!preBuildingCheck)
                 {
@@ -149,7 +149,8 @@ public class LDConnector : Structure
     public override void RemoveObjServerRpc()
     {
         //여기서 건물 철거 전 처리(삭제가 아니여도 비활성화가 필요하니 그거 생각해서 만들 것)
-        connector.RemoveFromGroup();
+               DisableFocused();
+ connector.RemoveFromGroup();
         clickEvent.RemoveAllLines();
         base.RemoveObjServerRpc();
     }

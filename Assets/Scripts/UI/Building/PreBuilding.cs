@@ -1042,9 +1042,23 @@ public class PreBuilding : NetworkBehaviour
         {
             isEnergyStr = prefabObj.GetComponentInChildren<Structure>().structureData.IsEnergyStr;
             isEnergyUse = prefabObj.GetComponentInChildren<Structure>().structureData.EnergyUse[level];
+
+            if (isEnergyStr && !prefabObj.GetComponentInChildren<EnergyBattery>())
+            {
+                preBuildingImg.TerritoryViewSet(1);
+            }
+            else if (prefabObj.GetComponentInChildren<Overclock>())
+            {
+                preBuildingImg.TerritoryViewSet(2);
+            }
+            else if (prefabObj.GetComponentInChildren<RepairTower>())
+            {
+                preBuildingImg.TerritoryViewSet(3);
+            }
         }
         else
         {
+            Debug.Log("??");
             isEnergyStr = false;
             isEnergyUse = false;
         }

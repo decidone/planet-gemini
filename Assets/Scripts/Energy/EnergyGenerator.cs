@@ -62,7 +62,7 @@ public class EnergyGenerator : Production
         }
         if (gameManager.focusedStructure == null)
         {
-            if (preBuilding.isBuildingOn)
+            if (preBuilding.isBuildingOn && !removeState)
             {
                 if (!preBuildingCheck)
                 {
@@ -140,6 +140,7 @@ public class EnergyGenerator : Production
     [ServerRpc(RequireOwnership = false)]
     public override void RemoveObjServerRpc()
     {
+        DisableFocused();
         connector.RemoveFromGroup();
         base.RemoveObjServerRpc();
     }

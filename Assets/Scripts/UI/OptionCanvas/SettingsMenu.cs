@@ -132,7 +132,6 @@ public class SettingsMenu : MonoBehaviour
             if (PlayerPrefs.HasKey(name))
             {
                 string rebinds = PlayerPrefs.GetString(name);
-                Debug.Log(rebinds);
                 action.LoadBindingOverridesFromJson(rebinds);
                 Debug.Log("Rebindings loaded.");
             }

@@ -9,11 +9,40 @@ public class Overclock : Production
     protected float searchInterval = 1f; // 딜레이 간격 설정
     [SerializeField]
     SpriteRenderer view;
+    GameManager gameManager;
+    PreBuilding preBuilding;
+    bool preBuildingCheck;
+
+    protected override void Start()
+    {
+        base.Start();
+        gameManager = GameManager.instance;
+        preBuilding = PreBuilding.instance;
+    }
 
     protected override void Update()
     {
         base.Update();
 
+        if (gameManager.focusedStructure == null)
+        {
+            if (preBuilding.isBuildingOn && !removeState)
+            {
+                if (!preBuildingCheck)
+                {
+                    preBuildingCheck = true;
+                    view.enabled = true;
+                }
+            }
+            else
+            {
+                if (preBuildingCheck)
+                {
+                    preBuildingCheck = false;
+                    view.enabled = false;
+                }
+            }
+        }
         if (!isPreBuilding && IsServer)
         {
             searchTimer += Time.deltaTime;

@@ -37,4 +37,10 @@ public class StructureSaveData
 
     // 필터 - 스플리터 같은 경우 3개의 필터 조건이 들어갈 수 있음
     public List<FilterSaveData> filters = new List<FilterSaveData>();
+
+    public bool isPreBuilding;
+    public bool isSetBuildingOk;
+    public bool destroyStart;
+    public float repairGauge;
+    public float destroyTimer;
 }

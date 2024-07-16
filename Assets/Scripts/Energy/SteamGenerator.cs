@@ -125,7 +125,7 @@ public class SteamGenerator : FluidFactoryCtrl
         }
         if (gameManager.focusedStructure == null)
         {
-            if (preBuilding.isBuildingOn)
+            if (preBuilding.isBuildingOn && !removeState)
             {
                 if (!preBuildingCheck)
                 {
@@ -223,7 +223,8 @@ public class SteamGenerator : FluidFactoryCtrl
     [ServerRpc(RequireOwnership = false)]
     public override void RemoveObjServerRpc()
     {
-        connector.RemoveFromGroup();
+                DisableFocused();
+connector.RemoveFromGroup();
         base.RemoveObjServerRpc();
     }
 

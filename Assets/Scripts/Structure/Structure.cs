@@ -220,21 +220,24 @@ public class Structure : NetworkBehaviour
 
     public void DestroyStart()
     {
-        if (!destroyStart && !isPreBuilding && destroyTimer > 0) 
+        if (!destroyStart && !isPreBuilding && destroyTimer > 0)
         {
             destroyStart = true;
+            isPreBuilding = true;
+            isSetBuildingOk = false;
             unitCanvas.SetActive(true);
             repairBar.enabled = true;
+            RemoveObjServerRpc();
         }
     }
 
     void ObjRemoveFunc()
     {
         AddInvenItem();
-        RemoveObjServerRpc();
+        DestroyFuncServerRpc();
         RefundCost();
         soundManager.PlayUISFX("BuildingRemove");
-        GameManager.instance.BuildAndSciUiReset();        
+        GameManager.instance.BuildAndSciUiReset();
     }
 
     void RefundCost()
@@ -288,7 +291,7 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public ulong ObjFindId() 
+    public ulong ObjFindId()
     {
         return GetComponent<NetworkObject>().NetworkObjectId;
     }
@@ -337,7 +340,7 @@ public class Structure : NetworkBehaviour
     {
         settingEndCheck = isEnd;
     }
-     
+
     [ClientRpc]
     public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, bool syncSetBuilding, bool syncPreBuilding)
     {
@@ -376,7 +379,7 @@ public class Structure : NetworkBehaviour
 
         NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(ObjID);
 
-        if(isIn)
+        if (isIn)
             inObj.Add(obj.gameObject);
         else
             outObj.Add(obj.gameObject);
@@ -401,7 +404,8 @@ public class Structure : NetworkBehaviour
 
     protected virtual void DataSet()
     {
-        hp = structureData.MaxHp[level];
+        maxHp = structureData.MaxHp[level];
+        hp = maxHp;
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         energyUse = structureData.EnergyUse[level];
         energyConsumption = structureData.Consumption[level];
@@ -551,12 +555,39 @@ public class Structure : NetworkBehaviour
         buildingIndex = index;
         isInHostMap = isHostMap;
         settingEndCheck = true;
-        isPreBuilding = true;
-        isSetBuildingOk = true;
         ColliderTriggerOnOff(false);
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         DataSet();
+    }
+
+    public virtual void StructureStateSet(bool preBuilding ,bool setBuildingOk, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    {
+        hp = hpSet;
+        isPreBuilding = preBuilding;
+        isSetBuildingOk = setBuildingOk;
+        destroyStart = destroy;
+
+        if (destroyStart)
+        {
+            hpBar.enabled = false;
+            destroyTimer = destroyTimerSet;
+            repairBar.fillAmount = destroyTimer / destroyInterval;
+            unitCanvas.SetActive(true);
+        }
+        else if (isPreBuilding && isSetBuildingOk)
+        {
+            hpBar.enabled = false;
+            repairGauge = repairGaugeSet;
+            repairBar.fillAmount = repairGauge / structureData.MaxRepairGauge;
+            unitCanvas.SetActive(true);
+        }
+        else if (hp < maxHp)
+        {
+            repairBar.enabled = false;
+            hpBar.fillAmount = hp / maxHp;
+            unitCanvas.SetActive(true);
+        }
     }
 
     public void ConnectedPosListPosSet(Vector3 pos)
@@ -987,7 +1018,7 @@ public class Structure : NetworkBehaviour
         if (hp < 0f)
             hp = 0f;
         onHpChangedCallback?.Invoke();
-        hpBar.fillAmount = hp / structureData.MaxHp[level];
+        hpBar.fillAmount = hp / maxHp;
 
         if (IsServer && hp <= 0f)
         {
@@ -1072,13 +1103,13 @@ public class Structure : NetworkBehaviour
 
     public void RepairFunc(float heal)
     {
-        if (hp == structureData.MaxHp[level])
+        if (hp == maxHp)
         {
             return;
         }
-        else if (hp + heal > structureData.MaxHp[level])
+        else if (hp + heal > maxHp)
         {
-            hp = structureData.MaxHp[level];
+            hp = maxHp;
             if (!isRepair)
                 unitCanvas.SetActive(false);
         }
@@ -1089,7 +1120,7 @@ public class Structure : NetworkBehaviour
         }
 
         onHpChangedCallback?.Invoke();
-        hpBar.fillAmount = hp / structureData.MaxHp[level];
+        hpBar.fillAmount = hp / maxHp;
     }
 
     [ServerRpc]
@@ -1107,7 +1138,7 @@ public class Structure : NetworkBehaviour
 
     public void RepairSet(bool repair)
     {
-        hp = structureData.MaxHp[level];
+        hp = maxHp;
         isRepair = repair;
     }
 
@@ -1123,7 +1154,7 @@ public class Structure : NetworkBehaviour
                 isPreBuilding = false;
                 repairGauge = 0.0f;
                 repairBar.enabled = false;
-                if (hp < structureData.MaxHp[level])
+                if (hp < maxHp)
                 {
                     unitCanvas.SetActive(true);
                     hpBar.enabled = true;
@@ -1149,10 +1180,10 @@ public class Structure : NetworkBehaviour
     protected virtual void RepairEnd()
     {
         hpBar.enabled = true;
-        hp = structureData.MaxHp[level];
+        hp = maxHp;
         Debug.Log("DataSet : " + hp);
         unitCanvas.SetActive(false);
-        hpBar.fillAmount = hp / structureData.MaxHp[level];
+        hpBar.fillAmount = hp / maxHp;
         repairBar.enabled = false;
         repairGauge = 0.0f;
         isPreBuilding = false;
@@ -1289,7 +1320,7 @@ public class Structure : NetworkBehaviour
     void RemoveObjClientRpc()
     {
         removeState = true;
-        ColliderTriggerOnOff(true);
+        //ColliderTriggerOnOff(true);
         StopAllCoroutines();
 
         if (InfoUI.instance.str == this)
@@ -1334,6 +1365,57 @@ public class Structure : NetworkBehaviour
             portalObj.RemovePortalData();
         }
 
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+
+        //GameManager gameManager = GameManager.instance;
+        //int x = Mathf.FloorToInt(transform.position.x);
+        //int y = Mathf.FloorToInt(transform.position.y);
+        //Cell cell = gameManager.map.GetCellDataFromPos(x, y);
+        //bool isOnMap = gameManager.map.IsOnMap(x, y);
+
+        //if (sizeOneByOne)
+        //{
+        //    if (isOnMap && cell.structure == gameObject)
+        //    {
+        //        cell.structure = null;
+        //    }
+        //}
+        //else
+        //{
+        //    if (isOnMap && cell.structure == gameObject)
+        //    {
+        //        for (int i = 0; i < height; i++)
+        //        {
+        //            for (int j = 0; j < width; j++)
+        //            {
+        //                gameManager.map.GetCellDataFromPos(x + j, y + i).structure = null;
+        //            }
+        //        }
+        //    }
+        //}
+
+        //NetworkObjManager.instance.NetObjRemove(gameObject);
+
+        //if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
+        //{
+        //    NetworkObject.Despawn();
+        //}
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void DestroyFuncServerRpc()
+    {
+        DestroyFuncClientRpc();
+    }
+
+    [ClientRpc]
+    void DestroyFuncClientRpc()
+    {
+        ColliderTriggerOnOff(true);
         GameManager gameManager = GameManager.instance;
         int x = Mathf.FloorToInt(transform.position.x);
         int y = Mathf.FloorToInt(transform.position.y);
@@ -1367,7 +1449,6 @@ public class Structure : NetworkBehaviour
         {
             NetworkObject.Despawn();
         }
-        //Destroy(this.gameObject);
     }
 
     void CloseUI()
@@ -1562,6 +1643,12 @@ public class Structure : NetworkBehaviour
         data.planet = isInHostMap;
         data.level = level;
         data.direction = dirNum;
+        data.isPreBuilding = isPreBuilding;
+        data.isSetBuildingOk = isSetBuildingOk;
+        data.destroyStart = destroyStart;
+        data.repairGauge = repairGauge;
+        data.destroyTimer = destroyTimer;
+
         foreach (Item items in itemList)
         {
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(items);

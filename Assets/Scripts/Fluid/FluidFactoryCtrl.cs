@@ -34,8 +34,9 @@ public class FluidFactoryCtrl : Production
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
-        hp = structureData.MaxHp[level];
-        hpBar.fillAmount = hp / structureData.MaxHp[level];
+        maxHp = structureData.MaxHp[level];
+        hp = maxHp;
+        hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         mainSource = null;
         howFarSource = -1;

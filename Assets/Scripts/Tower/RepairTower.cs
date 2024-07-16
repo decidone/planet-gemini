@@ -7,11 +7,41 @@ public class RepairTower : TowerAi
 {
     public List<GameObject> BuildingList = new List<GameObject>();
     bool isDelayRepairCoroutine = false;
+    [SerializeField]
+    SpriteRenderer view;
+    GameManager gameManager;
+    PreBuilding preBuilding;
+    bool preBuildingCheck;
+
+    protected override void Start()
+    {
+        base.Start();
+        gameManager = GameManager.instance;
+        preBuilding = PreBuilding.instance;
+    }
 
     protected override void Update()
     {
         base.Update();
-
+        if (gameManager.focusedStructure == null)
+        {
+            if (preBuilding.isBuildingOn && !removeState)
+            {
+                if (!preBuildingCheck)
+                {
+                    preBuildingCheck = true;
+                    view.enabled = true;
+                }
+            }
+            else
+            {
+                if (preBuildingCheck)
+                {
+                    preBuildingCheck = false;
+                    view.enabled = false;
+                }
+            }
+        }
         if (!isPreBuilding && IsServer)
         {
             searchTimer += Time.deltaTime;
@@ -92,12 +122,28 @@ public class RepairTower : TowerAi
         }
     }
 
+    public override void SetBuild()
+    {
+        base.SetBuild();
+        view.enabled = false;
+    }
+
+    public override void Focused()
+    {
+        view.enabled = true;
+    }
+
+    public override void DisableFocused()
+    {
+        view.enabled = false;
+    }
+
     //protected override void DieFuncClientRpc()
     //{
     //    base.DieFuncClientRpc();
 
     //    Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
-                
+
     //    foreach (GameObject tower in TowerList)
     //    {
     //        if (tower.TryGetComponent(out TowerAi towerAi))
