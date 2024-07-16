@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Miner
   m_EditorClassIdentifier: 
   factoryName: Miner
+  maxLevel: 3
   maxHp: 320000003c00000046000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
@@ -23,7 +24,6 @@ MonoBehaviour:
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  maxLevel: 3
   cooldown: 0
   isEnergyStr: 0
   production: 0
@@ -32,3 +32,4 @@ MonoBehaviour:
   - 0
   - 3
   - 30
+  removeGauge: 10

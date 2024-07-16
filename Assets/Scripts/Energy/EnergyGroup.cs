@@ -56,12 +56,12 @@ public class EnergyGroup
         {
             connectors[i].ChangeGroup(this);
         }
-        if (mainColony == null || getTempColony)
-            MainColonySet();
-        else if(mainColony)
-        {
-            MainColonyDataSet();
-        }
+        //if (mainColony == null || getTempColony)
+        //    MainColonySet();
+        //else if(mainColony)
+        //{
+        //    MainColonyDataSet();
+        //}
 
         groupManager.AddGroup(this);
     }
@@ -90,14 +90,14 @@ public class EnergyGroup
             }
         }
 
-        if (mainColony == null || getTempColony)
-        {
-            MainColonySet();
-        }
-        else if (mainColony)
-        {
-            MainColonyDataSet();
-        }        
+        //if (mainColony == null || getTempColony)
+        //{
+        //    MainColonySet();
+        //}
+        //else if (mainColony)
+        //{
+        //    MainColonyDataSet();
+        //}        
     }
 
     public void RemoveConnector(EnergyGroupConnector conn)
@@ -172,7 +172,7 @@ public class EnergyGroup
                 connectors.Remove(splitConnectors[i]);
             }
 
-            MainColonySet();
+            //MainColonySet();
 
             EnergyGroup splitGroup = new EnergyGroup(groupManager, splitConnectors);
             splitGroup.ConnectionCheck(code);
@@ -316,54 +316,50 @@ public class EnergyGroup
         }
     }
 
-    void MainColonySet()
-    {
-        bool hasMainColony = false;
-        for (int i = 0; i < connectors.Count; i++)
-        {
-            if (connectors[i].structure.isMainEnergyColony)
-            {
-                if (getTempColony)
-                {
-                    mainColony.DestoryThisScipt();
-                    getTempColony = false;
-                }
-                mainColony = connectors[i].mainEnergyColony;
-                mainColony.mainColony = true;
-                hasMainColony = true;
-            }
-        }
+    //void MainColonySet()
+    //{
+    //    bool hasMainColony = false;
+    //    for (int i = 0; i < connectors.Count; i++)
+    //    {
+    //        if (connectors[i].structure.isMainEnergyColony)
+    //        {
+    //            if (getTempColony)
+    //            {
+    //                mainColony.DestoryThisScipt();
+    //                getTempColony = false;
+    //            }
+    //            mainColony = connectors[i].mainEnergyColony;
+    //            mainColony.mainColony = true;
+    //            hasMainColony = true;
+    //        }
+    //    }
 
-        if(!hasMainColony && !getTempColony)
-        {
-            EnergyColony temp = connectors[0].gameObject.AddComponent<EnergyColony>();
-            mainColony = connectors[0].mainEnergyColony = temp;
-            mainColony.mainColony = true;
-            getTempColony = true;
-        }
+    //    if(!hasMainColony && !getTempColony)
+    //    {
+    //        EnergyColony temp = connectors[0].gameObject.AddComponent<EnergyColony>();
+    //        mainColony = connectors[0].mainEnergyColony = temp;
+    //        mainColony.mainColony = true;
+    //        getTempColony = true;
+    //    }
 
-        MainColonyDataSet();
-    }
+    //    MainColonyDataSet();
+    //}
 
-    void MainColonyDataSet()
-    {
-        //List<EnergyColony> othMain = new List<EnergyColony>();
+    //void MainColonyDataSet()
+    //{
+    //    for (int i = 0; i < connectors.Count; i++)
+    //    {
+    //        if (connectors[i].structure.isMainEnergyColony && mainColony != connectors[i].mainEnergyColony)
+    //        {
+    //            connectors[i].mainEnergyColony.DataClear();
+    //            connectors[i].mainEnergyColony.mainColony = false;
+    //        }
+    //    }
 
-        for (int i = 0; i < connectors.Count; i++)
-        {
-            if (connectors[i].structure.isMainEnergyColony && mainColony != connectors[i].mainEnergyColony)
-            {
-                //othMain.Add(connectors[i].mainEnergyColony);
-                connectors[i].mainEnergyColony.DataClear();
-                connectors[i].mainEnergyColony.mainColony = false;
-            }
-        }
-
-        if (mainColony)
-        {
-            mainColony.connectors = new List<EnergyGroupConnector>(connectors);
-        }
-        //mainColony.OthColonyListAdd(othMain);
-        mainColony.energyGroup = this;
-    }
+    //    if (mainColony)
+    //    {
+    //        mainColony.connectors = new List<EnergyGroupConnector>(connectors);
+    //    }
+    //    mainColony.energyGroup = this;
+    //}
 }

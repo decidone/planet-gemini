@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Spawner
   m_EditorClassIdentifier: 
   factoryName: Spawner
+  maxLevel: 5
   maxHp: 580200008a020000bc020000ee02000020030000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
@@ -22,9 +23,9 @@ MonoBehaviour:
   maxBuildingGauge: 0
   maxRepairGauge: 0
   colliderRadius: 0
-  maxLevel: 5
   cooldown: 0
   isEnergyStr: 0
   production: 0
   energyUse: 
   consumption: []
+  removeGauge: 10

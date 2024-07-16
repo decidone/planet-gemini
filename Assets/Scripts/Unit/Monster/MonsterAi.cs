@@ -91,6 +91,11 @@ public class MonsterAi : UnitCommonAi
                         ReturnPos();
                 }
                 break;
+            case AIState.AI_SpawnerCall:
+                {
+                    SpawnerCall();
+                }
+                break;
         }
     }
 
@@ -326,7 +331,7 @@ public class MonsterAi : UnitCommonAi
         direction.Normalize();
 
         tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 7));
-        if (Vector3.Distance(tr.position, targetPosition) <= 0.3f)
+        if (Vector3.Distance(tr.position, spawnPos.position) <= 0.3f)
         {
             aIState = AIState.AI_Idle;
             return;
@@ -608,6 +613,10 @@ public class MonsterAi : UnitCommonAi
         {
             aIState = AIState.AI_ReturnPos;
         }
+        else if (moveFunc == "SpawnerCall")
+        {
+            aIState = AIState.AI_SpawnerCall;
+        }
 
         direction = targetPos - tr.position;
         checkPathCoroutine = null;
@@ -701,28 +710,78 @@ public class MonsterAi : UnitCommonAi
 
         if(scriptState)
         {
-            //enabled = true;
             animator.enabled = true;
             capsule2D.enabled = true;
+            isScriptActive = scriptState;
         }
         else
         {
             if (IsServer)
             {
                 spawnDist = Vector3.Distance(tr.position, spawnPos.position);
-                if (spawnDist > maxSpawnDist)
+                if(aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack)
+                {
+                    isScriptActive = true;
+                    return;
+                }
+                else if (spawnDist > maxSpawnDist)
                 {
                     checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
                 }
                 else
                 {
-                    //enabled = false;
                     animator.enabled = false;
                     capsule2D.enabled = false;
                 }
             }
         }
     }
+
+    public void SpawnerCallCheck()
+    {
+        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol)
+        {
+            targetVec = (new Vector3(spawnPos.transform.position.x, spawnPos.transform.position.y, 0) - tr.position).normalized;
+
+            checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.transform.position, "SpawnerCall"));
+            aIState = AIState.AI_SpawnerCall;
+        }
+    }
+
+    public virtual void SpawnerCall()
+    {
+        //AnimBoolCtrl("isMove", true);
+        animator.SetBool("isMove", true);
+
+        AnimSetFloat(targetVec, true);
+
+        targetDist = Vector3.Distance(tr.position, spawnPos.transform.position);
+
+        if (targetDist > unitCommonData.AttackDist)
+        {
+            if (currentWaypointIndex >= movePath.Count)
+                return;
+
+            Vector3 targetWaypoint = movePath[currentWaypointIndex];
+            direction = targetWaypoint - tr.position;
+            direction.Normalize();
+
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+
+            if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+            {
+                currentWaypointIndex++;
+
+                if (currentWaypointIndex >= movePath.Count)
+                    return;
+            }
+        }
+        else
+        {
+            aIState = AIState.AI_NormalTrace;
+        }
+    }
+
 
     public void WaveStart(Vector3 _wavePos)
     {

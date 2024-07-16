@@ -59,7 +59,7 @@ public class EnergyGroupConnector : MonoBehaviour
     [HideInInspector]
     public SteamGenerator steamGenerator;
 
-    public EnergyColony mainEnergyColony;
+    //public EnergyColony mainEnergyColony;
 
     void Awake()
     {
@@ -73,8 +73,8 @@ public class EnergyGroupConnector : MonoBehaviour
         consumptions = new List<Structure>();
         energyGenerator = GetComponentInParent<EnergyGenerator>();
         steamGenerator = GetComponentInParent<SteamGenerator>();
-        if (structure.isMainEnergyColony)
-            mainEnergyColony = GetComponent<EnergyColony>();
+        //if (structure.isMainEnergyColony)
+        //    mainEnergyColony = GetComponent<EnergyColony>();
     }
 
     void OnTriggerEnter2D(Collider2D collision)

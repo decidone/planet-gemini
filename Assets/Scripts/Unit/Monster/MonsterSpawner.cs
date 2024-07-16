@@ -69,6 +69,13 @@ public class MonsterSpawner : NetworkBehaviour
 
     [SerializeField]
     GameObject searchColl;
+    SpawnerSearchColl spawnerSearchColl;
+    [SerializeField]
+    float energyAggroValue;
+    [SerializeField]
+    float energyAggroInterval;
+    float energyAggroTimer;
+    bool globalWave;
 
     public bool isInHostMap;
     bool gameLodeSet = false;
@@ -98,7 +105,7 @@ public class MonsterSpawner : NetworkBehaviour
             searchColl.SetActive(false);
         if(!gameLodeSet)
             InitializeMonsterSpawn();
-
+        spawnerSearchColl = searchColl.GetComponent<SpawnerSearchColl>();
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
         if (areaLevel == 1)
         {
@@ -144,6 +151,16 @@ public class MonsterSpawner : NetworkBehaviour
         if(!extraSpawn && nearUserObjExist && totalMonsterList.Count < totalSpawnNum / 2 && extraSpawnNum > 0)
         {
             ExtraMonsterSpawn();
+        }
+
+        if (!globalWave && nearUserObjExist && spawnerSearchColl.structures.Count > 0)
+        {
+            energyAggroTimer += Time.deltaTime;
+            if (energyAggroTimer >= energyAggroInterval)
+            {
+                StructuresEnergyCheck();
+                energyAggroTimer = 0;
+            }
         }
 
         if (takeDamageCheck)
@@ -353,7 +370,6 @@ public class MonsterSpawner : NetworkBehaviour
                 guardian.GetComponent<MonsterAi>().MonsterScriptSetClientRpc(scriptState);
             }
         }
-
     }
 
     public void MonsterDieChcek(GameObject monster, int type, bool waveState)
@@ -391,8 +407,11 @@ public class MonsterSpawner : NetworkBehaviour
     public void TakeDamage(float damage, GameObject attackObj)
     {
         if (!takeDamageCheck)
+        {
             GuardianCall(attackObj);
-        
+            MonsterCall();
+        }
+
         if(!dieCheck)
             TakeDamageServerRpc(damage);
     }
@@ -436,7 +455,7 @@ public class MonsterSpawner : NetworkBehaviour
             return;
 
         Overall.instance.OverallCount(0);
-        GetComponentInChildren<SpawnerSearchColl>().DieFunc();
+        spawnerSearchColl.DieFunc();
     }
 
     public void SearchObj(bool find)
@@ -451,7 +470,15 @@ public class MonsterSpawner : NetworkBehaviour
 
         foreach (GuardianAi guardian in guardianList)
         {
-            guardian.SpawnerCollCheck(attackObj);
+            guardian.SpawnerCallCheck(attackObj);
+        }
+    }
+
+    void MonsterCall()
+    {
+        foreach (MonsterAi monster in totalMonsterList)
+        {
+            monster.SpawnerCallCheck();
         }
     }
 
@@ -577,6 +604,37 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         return newMonster;
+    }
+
+    void StructuresEnergyCheck()
+    {
+        List<Structure> structures = new List<Structure>(spawnerSearchColl.structures);
+
+        foreach (Structure structure in structures)
+        {
+            if (structure.energyUse && structure.conn && structure.conn.group != null)
+            {
+                Debug.Log(structure.conn.group.consumption);
+                if (structure.conn.group.consumption > energyAggroValue)
+                {
+                    Debug.Log("WaveStartSet");
+                }
+            }
+            else if (structure.isEnergyStr && structure.GetComponentInChildren<EnergyGroupConnector>())
+            {
+                EnergyGroupConnector energy = structure.GetComponentInChildren<EnergyGroupConnector>(); 
+                if (energy.group != null && energy.group.consumption > energyAggroValue)
+                {
+                    Debug.Log("WaveStartSet");
+                }
+            }
+        }
+    }
+
+    public void GlobalWaveState(bool wave)
+    {
+        Debug.Log("GlobalWaveState" + wave);
+        globalWave = wave;
     }
 
     public SpawnerSaveData SaveData()

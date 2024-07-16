@@ -24,6 +24,9 @@ public class DragGraphic : MonoBehaviour
     bool isCtrlDrag;
     bool isShiftDrag;
 
+    bool upgradeBtnOn;
+    bool removeBtnOn;
+
     #region Singleton
     public static DragGraphic instance;
 
@@ -66,7 +69,7 @@ public class DragGraphic : MonoBehaviour
             endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             BoxSizeChange();
 
-            if ((isCtrlDrag && !inputManager.ctrl) || (isShiftDrag && !inputManager.shift))
+            if (((isCtrlDrag && !inputManager.ctrl) && !upgradeBtnOn) || ((isShiftDrag && !inputManager.shift) && !removeBtnOn))
                 DisableFunc();
         }
     }
@@ -82,12 +85,12 @@ public class DragGraphic : MonoBehaviour
             sprite.enabled = true;
             isDrag = true;
 
-            if (inputManager.ctrl && !inputManager.shift)
+            if ((inputManager.ctrl && !inputManager.shift) || upgradeBtnOn)
             {
                 isCtrlDrag = true;
                 ColorSet(Color.blue);
             }
-            else if (inputManager.shift && !inputManager.ctrl)
+            else if ((inputManager.shift && !inputManager.ctrl) || removeBtnOn)
             {
                 isShiftDrag = true;
                 ColorSet(Color.red);
@@ -105,9 +108,9 @@ public class DragGraphic : MonoBehaviour
         if (ItemDragManager.instance.isDrag) return;
         if (!isDrag) return;
 
-        if (isCtrlDrag)
+        if (isCtrlDrag || upgradeBtnOn)
             UpgradeBuild.LeftMouseUp(startPosition, endPosition);
-        else if (isShiftDrag)
+        else if (isShiftDrag || removeBtnOn)
             removeBuild.LeftMouseUp(startPosition, endPosition);
         else
             unitDrag.LeftMouseUp(startPosition, endPosition);
@@ -216,5 +219,25 @@ public class DragGraphic : MonoBehaviour
     public void CancelBuild()
     {
         selectedBuild = null;
+    }
+
+    public void BtnFuncReset()
+    {
+        upgradeBtnOn = false;
+        removeBtnOn = false;
+    }
+
+    public void BtnFunc(bool isUpgrade)
+    {
+        if (isUpgrade)
+        {
+            upgradeBtnOn = true;
+            removeBtnOn = false;
+        }
+        else
+        {
+            removeBtnOn = true;
+            upgradeBtnOn = false;
+        }
     }
 }

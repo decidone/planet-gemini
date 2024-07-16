@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Storage
   m_EditorClassIdentifier: 
   factoryName: Storage
+  maxLevel: 3
   maxHp: 320000003c00000046000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
@@ -25,7 +26,6 @@ MonoBehaviour:
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  maxLevel: 3
   cooldown: 0
   isEnergyStr: 0
   production: 0
@@ -34,3 +34,4 @@ MonoBehaviour:
   - 0
   - 0
   - 0
+  removeGauge: 10

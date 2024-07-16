@@ -43,6 +43,8 @@ public class ConfirmPanel : MonoBehaviour
 
     public void CallConfirm(SaveLoadBtn btn, bool saveLoadState, int slotNum)
     {
+        OkBtn.gameObject.SetActive(true);
+        CanelBtn.gameObject.SetActive(true);
         confirmPanel.SetActive(true);
         saveLoadBtn = btn;
         if (saveLoadState)
@@ -54,10 +56,13 @@ public class ConfirmPanel : MonoBehaviour
         {
             contentText.text = "Do you want to load to slot " + slotNum + "?";
         }
+        GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
     }
 
-    public void CallConfirm(KeyBindingsBtn btn, string key)
+    public void KeyBindingCallConfirm()
     {
+        OkBtn.gameObject.SetActive(false);
+        CanelBtn.gameObject.SetActive(false);
         confirmPanel.SetActive(true);
         contentText.text = "Waiting For Input";
     }
@@ -80,9 +85,10 @@ public class ConfirmPanel : MonoBehaviour
         UIClose();
     }
 
-    void UIClose()
+    public void UIClose()
     {
         confirmPanel.SetActive(false);
         inputObj.SetActive(false);
+        GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
     }
 }

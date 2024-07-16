@@ -69,4 +69,8 @@ public class StructureData : ScriptableObject
     [SerializeField]
     private float[] consumption;
     public float[] Consumption { get { return consumption; } }
+
+    [SerializeField]
+    private float removeGauge;
+    public float RemoveGauge { get { return removeGauge; } }
 }

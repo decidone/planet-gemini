@@ -72,12 +72,22 @@ public class RecipeManager : InventoryManager
         recipes = RecipeList.instance.GetRecipeInven(str);
         if (_prod.GetComponent<UnitFactory>())
         {
-            TempScienceDb scienceDb = TempScienceDb.instance;
-            for (int i = 0; i < recipes.Count; i++)
+            if (GameManager.instance.debug)
             {
-                if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))
+                for (int i = 0; i < recipes.Count; i++)
                 {
                     inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
+                }
+            }
+            else
+            {
+                TempScienceDb scienceDb = TempScienceDb.instance;
+                for (int i = 0; i < recipes.Count; i++)
+                {
+                    if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))
+                    {
+                        inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
+                    }
                 }
             }
         }

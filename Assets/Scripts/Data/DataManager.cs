@@ -187,6 +187,7 @@ public class DataManager : MonoBehaviour
         if (netObj.TryGetComponent(out Structure structure))
         {
             structure.GameStartSpawnSet(saveData.level, saveData.direction, building.height, building.width, saveData.planet, saveData.index);
+            structure.StructureStateSet(saveData.isPreBuilding, saveData.isSetBuildingOk, saveData.destroyStart, saveData.hp, saveData.repairGauge, saveData.destroyTimer);
             structure.GameStartRecipeSet(saveData.recipeId);
             structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(saveData.tileSetPos));
 
