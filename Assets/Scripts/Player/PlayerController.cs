@@ -20,6 +20,7 @@ public class PlayerController : NetworkBehaviour
 
     InputManager inputManager;
     ShopInteract nearShop;
+    TeleportUI teleportUI;
     bool isLoot;
     bool isTeleportable;
     bool isMarketTeleportable;
@@ -51,14 +52,15 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         inputManager = InputManager.instance;
-        
+        teleportUI = TeleportUI.instance;
+
         if (!IsOwner) { return; }
 
         GameManager.instance.SetPlayer(this.gameObject);
         inputManager.controls.Player.Loot.performed += ctx => LootCheck();
         inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
         inputManager.controls.Player.Interaction.performed += ctx => Interact();
-        inputManager.controls.Player.Market.performed += ctx => TeleportMarket();
+        //inputManager.controls.Player.Market.performed += ctx => TeleportMarket();
 
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
     }
@@ -170,6 +172,25 @@ public class PlayerController : NetworkBehaviour
 
     void Interact()
     {
+        if (!gameManager.isPlayerInMarket)
+        {
+            if (isTeleportable && GameManager.instance.isMultiPlay)
+            {
+                teleportUI.SetBtnDefault();
+                teleportUI.leftBtn.onClick.AddListener(TeleportWorld);
+                teleportUI.rightBtn.onClick.AddListener(TeleportMarket);
+
+                teleportUI.OpenUI();
+            }
+        }
+        else
+        {
+            TeleportMarket();
+        }
+    }
+
+    void TeleportWorld()
+    {
         if (isTeleportable && GameManager.instance.isMultiPlay)
         {
             if (PreBuilding.instance.isBuildingOn)
@@ -178,12 +199,10 @@ public class PlayerController : NetworkBehaviour
             this.transform.position = pos;
             SoundManager.Instance.PlayBgmMapCheck();
             onTeleportedCallback?.Invoke(0);
-        }
 
-        //if (nearShop != null)
-        //{
-        //    nearShop.OpenUI();
-        //}
+            teleportUI.CloseUI();
+            teleportUI.DisplayWorldName();
+        }
     }
 
     void TeleportMarket()
@@ -195,6 +214,9 @@ public class PlayerController : NetworkBehaviour
             Vector3 pos = GameManager.instance.TeleportMarket();
             this.transform.position = pos;
             onTeleportedCallback?.Invoke(1);
+
+            teleportUI.CloseUI();
+            teleportUI.DisplayWorldName();
         }
     }
 

@@ -723,4 +723,33 @@ public class GameManager : NetworkBehaviour
         Debug.Log("SubFinanceClientRpc");
         finance.SubFinance(money);
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveMapObjServerRpc(Vector3 vector3, bool isHostMapRequest)
+    {
+        RemoveMapObjClientRpc(vector3, isHostMapRequest);
+    }
+
+    [ClientRpc]
+    public void RemoveMapObjClientRpc(Vector3 vector3, bool isHostMapRequest)
+    {
+        Cell cell;
+
+        if (isHostMapRequest)
+        {
+            cell = hostMap.GetCellDataFromPos((int)vector3.x, (int)vector3.y);
+        }
+        else
+        {
+            cell = clientMap.GetCellDataFromPos((int)vector3.x, (int)vector3.y);
+        }
+        
+        if (cell.obj != null)
+        {
+            if (cell.obj.TryGetComponent<MapObject>(out MapObject mapObj))
+            {
+                mapObj.RemoveMapObj();
+            }
+        }
+    }
 }

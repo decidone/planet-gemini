@@ -25,6 +25,7 @@ public class InfoUI : MonoBehaviour
     [SerializeField] Text energyText;
     [SerializeField] Text firstBattleText;
     [SerializeField] Text secondBattleText;
+    [SerializeField] Button btn;
 
     [Space]
     public Material outlintMat;
@@ -46,6 +47,8 @@ public class InfoUI : MonoBehaviour
         energyText.text = "";
         firstBattleText.text = "";
         secondBattleText.text = "";
+        btn.onClick.RemoveAllListeners();
+        btn.gameObject.SetActive(false);
     }
 
     public void SetPlayerInfo(PlayerStatus _player)
@@ -74,6 +77,8 @@ public class InfoUI : MonoBehaviour
         SpriteRenderer spriteRenderer = obj.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
         nameText.text = obj.name;
+        btn.gameObject.SetActive(true);
+        btn.onClick.AddListener(obj.RemoveMapObjRequest);
     }
 
     public void SetStructureInfo(Structure _str)
