@@ -104,6 +104,9 @@ public class BeltManager : NetworkBehaviour
         beltGroup.nextCheck = true;
         beltGroup.preCheck = true;
 
+        beltGroup.beltList[0].preBelt = null;
+
+
         if (beltGroup.beltList.Count == 1)
         {
             beltGroup.beltList[0].BeltStateSetClientRpc((int)BeltState.SoloBelt);
@@ -120,8 +123,7 @@ public class BeltManager : NetworkBehaviour
         newObj.transform.parent = this.gameObject.transform;
 
         BeltGroupMgr newBeltGroup = newObj.GetComponent<BeltGroupMgr>();
-        //NetworkObjManager.instance.NetObjAdd(newObj);
-        //newBeltGroup.NetObjAddClientRpc();
+
         foreach (BeltCtrl belt in beltList)
         {
             belt.transform.parent = newBeltGroup.transform;
@@ -132,6 +134,8 @@ public class BeltManager : NetworkBehaviour
         newBeltGroup.Reconfirm();
         newBeltGroup.nextCheck = true;
         newBeltGroup.preCheck = true;
+
+        newBeltGroup.beltList[newBeltGroup.beltList.Count - 1].nextBelt = null;
 
         if (newBeltGroup.beltList.Count == 1)
         {

@@ -200,7 +200,7 @@ public class DataManager : MonoBehaviour
                 }
                 else if (structure.TryGetComponent(out UnitFactory unitFactory))
                 {
-                    unitFactory.UnitSpawnPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
+                    unitFactory.UnitSpawnPosSetServerRpc(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
                 }
                 else if (structure.TryGetComponent(out LDConnector lDConnector))
                 {

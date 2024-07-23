@@ -483,7 +483,6 @@ MonoBehaviour:
   signal: 0
   energyGenerator: {fileID: 0}
   steamGenerator: {fileID: 0}
-  mainEnergyColony: {fileID: 0}
 --- !u!1 &7372674185409712110
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,7 +649,6 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
-  isMainEnergyColony: 0
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}

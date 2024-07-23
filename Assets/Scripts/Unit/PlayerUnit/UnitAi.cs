@@ -32,7 +32,7 @@ public class UnitAi : UnitCommonAi
     private int aggropointIndex; // 현재 이동 중인 경로 점 인덱스
     bool isTargetSet = false;
     bool isAttackMove = true;
-
+    GameObject selectTarget;
     public float selfHealingAmount;
     public float selfHealInterval;
     float selfHealTimer;
@@ -143,8 +143,8 @@ public class UnitAi : UnitCommonAi
 
         yield return StartCoroutine(path.WaitForPath());
 
-        currentWaypointIndex = 0;
-        aggropointIndex = 0;
+        currentWaypointIndex = 1;
+        aggropointIndex = 1;
 
         if (moveFunc == "Move")
         {
@@ -181,7 +181,7 @@ public class UnitAi : UnitCommonAi
         {
             verticalValueY = 1f;
         }
-        else if (direction.y < 0)
+        else if (direction.y <= 0)
         {
             verticalValueY = -1f;
         }
@@ -190,7 +190,7 @@ public class UnitAi : UnitCommonAi
         {
             verticalValueX = 1f;
         }
-        else if (direction.x < 0)
+        else if (direction.x <= 0)
         {
             verticalValueX = -1f;
         }
@@ -376,19 +376,19 @@ public class UnitAi : UnitCommonAi
                     }
                 }
             }
+        }
 
-            if (aggroTarget != null)
+        if (aggroTarget != null)
+        {
+            if ((aIState == AIState.AI_Move && !isAttackMove) || isHold)
+                return;
+
+            if (checkPathCoroutine == null)
+                checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+            else
             {
-                if ((aIState == AIState.AI_Move && !isAttackMove) || isHold)
-                    return;
-
-                if (checkPathCoroutine == null)
-                    checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
-                else
-                {
-                    StopCoroutine(checkPathCoroutine);
-                    checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "Norm alTrace"));
-                }
+                StopCoroutine(checkPathCoroutine);
+                checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "Norm alTrace"));
             }
         }
     }
@@ -398,7 +398,8 @@ public class UnitAi : UnitCommonAi
         isTargetSet = true;
         aggroTarget = obj;
         aIState = AIState.AI_NormalTrace;
-        attackState = AttackState.Waiting;
+        //attackState = AttackState.Waiting;
+        Debug.Log("target : " + obj.name);
     }
 
     protected override void NormalTrace()
@@ -507,6 +508,11 @@ public class UnitAi : UnitCommonAi
 
             isLastStateOn = false;
             unitLastState = AIState.AI_Idle;
+        }
+        if (isTargetSet && aggroTarget == target)
+        {
+            aggroTarget = null;
+            isTargetSet = false;
         }
     }
 

@@ -161,7 +161,7 @@ public class DragGraphic : MonoBehaviour
                             else if (unitFactory)
                             {
                                 unitFactory.ResetLine(endPosition);
-                                unitFactory.UnitSpawnPosSet(endPosition);
+                                unitFactory.UnitSpawnPosSetServerRpc(endPosition);
                             }
                             //else if (transport && hit.collider.TryGetComponent(out Transporter othTrans))
                             //{
@@ -175,7 +175,7 @@ public class DragGraphic : MonoBehaviour
                         if (unitFactory)
                         {
                             unitFactory.ResetLine(endPosition);
-                            unitFactory.UnitSpawnPosSet(endPosition);
+                            unitFactory.UnitSpawnPosSetServerRpc(endPosition);
                         }
                     }
                 }

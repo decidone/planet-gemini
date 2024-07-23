@@ -218,7 +218,14 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public void DestroyStart()
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyServerRpc()
+    {
+        DestroyClientRpc();
+    }
+
+    [ClientRpc]
+    void DestroyClientRpc()
     {
         if (!destroyStart && !isPreBuilding && destroyTimer > 0)
         {
@@ -230,6 +237,20 @@ public class Structure : NetworkBehaviour
             RemoveObjServerRpc();
         }
     }
+
+
+    //public void DestroyStart()
+    //{
+    //    if (!destroyStart && !isPreBuilding && destroyTimer > 0)
+    //    {
+    //        destroyStart = true;
+    //        isPreBuilding = true;
+    //        isSetBuildingOk = false;
+    //        unitCanvas.SetActive(true);
+    //        repairBar.enabled = true;
+    //        RemoveObjServerRpc();
+    //    }
+    //}
 
     void ObjRemoveFunc()
     {

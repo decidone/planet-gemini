@@ -46,7 +46,7 @@ public class UnitCommonAi : NetworkBehaviour
 
     protected float searchInterval;
     protected float searchTimer;
-    protected GameObject aggroTarget;
+    public GameObject aggroTarget;
     protected float tarDisCheckTime;
     protected float tarDisCheckInterval;                // 0.3초 간격으로 몬스터 거리 체크
     protected float targetDist;
@@ -339,12 +339,9 @@ public class UnitCommonAi : NetworkBehaviour
 
     public virtual void RemoveTarget(GameObject target) 
     {            
-        if (target.GetComponent<MonsterSpawner>())
-            Debug.Log("MonsterSpawner");
         if (targetList.Contains(target))
         {
             targetList.Remove(target);
-
         }
         if (targetList.Count == 0)
         {

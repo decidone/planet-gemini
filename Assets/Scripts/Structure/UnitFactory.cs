@@ -134,7 +134,7 @@ public class UnitFactory : Production
         if (IsServer)
             return;
 
-        UnitSpawnPosSet(pos);
+        UnitSpawnPosSetServerRpc(pos);
     }
 
     public override void OpenRecipe()
@@ -205,7 +205,14 @@ public class UnitFactory : Production
         return spawnPosExist;
     }
 
-    public void UnitSpawnPosSet(Vector2 _spawnPos)
+    [ServerRpc(RequireOwnership = false)]
+    public void UnitSpawnPosSetServerRpc(Vector2 _spawnPos)
+    {
+        UnitSpawnPosSetClientRpc(_spawnPos);
+    }
+
+    [ClientRpc]
+    public void UnitSpawnPosSetClientRpc(Vector2 _spawnPos)
     {
         isSetPos = true;
         spawnPos = _spawnPos;

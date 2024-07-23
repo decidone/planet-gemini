@@ -88,6 +88,8 @@ public abstract class Production : Structure
             {
                 recipe = selectRecipe;
                 recipeIndex = index;
+                cooldown = recipe.cooldown;
+                effiCooldown = cooldown;
             }
         }
     }
