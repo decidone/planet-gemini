@@ -8,6 +8,7 @@ public class SaveData
 {
     public string fileName;
     public string saveDate;
+    public int mapSizeIndex;
 
     // 플레이어
     public List<PlayerSaveData> playerDataList = new List<PlayerSaveData>();

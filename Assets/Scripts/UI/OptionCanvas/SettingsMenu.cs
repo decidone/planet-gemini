@@ -54,14 +54,17 @@ public class SettingsMenu : MonoBehaviour
     public void MenuOpen()
     {
         settingsPanel.SetActive(true);
-        GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
+
+        if (GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
     }
 
     public void MenuClose()
     {
         OptionDataManager.instance.Save();
         settingsPanel.SetActive(false);
-        GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
+        if (GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
     }
 
     #region WindowMode
@@ -78,10 +81,10 @@ public class SettingsMenu : MonoBehaviour
 
     void WindowModeDropdownFunc(Dropdown dropdown)
     {
-        WindowSettset(dropdown.value);
+        WindowSet(dropdown.value);
     }
 
-    void WindowSettset(int dropdownIndex)
+    void WindowSet(int dropdownIndex)
     {
         var data = windowSize[dropdownIndex];
         if (data.Item4)
@@ -103,7 +106,8 @@ public class SettingsMenu : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
 
-        CameraController.instance.WindowSizeSet(CameraController.instance.zoomLevel, data.Item2, data.Item3);
+        if (GameManager.instance != null)
+            CameraController.instance.WindowSizeSet(CameraController.instance.zoomLevel, data.Item2, data.Item3);
         windowSizeIndex = dropdownIndex;
     }
 
@@ -170,7 +174,7 @@ public class SettingsMenu : MonoBehaviour
         KeyBindingPanelSet();
 
         int winIndex = PlayerPrefs.GetInt("WindowIndex", 0);
-        WindowSettset(winIndex);
+        WindowSet(winIndex);
         windowModeDropdown.value = winIndex;
 
         LoadRebindings();

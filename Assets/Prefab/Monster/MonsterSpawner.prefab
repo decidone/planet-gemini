@@ -256,6 +256,7 @@ MonoBehaviour:
   unitCanvas: {fileID: 5496904829296565877}
   hpBar: {fileID: 4936597692029941388}
   hp: 0
+  maxHp: 0
   dieCheck: 0
   waveTimer: 0
   searchColl: {fileID: 7283164378971898256}
@@ -639,4 +640,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 150
+  m_Radius: 55

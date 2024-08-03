@@ -24,7 +24,7 @@ public class InputManager : MonoBehaviour
             Debug.LogWarning("More than one instance of InputManager found!");
             return;
         }
-        controls = new InputControls();
+        DontDestroyOnLoad(gameObject);
         instance = this;
     }
     #endregion
@@ -49,7 +49,11 @@ public class InputManager : MonoBehaviour
         controls.MapCamera.Disable();
     }
 
-    void OnEnable() { controls.Enable(); }
+    void OnEnable()
+    {
+        controls = new InputControls();
+        controls.Enable();
+    }
     void OnDisable() { controls.Disable(); }
 
     void CtrlHold() { ctrl = !ctrl; }

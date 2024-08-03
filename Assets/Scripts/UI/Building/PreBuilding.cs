@@ -307,7 +307,7 @@ public class PreBuilding : NetworkBehaviour
     {
         beltGroupSet = Instantiate(beltGroup);
         beltGroupSet.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) beltGroupSet.GetComponent<NetworkObject>().Spawn();
+        if (!netObj.IsSpawned) beltGroupSet.GetComponent<NetworkObject>().Spawn(true);
         beltGroupSet.transform.parent = beltMgr.transform;
         BeltGroupSpawnClientRpc(NetworkObjManager.instance.FindNetObjID(beltGroupSet));
     }
@@ -822,7 +822,7 @@ public class PreBuilding : NetworkBehaviour
 
         GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn();
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
 
         if (netObj.TryGetComponent(out Structure structure))
         {
@@ -853,7 +853,7 @@ public class PreBuilding : NetworkBehaviour
 
         spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn();
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
         if (netObj.TryGetComponent(out Structure structure))
         {
             structure.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
@@ -868,7 +868,7 @@ public class PreBuilding : NetworkBehaviour
 
         GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn();
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
 
         if (netObj.TryGetComponent(out PortalObj portal))
         {
@@ -1042,6 +1042,8 @@ public class PreBuilding : NetworkBehaviour
         {
             isEnergyStr = prefabObj.GetComponentInChildren<Structure>().structureData.IsEnergyStr;
             isEnergyUse = prefabObj.GetComponentInChildren<Structure>().structureData.EnergyUse[level];
+
+            preBuildingImg.EnergyUseCheck(isEnergyUse);
 
             if (isEnergyStr && !prefabObj.GetComponentInChildren<EnergyBattery>())
             {

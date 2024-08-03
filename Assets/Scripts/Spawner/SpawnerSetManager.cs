@@ -181,7 +181,7 @@ public class SpawnerSetManager : NetworkBehaviour
             {
                 GameObject spawnerObj = Instantiate(spawner);
                 NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
-                if(!networkObject.IsSpawned) networkObject.Spawn();
+                if(!networkObject.IsSpawned) networkObject.Spawn(true);
 
                 spawnerObj.transform.position = randomPoints[index];
                 MapGenerator.instance.SetCorruption(map, randomPoints[index], 1);
@@ -224,7 +224,7 @@ public class SpawnerSetManager : NetworkBehaviour
 
         spawnObj = Instantiate(spawnerGroup);
         NetworkObject networkObject = spawnObj.GetComponent<NetworkObject>();
-        if (!networkObject.IsSpawned) networkObject.Spawn();
+        if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
         spawnObj.transform.position = pos;
         spawnObj.transform.parent = gameObject.transform;

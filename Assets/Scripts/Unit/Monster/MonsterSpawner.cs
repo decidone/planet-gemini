@@ -182,6 +182,47 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
+    protected virtual void OnClientConnectedCallback(ulong clientId)
+    {
+        ClientConnectSyncServerRpc();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if (IsServer)
+        {
+            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (IsServer)
+        {
+            NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void ClientConnectSyncServerRpc()
+    {
+        ClientConnectSyncClientRpc(hp, maxHp);
+    }
+
+    [ClientRpc]
+    public virtual void ClientConnectSyncClientRpc(float syncHp, float syncMaxHp)
+    {
+        hp = syncHp;
+        maxHp = syncMaxHp;
+        if (hp < maxHp)
+        {
+            hpBar.fillAmount = hp / maxHp;
+            unitCanvas.SetActive(true);
+        }
+    }
+
     public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos, bool isHostMap)
     {
         areaLevelData = levelData;
@@ -333,7 +374,7 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
-        if(!networkObject.IsSpawned) networkObject.Spawn();
+        if(!networkObject.IsSpawned) networkObject.Spawn(true);
 
         newMonster.transform.SetParent(this.transform, false);
 
@@ -343,15 +384,15 @@ public class MonsterSpawner : NetworkBehaviour
         MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
         monsterAi.MonsterSpawnerSet(this, monserType);
         monsterAi.AStarSet(isInHostMap);
-        if (!nearUserObjExist)
+        if (!nearUserObjExist && !dieCheck)
         {
             if(IsServer)
-                monsterAi.MonsterScriptSetClientRpc(false);
+                monsterAi.MonsterScriptSetServerRpc(false);
         }
         else
         {
             if (IsServer)
-                monsterAi.MonsterScriptSetClientRpc(true);
+                monsterAi.MonsterScriptSetServerRpc(true);
         }
         
         return newMonster;
@@ -361,13 +402,13 @@ public class MonsterSpawner : NetworkBehaviour
     {
         foreach (MonsterAi monster in totalMonsterList)
         {
-            monster.MonsterScriptSetClientRpc(scriptState);
+            monster.MonsterScriptSetServerRpc(scriptState);
         }
         if (guardianState)
         {
             foreach (GuardianAi guardian in guardianList)
             {
-                guardian.GetComponent<MonsterAi>().MonsterScriptSetClientRpc(scriptState);
+                guardian.GetComponent<MonsterAi>().MonsterScriptSetServerRpc(scriptState);
             }
         }
     }
@@ -437,11 +478,19 @@ public class MonsterSpawner : NetworkBehaviour
         {
             hp = 0f;
             dieCheck = true;
-            DieFunc();
+            if (IsServer)
+                DieFuncServerRpc();
         }
     }
 
-    protected virtual void DieFunc()
+    [ServerRpc(RequireOwnership = false)]
+    protected void DieFuncServerRpc()
+    {
+        DieFuncClientRpc();
+    }
+
+    [ClientRpc]
+    protected void DieFuncClientRpc()
     {
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
@@ -450,6 +499,9 @@ public class MonsterSpawner : NetworkBehaviour
 
         if (InfoUI.instance.spawner == this)
             InfoUI.instance.SetDefault();
+
+        GameObject InfoObj = GetComponentInChildren<InfoInteract>().gameObject;
+        InfoObj.SetActive(false);
 
         if (!IsServer)
             return;
@@ -460,7 +512,8 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void SearchObj(bool find)
     {
-        MonsterScriptSet(find, true);
+        if(!dieCheck)
+            MonsterScriptSet(find, true);
         nearUserObjExist = find;
     }
 
@@ -583,7 +636,7 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
-        if (!networkObject.IsSpawned) networkObject.Spawn();
+        if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
         newMonster.transform.SetParent(this.transform, false);
 
@@ -592,7 +645,7 @@ public class MonsterSpawner : NetworkBehaviour
         monsterAi.AStarSet(isInHostMap);
 
         if (IsServer)
-            monsterAi.MonsterScriptSetClientRpc(true);
+            monsterAi.MonsterScriptSetServerRpc(true);
   
         if (isWaveColonyCallCheck)
         {

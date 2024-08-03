@@ -218,7 +218,14 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public void DestroyStart()
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyServerRpc()
+    {
+        DestroyClientRpc();
+    }
+
+    [ClientRpc]
+    void DestroyClientRpc()
     {
         if (!destroyStart && !isPreBuilding && destroyTimer > 0)
         {
@@ -230,6 +237,20 @@ public class Structure : NetworkBehaviour
             RemoveObjServerRpc();
         }
     }
+
+
+    //public void DestroyStart()
+    //{
+    //    if (!destroyStart && !isPreBuilding && destroyTimer > 0)
+    //    {
+    //        destroyStart = true;
+    //        isPreBuilding = true;
+    //        isSetBuildingOk = false;
+    //        unitCanvas.SetActive(true);
+    //        repairBar.enabled = true;
+    //        RemoveObjServerRpc();
+    //    }
+    //}
 
     void ObjRemoveFunc()
     {
@@ -1657,4 +1678,25 @@ public class Structure : NetworkBehaviour
 
         return data;
     }
+
+
+    //public override void OnDestroy()
+    //{
+    //    if (NetworkObject != null)
+    //    {
+    //        // 부모 NetworkObject가 파괴될 때 자식 NetworkObject를 처리
+    //        NetworkObject[] children = NetworkObject.GetComponentsInChildren<NetworkObject>();
+
+    //        foreach (var child in children)
+    //        {
+    //            if (child != NetworkObject)
+    //            {
+    //                // 자식 NetworkObject를 적절히 처리 (예: 파괴)
+    //                Destroy(child.gameObject);
+    //            }
+    //        }
+    //    }
+    //    Debug.Log("OnDestroy : " + gameObject.name );
+    //    base.OnDestroy();
+    //}
 }

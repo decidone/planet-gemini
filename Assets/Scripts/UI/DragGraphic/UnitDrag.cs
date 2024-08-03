@@ -8,6 +8,7 @@ public class UnitDrag : DragFunc
 {
     int unitLayer;
     int monsterLayer;
+    int spawnerLayer;
 
     public delegate void AddUnitDelegate(GameObject obj);
     public static event AddUnitDelegate addUnit;
@@ -43,6 +44,7 @@ public class UnitDrag : DragFunc
     {
         unitLayer = LayerMask.NameToLayer("Unit");
         monsterLayer = LayerMask.NameToLayer("Monster");
+        spawnerLayer = LayerMask.NameToLayer("Spawner");
 
         inputManager = InputManager.instance;
         inputManager.controls.Unit.Attack.performed += ctx => Attack();
@@ -102,7 +104,8 @@ public class UnitDrag : DragFunc
         }
         else if (isAKeyPressed)
         {
-            RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << monsterLayer);
+            int layerMask = (1 << monsterLayer) | (1 << spawnerLayer);
+            RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, layerMask);
             if (hit)
             {
                 monsterTargetSet?.Invoke(hit.collider.gameObject);

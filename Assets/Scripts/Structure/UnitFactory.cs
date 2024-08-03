@@ -134,7 +134,7 @@ public class UnitFactory : Production
         if (IsServer)
             return;
 
-        UnitSpawnPosSet(pos);
+        UnitSpawnPosSetServerRpc(pos);
     }
 
     public override void OpenRecipe()
@@ -205,7 +205,14 @@ public class UnitFactory : Production
         return spawnPosExist;
     }
 
-    public void UnitSpawnPosSet(Vector2 _spawnPos)
+    [ServerRpc(RequireOwnership = false)]
+    public void UnitSpawnPosSetServerRpc(Vector2 _spawnPos)
+    {
+        UnitSpawnPosSetClientRpc(_spawnPos);
+    }
+
+    [ClientRpc]
+    public void UnitSpawnPosSetClientRpc(Vector2 _spawnPos)
     {
         isSetPos = true;
         spawnPos = _spawnPos;
@@ -233,7 +240,7 @@ public class UnitFactory : Production
         Vector3 spawnSet = transform.position + ((Vector3)spawnPos - transform.position).normalized * 1.5f;
         unit.transform.position = spawnSet;
         NetworkObject networkObject = unit.GetComponent<NetworkObject>();
-        if (!networkObject.IsSpawned) networkObject.Spawn();
+        if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
         //NetworkObjManager.instance.NetObjAdd(unit);
         UnitAi unitAi = unit.GetComponent<UnitAi>();

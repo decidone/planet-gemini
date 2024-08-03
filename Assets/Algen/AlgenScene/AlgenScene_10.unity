@@ -797,7 +797,7 @@ PrefabInstance:
       objectReference: {fileID: 1052323760}
     - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
       propertyPath: spawnerSet
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2480601898731471734, guid: 938ac4cb6e02bed4daae7245145a16c3, type: 3}
       propertyPath: mapSizeData

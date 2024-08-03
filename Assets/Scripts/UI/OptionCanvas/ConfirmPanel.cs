@@ -56,7 +56,8 @@ public class ConfirmPanel : MonoBehaviour
         {
             contentText.text = "Do you want to load to slot " + slotNum + "?";
         }
-        GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
+        if (GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
     }
 
     public void KeyBindingCallConfirm()
@@ -89,6 +90,7 @@ public class ConfirmPanel : MonoBehaviour
     {
         confirmPanel.SetActive(false);
         inputObj.SetActive(false);
-        GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
+        if (GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
     }
 }

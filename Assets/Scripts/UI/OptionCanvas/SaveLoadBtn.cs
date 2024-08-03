@@ -81,8 +81,9 @@ public class SaveLoadBtn : MonoBehaviour
             }
             else // 로드
             {
-                saveLoadMenu.Load(slotNum);
-            }
+                saveLoadMenu.LoadConfirm(slotNum);
+                //saveLoadMenu.Load(slotNum);
+            }   
         }
     }
 }

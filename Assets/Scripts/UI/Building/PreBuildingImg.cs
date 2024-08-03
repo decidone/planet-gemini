@@ -12,7 +12,11 @@ public class PreBuildingImg : MonoBehaviour
     [SerializeField]
     GameObject territoryView;
     [SerializeField]
+    Sprite[] sprites;
+    [SerializeField]
     Material[] materials;
+
+    public bool isEnergyUse;
 
     private void Start()
     {
@@ -37,20 +41,34 @@ public class PreBuildingImg : MonoBehaviour
     public void TerritoryViewSet(int index)
     {
         territoryView.SetActive(true);
+        Color32 newColor;
+        SpriteRenderer spriteRenderer = territoryView.GetComponent<SpriteRenderer>();
         switch (index)
         {
             case 1:
-                territoryView.GetComponent<SpriteRenderer>().material = materials[0];
+                spriteRenderer.material = materials[0];
+                spriteRenderer.sprite = sprites[0];
                 break;
             case 2:
                 territoryView.transform.localScale = new Vector3(1.95f, 1.95f, 1f);
-                territoryView.GetComponent<SpriteRenderer>().material = materials[1];
+                spriteRenderer.material = materials[1];
+                spriteRenderer.sprite = sprites[1];
+                newColor = new Color32(0, 255, 158, 100);
+                spriteRenderer.color = newColor;
                 break;
             case 3:
-                territoryView.transform.localScale = new Vector3(1.95f, 1.95f, 1f);
-                territoryView.GetComponent<SpriteRenderer>().material = materials[2];
+                territoryView.transform.localScale = new Vector3(1.56f, 1.56f, 1f);
+                spriteRenderer.material = materials[2];
+                spriteRenderer.sprite = sprites[1];
+                newColor = new Color32(45, 70, 195, 100);
+                spriteRenderer.color = newColor;
                 break;
         }
+    }
+
+    public void EnergyUseCheck(bool use)
+    {
+        isEnergyUse = use;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

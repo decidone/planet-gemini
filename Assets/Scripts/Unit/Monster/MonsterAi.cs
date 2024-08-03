@@ -591,7 +591,7 @@ public class MonsterAi : UnitCommonAi
 
         yield return StartCoroutine(path.WaitForPath());
 
-        currentWaypointIndex = 0;
+        currentWaypointIndex = 1;
 
         movePath = path.vectorPath;
 
@@ -701,6 +701,12 @@ public class MonsterAi : UnitCommonAi
         spawner = monsterSpawner.gameObject;
         spawnPos = spawner.transform;
         monsterType = type;
+    }
+
+    [ServerRpc]
+    public void MonsterScriptSetServerRpc(bool scriptState)
+    {
+        MonsterScriptSetClientRpc(scriptState);
     }
 
     [ClientRpc]

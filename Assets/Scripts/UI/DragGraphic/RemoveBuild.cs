@@ -62,7 +62,7 @@ public class RemoveBuild : DragFunc
             {
                 if (obj.TryGetComponent(out Structure structure))
                 {
-                    structure.DestroyStart();
+                    structure.DestroyServerRpc();
                 }
             }
         }

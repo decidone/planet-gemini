@@ -239,7 +239,7 @@ public class Transporter : Production
         {
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
             unit.TryGetComponent(out NetworkObject netObj);
-            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn();
+            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
             
             sendItemUnit.Add(unit);
             unit.GetComponent<TransportUnit>().MovePosSet(this, othBuildAni, invItemCheckDicAni);

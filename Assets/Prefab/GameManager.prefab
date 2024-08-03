@@ -243,7 +243,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3986364635626952760}
   - component: {fileID: 3268826974884516333}
-  - component: {fileID: 8121268344323043989}
   - component: {fileID: 762871311885926033}
   - component: {fileID: 762871311885926060}
   - component: {fileID: 3986364633838151513}
@@ -343,25 +342,7 @@ MonoBehaviour:
   hostPlayerSpawnPos: {x: 0, y: 0, z: 0}
   clientPlayerSpawnPos: {x: 0, y: 0, z: 0}
   consoleUI: {fileID: 0}
-  tempOption: {fileID: 0}
---- !u!114 &8121268344323043989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3986364635626952762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9792efe6cecebdc48a972c88dae62797, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ctrl: 0
-  shift: 0
-  alt: 0
-  mouseLeft: 0
-  mouseRight: 0
-  isMapOpened: 0
+  optionPanel: {fileID: 0}
 --- !u!114 &762871311885926033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -694,6 +675,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemListSO: {fileID: 11400000, guid: fb7046e3030870743a8b20eb19bf8824, type: 2}
+  spawnerDestroyCount: 0
+  monsterKillCount: 0
 --- !u!1 &4287165206276915524
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,6 +724,7 @@ MonoBehaviour:
   saveData:
     fileName: 
     saveDate: 
+    mapSizeIndex: 0
     playerDataList: []
     ScienceData: []
     structureData: []

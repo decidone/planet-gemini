@@ -210,7 +210,6 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
-  isMainEnergyColony: 0
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}
@@ -654,7 +653,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6111292424080105380}
   - component: {fileID: 4441947036194729626}
-  m_Layer: 0
+  - component: {fileID: 6917890458393431905}
+  - component: {fileID: 4068710645450609794}
+  m_Layer: 19
   m_Name: OverclockView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,7 +697,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 41cc59b88d7491348aac2e68cb89a4e4, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -717,8 +718,8 @@ SpriteRenderer:
   m_SortingLayerID: 618645769
   m_SortingLayer: 1
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 8ae5dcf00ef1c154fb7cfc030cecb678, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: c92e2d3d0c7a27d4bbb0c2c6c495bb6d, type: 3}
+  m_Color: {r: 0, g: 1, b: 0.620383, a: 0.39215687}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -728,6 +729,35 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &6917890458393431905
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970965086718267549}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 5.09
+--- !u!114 &4068710645450609794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970965086718267549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84f619fb66f54f04188d85b573e7200a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  structure: {fileID: 6930223019026626137}
 --- !u!1001 &8637437739860883944
 PrefabInstance:
   m_ObjectHideFlags: 0
