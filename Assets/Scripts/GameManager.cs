@@ -82,8 +82,7 @@ public class GameManager : NetworkBehaviour
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
-    [SerializeField]
-    GameObject optionPanel;
+    OptionCanvas optionCanvas;
 
     #region Singleton
     public static GameManager instance;
@@ -107,7 +106,7 @@ public class GameManager : NetworkBehaviour
         isConsoleOpened = false;
         openedUI = new List<GameObject>();
         onUIChangedCallback += UIChanged;
-
+        optionCanvas = OptionCanvas.instance;
         hostMap = mapGenerator.hostMap;
         clientMap = mapGenerator.clientMap;
         map = hostMap;
@@ -129,6 +128,8 @@ public class GameManager : NetworkBehaviour
         
         OtherPortalSet();
         //Cursor.lockState = CursorLockMode.Confined;
+
+        GameStartSet();
     }
 
     private void Update()
@@ -434,7 +435,7 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            optionPanel.SetActive(!optionPanel.activeSelf);
+            optionCanvas.mainPanel.SetActive(!optionCanvas.mainPanel.activeSelf);
         }
     }
 
@@ -596,6 +597,7 @@ public class GameManager : NetworkBehaviour
         isHost = true;
         ItemDragManager.instance.SetInven(hostDragInven);
         GeminiNetworkManager.instance.HostSpawnServerRPC();
+        Debug.Log("HostConnected??");
     }
 
     public void ClientConnected()
@@ -722,5 +724,23 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log("SubFinanceClientRpc");
         finance.SubFinance(money);
+    }
+
+    private void GameStartSet()
+    {
+        Debug.Log(NetworkManager.Singleton.IsHost);
+        if (NetworkManager.Singleton.IsHost)
+        {
+            Debug.Log("Host");
+            HostConnected();
+            MapGenerator.instance.SpawnerAreaMapSet();
+            if (!MainGameSetting.instance.isNewGame)
+                DataManager.instance.Load(MainGameSetting.instance.loadDataIndex);
+        }
+        else
+        {
+            Debug.Log("Client");
+            ClientConnected();
+        }
     }
 }

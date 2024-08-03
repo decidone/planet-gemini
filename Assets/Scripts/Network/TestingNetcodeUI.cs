@@ -16,21 +16,23 @@ public class TestingNetcodeUI : NetworkBehaviour
         startHostButton.onClick.AddListener(() =>
         {
             Debug.Log("Host");
-            NetworkManager.Singleton.StartHost();
+            //NetworkManager.Singleton.StartHost();
             GameManager.instance.HostConnected();
             MapGenerator.instance.SpawnerAreaMapSet();
+            if (!MainGameSetting.instance.isNewGame)
+                DataManager.instance.Load(MainGameSetting.instance.loadDataIndex);
             Hide();
         });
         startClientButton.onClick.AddListener(() =>
         {
             Debug.Log("Client");
-            NetworkManager.Singleton.StartClient();
+            //NetworkManager.Singleton.StartClient();
             GameManager.instance.ClientConnected();
             Hide();
         });
     }
 
-    void Hide() 
+    void Hide()
     {
         gameObject.SetActive(false);
     }

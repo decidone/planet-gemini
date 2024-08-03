@@ -923,6 +923,10 @@ MonoBehaviour:
   randomSeed: 0
   seed: 3
   mapSizeData: {fileID: 11400000, guid: 40c1909d136d22e4ebe4662258f93e22, type: 2}
+  mapSizeDatas:
+  - {fileID: 11400000, guid: 40c1909d136d22e4ebe4662258f93e22, type: 2}
+  - {fileID: 11400000, guid: 82b31e49e51d9ba43a8b4b1e6d78ea3f, type: 2}
+  - {fileID: 11400000, guid: e3dfcb66339806c41bb93748cb2c6c1a, type: 2}
   spawnAreaSize: 20
   width: 160
   height: 90

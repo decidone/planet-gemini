@@ -55,9 +55,6 @@ MonoBehaviour:
   map2Area3Group: []
   map2Area4Group: []
   map2Area5Group: []
-  totalMonsterSpawnerList: []
-  totalMonsterList: []
-  totalWaveMonsterList: []
   map1Wave1Start: 0
   map1Wave2Start: 0
   map1Wave3Start: 0
@@ -96,7 +93,3 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 61eff04140685384dae89a66d4d9c891, type: 2}
   - {fileID: 11400000, guid: d217c1f5250224d44bb230f04dea5996, type: 2}
   monsterSpawnerManager: {fileID: -3613212761563754259}
-  spawnerSprite:
-  - {fileID: 846619681, guid: 5e106a86825938f4cb02fd6ad417b413, type: 3}
-  - {fileID: 111823750, guid: ce129a5ecbb5580458afc70f4401c1e1, type: 3}
-  - {fileID: 1330350005, guid: 72d8f35b4a1f29d4cb6325fc19466f60, type: 3}

@@ -240,7 +240,7 @@ public class UnitFactory : Production
         Vector3 spawnSet = transform.position + ((Vector3)spawnPos - transform.position).normalized * 1.5f;
         unit.transform.position = spawnSet;
         NetworkObject networkObject = unit.GetComponent<NetworkObject>();
-        if (!networkObject.IsSpawned) networkObject.Spawn();
+        if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
         //NetworkObjManager.instance.NetObjAdd(unit);
         UnitAi unitAi = unit.GetComponent<UnitAi>();

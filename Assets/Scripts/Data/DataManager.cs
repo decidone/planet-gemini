@@ -67,6 +67,8 @@ public class DataManager : MonoBehaviour
         // 파일 이름
         saveData.fileName = fileName;
 
+        saveData.mapSizeIndex = MainGameSetting.instance.mapSizeIndex;
+
         // 플레이어
         PlayerSaveData playerData = new PlayerSaveData();
         playerData.isHostPlayer = true; // 임시
@@ -182,7 +184,7 @@ public class DataManager : MonoBehaviour
         //Vector3 spawnPos = new Vector3(saveData.pos[0], saveData.pos[1], saveData.pos[2]);
         GameObject spawnobj = Instantiate(building.gameObj, spawnPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn();
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
 
         if (netObj.TryGetComponent(out Structure structure))
         {
@@ -261,7 +263,7 @@ public class DataManager : MonoBehaviour
     {
         GameObject spawnobj = Instantiate(beltGroup);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn();
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
         spawnobj.transform.parent = beltMgr.transform;
         spawnobj.TryGetComponent(out BeltGroupMgr beltGroupMgr);
         
@@ -271,7 +273,7 @@ public class DataManager : MonoBehaviour
             Vector3 spawnPos = Vector3Extensions.ToVector3(beltData.Item2.pos);
             GameObject beltObj = Instantiate(building.gameObj, spawnPos, Quaternion.identity);
             beltObj.TryGetComponent(out NetworkObject netBeltObj);
-            if (!netBeltObj.IsSpawned) beltObj.GetComponent<NetworkObject>().Spawn();
+            if (!netBeltObj.IsSpawned) beltObj.GetComponent<NetworkObject>().Spawn(true);
 
             if (netBeltObj.TryGetComponent(out Structure structure))
             {
@@ -332,7 +334,7 @@ public class DataManager : MonoBehaviour
     {
         GameObject spawnobj = Instantiate(GeminiNetworkManager.instance.unitListSO.userUnitList[unitSaveData.unitIndex]);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn();
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
 
         spawnobj.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
         spawnobj.GetComponent<UnitAi>().GameStartSet(unitSaveData);
@@ -424,7 +426,7 @@ public class DataManager : MonoBehaviour
     {
         GameObject spawnerObj = Instantiate(spawner);
         NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
-        if (!networkObject.IsSpawned) networkObject.Spawn();
+        if (!networkObject.IsSpawned) networkObject.Spawn(true);
         spawnerObj.transform.position = Vector3Extensions.ToVector3(spawnerSaveData.spawnerPos);
 
         return spawnerObj;

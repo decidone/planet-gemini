@@ -374,7 +374,7 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
-        if(!networkObject.IsSpawned) networkObject.Spawn();
+        if(!networkObject.IsSpawned) networkObject.Spawn(true);
 
         newMonster.transform.SetParent(this.transform, false);
 
@@ -636,7 +636,7 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
-        if (!networkObject.IsSpawned) networkObject.Spawn();
+        if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
         newMonster.transform.SetParent(this.transform, false);
 

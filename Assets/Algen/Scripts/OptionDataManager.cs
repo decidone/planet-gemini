@@ -32,6 +32,8 @@ public class OptionDataManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DontDestroyOnLoad(gameObject);
+
         settingsMenu = SettingsMenu.instance;
         soundManager = SoundManager.Instance;
         WindowModeSetting();

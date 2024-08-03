@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 public class SaveLoadMenu : MonoBehaviour
 {
@@ -90,14 +92,15 @@ public class SaveLoadMenu : MonoBehaviour
         {
             btn.BtnStateSet(state);
         }
-        GameManager.instance.onUIChangedCallback?.Invoke(saveLoadPanel);
-
+        if(GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(saveLoadPanel);
     }
 
     public void MenuClose()
     {
         saveLoadPanel.SetActive(false);
-        GameManager.instance.onUIChangedCallback?.Invoke(saveLoadPanel);
+        if (GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(saveLoadPanel);
     }
 
     public (bool, string) GetJsonFromFile(int saveSlotNum)
@@ -128,6 +131,24 @@ public class SaveLoadMenu : MonoBehaviour
     {
         DataManager.instance.Load(slotNum);
         Debug.Log(slotNum + " : Load");
+    }
+
+    public void LoadConfirm(int slotNum)
+    {
+        MainGameSetting.instance.NewGameState(false);
+        MainGameSetting.instance.LoadDataIndexSet(slotNum);
+        var data = GetJsonFromFile(slotNum);
+        SaveData saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
+        MainGameSetting.instance.MapSizeSet(saveData.mapSizeIndex);
+
+        if (GameManager.instance != null)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("MergeScene_09", LoadSceneMode.Single);
+        }
+        else
+        {
+            LoadingSceneManager.LoadScene("LobbyScene");
+        }
     }
 
     void BackBtnFunc()

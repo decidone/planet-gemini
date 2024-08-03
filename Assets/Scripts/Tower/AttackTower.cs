@@ -219,7 +219,7 @@ public class AttackTower : TowerAi
                 }
 
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
-                if (!bulletPool.IsSpawned) bulletPool.Spawn();
+                if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
                 bulletPool.GetComponent<TowerSingleAttackFx>().GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject);                
             }
@@ -233,7 +233,7 @@ public class AttackTower : TowerAi
                 }
 
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(aggroTarget.transform.position.x, aggroTarget.transform.position.y + 0.5f), Quaternion.identity);
-                if (!bulletPool.IsSpawned) bulletPool.Spawn();
+                if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
                 bulletPool.GetComponent<TowerAreaAttackFx>().GetTarget(towerData.Damage + loadedBullet.damage, gameObject);
             }            
         }

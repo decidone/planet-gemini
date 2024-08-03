@@ -75,6 +75,7 @@ public class SoundManager : NetworkBehaviour
 
     private void Start()
     {
+        DontDestroyOnLoad(gameObject);
         //임시로 소리끄기
         audioMixer.SetFloat("Master", -80);
     }
@@ -204,13 +205,16 @@ public class SoundManager : NetworkBehaviour
 
     public void PlayBgmMapCheck()
     {
-        if (GameManager.instance.isPlayerInHostMap)
+        if (GameManager.instance != null)
         {
-            PlayBGM(isHostMapBattleOn, isHostMapWaveOn);
-        }
-        else
-        {
-            PlayBGM(isClientMapBattleOn, isClientMapWaveOn);
+            if (GameManager.instance.isPlayerInHostMap)
+            {
+                PlayBGM(isHostMapBattleOn, isHostMapWaveOn);
+            }
+            else
+            {
+                PlayBGM(isClientMapBattleOn, isClientMapWaveOn);
+            }
         }
     }
 

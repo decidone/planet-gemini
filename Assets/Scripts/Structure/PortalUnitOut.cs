@@ -48,7 +48,7 @@ public class PortalUnitOut : PortalObj
         if (IsServer)
         {
             unit.TryGetComponent(out NetworkObject netObj);
-            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn();
+            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
         }
 
         UnitAi unitAi = unit.GetComponent<UnitAi>();

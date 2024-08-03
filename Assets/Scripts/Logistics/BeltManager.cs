@@ -118,7 +118,7 @@ public class BeltManager : NetworkBehaviour
     {
         GameObject newObj = Instantiate(beltGroupMgrObj);
         newObj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) newObj.GetComponent<NetworkObject>().Spawn();
+        if (!netObj.IsSpawned) newObj.GetComponent<NetworkObject>().Spawn(true);
 
         newObj.transform.parent = this.gameObject.transform;
 
