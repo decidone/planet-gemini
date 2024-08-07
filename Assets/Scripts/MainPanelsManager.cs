@@ -38,7 +38,8 @@ public class MainPanelsManager : MonoBehaviour
     void GameStartBtnFunc()
     {
         gameSetting.NewGameState(true);
-        LoadingSceneManager.LoadScene("LobbyScene");
+        SteamManager.instance.HostLobby();
+        //LoadingSceneManager.LoadScene("LobbyScene");
     }
 
     void MapSizeDropdownFunc(Dropdown dropdown)

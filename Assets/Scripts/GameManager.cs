@@ -406,6 +406,7 @@ public class GameManager : NetworkBehaviour
 
     void DebugMode()
     {
+        Debug.Log(LobbySaver.instance.currentLobby?.Id);
         Debug.Log(EventSystem.current.currentSelectedGameObject);
         debug = !debug;
         Debug.Log("debug : " + debug);

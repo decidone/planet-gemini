@@ -50,7 +50,8 @@ public class MainManager : MonoBehaviour
 
     void JoinBtnFunc()
     {
-        LoadingSceneManager.LoadScene("LobbyScene");
+        SteamManager.instance.GetLobbiesList();
+        //LoadingSceneManager.LoadScene("LobbyScene");
     }
 
     void SettingsBtnFunc()
