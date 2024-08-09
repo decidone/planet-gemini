@@ -21,7 +21,7 @@ public class LogisticsClickEvent : MonoBehaviour
 
     private void Start()
     {
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
     }
 
 

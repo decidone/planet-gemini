@@ -147,7 +147,7 @@ public class SaveLoadMenu : MonoBehaviour
         }
         else
         {
-            LoadingSceneManager.LoadScene("LobbyScene");
+            SteamManager.instance.HostLobby();
         }
     }
 

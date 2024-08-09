@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // UTF-8 설정
@@ -34,13 +35,18 @@ public class ItemSpManager : InventoryManager
             int buttonIndex = i;
             itemTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
         }
-
-        inputManager = InputManager.instance;
-        inputManager.controls.Inventory.ItemSpawner.performed += ctx => InvenClick();
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
     }
-
-    void InvenClick()
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.ItemSpawner.performed += InvenClick;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Inventory.ItemSpawner.performed -= InvenClick;
+    }
+    void InvenClick(InputAction.CallbackContext ctx)
     {
         if (focusedSlot != null)
         {

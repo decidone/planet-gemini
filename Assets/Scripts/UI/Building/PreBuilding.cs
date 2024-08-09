@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Pathfinding;
 using Unity.Netcode;
+using UnityEngine.InputSystem;
 
 // UTF-8 설정
 public class PreBuilding : NetworkBehaviour
@@ -108,13 +109,23 @@ public class PreBuilding : NetworkBehaviour
 
         gameManager = GameManager.instance;
         buildingInven = BuildingInvenManager.instance;
-        inputManager = InputManager.instance;
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
         buildingListSO = BuildingList.instance;
-        inputManager.controls.Building.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
-        inputManager.controls.Building.LeftMouseButtonUp.performed += ctx => LeftMouseButtonUpCommand();
-        inputManager.controls.Building.RightMouseButtonDown.performed += ctx => CancelBuild();
-        inputManager.controls.Building.Rotate.performed += ctx => Rotate();
+    }
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Building.LeftMouseButtonDown.performed += LeftMouseButtonDown;
+        inputManager.controls.Building.LeftMouseButtonUp.performed += LeftMouseButtonUpCommand;
+        inputManager.controls.Building.RightMouseButtonDown.performed += CancelBuild;
+        inputManager.controls.Building.Rotate.performed += Rotate;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Building.LeftMouseButtonDown.performed -= LeftMouseButtonDown;
+        inputManager.controls.Building.LeftMouseButtonUp.performed -= LeftMouseButtonUpCommand;
+        inputManager.controls.Building.RightMouseButtonDown.performed -= CancelBuild;
+        inputManager.controls.Building.Rotate.performed -= Rotate;
     }
 
     void Update()
@@ -167,7 +178,7 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    void LeftMouseButtonDown()
+    void LeftMouseButtonDown(InputAction.CallbackContext ctx)
     {
         if (isBuildingOn)
         {
@@ -179,7 +190,7 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [Command]
-    void LeftMouseButtonUpCommand()
+    void LeftMouseButtonUpCommand(InputAction.CallbackContext ctx)
     {
         if (isBuildingOn)
         {
@@ -338,6 +349,11 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
+    public void CancelBuild(InputAction.CallbackContext ctx)
+    {
+        CancelBuild();
+    }
+
     public void CancelBuild()
     {
         mouseHoldCheck = false;
@@ -362,7 +378,7 @@ public class PreBuilding : NetworkBehaviour
         reversSet = false;
     }
 
-    void Rotate()
+    void Rotate(InputAction.CallbackContext ctx)
     {
         if (nonNetObj != null && !inputManager.mouseLeft)
         {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class DragGraphic : MonoBehaviour
 {
@@ -34,11 +35,14 @@ public class DragGraphic : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of GameManager found!");
+            Debug.LogWarning("More than one instance of DragGraphic found!");
+            Destroy(gameObject);
             return;
         }
-
-        instance = this;
+        else
+        {
+            instance = this;
+        }
     }
     #endregion
 
@@ -55,13 +59,22 @@ public class DragGraphic : MonoBehaviour
         isCtrlDrag = false;
         isShiftDrag = false;
         preBuilding = PreBuilding.instance;
-        inputManager = InputManager.instance;
-        inputManager.controls.MainCamera.LeftMouseButtonDown.performed += ctx => LeftMouseButtonDown();
-        inputManager.controls.MainCamera.LeftMouseButtonUp.performed += ctx => LeftMouseButtonUp();
-        inputManager.controls.MainCamera.RightMouseButtonDown.performed += ctx => RightMouseButtonDown();
-        inputManager.controls.MainCamera.RightMouseButtonUp.performed += ctx => RightMouseButtonUp();
     }
-
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.MainCamera.LeftMouseButtonDown.performed += LeftMouseButtonDown;
+        inputManager.controls.MainCamera.LeftMouseButtonUp.performed += LeftMouseButtonUp;
+        inputManager.controls.MainCamera.RightMouseButtonDown.performed += RightMouseButtonDown;
+        inputManager.controls.MainCamera.RightMouseButtonUp.performed += RightMouseButtonUp;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.MainCamera.LeftMouseButtonDown.performed -= LeftMouseButtonDown;
+        inputManager.controls.MainCamera.LeftMouseButtonUp.performed -= LeftMouseButtonUp;
+        inputManager.controls.MainCamera.RightMouseButtonDown.performed -= RightMouseButtonDown;
+        inputManager.controls.MainCamera.RightMouseButtonUp.performed -= RightMouseButtonUp;
+    }
     private void Update()
     {
         if (!preBuilding.isBuildingOn && isDrag)
@@ -74,7 +87,7 @@ public class DragGraphic : MonoBehaviour
         }
     }
 
-    void LeftMouseButtonDown()
+    void LeftMouseButtonDown(InputAction.CallbackContext ctx)
     {
         if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
@@ -102,7 +115,7 @@ public class DragGraphic : MonoBehaviour
         }
     }
 
-    void LeftMouseButtonUp()
+    void LeftMouseButtonUp(InputAction.CallbackContext ctx)
     {
         if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
@@ -118,7 +131,7 @@ public class DragGraphic : MonoBehaviour
         DisableFunc();
     }
 
-    void RightMouseButtonDown()
+    void RightMouseButtonDown(InputAction.CallbackContext ctx)
     {
         if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
@@ -126,7 +139,7 @@ public class DragGraphic : MonoBehaviour
         DisableFunc();
     }
 
-    void RightMouseButtonUp()
+    void RightMouseButtonUp(InputAction.CallbackContext ctx)
     {
         if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;

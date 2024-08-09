@@ -186,7 +186,7 @@ public class Structure : NetworkBehaviour
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
         destroyInterval = structureData.RemoveGauge;
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         destroyTimer = destroyInterval;
     }

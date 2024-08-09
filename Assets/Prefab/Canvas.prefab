@@ -7374,7 +7374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -28736,6 +28736,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2500729897755406647}
     m_Modifications:
+    - target: {fileID: 815269036283433527, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2840590663075101872, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4051539989702737942, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -28823,6 +28831,22 @@ PrefabInstance:
     - target: {fileID: 4933533316016503505, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
       propertyPath: m_Name
       value: Finance
+      objectReference: {fileID: 0}
+    - target: {fileID: 6381900695516079231, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188319528350701225, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8312421780258440148, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811004869598271927, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // UTF-8 설정
@@ -21,12 +22,19 @@ public class StructureInvenManager : InventoryManager
     public InputField inputField;
     public Button subBtn;
 
-    protected override void Start()
+    void OnEnable()
     {
-        base.Start();
-        inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotShiftClick();
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.SlotLeftClick.performed += SlotLeftClick;
+        inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
+        inputManager.controls.Inventory.SlotLeftClick.performed += SlotShiftClick;
     }
-
+    void OnDisable()
+    {
+        inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
+        inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
+        inputManager.controls.Inventory.SlotLeftClick.performed -= SlotShiftClick;
+    }
     protected override void Update()
     {
         base.Update();
@@ -40,7 +48,7 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
-    void SlotShiftClick()
+    void SlotShiftClick(InputAction.CallbackContext ctx)
     {
         if (inventory == null) return;
         if (!inputManager.shift) return;

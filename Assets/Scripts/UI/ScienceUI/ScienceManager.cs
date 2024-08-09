@@ -70,7 +70,7 @@ public class ScienceManager : MonoBehaviour
         buildingInven = gameManager.GetComponent<BuildingInven>();
         sciItemSetWindow = itemInputWindow.GetComponent<SciItemSetWindow>();
         portalSciManager = PortalSciManager.instance;
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
 
         contents[0].SetActive(true);
         contents[1].SetActive(false);

@@ -17,7 +17,7 @@ public class StructureClickEvent : MonoBehaviour
 
     private void Start()
     {
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
     }
 
     public void StructureClick()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
@@ -22,10 +23,15 @@ public class InputManager : MonoBehaviour
         if (instance != null)
         {
             Debug.LogWarning("More than one instance of InputManager found!");
+            Destroy(gameObject);
             return;
         }
-        DontDestroyOnLoad(gameObject);
-        instance = this;
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            instance = this;
+            controls = new InputControls();
+        }
     }
     #endregion
 
@@ -39,28 +45,37 @@ public class InputManager : MonoBehaviour
 
         isMapOpened = false;
 
-        controls.Hold.Ctrl.performed += ctx => CtrlHold();
-        controls.Hold.Shift.performed += ctx => ShiftHold();
-        controls.Hold.Alt.performed += ctx => AltHold();
-        controls.Hold.MouseLeft.performed += ctx => MouseLeftHold();
-        controls.Hold.MouseRight.performed += ctx => MouseRightHold();
-
         EnableControls();
         controls.MapCamera.Disable();
     }
 
     void OnEnable()
     {
-        controls = new InputControls();
         controls.Enable();
+        controls.Hold.Ctrl.performed += CtrlHold;
+        controls.Hold.Shift.performed += ShiftHold;
+        controls.Hold.Alt.performed += AltHold;
+        controls.Hold.MouseLeft.performed += MouseLeftHold;
+        controls.Hold.MouseRight.performed += MouseRightHold;
     }
-    void OnDisable() { controls.Disable(); }
+    void OnDisable()
+    {
+        if(controls != null)
+        {
+            controls.Disable();
+            controls.Hold.Ctrl.performed -= CtrlHold;
+            controls.Hold.Shift.performed -= ShiftHold;
+            controls.Hold.Alt.performed -= AltHold;
+            controls.Hold.MouseLeft.performed -= MouseLeftHold;
+            controls.Hold.MouseRight.performed -= MouseRightHold;
+        }
+    }
 
-    void CtrlHold() { ctrl = !ctrl; }
-    void ShiftHold() { shift = !shift; }
-    void AltHold() { alt = !alt; }
-    void MouseLeftHold() { mouseLeft = !mouseLeft; }
-    void MouseRightHold() { mouseRight = !mouseRight; }
+    void CtrlHold(InputAction.CallbackContext ctx) { ctrl = !ctrl; }
+    void ShiftHold(InputAction.CallbackContext ctx) { shift = !shift; }
+    void AltHold(InputAction.CallbackContext ctx) { alt = !alt; }
+    void MouseLeftHold(InputAction.CallbackContext ctx) { mouseLeft = !mouseLeft; }
+    void MouseRightHold(InputAction.CallbackContext ctx) { mouseRight = !mouseRight; }
 
     void EnableControls()
     {

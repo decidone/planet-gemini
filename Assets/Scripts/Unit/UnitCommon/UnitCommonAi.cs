@@ -111,7 +111,7 @@ public class UnitCommonAi : NetworkBehaviour
 
     protected virtual void Start()
     {
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
         battleBGM = BattleBGMCtrl.instance;
         networkObjectPool = NetworkObjectPool.Singleton;
     }

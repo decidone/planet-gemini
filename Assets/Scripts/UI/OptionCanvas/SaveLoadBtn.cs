@@ -83,7 +83,10 @@ public class SaveLoadBtn : MonoBehaviour
             {
                 saveLoadMenu.LoadConfirm(slotNum);
                 //saveLoadMenu.Load(slotNum);
-            }   
+            }
+            saveLoadMenu.MenuClose();
+            OptionCanvas.instance.MainPanelSet(false);
+
         }
     }
 }

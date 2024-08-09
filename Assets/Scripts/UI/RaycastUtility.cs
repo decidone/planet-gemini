@@ -15,7 +15,6 @@ public static class RaycastUtility
     {
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
-
         return results.Count < 1 ? null : results[0].gameObject;
     }
 

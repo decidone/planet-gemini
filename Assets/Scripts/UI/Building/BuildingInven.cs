@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // UTF-8 설정
@@ -35,7 +36,7 @@ public class BuildingInven : MonoBehaviour
     {
         gameManager = GameManager.instance;
         scienceDb = TempScienceDb.instance;
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
         buildingDataList = BuildingList.instance.buildingListSO.buildingSOList;
         buildingTagsBtn = buildingTagsPanel.GetComponentsInChildren<Button>();
 
@@ -45,12 +46,17 @@ public class BuildingInven : MonoBehaviour
             buildingTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
         }
         ButtonClicked(0);
-
-        inputManager = InputManager.instance;
-        inputManager.controls.HotKey.Debug.performed += ctx => DebugMode();
     }
-
-    void DebugMode()
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.HotKey.Debug.performed += DebugMode;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.HotKey.Debug.performed -= DebugMode;
+    }
+    void DebugMode(InputAction.CallbackContext ctx)
     {
         Refresh();
     }

@@ -11,7 +11,7 @@ public class DragFunc : MonoBehaviour
     protected virtual void Start()
     {
         gameManager = GameManager.instance;
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
     }
 
     public virtual void LeftMouseUp(Vector2 startPos, Vector2 endPos) { }

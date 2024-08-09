@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -116,22 +117,31 @@ public class GameManager : NetworkBehaviour
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
-        inputManager = InputManager.instance;
-        inputManager.controls.Structure.StrClick.performed += ctx => StrClick();
-        inputManager.controls.HotKey.Debug.performed += ctx => DebugMode();
-        inputManager.controls.HotKey.Supply.performed += ctx => Supply();
-        inputManager.controls.HotKey.Escape.performed += ctx => Escape();
-        inputManager.controls.Inventory.PlayerInven.performed += ctx => Inven();
-        //inputManager.controls.HotKey.Building.performed += ctx => Building();
-        inputManager.controls.HotKey.ScienceTree.performed += ctx => ScienceTree();
-        inputManager.controls.HotKey.EnergyCheck.performed += ctx => EnergyCheck();
-        
-        OtherPortalSet();
-        //Cursor.lockState = CursorLockMode.Confined;
 
+        OtherPortalSet();
         GameStartSet();
     }
-
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Structure.StrClick.performed += StrClick;
+        inputManager.controls.HotKey.Debug.performed += DebugMode;
+        inputManager.controls.HotKey.Supply.performed += Supply;
+        inputManager.controls.HotKey.Escape.performed += Escape;
+        inputManager.controls.Inventory.PlayerInven.performed += Inven;
+        inputManager.controls.HotKey.ScienceTree.performed += ScienceTree;
+        inputManager.controls.HotKey.EnergyCheck.performed += EnergyCheck;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Structure.StrClick.performed -= StrClick;
+        inputManager.controls.HotKey.Debug.performed -= DebugMode;
+        inputManager.controls.HotKey.Supply.performed -= Supply;
+        inputManager.controls.HotKey.Escape.performed -= Escape;
+        inputManager.controls.Inventory.PlayerInven.performed -= Inven;
+        inputManager.controls.HotKey.ScienceTree.performed -= ScienceTree;
+        inputManager.controls.HotKey.EnergyCheck.performed -= EnergyCheck;
+    }
     private void Update()
     {
         if (!isConsoleOpened)
@@ -211,7 +221,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void StrClick()
+    void StrClick(InputAction.CallbackContext ctx)
     {
         if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
             return;
@@ -404,7 +414,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void DebugMode()
+    void DebugMode(InputAction.CallbackContext ctx)
     {
         Debug.Log(LobbySaver.instance.currentLobby?.Id);
         Debug.Log(EventSystem.current.currentSelectedGameObject);
@@ -414,7 +424,7 @@ public class GameManager : NetworkBehaviour
         QuestManager.instance.SetQuest(0);
     }
 
-    void Supply()
+    void Supply(InputAction.CallbackContext ctx)
     {
         if (debug)
         {
@@ -428,7 +438,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void Escape()
+    void Escape(InputAction.CallbackContext ctx)
     {
         if (openedUI.Count > 0)
         {
@@ -436,7 +446,8 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            optionCanvas.mainPanel.SetActive(!optionCanvas.mainPanel.activeSelf);
+            Debug.Log("Escape");
+            optionCanvas.MainPanelSet(!optionCanvas.mainPanel.activeSelf);
         }
     }
 
@@ -500,7 +511,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void Inven()
+    public void Inven(InputAction.CallbackContext ctx)
     {
         if (!pInvenManager.inventoryUI.activeSelf)
         {
@@ -524,7 +535,7 @@ public class GameManager : NetworkBehaviour
     //    }
     //}
 
-    public void ScienceTree()
+    public void ScienceTree(InputAction.CallbackContext ctx)
     {
         if (!sTreeManager.scienceTreeUI.activeSelf)
         {
@@ -689,7 +700,7 @@ public class GameManager : NetworkBehaviour
             Destroy(selectPoint);
     }
 
-    void EnergyCheck()
+    void EnergyCheck(InputAction.CallbackContext ctx)
     {
         if (debug)
             EnergyGroupManager.instance.CheckGroups();

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // UTF-8 설정
@@ -30,13 +31,19 @@ public class SplitterFilterRecipe : InventoryManager
             itemTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
         }
 
-        inputManager = InputManager.instance;
-        inputManager.controls.Inventory.SplitterFilter.performed += ctx => FilterItemClick();
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
     }
-
-    void FilterItemClick()
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.SplitterFilter.performed += FilterItemClick;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Inventory.SplitterFilter.performed -= FilterItemClick;
+    }
+    void FilterItemClick(InputAction.CallbackContext ctx)
     {
         if (focusedSlot != null)
         {

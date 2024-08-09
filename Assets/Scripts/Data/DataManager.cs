@@ -44,12 +44,19 @@ public class DataManager : MonoBehaviour
         saveData = new SaveData();
         selectedSlot = 0;
 
-        inputManager = InputManager.instance;
         netObjMgr = NetworkObjManager.instance;
+    }
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
         inputManager.controls.HotKey.Save.performed += ctx => Save(selectedSlot);
         inputManager.controls.HotKey.Load.performed += ctx => Load(selectedSlot);
     }
-
+    void OnDisable()
+    {
+        inputManager.controls.HotKey.Save.performed -= ctx => Save(selectedSlot);
+        inputManager.controls.HotKey.Load.performed -= ctx => Load(selectedSlot);
+    }
     public string Save(int saveSlotNum)
     {
         return Save(saveSlotNum, null);
