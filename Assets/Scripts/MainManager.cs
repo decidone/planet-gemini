@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
@@ -39,7 +41,22 @@ public class MainManager : MonoBehaviour
         loadBtn.onClick.AddListener(() => LoadBtnFunc());
         backBtn.onClick.AddListener(() => BackBtnFunc());
 
+        Button[] mainBtnArr = mainBtns.GetComponentsInChildren<Button>();
+        Button[] hostBtnsArr = hostBtns.GetComponentsInChildren<Button>();
 
+        foreach (Button btn in mainBtnArr)
+        {
+            AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
+            AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(btn); });
+            AddEvent(btn, EventTriggerType.PointerClick, delegate { OnExit(btn); });
+        }
+
+        foreach (Button btn in hostBtnsArr)
+        {
+            AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
+            AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(btn); });
+            AddEvent(btn, EventTriggerType.PointerClick, delegate { OnExit(btn); });
+        }
     }
 
     void HostBtnFunc()
@@ -55,12 +72,12 @@ public class MainManager : MonoBehaviour
 
     void SettingsBtnFunc()
     {
-
+        OptionCanvas.instance.SettingsBtnFunc();
     }
 
     void QuitBtnFunc()
     {
-
+        Application.Quit();
     }
 
     void NewGameBtnFunc()
@@ -77,5 +94,33 @@ public class MainManager : MonoBehaviour
     {
         mainBtns.SetActive(true);
         hostBtns.SetActive(false);
+    }
+
+    void AddEvent(Button btn, EventTriggerType type, UnityAction<BaseEventData> action)
+    {
+        EventTrigger.Entry eventTrigger = new EventTrigger.Entry();
+        eventTrigger.eventID = type;
+        eventTrigger.callback.AddListener(action);
+
+        EventTrigger trigger = btn.GetComponent<EventTrigger>();
+        trigger.triggers.Add(eventTrigger);
+    }
+
+    void OnEnter(Button btn)
+    {
+        btn.TryGetComponent(out Image img);
+
+        Color newColor = img.color;
+        newColor.a = 50 / 255f;
+        img.color = newColor;
+    }
+
+    void OnExit(Button btn)
+    {
+        btn.TryGetComponent(out Image img);
+
+        Color newColor = img.color;
+        newColor.a = 0;
+        img.color = newColor;
     }
 }

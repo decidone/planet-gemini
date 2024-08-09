@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Overall : NetworkBehaviour
 {
@@ -60,9 +61,16 @@ public class Overall : NetworkBehaviour
         Init();
 
         display = OverallDisplay.instance;
-        InputManager.instance.controls.HotKey.Overall.performed += ctx => DisplayOverall();
     }
+    void OnEnable()
+    {
+        InputManager.instance.controls.HotKey.Overall.performed += DisplayOverall;
 
+    }
+    void OnDisable()
+    {
+        InputManager.instance.controls.HotKey.Overall.performed += DisplayOverall;
+    }
     void Init()
     {
         for (int i = 0; i < itemList.Count; i++)
@@ -78,7 +86,7 @@ public class Overall : NetworkBehaviour
         }
     }
 
-    public void DisplayOverall()
+    public void DisplayOverall(InputAction.CallbackContext ctx)
     {
         display.ToggleUI();
     }

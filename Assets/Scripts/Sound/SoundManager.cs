@@ -4,12 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class SoundManager : NetworkBehaviour
 {
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 
-    public static SoundManager Instance { get; private set; }
+    public static SoundManager instance { get; private set; }
 
     [SerializeField] 
     private AudioClipRefsSO audioClipRefsSO;
@@ -67,10 +68,17 @@ public class SoundManager : NetworkBehaviour
 
     private void Awake()
     {
-        Instance = this;
-        mainCamera = Camera.main;
-        SFXPlayerSet();
-        UIVolumeSet();
+        if (instance != null)
+        {
+            Debug.LogWarning("More than one instance of InputManager found!");
+            Destroy(gameObject);
+            return;
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            instance = this;
+        }
     }
 
     private void Start()
@@ -78,6 +86,32 @@ public class SoundManager : NetworkBehaviour
         DontDestroyOnLoad(gameObject);
         //임시로 소리끄기
         audioMixer.SetFloat("Master", -80);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        mainCamera = Camera.main;
+        SFXPlayerSet();
+        UIVolumeSet();
+        // 씬 로드 시 실행할 코드
+    }
+
+    private void OnSceneUnloaded(Scene scene)
+    {
+        mainCamera = null;
+        // 씬 언로드 시 실행할 코드
     }
 
     void Update()

@@ -4,6 +4,7 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class Chat : NetworkBehaviour
 {
@@ -30,11 +31,17 @@ public class Chat : NetworkBehaviour
 
     void Start()
     {
-        inputManager = InputManager.instance;
-        inputManager.controls.Chat.Enter.performed += ctx => Enter();
         isChatOpened = false;
     }
-
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Chat.Enter.performed += Enter;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Chat.Enter.performed -= Enter;
+    }
     void Update()
     {
         if (input.isFocused && input.gameObject == EventSystem.current.currentSelectedGameObject)
@@ -78,7 +85,7 @@ public class Chat : NetworkBehaviour
         input.text = string.Empty;
     }
 
-    public void Enter()
+    public void Enter(InputAction.CallbackContext ctx)
     {
         if (input.gameObject != EventSystem.current.currentSelectedGameObject)
         {

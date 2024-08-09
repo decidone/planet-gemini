@@ -23,14 +23,14 @@ public class BuildInfoCheck : MonoBehaviour
     {
         mousePos = Input.mousePosition;
 
-        if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
+        if (RaycastUtility.IsPointerOverUI(mousePos))
         {
             if(buildItemInfoWin.gameObject.activeSelf)
                 buildItemInfoWin.gameObject.SetActive(false);
             return;
         }
 
-        Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pos = Camera.main.ScreenToWorldPoint(mousePos);
         int x = Mathf.FloorToInt(pos.x);
         int y = Mathf.FloorToInt(pos.y);
         if (gameManager.map.IsOnMap(x, y))

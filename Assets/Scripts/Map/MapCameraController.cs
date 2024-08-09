@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.U2D;
 
 // UTF-8 설정
@@ -50,12 +51,19 @@ public class MapCameraController : MonoBehaviour
     void Start()
     {
         gameManager = GameManager.instance;
-        inputManager = InputManager.instance;
         mainCamController = Camera.main.GetComponent<CameraController>();
-        inputManager.controls.State.ToggleMap.performed += ctx => ToggleMap();
-        inputManager.controls.MapCamera.LeftClick.performed += ctx => LeftClick();
     }
-
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.State.ToggleMap.performed += ToggleMap;
+        inputManager.controls.MapCamera.LeftClick.performed += LeftClick;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.State.ToggleMap.performed -= ToggleMap;
+        inputManager.controls.MapCamera.LeftClick.performed -= LeftClick;
+    }
     void FixedUpdate()
     {
         camPos.x = Mathf.Clamp(camPos.x + ((movement.x * dragSpeed) / zoomLevel), borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
@@ -102,6 +110,11 @@ public class MapCameraController : MonoBehaviour
         mapOffsetY = map.offsetY;
     }
 
+    void ToggleMap(InputAction.CallbackContext ctx)
+    {
+        ToggleMap();
+    }
+
     public void ToggleMap()
     {
         if (inputManager.mouseLeft || inputManager.mouseRight)
@@ -128,7 +141,7 @@ public class MapCameraController : MonoBehaviour
         GameManager.instance.onUIChangedCallback?.Invoke(CameraObj);
     }
 
-    void LeftClick()
+    void LeftClick(InputAction.CallbackContext ctx)
     {
         if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
             return;

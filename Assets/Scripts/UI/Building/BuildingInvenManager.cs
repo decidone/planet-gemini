@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // UTF-8 설정
@@ -44,12 +45,18 @@ public class BuildingInvenManager : MonoBehaviour
         gameManager = GameManager.instance;
         SetInven(buildingInventory, buildingInventoryUI);
         
-        inputManager = InputManager.instance;
-        inputManager.controls.Inventory.BuildingInven.performed += ctx => BuildingInfo();
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
     }
-
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.BuildingInven.performed += BuildingInfo;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Inventory.BuildingInven.performed -= BuildingInfo;
+    }
     public void SetInven(BuildingInven inven, GameObject invenUI)
     {
         buildingInventory = inven;
@@ -70,7 +77,7 @@ public class BuildingInvenManager : MonoBehaviour
         buildingInventory.Refresh();
     }
 
-    void BuildingInfo()
+    void BuildingInfo(InputAction.CallbackContext ctx)
     {
         if (focusedSlot != null)
         {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 // UTF-8 설정
 public class PlayerController : NetworkBehaviour
@@ -51,20 +52,26 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
-        inputManager = InputManager.instance;
         teleportUI = TeleportUI.instance;
 
         if (!IsOwner) { return; }
 
         GameManager.instance.SetPlayer(this.gameObject);
-        inputManager.controls.Player.Loot.performed += ctx => LootCheck();
-        inputManager.controls.Player.RightClick.performed += ctx => GetStrItem();
-        inputManager.controls.Player.Interaction.performed += ctx => Interact();
-        //inputManager.controls.Player.Market.performed += ctx => TeleportMarket();
-
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
     }
-
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Player.Loot.performed += LootCheck;
+        inputManager.controls.Player.RightClick.performed += GetStrItem;
+        inputManager.controls.Player.Interaction.performed += Interact;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Player.Loot.performed -= LootCheck;
+        inputManager.controls.Player.RightClick.performed -= GetStrItem;
+        inputManager.controls.Player.Interaction.performed -= Interact;
+    }
     void Update()
     {
         if (!IsOwner) { return; }
@@ -170,7 +177,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    void Interact()
+    void Interact(InputAction.CallbackContext ctx)
     {
         if (!gameManager.isPlayerInMarket)
         {
@@ -197,7 +204,7 @@ public class PlayerController : NetworkBehaviour
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.Teleport();
             this.transform.position = pos;
-            SoundManager.Instance.PlayBgmMapCheck();
+            SoundManager.instance.PlayBgmMapCheck();
             onTeleportedCallback?.Invoke(0);
 
             teleportUI.CloseUI();
@@ -220,7 +227,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    void LootCheck() { isLoot = !isLoot; }
+    void LootCheck(InputAction.CallbackContext ctx) { isLoot = !isLoot; }
 
     void Loot()
     {
@@ -274,7 +281,7 @@ public class PlayerController : NetworkBehaviour
         // 빈 콜백으로 둬도 클라이언트 아이템 복사버그가 해결 됨. 아마 컴포넌트를 리프레시 해주는 기능이 있는 듯
     }
 
-    void GetStrItem()
+    void GetStrItem(InputAction.CallbackContext ctx)
     {
         if (inputManager.ctrl)
         {

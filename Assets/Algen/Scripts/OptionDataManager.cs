@@ -21,11 +21,15 @@ public class OptionDataManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of DataManager found!");
+            Debug.LogWarning("More than one instance of OptionDataManager found!");
+            Destroy(gameObject);
             return;
         }
-
-        instance = this;
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            instance = this;
+        }
     }
     #endregion
 
@@ -35,7 +39,7 @@ public class OptionDataManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         settingsMenu = SettingsMenu.instance;
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
         WindowModeSetting();
         KeyBindingSetting();
         settingsMenu.GetSettingData(windowSize, inputActions);

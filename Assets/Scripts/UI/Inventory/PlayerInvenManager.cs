@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // UTF-8 설정
 public class PlayerInvenManager : InventoryManager
@@ -13,10 +14,21 @@ public class PlayerInvenManager : InventoryManager
         base.Start();
         inventory = GameManager.instance.inventory;
         SetInven(inventory, inventoryUI);
-        inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotShiftClick();
     }
-
-    void SlotShiftClick()
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.SlotLeftClick.performed += SlotLeftClick;
+        inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
+        inputManager.controls.Inventory.SlotLeftClick.performed += SlotShiftClick;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
+        inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
+        inputManager.controls.Inventory.SlotLeftClick.performed -= SlotShiftClick;
+    }
+    void SlotShiftClick(InputAction.CallbackContext ctx)
     {
         if (!sManager.isOpened) return;
         if (!inputManager.shift) return;

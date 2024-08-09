@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // UTF-8 설정
@@ -19,12 +20,21 @@ public class RecipeManager : InventoryManager
     {
         base.Start();
         itemDic = ItemList.instance.itemDic;
-
-        inputManager = InputManager.instance;
-        inputManager.controls.Inventory.Recipe.performed += ctx => SlotClick();
     }
-
-    void SlotClick()
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.SlotLeftClick.performed += SlotLeftClick;
+        inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
+        inputManager.controls.Inventory.Recipe.performed += SlotClick;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
+        inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
+        inputManager.controls.Inventory.Recipe.performed -= SlotClick;
+    }
+    void SlotClick(InputAction.CallbackContext ctx)
     {
         if (focusedSlot != null)
         {

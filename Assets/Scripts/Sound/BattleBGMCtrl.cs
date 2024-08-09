@@ -30,7 +30,7 @@ public class BattleBGMCtrl : MonoBehaviour
 
     void Start()
     {
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
     }
 
     public void BattleAddMonster(GameObject monster, bool isInHostMap)

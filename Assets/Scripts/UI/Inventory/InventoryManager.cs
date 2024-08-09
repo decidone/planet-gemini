@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // UTF-8 설정
@@ -35,14 +36,21 @@ public abstract class InventoryManager : MonoBehaviour
         splitCooldown = 0.12f;
         slotRightClickHold = false;
         gameManager = GameManager.instance;
-        inputManager = InputManager.instance;
-        inputManager.controls.Inventory.SlotLeftClick.performed += ctx => SlotLeftClick();
-        inputManager.controls.Inventory.SlotRightClickHold.performed += ctx => SlotRightClickHold();
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
-        soundManager = SoundManager.Instance;
+        soundManager = SoundManager.instance;
         preBuilding = PreBuilding.instance;
     }
-
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Inventory.SlotLeftClick.performed += SlotLeftClick;
+        inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
+        inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
+    }
     protected virtual void Update()
     {
         if (slotRightClickHold)
@@ -119,7 +127,7 @@ public abstract class InventoryManager : MonoBehaviour
         inventory.Refresh();
     }
 
-    protected void SlotLeftClick()
+    protected void SlotLeftClick(InputAction.CallbackContext ctx)
     {
         if (inventory == null) return;
         if (inputManager.shift) return;
@@ -184,7 +192,7 @@ public abstract class InventoryManager : MonoBehaviour
         }
     }
 
-    protected void SlotRightClickHold()
+    protected void SlotRightClickHold(InputAction.CallbackContext ctx)
     {
         slotRightClickHold = !slotRightClickHold;
         splitTimer = splitCooldown;

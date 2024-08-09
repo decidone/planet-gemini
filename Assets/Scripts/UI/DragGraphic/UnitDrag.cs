@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 // UTF-8 설정
 public class UnitDrag : DragFunc
@@ -45,14 +46,21 @@ public class UnitDrag : DragFunc
         unitLayer = LayerMask.NameToLayer("Unit");
         monsterLayer = LayerMask.NameToLayer("Monster");
         spawnerLayer = LayerMask.NameToLayer("Spawner");
-
-        inputManager = InputManager.instance;
-        inputManager.controls.Unit.Attack.performed += ctx => Attack();
-        inputManager.controls.Unit.Patrol.performed += ctx => Patrol();
-        inputManager.controls.Unit.Hold.performed += ctx => Hold();
     }
-
-    void Attack()
+    void OnEnable()
+    {
+        inputManager = InputManager.instance;
+        inputManager.controls.Unit.Attack.performed += Attack;
+        inputManager.controls.Unit.Patrol.performed += Patrol;
+        inputManager.controls.Unit.Hold.performed += Hold;
+    }
+    void OnDisable()
+    {
+        inputManager.controls.Unit.Attack.performed -= Attack;
+        inputManager.controls.Unit.Patrol.performed -= Patrol;
+        inputManager.controls.Unit.Hold.performed -= Hold;
+    }
+    void Attack(InputAction.CallbackContext ctx)
     {
         if (selectedObjects.Length > 0)
         {
@@ -61,7 +69,7 @@ public class UnitDrag : DragFunc
         }
     }
 
-    void Patrol()
+    void Patrol(InputAction.CallbackContext ctx)
     {
         if (selectedObjects.Length > 0)
         {
@@ -70,7 +78,7 @@ public class UnitDrag : DragFunc
         }
     }
 
-    void Hold()
+    void Hold(InputAction.CallbackContext ctx)
     {
         if (selectedObjects.Length > 0)
         {
