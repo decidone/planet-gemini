@@ -77,6 +77,7 @@ public class OptionCanvas : MonoBehaviour
     void QuitBtnFunc()
     {
         MainPanelSet(false);
+        SteamManager.instance.LeaveLobby();
         NetworkManager.Singleton.Shutdown();
         Destroy(NetworkManager.Singleton.gameObject);
         LoadingSceneManager.LoadScene("MainMenuScene");

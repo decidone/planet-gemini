@@ -7,18 +7,19 @@ using Steamworks.Data;
 public class LobbyDataEntry : MonoBehaviour
 {
     [SerializeField] Text lobbyNameText;
+    [SerializeField] Text lobbyUserCount;
     [SerializeField] Button joinBtn;
 
     public Lobby lobby;
-    public ulong lobbyId;
-    public string lobbyName;
     
     public void SetLobbyData(Lobby _lobby)
     {
         lobby = _lobby;
-        lobbyId = lobby.Id;
-        lobbyName = lobby.Owner.Name;
-        lobbyNameText.text = lobbyId.ToString();
+        if (lobby.GetData("owner") != string.Empty)
+            lobbyNameText.text = lobby.GetData("owner") + "' Game";
+        else
+            lobbyNameText.text = "failed to get the lobby data";
+        lobbyUserCount.text = lobby.MemberCount + " / " + lobby.MaxMembers;
 
         joinBtn.onClick.AddListener(() => SteamManager.instance.JoinLobby(lobby));
     }

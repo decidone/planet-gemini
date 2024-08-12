@@ -11,8 +11,7 @@ using UnityEngine.UI;
 
 public class SteamManager : MonoBehaviour
 {
-    [SerializeField] InputField LobbyIdInputField;
-    [SerializeField] Text LobbyId;
+    public string userName;
     //[SerializeField] GameObject MainMenu;
     //[SerializeField] GameObject InLobbyMenu;
 
@@ -24,6 +23,7 @@ public class SteamManager : MonoBehaviour
         if (instance != null)
         {
             Debug.LogWarning("More than one instance of SteamManager found!");
+            Destroy(gameObject);
             return;
         }
 
@@ -52,6 +52,7 @@ public class SteamManager : MonoBehaviour
         {
             lobby.SetPublic();
             lobby.SetJoinable(true);
+            lobby.SetData("owner", lobby.Owner.Name);
             NetworkManager.Singleton.StartHost();
         }
         else
@@ -63,9 +64,9 @@ public class SteamManager : MonoBehaviour
     private void LobbyEntered(Lobby lobby)
     {
         LobbySaver.instance.currentLobby = lobby;
-        LobbyId.text = lobby.Id.ToString();
+        userName = SteamClient.Name;
         Debug.Log("Entered");
-
+        
         if (!NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;
@@ -85,17 +86,31 @@ public class SteamManager : MonoBehaviour
         await SteamMatchmaking.CreateLobbyAsync(2);
     }
 
-    public async void JoinLobbyWithID()
-    {
-        ulong Id;
-        if (!ulong.TryParse(LobbyIdInputField.text, out Id))
-            return;
+    //public async void JoinLobbyWithID()
+    //{
+    //    ulong Id;
+    //    if (!ulong.TryParse(LobbyIdInputField.text, out Id))
+    //        return;
 
+    //    Lobby[] lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
+
+    //    foreach (Lobby lobby in lobbies)
+    //    {
+    //        if (lobby.Id == Id)
+    //        {
+    //            await lobby.Join();
+    //            return;
+    //        }
+    //    }
+    //}
+
+    public async void JoinLobby(Lobby _lobby)
+    {
         Lobby[] lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
 
         foreach (Lobby lobby in lobbies)
         {
-            if (lobby.Id == Id)
+            if (lobby.Id == _lobby.Id)
             {
                 await lobby.Join();
                 return;
@@ -103,23 +118,17 @@ public class SteamManager : MonoBehaviour
         }
     }
 
-    public async void JoinLobby(Lobby lobby)
-    {
-        await lobby.Join();
-    }
-
     public void LeaveLobby()
     {
         LobbySaver.instance.currentLobby?.Leave();
         LobbySaver.instance.currentLobby = null;
-
-        NetworkManager.Singleton.Shutdown();
     }
 
     public async void GetLobbiesList()
     {
         Lobby[] lobbies = await SteamMatchmaking.LobbyList.RequestAsync();
         LobbiesListManager.instance.OpenUI();
+        LobbiesListManager.instance.DestroyLobbies();
 
         if (lobbies != null)
         {

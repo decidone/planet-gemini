@@ -79,6 +79,7 @@ public class Chat : NetworkBehaviour
         string userInput = input.text;
         if (!string.IsNullOrWhiteSpace(userInput))
         {
+            userInput = SteamManager.instance.userName + ": " + input.text;
             SendMessageServerRpc(userInput.Trim());
         }
 

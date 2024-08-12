@@ -31,8 +31,6 @@ public class LobbiesListManager : MonoBehaviour
     public void OpenUI()
     {
         lobbiesList.SetActive(true);
-        if (listOfLobbies.Count > 0)
-            DestroyLobbies();
     }
 
     public void CloseUI()
@@ -52,6 +50,8 @@ public class LobbiesListManager : MonoBehaviour
 
     public void DestroyLobbies()
     {
+        if (listOfLobbies.Count == 0) return;
+
         foreach (GameObject lobbyItem in listOfLobbies)
         {
             Destroy(lobbyItem);
