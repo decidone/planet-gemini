@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d33f8d348d2fb141b3978439e97a7d1, type: 3}
   m_Name: SoundData
   m_EditorClassIdentifier: 
-  bgm:
+  mainSceneBgm:
+  - {fileID: 8300000, guid: d64628477c028f64681c4d1b692345c9, type: 3}
+  inGameBgm:
   - {fileID: 8300000, guid: cde089fb60c66154eb4d973d48349c79, type: 3}
   - {fileID: 8300000, guid: f0782b7ec55f18045b0bed5b62261ba5, type: 3}
   battleBgm:
