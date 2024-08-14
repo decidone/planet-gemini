@@ -44,7 +44,7 @@ public class Overall : NetworkBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of Overall found!");
+            Destroy(gameObject);
             return;
         }
 

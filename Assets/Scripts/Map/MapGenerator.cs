@@ -74,6 +74,14 @@ public class MapGenerator : MonoBehaviour
 
     void Awake()
     {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+
         gameSetting = MainGameSetting.instance;
 
         mapSizeData = mapSizeDatas[gameSetting.mapSizeIndex];
@@ -117,7 +125,6 @@ public class MapGenerator : MonoBehaviour
         }
         isCompositeDone = false;
         comp = lakeTilemap.GetComponent<CompositeCollider2D>();
-        instance = this;
     }
 
     void Start()

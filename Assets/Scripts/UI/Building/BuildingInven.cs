@@ -25,7 +25,7 @@ public class BuildingInven : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of building inven found!");
+            Destroy(gameObject);
             return;
         }
 

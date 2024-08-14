@@ -25,7 +25,7 @@ public class ItemDragManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of ItemDragManager found!");
+            Destroy(gameObject);
             return;
         }
         isDrag = false;

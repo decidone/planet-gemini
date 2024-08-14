@@ -16,7 +16,7 @@ public class TempScienceDb : NetworkBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of InfoWindow found!");
+            Destroy(gameObject);
             return;
         }
         instance = this;

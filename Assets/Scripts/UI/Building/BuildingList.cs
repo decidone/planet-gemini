@@ -15,7 +15,7 @@ public class BuildingList : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of buildingList found!");
+            Destroy(gameObject);
             return;
         }
 

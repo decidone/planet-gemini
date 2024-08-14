@@ -35,7 +35,6 @@ public class DragGraphic : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of DragGraphic found!");
             Destroy(gameObject);
             return;
         }

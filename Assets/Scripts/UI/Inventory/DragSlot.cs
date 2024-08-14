@@ -17,7 +17,7 @@ public class DragSlot : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of drag slot found!");
+            Destroy(gameObject);
             return;
         }
 

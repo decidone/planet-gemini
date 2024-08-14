@@ -11,7 +11,7 @@ public class ResourcesManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of ResourcesManager found!");
+            Destroy(gameObject);
             return;
         }
 

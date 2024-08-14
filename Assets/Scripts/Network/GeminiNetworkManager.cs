@@ -29,7 +29,7 @@ public class GeminiNetworkManager : NetworkBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of GeminiMultiplayer found!");
+            Destroy(gameObject);
             return;
         }
 

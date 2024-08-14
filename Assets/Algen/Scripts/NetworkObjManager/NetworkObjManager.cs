@@ -25,7 +25,7 @@ public class NetworkObjManager : NetworkBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of PreBuilding found!");
+            Destroy(gameObject);
             return;
         }
 

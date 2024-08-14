@@ -21,7 +21,6 @@ public class OptionDataManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of OptionDataManager found!");
             Destroy(gameObject);
             return;
         }

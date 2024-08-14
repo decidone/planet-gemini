@@ -26,7 +26,7 @@ public class ConfirmPanel : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of DataManager found!");
+            Destroy(gameObject);
             return;
         }
 

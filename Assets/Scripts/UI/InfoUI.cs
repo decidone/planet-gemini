@@ -12,7 +12,7 @@ public class InfoUI : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of InfoUI found!");
+            Destroy(gameObject);
             return;
         }
 

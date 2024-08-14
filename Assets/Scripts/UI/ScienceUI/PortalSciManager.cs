@@ -18,7 +18,7 @@ public class PortalSciManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of GameManager found!");
+            Destroy(gameObject);
             return;
         }
 

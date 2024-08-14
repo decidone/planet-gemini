@@ -15,7 +15,7 @@ public class NetPoolSetting : NetworkBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of recipeList found!");
+            Destroy(gameObject);
             return;
         }
         instance = this;

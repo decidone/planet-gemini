@@ -21,7 +21,7 @@ public class Chat : NetworkBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of Chat found!");
+            Destroy(gameObject);
             return;
         }
 

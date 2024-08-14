@@ -22,7 +22,6 @@ public class InputManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of InputManager found!");
             Destroy(gameObject);
             return;
         }

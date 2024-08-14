@@ -20,7 +20,7 @@ public class LobbiesListManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of LobbiesListManager found!");
+            Destroy(gameObject);
             return;
         }
 

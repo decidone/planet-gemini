@@ -20,7 +20,7 @@ public class ItemList : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of itemList found!");
+            Destroy(gameObject);
             return;
         }
 

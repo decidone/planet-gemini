@@ -20,7 +20,7 @@ public class WarningWindow : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of ItemDragManager found!");
+            Destroy(gameObject);
             return;
         }
         instance = this;

@@ -23,7 +23,7 @@ public class QuestManager : MonoBehaviour
     {
         if (instance != null)
         {
-            Debug.LogWarning("More than one instance of QuestManager found!");
+            Destroy(gameObject);
             return;
         }
 
