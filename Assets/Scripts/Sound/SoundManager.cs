@@ -74,22 +74,22 @@ public class SoundManager : NetworkBehaviour
             Destroy(gameObject);
             return;
         }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
-            instance = this;
-        }
+        DontDestroyOnLoad(gameObject);
+        instance = this;
     }
 
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
+
         //임시로 소리끄기
         audioMixer.SetFloat("Master", -80);
     }
 
     private void OnEnable()
     {
+        SFXPlayerSet();
+        UIVolumeSet();
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
@@ -103,8 +103,17 @@ public class SoundManager : NetworkBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         mainCamera = Camera.main;
-        SFXPlayerSet();
-        UIVolumeSet();
+        switch (scene.buildIndex)
+        {
+            case 0:
+                bgmPlayer.clip = audioClipRefsSO.mainSceneBgm[Random.Range(0, audioClipRefsSO.mainSceneBgm.Length)];
+                bgmPlayer.Play();
+                break;
+            case 1:
+                bgmPlayer.clip = audioClipRefsSO.inGameBgm[Random.Range(0, audioClipRefsSO.inGameBgm.Length)];
+                bgmPlayer.Play();
+                break;
+        }
         // 씬 로드 시 실행할 코드
     }
 
@@ -155,7 +164,7 @@ public class SoundManager : NetworkBehaviour
     public void SetMasterVolume()
     {
         float sound = musicMasterSlider.value;
-        if (musicMasterToggle.isOn)
+        if (!musicMasterToggle.isOn)
         {
             if (sound == -40f)
                 audioMixer.SetFloat("Master", -80);
@@ -166,7 +175,7 @@ public class SoundManager : NetworkBehaviour
 
     public void SetMasterMute()
     {
-        if (musicMasterToggle.isOn)
+        if (!musicMasterToggle.isOn)
         {
             float sound = musicMasterSlider.value;
             audioMixer.SetFloat("Master", sound);
@@ -180,7 +189,7 @@ public class SoundManager : NetworkBehaviour
     public void SetBGMVolume()
     {
         float sound = musicBGMSlider.value;
-        if (musicBGMToggle.isOn)
+        if (!musicBGMToggle.isOn)
         {
             if (sound == -40f)
                 audioMixer.SetFloat("BGM", -80);
@@ -191,7 +200,7 @@ public class SoundManager : NetworkBehaviour
 
     public void SetBGMMute()
     {
-        if (musicBGMToggle.isOn)
+        if (!musicBGMToggle.isOn)
         {
             float sound = musicBGMSlider.value;
             audioMixer.SetFloat("BGM", sound);
@@ -205,7 +214,7 @@ public class SoundManager : NetworkBehaviour
     public void SetSFXVolume()
     {
         float sound = musicSFXSlider.value;
-        if (musicSFXToggle.isOn)
+        if (!musicSFXToggle.isOn)
         {
             if (sound == -40f)
                 audioMixer.SetFloat("SFX", -80);
@@ -216,7 +225,7 @@ public class SoundManager : NetworkBehaviour
 
     public void SetSFXMute()
     {
-        if (musicSFXToggle.isOn)
+        if (!musicSFXToggle.isOn)
         {
             float sound = musicSFXSlider.value;
             audioMixer.SetFloat("SFX", sound);
@@ -231,6 +240,7 @@ public class SoundManager : NetworkBehaviour
 
     void SFXPlayerSet()
     {
+        Debug.Log("SFXPlayerSet");
         BgmPlayerSet();
         StructureSFXPlayerSet();
         UnitSFXPlayerSet();
@@ -255,7 +265,7 @@ public class SoundManager : NetworkBehaviour
     void BgmPlayerSet()
     {
         bgmPlayer = PlayerBaseSet("BGM");
-        bgmPlayer.clip = audioClipRefsSO.bgm[Random.Range(0, audioClipRefsSO.bgm.Length)];
+        bgmPlayer.clip = audioClipRefsSO.inGameBgm[Random.Range(0, audioClipRefsSO.inGameBgm.Length)];
     }
 
     void StructureSFXPlayerSet()
@@ -313,7 +323,7 @@ public class SoundManager : NetworkBehaviour
         }
         else
         {
-            bgmPlayer.clip = audioClipRefsSO.bgm[Random.Range(0, audioClipRefsSO.bgm.Length)];
+            bgmPlayer.clip = audioClipRefsSO.inGameBgm[Random.Range(0, audioClipRefsSO.inGameBgm.Length)];
         }
 
         bgmPlayer.Play();
@@ -471,14 +481,17 @@ public class SoundManager : NetworkBehaviour
     {
         audioMixer.GetFloat("Master", out float masterVolume);
         PlayerPrefs.SetFloat("MasterVolume", masterVolume);
+        PlayerPrefs.SetFloat("TempMasterValume", musicMasterSlider.value);
         PlayerPrefs.SetInt("MasterMute", musicMasterToggle.isOn ? 0 : 1);
 
         audioMixer.GetFloat("BGM", out float bgmVolume);
         PlayerPrefs.SetFloat("BGMVolume", bgmVolume);
+        PlayerPrefs.SetFloat("TempBGMValume", musicBGMSlider.value);
         PlayerPrefs.SetInt("BGMMute", musicBGMToggle.isOn ? 0 : 1);
 
         audioMixer.GetFloat("SFX", out float sfxVolume);
         PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
+        PlayerPrefs.SetFloat("tempSFXValume", musicSFXSlider.value);
         PlayerPrefs.SetInt("SFXMute", musicSFXToggle.isOn ? 0 : 1);
 
         PlayerPrefs.Save();
@@ -488,26 +501,41 @@ public class SoundManager : NetworkBehaviour
     {
         float masterVolume = PlayerPrefs.GetFloat("MasterVolume");
         audioMixer.SetFloat("Master", masterVolume);
-        if(PlayerPrefs.GetInt("MasterMute", 0) == 0)        
+        if(PlayerPrefs.GetInt("MasterMute", 0) == 0)
+        {
             musicMasterToggle.isOn = true;
+            musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterValume", 0);
+        }
         else
+        {
             musicMasterToggle.isOn = false;
-        musicMasterSlider.value = masterVolume;
+            musicMasterSlider.value = masterVolume;
+        }
 
         float bgmVolume = PlayerPrefs.GetFloat("BGMVolume");
         audioMixer.SetFloat("BGM", bgmVolume);
         if (PlayerPrefs.GetInt("BGMMute", 0) == 0)
+        {
             musicBGMToggle.isOn = true;
+            musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMValume", 0);
+        }
         else
+        {
             musicBGMToggle.isOn = false;
-        musicBGMSlider.value = bgmVolume;
+            musicBGMSlider.value = bgmVolume;
+        }
 
         float sfxVolume = PlayerPrefs.GetFloat("SFXVolume");
         audioMixer.SetFloat("SFX", sfxVolume);
         if (PlayerPrefs.GetInt("SFXMute", 0) == 0)
+        {
             musicSFXToggle.isOn = true;
+            musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXValume", 0);
+        }
         else
+        {
             musicSFXToggle.isOn = false;
-        musicSFXSlider.value = sfxVolume;
+            musicSFXSlider.value = sfxVolume;
+        }
     }
 }

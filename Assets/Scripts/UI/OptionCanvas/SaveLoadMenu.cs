@@ -15,6 +15,10 @@ public class SaveLoadMenu : MonoBehaviour
     [SerializeField]
     GameObject saveLoadPanel;
     [SerializeField]
+    RectTransform saveLoadPanelsRectTr;
+    [SerializeField]
+    GameObject autoSavePanel;
+    [SerializeField]
     SaveLoadBtn autoSaveBtn;
     [SerializeField]
     GameObject content;
@@ -35,7 +39,6 @@ public class SaveLoadMenu : MonoBehaviour
             Debug.LogWarning("More than one instance of DataManager found!");
             return;
         }
-
         instance = this;
     }
     #endregion
@@ -84,9 +87,20 @@ public class SaveLoadMenu : MonoBehaviour
     public void MenuOpen(bool state) // true : save 버튼, false : load 버튼
     {
         if (state)
+        {
             optionName.text = "Save";
+            autoSavePanel.SetActive(false);
+            saveLoadPanelsRectTr.anchoredPosition = new Vector2(0, 0f);
+            saveLoadPanelsRectTr.sizeDelta = new Vector2(870, 900);
+        }
         else
+        {
             optionName.text = "Load";
+            autoSavePanel.SetActive(true);
+            saveLoadPanelsRectTr.anchoredPosition = new Vector2(0, -60);
+            saveLoadPanelsRectTr.sizeDelta = new Vector2(870, 780);
+        }
+
         saveLoadPanel.SetActive(true);
         foreach (SaveLoadBtn btn in buttons)
         {
@@ -94,6 +108,8 @@ public class SaveLoadMenu : MonoBehaviour
         }
         if(GameManager.instance != null)
             GameManager.instance.onUIChangedCallback?.Invoke(saveLoadPanel);
+        else
+            MainManager.instance.OpenedUISet(saveLoadPanel);
     }
 
     public void MenuClose()
@@ -101,6 +117,8 @@ public class SaveLoadMenu : MonoBehaviour
         saveLoadPanel.SetActive(false);
         if (GameManager.instance != null)
             GameManager.instance.onUIChangedCallback?.Invoke(saveLoadPanel);
+        else
+            MainManager.instance.ClosedUISet();
     }
 
     public (bool, string) GetJsonFromFile(int saveSlotNum)

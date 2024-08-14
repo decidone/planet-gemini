@@ -15,9 +15,9 @@ public class LobbySaver : MonoBehaviour
         if (instance != null)
         {
             Debug.LogWarning("More than one instance of LobbySaver found!");
+            Destroy(gameObject);
             return;
         }
-
         instance = this;
         DontDestroyOnLoad(this.gameObject);
     }

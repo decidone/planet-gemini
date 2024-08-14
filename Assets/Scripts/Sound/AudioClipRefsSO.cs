@@ -5,7 +5,8 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class AudioClipRefsSO : ScriptableObject
 {
-    public AudioClip[] bgm;
+    public AudioClip[] mainSceneBgm;
+    public AudioClip[] inGameBgm;
     public AudioClip[] battleBgm;
     public AudioClip[] waveBgm;
     public AudioClip[] structureSfx;

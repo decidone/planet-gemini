@@ -15,6 +15,9 @@ public class UpgradeRemoveBtn : MonoBehaviour
 
     DragGraphic dragGraphic;
 
+    [SerializeField]
+    Sprite[] images;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -62,12 +65,12 @@ public class UpgradeRemoveBtn : MonoBehaviour
     void SetColor(Button button)
     {
         Image img = button.GetComponent<Image>();
-        img.color = Color.blue;
+        img.sprite = images[1];
     }
 
     void ReSetColor(Button button)
     {
         Image img = button.GetComponent<Image>();
-        img.color = Color.white;
+        img.sprite = images[0];
     }
 }

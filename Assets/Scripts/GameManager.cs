@@ -446,7 +446,6 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log("Escape");
             optionCanvas.MainPanelSet(!optionCanvas.mainPanel.activeSelf);
         }
     }
@@ -511,7 +510,12 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void Inven(InputAction.CallbackContext ctx)
+    void Inven(InputAction.CallbackContext ctx)
+    {
+        Inven();
+    }
+
+    public void Inven()
     {
         if (!pInvenManager.inventoryUI.activeSelf)
         {
@@ -535,7 +539,12 @@ public class GameManager : NetworkBehaviour
     //    }
     //}
 
-    public void ScienceTree(InputAction.CallbackContext ctx)
+    void ScienceTree(InputAction.CallbackContext ctx)
+    {
+        ScienceTree();
+    }
+
+    public void ScienceTree()
     {
         if (!sTreeManager.scienceTreeUI.activeSelf)
         {

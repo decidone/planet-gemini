@@ -31,11 +31,8 @@ public class OptionCanvas : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
-            instance = this;
-        }
+        DontDestroyOnLoad(gameObject);
+        instance = this;
     }
     #endregion
 

@@ -33,11 +33,13 @@ public class LobbiesListManager : MonoBehaviour
         lobbiesList.SetActive(true);
         if (listOfLobbies.Count > 0)
             DestroyLobbies();
+        MainManager.instance.OpenedUISet(gameObject);
     }
 
     public void CloseUI()
     {
         lobbiesList.SetActive(false);
+        MainManager.instance.ClosedUISet();
     }
 
     public void DisplayLobby(Lobby lobby)

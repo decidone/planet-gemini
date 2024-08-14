@@ -18,13 +18,13 @@ public class MainPanelsManager : MonoBehaviour
     [SerializeField]
     Button backBtn;
 
-    [SerializeField]
     SaveLoadMenu saveLoadPanel;
 
     // Start is called before the first frame update
     void Start()
     {
         gameSetting = MainGameSetting.instance;
+        saveLoadPanel = SaveLoadMenu.instance;
         gameStartBtn.onClick.AddListener(() => GameStartBtnFunc());
         backBtn.onClick.AddListener(() => NewGamePanelSet(false));
         mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
@@ -33,6 +33,10 @@ public class MainPanelsManager : MonoBehaviour
     public void NewGamePanelSet(bool state)
     {
         newGamePanel.SetActive(state);
+        if (state)
+            MainManager.instance.OpenedUISet(gameObject);
+        else
+            MainManager.instance.ClosedUISet();
     }
 
     void GameStartBtnFunc()

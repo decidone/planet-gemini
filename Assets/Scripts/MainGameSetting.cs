@@ -16,11 +16,11 @@ public class MainGameSetting : MonoBehaviour
         if (instance != null)
         {
             Debug.LogWarning("More than one instance of recipeList found!");
+            Destroy(gameObject);
             return;
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-
     }
     #endregion
 
