@@ -31,11 +31,13 @@ public class LobbiesListManager : MonoBehaviour
     public void OpenUI()
     {
         lobbiesList.SetActive(true);
+        MainManager.instance.OpenedUISet(gameObject);
     }
 
     public void CloseUI()
     {
         lobbiesList.SetActive(false);
+        MainManager.instance.ClosedUISet();
     }
 
     public void DisplayLobby(Lobby lobby)

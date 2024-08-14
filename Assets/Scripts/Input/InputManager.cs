@@ -25,12 +25,10 @@ public class InputManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
-            instance = this;
-            controls = new InputControls();
-        }
+
+        DontDestroyOnLoad(gameObject);
+        instance = this;
+        controls = new InputControls();
     }
     #endregion
 

@@ -23,7 +23,6 @@ public class BattleBGMCtrl : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
     }
     #endregion

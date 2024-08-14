@@ -68,7 +68,7 @@ public class KeyBindingsBtn : MonoBehaviour
                     Debug.Log("Control is already bound to another action.");
                     rebindingOperation.Cancel();
                     inputAction.Enable();
-                    ConfirmPanel.instance.UIClose();
+                    BtnFunc();
                 }
             })
             .OnMatchWaitForAnother(0.1f)

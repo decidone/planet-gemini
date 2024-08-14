@@ -17,7 +17,6 @@ public class LobbySaver : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
         DontDestroyOnLoad(this.gameObject);
     }

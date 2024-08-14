@@ -39,7 +39,6 @@ public class SettingsMenu : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
     }
     #endregion
@@ -57,6 +56,8 @@ public class SettingsMenu : MonoBehaviour
 
         if (GameManager.instance != null)
             GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
+        else
+            MainManager.instance.OpenedUISet(settingsPanel);
     }
 
     public void MenuClose()
@@ -65,6 +66,8 @@ public class SettingsMenu : MonoBehaviour
         settingsPanel.SetActive(false);
         if (GameManager.instance != null)
             GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
+        else
+            MainManager.instance.ClosedUISet();
     }
 
     #region WindowMode

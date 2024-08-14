@@ -20,7 +20,6 @@ public class MainGameSetting : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-
     }
     #endregion
 

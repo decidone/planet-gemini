@@ -25,7 +25,6 @@ public class SteamManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
         DontDestroyOnLoad(this.gameObject);
     }

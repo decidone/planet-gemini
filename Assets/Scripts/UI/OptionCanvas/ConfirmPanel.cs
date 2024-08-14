@@ -29,7 +29,6 @@ public class ConfirmPanel : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
     }
     #endregion
@@ -65,7 +64,7 @@ public class ConfirmPanel : MonoBehaviour
         OkBtn.gameObject.SetActive(false);
         CanelBtn.gameObject.SetActive(false);
         confirmPanel.SetActive(true);
-        contentText.text = "Waiting For Input";
+        contentText.text = "Waiting For Input" + System.Environment.NewLine + "Press ESC to cancel";
     }
 
     void OkBtnFunc()

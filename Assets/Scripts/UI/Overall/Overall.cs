@@ -88,6 +88,11 @@ public class Overall : NetworkBehaviour
 
     public void DisplayOverall(InputAction.CallbackContext ctx)
     {
+        DisplayOverall();
+    }
+
+    public void DisplayOverall()
+    {
         display.ToggleUI();
     }
 
