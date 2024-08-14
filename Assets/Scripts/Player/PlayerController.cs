@@ -23,8 +23,6 @@ public class PlayerController : NetworkBehaviour
     ShopInteract nearShop;
     TeleportUI teleportUI;
     bool isLoot;
-    bool isTeleportable;
-    bool isMarketTeleportable;
 
     [Space]
     [Header ("Movement")]
@@ -46,8 +44,6 @@ public class PlayerController : NetworkBehaviour
         circleColl = GetComponent<CircleCollider2D>();
         nearShop = null;
         isLoot = false;
-        isTeleportable = false;
-        isMarketTeleportable = false;
     }
 
     void Start()
@@ -59,6 +55,7 @@ public class PlayerController : NetworkBehaviour
         GameManager.instance.SetPlayer(this.gameObject);
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -66,12 +63,14 @@ public class PlayerController : NetworkBehaviour
         inputManager.controls.Player.RightClick.performed += GetStrItem;
         inputManager.controls.Player.Interaction.performed += Interact;
     }
+
     void OnDisable()
     {
         inputManager.controls.Player.Loot.performed -= LootCheck;
         inputManager.controls.Player.RightClick.performed -= GetStrItem;
         inputManager.controls.Player.Interaction.performed -= Interact;
     }
+
     void Update()
     {
         if (!IsOwner) { return; }
@@ -111,8 +110,6 @@ public class PlayerController : NetworkBehaviour
 
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
-        Portal portal = collision.GetComponent<Portal>();
-        MarketPortal marketPortal = collision.GetComponent<MarketPortal>();
         Interactable interactable = collision.GetComponent<Interactable>();
         ShopInteract shop = collision.GetComponent<ShopInteract>();
 
@@ -123,15 +120,6 @@ public class PlayerController : NetworkBehaviour
             items.Add(collision.gameObject);
         else if (belt && !beltList.Contains(collision.gameObject))
             beltList.Add(collision.gameObject);
-
-        if (portal)
-        {
-            isTeleportable = true;
-            isMarketTeleportable = true;
-        }
-
-        if (marketPortal)
-            isMarketTeleportable = true;
 
         if (shop && !GameManager.instance.isShopOpened)
         {
@@ -160,14 +148,8 @@ public class PlayerController : NetworkBehaviour
         else if (belt && beltList.Contains(collision.gameObject))
             beltList.Remove(collision.gameObject);
 
-        if (portal)
-        {
-            isTeleportable = false;
-            isMarketTeleportable = false;
-        }
-
-        if (marketPortal)
-            isMarketTeleportable = false;
+        if (portal || marketPortal)
+            teleportUI.CloseUI();
 
         if (shop && GameManager.instance.isShopOpened)
         {
@@ -181,7 +163,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!gameManager.isPlayerInMarket)
         {
-            if (isTeleportable && GameManager.instance.isMultiPlay)
+            if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
             {
                 teleportUI.SetBtnDefault();
                 teleportUI.leftBtn.onClick.AddListener(TeleportWorld);
@@ -192,13 +174,16 @@ public class PlayerController : NetworkBehaviour
         }
         else
         {
-            TeleportMarket();
+            if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
+            {
+                TeleportMarket();
+            }
         }
     }
 
     void TeleportWorld()
     {
-        if (isTeleportable && GameManager.instance.isMultiPlay)
+        if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
         {
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();
@@ -214,7 +199,7 @@ public class PlayerController : NetworkBehaviour
 
     void TeleportMarket()
     {
-        if (isMarketTeleportable)
+        if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
         {
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();

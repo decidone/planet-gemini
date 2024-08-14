@@ -122026,6 +122026,10 @@ PrefabInstance:
       value: MarketPortal
       objectReference: {fileID: 0}
     - target: {fileID: 721077935684597043, guid: be48055cc222f324fa957fa6d9289b72, type: 3}
+      propertyPath: m_Layer
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 721077935684597043, guid: be48055cc222f324fa957fa6d9289b72, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
