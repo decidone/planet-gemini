@@ -1,33 +1,33 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TestingNetcodeUI : NetworkBehaviour
+public class TestingNetcodeUI : MonoBehaviour
 {
     [SerializeField]
     private Button startHostButton;
     [SerializeField]
     private Button startClientButton;
 
-    void Awake()
+    void Start()
     {
         startHostButton.onClick.AddListener(() =>
         {
             Debug.Log("Host");
-            //NetworkManager.Singleton.StartHost();
-            GameManager.instance.HostConnected();
-            MapGenerator.instance.SpawnerAreaMapSet();
-            if (!MainGameSetting.instance.isNewGame)
-                DataManager.instance.Load(MainGameSetting.instance.loadDataIndex);
+            MainGameSetting.instance.NewGameState(true);
+            NetworkManager.Singleton.StartHost();
+            NetworkManager.Singleton.SceneManager.LoadScene("MergeScene_09", 0);
             Hide();
         });
         startClientButton.onClick.AddListener(() =>
         {
             Debug.Log("Client");
-            //NetworkManager.Singleton.StartClient();
-            GameManager.instance.ClientConnected();
+            NetworkManager.Singleton.StartClient();
+            NetworkManager.Singleton.SceneManager.LoadScene("MergeScene_09", 0);
             Hide();
         });
     }

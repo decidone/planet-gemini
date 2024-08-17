@@ -569,4 +569,12 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
         return data;
     }
+
+    public void SetCorruption()
+    {
+        MonsterSpawner[] spawners = GetComponentsInChildren<MonsterSpawner>();
+        Debug.Log("Client Spawner Set Count: " + spawners.Length);
+        for (int i = 0; i < spawners.Length; i++)
+            spawners[i].SetCorruption();
+    }
 }

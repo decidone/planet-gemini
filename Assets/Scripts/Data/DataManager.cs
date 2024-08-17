@@ -435,6 +435,7 @@ public class DataManager : MonoBehaviour
         NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
         if (!networkObject.IsSpawned) networkObject.Spawn(true);
         spawnerObj.transform.position = Vector3Extensions.ToVector3(spawnerSaveData.spawnerPos);
+        MapGenerator.instance.SetCorruption(spawnerObj.transform.position, spawnerSaveData.level);
 
         return spawnerObj;
     }

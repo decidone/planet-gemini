@@ -184,7 +184,7 @@ public class SpawnerSetManager : NetworkBehaviour
                 if(!networkObject.IsSpawned) networkObject.Spawn(true);
 
                 spawnerObj.transform.position = randomPoints[index];
-                MapGenerator.instance.SetCorruption(map, randomPoints[index], 1);
+                MapGenerator.instance.SetCorruption(map, randomPoints[index], levelData.areaLevel);
                 //MapGenerator.instance.ClearCorruption(map, randomPoints[index], 1);
 
                 Cell cellData = map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y);

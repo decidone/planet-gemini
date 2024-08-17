@@ -18,6 +18,8 @@ public class MonsterSpawner : NetworkBehaviour
     List<GameObject> strongMonster;
     GameObject guardian;
 
+    [SerializeField] SpriteRenderer icon;
+
     // 최대 소환 개수 정보
     int maxWeakSpawn;
     int maxNormalSpawn;
@@ -503,6 +505,9 @@ public class MonsterSpawner : NetworkBehaviour
         GameObject InfoObj = GetComponentInChildren<InfoInteract>().gameObject;
         InfoObj.SetActive(false);
 
+        MapGenerator.instance.ClearCorruption(transform.position, areaLevel);
+        icon.enabled = false;
+
         if (!IsServer)
             return;
 
@@ -718,5 +723,11 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         return data;
+    }
+
+    public void SetCorruption()
+    {
+        if (!dieCheck)
+            MapGenerator.instance.SetCorruption(transform.position, areaLevel);
     }
 }

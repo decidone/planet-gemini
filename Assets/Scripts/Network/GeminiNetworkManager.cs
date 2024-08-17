@@ -219,5 +219,6 @@ public class GeminiNetworkManager : NetworkBehaviour
             return;
 
         DataManager.instance.Load(json);
+        MonsterSpawnerManager.instance.SetCorruption();
     }
 }

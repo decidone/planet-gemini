@@ -863,6 +863,19 @@ public class MapGenerator : MonoBehaviour
         gg.collision.mask |= 1 << LayerMask.NameToLayer("PortalUnit");
     }
 
+    public void SetCorruption(Vector3 spawnerPos, int level)
+    {
+        Map map;
+        Vector2 vector2Pos = new Vector2(spawnerPos.x, spawnerPos.y);
+
+        if (spawnerPos.y > height)
+            map = clientMap;
+        else
+            map = hostMap;
+
+        SetCorruption(map, vector2Pos, corruptionRadius, level);
+    }
+
     public void SetCorruption(Map map, Vector2 spawnerPos, int level)
     {
         SetCorruption(map, spawnerPos, corruptionRadius, level);
@@ -873,6 +886,8 @@ public class MapGenerator : MonoBehaviour
         int offsetY = 0;
         if (map == clientMap)
             offsetY = height + clientMapOffsetY;
+        if (spawnerPos.y > height)
+            spawnerPos.y -= offsetY;
 
         Biome biome;
         switch (level)
@@ -936,29 +951,32 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    public void ClearCorruption(Vector3 spawnerPos, int level)
+    {
+        Map map;
+        Vector2 vector2Pos = new Vector2(spawnerPos.x, spawnerPos.y);
+
+        if (spawnerPos.y > height)
+            map = clientMap;
+        else
+            map = hostMap;
+
+        StartCoroutine(ClearCorruptionCoroutine(map, vector2Pos, corruptionRadius, level));
+    }
+
     public void ClearCorruption(Map map, Vector2 spawnerPos, int level)
     {
         StartCoroutine(ClearCorruptionCoroutine(map, spawnerPos, corruptionRadius, level));
     }
 
-    void ClearCorruptionTiles(Map map, Vector2 spawnerPos, float radius)
-    {
-        for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)
-        {
-            for (int y = Mathf.FloorToInt(spawnerPos.y - radius); y <= (spawnerPos.y + radius); y++)
-            {
-                if (map.IsOnMapData(x, y))
-                {
-                    map.mapData[x][y].isCorrupted = false;
-                    corruptionTilemap.SetTile(new Vector3Int(x, y , 0), null);
-                }
-            }
-        }
-    }
-
     IEnumerator ClearCorruptionCoroutine(Map map, Vector2 spawnerPos, float _radius, int level)
     {
         float radius = _radius;
+        int offsetY = 0;
+        if (map == clientMap)
+            offsetY = height + clientMapOffsetY;
+        if (spawnerPos.y > height)
+            spawnerPos.y -= offsetY;
 
         while (true)
         {
@@ -972,6 +990,25 @@ public class MapGenerator : MonoBehaviour
                 yield break;
 
             SetCorruption(map, spawnerPos, radius, level);
+        }
+    }
+
+    void ClearCorruptionTiles(Map map, Vector2 spawnerPos, float radius)
+    {
+        int offsetY = 0;
+        if (map == clientMap)
+            offsetY = height + clientMapOffsetY;
+
+        for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)
+        {
+            for (int y = Mathf.FloorToInt(spawnerPos.y - radius); y <= (spawnerPos.y + radius); y++)
+            {
+                if (map.IsOnMapData(x, y))
+                {
+                    map.mapData[x][y].isCorrupted = false;
+                    corruptionTilemap.SetTile(new Vector3Int(x, (y + offsetY) , 0), null);
+                }
+            }
         }
     }
 
