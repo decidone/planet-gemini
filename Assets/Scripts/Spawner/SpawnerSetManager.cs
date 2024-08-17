@@ -25,7 +25,9 @@ public class SpawnerSetManager : NetworkBehaviour
     GameObject spawnerGroup;
 
     public AreaLevelData[] arealevelData;
-
+    public int[] basicSpawnerCount = new int[4] { 8, 16, 24, 32 }; //  구역별 기본 스포너 개수
+    public int[] spawnCount;
+    int[] subSpawnerCount;
     Vector3 basePos;
 
     [SerializeField]
@@ -120,6 +122,15 @@ public class SpawnerSetManager : NetworkBehaviour
         int xIndex = 0;
         int yIndex = 0;
 
+        MapSizeData mapSizeData = MapGenerator.instance.mapSizeData;
+        subSpawnerCount = new int[mapSizeData.CountOfSpawnersByLevel.Length];
+        spawnCount = (int[])basicSpawnerCount.Clone();
+
+        for (int i = 0; i < subSpawnerCount.Length; i++) 
+        {
+            subSpawnerCount[i] = basicSpawnerCount[i] - mapSizeData.CountOfSpawnersByLevel[i];
+        }
+
         foreach (var data in areaPosLevel)
         {
             if(basePos == (Vector3)data.Key)
@@ -136,6 +147,17 @@ public class SpawnerSetManager : NetworkBehaviour
 
             Vector2 centerPos = data.Key;
             int areaLevel = data.Value;
+
+            if (subSpawnerCount[areaLevel - 1] > 0)
+            {
+                int random = Random.Range(0, spawnCount[areaLevel - 1]);
+                spawnCount[areaLevel - 1] -= 1;
+                if (random < subSpawnerCount[areaLevel - 1])
+                {
+                    subSpawnerCount[areaLevel - 1] -= 1;
+                    continue;
+                }
+            }
 
             AreaLevelData levelData = arealevelData[areaLevel - 1];
 

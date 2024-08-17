@@ -6,6 +6,7 @@ public class MainGameSetting : MonoBehaviour
 {
     public bool isNewGame;
     public int mapSizeIndex;
+    public int difficultylevel;
     public int loadDataIndex;
 
     #region Singleton
@@ -31,6 +32,11 @@ public class MainGameSetting : MonoBehaviour
     public void MapSizeSet(int sizeIndex)
     {
         mapSizeIndex = sizeIndex;
+    }
+
+    public void DifficultylevelSet(int level)
+    {
+        difficultylevel = level;
     }
 
     public void LoadDataIndexSet(int index)

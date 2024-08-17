@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97d53f0bd4d071e409ca122e15f539c6, type: 3}
-  m_Name: BigMap
+  m_Name: BigMapDifficultyLevel1
   m_EditorClassIdentifier: 
   mapSize: 900
+  countOfSpawnersByLevel: 04000000080000000c00000010000000
   mapSplitCount: 9

@@ -132,7 +132,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public void MatrixSet(int spCount, GameObject[,] map1Matrix, GameObject[,] map2Matrix, bool isHostMap)
     {
         splitCount = spCount;
-        Debug.Log(splitCount);
         if (isHostMap)
         {
             spawnerMap1Matrix = new GameObject[splitCount, splitCount];

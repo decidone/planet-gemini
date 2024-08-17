@@ -18,13 +18,17 @@ public class KeyBindingsBtn : MonoBehaviour
     public InputAction inputAction;
     [SerializeField]
     private Text bindingDisplayNameText = null;
+    bool keybindingFalse;
 
     private InputActionRebindingExtensions.RebindingOperation rebindingOperation;
 
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Button>().onClick.AddListener(() => BtnFunc());
+        if (setKey != "F")
+            GetComponent<Button>().onClick.AddListener(() => BtnFunc());
+        else
+            GetComponent<Image>().color = Color.gray;
     }
 
     private void SaveRebindings()
@@ -54,8 +58,10 @@ public class KeyBindingsBtn : MonoBehaviour
     {
         Debug.Log("Starting rebinding operation...");
         inputAction.Disable();
-        
+
         ConfirmPanel.instance.KeyBindingCallConfirm();
+        if (keybindingFalse)
+            ConfirmPanel.instance.KeyBindingDuplication();
 
         rebindingOperation = inputAction.PerformInteractiveRebinding()
             .WithControlsExcluding("Mouse")
@@ -68,6 +74,7 @@ public class KeyBindingsBtn : MonoBehaviour
                     Debug.Log("Control is already bound to another action.");
                     rebindingOperation.Cancel();
                     inputAction.Enable();
+                    keybindingFalse = true;
                     BtnFunc();
                 }
             })
@@ -84,6 +91,8 @@ public class KeyBindingsBtn : MonoBehaviour
                 ConfirmPanel.instance.UIClose();
             })
             .Start();
+
+        keybindingFalse = false;
     }
 
     private bool IsControlAlreadyBound(InputControl control, InputAction action, int bindingIndex)

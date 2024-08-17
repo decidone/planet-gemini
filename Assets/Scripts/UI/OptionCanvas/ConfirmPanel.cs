@@ -59,6 +59,11 @@ public class ConfirmPanel : MonoBehaviour
             GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
     }
 
+    public void KeyBindingDuplication()
+    {
+        contentText.text = "The key is already assigned" + System.Environment.NewLine + "Press ESC to cancel";
+    }
+
     public void KeyBindingCallConfirm()
     {
         OkBtn.gameObject.SetActive(false);
