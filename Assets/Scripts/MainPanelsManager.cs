@@ -14,6 +14,8 @@ public class MainPanelsManager : MonoBehaviour
     [SerializeField]
     Dropdown mapSizeDropdown;
     [SerializeField]
+    Dropdown difficultyLevelDropdown;
+    [SerializeField]
     Button gameStartBtn;
     [SerializeField]
     Button backBtn;
@@ -28,6 +30,7 @@ public class MainPanelsManager : MonoBehaviour
         gameStartBtn.onClick.AddListener(() => GameStartBtnFunc());
         backBtn.onClick.AddListener(() => NewGamePanelSet(false));
         mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
+        difficultyLevelDropdown.onValueChanged.AddListener(delegate { DifficultyLevelDropdownFunc(difficultyLevelDropdown); });
     }
 
     public void NewGamePanelSet(bool state)
@@ -48,12 +51,12 @@ public class MainPanelsManager : MonoBehaviour
 
     void MapSizeDropdownFunc(Dropdown dropdown)
     {
-        MapSizeSet(dropdown.value);
+        gameSetting.MapSizeSet(dropdown.value);
     }
 
-    void MapSizeSet(int dropdownIndex)
+    void DifficultyLevelDropdownFunc(Dropdown dropdown)
     {
-        gameSetting.MapSizeSet(dropdownIndex);
+        gameSetting.DifficultylevelSet(dropdown.value);
     }
 
     public void SaveLoadPanelSet()

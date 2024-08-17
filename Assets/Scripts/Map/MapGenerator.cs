@@ -11,8 +11,7 @@ public class MapGenerator : MonoBehaviour
     public bool randomSeed;
     public int seed;
 
-    [SerializeField]
-    MapSizeData mapSizeData;
+    public MapSizeData mapSizeData;
     [SerializeField]
     MapSizeData[] mapSizeDatas;
     public float spawnAreaSize;
@@ -84,7 +83,7 @@ public class MapGenerator : MonoBehaviour
 
         gameSetting = MainGameSetting.instance;
 
-        mapSizeData = mapSizeDatas[gameSetting.mapSizeIndex];
+        mapSizeData = mapSizeDatas[(gameSetting.mapSizeIndex * 3) + gameSetting.difficultylevel];
         spawnerSet = gameSetting.isNewGame ? true : false;
 
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함

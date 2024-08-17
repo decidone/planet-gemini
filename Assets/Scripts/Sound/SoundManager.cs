@@ -239,7 +239,6 @@ public class SoundManager : NetworkBehaviour
 
     void SFXPlayerSet()
     {
-        Debug.Log("SFXPlayerSet");
         BgmPlayerSet();
         StructureSFXPlayerSet();
         UnitSFXPlayerSet();

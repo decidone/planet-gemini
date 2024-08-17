@@ -17,3 +17,4 @@ MonoBehaviour:
   maxWeakSpawn: 20
   maxNormalSpawn: 10
   maxStrongSpawn: 0
+  maxGuardianSpawn: 0
