@@ -40,8 +40,17 @@ public class MapCameraController : MonoBehaviour
     MapClickEvent tempEvent;
     bool isLineRendered;
 
+    public static MapCameraController instance;
+
     void Awake()
     {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+
         zoomLevel = 1;
         mainCamZoom = 1;
         pixelPerfectCamera = CameraObj.GetComponent<PixelPerfectCamera>();
@@ -53,17 +62,20 @@ public class MapCameraController : MonoBehaviour
         gameManager = GameManager.instance;
         mainCamController = Camera.main.GetComponent<CameraController>();
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
         inputManager.controls.State.ToggleMap.performed += ToggleMap;
         inputManager.controls.MapCamera.LeftClick.performed += LeftClick;
     }
+
     void OnDisable()
     {
         inputManager.controls.State.ToggleMap.performed -= ToggleMap;
         inputManager.controls.MapCamera.LeftClick.performed -= LeftClick;
     }
+
     void FixedUpdate()
     {
         camPos.x = Mathf.Clamp(camPos.x + ((movement.x * dragSpeed) / zoomLevel), borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
@@ -124,7 +136,8 @@ public class MapCameraController : MonoBehaviour
         {
             mainCamZoom = mainCamController.zoomLevel;  //메인 카메라의 줌 레벨에 따라 픽셀퍼펙트가 깨지는 버그가 있어서 줌 레벨을 고정시켜 줌
             mainCamController.ChangeZoomLv(1);
-            canvas.enabled = false;
+            gameManager.CloseAllOpenedUI();
+            gameManager.CloseBasicUIs();
 
             OpenUI();
             inputManager.OpenMap();
@@ -132,7 +145,7 @@ public class MapCameraController : MonoBehaviour
         else
         {
             mainCamController.ChangeZoomLv(mainCamZoom);
-            canvas.enabled = true;
+            gameManager.OpenBasicUIs();
 
             CloseUI();
             inputManager.CloseMap();

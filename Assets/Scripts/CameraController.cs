@@ -7,9 +7,8 @@ using UnityEngine.U2D;
 public class CameraController : MonoBehaviour
 {
     public Transform target;
-    [SerializeField]
-    Vector3 offset;
-
+    [SerializeField] Vector3 offset;
+    Vector3 camPos;
     PixelPerfectCamera pixelPerfectCamera;
     public int zoomLevel;
     float scrollWheelInput;
@@ -18,6 +17,13 @@ public class CameraController : MonoBehaviour
 
     int width = 1920;
     int height = 1080;
+
+    [SerializeField] float borderX;
+    [SerializeField] float borderY;
+
+    float mapWidth;
+    float mapHeight;
+    float mapOffsetY;
 
     #region Singleton
     public static CameraController instance;
@@ -40,6 +46,9 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         inputManager = InputManager.instance;
+        mapWidth = MapGenerator.instance.width;
+        mapHeight = MapGenerator.instance.height;
+        mapOffsetY = MapGenerator.instance.clientMapOffsetY;
     }
 
     void Update()
@@ -66,8 +75,23 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
+        float offsetY = 0;
         if (target != null)
-            transform.position = target.position - offset;
+        {
+            if (!GameManager.instance.isPlayerInMarket)
+            {
+                if (!GameManager.instance.isPlayerInHostMap)
+                    offsetY = mapOffsetY + mapHeight;
+                camPos = target.position - offset;
+                camPos.x = Mathf.Clamp(camPos.x, (borderX / zoomLevel), mapWidth - (borderX / zoomLevel));
+                camPos.y = Mathf.Clamp(camPos.y, offsetY + (borderY / zoomLevel), mapHeight + offsetY - (borderY / zoomLevel));
+                transform.position = camPos;
+            }
+            else
+            {
+                transform.position = target.position - offset;
+            }
+        }
     }
 
     public void ChangeZoomLv(int lv)

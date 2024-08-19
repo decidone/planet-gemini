@@ -30,15 +30,24 @@ public class BuildInfoCheck : MonoBehaviour
             return;
         }
 
-        Vector2 pos = Camera.main.ScreenToWorldPoint(mousePos);
-        int x = Mathf.FloorToInt(pos.x);
-        int y = Mathf.FloorToInt(pos.y);
+        Vector2 pos = new Vector2();
+        int x;
+        int y;
+
+        if (!inputManager.isMapOpened)
+            pos = Camera.main.ScreenToWorldPoint(mousePos);
+        else
+            pos = MapCameraController.instance.cam.ScreenToWorldPoint(mousePos);
+
+        x = Mathf.FloorToInt(pos.x);
+        y = Mathf.FloorToInt(pos.y);
+
         if (gameManager.map.IsOnMap(x, y))
         {
             Cell cell = gameManager.map.GetCellDataFromPos(x, y);
             if (cell.structure != null)
             {
-                if(cell.structure.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
+                if (cell.structure.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
                 {
                     PopUpPosSetStructure(mousePos, structure);
                 }
@@ -55,7 +64,7 @@ public class BuildInfoCheck : MonoBehaviour
                 //    PopUpPosSetStructure(mousePos);
                 //}
             }
-            else if(cell.resource != null)
+            else if (cell.resource != null)
             {
                 PopUpPosSetResource(mousePos, cell.resource.item);
             }

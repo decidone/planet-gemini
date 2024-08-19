@@ -131,6 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 471910584}
   - component: {fileID: 471910585}
+  - component: {fileID: 6571952992782214896}
   m_Layer: 3
   m_Name: HostMap
   m_TagString: Untagged
@@ -168,6 +169,31 @@ MonoBehaviour:
   width: 0
   height: 0
   offsetY: 0
+--- !u!68 &6571952992782214896
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 471910583}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5, y: 0}
+  - {x: 0.5, y: 0}
+  - {x: 0.5, y: 0}
+  - {x: 0.5, y: 0}
+  - {x: 0.5, y: 0}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &1233895885
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,6 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1233895886}
   - component: {fileID: 1233895887}
+  - component: {fileID: 2467318846739657865}
   m_Layer: 3
   m_Name: ClientMap
   m_TagString: Untagged
@@ -215,6 +242,31 @@ MonoBehaviour:
   width: 0
   height: 0
   offsetY: 0
+--- !u!68 &2467318846739657865
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1233895885}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5, y: 0}
+  - {x: 0.5, y: 0}
+  - {x: 0.5, y: 0}
+  - {x: 0.5, y: 0}
+  - {x: 0.5, y: 0}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &1272315144
 GameObject:
   m_ObjectHideFlags: 0
@@ -949,6 +1001,8 @@ MonoBehaviour:
   mapFog: {fileID: 0}
   hostMap: {fileID: 471910585}
   clientMap: {fileID: 1233895887}
+  hostMapCol: {fileID: 6571952992782214896}
+  clientMapCol: {fileID: 2467318846739657865}
   isMultiPlay: 1
   clientMapOffsetY: 20
   plain: {fileID: 2480601898745360442}

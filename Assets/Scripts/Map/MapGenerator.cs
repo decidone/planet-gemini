@@ -31,11 +31,13 @@ public class MapGenerator : MonoBehaviour
     public Tilemap resourcesIconTilemap;
     public GameObject objects;
     public Transform mapFog;
-    //public Map map;
+
     public Map hostMap;
     public Map clientMap;
+    [SerializeField] EdgeCollider2D hostMapCol;
+    [SerializeField] EdgeCollider2D clientMapCol;
     public bool isMultiPlay;
-    [SerializeField] int clientMapOffsetY;
+    public int clientMapOffsetY;
 
     [Space]
     [Header("Biomes")]
@@ -399,6 +401,7 @@ public class MapGenerator : MonoBehaviour
         }
 
         SetMapFog();
+        SetMapBorderCol();
     }
 
     void SetMapFog()
@@ -1039,5 +1042,26 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    void SetMapBorderCol()
+    {
+        int offsetY = 0;
+        offsetY = height + clientMapOffsetY;
+
+        Vector2[] colliderPoints = new Vector2[5];
+        colliderPoints[0] = new Vector2(0, 0);
+        colliderPoints[1] = new Vector2(0, height);
+        colliderPoints[2] = new Vector2(width, height);
+        colliderPoints[3] = new Vector2(width, 0);
+        colliderPoints[4] = new Vector2(0, 0);
+        hostMapCol.points = colliderPoints;
+
+        colliderPoints[0] = new Vector2(0, offsetY);
+        colliderPoints[1] = new Vector2(0, height + offsetY);
+        colliderPoints[2] = new Vector2(width, height + offsetY);
+        colliderPoints[3] = new Vector2(width, offsetY);
+        colliderPoints[4] = new Vector2(0, offsetY);
+        clientMapCol.points = colliderPoints;
     }
 }

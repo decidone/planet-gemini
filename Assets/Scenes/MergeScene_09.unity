@@ -676,6 +676,11 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!1 &301094860 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5506024930092010325, guid: 2ed2767e8f58eda468a02ad4c7a743d1, type: 3}
+  m_PrefabInstance: {fileID: 301094857}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &352262288 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7525422398918600991, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
@@ -1705,6 +1710,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30fb03d4f5333974dbfc1a85400c4d85, type: 3}
+--- !u!1 &1520459426 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 59186549499498538, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1798222437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4323,6 +4333,14 @@ PrefabInstance:
       propertyPath: map
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: chat
+      value: 
+      objectReference: {fileID: 301094860}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: basicUI
+      value: 
+      objectReference: {fileID: 1520459426}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: finance
       value: 

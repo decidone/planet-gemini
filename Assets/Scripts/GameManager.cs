@@ -80,6 +80,9 @@ public class GameManager : NetworkBehaviour
     bool isConsoleOpened;
     InfoInteract info;
 
+    [SerializeField] GameObject basicUI;
+    [SerializeField] GameObject chat;
+
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
 
@@ -510,6 +513,18 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    public void OpenBasicUIs()
+    {
+        basicUI.SetActive(true);
+        chat.SetActive(true);
+    }
+
+    public void CloseBasicUIs()
+    {
+        basicUI.SetActive(false);
+        chat.SetActive(false);
+    }
+
     void Inven(InputAction.CallbackContext ctx)
     {
         Inven();
@@ -667,7 +682,7 @@ public class GameManager : NetworkBehaviour
         mapCameraController.SetCamRange(map);
         GameObject fogOfWar = ResourcesManager.instance.fogOfWar;
         FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
-        followTransform.SetTargetTransform(player.transform);
+        followTransform.SetTargetTransform(mainCam.transform);
         if (isHost)
             WavePoint.instance.PlayerSet(player);
         else

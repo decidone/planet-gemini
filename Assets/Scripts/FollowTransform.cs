@@ -20,6 +20,6 @@ public class FollowTransform : MonoBehaviour
             return;
         }
 
-        transform.position = targetTransform.position - offset;
+        transform.position = targetTransform.position + offset;
     }
 }

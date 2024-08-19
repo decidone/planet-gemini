@@ -122,6 +122,8 @@ MonoBehaviour:
   target: {fileID: 0}
   offset: {x: 0, y: -1, z: 10}
   zoomLevel: 0
+  borderX: 30
+  borderY: 16.875
 --- !u!114 &5745257049298284171
 MonoBehaviour:
   m_ObjectHideFlags: 0
