@@ -24,5 +24,7 @@ public class ItemProps : MonoBehaviour
         isOnBelt = false;
         setOnBelt = null;
         col.enabled = true;
+        SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.material = ResourcesManager.instance.outlintMat;
     }
 }

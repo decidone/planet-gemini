@@ -1111,13 +1111,14 @@ public class Structure : NetworkBehaviour
         SpriteRenderer sprite = itemProps.GetComponent<SpriteRenderer>();
         sprite.sprite = item.icon;
         sprite.sortingOrder = 2;
+        sprite.material = ResourcesManager.instance.outlintMat;
         itemProps.item = item;
         itemProps.amount = itemAmount;
         itemProps.transform.position = transform.position;
         itemProps.ResetItemProps();
 
         NetworkObject itemNetworkObject = itemProps.GetComponent<NetworkObject>();
-        itemNetworkObject.Spawn(true);        
+        itemNetworkObject.Spawn(true);
     }
 
     protected virtual void ItemDrop() { }

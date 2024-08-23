@@ -174,6 +174,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         SpriteRenderer sprite = itemNetworkObject.GetComponent<SpriteRenderer>();
         sprite.sprite = item.icon;
+        sprite.material = ResourcesManager.instance.outlintMat;
         ItemProps itemProps = itemNetworkObject.GetComponent<ItemProps>();
         itemProps.item = item;
         itemProps.amount = amount;

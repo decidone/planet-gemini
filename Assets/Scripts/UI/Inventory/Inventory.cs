@@ -22,6 +22,8 @@ public class Inventory : NetworkBehaviour
     List<Item> itemList;
     public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
 
+    ulong[] singleTarget = new ulong[1];
+
     void Start()
     {
         //itemList = ItemList.instance.itemList;
@@ -80,7 +82,6 @@ public class Inventory : NetworkBehaviour
                     if (items[i] == merch.item)
                     {
                         merchItemSlotRemaining += (maxAmount - amounts[i]);
-
                     }
                 }
             }
@@ -177,7 +178,7 @@ public class Inventory : NetworkBehaviour
         {
             tempAmount = containableAmount;
             int dropAmount = amount - containableAmount;
-            Drop(item, dropAmount, GameManager.instance.GetPlayerPos(isHost));
+            Drop(item, dropAmount, isHost);
         }
 
         // 2. 이미 있던 칸에 수량 증가
@@ -227,11 +228,18 @@ public class Inventory : NetworkBehaviour
 
             if (tempAmount > 0)
             {
-                Drop(item, tempAmount, GameManager.instance.GetPlayerPos(isHost));
+                Drop(item, tempAmount, isHost);
             }
         }
 
         onItemChangedCallback?.Invoke();
+    }
+
+    [ClientRpc]
+    public void DisplayLootInfoClientRpc(int itemIndex, int amount, ClientRpcParams rpcParams = default)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        LootListManager.instance.DisplayLootInfo(item, amount);
     }
 
     public void Swap(int slotNum)
@@ -472,27 +480,35 @@ public class Inventory : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void LootItemServerRpc(NetworkObjectReference itemObjNetworkObjectReference)
+    public void LootItemServerRpc(NetworkObjectReference itemObjNetworkObjectReference, ServerRpcParams serverRpcParams = default)
     {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
         itemObjNetworkObjectReference.TryGet(out NetworkObject itemObj);
+
         if (itemObj != null)
         {
             ItemProps itemProps = itemObj.GetComponent<ItemProps>();
             if (itemProps.waitingForDestroy)
                 return;
 
+            singleTarget[0] = clientId;
+            ClientRpcParams rpcParams = default;
+            rpcParams.Send.TargetClientIds = singleTarget;
+
             int containableAmount = SpaceCheck(itemProps.item);
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemProps.item);
 
             if (itemProps.amount <= containableAmount)
             {
                 itemProps.waitingForDestroy = true;
                 Add(itemProps.item, itemProps.amount);
+                DisplayLootInfoClientRpc(itemIndex, itemProps.amount, rpcParams);
                 GeminiNetworkManager.instance.DestroyItem(itemObj);
             }
             else if (containableAmount != 0)
             {
                 Add(itemProps.item, containableAmount);
-                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemProps.item);
+                DisplayLootInfoClientRpc(itemIndex, containableAmount, rpcParams);
                 GeminiNetworkManager.instance.SetItemPropsClientRpc(itemObj, itemIndex, (itemProps.amount - containableAmount));
             }
             else
@@ -541,16 +557,27 @@ public class Inventory : NetworkBehaviour
 
         Item dragItem = ItemDragManager.instance.GetItem(isHost);
         int dragAmount = ItemDragManager.instance.GetAmount(isHost);
-        Drop(dragItem, dragAmount, GameManager.instance.GetPlayerPos(isHost));
+        Drop(dragItem, dragAmount, isHost);
         ItemDragManager.instance.Clear(isHost);
 
         onItemChangedCallback?.Invoke();
     }
 
-    public void Drop(Item item, int amount, Vector3 spawnPos)
+    public void Drop(Item item, int amount, bool isHost)
     {
+        Vector3 spawnPos = GameManager.instance.GetPlayerPos(isHost);
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+        DisplayDropInfoClientRpc(itemIndex, amount, isHost);
         GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, amount, spawnPos);
+    }
+
+    [ClientRpc]
+    public void DisplayDropInfoClientRpc(int itemIndex, int amount, bool isHost)
+    {
+        if (isHost != GameManager.instance.isHost) return;
+
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        LootListManager.instance.DisplayDropInfo(item, amount);
     }
 
     public void ResetInven()

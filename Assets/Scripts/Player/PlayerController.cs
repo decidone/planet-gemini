@@ -161,6 +161,8 @@ public class PlayerController : NetworkBehaviour
 
     void Interact(InputAction.CallbackContext ctx)
     {
+        if (!IsOwner) { return; }
+
         if (!gameManager.isPlayerInMarket)
         {
             if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
@@ -243,11 +245,13 @@ public class PlayerController : NetworkBehaviour
                 if (itemProps.amount <= containableAmount)
                 {
                     gameManager.inventory.Add(itemProps.item, itemProps.amount);
+                    LootListManager.instance.DisplayLootInfo(itemProps.item, itemProps.amount);
                     beltCtrl.PlayerRootFunc(itemProps);
                 }
                 else if (containableAmount != 0)
                 {
                     gameManager.inventory.Add(itemProps.item, containableAmount);
+                    LootListManager.instance.DisplayLootInfo(itemProps.item, containableAmount);
                     itemProps.amount -= containableAmount;
                 }
                 else

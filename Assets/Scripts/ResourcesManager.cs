@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class ResourcesManager : MonoBehaviour
 {
+    public GameObject fogOfWar;
+
+    public Material outlintMat;
+    public Material noOutlineMat;
+
     #region Singleton
     public static ResourcesManager instance;
 
@@ -18,6 +23,4 @@ public class ResourcesManager : MonoBehaviour
         instance = this;
     }
     #endregion
-
-    public GameObject fogOfWar;
 }

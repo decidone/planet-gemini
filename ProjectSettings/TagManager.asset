@@ -48,9 +48,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
+  - name: Map
+    uniqueID: 2159911979
     locked: 0
   - name: Energy
     uniqueID: 618645769
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0
