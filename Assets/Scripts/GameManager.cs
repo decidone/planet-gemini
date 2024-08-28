@@ -85,6 +85,10 @@ public class GameManager : NetworkBehaviour
 
     OptionCanvas optionCanvas;
 
+    public bool scienceBuildingSet;
+    public bool sciBuildingMap;
+    ScienceBuildingInfo scienceBuildingInfo;
+
     #region Singleton
     public static GameManager instance;
 
@@ -117,7 +121,7 @@ public class GameManager : NetworkBehaviour
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
-
+        scienceBuildingInfo = inventoryUiCanvas.GetComponent<ScienceBuildingInfo>();
         OtherPortalSet();
         GameStartSet();
     }
@@ -491,7 +495,10 @@ public class GameManager : NetworkBehaviour
                 SaveLoadMenu.instance.MenuClose();
                 break;
             case "ConfirmPanel":
-                ConfirmPanel.instance.UIClose();
+                ConfirmPanel.instance.CanelBtnFunc();
+                break;
+            case "ScienceBuildingInfo":
+                scienceBuildingInfo.CloseUI();
                 break;
             default:
                 if (openedUI[order].gameObject.TryGetComponent<Shop>(out Shop shop))
@@ -546,13 +553,20 @@ public class GameManager : NetworkBehaviour
 
     public void ScienceTree()
     {
-        if (!sTreeManager.scienceTreeUI.activeSelf)
+        if (scienceBuildingSet)
         {
-            sTreeManager.OpenUI();
+            if (!sTreeManager.scienceTreeUI.activeSelf)
+            {
+                sTreeManager.OpenUI();
+            }
+            else
+            {
+                sTreeManager.CloseUI();
+            }
         }
         else
         {
-            sTreeManager.CloseUI();
+            scienceBuildingInfo.OpenUI();
         }
     }
 
@@ -792,5 +806,11 @@ public class GameManager : NetworkBehaviour
             Debug.Log("Client");
             ClientConnected();
         }
+    }
+
+    public void SciBuildingSet(bool map)
+    {
+        scienceBuildingSet = true;
+        sciBuildingMap = map;
     }
 }

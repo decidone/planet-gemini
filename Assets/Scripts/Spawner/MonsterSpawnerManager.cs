@@ -243,7 +243,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     }
 
     [QFSW.QC.Command()]
-    private void WavePointSet(int waveLevel, bool isInHostMap)
+    public void WavePointSet(int waveLevel, bool isInHostMap)
     {
         MonsterSpawner waveSpawner = null; 
         switch (waveLevel)

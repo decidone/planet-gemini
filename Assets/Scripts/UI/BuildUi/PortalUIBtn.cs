@@ -19,12 +19,21 @@ public class PortalUIBtn : MonoBehaviour
     GameObject LockUi;
     public string objName;
     public Portal portal;
+    [SerializeField]
+    bool isPortalObj;
 
     bool isLock;
 
     public PreBuilding preBuilding;
 
     GameManager gameManager;
+    [SerializeField]
+    GameObject confirmPanel;
+    [SerializeField]
+    Button okBtn;
+    [SerializeField]
+    Button canselBtn;
+
 
     private void Start()
     {
@@ -38,9 +47,30 @@ public class PortalUIBtn : MonoBehaviour
         if (!portal.PortalObjFind(objName))
         //if (!isLock && !portal.PortalObjFind(objName))
         {
-            preBuilding.SetPortalImage(building, portal, gameManager.isPlayerInHostMap);
-            preBuilding.isEnough = true;
+            if (isPortalObj)
+            {
+                preBuilding.SetPortalImage(building, portal, gameManager.isPlayerInHostMap, isPortalObj);
+                preBuilding.isEnough = true;
+            }
+            else
+            {
+                confirmPanel.SetActive(true);
+            }
         }
+    }
+
+    public void OkBtnFunc()
+    {
+        confirmPanel.SetActive(false);
+        if (!gameManager.scienceBuildingSet)
+        {
+            portal.SetScienceBuildingServerRpc();
+        }
+    }
+
+    public void CanselBtnFunc()
+    {
+        confirmPanel.SetActive(false);
     }
 
     public void SetProduction(Production _prod)

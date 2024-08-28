@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapSize: 700
   countOfSpawnersByLevel: 040000000c00000010000000
+  upgradeSpawnerSet: 000000000000000000000000
   mapSplitCount: 7

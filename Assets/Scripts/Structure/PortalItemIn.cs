@@ -172,8 +172,12 @@ public class PortalItemIn : PortalObj
     [ServerRpc(RequireOwnership = false)]
     protected override void PortalObjConnectServerRpc()
     {
-        ulong objID = NetworkObjManager.instance.FindNetObjID(portalItemOut.gameObject);
-        ConnectObjClientRpc(objID);
+        base.PortalObjConnectServerRpc();
+        if (portalItemOut != null)
+        {
+            ulong objID = NetworkObjManager.instance.FindNetObjID(portalItemOut.gameObject);
+            ConnectObjClientRpc(objID);
+        }
     }
 
     [ServerRpc]

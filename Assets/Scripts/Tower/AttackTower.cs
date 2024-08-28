@@ -221,7 +221,7 @@ public class AttackTower : TowerAi
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
                 if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
-                bulletPool.GetComponent<TowerSingleAttackFx>().GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject);                
+                bulletPool.GetComponent<TowerSingleAttackFx>().GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject, loadedBullet.explosion);                
             }
             else
             {

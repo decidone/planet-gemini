@@ -105,10 +105,17 @@ public class PortalUnitIn : PortalObj
     [ServerRpc(RequireOwnership = false)]
     protected override void PortalObjConnectServerRpc()
     {
-        ulong objID = NetworkObjManager.instance.FindNetObjID(portalUnitOut.gameObject);
-        ConnectObjClientRpc(objID);
-        ulong myObjID = NetworkObjManager.instance.FindNetObjID(myPortalUnitOut.gameObject);
-        ConnectMyObjClientRpc(myObjID);
+        base.PortalObjConnectServerRpc();
+        if (portalUnitOut != null)
+        {
+            ulong objID = NetworkObjManager.instance.FindNetObjID(portalUnitOut.gameObject);
+            ConnectObjClientRpc(objID);
+        }
+        if (myPortalUnitOut != null)
+        {
+            ulong myObjID = NetworkObjManager.instance.FindNetObjID(myPortalUnitOut.gameObject);
+            ConnectMyObjClientRpc(myObjID);
+        }
     }
 
     [ServerRpc]

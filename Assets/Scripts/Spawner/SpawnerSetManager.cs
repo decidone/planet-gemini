@@ -25,9 +25,10 @@ public class SpawnerSetManager : NetworkBehaviour
     GameObject spawnerGroup;
 
     public AreaLevelData[] arealevelData;
-    public int[] basicSpawnerCount = new int[4] { 8, 16, 24, 32 }; //  구역별 기본 스포너 개수
-    public int[] spawnCount;
+    int[] basicSpawnerCount = new int[4] { 8, 16, 24, 32 }; //  구역별 기본 스포너 개수
+    int[] spawnCount;
     int[] subSpawnerCount;
+    int[] upgradeSpawnerSetCount;
     Vector3 basePos;
 
     [SerializeField]
@@ -125,6 +126,7 @@ public class SpawnerSetManager : NetworkBehaviour
         MapSizeData mapSizeData = MapGenerator.instance.mapSizeData;
         subSpawnerCount = new int[mapSizeData.CountOfSpawnersByLevel.Length];
         spawnCount = (int[])basicSpawnerCount.Clone();
+        upgradeSpawnerSetCount = (int[])mapSizeData.UpgradeSpawnerSet.Clone();
 
         for (int i = 0; i < subSpawnerCount.Length; i++) 
         {
@@ -148,15 +150,13 @@ public class SpawnerSetManager : NetworkBehaviour
             Vector2 centerPos = data.Key;
             int areaLevel = data.Value;
 
-            if (subSpawnerCount[areaLevel - 1] > 0)
+            int random = Random.Range(0, spawnCount[areaLevel - 1]);
+            spawnCount[areaLevel - 1] -= 1;
+
+            if (subSpawnerCount[areaLevel - 1] > 0 && random < subSpawnerCount[areaLevel - 1])
             {
-                int random = Random.Range(0, spawnCount[areaLevel - 1]);
-                spawnCount[areaLevel - 1] -= 1;
-                if (random < subSpawnerCount[areaLevel - 1])
-                {
-                    subSpawnerCount[areaLevel - 1] -= 1;
-                    continue;
-                }
+                subSpawnerCount[areaLevel - 1] -= 1;
+                continue;
             }
 
             AreaLevelData levelData = arealevelData[areaLevel - 1];
@@ -206,8 +206,24 @@ public class SpawnerSetManager : NetworkBehaviour
                 if(!networkObject.IsSpawned) networkObject.Spawn(true);
 
                 spawnerObj.transform.position = randomPoints[index];
-                MapGenerator.instance.SetCorruption(map, randomPoints[index], levelData.areaLevel);
-                //MapGenerator.instance.ClearCorruption(map, randomPoints[index], 1);
+
+                int levelSet = levelData.areaLevel;
+                AreaLevelData levelDataSet = levelData;
+
+                if (upgradeSpawnerSetCount[areaLevel - 1] > 0)
+                {
+                    random = Random.Range(0, spawnCount[areaLevel - 1]);
+
+                    if (random < upgradeSpawnerSetCount[areaLevel - 1])
+                    {
+                        upgradeSpawnerSetCount[areaLevel - 1] -= 1;
+                        levelSet += 1;
+                        levelDataSet = arealevelData[levelSet - 1];
+                    }
+                }
+
+                MapGenerator.instance.SetCorruption(map, randomPoints[index], levelSet);
+                //MapGenerator.instance.SetCorruption(map, randomPoints[index], levelData.areaLevel);
 
                 Cell cellData = map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y);
                 if (cellData.obj != null)
@@ -217,7 +233,8 @@ public class SpawnerSetManager : NetworkBehaviour
                 spawnerGroupManager.SpawnerSet(spawnerObj);
                 spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);
                 monsterSpawner.groupManager = spawnerGroupManager;
-                monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos, isHostMap);
+                monsterSpawner.SpawnerSetting(levelDataSet, cellData.biome.biome, basePos, isHostMap, levelData.areaLevel);
+                //monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos, isHostMap);
                 monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel, isHostMap);
 
                 index++;

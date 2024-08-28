@@ -35,9 +35,9 @@ public class Structure : NetworkBehaviour
     [HideInInspector]
     public bool sizeOneByOne;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isPreBuilding = true;
-    [HideInInspector]
+    //[HideInInspector]
     public bool isSetBuildingOk = false;
 
     protected bool removeState = false;
@@ -147,9 +147,10 @@ public class Structure : NetworkBehaviour
     public bool isInHostMap;
     public Vector3 tileSetPos;
 
-    bool destroyStart;
-    float destroyInterval;
-    float destroyTimer;
+    
+    protected bool destroyStart;
+    protected float destroyInterval;
+    protected float destroyTimer;
 
     public bool settingEndCheck = false;
     public List<(int, int)> DelaySendList = new List<(int, int)>();
@@ -166,6 +167,7 @@ public class Structure : NetworkBehaviour
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
+
         maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
         hp = structureData.MaxHp[level];
@@ -234,7 +236,6 @@ public class Structure : NetworkBehaviour
             isSetBuildingOk = false;
             unitCanvas.SetActive(true);
             repairBar.enabled = true;
-            RemoveObjServerRpc();
         }
     }
 
@@ -252,7 +253,7 @@ public class Structure : NetworkBehaviour
     //    }
     //}
 
-    void ObjRemoveFunc()
+    protected void ObjRemoveFunc()
     {
         AddInvenItem();
         DestroyFuncServerRpc();
@@ -289,6 +290,7 @@ public class Structure : NetworkBehaviour
 
     protected virtual void OnClientConnectedCallback(ulong clientId)
     {
+        RepairGaugeServerRpc();
         ClientConnectSyncServerRpc();
         ItemSyncServerRpc();
     }
@@ -320,7 +322,8 @@ public class Structure : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public virtual void ClientConnectSyncServerRpc()
     {
-        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, isSetBuildingOk, isPreBuilding);
+        //ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, isSetBuildingOk, isPreBuilding);
+        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap);
         for (int i = 0; i < nearObj.Length; i++)
         {
             if (nearObj[i] == null)
@@ -356,6 +359,18 @@ public class Structure : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    protected void RepairGaugeServerRpc()
+    {
+        RepairGaugeClientRpc(isPreBuilding, isSetBuildingOk, destroyStart, hp, repairGauge, destroyTimer);
+    }
+
+    [ClientRpc]
+    protected virtual void RepairGaugeClientRpc(bool preBuilding, bool setBuildingOk, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    {
+        StructureStateSet(preBuilding, setBuildingOk, destroy, hpSet, repairGaugeSet, destroyTimerSet);
+    }
+
     [ClientRpc]
     public void ConnectCheckClientRpc(bool isEnd)
     {
@@ -363,7 +378,7 @@ public class Structure : NetworkBehaviour
     }
 
     [ClientRpc]
-    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, bool syncSetBuilding, bool syncPreBuilding)
+    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap)
     {
         if (IsServer)
             return;
@@ -373,8 +388,6 @@ public class Structure : NetworkBehaviour
         height = syncHeight;
         width = syncWidth;
         isInHostMap = syncMap;
-        isSetBuildingOk = syncSetBuilding;
-        isPreBuilding = syncPreBuilding;
         ColliderTriggerOnOff(false);
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
@@ -609,6 +622,8 @@ public class Structure : NetworkBehaviour
             hpBar.fillAmount = hp / maxHp;
             unitCanvas.SetActive(true);
         }
+
+        Debug.Log(repairGauge + " : " + preBuilding + " : " + setBuildingOk);
     }
 
     public void ConnectedPosListPosSet(Vector3 pos)
@@ -1044,9 +1059,16 @@ public class Structure : NetworkBehaviour
         if (IsServer && hp <= 0f)
         {
             hp = 0f;
-            DieFuncClientRpc();
+            DieFuncServerRpc();
         }
     }
+
+    [ServerRpc]
+    protected virtual void DieFuncServerRpc()
+    {
+        DieFuncClientRpc();
+    }
+
 
     [ClientRpc]
     protected virtual void DieFuncClientRpc()
@@ -1163,7 +1185,7 @@ public class Structure : NetworkBehaviour
         isRepair = repair;
     }
 
-    protected void RepairFunc(bool isBuilding)
+    protected virtual void RepairFunc(bool isBuilding)
     {
         repairGauge += 10.0f * Time.deltaTime;
 
@@ -1425,6 +1447,7 @@ public class Structure : NetworkBehaviour
         //{
         //    NetworkObject.Despawn();
         //}
+        DestroyFuncServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -3444,6 +3444,10 @@ PrefabInstance:
       propertyPath: inventory
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 142728372057670182, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 792990450431671789, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
@@ -4012,6 +4016,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: GameManager, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 2707318739870505773, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_Name
+      value: ScienceBuildingInfo
+      objectReference: {fileID: 0}
     - target: {fileID: 5315094254524996675, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: inventory
       value: 
@@ -4403,6 +4411,14 @@ PrefabInstance:
       propertyPath: MonsterSpawnMgr
       value: 
       objectReference: {fileID: 1218140029}
+    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: uiItemList.Array.size
+      value: 54
+      objectReference: {fileID: 0}
+    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: uiItemList.Array.data[54]
+      value: 
+      objectReference: {fileID: 11400000, guid: a3020250a4044e341af1fee415ecb042, type: 2}
     - target: {fileID: 3986364635626952760, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: m_RootOrder
       value: 3

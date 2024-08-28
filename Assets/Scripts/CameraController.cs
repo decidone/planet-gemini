@@ -40,6 +40,8 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         inputManager = InputManager.instance;
+        SettingsMenu settingsMenu = SettingsMenu.instance;
+        WindowSizeSet(zoomLevel, settingsMenu.fixedWidth, settingsMenu.fixedHeight);
     }
 
     void Update()
@@ -51,14 +53,14 @@ public class CameraController : MonoBehaviour
         if (scrollWheelInput < 0)
         {
             zoomLevel -= 1;
-            zoomLevel = Mathf.Clamp(zoomLevel, 1, 6);
+            zoomLevel = Mathf.Clamp(zoomLevel, 1, 5);
             pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(width / zoomLevel);
             pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(height / zoomLevel);
         }
         else if(scrollWheelInput > 0)
         {
             zoomLevel += 1;
-            zoomLevel = Mathf.Clamp(zoomLevel, 1, 6);
+            zoomLevel = Mathf.Clamp(zoomLevel, 1, 5);
             pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(width / zoomLevel);
             pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(height / zoomLevel);
         }
@@ -72,7 +74,7 @@ public class CameraController : MonoBehaviour
 
     public void ChangeZoomLv(int lv)
     {
-        zoomLevel = Mathf.Clamp(lv, 1, 6);
+        zoomLevel = Mathf.Clamp(lv, 1, 5);
         pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(width / zoomLevel);
         pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(height / zoomLevel);
     }

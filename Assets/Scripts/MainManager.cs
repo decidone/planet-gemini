@@ -32,7 +32,7 @@ public class MainManager : MonoBehaviour
     MainPanelsManager panelsManager;
 
     InputManager inputManager;
-    GameObject openedUI;
+    public List<GameObject> openedUI = new List<GameObject>();
 
     #region Singleton
     public static MainManager instance;
@@ -156,19 +156,22 @@ public class MainManager : MonoBehaviour
 
     public void OpenedUISet(GameObject obj)
     {
-        openedUI = obj;
+        if (!openedUI.Contains(obj))
+        {
+            openedUI.Add(obj);
+        }
     }
 
     public void ClosedUISet()
     {
-        openedUI = null;
+        openedUI.RemoveAt(openedUI.Count - 1);
     }
 
     void Escape(InputAction.CallbackContext ctx)
     {
-        if (openedUI != null)
+        if (openedUI.Count > 0)
         {
-            switch (openedUI.gameObject.name)
+            switch (openedUI[openedUI.Count - 1].gameObject.name)
             {
                 case "HostBtns":
                     BackBtnFunc();
@@ -185,6 +188,10 @@ public class MainManager : MonoBehaviour
                 case "SaveLoadPanel":
                     SaveLoadMenu.instance.MenuClose();
                     break;
+                case "ConfirmPanel":
+                    ConfirmPanel.instance.CanelBtnFunc();
+                    break;
+
             }
         }
     }

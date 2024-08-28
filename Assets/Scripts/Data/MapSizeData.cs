@@ -13,6 +13,11 @@ public class MapSizeData : ScriptableObject
     private int[] countOfSpawnersByLevel;
     public int[] CountOfSpawnersByLevel { get { return countOfSpawnersByLevel; } }
 
+
+    [SerializeField]
+    private int[] upgradeSpawnerSet;
+    public int[] UpgradeSpawnerSet { get { return upgradeSpawnerSet; } }
+
     [SerializeField]
     private int mapSplitCount;
     public int MapSplitCount { get { return mapSplitCount; } }
