@@ -43,6 +43,7 @@ public class MonsterSpawner : NetworkBehaviour
     public int areaLevel;
     AreaLevelData areaLevelData;
     string biome;
+    int spawnerGroupIndex;
 
     float spawnInterval;
     float spawnTimer;
@@ -225,12 +226,13 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos, bool isHostMap)
+    public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos, bool isHostMap, int groupIndex)
     {
         areaLevelData = levelData;
         areaLevel = levelData.areaLevel;
         biome = _biome;
         isInHostMap = isHostMap;
+        spawnerGroupIndex = groupIndex;
         hp = structureData.MaxHp[levelData.areaLevel -1];
         maxHp = structureData.MaxHp[levelData.areaLevel -1];
 
@@ -597,13 +599,13 @@ public class MonsterSpawner : NetworkBehaviour
         WarningWindow.instance.WarningTextSet("Attack detected on", isInHostMap);
     }
 
-    public void GameStartSet(SpawnerSaveData spawnerSaveData, AreaLevelData levelData, Vector3 _basePos, bool isHostMap)
+    public void GameStartSet(SpawnerSaveData spawnerSaveData, AreaLevelData levelData, Vector3 _basePos, bool isHostMap, int groupIndex)
     {
         hp = spawnerSaveData.hp;
         areaLevel = spawnerSaveData.level;
         extraSpawnNum = spawnerSaveData.extraSpawnNum;
         isInHostMap = isHostMap;
-
+        spawnerGroupIndex = groupIndex;
         areaLevelData = levelData;
         areaLevel = levelData.areaLevel;
         maxWeakSpawn = levelData.maxWeakSpawn;
@@ -707,7 +709,7 @@ public class MonsterSpawner : NetworkBehaviour
         data.waveState = waveState;
         data.waveTimer = waveTimer;
         data.dieCheck = dieCheck;
-        Debug.Log(waveTimer + " : " + waveState);
+        data.spawnerGroupIndex = spawnerGroupIndex;
          
         foreach (MonsterAi monster in totalMonsterList)
         {

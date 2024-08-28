@@ -22,10 +22,13 @@ public class PortalObj : Production
     }
 
     [ServerRpc(RequireOwnership = false)]
-    protected virtual void PortalObjConnectServerRpc() { }
+    protected virtual void PortalObjConnectServerRpc() { PortalObjConnectClientRpc(transform.position); }
 
     [ClientRpc]
-    protected virtual void PortalObjConnectClientRpc(ulong objID) { }
+    protected virtual void PortalObjConnectClientRpc(Vector3 tr)
+    {
+        transform.position = tr;
+    }
 
     public virtual void RemovePortalData()
     {

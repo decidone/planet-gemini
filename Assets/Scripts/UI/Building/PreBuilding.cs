@@ -64,6 +64,7 @@ public class PreBuilding : NetworkBehaviour
     bool isBeltObj = false;
     bool reversSet = false;
     bool isPortalObj = false;
+    bool isScienceBuilding = false;
     Portal portalScript;
     int portalIndex;
 
@@ -1076,7 +1077,6 @@ public class PreBuilding : NetworkBehaviour
         }
         else
         {
-            Debug.Log("??");
             isEnergyStr = false;
             isEnergyUse = false;
         }
@@ -1104,7 +1104,7 @@ public class PreBuilding : NetworkBehaviour
         endBuildPos = transform.position;
     }
 
-    public void SetPortalImage(Building build, Portal portal, bool _isInHostMap)
+    public void SetPortalImage(Building build, Portal portal, bool _isInHostMap, bool isPortalObjs)
     {
         isBuildingOn = true;
         buildData = build;
@@ -1112,6 +1112,7 @@ public class PreBuilding : NetworkBehaviour
         int height = 2;
         int width = 2;
         isPortalObj = true;
+        isScienceBuilding = !isPortalObjs;
         canBuildCount = 1;
         portalScript = portal;
         isInHostMap = _isInHostMap;
@@ -1237,18 +1238,27 @@ public class PreBuilding : NetworkBehaviour
                 {
                     foreach (int newY in yList)
                     {
+                        if (gameManager.portal[portalIndex].PortalObjFind(buildData.item.name))
+                        {
+                            return false;
+                        }
+
                         if (!gameManager.map.IsOnMap(newX, newY))
                         {
                             continue;
                         }
 
                         Cell cell = gameManager.map.GetCellDataFromPos(newX, newY);
-                        if (cell.structure != null || cell.obj != null)
+                        if (cell.obj != null)
                         {
                             return false;
                         }
 
-                        if (!cell.BuildCheck("PortalObj"))
+                        if (!isScienceBuilding && !cell.BuildCheck("PortalObj"))
+                        {
+                            return false;
+                        }
+                        else if (isScienceBuilding && !cell.BuildCheck("ScienceBuilding"))
                         {
                             return false;
                         }
@@ -1291,7 +1301,7 @@ public class PreBuilding : NetworkBehaviour
                         }
                         else
                         {
-                            if (cell.buildable.Count == 0 && cell.structure == null)
+                            if (((cell.buildable.Count == 0 || cell.BuildCheck("miner")) && cell.biome.biome != "cliff") && cell.structure == null)
                             {
                                 canBuild = true;
                             }

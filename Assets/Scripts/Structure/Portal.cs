@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -11,9 +11,9 @@ public class Portal : Production
     GameObject[] portalTile;
 
     PortalSciManager portalSci;
-    Dictionary<string, GameObject> portalObjList = new Dictionary<string, GameObject>();
-
+    public Dictionary<string, GameObject> portalObjList = new Dictionary<string, GameObject>();
     public Portal otherPortal;
+    public GameObject scienceBuilding;
 
     protected override void Awake()
     {
@@ -36,6 +36,7 @@ public class Portal : Production
     public override void OpenUI()
     {
         base.OpenUI();
+        PortalSciManager.instance.UISet();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.PortalProductionSet();
@@ -70,11 +71,13 @@ public class Portal : Production
         int x = Mathf.FloorToInt(pos.x);
         int y = Mathf.FloorToInt(pos.y);
 
-        for (int a = 0; a < 2; a++)
+        for (int a = -1; a < 1; a++)
         {
             for (int b = -1; b < 1; b++)
             {
                 map.GetCellDataFromPos(x + b, y + a).structure = this.gameObject;
+                map.GetCellDataFromPos(x + b, y + a).buildable.Clear();
+                map.GetCellDataFromPos(x + b, y + a).buildable.Add("ScienceBuilding");
             }
         }
 
@@ -131,6 +134,7 @@ public class Portal : Production
         if (!portalObjList.ContainsKey(objName))
         {
             portalObjList.Add(objName, obj);
+            //ObjSyncServerRpc(objName, NetworkObjManager.instance.FindNetObjID(obj));
             var objId = NetworkObjManager.instance.FindNetObjID(obj);
 
             if (objName == "PortalItemIn")
@@ -200,6 +204,19 @@ public class Portal : Production
         if (portalObjList.ContainsKey(objName))
         {
             portalObjList.Remove(objName);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetScienceBuildingServerRpc()
+    {
+        if (IsServer)
+        {
+            GameObject spawnobj = Instantiate(scienceBuilding, transform.position, Quaternion.identity);
+            spawnobj.TryGetComponent(out NetworkObject netObj);
+            if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+            spawnobj.transform.parent = transform;
+            spawnobj.GetComponent<ScienceBuilding>().SetPortal(isInHostMap);
         }
     }
 }

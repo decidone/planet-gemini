@@ -26,7 +26,11 @@ public class UnitCommonData : ScriptableObject
     [SerializeField]
     private float colliderRadius;//타겟 탐색 범위
     public float ColliderRadius { get { return colliderRadius; } }
-    
+
+    [SerializeField]
+    private float minCollRad;//타겟 탐색 최소 범위
+    public float MinCollRad { get { return minCollRad; } }
+
     //몬스터 전용
     [SerializeField]
     private float patrolRad;//패트롤 범위

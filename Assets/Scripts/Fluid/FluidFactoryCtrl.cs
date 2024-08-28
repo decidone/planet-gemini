@@ -50,7 +50,10 @@ public class FluidFactoryCtrl : Production
         isEnergyStr = structureData.IsEnergyStr;
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
+        destroyInterval = structureData.RemoveGauge;
+        soundManager = SoundManager.instance;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
+        destroyTimer = destroyInterval;
     }
 
     protected override void Update()
@@ -64,6 +67,19 @@ public class FluidFactoryCtrl : Production
             else if (isPreBuilding && isSetBuildingOk)
             {
                 RepairFunc(true);
+            }
+        }
+
+
+        if (destroyStart)
+        {
+            destroyTimer -= Time.deltaTime;
+            repairBar.fillAmount = destroyTimer / destroyInterval;
+
+            if (destroyTimer <= 0)
+            {
+                ObjRemoveFunc();
+                destroyStart = false;
             }
         }
     }

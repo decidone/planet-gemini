@@ -1389,6 +1389,7 @@ MonoBehaviour:
   loadBtn: {fileID: 958309195}
   backBtn: {fileID: 1738409792}
   panelsManager: {fileID: 1872915507}
+  openedUI: []
 --- !u!4 &324518175
 Transform:
   m_ObjectHideFlags: 0
@@ -8986,6 +8987,11 @@ MonoBehaviour:
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
     - Override: 0
+      Prefab: {fileID: 1886033591091936625, guid: 8af741c3fecc1204296724e9698a2ca6, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
       Prefab: {fileID: 1929914461128864781, guid: d2d2b4b47c22f554aab56e5117c95d13, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
@@ -9066,12 +9072,27 @@ MonoBehaviour:
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
     - Override: 0
+      Prefab: {fileID: 3832536798139642931, guid: 1e24e7473d563d84dbb0d9059643c4d7, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 3832536798139642931, guid: fc07e714adde36e41a18d7d008d4cc9f, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
       Prefab: {fileID: 4728483135223444395, guid: 3497393f39f650e4c89243555f2f5d67, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
     - Override: 0
       Prefab: {fileID: 90368467031128404, guid: 903ccf7ca7e03b644be54cdc95cc1bc3, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 2298398471109412266, guid: 925e40e8a85377446816902d63cd608c, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}

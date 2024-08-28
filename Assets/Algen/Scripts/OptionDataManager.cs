@@ -49,7 +49,6 @@ public class OptionDataManager : MonoBehaviour
         windowSize.Add(2, ("Window : 1920 x 1080", 1920, 1080, false, false));
         windowSize.Add(3, ("Window : 1600 x 900", 1600, 900, false, false));
         windowSize.Add(4, ("Window : 1280 x 720", 1280, 720, false, false));
-        windowSize.Add(5, ("Window : 960 x 540", 960, 540, false, false));
     }
 
     void KeyBindingSetting()

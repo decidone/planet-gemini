@@ -32,7 +32,7 @@ public class PortalSciManager : MonoBehaviour
         gameManager = GameManager.instance;
         canvas = gameManager.inventoryUiCanvas;
         GetUIFunc();
-        portalSciName = new string[] { "PortalItemIn", "PortalItemOut", "PortalUnitIn", "PortalUnitOut" };
+        portalSciName = new string[] { "ScienceBuilding", "PortalItemIn", "PortalItemOut", "PortalUnitIn", "PortalUnitOut" };
 
         for (int i = 0; i < portalSciName.Length; i++)
         {
@@ -47,6 +47,27 @@ public class PortalSciManager : MonoBehaviour
             else
             {
                 portalSciDic.Add(portalSciName[i], false);
+            }
+        }
+    }
+
+    public void UISet()
+    {
+        foreach (var data in UIBtnData)
+        {
+            if (!gameManager.scienceBuildingSet)
+            {
+                if (data.Key == "ScienceBuilding")
+                    data.Value.gameObject.SetActive(true);
+                else
+                    data.Value.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (data.Key == "ScienceBuilding")
+                    data.Value.gameObject.SetActive(false);
+                else
+                    data.Value.gameObject.SetActive(true);
             }
         }
     }

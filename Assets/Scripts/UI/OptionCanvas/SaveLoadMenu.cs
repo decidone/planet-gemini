@@ -75,11 +75,11 @@ public class SaveLoadMenu : MonoBehaviour
             if (data.Item1)
             {
                 saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
-                buttons[i].SetSlotData(i, saveData.saveDate, saveData.fileName);
+                buttons[i].SetSlotData(i, saveData.saveDate, saveData.fileName, saveData.mapSizeIndex, saveData.difficultyLevel);
             }
             else
             {
-                buttons[i].SetSlotData(i, null, null);
+                buttons[i].SetSlotData(i, null, null, -1, -1);
             }
         }
     }
@@ -142,7 +142,7 @@ public class SaveLoadMenu : MonoBehaviour
         DataManager.instance.Save(slotNum, fileName);
         var data = GetJsonFromFile(slotNum);
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
-        buttons[slotNum].SetSlotData(slotNum, saveData.saveDate, saveData.fileName);
+        buttons[slotNum].SetSlotData(slotNum, saveData.saveDate, saveData.fileName, saveData.mapSizeIndex, saveData.difficultyLevel);
     }
 
     public void Load(int slotNum) // 인게임에서 로드와 로비씬에서 로드를 구분해야함

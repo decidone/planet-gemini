@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
+  m_Name: BuildingScienceBuilding
+  m_EditorClassIdentifier: 
+  type: Portal
+  scienceName: ScienceBuilding
+  item: {fileID: 11400000, guid: 0b43ac30f45ef244687c686d5ac54315, type: 2}
+  gameObj: {fileID: 2298398471109412266, guid: 925e40e8a85377446816902d63cd608c, type: 3}
+  sideObj: {fileID: 0}
+  isGetAnim: 1
+  isGetDirection: 0
+  isUnderObj: 0
+  isEnergyUse: 0
+  isEnergyStr: 0
+  sprites: []
+  animatorController:
+  - {fileID: 9100000, guid: 5ebeddce345e93b44badd748f2e26aa7, type: 2}
+  level: 1
+  height: 2
+  width: 2
+  dirCount: 0

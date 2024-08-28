@@ -264,6 +264,12 @@ public class DataManager : MonoBehaviour
                 }
             }
         }
+
+        if (structure.GetComponent<ScienceBuilding>())
+        {
+            GameManager gameManager = GameManager.instance;
+            gameManager.SciBuildingSet(saveData.planet);
+        }
     }
 
     void SpawnBeltGroup(BeltGroupSaveData saveData)
@@ -389,9 +395,9 @@ public class DataManager : MonoBehaviour
             spawnerGroup.SpawnerSet(spawner);
             spawner.TryGetComponent(out MonsterSpawner monsterSpawner);
             monsterSpawner.dieCheck = spawnerSaveData.dieCheck;
-            MonsterSpawnerManager.instance.AreaGroupSet(monsterSpawner, spawnerSaveData.level, planet);
+            MonsterSpawnerManager.instance.AreaGroupSet(monsterSpawner, spawnerSaveData.spawnerGroupIndex, planet);
             monsterSpawner.groupManager = spawnerGroup;
-            monsterSpawner.GameStartSet(spawnerSaveData, levelData[spawnerSaveData.level - 1], Vector3Extensions.ToVector3(spawnerSaveData.wavePos), planet);
+            monsterSpawner.GameStartSet(spawnerSaveData, levelData[spawnerSaveData.level - 1], Vector3Extensions.ToVector3(spawnerSaveData.wavePos), planet, spawnerSaveData.spawnerGroupIndex);
             if(spawnerSaveData.waveState)
                 monsterSpawner.GameStartWaveSet(spawnerSaveData.waveTimer);
             SetSpawner(monsterSpawner, spawnerSaveData, planet, spawnerSaveData.waveState);

@@ -21,6 +21,7 @@ public class SpawnerSaveData
     public bool waveState;      // 웨이브 상태 저장
     public float waveTimer;     // 웨이브 시간 저장
     public bool dieCheck;       // 스포너 죽은 상태 체크
+    public int spawnerGroupIndex;
     public SerializedVector3 wavePos = new SerializedVector3();
     public SerializedVector3 spawnerPos = new SerializedVector3();      // 스포너 위치
     public List<UnitSaveData> monsterList = new List<UnitSaveData>();   // 몬스터 데이터

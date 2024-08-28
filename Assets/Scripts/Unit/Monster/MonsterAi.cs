@@ -33,11 +33,27 @@ public class MonsterAi : UnitCommonAi
     bool isWaveColonyCallCheck = true;
     //bool goalPathBlocked = false;
 
+    public float normalTraceTimer;
+    float normalTraceInterval = 10f;
+    bool stopTrace;
+
     protected override void FixedUpdate()
     {
         if (isScriptActive)
         {
             base.FixedUpdate();
+            if(aIState == AIState.AI_NormalTrace)
+            {
+                normalTraceTimer += Time.deltaTime;
+                if (normalTraceTimer > normalTraceInterval)
+                {
+                    normalTraceTimer = 0f;
+                    stopTrace = true;
+                    TargetListReset();
+                    SearchObjectsInRange();
+                    PatrolRandomPosSet();
+                }
+            }
         }
         else
             ReturnPos();
@@ -229,6 +245,7 @@ public class MonsterAi : UnitCommonAi
             {
                 aIState = AIState.AI_Idle;
                 AnimSetFloat(lastMoveDirection, false);
+                stopTrace = false;
                 return;
             }
             if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
@@ -239,6 +256,7 @@ public class MonsterAi : UnitCommonAi
                 {
                     aIState = AIState.AI_Idle;
                     AnimSetFloat(lastMoveDirection, false);
+                    stopTrace = false;
                     return;
                 }
             }
@@ -291,7 +309,21 @@ public class MonsterAi : UnitCommonAi
             patrolPos = randomPosition;
             if (checkPathCoroutine == null)
             {
-                checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
+                if (!waveState)
+                {
+                    if (spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
+                    {
+                        checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
+                    }
+                    else
+                    {
+                        checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "ReturnPos"));
+                    }
+                }
+                else
+                {
+                    checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
+                }
             }
         }
         else
@@ -334,6 +366,14 @@ public class MonsterAi : UnitCommonAi
         if (Vector3.Distance(tr.position, spawnPos.position) <= 0.3f)
         {
             aIState = AIState.AI_Idle;
+            if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
+            {
+                isScriptActive = false;
+                animator.enabled = false;
+                capsule2D.enabled = false;
+            }
+            stopTrace = false;
+
             return;
         }
         if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
@@ -343,6 +383,14 @@ public class MonsterAi : UnitCommonAi
             if (currentWaypointIndex >= movePath.Count)
             {
                 aIState = AIState.AI_Idle;
+                if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
+                {
+                    isScriptActive = false;
+                    animator.enabled = false;
+                    capsule2D.enabled = false;
+                }
+                stopTrace = false;
+
                 return;
             }
         }
@@ -472,9 +520,23 @@ public class MonsterAi : UnitCommonAi
         }
     }
 
+    void TargetListReset()
+    {
+        targetList.Clear();
+    }
+
     protected override void SearchObjectsInRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
+        Collider2D[] colliders;
+        if (stopTrace)
+        {
+            colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.MinCollRad);
+        }
+        else
+        {
+            colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
+        }
+
         HashSet<GameObject> targetListSet = new HashSet<GameObject>(targetList);
 
         for (int i = 0; i < colliders.Length; i++)
@@ -514,6 +576,10 @@ public class MonsterAi : UnitCommonAi
         if(targetList.Count > 0)
         {
             battleBGM.BattleAddMonster(gameObject, isInHostMap);
+        }
+        else
+        {
+            aggroTarget = null;
         }
 
         if((aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack) && targetList.Count == 0)
@@ -574,10 +640,20 @@ public class MonsterAi : UnitCommonAi
         }        
     }
 
+    public override void TakeDamage(float damage)
+    {
+        if (!dieCheck)
+        {
+            TakeDamageServerRpc(damage);
+            normalTraceTimer = 0;
+        }
+    }
+
     protected override void AttackStart()
     {
         if(aggroTarget != null)
         {
+            normalTraceTimer = 0;
             AttackSet(aggroTarget.transform);
             soundManager.PlaySFX(gameObject, "unitSFX", "MonsterAttack");
         }
@@ -724,20 +800,15 @@ public class MonsterAi : UnitCommonAi
         {
             if (IsServer)
             {
-                spawnDist = Vector3.Distance(tr.position, spawnPos.position);
                 if(aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack)
                 {
                     isScriptActive = true;
                     return;
                 }
-                else if (spawnDist > maxSpawnDist)
-                {
-                    checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
-                }
                 else
                 {
-                    animator.enabled = false;
-                    capsule2D.enabled = false;
+                    PatrolRandomPosSet();
+                    checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "ReturnPos"));
                 }
             }
         }

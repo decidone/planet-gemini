@@ -8,8 +8,8 @@ using UnityEngine.InputSystem;
 
 public class SettingsMenu : MonoBehaviour
 {
-    int fixedWidth = 1920;
-    int fixedHeight = 1080;
+    public int fixedWidth = 1920;
+    public int fixedHeight = 1080;
 
     [SerializeField]
     GameObject settingsPanel;
@@ -28,6 +28,9 @@ public class SettingsMenu : MonoBehaviour
     Dictionary<string, (InputAction, string)> inputActions = new Dictionary<string, (InputAction, string)>();
 
     int windowSizeIndex;
+    int tempWindowSizeIndex;
+
+    bool gameStartFirstSet = true;
 
     #region Singleton
     public static SettingsMenu instance;
@@ -78,13 +81,20 @@ public class SettingsMenu : MonoBehaviour
         {
             windowModeDropdown.options.Add(new Dropdown.OptionData(winSize.Value.Item1));
         }
-        WindowModeDropdownFunc(windowModeDropdown);
+        //WindowModeDropdownFunc(windowModeDropdown);
         windowModeDropdown.onValueChanged.AddListener(delegate { WindowModeDropdownFunc(windowModeDropdown); });
     }
 
     void WindowModeDropdownFunc(Dropdown dropdown)
     {
         WindowSet(dropdown.value);
+        if (gameStartFirstSet)
+        {
+            gameStartFirstSet = false;
+            return;
+        }
+
+        ConfirmPanel.instance.WindowSizeCallConfirm();
     }
 
     void WindowSet(int dropdownIndex)
@@ -111,7 +121,10 @@ public class SettingsMenu : MonoBehaviour
 
         if (GameManager.instance != null)
             CameraController.instance.WindowSizeSet(CameraController.instance.zoomLevel, data.Item2, data.Item3);
-        windowSizeIndex = dropdownIndex;
+
+        fixedWidth = data.Item2;
+        fixedHeight = data.Item3;
+        tempWindowSizeIndex = dropdownIndex;
     }
 
     #endregion
@@ -176,10 +189,9 @@ public class SettingsMenu : MonoBehaviour
         WindowModeDropdownSet();
         KeyBindingPanelSet();
 
-        int winIndex = PlayerPrefs.GetInt("WindowIndex", 0);
-        WindowSet(winIndex);
-        windowModeDropdown.value = winIndex;
-
+        windowSizeIndex = PlayerPrefs.GetInt("WindowIndex", 0);
+        WindowSet(windowSizeIndex);
+        windowModeDropdown.value = windowSizeIndex;
         LoadRebindings();
     }
 
@@ -187,5 +199,21 @@ public class SettingsMenu : MonoBehaviour
     {
         windowSize = new Dictionary<int, (string, int, int, bool, bool)>(winSize);
         inputActions = new Dictionary<string, (InputAction, string)>(inputs);
+    }
+
+    public void WindowSizeConfirm(bool isOk)
+    {
+        Debug.Log(isOk);
+        if(isOk)
+        {
+            windowSizeIndex = tempWindowSizeIndex;
+        }
+        else
+        {
+            WindowSet(windowSizeIndex);
+            windowModeDropdown.value = windowSizeIndex;
+        }
+
+        SaveData();
     }
 }

@@ -55,6 +55,7 @@ public abstract class Production : Structure
 
     protected override void OnClientConnectedCallback(ulong clientId)
     {
+        RepairGaugeServerRpc();
         ClientConnectSyncServerRpc();
         if(recipeIndex != -1)
             SetRecipeServerRpc(recipeIndex);

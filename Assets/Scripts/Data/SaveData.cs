@@ -9,6 +9,7 @@ public class SaveData
     public string fileName;
     public string saveDate;
     public int mapSizeIndex;
+    public int difficultyLevel;
 
     // 플레이어
     public List<PlayerSaveData> playerDataList = new List<PlayerSaveData>();

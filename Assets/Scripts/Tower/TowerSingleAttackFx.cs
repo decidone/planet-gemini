@@ -14,10 +14,13 @@ public class TowerSingleAttackFx : NetworkBehaviour
     GameObject attackUnit;
 
     bool alreadyHit;
+    bool explosion;
 
     Coroutine timerCoroutine;
 
     NetworkObjectPool networkObjectPool;
+    [SerializeField]
+    GameObject bulletExploFx;
 
     private void Start()
     {
@@ -40,12 +43,13 @@ public class TowerSingleAttackFx : NetworkBehaviour
         }
     }
 
-    public void GetTarget(Vector3 target, float GetDamage, GameObject obj)
+    public void GetTarget(Vector3 target, float GetDamage, GameObject obj, bool explo)
     {
         moveNextStep = (target - transform.position).normalized;
         damage = GetDamage;
         attackUnit = obj;
         alreadyHit = false;
+        explosion = explo;
         timerCoroutine = StartCoroutine(nameof(RemoveTimer));
     }
 
@@ -71,13 +75,22 @@ public class TowerSingleAttackFx : NetworkBehaviour
             else
                 return;
 
-            if (collision.TryGetComponent(out MonsterAi monster))
+            if (explosion)
             {
-                monster.TakeDamage(damage);
+                NetworkObject bulletPool = networkObjectPool.GetNetworkObject(bulletExploFx, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
+                if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
+                bulletPool.GetComponent<TowerAreaAttackFx>().GetTarget(damage, attackUnit);
             }
-            else if (collision.TryGetComponent(out MonsterSpawner spawner))
+            else
             {
-                spawner.TakeDamage(damage, attackUnit);
+                if (collision.TryGetComponent(out MonsterAi monster))
+                {
+                    monster.TakeDamage(damage);
+                }
+                else if (collision.TryGetComponent(out MonsterSpawner spawner))
+                {
+                    spawner.TakeDamage(damage, attackUnit);
+                }
             }
         }
     }
