@@ -92,6 +92,11 @@ public class GameManager : NetworkBehaviour
     public bool sciBuildingMap;
     ScienceBuildingInfo scienceBuildingInfo;
 
+    public int day;                     // 일 수
+    public bool isDay;                  // 밤 낮
+    [SerializeField] float dayTime;     // 밤/낮 현실 기준 시간(초)
+    public float dayTimer;              // 게임 내 시간(타이머)
+
     #region Singleton
     public static GameManager instance;
 
@@ -115,19 +120,27 @@ public class GameManager : NetworkBehaviour
         openedUI = new List<GameObject>();
         onUIChangedCallback += UIChanged;
         optionCanvas = OptionCanvas.instance;
+
         hostMap = mapGenerator.hostMap;
         clientMap = mapGenerator.clientMap;
         map = hostMap;
         isPlayerInHostMap = true;
         isPlayerInMarket = false;
         isShopOpened = false;
+
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
         scienceBuildingInfo = inventoryUiCanvas.GetComponent<ScienceBuildingInfo>();
+
+        day = 0;
+        isDay = true;
+        dayTimer = 0;
+
         OtherPortalSet();
         GameStartSet();
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -139,6 +152,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.ScienceTree.performed += ScienceTree;
         inputManager.controls.HotKey.EnergyCheck.performed += EnergyCheck;
     }
+
     void OnDisable()
     {
         inputManager.controls.Structure.StrClick.performed -= StrClick;
@@ -149,8 +163,27 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.ScienceTree.performed -= ScienceTree;
         inputManager.controls.HotKey.EnergyCheck.performed -= EnergyCheck;
     }
+
     private void Update()
     {
+        dayTimer += Time.deltaTime;
+        if (dayTimer > dayTime)
+        {
+            dayTimer = 0;
+            if (isDay)
+            {
+                // 낮 -> 밤
+                isDay = false;
+            }
+            else
+            {
+                // 밤 -> 낮
+                isDay = true;
+                day++;
+            }
+        }
+
+
         if (!isConsoleOpened)
         {
             if (consoleUI.activeSelf)
@@ -297,52 +330,53 @@ public class GameManager : NetworkBehaviour
             //foreach (RaycastHit2D hit in hits)
             for (int i = 0; i < hits.Length; i++)
             {
-                if (hits[i].collider.TryGetComponent(out Structure str))
-                    newStructure = str;
-                newClickEvent = hits[i].collider.GetComponent<StructureClickEvent>();
-                newLogisticsClickEvent = hits[i].collider.GetComponent<LogisticsClickEvent>();
-
-                if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
-                {
-                    if (clickEvent != null)
-                    {
-                        clickEvent.CloseUI();
-                    }
-                    if (logisticsClickEvent != null)
-                    {
-                        logisticsClickEvent.CloseUI();
-                    }
-
-                    clickEvent = newClickEvent;
-                    clickEvent.StructureClick();
-                    clickEvent.OpenUI();
-                }
-                else if (newLogisticsClickEvent != null && !newLogisticsClickEvent.GetComponentInParent<Structure>().isPreBuilding)
-                {
-                    if (logisticsClickEvent != null)
-                    {
-                        logisticsClickEvent.CloseUI();
-                    }
-                    if (clickEvent != null)
-                    {
-                        clickEvent.CloseUI();
-                    }
-
-                    logisticsClickEvent = newLogisticsClickEvent;
-
-                    if (logisticsClickEvent.LogisticsCheck())
-                    {
-                        logisticsClickEvent.OpenUI();
-                    }
-                    else
-                    {
-                        logisticsClickEvent = null;
-                    }
-                }
-
                 if (hits[i].collider.TryGetComponent(out InfoInteract _info))
                 {
                     infoList.Add(_info);
+                    GameObject parent = _info.transform.parent.gameObject;
+
+                    if (parent.TryGetComponent(out Structure str))
+                        newStructure = str;
+                    newClickEvent = parent.GetComponent<StructureClickEvent>();
+                    newLogisticsClickEvent = parent.GetComponent<LogisticsClickEvent>();
+
+                    if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+                    {
+                        if (clickEvent != null)
+                        {
+                            clickEvent.CloseUI();
+                        }
+                        if (logisticsClickEvent != null)
+                        {
+                            logisticsClickEvent.CloseUI();
+                        }
+
+                        clickEvent = newClickEvent;
+                        clickEvent.StructureClick();
+                        clickEvent.OpenUI();
+                    }
+                    else if (newLogisticsClickEvent != null && !newLogisticsClickEvent.GetComponentInParent<Structure>().isPreBuilding)
+                    {
+                        if (logisticsClickEvent != null)
+                        {
+                            logisticsClickEvent.CloseUI();
+                        }
+                        if (clickEvent != null)
+                        {
+                            clickEvent.CloseUI();
+                        }
+
+                        logisticsClickEvent = newLogisticsClickEvent;
+
+                        if (logisticsClickEvent.LogisticsCheck())
+                        {
+                            logisticsClickEvent.OpenUI();
+                        }
+                        else
+                        {
+                            logisticsClickEvent = null;
+                        }
+                    }
                 }
             }
 
@@ -506,6 +540,8 @@ public class GameManager : NetworkBehaviour
             default:
                 if (openedUI[order].gameObject.TryGetComponent<Shop>(out Shop shop))
                     shop.CloseUI();
+                else if (openedUI[order].gameObject.TryGetComponent<Bounty>(out Bounty bounty))
+                    bounty.CloseUI();
                 else if (openedUI[order].gameObject.TryGetComponent<PopUpCtrl>(out PopUpCtrl popup))
                     popup.CloseUI();
                 break;

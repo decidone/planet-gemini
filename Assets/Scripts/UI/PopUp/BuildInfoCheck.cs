@@ -6,9 +6,9 @@ using UnityEngine.EventSystems;
 public class BuildInfoCheck : MonoBehaviour
 {
     public BuildItemInfoWin buildItemInfoWin;
-    Structure selectBuild;
+    Structure selectedStr;
     Vector2 mousePos;
-    bool isMouseOnBuild = false;
+    bool isMouseOnStr;
     GameManager gameManager;
     InputManager inputManager;
 
@@ -42,12 +42,44 @@ public class BuildInfoCheck : MonoBehaviour
         x = Mathf.FloorToInt(pos.x);
         y = Mathf.FloorToInt(pos.y);
 
+        RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
+        if (hits.Length > 0)
+        {
+            isMouseOnStr = false;
+            selectedStr = null;
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if (hits[i].collider.TryGetComponent(out InfoInteract info))
+                {
+                    GameObject parent = info.transform.parent.gameObject;
+                    if (parent.TryGetComponent(out Structure str))
+                    {
+                        isMouseOnStr = true;
+                        selectedStr = str;
+                    }
+                }
+            }
+        }
+        else
+        {
+            selectedStr = null;
+            isMouseOnStr = false;
+            BuildItemInfoPopUpOff();
+        }
+
         if (gameManager.map.IsOnMap(x, y))
         {
             Cell cell = gameManager.map.GetCellDataFromPos(x, y);
-            if (cell.structure != null)
+            if (isMouseOnStr)
             {
-                if (cell.structure.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
+                if (!inputManager.isMapOpened && !selectedStr.isPreBuilding)
+                {
+                    PopUpPosSetStructure(mousePos, selectedStr);
+                }
+            }
+            else if (cell.structure != null)
+            {
+                if (inputManager.isMapOpened && cell.structure.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
                 {
                     PopUpPosSetStructure(mousePos, structure);
                 }
@@ -70,8 +102,8 @@ public class BuildInfoCheck : MonoBehaviour
             }
             else
             {
-                selectBuild = null;
-                isMouseOnBuild = false;
+                selectedStr = null;
+                isMouseOnStr = false;
                 BuildItemInfoPopUpOff();
             }
         }

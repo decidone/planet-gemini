@@ -384,7 +384,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!95 &4304459724202878725
 Animator:
   serializedVersion: 4
@@ -512,7 +512,6 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
-  isMainEnergyColony: 0
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}

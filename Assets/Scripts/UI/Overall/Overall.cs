@@ -33,7 +33,9 @@ public class Overall : NetworkBehaviour
     Dictionary<int, int> itemsFromHostToClient = new Dictionary<int, int>();    // 호스트 행성에서 클라이언트 행성으로 전송한 아이템 종류별 총합
     Dictionary<int, int> itemsFromClientToHost = new Dictionary<int, int>();    // 클라이언트 행성에서 호스트 행성으로 전송한 아이템 종류별 총합
     public int spawnerDestroyCount;   // 스포너 파괴 카운트 (스포너 단계에 따른 분류는 따로 하지 않음)
+    public int spawnerBountyReceived; // 스포너 파괴 보상 카운트
     public int monsterKillCount;      // 몬스터 킬 카운트 (마찬가지로 몬스터 종류에 따른 분류는 따로 하지 않음)
+    public int monsterBountyReceived; // 몬스터 킬 보상 카운트
 
     OverallDisplay display;
 
@@ -56,7 +58,9 @@ public class Overall : NetworkBehaviour
     {
         itemList = itemListSO.itemSOList;
         spawnerDestroyCount = 0;
+        spawnerBountyReceived = 0;
         monsterKillCount = 0;
+        monsterBountyReceived = 0;
 
         Init();
 
@@ -349,6 +353,35 @@ public class Overall : NetworkBehaviour
             case 1: // monsterKillCount
                 monsterKillCount++;
                 onOverallChangedCallback?.Invoke(31);
+                break;
+            default:
+                Debug.Log("Wrong task id");
+                break;
+        }
+    }
+
+    public void ReceivedCount(int taskId, int amount)
+    {
+        ReceivedCountServerRpc(taskId, amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ReceivedCountServerRpc(int taskId, int amount)
+    {
+        // 0: 스포너, 1: 몬스터
+        ReceivedCountClientRpc(taskId, amount);
+    }
+
+    [ClientRpc]
+    public void ReceivedCountClientRpc(int taskId, int amount)
+    {
+        switch (taskId)
+        {
+            case 0:
+                spawnerBountyReceived += amount;
+                break;
+            case 1:
+                monsterBountyReceived += amount;
                 break;
             default:
                 Debug.Log("Wrong task id");

@@ -20,7 +20,7 @@ public class PlayerController : NetworkBehaviour
     //int tempMinerMaxCount;
 
     InputManager inputManager;
-    ShopInteract nearShop;
+    NPCInteract nearShop;
     TeleportUI teleportUI;
     bool isLoot;
 
@@ -111,7 +111,7 @@ public class PlayerController : NetworkBehaviour
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Interactable interactable = collision.GetComponent<Interactable>();
-        ShopInteract shop = collision.GetComponent<ShopInteract>();
+        NPCInteract shop = collision.GetComponent<NPCInteract>();
 
         if (interactable)
             interactable.SpawnIcon();
@@ -138,7 +138,7 @@ public class PlayerController : NetworkBehaviour
         Portal portal = collision.GetComponent<Portal>();
         MarketPortal marketPortal = collision.GetComponent<MarketPortal>();
         Interactable interactable = collision.GetComponent<Interactable>();
-        ShopInteract shop = collision.GetComponent<ShopInteract>();
+        NPCInteract shop = collision.GetComponent<NPCInteract>();
 
         if (interactable)
             interactable.DespawnIcon();
