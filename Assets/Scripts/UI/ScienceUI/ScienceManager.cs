@@ -29,7 +29,7 @@ public class ScienceManager : MonoBehaviour
 
     ScienceCoreLvCtrl[] buildContent = new ScienceCoreLvCtrl[5];
     ScienceCoreLvCtrl[] battleContent = new ScienceCoreLvCtrl[5];
-
+    int[] canCoreUpgradeCount = new int[5] {0, 1, 2, 3, 4 };  
     public GameObject scienceTreeUI;
 
     ScienceInfoData scienceInfoData;
@@ -153,9 +153,9 @@ public class ScienceManager : MonoBehaviour
         {
             ScienceBtn btn = btns[i];
 
-            if (scienceDb.scienceNameDb.TryGetValue(btn.sciName, out List<int> levels))
+            if (scienceDb.scienceNameDb.TryGetValue(btn.sciName, out Dictionary<int, int> levels))
             {
-                bool sciNameFound = levels.Contains(btn.level);
+                bool sciNameFound = levels.ContainsKey(btn.level);
 
                 if (sciNameFound)
                 {
@@ -213,24 +213,24 @@ public class ScienceManager : MonoBehaviour
         if (scienceInfoData.coreLv > scienceDb.coreLevel)
             return;
 
-        mousePos = Input.mousePosition;
-        if (mousePos.x + popupWidth > Screen.width)
-        {
-            mousePos.x = Screen.width - popupWidth - 10.0f;
-        }
-        else if (mousePos.x < 0)
-        {
-            mousePos.x = 0;
-        }
-        itemInputWindow.transform.position = mousePos;
+        //mousePos = Input.mousePosition;
+        //if (mousePos.x + popupWidth > Screen.width)
+        //{
+        //    mousePos.x = Screen.width - popupWidth - 10.0f;
+        //}
+        //else if (mousePos.x < 0)
+        //{
+        //    mousePos.x = 0;
+        //}
+        //itemInputWindow.transform.position = mousePos;
         itemInputWindow.SetActive(true);
         sciItemSetWindow.SetUI(focusedSciBtn);
     }
 
     public void OpenUpgradeWindow()
     {
-        mousePos = Input.mousePosition;
-        upgradeWindow.transform.position = mousePos;
+        //mousePos = Input.mousePosition;
+        //upgradeWindow.transform.position = mousePos;
         upgradeWindow.gameObject.SetActive(true);
         if (focusedSciBtn.isCore && !focusedSciBtn.isMain)
         {
@@ -240,13 +240,26 @@ public class ScienceManager : MonoBehaviour
             upgradeWindow.SetBtn(focusedSciBtn);
     }
 
+    public void CoreUpgradeWarningWindow(int coreLevel)
+    {
+        //mousePos = Input.mousePosition;
+        //upgradeWindow.transform.position = mousePos;
+        upgradeWindow.gameObject.SetActive(true);
+        upgradeWindow.CoreWaring(canCoreUpgradeCount[coreLevel - 1]);
+    }
+
     public void UpgradeStart(ScienceBtn btn)
     {
         //btn.ItemSaveEnd();
         scienceDb.SciBtnUpgradeServerRpc(btn.btnIndex);
+        if (btn.isCore)
+        {
+            gameManager.WaveStartSet(btn.coreLevel);
+            //웨이브 발생 코드
+        }
     }
 
-    public void SciUpgradeEnd(string sciName, int sciLevel)
+    public void SciUpgradeEnd(string sciName, int sciLevel, int coreLv, bool isLoad)
     {
         if (sciName == "Core")
         {
@@ -260,7 +273,7 @@ public class ScienceManager : MonoBehaviour
         isAnyUpgradeCompleted = true;
         onUpgradeCompletedCallback?.Invoke(40);
 
-        scienceDb.SaveSciDb(sciName, sciLevel);
+        scienceDb.SaveSciDb(sciName, sciLevel, coreLv, isLoad);
         buildingInven.Refresh();
     }
 
@@ -289,6 +302,19 @@ public class ScienceManager : MonoBehaviour
     public void SyncSciBtnItem(int btnIndex, int index, int amount)
     {
         scienceDb.SyncSciBtnItemServerRpc(btnIndex, index, amount);
+    }
+
+    public bool CoreUpgradeCheck(int coreLevel)
+    {
+        bool canUpgrade = false;
+
+        int upgradeCount = scienceDb.CoreLevelUpgradeCount(coreLevel - 1);
+        if (upgradeCount >= canCoreUpgradeCount[coreLevel - 1]) 
+        {
+            canUpgrade = true;
+        }
+
+        return canUpgrade;
     }
 
     public bool CoreSaveCheck(ScienceBtn btn)

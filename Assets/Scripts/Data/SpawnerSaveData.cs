@@ -25,4 +25,5 @@ public class SpawnerSaveData
     public SerializedVector3 wavePos = new SerializedVector3();
     public SerializedVector3 spawnerPos = new SerializedVector3();      // 스포너 위치
     public List<UnitSaveData> monsterList = new List<UnitSaveData>();   // 몬스터 데이터
+    public float violentCollSize;   // 광폭화 시 검색범위
 }

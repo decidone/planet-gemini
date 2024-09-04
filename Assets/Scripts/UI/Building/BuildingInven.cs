@@ -101,8 +101,8 @@ public class BuildingInven : MonoBehaviour
                 {
                     if (scienceDb.scienceNameDb.ContainsKey(buildingDataList[i].scienceName) && buildingDataList[i].type == itemType)
                     {
-                        List<int> values;
-                        if (scienceDb.scienceNameDb.TryGetValue(buildingDataList[i].scienceName, out values) && values.Contains(buildingDataList[i].level))
+                        Dictionary<int, int> values;
+                        if (scienceDb.scienceNameDb.TryGetValue(buildingDataList[i].scienceName, out values) && values.ContainsKey(buildingDataList[i].level))
                         {
                             buildingDic[index] = buildingDataList[i];
                             index++;

@@ -466,6 +466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: 8a4e11f449c76804cb5ef45f38232888, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
   unitName: 
@@ -482,9 +483,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   name: Evil Eye
   spawner: {fileID: 0}
-  maxSpawnDist: 40
+  maxSpawnDist: 20
   waveState: 0
   waveArrivePos: 0
+  normalTraceTimer: 0
 --- !u!50 &6876622670015851553
 Rigidbody2D:
   serializedVersion: 4

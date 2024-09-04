@@ -118,7 +118,7 @@ public class Unloader : LogisticsCtrl
                 || outFactory.isFull)
         {
             GetItemIndexSet();
-            Invoke(nameof(DelayGetItem), structureData.SendDelay);
+            Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
             return;
         }
 
@@ -139,7 +139,7 @@ public class Unloader : LogisticsCtrl
                     SendItem(itemIndex);
                 }
             }
-            Invoke(nameof(DelayGetItem), structureData.SendDelay);
+            Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
         }
     }
 

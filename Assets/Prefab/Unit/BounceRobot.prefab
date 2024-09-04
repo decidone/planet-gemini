@@ -577,6 +577,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: d4523c5fa7df1244998568cd8862e84a, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 8598225404917607297}
   unitName: 

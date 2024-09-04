@@ -261,8 +261,17 @@ MonoBehaviour:
   dieCheck: 0
   waveTimer: 0
   searchColl: {fileID: 7283164378971898256}
-  energyAggroValue: 50
-  energyAggroInterval: 30
+  energyAggroMaxValue:
+  - 3000
+  - 6000
+  - 8000
+  - 10000
+  energyAggroValue: 0
+  energyAggroInterval:
+  - 120
+  - 150
+  - 180
+  - 200
   isInHostMap: 0
 --- !u!50 &5546485786390217281
 Rigidbody2D:

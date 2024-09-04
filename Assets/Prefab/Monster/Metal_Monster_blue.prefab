@@ -403,6 +403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: 1682f2fee90d77e479512842b3435b99, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
   unitName: 
@@ -419,9 +420,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   name: Metal Monster
   spawner: {fileID: 0}
-  maxSpawnDist: 40
+  maxSpawnDist: 20
   waveState: 0
   waveArrivePos: 0
+  normalTraceTimer: 0
 --- !u!70 &5456661407106365054
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

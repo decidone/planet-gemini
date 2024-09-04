@@ -92,7 +92,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[0], item));
         }
 
-        Invoke(nameof(DelaySetItem), structureData.SendDelay);
+        Invoke(nameof(DelaySetItem), structureData.SendDelay[level]);
     }
 
     public void SetOutObj(GameObject Obj)

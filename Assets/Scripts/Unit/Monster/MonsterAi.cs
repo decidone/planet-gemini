@@ -21,7 +21,7 @@ public class MonsterAi : UnitCommonAi
     protected bool idleTimeStart = true;
 
     protected bool isScriptActive = false;
-    protected int monsterType;    // 0 : 약한, 1 : 노멀, 2 : 강함, 3 : 가디언
+    public int monsterType;    // 0 : 약한, 1 : 노멀, 2 : 강함, 3 : 가디언
 
     [SerializeField]
     protected bool waveState = false;
@@ -340,7 +340,7 @@ public class MonsterAi : UnitCommonAi
             {
                 patrolPos = Vector3.zero;
 
-                patRandomPos = Random.insideUnitCircle * unitCommonData.PatrolRad * Random.Range(5, 10);
+                patRandomPos = Random.insideUnitCircle * unitCommonData.PatrolRad * Random.Range(3, 7);
                 patrolPos = tr.position + patRandomPos;
                 if (checkPathCoroutine == null)
                 {
@@ -355,7 +355,10 @@ public class MonsterAi : UnitCommonAi
         if (movePath == null)
             return; 
         if (movePath.Count <= currentWaypointIndex)
+        {
+            aIState = AIState.AI_Idle;
             return;
+        }
 
         Vector3 targetWaypoint = movePath[currentWaypointIndex];
 
@@ -808,7 +811,7 @@ public class MonsterAi : UnitCommonAi
                 else
                 {
                     PatrolRandomPosSet();
-                    checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "ReturnPos"));
+                    checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
                 }
             }
         }
@@ -878,10 +881,7 @@ public class MonsterAi : UnitCommonAi
         waveState = true;
         isWaveColonyCallCheck = false;
 
-        int x = (int)Random.Range(-5, 5);
-        int y = (int)Random.Range(-5, 5);
-
-        wavePos = _wavePos + new Vector3(x, y);
+        wavePos = _wavePos;
         checkPathCoroutine = StartCoroutine(CheckPath(wavePos, "NormalTrace"));
     }
 

@@ -31,7 +31,9 @@
     "1":{"items":["IronPlate"],"amounts":[1],"cooldown":3}
   },
   "Splitter":{
-    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3},
+    "2":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3},
+    "3":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   },
   "Merger":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}

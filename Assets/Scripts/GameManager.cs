@@ -92,6 +92,13 @@ public class GameManager : NetworkBehaviour
     public bool sciBuildingMap;
     ScienceBuildingInfo scienceBuildingInfo;
 
+    Dictionary<int, int[]> waveLevelsByMapSize = new Dictionary<int, int[]>
+    {
+        { 0, new int[] { 1, 1, 2, 2 } }, // mapSize 0에 따른 coreLevel별 waveLevel
+        { 1, new int[] { 1, 1, 2, 3 } }, // mapSize 1에 따른 coreLevel별 waveLevel
+        { 2, new int[] { 1, 2, 3, 4 } }  // mapSize 2에 따른 coreLevel별 waveLevel
+    };
+
     #region Singleton
     public static GameManager instance;
 
@@ -821,6 +828,19 @@ public class GameManager : NetworkBehaviour
             Debug.Log("Client");
             ClientConnected();
         }
+    }
+
+    public void WaveStartSet(int coreLevel)
+    {
+        int mapSize = MainGameSetting.instance.mapSizeIndex;
+        int waveLevel = 0;
+
+        if (waveLevelsByMapSize.ContainsKey(mapSize))
+        {
+            waveLevel = waveLevelsByMapSize[mapSize][coreLevel - 2];
+        }
+        Debug.Log(waveLevel);
+        MonsterSpawnerManager.instance.WavePointSet(waveLevel, sciBuildingMap);
     }
 
     public void SciBuildingSet(bool map)

@@ -35,8 +35,8 @@ public class StructureData : ScriptableObject
     public float SendFluidAmount { get { return sendFluidAmount; } }
 
     [SerializeField]
-    private float sendDelay;
-    public float SendDelay { get { return sendDelay; } }
+    private float[] sendDelay;
+    public float[] SendDelay { get { return sendDelay; } }
 
     [SerializeField]
     private float maxBuildingGauge;

@@ -148,7 +148,7 @@ public class Structure : NetworkBehaviour
     public Vector3 tileSetPos;
 
     
-    protected bool destroyStart;
+    public bool destroyStart;
     protected float destroyInterval;
     protected float destroyTimer;
 
@@ -256,7 +256,8 @@ public class Structure : NetworkBehaviour
     protected void ObjRemoveFunc()
     {
         AddInvenItem();
-        DestroyFuncServerRpc();
+        RemoveObjServerRpc();
+        //DestroyFuncServerRpc();
         RefundCost();
         soundManager.PlayUISFX("BuildingRemove");
         GameManager.instance.BuildAndSciUiReset();
@@ -741,26 +742,26 @@ public class Structure : NetworkBehaviour
             if (!belt.isItemStop)
             {
                 GetItemIndexSet();
-                Invoke(nameof(DelayGetItem), structureData.SendDelay);
+                Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
                 return;
             }
             else if (TryGetComponent(out Production production) && belt.itemObjList.Count > 0 && !production.CanTakeItem(belt.itemObjList[0].item))
             {
                 GetItemIndexSet();
-                Invoke(nameof(DelayGetItem), structureData.SendDelay);
+                Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
                 return;
             }
         }
         else if (TryGetComponent(out Unloader unloader) && inObj[getItemIndex].TryGetComponent(out Production inObjScript) && !inObjScript.UnloadItemCheck(unloader.selectItem))
         {
             GetItemIndexSet();
-            Invoke(nameof(DelayGetItem), structureData.SendDelay);
+            Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
             return;
         }
         else if (!GetComponent<Unloader>() && inObj[getItemIndex].GetComponent<Structure>())
         {
             GetItemIndexSet();
-            Invoke(nameof(DelayGetItem), structureData.SendDelay);
+            Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
             return;
         }
 
@@ -916,7 +917,7 @@ public class Structure : NetworkBehaviour
                 setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
         }
 
-        Invoke(nameof(DelaySetItem), structureData.SendDelay);
+        Invoke(nameof(DelaySetItem), structureData.SendDelay[level]);
     }
     
     protected void SendDelaySet(int itemIndex, int outObjIndex)

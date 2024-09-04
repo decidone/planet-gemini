@@ -25,7 +25,7 @@ public class SettingsMenu : MonoBehaviour
     Button resetBtn;
     List<KeyBindingsBtn> keyBindingsBtn = new List<KeyBindingsBtn>();
     Dictionary<int, (string, int, int, bool, bool)> windowSize = new Dictionary<int, (string, int, int, bool, bool)>();
-    Dictionary<string, (InputAction, string)> inputActions = new Dictionary<string, (InputAction, string)>();
+    Dictionary<string, InputAction> inputActions = new Dictionary<string, InputAction>();
 
     int windowSizeIndex;
     int tempWindowSizeIndex;
@@ -50,7 +50,7 @@ public class SettingsMenu : MonoBehaviour
     void Start()
     {
         backBtn.onClick.AddListener(() => BackBtnFunc());
-        resetBtn.onClick.AddListener(()=> ResetToDefault());
+        resetBtn.onClick.AddListener(()=> ResetBtnFunc());
     }
 
     public void MenuOpen()
@@ -138,15 +138,23 @@ public class SettingsMenu : MonoBehaviour
             keyBindPanel.transform.SetParent(keyBindingsPanel.transform, false);
             KeyBindingsBtn btn = keyBindPanel.GetComponentInChildren<KeyBindingsBtn>();
             keyBindingsBtn.Add(btn);
-            btn.BtnSetting(action.Value.Item1, action.Key, action.Value.Item2); // 현제는 초기값만 넣게 하는데 저장 기능 추가되면 저장된 값을 불러오도록(덮어씌우기 하도록)
+            string key = inputActionSet(action.Value);
+            btn.BtnSetting(action.Value, action.Key, key); // 현제는 초기값만 넣게 하는데 저장 기능 추가되면 저장된 값을 불러오도록(덮어씌우기 하도록)
         }
+    }
+
+    string inputActionSet(InputAction input)
+    {
+        var playerInvenAction = input.bindings[0].effectivePath;
+        string key = InputControlPath.ToHumanReadableString(playerInvenAction, InputControlPath.HumanReadableStringOptions.OmitDevice);
+        return key;
     }
 
     private void LoadRebindings()
     {
         foreach (var inputAction in inputActions)
         {
-            InputAction action = inputAction.Value.Item1;
+            InputAction action = inputAction.Value;
             string name = inputAction.Key;
             // 저장된 리바인딩 데이터를 로드
             if (PlayerPrefs.HasKey(name))
@@ -163,7 +171,12 @@ public class SettingsMenu : MonoBehaviour
         }
     }
 
-    void ResetToDefault()
+    void ResetBtnFunc()
+    {
+        ConfirmPanel.instance.KeyBindingResetConfirm();
+    }
+
+    public void ResetToDefault()
     {
         foreach (var btn in keyBindingsBtn)
         {
@@ -195,10 +208,10 @@ public class SettingsMenu : MonoBehaviour
         LoadRebindings();
     }
 
-    public void GetSettingData(Dictionary<int, (string, int, int, bool, bool)> winSize, Dictionary<string, (InputAction, string)> inputs)
+    public void GetSettingData(Dictionary<int, (string, int, int, bool, bool)> winSize, Dictionary<string, InputAction> inputs)
     {
         windowSize = new Dictionary<int, (string, int, int, bool, bool)>(winSize);
-        inputActions = new Dictionary<string, (InputAction, string)>(inputs);
+        inputActions = new Dictionary<string, InputAction>(inputs);
     }
 
     public void WindowSizeConfirm(bool isOk)

@@ -335,6 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: d9b93cd55c911484e8439996256f5826, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
   unitName: 
@@ -351,9 +352,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   name: Armor Golem
   spawner: {fileID: 0}
-  maxSpawnDist: 40
+  maxSpawnDist: 20
   waveState: 0
   waveArrivePos: 0
+  normalTraceTimer: 0
   golemAttackFX: {fileID: 3455073265877218510, guid: cd93eff768044de4eba4c9eb476f1bb8, type: 3}
 --- !u!70 &7454456902833923465
 CapsuleCollider2D:

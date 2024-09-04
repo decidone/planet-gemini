@@ -342,7 +342,10 @@ MonoBehaviour:
   hostPlayerSpawnPos: {x: 0, y: 0, z: 0}
   clientPlayerSpawnPos: {x: 0, y: 0, z: 0}
   consoleUI: {fileID: 0}
-  optionPanel: {fileID: 0}
+  basicUI: {fileID: 0}
+  chat: {fileID: 0}
+  scienceBuildingSet: 0
+  sciBuildingMap: 0
 --- !u!114 &762871311885926033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,6 +490,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1eccbc744d352cb498255e7dc4185f52, type: 2}
   - {fileID: 11400000, guid: db690fbf05d11be48816a392b5f5b26a, type: 2}
   - {fileID: 11400000, guid: a3020250a4044e341af1fee415ecb042, type: 2}
+  - {fileID: 11400000, guid: cd3bb9bb1ab9ebd469093e8458841525, type: 2}
+  - {fileID: 11400000, guid: 4d399b61e84a09348a63cd723a216974, type: 2}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,6 +556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scienceBtns: []
+  coreLevelUpgrade: 0000000000000000000000000000000000000000
   coreLevel: 1
 --- !u!114 &4059864358883353247
 MonoBehaviour:
@@ -725,6 +731,7 @@ MonoBehaviour:
     fileName: 
     saveDate: 
     mapSizeIndex: 0
+    difficultyLevel: 0
     playerDataList: []
     ScienceData: []
     structureData: []
@@ -782,6 +789,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fogOfWar: {fileID: 0}
+  outlintMat: {fileID: 0}
+  noOutlineMat: {fileID: 0}
 --- !u!1 &7414352785637535675
 GameObject:
   m_ObjectHideFlags: 0

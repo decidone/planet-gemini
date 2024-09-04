@@ -301,6 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: 828465b374c99a94eb14697b450620ce, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
   unitName: 
@@ -317,9 +318,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   name: Stone Golem
   spawner: {fileID: 0}
-  maxSpawnDist: 40
+  maxSpawnDist: 20
   waveState: 0
   waveArrivePos: 0
+  normalTraceTimer: 0
 --- !u!70 &8051527625688539190
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

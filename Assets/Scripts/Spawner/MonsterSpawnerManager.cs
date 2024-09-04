@@ -6,17 +6,8 @@ using QFSW.QC;
 
 public class MonsterSpawnerManager : NetworkBehaviour
 {
-    public List<MonsterSpawner> map1Area1Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> map1Area2Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> map1Area3Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> map1Area4Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> map1Area5Group = new List<MonsterSpawner>();
-
-    public List<MonsterSpawner> map2Area1Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> map2Area2Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> map2Area3Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> map2Area4Group = new List<MonsterSpawner>();
-    public List<MonsterSpawner> map2Area5Group = new List<MonsterSpawner>();
+    public Dictionary<(int map, int area), List<MonsterSpawner>> monsterSpawners = new Dictionary<(int, int), List<MonsterSpawner>>();
+    // map 1 = hostMap, 2 = clientMap
 
     public GameObject[,] spawnerMap1Matrix;
     public GameObject[,] spawnerMap2Matrix;
@@ -48,6 +39,11 @@ public class MonsterSpawnerManager : NetworkBehaviour
     bool map2Wave4Start = false;
     [SerializeField]
     bool map2Wave5Start = false;
+
+    [SerializeField]
+    bool viDayOn = false;
+    [SerializeField]
+    bool viDayOff = false;
 
     WavePoint wavePoint;
     bool hostMapWave;
@@ -127,6 +123,17 @@ public class MonsterSpawnerManager : NetworkBehaviour
             WavePointSet(5, false);
             map2Wave5Start = false;
         }
+
+        if (viDayOn)
+        {
+            ViolentDayOn();
+            viDayOn = false;
+        }
+        if (viDayOff)
+        {
+            ViolentDayOff();
+            viDayOff = false;
+        }
     }
 
     public void MatrixSet(int spCount, GameObject[,] map1Matrix, GameObject[,] map2Matrix, bool isHostMap)
@@ -166,120 +173,37 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public void AreaGroupSet(MonsterSpawner spawner, int groupNum, bool isHostMap)
     {
         isInHostMap = isHostMap;
-        switch (groupNum)
+        (int map, int area) key = (isHostMap ? 1 : 2, groupNum);
+
+        if (!monsterSpawners.ContainsKey(key))
         {
-            case 1 :
-                if(isInHostMap)
-                    map1Area1Group.Add(spawner);
-                else
-                    map2Area1Group.Add(spawner);
-                break;
-            case 2 :
-                if (isInHostMap)
-                    map1Area2Group.Add(spawner);
-                else
-                    map2Area2Group.Add(spawner);
-                break;
-            case 3 :
-                if (isInHostMap)
-                    map1Area3Group.Add(spawner);
-                else
-                    map2Area3Group.Add(spawner);
-                break;
-            case 4 :
-                if (isInHostMap)
-                    map1Area4Group.Add(spawner);
-                else
-                    map2Area4Group.Add(spawner);
-                break;
-            case 5 :
-                if (isInHostMap)
-                    map1Area5Group.Add(spawner);
-                else
-                    map2Area5Group.Add(spawner);
-                break;
-            default :
-                break;
+            monsterSpawners.Add(key, new List<MonsterSpawner>());
         }
+
+        monsterSpawners[key].Add(spawner);
     }
 
     public void AreaGroupRemove(MonsterSpawner spawner, int groupNum, bool isInHostMap)
     {
-        switch (groupNum)
-        {
-            case 1:
-                if(isInHostMap && map1Area1Group.Contains(spawner))
-                    map1Area1Group.Remove(spawner);
-                else if (!isInHostMap && map2Area1Group.Contains(spawner))
-                    map2Area1Group.Remove(spawner);        
-                break;
-            case 2:
-                if (isInHostMap && map1Area2Group.Contains(spawner))
-                    map1Area2Group.Remove(spawner);
-                else if (!isInHostMap && map2Area2Group.Contains(spawner))
-                    map2Area2Group.Remove(spawner);
-                break;
-            case 3:
-                if (isInHostMap && map1Area3Group.Contains(spawner))
-                    map1Area3Group.Remove(spawner);
-                else if (!isInHostMap && map2Area3Group.Contains(spawner))
-                    map2Area3Group.Remove(spawner);
-                break;
-            case 4:
-                if (isInHostMap && map1Area4Group.Contains(spawner))
-                    map1Area4Group.Remove(spawner);
-                else if (!isInHostMap && map2Area4Group.Contains(spawner))
-                    map2Area4Group.Remove(spawner);
-                break;
-            case 5:
-                if (isInHostMap && map1Area5Group.Contains(spawner))
-                    map1Area5Group.Remove(spawner);
-                else if (!isInHostMap && map2Area5Group.Contains(spawner))
-                    map2Area5Group.Remove(spawner);
-                break;
-            default:
-                break;
-        }
+        (int map, int area) key = (isInHostMap ? 1 : 2, groupNum);
+
+        monsterSpawners[key].Remove(spawner);
+
+        if (monsterSpawners[key].Count == 0)
+            monsterSpawners.Remove(key);
     }
 
     [QFSW.QC.Command()]
     public void WavePointSet(int waveLevel, bool isInHostMap)
     {
-        MonsterSpawner waveSpawner = null; 
-        switch (waveLevel)
+        MonsterSpawner waveSpawner = null;
+
+        (int map, int area) key = (isInHostMap ? 1 : 2, waveLevel);
+
+        waveSpawner = monsterSpawners[key][Random.Range(0, monsterSpawners[key].Count)];
+        if (waveSpawner == null)
         {
-            case 1:
-                if (isInHostMap)
-                    waveSpawner = map1Area1Group[Random.Range(0, map1Area1Group.Count)];
-                else
-                    waveSpawner = map2Area1Group[Random.Range(0, map2Area1Group.Count)];
-                break;
-            case 2:
-                if (isInHostMap)
-                    waveSpawner = map1Area2Group[Random.Range(0, map1Area2Group.Count)];
-                else
-                    waveSpawner = map2Area2Group[Random.Range(0, map2Area2Group.Count)];
-                break;
-            case 3:
-                if (isInHostMap)
-                    waveSpawner = map1Area3Group[Random.Range(0, map1Area3Group.Count)];
-                else
-                    waveSpawner = map2Area3Group[Random.Range(0, map2Area3Group.Count)];
-                break;
-            case 4:
-                if (isInHostMap)
-                    waveSpawner = map1Area4Group[Random.Range(0, map1Area4Group.Count)];
-                else
-                    waveSpawner = map2Area4Group[Random.Range(0, map2Area4Group.Count)];
-                break;
-            case 5:
-                if (isInHostMap)
-                    waveSpawner = map1Area5Group[Random.Range(0, map1Area5Group.Count)];
-                else
-                    waveSpawner = map2Area5Group[Random.Range(0, map2Area5Group.Count)];
-                break;
-            default:
-                break;
+            return;
         }
 
         if (waveSpawner != null)
@@ -351,8 +275,22 @@ public class MonsterSpawnerManager : NetworkBehaviour
         else
             clientMapWave = waveState;
 
+        WarningWindowSetServerRpc();
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    void WarningWindowSetServerRpc()
+    {
+        WarningWindowSetClientRpc();
+    }
+
+    [ClientRpc]
+    void WarningWindowSetClientRpc()
+    {
         WarningWindow.instance.WarningTextSet("Wave detected on", isInHostMap);
     }
+
 
     public void WaveEnd()
     {
@@ -361,45 +299,12 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     void GlobalWaveSet(bool state)
     {
-        foreach (MonsterSpawner spawner in map1Area1Group)
+        foreach (var data in monsterSpawners)
         {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map1Area2Group)
-        {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map1Area3Group)
-        {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map1Area4Group)
-        {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map1Area5Group)
-        {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map2Area1Group)
-        {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map2Area2Group)
-        {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map2Area3Group)
-        {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map2Area4Group)
-        {
-            spawner.GlobalWaveState(state);
-        }
-        foreach (MonsterSpawner spawner in map2Area5Group)
-        {
-            spawner.GlobalWaveState(state);
+            foreach (MonsterSpawner spawner in data.Value)
+            {
+                spawner.GlobalWaveState(state);
+            }            
         }
     }
 
@@ -565,7 +470,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
         data.spawnerMap1Matrix = group1Data;
         data.spawnerMap2Matrix = group2Data;
-
         return data;
     }
 
@@ -575,5 +479,27 @@ public class MonsterSpawnerManager : NetworkBehaviour
         Debug.Log("Client Spawner Set Count: " + spawners.Length);
         for (int i = 0; i < spawners.Length; i++)
             spawners[i].SetCorruption();
+    }
+
+    public void ViolentDayOn()
+    {
+        foreach (var data in monsterSpawners)
+        {
+            foreach (MonsterSpawner spawner in data.Value)
+            {
+                spawner.SearchCollExtend();
+            }
+        }
+    }
+
+    public void ViolentDayOff()
+    {
+        foreach (var data in monsterSpawners)
+        {
+            foreach (MonsterSpawner spawner in data.Value)
+            {
+                spawner.SearchCollReturn();
+            }
+        }
     }
 }

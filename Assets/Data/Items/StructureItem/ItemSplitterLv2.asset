@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: ItemSplitter
+  m_Name: ItemSplitterLv2
   m_EditorClassIdentifier: 
   name: Splitter
   icon: {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}

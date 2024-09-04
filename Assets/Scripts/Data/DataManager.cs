@@ -33,17 +33,15 @@ public class DataManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
+        path = Application.persistentDataPath + "/save";
     }
     #endregion
 
     private void Start()
     {
-        path = Application.persistentDataPath + "/save";
         saveData = new SaveData();
         selectedSlot = 0;
-
         netObjMgr = NetworkObjManager.instance;
     }
     void OnEnable()
@@ -175,7 +173,8 @@ public class DataManager : MonoBehaviour
         // 행성 인벤토리
         GameManager.instance.hostMapInven.LoadData(saveData.HostMapInvenData);
         GameManager.instance.clientMapInven.LoadData(saveData.ClientMapInvenData);
-        TempScienceDb.instance.LoadData(saveData.ScienceData);
+        TempScienceDb.instance.LoadSet(saveData.ScienceData);
+        //TempScienceDb.instance.LoadData(saveData.ScienceData);
     }
 
     public void Clear()
@@ -401,6 +400,7 @@ public class DataManager : MonoBehaviour
             if(spawnerSaveData.waveState)
                 monsterSpawner.GameStartWaveSet(spawnerSaveData.waveTimer);
             SetSpawner(monsterSpawner, spawnerSaveData, planet, spawnerSaveData.waveState);
+            monsterSpawner.violentCollSize = spawnerSaveData.violentCollSize;
         }
 
         return spawnerGroupObj;
