@@ -35,7 +35,7 @@ public class PumpCtrl : FluidFactoryCtrl
             {
                 sendDelayTimer += Time.deltaTime;
 
-                if (sendDelayTimer > structureData.SendDelay)
+                if (sendDelayTimer > structureData.SendDelay[level])
                 {
                     SendFluid();
                     sendDelayTimer = 0;

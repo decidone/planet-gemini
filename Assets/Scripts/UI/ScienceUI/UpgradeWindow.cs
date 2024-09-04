@@ -10,6 +10,9 @@ public class UpgradeWindow : MonoBehaviour
     [SerializeField]
     Button cancelBtn;
     ScienceBtn scienceBtn;
+    [SerializeField]
+    Text text;
+    bool isCoreWaring;
 
     private void Awake()
     {
@@ -21,11 +24,31 @@ public class UpgradeWindow : MonoBehaviour
     public void SetBtn(ScienceBtn btn)
     {
         scienceBtn = btn;
+        isCoreWaring = false;
+        if (btn.isCore)
+        {
+            text.text = "Upgrading the core will trigger a monster wave.";
+        }
+        else
+        {
+            text.text = "Would you like to upgrade the science " + scienceBtn.sciName + "?";
+        }
     }
+
+    public void CoreWaring(int needToUpgradeCount)
+    {
+        isCoreWaring = true;
+        text.text = "To increase the core level, you must unlock a " + needToUpgradeCount + " of sciences from the previous core level.";
+    }
+
 
     void OkBtnFunc()
     {
-        ScienceManager.instance.UpgradeStart(scienceBtn);
+        if (!isCoreWaring)
+        {
+            ScienceManager.instance.UpgradeStart(scienceBtn);
+        }
+
         CloseUI();
     }
 

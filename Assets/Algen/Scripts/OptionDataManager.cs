@@ -12,7 +12,7 @@ public class OptionDataManager : MonoBehaviour
     SoundManager soundManager;
 
     Dictionary<int, (string, int, int, bool, bool)> windowSize = new Dictionary<int, (string, int, int, bool, bool)>();  // 드롭다운인덱스, 이름, 가로, 높이, 전체화면, 커서 가두기
-    Dictionary<string, (InputAction, string)> inputActions = new Dictionary<string, (InputAction, string)>();
+    Dictionary<string, InputAction> inputActions = new Dictionary<string, InputAction>();
 
     #region Singleton
     public static OptionDataManager instance;
@@ -53,17 +53,17 @@ public class OptionDataManager : MonoBehaviour
 
     void KeyBindingSetting()
     {
-        inputActions.Add("Inventory", (InputManager.instance.controls.Inventory.PlayerInven, "E"));
-        inputActions.Add("Loot", (InputManager.instance.controls.Player.Loot, "C"));
-        inputActions.Add("Interaction", (InputManager.instance.controls.Player.Interaction, "F"));
-        inputActions.Add("Market", (InputManager.instance.controls.Player.Market, "V"));
-        inputActions.Add("Map", (InputManager.instance.controls.State.ToggleMap, "M"));
-        inputActions.Add("ScienceTree", (InputManager.instance.controls.HotKey.ScienceTree, "T"));
-        inputActions.Add("Overall", (InputManager.instance.controls.HotKey.Overall, "O"));
-        inputActions.Add("Rotate", (InputManager.instance.controls.Building.Rotate, "R"));
-        inputActions.Add("Unit Attack", (InputManager.instance.controls.Unit.Attack, "A"));
-        inputActions.Add("Unit Patrol", (InputManager.instance.controls.Unit.Patrol, "P"));
-        inputActions.Add("Unit Hold", (InputManager.instance.controls.Unit.Hold, "H"));
+        inputActions.Add("Inventory", InputManager.instance.controls.Inventory.PlayerInven);
+        inputActions.Add("Loot", InputManager.instance.controls.Player.Loot);
+        inputActions.Add("Interaction", InputManager.instance.controls.Player.Interaction);
+        inputActions.Add("Market", InputManager.instance.controls.Player.Market);
+        inputActions.Add("Map", InputManager.instance.controls.State.ToggleMap);
+        inputActions.Add("ScienceTree", InputManager.instance.controls.HotKey.ScienceTree);
+        inputActions.Add("Overall", InputManager.instance.controls.HotKey.Overall);
+        inputActions.Add("Rotate", InputManager.instance.controls.Building.Rotate);
+        inputActions.Add("Unit Attack", InputManager.instance.controls.Unit.Attack);
+        inputActions.Add("Unit Patrol", InputManager.instance.controls.Unit.Patrol);
+        inputActions.Add("Unit Hold", InputManager.instance.controls.Unit.Hold);
     }
 
     public void Save()

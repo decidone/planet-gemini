@@ -233,6 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: 93edbc800f24e6b46b92bff6d3af7e92, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
   unitName: 
@@ -249,9 +250,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   name: Stone Head
   spawner: {fileID: 0}
-  maxSpawnDist: 40
+  maxSpawnDist: 20
   waveState: 0
   waveArrivePos: 0
+  normalTraceTimer: 0
 --- !u!70 &1462048544358157173
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

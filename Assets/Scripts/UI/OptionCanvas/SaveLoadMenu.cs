@@ -28,7 +28,6 @@ public class SaveLoadMenu : MonoBehaviour
     SaveLoadBtn[] buttons;
     [SerializeField]
     Button backBtn;
-
     #region Singleton
     public static SaveLoadMenu instance;
 
@@ -40,13 +39,13 @@ public class SaveLoadMenu : MonoBehaviour
             return;
         }
         instance = this;
+        path = Application.persistentDataPath + "/save";
     }
     #endregion
 
     // Start is called before the first frame update
     void Start()
     {
-        path = Application.persistentDataPath + "/save";
         LoadSaveData();
         backBtn.onClick.AddListener(() => BackBtnFunc());
     }

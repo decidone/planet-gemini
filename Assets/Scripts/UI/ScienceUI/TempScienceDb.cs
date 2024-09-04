@@ -7,9 +7,12 @@ using Unity.Netcode;
 public class TempScienceDb : NetworkBehaviour
 {
     public static TempScienceDb instance;
-    public Dictionary<string, List<int>> scienceNameDb = new Dictionary<string, List<int>>();
+    //public Dictionary<string, List<int>> scienceNameDb = new Dictionary<string, List<int>>();
+    public Dictionary<string, Dictionary<int, int>> scienceNameDb = new Dictionary<string, Dictionary<int, int>>();
     public ScienceBtn[] scienceBtns;
-
+    public int[] coreLevelUpgrade = new int[5] { 0, 0, 0, 0, 0 }; // 코어 레벨 당 업그레이드 개수
+    List<ScienceData> getData = new List<ScienceData>();
+    bool loadDataSet = false;
     public int coreLevel = 1;
 
     private void Awake()
@@ -25,6 +28,10 @@ public class TempScienceDb : NetworkBehaviour
     public void ScienceBtnArrGet(ScienceBtn[] arr)
     {
         scienceBtns = arr;
+        if (loadDataSet)
+        {
+            LoadData(getData);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -51,28 +58,62 @@ public class TempScienceDb : NetworkBehaviour
         scienceBtns[btnIndex].ItemSaveEnd();
     }
 
-    public void SaveSciDb(string sciName, int sciLv)
+    public void CoreLevelUpgradeCheck(int coreLevel)
+    {
+        coreLevelUpgrade[coreLevel -1] += 1;
+    }
+
+    public int CoreLevelUpgradeCount(int coreLv)
+    {
+        return coreLevelUpgrade[coreLv - 1];
+    }
+
+    public void SaveSciDb(string sciName, int sciLv, int coreLv, bool isLoad)
     {
         if (scienceNameDb.ContainsKey(sciName))
         {
             if (!IsLevelExists(sciName, sciLv))
             {
-                scienceNameDb[sciName].Add(sciLv);
+                scienceNameDb[sciName].Add(sciLv, coreLv);
             }
         }
         else
         {
-            scienceNameDb.Add(sciName, new List<int>());
-            scienceNameDb[sciName].Add(sciLv);
+            scienceNameDb.Add(sciName, new Dictionary<int, int>());
+            scienceNameDb[sciName].Add(sciLv, coreLv);
+        }
+
+        if (sciName != "Core")
+        {
+            CoreLevelUpgradeCheck(coreLv);
+        }
+
+        if (!isLoad)
+        {
+            WarningWindowSetServerRpc(sciName);
         }
     }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    void WarningWindowSetServerRpc(string sciName)
+    {
+        WarningWindowSetClientRpc(sciName);
+    }
+
+    [ClientRpc]
+    void WarningWindowSetClientRpc(string sciName)
+    {
+        WarningWindow.instance.WarningTextSet(sciName + " Upgrade Complete.");
+    }
+
 
     public bool IsLevelExists(string sciName, int sciLv)
     {
         if (scienceNameDb.ContainsKey(sciName))
         {
-            List<int> levels = scienceNameDb[sciName];
-            return levels.Contains(sciLv);
+            Dictionary<int, int> levels = scienceNameDb[sciName];
+            return levels.ContainsKey(sciLv);
         }
 
         return false;
@@ -94,5 +135,11 @@ public class TempScienceDb : NetworkBehaviour
             if (data[i].upgradeState == 2)
                 ScienceManager.instance.isAnyUpgradeCompleted = true;
         }
+    }
+
+    public void LoadSet(List<ScienceData> data)
+    {
+        getData = data;
+        loadDataSet = true;
     }
 }

@@ -42,7 +42,7 @@ public class SciUpgradeFunc : MonoBehaviour
 
             if (upgradeTimer >= upgradeTime)
             {
-                btn.UpgradeFunc();
+                btn.UpgradeFunc(false);
                 upgradeSave.Remove(btn);
                 yield break;
             }
@@ -70,7 +70,7 @@ public class SciUpgradeFunc : MonoBehaviour
             upgradeSave[btn] = upgradeTimer;
             if (upgradeTimer >= upgradeTime)
             {
-                btn.UpgradeFunc();
+                btn.UpgradeFunc(false);
                 upgradeSave.Remove(btn);
                 yield break;
             }

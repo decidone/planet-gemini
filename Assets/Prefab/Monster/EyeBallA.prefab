@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: ddcf475f576ddc1439f3e2bc0f75da4c, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
   unitName: 
@@ -165,9 +166,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   name: Eye
   spawner: {fileID: 0}
-  maxSpawnDist: 40
+  maxSpawnDist: 20
   waveState: 0
   waveArrivePos: 0
+  normalTraceTimer: 0
 --- !u!70 &5880749345680461039
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

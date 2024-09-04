@@ -549,6 +549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: b5198616e1983e844a6dcf5bf0b6c56c, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
   unitName: 
@@ -565,9 +566,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   name: Puddle
   spawner: {fileID: 0}
-  maxSpawnDist: 40
+  maxSpawnDist: 20
   waveState: 0
   waveArrivePos: 0
+  normalTraceTimer: 0
 --- !u!70 &4212981719435381732
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

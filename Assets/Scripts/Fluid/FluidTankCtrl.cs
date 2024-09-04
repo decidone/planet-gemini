@@ -31,7 +31,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
                 {
                     sendDelayTimer += Time.deltaTime;
 
-                    if (sendDelayTimer > structureData.SendDelay)
+                    if (sendDelayTimer > structureData.SendDelay[level])
                     {
                         if(saveFluidNum >= structureData.SendFluidAmount)
                             SendFluid();

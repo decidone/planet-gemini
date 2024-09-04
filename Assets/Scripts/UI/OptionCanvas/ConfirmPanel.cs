@@ -24,6 +24,7 @@ public class ConfirmPanel : MonoBehaviour
     InputManager inputManager;
 
     bool windowSetting;
+    bool keyBindingReset;
     float countdownTimer;
     float countdownInterval;
 
@@ -102,6 +103,20 @@ public class ConfirmPanel : MonoBehaviour
             MainManager.instance.OpenedUISet(confirmPanel);
     }
 
+    public void KeyBindingResetConfirm()
+    {
+        OkBtn.gameObject.SetActive(true);
+        CanelBtn.gameObject.SetActive(true);
+        confirmPanel.SetActive(true);
+        keyBindingReset = true;
+        contentText.text = "Do you want to reset" + System.Environment.NewLine + "all key bindings?";
+
+        if (GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
+        else
+            MainManager.instance.OpenedUISet(confirmPanel);
+    }
+
     public void KeyBindingDuplication()
     {
         contentText.text = "The key is already assigned" + System.Environment.NewLine + "Press ESC to cancel";
@@ -129,6 +144,10 @@ public class ConfirmPanel : MonoBehaviour
         else if (windowSetting)
         {
             SettingsMenu.instance.WindowSizeConfirm(true);
+        }
+        else if (keyBindingReset)
+        {
+            SettingsMenu.instance.ResetToDefault();
         }
         UIClose();
     }

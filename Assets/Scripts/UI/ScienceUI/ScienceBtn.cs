@@ -8,6 +8,7 @@ public class ScienceBtn : MonoBehaviour
 {
     public int btnIndex;
     public string sciName;
+    public int coreLevel;
     public int level;
     public float upgradeTime;
     GameObject lockUI;
@@ -48,18 +49,25 @@ public class ScienceBtn : MonoBehaviour
 
     void ButtonFunc()
     {
-        if (ItemFullCheck())
+        if (isCore && !scienceManager.CoreUpgradeCheck(coreLevel))
         {
-            if (!upgradeStart && !upgrade && isLock)
-            {
-                scienceManager.OpenUpgradeWindow();
-            }
+            scienceManager.CoreUpgradeWarningWindow(coreLevel);
         }
         else
         {
-            if (!upgradeStart && !upgrade && isLock)
+            if (ItemFullCheck())
             {
-                scienceManager.OpenItemSetWindow();
+                if (!upgradeStart && !upgrade && isLock)
+                {
+                    scienceManager.OpenUpgradeWindow();
+                }
+            }
+            else
+            {
+                if (!upgradeStart && !upgrade && isLock)
+                {
+                    scienceManager.OpenItemSetWindow();
+                }
             }
         }
     }
@@ -69,12 +77,12 @@ public class ScienceBtn : MonoBehaviour
         othCoreBtn = btn;
     }
 
-    public void UpgradeFunc()
+    public void UpgradeFunc(bool isLoad)
     {
         if(scienceManager == null)
             scienceManager = GameManager.instance.inventoryUiCanvas.GetComponent<ScienceManager>();
 
-        scienceManager.SciUpgradeEnd(sciName, level);
+        scienceManager.SciUpgradeEnd(sciName, level, coreLevel, isLoad);
         LockUiActiveFalse();
         upgrade = true;
         btnImage.color = new Color(255, 255, 255);
@@ -98,10 +106,11 @@ public class ScienceBtn : MonoBehaviour
         }
     }
 
-    public void SetInfo(string name, int coreLv, float time, bool core)
+    public void SetInfo(string name, int lv, int coreLv, float time, bool core)
     {
         sciName = name;
-        level = coreLv;
+        level = lv;
+        coreLevel = coreLv;
         upgradeTime = time;
         isCore = core;
         scienceInfoData = new ScienceInfoData();
@@ -182,16 +191,6 @@ public class ScienceBtn : MonoBehaviour
 
     public void LoadEnd(float upgradeState, bool isLockCheck, float upgradeTimeSet)
     {
-        //if (btnImage == null)
-        //    btnImage = GetComponent<Image>();
-
-        //if (isCore)
-        //    lockUI = transform.parent.Find("LockUi").gameObject;
-        //else
-        //    lockUI = transform.Find("LockUi").gameObject;
-        //upgradeImg = lockUI.transform.Find("Upgrade").gameObject.GetComponent<Image>();
-        //upgradeFunc = SciUpgradeFunc.instance;
-
         if (upgradeState == 0)
         {
             if (ItemFullCheck())
@@ -224,7 +223,7 @@ public class ScienceBtn : MonoBehaviour
             {
                 othCoreBtn.upgradeStart = true;
             }
-            UpgradeFunc();
+            UpgradeFunc(true);
         }
         isLock = isLockCheck;
         if (isCore)

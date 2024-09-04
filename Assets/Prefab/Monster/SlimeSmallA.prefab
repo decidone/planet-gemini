@@ -549,6 +549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: 13e2d60cd2589df45a9005510f64f032, type: 2}
+  aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
   unitName: 
@@ -565,9 +566,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   name: Purple Slime
   spawner: {fileID: 0}
-  maxSpawnDist: 40
+  maxSpawnDist: 20
   waveState: 0
   waveArrivePos: 0
+  normalTraceTimer: 0
 --- !u!70 &8580768404875729042
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
