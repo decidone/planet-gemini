@@ -7,7 +7,7 @@ public class Disintegrator : Production
 {
     [SerializeField] MerchandiseListSO merchandiseList;
     Button confirmBtn;
-    public Finance finance;
+    public Scrap scrap;
     [SerializeField]
     Animator animator;
 
@@ -42,7 +42,7 @@ public class Disintegrator : Production
             }
         }
 
-        finance.SetFinance(totalAmount);
+        scrap.SetScrap(totalAmount);
     }
 
     public void ConfirmBtnClicked()
@@ -55,7 +55,7 @@ public class Disintegrator : Production
                 {
                     if (inventory.items[i] == merchandiseList.MerchandiseSOList[j].item)
                     {
-                        GameManager.instance.AddFinanceServerRpc(merchandiseList.MerchandiseSOList[j].sellPrice * inventory.amounts[i]);
+                        GameManager.instance.AddScrapServerRpc(merchandiseList.MerchandiseSOList[j].sellPrice * inventory.amounts[i]);
                         inventory.RemoveServerRpc(i);
                         animator.Play("StartAction", -1, 0);
                         break;
@@ -73,7 +73,7 @@ public class Disintegrator : Production
         sInvenManager.progressBar.gameObject.SetActive(false);
         sInvenManager.energyBar.gameObject.SetActive(false);
 
-        finance = ui.GetComponentInChildren<Finance>();
+        scrap = ui.GetComponentInChildren<Scrap>();
         if (confirmBtn == null)
             confirmBtn = ui.transform.Find("ConfirmBtn").GetComponent<Button>();
         confirmBtn.onClick.AddListener(ConfirmBtnClicked);
@@ -90,7 +90,7 @@ public class Disintegrator : Production
 
         inventory.onItemChangedCallback -= CheckTotalAmount;
         confirmBtn.onClick.RemoveAllListeners();
-        finance = null;
+        scrap = null;
     }
 
     public override bool CanTakeItem(Item item)

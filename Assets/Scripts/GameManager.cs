@@ -34,6 +34,7 @@ public class GameManager : NetworkBehaviour
     PreBuilding preBuilding;
     //public GameObject preBuildingObj;
     public Finance finance;
+    public Scrap scrap;
 
     [SerializeField]
     PlayerInvenManager pInvenManager;
@@ -820,9 +821,44 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
+    public void AddScrapServerRpc(int _scrap)
+    {
+        AddScrapClientRpc(_scrap);
+    }
+
+    [ClientRpc]
+    public void AddScrapClientRpc(int _scrap)
+    {
+        scrap.AddScrap(_scrap);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SubScrapServerRpc(int _scrap)
+    {
+        SubScrapClientRpc(_scrap);
+    }
+
+    [ClientRpc]
+    public void SubScrapClientRpc(int _scrap)
+    {
+        scrap.SubScrap(_scrap);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     public void RemoveMapObjServerRpc(Vector3 vector3, bool isHostMapRequest)
     {
         RemoveMapObjClientRpc(vector3, isHostMapRequest);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SellScrapServerRpc()
+    {
+        int scrapAmount = scrap.GetScrap();
+        if (scrapAmount > 0)
+        {
+            SubScrapServerRpc(scrapAmount);
+            AddFinanceServerRpc(scrapAmount);
+        }
     }
 
     [ClientRpc]

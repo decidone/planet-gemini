@@ -76,6 +76,13 @@ public class BuildInfoCheck : MonoBehaviour
                 {
                     PopUpPosSetStructure(mousePos, selectedStr);
                 }
+                else if (cell.structure != null)
+                {
+                    if (inputManager.isMapOpened && cell.structure.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
+                    {
+                        PopUpPosSetStructure(mousePos, structure);
+                    }
+                }
             }
             else if (cell.structure != null)
             {
