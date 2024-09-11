@@ -64,14 +64,17 @@ public class SteamManager : MonoBehaviour
         LobbySaver.instance.currentLobby = lobby;
         userName = SteamClient.Name;
         Debug.Log("Entered");
-        
+
         if (!NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;
             NetworkManager.Singleton.StartClient();
+            LoadingUICtrl.Instance.LoadScene("MergeScene_09");
         }
-
-        NetworkManager.Singleton.SceneManager.LoadScene("MergeScene_09", 0);
+        else
+        {
+            LoadingUICtrl.Instance.LoadScene("MergeScene_09");
+        }
     }
 
     private async void GameLobbyJoinRequested(Lobby lobby, SteamId SteamId)

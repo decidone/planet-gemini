@@ -109,6 +109,7 @@ public class UnitDrag : DragFunc
         {
             groupCenterSet?.Invoke();
             patrolSet?.Invoke(endPos);
+            UnitMovePos.instance.AnimStart(endPos);
         }
         else if (isAKeyPressed)
         {
@@ -122,6 +123,7 @@ public class UnitDrag : DragFunc
             {
                 SetTargetPosition(true, endPos);
             }
+            UnitMovePos.instance.AnimStart(endPos);
         }
         ReSetBool();
     }
@@ -129,6 +131,7 @@ public class UnitDrag : DragFunc
     public override void RightMouseUp(Vector2 startPos, Vector2 endPos)
     {
         SetTargetPosition(false, endPos);
+        UnitMovePos.instance.AnimStart(endPos);
         ReSetBool();
     }
 

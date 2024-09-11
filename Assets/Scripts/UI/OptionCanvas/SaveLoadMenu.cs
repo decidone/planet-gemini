@@ -51,14 +51,17 @@ public class SaveLoadMenu : MonoBehaviour
     }
 
     void LoadSaveData()
-    { 
+    {
         SaveData saveData;
+        InGameData inGameData;
+
         buttons[0] = autoSaveBtn;
         var data = GetJsonFromFile(0);
         if (data.Item1)
         {
             saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
-            buttons[0].SetSlotData(0, saveData.saveDate);
+            inGameData = saveData.InGameData;
+            buttons[0].SetSlotData(0, inGameData.saveDate);
         }
         else
         {
@@ -74,7 +77,8 @@ public class SaveLoadMenu : MonoBehaviour
             if (data.Item1)
             {
                 saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
-                buttons[i].SetSlotData(i, saveData.saveDate, saveData.fileName, saveData.mapSizeIndex, saveData.difficultyLevel);
+                inGameData = saveData.InGameData;
+                buttons[i].SetSlotData(i, inGameData.saveDate, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
             }
             else
             {
@@ -141,7 +145,8 @@ public class SaveLoadMenu : MonoBehaviour
         DataManager.instance.Save(slotNum, fileName);
         var data = GetJsonFromFile(slotNum);
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
-        buttons[slotNum].SetSlotData(slotNum, saveData.saveDate, saveData.fileName, saveData.mapSizeIndex, saveData.difficultyLevel);
+        InGameData inGameData = saveData.InGameData;
+        buttons[slotNum].SetSlotData(slotNum, inGameData.saveDate, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
     }
 
     public void Load(int slotNum) // 인게임에서 로드와 로비씬에서 로드를 구분해야함
@@ -156,11 +161,13 @@ public class SaveLoadMenu : MonoBehaviour
         MainGameSetting.instance.LoadDataIndexSet(slotNum);
         var data = GetJsonFromFile(slotNum);
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
-        MainGameSetting.instance.MapSizeSet(saveData.mapSizeIndex);
+        InGameData inGameData = saveData.InGameData;
+        MainGameSetting.instance.MapSizeSet(inGameData.mapSizeIndex);
 
         if (GameManager.instance != null)
         {
-            NetworkManager.Singleton.SceneManager.LoadScene("MergeScene_09", LoadSceneMode.Single);
+            LoadingUICtrl.Instance.LoadScene("MergeScene_09");
+           // NetworkManager.Singleton.SceneManager.LoadScene("MergeScene_09", LoadSceneMode.Single);
         }
         else
         {

@@ -1,4 +1,3 @@
-using System;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -64,15 +63,9 @@ public class DataManager : MonoBehaviour
     {
         saveData = new SaveData();
 
-        // 저장 시간
-        DateTime currentDateTime = DateTime.Now;
-        string formattedDateTime = currentDateTime.ToString("yyyy-MM-dd HH:mm:ss");
-        saveData.saveDate = formattedDateTime;
-
-        // 파일 이름
-        saveData.fileName = fileName;
-
-        saveData.mapSizeIndex = MainGameSetting.instance.mapSizeIndex;
+        InGameData inGameData = GameManager.instance.SaveData();
+        saveData.InGameData = inGameData;
+        saveData.InGameData.fileName = fileName;
 
         // 플레이어
         PlayerSaveData playerData = new PlayerSaveData();
@@ -81,14 +74,14 @@ public class DataManager : MonoBehaviour
 
         // 행성 인벤토리
         InventorySaveData hostMapInventoryData = GameManager.instance.hostMapInven.SaveData();
-        saveData.HostMapInvenData = hostMapInventoryData;
+        saveData.hostMapInvenData = hostMapInventoryData;
         InventorySaveData clientMapInventoryData = GameManager.instance.clientMapInven.SaveData();
-        saveData.ClientMapInvenData = clientMapInventoryData;
+        saveData.clientMapInvenData = clientMapInventoryData;
 
         foreach (ScienceBtn scienceBtn in TempScienceDb.instance.scienceBtns)
         {
             ScienceData scienceData = scienceBtn.SaveData();
-            saveData.ScienceData.Add(scienceData);
+            saveData.scienceData.Add(scienceData);
         }
 
         foreach (Structure structure in netObjMgr.netStructures)
@@ -170,11 +163,11 @@ public class DataManager : MonoBehaviour
 
     public void LoadData(SaveData saveData)
     {
+        GameManager.instance.LoadData(saveData.InGameData);
         // 행성 인벤토리
-        GameManager.instance.hostMapInven.LoadData(saveData.HostMapInvenData);
-        GameManager.instance.clientMapInven.LoadData(saveData.ClientMapInvenData);
-        TempScienceDb.instance.LoadSet(saveData.ScienceData);
-        //TempScienceDb.instance.LoadData(saveData.ScienceData);
+        GameManager.instance.hostMapInven.LoadData(saveData.hostMapInvenData);
+        GameManager.instance.clientMapInven.LoadData(saveData.clientMapInvenData);
+        TempScienceDb.instance.LoadSet(saveData.scienceData);
     }
 
     public void Clear()

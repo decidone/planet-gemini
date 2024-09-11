@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using System;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -94,15 +96,56 @@ public class GameManager : NetworkBehaviour
 
     public int day;                     // 일 수
     public bool isDay;                  // 밤 낮
-    [SerializeField] float dayTime;     // 밤/낮 현실 기준 시간(초)
+    [SerializeField] float dayTime;     // 인게임 4시간을 현실 시간으로
     public float dayTimer;              // 게임 내 시간(타이머)
-    
+    int dayIndex = 0;                   // 24시간을 6등분해서 인덱스로 사용
+    // 0 : 08:00 ~ 12:00
+    // 1 : 12:00 ~ 16:00
+    // 2 : 16:00 ~ 20:00
+    // 3 : 20:00 ~ 24:00
+    // 4 : 24:00 ~ 04:00
+    // 5 : 04:00 ~ 08:00
+
+    int safeDay = 30;                   // 게임 초기 안전한 날
+    int[] randomStackValue = new int[2] { 20, 80 }; // 스택 랜덤 범위
+    [SerializeField]
+    float violentValue;                 // 광폭화의날 스택
+    float violentMaxValue = 100;        // 광폭화의날 최대 값
+    [SerializeField]
+    bool violentDay;                    // true면 광폭화의 날
+
+    /// <summary>
+    /// 광폭화 시스템
+    /// 인게임 하루 = 현실 10분
+    /// 안전한날 30일 = 현실 5시간
+    /// 20분에 1번 발생 한다면
+    /// 인게임 2일 = 현실 20분
+    /// 2일간 100 스택이 쌓이면 광폭화 발생이라 하면 평균 스택 50으로 잡고 상한선 80 하한선 20 으로 잡으면
+    /// 최소 2일 ~ 최대 5일
+    /// </summary>
+
+    [SerializeField]
+    Sprite[] timeImgSet;
+    [SerializeField]
+    Image timeImg;
+    [SerializeField]
+    Text timeText;
+    [SerializeField]
+    Text dayText;
+
+    float hours;        // 시간 계산
+    int displayHour;    // 시 부분
+    int displayMinute;  // 분 부분
+    string timeDisplay; // 시간표시용 
+
     Dictionary<int, int[]> waveLevelsByMapSize = new Dictionary<int, int[]>
     {
         { 0, new int[] { 1, 1, 2, 2 } }, // mapSize 0에 따른 coreLevel별 waveLevel
         { 1, new int[] { 1, 1, 2, 3 } }, // mapSize 1에 따른 coreLevel별 waveLevel
         { 2, new int[] { 1, 2, 3, 4 } }  // mapSize 2에 따른 coreLevel별 waveLevel
     };
+
+    public static event Action GenerationComplete;
 
     #region Singleton
     public static GameManager instance;
@@ -174,22 +217,60 @@ public class GameManager : NetworkBehaviour
     private void Update()
     {
         dayTimer += Time.deltaTime;
+
+        hours = (dayTimer / 25f) + (dayIndex * 4) + 8;
+        hours = Mathf.Repeat(hours, 24f);
+
+        displayHour = Mathf.FloorToInt(hours); // 시 부분
+        displayMinute = Mathf.FloorToInt((hours - displayHour) * 60); // 분 부분
+
+        timeDisplay = string.Format("{0:D2} : {1:D2}", displayHour, displayMinute);
+
+        timeText.text = timeDisplay;
+
         if (dayTimer > dayTime)
         {
             dayTimer = 0;
-            if (isDay)
+
+            dayIndex++;
+            if (dayIndex > 5)
             {
-                // 낮 -> 밤
-                isDay = false;
+                dayIndex = 0;
             }
-            else
+
+            timeImg.sprite = timeImgSet[dayIndex];
+
+            if (dayIndex == 0)
             {
-                // 밤 -> 낮
                 isDay = true;
+                if (violentDay)
+                {
+                    violentDay = false;
+                    timeImg.color = new Color32(255, 255, 255, 255);
+                    MonsterSpawnerManager.instance.ViolentDayOff();
+                }
+            }
+            else if (dayIndex == 3)
+            {
+                isDay = false;
+                if (day > safeDay)
+                {
+                    violentValue += UnityEngine.Random.Range(randomStackValue[0], randomStackValue[1] + 1);
+                    if (violentValue > violentMaxValue)
+                    {
+                        violentDay = true;
+                        violentValue = 0;
+                        timeImg.color = new Color32(255, 50, 50, 255);
+                        MonsterSpawnerManager.instance.ViolentDayOn();
+                    }
+                }
+            }
+            else if (dayIndex == 4)
+            {
                 day++;
+                dayText.text = "Day : " + day;
             }
         }
-
 
         if (!isConsoleOpened)
         {
@@ -691,6 +772,8 @@ public class GameManager : NetworkBehaviour
         ItemDragManager.instance.SetInven(hostDragInven);
         GeminiNetworkManager.instance.HostSpawnServerRPC();
         Debug.Log("HostConnected??");
+
+        GenerationComplete?.Invoke();
     }
 
     public void ClientConnected()
@@ -713,6 +796,7 @@ public class GameManager : NetworkBehaviour
         GeminiNetworkManager.instance.RequestJsonServerRpc();
 
         Debug.Log("Connected to Network");
+        GenerationComplete?.Invoke();
     }
 
     public void SetPlayer(GameObject playerObj)
@@ -864,6 +948,7 @@ public class GameManager : NetworkBehaviour
             Debug.Log("Client");
             ClientConnected();
         }
+        //GenerationComplete?.Invoke();
     }
 
     public void WaveStartSet(int coreLevel)
@@ -883,5 +968,64 @@ public class GameManager : NetworkBehaviour
     {
         scienceBuildingSet = true;
         sciBuildingMap = map;
+    }
+
+    public InGameData SaveData()
+    {
+        InGameData inGameData = new InGameData();
+
+        // 저장 시간
+        DateTime currentDateTime = DateTime.Now;
+        string formattedDateTime = currentDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+        inGameData.saveDate = formattedDateTime;
+        // 파일 이름
+        inGameData.mapSizeIndex = MainGameSetting.instance.mapSizeIndex;
+
+        inGameData.day = day;
+        inGameData.isDay = isDay;
+        inGameData.dayTimer = dayTimer;
+        inGameData.dayIndex = dayIndex;
+
+        inGameData.violentValue = violentValue;
+        inGameData.violentDay = violentDay;
+
+        return inGameData;
+    }
+
+    public void LoadData(InGameData data)
+    {
+        day = data.day;
+        isDay = data.isDay;
+        dayTimer = data.dayTimer;
+        dayIndex = data.dayIndex;
+
+        violentValue = data.violentValue;
+        violentDay = data.violentDay;
+        timeImg.sprite = timeImgSet[dayIndex];
+        dayText.text = "Day : " + day;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SyncTimeServerRpc()
+    {
+        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentValue, violentDay);
+    }
+
+    [ClientRpc]
+    public void SyncTimeClientRpc(int serverDay, bool serverIsDay, float serverDayTimer,
+        int serverDayIndex, float serverViolentValue, bool serverViolentDay)
+    {
+        day = serverDay;
+        isDay = serverIsDay;
+        dayTimer = serverDayTimer;
+        dayIndex = serverDayIndex;
+        violentValue = serverViolentValue;
+        violentDay = serverViolentDay;
+
+        timeImg.sprite = timeImgSet[dayIndex];
+        dayText.text = "Day : " + day;
+
+        if(violentDay)
+            timeImg.color = new Color32(255, 50, 50, 255);
     }
 }
