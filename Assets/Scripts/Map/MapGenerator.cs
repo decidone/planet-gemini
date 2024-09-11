@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -71,7 +72,6 @@ public class MapGenerator : MonoBehaviour
 
     public static MapGenerator instance;
     MainGameSetting gameSetting;
-
 
     void Awake()
     {
@@ -356,7 +356,7 @@ public class MapGenerator : MonoBehaviour
     void SetRandomSeed()
     {
         if (randomSeed)
-            seed = Random.Range(int.MinValue, int.MaxValue);
+            seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
         random = new System.Random(seed);
     }
@@ -723,7 +723,7 @@ public class MapGenerator : MonoBehaviour
                                     if (canSetResource)
                                     {
                                         
-                                        int randomSprite = Random.Range(0, 2);
+                                        int randomSprite = UnityEngine.Random.Range(0, 2);
                                         int spriteIndex = 0;
 
                                         if(randomSprite == 0)                                        

@@ -19,6 +19,10 @@ public class ItemPoolManager : MonoBehaviour
         else
             Destroy(this.gameObject);
 
+    }
+
+    private void Start()
+    {
         Init();
     }
 

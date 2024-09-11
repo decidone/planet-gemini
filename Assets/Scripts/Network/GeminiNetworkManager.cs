@@ -203,10 +203,11 @@ public class GeminiNetworkManager : NetworkBehaviour
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
         SaveData clientData = new SaveData();
 
+        clientData.InGameData = saveData.InGameData;
         clientData.playerDataList = saveData.playerDataList;
-        clientData.HostMapInvenData = saveData.HostMapInvenData;
-        clientData.ClientMapInvenData = saveData.ClientMapInvenData;
-        clientData.ScienceData = saveData.ScienceData;
+        clientData.hostMapInvenData = saveData.hostMapInvenData;
+        clientData.clientMapInvenData = saveData.clientMapInvenData;
+        clientData.scienceData = saveData.scienceData;
 
         string clientJson = JsonConvert.SerializeObject(clientData);
 
@@ -221,5 +222,6 @@ public class GeminiNetworkManager : NetworkBehaviour
 
         DataManager.instance.Load(json);
         MonsterSpawnerManager.instance.SetCorruption();
+        GameManager.instance.SyncTimeServerRpc();
     }
 }

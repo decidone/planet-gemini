@@ -346,6 +346,22 @@ MonoBehaviour:
   chat: {fileID: 0}
   scienceBuildingSet: 0
   sciBuildingMap: 0
+  day: 0
+  isDay: 0
+  dayTime: 100
+  dayTimer: 0
+  violentValue: 0
+  violentDay: 0
+  timeImgSet:
+  - {fileID: -856865314, guid: c61cd31f9d0bb224f841a1eeffaf83b7, type: 3}
+  - {fileID: 4351435, guid: c61cd31f9d0bb224f841a1eeffaf83b7, type: 3}
+  - {fileID: -873515317, guid: c61cd31f9d0bb224f841a1eeffaf83b7, type: 3}
+  - {fileID: -423634117, guid: c61cd31f9d0bb224f841a1eeffaf83b7, type: 3}
+  - {fileID: 1694009922, guid: c61cd31f9d0bb224f841a1eeffaf83b7, type: 3}
+  - {fileID: -871694854, guid: c61cd31f9d0bb224f841a1eeffaf83b7, type: 3}
+  timeImg: {fileID: 0}
+  timeText: {fileID: 0}
+  dayText: {fileID: 0}
 --- !u!114 &762871311885926033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -682,7 +698,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemListSO: {fileID: 11400000, guid: fb7046e3030870743a8b20eb19bf8824, type: 2}
   spawnerDestroyCount: 0
+  spawnerBountyReceived: 0
   monsterKillCount: 0
+  monsterBountyReceived: 0
 --- !u!1 &4287165206276915524
 GameObject:
   m_ObjectHideFlags: 0

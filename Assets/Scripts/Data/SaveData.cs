@@ -6,19 +6,16 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    public string fileName;
-    public string saveDate;
-    public int mapSizeIndex;
-    public int difficultyLevel;
+    public InGameData InGameData = new InGameData();
 
     // 플레이어
     public List<PlayerSaveData> playerDataList = new List<PlayerSaveData>();
 
     // 행성 인벤토리
-    public InventorySaveData HostMapInvenData = new InventorySaveData();
-    public InventorySaveData ClientMapInvenData = new InventorySaveData();
+    public InventorySaveData hostMapInvenData = new InventorySaveData();
+    public InventorySaveData clientMapInvenData = new InventorySaveData();
 
-    public List<ScienceData> ScienceData = new List<ScienceData>();
+    public List<ScienceData> scienceData = new List<ScienceData>();
 
     public List<StructureSaveData> structureData = new List<StructureSaveData>();
     public List<BeltGroupSaveData> beltGroupData = new List<BeltGroupSaveData>();

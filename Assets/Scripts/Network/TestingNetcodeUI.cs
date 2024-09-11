@@ -20,14 +20,14 @@ public class TestingNetcodeUI : MonoBehaviour
             Debug.Log("Host");
             MainGameSetting.instance.NewGameState(true);
             NetworkManager.Singleton.StartHost();
-            NetworkManager.Singleton.SceneManager.LoadScene("MergeScene_09", 0);
+            LoadingUICtrl.Instance.LoadScene("GameScene");
             Hide();
         });
         startClientButton.onClick.AddListener(() =>
         {
             Debug.Log("Client");
             NetworkManager.Singleton.StartClient();
-            NetworkManager.Singleton.SceneManager.LoadScene("MergeScene_09", 0);
+            LoadingUICtrl.Instance.LoadScene("GameScene");
             Hide();
         });
     }
