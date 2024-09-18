@@ -7,15 +7,16 @@ using Unity.Netcode;
 
 public class LoadingUICtrl : MonoBehaviour
 {
-  protected static LoadingUICtrl instance;
+    protected static LoadingUICtrl instance;
+
     public static LoadingUICtrl Instance
     {
         get
         {
-            if(instance == null)
+            if (instance == null)
             {
                 var obj = FindObjectOfType<LoadingUICtrl>();
-                if(obj != null)
+                if (obj != null)
                 {
                     instance = obj;
                 }

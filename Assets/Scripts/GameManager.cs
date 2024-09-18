@@ -291,6 +291,15 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    public void DestroyAllDontDestroyOnLoadObjects()
+    {
+        var marker = new GameObject("Marker");
+        DontDestroyOnLoad(marker);
+
+        foreach (var root in marker.scene.GetRootGameObjects())
+            Destroy(root);
+    }
+
     public void SetMapInven(bool isHostMap)
     {
         if (isHostMap)

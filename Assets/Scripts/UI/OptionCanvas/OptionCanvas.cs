@@ -76,9 +76,10 @@ public class OptionCanvas : MonoBehaviour
         SteamManager.instance.LeaveLobby();
         NetworkManager.Singleton.Shutdown();
         Destroy(NetworkManager.Singleton.gameObject);
-        LoadingUICtrl.Instance.LoadScene("MainMenuScene");
+        GameManager.instance.DestroyAllDontDestroyOnLoadObjects();
+        //LoadingUICtrl.Instance.LoadScene("MainMenuScene");
         //LoadingSceneManager.LoadScene("MainMenuScene");
-        //SceneManager.LoadScene("LobbyScene");
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void MainPanelSet(bool open)

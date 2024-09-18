@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SteamManager : MonoBehaviour
@@ -34,6 +35,8 @@ public class SteamManager : MonoBehaviour
     {
         SteamMatchmaking.OnLobbyCreated += LobbyCreated;
         SteamMatchmaking.OnLobbyEntered += LobbyEntered;
+        SteamMatchmaking.OnLobbyMemberDisconnected += LobbyMemberLeft;
+        SteamMatchmaking.OnLobbyMemberLeave += LobbyMemberLeft;
         SteamFriends.OnGameLobbyJoinRequested += GameLobbyJoinRequested;
     }
 
@@ -123,6 +126,33 @@ public class SteamManager : MonoBehaviour
     {
         LobbySaver.instance.currentLobby?.Leave();
         LobbySaver.instance.currentLobby = null;
+    }
+
+    private void LobbyMemberLeft(Lobby lobby, Friend friend)
+    {
+        if (!GameManager.instance.isHost)
+        {
+            Debug.Log("Host left");
+            if (DisconnectedPopup.instance != null)
+            {
+                DisconnectedPopup.instance.OpenUI();
+            }
+            else
+            {
+                LeaveGame();
+            }
+        }
+        //Debug.Log(lobby.Owner.Id);
+        //Debug.Log(friend.Id);
+    }
+
+    public void LeaveGame()
+    {
+        SteamManager.instance.LeaveLobby();
+        NetworkManager.Singleton.Shutdown();
+        Destroy(NetworkManager.Singleton.gameObject);
+        GameManager.instance.DestroyAllDontDestroyOnLoadObjects();
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public async void GetLobbiesList()
