@@ -298,8 +298,15 @@ public class UnitAi : UnitCommonAi
                 currentWaypointIndex++;
                 if (currentWaypointIndex >= movePath.Count)
                 {
+                    if (isPatrolMove)
+                    {
+                        checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
+                    }
+                    else
+                    {
+                        checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Patrol"));
+                    }
                     isPatrolMove = !isPatrolMove;
-                    PatrolPosSetServerRpc(patrolPos);
                 }
             }
 
@@ -548,10 +555,17 @@ public class UnitAi : UnitCommonAi
         AStarSet(isInHostMap);
     }
 
-    public override void GameStartSet(UnitSaveData unitSaveData)
-    {
-        base.GameStartSet(unitSaveData);
+    UnitSaveData unitSaveData;
 
+    public override void GameStartSet(UnitSaveData unitSave)
+    {
+        base.GameStartSet(unitSave);
+        unitSaveData = unitSave;
+        StartCoroutine(AstarScanCheck());
+    }
+
+    void stateLoad(UnitSaveData unitSaveData)
+    {
         Vector3 targetPos = Vector3Extensions.ToVector3(unitSaveData.moveTragetPos);
         Vector3 moveStartPos = Vector3Extensions.ToVector3(unitSaveData.moveStartPos);
 
@@ -559,7 +573,7 @@ public class UnitAi : UnitCommonAi
         {
             MovePosSetServerRpc(targetPos, 0, true);
         }
-        else if(unitSaveData.aiState == 2)  // patrol 상태
+        else if (unitSaveData.aiState == 2)  // patrol 상태
         {
             if (unitSaveData.patrolDir) // true 일때 targetPos로 이동
             {
@@ -576,7 +590,7 @@ public class UnitAi : UnitCommonAi
         }
         else    // 이전 상태체크
         {
-            if(unitSaveData.lastState == 1) 
+            if (unitSaveData.lastState == 1)
             {
                 MovePosSetServerRpc(targetPos, 0, true);
             }
@@ -592,8 +606,8 @@ public class UnitAi : UnitCommonAi
                 {
                     PatrolPosSetServerRpc(moveStartPos);
                     patrolPos = targetPos;
-                                isPatrolMove = false;
-}
+                    isPatrolMove = false;
+                }
             }
         }
 
@@ -601,6 +615,16 @@ public class UnitAi : UnitCommonAi
         {
             HoldFuncServerRpc();
         }
+    }
+
+    IEnumerator AstarScanCheck()
+    {
+        while (!MapGenerator.instance.isCompositeDone)
+        {
+            yield return null;
+        }
+
+        stateLoad(unitSaveData);
     }
 
     public override UnitSaveData SaveData()

@@ -26,18 +26,29 @@ public class ItemInfoWindow : MonoBehaviour
             popupHeight = image.GetComponent<RectTransform>().rect.height;
             Vector2 newPos = new Vector2(mousePos.x + popupWidth / 2, mousePos.y - popupHeight / 2);
 
-            obj.transform.position = newPos;
+            float clampedX = Mathf.Clamp(newPos.x, popupWidth / 2, Screen.width - popupWidth / 2);
+            float clampedY = Mathf.Clamp(newPos.y, popupHeight / 2, Screen.height - popupHeight / 2);
+
+            obj.transform.position = new Vector2(clampedX, clampedY);
         }
     }
 
     public void OpenWindow(Slot slot)
     {
-        if(slot.item != null)
+
+        if (slot.item != null)
         {
             image.SetActive(true);
             IsOpen = true;
-            winText.text = slot.item.name;
+            winText.text = slot.inGameName;
         }
+    }
+
+    public void OpenWindow(PortalUIBtn portalUIBtn)
+    {
+        image.SetActive(true);
+        IsOpen = true;
+        winText.text = portalUIBtn.inGameName;
     }
 
     public void CloseWindow()

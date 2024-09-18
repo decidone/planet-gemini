@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
-  m_Name: BuildingMergerLevel1
+  m_Name: BuildingMerger
   m_EditorClassIdentifier: 
   type: Logistics
   scienceName: Merger

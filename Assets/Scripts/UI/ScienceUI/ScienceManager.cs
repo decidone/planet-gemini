@@ -197,12 +197,12 @@ public class ScienceManager : MonoBehaviour
 
             if (focusedSciBtn.isCore)
             {
-                infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
+                infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
                 infoWindow[1].SetActive(true);
             }
             else
             {
-                infoWindow[0].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.sciName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
+                infoWindow[0].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
                 infoWindow[0].SetActive(true);
             }
         }

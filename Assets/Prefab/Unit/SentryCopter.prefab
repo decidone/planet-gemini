@@ -260,7 +260,7 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
-  name: 
+  name: Sentry Copter
   unitLastState: 0
   unitSelImg: {fileID: 6013075139773666233}
   selfHealingAmount: 0

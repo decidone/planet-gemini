@@ -370,6 +370,8 @@ public class DataManager : MonoBehaviour
                 }
             }
         }
+
+        MonsterSpawnerManager.instance.WaveStateLoad(spawnerManagerSaveData);
     }
 
     GameObject SetSpawnerGroupMgr(SpawnerGroupData spawnerGroupData, bool planet)
@@ -413,7 +415,7 @@ public class DataManager : MonoBehaviour
             {
                 if (waveState)
                 {
-                    monster = monsterSpawner.SpawnMonster(unitSaveData.monsterType, unitSaveData.unitIndex, planet);
+                    monster = monsterSpawner.WaveWaitingMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet);
                     monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
                 }
                 else

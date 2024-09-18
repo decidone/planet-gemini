@@ -245,6 +245,24 @@ public class SoundManager : NetworkBehaviour
         UIPlayerSet();
     }
 
+    public void PlayerBgmMapCheck()
+    {
+        if (GameManager.instance != null)
+        {
+            if (isHostMapBattleOn != isClientMapBattleOn || isHostMapWaveOn != isClientMapWaveOn)
+            {
+                if (GameManager.instance.isPlayerInHostMap)
+                {
+                    PlayBGM(isHostMapBattleOn, isHostMapWaveOn);
+                }
+                else
+                {
+                    PlayBGM(isClientMapBattleOn, isClientMapWaveOn);
+                }
+            }
+        }
+    }
+
     public void PlayBgmMapCheck()
     {
         if (GameManager.instance != null)
@@ -337,14 +355,13 @@ public class SoundManager : NetworkBehaviour
     [ClientRpc]
     public void BattleStateSetClientRpc(bool isBattle, bool isWave, bool isHostMap)
     {
-        if (GameManager.instance.isPlayerInHostMap && isHostMap)
+        if (isHostMap)
         {
             isHostMapBattleOn = isBattle;
             isHostMapWaveOn = isWave;
             StartCoroutine(nameof(SoundFadeOut));
-
         }
-        else if(!GameManager.instance.isPlayerInHostMap && !isHostMap)
+        else if(!isHostMap)
         {
             isClientMapBattleOn = isBattle;
             isClientMapWaveOn = isWave;

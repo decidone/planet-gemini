@@ -260,6 +260,7 @@ GameObject:
   - component: {fileID: 8119477237859809883}
   - component: {fileID: 1592428971395791709}
   - component: {fileID: 6855278147112794435}
+  - component: {fileID: 7245252683046581172}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -322,6 +323,7 @@ MonoBehaviour:
   marketPortalTransform: {fileID: 0}
   mapCameraController: {fileID: 0}
   finance: {fileID: 0}
+  scrap: {fileID: 0}
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -480,9 +482,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9a07fa09493831f4f9694cacf2306cd1, type: 2}
   - {fileID: 11400000, guid: 17ab3098301b53e40862ddaa6517ee00, type: 2}
   - {fileID: 11400000, guid: 965d905323e9ff74f95ec5113b5fe33a, type: 2}
+  - {fileID: 11400000, guid: cd3bb9bb1ab9ebd469093e8458841525, type: 2}
   - {fileID: 11400000, guid: 24cdf57e31fc0eb41ac7256e04e1003d, type: 2}
   - {fileID: 11400000, guid: af022b03362f07345b54ec333d8cf7a7, type: 2}
   - {fileID: 11400000, guid: 374fa9089cb1cae428bb1eae3d06c339, type: 2}
+  - {fileID: 11400000, guid: 355b475a8cc807b459662d89dc2aa8eb, type: 2}
+  - {fileID: 11400000, guid: bd2472eb20b5aab468b3b67d537fd557, type: 2}
   - {fileID: 11400000, guid: 8a719f6949919734e8252d432c51621f, type: 2}
   - {fileID: 11400000, guid: 818ab841f732a824e9c7f8812862f7c0, type: 2}
   - {fileID: 11400000, guid: e5b61a4c5a526844e85a9f253fac2880, type: 2}
@@ -506,8 +511,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1eccbc744d352cb498255e7dc4185f52, type: 2}
   - {fileID: 11400000, guid: db690fbf05d11be48816a392b5f5b26a, type: 2}
   - {fileID: 11400000, guid: a3020250a4044e341af1fee415ecb042, type: 2}
-  - {fileID: 11400000, guid: cd3bb9bb1ab9ebd469093e8458841525, type: 2}
-  - {fileID: 11400000, guid: 4d399b61e84a09348a63cd723a216974, type: 2}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -701,6 +704,18 @@ MonoBehaviour:
   spawnerBountyReceived: 0
   monsterKillCount: 0
   monsterBountyReceived: 0
+--- !u!114 &7245252683046581172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92c25844b79f2b54f85b0ae2ea66d3d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4287165206276915524
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,12 +761,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   saveData:
-    fileName: 
-    saveDate: 
-    mapSizeIndex: 0
-    difficultyLevel: 0
+    InGameData:
+      fileName: 
+      saveDate: 
+      mapSizeIndex: 0
+      difficultyLevel: 0
+      day: 0
+      isDay: 0
+      dayTimer: 0
+      dayIndex: 0
+      violentValue: 0
+      violentDay: 0
     playerDataList: []
-    ScienceData: []
+    scienceData: []
     structureData: []
     beltGroupData: []
     unitData: []

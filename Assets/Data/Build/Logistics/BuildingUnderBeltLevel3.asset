@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Logistics
   scienceName: UnderBelt
-  item: {fileID: 11400000, guid: 374fa9089cb1cae428bb1eae3d06c339, type: 2}
+  item: {fileID: 11400000, guid: bd2472eb20b5aab468b3b67d537fd557, type: 2}
   gameObj: {fileID: 649535378188675683, guid: a79bd2acdde91034ea51d0ad2930fa27, type: 3}
   sideObj: {fileID: 5450028805572291566, guid: 3028c2927e9496945b4209cab7935378, type: 3}
   isGetAnim: 0
@@ -23,14 +23,14 @@ MonoBehaviour:
   isEnergyUse: 0
   isEnergyStr: 0
   sprites:
-  - {fileID: -220168426, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  - {fileID: -627380388, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  - {fileID: 878528353, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  - {fileID: -1788641530, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  - {fileID: -1587426880, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  - {fileID: -1031399349, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  - {fileID: -2051148247, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
-  - {fileID: 1704090391, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 437980030, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -1501248408, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 1400864371, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -1163058687, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 1938217563, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -794058005, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 839440310, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 1867927611, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   animatorController: []
   level: 3
   height: 1

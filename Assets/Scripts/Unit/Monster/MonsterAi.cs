@@ -56,7 +56,10 @@ public class MonsterAi : UnitCommonAi
             }
         }
         else
-            ReturnPos();
+        {
+            if (!waveState)
+                ReturnPos();
+        }
     }
 
     protected override void Update()
@@ -808,7 +811,7 @@ public class MonsterAi : UnitCommonAi
                     isScriptActive = true;
                     return;
                 }
-                else
+                else if(!waveState)
                 {
                     PatrolRandomPosSet();
                     checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
@@ -896,12 +899,25 @@ public class MonsterAi : UnitCommonAi
 
     public void WaveTeleport(Vector3 teleportPos, Vector3 setWavePos)
     {
-        if(aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
-        {
-            int x = (int)Random.Range(-10, 10);
-            int y = (int)Random.Range(-10, 10);
+        Map map;
 
-            Vector3 newWavePos = teleportPos + new Vector3(x, y);
+        if (isInHostMap)
+            map = GameManager.instance.hostMap;
+        else
+            map = GameManager.instance.clientMap;
+        Vector3 newWavePos;
+        if (aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
+        {
+            do
+            {
+                int x = (int)Random.Range(-20, 20);
+                int y = (int)Random.Range(-20, 20);
+
+                newWavePos = teleportPos + new Vector3(x, y);
+
+            } while (map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "lake" 
+            || map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "cliff");
+
             wavePos = setWavePos;
             waveState = true;
             waveWaiting = true;
@@ -913,6 +929,8 @@ public class MonsterAi : UnitCommonAi
     {
         base.GameStartSet(unitSaveData);
 
+        waveState = unitSaveData.waveState;
+        waveWaiting = unitSaveData.waveWaiting;
         monsterType = unitSaveData.monsterType;
     }
 
@@ -924,6 +942,7 @@ public class MonsterAi : UnitCommonAi
         data.monsterType = monsterType;
         data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.waveState = waveState;
+        data.waveWaiting = waveWaiting;
         data.isWaveColonyCallCheck = isWaveColonyCallCheck;
         return data;
     }

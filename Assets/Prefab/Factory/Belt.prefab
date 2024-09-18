@@ -641,6 +641,7 @@ MonoBehaviour:
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
+  canUpgrade: 1
   beltGroupMgr: {fileID: 0}
   beltState: 0
   nextBelt: {fileID: 0}

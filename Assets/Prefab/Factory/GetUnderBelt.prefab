@@ -364,7 +364,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.42}
+    pivot: {x: 0.5, y: 0.4210526}
     oldSize: {x: 1, y: 1.1875}
     newSize: {x: 1, y: 1.1875}
     adaptiveTilingThreshold: 0.5
@@ -447,6 +447,14 @@ MonoBehaviour:
   - {fileID: -1031399349, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: -2051148247, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: 1704090391, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -919842468, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -706410064, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -1264718435, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -964993775, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 1938217563, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: -794058005, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 839440310, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  - {fileID: 1867927611, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   spawnItem: {fileID: 0}
   monsterList: []
   col: {fileID: 0}
@@ -476,6 +484,7 @@ MonoBehaviour:
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
+  canUpgrade: 1
 --- !u!114 &717895800371076390
 MonoBehaviour:
   m_ObjectHideFlags: 0

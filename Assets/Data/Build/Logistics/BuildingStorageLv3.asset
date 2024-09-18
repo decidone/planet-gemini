@@ -15,7 +15,7 @@ MonoBehaviour:
   type: Logistics
   scienceName: Storage
   item: {fileID: 11400000, guid: 336a6dd4a9f696641985a3a32e439650, type: 2}
-  gameObj: {fileID: 5999188213166003493, guid: 854f4ac8645645e4697faeebfdbfcd59, type: 3}
+  gameObj: {fileID: 5999188213166003493, guid: 1b82e3914dd73ca429b1465c31ed1b01, type: 3}
   sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 0

@@ -87,9 +87,7 @@ public class InfoUI : MonoBehaviour
         str = _str;
         SpriteRenderer spriteRenderer = str.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
-        nameText.text = str.buildName;
-        if (str.maxLevel > 1)
-            nameText.text += " Level " + str.level;
+        nameText.text = InGameNameDataGet.instance.ReturnName(str.level + 1, str.buildName);
         SetStructureHp();
         str.onHpChangedCallback += SetStructureHp;
         if (str.energyUse)

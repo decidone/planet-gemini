@@ -114,4 +114,18 @@ public class OptionCanvas : MonoBehaviour
         newColor.a = 0;
         img.color = newColor;
     }
+
+    public void SaveBtnOnOff(bool on)
+    {
+        SaveBtn.gameObject.SetActive(on);
+        RectTransform rect = quitBtn.gameObject.GetComponent<RectTransform>();
+        if (on)
+        {
+            rect.anchoredPosition = new Vector2(0, -50);
+        }
+        else
+        {
+            rect.anchoredPosition = new Vector2(0, 50);
+        }
+    }
 }
