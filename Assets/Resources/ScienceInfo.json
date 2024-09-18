@@ -48,12 +48,15 @@
   },
   "UnderBelt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Underbelts are structures used to transport items through the underground connection."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Underbelts are structures used to transport items through the underground connection."},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Underbelts are structures used to transport items through the underground connection."},
+      "3":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Underbelts are structures used to transport items through the underground connection."}
     }
   },
   "Splitter":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Splitter is a structure used to split an input into three outputs."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Splitter is a structure used to split an input into three outputs."},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Splitter is a structure used to split an input into three outputs."}
     }
   },
   "Merger":{

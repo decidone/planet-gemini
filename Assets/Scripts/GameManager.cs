@@ -974,6 +974,7 @@ public class GameManager : NetworkBehaviour
         if (NetworkManager.Singleton.IsHost)
         {
             Debug.Log("Host");
+            optionCanvas.SaveBtnOnOff(true);
             HostConnected();
             MapGenerator.instance.SpawnerAreaMapSet();
             if (!MainGameSetting.instance.isNewGame)
@@ -982,6 +983,7 @@ public class GameManager : NetworkBehaviour
         else
         {
             Debug.Log("Client");
+            optionCanvas.SaveBtnOnOff(false);
             ClientConnected();
         }
         //GenerationComplete?.Invoke();

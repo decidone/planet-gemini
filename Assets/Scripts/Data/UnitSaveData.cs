@@ -26,6 +26,7 @@ public class UnitSaveData
     // 몬스터
     public int monsterType;     // 몬스터 타입(약, 중, 강, 가디언)
     public bool waveState;      // 웨이브 상태
+    public bool waveWaiting;    // 웨이브 대기 상태
     public bool isWaveColonyCallCheck;  // true: 웨이브, false: 콜로니 콜
     public SerializedVector3 wavePos = new SerializedVector3(); // 웨이브, 콜로니콜 위치
     // 몬스터

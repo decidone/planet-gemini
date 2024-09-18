@@ -23,7 +23,7 @@ MonoBehaviour:
   - 1
   sendFluidAmount: 0
   sendDelay:
-  - 0.01
+  - 0.5
   - 0.01
   - 0.01
   maxBuildingGauge: 10

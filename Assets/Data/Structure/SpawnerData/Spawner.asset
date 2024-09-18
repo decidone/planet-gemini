@@ -20,7 +20,7 @@ MonoBehaviour:
   sendSpeed: []
   sendFluidAmount: 0
   sendDelay:
-  - 1
+  - 0
   maxBuildingGauge: 0
   maxRepairGauge: 0
   colliderRadius: 0

@@ -60,7 +60,7 @@ public class MapGenerator : MonoBehaviour
 
     public AstarPath astar;
     public CompositeCollider2D comp;
-    bool isCompositeDone;
+    public bool isCompositeDone;
     Vector3 map1CenterPos;
     Vector3 map2CenterPos;
 

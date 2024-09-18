@@ -9,6 +9,7 @@ public class Storage : Production
     protected override void Start()
     {
         base.Start();
+        setModel = GetComponent<SpriteRenderer>();
         isStorageBuilding = true;
         invenSize = new int[5] { 6, 12, 18, 24, 30 };
     }
@@ -16,7 +17,14 @@ public class Storage : Production
     protected override void Update()
     {
         base.Update();
+        SetDirNum();
         inventory.space = invenSize[level];
+    }
+
+    protected override void SetDirNum()
+    {
+        setModel.sprite = modelNum[dirNum + level];
+        CheckPos();
     }
 
     public override void OpenUI()

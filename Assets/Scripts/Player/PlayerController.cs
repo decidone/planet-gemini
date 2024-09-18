@@ -191,7 +191,7 @@ public class PlayerController : NetworkBehaviour
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.Teleport();
             this.transform.position = pos;
-            SoundManager.instance.PlayBgmMapCheck();
+            SoundManager.instance.PlayerBgmMapCheck();
             onTeleportedCallback?.Invoke(0);
 
             teleportUI.CloseUI();

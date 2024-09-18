@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: ItemUnderBelt
+  m_Name: ItemUnderBeltLv2
   m_EditorClassIdentifier: 
   name: UnderBelt
-  icon: {fileID: -220168426, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  icon: {fileID: 2131651862, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
+  tier: -1

@@ -47,6 +47,11 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         } 
     }
 
+    protected override void SetDirNum()
+    {
+        setModel.sprite = modelNum[dirNum + (level * 4)];
+        CheckPos();
+    }
     protected override IEnumerator SetInObjCoroutine(GameObject obj)
     {
         checkObj = false;

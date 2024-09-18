@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BattleBGMCtrl : MonoBehaviour
 {
@@ -30,6 +31,20 @@ public class BattleBGMCtrl : MonoBehaviour
     void Start()
     {
         soundManager = SoundManager.instance;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        // 씬 전환이 완료되면 이벤트 등록 해제
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        battleMonsters.Clear();
+        colonyCallMonsters.Clear();
+        waveMonsters.Clear();
     }
 
     public void BattleAddMonster(GameObject monster, bool isInHostMap)

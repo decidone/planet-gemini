@@ -35,9 +35,9 @@ public class Structure : NetworkBehaviour
     [HideInInspector]
     public bool sizeOneByOne;
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool isPreBuilding = true;
-    //[HideInInspector]
+    [HideInInspector]
     public bool isSetBuildingOk = false;
 
     protected bool removeState = false;
@@ -138,7 +138,9 @@ public class Structure : NetworkBehaviour
     public float energyConsumption;
 
     public bool isOperate;
+    [HideInInspector]
     public float efficiency;
+    [HideInInspector]
     public float effiCooldown;
 
     //public bool isMainEnergyColony;
@@ -157,6 +159,8 @@ public class Structure : NetworkBehaviour
     public List<int> DelayGetList = new List<int>();
     protected int buildingIndex;
     public List<Vector3> connectedPosList = new List<Vector3>();
+
+    public bool canUpgrade;
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
@@ -1554,6 +1558,25 @@ public class Structure : NetworkBehaviour
     protected void DelayGetItem()
     {
         itemGetDelay = false;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpgradeFuncServerRpc()
+    {
+        UpgradeFuncClientRpc();
+    }
+
+    [ClientRpc]
+    public void UpgradeFuncClientRpc()
+    {
+        level++;
+
+        if (hp == maxHp)
+        {
+            hp = structureData.MaxHp[level];
+        }
+
+        maxHp = structureData.MaxHp[level];
     }
 
     public virtual Dictionary<Item, int> PopUpItemCheck() { return null; }

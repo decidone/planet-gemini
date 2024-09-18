@@ -85,6 +85,12 @@ public class SplitterCtrl : LogisticsCtrl
         }
     }
 
+    protected override void SetDirNum()
+    {
+        setModel.sprite = modelNum[dirNum + (level * 4)];
+        CheckPos();
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {

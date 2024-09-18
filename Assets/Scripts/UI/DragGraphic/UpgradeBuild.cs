@@ -126,14 +126,20 @@ public class UpgradeBuild : DragFunc
             {
                 Item item = ItemList.instance.itemDic[UpgradeCost.items[i]];
 
-                if (upgradeItemDic.ContainsKey(item))
+                if (UpgradeCost.amounts[i] == 0)
+                {
+                    continue;
+                }
+                else if (upgradeItemDic.ContainsKey(item))
                 {
                     int currentValue = upgradeItemDic[item];
                     int newValue = currentValue + UpgradeCost.amounts[i];
                     upgradeItemDic[item] = newValue;
                 }
                 else
+                {
                     upgradeItemDic.Add(item, UpgradeCost.amounts[i]);
+                }
             }
         }
         else
@@ -162,16 +168,16 @@ public class UpgradeBuild : DragFunc
     }
 
     BuildingData CanUpgradeCheck(GameObject obj)
-    {
-        if (obj.TryGetComponent(out LogisticsCtrl logistics) && !logistics.isPreBuilding) // 일단 임시로 벨트로 적용
+    {   // 벨트 스프리터 벽 창고
+        if (obj.TryGetComponent(out Structure structure) && structure.canUpgrade && !structure.isPreBuilding)
         {
-            if (logistics.GetComponent<ItemSpawner>() || logistics.structureData.MaxLevel == logistics.level + 1)
+            if (structure.structureData.MaxLevel == structure.level + 1)
                 return null;
 
             buildingData = new BuildingData();
-            buildingData = BuildingDataGet.instance.GetBuildingName(logistics.buildName, logistics.level + 1);
+            buildingData = BuildingDataGet.instance.GetBuildingName(structure.buildName, structure.level + 1);
             BuildingData buildUpgradeData = new BuildingData();
-            buildUpgradeData = BuildingDataGet.instance.GetBuildingName(logistics.buildName, logistics.level + 2);
+            buildUpgradeData = BuildingDataGet.instance.GetBuildingName(structure.buildName, structure.level + 2);
             return buildUpgradeData;
         }
 
@@ -247,7 +253,7 @@ public class UpgradeBuild : DragFunc
                     gameManager.inventory.Sub(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
                     Overall.instance.OverallConsumption(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
                 }
-                obj.GetComponent<LogisticsCtrl>().level++;
+                obj.GetComponent<Structure>().UpgradeFuncServerRpc();
             }
             gameManager.BuildAndSciUiReset();
         }

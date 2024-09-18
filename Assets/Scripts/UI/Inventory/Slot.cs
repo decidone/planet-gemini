@@ -16,6 +16,7 @@ public class Slot : MonoBehaviour
     public int slotNum;
     public bool inputSlot;
     public bool outputSlot;
+    public string inGameName;
 
     void Start()
     {
@@ -46,10 +47,18 @@ public class Slot : MonoBehaviour
         }
     }
 
+    public void AddItem(Item newItem, int itemAmount, string gameName)
+    {
+        AddItem(newItem, itemAmount);
+        inGameName = gameName;
+    }
+
     public void AddItem(Item newItem, int itemAmount)
     {
         item = newItem;
         amount = itemAmount;
+        string name = InGameNameDataGet.instance.ReturnName(1, newItem.name);
+        inGameName = name;
 
         icon.sprite = item.icon;
         icon.enabled = true;

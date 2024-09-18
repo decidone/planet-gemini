@@ -365,7 +365,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.42}
+    pivot: {x: 0.5, y: 0.42105263}
     oldSize: {x: 1, y: 1.1875}
     newSize: {x: 1, y: 1.1875}
     adaptiveTilingThreshold: 0.5
@@ -448,6 +448,10 @@ MonoBehaviour:
   - {fileID: 1484085052, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   - {fileID: -1234653658, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  - {fileID: 1685821966, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  - {fileID: -190096144, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  - {fileID: 1942038125, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  - {fileID: 2091919283, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   spawnItem: {fileID: 0}
   monsterList: []
   col: {fileID: 0}
@@ -477,6 +481,7 @@ MonoBehaviour:
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
+  canUpgrade: 0
   arrFilter:
   - outObj: {fileID: 0}
     isFilterOn: 0

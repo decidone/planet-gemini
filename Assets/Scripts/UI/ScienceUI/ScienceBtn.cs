@@ -8,6 +8,7 @@ public class ScienceBtn : MonoBehaviour
 {
     public int btnIndex;
     public string sciName;
+    public string gameName;
     public int coreLevel;
     public int level;
     public float upgradeTime;
@@ -106,9 +107,10 @@ public class ScienceBtn : MonoBehaviour
         }
     }
 
-    public void SetInfo(string name, int lv, int coreLv, float time, bool core)
+    public void SetInfo(string name, int lv, int coreLv, float time, bool core, string _gameName)
     {
         sciName = name;
+        gameName = _gameName;
         level = lv;
         coreLevel = coreLv;
         upgradeTime = time;

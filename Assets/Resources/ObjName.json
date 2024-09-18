@@ -1,0 +1,300 @@
+{
+  "ItemSpawner": {
+    "1": "Item Spawner"
+  },
+  "Miner": {
+    "1": "Miner Lv1",
+    "2": "Miner Lv2",
+    "3": "Miner Lv3"
+  },
+  "Furnace": {
+    "1": "Furnace"
+  },
+  "Smelter": {
+    "1": "Smelter"
+  },
+  "Constructor": {
+    "1": "Constructor"
+  },
+  "Assembler": {
+    "1": "Assembler"
+  },
+  "Manufacturer": {
+    "1": "Manufacturer"
+  },
+  "Belt": {
+    "1": "Belt Lv1",
+    "2": "Belt Lv2",
+    "3": "Belt Lv3"
+  },
+  "UnderBelt": {
+    "1": "Under Belt Lv1",
+    "2": "Under Belt Lv2",
+    "3": "Under Belt Lv3"
+  },
+  "Splitter": {
+    "1": "Splitter",
+    "2": "Smart Splitter"
+  },
+  "Merger": {
+    "1": "Merger"
+  },
+  "Storage": {
+    "1": "Storage Lv1",
+    "2": "Storage Lv2",
+    "3": "Storage Lv3"
+  },
+  "Disintegrator": {
+    "1": "Disintegrator"
+  },
+  "Unloader": {
+    "1": "Unloader"
+  },
+  "Transporter": {
+    "1": "Transporter"
+  },
+  "Pump": {
+    "1": "Pump"
+  },
+  "Pipe": {
+    "1": "Pipe"
+  },
+  "UnderPipe": {
+    "1": "Under Pipe"
+  },
+  "FluidTank": {
+    "1": "Fluid Tank"
+  },
+  "Extractor": {
+    "1": "Extractor"
+  },
+  "Refinery": {
+    "1": "Refinery"
+  },
+  "ChemicalPlant": {
+    "1": "Chemical Plant"
+  },
+  "Overclock": {
+    "1": "Overclock"
+  },
+  "ScienceBuilding": {
+    "1": "Science Building"
+  },
+  "PortalItemIn": {
+    "1": "Item Teleporter"
+  },
+  "PortalItemOut": {
+    "1": "Item Receiver"
+  },
+  "PortalUnitIn": {
+    "1": "Unit Teleporter"
+  },
+  "PortalUnitOut": {
+    "1": "Unit Receiver"
+  },
+  "Wall": {
+    "1": "Brick Wall",
+    "2": "Copper Wall",
+    "3": "Iron Wall",
+    "4": "Steel Wall",
+    "5": "Adamantite Wall"
+  },
+  "BasicTower": {
+    "1": "Basic Tower"
+  },
+  "FireTower": {
+    "1": "Fire Tower"
+  },
+  "IceTower": {
+    "1": "Ice Tower"
+  },
+  "PoisonTower": {
+    "1": "Poison Tower"
+  },
+  "StormTower": {
+    "1": "Storm Tower"
+  },
+  "SunTower": {
+    "1": "Sun Tower"
+  },
+  "RepairTower": {
+    "1": "Repair Tower"
+  },
+  "UnitFactory": {
+    "1": "Unit Factory"
+  },
+  "BounceRobot": {
+    "1": "Bounce Robot"
+  },
+  "SpinRobot": {
+    "1": "Spin Robot"
+  },
+  "SentryCopter": {
+    "1": "Sentry Copter"
+  },
+  "EnergyRepeater": {
+    "1": "Energy Repeater"
+  },
+  "LDConnector": {
+    "1": "LD Connector"
+  },
+  "EnergyBattery": {
+    "1": "Energy Battery"
+  },
+  "CoalGenerator": {
+    "1": "Coal Generator"
+  },
+  "SteamGenerator": {
+    "1": "Steam Generator"
+  },
+  "ManaGenerator": {
+    "1": "Mana Generator"
+  },
+  "AdamantiteAlloy": {
+    "1": "Adamantite Alloy"
+  },
+  "AdamantiteOre": {
+    "1": "Adamantite Ore"
+  },
+  "AdamantitePlate": {
+    "1": "Adamantite Plate"
+  },
+  "Amethyst": {
+    "1": "Amethyst"
+  },
+  "Battery": {
+    "1": "Battery"
+  },
+  "Brick": {
+    "1": "Brick"
+  },
+  "Cable": {
+    "1": "Cable"
+  },
+  "Chainsaw": {
+    "1": "Chainsaw"
+  },
+  "Coal": {
+    "1": "Coal"
+  },
+  "Cogwheel": {
+    "1": "Cogwheel"
+  },
+  "ControlUnit": {
+    "1": "Control Unit"
+  },
+  "CopperBar": {
+    "1": "Copper Bar"
+  },
+  "CopperBullet": {
+    "1": "Copper Bullet"
+  },
+  "CopperGoblet": {
+    "1": "Copper Goblet"
+  },
+  "CopperOre": {
+    "1": "Copper Ore"
+  },
+  "CopperPlate": {
+    "1": "Copper Plate"
+  },
+  "CrudeOil": {
+    "1": "Crude Oil"
+  },
+  "Diamond": {
+    "1": "Diamond"
+  },
+  "Energy": {
+    "1": "Energy"
+  },
+  "Engine": {
+    "1": "Engine"
+  },
+  "ExplosiveBullet": {
+    "1": "Explosive Bullet"
+  },
+  "Fuel": {
+    "1": "Fuel"
+  },
+  "Fuse": {
+    "1": "Fuse"
+  },
+  "IronAxe": {
+    "1": "Iron Axe"
+  },
+  "IronBar": {
+    "1": "Iron Bar"
+  },
+  "IronBullet": {
+    "1": "Iron Bullet"
+  },
+  "IronOre": {
+    "1": "Iron Ore"
+  },
+  "IronPlate": {
+    "1": "Iron Plate"
+  },
+  "IronRod": {
+    "1": "Iron Rod"
+  },
+  "ManablastBullet": {
+    "1": "Manablast Bullet"
+  },
+  "ManaStone": {
+    "1": "Mana Stone"
+  },
+  "Module": {
+    "1": "Module"
+  },
+  "Motor": {
+    "1": "Motor"
+  },
+  "Naphtha": {
+    "1": "Naphtha"
+  },
+  "Plastic": {
+    "1": "Plastic"
+  },
+  "Rubber": {
+    "1": "Rubber"
+  },
+  "Ruby": {
+    "1": "Ruby"
+  },
+  "Screw": {
+    "1": "Screw"
+  },
+  "SlimyPlant": {
+    "1": "Slimy Plant"
+  },
+  "SteelBar": {
+    "1": "Steel Bar"
+  },
+  "SteelBeam": {
+    "1": "Steel Beam"
+  },
+  "SteelBullet": {
+    "1": "Steel Bullet"
+  },
+  "SteelPlate": {
+    "1": "Steel Plate"
+  },
+  "SteelSword": {
+    "1": "Steel Sword"
+  },
+  "Stone": {
+    "1": "Stone"
+  },
+  "Sulfur": {
+    "1": "Sulfur"
+  },
+  "ToxicPlant": {
+    "1": "Toxic Plant"
+  },
+  "Water": {
+    "1": "Water"
+  },
+  "Wire": {
+    "1": "Wire"
+  }
+}

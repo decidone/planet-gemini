@@ -31,7 +31,7 @@ public class UpgradeWindow : MonoBehaviour
         }
         else
         {
-            text.text = "Would you like to upgrade the science " + scienceBtn.sciName + "?";
+            text.text = "Would you like to upgrade the science " + scienceBtn.gameName + "?";
         }
     }
 

@@ -16,7 +16,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     int xIndex;
     int yIndex;
 
-    bool isInHostMap;
+    //bool isInHostMap;
 
     [SerializeField]
     bool map1Wave1Start = false;
@@ -46,8 +46,10 @@ public class MonsterSpawnerManager : NetworkBehaviour
     bool viDayOff = false;
 
     WavePoint wavePoint;
+
+    bool waveState;
     bool hostMapWave;
-    bool clientMapWave;
+    Vector3 wavePos;
 
     public Sprite[] spawnerSprite;
 
@@ -172,7 +174,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     public void AreaGroupSet(MonsterSpawner spawner, int groupNum, bool isHostMap)
     {
-        isInHostMap = isHostMap;
         (int map, int area) key = (isHostMap ? 1 : 2, groupNum);
 
         if (!monsterSpawners.ContainsKey(key))
@@ -259,22 +260,20 @@ public class MonsterSpawnerManager : NetworkBehaviour
     void WaveStart(Vector3 waveTrPos, bool isInHostMap)
     {
         Debug.Log("waveStart : " + waveTrPos);
+        waveState = true;
+        wavePos = waveTrPos;
         wavePoint.WaveStart(waveTrPos, isInHostMap);
 
         GlobalWaveSet(true);
 
         if (IsServer)
             BattleBGMCtrl.instance.WaveStart(isInHostMap);
-        WaveStateSet(isInHostMap, true);
+        WaveStateSet(isInHostMap);
     }
 
-    public void WaveStateSet(bool isInHostMap, bool waveState)
+    public void WaveStateSet(bool isInHostMap)
     {
-        if (isInHostMap)
-            hostMapWave = waveState;
-        else
-            clientMapWave = waveState;
-
+        hostMapWave = isInHostMap;
         WarningWindowSetServerRpc();
     }
 
@@ -288,7 +287,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     [ClientRpc]
     void WarningWindowSetClientRpc()
     {
-        WarningWindow.instance.WarningTextSet("Wave detected on", isInHostMap);
+        WarningWindow.instance.WarningTextSet("Wave detected on", hostMapWave);
     }
 
 
@@ -449,6 +448,20 @@ public class MonsterSpawnerManager : NetworkBehaviour
         return closestPoint;
     }
 
+    public void WaveStateLoad(SpawnerManagerSaveData data)
+    {
+        waveState = data.waveState;
+        hostMapWave = data.hostMapWave;
+        wavePos = Vector3Extensions.ToVector3(data.wavePos);
+
+        if (waveState)
+        {
+            wavePoint.LoadWaveStart(wavePos, hostMapWave);
+            if (IsServer)
+                BattleBGMCtrl.instance.WaveStart(hostMapWave);
+        }
+    }
+
     public SpawnerManagerSaveData SaveData()
     {
         SpawnerManagerSaveData data = new SpawnerManagerSaveData();
@@ -467,7 +480,9 @@ public class MonsterSpawnerManager : NetworkBehaviour
                     group2Data[x, y] = spawnerMap2Matrix[x, y].GetComponent<SpawnerGroupManager>().SaveData();
             }
         }
-
+        data.waveState = waveState;
+        data.hostMapWave = hostMapWave;
+        data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.spawnerMap1Matrix = group1Data;
         data.spawnerMap2Matrix = group2Data;
         return data;

@@ -15,7 +15,7 @@ MonoBehaviour:
   type: Battle
   scienceName: Wall
   item: {fileID: 11400000, guid: 818ab841f732a824e9c7f8812862f7c0, type: 2}
-  gameObj: {fileID: 941880205020935685, guid: e182553dd49dd4f4a97701e142304e8d, type: 3}
+  gameObj: {fileID: 941880205020935685, guid: db40d0ff8bcced841a5b9d598f1e9e9c, type: 3}
   sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 0

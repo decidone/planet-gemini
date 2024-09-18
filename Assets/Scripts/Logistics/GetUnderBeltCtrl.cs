@@ -48,6 +48,12 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         }
     }
 
+    protected override void SetDirNum()
+    {
+        setModel.sprite = modelNum[dirNum + (level * 4)];
+        CheckPos();
+    }
+
     protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
         float dist = 0;

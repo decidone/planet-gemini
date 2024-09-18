@@ -2632,14 +2632,6 @@ PrefabInstance:
       propertyPath: MonsterSpawnMgr
       value: 
       objectReference: {fileID: 1218140029}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.size
-      value: 54
-      objectReference: {fileID: 0}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[54]
-      value: 
-      objectReference: {fileID: 11400000, guid: a3020250a4044e341af1fee415ecb042, type: 2}
     - target: {fileID: 3986364635626952760, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: m_RootOrder
       value: 3

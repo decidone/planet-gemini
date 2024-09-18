@@ -14,17 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Logistics
   scienceName: Splitter
-  item: {fileID: 11400000, guid: 965d905323e9ff74f95ec5113b5fe33a, type: 2}
+  item: {fileID: 11400000, guid: cd3bb9bb1ab9ebd469093e8458841525, type: 2}
   gameObj: {fileID: 5043839874347049428, guid: 3f83e29ed8424d041876978f00fd5d4e, type: 3}
+  sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 1
   isUnderObj: 0
+  isEnergyUse: 0
+  isEnergyStr: 0
   sprites:
-  - {fileID: -1122253560, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: 1484085052, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: -1234653658, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  animations: []
+  - {fileID: 1685821966, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  - {fileID: -190096144, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  - {fileID: 1942038125, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  - {fileID: 2091919283, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  animatorController: []
   level: 2
   height: 1
   width: 1

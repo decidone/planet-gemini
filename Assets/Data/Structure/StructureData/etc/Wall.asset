@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Wall
   m_EditorClassIdentifier: 
   factoryName: Wall
-  maxLevel: 3
+  maxLevel: 5
   maxHp: 6400000096000000c8000000fa0000002c010000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed: []
   sendFluidAmount: 0
-  sendDelay: 0
+  sendDelay: []
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

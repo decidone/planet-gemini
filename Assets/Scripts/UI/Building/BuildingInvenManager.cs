@@ -157,7 +157,8 @@ public class BuildingInvenManager : MonoBehaviour
         {
             if (buildingInventory.buildingDic.ContainsKey(i))
             {
-                slots[i].AddItem(buildingInventory.buildingDic[i].item, buildingInventory.buildingDic[i].level);
+                string name = InGameNameDataGet.instance.ReturnName(buildingInventory.buildingDic[i].level, buildingInventory.buildingDic[i].item.name);
+                slots[i].AddItem(buildingInventory.buildingDic[i].item, buildingInventory.buildingDic[i].level, name);
             }
             else
             {

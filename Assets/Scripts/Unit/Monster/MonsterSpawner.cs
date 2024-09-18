@@ -676,6 +676,48 @@ public class MonsterSpawner : NetworkBehaviour
         waveTimer = waveTimerSet;
     }
 
+    public GameObject WaveWaitingMonsterSpawn(int monserType, int monsterIndex, bool isInHostMap)
+    {
+        GameObject newMonster = null;
+        if (monserType == 0)
+        {
+            newMonster = Instantiate(weakMonster[monsterIndex]);
+            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
+            currentWeakSpawn++;
+        }
+        else if (monserType == 1)
+        {
+            newMonster = Instantiate(normalMonster[monsterIndex]);
+            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
+            currentNormalSpawn++;
+        }
+        else if (monserType == 2)
+        {
+            newMonster = Instantiate(strongMonster[monsterIndex]);
+            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
+            currentStrongSpawn++;
+        }
+        else if (monserType == 3)
+        {
+            newMonster = Instantiate(guardian);
+            guardianList.Add(newMonster.GetComponent<GuardianAi>());
+        }
+
+        NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
+        if (!networkObject.IsSpawned) networkObject.Spawn(true);
+
+        newMonster.transform.SetParent(this.transform, false);
+
+        MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
+        monsterAi.MonsterSpawnerSet(this, monserType);
+        monsterAi.AStarSet(isInHostMap);
+
+        if (IsServer)
+            monsterAi.MonsterScriptSetServerRpc(true);
+
+        return newMonster;
+    }
+
     public GameObject WaveMonsterSpawn(int monserType, int monsterIndex, bool isInHostMap, bool isWaveColonyCallCheck)
     {
         GameObject newMonster = null;
@@ -852,7 +894,6 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void GlobalWaveState(bool wave)
     {
-        Debug.Log("GlobalWaveState" + wave);
         globalWave = wave;
     }
 

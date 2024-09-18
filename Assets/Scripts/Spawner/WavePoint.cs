@@ -53,18 +53,21 @@ public class WavePoint : MonoBehaviour
 
     void Update()
     {
-        if (isMap1WaveStart && gameManager.isPlayerInHostMap)
+        if (player != null)
         {
-            SetIndicator(true);
-        }
-        else if (isMap2WaveStart && !gameManager.isPlayerInHostMap)
-        {
-            SetIndicator(false);
-        }
-        else
-        {
-            canvasObj.SetActive(false);
-            mapObj.SetActive(false);
+            if (isMap1WaveStart && gameManager.isPlayerInHostMap)
+            {
+                SetIndicator(true);
+            }
+            else if (isMap2WaveStart && !gameManager.isPlayerInHostMap)
+            {
+                SetIndicator(false);
+            }
+            else
+            {
+                canvasObj.SetActive(false);
+                mapObj.SetActive(false);
+            }
         }
     }
 
@@ -111,6 +114,27 @@ public class WavePoint : MonoBehaviour
             map2LineRenderer.SetPosition(1, map2BasePos);
         }
     }
+
+    (Vector3, bool) loadWaveData;
+
+    public void LoadWaveStart(Vector3 wavePos, bool isInHostMap)
+    {
+        Debug.Log("LoadWaveStart");
+        loadWaveData = (wavePos, isInHostMap);
+        StartCoroutine(AstarScanCheck());
+    }
+
+    IEnumerator AstarScanCheck()
+    {
+        while (!MapGenerator.instance.isCompositeDone)
+        {
+            yield return null;
+        }
+
+        WaveStart(loadWaveData.Item1, loadWaveData.Item2);
+        Debug.Log("WaveStart");
+    }
+
 
     public void WaveEnd(bool isInHostMap)
     {

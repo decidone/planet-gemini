@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PortalUIBtn : MonoBehaviour
@@ -18,6 +20,7 @@ public class PortalUIBtn : MonoBehaviour
     [SerializeField]
     GameObject LockUi;
     public string objName;
+    public string inGameName;
     public Portal portal;
     [SerializeField]
     bool isPortalObj;
@@ -33,13 +36,39 @@ public class PortalUIBtn : MonoBehaviour
     Button okBtn;
     [SerializeField]
     Button canselBtn;
-
+    ItemInfoWindow itemInfoWindow;
 
     private void Start()
     {
         preBuilding = PreBuilding.instance;
         gameManager = GameManager.instance;
         btn.onClick.AddListener(() => ButtonFunc());
+        itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
+
+        EventTrigger trigger = GetComponent<EventTrigger>();
+        trigger.triggers.RemoveRange(0, trigger.triggers.Count);
+        AddEvent(EventTriggerType.PointerEnter, delegate { OnEnter(); });
+        AddEvent(EventTriggerType.PointerExit, delegate { OnExit(); });
+    }
+
+    void AddEvent(EventTriggerType type, UnityAction<BaseEventData> action)
+    {
+        EventTrigger.Entry eventTrigger = new EventTrigger.Entry();
+        eventTrigger.eventID = type;
+        eventTrigger.callback.AddListener(action);
+
+        EventTrigger trigger = GetComponent<EventTrigger>();
+        trigger.triggers.Add(eventTrigger);
+    }
+
+    void OnEnter()
+    {
+        itemInfoWindow.OpenWindow(this);
+    }
+
+    void OnExit()
+    {
+        itemInfoWindow.CloseWindow();
     }
 
     void ButtonFunc()
@@ -87,6 +116,7 @@ public class PortalUIBtn : MonoBehaviour
     public void SetData()
     {
         objName = objItem.name;
+        inGameName = InGameNameDataGet.instance.ReturnName(1, objName);
         icon.sprite = objItem.icon;
         isLock = true;
     }
