@@ -54,6 +54,8 @@ public class SteamManager : MonoBehaviour
             lobby.SetPublic();
             lobby.SetJoinable(true);
             lobby.SetData("owner", lobby.Owner.Name);
+            lobby.SetData("mapSize", MainGameSetting.instance.mapSizeIndex.ToString());
+
             NetworkManager.Singleton.StartHost();
         }
         else
@@ -72,6 +74,8 @@ public class SteamManager : MonoBehaviour
         {
             NetworkManager.Singleton.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;
             NetworkManager.Singleton.StartClient();
+            string data = lobby.GetData("mapSize");
+            MainGameSetting.instance.MapSizeSet(int.Parse(data));
             LoadingUICtrl.Instance.LoadScene("GameScene");
         }
         else
