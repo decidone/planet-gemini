@@ -370,6 +370,7 @@ MonoBehaviour:
   cliffBottomLeftCornerWall: []
   cliffBottomRightCornerWall: []
   objects: []
+  objectsSpawnrate: 0
 --- !u!1 &1784946213
 GameObject:
   m_ObjectHideFlags: 0
@@ -604,6 +605,7 @@ MonoBehaviour:
   - {fileID: 4009096746150404129, guid: efa440407aa7a8140977824532450fc6, type: 3}
   - {fileID: 4009096746150404129, guid: 154c927fb0a9d8644b2724ee5ee12441, type: 3}
   - {fileID: 4009096746150404129, guid: 3ca23ec783f0e9649ac4149b2c3a7c0f, type: 3}
+  objectsSpawnrate: 0
 --- !u!1 &2480601897812969364
 GameObject:
   m_ObjectHideFlags: 0
@@ -709,7 +711,12 @@ MonoBehaviour:
   cliffRightCornerWall: []
   cliffBottomLeftCornerWall: []
   cliffBottomRightCornerWall: []
-  objects: []
+  objects:
+  - {fileID: 2557397671702435269, guid: 0317abe437244da46846ca7f94deecd1, type: 3}
+  - {fileID: 7020412104492794120, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
+  - {fileID: 8159159478609809111, guid: fc76007f987c05749a8db6c1f51e00eb, type: 3}
+  - {fileID: 4009096746150404129, guid: 1f9a7be67f8ed1b4e9138b769a45c43b, type: 3}
+  objectsSpawnrate: 3
 --- !u!1 &2480601897858781117
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,7 +822,13 @@ MonoBehaviour:
   cliffRightCornerWall: []
   cliffBottomLeftCornerWall: []
   cliffBottomRightCornerWall: []
-  objects: []
+  objects:
+  - {fileID: 8159159478609809111, guid: f3a6f3ceb7421804bb9c3861a265bc84, type: 3}
+  - {fileID: 8159159478609809111, guid: 1164bf944e6051c4a941a5e6d6c056a1, type: 3}
+  - {fileID: 8159159478609809111, guid: fca630f9b90bd834c815401eb2040f9c, type: 3}
+  - {fileID: 8159159478609809111, guid: d4536b192ed263b4f86c2a3b7b37ca69, type: 3}
+  - {fileID: 8159159478609809111, guid: e72cac07b1f1d634a8239ff3568d7556, type: 3}
+  objectsSpawnrate: 0.3
 --- !u!1 &2480601898082089274
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,7 +934,13 @@ MonoBehaviour:
   cliffRightCornerWall: []
   cliffBottomLeftCornerWall: []
   cliffBottomRightCornerWall: []
-  objects: []
+  objects:
+  - {fileID: 2557397671702435269, guid: 2e72e32d611b04646ac525159af196b3, type: 3}
+  - {fileID: 2557397671702435269, guid: d8181acac4135c2469784a9142784fb0, type: 3}
+  - {fileID: 2557397671702435269, guid: 553a04ff6196cdd4586d4207d53fd43b, type: 3}
+  - {fileID: 2557397671702435269, guid: 1bbc5131e36e2e54397b1a1cb7321942, type: 3}
+  - {fileID: 2557397671702435269, guid: 62c294dcff4a850499bcec6bd5eec1cf, type: 3}
+  objectsSpawnrate: 0.2
 --- !u!1 &2480601898731471735
 GameObject:
   m_ObjectHideFlags: 0
@@ -1017,14 +1036,12 @@ MonoBehaviour:
   HardCorruption: {fileID: 3302591637482025035}
   resources:
   - {fileID: 11400000, guid: 51582f1d0251b214d8a03053ae6d33b9, type: 2}
-  - {fileID: 11400000, guid: fb13a8a9ab5affe4f983df53ee493fe6, type: 2}
   - {fileID: 11400000, guid: ccb239f947622374f9a95480af3ea143, type: 2}
   - {fileID: 11400000, guid: 2c2613a7495a81e4ca384c2c0b710018, type: 2}
   - {fileID: 11400000, guid: f4265b437db2e674294728a4b29231ac, type: 2}
   - {fileID: 11400000, guid: e1c9948475d2f0a45b89460e72fe29a8, type: 2}
   - {fileID: 11400000, guid: 8b035726b6a2f844799379f69a3cd309, type: 2}
   resourcesIcon:
-  - {fileID: 11400000, guid: 8dc830c7183ee1c4295c2276837ed0ed, type: 2}
   - {fileID: 11400000, guid: 8dc830c7183ee1c4295c2276837ed0ed, type: 2}
   - {fileID: 11400000, guid: b702cc5afee17db438232e600d466039, type: 2}
   - {fileID: 11400000, guid: a95442ebbfc78a5439b2b26342aa885c, type: 2}
@@ -1033,6 +1050,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f2e8519c9f817c74783b8e4acba6865f, type: 2}
   astar: {fileID: 7378487733200588626}
   comp: {fileID: 0}
+  isCompositeDone: 0
   spawnerSet: 1
   corruptionRadius: 20
   corruptionClearRadius: 2
@@ -1222,6 +1240,7 @@ MonoBehaviour:
   - {fileID: 7020412104492794120, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
   - {fileID: 8159159478609809111, guid: fc76007f987c05749a8db6c1f51e00eb, type: 3}
   - {fileID: 4009096746150404129, guid: 1f9a7be67f8ed1b4e9138b769a45c43b, type: 3}
+  objectsSpawnrate: 0.5
 --- !u!1 &2480601899221957862
 GameObject:
   m_ObjectHideFlags: 0
@@ -1359,6 +1378,7 @@ MonoBehaviour:
   cliffBottomLeftCornerWall: []
   cliffBottomRightCornerWall: []
   objects: []
+  objectsSpawnrate: 0
 --- !u!1 &2683733143706710911
 GameObject:
   m_ObjectHideFlags: 0
@@ -1473,6 +1493,7 @@ MonoBehaviour:
   - {fileID: 4009096746150404129, guid: efa440407aa7a8140977824532450fc6, type: 3}
   - {fileID: 4009096746150404129, guid: 154c927fb0a9d8644b2724ee5ee12441, type: 3}
   - {fileID: 4009096746150404129, guid: 3ca23ec783f0e9649ac4149b2c3a7c0f, type: 3}
+  objectsSpawnrate: 0
 --- !u!1 &4225482038413158493
 GameObject:
   m_ObjectHideFlags: 0
@@ -1757,6 +1778,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 52a20d09e9eb4e14d9857000b9be0797, type: 2}
   - {fileID: 11400000, guid: caa0755f57957d44daf9e2e2c73f8807, type: 2}
   objects: []
+  objectsSpawnrate: 0
 --- !u!1 &4952291414298632577
 GameObject:
   m_ObjectHideFlags: 0
@@ -2123,6 +2145,7 @@ MonoBehaviour:
   - {fileID: 4009096746150404129, guid: efa440407aa7a8140977824532450fc6, type: 3}
   - {fileID: 4009096746150404129, guid: 154c927fb0a9d8644b2724ee5ee12441, type: 3}
   - {fileID: 4009096746150404129, guid: 3ca23ec783f0e9649ac4149b2c3a7c0f, type: 3}
+  objectsSpawnrate: 0
 --- !u!1 &8796589799958555669
 GameObject:
   m_ObjectHideFlags: 0

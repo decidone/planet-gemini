@@ -115,7 +115,112 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: CL_Tropical_Crops_Mining_0
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 144
+        width: 59
+        height: 86
+      alignment: 9
+      pivot: {x: 0.5142473, y: 0.12532239}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 766aad0912ddcf440b6561112e35b591
+      internalID: -949171176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CL_Tropical_Crops_Mining_1
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 145
+        width: 50
+        height: 70
+      alignment: 9
+      pivot: {x: 0.48318848, y: 0.13975088}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df0f28a85a255934ea4c777bbde779d5
+      internalID: 316091681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CL_Tropical_Crops_Mining_2
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 146
+        width: 39
+        height: 54
+      alignment: 9
+      pivot: {x: 0.5143691, y: 0.15235223}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 363c5a48c41211649bd38569c0f53c7a
+      internalID: 1142036466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CL_Tropical_Crops_Mining_3
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 66
+        width: 50
+        height: 75
+      alignment: 9
+      pivot: {x: 0.52056456, y: 0.13326293}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ceab486ff2c7d7d45926b79c04a65903
+      internalID: 1804868986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CL_Tropical_Crops_Mining_4
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 66
+        width: 35
+        height: 53
+      alignment: 9
+      pivot: {x: 0.5000001, y: 0.17988917}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8059dbcb1e577b14cacbd38cb9e47b78
+      internalID: 2076065310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -126,7 +231,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CL_Tropical_Crops_Mining_0: -949171176
+      CL_Tropical_Crops_Mining_2: 1142036466
+      CL_Tropical_Crops_Mining_4: 2076065310
+      CL_Tropical_Crops_Mining_1: 316091681
+      CL_Tropical_Crops_Mining_3: 1804868986
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -33,6 +33,7 @@ public class Biome : MonoBehaviour
     [Space]
     [Header("Objects")]
     public List<GameObject> objects;
+    public float objectsSpawnrate;
 
     public void RoughBiomeSmoother(Map map, int x, int y, bool isSpecificDiffBiome)
     {
@@ -604,7 +605,7 @@ public class Biome : MonoBehaviour
     public GameObject SetRandomObject(System.Random random)
     {
         GameObject obj = null;
-        if (random.Next(0, 100) > 98 && objects.Count > 0)
+        if (objectsSpawnrate * 10 > random.Next(0, 1000) && objects.Count > 0)
         {
             obj = objects[random.Next(0, objects.Count)];
         }

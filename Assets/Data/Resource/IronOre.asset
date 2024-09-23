@@ -31,5 +31,10 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 8f35d578a91839e459b68ede2603b22a, type: 2}
   efficiency: 5
   level: 1
-  biome: all
+  biome:
+  - plain
+  - forest
+  - desert
+  - snow
+  - frozen
   value: 3

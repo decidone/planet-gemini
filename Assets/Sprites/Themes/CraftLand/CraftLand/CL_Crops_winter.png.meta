@@ -115,7 +115,112 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: CL_Crops_winter_0
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 208
+        width: 44
+        height: 75
+      alignment: 9
+      pivot: {x: 0.50390625, y: 0.14709045}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2cd8f23c2809deb4593326ff461000df
+      internalID: -362684179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CL_Crops_winter_1
+      rect:
+        serializedVersion: 2
+        x: 501
+        y: 208
+        width: 38
+        height: 65
+      alignment: 9
+      pivot: {x: 0.50452304, y: 0.15096858}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3efc849a3eeb5714c83c2a9095773e0b
+      internalID: 1550245217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CL_Crops_winter_2
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 211
+        width: 24
+        height: 46
+      alignment: 9
+      pivot: {x: 0.4856771, y: 0.13383882}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94e4ec162d7023f46aa7c274e8381b07
+      internalID: 777354487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CL_Crops_winter_3
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 129
+        width: 28
+        height: 69
+      alignment: 9
+      pivot: {x: 0.5194942, y: 0.1123885}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b39921b29f26b8a44ac177de0f55c6cf
+      internalID: -1216151406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CL_Crops_winter_4
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 130
+        width: 24
+        height: 56
+      alignment: 9
+      pivot: {x: 0.50758106, y: 0.12312426}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0fe013a8131e10429bb8fd990663c8b
+      internalID: -1643863427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -126,7 +231,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      CL_Crops_winter_1: 1550245217
+      CL_Crops_winter_4: -1643863427
+      CL_Crops_winter_2: 777354487
+      CL_Crops_winter_3: -1216151406
+      CL_Crops_winter_0: -362684179
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

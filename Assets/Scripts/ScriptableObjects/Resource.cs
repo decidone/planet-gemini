@@ -15,6 +15,6 @@ public class Resource : ScriptableObject
     public Item item = null;
     public float efficiency;    //채굴 효율 (채굴 쿨다운. 낮을수록 빨리 채굴)
     public int level;           //채굴 가능한 채굴기 레벨. 설원 바이옴의 경우 채굴기에서 따로 배율 적용
-    public string biome;        //All or 특정바이옴으로 표시, All에 lake는 포함되지 않음. 전부는 아니지만 2바이옴 이상 필요한 경우 바이옴별로 데이터 생성
+    public List<string> biome;  //해당 자원을 스폰시킬 바이옴을 전부 입력
     public int value;           //자원의 가치
 }

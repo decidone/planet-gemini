@@ -301,4 +301,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9050d2f4de3bd240ad15e2e0bb6f5bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: Tree 3
+  name: Tree

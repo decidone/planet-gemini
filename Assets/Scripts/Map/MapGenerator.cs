@@ -683,7 +683,7 @@ public class MapGenerator : MonoBehaviour
         for (int i = 0; i < resources.Count; i++)
         {
             Resource resource = resources[i];
-            Debug.Log("ore gen : " + resource.name);
+            Debug.Log("resource gen : " + resource.name);
             int oreX = random.Next(0, 1000000);
             int oreY = random.Next(0, 1000000);
 
@@ -696,11 +696,10 @@ public class MapGenerator : MonoBehaviour
                         int randomNum = random.Next(1, 1000);
                         if (randomNum <= resource.distribution)
                         {
-                            // 해당 메서드는 사막, 빙하 리소스에서 각각 1번씩 2번 돌아감. 따라서 여기서 정한 확률의 2배 확률로 석유자원이 젠 됨
                             Cell cell = map.mapData[x][y];
                             Biome biome = cell.biome;
 
-                            if (resource.biome == biome.biome)
+                            if (resource.biome.Contains(biome.biome))
                             {
                                 if (map.IsOnMapData(x + 1, y) && map.IsOnMapData(x, y + 1) && map.IsOnMapData(x + 1, y + 1))
                                 {
@@ -757,26 +756,26 @@ public class MapGenerator : MonoBehaviour
                             else
                             {
                                 // 사막, 빙하 바이옴이 아닌 경우 사막, 빙하 바이옴의 1/10 확률로 1칸 젠
-                                int diffBiomeRandomNum = random.Next(1, 10);
-                                if (diffBiomeRandomNum <= 1)
-                                {
-                                    if (biome != lake && biome != cliff && cell.resource == null)
-                                    {
-                                        if (cell.tileType == "normal")
-                                        {
-                                            Tile mapTile = cell.biome.SetNormalTile(random);
-                                            tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), mapTile);
-                                        }
+                                //int diffBiomeRandomNum = random.Next(1, 10);
+                                //if (diffBiomeRandomNum <= 1)
+                                //{
+                                //    if (biome != lake && biome != cliff && cell.resource == null)
+                                //    {
+                                //        if (cell.tileType == "normal")
+                                //        {
+                                //            Tile mapTile = cell.biome.SetNormalTile(random);
+                                //            tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), mapTile);
+                                //        }
 
-                                        //Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
-                                        Tile resourceTile = resource.tiles[random.Next(0, 3)];
-                                        resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
-                                        resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
-                                        cell.resource = resource;
+                                //        //Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
+                                //        Tile resourceTile = resource.tiles[random.Next(0, 3)];
+                                //        resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
+                                //        resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
+                                //        cell.resource = resource;
 
-                                        cell.buildable.Add("extractor");
-                                    }
-                                }
+                                //        cell.buildable.Add("extractor");
+                                //    }
+                                //}
                             }
                         }
                     }
@@ -792,7 +791,7 @@ public class MapGenerator : MonoBehaviour
                             Cell cell = map.mapData[x][y];
                             Biome biome = cell.biome;
 
-                            if ((resource.biome == "all" || resource.biome == biome.biome)
+                            if ((resource.biome.Contains(biome.biome))
                                 && biome != lake && biome != cliff && cell.resource == null)
                             {
                                 if (cell.tileType == "normal")
