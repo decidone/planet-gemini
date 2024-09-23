@@ -27,7 +27,7 @@ public class MonsterSpawner : NetworkBehaviour
     int maxGuardianSpawn;
 
     int totalSpawnNum;  // 가딘언을 제외한 최대 소환 수
-    int extraSpawnNum;  // 임시 저장 소환 수
+    public int extraSpawnNum;  // 임시 저장 소환 수
 
     // 현재 소환 개수 정보
     public int currentWeakSpawn;
@@ -56,7 +56,7 @@ public class MonsterSpawner : NetworkBehaviour
     public float maxHp;
     public bool dieCheck = false;
     protected CapsuleCollider2D capsuleCollider2D;
-    bool extraSpawn;
+    public bool extraSpawn;
     bool takeDamageCheck;
     float guardianCallInterval;
     float guardianCallTimer;
@@ -293,6 +293,7 @@ public class MonsterSpawner : NetworkBehaviour
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
         maxGuardianSpawn = levelData.maxGuardianSpawn;
+        totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
 
         wavePos = _basePos;
     }
@@ -315,8 +316,6 @@ public class MonsterSpawner : NetworkBehaviour
         {
             SpawnMonster(3, 0, isInHostMap);
         }
-
-        totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
     }
 
     void MonsterSpawn()
@@ -406,6 +405,7 @@ public class MonsterSpawner : NetworkBehaviour
     public GameObject SpawnMonster(int monserType, int monsterIndex, bool isInHostMap)
     {
         GameObject newMonster = null;
+        Debug.Log(transform.position);
         if (monserType == 0)
         {
             newMonster = Instantiate(weakMonster[monsterIndex]);
@@ -434,9 +434,7 @@ public class MonsterSpawner : NetworkBehaviour
         if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
         newMonster.transform.SetParent(this.transform, false);
-
-        Vector3 setPos = this.transform.position;
-        newMonster.transform.position = setPos;
+        //newMonster.transform.position = transform.position;
 
         MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
         monsterAi.MonsterSpawnerSet(this, monserType);
@@ -551,7 +549,6 @@ public class MonsterSpawner : NetworkBehaviour
     {
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
-        monsterSpawnerManager.AreaGroupRemove(this, areaLevel, isInHostMap);
         capsuleCollider2D.enabled = false;
 
         if (InfoUI.instance.spawner == this)
@@ -565,7 +562,8 @@ public class MonsterSpawner : NetworkBehaviour
 
         if (!IsServer)
             return;
-
+        
+        monsterSpawnerManager.AreaGroupRemove(this, areaLevel, isInHostMap);
         Overall.instance.OverallCount(0);
         spawnerSearchColl.DieFunc();
     }
@@ -665,6 +663,7 @@ public class MonsterSpawner : NetworkBehaviour
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
         maxGuardianSpawn = levelData.maxGuardianSpawn;
+        totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
 
         wavePos = _basePos;
         gameLodeSet = true;

@@ -163,7 +163,7 @@ public class DataManager : MonoBehaviour
 
     public void LoadData(SaveData saveData)
     {
-        GameManager.instance.LoadData(saveData.InGameData);
+        //GameManager.instance.LoadData(saveData.InGameData);
         // 행성 인벤토리
         GameManager.instance.hostMapInven.LoadData(saveData.hostMapInvenData);
         GameManager.instance.clientMapInven.LoadData(saveData.clientMapInvenData);

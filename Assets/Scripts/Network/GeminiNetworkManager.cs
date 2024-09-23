@@ -45,6 +45,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         Transform playerTransform = Instantiate(hostChar);
         GameManager.instance.hostPlayerTransform = playerTransform;
         playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        PlayerObjSpawnDoneClientRpc(clientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -54,6 +55,16 @@ public class GeminiNetworkManager : NetworkBehaviour
         Transform playerTransform = Instantiate(clientChar);
         GameManager.instance.clientPlayerTransform = playerTransform;
         playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        PlayerObjSpawnDoneClientRpc(clientId);
+    }
+
+    [ClientRpc]
+    private void PlayerObjSpawnDoneClientRpc(ulong clientId)
+    {
+        if (NetworkManager.Singleton.LocalClientId == clientId)
+        {
+            GameManager.instance.LoadingEnd();
+        }
     }
 
     public int GetItemSOIndex(Item item)
@@ -203,7 +214,6 @@ public class GeminiNetworkManager : NetworkBehaviour
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
         SaveData clientData = new SaveData();
 
-        clientData.InGameData = saveData.InGameData;
         clientData.playerDataList = saveData.playerDataList;
         clientData.hostMapInvenData = saveData.hostMapInvenData;
         clientData.clientMapInvenData = saveData.clientMapInvenData;

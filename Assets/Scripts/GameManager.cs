@@ -782,8 +782,6 @@ public class GameManager : NetworkBehaviour
         ItemDragManager.instance.SetInven(hostDragInven);
         GeminiNetworkManager.instance.HostSpawnServerRPC();
         Debug.Log("HostConnected??");
-
-        GenerationComplete?.Invoke();
     }
 
     public void ClientConnected()
@@ -806,6 +804,10 @@ public class GameManager : NetworkBehaviour
         GeminiNetworkManager.instance.RequestJsonServerRpc();
 
         Debug.Log("Connected to Network");
+    }
+
+    public void LoadingEnd()
+    {
         GenerationComplete?.Invoke();
     }
 
@@ -1037,19 +1039,6 @@ public class GameManager : NetworkBehaviour
         inGameData.violentDay = violentDay;
 
         return inGameData;
-    }
-
-    public void LoadData(InGameData data)
-    {
-        day = data.day;
-        isDay = data.isDay;
-        dayTimer = data.dayTimer;
-        dayIndex = data.dayIndex;
-
-        violentValue = data.violentValue;
-        violentDay = data.violentDay;
-        timeImg.sprite = timeImgSet[dayIndex];
-        dayText.text = "Day : " + day;
     }
 
     [ServerRpc(RequireOwnership = false)]
