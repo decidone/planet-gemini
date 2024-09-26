@@ -11,7 +11,7 @@ public class QuestManager : MonoBehaviour
     [SerializeField] Text titleText;
     [SerializeField] Text descriptionText;
 
-    int currentQuest;
+    public int currentQuest = 0;
     Overall overall;
     NetworkObjManager networkObjManager;
     ScienceManager scienceManager;
@@ -37,7 +37,6 @@ public class QuestManager : MonoBehaviour
         overall = Overall.instance;
         networkObjManager = NetworkObjManager.instance;
         scienceManager = ScienceManager.instance;
-        currentQuest = 0;
 
         //SetQuest(currentQuest);
     }
@@ -53,6 +52,7 @@ public class QuestManager : MonoBehaviour
         if (quests.Count <= order)
             return;
 
+        currentQuest = order;
         PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
 
         titleText.text = quests[order].title;
@@ -60,16 +60,16 @@ public class QuestManager : MonoBehaviour
 
         switch (quests[order].type)
         {
-            case 0:
+            case 0:     // 텔레포트 이용
                 player.onTeleportedCallback += TeleportCheck;
                 break;
-            case 1:
+            case 1:     // 아이템 전송, 수신
                 if (overall.OverallSentCheck() || overall.OverallReceivedCheck())
                     QuestClear();
                 else
                     overall.onOverallChangedCallback += QuestCompCheck;
                 break;
-            case 10:
+            case 10:    // 아이템 구매
                 if (quests[order].item != null)
                 {
                     int itemAmount = overall.OverallPurchasedItemCheck(quests[order].item);
@@ -80,7 +80,7 @@ public class QuestManager : MonoBehaviour
                         overall.onOverallChangedCallback += QuestCompCheck;
                 }
                 break;
-            case 11:
+            case 11:    // 아이템 판매
                 if (quests[order].item != null)
                 {
                     int itemAmount = overall.OverallSoldItemCheck(quests[order].item);
@@ -91,13 +91,13 @@ public class QuestManager : MonoBehaviour
                         overall.onOverallChangedCallback += QuestCompCheck;
                 }
                 break;
-            case 20:
+            case 20:    // 특정 건물 건설
                 if (networkObjManager.StructureCheck(quests[order].strData))
                     QuestClear();
                 else
                     networkObjManager.onStructureChangedCallback += QuestCompCheck;
                 break;
-            case 21:
+            case 21:    // 아이템 생산
                 if (quests[order].item != null)
                 {
                     int itemAmount = overall.OverallProdItemCheck(quests[order].item);
@@ -108,27 +108,27 @@ public class QuestManager : MonoBehaviour
                         overall.onOverallChangedCallback += QuestCompCheck;
                 }
                 break;
-            case 22:
+            case 22:    // 유닛 생산
                 if (networkObjManager.UnitCheck(quests[order].unitData))
                     QuestClear();
                 else
                     networkObjManager.onUnitChangedCallback += QuestCompCheck;
                 break;
-            case 30:
+            case 30:    // 스포너 파괴
                 descriptionText.text = quests[order].description + "\n" + overall.spawnerDestroyCount + " / " + quests[order].amount;
                 if (quests[order].amount <= overall.spawnerDestroyCount)
                     QuestClear();
                 else
                     overall.onOverallChangedCallback += QuestCompCheck;
                 break;
-            case 31:
+            case 31:    // 몬스터 처치
                 descriptionText.text = quests[order].description + "\n" + overall.monsterKillCount + " / " + quests[order].amount;
                 if (quests[order].amount <= overall.monsterKillCount)
                     QuestClear();
                 else
                     overall.onOverallChangedCallback += QuestCompCheck;
                 break;
-            case 40:
+            case 40:    // 과학 트리 업그레이드
                 if (scienceManager.isAnyUpgradeCompleted)
                     QuestClear();
                 else

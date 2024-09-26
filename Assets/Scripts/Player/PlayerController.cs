@@ -54,6 +54,12 @@ public class PlayerController : NetworkBehaviour
 
         GameManager.instance.SetPlayer(this.gameObject);
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
+        if (GameManager.instance.playerDataHp != -1)
+        {
+            PlayerStatus status = gameObject.GetComponent<PlayerStatus>();
+            status.hp = GameManager.instance.playerDataHp;
+            gameObject.transform.position = GameManager.instance.playerDataPos;
+        }
     }
 
     void OnEnable()

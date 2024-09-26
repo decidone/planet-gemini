@@ -18,4 +18,8 @@ public class InGameData
 
     public float violentValue;      // 광폭화 스택
     public bool violentDay;         // 광폭화 날인지
+
+    public int finance;             // 재화
+    public int scrap;               // 고철
+    public int questIndex;          // 퀘스트 번호
 }

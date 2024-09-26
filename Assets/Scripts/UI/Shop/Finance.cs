@@ -22,6 +22,11 @@ public class Finance : MonoBehaviour
         isTripleDigitForm = false;
     }
 
+    public int GetFinance()
+    {
+        return finance;
+    }
+
     public void SetFinance(int _finance)
     {
         finance = _finance;

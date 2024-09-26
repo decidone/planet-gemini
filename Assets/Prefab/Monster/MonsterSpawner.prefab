@@ -244,7 +244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureData: {fileID: 11400000, guid: 1daea59d30eb91747a451135e9c59bda, type: 2}
   groupManager: {fileID: 0}
-  icon: {fileID: 0}
+  icon: {fileID: 5182953039587840639}
   currentWeakSpawn: 0
   currentNormalSpawn: 0
   currentStrongSpawn: 0
@@ -624,6 +624,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 029a56b1420ee984dab85524f44d4742, type: 3}
+--- !u!212 &5182953039587840639 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 7168543295009494413, guid: 029a56b1420ee984dab85524f44d4742, type: 3}
+  m_PrefabInstance: {fileID: 2636369885271590898}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5892490926701017292 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8453275426282766142, guid: 029a56b1420ee984dab85524f44d4742, type: 3}

@@ -21,11 +21,15 @@ public class GameManager : NetworkBehaviour
     [HideInInspector] public Map hostMap;
     [HideInInspector] public Map clientMap;
     [HideInInspector] public Map map;
+    public List<Vector3> destroyedMapObjects = new List<Vector3>();
 
     public bool isPlayerInHostMap;
     public bool isPlayerInMarket;
 
     public GameObject player;
+    public PlayerStatus playerStatus;
+    public float playerDataHp = -1;
+    public Vector3 playerDataPos = Vector3.zero;
     public PlayerController playerController;
     public Transform hostPlayerTransform;
     public Transform clientPlayerTransform;
@@ -37,6 +41,7 @@ public class GameManager : NetworkBehaviour
     //public GameObject preBuildingObj;
     public Finance finance;
     public Scrap scrap;
+    public int questData;
 
     [SerializeField]
     PlayerInvenManager pInvenManager;
@@ -322,6 +327,7 @@ public class GameManager : NetworkBehaviour
         {
             map = clientMap;
             isPlayerInHostMap = false;
+            SetPlayerLocationServerRpc(false, false);
             SetMapInven(false);
             mapCameraController.SetCamRange(map);
             return clientPlayerSpawnPos;
@@ -330,6 +336,7 @@ public class GameManager : NetworkBehaviour
         {
             map = hostMap;
             isPlayerInHostMap = true;
+            SetPlayerLocationServerRpc(true, false);
             SetMapInven(true);
             mapCameraController.SetCamRange(map);
             return hostPlayerSpawnPos;
@@ -343,11 +350,13 @@ public class GameManager : NetworkBehaviour
         if (!isPlayerInMarket)
         {
             isPlayerInMarket = true;
+            SetPlayerLocationServerRpc(isPlayerInHostMap, true);
             return marketPortalTransform.position;
         }
         else
         {
             isPlayerInMarket = false;
+            SetPlayerLocationServerRpc(isPlayerInHostMap, false);
             if (isPlayerInHostMap)
             {
                 return hostPlayerSpawnPos;
@@ -560,7 +569,7 @@ public class GameManager : NetworkBehaviour
         debug = !debug;
         Debug.Log("debug : " + debug);
 
-        QuestManager.instance.SetQuest(0);
+        QuestManager.instance.SetQuest(questData);
     }
 
     void Supply(InputAction.CallbackContext ctx)
@@ -812,21 +821,41 @@ public class GameManager : NetworkBehaviour
     public void SetPlayer(GameObject playerObj)
     {
         player = playerObj;
+        playerStatus = playerObj.GetComponent<PlayerStatus>();
         playerController = player.GetComponent<PlayerController>();
-        if (isHost)
+        if (playerDataHp == -1)
         {
-            player.transform.position = hostPlayerSpawnPos;
-            SetMapInven(true);
-            map = hostMap;
-            isPlayerInHostMap = true;
+            if (isHost)
+            {
+                player.transform.position = hostPlayerSpawnPos;
+                SetMapInven(true);
+                map = hostMap;
+                isPlayerInHostMap = true;
+            }
+            else
+            {
+                player.transform.position = clientPlayerSpawnPos;
+                SetMapInven(false);
+                map = clientMap;
+                isPlayerInHostMap = false;
+            }
         }
         else
         {
-            player.transform.position = clientPlayerSpawnPos;
-            SetMapInven(false);
-            map = clientMap;
-            isPlayerInHostMap = false;
+            player.transform.position = playerDataPos;
+            if (isPlayerInHostMap)
+            {
+                SetMapInven(true);
+                map = hostMap;
+            }
+            else
+            {
+                SetMapInven(false);
+                map = clientMap;
+            }
         }
+
+        SetPlayerLocationServerRpc(isPlayerInHostMap, isPlayerInMarket);
         mainCam = Camera.main.gameObject.GetComponent<CameraController>();
         mainCam.target = player.transform;
         mapCameraController.target = player.transform;
@@ -940,6 +969,7 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RemoveMapObjServerRpc(Vector3 vector3, bool isHostMapRequest)
     {
+        destroyedMapObjects.Add(vector3);
         RemoveMapObjClientRpc(vector3, isHostMapRequest);
     }
 
@@ -957,6 +987,11 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void RemoveMapObjClientRpc(Vector3 vector3, bool isHostMapRequest)
     {
+        RemoveMapObj(vector3, isHostMapRequest);
+    }
+
+    public void RemoveMapObj(Vector3 vector3, bool isHostMapRequest)
+    {
         Cell cell;
 
         if (isHostMapRequest)
@@ -967,7 +1002,7 @@ public class GameManager : NetworkBehaviour
         {
             cell = clientMap.GetCellDataFromPos((int)vector3.x, (int)vector3.y);
         }
-        
+
         if (cell.obj != null)
         {
             if (cell.obj.TryGetComponent<MapObject>(out MapObject mapObj))
@@ -976,8 +1011,8 @@ public class GameManager : NetworkBehaviour
             }
         }
     }
-    
-    private void GameStartSet()
+
+    void GameStartSet()
     {
         Debug.Log(NetworkManager.Singleton.IsHost);
         if (NetworkManager.Singleton.IsHost)
@@ -1036,6 +1071,10 @@ public class GameManager : NetworkBehaviour
         inGameData.violentValue = violentValue;
         inGameData.violentDay = violentDay;
 
+        inGameData.finance = finance.GetFinance();
+        inGameData.scrap = scrap.GetScrap();
+        inGameData.questIndex = QuestManager.instance.currentQuest;
+
         return inGameData;
     }
 
@@ -1050,6 +1089,10 @@ public class GameManager : NetworkBehaviour
         violentDay = data.violentDay;
         timeImg.sprite = timeImgSet[dayIndex];
         dayText.text = "Day : " + day;
+
+        finance.SetFinance(data.finance);
+        scrap.SetScrap(data.scrap);
+        questData = data.questIndex;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1074,5 +1117,101 @@ public class GameManager : NetworkBehaviour
 
         if(violentDay)
             timeImg.color = new Color32(255, 50, 50, 255);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPlayerLocationServerRpc(bool isHostMap, bool isInMarket)
+    {
+        SetPlayerLocationClientRpc(isHostMap, isInMarket);
+    }
+
+    [ClientRpc]
+    public void SetPlayerLocationClientRpc(bool isHostMap, bool isInMarket)
+    {
+        playerStatus.isPlayerInHostMap = isHostMap;
+        playerStatus.isPlayerInMarket = isInMarket;
+    }
+
+    public PlayerSaveData PlayerSaveData(bool isHost)
+    {
+        PlayerSaveData data = new PlayerSaveData();
+        data.hp = -1;
+        PlayerStatus[] players = GameObject.FindObjectsOfType<PlayerStatus>();
+        foreach(PlayerStatus p in players)
+        {
+            if (isHost && p.name == "Desire")
+            {
+                data.hp = p.hp;
+                data.pos = Vector3Extensions.FromVector3(p.gameObject.transform.position);
+                data.isPlayerInHostMap = p.isPlayerInHostMap;
+                data.isPlayerInMarket = p.isPlayerInMarket;
+            }
+            // 이 아래는 클라이언트 접속보다 데이터 교환이 먼저 이루어지게 바뀌면 다시 활성화
+            //else if (!isHost && p.name == "Pitaya")
+            //{
+            //    data.hp = p.hp;
+            //    data.pos = Vector3Extensions.FromVector3(p.gameObject.transform.position);
+            //    data.isPlayerInHostMap = p.isPlayerInHostMap;
+            //    data.isPlayerInMarket = p.isPlayerInMarket;
+            //}
+        }
+
+        return data;
+    }
+
+    public void LoadPlayerData(PlayerSaveData hostData, PlayerSaveData clientData)
+    {
+        PlayerSaveData data = new PlayerSaveData();
+        if (isHost)
+            data = hostData;
+        else
+            data = clientData;
+
+        if (data.hp < 0)
+            return;
+
+        if (player != null)
+        {
+            PlayerStatus playerStatus = player.GetComponent<PlayerStatus>();
+            playerStatus.hp = data.hp;
+            SetPlayerLocationServerRpc(data.isPlayerInHostMap, data.isPlayerInMarket);
+            isPlayerInHostMap = data.isPlayerInHostMap;
+            isPlayerInMarket = data.isPlayerInMarket;
+            player.transform.position = Vector3Extensions.ToVector3(data.pos);
+        }
+        else
+        {
+            playerDataHp = data.hp;
+            isPlayerInHostMap = data.isPlayerInHostMap;
+            isPlayerInMarket = data.isPlayerInMarket;
+            playerDataPos = Vector3Extensions.ToVector3(data.pos);
+        }
+    }
+
+    public MapSaveData SaveMapData()
+    {
+        MapSaveData data = new MapSaveData();
+
+        foreach (var obj in destroyedMapObjects)
+        {
+            data.objects.Add(Vector3Extensions.FromVector3(obj));
+        }
+
+        return data;
+    }
+
+    public void LoadMapData(MapSaveData data)
+    {
+        foreach(var obj in data.objects)
+        {
+            bool isHostMap = true;
+            if (obj.y > map.height)
+            {
+                isHostMap = false;
+            }
+
+            destroyedMapObjects.Add(Vector3Extensions.ToVector3(obj));
+            RemoveMapObj(Vector3Extensions.ToVector3(obj), isHostMap);
+        }
     }
 }

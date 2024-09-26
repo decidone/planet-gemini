@@ -50,12 +50,6 @@ public class Overall : NetworkBehaviour
             return;
         }
 
-        instance = this;
-    }
-    #endregion
-
-    void Start()
-    {
         itemList = itemListSO.itemSOList;
         spawnerDestroyCount = 0;
         spawnerBountyReceived = 0;
@@ -64,17 +58,25 @@ public class Overall : NetworkBehaviour
 
         Init();
 
+        instance = this;
+    }
+    #endregion
+
+    void Start()
+    {
         display = OverallDisplay.instance;
     }
+
     void OnEnable()
     {
         InputManager.instance.controls.HotKey.Overall.performed += DisplayOverall;
-
     }
+
     void OnDisable()
     {
         InputManager.instance.controls.HotKey.Overall.performed += DisplayOverall;
     }
+
     void Init()
     {
         for (int i = 0; i < itemList.Count; i++)
@@ -451,5 +453,85 @@ public class Overall : NetworkBehaviour
         }
 
         return amout;
+    }
+
+    public OverallSaveData SaveData()
+    {
+        OverallSaveData data = new OverallSaveData();
+
+        data.itemsProduction = new Dictionary<int, int>(itemsProduction);
+        data.itemsConsumption = itemsConsumption;
+        data.purchasedItems = purchasedItems;
+        data.soldItems = soldItems;
+        data.itemsFromHostToClient = itemsFromHostToClient;
+        data.itemsFromClientToHost = itemsFromClientToHost;
+        data.spawnerDestroyCount = spawnerDestroyCount;
+        data.spawnerBountyReceived = spawnerBountyReceived;
+        data.monsterKillCount = monsterKillCount;
+        data.monsterBountyReceived = monsterBountyReceived;
+
+        return data;
+    }
+
+    public void LoadData(OverallSaveData data)
+    {
+        itemsProduction = data.itemsProduction;
+        itemsConsumption = data.itemsConsumption;
+        purchasedItems = data.purchasedItems;
+        soldItems = data.soldItems;
+        itemsFromHostToClient = data.itemsFromHostToClient;
+        itemsFromClientToHost = data.itemsFromClientToHost;
+        spawnerDestroyCount = data.spawnerDestroyCount;
+        spawnerBountyReceived = data.spawnerBountyReceived;
+        monsterKillCount = data.monsterKillCount;
+        monsterBountyReceived = data.monsterBountyReceived;
+
+        DisplayRefresh();
+    }
+
+    void DisplayRefresh()
+    {
+        display = OverallDisplay.instance;
+
+        foreach (var item in itemsProduction)
+        {
+            if (item.Value != 0)
+                display.SetProdAmount(item.Key, item.Value);
+        }
+        foreach (var item in itemsConsumption)
+        {
+            if (item.Value != 0)
+                display.SetConsumptionAmount(item.Key, item.Value);
+        }
+        foreach (var item in purchasedItems)
+        {
+            if (item.Value != 0)
+                display.SetPurchasedAmount(item.Key, item.Value);
+        }
+        foreach (var item in soldItems)
+        {
+            if (item.Value != 0)
+                display.SetSoldAmount(item.Key, item.Value);
+        }
+        foreach (var item in itemsFromHostToClient)
+        {
+            if (item.Value != 0)
+            {
+                if (GameManager.instance.isHost)
+                    display.SetSentAmount(item.Key, item.Value);
+                else
+                    display.SetReceivedAmount(item.Key, item.Value);
+            }
+        }
+        foreach (var item in itemsFromClientToHost)
+        {
+            if (item.Value != 0)
+            {
+                if (GameManager.instance.isHost)
+                    display.SetReceivedAmount(item.Key, item.Value);
+                else
+                    display.SetSentAmount(item.Key, item.Value);
+            }
+        }
     }
 }

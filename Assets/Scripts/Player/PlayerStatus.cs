@@ -12,6 +12,9 @@ public class PlayerStatus : NetworkBehaviour
     public float hp = 100.0f;
     public float maxHp = 100.0f;
 
+    public bool isPlayerInHostMap = true;
+    public bool isPlayerInMarket = false;
+
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
 

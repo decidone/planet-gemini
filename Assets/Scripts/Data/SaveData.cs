@@ -9,7 +9,8 @@ public class SaveData
     public InGameData InGameData = new InGameData();
 
     // 플레이어
-    public List<PlayerSaveData> playerDataList = new List<PlayerSaveData>();
+    public PlayerSaveData hostPlayerData = new PlayerSaveData();
+    public PlayerSaveData clientPlayerData = new PlayerSaveData();
 
     // 행성 인벤토리
     public InventorySaveData hostMapInvenData = new InventorySaveData();
@@ -21,4 +22,7 @@ public class SaveData
     public List<BeltGroupSaveData> beltGroupData = new List<BeltGroupSaveData>();
     public List<UnitSaveData> unitData = new List<UnitSaveData>();
     public SpawnerManagerSaveData spawnerManagerSaveData = new SpawnerManagerSaveData();
+
+    public OverallSaveData overallData = new OverallSaveData();
+    public MapSaveData mapData = new MapSaveData();
 }

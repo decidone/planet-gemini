@@ -7,7 +7,6 @@ using Unity.Netcode;
 
 public class DataManager : MonoBehaviour
 {
-    InputManager inputManager;
     public SaveData saveData;
     public string path;
     public int selectedSlot;    // 저장 슬롯. 나중에 ui 넣을 때 지정
@@ -43,17 +42,7 @@ public class DataManager : MonoBehaviour
         selectedSlot = 0;
         netObjMgr = NetworkObjManager.instance;
     }
-    void OnEnable()
-    {
-        inputManager = InputManager.instance;
-        inputManager.controls.HotKey.Save.performed += ctx => Save(selectedSlot);
-        inputManager.controls.HotKey.Load.performed += ctx => Load(selectedSlot);
-    }
-    void OnDisable()
-    {
-        inputManager.controls.HotKey.Save.performed -= ctx => Save(selectedSlot);
-        inputManager.controls.HotKey.Load.performed -= ctx => Load(selectedSlot);
-    }
+
     public string Save(int saveSlotNum)
     {
         return Save(saveSlotNum, null);
@@ -68,9 +57,8 @@ public class DataManager : MonoBehaviour
         saveData.InGameData.fileName = fileName;
 
         // 플레이어
-        PlayerSaveData playerData = new PlayerSaveData();
-        playerData.isHostPlayer = true; // 임시
-        saveData.playerDataList.Add(playerData);
+        saveData.hostPlayerData = GameManager.instance.PlayerSaveData(true);
+        saveData.clientPlayerData = GameManager.instance.PlayerSaveData(false);
 
         // 행성 인벤토리
         InventorySaveData hostMapInventoryData = GameManager.instance.hostMapInven.SaveData();
@@ -105,6 +93,12 @@ public class DataManager : MonoBehaviour
         MonsterSpawnerManager monsterSpawner = MonsterSpawnerManager.instance;
         SpawnerManagerSaveData spawnerManagerSaveData = monsterSpawner.SaveData();
         saveData.spawnerManagerSaveData = spawnerManagerSaveData;
+
+        OverallSaveData overallSaveData = Overall.instance.SaveData();
+        saveData.overallData = overallSaveData;
+
+        MapSaveData mapSaveData = GameManager.instance.SaveMapData();
+        saveData.mapData = mapSaveData;
 
         // Json 저장
         Debug.Log("saved: " + path);
@@ -164,10 +158,13 @@ public class DataManager : MonoBehaviour
     public void LoadData(SaveData saveData)
     {
         GameManager.instance.LoadData(saveData.InGameData);
+        GameManager.instance.LoadPlayerData(saveData.hostPlayerData, saveData.clientPlayerData);
         // 행성 인벤토리
         GameManager.instance.hostMapInven.LoadData(saveData.hostMapInvenData);
         GameManager.instance.clientMapInven.LoadData(saveData.clientMapInvenData);
         TempScienceDb.instance.LoadSet(saveData.scienceData);
+        Overall.instance.LoadData(saveData.overallData);
+        GameManager.instance.LoadMapData(saveData.mapData);
     }
 
     public void Clear()
