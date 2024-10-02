@@ -24,13 +24,21 @@ public class BulletCtrl : NetworkBehaviour
         alreadyHit = false;
     }
 
-    void Update()
+    //void Update()
+    //{
+    //    if (Time.timeScale == 0)
+    //    {
+    //        return;
+    //    }
+
+    //}
+
+    private void FixedUpdate()
     {
         transform.position += moveNextStep * 5 * Time.fixedDeltaTime;
     }
 
-    [ClientRpc]
-    public void DestroyBulletClientRpc()
+    public void DestroyBullet()
     {
         if(IsServer)
         {
@@ -51,7 +59,7 @@ public class BulletCtrl : NetworkBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         if(!alreadyHit)
-            DestroyBulletClientRpc();
+            DestroyBullet();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -63,7 +71,7 @@ public class BulletCtrl : NetworkBehaviour
             if (!alreadyHit)
             {
                 StopCoroutine(timerCoroutine);
-                DestroyBulletClientRpc();
+                DestroyBullet();
                 alreadyHit = true;
             }
             else

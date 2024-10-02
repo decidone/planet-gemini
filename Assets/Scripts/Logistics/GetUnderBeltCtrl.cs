@@ -43,6 +43,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             }
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
+                Debug.Log("get");
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         }
@@ -155,5 +156,12 @@ public class GetUnderBeltCtrl : LogisticsCtrl
     {
         nearObj[2] = null;
         inObj.Clear();
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+        data.sideObj = true;
+        return data;
     }
 }

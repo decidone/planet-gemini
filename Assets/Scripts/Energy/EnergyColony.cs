@@ -33,6 +33,11 @@ public class EnergyColony : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (energyGroup != null && mainColony && !colonyCallStart)
         {
             spawnerCheckTime += Time.deltaTime;

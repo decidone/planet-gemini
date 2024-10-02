@@ -59,7 +59,8 @@ public abstract class Production : Structure
         ClientConnectSyncServerRpc();
         if(recipeIndex != -1)
             SetRecipeServerRpc(recipeIndex);
-        ItemSyncServerRpc();
+        if(inventory != null)
+            ItemSyncServerRpc();
     }
 
     [ClientRpc]
@@ -72,7 +73,6 @@ public abstract class Production : Structure
             {
                 AddInvenItem();
             }
-
             inventory.ResetInven();
 
             if (isUIOpened)

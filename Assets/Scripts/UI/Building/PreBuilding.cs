@@ -131,6 +131,11 @@ public class PreBuilding : NetworkBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (isBuildingOn)
         {
             mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

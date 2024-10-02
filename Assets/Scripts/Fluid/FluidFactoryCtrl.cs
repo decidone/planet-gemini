@@ -7,7 +7,7 @@ using System.Linq;
 // UTF-8 설정
 public class FluidFactoryCtrl : Production
 {
-    //[HideInInspector]
+    [HideInInspector]
     public string fluidName;
     //[HideInInspector]
     public float saveFluidNum;
@@ -58,6 +58,11 @@ public class FluidFactoryCtrl : Production
 
     protected override void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!removeState)
         {
             if (isRepair)
@@ -83,6 +88,32 @@ public class FluidFactoryCtrl : Production
             }
         }
     }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        FluidSyncServerRpc();
+    }
+
+    IEnumerator lateSync()
+    {
+        yield return new WaitForSeconds(0.2f);
+        FluidSyncServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void FluidSyncServerRpc()
+    {
+        FluidSyncClientRpc(saveFluidNum, fluidName);
+    }
+
+    [ClientRpc]
+    void FluidSyncClientRpc(float fluidNum, string fluidNameSync)
+    {
+        saveFluidNum = fluidNum;
+        fluidName = fluidNameSync;
+    }
+
 
     protected virtual void FluidSetOutObj(GameObject obj)
     {
@@ -135,7 +166,7 @@ public class FluidFactoryCtrl : Production
 
     protected virtual void SendFluid()
     {
-        GameObject lowestObj = null;
+        FluidFactoryCtrl lowestObj = null;
         float lowestSaveFluidNum = float.MaxValue; // 초기값 설정
 
         foreach (GameObject obj in outObj)
@@ -146,7 +177,7 @@ public class FluidFactoryCtrl : Production
                 if (saveFluidNum < lowestSaveFluidNum && fluidCtrl.CanTake())
                 {
                     lowestSaveFluidNum = saveFluidNum;
-                    lowestObj = obj;
+                    lowestObj = fluidCtrl;
                 }
 
                 if (fluidCtrl.mainSource == null && !fluidCtrl.reFindMain && !fluidCtrl.isPreBuilding)
@@ -165,31 +196,28 @@ public class FluidFactoryCtrl : Production
             }
         }
 
-        if (lowestObj == null)
-            return;        
-
-        if (lowestObj.TryGetComponent(out FluidFactoryCtrl fluidFac) && !fluidFac.GetComponent<PumpCtrl>() && !fluidFac.GetComponent<ExtractorCtrl>())
+        if (lowestObj)
         {
             bool canSendFluid = false;
 
-            if (mainSource == fluidFac.mainSource)
+            if (mainSource == lowestObj.mainSource)
             {
-                if (howFarSource <= fluidFac.howFarSource ||
-                    (howFarSource > fluidFac.howFarSource &&
-                    structureData.MaxFulidStorageLimit == fluidFac.structureData.MaxFulidStorageLimit &&
-                    saveFluidNum - 2 > fluidFac.saveFluidNum))
+                if (howFarSource <= lowestObj.howFarSource ||
+                    (howFarSource > lowestObj.howFarSource &&
+                    structureData.MaxFulidStorageLimit == lowestObj.structureData.MaxFulidStorageLimit &&
+                    saveFluidNum - 2 > lowestObj.saveFluidNum))
                 {
                     canSendFluid = true;
                 }
             }
-            else if (fluidFac.fluidName == fluidName)
+            else if (lowestObj.fluidName == fluidName)
             {
                 canSendFluid = true;
             }
 
-            if (canSendFluid && CheckFluidAmount(fluidFac))
+            if (canSendFluid && CheckFluidAmount(lowestObj))
             {
-                SendFluidFunc(fluidFac);
+                SendFluidFunc(lowestObj);
             }
         }        
     }
@@ -354,11 +382,11 @@ public class FluidFactoryCtrl : Production
     {
         fluidName = _fluidName;
 
-        if (GetComponent<PipeCtrl>() || GetComponent<UnderPipeCtrl>() || GetComponent<FluidTankCtrl>())
-        {
-            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-            sprite.color = _fluidName == "CrudeOil" ? Color.black : Color.blue;
-        }
+        //if (GetComponent<PipeCtrl>() || GetComponent<UnderPipeCtrl>() || GetComponent<FluidTankCtrl>())
+        //{
+        //    SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        //    sprite.color = _fluidName == "CrudeOil" ? Color.black : Color.blue;
+        //}
     }
 
     public void RemoveMainSource(bool isRemoveMain)

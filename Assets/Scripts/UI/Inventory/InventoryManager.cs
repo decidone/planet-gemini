@@ -53,6 +53,11 @@ public abstract class InventoryManager : MonoBehaviour
     }
     protected virtual void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (slotRightClickHold)
         {
             splitTimer += Time.deltaTime;

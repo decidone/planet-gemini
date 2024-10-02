@@ -101,6 +101,11 @@ public class ScienceManager : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (infoWindow[0].activeSelf)
         {
             mousePos = Input.mousePosition;

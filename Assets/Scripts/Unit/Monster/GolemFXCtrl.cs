@@ -12,7 +12,12 @@ public class GolemFXCtrl : NetworkBehaviour
     float damage = 0;
 
     void Update()
-    {        
+    {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         AttackFunc();
     }
 

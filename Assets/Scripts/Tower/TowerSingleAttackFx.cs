@@ -30,6 +30,11 @@ public class TowerSingleAttackFx : NetworkBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         transform.position += moveNextStep * 2 * Time.fixedDeltaTime;
         Destroy(this.gameObject, 3f);
     }

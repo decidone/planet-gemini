@@ -56,6 +56,11 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         scrollWheelInput = inputManager.controls.MainCamera.Zoom.ReadValue<float>();
         if (scrollWheelInput == 0)
             return;

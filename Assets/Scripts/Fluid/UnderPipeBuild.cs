@@ -28,6 +28,11 @@ public class UnderPipeBuild : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (isPreBuilding)
         {
             CheckPos();

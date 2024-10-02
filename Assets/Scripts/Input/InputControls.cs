@@ -811,6 +811,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GameStop"",
+                    ""type"": ""Button"",
+                    ""id"": ""8901555e-f797-4070-bc3d-f1c78dddf09d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -910,6 +919,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Overall"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""09cb02a7-8e92-42e1-bf9d-c9f054dcc8aa"",
+                    ""path"": ""<Keyboard>/slash"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""GameStop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1668,6 +1688,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_Save = m_HotKey.FindAction("Save", throwIfNotFound: true);
         m_HotKey_Load = m_HotKey.FindAction("Load", throwIfNotFound: true);
         m_HotKey_Overall = m_HotKey.FindAction("Overall", throwIfNotFound: true);
+        m_HotKey_GameStop = m_HotKey.FindAction("GameStop", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -2160,6 +2181,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_Save;
     private readonly InputAction m_HotKey_Load;
     private readonly InputAction m_HotKey_Overall;
+    private readonly InputAction m_HotKey_GameStop;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2173,6 +2195,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Save => m_Wrapper.m_HotKey_Save;
         public InputAction @Load => m_Wrapper.m_HotKey_Load;
         public InputAction @Overall => m_Wrapper.m_HotKey_Overall;
+        public InputAction @GameStop => m_Wrapper.m_HotKey_GameStop;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2209,6 +2232,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Overall.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnOverall;
                 @Overall.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnOverall;
                 @Overall.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnOverall;
+                @GameStop.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnGameStop;
+                @GameStop.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnGameStop;
+                @GameStop.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnGameStop;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2240,6 +2266,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Overall.started += instance.OnOverall;
                 @Overall.performed += instance.OnOverall;
                 @Overall.canceled += instance.OnOverall;
+                @GameStop.started += instance.OnGameStop;
+                @GameStop.performed += instance.OnGameStop;
+                @GameStop.canceled += instance.OnGameStop;
             }
         }
     }
@@ -2549,6 +2578,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnSave(InputAction.CallbackContext context);
         void OnLoad(InputAction.CallbackContext context);
         void OnOverall(InputAction.CallbackContext context);
+        void OnGameStop(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

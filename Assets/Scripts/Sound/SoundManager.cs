@@ -124,6 +124,11 @@ public class SoundManager : NetworkBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!bgmPlayer.isPlaying)
         {
             PlayBgmMapCheck();

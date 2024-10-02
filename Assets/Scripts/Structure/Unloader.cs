@@ -152,6 +152,7 @@ public class Unloader : LogisticsCtrl
     [ClientRpc]
     public void SelectItemSetClientRpc(int itemIndex)
     {
+        Debug.Log(itemIndex);
         selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         UIReset();
     }

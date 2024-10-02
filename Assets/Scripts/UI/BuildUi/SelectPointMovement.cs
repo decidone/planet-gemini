@@ -11,6 +11,11 @@ public class SelectPointMovement : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         // 오브젝트를 위아래로 움직임
         float newY = initialPosition.y + Mathf.PingPong(Time.time * speed, movementRange);
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);

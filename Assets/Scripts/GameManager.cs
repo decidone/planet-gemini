@@ -148,6 +148,8 @@ public class GameManager : NetworkBehaviour
 
     public static event Action GenerationComplete;
 
+    bool gameStop;
+
     #region Singleton
     public static GameManager instance;
 
@@ -165,6 +167,7 @@ public class GameManager : NetworkBehaviour
 
     void Start()
     {
+        Debug.Log("Gamestart");
         debug = false;
         isHost = false;
         isConsoleOpened = false;
@@ -189,7 +192,7 @@ public class GameManager : NetworkBehaviour
         dayTimer = 0;
 
         OtherPortalSet();
-        GameStartSet();
+        //GameStartSet();
     }
 
     void OnEnable()
@@ -202,6 +205,8 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.Inventory.PlayerInven.performed += Inven;
         inputManager.controls.HotKey.ScienceTree.performed += ScienceTree;
         inputManager.controls.HotKey.EnergyCheck.performed += EnergyCheck;
+        inputManager.controls.HotKey.GameStop.performed += GameStopSet;
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
 
     void OnDisable()
@@ -213,12 +218,49 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.Inventory.PlayerInven.performed -= Inven;
         inputManager.controls.HotKey.ScienceTree.performed -= ScienceTree;
         inputManager.controls.HotKey.EnergyCheck.performed -= EnergyCheck;
+        inputManager.controls.HotKey.GameStop.performed -= GameStopSet;
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+    }
+
+    private void OnClientConnected(ulong clientId)
+    {
+        Debug.Log("Client connected with ID: " + clientId);
+    }
+
+    void GameStopSet(InputAction.CallbackContext ctx)
+    {
+        GameStopSetServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void GameStopSetServerRpc()
+    {
+        GameStopSetClientRpc();
+    }
+
+    [ClientRpc]
+    void GameStopSetClientRpc()
+    {
+        if (gameStop)
+        {
+            Time.timeScale = 1;
+            gameStop = !gameStop;
+        }
+        else
+        {
+            Time.timeScale = 0;
+            gameStop = !gameStop;
+        }
     }
 
     private void Update()
     {
-        dayTimer += Time.deltaTime;
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
 
+        dayTimer += Time.deltaTime;
         hours = (dayTimer / 25f) + (dayIndex * 4) + 8;
         hours = Mathf.Repeat(hours, 24f);
 
@@ -787,6 +829,23 @@ public class GameManager : NetworkBehaviour
     public void ClientConnected()
     {
         ItemDragManager.instance.SetInven(clientDragInven);
+        //Time.timeScale = 0;
+        Debug.Log("Time.timeScale = 0;");
+        StartCoroutine(DataSync());
+        //StartCoroutine(WaitForNetworkConnection());
+    }
+
+    IEnumerator DataSync()
+    {
+        while (!SteamManager.instance.getData)
+        {
+            SteamManager.instance.ReceiveP2PPacket();
+            yield return new WaitForSecondsRealtime(1f);
+        }
+
+        Debug.Log("ClientDataGet And StartClient");
+
+        NetworkManager.Singleton.StartClient();
         StartCoroutine(WaitForNetworkConnection());
     }
 
@@ -796,19 +855,34 @@ public class GameManager : NetworkBehaviour
 
         while (!NetworkManager.Singleton.IsConnectedClient)
         {
+            //yield return null;
             yield return new WaitForEndOfFrame();
         }
 
-        //ulong id = NetworkManager.Singleton.LocalClientId;
-        GeminiNetworkManager.instance.ClientSpawnServerRPC();
-        GeminiNetworkManager.instance.RequestJsonServerRpc();
+        Debug.Log(NetworkManager.Singleton.IsConnectedClient);
+        Debug.Log(NetworkManager.Singleton.LogLevel);
 
-        Debug.Log("Connected to Network");
+        if (NetworkManager.Singleton.IsConnectedClient)
+        {
+            GeminiNetworkManager.instance.ClientSpawnServerRPC();
+            Debug.Log("Connected to Network");
+        }
+        else
+        {
+            StartCoroutine(WaitForNetworkConnection());
+        }
+        Debug.Log(NetworkManager.Singleton.LogLevel);
     }
 
     public void LoadingEnd()
     {
         GenerationComplete?.Invoke();
+
+        if (!isHost)
+        {
+            TimeScaleServerRpc();
+            SyncTimeServerRpc();
+        }
     }
 
     public void SetPlayer(GameObject playerObj)
@@ -979,7 +1053,7 @@ public class GameManager : NetworkBehaviour
         }
     }
     
-    private void GameStartSet()
+    public void GameStartSet()
     {
         Debug.Log(NetworkManager.Singleton.IsHost);
         if (NetworkManager.Singleton.IsHost)
@@ -993,11 +1067,26 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log("Client");
+            SteamManager.instance.ClientConnectSend();
+            //NetworkManager.Singleton.StartClient();
+            //Debug.Log("Client");
             optionCanvas.SaveBtnOnOff(false);
             ClientConnected();
         }
         //GenerationComplete?.Invoke();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TimeScaleServerRpc()
+    {
+        TimeScaleClientRpc();
+    }
+
+    [ClientRpc]
+    void TimeScaleClientRpc()
+    {
+        Debug.Log("TimeScaleClientRpc");
+        Time.timeScale = 1;
     }
 
     public void WaveStartSet(int coreLevel)

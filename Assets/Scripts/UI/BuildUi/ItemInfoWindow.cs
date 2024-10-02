@@ -19,6 +19,11 @@ public class ItemInfoWindow : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (IsOpen)
         {
             mousePos = Input.mousePosition;

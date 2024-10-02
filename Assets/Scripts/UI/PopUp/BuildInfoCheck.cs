@@ -21,6 +21,11 @@ public class BuildInfoCheck : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         mousePos = Input.mousePosition;
 
         if (RaycastUtility.IsPointerOverUI(mousePos))

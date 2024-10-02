@@ -54,6 +54,11 @@ public class ConfirmPanel : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (windowSetting)
         {
             countdownTimer -= Time.deltaTime;

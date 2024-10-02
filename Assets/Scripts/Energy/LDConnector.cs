@@ -113,8 +113,7 @@ public class LDConnector : Structure
             map = gameManager.clientMap;
 
         Cell cell = map.GetCellDataFromPos(x, y);
-
-        while (cell.structure == null)
+        while (cell.structure == null) 
         {
             yield return null;
         }

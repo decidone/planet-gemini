@@ -148,6 +148,11 @@ public class MonsterSpawner : NetworkBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!IsServer || dieCheck)
             return;
 
@@ -405,7 +410,6 @@ public class MonsterSpawner : NetworkBehaviour
     public GameObject SpawnMonster(int monserType, int monsterIndex, bool isInHostMap)
     {
         GameObject newMonster = null;
-        Debug.Log(transform.position);
         if (monserType == 0)
         {
             newMonster = Instantiate(weakMonster[monsterIndex]);

@@ -26,21 +26,25 @@ public class Inventory : NetworkBehaviour
 
     void Start()
     {
-        //itemList = ItemList.instance.itemList;
-        //foreach (Item item in itemList)
-        //{
-        //    totalItems.Add(item, 0);
-        //}
+        if (totalItems.Count == 0)
+        {        
+            itemList = ItemList.instance.itemList;
+            foreach (Item item in itemList)
+            {
+                totalItems.Add(item, 0);
+            }
+        }
+
     }
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        itemList = ItemList.instance.itemList;
-        foreach (Item item in itemList)
-        {
-            totalItems.Add(item, 0);
-        }
+        //itemList = ItemList.instance.itemList;
+        //foreach (Item item in itemList)
+        //{
+        //    totalItems.Add(item, 0);
+        //}
     }
 
     public int SpaceCheck(Item item)
@@ -582,6 +586,7 @@ public class Inventory : NetworkBehaviour
 
     public void ResetInven()
     {
+        Debug.Log("ResetInven");
         // 얜 로컬에서만 쓰는 듯? 일단 회의때 다시 확인
         items.Clear();
         amounts.Clear();
@@ -699,7 +704,6 @@ public class Inventory : NetworkBehaviour
         {
             tempItems.Add(kv.Key, GeminiNetworkManager.instance.GetItemSOFromIndex(kv.Value));
         }
-
         totalItems = tempTotalItems;
         items = tempItems;
         amounts = data.amounts;
