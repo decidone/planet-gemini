@@ -9,7 +9,7 @@
   },
   "Miner":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"When placed on an ore vein, it mines ore slowly."},
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":110,"Info":"When placed on an ore vein, it mines ore slowly."},
       "2":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":10,"Info":"It can mine 2x2 area, produces faster than basic Miner."},
       "3":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"It can mine 2x2 area, produces faster than Miner Lv2."}
     }

@@ -6,6 +6,8 @@ using UnityEngine;
 public class ExtractorCtrl : FluidFactoryCtrl
 {
     float pumpFluid = 15.0f;
+    float pumpTimer;
+    public float pumpInterval = 3;
 
     protected override void Start()
     {
@@ -31,29 +33,36 @@ public class ExtractorCtrl : FluidFactoryCtrl
                 }
             }
 
+
             if (!isPreBuilding && checkObj)
             {
                 sendDelayTimer += Time.deltaTime;
-
                 if (sendDelayTimer > structureData.SendDelay[level])
                 {
                     SendFluid();
                     sendDelayTimer = 0;
                 }
+
+                pumpTimer += Time.deltaTime;
+                if (pumpTimer > pumpInterval)
+                {
+                    PumpUp();
+                    pumpTimer = 0;
+                }
             }
         }
     }
 
+    void PumpUp()
+    {
+        if (saveFluidNum + pumpFluid >= structureData.MaxFulidStorageLimit)
+            saveFluidNum = structureData.MaxFulidStorageLimit;
+        else if (saveFluidNum + pumpFluid < structureData.MaxFulidStorageLimit)
+            saveFluidNum += pumpFluid;
+    }
+
     protected override void SendFluid()
     {
-        if (saveFluidNum < structureData.MaxFulidStorageLimit)
-        {
-            if (saveFluidNum + pumpFluid >= structureData.MaxFulidStorageLimit)
-                saveFluidNum = structureData.MaxFulidStorageLimit;
-            else if (saveFluidNum + pumpFluid < structureData.MaxFulidStorageLimit)
-                saveFluidNum += pumpFluid;
-        }
-
         if (outObj.Count > 0)
         {
             foreach (GameObject obj in outObj)

@@ -79,6 +79,11 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!IsOwner) { return; }
 
         if (isLoot)

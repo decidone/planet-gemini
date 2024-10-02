@@ -20,7 +20,7 @@ public class MonsterAi : UnitCommonAi
     List<string> targetTags = new List<string> { "Player", "Unit", "Tower", "Factory" };
     protected bool idleTimeStart = true;
 
-    protected bool isScriptActive = false;
+    public bool isScriptActive = false;
     public int monsterType;    // 0 : 약한, 1 : 노멀, 2 : 강함, 3 : 가디언
 
     [SerializeField]
@@ -303,7 +303,12 @@ public class MonsterAi : UnitCommonAi
 
         float spawnDis = (tr.position - patrolMainPos).magnitude;
 
-        if (spawnDis > maxSpawnDist)
+        if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
+        {
+            if (!waveState)
+                checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
+        }
+        else if (spawnDis > maxSpawnDist)
         {
             float randomAngle = Random.Range(0f, 2f * Mathf.PI);
             float randomDistance = Random.Range(0f, unitCommonData.PatrolRad);
@@ -312,21 +317,7 @@ public class MonsterAi : UnitCommonAi
             patrolPos = randomPosition;
             if (checkPathCoroutine == null)
             {
-                if (!waveState)
-                {
-                    if (spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
-                    {
-                        checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
-                    }
-                    else
-                    {
-                        checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "ReturnPos"));
-                    }
-                }
-                else
-                {
-                    checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
-                }
+                checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
             }
         }
         else
@@ -375,6 +366,7 @@ public class MonsterAi : UnitCommonAi
             if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
             {
                 isScriptActive = false;
+                //enabled = false;
                 animator.enabled = false;
                 capsule2D.enabled = false;
             }
@@ -392,6 +384,7 @@ public class MonsterAi : UnitCommonAi
                 if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
                 {
                     isScriptActive = false;
+                    //enabled = false;
                     animator.enabled = false;
                     capsule2D.enabled = false;
                 }
@@ -798,6 +791,7 @@ public class MonsterAi : UnitCommonAi
 
         if(scriptState)
         {
+            //enabled = true;
             animator.enabled = true;
             capsule2D.enabled = true;
             isScriptActive = scriptState;
@@ -813,7 +807,6 @@ public class MonsterAi : UnitCommonAi
                 }
                 else if(!waveState)
                 {
-                    PatrolRandomPosSet();
                     checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
                 }
             }

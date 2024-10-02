@@ -771,6 +771,15 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GameStop",
+                    "type": "Button",
+                    "id": "8901555e-f797-4070-bc3d-f1c78dddf09d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -848,6 +857,17 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Overall",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "09cb02a7-8e92-42e1-bf9d-c9f054dcc8aa",
+                    "path": "<Keyboard>/slash",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "GameStop",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

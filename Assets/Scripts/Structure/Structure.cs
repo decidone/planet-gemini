@@ -199,6 +199,11 @@ public class Structure : NetworkBehaviour
 
     protected virtual void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!removeState)
         {
             if (isRepair)
@@ -233,6 +238,7 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     void DestroyClientRpc()
     {
+        Debug.Log("DestroyClientRpc : " + destroyStart + " : " + !isPreBuilding);
         if (!destroyStart && !isPreBuilding && destroyTimer > 0)
         {
             destroyStart = true;
@@ -679,8 +685,7 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    protected void itemListRemoveClientRpc()
+    protected void itemListRemove()
     {
         itemList.RemoveAt(0);
     }
@@ -986,7 +991,7 @@ public class Structure : NetworkBehaviour
                 }
                 if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
                 {
-                    itemListRemoveClientRpc();
+                    itemListRemove();
                     ItemNumCheck();
                 }
                 else if (GetComponent<Production>())
@@ -1705,7 +1710,7 @@ public class Structure : NetworkBehaviour
     {
         StructureSaveData data = new StructureSaveData();
         data.index = buildingIndex;
-
+        data.sideObj = false;
         data.pos = Vector3Extensions.FromVector3(transform.position);
         data.tileSetPos = Vector3Extensions.FromVector3(tileSetPos);
         data.hp = hp;

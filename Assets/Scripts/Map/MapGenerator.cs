@@ -87,7 +87,6 @@ public class MapGenerator : MonoBehaviour
 
         mapSizeData = mapSizeDatas[(gameSetting.mapSizeIndex * 3) + gameSetting.difficultylevel];
         spawnerSet = gameSetting.isNewGame ? true : false;
-
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         if (mapSizeData == null)
@@ -132,7 +131,7 @@ public class MapGenerator : MonoBehaviour
     {
         SetRandomSeed();
         GenerateMap();
-        
+
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         spawnerPosSet = SpawnerSetManager.instance;
@@ -164,6 +163,7 @@ public class MapGenerator : MonoBehaviour
             {
                 astar.Scan();
                 isCompositeDone = true;
+                GameManager.instance.GameStartSet();
             }
         }
     }

@@ -131,7 +131,6 @@ public class DataManager : MonoBehaviour
         {
             SpawnStructure(structureSave);
         }
-
         foreach (BeltGroupSaveData beltGroupSave in saveData.beltGroupData)
         {
             SpawnBeltGroup(beltGroupSave);
@@ -178,7 +177,17 @@ public class DataManager : MonoBehaviour
         Building building = GeminiNetworkManager.instance.GetBuildingSOFromIndex(saveData.index);
         Vector3 spawnPos = Vector3Extensions.ToVector3(saveData.pos);
         //Vector3 spawnPos = new Vector3(saveData.pos[0], saveData.pos[1], saveData.pos[2]);
-        GameObject spawnobj = Instantiate(building.gameObj, spawnPos, Quaternion.identity);
+        GameObject spawnobj;
+
+        if (!saveData.sideObj)
+        {
+            spawnobj = Instantiate(building.gameObj, spawnPos, Quaternion.identity);
+        }
+        else
+        {
+            spawnobj = Instantiate(building.sideObj, spawnPos, Quaternion.identity);
+        }
+
         spawnobj.TryGetComponent(out NetworkObject netObj);
         if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
 
@@ -268,7 +277,7 @@ public class DataManager : MonoBehaviour
         if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
         spawnobj.transform.parent = beltMgr.transform;
         spawnobj.TryGetComponent(out BeltGroupMgr beltGroupMgr);
-        
+
         foreach (var beltData in saveData.beltList)
         {
             Building building = GeminiNetworkManager.instance.GetBuildingSOFromIndex(beltData.Item2.index);
@@ -280,6 +289,7 @@ public class DataManager : MonoBehaviour
             if (netBeltObj.TryGetComponent(out Structure structure))
             {
                 structure.GameStartSpawnSet(beltData.Item2.level, beltData.Item2.direction, building.height, building.width, beltData.Item2.planet, beltData.Item2.index);
+                structure.StructureStateSet(beltData.Item2.isPreBuilding, beltData.Item2.isSetBuildingOk, beltData.Item2.destroyStart, beltData.Item2.hp, beltData.Item2.repairGauge, beltData.Item2.destroyTimer);
                 structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(beltData.Item2.tileSetPos));
             }
 

@@ -127,6 +127,11 @@ public class UnitCommonAi : NetworkBehaviour
 
     protected virtual void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!IsServer)
             return;
 

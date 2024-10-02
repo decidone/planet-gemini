@@ -33,6 +33,11 @@ public class BeltGroupMgr : NetworkBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!IsServer)
             return;
 

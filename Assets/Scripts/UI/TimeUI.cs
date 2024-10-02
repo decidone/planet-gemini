@@ -36,13 +36,7 @@ public class TimeUI : MonoBehaviour
         gameManager = GameManager.instance;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void DayText(int day)
+     public void DayText(int day)
     {
         dayText.text = "Day : " + day;
     }

@@ -75,6 +75,11 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (map1Wave1Start)
         {
             WavePointSet(1, true);
@@ -516,5 +521,29 @@ public class MonsterSpawnerManager : NetworkBehaviour
                 spawner.SearchCollReturn();
             }
         }
+    }
+
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if (!IsServer)
+        {
+            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (!IsServer)
+        {
+            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        }
+    }
+
+    void OnClientConnectedCallback(ulong clientId)
+    {
+        SetCorruption();
     }
 }

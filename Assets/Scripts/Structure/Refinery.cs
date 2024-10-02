@@ -21,6 +21,9 @@ public class Refinery : FluidFactoryCtrl
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
+        destroyInterval = structureData.RemoveGauge;
+        soundManager = SoundManager.instance;
+        destroyTimer = destroyInterval;
         #endregion
 
         #region FluidFactoryAwake
@@ -70,6 +73,11 @@ public class Refinery : FluidFactoryCtrl
 
     protected override void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         #region ProductionUpdate
         if (!removeState)
         {

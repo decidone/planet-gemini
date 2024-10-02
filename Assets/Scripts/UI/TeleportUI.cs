@@ -31,6 +31,11 @@ public class TeleportUI : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (timerRun)
         {
             timer += Time.deltaTime;

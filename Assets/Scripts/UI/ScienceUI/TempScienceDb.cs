@@ -11,8 +11,6 @@ public class TempScienceDb : NetworkBehaviour
     public Dictionary<string, Dictionary<int, int>> scienceNameDb = new Dictionary<string, Dictionary<int, int>>();
     public ScienceBtn[] scienceBtns;
     public int[] coreLevelUpgrade = new int[5] { 0, 0, 0, 0, 0 }; // 코어 레벨 당 업그레이드 개수
-    List<ScienceData> getData = new List<ScienceData>();
-    bool loadDataSet = false;
     public int coreLevel = 1;
 
     private void Awake()
@@ -28,10 +26,6 @@ public class TempScienceDb : NetworkBehaviour
     public void ScienceBtnArrGet(ScienceBtn[] arr)
     {
         scienceBtns = arr;
-        if (loadDataSet)
-        {
-            LoadData(getData);
-        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -139,7 +133,6 @@ public class TempScienceDb : NetworkBehaviour
 
     public void LoadSet(List<ScienceData> data)
     {
-        getData = data;
-        loadDataSet = true;
+        LoadData(data);
     }
 }

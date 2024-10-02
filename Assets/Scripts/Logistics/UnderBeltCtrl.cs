@@ -30,8 +30,13 @@ public class UnderBeltCtrl : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         // 기본적으로 send벨트이고 send벨트의 반대 방향으로 10 체크해서 다른 send벨트가 있을 때 get벨트로 변경
-        if(isPreBuilding)
+        if (isPreBuilding)
         {
             CheckPos();
             if (!buildEnd)

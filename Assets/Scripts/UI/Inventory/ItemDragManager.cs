@@ -35,6 +35,11 @@ public class ItemDragManager : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (isDrag)
         {
             slotObj.GetComponent<RectTransform>().position = Input.mousePosition;

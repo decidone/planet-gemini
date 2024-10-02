@@ -33,6 +33,10 @@ public class SteamGenerator : FluidFactoryCtrl
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
+        destroyInterval = structureData.RemoveGauge;
+        soundManager = SoundManager.instance;
+        destroyTimer = destroyInterval;
+
         #endregion
         #region FluidFactoryAwake
         gameManager = GameManager.instance;
@@ -78,6 +82,11 @@ public class SteamGenerator : FluidFactoryCtrl
 
     protected override void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         #region ProductionUpdate
         if (!removeState)
         {
@@ -111,6 +120,18 @@ public class SteamGenerator : FluidFactoryCtrl
         if (DelayGetList.Count > 0 && inObj.Count > 0)
         {
             GetDelayFunc(DelayGetList[0], 0);
+        }
+
+        if (destroyStart)
+        {
+            destroyTimer -= Time.deltaTime;
+            repairBar.fillAmount = destroyTimer / destroyInterval;
+
+            if (destroyTimer <= 0)
+            {
+                ObjRemoveFunc();
+                destroyStart = false;
+            }
         }
         #endregion
 

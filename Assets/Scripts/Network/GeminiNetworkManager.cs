@@ -16,8 +16,7 @@ public class GeminiNetworkManager : NetworkBehaviour
     public BuildingListSO buildingListSO;
     [SerializeField]
     public UnitListSO unitListSO;
-    [SerializeField]
-    GameObject itemPref;
+    public GameObject itemPref;
 
     public delegate void OnItemDestroyed();
     public OnItemDestroyed onItemDestroyedCallback;
@@ -45,15 +44,36 @@ public class GeminiNetworkManager : NetworkBehaviour
         Transform playerTransform = Instantiate(hostChar);
         GameManager.instance.hostPlayerTransform = playerTransform;
         playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        PlayerObjSpawnDoneClientRpc(clientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void ClientSpawnServerRPC(ServerRpcParams serverRpcParams = default)
     {
+        Debug.Log("ClientSpawnServerRPC : 1");
         ulong clientId = serverRpcParams.Receive.SenderClientId;
         Transform playerTransform = Instantiate(clientChar);
         GameManager.instance.clientPlayerTransform = playerTransform;
+        Debug.Log("ClientSpawnServerRPC : 2");
         playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        Debug.Log("ClientSpawnServerRPC : 3");
+        PlayerObjSpawnDoneClientRpc(clientId);
+        Debug.Log("ClientSpawnServerRPC : 4");
+
+    }
+
+    [ClientRpc]
+    private void PlayerObjSpawnDoneClientRpc(ulong clientId)
+    {
+        Debug.Log("ClientSpawnServerRPC : 5");
+        Debug.Log(NetworkManager.Singleton.LocalClientId + " : " + clientId);
+
+        if (NetworkManager.Singleton.LocalClientId == clientId)
+        {
+            Debug.Log("ClientSpawnServerRPC : 6");
+
+            GameManager.instance.LoadingEnd();
+        }
     }
 
     public int GetItemSOIndex(Item item)
@@ -196,6 +216,22 @@ public class GeminiNetworkManager : NetworkBehaviour
         }
     }
 
+    public string RequestJson()
+    {
+        string json = DataManager.instance.Save(0);
+        SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
+        SaveData clientData = new SaveData();
+
+        //clientData.playerDataList = saveData.playerDataList;
+        clientData.hostPlayerData = saveData.hostPlayerData;
+        clientData.clientPlayerData = saveData.clientPlayerData;
+        clientData.hostMapInvenData = saveData.hostMapInvenData;
+        clientData.clientMapInvenData = saveData.clientMapInvenData;
+        clientData.scienceData = saveData.scienceData;
+
+        return JsonConvert.SerializeObject(clientData);
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void RequestJsonServerRpc()
     {
@@ -215,6 +251,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         string clientJson = JsonConvert.SerializeObject(clientData);
 
         RequestJsonClientRpc(clientJson);
+
     }
 
     [ClientRpc]

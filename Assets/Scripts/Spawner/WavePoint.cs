@@ -53,6 +53,11 @@ public class WavePoint : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (player != null)
         {
             if (isMap1WaveStart && gameManager.isPlayerInHostMap)

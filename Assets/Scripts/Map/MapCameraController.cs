@@ -85,6 +85,11 @@ public class MapCameraController : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!inputManager.isMapOpened)
             return;
 

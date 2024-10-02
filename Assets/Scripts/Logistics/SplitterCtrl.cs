@@ -281,7 +281,8 @@ public class SplitterCtrl : LogisticsCtrl
         {
             setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
         }
-        itemListRemoveClientRpc();
+        Debug.Log("sp");
+        itemListRemove();
         ItemNumCheck();
         
         Invoke(nameof(DelaySetItem), structureData.SendDelay[level]);

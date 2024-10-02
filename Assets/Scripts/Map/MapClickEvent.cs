@@ -46,6 +46,11 @@ public class MapClickEvent : NetworkBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (updateRenderer && lineRenderer != null)
         {
             pos = cam.ScreenToWorldPoint(Input.mousePosition);

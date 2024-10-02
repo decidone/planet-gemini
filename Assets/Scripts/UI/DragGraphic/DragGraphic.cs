@@ -76,6 +76,11 @@ public class DragGraphic : MonoBehaviour
     }
     private void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (!preBuilding.isBuildingOn && isDrag)
         {
             endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

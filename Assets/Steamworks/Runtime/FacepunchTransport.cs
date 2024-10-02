@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -64,6 +64,7 @@ namespace Netcode.Transports.Facepunch
 
         private void OnDestroy()
         {
+            Debug.Log("Shutdown");
             SteamClient.Shutdown();
         }
 
@@ -196,6 +197,7 @@ namespace Netcode.Transports.Facepunch
 
         void IConnectionManager.OnConnecting(ConnectionInfo info)
         {
+            Debug.Log(LogLevel);
             if (LogLevel <= LogLevel.Developer)
                 Debug.Log($"[{nameof(FacepunchTransport)}] - Connecting with Steam user {info.Identity.SteamId}.");
         }

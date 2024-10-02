@@ -53,6 +53,30 @@ public class LoadingUICtrl : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void LoadScene(string sceneName, bool isHost)
+    {
+        gameObject.SetActive(true);
+        SceneManager.sceneLoaded += LoadSceneEnd;
+        loadSceneName = sceneName;
+        if (loadSceneName == "GameScene")
+        {
+            GameManager.GenerationComplete += HandleGenerationComplete;
+
+            if (isHost)
+            {
+                NetworkManager.Singleton.SceneManager.LoadScene(sceneName, 0);
+            }
+            else
+            {
+                SceneManager.LoadScene(sceneName, 0);
+            }
+        }
+        else if (loadSceneName == "MainMenuScene")
+        {
+            SceneManager.LoadScene("MainMenuScene");
+        }
+    }
+
     public void LoadScene(string sceneName)
     {
         gameObject.SetActive(true);
@@ -73,6 +97,8 @@ public class LoadingUICtrl : MonoBehaviour
     {
         if (scene.name == loadSceneName)
         {
+            //SteamManager.instance.ClientConnectSend();
+
             if (loadSceneName != "GameScene")
             {
                 gameObject.SetActive(false);

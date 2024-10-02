@@ -58,7 +58,8 @@ public class UnloaderManager : MonoBehaviour
             return;
 
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(_item);
-        unloader.SelectItemSetServerRpc(itemIndex);
+        if (itemIndex != -1)
+            unloader.SelectItemSetServerRpc(itemIndex);
     }
 
     public void OpenUI()
