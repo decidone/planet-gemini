@@ -366,7 +366,7 @@ public class MonsterAi : UnitCommonAi
             if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
             {
                 isScriptActive = false;
-                //enabled = false;
+                enabled = false;
                 animator.enabled = false;
                 capsule2D.enabled = false;
             }
@@ -384,7 +384,7 @@ public class MonsterAi : UnitCommonAi
                 if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
                 {
                     isScriptActive = false;
-                    //enabled = false;
+                    enabled = false;
                     animator.enabled = false;
                     capsule2D.enabled = false;
                 }
@@ -791,7 +791,7 @@ public class MonsterAi : UnitCommonAi
 
         if(scriptState)
         {
-            //enabled = true;
+            enabled = true;
             animator.enabled = true;
             capsule2D.enabled = true;
             isScriptActive = scriptState;

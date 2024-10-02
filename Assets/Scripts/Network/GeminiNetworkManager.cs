@@ -50,28 +50,18 @@ public class GeminiNetworkManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ClientSpawnServerRPC(ServerRpcParams serverRpcParams = default)
     {
-        Debug.Log("ClientSpawnServerRPC : 1");
         ulong clientId = serverRpcParams.Receive.SenderClientId;
         Transform playerTransform = Instantiate(clientChar);
         GameManager.instance.clientPlayerTransform = playerTransform;
-        Debug.Log("ClientSpawnServerRPC : 2");
         playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-        Debug.Log("ClientSpawnServerRPC : 3");
         PlayerObjSpawnDoneClientRpc(clientId);
-        Debug.Log("ClientSpawnServerRPC : 4");
-
     }
 
     [ClientRpc]
     private void PlayerObjSpawnDoneClientRpc(ulong clientId)
     {
-        Debug.Log("ClientSpawnServerRPC : 5");
-        Debug.Log(NetworkManager.Singleton.LocalClientId + " : " + clientId);
-
         if (NetworkManager.Singleton.LocalClientId == clientId)
         {
-            Debug.Log("ClientSpawnServerRPC : 6");
-
             GameManager.instance.LoadingEnd();
         }
     }
