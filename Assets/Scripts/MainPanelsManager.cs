@@ -45,7 +45,9 @@ public class MainPanelsManager : MonoBehaviour
     void GameStartBtnFunc()
     {
         gameSetting.NewGameState(true);
-        SteamManager.instance.HostLobby();
+        NetworkManager.Singleton.StartHost();
+        LoadingUICtrl.Instance.LoadScene("GameScene", true);
+        //SteamManager.instance.HostLobby();
         //LoadingSceneManager.LoadScene("LobbyScene");
     }
 

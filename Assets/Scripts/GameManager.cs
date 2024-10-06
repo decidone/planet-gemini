@@ -611,7 +611,7 @@ public class GameManager : NetworkBehaviour
         debug = !debug;
         Debug.Log("debug : " + debug);
 
-        QuestManager.instance.SetQuest(questData);
+        //QuestManager.instance.SetQuest(questData);
     }
 
     void Supply(InputAction.CallbackContext ctx)
@@ -1090,11 +1090,12 @@ public class GameManager : NetworkBehaviour
     
     public void GameStartSet()
     {
-        Debug.Log(NetworkManager.Singleton.IsHost);
+        Debug.Log("NetworkManager.Singleton.IsHost: " + NetworkManager.Singleton.IsHost);
         if (NetworkManager.Singleton.IsHost)
         {
             Debug.Log("Host");
             optionCanvas.SaveBtnOnOff(true);
+            SteamManager.instance.HostLobby();
             HostConnected();
             MapGenerator.instance.SpawnerAreaMapSet();
             if (!MainGameSetting.instance.isNewGame)
@@ -1108,6 +1109,8 @@ public class GameManager : NetworkBehaviour
             optionCanvas.SaveBtnOnOff(false);
             ClientConnected();
         }
+
+        StartCoroutine(SetQuest());
         //GenerationComplete?.Invoke();
     }
 
@@ -1304,5 +1307,15 @@ public class GameManager : NetworkBehaviour
             destroyedMapObjects.Add(Vector3Extensions.ToVector3(obj));
             RemoveMapObj(Vector3Extensions.ToVector3(obj), isHostMap);
         }
+    }
+
+    IEnumerator SetQuest()
+    {
+        while (player == null)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+
+        QuestManager.instance.SetQuest(questData);
     }
 }

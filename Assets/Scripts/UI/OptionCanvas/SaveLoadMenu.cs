@@ -171,7 +171,9 @@ public class SaveLoadMenu : MonoBehaviour
         }
         else
         {
-            SteamManager.instance.HostLobby();
+            //SteamManager.instance.HostLobby();
+            NetworkManager.Singleton.StartHost();
+            LoadingUICtrl.Instance.LoadScene("GameScene", true);
         }
     }
 

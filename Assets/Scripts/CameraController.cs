@@ -62,7 +62,7 @@ public class CameraController : MonoBehaviour
         }
 
         scrollWheelInput = inputManager.controls.MainCamera.Zoom.ReadValue<float>();
-        if (scrollWheelInput == 0)
+        if (scrollWheelInput == 0 || RaycastUtility.IsPointerOverUI(Input.mousePosition))
             return;
 
         if (scrollWheelInput < 0)

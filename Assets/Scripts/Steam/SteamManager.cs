@@ -79,11 +79,11 @@ public class SteamManager : MonoBehaviour
             lobby.SetData("owner", lobby.Owner.Name);
             lobby.SetData("mapSize", MainGameSetting.instance.mapSizeIndex.ToString());
 
-            NetworkManager.Singleton.StartHost();
+            //NetworkManager.Singleton.StartHost();
         }
         else
         {
-            Debug.Log("Creat Lobby Error");
+            Debug.Log("Create Lobby Error");
         }
     }
 
@@ -107,7 +107,7 @@ public class SteamManager : MonoBehaviour
         }
         else
         {
-            LoadingUICtrl.Instance.LoadScene("GameScene", true);
+            //LoadingUICtrl.Instance.LoadScene("GameScene", true);
         }
     }
 

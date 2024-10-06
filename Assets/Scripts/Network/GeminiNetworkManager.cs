@@ -212,12 +212,14 @@ public class GeminiNetworkManager : NetworkBehaviour
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
         SaveData clientData = new SaveData();
 
-        //clientData.playerDataList = saveData.playerDataList;
+        clientData.InGameData = saveData.InGameData;
         clientData.hostPlayerData = saveData.hostPlayerData;
         clientData.clientPlayerData = saveData.clientPlayerData;
         clientData.hostMapInvenData = saveData.hostMapInvenData;
         clientData.clientMapInvenData = saveData.clientMapInvenData;
         clientData.scienceData = saveData.scienceData;
+        clientData.overallData = saveData.overallData;
+        clientData.mapData = saveData.mapData;
 
         return JsonConvert.SerializeObject(clientData);
     }

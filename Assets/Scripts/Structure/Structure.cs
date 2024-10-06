@@ -589,6 +589,24 @@ public class Structure : NetworkBehaviour
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         DataSet();
+
+        if (energyUse)
+        {
+            GameObject TriggerObj = new GameObject("Trigger");
+            CircleCollider2D col = TriggerObj.AddComponent<CircleCollider2D>();
+            col.isTrigger = true;
+            TriggerObj.transform.position = Vector3.zero;
+            StartCoroutine(Move(TriggerObj));
+        }
+    }
+
+    IEnumerator Move(GameObject obj)
+    {
+        yield return new WaitForSeconds(0.1f);
+        obj.transform.position = transform.position;
+
+        yield return new WaitForSeconds(1f);
+        Destroy(obj);
     }
 
     public virtual void GameStartSpawnSet(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
