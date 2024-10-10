@@ -28,10 +28,18 @@ public class ItemProps : MonoBehaviour
 
     public void ResetItemProps()
     {
-        isOnBelt = false;
-        setOnBelt = null;
-        col.enabled = true;
-        SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.material = ResourcesManager.instance.outlintMat;
+        if (GameManager.instance.isHost)
+        {
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+            GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, amount, transform.position);
+        }
+
+        itemPool.Release(gameObject);
+
+        //isOnBelt = false;
+        //setOnBelt = null;
+        //col.enabled = true;
+        //SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
+        //spriteRenderer.material = ResourcesManager.instance.outlintMat;
     }
 }

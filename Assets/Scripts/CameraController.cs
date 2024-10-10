@@ -31,6 +31,7 @@ public class CameraController : MonoBehaviour
     void Awake()
     {
         pixelPerfectCamera = Camera.main.GetComponent<PixelPerfectCamera>();
+        pixelPerfectCamera.upscaleRT = true;
         zoomLevel = 1;
 
         if (instance != null)
@@ -38,7 +39,6 @@ public class CameraController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
     }
     #endregion
@@ -113,7 +113,7 @@ public class CameraController : MonoBehaviour
     {
         width = widthSize;
         height = heightSize;
-        ChangeZoomLv(lv) ;
+        ChangeZoomLv(lv);
         Debug.Log(width + " : " + height);
     }
 }

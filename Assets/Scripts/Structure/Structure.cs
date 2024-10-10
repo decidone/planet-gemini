@@ -1092,6 +1092,7 @@ public class Structure : NetworkBehaviour
         ColliderTriggerOnOff(true);
 
         soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
+        ItemDrop();
 
         if (!IsServer)
             return;
@@ -1131,26 +1132,28 @@ public class Structure : NetworkBehaviour
         }
         monsterList.Clear();
 
-        ItemDrop();
         RemoveObjServerRpc();
     }
 
     protected void ItemToItemProps(Item item, int itemAmount)
     {
-        var itemPool = ItemPoolManager.instance.Pool.Get();
-        ItemProps itemProps = itemPool.GetComponent<ItemProps>();
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+        GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, itemAmount, transform.position);
 
-        SpriteRenderer sprite = itemProps.GetComponent<SpriteRenderer>();
-        sprite.sprite = item.icon;
-        sprite.sortingOrder = 2;
-        sprite.material = ResourcesManager.instance.outlintMat;
-        itemProps.item = item;
-        itemProps.amount = itemAmount;
-        itemProps.transform.position = transform.position;
-        itemProps.ResetItemProps();
+        //var itemPool = ItemPoolManager.instance.Pool.Get();
+        //ItemProps itemProps = itemPool.GetComponent<ItemProps>();
 
-        NetworkObject itemNetworkObject = itemProps.GetComponent<NetworkObject>();
-        itemNetworkObject.Spawn(true);
+        //SpriteRenderer sprite = itemProps.GetComponent<SpriteRenderer>();
+        //sprite.sprite = item.icon;
+        //sprite.sortingOrder = 2;
+        //sprite.material = ResourcesManager.instance.outlintMat;
+        //itemProps.item = item;
+        //itemProps.amount = itemAmount;
+        //itemProps.transform.position = transform.position;
+        //itemProps.ResetItemProps();
+
+        //NetworkObject itemNetworkObject = itemProps.GetComponent<NetworkObject>();
+        //itemNetworkObject.Spawn(true);
     }
 
     protected virtual void ItemDrop() { }

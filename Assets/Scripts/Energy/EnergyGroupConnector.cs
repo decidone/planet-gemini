@@ -185,8 +185,10 @@ public class EnergyGroupConnector : MonoBehaviour
         {
             connectors[i].SubtractConnector(this);
         }
-
-        group.RemoveConnector(this);
+        if (group != null)
+        {
+            group.RemoveConnector(this);
+        }
     }
 
     public void SubtractConnector(EnergyGroupConnector conn)

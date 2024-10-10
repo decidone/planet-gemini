@@ -224,7 +224,10 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.ScienceTree.performed -= ScienceTree;
         inputManager.controls.HotKey.EnergyCheck.performed -= EnergyCheck;
         inputManager.controls.HotKey.GameStop.performed -= GameStopSet;
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
     }
 
     private void OnClientConnected(ulong clientId)
@@ -838,7 +841,7 @@ public class GameManager : NetworkBehaviour
     public void ClientConnected()
     {
         ItemDragManager.instance.SetInven(clientDragInven);
-        //Time.timeScale = 0;
+        Time.timeScale = 0;
         Debug.Log("Time.timeScale = 0;");
         StartCoroutine(DataSync());
         //StartCoroutine(WaitForNetworkConnection());
@@ -868,19 +871,14 @@ public class GameManager : NetworkBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        Debug.Log(NetworkManager.Singleton.IsConnectedClient);
-        Debug.Log(NetworkManager.Singleton.LogLevel);
-
-        if (NetworkManager.Singleton.IsConnectedClient)
-        {
-            GeminiNetworkManager.instance.ClientSpawnServerRPC();
-            Debug.Log("Connected to Network");
-        }
-        else
-        {
-            StartCoroutine(WaitForNetworkConnection());
-        }
-        Debug.Log(NetworkManager.Singleton.LogLevel);
+        TestServerRpc();
+        GeminiNetworkManager.instance.ClientSpawnServerRPC();
+        Debug.Log("Connected to Network");
+    }
+    [ServerRpc(RequireOwnership = false)]
+    void TestServerRpc()
+    {
+        Debug.Log("TestServerRpc");
     }
 
     public void LoadingEnd()

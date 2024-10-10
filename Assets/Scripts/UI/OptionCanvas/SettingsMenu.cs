@@ -30,7 +30,7 @@ public class SettingsMenu : MonoBehaviour
     int windowSizeIndex;
     int tempWindowSizeIndex;
 
-    bool gameStartFirstSet = true;
+    bool gameStartFirstSet;
 
     #region Singleton
     public static SettingsMenu instance;
@@ -43,6 +43,8 @@ public class SettingsMenu : MonoBehaviour
             return;
         }
         instance = this;
+
+        gameStartFirstSet = true;
     }
     #endregion
 
@@ -204,6 +206,10 @@ public class SettingsMenu : MonoBehaviour
 
         windowSizeIndex = PlayerPrefs.GetInt("WindowIndex", 0);
         WindowSet(windowSizeIndex);
+        if (windowModeDropdown.value == windowSizeIndex)
+        {
+            gameStartFirstSet = false;
+        }
         windowModeDropdown.value = windowSizeIndex;
         LoadRebindings();
     }
