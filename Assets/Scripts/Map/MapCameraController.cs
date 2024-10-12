@@ -192,14 +192,22 @@ public class MapCameraController : MonoBehaviour
             {
                 if (tempEvent == focusedEvent)
                 {
-                    // 라인 생성
+                    //라인 생성
                     //기존 라인 끊는거는 클릭이벤트쪽에서 처리
                     if (focusedEvent.StartRenderer())
                         isLineRendered = true;
                 }
                 else
                 {
-                    if (!focusedEvent.RemoveRenderer(tempEvent))
+                    if (focusedEvent.strType == tempEvent.strType)
+                    {
+                        if (!focusedEvent.RemoveRenderer(tempEvent))
+                        {
+                            CancelFocus();
+                            SetFocus();
+                        }
+                    }
+                    else
                     {
                         CancelFocus();
                         SetFocus();

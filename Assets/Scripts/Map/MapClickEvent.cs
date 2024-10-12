@@ -234,7 +234,7 @@ public class MapClickEvent : NetworkBehaviour
         }
         else if (strType == "transporter")
         {
-            if(transporter.takeBuild  == clickEvent.transporter)
+            if (transporter.takeBuild == clickEvent.transporter)
             {
                 RendererRemoveServerRpc(clickEvent.transform.position, 0);
                 return true;

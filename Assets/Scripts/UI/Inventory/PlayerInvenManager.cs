@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 // UTF-8 설정
 public class PlayerInvenManager : InventoryManager
 {
     [SerializeField]
     StructureInvenManager sManager;
+    [SerializeField]
+    Text title;
 
     protected override void Start()
     {
@@ -58,6 +61,15 @@ public class PlayerInvenManager : InventoryManager
     public override void OpenUI()
     {
         inventoryUI.SetActive(true);
+        if (inventory == GameManager.instance.hostMapInven)
+        {
+            title.text = "Host";
+        }
+        else
+        {
+            title.text = "Client";
+        }
+
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 
@@ -66,6 +78,7 @@ public class PlayerInvenManager : InventoryManager
         inventoryUI.SetActive(false);
         itemInfoWindow.CloseWindow();
         soundManager.PlayUISFX("CloseUI");
+
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
 }

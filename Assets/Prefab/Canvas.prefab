@@ -29472,6 +29472,7 @@ MonoBehaviour:
   slots: []
   itemInfoWindow: {fileID: 0}
   sManager: {fileID: 142728371453078230}
+  title: {fileID: 8669813806468503359}
 --- !u!114 &142728371453078230
 MonoBehaviour:
   m_ObjectHideFlags: 0
