@@ -56,16 +56,30 @@ public class UnitAi : UnitCommonAi
 
             if (selfHealTimer >= selfHealInterval)
             {
-                hp += selfHealingAmount;
-                if (hp > maxHp)
-                    hp = maxHp;
-                onHpChangedCallback?.Invoke();
-                hpBar.fillAmount = hp / maxHp;
-                if(hp >= maxHp)                
-                    unitCanvas.SetActive(false);                
+                SelfHealingServerRpc();              
                 selfHealTimer = 0f;
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void SelfHealingServerRpc()
+    {
+        hp += selfHealingAmount;
+        SelfHealingClientRpc(hp);
+    }
+
+    [ClientRpc]
+    void SelfHealingClientRpc(float hostHp)
+    {
+        hp = hostHp;
+
+        if (hp > maxHp)
+            hp = maxHp;
+        onHpChangedCallback?.Invoke();
+        hpBar.fillAmount = hp / maxHp;
+        if (hp >= maxHp)
+            unitCanvas.SetActive(false);
     }
 
     public override void OnNetworkSpawn()

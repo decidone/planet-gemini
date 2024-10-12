@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class BuildInfoCheck : MonoBehaviour
 {
+    public RectTransform canvasRectTransform; // 캔버스의 RectTransform
+    public RectTransform imageRectTransform;  // 팝업 이미지의 RectTransform
     public BuildItemInfoWin buildItemInfoWin;
     Structure selectedStr;
     Vector2 mousePos;
@@ -95,18 +97,6 @@ public class BuildInfoCheck : MonoBehaviour
                 {
                     PopUpPosSetStructure(mousePos, structure);
                 }
-                //if (!isMouseOnBuild && cell.structure.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
-                //{
-                //    if (selectBuild != null || selectBuild != structure)
-                //    {
-                //        isMouseOnBuild = true;
-                //        selectBuild = structure;
-                //    }
-                //}
-                //else if (isMouseOnBuild)
-                //{
-                //    PopUpPosSetStructure(mousePos);
-                //}
             }
             else if (cell.resource != null)
             {
@@ -119,34 +109,6 @@ public class BuildInfoCheck : MonoBehaviour
                 BuildItemInfoPopUpOff();
             }
         }
-
-        //if (!EventSystem.current.IsPointerOverGameObject())
-        //{
-        //    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
-        //    if (hit.collider != null && !isMouseOnBuild && hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
-        //    {
-        //        if(selectBuild != null || selectBuild != structure)
-        //        {
-        //            isMouseOnBuild = true;
-        //            selectBuild = structure;
-        //        }
-        //    }
-        //    else if (hit.collider != null && isMouseOnBuild)
-        //    {
-        //        PopUpPosSet(mousePos);
-        //    }
-        //    else if (hit.collider == null && isMouseOnBuild)
-        //    {
-        //        isMouseOnBuild = false;
-        //        BuildItemInfoPopUpOff();
-        //    }
-        //}
-        //else if (selectBuild != null)
-        //{
-        //    selectBuild = null;
-        //    isMouseOnBuild = false;
-        //    BuildItemInfoPopUpOff();
-        //}
     }
 
     void BuildItemInfoPopUpOn()
@@ -162,10 +124,29 @@ public class BuildInfoCheck : MonoBehaviour
 
     void PopUpPosSetStructure(Vector2 pos, Structure structure)
     {
-        RectTransform popUpRect = buildItemInfoWin.GetComponent<RectTransform>();
-        Vector2 newPos = new Vector2(pos.x + popUpRect.rect.width / 2, pos.y - popUpRect.rect.height / 2);
+        Vector2 mousePos = Input.mousePosition;
 
-        buildItemInfoWin.gameObject.transform.position = newPos;
+        // 캔버스 공간에서의 마우스 좌표로 변환
+        Vector2 anchoredPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
+
+        // 팝업 이미지의 크기 가져오기
+        float popupWidth = imageRectTransform.rect.width;
+        float popupHeight = imageRectTransform.rect.height;
+
+        // 새 좌표 계산 (마우스 위치에 대해 오프셋 적용)
+        // 왼쪽 위에 위치하도록 마우스 좌표에서 팝업 크기만큼 뺌
+        Vector2 newPos = new Vector2(anchoredPos.x + popupWidth / 2, anchoredPos.y + popupHeight / 2);
+        // 팝업이 화면 밖으로 나가지 않도록 클램핑
+        float clampedX = Mathf.Clamp(newPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth / 2);
+        float clampedY = Mathf.Clamp(newPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight / 2);
+
+        // 위치 설정
+        buildItemInfoWin.gameObject.transform.localPosition = new Vector2(clampedX, clampedY);
+
+        //RectTransform popUpRect = buildItemInfoWin.GetComponent<RectTransform>();
+        //Vector2 newPos = new Vector2(pos.x + popUpRect.rect.width / 2, pos.y - popUpRect.rect.height / 2);
+        //buildItemInfoWin.gameObject.transform.position = newPos;
         Dictionary<Item, int> getDic = structure.PopUpItemCheck();
         (bool, bool, EnergyGroup) energyState = structure.PopUpEnergyCheck();
 
@@ -176,25 +157,33 @@ public class BuildInfoCheck : MonoBehaviour
         }
         else
             BuildItemInfoPopUpOff();
-
-        //Dictionary<Item, int> getDic = selectBuild.PopUpItemCheck();
-        //(bool, float) energyState = selectBuild.PopUpEnergyCheck();
-
-        //if (selectBuild != null && getDic != null && getDic.Count > 0)
-        //{
-        //    BuildItemInfoPopUpOn();
-        //    buildItemInfoWin.UiSetting(getDic, energyState.Item1, energyState.Item2);
-        //}
-        //else
-        //    BuildItemInfoPopUpOff();
     }
 
     void PopUpPosSetResource(Vector2 pos, Item item)
     {
-        RectTransform popUpRect = buildItemInfoWin.GetComponent<RectTransform>();
-        Vector2 newPos = new Vector2(pos.x + popUpRect.rect.width / 2, pos.y - popUpRect.rect.height / 2);
+        Vector2 mousePos = Input.mousePosition;
 
-        buildItemInfoWin.gameObject.transform.position = newPos;
+        // 캔버스 공간에서의 마우스 좌표로 변환
+        Vector2 anchoredPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
+
+        // 팝업 이미지의 크기 가져오기
+        float popupWidth = imageRectTransform.rect.width;
+        float popupHeight = imageRectTransform.rect.height;
+
+        // 새 좌표 계산 (마우스 위치에 대해 오프셋 적용)
+        // 왼쪽 위에 위치하도록 마우스 좌표에서 팝업 크기만큼 뺌
+        Vector2 newPos = new Vector2(anchoredPos.x + popupWidth / 2, anchoredPos.y + popupHeight / 2);
+        // 팝업이 화면 밖으로 나가지 않도록 클램핑
+        float clampedX = Mathf.Clamp(newPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth / 2);
+        float clampedY = Mathf.Clamp(newPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight / 2);
+
+        // 위치 설정
+        buildItemInfoWin.gameObject.transform.localPosition = new Vector2(clampedX, clampedY);
+
+        //RectTransform popUpRect = buildItemInfoWin.GetComponent<RectTransform>();
+        //Vector2 newPos = new Vector2(pos.x + popUpRect.rect.width / 2, pos.y - popUpRect.rect.height / 2);
+        //buildItemInfoWin.gameObject.transform.position = newPos;
 
         BuildItemInfoPopUpOn();
         buildItemInfoWin.UiSetting(item);

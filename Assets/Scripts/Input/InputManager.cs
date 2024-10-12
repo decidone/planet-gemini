@@ -68,8 +68,34 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    void CtrlHold(InputAction.CallbackContext ctx) { ctrl = !ctrl; }
-    void ShiftHold(InputAction.CallbackContext ctx) { shift = !shift; }
+    void CtrlHold(InputAction.CallbackContext ctx)
+    {
+        ctrl = !ctrl;
+        if (GameManager.instance != null)
+        {
+            if (!UpgradeRemoveBtn.instance.clickBtn)
+            {
+                if (ctrl)
+                    MouseSkin.instance.DragCursorSet(false);
+                else
+                    MouseSkin.instance.ResetCursor();
+            }
+        }
+    }
+    void ShiftHold(InputAction.CallbackContext ctx)
+    {
+        shift = !shift;
+        if (GameManager.instance != null)
+        {
+            if (!UpgradeRemoveBtn.instance.clickBtn)
+            {
+                if (shift)
+                    MouseSkin.instance.DragCursorSet(true);
+                else
+                    MouseSkin.instance.ResetCursor();
+            }
+        }
+    }
     void AltHold(InputAction.CallbackContext ctx) { alt = !alt; }
     void MouseLeftHold(InputAction.CallbackContext ctx) { mouseLeft = !mouseLeft; }
     void MouseRightHold(InputAction.CallbackContext ctx) { mouseRight = !mouseRight; }

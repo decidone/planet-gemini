@@ -15,6 +15,8 @@ public class StructureClickEvent : MonoBehaviour
 
     SoundManager soundManager;
 
+    public bool openUI;
+
     private void Start()
     {
         soundManager = SoundManager.instance;
@@ -34,6 +36,7 @@ public class StructureClickEvent : MonoBehaviour
             {
                 structureInfoUI = list;
                 closeBtn = structureInfoUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+                closeBtn.onClick.RemoveAllListeners();
                 closeBtn.onClick.AddListener(CloseUI);
             }
         }
@@ -42,6 +45,7 @@ public class StructureClickEvent : MonoBehaviour
 
     public void OpenUI()
     {
+        openUI = true;
         prod.OpenUI();
         if(prod.isGetLine)
             drag.SelectBuild(this.gameObject);
@@ -51,6 +55,7 @@ public class StructureClickEvent : MonoBehaviour
 
     public void CloseUI()
     {
+        openUI = false;
         prod.CloseUI();
         if (prod.isGetLine)
             drag.CancelBuild();

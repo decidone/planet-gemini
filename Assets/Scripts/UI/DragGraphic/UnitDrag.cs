@@ -64,6 +64,8 @@ public class UnitDrag : DragFunc
     {
         if (selectedObjects.Length > 0)
         {
+            if (!UpgradeRemoveBtn.instance.clickBtn)
+                MouseSkin.instance.UnitCursorCursorSet(true);
             isAKeyPressed = true;
             unitCtrlKeyPressed = true;
         }
@@ -73,6 +75,8 @@ public class UnitDrag : DragFunc
     {
         if (selectedObjects.Length > 0)
         {
+            if (!UpgradeRemoveBtn.instance.clickBtn)
+                MouseSkin.instance.UnitCursorCursorSet(false);
             isPKeyPressed = true;
             unitCtrlKeyPressed = true;
         }
@@ -125,6 +129,7 @@ public class UnitDrag : DragFunc
             }
             UnitMovePos.instance.AnimStart(endPos);
         }
+        MouseSkin.instance.ResetCursor();
         ReSetBool();
     }
 
@@ -132,6 +137,7 @@ public class UnitDrag : DragFunc
     {
         SetTargetPosition(false, endPos);
         UnitMovePos.instance.AnimStart(endPos);
+        MouseSkin.instance.ResetCursor();
         ReSetBool();
     }
 
@@ -153,6 +159,9 @@ public class UnitDrag : DragFunc
     private void SelectedObjects(RaycastHit2D ray)
     {
         removeUnit?.Invoke();
+        selectedObjects = new GameObject[1];
+        selectedObjects[0] = ray.collider.gameObject;
+
         addUnit?.Invoke(ray.collider.gameObject);
         isSelectingUnits = true;
     }

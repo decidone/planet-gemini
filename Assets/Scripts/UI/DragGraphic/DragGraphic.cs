@@ -102,19 +102,35 @@ public class DragGraphic : MonoBehaviour
             sprite.enabled = true;
             isDrag = true;
 
-            if ((inputManager.ctrl && !inputManager.shift) || upgradeBtnOn)
+            if (UpgradeRemoveBtn.instance.clickBtn)
             {
-                isCtrlDrag = true;
-                ColorSet(Color.blue);
-            }
-            else if ((inputManager.shift && !inputManager.ctrl) || removeBtnOn)
-            {
-                isShiftDrag = true;
-                ColorSet(Color.red);
+                if (UpgradeRemoveBtn.instance.btnSwitch)
+                {
+                    isCtrlDrag = true;
+                    ColorSet(Color.blue);
+                }
+                else
+                {
+                    isShiftDrag = true;
+                    ColorSet(Color.red);
+                }
             }
             else
             {
-                ColorSet(Color.green);
+                if ((inputManager.ctrl && !inputManager.shift) || upgradeBtnOn)
+                {
+                    isCtrlDrag = true;
+                    ColorSet(Color.blue);
+                }
+                else if ((inputManager.shift && !inputManager.ctrl) || removeBtnOn)
+                {
+                    isShiftDrag = true;
+                    ColorSet(Color.red);
+                }
+                else
+                {
+                    ColorSet(Color.green);
+                }
             }
         }
     }
@@ -124,6 +140,7 @@ public class DragGraphic : MonoBehaviour
         if (preBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
         if (!isDrag) return;
+
 
         if (isCtrlDrag || upgradeBtnOn)
             UpgradeBuild.LeftMouseUp(startPosition, endPosition);

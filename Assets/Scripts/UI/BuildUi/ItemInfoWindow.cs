@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class ItemInfoWindow : MonoBehaviour
 {
+    public RectTransform canvasRectTransform; // 캔버스의 RectTransform
+    public RectTransform imageRectTransform;  // 팝업 이미지의 RectTransform
     [SerializeField]
     GameObject obj;
     [SerializeField]
@@ -13,9 +15,6 @@ public class ItemInfoWindow : MonoBehaviour
     Text winText;
 
     bool IsOpen;
-    Vector3 mousePos;
-    float popupWidth;
-    float popupHeight;
 
     private void Update()
     {
@@ -26,15 +25,25 @@ public class ItemInfoWindow : MonoBehaviour
 
         if (IsOpen)
         {
-            mousePos = Input.mousePosition;
-            popupWidth = image.GetComponent<RectTransform>().rect.width;
-            popupHeight = image.GetComponent<RectTransform>().rect.height;
-            Vector2 newPos = new Vector2(mousePos.x + popupWidth / 2, mousePos.y - popupHeight / 2);
+            Vector2 mousePos = Input.mousePosition;
 
-            float clampedX = Mathf.Clamp(newPos.x, popupWidth / 2, Screen.width - popupWidth / 2);
-            float clampedY = Mathf.Clamp(newPos.y, popupHeight / 2, Screen.height - popupHeight / 2);
+            // 캔버스 공간에서의 마우스 좌표로 변환
+            Vector2 anchoredPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
 
-            obj.transform.position = new Vector2(clampedX, clampedY);
+            // 팝업 이미지의 크기 가져오기
+            float popupWidth = imageRectTransform.rect.width;
+            float popupHeight = imageRectTransform.rect.height;
+
+            // 새 좌표 계산 (마우스 위치에 대해 오프셋 적용)
+            // 왼쪽 위에 위치하도록 마우스 좌표에서 팝업 크기만큼 뺌
+            Vector2 newPos = new Vector2(anchoredPos.x + popupWidth / 2, anchoredPos.y + popupHeight / 2);
+            // 팝업이 화면 밖으로 나가지 않도록 클램핑
+            float clampedX = Mathf.Clamp(newPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth / 2);
+            float clampedY = Mathf.Clamp(newPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight / 2);
+
+            // 위치 설정
+            obj.transform.localPosition = new Vector2(clampedX, clampedY);
         }
     }
 

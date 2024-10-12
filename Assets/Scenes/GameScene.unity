@@ -2760,6 +2760,16 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!224 &1992018125 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8669813805128897140, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1992018126 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6957442345310591204, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2024421571
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3890,6 +3900,14 @@ PrefabInstance:
       propertyPath: noOutlineMat
       value: 
       objectReference: {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
+    - target: {fileID: 7150366280860555239, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: imageRectTransform
+      value: 
+      objectReference: {fileID: 1992018126}
+    - target: {fileID: 7150366280860555239, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: canvasRectTransform
+      value: 
+      objectReference: {fileID: 1992018125}
     - target: {fileID: 8129189935975276893, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 190450894
@@ -3936,6 +3954,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8033250253418668032, guid: 9ce865a7124c87c4ea39c425e37421d8, type: 3}
+      propertyPath: m_ForceIntoRT
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8033250253418668032, guid: 9ce865a7124c87c4ea39c425e37421d8, type: 3}
+      propertyPath: orthographic size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8033250253418668032, guid: 9ce865a7124c87c4ea39c425e37421d8, type: 3}
+      propertyPath: m_NormalizedViewPortRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8033250253418668032, guid: 9ce865a7124c87c4ea39c425e37421d8, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8033250253418668033, guid: 9ce865a7124c87c4ea39c425e37421d8, type: 3}
       propertyPath: m_RootOrder
       value: 16

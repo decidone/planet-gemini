@@ -78,7 +78,7 @@ public abstract class InventoryManager : MonoBehaviour
             EventTrigger trigger = slot.GetComponent<EventTrigger>();
             trigger.triggers.RemoveRange(0, trigger.triggers.Count);
             AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(); });
         }
         inventory.Refresh();
     }
@@ -97,7 +97,7 @@ public abstract class InventoryManager : MonoBehaviour
                 EventTrigger trigger = slot.GetComponent<EventTrigger>();
                 trigger.triggers.RemoveRange(0, trigger.triggers.Count);
                 AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-                AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+                AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(); });
             }
             inventory.Refresh();
         }
@@ -121,7 +121,7 @@ public abstract class InventoryManager : MonoBehaviour
                 EventTrigger trigger = slot.GetComponent<EventTrigger>();
                 trigger.triggers.RemoveRange(0, trigger.triggers.Count);
                 AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-                AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+                AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(); });
             }
             else
             {
@@ -257,7 +257,7 @@ public abstract class InventoryManager : MonoBehaviour
         itemInfoWindow.OpenWindow(slot);
     }
 
-    void OnExit(Slot slot)
+    void OnExit()
     {
         focusedSlot = null;
         itemInfoWindow.CloseWindow();

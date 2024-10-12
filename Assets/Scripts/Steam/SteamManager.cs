@@ -91,9 +91,8 @@ public class SteamManager : MonoBehaviour
     {
         LobbySaver.instance.currentLobby = lobby;
         userName = SteamClient.Name;
-        Debug.Log("Entered");
-
-        if (!NetworkManager.Singleton.IsHost)
+        Debug.Log("Entered : " + (lobby.Owner.Id != PlayerSteamId));
+        if (lobby.Owner.Id != PlayerSteamId)
         {
             NetworkManager.Singleton.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;
 
@@ -159,7 +158,7 @@ public class SteamManager : MonoBehaviour
 
             if (opponentDataSent == "ClientConnect")
             {
-                //Time.timeScale = 0;
+                Time.timeScale = 0;
                 Debug.Log("Time.timeScale = 0 and send;");
                 SendP2PPacket();
             }

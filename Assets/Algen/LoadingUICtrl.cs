@@ -32,6 +32,7 @@ public class LoadingUICtrl : MonoBehaviour
         {
             instance = value;
         }
+
     }
 
     private string loadSceneName;
@@ -51,6 +52,12 @@ public class LoadingUICtrl : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+
+        Animator[] animator = GetComponentsInChildren<Animator>();
+        foreach (Animator ani in animator)
+        {
+            ani.updateMode = AnimatorUpdateMode.UnscaledTime;
+        }
     }
 
     public void LoadScene(string sceneName, bool isHost)

@@ -37,7 +37,10 @@ public class QuestManager : MonoBehaviour
         overall = Overall.instance;
         networkObjManager = NetworkObjManager.instance;
         scienceManager = ScienceManager.instance;
-
+        if (SettingsMenu.instance.tutorialQuestToggle.isOn)
+            UIOpen();
+        else
+            UIClose();
         //SetQuest(currentQuest);
     }
 
@@ -242,5 +245,17 @@ public class QuestManager : MonoBehaviour
         quests[currentQuest].isCompleted = true;
         currentQuest++;
         SetQuest(currentQuest);
+    }
+
+    public void UIOpen()
+    {
+        titleText.gameObject.SetActive(true);
+        descriptionText.gameObject.SetActive(true);
+    }
+
+    public void UIClose()
+    {
+        titleText.gameObject.SetActive(false);
+        descriptionText.gameObject.SetActive(false);
     }
 }

@@ -362,12 +362,20 @@ public class SoundManager : NetworkBehaviour
     {
         if (isHostMap)
         {
+            if (isHostMapBattleOn == isBattle && isHostMapWaveOn == isWave)
+            {
+                return;
+            }
             isHostMapBattleOn = isBattle;
             isHostMapWaveOn = isWave;
             StartCoroutine(nameof(SoundFadeOut));
         }
         else if(!isHostMap)
         {
+            if (isClientMapBattleOn == isBattle && isClientMapWaveOn == isWave)
+            {
+                return;
+            }
             isClientMapBattleOn = isBattle;
             isClientMapWaveOn = isWave;
             StartCoroutine(nameof(SoundFadeOut));

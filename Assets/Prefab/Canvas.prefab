@@ -22889,6 +22889,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upgradeBtn: {fileID: 8177946106745672120}
   removeBtn: {fileID: 8407446111083919306}
+  clickBtn: 0
+  btnSwitch: 0
   images:
   - {fileID: 1699389776, guid: de68115de9148ce4c96502fb82e841d0, type: 3}
   - {fileID: 21300000, guid: fd4f02c7f2643d54bb94c8d835f0d10a, type: 3}
@@ -29718,6 +29720,7 @@ MonoBehaviour:
   - {fileID: 8683400516340142521}
   itemInputWindow: {fileID: 1307766763441469976}
   upgradeWindow: {fileID: 9194252855946770708}
+  canvasRectTransform: {fileID: 8669813805128897140}
   coreLvUI: {fileID: 3134461431608571290, guid: 93abd0f61bd5a7a47a11f68529acf2fd, type: 3}
   scienceBtns: []
   scienceTreeUI: {fileID: 3708228166959310970}
@@ -29761,6 +29764,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c439c5442feef7d4f87edb43d6141efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasRectTransform: {fileID: 8669813805128897140}
+  imageRectTransform: {fileID: 7448995354872781303}
   obj: {fileID: 3643991510931800561}
   image: {fileID: 5661562142483265187}
   winText: {fileID: 8414462153329515264}

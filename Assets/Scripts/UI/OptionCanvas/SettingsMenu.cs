@@ -26,11 +26,12 @@ public class SettingsMenu : MonoBehaviour
     List<KeyBindingsBtn> keyBindingsBtn = new List<KeyBindingsBtn>();
     Dictionary<int, (string, int, int, bool, bool)> windowSize = new Dictionary<int, (string, int, int, bool, bool)>();
     Dictionary<string, InputAction> inputActions = new Dictionary<string, InputAction>();
-
+    [SerializeField]
+    public Toggle tutorialQuestToggle;
     int windowSizeIndex;
     int tempWindowSizeIndex;
 
-    bool gameStartFirstSet = true;
+    bool gameStartFirstSet;
 
     #region Singleton
     public static SettingsMenu instance;
@@ -43,6 +44,8 @@ public class SettingsMenu : MonoBehaviour
             return;
         }
         instance = this;
+
+        gameStartFirstSet = true;
     }
     #endregion
 
@@ -51,6 +54,7 @@ public class SettingsMenu : MonoBehaviour
     {
         backBtn.onClick.AddListener(() => BackBtnFunc());
         resetBtn.onClick.AddListener(()=> ResetBtnFunc());
+        tutorialQuestToggle.onValueChanged.AddListener(delegate { TutorialQuestToggleValue(); });
     }
 
     public void MenuOpen()
@@ -127,6 +131,21 @@ public class SettingsMenu : MonoBehaviour
         tempWindowSizeIndex = dropdownIndex;
     }
 
+    void TutorialQuestToggleValue()
+    {
+        if (GameManager.instance != null)
+        {
+            if (tutorialQuestToggle.isOn)
+            {
+                QuestManager.instance.UIOpen();
+            }
+            else
+            {
+                QuestManager.instance.UIClose();
+            }
+        }
+    }
+
     #endregion
 
     #region KeyBindings
@@ -194,6 +213,7 @@ public class SettingsMenu : MonoBehaviour
     public void SaveData()
     {
         PlayerPrefs.SetInt("WindowIndex", windowSizeIndex);
+        PlayerPrefs.SetInt("TutorialQuest", tutorialQuestToggle.isOn ? 0 : 1);
         PlayerPrefs.Save();
     }
 
@@ -203,7 +223,12 @@ public class SettingsMenu : MonoBehaviour
         KeyBindingPanelSet();
 
         windowSizeIndex = PlayerPrefs.GetInt("WindowIndex", 0);
+        tutorialQuestToggle.isOn = PlayerPrefs.GetInt("TutorialQuest", 0) == 0;
         WindowSet(windowSizeIndex);
+        if (windowModeDropdown.value == windowSizeIndex)
+        {
+            gameStartFirstSet = false;
+        }
         windowModeDropdown.value = windowSizeIndex;
         LoadRebindings();
     }

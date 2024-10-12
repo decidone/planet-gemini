@@ -136,6 +136,7 @@ public class ItemSpManager : InventoryManager
 
     public override void CloseUI()
     {
+        focusedSlot = null;
         inventoryUI.SetActive(false);
         itemInfoWindow.CloseWindow();
         soundManager.PlayUISFX("CloseUI");

@@ -23,7 +23,7 @@ MonoBehaviour:
   - 2
   sendFluidAmount: 0
   sendDelay:
-  - 0.5
+  - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

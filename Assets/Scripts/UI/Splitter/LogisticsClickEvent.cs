@@ -19,6 +19,8 @@ public class LogisticsClickEvent : MonoBehaviour
 
     SoundManager soundManager;
 
+    public bool openUI;
+
     private void Start()
     {
         soundManager = SoundManager.instance;
@@ -39,6 +41,7 @@ public class LogisticsClickEvent : MonoBehaviour
             {
                 LogisticsUI = obj;
                 logisticsCloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+                logisticsCloseBtn.onClick.RemoveAllListeners();
                 logisticsCloseBtn.onClick.AddListener(CloseUI);
                 sFilterManager = canvas.GetComponent<SplitterFilterManager>();
                 inventoryList.LogisticsArr[0].gameObject.SetActive(true);
@@ -48,6 +51,7 @@ public class LogisticsClickEvent : MonoBehaviour
             {
                 LogisticsUI = obj;
                 logisticsCloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+                logisticsCloseBtn.onClick.RemoveAllListeners();
                 logisticsCloseBtn.onClick.AddListener(CloseUI);
                 unloaderManager = canvas.GetComponent<UnloaderManager>();
                 inventoryList.LogisticsArr[1].gameObject.SetActive(true);
@@ -57,6 +61,7 @@ public class LogisticsClickEvent : MonoBehaviour
             {
                 LogisticsUI = obj;
                 logisticsCloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
+                logisticsCloseBtn.onClick.RemoveAllListeners();
                 logisticsCloseBtn.onClick.AddListener(CloseUI);
                 itemSpManager = canvas.GetComponent<ItemSpManager>();
                 canOpen = true;
@@ -68,6 +73,7 @@ public class LogisticsClickEvent : MonoBehaviour
 
     public void OpenUI()
     {
+        openUI = true;
         if (logisticsCtrl.TryGetComponent(out SplitterCtrl splitter))
         {
             sFilterManager.SetSplitter(splitter);
@@ -92,6 +98,7 @@ public class LogisticsClickEvent : MonoBehaviour
 
     public void CloseUI()
     {
+        openUI = false;
         if (logisticsCtrl.GetComponent<SplitterCtrl>())
         {
             sFilterManager.ReleaseInven();
@@ -111,6 +118,29 @@ public class LogisticsClickEvent : MonoBehaviour
             itemSpManager.ReleaseInven();
             gameManager.SelectPointRemove();
             itemSpManager.CloseUI();
+        }
+        soundManager.PlayUISFX("CloseUI");
+    }
+
+    public void CloseTest()
+    {
+        openUI = false;
+        if (logisticsCtrl.GetComponent<SplitterCtrl>())
+        {
+            sFilterManager.ReleaseInven();
+            inventoryList.LogisticsArr[0].gameObject.SetActive(false);
+            gameManager.SelectPointRemove();
+        }
+        else if (logisticsCtrl.GetComponent<Unloader>())
+        {
+            unloaderManager.ReleaseInven();
+            inventoryList.LogisticsArr[1].gameObject.SetActive(false);
+            gameManager.SelectPointRemove();
+        }
+        else if (logisticsCtrl.GetComponent<ItemSpawner>())
+        {
+            itemSpManager.ReleaseInven();
+            gameManager.SelectPointRemove();
         }
         soundManager.PlayUISFX("CloseUI");
     }

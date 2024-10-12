@@ -545,5 +545,27 @@ public class MonsterSpawnerManager : NetworkBehaviour
     void OnClientConnectedCallback(ulong clientId)
     {
         SetCorruption();
+        ClientConnWaveServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ClientConnWaveServerRpc()
+    {
+        if (waveState)
+        {
+            ClientConnWaveClientRpc(wavePos, hostMapWave);
+            BattleBGMCtrl.instance.WaveStart(hostMapWave);
+        }
+    }
+
+    [ClientRpc]
+    void ClientConnWaveClientRpc(Vector3 waveTrPos, bool isInHostMap)
+    {
+        if (!IsServer)
+        {
+            Debug.Log("waveStart : " + waveTrPos);
+            wavePoint.WaveStart(waveTrPos, isInHostMap);
+            WarningWindowSetClientRpc();
+        }
     }
 }

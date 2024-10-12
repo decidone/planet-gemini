@@ -314,9 +314,13 @@ MonoBehaviour:
   hostMap: {fileID: 0}
   clientMap: {fileID: 0}
   map: {fileID: 0}
+  destroyedMapObjects: []
   isPlayerInHostMap: 0
   isPlayerInMarket: 0
   player: {fileID: 0}
+  playerStatus: {fileID: 0}
+  playerDataHp: -1
+  playerDataPos: {x: 0, y: 0, z: 0}
   playerController: {fileID: 0}
   hostPlayerTransform: {fileID: 0}
   clientPlayerTransform: {fileID: 0}
@@ -324,6 +328,7 @@ MonoBehaviour:
   mapCameraController: {fileID: 0}
   finance: {fileID: 0}
   scrap: {fileID: 0}
+  questData: 0
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -619,7 +624,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultCapacity: 10
   maxPoolSize: 100
-  itemPrefab: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemPrefab: {fileID: 706260756050914416, guid: 6d902b22598131f4ca5f25a836413150, type: 3}
 --- !u!114 &3729439446491037180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -772,13 +777,44 @@ MonoBehaviour:
       dayIndex: 0
       violentValue: 0
       violentDay: 0
-    playerDataList: []
+      finance: 0
+      scrap: 0
+      questIndex: 0
+    hostPlayerData:
+      pos:
+        x: 0
+        y: 0
+        z: 0
+      hp: 0
+      isPlayerInHostMap: 0
+      isPlayerInMarket: 0
+    clientPlayerData:
+      pos:
+        x: 0
+        y: 0
+        z: 0
+      hp: 0
+      isPlayerInHostMap: 0
+      isPlayerInMarket: 0
     scienceData: []
     structureData: []
     beltGroupData: []
     unitData: []
     spawnerManagerSaveData:
       splitCount: 0
+      waveState: 0
+      hostMapWave: 0
+      wavePos:
+        x: 0
+        y: 0
+        z: 0
+    overallData:
+      spawnerDestroyCount: 0
+      spawnerBountyReceived: 0
+      monsterKillCount: 0
+      monsterBountyReceived: 0
+    mapData:
+      objects: []
   path: 
   selectedSlot: 0
   beltGroup: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
