@@ -494,11 +494,11 @@ public class GameManager : NetworkBehaviour
 
                     if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
-                        if (clickEvent != null)
+                        if (clickEvent != null && clickEvent.openUI)
                         {
                             clickEvent.CloseUI();
                         }
-                        if (logisticsClickEvent != null)
+                        if (logisticsClickEvent != null && logisticsClickEvent.openUI)
                         {
                             logisticsClickEvent.CloseUI();
                         }
@@ -509,11 +509,11 @@ public class GameManager : NetworkBehaviour
                     }
                     else if (newLogisticsClickEvent != null && !newLogisticsClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
-                        if (logisticsClickEvent != null)
+                        if (logisticsClickEvent != null && logisticsClickEvent.openUI)
                         {
                             logisticsClickEvent.CloseUI();
                         }
-                        if (clickEvent != null)
+                        if (clickEvent != null && clickEvent.openUI)
                         {
                             clickEvent.CloseUI();
                         }
@@ -705,6 +705,11 @@ public class GameManager : NetworkBehaviour
         for (int i = openedUI.Count - 1; i >= 0; i--)
         {
             CloseOpenedUI(i);
+            if (openedUI.Count < i)
+            {
+                CloseAllOpenedUI();
+                break;
+            }
         }
     }
 

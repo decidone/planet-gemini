@@ -382,6 +382,8 @@ public class PreBuilding : NetworkBehaviour
         isEnergyUse = false;
         isBeltObj = false;
         reversSet = false;
+
+        MouseSkin.instance.ResetCursor();
     }
 
     void Rotate(InputAction.CallbackContext ctx)
@@ -1009,6 +1011,7 @@ public class PreBuilding : NetworkBehaviour
         {
             Destroy(nonNetObj);
         }
+        MouseSkin.instance.BuildingCursorSet();
 
         nonNetObj = Instantiate(preBuildingNonNet);
 
@@ -1121,6 +1124,7 @@ public class PreBuilding : NetworkBehaviour
         canBuildCount = 1;
         portalScript = portal;
         isInHostMap = _isInHostMap;
+        MouseSkin.instance.BuildingCursorSet();
 
         if (gameManager.portal[0] == portal)        
             portalIndex = 0;
@@ -1200,10 +1204,14 @@ public class PreBuilding : NetworkBehaviour
         {
             if(nonNetObj != null)
             {
-                if (isBuildingOk && isEnough && GroupBuildCheck(nonNetObj, mousePos))                
-                    SetColor(spriteRenderer, Color.green, 0.35f);                
+                if (isBuildingOk && isEnough && GroupBuildCheck(nonNetObj, mousePos))
+                {
+                    SetColor(spriteRenderer, Color.green, 0.35f);
+                }
                 else if (!isBuildingOk || !isEnough || !GroupBuildCheck(nonNetObj, mousePos))
-                    SetColor(spriteRenderer, Color.red, 0.35f);                
+                {
+                    SetColor(spriteRenderer, Color.red, 0.35f);
+                }
             }
         }
     }

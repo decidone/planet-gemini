@@ -30,30 +30,6 @@ public class RemoveBuild : DragFunc
             gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
     }
 
-    //void ObjRemoveFunc(GameObject obj)
-    //{
-    //    if (obj.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
-    //    {
-    //        structure.AddInvenItem();
-    //        structure.RemoveObjServerRpc();
-    //        RefundCost(structure);
-    //    }
-    //}
-
-    //public void ConfirmEnd(bool isOk)
-    //{
-    //    if (isOk)
-    //    {
-    //        foreach (GameObject obj in selectedObjects)
-    //        {
-    //            ObjRemoveFunc(obj);
-    //        }
-    //        gameManager.BuildAndSciUiReset();
-    //        soundManager.PlayUISFX("BuildingRemove");
-    //    }
-    //    selectedObjects = new GameObject[0];
-    //}
-
     public void ConfirmEnd(bool isOk)
     {
         if (isOk)
@@ -68,27 +44,4 @@ public class RemoveBuild : DragFunc
         }
         selectedObjects = new GameObject[0];
     }
-
-    //void RefundCost(Structure obj)
-    //{
-    //    if (obj.isPortalBuild)
-    //    {
-    //        return;
-    //    }
-    //    else
-    //    {
-    //        buildingData = new BuildingData();
-    //        buildingData = BuildingDataGet.instance.GetBuildingName(obj.buildName, obj.level + 1);
-    //        if(obj.GetComponent<Structure>().isInHostMap)
-    //            inventory = gameManager.hostMapInven;
-    //        else
-    //            inventory = gameManager.clientMapInven;
-
-    //        for (int i = 0; i < buildingData.GetItemCount(); i++)
-    //        {
-    //            inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
-    //            Overall.instance.OverallConsumptionCancel(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
-    //        }
-    //    }
-    //}
 }

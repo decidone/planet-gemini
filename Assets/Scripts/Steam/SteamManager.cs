@@ -91,8 +91,7 @@ public class SteamManager : MonoBehaviour
     {
         LobbySaver.instance.currentLobby = lobby;
         userName = SteamClient.Name;
-        Debug.Log("Entered");
-
+        Debug.Log("Entered : " + (lobby.Owner.Id != PlayerSteamId));
         if (lobby.Owner.Id != PlayerSteamId)
         {
             NetworkManager.Singleton.gameObject.GetComponent<FacepunchTransport>().targetSteamId = lobby.Owner.Id;

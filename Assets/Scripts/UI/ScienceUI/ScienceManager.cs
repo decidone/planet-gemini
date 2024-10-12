@@ -49,6 +49,10 @@ public class ScienceManager : MonoBehaviour
     public bool isAnyUpgradeCompleted = false;
     public delegate void OnUpgradeCompleted(int type);
     public OnUpgradeCompleted onUpgradeCompletedCallback;
+    
+    public delegate void ToggleMapChange();
+    public ToggleMapChange onToggleMapChangeCallback;
+
 
     public static ScienceManager instance;
     private void Awake()
@@ -71,6 +75,7 @@ public class ScienceManager : MonoBehaviour
         sciItemSetWindow = itemInputWindow.GetComponent<SciItemSetWindow>();
         portalSciManager = PortalSciManager.instance;
         soundManager = SoundManager.instance;
+        onToggleMapChangeCallback += OnExit;
 
         contents[0].SetActive(true);
         contents[1].SetActive(false);

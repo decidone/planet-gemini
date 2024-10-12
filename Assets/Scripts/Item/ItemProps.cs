@@ -35,11 +35,5 @@ public class ItemProps : MonoBehaviour
         }
 
         itemPool.Release(gameObject);
-
-        //isOnBelt = false;
-        //setOnBelt = null;
-        //col.enabled = true;
-        //SpriteRenderer spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
-        //spriteRenderer.material = ResourcesManager.instance.outlintMat;
     }
 }

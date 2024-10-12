@@ -1533,6 +1533,7 @@ public class Structure : NetworkBehaviour
                     if (structureClickEvent.sInvenManager != null)
                     {
                         structureClickEvent.sInvenManager.ClearInvenOption();
+                        Debug.Log("str");
                         structureClickEvent.sInvenManager.CloseUI();
                     }
                 }

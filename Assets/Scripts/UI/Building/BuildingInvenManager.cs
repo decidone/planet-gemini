@@ -25,6 +25,10 @@ public class BuildingInvenManager : MonoBehaviour
 
     SoundManager soundManager;
 
+    public delegate void ToggleMapChange();
+    public ToggleMapChange onToggleMapChangeCallback;
+
+
     #region Singleton
     public static BuildingInvenManager instance;
 
@@ -47,6 +51,7 @@ public class BuildingInvenManager : MonoBehaviour
         
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
         soundManager = SoundManager.instance;
+        onToggleMapChangeCallback += OnExit;
     }
     void OnEnable()
     {
@@ -72,7 +77,7 @@ public class BuildingInvenManager : MonoBehaviour
             EventTrigger trigger = slot.GetComponent<EventTrigger>();
             trigger.triggers.RemoveRange(0, trigger.triggers.Count);
             AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(slot); });
+            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(); });
         }
         buildingInventory.Refresh();
     }
@@ -183,7 +188,7 @@ public class BuildingInvenManager : MonoBehaviour
         itemInfoWindow.OpenWindow(slot);
     }
 
-    void OnExit(Slot slot)
+    void OnExit()
     {
         focusedSlot = null;
         itemInfoWindow.CloseWindow();

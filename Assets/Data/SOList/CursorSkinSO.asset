@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcbb103c20e8f6640a2985788f8a0e8a, type: 3}
+  m_Name: CursorSkinSO
+  m_EditorClassIdentifier: 
+  baseCursor: {fileID: 2800000, guid: 0cb588ad94f06314e8b20daa4beff806, type: 3}
+  dragCursor:
+  - {fileID: 2800000, guid: d86271061c724b7448a91d9e79268b83, type: 3}
+  - {fileID: 2800000, guid: eb7643b42a0ca714383bf5d0a0a52d04, type: 3}
+  buildingCursor: {fileID: 2800000, guid: 048fa331c80cd1f4cb81f53672711ad1, type: 3}
+  unitCursor:
+  - {fileID: 2800000, guid: 0ee329defd1520a49908dc6e5c84ce19, type: 3}
+  - {fileID: 2800000, guid: bed661a05bea2e4418321348f98d8725, type: 3}

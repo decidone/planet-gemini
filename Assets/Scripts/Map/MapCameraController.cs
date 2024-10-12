@@ -275,11 +275,10 @@ public class MapCameraController : MonoBehaviour
         camPos.y = Mathf.Clamp(camPos.y, mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
         transform.position = camPos;
 
-        //if (PreBuilding.instance != null)
-        //PreBuilding.instance.CancelBuild();
-
         if (PreBuilding.instance.isBuildingOn)
             PreBuilding.instance.CancelBuild();
+        BuildingInvenManager.instance.onToggleMapChangeCallback?.Invoke();
+        ScienceManager.instance.onToggleMapChangeCallback?.Invoke();
 
         CameraObj.SetActive(true);
     }
