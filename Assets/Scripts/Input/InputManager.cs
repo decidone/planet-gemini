@@ -146,6 +146,31 @@ public class InputManager : MonoBehaviour
         controls.MapCamera.Disable();
     }
 
+    public void InMarket()
+    {
+        DisableControls();
+
+        controls.MainCamera.Enable();
+        controls.Player.Enable();
+        controls.Inventory.Enable();
+        controls.HotKey.Enable();
+        controls.Hold.Enable();
+        controls.Chat.Enable();
+    }
+
+    public void OutMarket()
+    {
+        controls.MainCamera.Disable();
+        controls.Player.Disable();
+        controls.Inventory.Disable();
+        controls.HotKey.Disable();
+        controls.Hold.Disable();
+        controls.Chat.Disable();
+
+        EnableControls();
+        controls.MapCamera.Disable();
+    }
+
     public void OpenChat()
     {
         DisableControls();

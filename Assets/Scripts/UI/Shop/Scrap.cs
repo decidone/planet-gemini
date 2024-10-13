@@ -8,11 +8,6 @@ public class Scrap : MonoBehaviour
     [SerializeField] Text text;
     public int scrap;
 
-    void Awake()
-    {
-        scrap = 0;
-    }
-
     public int GetScrap()
     {
         return scrap;

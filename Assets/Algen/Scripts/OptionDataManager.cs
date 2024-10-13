@@ -56,7 +56,7 @@ public class OptionDataManager : MonoBehaviour
         inputActions.Add("Inventory", InputManager.instance.controls.Inventory.PlayerInven);
         inputActions.Add("Loot", InputManager.instance.controls.Player.Loot);
         inputActions.Add("Interaction", InputManager.instance.controls.Player.Interaction);
-        inputActions.Add("Market", InputManager.instance.controls.Player.Market);
+        //inputActions.Add("Market", InputManager.instance.controls.Player.Market);
         inputActions.Add("Map", InputManager.instance.controls.State.ToggleMap);
         inputActions.Add("ScienceTree", InputManager.instance.controls.HotKey.ScienceTree);
         inputActions.Add("Overall", InputManager.instance.controls.HotKey.Overall);

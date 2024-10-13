@@ -548,7 +548,14 @@ public class Inventory : NetworkBehaviour
 
     public void DragDrop()
     {
-        DragDropServerRpc();
+        if (GameManager.instance.isPlayerInMarket)
+        {
+            LootListManager.instance.DisplayInfoMessage("Can't drop items in market");
+        }
+        else
+        {
+            DragDropServerRpc();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

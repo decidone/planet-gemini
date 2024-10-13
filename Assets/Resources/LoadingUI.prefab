@@ -115,6 +115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e00f22c6d4cd1f449a4e3a43e1e10b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneLoadTimeoutLimit: 60
+  gameSetTimeoutLimit: 120
 --- !u!1 &5187722754453364046
 GameObject:
   m_ObjectHideFlags: 0

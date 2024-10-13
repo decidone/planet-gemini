@@ -348,15 +348,6 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Market",
-                    "type": "Button",
-                    "id": "8f6c7167-9150-45b4-93fe-c50074e8de95",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Tap",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -445,17 +436,6 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Interaction",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "44f54028-f4ff-479b-9b02-1c77a8dfbf3b",
-                    "path": "<Keyboard>/v",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Market",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -737,15 +717,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Building",
-                    "type": "Button",
-                    "id": "71f7ce3e-c629-4dd5-a5d3-98cc0dfd5c3d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Tap",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "ScienceTree",
                     "type": "Button",
                     "id": "b35d603e-71a6-4e26-9123-d943e7bb5641",
@@ -813,17 +784,6 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Escape",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "11339cfa-e0bb-4a37-9a8b-f1a8787ae8d9",
-                    "path": "<Keyboard>/b",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "Building",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

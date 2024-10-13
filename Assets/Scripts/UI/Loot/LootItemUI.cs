@@ -36,4 +36,11 @@ public class LootItemUI : MonoBehaviour
         lootInfoText.text = "Drop " + item.name + ", " + amount;
         lootInfoText.color = Color.red;
     }
+
+    public void SetMessage(string message)
+    {
+        timer = 0;
+        lootInfoText.text = message;
+        lootInfoText.color = Color.red;
+    }
 }

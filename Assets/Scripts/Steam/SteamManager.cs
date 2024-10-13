@@ -59,7 +59,7 @@ public class SteamManager : MonoBehaviour
         SteamMatchmaking.OnLobbyMemberDisconnected += LobbyMemberLeft;
         SteamMatchmaking.OnLobbyMemberLeave += LobbyMemberLeft;
         SteamFriends.OnGameLobbyJoinRequested += GameLobbyJoinRequested;
-        SteamMatchmaking.OnLobbyMemberJoined += ClientConnent;
+        SteamMatchmaking.OnLobbyMemberJoined += ClientConnect;
     }
 
     private void OnDisable()
@@ -67,7 +67,7 @@ public class SteamManager : MonoBehaviour
         SteamMatchmaking.OnLobbyCreated -= LobbyCreated;
         SteamMatchmaking.OnLobbyEntered -= LobbyEntered;
         SteamFriends.OnGameLobbyJoinRequested -= GameLobbyJoinRequested;
-        SteamMatchmaking.OnLobbyMemberJoined -= ClientConnent;
+        SteamMatchmaking.OnLobbyMemberJoined -= ClientConnect;
     }
 
     private void LobbyCreated(Result result, Lobby lobby)
@@ -110,7 +110,7 @@ public class SteamManager : MonoBehaviour
         }
     }
 
-    void ClientConnent(Lobby lobby, Friend friend)
+    void ClientConnect(Lobby lobby, Friend friend)
     {
         if (friend.Id != PlayerSteamId)
         {

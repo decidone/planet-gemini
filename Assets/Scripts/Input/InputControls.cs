@@ -370,15 +370,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Market"",
-                    ""type"": ""Button"",
-                    ""id"": ""8f6c7167-9150-45b4-93fe-c50074e8de95"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Tap"",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -467,17 +458,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Interaction"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""44f54028-f4ff-479b-9b02-1c77a8dfbf3b"",
-                    ""path"": ""<Keyboard>/v"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""Market"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -759,15 +739,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Building"",
-                    ""type"": ""Button"",
-                    ""id"": ""71f7ce3e-c629-4dd5-a5d3-98cc0dfd5c3d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Tap"",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""ScienceTree"",
                     ""type"": ""Button"",
                     ""id"": ""b35d603e-71a6-4e26-9123-d943e7bb5641"",
@@ -835,17 +806,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Escape"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""11339cfa-e0bb-4a37-9a8b-f1a8787ae8d9"",
-                    ""path"": ""<Keyboard>/b"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""Building"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1619,7 +1579,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Player_Loot = m_Player.FindAction("Loot", throwIfNotFound: true);
         m_Player_RightClick = m_Player.FindAction("RightClick", throwIfNotFound: true);
         m_Player_Interaction = m_Player.FindAction("Interaction", throwIfNotFound: true);
-        m_Player_Market = m_Player.FindAction("Market", throwIfNotFound: true);
         // Unit
         m_Unit = asset.FindActionMap("Unit", throwIfNotFound: true);
         m_Unit_Attack = m_Unit.FindAction("Attack", throwIfNotFound: true);
@@ -1642,7 +1601,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_Debug = m_HotKey.FindAction("Debug", throwIfNotFound: true);
         m_HotKey_Supply = m_HotKey.FindAction("Supply", throwIfNotFound: true);
         m_HotKey_Escape = m_HotKey.FindAction("Escape", throwIfNotFound: true);
-        m_HotKey_Building = m_HotKey.FindAction("Building", throwIfNotFound: true);
         m_HotKey_ScienceTree = m_HotKey.FindAction("ScienceTree", throwIfNotFound: true);
         m_HotKey_EnergyCheck = m_HotKey.FindAction("EnergyCheck", throwIfNotFound: true);
         m_HotKey_Overall = m_HotKey.FindAction("Overall", throwIfNotFound: true);
@@ -1906,7 +1864,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Loot;
     private readonly InputAction m_Player_RightClick;
     private readonly InputAction m_Player_Interaction;
-    private readonly InputAction m_Player_Market;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -1915,7 +1872,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Loot => m_Wrapper.m_Player_Loot;
         public InputAction @RightClick => m_Wrapper.m_Player_RightClick;
         public InputAction @Interaction => m_Wrapper.m_Player_Interaction;
-        public InputAction @Market => m_Wrapper.m_Player_Market;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1937,9 +1893,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Interaction.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteraction;
                 @Interaction.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteraction;
                 @Interaction.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteraction;
-                @Market.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
-                @Market.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
-                @Market.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMarket;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1956,9 +1909,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Interaction.started += instance.OnInteraction;
                 @Interaction.performed += instance.OnInteraction;
                 @Interaction.canceled += instance.OnInteraction;
-                @Market.started += instance.OnMarket;
-                @Market.performed += instance.OnMarket;
-                @Market.canceled += instance.OnMarket;
             }
         }
     }
@@ -2133,7 +2083,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_Debug;
     private readonly InputAction m_HotKey_Supply;
     private readonly InputAction m_HotKey_Escape;
-    private readonly InputAction m_HotKey_Building;
     private readonly InputAction m_HotKey_ScienceTree;
     private readonly InputAction m_HotKey_EnergyCheck;
     private readonly InputAction m_HotKey_Overall;
@@ -2145,7 +2094,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @Debug => m_Wrapper.m_HotKey_Debug;
         public InputAction @Supply => m_Wrapper.m_HotKey_Supply;
         public InputAction @Escape => m_Wrapper.m_HotKey_Escape;
-        public InputAction @Building => m_Wrapper.m_HotKey_Building;
         public InputAction @ScienceTree => m_Wrapper.m_HotKey_ScienceTree;
         public InputAction @EnergyCheck => m_Wrapper.m_HotKey_EnergyCheck;
         public InputAction @Overall => m_Wrapper.m_HotKey_Overall;
@@ -2168,9 +2116,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Escape.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEscape;
                 @Escape.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEscape;
                 @Escape.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEscape;
-                @Building.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnBuilding;
-                @Building.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnBuilding;
-                @Building.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnBuilding;
                 @ScienceTree.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnScienceTree;
                 @ScienceTree.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnScienceTree;
                 @ScienceTree.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnScienceTree;
@@ -2196,9 +2141,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Escape.started += instance.OnEscape;
                 @Escape.performed += instance.OnEscape;
                 @Escape.canceled += instance.OnEscape;
-                @Building.started += instance.OnBuilding;
-                @Building.performed += instance.OnBuilding;
-                @Building.canceled += instance.OnBuilding;
                 @ScienceTree.started += instance.OnScienceTree;
                 @ScienceTree.performed += instance.OnScienceTree;
                 @ScienceTree.canceled += instance.OnScienceTree;
@@ -2487,7 +2429,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnLoot(InputAction.CallbackContext context);
         void OnRightClick(InputAction.CallbackContext context);
         void OnInteraction(InputAction.CallbackContext context);
-        void OnMarket(InputAction.CallbackContext context);
     }
     public interface IUnitActions
     {
@@ -2514,7 +2455,6 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnDebug(InputAction.CallbackContext context);
         void OnSupply(InputAction.CallbackContext context);
         void OnEscape(InputAction.CallbackContext context);
-        void OnBuilding(InputAction.CallbackContext context);
         void OnScienceTree(InputAction.CallbackContext context);
         void OnEnergyCheck(InputAction.CallbackContext context);
         void OnOverall(InputAction.CallbackContext context);

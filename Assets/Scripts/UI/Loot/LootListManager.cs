@@ -15,6 +15,8 @@ public class LootListManager : MonoBehaviour
     List<GameObject> dropInfoList = new List<GameObject>();
     List<Item> dropList = new List<Item>();
 
+    bool isDropMessageDisplayed;
+
     #region Singleton
     public static LootListManager instance;
 
@@ -113,6 +115,38 @@ public class LootListManager : MonoBehaviour
             {
                 dropList.Remove(lootUI.item);
                 dropInfoList.Remove(obj);
+                Destroy(obj);
+                SetScrollToBottom();
+                yield break;
+            }
+        }
+    }
+
+    public void DisplayInfoMessage(string message)
+    {
+        if (isDropMessageDisplayed)
+            return;
+
+        GameObject createdItem = Instantiate(lootItemPrefab);
+        createdItem.GetComponent<LootItemUI>().SetMessage(message);
+        createdItem.transform.SetParent(lootListContent.transform);
+        createdItem.transform.localScale = Vector3.one;
+        SetScrollToBottom();
+        isDropMessageDisplayed = true;
+
+        StartCoroutine(DestroyInfoMessage(createdItem));
+    }
+
+    IEnumerator DestroyInfoMessage(GameObject obj)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            LootItemUI lootUI = obj.GetComponent<LootItemUI>();
+            if (lootUI.timer > 5f)
+            {
+                isDropMessageDisplayed = false;
                 Destroy(obj);
                 SetScrollToBottom();
                 yield break;

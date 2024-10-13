@@ -32,11 +32,14 @@ public class LoadingUICtrl : MonoBehaviour
         {
             instance = value;
         }
-
     }
 
     private string loadSceneName;
-
+    bool isTimerOn;
+    float timer;
+    float timeoutLimit;
+    [SerializeField] float sceneLoadTimeoutLimit;
+    [SerializeField] float gameSetTimeoutLimit;
     public static LoadingUICtrl Create()
     {
         var SceneLoaderPrefab = Resources.Load<LoadingUICtrl>("LoadingUI");
@@ -60,8 +63,24 @@ public class LoadingUICtrl : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (isTimerOn)
+            timer += Time.deltaTime;
+        if (timer > timeoutLimit)
+        {
+            timer = 0;
+            isTimerOn = false;
+            Debug.Log("timeout, limit: " + timeoutLimit);
+        }
+    }
+
     public void LoadScene(string sceneName, bool isHost)
     {
+        timer = 0;
+        timeoutLimit = sceneLoadTimeoutLimit;
+        isTimerOn = true;
+
         gameObject.SetActive(true);
         SceneManager.sceneLoaded += LoadSceneEnd;
         loadSceneName = sceneName;
@@ -86,6 +105,10 @@ public class LoadingUICtrl : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+        timer = 0;
+        timeoutLimit = sceneLoadTimeoutLimit;
+        isTimerOn = true;
+
         gameObject.SetActive(true);
         SceneManager.sceneLoaded += LoadSceneEnd;
         loadSceneName = sceneName;
@@ -102,20 +125,31 @@ public class LoadingUICtrl : MonoBehaviour
 
     private void LoadSceneEnd(Scene scene, LoadSceneMode loadSceneMode)
     {
+        Debug.Log("LoadSceneEnd");
         if (scene.name == loadSceneName)
         {
             //SteamManager.instance.ClientConnectSend();
 
             if (loadSceneName != "GameScene")
             {
+                timer = 0;
+                isTimerOn = false;
                 gameObject.SetActive(false);
                 SceneManager.sceneLoaded -= LoadSceneEnd;
+            }
+            else
+            {
+                timer = 0;
+                timeoutLimit = gameSetTimeoutLimit;
             }
         }
     }
 
     private void HandleGenerationComplete()
     {
+        timer = 0;
+        isTimerOn = false;
+
         gameObject.SetActive(false);
         SceneManager.sceneLoaded -= LoadSceneEnd;
         GameManager.GenerationComplete -= HandleGenerationComplete;

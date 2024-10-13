@@ -650,6 +650,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
   sInvenManager: {fileID: 0}
+  openUI: 0
 --- !u!114 &5197040497763038552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -677,7 +678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 097514b08056279428a49e91e47c91bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineObj: {fileID: 5696256792421437546, guid: 5e7820cb058d9584eb5c5e86e80bbcac, type: 3}
+  lineObj: {fileID: 5696256792421437546, guid: f95d09b2a8a847845b8fe72d2923e8be, type: 3}
   lineRenderer: {fileID: 0}
   lines: []
   lineCountLimit: 1

@@ -41,6 +41,7 @@ public class GameManager : NetworkBehaviour
     //public GameObject preBuildingObj;
     public Finance finance;
     public Scrap scrap;
+    public Scrap shopScrap;
     public int questData;
 
     [SerializeField]
@@ -395,12 +396,14 @@ public class GameManager : NetworkBehaviour
         if (!isPlayerInMarket)
         {
             isPlayerInMarket = true;
+            inputManager.InMarket();
             SetPlayerLocationServerRpc(isPlayerInHostMap, true);
             return marketPortalTransform.position;
         }
         else
         {
             isPlayerInMarket = false;
+            inputManager.OutMarket();
             SetPlayerLocationServerRpc(isPlayerInHostMap, false);
             if (isPlayerInHostMap)
             {
@@ -1031,6 +1034,7 @@ public class GameManager : NetworkBehaviour
     public void AddScrapClientRpc(int _scrap)
     {
         scrap.AddScrap(_scrap);
+        shopScrap.AddScrap(_scrap);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1043,6 +1047,7 @@ public class GameManager : NetworkBehaviour
     public void SubScrapClientRpc(int _scrap)
     {
         scrap.SubScrap(_scrap);
+        shopScrap.SubScrap(_scrap);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1189,6 +1194,7 @@ public class GameManager : NetworkBehaviour
 
         finance.SetFinance(data.finance);
         scrap.SetScrap(data.scrap);
+        shopScrap.SetScrap(data.scrap);
         questData = data.questIndex;
     }
 
