@@ -194,6 +194,18 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public void TeleportLocal(Vector3 pos)
+    {
+        this.transform.position = pos;
+        if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
+        {
+            if (PreBuilding.instance.isBuildingOn)
+                PreBuilding.instance.CancelBuild();
+
+            this.transform.position = pos;
+        }
+    }
+
     void TeleportWorld()
     {
         if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))

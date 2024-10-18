@@ -173,6 +173,13 @@ public class MapCameraController : MonoBehaviour
             {
                 tempEvent = _mapClickEvent;
             }
+            if (hits[i].collider.gameObject.layer == LayerMask.NameToLayer("Portal"))
+            {
+                PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
+                player.TeleportLocal(hits[i].collider.transform.position);
+                Debug.Log("TP");
+                ToggleMap();
+            }
         }
 
         if (focusedEvent == null)   //첫 클릭

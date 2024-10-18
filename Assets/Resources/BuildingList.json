@@ -125,5 +125,8 @@
   },
   "ManaGenerator":{
     "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "LocalPortal":{
+    "1":{"items":["Screw","IronPlate"],"amounts":[1,1],"cooldown":3}
   }
 }

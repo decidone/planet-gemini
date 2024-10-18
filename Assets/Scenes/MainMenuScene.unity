@@ -4704,6 +4704,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cursorSkin: {fileID: 11400000, guid: afbaca979faa19c4b9fe4a7845d8b0ae, type: 2}
+  setTexture: {fileID: 0}
+  tempTexture: {fileID: 0}
 --- !u!4 &1084120589
 Transform:
   m_ObjectHideFlags: 0

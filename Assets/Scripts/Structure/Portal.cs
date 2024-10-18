@@ -17,7 +17,7 @@ public class Portal : Production
 
     protected override void Awake()
     {
-        myVision.SetActive(false);
+        //myVision.SetActive(false);
         portalSci = PortalSciManager.instance;
         inventory = this.GetComponent<Inventory>();
     }
