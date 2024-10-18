@@ -29,6 +29,11 @@ public class TeleportUI : MonoBehaviour
     }
     #endregion
 
+    void Start()
+    {
+        rightBtn.GetComponentInChildren<Text>().text = displayMarketName;
+    }
+
     private void Update()
     {
         if (Time.timeScale == 0)
@@ -49,6 +54,14 @@ public class TeleportUI : MonoBehaviour
 
     public void OpenUI()
     {
+        if (GameManager.instance.isPlayerInHostMap)
+        {
+            leftBtn.GetComponentInChildren<Text>().text = displayClientWorldName;
+        }
+        else
+        {
+            leftBtn.GetComponentInChildren<Text>().text = displayHostWorldName;
+        }
         content.SetActive(true);
     }
 
@@ -71,7 +84,8 @@ public class TeleportUI : MonoBehaviour
         if (GameManager.instance.isPlayerInMarket)
         {
             displayText.text = displayMarketName;
-        }else if (GameManager.instance.isPlayerInHostMap)
+        }
+        else if (GameManager.instance.isPlayerInHostMap)
         {
             displayText.text = displayHostWorldName;
         }

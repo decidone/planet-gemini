@@ -27,8 +27,8 @@ public class SoundManager : NetworkBehaviour
 
     AudioSource uiSfxPlayer;
 
-    private float bgmVolume = .3f;
-    private float sfxVolume = .3f;
+    private float bgmVolume = .8f;
+    private float sfxVolume = .6f;
 
     [SerializeField]
     Camera mainCamera;
@@ -456,12 +456,12 @@ public class SoundManager : NetworkBehaviour
             }
         }
 
-        if (playAudioCount < 3)
-            soundValue = 1.2f;
-        else if (playAudioCount < 6)
-            soundValue = 2.5f;
-        else if (playAudioCount < 12)
-            soundValue = 3.5f;
+        //if (playAudioCount < 3)
+        //    soundValue = 1.2f;
+        //else if (playAudioCount < 6)
+        //    soundValue = 2.5f;
+        //else if (playAudioCount < 12)
+        //    soundValue = 3.5f;
 
         for (int i = 0; i < audioClips.Length; i++)
         {

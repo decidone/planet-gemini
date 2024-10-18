@@ -916,7 +916,6 @@ public class Structure : NetworkBehaviour
             if (beltCtrl.OnBeltItem(spawnItem))
             {
                 SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-                spawnItem.col.enabled = false;
                 sprite.sprite = item.icon;
                 sprite.sortingOrder = 2;
                 spawnItem.item = item;
@@ -967,11 +966,8 @@ public class Structure : NetworkBehaviour
     {
         var itemPool = ItemPoolManager.instance.Pool.Get();
         ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
-        spawnItem.col.enabled = false;
         SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
         sprite.color = new Color(1f, 1f, 1f, 0f);
-        CircleCollider2D coll = spawnItem.GetComponent<CircleCollider2D>();
-        coll.enabled = false;
 
         spawnItem.transform.position = this.transform.position;
 
@@ -1003,7 +999,6 @@ public class Structure : NetworkBehaviour
                 else
                 {
                     sprite.color = new Color(1f, 1f, 1f, 1f);
-                    coll.enabled = true;
                     spawnItem.itemPool.Release(itemPool);
                     spawnItem = null;
                 }
@@ -1022,7 +1017,6 @@ public class Structure : NetworkBehaviour
         if (spawnItem != null)
         {
             sprite.color = new Color(1f, 1f, 1f, 1f);
-            coll.enabled = true;
             setFacDelayCoroutine = null;
             spawnItem.itemPool.Release(itemPool);
         }

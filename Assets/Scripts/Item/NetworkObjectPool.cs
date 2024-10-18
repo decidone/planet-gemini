@@ -195,6 +195,13 @@ public class NetworkObjectPool : NetworkBehaviour
         }
         return null;
     }
+
+    public Queue<NetworkObject> FindAllObj(GameObject prefab)
+    {
+        Queue<NetworkObject> queue = null;
+        queue = pooledObjects[prefab];
+        return queue;
+    }
 }
 
 [Serializable]

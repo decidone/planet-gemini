@@ -650,6 +650,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 068276d7650715c4886cd64c4d2f35fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasRectTransform: {fileID: 0}
+  imageRectTransform: {fileID: 0}
   buildItemInfoWin: {fileID: 0}
 --- !u!114 &198327214828012134
 MonoBehaviour:
