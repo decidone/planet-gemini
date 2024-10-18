@@ -123,7 +123,6 @@ public class BeltCtrl : LogisticsCtrl
         var itemPool = ItemPoolManager.instance.Pool.Get();
         ItemProps spawn = itemPool.GetComponent<ItemProps>();
         SpriteRenderer sprite = spawn.GetComponent<SpriteRenderer>();
-        spawn.col.enabled = false;
         sprite.sprite = sendItem.icon;
         sprite.sortingOrder = 2;
         spawn.item = sendItem;
@@ -147,7 +146,6 @@ public class BeltCtrl : LogisticsCtrl
         var itemPool = ItemPoolManager.instance.Pool.Get();
         ItemProps spawn = itemPool.GetComponent<ItemProps>();
         SpriteRenderer sprite = spawn.GetComponent<SpriteRenderer>();
-        spawn.col.enabled = false;
         sprite.sprite = sendItem.icon;
         sprite.sortingOrder = 2;
         spawn.item = sendItem;

@@ -100,6 +100,9 @@ public class DataManager : MonoBehaviour
         MapSaveData mapSaveData = GameManager.instance.SaveMapData();
         saveData.mapData = mapSaveData;
 
+        List<NetItemPropsData> netItemPropsDatas = NetworkItemPoolSync.instance.NetItemSaveData();
+        saveData.netItemData = netItemPropsDatas;
+
         // Json 저장
         Debug.Log("saved: " + path);
         string json = JsonConvert.SerializeObject(saveData);
@@ -140,6 +143,8 @@ public class DataManager : MonoBehaviour
         {
             SpawnUnit(unitSave);
         }
+
+        NetworkItemPoolSync.instance.NetItemLoadData(saveData.netItemData);
 
         SetSpawnerManager(saveData.spawnerManagerSaveData);
 

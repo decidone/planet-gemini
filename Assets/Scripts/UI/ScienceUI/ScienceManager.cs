@@ -18,10 +18,13 @@ public class ScienceManager : MonoBehaviour
     [SerializeField]
     GameObject[] infoWindow;
     [SerializeField]
+    GameObject[] infoWindowObj;
+    [SerializeField]
     GameObject itemInputWindow;
     SciItemSetWindow sciItemSetWindow;
     [SerializeField]
     UpgradeWindow upgradeWindow;
+    public RectTransform canvasRectTransform; // 캔버스의 RectTransform
 
     public GameObject coreLvUI;
     [HideInInspector]
@@ -114,21 +117,47 @@ public class ScienceManager : MonoBehaviour
         if (infoWindow[0].activeSelf)
         {
             mousePos = Input.mousePosition;
+            Vector2 anchoredPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
 
-            if (mousePos.x + popupWidth > Screen.width)
-            {
-                mousePos.x = Screen.width - popupWidth - 10.0f;
-            }
-            else if (mousePos.x < 0)
-            {
-                mousePos.x = 0;
-            }
-            infoWindow[0].transform.position = mousePos;
+            float popupWidth = infoWindowObj[0].GetComponent<RectTransform>().rect.width;
+            float popupHeight = infoWindowObj[0].GetComponent<RectTransform>().rect.height;
+
+            float clampedX = Mathf.Clamp(anchoredPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth);
+            float clampedY = Mathf.Clamp(anchoredPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight);
+
+            // 위치 설정
+            infoWindow[0].transform.localPosition = new Vector2(clampedX, clampedY);
+
+
+            //mousePos = Input.mousePosition;
+
+            //if (mousePos.x + popupWidth > Screen.width)
+            //{
+            //    mousePos.x = Screen.width - popupWidth - 10.0f;
+            //}
+            //else if (mousePos.x < 0)
+            //{
+            //    mousePos.x = 0;
+            //}
+            //infoWindow[0].transform.position = mousePos;
         }
         else if (infoWindow[1].activeSelf)
         {
             mousePos = Input.mousePosition;
-            infoWindow[1].transform.position = mousePos;
+            Vector2 anchoredPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
+
+            float popupWidth = infoWindowObj[1].GetComponent<RectTransform>().rect.width;
+            float popupHeight = infoWindowObj[1].GetComponent<RectTransform>().rect.height;
+
+            float clampedX = Mathf.Clamp(anchoredPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth);
+            float clampedY = Mathf.Clamp(anchoredPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight);
+
+            // 위치 설정
+            infoWindow[1].transform.localPosition = new Vector2(clampedX, clampedY);
+            //mousePos = Input.mousePosition;
+            //infoWindow[1].transform.position = mousePos;
         }
     }
 

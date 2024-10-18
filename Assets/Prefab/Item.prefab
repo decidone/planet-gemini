@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4274167515104423560}
   - component: {fileID: 4638321260778344907}
-  - component: {fileID: 2494145269715281245}
   - component: {fileID: 3924517579319507838}
   m_Layer: 0
   m_Name: Item
@@ -86,22 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &2494145269715281245
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 706260756050914416}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1
 --- !u!114 &3924517579319507838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,4 +102,4 @@ MonoBehaviour:
   waitingForDestroy: 0
   isOnBelt: 0
   setOnBelt: {fileID: 0}
-  col: {fileID: 2494145269715281245}
+  col: {fileID: 0}

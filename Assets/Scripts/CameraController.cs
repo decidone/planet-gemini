@@ -31,7 +31,6 @@ public class CameraController : MonoBehaviour
     void Awake()
     {
         pixelPerfectCamera = Camera.main.GetComponent<PixelPerfectCamera>();
-        pixelPerfectCamera.upscaleRT = true;
         zoomLevel = 1;
 
         if (instance != null)

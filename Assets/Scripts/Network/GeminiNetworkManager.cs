@@ -175,6 +175,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         //NetworkObject itemNetworkObject = dropItem.GetComponent<NetworkObject>();
         NetworkObject itemNetworkObject = NetworkObjectPool.Singleton.GetNetworkObject(itemPref, spawnPos, Quaternion.identity);
         ItemProps itemProps = itemNetworkObject.GetComponent<ItemProps>();
+        NetworkItemPoolSync.instance.NetPoolItemSet(itemProps);
         itemProps.waitingForDestroy = false;
         if (!itemNetworkObject.IsSpawned) itemNetworkObject.Spawn(true);
 
@@ -205,6 +206,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         networkObjectReference.TryGet(out NetworkObject networkObject);
         if (networkObject != null)
         {
+            NetworkItemPoolSync.instance.NetPoolItemSub(networkObject.GetComponent<ItemProps>());
             networkObject.Despawn();
             //Destroy(networkObject.gameObject);
             onItemDestroyedCallback?.Invoke();

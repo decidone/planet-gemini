@@ -74,7 +74,8 @@ public class BuildInfoCheck : MonoBehaviour
             BuildItemInfoPopUpOff();
         }
 
-        if (gameManager.map.IsOnMap(x, y))
+        if (gameManager.map.IsOnMap(x, y) && 
+            (mousePos.x >= 0 && mousePos.x <= Screen.width && mousePos.y >= 0 && mousePos.y <= Screen.height))
         {
             Cell cell = gameManager.map.GetCellDataFromPos(x, y);
             if (isMouseOnStr)

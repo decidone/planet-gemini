@@ -19,8 +19,6 @@ public class ItemProps : MonoBehaviour
     [HideInInspector]
     public BeltCtrl setOnBelt;
 
-    public Collider2D col;
-
     private void Start()
     {
         networkObjectPool = NetworkObjectPool.Singleton;

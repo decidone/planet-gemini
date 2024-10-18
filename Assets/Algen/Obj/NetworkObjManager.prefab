@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7450791411852019791}
   - component: {fileID: 7450791411852019784}
+  - component: {fileID: -1402281435335404763}
   m_Layer: 0
   m_Name: NetworkObjManager
   m_TagString: Untagged
@@ -44,4 +45,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec757d1005a35314a961bb840292bff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkObjListSO: {fileID: 11400000, guid: 7025760d0b6edd74b9ea27930c217e6e, type: 2}
+  netPortals: []
+  netStructures: []
+  netBeltGroupMgrs: []
+  netUnitCommonAis: []
+  networkBelts: []
+--- !u!114 &-1402281435335404763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7450791411852019785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3eae3800310a8c144ae5e0581908cdea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  netItemPool: []

@@ -25,4 +25,5 @@ public class SaveData
 
     public OverallSaveData overallData = new OverallSaveData();
     public MapSaveData mapData = new MapSaveData();
+    public List<NetItemPropsData> netItemData = new List<NetItemPropsData>();
 }
