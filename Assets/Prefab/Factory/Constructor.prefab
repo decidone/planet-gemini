@@ -135,6 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
   sInvenManager: {fileID: 0}
+  openUI: 0
 --- !u!114 &375400609723545135
 MonoBehaviour:
   m_ObjectHideFlags: 0
