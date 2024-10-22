@@ -299,5 +299,8 @@
   },
   "Wire": {
     "1": "Wire"
+  },
+  "VoidShard": {
+    "1": "Void Shard"
   }
 }

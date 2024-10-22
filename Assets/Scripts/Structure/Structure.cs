@@ -265,7 +265,8 @@ public class Structure : NetworkBehaviour
 
     protected void ObjRemoveFunc()
     {
-        AddInvenItem();
+        //AddInvenItem();
+        ItemDrop();
         RemoveObjServerRpc();
         //DestroyFuncServerRpc();
         RefundCost();
@@ -283,17 +284,18 @@ public class Structure : NetworkBehaviour
         {
             BuildingData buildingData = new BuildingData();
             buildingData = BuildingDataGet.instance.GetBuildingName(buildName, level + 1);
-            Inventory inventory;
-            GameManager gameManager = GameManager.instance;
+            //Inventory inventory;
+            //GameManager gameManager = GameManager.instance;
 
-            if (isInHostMap)
-                inventory = gameManager.hostMapInven;
-            else
-                inventory = gameManager.clientMapInven;
+            //if (isInHostMap)
+            //    inventory = gameManager.hostMapInven;
+            //else
+            //    inventory = gameManager.clientMapInven;
 
             for (int i = 0; i < buildingData.GetItemCount(); i++)
             {
-                inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
+                //inventory.Add(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
+                ItemToItemProps(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
                 Overall.instance.OverallConsumptionCancel(ItemList.instance.itemDic[buildingData.items[i]], buildingData.amounts[i]);
             }
         }
@@ -593,8 +595,8 @@ public class Structure : NetworkBehaviour
         if (energyUse)
         {
             GameObject TriggerObj = new GameObject("Trigger");
-            CircleCollider2D col = TriggerObj.AddComponent<CircleCollider2D>();
-            col.isTrigger = true;
+            CircleCollider2D coll = TriggerObj.AddComponent<CircleCollider2D>();
+            coll.isTrigger = true;
             TriggerObj.transform.position = Vector3.zero;
             StartCoroutine(Move(TriggerObj));
         }
@@ -1302,7 +1304,6 @@ public class Structure : NetworkBehaviour
         {
             Debug.Log("wall");
             yield break;
-
         }
 
         if (obj.GetComponent<Structure>() != null)

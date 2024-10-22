@@ -173,12 +173,13 @@ public class MapCameraController : MonoBehaviour
             {
                 tempEvent = _mapClickEvent;
             }
-            if (hits[i].collider.gameObject.layer == LayerMask.NameToLayer("Portal"))
+            if (hits[i].collider.gameObject.layer == LayerMask.NameToLayer("Portal")
+                || hits[i].collider.gameObject.layer == LayerMask.NameToLayer("LocalPortal"))
             {
                 PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
-                player.TeleportLocal(hits[i].collider.transform.position);
-                Debug.Log("TP");
-                ToggleMap();
+                bool isteleported = player.TeleportLocal(hits[i].collider.transform.position);
+                if (isteleported)
+                    ToggleMap();
             }
         }
 

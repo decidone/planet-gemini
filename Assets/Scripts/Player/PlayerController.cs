@@ -179,10 +179,15 @@ public class PlayerController : NetworkBehaviour
             if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
             {
                 teleportUI.SetBtnDefault();
-                teleportUI.leftBtn.onClick.AddListener(TeleportWorld);
-                teleportUI.rightBtn.onClick.AddListener(TeleportMarket);
+                teleportUI.firstBtn.onClick.AddListener(TeleportWorld);
+                teleportUI.secondBtn.onClick.AddListener(TeleportMarket);
+                teleportUI.thirdBtn.onClick.AddListener(OpenMap);
 
                 teleportUI.OpenUI();
+            }
+            else if (circleColl.IsTouchingLayers(LayerMask.GetMask("LocalPortal")))
+            {
+                OpenMap();
             }
         }
         else
@@ -194,16 +199,22 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public void TeleportLocal(Vector3 pos)
+    public void OpenMap()
     {
-        this.transform.position = pos;
-        if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
-        {
-            if (PreBuilding.instance.isBuildingOn)
-                PreBuilding.instance.CancelBuild();
+        MapCameraController.instance.ToggleMap();
+        teleportUI.CloseUI();
+    }
 
+    public bool TeleportLocal(Vector3 pos)
+    {
+        if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal"))
+            || circleColl.IsTouchingLayers(LayerMask.GetMask("LocalPortal")))
+        {
             this.transform.position = pos;
+            return true;
         }
+
+        return false;
     }
 
     void TeleportWorld()

@@ -569,6 +569,10 @@ public class MonsterSpawner : NetworkBehaviour
         
         monsterSpawnerManager.AreaGroupRemove(this, areaLevel, isInHostMap);
         Overall.instance.OverallCount(0);
+
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(ItemList.instance.itemDic["VoidShard"]);
+        GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, 1, transform.position);
+
         spawnerSearchColl.DieFunc();
     }
 

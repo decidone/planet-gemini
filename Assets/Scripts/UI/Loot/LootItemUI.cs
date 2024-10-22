@@ -25,7 +25,7 @@ public class LootItemUI : MonoBehaviour
         timer = 0;
         item = _item;
         amount = _amount;
-        lootInfoText.text = item.name + ", " + amount;
+        lootInfoText.text = InGameNameDataGet.instance.ReturnName(item.name) + ", " + amount;
     }
 
     public void SetDropMessage(Item _item, int _amount)
@@ -33,7 +33,7 @@ public class LootItemUI : MonoBehaviour
         timer = 0;
         item = _item;
         amount = _amount;
-        lootInfoText.text = "Drop " + item.name + ", " + amount;
+        lootInfoText.text = "Drop " + InGameNameDataGet.instance.ReturnName(item.name) + ", " + amount;
         lootInfoText.color = Color.red;
     }
 

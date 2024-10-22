@@ -148,7 +148,7 @@
   },
   "LocalPortal":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
+      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "Wall":{

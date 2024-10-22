@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class Bounty : MonoBehaviour
 {
     Overall overall;
-
     [SerializeField] Finance finance;
     [SerializeField] Button btn;
     [SerializeField] Text spawnerText;
@@ -15,7 +14,6 @@ public class Bounty : MonoBehaviour
     public int bounty;
     int newSpawnerCount;
     int newMonsterCount;
-
 
     private void Awake()
     {

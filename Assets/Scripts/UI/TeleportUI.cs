@@ -4,8 +4,9 @@ using UnityEngine.UI;
 public class TeleportUI : MonoBehaviour
 {
     [SerializeField] GameObject content;
-    public Button leftBtn;
-    public Button rightBtn;
+    public Button firstBtn;
+    public Button secondBtn;
+    public Button thirdBtn;
     public Text displayText;
     [SerializeField] float displayTime;
     [SerializeField] string displayMarketName;
@@ -31,7 +32,7 @@ public class TeleportUI : MonoBehaviour
 
     void Start()
     {
-        rightBtn.GetComponentInChildren<Text>().text = displayMarketName;
+        secondBtn.GetComponentInChildren<Text>().text = displayMarketName;
     }
 
     private void Update()
@@ -56,11 +57,11 @@ public class TeleportUI : MonoBehaviour
     {
         if (GameManager.instance.isPlayerInHostMap)
         {
-            leftBtn.GetComponentInChildren<Text>().text = displayClientWorldName;
+            firstBtn.GetComponentInChildren<Text>().text = displayClientWorldName;
         }
         else
         {
-            leftBtn.GetComponentInChildren<Text>().text = displayHostWorldName;
+            firstBtn.GetComponentInChildren<Text>().text = displayHostWorldName;
         }
         content.SetActive(true);
     }
@@ -72,8 +73,9 @@ public class TeleportUI : MonoBehaviour
 
     public void SetBtnDefault()
     {
-        leftBtn.onClick.RemoveAllListeners();
-        rightBtn.onClick.RemoveAllListeners();
+        firstBtn.onClick.RemoveAllListeners();
+        secondBtn.onClick.RemoveAllListeners();
+        thirdBtn.onClick.RemoveAllListeners();
     }
 
     public void DisplayWorldName()
@@ -93,6 +95,5 @@ public class TeleportUI : MonoBehaviour
         {
             displayText.text = displayClientWorldName;
         }
-
     }
 }
