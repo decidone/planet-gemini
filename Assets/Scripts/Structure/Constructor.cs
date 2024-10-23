@@ -38,7 +38,7 @@ public class Constructor : Production
                                     Overall.instance.OverallProd(output, recipe.amounts[recipe.amounts.Count - 1]);
                                 }
 
-                                soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
+                                soundManager.PlaySFX(gameObject, "structureSFX", "Structure");
                                 prodTimer = 0;
                             }
                         }

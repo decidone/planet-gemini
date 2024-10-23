@@ -60,11 +60,11 @@ public class WavePoint : MonoBehaviour
 
         if (player != null)
         {
-            if (isMap1WaveStart && gameManager.isPlayerInHostMap)
+            if (isMap1WaveStart && gameManager.isPlayerInHostMap && !gameManager.isPlayerInMarket)
             {
                 SetIndicator(true);
             }
-            else if (isMap2WaveStart && !gameManager.isPlayerInHostMap)
+            else if (isMap2WaveStart && !gameManager.isPlayerInHostMap && !gameManager.isPlayerInMarket)
             {
                 SetIndicator(false);
             }

@@ -105,7 +105,7 @@ public class GameManager : NetworkBehaviour
     public bool isDay;                  // 밤 낮
     [SerializeField] float dayTime;     // 인게임 4시간을 현실 시간으로
     public float dayTimer;              // 게임 내 시간(타이머)
-    int dayIndex = 0;                   // 24시간을 6등분해서 인덱스로 사용
+    public int dayIndex = 0;                   // 24시간을 6등분해서 인덱스로 사용
     // 0 : 08:00 ~ 12:00
     // 1 : 12:00 ~ 16:00
     // 2 : 16:00 ~ 20:00
@@ -197,7 +197,9 @@ public class GameManager : NetworkBehaviour
         isDay = true;
         dayTimer = 0;
 
-        OtherPortalSet();
+        OtherPortalSet(); 
+        SoundManager.instance.GameSceneLoad();
+
         //GameStartSet();
     }
 
@@ -295,6 +297,7 @@ public class GameManager : NetworkBehaviour
             if (dayIndex == 0)
             {
                 isDay = true;
+                SoundManager.instance.PlayBgmMapCheck();
                 if (violentDay)
                 {
                     violentDay = false;
@@ -305,6 +308,7 @@ public class GameManager : NetworkBehaviour
             else if (dayIndex == 3)
             {
                 isDay = false;
+                SoundManager.instance.PlayBgmMapCheck();
                 if (day > safeDay)
                 {
                     violentValue += UnityEngine.Random.Range(randomStackValue[0], randomStackValue[1] + 1);
@@ -398,6 +402,7 @@ public class GameManager : NetworkBehaviour
             isPlayerInMarket = true;
             inputManager.InMarket();
             SetPlayerLocationServerRpc(isPlayerInHostMap, true);
+            SoundManager.instance.PlayerMarketBgm();
             return marketPortalTransform.position;
         }
         else
@@ -405,6 +410,7 @@ public class GameManager : NetworkBehaviour
             isPlayerInMarket = false;
             inputManager.OutMarket();
             SetPlayerLocationServerRpc(isPlayerInHostMap, false);
+            SoundManager.instance.PlayBgmMapCheck();
             if (isPlayerInHostMap)
             {
                 return hostPlayerSpawnPos;
@@ -1164,7 +1170,7 @@ public class GameManager : NetworkBehaviour
         inGameData.saveDate = formattedDateTime;
         // 파일 이름
         inGameData.mapSizeIndex = MainGameSetting.instance.mapSizeIndex;
-
+        inGameData.seed = MainGameSetting.instance.randomSeed;
         inGameData.day = day;
         inGameData.isDay = isDay;
         inGameData.dayTimer = dayTimer;
@@ -1186,7 +1192,7 @@ public class GameManager : NetworkBehaviour
         isDay = data.isDay;
         dayTimer = data.dayTimer;
         dayIndex = data.dayIndex;
-
+        SoundManager.instance.GameSceneLoad();
         violentValue = data.violentValue;
         violentDay = data.violentDay;
         timeImg.sprite = timeImgSet[dayIndex];

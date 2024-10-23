@@ -78,7 +78,13 @@ public class InfoUI : MonoBehaviour
         spriteRenderer.material = outlintMat;
         nameText.text = obj.name;
         btn.gameObject.SetActive(true);
-        btn.onClick.AddListener(obj.RemoveMapObjRequest);
+        btn.onClick.AddListener(() => CutDownBtnFucn());
+    }
+
+    void CutDownBtnFucn()
+    {
+        SoundManager.instance.PlayUISFX("TreeCut");
+        obj.RemoveMapObjRequest();
     }
 
     public void SetStructureInfo(Structure _str)

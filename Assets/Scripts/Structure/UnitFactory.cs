@@ -62,7 +62,7 @@ public class UnitFactory : Production
                                     SpawnUnit();
                                 }
 
-                                soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
+                                soundManager.PlaySFX(gameObject, "structureSFX", "Structure");
                                 prodTimer = 0;
                             }
                         }

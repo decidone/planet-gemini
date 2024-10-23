@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: -3277164571938035438}
   - component: {fileID: 2293801111561705511}
   - component: {fileID: -4004599223044454658}
-  m_Layer: 18
+  m_Layer: 8
   m_Name: LocalPortal
-  m_TagString: Untagged
+  m_TagString: Factory
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -140,6 +140,7 @@ MonoBehaviour:
   hpBar: {fileID: 2221951730222048026}
   maxHp: 0
   hp: 0
+  RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   isRepair: 0
   repairBar: {fileID: 3663937647444895478}
   itemList: []

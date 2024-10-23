@@ -607,6 +607,7 @@ MonoBehaviour:
   hpBar: {fileID: 2815434081121098401}
   maxHp: 0
   hp: 0
+  RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   isRepair: 0
   repairBar: {fileID: 5769637539421819238}
   itemList: []

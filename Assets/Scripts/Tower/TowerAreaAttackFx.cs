@@ -19,8 +19,7 @@ public class TowerAreaAttackFx : NetworkBehaviour
         networkObjectPool = NetworkObjectPool.Singleton;
     }
 
-    [ClientRpc]
-    public void DestroyBulletClientRpc()
+    public void DestroyBullet()
     {
         if (IsServer)
         {
@@ -38,7 +37,7 @@ public class TowerAreaAttackFx : NetworkBehaviour
     {
         if (str == "false")
         {
-            Invoke(nameof(DestroyBulletClientRpc), 0.1f);
+            Invoke(nameof(DestroyBullet), 0.1f);
             //Destroy(this.gameObject, 0.1f);
         }
     }

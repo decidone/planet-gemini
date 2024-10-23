@@ -10,6 +10,7 @@ public class InGameData
     public string saveDate;         // 저장 날짜
     public int mapSizeIndex;        // 맵 크기
     public int difficultyLevel;     // 레벨
+    public int seed;                // 맵 시드
 
     public int day;                 // 인게임 날짜
     public bool isDay;              // 낮 / 밤

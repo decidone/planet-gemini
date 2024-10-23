@@ -8,6 +8,7 @@ public class MainGameSetting : MonoBehaviour
     public int mapSizeIndex;
     public int difficultylevel;
     public int loadDataIndex;
+    public int randomSeed;
 
     #region Singleton
     public static MainGameSetting instance;
@@ -42,5 +43,10 @@ public class MainGameSetting : MonoBehaviour
     public void LoadDataIndexSet(int index)
     {
         loadDataIndex = index;
+    }
+
+    public void RandomSeedValue(int index)
+    {
+        randomSeed = index;
     }
 }

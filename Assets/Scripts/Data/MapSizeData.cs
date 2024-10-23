@@ -1,4 +1,4 @@
-using System.Collections;
+  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,7 +12,6 @@ public class MapSizeData : ScriptableObject
     [SerializeField]
     private int[] countOfSpawnersByLevel;
     public int[] CountOfSpawnersByLevel { get { return countOfSpawnersByLevel; } }
-
 
     [SerializeField]
     private int[] upgradeSpawnerSet;

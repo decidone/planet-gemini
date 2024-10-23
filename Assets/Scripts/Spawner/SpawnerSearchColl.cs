@@ -88,6 +88,11 @@ public class SpawnerSearchColl : NetworkBehaviour
 
         if (nearUserObjExist && inObjList.Count == 0 && structures.Count == 0)
         {
+            if (!NetworkObject.IsSpawned)
+            {
+                return;
+            }
+
             nearUserObjExist = false;
             monsterSpawner.SearchObj(false);
         }

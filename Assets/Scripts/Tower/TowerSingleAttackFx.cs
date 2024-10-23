@@ -36,11 +36,9 @@ public class TowerSingleAttackFx : NetworkBehaviour
         }
 
         transform.position += moveNextStep * 2 * Time.fixedDeltaTime;
-        Destroy(this.gameObject, 3f);
     }
 
-    [ClientRpc]
-    public void DestroyBulletClientRpc()
+    public void DestroyBullet()
     {
         if (IsServer)
         {
@@ -62,7 +60,7 @@ public class TowerSingleAttackFx : NetworkBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         if (!alreadyHit)
-            DestroyBulletClientRpc();
+            DestroyBullet();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -74,7 +72,7 @@ public class TowerSingleAttackFx : NetworkBehaviour
             if (!alreadyHit)
             {
                 StopCoroutine(timerCoroutine);
-                DestroyBulletClientRpc();
+                DestroyBullet();
                 alreadyHit = true;
             }
             else

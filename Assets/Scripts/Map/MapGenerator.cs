@@ -9,7 +9,6 @@ using Pathfinding;
 public class MapGenerator : MonoBehaviour
 {
     System.Random random;
-    public bool randomSeed;
     public int seed;
 
     public MapSizeData mapSizeData;
@@ -129,7 +128,7 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
-        SetRandomSeed();
+        SetSeed();
         GenerateMap();
 
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
@@ -353,11 +352,9 @@ public class MapGenerator : MonoBehaviour
         return (x, y);
     }
 
-    void SetRandomSeed()
+    void SetSeed()
     {
-        if (randomSeed)
-            seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-
+        seed = gameSetting.randomSeed;
         random = new System.Random(seed);
     }
 

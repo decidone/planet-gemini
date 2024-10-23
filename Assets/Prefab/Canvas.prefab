@@ -29884,6 +29884,7 @@ MonoBehaviour:
   - {fileID: 2944685124441747705}
   itemInputWindow: {fileID: 1307766763441469976}
   upgradeWindow: {fileID: 9194252855946770708}
+  canvasRectTransform: {fileID: 0}
   coreLvUI: {fileID: 3134461431608571290, guid: 93abd0f61bd5a7a47a11f68529acf2fd, type: 3}
   scienceBtns: []
   scienceTreeUI: {fileID: 3708228166959310970}

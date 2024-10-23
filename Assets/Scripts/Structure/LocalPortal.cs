@@ -9,5 +9,7 @@ public class LocalPortal : Structure
         base.Awake();
         col = GetComponent<CapsuleCollider2D>();
     }
-    protected override void Update() { }
+
+    public override void ColliderTriggerOnOff(bool isOn) { }
+
 }

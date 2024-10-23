@@ -163,6 +163,7 @@ public class SaveLoadMenu : MonoBehaviour
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
         InGameData inGameData = saveData.InGameData;
         MainGameSetting.instance.MapSizeSet(inGameData.mapSizeIndex);
+        MainGameSetting.instance.RandomSeedValue(inGameData.seed);
 
         if (GameManager.instance != null)
         {
