@@ -39,8 +39,8 @@ public class MonsterSpawner : NetworkBehaviour
     public List<MonsterAi> waveMonsterList = new List<MonsterAi>();
     // 가디언은 초기에 배치하고 그 이후로는 관리 안함
 
-    public int areaLevel;
-    AreaLevelData areaLevelData;
+    public int sppawnerLevel;
+    AreaLevelData sppawnerLevelData;
     string biome;
     int spawnerGroupIndex;
 
@@ -64,7 +64,7 @@ public class MonsterSpawner : NetworkBehaviour
     Vector3 wavePos;
     float waveInterval = 40;
     public float waveTimer;
-    bool waveState = false;
+    bool waveState;
 
     BattleBGMCtrl battleBGM;
     MonsterSpawnerManager monsterSpawnerManager;
@@ -72,10 +72,10 @@ public class MonsterSpawner : NetworkBehaviour
     [SerializeField]
     GameObject searchColl;
     SpawnerSearchColl spawnerSearchColl;
-    float[] energyAggroMaxValue = new float[5] {3000, 6000, 8000, 10000, 12000 }; // 어그로 최대 임계치
-    float[] violentEnergyAggroMaxValue = new float[5] {5000, 8000, 10000, 12000, 14000 }; // 광폭화시 최대 임계치
+    float[] energyAggroMaxValue = new float[8] {3000, 6000, 8000, 10000, 12000, 12000, 12000, 12000 }; // 어그로 최대 임계치
+    float[] violentEnergyAggroMaxValue = new float[8] {5000, 8000, 10000, 12000, 14000, 14000, 14000, 14000 }; // 광폭화시 최대 임계치
     public float energyAggroValue; // 어그로 현 임계치
-    float[] energyAggroInterval = new float[5] { 120, 150, 180, 200, 220 }; // 어그로 수치 체크타임
+    float[] energyAggroInterval = new float[8] { 120, 150, 180, 200, 220, 220, 220, 220 }; // 어그로 수치 체크타임
     float energyAggroTimer;
     float checkAggroInterval = 5;
     float checkAggroTimer;
@@ -83,11 +83,14 @@ public class MonsterSpawner : NetworkBehaviour
     int attackLevelTier;    // 낮을수록 강한
     float[][] restAggroIntervals = new float[][] // 어그로 끌리고 쉬는 타임
     {
-    new float[5] { 210, 240, 270, 300, 330 }, // Level 1
-    new float[5] { 240, 270, 300, 330, 360 }, // Level 2
-    new float[5] { 270, 300, 330, 360, 390 }, // Level 3
-    new float[5] { 300, 330, 360, 390, 420 }, // Level 4
-    new float[5] { 330, 360, 390, 420, 450 }  // Level 5
+    new float[5] { 210, 240, 270, 300, 330 },   // Level 1
+    new float[5] { 240, 270, 300, 330, 360 },   // Level 2
+    new float[5] { 270, 300, 330, 360, 390 },   // Level 3
+    new float[5] { 300, 330, 360, 390, 420 },   // Level 4
+    new float[5] { 330, 360, 390, 420, 450 },   // Level 5
+    new float[5] { 330, 360, 390, 420, 450 },   // Level 6
+    new float[5] { 330, 360, 390, 420, 450 },   // Level 7
+    new float[5] { 330, 360, 390, 420, 450 }    // Level 8
     };
     float restAggroTimer;
     public Dictionary<Structure, float> energyUseStrs = new Dictionary<Structure, float>();
@@ -112,11 +115,12 @@ public class MonsterSpawner : NetworkBehaviour
         normalMonster = GeminiNetworkManager.instance.unitListSO.normalMonsterList;
         strongMonster = GeminiNetworkManager.instance.unitListSO.strongMonsterList;
         guardian = GeminiNetworkManager.instance.unitListSO.guardian[0];
+        capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+        spawnerSearchColl = searchColl.GetComponent<SpawnerSearchColl>();
     }
 
     void Start()
     {
-        capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         spawnInterval = 20;
         guardianCallInterval = 2;
         maxExtraSpawn = 10;
@@ -125,24 +129,23 @@ public class MonsterSpawner : NetworkBehaviour
             searchColl.SetActive(false);
         if (!gameLodeSet)
             InitializeMonsterSpawn();
-        spawnerSearchColl = searchColl.GetComponent<SpawnerSearchColl>();
         spawnerSearchColl.violentCollSize = violentCollSize;
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
 
-        if (areaLevel == 1)
+        if (sppawnerLevel >= 7)
+        {
+            sprite.sprite = monsterSpawnerManager.spawnerSprite[2];
+            capsuleCollider2D.size = new Vector2(5f, 1.8f);
+        }
+        else if (sppawnerLevel <= 3)
         {
             sprite.sprite = monsterSpawnerManager.spawnerSprite[0];
             capsuleCollider2D.size = new Vector2(2.6f, 0.9f);
         }
-        else if (areaLevel == 2 || areaLevel == 3)
+        else
         {
             sprite.sprite = monsterSpawnerManager.spawnerSprite[1];
             capsuleCollider2D.size = new Vector2(3.5f, 1f);
-        }
-        else if (areaLevel == 4 || areaLevel == 5)
-        {
-            sprite.sprite = monsterSpawnerManager.spawnerSprite[2];
-            capsuleCollider2D.size = new Vector2(5f, 1.8f);
         }
     }
 
@@ -188,7 +191,7 @@ public class MonsterSpawner : NetworkBehaviour
             {
                 restAggroTimer += Time.deltaTime;
 
-                if (restAggroTimer >= restAggroIntervals[areaLevel - 1][attackLevelTier])
+                if (restAggroTimer >= restAggroIntervals[sppawnerLevel - 1][attackLevelTier])
                 {
                     restTime = false;
                     restAggroTimer = 0;
@@ -205,15 +208,15 @@ public class MonsterSpawner : NetworkBehaviour
                     checkAggroTimer = 0;
                 }
 
-                if (energyAggroTimer >= energyAggroInterval[areaLevel - 1])
+                if (energyAggroTimer >= energyAggroInterval[sppawnerLevel - 1])
                 {
-                    float maxAggroValue = violentDay ? violentEnergyAggroMaxValue[areaLevel - 1] : energyAggroMaxValue[areaLevel - 1];
+                    float maxAggroValue = violentDay ? violentEnergyAggroMaxValue[sppawnerLevel - 1] : energyAggroMaxValue[sppawnerLevel - 1];
 
                     // 공통 조건을 사용하여 로직 단순화
                     if (energyAggroValue > maxAggroValue)
                     {
                         restTime = true;
-                        attackLevelTier = (int)(energyAggroTimer / (energyAggroInterval[areaLevel - 1] / restAggroIntervals[areaLevel - 1].Length));
+                        attackLevelTier = (int)(energyAggroTimer / (energyAggroInterval[sppawnerLevel - 1] / restAggroIntervals[sppawnerLevel - 1].Length));
                         EnergyUseStrAttack();
                     }
 
@@ -286,13 +289,13 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos, bool isHostMap, int groupIndex)
     {
-        areaLevelData = levelData;
-        areaLevel = levelData.areaLevel;
+        sppawnerLevelData = levelData;
+        sppawnerLevel = levelData.sppawnerLevel;
         biome = _biome;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
-        hp = structureData.MaxHp[levelData.areaLevel - 1];
-        maxHp = structureData.MaxHp[levelData.areaLevel - 1];
+        hp = structureData.MaxHp[levelData.sppawnerLevel - 1];
+        maxHp = structureData.MaxHp[levelData.sppawnerLevel - 1];
 
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
@@ -561,18 +564,28 @@ public class MonsterSpawner : NetworkBehaviour
         GameObject InfoObj = GetComponentInChildren<InfoInteract>().gameObject;
         InfoObj.SetActive(false);
 
-        MapGenerator.instance.ClearCorruption(transform.position, areaLevel);
+        MapGenerator.instance.ClearCorruption(transform.position, sppawnerLevel);
         icon.enabled = false;
 
         if (!IsServer)
             return;
         
-        monsterSpawnerManager.AreaGroupRemove(this, areaLevel, isInHostMap);
+        monsterSpawnerManager.AreaGroupRemove(this, sppawnerLevel, isInHostMap);
         Overall.instance.OverallCount(0);
 
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(ItemList.instance.itemDic["VoidShard"]);
         GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, 1, transform.position);
 
+        spawnerSearchColl.DieFunc();
+    }
+
+    public void DieFuncLoad()
+    {
+        unitSprite.color = new Color(1f, 1f, 1f, 0f);
+        unitCanvas.SetActive(false);
+        capsuleCollider2D.enabled = false;
+        MapGenerator.instance.ClearCorruption(transform.position, sppawnerLevel);
+        icon.enabled = false;
         spawnerSearchColl.DieFunc();
     }
 
@@ -661,12 +674,18 @@ public class MonsterSpawner : NetworkBehaviour
     public void GameStartSet(SpawnerSaveData spawnerSaveData, AreaLevelData levelData, Vector3 _basePos, bool isHostMap, int groupIndex)
     {
         hp = spawnerSaveData.hp;
-        areaLevel = spawnerSaveData.level;
+        maxHp = structureData.MaxHp[spawnerSaveData.level - 1];
+        if (hp < maxHp)
+        {
+            hpBar.fillAmount = hp / maxHp;
+            unitCanvas.SetActive(true);
+        }
+        sppawnerLevel = spawnerSaveData.level;
         extraSpawnNum = spawnerSaveData.extraSpawnNum;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
-        areaLevelData = levelData;
-        areaLevel = levelData.areaLevel;
+        sppawnerLevelData = levelData;
+        sppawnerLevel = levelData.sppawnerLevel;
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
@@ -778,13 +797,13 @@ public class MonsterSpawner : NetworkBehaviour
             }
         }
 
-        float maxAggroValue = violentDay ? violentEnergyAggroMaxValue[areaLevel - 1] : energyAggroMaxValue[areaLevel - 1];
+        float maxAggroValue = violentDay ? violentEnergyAggroMaxValue[sppawnerLevel - 1] : energyAggroMaxValue[sppawnerLevel - 1];
 
         // 공통 조건을 사용하여 로직 단순화
         if (energyAggroValue > maxAggroValue)
         {
             restTime = true;
-            attackLevelTier = (int)(energyAggroTimer / (energyAggroInterval[areaLevel - 1] / restAggroIntervals[areaLevel - 1].Length));
+            attackLevelTier = (int)(energyAggroTimer / (energyAggroInterval[sppawnerLevel - 1] / restAggroIntervals[sppawnerLevel - 1].Length));
             energyAggroValue = 0;
             checkAggroTimer = 0;
             energyAggroTimer = 0;
@@ -909,7 +928,7 @@ public class MonsterSpawner : NetworkBehaviour
         SpawnerSaveData data = new SpawnerSaveData();
 
         data.hp = hp;
-        data.level = areaLevel;
+        data.level = sppawnerLevel;
         data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.spawnerPos = Vector3Extensions.FromVector3(transform.position);
         data.extraSpawnNum = extraSpawnNum;
@@ -937,7 +956,7 @@ public class MonsterSpawner : NetworkBehaviour
     public void SetCorruption()
     {
         if (!dieCheck)
-            MapGenerator.instance.SetCorruption(transform.position, areaLevel);
+            MapGenerator.instance.SetCorruption(transform.position, sppawnerLevel);
     }
 
     public void SearchCollExtend()

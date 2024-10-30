@@ -53,6 +53,8 @@ public class Structure : NetworkBehaviour
     public float hp;
     protected RepairEffectFunc repairEffect;
     protected bool dieCheck = false;
+    public GameObject RuinExplo;
+
     //[HideInInspector]
     //public bool isRuin = false;
 
@@ -1139,7 +1141,7 @@ public class Structure : NetworkBehaviour
         //repairGauge = 0;
         //repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         ColliderTriggerOnOff(true);
-
+        Instantiate(RuinExplo, transform.position, Quaternion.identity);
         soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
         ItemDrop();
 

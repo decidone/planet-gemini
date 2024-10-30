@@ -9,7 +9,6 @@ using Pathfinding;
 public class MapGenerator : MonoBehaviour
 {
     System.Random random;
-    public bool randomSeed;
     public int seed;
 
     public MapSizeData mapSizeData;
@@ -129,7 +128,7 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
-        SetRandomSeed();
+        SetSeed();
         GenerateMap();
 
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
@@ -149,9 +148,9 @@ public class MapGenerator : MonoBehaviour
     {
         if (spawnerSet && spawnerPosSet && mapSizeData != null)
         {
-            spawnerPosSet.AreaMapSetServerRpc(map1CenterPos, mapSizeData.MapSplitCount, true);
+            spawnerPosSet.AreaMapSet(map1CenterPos, mapSizeData.MapSplitCount, true);
             if (isMultiPlay)
-                spawnerPosSet.AreaMapSetServerRpc(map2CenterPos, mapSizeData.MapSplitCount, false);
+                spawnerPosSet.AreaMapSet(map2CenterPos, mapSizeData.MapSplitCount, false);
         }
     }
 
@@ -353,11 +352,9 @@ public class MapGenerator : MonoBehaviour
         return (x, y);
     }
 
-    void SetRandomSeed()
+    void SetSeed()
     {
-        if (randomSeed)
-            seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-
+        seed = gameSetting.randomSeed;
         random = new System.Random(seed);
     }
 
@@ -891,17 +888,29 @@ public class MapGenerator : MonoBehaviour
             spawnerPos.y -= offsetY;
 
         Biome biome;
-        switch (level)
+        if (level >= 7)
         {
-            case 1: biome = EasyCorruption;
-                break;
-            case 2: biome = NormalCorruption;
-                break;
-            case 3: biome = HardCorruption;
-                break;
-            default: biome = NormalCorruption;
-                break;
+            biome = HardCorruption;
         }
+        else if (level <= 3)
+        {
+            biome = EasyCorruption;
+        }
+        else
+        {
+            biome = NormalCorruption;
+        }
+        //switch (level)
+        //{
+        //    case 1: biome = EasyCorruption;
+        //        break;
+        //    case 2: biome = NormalCorruption;
+        //        break;
+        //    case 3: biome = HardCorruption;
+        //        break;
+        //    default: biome = NormalCorruption;
+        //        break;
+        //}
 
         Vector2 tempPos;
         for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)

@@ -90,6 +90,7 @@ GameObject:
   - component: {fileID: 4160459754521078670}
   - component: {fileID: 1886033591091936635}
   - component: {fileID: 4358637142042107256}
+  - component: {fileID: -6871950343330625780}
   - component: {fileID: -5580005005730672984}
   - component: {fileID: 1908523262386043206}
   - component: {fileID: 5045978984777892132}
@@ -257,6 +258,7 @@ MonoBehaviour:
   hpBar: {fileID: 3243403136236991800}
   maxHp: 0
   hp: 0
+  RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   isRepair: 0
   repairBar: {fileID: 2164452483589807465}
   itemList: []
@@ -316,10 +318,27 @@ MonoBehaviour:
   towerData: {fileID: 11400000, guid: 111bc02974a73b947bd0d899a1d1a714, type: 2}
   towerState: 0
   animator: {fileID: 1886033591091936630}
-  RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   bulletDataManager: {fileID: 0}
   attackFX: {fileID: 3832536798139642931, guid: b3f85c014934a084ea6db9bddeba8932, type: 3}
   isSingleAttack: 1
+--- !u!114 &-6871950343330625780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886033591091936625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa9f2fa68281ccc41b958149fbdd5d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowDebuff: 0
+  slowTime: 0
+  poisonTrueAttack: 0
+  poisonDamage: 0
+  ignoreDdefense: 0
+  ignorePercent: 0
 --- !u!114 &-5580005005730672984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,6 +353,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
   sInvenManager: {fileID: 0}
+  openUI: 0
 --- !u!114 &1908523262386043206
 MonoBehaviour:
   m_ObjectHideFlags: 0

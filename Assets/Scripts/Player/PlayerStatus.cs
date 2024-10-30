@@ -8,9 +8,15 @@ using Unity.Netcode;
 public class PlayerStatus : NetworkBehaviour
 {
     public new string name;
-    public Image hpBar;
+    [SerializeField]
+    Image hpBar;
+    [SerializeField]
+    Image hpBackBar;
     public float hp = 100.0f;
     public float maxHp = 100.0f;
+    public float selfHealingAmount;
+    public float selfHealInterval;
+    float selfHealTimer;
 
     public bool isPlayerInHostMap = true;
     public bool isPlayerInMarket = false;
@@ -20,6 +26,47 @@ public class PlayerStatus : NetworkBehaviour
 
     void Start()
     {
+        hpBar.fillAmount = hp / maxHp;
+    }
+
+    void Update()
+    {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
+        if (!IsOwner) { return; }
+
+        if (hp != maxHp)
+        {
+            selfHealTimer += Time.deltaTime;
+
+            if (selfHealTimer >= selfHealInterval)
+            {
+                SelfHealingServerRpc();
+                selfHealTimer = 0f;
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void SelfHealingServerRpc()
+    {
+        SelfHealingClientRpc();
+    }
+
+    [ClientRpc]
+    void SelfHealingClientRpc()
+    {
+        hp += selfHealingAmount;
+
+        if (hp >= maxHp)
+        {
+            hp = maxHp;
+            HPUISet(false);
+        }
+        onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / maxHp;
     }
 
@@ -37,6 +84,7 @@ public class PlayerStatus : NetworkBehaviour
     [ClientRpc]
     public void TakeDamageClientRpc(float damage)
     {
+        HPUISet(true);
         if (hp <= 0f)
             return;
 
@@ -45,5 +93,25 @@ public class PlayerStatus : NetworkBehaviour
             hp = 0f;
         onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / maxHp;
+    }
+
+    public void HPUISet(bool isOn)
+    {
+        if (isOn)
+        {
+            hpBar.enabled = true;
+            hpBackBar.enabled = true;
+        }
+        else
+        {
+            hpBar.enabled = false;
+            hpBackBar.enabled = false;
+        }
+    }
+
+    public void LoadGame()
+    {
+        hp = GameManager.instance.playerDataHp;
+        HPUISet(hp >= maxHp);
     }
 }

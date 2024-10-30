@@ -47,6 +47,7 @@ public class Disintegrator : Production
 
     public void ConfirmBtnClicked()
     {
+        bool confirm = false;
         for (int i = 0; i < inventory.space; i++)
         {
             if (inventory.items.ContainsKey(i))
@@ -57,11 +58,17 @@ public class Disintegrator : Production
                     {
                         GameManager.instance.AddScrapServerRpc(merchandiseList.MerchandiseSOList[j].sellPrice * inventory.amounts[i]);
                         inventory.RemoveServerRpc(i);
-                        animator.Play("StartAction", -1, 0);
+                        confirm = true;
                         break;
                     }
                 }
             }
+        }
+
+        if (confirm)
+        {
+            animator.Play("StartAction", -1, 0);
+            soundManager.PlaySFX(gameObject, "structureSFX", "Disintegrator");
         }
     }
 

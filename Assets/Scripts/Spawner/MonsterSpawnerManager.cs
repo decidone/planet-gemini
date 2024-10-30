@@ -185,7 +185,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             monsterSpawners.Add(key, new List<MonsterSpawner>());
         }
-
+        Debug.Log(key.map + " : " + key.area);
         monsterSpawners[key].Add(spawner);
     }
 
@@ -211,8 +211,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             return;
         }
-
-        if (waveSpawner != null)
+        else
         {
             SpawnerGroupManager spawnerGroup = waveSpawner.groupManager;
             if (FindMatrix(spawnerGroup, isInHostMap))

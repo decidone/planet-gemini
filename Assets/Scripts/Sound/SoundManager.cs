@@ -28,7 +28,7 @@ public class SoundManager : NetworkBehaviour
     AudioSource uiSfxPlayer;
 
     private float bgmVolume = .8f;
-    private float sfxVolume = .6f;
+    private float sfxVolume = .8f;
 
     [SerializeField]
     Camera mainCamera;
@@ -63,9 +63,6 @@ public class SoundManager : NetworkBehaviour
 
     float fadeSeconds = 1.0f;
 
-    //Coroutine bgmFadeIn;
-    //Coroutine bgmFadeOut;
-
     private void Awake()
     {
         if (instance != null)
@@ -80,9 +77,6 @@ public class SoundManager : NetworkBehaviour
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
-
-        //임시로 소리끄기
-        audioMixer.SetFloat("Master", -80);
     }
 
     private void OnEnable()
@@ -108,18 +102,34 @@ public class SoundManager : NetworkBehaviour
                 bgmPlayer.clip = audioClipRefsSO.mainSceneBgm[Random.Range(0, audioClipRefsSO.mainSceneBgm.Length)];
                 bgmPlayer.Play();
                 break;
-            case 1:
-                bgmPlayer.clip = audioClipRefsSO.inGameBgm[Random.Range(0, audioClipRefsSO.inGameBgm.Length)];
-                bgmPlayer.Play();
-                break;
+            //case 1:
+            //    bgmPlayer.clip = audioClipRefsSO.inGameBgm[Random.Range(0, audioClipRefsSO.inGameBgm.Length)];
+            //    bgmPlayer.Play();
+            //    break;
         }
-        // 씬 로드 시 실행할 코드
+    }
+
+    void GameBgmByTime()
+    {
+        if (GameManager.instance.dayIndex > 2)
+        {
+            bgmPlayer.clip = audioClipRefsSO.nightBgm[Random.Range(0, audioClipRefsSO.nightBgm.Length)];
+        }
+        else
+        {
+            bgmPlayer.clip = audioClipRefsSO.dayBgm[Random.Range(0, audioClipRefsSO.dayBgm.Length)];
+        }
+    }
+
+    public void GameSceneLoad()
+    {
+        GameBgmByTime();
+        bgmPlayer.Play();
     }
 
     private void OnSceneUnloaded(Scene scene)
     {
         mainCamera = null;
-        // 씬 언로드 시 실행할 코드
     }
 
     void Update()
@@ -268,11 +278,28 @@ public class SoundManager : NetworkBehaviour
         }
     }
 
+    public void PlayerMarketBgm()
+    {
+        if (GameManager.instance.dayIndex > 2)
+        {
+            bgmPlayer.clip = audioClipRefsSO.marketBgm[1];
+        }
+        else
+        {
+            bgmPlayer.clip = audioClipRefsSO.marketBgm[0];
+        }
+        bgmPlayer.Play();
+    }
+
     public void PlayBgmMapCheck()
     {
         if (GameManager.instance != null)
         {
-            if (GameManager.instance.isPlayerInHostMap)
+            if (GameManager.instance.isPlayerInMarket)
+            {
+                PlayerMarketBgm();
+            }
+            else if (GameManager.instance.isPlayerInHostMap)
             {
                 PlayBGM(isHostMapBattleOn, isHostMapWaveOn);
             }
@@ -286,7 +313,6 @@ public class SoundManager : NetworkBehaviour
     void BgmPlayerSet()
     {
         bgmPlayer = PlayerBaseSet("BGM");
-        bgmPlayer.clip = audioClipRefsSO.inGameBgm[Random.Range(0, audioClipRefsSO.inGameBgm.Length)];
     }
 
     void StructureSFXPlayerSet()
@@ -344,7 +370,7 @@ public class SoundManager : NetworkBehaviour
         }
         else
         {
-            bgmPlayer.clip = audioClipRefsSO.inGameBgm[Random.Range(0, audioClipRefsSO.inGameBgm.Length)];
+            GameBgmByTime();
         }
 
         bgmPlayer.Play();
@@ -368,6 +394,10 @@ public class SoundManager : NetworkBehaviour
             }
             isHostMapBattleOn = isBattle;
             isHostMapWaveOn = isWave;
+            if (GameManager.instance.isPlayerInMarket)
+            {
+                return;
+            }
             StartCoroutine(nameof(SoundFadeOut));
         }
         else if(!isHostMap)
@@ -378,6 +408,10 @@ public class SoundManager : NetworkBehaviour
             }
             isClientMapBattleOn = isBattle;
             isClientMapWaveOn = isWave;
+            if (GameManager.instance.isPlayerInMarket)
+            {
+                return;
+            }
             StartCoroutine(nameof(SoundFadeOut));
         }
     }
@@ -426,7 +460,7 @@ public class SoundManager : NetworkBehaviour
                 {
                     if (structureSfxPlay)
                         return;
-                    SFXAudioSet(structureSfxPlayer, audioClipRefsSO.structureSfx, sfxName);
+                    SFXAudioSet(structureSfxPlayer, true, sfxName);
                     structureSfxPlay = true;
                 }
                 break;
@@ -434,7 +468,7 @@ public class SoundManager : NetworkBehaviour
                 {
                     if (unitSfxPlay)
                         return;
-                    SFXAudioSet(unitSfxPlayer, audioClipRefsSO.unitSfx, sfxName);
+                    SFXAudioSet(unitSfxPlayer, false, sfxName);
                     unitSfxPlay = true;
                 }
                 break;
@@ -443,40 +477,47 @@ public class SoundManager : NetworkBehaviour
         }
     }
 
-    void SFXAudioSet(List<AudioSource> audioList, AudioClip[] audioClips, string sfxName)
+    void SFXAudioSet(List<AudioSource> audioList, bool strSound, string sfxName)
     {
-        int playAudioCount = 0;
-        float soundValue = 1;
+        AudioClip playClip = null;
+        AudioClip[] audioClips;
 
-        for (int j = 0; j < audioList.Count; j++)
+        if (strSound)
         {
-            if (audioList[j].isPlaying)
-            {
-                playAudioCount++;
-            }
+            audioClips = audioClipRefsSO.structureSfx;
         }
-
-        //if (playAudioCount < 3)
-        //    soundValue = 1.2f;
-        //else if (playAudioCount < 6)
-        //    soundValue = 2.5f;
-        //else if (playAudioCount < 12)
-        //    soundValue = 3.5f;
+        else
+        {
+            audioClips = audioClipRefsSO.unitSfx;
+        }
 
         for (int i = 0; i < audioClips.Length; i++)
         {
             if (sfxName == audioClips[i].name)
             {
-                for (int j = 0; j < audioList.Count; j++)
+                playClip = audioClips[i];
+            }
+        }
+
+        if (strSound)
+        {
+            for (int j = 0; j < audioList.Count; j++)
+            {
+                if (audioList[j].clip == playClip && audioList[j].isPlaying)
                 {
-                    if (!audioList[j].isPlaying)
-                    {
-                        audioList[j].clip = audioClips[i];
-                        audioList[j].volume = sfxVolume / soundValue;
-                        audioList[j].Play();
-                        return;
-                    }
+                    return;
                 }
+            }
+        }
+
+
+        for (int j = 0; j < audioList.Count; j++)
+        {
+            if (!audioList[j].isPlaying)
+            {
+                audioList[j].clip = playClip;
+                audioList[j].volume = sfxVolume;
+                audioList[j].Play();
                 return;
             }
         }

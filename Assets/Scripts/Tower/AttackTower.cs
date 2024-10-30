@@ -22,9 +22,12 @@ public class AttackTower : TowerAi
     [SerializeField]
     bool isSingleAttack;
 
+    TowerAttackOption towerAttackOption;
+
     protected override void Start()
     {
         base.Start();
+        towerAttackOption = GetComponent<TowerAttackOption>();
         bulletDataManager = TwBulletDataManager.instance;
         bulletDic = bulletDataManager.bulletDic;
     }
@@ -45,20 +48,6 @@ public class AttackTower : TowerAi
                     searchTimer = 0f; // 탐색 후 타이머 초기화
                 }
 
-                var slot = inventory.SlotCheck(0);
-                if(slot.item != null && slot.amount > 0)
-                {
-                    if (loadedBullet == null)
-                    {
-                        BulletCheck();
-                    }
-                    AttackTowerAiCtrl();
-                }
-                else if (slot.item == null && loadedBullet != null)
-                {
-                    loadedBullet = null;
-                }
-
                 if (monsterList.Count > 0)
                 {
                     mstDisCheckTime += Time.deltaTime;
@@ -69,6 +58,20 @@ public class AttackTower : TowerAi
                         RemoveObjectsOutOfRange();
                     }
                     AttackTargetDisCheck();
+
+                    var slot = inventory.SlotCheck(0);
+                    if (slot.item != null && slot.amount > 0)
+                    {
+                        if (loadedBullet == null)
+                        {
+                            BulletCheck();
+                        }
+                        AttackTowerAiCtrl();
+                    }
+                    else if (slot.item == null && loadedBullet != null)
+                    {
+                        loadedBullet = null;
+                    }
                 }
             }
         }
@@ -77,7 +80,10 @@ public class AttackTower : TowerAi
     void AttackCheck()
     {
         if (targetDist == 0)
+        {
+            towerState = TowerState.Waiting;
             return;
+        }
 
         else if (targetDist > towerData.AttackDist + loadedBullet.range)  // 공격 범위 밖으로 나갈 때
         {
@@ -213,35 +219,43 @@ public class AttackTower : TowerAi
 
                 if (IsServer)
                 {
-                    inventory.SubServerRpc(0, 1);
                     var slot = inventory.SlotCheck(0);
-                    Overall.instance.OverallConsumption(slot.item, 1);
+                    Overall.instance.OverallConsumption(slot.item, 1); 
+                    inventory.SubServerRpc(0, 1);
                 }
 
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
                 if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
-                bulletPool.GetComponent<TowerSingleAttackFx>().GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject, loadedBullet.explosion);                
+                bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
+                towerAttackOption.TowerAttackFxSet(fx);
+                fx.GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject, loadedBullet.explosion);
             }
             else
             {
                 if (IsServer)
                 {
-                    inventory.SubServerRpc(0, 1);
                     var slot = inventory.SlotCheck(0);
                     Overall.instance.OverallConsumption(slot.item, 1);
+                    inventory.SubServerRpc(0, 1);
                 }
 
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(aggroTarget.transform.position.x, aggroTarget.transform.position.y + 0.5f), Quaternion.identity);
                 if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
-                bulletPool.GetComponent<TowerAreaAttackFx>().GetTarget(towerData.Damage + loadedBullet.damage, gameObject);
-            }            
+
+                bulletPool.TryGetComponent(out TowerAreaAttackFx fx);
+                towerAttackOption.TowerAttackFxSet(fx);
+                fx.GetTarget(towerData.Damage + loadedBullet.damage, gameObject);
+            }
+
+            Debug.Log("Attack");
+            soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
         }
 
-        Debug.Log("BulletName" + loadedBullet.bulletName);
-        Debug.Log("damage" + loadedBullet.damage);
-        Debug.Log("fireRate" + loadedBullet.fireRate);
-        Debug.Log("range" + loadedBullet.range);
+        //Debug.Log("BulletName" + loadedBullet.bulletName);
+        //Debug.Log("damage" + loadedBullet.damage);
+        //Debug.Log("fireRate" + loadedBullet.fireRate);
+        //Debug.Log("range" + loadedBullet.range);
     }
 
     //[ClientRpc]

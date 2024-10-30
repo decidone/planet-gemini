@@ -341,12 +341,30 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "LeftClick",
+                    "type": "Button",
+                    "id": "fb6591dc-5f00-4f3f-96cc-b8e0c218c208",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Interaction",
                     "type": "Button",
                     "id": "3f5ab9d8-2735-499a-bf5b-16541617d2f0",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Tap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TankAttack",
+                    "type": "Button",
+                    "id": "708e82c5-ab8f-4e45-952f-d40237166de8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
                     "initialStateCheck": false
                 }
             ],
@@ -436,6 +454,28 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Interaction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1f6bebe3-c6c5-4c60-8f46-0dafb52847df",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TankAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7b5de75a-1e53-45ef-947a-7d6aa0fe840f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -543,6 +543,7 @@ MonoBehaviour:
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
+  canUpgrade: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -570,6 +571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
   sInvenManager: {fileID: 0}
+  openUI: 0
 --- !u!114 &721077935684597035
 MonoBehaviour:
   m_ObjectHideFlags: 0

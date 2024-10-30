@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: Spawner
   maxLevel: 5
-  maxHp: 580200008a020000bc020000ee02000020030000
+  maxHp: 580200008a020000bc020000ee02000020030000200300002003000020030000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed: []

@@ -10,8 +10,5 @@ public class LocalPortal : Structure
         col = GetComponent<CapsuleCollider2D>();
     }
 
-    public override void ColliderTriggerOnOff(bool isOn)
-    {
-        col.isTrigger = true;
-    }
+    public override void ColliderTriggerOnOff(bool isOn) { }
 }

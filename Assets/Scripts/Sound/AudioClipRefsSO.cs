@@ -6,7 +6,9 @@ using UnityEngine;
 public class AudioClipRefsSO : ScriptableObject
 {
     public AudioClip[] mainSceneBgm;
-    public AudioClip[] inGameBgm;
+    public AudioClip[] dayBgm;
+    public AudioClip[] nightBgm;
+    public AudioClip[] marketBgm;
     public AudioClip[] battleBgm;
     public AudioClip[] waveBgm;
     public AudioClip[] structureSfx;

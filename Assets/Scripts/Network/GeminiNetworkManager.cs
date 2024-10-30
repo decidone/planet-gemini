@@ -73,6 +73,7 @@ public class GeminiNetworkManager : NetworkBehaviour
 
     public Item GetItemSOFromIndex(int itemSOIndex)
     {
+        Debug.Log(itemSOIndex);
         return itemListSO.itemSOList[itemSOIndex];
     }
 

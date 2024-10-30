@@ -19,7 +19,12 @@ public class MainPanelsManager : MonoBehaviour
     Button gameStartBtn;
     [SerializeField]
     Button backBtn;
-
+    [SerializeField]
+    Toggle randomSeedToggle;
+    [SerializeField]
+    GameObject seedPanel;
+    [SerializeField]
+    InputField seedInputField;
     SaveLoadMenu saveLoadPanel;
 
     // Start is called before the first frame update
@@ -31,6 +36,7 @@ public class MainPanelsManager : MonoBehaviour
         backBtn.onClick.AddListener(() => NewGamePanelSet(false));
         mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
         difficultyLevelDropdown.onValueChanged.AddListener(delegate { DifficultyLevelDropdownFunc(difficultyLevelDropdown); });
+        randomSeedToggle.onValueChanged.AddListener(delegate { RandomSeedToggleValue(); });
     }
 
     public void NewGamePanelSet(bool state)
@@ -44,11 +50,19 @@ public class MainPanelsManager : MonoBehaviour
 
     void GameStartBtnFunc()
     {
+        if (seedInputField.text == "")
+        {
+            SetRandomSeed();
+        }
+        else
+        {
+            int inputValue;
+            int.TryParse(seedInputField.text, out inputValue);
+            gameSetting.RandomSeedValue(inputValue);
+        }
         gameSetting.NewGameState(true);
         NetworkManager.Singleton.StartHost();
         LoadingUICtrl.Instance.LoadScene("GameScene", true);
-        //SteamManager.instance.HostLobby();
-        //LoadingSceneManager.LoadScene("LobbyScene");
     }
 
     void MapSizeDropdownFunc(Dropdown dropdown)
@@ -64,5 +78,24 @@ public class MainPanelsManager : MonoBehaviour
     public void SaveLoadPanelSet()
     {
         saveLoadPanel.MenuOpen(false);
+    }
+
+    void RandomSeedToggleValue()
+    {
+        if (randomSeedToggle.isOn)
+        {
+            seedPanel.SetActive(false);
+        }
+        else
+        {
+            seedPanel.SetActive(true);
+        }
+
+        SetRandomSeed();
+    }
+
+    void SetRandomSeed()
+    {
+        gameSetting.RandomSeedValue(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
     }
 }

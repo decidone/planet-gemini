@@ -60,11 +60,11 @@ public class WavePoint : MonoBehaviour
 
         if (player != null)
         {
-            if (isMap1WaveStart && gameManager.isPlayerInHostMap)
+            if (isMap1WaveStart && gameManager.isPlayerInHostMap && !gameManager.isPlayerInMarket)
             {
                 SetIndicator(true);
             }
-            else if (isMap2WaveStart && !gameManager.isPlayerInHostMap)
+            else if (isMap2WaveStart && !gameManager.isPlayerInHostMap && !gameManager.isPlayerInMarket)
             {
                 SetIndicator(false);
             }
@@ -76,11 +76,21 @@ public class WavePoint : MonoBehaviour
         }
     }
 
+    public void SpawnPos(bool isHostPos, Vector2 pos)
+    {
+        if (isHostPos)
+        {
+            map1BasePos = pos;
+        }
+        else
+        {
+            map2BasePos = pos;
+        }
+    }
+
     public void PlayerSet(GameObject _player)
     {
         player = _player;
-        map1BasePos = gameManager.hostPlayerSpawnPos;
-        map2BasePos = gameManager.clientPlayerSpawnPos;
     }
 
     public void WaveStart(Vector3 wavePos, bool isInHostMap)
@@ -124,7 +134,6 @@ public class WavePoint : MonoBehaviour
 
     public void LoadWaveStart(Vector3 wavePos, bool isInHostMap)
     {
-        Debug.Log("LoadWaveStart");
         loadWaveData = (wavePos, isInHostMap);
         StartCoroutine(AstarScanCheck());
     }

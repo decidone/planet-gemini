@@ -78,6 +78,7 @@ public class SteamManager : MonoBehaviour
             lobby.SetJoinable(true);
             lobby.SetData("owner", lobby.Owner.Name);
             lobby.SetData("mapSize", MainGameSetting.instance.mapSizeIndex.ToString());
+            lobby.SetData("mapSeed", MainGameSetting.instance.randomSeed.ToString());
 
             //NetworkManager.Singleton.StartHost();
         }
@@ -102,6 +103,9 @@ public class SteamManager : MonoBehaviour
 
             string data = lobby.GetData("mapSize");
             MainGameSetting.instance.MapSizeSet(int.Parse(data));
+            data = lobby.GetData("mapSeed");
+            MainGameSetting.instance.RandomSeedValue(int.Parse(data));
+
             LoadingUICtrl.Instance.LoadScene("GameScene", false);
         }
         else

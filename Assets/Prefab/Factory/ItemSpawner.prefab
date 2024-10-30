@@ -301,6 +301,7 @@ MonoBehaviour:
   hpBar: {fileID: 1412458371692817437}
   maxHp: 0
   hp: 0
+  RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   isRepair: 0
   repairBar: {fileID: 8047090835710424365}
   itemList: []
@@ -415,6 +416,7 @@ MonoBehaviour:
   sFilterManager: {fileID: 0}
   unloaderManager: {fileID: 0}
   itemSpManager: {fileID: 0}
+  openUI: 0
 --- !u!114 &6146810947861539970
 MonoBehaviour:
   m_ObjectHideFlags: 0

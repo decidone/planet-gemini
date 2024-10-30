@@ -8,6 +8,7 @@ using Unity.Netcode;
 public class MonsterAi : UnitCommonAi
 {
     public new string name;
+    MonsterSpawner spawnerScript;
     public GameObject spawner;
     Transform spawnPos;
     float spawnDist;
@@ -120,7 +121,7 @@ public class MonsterAi : UnitCommonAi
 
     protected override void AnimSetFloat(Vector3 direction, bool isNotLast)
     {
-        float moveStep = unitCommonData.MoveSpeed * Time.fixedDeltaTime;
+        float moveStep = unitCommonData.MoveSpeed * Time.fixedDeltaTime * slowSpeedPer;
         Vector2 moveDir = direction.normalized;
         Vector3 moveNextStep = moveDir * moveStep;
 
@@ -243,7 +244,7 @@ public class MonsterAi : UnitCommonAi
             direction = targetWaypoint - tr.position;
             direction.Normalize();
 
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
             if (Vector3.Distance(tr.position, patrolPos) <= 0.3f)
             {
                 aIState = AIState.AI_Idle;
@@ -303,10 +304,9 @@ public class MonsterAi : UnitCommonAi
 
         float spawnDis = (tr.position - patrolMainPos).magnitude;
 
-        if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
+        if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck && !waveState)
         {
-            if (!waveState)
-                checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
+            checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
         }
         else if (spawnDis > maxSpawnDist)
         {
@@ -359,11 +359,11 @@ public class MonsterAi : UnitCommonAi
         direction = targetWaypoint - tr.position;
         direction.Normalize();
 
-        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 7));
+        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 7) * slowSpeedPer);
         if (Vector3.Distance(tr.position, spawnPos.position) <= 0.3f)
         {
             aIState = AIState.AI_Idle;
-            if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
+            if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck)
             {
                 isScriptActive = false;
                 enabled = false;
@@ -381,7 +381,7 @@ public class MonsterAi : UnitCommonAi
             if (currentWaypointIndex >= movePath.Count)
             {
                 aIState = AIState.AI_Idle;
-                if (!spawner.GetComponent<MonsterSpawner>().nearUserObjExist)
+                if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck)
                 {
                     isScriptActive = false;
                     enabled = false;
@@ -440,7 +440,7 @@ public class MonsterAi : UnitCommonAi
                 direction.Normalize();
                 AnimSetFloat(targetVec, true);
 
-                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
 
                 if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                 {
@@ -510,7 +510,7 @@ public class MonsterAi : UnitCommonAi
                 if (Obj.GetComponent<PlayerStatus>())
                     Obj.GetComponent<PlayerStatus>().TakeDamage(unitCommonData.Damage);
                 else if (Obj.GetComponent<UnitAi>())
-                    Obj.GetComponent<UnitAi>().TakeDamage(unitCommonData.Damage);
+                    Obj.GetComponent<UnitAi>().TakeDamage(unitCommonData.Damage, 0);
                 else if (Obj.GetComponent<TowerAi>())
                     Obj.GetComponent<TowerAi>().TakeDamage(unitCommonData.Damage);
                 else if (Obj.GetComponent<Structure>())
@@ -639,13 +639,16 @@ public class MonsterAi : UnitCommonAi
         }        
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, int attackType, float ignorePercent)
     {
-        if (!dieCheck)
-        {
-            TakeDamageServerRpc(damage);
-            normalTraceTimer = 0;
-        }
+        base.TakeDamage(damage, attackType, ignorePercent);
+        normalTraceTimer = 0;
+    }
+
+    public override void TakeDamage(float damage, int attackType)
+    {
+        base.TakeDamage(damage, attackType);
+        normalTraceTimer = 0;
     }
 
     protected override void AttackStart()
@@ -773,6 +776,7 @@ public class MonsterAi : UnitCommonAi
 
     public void MonsterSpawnerSet(MonsterSpawner monsterSpawner, int type)
     {
+        spawnerScript = monsterSpawner;
         spawner = monsterSpawner.gameObject;
         spawnPos = spawner.transform;
         monsterType = type;
@@ -842,7 +846,7 @@ public class MonsterAi : UnitCommonAi
             direction = targetWaypoint - tr.position;
             direction.Normalize();
 
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
 
             if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
             {

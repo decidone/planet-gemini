@@ -136,6 +136,7 @@ public class Overall : NetworkBehaviour
 
     public void OverallConsumption(Item item, int amount)
     {
+        Debug.Log(item.name);
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
         OverallConsumptionServerRpc(itemIndex, amount);
     }
@@ -149,6 +150,7 @@ public class Overall : NetworkBehaviour
     [ClientRpc]
     public void OverallConsumptionClientRpc(int itemIndex, int amount)
     {
+        Debug.Log(itemIndex);
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         for (int i = 0; i < itemList.Count; i++)
         {

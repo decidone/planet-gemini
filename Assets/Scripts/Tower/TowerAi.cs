@@ -26,8 +26,6 @@ public class TowerAi : Production
     protected float searchTimer = 0f;
     protected float searchInterval = 1f; // 딜레이 간격 설정
 
-    public GameObject RuinExplo;
-
     List<Item> bulletRecipe;
 
     protected NetworkObjectPool networkObjectPool;

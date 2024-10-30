@@ -239,7 +239,7 @@ public class UnitAi : UnitCommonAi
 
         if (!isHold)
         {
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
 
             if (Vector3.Distance(tr.position, targetWaypoint) <= moveRadi / 2)
             {
@@ -306,7 +306,7 @@ public class UnitAi : UnitCommonAi
 
         if (!isHold)
         {
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
             if (Vector3.Distance(tr.position, targetWaypoint) <= 0.5f)
             {
                 currentWaypointIndex++;
@@ -418,9 +418,14 @@ public class UnitAi : UnitCommonAi
     {
         isTargetSet = true;
         aggroTarget = obj;
-        aIState = AIState.AI_NormalTrace;
-        //attackState = AttackState.Waiting;
-        Debug.Log("target : " + obj.name);
+        AttackTargetDisCheck();
+        if (checkPathCoroutine == null)
+            checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+        else
+        {
+            StopCoroutine(checkPathCoroutine);
+            checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "Norm alTrace"));
+        }
     }
 
     protected override void NormalTrace()
@@ -443,7 +448,7 @@ public class UnitAi : UnitCommonAi
             direction = targetWaypoint - tr.position;
             direction.Normalize();
 
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
 
             if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
             {
@@ -457,7 +462,7 @@ public class UnitAi : UnitCommonAi
 
 
     [ClientRpc]
-    public override void TakeDamageClientRpc(float damage)
+    public override void TakeDamageClientRpc(float damage, int attackType, float ignorePercent)
     {
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);

@@ -53,7 +53,7 @@ public class GolemFXCtrl : NetworkBehaviour
         {
             if (!collision.isTrigger)
             {
-                collision.GetComponent<UnitAi>().TakeDamage(damage);
+                collision.GetComponent<UnitAi>().TakeDamage(damage, 0);
             }
         }
         else if (collision.GetComponent<TowerAi>())

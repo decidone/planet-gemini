@@ -502,6 +502,7 @@ MonoBehaviour:
   hpBar: {fileID: 4704275574380011210}
   maxHp: 0
   hp: 0
+  RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   isRepair: 0
   repairBar: {fileID: 6651776388365973479}
   itemList: []
@@ -575,6 +576,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
   sInvenManager: {fileID: 0}
+  openUI: 0
 --- !u!114 &5197040497763038552
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -77,8 +77,6 @@ public class OptionCanvas : MonoBehaviour
         NetworkManager.Singleton.Shutdown();
         Destroy(NetworkManager.Singleton.gameObject);
         GameManager.instance.DestroyAllDontDestroyOnLoadObjects();
-        //LoadingUICtrl.Instance.LoadScene("MainMenuScene");
-        //LoadingSceneManager.LoadScene("MainMenuScene");
         SceneManager.LoadScene("MainMenuScene");
     }
 

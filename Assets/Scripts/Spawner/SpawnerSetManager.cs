@@ -69,8 +69,7 @@ public class SpawnerSetManager : NetworkBehaviour
         //yIndex = 0;
     }
 
-    [ServerRpc]
-    public void AreaMapSetServerRpc(Vector2 centerPos, int mapSplitCount, bool isHostMap)
+    public void AreaMapSet(Vector2 centerPos, int mapSplitCount, bool isHostMap)
     {
         hostMap = GameManager.instance.hostMap;
         clientMap = GameManager.instance.clientMap; 
@@ -104,7 +103,6 @@ public class SpawnerSetManager : NetworkBehaviour
                 {
                     basePos = areaCenter;
                 }
-
                 areaPosLevel.Add(areaCenter, Math.Max(x, y));    // 구역의 중앙 좌표 + 구역 레벨
             }
         }
@@ -149,7 +147,6 @@ public class SpawnerSetManager : NetworkBehaviour
 
             Vector2 centerPos = data.Key;
             int areaLevel = data.Value;
-
             int random = Random.Range(0, spawnCount[areaLevel - 1]);
             spawnCount[areaLevel - 1] -= 1;
 
@@ -159,86 +156,103 @@ public class SpawnerSetManager : NetworkBehaviour
                 continue;
             }
 
-            AreaLevelData levelData = arealevelData[areaLevel - 1];
-
-            Vector2[] randomPoints = new Vector2[levelData.maxSpawner];
+            //AreaLevelData levelData = arealevelData[areaLevel - 1];
+            AreaLevelData levelData = arealevelData[(areaLevel * 2) - 2];
 
             float xRadius;
             float yRadius;
 
-            if(areaLevel == Mathf.RoundToInt(splitCount/2) || areaLevel == 1)
-            {
-                xRadius = areaWSize / 2 - 30;
-                yRadius = areaHSize / 2 - 30;
-            }
-            else
-            {
-                xRadius = areaWSize / 2 - 10;
-                yRadius = areaHSize / 2 - 10;
-            }
-
-            float minDistance = 10 ; // 오브젝트간 최소 거리
+            //if(areaLevel == Mathf.RoundToInt(splitCount/2) || areaLevel == 1)
+            //{
+                xRadius = areaWSize / 2 - 20;
+                yRadius = areaHSize / 2 - 20;
+            //}
+            //else
+            //{
+            //    xRadius = areaWSize / 2 - 10;
+            //    yRadius = areaHSize / 2 - 10;
+            //}
 
             Vector2 newPoint;
+            bool whileCheck = false;
+            List<Vector2> cantPos = new List<Vector2>();
 
-            for (int i = 0; i < levelData.maxSpawner; i++)
+            do
             {
-                do
+                int x = (int)Random.Range(-xRadius, xRadius);
+                int y = (int)Random.Range(-yRadius, yRadius);
+
+                newPoint = centerPos + new Vector2(x, y);
+
+                if (cantPos.Contains(newPoint))
                 {
-                    int x = (int)Random.Range(-xRadius, xRadius);
-                    int y = (int)Random.Range(-yRadius, yRadius);
+                    whileCheck = true;
+                    continue;
+                }
 
-                    newPoint = centerPos + new Vector2(x, y);
-                } while (!IsDistanceValid(randomPoints, newPoint, minDistance) || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "lake" || map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome == "cliff");    // 거리 체크하여 가까우면 다시 돌리기
+                string biome = map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome;
 
-                randomPoints[i] = newPoint;
-            }
+                if (biome == "lake" || biome == "cliff")
+                {
+                    whileCheck = true;
+                    cantPos.Add(newPoint);
+                    continue;
+                }
 
-            int index = 0;
+                for (int i = -2; i <= 2; i += 5)
+                {
+                    for (int j = -2; j <= 2; j += 5)
+                    {
+                        biome = map.GetCellDataFromPos((int)newPoint.x + i, (int)newPoint.y + j).biome.biome;
+                        if (biome == "lake" || biome == "cliff")
+                        {
+                            whileCheck = true;
+                            cantPos.Add(newPoint);
+                            continue;
+                        }
+                    }
+                }
+
+                whileCheck = false;
+
+            } while (whileCheck);
 
             GameObject spawnGroup = SpawnerGroupSet(centerPos);
             SpawnerGroupManager spawnerGroupManager = spawnGroup.GetComponent<SpawnerGroupManager>();
 
-            for (int i = 0; i < levelData.maxSpawner; i++)
+            GameObject spawnerObj = Instantiate(spawner);
+            NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
+            if(!networkObject.IsSpawned) networkObject.Spawn(true);
+
+            spawnerObj.transform.position = newPoint;
+
+            int levelSet = levelData.sppawnerLevel;
+            AreaLevelData levelDataSet = levelData;
+
+            if (upgradeSpawnerSetCount[areaLevel - 1] > 0)
             {
-                GameObject spawnerObj = Instantiate(spawner);
-                NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
-                if(!networkObject.IsSpawned) networkObject.Spawn(true);
+                random = Random.Range(0, spawnCount[areaLevel - 1]);
 
-                spawnerObj.transform.position = randomPoints[index];
-
-                int levelSet = levelData.areaLevel;
-                AreaLevelData levelDataSet = levelData;
-
-                if (upgradeSpawnerSetCount[areaLevel - 1] > 0)
+                if (random < upgradeSpawnerSetCount[areaLevel - 1])
                 {
-                    random = Random.Range(0, spawnCount[areaLevel - 1]);
-
-                    if (random < upgradeSpawnerSetCount[areaLevel - 1])
-                    {
-                        upgradeSpawnerSetCount[areaLevel - 1] -= 1;
-                        levelSet += 1;
-                        levelDataSet = arealevelData[levelSet - 1];
-                    }
+                    upgradeSpawnerSetCount[areaLevel - 1] -= 1;
+                    levelSet += 1;
+                    levelDataSet = arealevelData[levelSet - 1];
                 }
-
-                MapGenerator.instance.SetCorruption(map, randomPoints[index], levelSet);
-                //MapGenerator.instance.SetCorruption(map, randomPoints[index], levelData.areaLevel);
-
-                Cell cellData = map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y);
-                if (cellData.obj != null)
-                {
-                    Destroy(map.GetCellDataFromPos((int)randomPoints[index].x, (int)randomPoints[index].y).obj);
-                }
-                spawnerGroupManager.SpawnerSet(spawnerObj);
-                spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);
-                monsterSpawner.groupManager = spawnerGroupManager;
-                monsterSpawner.SpawnerSetting(levelDataSet, cellData.biome.biome, basePos, isHostMap, levelData.areaLevel);
-                //monsterSpawner.SpawnerSetting(levelData, cellData.biome.biome, basePos, isHostMap);
-                monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel, isHostMap);
-
-                index++;
             }
+
+            MapGenerator.instance.SetCorruption(map, newPoint, levelSet);
+
+            Cell cellData = map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y);
+            if (cellData.obj != null)
+            {
+                Destroy(map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).obj);
+            }
+            spawnerGroupManager.SpawnerSet(spawnerObj);
+            spawnerObj.TryGetComponent(out MonsterSpawner monsterSpawner);
+            monsterSpawner.groupManager = spawnerGroupManager;
+            monsterSpawner.SpawnerSetting(levelDataSet, cellData.biome.biome, basePos, isHostMap, areaLevel);
+            monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel, isHostMap);
 
             if (isHostMap)
                 spawnerMap1Matrix[xIndex, yIndex] = spawnGroup;
@@ -269,17 +283,5 @@ public class SpawnerSetManager : NetworkBehaviour
         spawnObj.transform.parent = gameObject.transform;
 
         return spawnObj;
-    }
-
-    bool IsDistanceValid(Vector2[] existingPoints, Vector2 newPoint, float minDistance)
-    {
-        foreach (Vector2 point in existingPoints)
-        {
-            if (Vector2.Distance(point, newPoint) < minDistance)
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }
