@@ -11,5 +11,4 @@ public class LocalPortal : Structure
     }
 
     public override void ColliderTriggerOnOff(bool isOn) { }
-
 }

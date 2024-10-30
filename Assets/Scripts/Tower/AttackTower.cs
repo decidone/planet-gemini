@@ -22,9 +22,12 @@ public class AttackTower : TowerAi
     [SerializeField]
     bool isSingleAttack;
 
+    TowerAttackOption towerAttackOption;
+
     protected override void Start()
     {
         base.Start();
+        towerAttackOption = GetComponent<TowerAttackOption>();
         bulletDataManager = TwBulletDataManager.instance;
         bulletDic = bulletDataManager.bulletDic;
     }
@@ -216,28 +219,33 @@ public class AttackTower : TowerAi
 
                 if (IsServer)
                 {
-                    inventory.SubServerRpc(0, 1);
                     var slot = inventory.SlotCheck(0);
-                    Overall.instance.OverallConsumption(slot.item, 1);
+                    Overall.instance.OverallConsumption(slot.item, 1); 
+                    inventory.SubServerRpc(0, 1);
                 }
 
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
                 if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
-                bulletPool.GetComponent<TowerSingleAttackFx>().GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject, loadedBullet.explosion);                
+                bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
+                towerAttackOption.TowerAttackFxSet(fx);
+                fx.GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject, loadedBullet.explosion);
             }
             else
             {
                 if (IsServer)
                 {
-                    inventory.SubServerRpc(0, 1);
                     var slot = inventory.SlotCheck(0);
                     Overall.instance.OverallConsumption(slot.item, 1);
+                    inventory.SubServerRpc(0, 1);
                 }
 
                 NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(aggroTarget.transform.position.x, aggroTarget.transform.position.y + 0.5f), Quaternion.identity);
                 if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
-                bulletPool.GetComponent<TowerAreaAttackFx>().GetTarget(towerData.Damage + loadedBullet.damage, gameObject);
+
+                bulletPool.TryGetComponent(out TowerAreaAttackFx fx);
+                towerAttackOption.TowerAttackFxSet(fx);
+                fx.GetTarget(towerData.Damage + loadedBullet.damage, gameObject);
             }
 
             Debug.Log("Attack");

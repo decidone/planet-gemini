@@ -148,9 +148,9 @@ public class MapGenerator : MonoBehaviour
     {
         if (spawnerSet && spawnerPosSet && mapSizeData != null)
         {
-            spawnerPosSet.AreaMapSetServerRpc(map1CenterPos, mapSizeData.MapSplitCount, true);
+            spawnerPosSet.AreaMapSet(map1CenterPos, mapSizeData.MapSplitCount, true);
             if (isMultiPlay)
-                spawnerPosSet.AreaMapSetServerRpc(map2CenterPos, mapSizeData.MapSplitCount, false);
+                spawnerPosSet.AreaMapSet(map2CenterPos, mapSizeData.MapSplitCount, false);
         }
     }
 
@@ -888,17 +888,29 @@ public class MapGenerator : MonoBehaviour
             spawnerPos.y -= offsetY;
 
         Biome biome;
-        switch (level)
+        if (level >= 7)
         {
-            case 1: biome = EasyCorruption;
-                break;
-            case 2: biome = NormalCorruption;
-                break;
-            case 3: biome = HardCorruption;
-                break;
-            default: biome = NormalCorruption;
-                break;
+            biome = HardCorruption;
         }
+        else if (level <= 3)
+        {
+            biome = EasyCorruption;
+        }
+        else
+        {
+            biome = NormalCorruption;
+        }
+        //switch (level)
+        //{
+        //    case 1: biome = EasyCorruption;
+        //        break;
+        //    case 2: biome = NormalCorruption;
+        //        break;
+        //    case 3: biome = HardCorruption;
+        //        break;
+        //    default: biome = NormalCorruption;
+        //        break;
+        //}
 
         Vector2 tempPos;
         for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)

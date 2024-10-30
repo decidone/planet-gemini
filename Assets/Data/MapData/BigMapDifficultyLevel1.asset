@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97d53f0bd4d071e409ca122e15f539c6, type: 3}
   m_Name: BigMapDifficultyLevel1
   m_EditorClassIdentifier: 
-  mapSize: 900
+  mapSize: 1170
   countOfSpawnersByLevel: 04000000080000000c00000010000000
-  upgradeSpawnerSet: 01000000040000000700000000000000
+  upgradeSpawnerSet: 0100000004000000070000000a000000
   mapSplitCount: 9

@@ -147,7 +147,7 @@ public class InfoUI : MonoBehaviour
         spawner = _spawner;
         SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
-        nameText.text = "Spawner Level " + spawner.areaLevel;
+        nameText.text = "Spawner Level " + spawner.sppawnerLevel;
         SetSpawnerHp();
         spawner.onHpChangedCallback += SetSpawnerHp;
     }

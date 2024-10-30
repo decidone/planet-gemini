@@ -24,18 +24,14 @@ public class BulletCtrl : NetworkBehaviour
         alreadyHit = false;
     }
 
-    //void Update()
-    //{
-    //    if (Time.timeScale == 0)
-    //    {
-    //        return;
-    //    }
-
-    //}
-
     private void FixedUpdate()
-    {
-        transform.position += moveNextStep * 5 * Time.fixedDeltaTime;
+    {   
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
+        transform.position += moveNextStep * 10 * Time.fixedDeltaTime;
     }
 
     public void DestroyBullet()
@@ -48,7 +44,9 @@ public class BulletCtrl : NetworkBehaviour
 
     public void GetTarget(Vector3 target, float GetDamage, GameObject obj)
     {
-        moveNextStep = (target - transform.position).normalized;
+        Vector3 direction = target - transform.position;
+        direction.z = 0;
+        moveNextStep = direction.normalized;
         damage = GetDamage;
         attackUnit = obj;
         alreadyHit = false;
@@ -79,7 +77,7 @@ public class BulletCtrl : NetworkBehaviour
 
             if (collision.TryGetComponent(out MonsterAi monster))
             {
-                monster.TakeDamage(damage);
+                monster.TakeDamage(damage, 0);
             }
             else if (collision.TryGetComponent(out MonsterSpawner spawner))
             {

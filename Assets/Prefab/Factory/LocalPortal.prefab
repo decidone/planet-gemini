@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -4004599223044454658}
   m_Layer: 8
   m_Name: LocalPortal
-  m_TagString: Factory
+  m_TagString: LocalPortal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

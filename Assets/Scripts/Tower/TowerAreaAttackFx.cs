@@ -4,29 +4,8 @@ using UnityEngine;
 using Unity.Netcode;
 
 // UTF-8 설정
-public class TowerAreaAttackFx : NetworkBehaviour
+public class TowerAreaAttackFx : TowerAttackFx
 {
-    float damage = 0;
-
-    [SerializeField]
-    protected Animator animator;
-    GameObject attackUnit;
-
-    NetworkObjectPool networkObjectPool;
-
-    private void Start()
-    {
-        networkObjectPool = NetworkObjectPool.Singleton;
-    }
-
-    public void DestroyBullet()
-    {
-        if (IsServer)
-        {
-            NetworkObject.Despawn();
-        }
-    }
-
     public void GetTarget(float GetDamage, GameObject obj)
     {
         damage = GetDamage;
@@ -50,11 +29,11 @@ public class TowerAreaAttackFx : NetworkBehaviour
         {
             if (collision.TryGetComponent(out MonsterAi monster))
             {
-                monster.TakeDamage(damage);
+                TakeDamage(monster);
             }
             else if (collision.TryGetComponent(out MonsterSpawner spawner))
             {
-                spawner.TakeDamage(damage, attackUnit);
+                TakeDamage(spawner);
             }
         }
     }

@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class AreaLevelData : ScriptableObject
 {
-    public int areaLevel;
-    public int maxSpawner;
+    public int sppawnerLevel;
     public int maxWeakSpawn;
     public int maxNormalSpawn;
     public int maxStrongSpawn;

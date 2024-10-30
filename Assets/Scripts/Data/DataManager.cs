@@ -401,6 +401,10 @@ public class DataManager : MonoBehaviour
             spawnerGroup.SpawnerSet(spawner);
             spawner.TryGetComponent(out MonsterSpawner monsterSpawner);
             monsterSpawner.dieCheck = spawnerSaveData.dieCheck;
+            if (monsterSpawner.dieCheck)
+            {
+                monsterSpawner.DieFuncLoad();
+            }
             MonsterSpawnerManager.instance.AreaGroupSet(monsterSpawner, spawnerSaveData.spawnerGroupIndex, planet);
             monsterSpawner.groupManager = spawnerGroup;
             monsterSpawner.GameStartSet(spawnerSaveData, levelData[spawnerSaveData.level - 1], Vector3Extensions.ToVector3(spawnerSaveData.wavePos), planet, spawnerSaveData.spawnerGroupIndex);

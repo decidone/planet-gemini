@@ -167,6 +167,7 @@ MonoBehaviour:
   name: Scorpion
   spawner: {fileID: 0}
   maxSpawnDist: 20
+  isScriptActive: 0
   monsterType: 0
   waveState: 0
   waveArrivePos: 0

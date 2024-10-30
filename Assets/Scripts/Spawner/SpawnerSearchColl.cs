@@ -10,21 +10,21 @@ public class SpawnerSearchColl : NetworkBehaviour
     public List<Structure> structures = new List<Structure>();
     bool nearUserObjExist = false;
     int level;
-    CircleCollider2D coll;
-    int[] collSize = new int[5] { 55, 65, 75, 85, 95 }; // 레벨 별 콜라이더 크기
-    int[] maxCollSize = new int[5] { 105, 135, 175, 225, 285 }; // 광폭화 시 최대 콜라이더 크기
+    public CircleCollider2D coll;
+    int[] collSize = new int[8] { 55, 65, 75, 85, 95, 95, 95, 95 }; // 레벨 별 콜라이더 크기
+    int[] maxCollSize = new int[8] { 105, 135, 175, 225, 285, 285, 285, 285 }; // 광폭화 시 최대 콜라이더 크기
     int increaseSize = 10; // 광폭화의날 콜라이더 크기 증가
     public float violentCollSize;
 
     private void Awake()
     {
         monsterSpawner = GetComponentInParent<MonsterSpawner>();
+        coll = GetComponent<CircleCollider2D>();
     }
 
     void Start()
     {
-        coll = GetComponent<CircleCollider2D>();
-        level = monsterSpawner.areaLevel - 1;
+        level = monsterSpawner.sppawnerLevel - 1;
         coll.radius = collSize[level];
     }
 
@@ -44,7 +44,7 @@ public class SpawnerSearchColl : NetworkBehaviour
                 }
             }
         }
-        GetComponent<CircleCollider2D>().enabled = false;
+        coll.enabled = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

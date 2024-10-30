@@ -1,8 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 // UTF-8 설정
 public class PlayerController : NetworkBehaviour
@@ -12,6 +14,7 @@ public class PlayerController : NetworkBehaviour
     List<GameObject> beltList = new List<GameObject>();
 
     public Collider2D circleColl;
+    CapsuleCollider2D capsuleColl;
     //PreBuilding preBuilding;
     //Building tempMiner;
     //TempMinerUi tempMinerUI;
@@ -29,6 +32,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     float moveSpeed;
     [SerializeField]
+    float moveTankSpeed;
+    [SerializeField]
     Rigidbody2D rb;
     [SerializeField]
     Animator animator;
@@ -38,10 +43,30 @@ public class PlayerController : NetworkBehaviour
     public delegate void OnTeleported(int type);
     public OnTeleported onTeleportedCallback;
 
+    // 탱크 테스트
+    bool tankOn;
+    bool tankAttackKeyPressed;
+    [SerializeField]
+    GameObject attackFX;
+    [SerializeField]
+    Image reloadingBar;
+    [SerializeField]
+    Image reloadingBackBar;
+    bool reloading;
+    float reloadTimer;
+    [SerializeField]
+    float reloadInterval;
+    [SerializeField]
+    float slowdown;
+    bool attackMotion;
+    [SerializeField]
+    float stopTime;
+
     void Awake()
     {
         gameManager = GameManager.instance;
         circleColl = GetComponent<CircleCollider2D>();
+        capsuleColl = GetComponent<CapsuleCollider2D>();
         nearShop = null;
         isLoot = false;
     }
@@ -57,7 +82,7 @@ public class PlayerController : NetworkBehaviour
         if (GameManager.instance.playerDataHp != -1)
         {
             PlayerStatus status = gameObject.GetComponent<PlayerStatus>();
-            status.hp = GameManager.instance.playerDataHp;
+            status.LoadGame();
             gameObject.transform.position = GameManager.instance.playerDataPos;
         }
     }
@@ -66,15 +91,19 @@ public class PlayerController : NetworkBehaviour
     {
         inputManager = InputManager.instance;
         inputManager.controls.Player.Loot.performed += LootCheck;
-        inputManager.controls.Player.RightClick.performed += GetStrItem;
+        inputManager.controls.Player.RightClick.performed += RightClick;
+        inputManager.controls.Player.LeftClick.performed += LeftClick;
         inputManager.controls.Player.Interaction.performed += Interact;
+        inputManager.controls.Player.TankAttack.performed += TankAttack;
     }
 
     void OnDisable()
     {
         inputManager.controls.Player.Loot.performed -= LootCheck;
-        inputManager.controls.Player.RightClick.performed -= GetStrItem;
+        inputManager.controls.Player.RightClick.performed -= RightClick;
+        inputManager.controls.Player.LeftClick.performed -= LeftClick;
         inputManager.controls.Player.Interaction.performed -= Interact;
+        inputManager.controls.Player.TankAttack.performed -= TankAttack;
     }
 
     void Update()
@@ -89,21 +118,56 @@ public class PlayerController : NetworkBehaviour
         if (isLoot)
             Loot();
 
-        movement = inputManager.controls.Player.Movement.ReadValue<Vector2>();
-        animator.SetFloat("Horizontal", movement.x);
-        animator.SetFloat("Vertical", movement.y);
-        animator.SetFloat("Speed", movement.sqrMagnitude);
-
-        // idle 모션 방향을 위해 마지막 움직인 방향을 저장
-        animTimer += Time.deltaTime;
-        if (Mathf.Abs(movement.x) == 1 || Mathf.Abs(movement.y) == 1)
+        if (!attackMotion)
         {
-            // 0.1초마다 입력 상태를 저장
-            if (animTimer > 0.1)
+            movement = inputManager.controls.Player.Movement.ReadValue<Vector2>();
+            animator.SetFloat("Horizontal", movement.x);
+            animator.SetFloat("Vertical", movement.y);
+            animator.SetFloat("Speed", movement.sqrMagnitude);
+
+            // idle 모션 방향을 위해 마지막 움직인 방향을 저장
+            animTimer += Time.deltaTime;
+            if (Mathf.Abs(movement.x) == 1 || Mathf.Abs(movement.y) == 1)
             {
-                animator.SetFloat("lastMoveX", movement.x);
-                animator.SetFloat("lastMoveY", movement.y);
-                animTimer = 0;
+                // 0.1초마다 입력 상태를 저장
+                if (animTimer > 0.1)
+                {
+                    animator.SetFloat("lastMoveX", movement.x);
+                    animator.SetFloat("lastMoveY", movement.y);
+                    animTimer = 0;
+                }
+            }
+        }
+
+        if (reloading)
+        {
+            reloadTimer += Time.deltaTime;
+            reloadingBar.fillAmount = reloadTimer / reloadInterval;
+
+            if (reloadTimer >= reloadInterval)
+            {
+                reloading = false;
+                ReloadingUISet(false);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            tankOn = !tankOn;
+            if (tankOn)
+            {
+                capsuleColl.size = new Vector2(2.25f, 2f);
+                animator.Play("TankWalk");
+            }
+            else
+            {
+                capsuleColl.size = new Vector2(1f, 0.8f);
+                if (tankAttackKeyPressed)
+                {
+                    TankAttackEnd();
+                }
+
+                animator.Play("Idle");
             }
         }
     }
@@ -112,7 +176,25 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) { return; }
 
-        rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * movement.normalized);
+
+        if (tankOn)
+        {
+            if (!attackMotion)
+            {
+                if (!reloading)
+                {
+                    rb.MovePosition(rb.position + moveTankSpeed * Time.fixedDeltaTime * movement.normalized);
+                }
+                else
+                {
+                    rb.MovePosition(rb.position + moveTankSpeed / slowdown * Time.fixedDeltaTime * movement.normalized);
+                }
+            }
+        }
+        else
+        {
+            rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * movement.normalized);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -293,7 +375,7 @@ public class PlayerController : NetworkBehaviour
         // 빈 콜백으로 둬도 클라이언트 아이템 복사버그가 해결 됨. 아마 컴포넌트를 리프레시 해주는 기능이 있는 듯
     }
 
-    void GetStrItem(InputAction.CallbackContext ctx)
+    void RightClick(InputAction.CallbackContext ctx)
     {
         if (inputManager.ctrl)
         {
@@ -313,6 +395,87 @@ public class PlayerController : NetworkBehaviour
                 if (item.Item1 != null && item.Item2 > 0)
                     gameManager.inventory.Add(item.Item1, item.Item2);
             }
+        }
+
+        if (tankAttackKeyPressed)
+        {
+            TankAttackEnd();
+        }
+    }
+
+    void LeftClick(InputAction.CallbackContext ctx)
+    {
+        if (tankAttackKeyPressed)
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            Vector3 dir = mousePos - transform.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+            var rot = Quaternion.identity;
+            if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
+                rot = Quaternion.AngleAxis(angle + 180, Vector3.forward);
+            else
+                rot = Quaternion.AngleAxis(angle, Vector3.forward);
+
+            animator.SetFloat("Horizontal", dir.x);
+            animator.SetFloat("Vertical", dir.y);
+            animator.SetFloat("lastMoveX", dir.x);
+            animator.SetFloat("lastMoveY", dir.y);
+
+            dir.z = 0;
+            Vector2 spawnPos = transform.position + dir.normalized * 1;
+
+            NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, new Vector2(spawnPos.x, spawnPos.y), rot);
+            if (!bulletPool.IsSpawned) bulletPool.Spawn(true); 
+
+            bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
+            fx.GetTarget(mousePos, 10, gameObject, false);
+
+            TankAttackEnd();
+
+            StartCoroutine(StopMotion());
+            reloading = true;
+            ReloadingUISet(true);
+            reloadTimer = 0;
+        }
+    }
+
+    IEnumerator StopMotion()
+    {            attackMotion = true;
+
+        yield return new WaitForSeconds(stopTime);
+        attackMotion = false;
+    }
+
+
+    void TankAttack(InputAction.CallbackContext ctx)
+    {
+        if (tankOn && !reloading)
+        {
+            tankAttackKeyPressed = true;
+            if (!UpgradeRemoveBtn.instance.clickBtn)
+                MouseSkin.instance.UnitCursorCursorSet(true);
+        }
+    }
+
+    void TankAttackEnd()
+    {
+        tankAttackKeyPressed = false;
+        MouseSkin.instance.ResetCursor();
+    }
+
+    void ReloadingUISet(bool isOn)
+    {
+        if (isOn)
+        {
+            reloadingBar.enabled = true;
+            reloadingBackBar.enabled = true;
+        }
+        else
+        {
+            reloadingBar.enabled = false;
+            reloadingBackBar.enabled = false;
         }
     }
 }

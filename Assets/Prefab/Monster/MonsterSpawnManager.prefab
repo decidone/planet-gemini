@@ -45,16 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b089ca7d7e7c5ac409327a811e8f850c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map1Area1Group: []
-  map1Area2Group: []
-  map1Area3Group: []
-  map1Area4Group: []
-  map1Area5Group: []
-  map2Area1Group: []
-  map2Area2Group: []
-  map2Area3Group: []
-  map2Area4Group: []
-  map2Area5Group: []
   map1Wave1Start: 0
   map1Wave2Start: 0
   map1Wave3Start: 0
@@ -65,6 +55,8 @@ MonoBehaviour:
   map2Wave3Start: 0
   map2Wave4Start: 0
   map2Wave5Start: 0
+  viDayOn: 0
+  viDayOff: 0
   spawnerSprite:
   - {fileID: 846619681, guid: 5e106a86825938f4cb02fd6ad417b413, type: 3}
   - {fileID: 111823750, guid: ce129a5ecbb5580458afc70f4401c1e1, type: 3}
@@ -92,4 +84,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c63bfce06c86fb44e898f6047f954a2d, type: 2}
   - {fileID: 11400000, guid: 61eff04140685384dae89a66d4d9c891, type: 2}
   - {fileID: 11400000, guid: d217c1f5250224d44bb230f04dea5996, type: 2}
+  - {fileID: 11400000, guid: 2c9c590f6c9e6854fbbbd29a39c0e04f, type: 2}
+  - {fileID: 11400000, guid: 546785d654ee67d469cde82e07ce42b6, type: 2}
+  - {fileID: 11400000, guid: a6501a1e339e1794aa663d2ac1cd52e9, type: 2}
   monsterSpawnerManager: {fileID: -3613212761563754259}

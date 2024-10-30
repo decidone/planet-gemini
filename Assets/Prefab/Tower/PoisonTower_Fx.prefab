@@ -138,6 +138,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 3832536798139642928}
+  slowDebuff: 0
+  slowTime: 0
+  poisonTrueAttack: 1
+  poisonDamage: 10
+  ignoreDdefense: 0
+  ignorePercent: 0
   bulletExploFx: {fileID: 3832536798139642931, guid: fc07e714adde36e41a18d7d008d4cc9f, type: 3}
 --- !u!114 &8373389327281855433
 MonoBehaviour:

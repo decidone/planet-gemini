@@ -951,18 +951,18 @@ public class GameManager : NetworkBehaviour
         GameObject fogOfWar = ResourcesManager.instance.fogOfWar;
         FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
         followTransform.SetTargetTransform(mainCam.transform);
-        if (isHost)
-            WavePoint.instance.PlayerSet(player);
-        else
-            WavePoint.instance.PlayerSet(player);
+        WavePoint.instance.PlayerSet(player);
     }
 
     public void SetPlayerPos(float x, float y, bool isHostPos)
     {
+        Vector3 spawnPos = new Vector3(x, y, 0);
         if (isHostPos)
-            hostPlayerSpawnPos = new Vector3(x, y, 0);
+            hostPlayerSpawnPos = spawnPos;
         else
-            clientPlayerSpawnPos = new Vector3(x, y, 0);
+            clientPlayerSpawnPos = spawnPos;
+
+        WavePoint.instance.SpawnPos(isHostPos, spawnPos);
         //player.transform.position = playerSpawnPos;
     }
 
@@ -1143,15 +1143,15 @@ public class GameManager : NetworkBehaviour
 
     public void WaveStartSet(int coreLevel)
     {
-        int mapSize = MainGameSetting.instance.mapSizeIndex;
-        int waveLevel = 0;
+        //int mapSize = MainGameSetting.instance.mapSizeIndex;
+        //int waveLevel = 0;
 
-        if (waveLevelsByMapSize.ContainsKey(mapSize))
-        {
-            waveLevel = waveLevelsByMapSize[mapSize][coreLevel - 2];
-        }
-        Debug.Log(waveLevel);
-        MonsterSpawnerManager.instance.WavePointSet(waveLevel, sciBuildingMap);
+        //if (waveLevelsByMapSize.ContainsKey(mapSize))
+        //{
+        //    waveLevel = waveLevelsByMapSize[mapSize][coreLevel - 2];
+        //}
+        Debug.Log(coreLevel - 1);
+        MonsterSpawnerManager.instance.WavePointSet(coreLevel - 1, sciBuildingMap);
     }
 
     public void SciBuildingSet(bool map)

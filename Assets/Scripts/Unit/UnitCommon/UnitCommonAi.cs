@@ -86,6 +86,11 @@ public class UnitCommonAi : NetworkBehaviour
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
 
+    [SerializeField]
+    protected bool slowDebuffOn;
+    protected float slowTimer;
+    protected float slowSpeedPer = 1;
+
     private void Awake()
     {
         tr = GetComponent<Transform>();
@@ -155,6 +160,18 @@ public class UnitCommonAi : NetworkBehaviour
                     RemoveObjectsOutOfRange();
                 }
                 AttackTargetDisCheck();
+            }
+
+            if (slowDebuffOn)
+            {
+                slowTimer -= Time.deltaTime;
+
+                if (slowTimer < 0)
+                {
+                    unitSprite.color = new Color32(255, 255, 255, 255);
+                    slowDebuffOn = false;
+                    slowSpeedPer = 1;
+                }
             }
         }
     }
@@ -238,6 +255,7 @@ public class UnitCommonAi : NetworkBehaviour
     {
         if (targetDist == 0)
             return;
+
         else if (targetDist > unitCommonData.AttackDist)  // 공격 범위 밖으로 나갈 때
         {
             animator.SetBool("isAttack", false);
@@ -258,7 +276,7 @@ public class UnitCommonAi : NetworkBehaviour
         if (!isDelayAfterAttackCoroutine)
         {
             attackState = AttackState.AttackDelay;
-            StartCoroutine(DelayAfterAttack(unitCommonData.AttDelayTime)); // 1.5초 후 딜레이 적용
+            StartCoroutine(DelayAfterAttack(slowDebuffOn ? unitCommonData.AttDelayTime * 1.6f : unitCommonData.AttDelayTime));
         }
     }
     protected IEnumerator DelayAfterAttack(float delayTime)
@@ -288,29 +306,52 @@ public class UnitCommonAi : NetworkBehaviour
         attackState = AttackState.Waiting;        
     }
 
-    public virtual void TakeDamage(float damage)
+    public void TakeSlowDebuff(float timer)
+    {
+        slowTimer = timer;
+        slowDebuffOn = true;
+        unitSprite.color = new Color32(100, 255, 255, 255);
+        slowSpeedPer = 0.6f;
+    }
+
+    //attackType : 0 일반 공격, 1 고정 데미지, 2 방어력 무시
+    public virtual void TakeDamage(float damage, int attackType, float ignorePercent)
     {
         if (!dieCheck)
         {
-            TakeDamageServerRpc(damage);
+            TakeDamageServerRpc(damage, attackType, ignorePercent);
         }
     }
 
-    [ServerRpc]
-    public virtual void TakeDamageServerRpc(float damage)
+    public virtual void TakeDamage(float damage, int attackType)
     {
-        TakeDamageClientRpc(damage);
+        TakeDamage(damage, attackType, 100);
+    }
+
+    [ServerRpc]
+    public virtual void TakeDamageServerRpc(float damage, int attackType, float ignorePercent)
+    {
+        TakeDamageClientRpc(damage, attackType, ignorePercent);
     }
 
     [ClientRpc]
-    public virtual void TakeDamageClientRpc(float damage)
+    public virtual void TakeDamageClientRpc(float damage, int attackType, float ignorePercent)
     {
         //if (hp <= 0f)
         //    return;
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
 
-        float reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
+        float reducedDamage = damage;
+
+        if (attackType == 0)
+        {
+            reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
+        }
+        else if (attackType == 2)
+        {
+            reducedDamage = Mathf.Max(damage - (unitCommonData.Defense * (ignorePercent / 100)), 5);
+        }
 
         hp -= reducedDamage;
         if (hp < 0f)

@@ -77,7 +77,7 @@ public class GuardianAi : MonsterAi
             direction = targetWaypoint - tr.position;
             direction.Normalize();
 
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 10));
+            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 10) * slowSpeedPer);
 
             if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
             {

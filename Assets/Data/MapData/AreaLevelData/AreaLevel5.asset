@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55a50a1cc6910424c8997a1ee6345444, type: 3}
   m_Name: AreaLevel5
   m_EditorClassIdentifier: 
-  areaLevel: 5
-  maxSpawner: 1
+  sppawnerLevel: 5
   maxWeakSpawn: 0
   maxNormalSpawn: 20
   maxStrongSpawn: 20
