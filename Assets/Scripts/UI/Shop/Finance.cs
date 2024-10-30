@@ -29,20 +29,38 @@ public class Finance : MonoBehaviour
 
     public void SetFinance(int _finance)
     {
+        SetFinance(_finance, true);
+    }
+
+    public void SetFinance(int _finance, bool isEnough)
+    {
+        if (isEnough)
+        {
+            firstText.color = Color.white;
+            secondText.color = Color.white;
+            thirdText.color = Color.white;
+        }
+        else
+        {
+            firstText.color = Color.red;
+            secondText.color = Color.red;
+            thirdText.color = Color.red;
+        }
+
         finance = _finance;
         int temp = finance;
 
         ResetText();
         CheckForm();
-        
+
         if (temp >= 10000)
         {
-            firstText.text = (temp/10000).ToString();
+            firstText.text = (temp / 10000).ToString();
             temp %= 10000;
         }
         if (temp >= 100)
         {
-            secondText.text = (temp/100).ToString();
+            secondText.text = (temp / 100).ToString();
             temp %= 100;
         }
         thirdText.text = temp.ToString();

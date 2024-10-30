@@ -78,7 +78,21 @@ public class Shop : MonoBehaviour
             totalPrice += merch.SumPrice();
         }
 
-        finance.SetFinance(totalPrice);
+        if (isPurchase)
+        {
+            if (totalPrice <= GameManager.instance.finance.GetFinance())
+            {
+                finance.SetFinance(totalPrice);
+            }
+            else
+            {
+                finance.SetFinance(totalPrice, false);
+            }
+        }
+        else
+        {
+            finance.SetFinance(totalPrice);
+        }
     }
 
     public void BuyMerch()

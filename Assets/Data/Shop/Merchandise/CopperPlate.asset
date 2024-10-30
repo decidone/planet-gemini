@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: CopperPlate
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 7c641e9b793d9ae40aed492c4c496872, type: 2}
-  buyPrice: -1
+  buyPrice: 6
   sellPrice: 10

@@ -161,6 +161,9 @@ public class Structure : NetworkBehaviour
     public List<Vector3> connectedPosList = new List<Vector3>();
 
     public bool canUpgrade;
+    public SpriteRenderer warningIcon;
+    bool warningIconCheck;
+    IEnumerator warning;
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
@@ -195,6 +198,7 @@ public class Structure : NetworkBehaviour
         soundManager = SoundManager.instance;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         destroyTimer = destroyInterval;
+        warningIconCheck = false;
     }
 
     protected virtual void Update()
@@ -214,6 +218,28 @@ public class Structure : NetworkBehaviour
             {
                 RepairFunc(true);
             }
+
+            if (!isPreBuilding && warningIcon != null && energyUse)
+            {
+                if (connectors.Count < 1)
+                {
+                    if (!warningIconCheck)
+                    {
+                        warning = FlickeringIcon();
+                        StartCoroutine(warning);
+                        warningIconCheck = true;
+                    }
+                }
+                else
+                {
+                    if (warningIconCheck)
+                    {
+                        StopCoroutine(warning);
+                        warningIconCheck = false;
+                        warningIcon.enabled = false;
+                    }
+                }
+            }
         }
 
         if (destroyStart)
@@ -226,6 +252,15 @@ public class Structure : NetworkBehaviour
                 ObjRemoveFunc();
                 destroyStart = false;
             }
+        }
+    }
+
+    IEnumerator FlickeringIcon()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(2f);
+            warningIcon.enabled = !warningIcon.enabled;
         }
     }
 

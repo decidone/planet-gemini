@@ -883,6 +883,7 @@ public class GameManager : NetworkBehaviour
         GeminiNetworkManager.instance.ClientSpawnServerRPC();
         Debug.Log("Connected to Network");
     }
+
     [ServerRpc(RequireOwnership = false)]
     void TestServerRpc()
     {
@@ -1106,8 +1107,15 @@ public class GameManager : NetworkBehaviour
             SteamManager.instance.HostLobby();
             HostConnected();
             MapGenerator.instance.SpawnerAreaMapSet();
-            if (!MainGameSetting.instance.isNewGame)
+            if (MainGameSetting.instance.isNewGame)
+            {
+                Debug.Log("New Game");
+                SetStartingItem();
+            }
+            else
+            {
                 DataManager.instance.Load(MainGameSetting.instance.loadDataIndex);
+            }
         }
         else
         {
@@ -1120,6 +1128,12 @@ public class GameManager : NetworkBehaviour
 
         StartCoroutine(SetQuest());
         //GenerationComplete?.Invoke();
+    }
+
+    void SetStartingItem()
+    {
+        Item item = ItemList.instance.itemDic["Fuel"];
+        inventory.Add(item, 5);
     }
 
     [ServerRpc(RequireOwnership = false)]

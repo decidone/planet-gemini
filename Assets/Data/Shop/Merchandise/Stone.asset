@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Stone
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: c5a82ea7dfa96c24893abe127b74a61c, type: 2}
-  buyPrice: 1
+  buyPrice: -1
   sellPrice: 10
