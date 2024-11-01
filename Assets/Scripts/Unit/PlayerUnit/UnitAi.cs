@@ -35,7 +35,7 @@ public class UnitAi : UnitCommonAi
     GameObject selectTarget;
     public float selfHealingAmount;
     public float selfHealInterval;
-    float selfHealTimer;
+    protected float selfHealTimer;
 
     protected override void Start()
     {
@@ -63,7 +63,7 @@ public class UnitAi : UnitCommonAi
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void SelfHealingServerRpc()
+    protected void SelfHealingServerRpc()
     {
         hp += selfHealingAmount;
         SelfHealingClientRpc(hp);

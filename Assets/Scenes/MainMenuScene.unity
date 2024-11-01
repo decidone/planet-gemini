@@ -3598,14 +3598,6 @@ PrefabInstance:
       propertyPath: NetworkConfig.NetworkTransport
       value: 
       objectReference: {fileID: 649416038}
-    - target: {fileID: 7365171543875838658, guid: 9432c4b9c3a31c347be7c3327cbdba2e, type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.size
-      value: 79
-      objectReference: {fileID: 0}
-    - target: {fileID: 7365171543875838658, guid: 9432c4b9c3a31c347be7c3327cbdba2e, type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[78].Prefab
-      value: 
-      objectReference: {fileID: 721077935684597043, guid: 06a4fda6f76c78e43b64271f014e6e70, type: 3}
     - target: {fileID: 7365171543875838659, guid: 9432c4b9c3a31c347be7c3327cbdba2e, type: 3}
       propertyPath: m_RootOrder
       value: 9

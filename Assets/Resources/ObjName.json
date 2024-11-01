@@ -132,6 +132,9 @@
   "SentryCopter": {
     "1": "Sentry Copter"
   },
+  "Tank": {
+    "1": "Tank"
+  },
   "EnergyRepeater": {
     "1": "Energy Repeater"
   },

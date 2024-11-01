@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class PlayerController : NetworkBehaviour
 {
     GameManager gameManager;
+    PlayerStatus status;
     public List<GameObject> items = new List<GameObject>();
     List<GameObject> beltList = new List<GameObject>();
 
@@ -61,6 +62,8 @@ public class PlayerController : NetworkBehaviour
     bool attackMotion;
     [SerializeField]
     float stopTime;
+    GameObject nearTank;
+    TankCtrl onTankData;
 
     void Awake()
     {
@@ -69,6 +72,7 @@ public class PlayerController : NetworkBehaviour
         capsuleColl = GetComponent<CapsuleCollider2D>();
         nearShop = null;
         isLoot = false;
+        ReloadingUISet(false);
     }
 
     void Start()
@@ -79,9 +83,10 @@ public class PlayerController : NetworkBehaviour
 
         GameManager.instance.SetPlayer(this.gameObject);
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
+        status = gameObject.GetComponent<PlayerStatus>();
+
         if (GameManager.instance.playerDataHp != -1)
         {
-            PlayerStatus status = gameObject.GetComponent<PlayerStatus>();
             status.LoadGame();
             gameObject.transform.position = GameManager.instance.playerDataPos;
         }
@@ -150,26 +155,6 @@ public class PlayerController : NetworkBehaviour
                 ReloadingUISet(false);
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            tankOn = !tankOn;
-            if (tankOn)
-            {
-                capsuleColl.size = new Vector2(2.25f, 2f);
-                animator.Play("TankWalk");
-            }
-            else
-            {
-                capsuleColl.size = new Vector2(1f, 0.8f);
-                if (tankAttackKeyPressed)
-                {
-                    TankAttackEnd();
-                }
-
-                animator.Play("Idle");
-            }
-        }
     }
 
     void FixedUpdate()
@@ -200,14 +185,19 @@ public class PlayerController : NetworkBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (!IsOwner) { return; }
-
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Interactable interactable = collision.GetComponent<Interactable>();
         NPCInteract shop = collision.GetComponent<NPCInteract>();
 
         if (interactable)
+        {
             interactable.SpawnIcon();
+            if (nearTank == null)
+            {
+                nearTank = collision.gameObject;
+            }
+        }
 
         if (itemProps && !items.Contains(collision.gameObject))
             items.Add(collision.gameObject);
@@ -225,7 +215,6 @@ public class PlayerController : NetworkBehaviour
     void OnTriggerExit2D(Collider2D collision)
     {
         if (!IsOwner) { return; }
-
         ItemProps itemProps = collision.GetComponent<ItemProps>();
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Portal portal = collision.GetComponent<Portal>();
@@ -234,7 +223,13 @@ public class PlayerController : NetworkBehaviour
         NPCInteract shop = collision.GetComponent<NPCInteract>();
 
         if (interactable)
+        {
             interactable.DespawnIcon();
+            if (nearTank != null)
+            {
+                nearTank = null;
+            }
+        }
 
         if (itemProps && items.Contains(collision.gameObject))
             items.Remove(collision.gameObject);
@@ -271,6 +266,14 @@ public class PlayerController : NetworkBehaviour
             {
                 OpenMap();
             }
+            else if (!tankOn && nearTank != null)
+            {
+                TankOnFunc();
+            }
+            else if (tankOn)
+            {
+                TankOffFunc();
+            }
         }
         else
         {
@@ -279,6 +282,88 @@ public class PlayerController : NetworkBehaviour
                 TeleportMarket();
             }
         }
+    }
+
+    void TankOnFunc()
+    {
+        tankOn = true;
+        nearTank.TryGetComponent(out TankCtrl tankCtrl);
+        status.TankOn(tankCtrl);
+        onTankData = tankCtrl;
+        transform.position = nearTank.transform.position;
+        onTankData.PlayerTankOn();
+        capsuleColl.size = new Vector2(2.25f, 2f);
+        animator.Play("TankWalk");
+    }
+
+    void TankOffFunc()
+    {
+        var landData = TankLandingPos();
+        if (landData.Item1)
+        {
+            tankOn = false;
+            onTankData.PlayerTankOff(transform.position);
+            status.TankOff();
+            onTankData = null;
+            transform.position = landData.Item2;
+            capsuleColl.size = new Vector2(1f, 0.8f);
+            if (tankAttackKeyPressed)
+            {
+                TankAttackEnd();
+            }
+            animator.Play("Idle");
+        }
+    }
+
+    public void TankDestory()
+    {
+        tankOn = false;
+        onTankData.TankDestory();
+        onTankData = null;
+        capsuleColl.size = new Vector2(1f, 0.8f);
+        if (tankAttackKeyPressed)
+        {
+            TankAttackEnd();
+        }
+        animator.Play("Idle");
+    }
+
+    (bool, Vector2) TankLandingPos()
+    {
+        Vector2[] landingPos = GetSurroundingPositions(transform.position);
+        foreach (Vector2 newPos in landingPos)
+        {
+            int x = Mathf.FloorToInt(newPos.x);
+            int y = Mathf.FloorToInt(newPos.y);
+            Map map;
+            if (gameManager.isPlayerInHostMap)
+                map = GameManager.instance.hostMap;
+            else
+                map = GameManager.instance.clientMap;
+
+            Cell cell = map.GetCellDataFromPos(x, y);
+
+            if (cell.obj == null && cell.structure == null && cell.biome.biome != "lake" && cell.biome.biome != "cliff")
+            {
+                Debug.Log(cell.biome.biome);
+                return (true, newPos);
+            }
+        }
+
+        return (false, new Vector2());
+    }
+
+    Vector2[] GetSurroundingPositions(Vector2 playerPos)
+    {
+        float distance = 1.5f;
+        Vector2[] positions = new Vector2[4];
+
+        positions[0] = playerPos + new Vector2(distance, 0);  // 오른쪽
+        positions[1] = playerPos + new Vector2(-distance, 0); // 왼쪽
+        positions[2] = playerPos + new Vector2(0, distance);  // 위쪽
+        positions[3] = playerPos + new Vector2(0, -distance); // 아래쪽
+
+        return positions;
     }
 
     public void OpenMap()
@@ -420,41 +505,52 @@ public class PlayerController : NetworkBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            Vector3 dir = mousePos - transform.position;
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-            var rot = Quaternion.identity;
-            if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
-                rot = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-            else
-                rot = Quaternion.AngleAxis(angle, Vector3.forward);
-
-            animator.SetFloat("Horizontal", dir.x);
-            animator.SetFloat("Vertical", dir.y);
-            animator.SetFloat("lastMoveX", dir.x);
-            animator.SetFloat("lastMoveY", dir.y);
-
-            dir.z = 0;
-            Vector2 spawnPos = transform.position + dir.normalized * 1;
-
-            NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, new Vector2(spawnPos.x, spawnPos.y), rot);
-            if (!bulletPool.IsSpawned) bulletPool.Spawn(true); 
-
-            bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
-            fx.GetTarget(mousePos, 10, gameObject, false);
-
-            TankAttackEnd();
-
-            StartCoroutine(StopMotion());
-            reloading = true;
-            ReloadingUISet(true);
-            reloadTimer = 0;
+            BulletSpawnServerRpc(mousePos);
         }
     }
 
-    IEnumerator StopMotion()
-    {            attackMotion = true;
+    [ServerRpc(RequireOwnership = false)]
+    void BulletSpawnServerRpc(Vector3 mousePos)
+    {
+        Vector3 dir = mousePos - transform.position;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
+        var rot = Quaternion.identity;
+        if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
+            rot = Quaternion.AngleAxis(angle + 180, Vector3.forward);
+        else
+            rot = Quaternion.AngleAxis(angle, Vector3.forward);
+
+        dir.z = 0;
+        Vector2 spawnPos = transform.position + dir.normalized * 1;
+
+        NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, new Vector2(spawnPos.x, spawnPos.y), rot);
+        if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
+
+        bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
+        fx.GetTarget(mousePos, 10, gameObject, false);
+        BulletSpawnClientRpc(dir);
+    }
+
+    [ClientRpc]
+    void BulletSpawnClientRpc(Vector3 dir)
+    {
+        animator.SetFloat("Horizontal", dir.x);
+        animator.SetFloat("Vertical", dir.y);
+        animator.SetFloat("lastMoveX", dir.x);
+        animator.SetFloat("lastMoveY", dir.y);
+
+        TankAttackEnd();
+
+        StartCoroutine(StopMotion());
+        reloading = true;
+        ReloadingUISet(true);
+        reloadTimer = 0;
+    }
+
+    IEnumerator StopMotion()
+    {            
+        attackMotion = true;
         yield return new WaitForSeconds(stopTime);
         attackMotion = false;
     }

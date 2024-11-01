@@ -59,6 +59,7 @@
     "UnitFactory":[
         {"name":"SentryCopter","items":["IronPlate","IronBar","SteelBar","SentryCopter"],"amounts":[1,1,1,1],"cooldown":3},
         {"name":"BounceRobot","items":["IronPlate","IronBar","SteelBar","BounceRobot"],"amounts":[1,1,1,1],"cooldown":3},
-        {"name":"SpinRobot","items":["IronPlate","IronBar","SteelBar","SpinRobot"],"amounts":[1,1,1,1],"cooldown":3}
+        {"name":"SpinRobot","items":["IronPlate","IronBar","SteelBar","SpinRobot"],"amounts":[1,1,1,1],"cooldown":3},
+        {"name":"Tank","items":["IronPlate","IronBar","SteelBar","Tank"],"amounts":[1,1,1,1],"cooldown":3}
     ]
 }

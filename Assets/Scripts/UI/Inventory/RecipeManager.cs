@@ -87,6 +87,8 @@ public class RecipeManager : InventoryManager
             {
                 for (int i = 0; i < recipes.Count; i++)
                 {
+                    Debug.Log(recipes[i].name);
+
                     inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
                 }
             }
