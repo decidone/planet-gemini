@@ -181,6 +181,7 @@ MonoBehaviour:
   hpBar: {fileID: 3922465802371952925}
   maxHp: 0
   hp: 0
+  RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   isRepair: 0
   repairBar: {fileID: 8302925838158578637}
   itemList: []
@@ -231,6 +232,7 @@ MonoBehaviour:
   DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
+  warningIcon: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -240,7 +242,6 @@ MonoBehaviour:
   towerData: {fileID: 11400000, guid: dcda8e71faf16f146be49158e118514e, type: 2}
   towerState: 0
   animator: {fileID: 90368467031128403}
-  RuinExplo: {fileID: 1599892527247610534, guid: 765d4a8c98a4427428c5590633702dbc, type: 3}
   BuildingList: []
   view: {fileID: 5840086398164157876}
 --- !u!114 &-3816376593289155045
@@ -740,7 +741,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.03, y: 0.65}
+  m_AnchoredPosition: {x: 0, y: 1.7}
   m_SizeDelta: {x: 1.5, y: 0.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1824467593557473268

@@ -86,6 +86,34 @@ public class Furnace : Production
         }
     }
 
+    public override void WarningStateCheck()
+    {
+        if (!isPreBuilding && warningIcon != null)
+        {
+            if (fuel > 0)
+            {
+                if (warningIconCheck)
+                {
+                    if (warning != null)
+                        StopCoroutine(warning);
+                    warningIconCheck = false;
+                    warningIcon.enabled = false;
+                }
+            }
+            else
+            {
+                if (!warningIconCheck)
+                {
+                    if (warning != null)
+                        StopCoroutine(warning);
+                    warning = FlickeringIcon();
+                    StartCoroutine(warning);
+                    warningIconCheck = true;
+                }
+            }
+        }
+    }
+
     public override void OpenUI()
     {
         base.OpenUI();

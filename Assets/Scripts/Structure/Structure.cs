@@ -164,8 +164,10 @@ public class Structure : NetworkBehaviour
 
     public bool canUpgrade;
     public SpriteRenderer warningIcon;
-    bool warningIconCheck;
-    IEnumerator warning;
+    //public Sprite warningRed;
+    //public Sprite warningYellow;
+    public bool warningIconCheck;
+    public IEnumerator warning;
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
@@ -221,27 +223,7 @@ public class Structure : NetworkBehaviour
                 RepairFunc(true);
             }
 
-            if (!isPreBuilding && warningIcon != null && energyUse)
-            {
-                if (connectors.Count < 1)
-                {
-                    if (!warningIconCheck)
-                    {
-                        warning = FlickeringIcon();
-                        StartCoroutine(warning);
-                        warningIconCheck = true;
-                    }
-                }
-                else
-                {
-                    if (warningIconCheck)
-                    {
-                        StopCoroutine(warning);
-                        warningIconCheck = false;
-                        warningIcon.enabled = false;
-                    }
-                }
-            }
+            WarningStateCheck();
         }
 
         if (destroyStart)
@@ -257,7 +239,53 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    IEnumerator FlickeringIcon()
+    public virtual void WarningStateCheck()
+    {
+        if (!isPreBuilding && warningIcon != null && energyUse)
+        {
+            if (conn != null && conn.group != null)
+            {
+                if (conn.group.efficiency < 1f)
+                {
+                    if (!warningIconCheck)
+                    {
+                        //low energy
+                        if (warning != null)
+                            StopCoroutine(warning);
+                        warningIcon.sprite = Resources.Load<Sprite>("warning_yellow");
+                        warning = FlickeringIcon();
+                        StartCoroutine(warning);
+                        warningIconCheck = true;
+                    }
+                }
+                else
+                {
+                    if (warningIconCheck)
+                    {
+                        if (warning != null)
+                            StopCoroutine(warning);
+                        warningIconCheck = false;
+                        warningIcon.enabled = false;
+                    }
+                }
+            }
+            else
+            {
+                if (!warningIconCheck)
+                {
+                    //disconnected
+                    if (warning != null)
+                        StopCoroutine(warning);
+                    warningIcon.sprite = Resources.Load<Sprite>("warning_red");
+                    warning = FlickeringIcon();
+                    StartCoroutine(warning);
+                    warningIconCheck = true;
+                }
+            }
+        }
+    }
+
+    public IEnumerator FlickeringIcon()
     {
         while (true)
         {

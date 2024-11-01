@@ -164,8 +164,8 @@ public class InputManager : MonoBehaviour
         controls.Player.Disable();
         controls.Inventory.Disable();
         controls.HotKey.Disable();
-        controls.Hold.Disable();
-        controls.Chat.Disable();
+        //controls.Hold.Disable();
+        //controls.Chat.Disable();
 
         EnableControls();
         controls.MapCamera.Disable();

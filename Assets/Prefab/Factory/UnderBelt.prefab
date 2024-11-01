@@ -177,6 +177,10 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5209748675834970393, guid: 3028c2927e9496945b4209cab7935378, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5450028805572291566, guid: 3028c2927e9496945b4209cab7935378, type: 3}
       propertyPath: m_Name
       value: GetUnderBelt

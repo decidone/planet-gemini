@@ -98,7 +98,10 @@ public class SteamGenerator : FluidFactoryCtrl
             {
                 RepairFunc(true);
             }
+
+            WarningStateCheck();
         }
+
         if (isSetBuildingOk)
         {
             for (int i = 0; i < nearObj.Length; i++)
@@ -111,12 +114,12 @@ public class SteamGenerator : FluidFactoryCtrl
             }
         }
 
-
         if (IsServer && !isPreBuilding)
         {
             if (inObj.Count > 0 && !itemGetDelay && checkObj)
                 GetItem();
         }
+
         if (DelayGetList.Count > 0 && inObj.Count > 0)
         {
             GetDelayFunc(DelayGetList[0], 0);
@@ -145,6 +148,7 @@ public class SteamGenerator : FluidFactoryCtrl
                 isPlaced = true;
             }
         }
+
         if (gameManager.focusedStructure == null)
         {
             if (preBuilding.isBuildingOn && !removeState)
@@ -202,6 +206,34 @@ public class SteamGenerator : FluidFactoryCtrl
                 else
                 {
                     isOperate = false;
+                }
+            }
+        }
+    }
+
+    public override void WarningStateCheck()
+    {
+        if (!isPreBuilding && warningIcon != null)
+        {
+            if (fuel > 0)
+            {
+                if (warningIconCheck)
+                {
+                    if (warning != null)
+                        StopCoroutine(warning);
+                    warningIconCheck = false;
+                    warningIcon.enabled = false;
+                }
+            }
+            else
+            {
+                if (!warningIconCheck)
+                {
+                    if (warning != null)
+                        StopCoroutine(warning);
+                    warning = FlickeringIcon();
+                    StartCoroutine(warning);
+                    warningIconCheck = true;
                 }
             }
         }
