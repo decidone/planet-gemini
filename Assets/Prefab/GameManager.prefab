@@ -328,6 +328,7 @@ MonoBehaviour:
   mapCameraController: {fileID: 0}
   finance: {fileID: 0}
   scrap: {fileID: 0}
+  shopScrap: {fileID: 0}
   questData: 0
   pInvenManager: {fileID: 0}
   bManager: {fileID: 0}
@@ -357,6 +358,7 @@ MonoBehaviour:
   isDay: 0
   dayTime: 100
   dayTimer: 0
+  dayIndex: 0
   violentValue: 0
   violentDay: 0
   timeImgSet:
@@ -516,6 +518,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1eccbc744d352cb498255e7dc4185f52, type: 2}
   - {fileID: 11400000, guid: db690fbf05d11be48816a392b5f5b26a, type: 2}
   - {fileID: 11400000, guid: a3020250a4044e341af1fee415ecb042, type: 2}
+  - {fileID: 11400000, guid: f85f44175b0c2834b9c1e8228ec967a2, type: 2}
+  - {fileID: 11400000, guid: 5d4d534ddf4f44e47b3f1285491464ea, type: 2}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -682,6 +686,7 @@ MonoBehaviour:
   - {fileID: 8598225404917607298, guid: b51e05c41bd7d664aad1ca10a4dd19fd, type: 3}
   - {fileID: 1885955664131610326, guid: 15142411a933d1245b957f009a3493eb, type: 3}
   - {fileID: 248036444977090385, guid: d70a8f4e456ddd94b96397d2f52b11c8, type: 3}
+  - {fileID: 8598225404917607298, guid: 98d989c3dc70fad4f863f229717bee75, type: 3}
 --- !u!114 &1592428971395791709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -773,6 +778,7 @@ MonoBehaviour:
       saveDate: 
       mapSizeIndex: 0
       difficultyLevel: 0
+      seed: 0
       day: 0
       isDay: 0
       dayTimer: 0
@@ -817,6 +823,7 @@ MonoBehaviour:
       monsterBountyReceived: 0
     mapData:
       objects: []
+    netItemData: []
   path: 
   selectedSlot: 0
   beltGroup: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}

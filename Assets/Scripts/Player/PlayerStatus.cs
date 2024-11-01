@@ -8,6 +8,7 @@ using Unity.Netcode;
 public class PlayerStatus : NetworkBehaviour
 {
     public new string name;
+    PlayerController playerController;
     [SerializeField]
     Image hpBar;
     [SerializeField]
@@ -21,11 +22,20 @@ public class PlayerStatus : NetworkBehaviour
     public bool isPlayerInHostMap = true;
     public bool isPlayerInMarket = false;
 
+    bool tankOn;
+    TankCtrl tankData;
+
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
 
+    void Awake()
+    {
+        HPUISet(false);
+    }
+
     void Start()
     {
+        playerController = gameObject.GetComponent<PlayerController>();
         hpBar.fillAmount = hp / maxHp;
     }
 
@@ -85,14 +95,33 @@ public class PlayerStatus : NetworkBehaviour
     public void TakeDamageClientRpc(float damage)
     {
         HPUISet(true);
-        if (hp <= 0f)
-            return;
 
-        hp -= damage;
-        if (hp < 0f)
-            hp = 0f;
-        onHpChangedCallback?.Invoke();
-        hpBar.fillAmount = hp / maxHp;
+        if (!tankOn)
+        {
+            if (hp <= 0f)
+                return;
+
+            hp -= damage;
+            if (hp < 0f)
+                hp = 0f;
+            onHpChangedCallback?.Invoke();
+            hpBar.fillAmount = hp / maxHp;
+        }
+        else if(tankData != null)
+        {
+            if (tankData.hp <= 0f)
+                return;
+
+            tankData.hp -= damage;
+            if (tankData.hp < 0f)
+            {
+                tankData.hp = 0f;
+                TankDestory();
+                return;
+            }
+            onHpChangedCallback?.Invoke();
+            hpBar.fillAmount = tankData.hp / tankData.maxHp;
+        }
     }
 
     public void HPUISet(bool isOn)
@@ -107,6 +136,24 @@ public class PlayerStatus : NetworkBehaviour
             hpBar.enabled = false;
             hpBackBar.enabled = false;
         }
+    }
+
+    public void TankOn(TankCtrl tankCtrl)
+    {
+        tankOn = true;
+        tankData = tankCtrl;
+    }
+
+    public void TankOff()
+    {
+        tankOn = false;
+    }
+
+    void TankDestory()
+    {
+        tankData = null;
+        tankOn = false;
+        playerController.TankDestory();
     }
 
     public void LoadGame()

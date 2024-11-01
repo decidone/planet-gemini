@@ -214,5 +214,10 @@
     "Battle":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
     }
+  },
+  "Tank":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+    }
   }
 }
