@@ -89,6 +89,8 @@ public class Refinery : FluidFactoryCtrl
             {
                 RepairFunc(true);
             }
+
+            WarningStateCheck();
         }
         if (isSetBuildingOk)
         {
@@ -236,6 +238,8 @@ public class Refinery : FluidFactoryCtrl
     public override void SetRecipe(Recipe _recipe, int index)
     {
         base.SetRecipe(_recipe, index);
+        sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[1]]);
+        sInvenManager.slots[0].SetNeedAmount(recipe.amounts[1]);
         sInvenManager.slots[0].outputSlot = true;
     }
 

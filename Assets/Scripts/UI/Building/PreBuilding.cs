@@ -1072,7 +1072,10 @@ public class PreBuilding : NetworkBehaviour
 
             if (isEnergyStr && !prefabObj.GetComponentInChildren<EnergyBattery>())
             {
-                preBuildingImg.TerritoryViewSet(1);
+                if (prefabObj.GetComponentInChildren<EnergyRepeater>() && prefabObj.GetComponentInChildren<EnergyRepeater>().isImprovedRepeater)
+                    preBuildingImg.TerritoryViewSet(0);
+                else
+                    preBuildingImg.TerritoryViewSet(1);
             }
             else if (prefabObj.GetComponentInChildren<Overclock>())
             {

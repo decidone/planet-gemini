@@ -118,8 +118,13 @@ public class Manufacturer : Production
     {
         base.SetRecipe(_recipe, index);
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
+        sInvenManager.slots[0].SetNeedAmount(recipe.amounts[0]);
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
+        sInvenManager.slots[1].SetNeedAmount(recipe.amounts[1]);
         sInvenManager.slots[2].SetInputItem(itemDic[recipe.items[2]]);
+        sInvenManager.slots[2].SetNeedAmount(recipe.amounts[2]);
+        sInvenManager.slots[3].SetInputItem(itemDic[recipe.items[3]]);
+        sInvenManager.slots[3].SetNeedAmount(recipe.amounts[3]);
         sInvenManager.slots[3].outputSlot = true;
     }
 

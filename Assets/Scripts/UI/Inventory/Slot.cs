@@ -13,6 +13,7 @@ public class Slot : MonoBehaviour
     public Item item;
     public List<Item> inputItem;  //inputSlot 받는 아이템
     public int amount;
+    public int needAmount;
     public int slotNum;
     public bool inputSlot;
     public bool outputSlot;
@@ -37,6 +38,11 @@ public class Slot : MonoBehaviour
                 if (amount == 0)
                 {
                     color.a = 0.5f;
+                    if (needAmount != 0)
+                    {
+                        amountText.text = needAmount.ToString();
+                        amountText.enabled = true;
+                    }
                 }
                 else
                 {
@@ -111,6 +117,13 @@ public class Slot : MonoBehaviour
     {
         amount = _amount;
         amountText.text = _amount + "";
+
+        onSlotChangedCallback?.Invoke();
+    }
+
+    public void SetNeedAmount(int _needAmount) //디스플레이 슬롯용
+    {
+        needAmount = _needAmount;
 
         onSlotChangedCallback?.Invoke();
     }

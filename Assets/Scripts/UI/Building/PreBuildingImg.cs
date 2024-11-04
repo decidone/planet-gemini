@@ -45,18 +45,23 @@ public class PreBuildingImg : MonoBehaviour
         SpriteRenderer spriteRenderer = territoryView.GetComponent<SpriteRenderer>();
         switch (index)
         {
-            case 1:
+            case 0: //ImprovedRepeater
+                territoryView.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
                 spriteRenderer.material = materials[0];
                 spriteRenderer.sprite = sprites[0];
                 break;
-            case 2:
+            case 1: //Normal Energy Str
+                spriteRenderer.material = materials[0];
+                spriteRenderer.sprite = sprites[0];
+                break;
+            case 2: //Overclock
                 territoryView.transform.localScale = new Vector3(1.95f, 1.95f, 1f);
                 spriteRenderer.material = materials[1];
                 spriteRenderer.sprite = sprites[1];
                 newColor = new Color32(0, 255, 158, 100);
                 spriteRenderer.color = newColor;
                 break;
-            case 3:
+            case 3: //RepairTower
                 territoryView.transform.localScale = new Vector3(1.56f, 1.56f, 1f);
                 spriteRenderer.material = materials[2];
                 spriteRenderer.sprite = sprites[1];

@@ -29,7 +29,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 838a1959270adc24ca898808ede9bdeb, type: 2}
   - {fileID: 11400000, guid: 3635a4a36eede2b4e8bde7637d70bd80, type: 2}
   item: {fileID: 11400000, guid: c5a82ea7dfa96c24893abe127b74a61c, type: 2}
-  efficiency: 3
+  efficiency: 4
   level: 0
   biome:
   - plain

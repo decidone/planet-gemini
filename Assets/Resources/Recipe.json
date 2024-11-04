@@ -1,52 +1,53 @@
 {
     "Furnace":[
-        {"name":"Brick","items":["Stone","Brick"],"amounts":[1,1],"cooldown":3},
-        {"name":"CopperBar","items":["CopperOre","CopperBar"],"amounts":[1,1],"cooldown":3},
-        {"name":"IronBar","items":["IronOre","IronBar"],"amounts":[1,1],"cooldown":3}
+        {"name":"Brick","items":["Stone","Brick"],"amounts":[1,1],"cooldown":4},
+        {"name":"CopperBar","items":["CopperOre","CopperBar"],"amounts":[1,1],"cooldown":4},
+        {"name":"IronBar","items":["IronOre","IronBar"],"amounts":[1,1],"cooldown":4}
     ],
     "Smelter":[
-        {"name":"SteelBar","items":["Coal","IronBar","SteelBar"],"amounts":[1,1,2],"cooldown":3},
-        {"name":"AdamantiteAlloy","items":["SteelBar","AdamantiteOre","AdamantiteAlloy"],"amounts":[1,1,2],"cooldown":3}
+        {"name":"SteelBar","items":["IronBar","Coal","SteelBar"],"amounts":[1,1,1],"cooldown":6},
+        {"name":"AdamantiteAlloy","items":["AdamantiteOre","SteelBar","AdamantiteAlloy"],"amounts":[1,1,1],"cooldown":10}
     ],
     "Constructor":[
-        {"name":"CopperPlate","items":["CopperBar","CopperPlate"],"amounts":[1,1],"cooldown":3},
-        {"name":"Wire","items":["CopperPlate","Wire"],"amounts":[1,1],"cooldown":4},
-        {"name":"IronPlate","items":["IronBar","IronPlate"],"amounts":[1,1],"cooldown":5},
-        {"name":"Cogwheel","items":["IronPlate","Cogwheel"],"amounts":[1,1],"cooldown":3},
-        {"name":"Screw","items":["IronPlate","Screw"],"amounts":[1,1],"cooldown":3},
-        {"name":"SteelPlate","items":["SteelBar","SteelPlate"],"amounts":[1,1],"cooldown":3},
-        {"name":"SteelBeam","items":["SteelBar","SteelBeam"],"amounts":[1,1],"cooldown":3},
-        {"name":"AdamantitePlate","items":["AdamantiteAlloy","AdamantitePlate"],"amounts":[1,1],"cooldown":3},
-        {"name":"CopperBullet","items":["CopperPlate","CopperBullet"],"amounts":[1,1],"cooldown":3},
-        {"name":"IronBullet","items":["IronPlate","IronBullet"],"amounts":[1,1],"cooldown":3},
-        {"name":"SteelBullet","items":["SteelPlate","SteelBullet"],"amounts":[1,1],"cooldown":3},
-        {"name":"IronAxe","items":["IronPlate","IronAxe"],"amounts":[1,1],"cooldown":3}
+        {"name":"CopperPlate","items":["CopperBar","CopperPlate"],"amounts":[1,1],"cooldown":2},
+        {"name":"Wire","items":["CopperPlate","Wire"],"amounts":[1,2],"cooldown":2},
+        {"name":"CopperGoblet","items":["CopperPlate","CopperGoblet"],"amounts":[3,1],"cooldown":6},
+        {"name":"IronPlate","items":["IronBar","IronPlate"],"amounts":[1,1],"cooldown":2},
+        {"name":"Cogwheel","items":["IronPlate","Cogwheel"],"amounts":[1,2],"cooldown":4},
+        {"name":"Screw","items":["IronPlate","Screw"],"amounts":[1,2],"cooldown":4},
+        {"name":"SteelPlate","items":["SteelBar","SteelPlate"],"amounts":[1,1],"cooldown":4},
+        {"name":"SteelBeam","items":["SteelPlate","SteelBeam"],"amounts":[1,1],"cooldown":6},
+        {"name":"AdamantitePlate","items":["AdamantiteAlloy","AdamantitePlate"],"amounts":[1,1],"cooldown":6},
+        {"name":"CopperBullet","items":["CopperPlate","CopperBullet"],"amounts":[1,3],"cooldown":6},
+        {"name":"IronBullet","items":["IronPlate","IronBullet"],"amounts":[1,3],"cooldown":6}
     ],
     "Assembler":[
-        {"name":"Cable","items":["Rubber","Wire","Cable"],"amounts":[1,1,1],"cooldown":3},
-        {"name":"Module","items":["Plastic","CopperPlate","Module"],"amounts":[1,1,1],"cooldown":3},
-        {"name":"Motor","items":["SteelPlate","Cable","Motor"],"amounts":[1,1,1],"cooldown":3},
-        {"name":"Fuse","items":["Plastic","Wire","Fuse"],"amounts":[1,1,1],"cooldown":3},
-        {"name":"ExplosiveBullet","items":["Sulfur","Coal","ExplosiveBullet"],"amounts":[1,1,1],"cooldown":3},
-        {"name":"SteelSword","items":["SteelPlate","Screw","SteelSword"],"amounts":[1,1,1],"cooldown":3}
+        {"name":"IronAxe","items":["IronPlate","Screw","IronAxe"],"amounts":[3,5,1],"cooldown":8},
+        {"name":"Motor","items":["SteelPlate","Cogwheel","Motor"],"amounts":[2,8,1],"cooldown":8},
+        {"name":"SteelSword","items":["SteelPlate","Screw","SteelSword"],"amounts":[5,15,1],"cooldown":12},
+        {"name":"Cable","items":["Rubber","Wire","Cable"],"amounts":[2,4,2],"cooldown":8},
+        {"name":"Fuse","items":["Plastic","Wire","Fuse"],"amounts":[2,2,4],"cooldown":8},
+        {"name":"Module","items":["Plastic","Fuse","Module"],"amounts":[3,12,1],"cooldown":10},
+        {"name":"SteelBullet","items":["SteelPlate","IronPlate","SteelBullet"],"amounts":[2,4,3],"cooldown":8},
+        {"name":"ExplosiveBullet","items":["Sulfur","Coal","ExplosiveBullet"],"amounts":[2,5,3],"cooldown":10}
     ],
     "Manufacturer":[
-        {"name":"ControlUnit","items":["Module","Plastic","Cable","ControlUnit"],"amounts":[1,1,1,1],"cooldown":3},
-        {"name":"Engine","items":["AdamantiteAlloy","Motor","Plastic","Engine"],"amounts":[1,1,1,1],"cooldown":3},
-        {"name":"Battery","items":["Sulfur","CopperPlate","Plastic","Battery"],"amounts":[1,1,1,1],"cooldown":3},
-        {"name":"ManablastBullet","items":["Sulfur","Coal","ManaStone","ManablastBullet"],"amounts":[1,1,1,1],"cooldown":3},
-        {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[1,1,1,1],"cooldown":3}
+        {"name":"ControlUnit","items":["Module","Cable","Plastic","ControlUnit"],"amounts":[4,10,20,1],"cooldown":16},
+        {"name":"Engine","items":["AdamantiteAlloy","Motor","Plastic","Engine"],"amounts":[4,8,16,1],"cooldown":16},
+        {"name":"Battery","items":["Sulfur","Plastic","CopperPlate","Battery"],"amounts":[4,8,16,1],"cooldown":12},
+        {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[1,8,5,1],"cooldown":10},
+        {"name":"ManablastBullet","items":["ManaStone","Sulfur","Coal","ManablastBullet"],"amounts":[1,5,10,3],"cooldown":10}
     ],
     "Refinery":[
-        {"name":"Fuel","items":["CrudeOil","Fuel"],"amounts":[20,1],"cooldown":3},
-        {"name":"Naphtha","items":["CrudeOil","Naphtha"],"amounts":[20,1],"cooldown":3},
-        {"name":"Sulfur","items":["CrudeOil","Sulfur"],"amounts":[20,1],"cooldown":3}
+        {"name":"Fuel","items":["CrudeOil","Fuel"],"amounts":[40,1],"cooldown":8},
+        {"name":"Naphtha","items":["CrudeOil","Naphtha"],"amounts":[30,1],"cooldown":8},
+        {"name":"Sulfur","items":["CrudeOil","Sulfur"],"amounts":[20,2],"cooldown":8}
     ],
     "ChemicalPlant":[
-        {"name":"Plastic","items":["Naphtha","Plastic"],"amounts":[1,1],"cooldown":3},
-        {"name":"Rubber","items":["Naphtha","Rubber"],"amounts":[1,1],"cooldown":3},
-        {"name":"Rubber","items":["SlimyPlant","Rubber"],"amounts":[1,1],"cooldown":3},
-        {"name":"Sulfur","items":["ToxicPlant","Sulfur"],"amounts":[1,1],"cooldown":3}
+        {"name":"Plastic","items":["Naphtha","Plastic"],"amounts":[1,2],"cooldown":8},
+        {"name":"Rubber","items":["Naphtha","Rubber"],"amounts":[1,2],"cooldown":8},
+        {"name":"Rubber","items":["SlimyPlant","Rubber"],"amounts":[1,4],"cooldown":8},
+        {"name":"Sulfur","items":["ToxicPlant","Sulfur"],"amounts":[1,4],"cooldown":8}
     ],
     "Tower":[
         {"name":"BasicTower","items":["CopperBullet","IronBullet","SteelBullet"],"amounts":[0,0,0],"cooldown":0},

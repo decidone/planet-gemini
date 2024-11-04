@@ -21,6 +21,7 @@ public class RecipeManager : InventoryManager
         base.Start();
         itemDic = ItemList.instance.itemDic;
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -28,12 +29,14 @@ public class RecipeManager : InventoryManager
         inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
         inputManager.controls.Inventory.Recipe.performed += SlotClick;
     }
+
     void OnDisable()
     {
         inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
         inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
         inputManager.controls.Inventory.Recipe.performed -= SlotClick;
     }
+
     void SlotClick(InputAction.CallbackContext ctx)
     {
         if (focusedSlot != null)
@@ -89,7 +92,7 @@ public class RecipeManager : InventoryManager
                 {
                     Debug.Log(recipes[i].name);
 
-                    inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
+                    inventory.RecipeInvenAdd(itemDic[recipes[i].name], recipes[i].amounts[recipes[i].amounts.Count - 1]);
                 }
             }
             else
@@ -99,7 +102,7 @@ public class RecipeManager : InventoryManager
                 {
                     if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))
                     {
-                        inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
+                        inventory.RecipeInvenAdd(itemDic[recipes[i].name], recipes[i].amounts[recipes[i].amounts.Count - 1]);
                     }
                 }
             }
@@ -108,7 +111,7 @@ public class RecipeManager : InventoryManager
         {
             for (int i = 0; i < recipes.Count; i++)
             {
-                inventory.RecipeInvenAdd(itemDic[recipes[i].name], 1);
+                inventory.RecipeInvenAdd(itemDic[recipes[i].name], recipes[i].amounts[recipes[i].amounts.Count - 1]);
             }
         }
 
