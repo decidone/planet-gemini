@@ -3551,42 +3551,6 @@ PrefabInstance:
       propertyPath: MonsterSpawnMgr
       value: 
       objectReference: {fileID: 1218140029}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.size
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[52]
-      value: 
-      objectReference: {fileID: 11400000, guid: 0188d7103f8f7664bac4dee011274476, type: 2}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[53]
-      value: 
-      objectReference: {fileID: 11400000, guid: 67ca53489ae51cf45811d0ee8a60c0be, type: 2}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[54]
-      value: 
-      objectReference: {fileID: 11400000, guid: ad6f3fc4b10c08b4caa6a19413a61414, type: 2}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[55]
-      value: 
-      objectReference: {fileID: 11400000, guid: 1eccbc744d352cb498255e7dc4185f52, type: 2}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[56]
-      value: 
-      objectReference: {fileID: 11400000, guid: db690fbf05d11be48816a392b5f5b26a, type: 2}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[57]
-      value: 
-      objectReference: {fileID: 11400000, guid: a3020250a4044e341af1fee415ecb042, type: 2}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[58]
-      value: 
-      objectReference: {fileID: 11400000, guid: f85f44175b0c2834b9c1e8228ec967a2, type: 2}
-    - target: {fileID: 3986364633838151513, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
-      propertyPath: uiItemList.Array.data[59]
-      value: 
-      objectReference: {fileID: 11400000, guid: 5d4d534ddf4f44e47b3f1285491464ea, type: 2}
     - target: {fileID: 3986364635626952760, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: m_RootOrder
       value: 3

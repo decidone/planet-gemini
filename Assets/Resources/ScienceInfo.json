@@ -1,223 +1,258 @@
 {
   "Core":{
     "Core":{
-      "2":{"items":["Coal","CopperBar","IronBar","Diamond","Ruby","Amethyst"],"amounts":[5,4,3,2,3,4],"coreLv":1,"time":10},
-      "3":{"items":["Coal","CopperBar","IronBar","SteelBar"],"amounts":[1,1,1,1],"coreLv":2,"time":1},
-      "4":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic"],"amounts":[1,1,1,1,1],"coreLv":3,"time":1},
-      "5":{"items":["Coal","CopperBar","IronBar","SteelBar","Plastic","ControlUnit"],"amounts":[1,1,1,1,1,1],"coreLv":4,"time":1}
+      "2":{"items":["Wire","Cogwheel","ManaStone"],"amounts":[1,1,1],"coreLv":1,"time":1},
+      "3":{"items":["Wire","Cogwheel","SteelPlate","ManaStone"],"amounts":[1,1,1,1],"coreLv":2,"time":1},
+      "4":{"items":["SteelBeam","Motor","Plastic","Rubber","ManaStone"],"amounts":[1,1,1,1,1],"coreLv":3,"time":1},
+      "5":{"items":["Module","Battery","ControlUnit","AdamantitePlate","Engine","ManaStone"],"amounts":[1,1,1,1,1,1],"coreLv":4,"time":1}
     }
   },
   "Miner":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":110,"Info":"When placed on an ore vein, it mines ore slowly."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":10,"Info":"It can mine 2x2 area, produces faster than basic Miner."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"It can mine 2x2 area, produces faster than Miner Lv2."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"When placed on an ore vein, it mines ore slowly."},
+      "2":{"items":["SteelPlate","Cogwheel"],"amounts":[5,1],"coreLv":2,"time":1,"Info":"It can mine 2x2 area, produces faster than basic Miner."},
+      "3":{"items":["ControlUnit","Motor"],"amounts":[5,1],"coreLv":4,"time":1,"Info":"It can mine 2x2 area, produces faster than Miner Lv2."}
     }
   },
   "Furnace":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Furnace is a building used to smelt raw ores into ingots."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Furnace is a building used to smelt raw ores into ingots."}
     }
   },
   "Smelter":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Smelter is a building used to smelts two ores into alloy ingots."}
+      "1":{"items":["IronPlate","Coal"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Smelter is a building used to smelts two ores into alloy ingots."}
     }
   },
   "Constructor":{
     "Build":{
-      "1":{"items":["IronBar"],"amounts":[1],"coreLv":2,"time":10,"Info":"Constructor is a building that automate the production of one ingredient parts."}
+      "1":{"items":["IronPlate","CopperPlate"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"Constructor is a building that automate the production of one ingredient parts."}
     }
   },
   "Assembler":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":10,"Info":"Assembler is a building that automate the production of two ingredient parts."}
+      "1":{"items":["SteelPlate","Screw"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Assembler is a building that automate the production of two ingredient parts."}
     }
   },
   "Manufacturer":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Manufacturer is a building that automate the production of three ingredient parts."}
+      "1":{"items":["Module","Motor"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Manufacturer is a building that automate the production of three ingredient parts."}
     }
   },
   "Belt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Conveyor belts are structures used to transport items between buildings."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Faster than basic belts."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"time":10,"Info":"Much faster than basic belts."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Conveyor belts are structures used to transport items between buildings."},
+      "2":{"items":["IronPlate","ManaStone"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Faster than basic belts."},
+      "3":{"items":["SteelPlate","Rubber"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"Much faster than basic belts."}
     }
   },
   "UnderBelt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Underbelts are structures used to transport items through the underground connection."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Underbelts are structures used to transport items through the underground connection."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Underbelts are structures used to transport items through the underground connection."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Underbelts are structures used to transport items through the underground connection."},
+      "2":{"items":["IronPlate","ManaStone"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Underbelts are structures used to transport items through the underground connection."},
+      "3":{"items":["SteelPlate","Rubber"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"Underbelts are structures used to transport items through the underground connection."}
     }
   },
   "Splitter":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Splitter is a structure used to split an input into three outputs."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Splitter is a structure used to split an input into three outputs."}
+      "1":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Splitter is a structure used to split an input into three outputs."},
+      "2":{"items":["ControlUnit"],"amounts":[1],"coreLv":3,"time":1,"Info":"Splitter is a structure used to split an input into three outputs."}
     }
   },
   "Merger":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Merger is a structure used to merge three inputs into one output."}
+      "1":{"items":["Cogwheel"],"amounts":[1],"coreLv":1,"time":1,"Info":"Merger is a structure used to merge three inputs into one output."}
     }
   },
   "Storage":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"Storage is a Building used to store items."},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Storage is a Building used to store items."},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":5,"time":10,"Info":"Storage is a Building used to store items."}
+      "1":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Storage is a Building used to store items."},
+      "2":{"items":["IronPlate"],"amounts":[1],"coreLv":2,"time":1,"Info":"Storage is a Building used to store items."},
+      "3":{"items":["SteelPlate"],"amounts":[1],"coreLv":3,"time":1,"Info":"Storage is a Building used to store items."}
     }
   },
   "Disintegrator":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Storage is a Building used to store items."}
+      "1":{"items":["SteelPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Storage is a Building used to store items."}
     }
   },
   "Unloader":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Unloader is a structure used to pick items out from storage."}
+      "1":{"items":["Motor"],"amounts":[1],"coreLv":2,"time":1,"Info":"Unloader is a structure used to pick items out from storage."}
     }
   },
   "Transporter":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Transporter is a Building used for long-distance transportation."}
+      "1":{"items":["Module","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Transporter is a Building used for long-distance transportation."}
     }
   },
   "Pump":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":10,"Info":"Pump is a building used to pump water out of lake."}
+      "1":{"items":["Motor"],"amounts":[1],"coreLv":2,"time":1,"Info":"Pump is a building used to pump water out of lake."}
     }
   },
   "Pipe":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":10,"Info":"Pipes are structures used to transport fluids."}
+      "1":{"items":["IronPlate","Screw"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Pipes are structures used to transport fluids."}
     }
   },
   "UnderPipe":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":10,"Info":"Underpipes are structures used to transport fluids through the underground connection."}
+      "1":{"items":["IronPlate","Screw"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Underpipes are structures used to transport fluids through the underground connection."}
     }
   },
   "FluidTank":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":10,"Info":"Fluid tank is a Building used to store liquids."}
+      "1":{"items":["SteelPlate","Screw"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Fluid tank is a Building used to store liquids."}
     }
   },
   "Extractor":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Extractor is a building used to extract crude oil out of oil nodes."}
+      "1":{"items":["SteelBeam","Motor"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Extractor is a building used to extract crude oil out of oil nodes."}
     }
   },
   "Refinery":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Refinery is a building used to refine crude oil."}
+      "1":{"items":["Motor"],"amounts":[1],"coreLv":3,"time":1,"Info":"Refinery is a building used to refine crude oil."}
     }
   },
   "ChemicalPlant":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["Naphtha"],"amounts":[5],"coreLv":3,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
     }
   },
   "Overclock":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"Increases the productivity of nearby buildings."}
+      "1":{"items":["ControlUnit"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increases the productivity of nearby buildings."}
     }
   },
-  "PortalItemIn":{
+  "EnergyRepeater":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["Wire"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
-  "PortalItemOut":{
+  "ImprovedRepeater":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["Cable"],"amounts":[1],"coreLv":3,"time":1,"Info":"TBD"}
     }
   },
-  "PortalUnitIn":{
+  "LDConnector":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["ManaStone","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"TBD"}
     }
   },
-  "PortalUnitOut":{
+  "EnergyBattery":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
+      "1":{"items":["Battery"],"amounts":[5],"coreLv":3,"time":1,"Info":"TBD"}
+    }
+  },
+  "CoalGenerator":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
+    }
+  },
+  "SteamGenerator":{
+    "Build":{
+      "1":{"items":["Motor"],"amounts":[1],"coreLv":2,"time":1,"Info":"TBD"}
+    }
+  },
+  "ManaGenerator":{
+    "Build":{
+      "1":{"items":["ManaStone"],"amounts":[1],"coreLv":3,"time":1,"Info":"TBD"}
     }
   },
   "LocalPortal":{
     "Build":{
-      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
+      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":2,"time":1,"Info":"TBD"}
+    }
+  },
+  "PortalItemIn":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
+    }
+  },
+  "PortalItemOut":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
+    }
+  },
+  "PortalUnitIn":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
+    }
+  },
+  "PortalUnitOut":{
+    "Build":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Chemical plant is a building used to manufacture chemicals."}
     }
   },
   "Wall":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":10,"Info":"TBD"},
-      "3":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"TBD"},
-      "4":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"TBD"},
-      "5":{"items":["Coal"],"amounts":[1],"coreLv":5,"time":10,"Info":"TBD"}
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"},
+      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"},
+      "4":{"items":["SteelPlate"],"amounts":[1],"coreLv":2,"time":1,"Info":"TBD"},
+      "5":{"items":["AdamantitePlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"TBD"}
     }
   },
   "BasicTower":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "FireTower":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"TBD"}
     }
   },
   "IceTower":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "PoisonTower":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "StormTower":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"TBD"}
     }
   },
   "SunTower":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":5,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":5,"time":1,"Info":"TBD"}
     }
   },
   "RepairTower":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "UnitFactory":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "BounceRobot":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "SpinRobot":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "SentryCopter":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   },
   "Tank":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":10,"Info":"TBD"}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD"}
     }
   }
 }

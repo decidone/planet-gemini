@@ -32,16 +32,16 @@
         {"name":"ExplosiveBullet","items":["Sulfur","Coal","ExplosiveBullet"],"amounts":[2,5,3],"cooldown":10}
     ],
     "Manufacturer":[
-        {"name":"ControlUnit","items":["Module","Cable","Plastic","ControlUnit"],"amounts":[4,10,20,1],"cooldown":16},
-        {"name":"Engine","items":["AdamantiteAlloy","Motor","Plastic","Engine"],"amounts":[4,8,16,1],"cooldown":16},
         {"name":"Battery","items":["Sulfur","Plastic","CopperPlate","Battery"],"amounts":[4,8,16,1],"cooldown":12},
+        {"name":"ControlUnit","items":["Module","Cable","Plastic","ControlUnit"],"amounts":[4,10,20,1],"cooldown":16},
+        {"name":"Engine","items":["AdamantitePlate","Motor","Plastic","Engine"],"amounts":[4,8,16,1],"cooldown":16},
         {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[1,8,5,1],"cooldown":10},
         {"name":"ManablastBullet","items":["ManaStone","Sulfur","Coal","ManablastBullet"],"amounts":[1,5,10,3],"cooldown":10}
     ],
     "Refinery":[
-        {"name":"Fuel","items":["CrudeOil","Fuel"],"amounts":[40,1],"cooldown":8},
         {"name":"Naphtha","items":["CrudeOil","Naphtha"],"amounts":[30,1],"cooldown":8},
-        {"name":"Sulfur","items":["CrudeOil","Sulfur"],"amounts":[20,2],"cooldown":8}
+        {"name":"Sulfur","items":["CrudeOil","Sulfur"],"amounts":[20,2],"cooldown":8},
+        {"name":"Fuel","items":["CrudeOil","Fuel"],"amounts":[40,1],"cooldown":8}
     ],
     "ChemicalPlant":[
         {"name":"Plastic","items":["Naphtha","Plastic"],"amounts":[1,2],"cooldown":8},
