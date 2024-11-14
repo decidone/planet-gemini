@@ -62,6 +62,7 @@ public class SoundManager : NetworkBehaviour
     public bool isClientMapWaveOn = false;
 
     float fadeSeconds = 1.0f;
+    bool isFadingOut;
 
     private void Awake()
     {
@@ -142,6 +143,13 @@ public class SoundManager : NetworkBehaviour
         if (!bgmPlayer.isPlaying)
         {
             PlayBgmMapCheck();
+        }
+        else if (bgmPlayer.isPlaying && !isFadingOut)
+        {
+            if (bgmPlayer.clip.length - bgmPlayer.time <= 1.0f)
+            {
+                StartCoroutine(nameof(SoundFadeOut));
+            }
         }
 
         if (structureSfxPlay)
@@ -280,6 +288,16 @@ public class SoundManager : NetworkBehaviour
 
     public void PlayerMarketBgm()
     {
+        StartCoroutine(nameof(SoundFadeOut));
+        StartCoroutine(MarketBgmChange());
+    }
+
+    public IEnumerator MarketBgmChange()
+    {
+        yield return new WaitForSecondsRealtime(fadeSeconds);
+
+        StartCoroutine(nameof(SoundFadeIn));
+
         if (GameManager.instance.dayIndex > 2)
         {
             bgmPlayer.clip = audioClipRefsSO.marketBgm[1];
@@ -293,6 +311,14 @@ public class SoundManager : NetworkBehaviour
 
     public void PlayBgmMapCheck()
     {
+        StartCoroutine(nameof(SoundFadeOut));
+        StartCoroutine(BgmChange());
+    }
+
+    public IEnumerator BgmChange()
+    {
+        yield return new WaitForSecondsRealtime(fadeSeconds);
+
         if (GameManager.instance != null)
         {
             if (GameManager.instance.isPlayerInMarket)
@@ -398,7 +424,8 @@ public class SoundManager : NetworkBehaviour
             {
                 return;
             }
-            StartCoroutine(nameof(SoundFadeOut));
+            PlayBgmMapCheck();
+            //StartCoroutine(nameof(SoundFadeOut));
         }
         else if(!isHostMap)
         {
@@ -412,7 +439,8 @@ public class SoundManager : NetworkBehaviour
             {
                 return;
             }
-            StartCoroutine(nameof(SoundFadeOut));
+            PlayBgmMapCheck();
+            //StartCoroutine(nameof(SoundFadeOut));
         }
     }
 
@@ -434,6 +462,7 @@ public class SoundManager : NetworkBehaviour
 
     IEnumerator SoundFadeOut() // 점점 작아지는
     {
+        isFadingOut = true;
         float time = 0.0f;
 
         while (time < fadeSeconds)
@@ -446,7 +475,8 @@ public class SoundManager : NetworkBehaviour
         }
 
         bgmPlayer.volume = 0;
-        PlayBgmMapCheck();
+        //PlayBgmMapCheck();
+        isFadingOut = false;
     }
 
     public void PlaySFX(GameObject obj, string sfxGroupName, string sfxName)

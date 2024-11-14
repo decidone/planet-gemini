@@ -15,6 +15,8 @@ public class PlayerStatus : NetworkBehaviour
     Image hpBackBar;
     public float hp = 100.0f;
     public float maxHp = 100.0f;
+    public float tankHp;
+    public float tankMaxHp;
     public float selfHealingAmount;
     public float selfHealInterval;
     float selfHealTimer;
@@ -22,22 +24,108 @@ public class PlayerStatus : NetworkBehaviour
     public bool isPlayerInHostMap = true;
     public bool isPlayerInMarket = false;
 
-    bool tankOn;
-    TankCtrl tankData;
+    public bool tankOn;
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
 
     void Awake()
     {
+        playerController = gameObject.GetComponent<PlayerController>();
+        hpBar.fillAmount = hp / maxHp;
         HPUISet(false);
     }
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        playerController = gameObject.GetComponent<PlayerController>();
-        hpBar.fillAmount = hp / maxHp;
+        base.OnNetworkSpawn();
+        if (IsServer)
+        {
+            if (NetworkObject.IsLocalPlayer)
+            {
+                NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+            }
+            else
+            {
+                NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
+            }
+        }
     }
+
+    private void OnDisable()
+    {
+        if (IsServer)
+        {
+            if (NetworkObject.IsLocalPlayer)
+            {
+                NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
+            }
+            else
+            {
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+            }
+        }
+    }
+
+    #region ClientConnected
+    protected virtual void OnClientConnectedCallback(ulong clientId)
+    {
+        ClientConnectSyncServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ClientConnectSyncServerRpc()
+    {
+        if (tankOn)
+            ClientConnectSyncClientRpc(hp, tankOn, tankHp, tankMaxHp, playerController.onTankData.NetworkObject);
+        else
+            ClientConnectSyncClientRpc(hp);
+    }
+
+    [ClientRpc]
+    void ClientConnectSyncClientRpc(float hpSync)
+    {
+        hp = hpSync;
+    }
+
+    [ClientRpc]
+    void ClientConnectSyncClientRpc(float hpSync, bool tankOnSync, float tankHpSync, float tankMaxHpSync, NetworkObjectReference networkObjectReference)
+    {
+        hp = hpSync;
+        if (tankOnSync)
+        {
+            tankOn = tankOnSync;
+            tankHp = tankHpSync;
+            tankMaxHp = tankMaxHpSync;
+            networkObjectReference.TryGet(out NetworkObject networkObject);
+            playerController.onTankData = networkObject.GetComponent<TankCtrl>();
+            playerController.tankOn = tankOnSync;
+            Debug.Log(tankOnSync + " : " + networkObject.name);
+        }
+    }
+    #endregion
+
+    #region ClientDisconnected
+    private void OnClientDisconnected(ulong clientId)
+    {
+        if (IsServer)
+        {
+            var playerObject = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+            if (playerObject != null)
+            {
+                var playerCt = playerObject.GetComponent<PlayerController>();
+                if (playerCt != null)
+                {
+                    if (playerCt.onTankData)
+                    {
+                        playerCt.onTankData.ClientUISet();
+                    }
+                    playerCt.ClientDisConnServerRpc();
+                }
+            }
+        }
+    }
+    #endregion
 
     void Update()
     {
@@ -77,7 +165,10 @@ public class PlayerStatus : NetworkBehaviour
             HPUISet(false);
         }
         onHpChangedCallback?.Invoke();
-        hpBar.fillAmount = hp / maxHp;
+        if (!tankOn)
+        {
+            hpBar.fillAmount = hp / maxHp;
+        }
     }
 
     public void TakeDamage(float damage)
@@ -107,20 +198,22 @@ public class PlayerStatus : NetworkBehaviour
             onHpChangedCallback?.Invoke();
             hpBar.fillAmount = hp / maxHp;
         }
-        else if(tankData != null)
+        else
         {
-            if (tankData.hp <= 0f)
+            if (tankHp <= 0f)
                 return;
 
-            tankData.hp -= damage;
-            if (tankData.hp < 0f)
+            tankHp -= damage;
+            if (tankHp < 0f)
             {
-                tankData.hp = 0f;
-                TankDestory();
+                tankHp = 0f;
+                playerController.onTankData.CloseUI();
+                if (IsServer)
+                    TankDestoryServerRpc();
                 return;
             }
             onHpChangedCallback?.Invoke();
-            hpBar.fillAmount = tankData.hp / tankData.maxHp;
+            hpBar.fillAmount = tankHp / tankMaxHp;
         }
     }
 
@@ -138,27 +231,61 @@ public class PlayerStatus : NetworkBehaviour
         }
     }
 
-    public void TankOn(TankCtrl tankCtrl)
+    [ServerRpc(RequireOwnership = false)]
+    public void TankOnServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        TankOnClientRpc(networkObjectReference);
+    }
+
+    [ClientRpc]
+    void TankOnClientRpc(NetworkObjectReference networkObjectReference)
     {
         tankOn = true;
-        tankData = tankCtrl;
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        networkObject.TryGetComponent(out TankCtrl tankCtrl);
+        tankHp = tankCtrl.hp;
+        tankMaxHp = tankCtrl.maxHp;
     }
 
-    public void TankOff()
+    [ServerRpc(RequireOwnership = false)]
+    public void TankOffServerRpc()
     {
-        tankOn = false;
+        TankOffClientRpc();
     }
 
-    void TankDestory()
+    [ClientRpc]
+    void TankOffClientRpc()
     {
-        tankData = null;
         tankOn = false;
-        playerController.TankDestory();
+        hpBar.fillAmount = hp / maxHp;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void TankDestoryServerRpc()
+    {
+        TankDestoryClientRpc();
+        playerController.TankDestoryServerRpc();
+    }
+
+    [ClientRpc]
+    void TankDestoryClientRpc()
+    {
+        tankOn = false;
     }
 
     public void LoadGame()
     {
         hp = GameManager.instance.playerDataHp;
-        HPUISet(hp >= maxHp);
+
+        if (tankOn)
+        {
+            hpBar.fillAmount = tankHp / tankMaxHp;
+            HPUISet(tankHp < tankMaxHp);
+        }
+        else
+        {
+            hpBar.fillAmount = hp / maxHp;
+            HPUISet(hp < maxHp);
+        }
     }
 }

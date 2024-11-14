@@ -480,9 +480,11 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
+  slowDebuffOn: 0
   name: Puddle
   spawner: {fileID: 0}
   maxSpawnDist: 20
+  isScriptActive: 0
   monsterType: 0
   waveState: 0
   waveArrivePos: 0

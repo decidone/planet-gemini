@@ -260,6 +260,15 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "BuildingInven",
+                    "type": "Button",
+                    "id": "07b0f319-adf1-4a06-995d-a6004d6a4c83",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -304,6 +313,61 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a806df7a-a8fd-4ef5-bdb1-30796e6fa391",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BuildingInven",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eaac85cc-397b-4235-af90-0bfdb06b7890",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BuildingInven",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2fc6d694-e2e5-4c07-9d99-851fe08db376",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BuildingInven",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "565c12e3-4686-47c7-9bf3-66194dc315ce",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BuildingInven",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bd531546-1032-4ae3-8656-8ce99d2d0d49",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BuildingInven",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -362,6 +426,15 @@
                     "name": "TankAttack",
                     "type": "Button",
                     "id": "708e82c5-ab8f-4e45-952f-d40237166de8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TankInven",
+                    "type": "Button",
+                    "id": "efdbe5b8-4e87-458e-bff3-0ae6aa00c50b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -476,6 +549,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "LeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9ca1f1b5-3ae0-4b99-b331-53b762fb91ee",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TankInven",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -791,6 +875,15 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "BasicUIBtnsSwap",
+                    "type": "Button",
+                    "id": "e2bd8460-be16-4ea6-9d07-7dd4771f9199",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -868,6 +961,17 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "GameStop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8862477d-0e7b-451f-ae4d-862064aa52e1",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BasicUIBtnsSwap",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

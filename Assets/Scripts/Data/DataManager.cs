@@ -50,6 +50,7 @@ public class DataManager : MonoBehaviour
 
     public string Save(int saveSlotNum, string fileName)
     {
+        PlayerSaveData lastClientSaveData = saveData.clientPlayerData;
         saveData = new SaveData();
 
         InGameData inGameData = GameManager.instance.SaveData();
@@ -58,7 +59,16 @@ public class DataManager : MonoBehaviour
 
         // 플레이어
         saveData.hostPlayerData = GameManager.instance.PlayerSaveData(true);
-        saveData.clientPlayerData = GameManager.instance.PlayerSaveData(false);
+        PlayerSaveData tempData = GameManager.instance.PlayerSaveData(false);
+
+        if (lastClientSaveData.clientFirstConnection && tempData.hp == -1)
+        {
+            saveData.clientPlayerData = lastClientSaveData;
+        }
+        else
+        {
+            saveData.clientPlayerData = tempData;
+        }
 
         // 행성 인벤토리
         InventorySaveData hostMapInventoryData = GameManager.instance.hostMapInven.SaveData();
@@ -86,6 +96,8 @@ public class DataManager : MonoBehaviour
 
         foreach (UnitCommonAi unitAi in netObjMgr.netUnitCommonAis)
         {
+            //if (unitAi.GetComponent<TankCtrl>().playerOnTank)
+            //    continue;
             UnitSaveData unitSaveData = unitAi.SaveData();
             saveData.unitData.Add(unitSaveData);
         }

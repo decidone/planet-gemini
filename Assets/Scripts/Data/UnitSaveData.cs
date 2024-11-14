@@ -30,4 +30,10 @@ public class UnitSaveData
     public bool isWaveColonyCallCheck;  // true: 웨이브, false: 콜로니 콜
     public SerializedVector3 wavePos = new SerializedVector3(); // 웨이브, 콜로니콜 위치
     // 몬스터
+
+    // 탱크
+    public bool playerOnTank;
+    public float fuel;
+    public InventorySaveData inven = new InventorySaveData();   // 인벤토리
+    // 탱크
 }

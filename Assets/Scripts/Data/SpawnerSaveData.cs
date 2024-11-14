@@ -17,6 +17,7 @@ public class SpawnerSaveData
 
     public float hp;    // 스포너 Hp
     public int level;   // 스포너 레벨
+    public bool nearUserObjExist;
     public int extraSpawnNum;   // 임시 저장 소환 수
     public bool waveState;      // 웨이브 상태 저장
     public float waveTimer;     // 웨이브 시간 저장

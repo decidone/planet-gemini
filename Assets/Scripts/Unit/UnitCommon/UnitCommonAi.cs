@@ -88,10 +88,10 @@ public class UnitCommonAi : NetworkBehaviour
 
     [SerializeField]
     protected bool slowDebuffOn;
-    protected float slowTimer;
     protected float slowSpeedPer = 1;
+    protected bool takePoisonDamgae;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         tr = GetComponent<Transform>();
         rg = GetComponent<Rigidbody2D>();
@@ -160,18 +160,6 @@ public class UnitCommonAi : NetworkBehaviour
                     RemoveObjectsOutOfRange();
                 }
                 AttackTargetDisCheck();
-            }
-
-            if (slowDebuffOn)
-            {
-                slowTimer -= Time.deltaTime;
-
-                if (slowTimer < 0)
-                {
-                    unitSprite.color = new Color32(255, 255, 255, 255);
-                    slowDebuffOn = false;
-                    slowSpeedPer = 1;
-                }
             }
         }
     }
@@ -306,20 +294,12 @@ public class UnitCommonAi : NetworkBehaviour
         attackState = AttackState.Waiting;        
     }
 
-    public void TakeSlowDebuff(float timer)
-    {
-        slowTimer = timer;
-        slowDebuffOn = true;
-        unitSprite.color = new Color32(100, 255, 255, 255);
-        slowSpeedPer = 0.6f;
-    }
-
-    //attackType : 0 일반 공격, 1 고정 데미지, 2 방어력 무시
-    public virtual void TakeDamage(float damage, int attackType, float ignorePercent)
+    //attackType : 0 일반 공격, 1 고정 데미지, 2 방어력 무시 데미지, 3 독 공격, 4 슬로우 공격
+    public virtual void TakeDamage(float damage, int attackType, float option)
     {
         if (!dieCheck)
         {
-            TakeDamageServerRpc(damage, attackType, ignorePercent);
+            TakeDamageServerRpc(damage, attackType, option);
         }
     }
 
@@ -329,13 +309,13 @@ public class UnitCommonAi : NetworkBehaviour
     }
 
     [ServerRpc]
-    public virtual void TakeDamageServerRpc(float damage, int attackType, float ignorePercent)
+    public virtual void TakeDamageServerRpc(float damage, int attackType, float option)
     {
-        TakeDamageClientRpc(damage, attackType, ignorePercent);
+        TakeDamageClientRpc(damage, attackType, option);
     }
 
     [ClientRpc]
-    public virtual void TakeDamageClientRpc(float damage, int attackType, float ignorePercent)
+    public virtual void TakeDamageClientRpc(float damage, int attackType, float option)
     {
         //if (hp <= 0f)
         //    return;
@@ -344,13 +324,22 @@ public class UnitCommonAi : NetworkBehaviour
 
         float reducedDamage = damage;
 
-        if (attackType == 0)
+        if (attackType == 0 || attackType == 4)
         {
             reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
+            if (attackType == 4)
+            {
+                StartCoroutine(SlowDebuffDamage(option));
+            }
         }
         else if (attackType == 2)
         {
-            reducedDamage = Mathf.Max(damage - (unitCommonData.Defense * (ignorePercent / 100)), 5);
+            reducedDamage = Mathf.Max(damage - (unitCommonData.Defense * (option / 100)), 5);
+        }
+        else if (attackType == 3)
+        {
+            reducedDamage = 0;
+            StartCoroutine(PoisonDamage(damage, option));
         }
 
         hp -= reducedDamage;
@@ -366,6 +355,43 @@ public class UnitCommonAi : NetworkBehaviour
             dieCheck = true;
             DieFuncServerRpc();
         }
+    }
+
+    IEnumerator SlowDebuffDamage(float time)
+    {
+        slowDebuffOn = true;
+        
+        slowSpeedPer = 0.6f;
+        unitSprite.color = new Color32(100, 255, 255, 255);
+
+        yield return new WaitForSeconds(time);
+
+        slowSpeedPer = 1;
+        unitSprite.color = new Color32(255, 255, 255, 255);
+        
+        slowDebuffOn = false;
+    }
+
+    IEnumerator PoisonDamage(float damageAmount, float time)
+    {
+        takePoisonDamgae = true;
+
+        float damageCount = 10;
+        float tickDamage = damageAmount / damageCount;
+        float tickTime = time / damageCount;
+        int count = 0;
+        unitSprite.color = new Color32(255, 50, 255, 255);
+
+        while (count < damageCount)
+        {
+            count++;
+            TakeDamageClientRpc(tickDamage, 1, 100);
+            yield return new WaitForSeconds(tickTime);
+        }
+
+        unitSprite.color = new Color32(255, 255, 255, 255);
+
+        takePoisonDamgae = false;
     }
 
     [ServerRpc]
