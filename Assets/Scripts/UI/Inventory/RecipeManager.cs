@@ -123,4 +123,12 @@ public class RecipeManager : InventoryManager
         
         return recipes;
     }
+
+    public List<Recipe> GetRecipeList(string str)
+    {
+        recipes = new List<Recipe>();
+        recipes = RecipeList.instance.GetRecipeInven(str);
+
+        return recipes;
+    }
 }

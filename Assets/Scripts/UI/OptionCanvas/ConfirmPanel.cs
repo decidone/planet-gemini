@@ -25,6 +25,7 @@ public class ConfirmPanel : MonoBehaviour
 
     bool windowSetting;
     bool keyBindingReset;
+    bool hostGameQuit;
     float countdownTimer;
     float countdownInterval;
 
@@ -70,11 +71,16 @@ public class ConfirmPanel : MonoBehaviour
         }
     }
 
+    void PanelSetBtn(bool btnOn)
+    {
+        OkBtn.gameObject.SetActive(btnOn);
+        CanelBtn.gameObject.SetActive(btnOn);
+        confirmPanel.SetActive(true);
+    }
+
     public void CallConfirm(SaveLoadBtn btn, bool saveLoadState, int slotNum)
     {
-        OkBtn.gameObject.SetActive(true);
-        CanelBtn.gameObject.SetActive(true);
-        confirmPanel.SetActive(true);
+        PanelSetBtn(true);
         saveLoadBtn = btn;
         if (saveLoadState)
         {
@@ -94,9 +100,7 @@ public class ConfirmPanel : MonoBehaviour
 
     public void WindowSizeCallConfirm()
     {
-        OkBtn.gameObject.SetActive(true);
-        CanelBtn.gameObject.SetActive(true);
-        confirmPanel.SetActive(true);
+        PanelSetBtn(true);
         windowSetting = true;
         countdownTimer = windowTimer;
         countdownText.gameObject.SetActive(true);
@@ -110,9 +114,7 @@ public class ConfirmPanel : MonoBehaviour
 
     public void KeyBindingResetConfirm()
     {
-        OkBtn.gameObject.SetActive(true);
-        CanelBtn.gameObject.SetActive(true);
-        confirmPanel.SetActive(true);
+        PanelSetBtn(true);
         keyBindingReset = true;
         contentText.text = "Do you want to reset" + System.Environment.NewLine + "all key bindings?";
 
@@ -124,15 +126,25 @@ public class ConfirmPanel : MonoBehaviour
 
     public void KeyBindingDuplication()
     {
-        contentText.text = "The key is already assigned" + System.Environment.NewLine + "Press ESC to cancel";
+        contentText.text = "The key is already assigned" + System.Environment.NewLine + "Press ESC to cancel.";
     }
 
     public void KeyBindingCallConfirm()
     {
-        OkBtn.gameObject.SetActive(false);
-        CanelBtn.gameObject.SetActive(false);
-        confirmPanel.SetActive(true);
-        contentText.text = "Waiting For Input" + System.Environment.NewLine + "Press ESC to cancel";
+        PanelSetBtn(false);
+        contentText.text = "Waiting For Input" + System.Environment.NewLine + "Press ESC to cancel.";
+
+        if (GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
+        else
+            MainManager.instance.OpenedUISet(confirmPanel);
+    }
+
+    public void HostQuitGameCallConfirm()
+    {
+        PanelSetBtn(true);
+        hostGameQuit = true;
+        contentText.text = "Return to the Main Menu?" + System.Environment.NewLine + "Unsaved progress will be lost.";
 
         if (GameManager.instance != null)
             GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
@@ -153,6 +165,10 @@ public class ConfirmPanel : MonoBehaviour
         else if (keyBindingReset)
         {
             SettingsMenu.instance.ResetToDefault();
+        }
+        else if (hostGameQuit)
+        {
+            OptionCanvas.instance.QuitFunc();
         }
         UIClose();
     }
@@ -183,6 +199,8 @@ public class ConfirmPanel : MonoBehaviour
 
         saveLoadBtn = null;
         windowSetting = false;
+        keyBindingReset = false;
+        hostGameQuit = false;
         countdownText.gameObject.SetActive(false);
     }
 }

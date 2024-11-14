@@ -57,12 +57,14 @@ public class OptionDataManager : MonoBehaviour
         inputActions.Add("Loot", InputManager.instance.controls.Player.Loot);
         inputActions.Add("Interaction", InputManager.instance.controls.Player.Interaction);
         inputActions.Add("Map", InputManager.instance.controls.State.ToggleMap);
-        inputActions.Add("ScienceTree", InputManager.instance.controls.HotKey.ScienceTree);
+        inputActions.Add("Science Tree", InputManager.instance.controls.HotKey.ScienceTree);
         inputActions.Add("Overall", InputManager.instance.controls.HotKey.Overall);
         inputActions.Add("Rotate", InputManager.instance.controls.Building.Rotate);
         inputActions.Add("Unit Attack", InputManager.instance.controls.Unit.Attack);
         inputActions.Add("Unit Patrol", InputManager.instance.controls.Unit.Patrol);
         inputActions.Add("Unit Hold", InputManager.instance.controls.Unit.Hold);
+        inputActions.Add("Tank Inventory", InputManager.instance.controls.Player.TankInven);
+        inputActions.Add("Tank Attack", InputManager.instance.controls.Player.TankAttack);
     }
 
     public void Save()

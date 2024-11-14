@@ -30,6 +30,8 @@ public class GameManager : NetworkBehaviour
     public PlayerStatus playerStatus;
     public float playerDataHp = -1;
     public Vector3 playerDataPos = Vector3.zero;
+    bool loadTankOn;
+    public (float, float) loadTankData;
     public PlayerController playerController;
     public Transform hostPlayerTransform;
     public Transform clientPlayerTransform;
@@ -45,7 +47,7 @@ public class GameManager : NetworkBehaviour
     public int questData;
 
     [SerializeField]
-    PlayerInvenManager pInvenManager;
+    public PlayerInvenManager pInvenManager;
     [SerializeField]
     BuildingInvenManager bManager;
     [SerializeField]
@@ -145,6 +147,9 @@ public class GameManager : NetworkBehaviour
     int displayMinute;  // 분 부분
     string timeDisplay; // 시간표시용 
 
+    public float autoSaveTimer;
+    public float autoSaveinterval;
+
     Dictionary<int, int[]> waveLevelsByMapSize = new Dictionary<int, int[]>
     {
         { 0, new int[] { 1, 1, 2, 2 } }, // mapSize 0에 따른 coreLevel별 waveLevel
@@ -199,7 +204,7 @@ public class GameManager : NetworkBehaviour
 
         OtherPortalSet(); 
         SoundManager.instance.GameSceneLoad();
-
+        autoSaveinterval = SettingsMenu.instance.autoSaveInterval;
         //GameStartSet();
     }
 
@@ -344,6 +349,16 @@ public class GameManager : NetworkBehaviour
                 isConsoleOpened = false;
             }
         }
+
+        if (IsServer)
+        {
+            autoSaveTimer += Time.deltaTime;
+            if (autoSaveTimer > autoSaveinterval)
+            {
+                autoSaveTimer = 0;
+                DataManager.instance.Save(0);
+            }
+        }
     }
 
     public void DestroyAllDontDestroyOnLoadObjects()
@@ -377,7 +392,7 @@ public class GameManager : NetworkBehaviour
         {
             map = clientMap;
             isPlayerInHostMap = false;
-            SetPlayerLocationServerRpc(false, false);
+            SetPlayerLocationServerRpc(false, false, IsServer);
             SetMapInven(false);
             mapCameraController.SetCamRange(map);
             return clientPlayerSpawnPos;
@@ -386,7 +401,7 @@ public class GameManager : NetworkBehaviour
         {
             map = hostMap;
             isPlayerInHostMap = true;
-            SetPlayerLocationServerRpc(true, false);
+            SetPlayerLocationServerRpc(true, false, IsServer);
             SetMapInven(true);
             mapCameraController.SetCamRange(map);
             return hostPlayerSpawnPos;
@@ -401,7 +416,7 @@ public class GameManager : NetworkBehaviour
         {
             isPlayerInMarket = true;
             inputManager.InMarket();
-            SetPlayerLocationServerRpc(isPlayerInHostMap, true);
+            SetPlayerLocationServerRpc(isPlayerInHostMap, true, IsServer);
             SoundManager.instance.PlayerMarketBgm();
             return marketPortalTransform.position;
         }
@@ -409,7 +424,7 @@ public class GameManager : NetworkBehaviour
         {
             isPlayerInMarket = false;
             inputManager.OutMarket();
-            SetPlayerLocationServerRpc(isPlayerInHostMap, false);
+            SetPlayerLocationServerRpc(isPlayerInHostMap, false, IsServer);
             SoundManager.instance.PlayBgmMapCheck();
             if (isPlayerInHostMap)
             {
@@ -501,6 +516,14 @@ public class GameManager : NetworkBehaviour
                     newClickEvent = parent.GetComponent<StructureClickEvent>();
                     newLogisticsClickEvent = parent.GetComponent<LogisticsClickEvent>();
 
+                    if (player.TryGetComponent(out PlayerController playerController) && playerController.onTankData)
+                    {
+                        if (playerController.onTankData.tankUIOpen)
+                        {
+                            playerController.onTankData.CloseUI();
+                        }
+                    }
+                    
                     if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
                         if (clickEvent != null && clickEvent.openUI)
@@ -607,6 +630,18 @@ public class GameManager : NetworkBehaviour
         newStructure = null;
     }
 
+    public void TankUIOpen()
+    {
+        if (clickEvent && clickEvent.openUI)
+        {
+            clickEvent.CloseUI();
+        }
+        else if (logisticsClickEvent && logisticsClickEvent.openUI)
+        {
+            logisticsClickEvent.CloseUI();
+        }
+    }
+
     public void CheckAndCancelFocus(Structure str)
     {
         if (focusedStructure == str)
@@ -660,7 +695,20 @@ public class GameManager : NetworkBehaviour
                 pInvenManager.CloseUI();
                 break;
             case "StructureInfo":
-                clickEvent.CloseUI();
+                if(clickEvent)
+                {
+                    clickEvent.CloseUI();
+                }
+                else
+                {
+                    if (player.TryGetComponent(out PlayerController playerController) && playerController.onTankData)
+                    {
+                        if (playerController.onTankData.tankUIOpen)
+                        {
+                            playerController.onTankData.CloseUI();
+                        }
+                    }
+                }
                 break;
             case "RecipeMenu":
                 rManager.CloseUI();
@@ -942,9 +990,15 @@ public class GameManager : NetworkBehaviour
                 SetMapInven(false);
                 map = clientMap;
             }
+
+            //if (loadTankOn && isHost)
+            //{
+            //    player.GetComponent<PlayerController>().LoadDataSetTankServerRpc(loadTankData.Item1, loadTankData.Item2);
+            //}
         }
 
-        SetPlayerLocationServerRpc(isPlayerInHostMap, isPlayerInMarket);
+
+        SetPlayerLocationServerRpc(isPlayerInHostMap, isPlayerInMarket, IsServer);
         mainCam = Camera.main.gameObject.GetComponent<CameraController>();
         mainCam.target = player.transform;
         mapCameraController.target = player.transform;
@@ -1243,16 +1297,31 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SetPlayerLocationServerRpc(bool isHostMap, bool isInMarket)
+    public void SetPlayerLocationServerRpc(bool isHostMap, bool isInMarket, bool hostCheck)
     {
-        SetPlayerLocationClientRpc(isHostMap, isInMarket);
+        SetPlayerLocationClientRpc(isHostMap, isInMarket, hostCheck);
     }
 
     [ClientRpc]
-    public void SetPlayerLocationClientRpc(bool isHostMap, bool isInMarket)
+    public void SetPlayerLocationClientRpc(bool isHostMap, bool isInMarket, bool hostCheck)
     {
-        playerStatus.isPlayerInHostMap = isHostMap;
-        playerStatus.isPlayerInMarket = isInMarket;
+        PlayerStatus[] players = GameObject.FindObjectsOfType<PlayerStatus>();
+        foreach (PlayerStatus p in players)
+        {
+            if (hostCheck && p.name == "Desire")
+            {
+                p.isPlayerInHostMap = isHostMap;
+                p.isPlayerInMarket = isInMarket;
+            }
+            // 이 아래는 클라이언트 접속보다 데이터 교환이 먼저 이루어지게 바뀌면 다시 활성화
+            else if (!hostCheck && p.name == "Pitaya")
+            {
+                p.isPlayerInHostMap = isHostMap;
+                p.isPlayerInMarket = isInMarket;
+            }
+        }
+        //playerStatus.isPlayerInHostMap = isHostMap;
+        //playerStatus.isPlayerInMarket = isInMarket;
     }
 
     public PlayerSaveData PlayerSaveData(bool isHost)
@@ -1268,15 +1337,24 @@ public class GameManager : NetworkBehaviour
                 data.pos = Vector3Extensions.FromVector3(p.gameObject.transform.position);
                 data.isPlayerInHostMap = p.isPlayerInHostMap;
                 data.isPlayerInMarket = p.isPlayerInMarket;
+                data.tankOn = p.tankOn;
+                data.tankHp = p.tankHp;
+                data.tankMaxHp = p.tankMaxHp;
             }
             // 이 아래는 클라이언트 접속보다 데이터 교환이 먼저 이루어지게 바뀌면 다시 활성화
-            //else if (!isHost && p.name == "Pitaya")
-            //{
-            //    data.hp = p.hp;
-            //    data.pos = Vector3Extensions.FromVector3(p.gameObject.transform.position);
-            //    data.isPlayerInHostMap = p.isPlayerInHostMap;
-            //    data.isPlayerInMarket = p.isPlayerInMarket;
-            //}
+            else if (!isHost && p.name == "Pitaya")
+            {
+                data.hp = p.hp;
+                data.pos = Vector3Extensions.FromVector3(p.gameObject.transform.position);
+                data.isPlayerInHostMap = p.isPlayerInHostMap;
+                data.isPlayerInMarket = p.isPlayerInMarket;
+                data.tankOn = p.tankOn;
+                data.tankHp = p.tankHp;
+                data.tankMaxHp = p.tankMaxHp;
+                data.clientFirstConnection = true;
+            }
+
+            p.GetComponent<PlayerController>().TankSaveFunc();
         }
 
         return data;
@@ -1297,7 +1375,7 @@ public class GameManager : NetworkBehaviour
         {
             PlayerStatus playerStatus = player.GetComponent<PlayerStatus>();
             playerStatus.hp = data.hp;
-            SetPlayerLocationServerRpc(data.isPlayerInHostMap, data.isPlayerInMarket);
+            SetPlayerLocationServerRpc(data.isPlayerInHostMap, data.isPlayerInMarket, IsServer);
             isPlayerInHostMap = data.isPlayerInHostMap;
             isPlayerInMarket = data.isPlayerInMarket;
             player.transform.position = Vector3Extensions.ToVector3(data.pos);
@@ -1309,6 +1387,9 @@ public class GameManager : NetworkBehaviour
             isPlayerInMarket = data.isPlayerInMarket;
             playerDataPos = Vector3Extensions.ToVector3(data.pos);
         }
+
+        loadTankOn = data.tankOn;
+        loadTankData = (data.tankHp, data.tankMaxHp);
     }
 
     public MapSaveData SaveMapData()
@@ -1346,5 +1427,10 @@ public class GameManager : NetworkBehaviour
         }
 
         QuestManager.instance.SetQuest(questData);
+    }
+
+    public void AutoSaveTimeIntervalSet(float interval)
+    {
+        autoSaveinterval = interval;
     }
 }

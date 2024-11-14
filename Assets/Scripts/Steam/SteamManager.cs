@@ -20,6 +20,7 @@ public class SteamManager : MonoBehaviour
     public SteamId opponentSteamId;
     //bool clientConnCheck;
     bool clientReceive;
+    int clientCallCount;
     private const int MaxChunkSize = 1024;
     //[SerializeField] GameObject MainMenu;
     //[SerializeField] GameObject InLobbyMenu;
@@ -147,6 +148,7 @@ public class SteamManager : MonoBehaviour
             string message = "ClientConnect";
             byte[] data = Encoding.UTF8.GetBytes(message);
             SteamNetworking.SendP2PPacket(opponentSteamId, data);
+            clientCallCount = 0;
             Debug.Log("ClientConnectSend");
         }
     }
@@ -263,6 +265,13 @@ public class SteamManager : MonoBehaviour
                 RequestMissingPackets();
             }
         }
+
+        clientCallCount++;
+        if (clientCallCount > 10)
+        {
+            clientCallCount = 0;
+            RequestMissingPackets();
+        }
     }
 
     // 누락된 패킷 요청 함수
@@ -280,7 +289,6 @@ public class SteamManager : MonoBehaviour
         try
         {
             string opponentDataSent = ConvertByteArrayToString(dataPacket);
-            Debug.Log($"Converted string: {opponentDataSent}");
             DataManager.instance.Load(opponentDataSent);
             Debug.Log("Get Data");
             getData = true;
@@ -365,6 +373,7 @@ public class SteamManager : MonoBehaviour
     public void LeaveGame()
     {
         SteamManager.instance.LeaveLobby();
+        NetworkManager.Singleton.gameObject.GetComponent<NetworkObject>().Despawn();
         NetworkManager.Singleton.Shutdown();
         Destroy(NetworkManager.Singleton.gameObject);
         GameManager.instance.DestroyAllDontDestroyOnLoadObjects();

@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class PlayerController : NetworkBehaviour
 {
     GameManager gameManager;
-    PlayerStatus status;
+    public PlayerStatus status;
     public List<GameObject> items = new List<GameObject>();
     List<GameObject> beltList = new List<GameObject>();
 
@@ -29,7 +29,7 @@ public class PlayerController : NetworkBehaviour
     bool isLoot;
 
     [Space]
-    [Header ("Movement")]
+    [Header("Movement")]
     [SerializeField]
     float moveSpeed;
     [SerializeField]
@@ -45,7 +45,7 @@ public class PlayerController : NetworkBehaviour
     public OnTeleported onTeleportedCallback;
 
     // 탱크 테스트
-    bool tankOn;
+    public bool tankOn;
     bool tankAttackKeyPressed;
     [SerializeField]
     GameObject attackFX;
@@ -62,14 +62,15 @@ public class PlayerController : NetworkBehaviour
     bool attackMotion;
     [SerializeField]
     float stopTime;
-    GameObject nearTank;
-    TankCtrl onTankData;
+    TankCtrl nearTank;
+    public TankCtrl onTankData;
 
     void Awake()
     {
         gameManager = GameManager.instance;
         circleColl = GetComponent<CircleCollider2D>();
         capsuleColl = GetComponent<CapsuleCollider2D>();
+        status = GetComponent<PlayerStatus>();
         nearShop = null;
         isLoot = false;
         ReloadingUISet(false);
@@ -83,7 +84,6 @@ public class PlayerController : NetworkBehaviour
 
         GameManager.instance.SetPlayer(this.gameObject);
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
-        status = gameObject.GetComponent<PlayerStatus>();
 
         if (GameManager.instance.playerDataHp != -1)
         {
@@ -100,6 +100,7 @@ public class PlayerController : NetworkBehaviour
         inputManager.controls.Player.LeftClick.performed += LeftClick;
         inputManager.controls.Player.Interaction.performed += Interact;
         inputManager.controls.Player.TankAttack.performed += TankAttack;
+        inputManager.controls.Player.TankInven.performed += TankInven;
     }
 
     void OnDisable()
@@ -109,6 +110,7 @@ public class PlayerController : NetworkBehaviour
         inputManager.controls.Player.LeftClick.performed -= LeftClick;
         inputManager.controls.Player.Interaction.performed -= Interact;
         inputManager.controls.Player.TankAttack.performed -= TankAttack;
+        inputManager.controls.Player.TankInven.performed -= TankInven;
     }
 
     void Update()
@@ -116,6 +118,18 @@ public class PlayerController : NetworkBehaviour
         if (Time.timeScale == 0)
         {
             return;
+        }
+
+        if (reloading)
+        {
+            reloadTimer += Time.deltaTime;
+            reloadingBar.fillAmount = reloadTimer / reloadInterval;
+
+            if (reloadTimer >= reloadInterval)
+            {
+                reloading = false;
+                ReloadingUISet(false);
+            }
         }
 
         if (!IsOwner) { return; }
@@ -129,6 +143,14 @@ public class PlayerController : NetworkBehaviour
             animator.SetFloat("Horizontal", movement.x);
             animator.SetFloat("Vertical", movement.y);
             animator.SetFloat("Speed", movement.sqrMagnitude);
+            if (onTankData)
+            {
+                onTankData.FillFuel();
+                if (movement.sqrMagnitude > 0)
+                {
+                    onTankData.TankMove();
+                }
+            }
 
             // idle 모션 방향을 위해 마지막 움직인 방향을 저장
             animTimer += Time.deltaTime;
@@ -143,18 +165,6 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
-
-        if (reloading)
-        {
-            reloadTimer += Time.deltaTime;
-            reloadingBar.fillAmount = reloadTimer / reloadInterval;
-
-            if (reloadTimer >= reloadInterval)
-            {
-                reloading = false;
-                ReloadingUISet(false);
-            }
-        }
     }
 
     void FixedUpdate()
@@ -162,7 +172,7 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner) { return; }
 
 
-        if (tankOn)
+        if (tankOn && onTankData.fuel > 0)
         {
             if (!attackMotion)
             {
@@ -176,7 +186,7 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
-        else
+        else if(!tankOn)
         {
             rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * movement.normalized);
         }
@@ -193,9 +203,9 @@ public class PlayerController : NetworkBehaviour
         if (interactable)
         {
             interactable.SpawnIcon();
-            if (nearTank == null)
+            if (collision.GetComponent<TankCtrl>() && nearTank == null)
             {
-                nearTank = collision.gameObject;
+                TankSetServerRpc(collision.GetComponent<NetworkObject>());
             }
         }
 
@@ -227,7 +237,7 @@ public class PlayerController : NetworkBehaviour
             interactable.DespawnIcon();
             if (nearTank != null)
             {
-                nearTank = null;
+                TankResetServerRpc();
             }
         }
 
@@ -245,6 +255,31 @@ public class PlayerController : NetworkBehaviour
             nearShop = null;
             GameManager.instance.isShopOpened = false;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TankSetServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        TankSetClientRpc(networkObjectReference);
+    }
+
+    [ClientRpc]
+    public void TankSetClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        nearTank = networkObject.GetComponent<TankCtrl>();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TankResetServerRpc()
+    {
+        TankResetClientRpc();
+    }
+
+    [ClientRpc]
+    public void TankResetClientRpc()
+    {
+        nearTank = null;
     }
 
     void Interact(InputAction.CallbackContext ctx)
@@ -268,11 +303,15 @@ public class PlayerController : NetworkBehaviour
             }
             else if (!tankOn && nearTank != null)
             {
-                TankOnFunc();
+                nearTank.OpenUI();
+                BasicUIBtns.instance.SwapFunc(false);
+                TankOnFuncServerRpc();
             }
             else if (tankOn)
             {
-                TankOffFunc();
+                onTankData.ClientUISet();
+                onTankData.CloseUI();
+                TankOffFuncServerRpc();
             }
         }
         else
@@ -284,26 +323,58 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    void TankOnFuncServerRpc()
+    {
+        TankOnFuncClientRpc();
+    }
+
+    [ClientRpc]
+    void TankOnFuncClientRpc()
+    {
+        if (!nearTank.playerOnTank)
+        {
+            transform.position = nearTank.transform.position;
+
+            status.TankOnServerRpc(nearTank.GetComponent<NetworkObject>());
+            onTankData = nearTank;
+
+            onTankData.PlayerTankOnClientRpc();
+            TankOnFunc();
+        }
+    }
+
     void TankOnFunc()
     {
         tankOn = true;
-        nearTank.TryGetComponent(out TankCtrl tankCtrl);
-        status.TankOn(tankCtrl);
-        onTankData = tankCtrl;
-        transform.position = nearTank.transform.position;
-        onTankData.PlayerTankOn();
         capsuleColl.size = new Vector2(2.25f, 2f);
         animator.Play("TankWalk");
+
+        if (onTankData.reloading)
+        {
+            reloading = onTankData.reloading;
+            reloadTimer = onTankData.reloadTimer;
+            reloadInterval = onTankData.reloadInterval;
+            ReloadingUISet(true);
+        }
     }
 
-    void TankOffFunc()
+    [ServerRpc(RequireOwnership = false)]
+    void TankOffFuncServerRpc()
+    {
+        TankOffFuncClientRpc();
+    }
+
+    [ClientRpc]
+    void TankOffFuncClientRpc()
     {
         var landData = TankLandingPos();
         if (landData.Item1)
         {
             tankOn = false;
-            onTankData.PlayerTankOff(transform.position);
-            status.TankOff();
+            onTankData.PlayerTankOff(transform.position, status.tankHp, reloading, reloadTimer, reloadInterval);
+            ReloadingUISet(false);
+            status.TankOffServerRpc();
             onTankData = null;
             transform.position = landData.Item2;
             capsuleColl.size = new Vector2(1f, 0.8f);
@@ -315,9 +386,36 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public void TankDestory()
+    [ServerRpc(RequireOwnership = false)]
+    public void ClientDisConnServerRpc()
+    {
+        ClientDisConnClientRpc();
+    }
+
+    [ClientRpc]
+    public void ClientDisConnClientRpc()
+    {
+        if (tankOn)
+        {
+            onTankData.PlayerTankOff(transform.position, status.tankHp, reloading, reloadTimer, reloadInterval);
+        }
+        if (IsServer)
+        {
+            DataManager.instance.Save(0);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TankDestoryServerRpc()
+    {
+        TankDestoryClientRpc();
+    }
+
+    [ClientRpc]
+    public void TankDestoryClientRpc()
     {
         tankOn = false;
+        ReloadingUISet(false);
         onTankData.TankDestory();
         onTankData = null;
         capsuleColl.size = new Vector2(1f, 0.8f);
@@ -345,7 +443,6 @@ public class PlayerController : NetworkBehaviour
 
             if (cell.obj == null && cell.structure == null && cell.biome.biome != "lake" && cell.biome.biome != "cliff")
             {
-                Debug.Log(cell.biome.biome);
                 return (true, newPos);
             }
         }
@@ -493,7 +590,7 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        if (tankAttackKeyPressed)
+        if (tankAttackKeyPressed && IsOwner)
         {
             TankAttackEnd();
         }
@@ -501,11 +598,19 @@ public class PlayerController : NetworkBehaviour
 
     void LeftClick(InputAction.CallbackContext ctx)
     {
+        if (!IsOwner)
+            return;
+        if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
+            return;
+
         if (tankAttackKeyPressed)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            BulletSpawnServerRpc(mousePos);
+            if (onTankData.TankAttackCheck())
+            {
+                onTankData.inventory.SubServerRpc(0, 1);
+                BulletSpawnServerRpc(mousePos);
+            }
         }
     }
 
@@ -556,14 +661,19 @@ public class PlayerController : NetworkBehaviour
     }
 
 
-    void TankAttack(InputAction.CallbackContext ctx)
+    public void TankAttack()
     {
-        if (tankOn && !reloading)
+        if (IsOwner && tankOn && !reloading)
         {
             tankAttackKeyPressed = true;
             if (!UpgradeRemoveBtn.instance.clickBtn)
                 MouseSkin.instance.UnitCursorCursorSet(true);
         }
+    }
+
+    void TankAttack(InputAction.CallbackContext ctx)
+    {
+        TankAttack();
     }
 
     void TankAttackEnd()
@@ -584,5 +694,54 @@ public class PlayerController : NetworkBehaviour
             reloadingBar.enabled = false;
             reloadingBackBar.enabled = false;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void LoadDataSetTankServerRpc(float tankHp, float tankMaxHp)
+    {
+        GameObject spawnobj = Instantiate(GeminiNetworkManager.instance.unitListSO.userUnitList[3],transform.position, Quaternion.identity);
+        spawnobj.TryGetComponent(out NetworkObject netObj);
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+
+        LoadDataSetTankClientRpc(netObj, tankHp, tankMaxHp);
+    }
+
+    [ClientRpc]
+    void LoadDataSetTankClientRpc(NetworkObjectReference networkObjectReference, float tankHp, float tankMaxHp)
+    {
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        networkObject.gameObject.SetActive(false);
+        networkObject.TryGetComponent(out TankCtrl tank);
+        tank.PlayerOnTankLoad(tankHp, tankMaxHp);
+
+        status.TankOnServerRpc(tank.GetComponent<NetworkObject>());
+        onTankData = tank;
+        TankOnFunc();
+    }
+
+    public void TankSaveFunc()
+    {
+        if (onTankData)
+        {
+            onTankData.hp = status.tankHp;
+            onTankData.maxHp = status.tankMaxHp;
+            onTankData.transform.position = transform.position;
+        }
+    }
+
+    public void TankInven()
+    {
+        if (onTankData)
+        {
+            if (onTankData.tankUIOpen)
+                onTankData.CloseUI();
+            else
+                onTankData.OpenUI();
+        }
+    }
+
+    void TankInven(InputAction.CallbackContext ctx)
+    {
+        TankInven();
     }
 }

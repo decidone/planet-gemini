@@ -49,7 +49,6 @@ public class ItemInfoWindow : MonoBehaviour
 
     public void OpenWindow(Slot slot)
     {
-
         if (slot.item != null)
         {
             image.SetActive(true);
@@ -63,6 +62,13 @@ public class ItemInfoWindow : MonoBehaviour
         image.SetActive(true);
         IsOpen = true;
         winText.text = portalUIBtn.inGameName;
+    }
+
+    public void OpenWindow(string name)
+    {
+        image.SetActive(true);
+        IsOpen = true;
+        winText.text = name;
     }
 
     public void CloseWindow()

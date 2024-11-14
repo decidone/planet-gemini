@@ -85,10 +85,6 @@ public class UnitAi : UnitCommonAi
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if (IsServer)
-        {
-            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
-        }
 
         NetworkObjManager.instance.NetObjAdd(gameObject);
     }

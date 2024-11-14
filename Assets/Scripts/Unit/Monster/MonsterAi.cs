@@ -369,6 +369,8 @@ public class MonsterAi : UnitCommonAi
                 enabled = false;
                 animator.enabled = false;
                 capsule2D.enabled = false;
+                battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
+
             }
             stopTrace = false;
 
@@ -387,6 +389,8 @@ public class MonsterAi : UnitCommonAi
                     enabled = false;
                     animator.enabled = false;
                     capsule2D.enabled = false;
+                    battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
+
                 }
                 stopTrace = false;
 

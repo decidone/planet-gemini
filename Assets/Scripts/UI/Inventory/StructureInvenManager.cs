@@ -16,6 +16,8 @@ public class StructureInvenManager : InventoryManager
     public bool isOpened;
     [HideInInspector]
     public Production prod;
+    [HideInInspector]
+    public TankCtrl tank;
 
     //Transporter UI 전용
     public Toggle toggle;
@@ -40,10 +42,17 @@ public class StructureInvenManager : InventoryManager
         base.Update();
         if (isOpened)
         {
-            progressBar.SetProgress(prod.GetProgress());
-            if (prod.GetType().Name == "Furnace")
+            if (prod)
             {
-                energyBar.SetProgress(prod.GetFuel());
+                progressBar.SetProgress(prod.GetProgress());
+                if (prod.GetType().Name == "Furnace")
+                {
+                    energyBar.SetProgress(prod.GetFuel());
+                }
+            }
+            else if(tank)
+            {
+                progressBar.SetProgress(tank.GetProgress());
             }
         }
     }
@@ -121,6 +130,12 @@ public class StructureInvenManager : InventoryManager
     {
         prod = _prod;
     }
+
+    public void SetTank(TankCtrl _tank)
+    {
+        tank = _tank;
+    }
+
 
     public int InsertItem(Item item, int amount)
     {
@@ -233,5 +248,17 @@ public class StructureInvenManager : InventoryManager
         Debug.Log("strCloseUI");
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
         isOpened = false;
+    }
+
+    public void OpenTankUI()
+    {
+        inventoryUI.SetActive(true);
+    }
+
+    public void CloseTankUI()
+    {
+        focusedSlot = null;
+        inventoryUI.SetActive(false);
+        itemInfoWindow.CloseWindow();
     }
 }

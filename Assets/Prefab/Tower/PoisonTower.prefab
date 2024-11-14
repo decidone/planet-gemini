@@ -475,6 +475,7 @@ MonoBehaviour:
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
+  warningIconCheck: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -502,7 +503,7 @@ MonoBehaviour:
   slowDebuff: 0
   slowTime: 0
   poisonTrueAttack: 1
-  poisonDamage: 10
+  poisonTime: 1
   ignoreDdefense: 0
   ignorePercent: 0
 --- !u!114 &4459362913623488001

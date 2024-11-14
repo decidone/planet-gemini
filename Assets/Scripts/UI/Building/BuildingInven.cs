@@ -51,10 +51,12 @@ public class BuildingInven : MonoBehaviour
     {
         inputManager = InputManager.instance;
         inputManager.controls.HotKey.Debug.performed += DebugMode;
+        inputManager.controls.Building.BuildingInven.performed += OnBuildingInvenPerformed;
     }
     void OnDisable()
     {
         inputManager.controls.HotKey.Debug.performed -= DebugMode;
+        inputManager.controls.Building.BuildingInven.performed -= OnBuildingInvenPerformed;
     }
     void DebugMode(InputAction.CallbackContext ctx)
     {
@@ -66,6 +68,33 @@ public class BuildingInven : MonoBehaviour
         string itemType = GetItemType(buttonIndex);
         AddDicType(itemType);
         preBtnIndex = buttonIndex;
+    }
+
+    private void OnBuildingInvenPerformed(InputAction.CallbackContext context)
+    {
+        // 눌린 키 확인
+        var key = context.control.displayName;
+
+        switch (key)
+        {
+            case "1":
+                ButtonClicked(0);
+                break;
+            case "2":
+                ButtonClicked(1);
+                break;
+            case "3":
+                ButtonClicked(2);
+                break;
+            case "4":
+                ButtonClicked(3);
+                break;
+            case "5":
+                ButtonClicked(4);
+                break;
+            default:
+                break;
+        }
     }
 
     private string GetItemType(int buttonIndex)

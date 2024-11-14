@@ -11,6 +11,8 @@ public class PlayerInvenManager : InventoryManager
     StructureInvenManager sManager;
     [SerializeField]
     Text title;
+    [SerializeField]
+    PlayerController player;
 
     protected override void Start()
     {

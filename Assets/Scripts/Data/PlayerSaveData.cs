@@ -14,4 +14,10 @@ public class PlayerSaveData
     public float hp;
     public bool isPlayerInHostMap;
     public bool isPlayerInMarket;
+
+    public bool tankOn;
+    public float tankHp;
+    public float tankMaxHp;
+
+    public bool clientFirstConnection;  // 클라이언트가 접속했는지
 }

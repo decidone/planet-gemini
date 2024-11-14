@@ -16,7 +16,7 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField]
     Dropdown windowModeDropdown;
     [SerializeField]
-    Button backBtn;
+    Button saveBtn;
     [SerializeField]
     GameObject keyBindingsPanel;
     [SerializeField]
@@ -25,13 +25,21 @@ public class SettingsMenu : MonoBehaviour
     Button resetBtn;
     List<KeyBindingsBtn> keyBindingsBtn = new List<KeyBindingsBtn>();
     Dictionary<int, (string, int, int, bool, bool)> windowSize = new Dictionary<int, (string, int, int, bool, bool)>();
-    Dictionary<string, InputAction> inputActions = new Dictionary<string, InputAction>();
+    public Dictionary<string, InputAction> inputActions = new Dictionary<string, InputAction>();
     [SerializeField]
     public Toggle tutorialQuestToggle;
     int windowSizeIndex;
     int tempWindowSizeIndex;
-
     bool gameStartFirstSet;
+
+    public int autoSaveInterval;
+    int autoSaveValue;
+    [SerializeField]
+    InputField autoSaveInput;
+    [SerializeField]
+    public Slider autoSaveSlider;
+    bool isInputChanging = false;
+    bool isSliderChanging = false;
 
     #region Singleton
     public static SettingsMenu instance;
@@ -52,9 +60,11 @@ public class SettingsMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        backBtn.onClick.AddListener(() => BackBtnFunc());
-        resetBtn.onClick.AddListener(()=> ResetBtnFunc());
+        saveBtn.onClick.AddListener(() => SaveBtnFunc());
+        resetBtn.onClick.AddListener(() => ResetBtnFunc());
         tutorialQuestToggle.onValueChanged.AddListener(delegate { TutorialQuestToggleValue(); });
+        autoSaveInput.onValueChanged.AddListener(delegate { AutoSaveInputFunc(); });
+        autoSaveSlider.onValueChanged.AddListener(delegate { AutoSaveSliderFunc(); });
     }
 
     public void MenuOpen()
@@ -72,7 +82,10 @@ public class SettingsMenu : MonoBehaviour
         OptionDataManager.instance.Save();
         settingsPanel.SetActive(false);
         if (GameManager.instance != null)
+        {
             GameManager.instance.onUIChangedCallback?.Invoke(settingsPanel);
+            BasicUIBtns.instance.KeyValueSet();
+        }
         else
             MainManager.instance.ClosedUISet();
     }
@@ -158,7 +171,7 @@ public class SettingsMenu : MonoBehaviour
             KeyBindingsBtn btn = keyBindPanel.GetComponentInChildren<KeyBindingsBtn>();
             keyBindingsBtn.Add(btn);
             string key = inputActionSet(action.Value);
-            btn.BtnSetting(action.Value, action.Key, key); // 현제는 초기값만 넣게 하는데 저장 기능 추가되면 저장된 값을 불러오도록(덮어씌우기 하도록)
+            btn.BtnSetting(action.Value, action.Key, key);
         }
     }
 
@@ -205,7 +218,7 @@ public class SettingsMenu : MonoBehaviour
 
     #endregion
 
-    void BackBtnFunc()
+    void SaveBtnFunc()
     {
         MenuClose();
     }
@@ -214,6 +227,11 @@ public class SettingsMenu : MonoBehaviour
     {
         PlayerPrefs.SetInt("WindowIndex", windowSizeIndex);
         PlayerPrefs.SetInt("TutorialQuest", tutorialQuestToggle.isOn ? 0 : 1);
+        PlayerPrefs.SetInt("AutoSaveTime", autoSaveValue);
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.AutoSaveTimeIntervalSet(autoSaveInterval);
+        }
         PlayerPrefs.Save();
     }
 
@@ -224,6 +242,11 @@ public class SettingsMenu : MonoBehaviour
 
         windowSizeIndex = PlayerPrefs.GetInt("WindowIndex", 0);
         tutorialQuestToggle.isOn = PlayerPrefs.GetInt("TutorialQuest", 0) == 0;
+        autoSaveSlider.value = PlayerPrefs.GetInt("AutoSaveTime", 30);
+        autoSaveValue = (int)autoSaveSlider.value;
+        autoSaveInput.text = autoSaveValue.ToString();
+        autoSaveInterval = autoSaveValue * 60;
+
         WindowSet(windowSizeIndex);
         if (windowModeDropdown.value == windowSizeIndex)
         {
@@ -253,5 +276,49 @@ public class SettingsMenu : MonoBehaviour
         }
 
         SaveData();
+    }
+
+    void AutoSaveInputFunc()
+    {
+        if (isSliderChanging) return;
+
+        isInputChanging = true;
+
+        if (!int.TryParse(autoSaveInput.text, out int textInt))
+        {
+            autoSaveSlider.value = autoSaveSlider.minValue;
+            autoSaveInput.text = autoSaveSlider.minValue.ToString();
+        }
+        else if (textInt < autoSaveSlider.minValue)
+        {
+            autoSaveSlider.value = autoSaveSlider.minValue;
+            autoSaveInput.text = autoSaveSlider.minValue.ToString();
+        }
+        else if (textInt > autoSaveSlider.maxValue)
+        {
+            autoSaveSlider.value = autoSaveSlider.maxValue;
+            autoSaveInput.text = autoSaveSlider.maxValue.ToString();
+        }
+        else
+        {
+            autoSaveSlider.value = textInt;
+        }
+
+        autoSaveValue = (int)autoSaveSlider.value;
+        autoSaveInterval = autoSaveValue * 60;
+        isInputChanging = false;
+    }
+
+    void AutoSaveSliderFunc()
+    {
+        if (isInputChanging) return;
+
+        isSliderChanging = true;
+
+        autoSaveValue = (int)autoSaveSlider.value;
+        autoSaveInput.text = autoSaveValue.ToString();
+        autoSaveInterval = autoSaveValue * 60;
+
+        isSliderChanging = false;
     }
 }

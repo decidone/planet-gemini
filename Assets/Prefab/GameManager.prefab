@@ -371,6 +371,8 @@ MonoBehaviour:
   timeImg: {fileID: 0}
   timeText: {fileID: 0}
   dayText: {fileID: 0}
+  autoSaveTimer: 0
+  autoSaveinterval: 0
 --- !u!114 &762871311885926033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -796,6 +798,10 @@ MonoBehaviour:
       hp: 0
       isPlayerInHostMap: 0
       isPlayerInMarket: 0
+      tankOn: 0
+      tankHp: 0
+      tankMaxHp: 0
+      clientFirstConnection: 0
     clientPlayerData:
       pos:
         x: 0
@@ -804,6 +810,10 @@ MonoBehaviour:
       hp: 0
       isPlayerInHostMap: 0
       isPlayerInMarket: 0
+      tankOn: 0
+      tankHp: 0
+      tankMaxHp: 0
+      clientFirstConnection: 0
     scienceData: []
     structureData: []
     beltGroupData: []

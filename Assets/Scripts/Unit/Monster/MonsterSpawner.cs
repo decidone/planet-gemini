@@ -446,6 +446,7 @@ public class MonsterSpawner : NetworkBehaviour
         MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
         monsterAi.MonsterSpawnerSet(this, monserType);
         monsterAi.AStarSet(isInHostMap);
+
         if (!nearUserObjExist && !dieCheck)
         {
             if (IsServer)
@@ -682,6 +683,7 @@ public class MonsterSpawner : NetworkBehaviour
         }
         sppawnerLevel = spawnerSaveData.level;
         extraSpawnNum = spawnerSaveData.extraSpawnNum;
+        nearUserObjExist = spawnerSaveData.nearUserObjExist;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
         sppawnerLevelData = levelData;
@@ -691,7 +693,6 @@ public class MonsterSpawner : NetworkBehaviour
         maxStrongSpawn = levelData.maxStrongSpawn;
         maxGuardianSpawn = levelData.maxGuardianSpawn;
         totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
-
         wavePos = _basePos;
         gameLodeSet = true;
     }
@@ -937,6 +938,7 @@ public class MonsterSpawner : NetworkBehaviour
         data.dieCheck = dieCheck;
         data.spawnerGroupIndex = spawnerGroupIndex;
         data.violentCollSize = spawnerSearchColl.violentCollSize;
+        data.nearUserObjExist = nearUserObjExist;
         foreach (MonsterAi monster in totalMonsterList)
         {
             data.monsterList.Add(monster.SaveData());

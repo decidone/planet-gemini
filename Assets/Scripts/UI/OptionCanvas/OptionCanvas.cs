@@ -72,6 +72,18 @@ public class OptionCanvas : MonoBehaviour
 
     void QuitBtnFunc()
     {
+        if (GameManager.instance.isHost)
+        {
+            ConfirmPanel.instance.HostQuitGameCallConfirm();
+        }
+        else
+        {
+            QuitFunc();
+        }
+    }
+
+    public void QuitFunc()
+    {
         MainPanelSet(false);
         SteamManager.instance.LeaveLobby();
         NetworkManager.Singleton.Shutdown();

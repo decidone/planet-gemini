@@ -251,22 +251,7 @@ public class AttackTower : TowerAi
             Debug.Log("Attack");
             soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
         }
-
-        //Debug.Log("BulletName" + loadedBullet.bulletName);
-        //Debug.Log("damage" + loadedBullet.damage);
-        //Debug.Log("fireRate" + loadedBullet.fireRate);
-        //Debug.Log("range" + loadedBullet.range);
     }
-
-    //[ClientRpc]
-    //protected override void DieFuncClientRpc()
-    //{
-    //    base.DieFuncClientRpc();
-
-    //    Instantiate(RuinExplo, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
-
-    //    animator.SetBool("isDie", true);
-    //}
 
     public void RemoveMonster(GameObject monster)
     {

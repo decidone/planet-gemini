@@ -9,13 +9,13 @@ public class TowerAttackOption : MonoBehaviour
     [SerializeField]
     float slowTime;         // 디버프 시간
     [SerializeField]
-    bool poisonTrueAttack;  // 추가 고정 데미지
+    bool poisonTrueAttack;  // 독 공격
     [SerializeField]
-    float poisonDamage;     // 독 데미지
+    float poisonTime;         // 디버프 시간
     [SerializeField]
     bool ignoreDdefense;    // 방어력 무시
     [SerializeField]
-    float ignorePercent;     // 독 데미지
+    float ignorePercent;    // 방어력 무시 퍼센트
 
     public void TowerAttackFxSet(TowerAttackFx fx)
     {
@@ -25,7 +25,7 @@ public class TowerAttackOption : MonoBehaviour
         }
         else if (poisonTrueAttack)
         {
-            fx.PoisonTrueAttackSet(poisonDamage);
+            fx.PoisonTrueAttackSet(poisonTime);
         }
         else if (ignoreDdefense)
         {

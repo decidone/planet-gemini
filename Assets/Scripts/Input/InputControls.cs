@@ -282,6 +282,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BuildingInven"",
+                    ""type"": ""Button"",
+                    ""id"": ""07b0f319-adf1-4a06-995d-a6004d6a4c83"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -326,6 +335,61 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a806df7a-a8fd-4ef5-bdb1-30796e6fa391"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildingInven"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eaac85cc-397b-4235-af90-0bfdb06b7890"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildingInven"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2fc6d694-e2e5-4c07-9d99-851fe08db376"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildingInven"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""565c12e3-4686-47c7-9bf3-66194dc315ce"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildingInven"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd531546-1032-4ae3-8656-8ce99d2d0d49"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildingInven"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -384,6 +448,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""name"": ""TankAttack"",
                     ""type"": ""Button"",
                     ""id"": ""708e82c5-ab8f-4e45-952f-d40237166de8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TankInven"",
+                    ""type"": ""Button"",
+                    ""id"": ""efdbe5b8-4e87-458e-bff3-0ae6aa00c50b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -498,6 +571,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""LeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9ca1f1b5-3ae0-4b99-b331-53b762fb91ee"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TankInven"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -813,6 +897,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BasicUIBtnsSwap"",
+                    ""type"": ""Button"",
+                    ""id"": ""e2bd8460-be16-4ea6-9d07-7dd4771f9199"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -890,6 +983,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""GameStop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8862477d-0e7b-451f-ae4d-862064aa52e1"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BasicUIBtnsSwap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1613,6 +1717,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Building_LeftMouseButtonUp = m_Building.FindAction("LeftMouseButtonUp", throwIfNotFound: true);
         m_Building_RightMouseButtonDown = m_Building.FindAction("RightMouseButtonDown", throwIfNotFound: true);
         m_Building_Rotate = m_Building.FindAction("Rotate", throwIfNotFound: true);
+        m_Building_BuildingInven = m_Building.FindAction("BuildingInven", throwIfNotFound: true);
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
@@ -1621,6 +1726,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Player_LeftClick = m_Player.FindAction("LeftClick", throwIfNotFound: true);
         m_Player_Interaction = m_Player.FindAction("Interaction", throwIfNotFound: true);
         m_Player_TankAttack = m_Player.FindAction("TankAttack", throwIfNotFound: true);
+        m_Player_TankInven = m_Player.FindAction("TankInven", throwIfNotFound: true);
         // Unit
         m_Unit = asset.FindActionMap("Unit", throwIfNotFound: true);
         m_Unit_Attack = m_Unit.FindAction("Attack", throwIfNotFound: true);
@@ -1647,6 +1753,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_EnergyCheck = m_HotKey.FindAction("EnergyCheck", throwIfNotFound: true);
         m_HotKey_Overall = m_HotKey.FindAction("Overall", throwIfNotFound: true);
         m_HotKey_GameStop = m_HotKey.FindAction("GameStop", throwIfNotFound: true);
+        m_HotKey_BasicUIBtnsSwap = m_HotKey.FindAction("BasicUIBtnsSwap", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -1849,6 +1956,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Building_LeftMouseButtonUp;
     private readonly InputAction m_Building_RightMouseButtonDown;
     private readonly InputAction m_Building_Rotate;
+    private readonly InputAction m_Building_BuildingInven;
     public struct BuildingActions
     {
         private @InputControls m_Wrapper;
@@ -1857,6 +1965,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @LeftMouseButtonUp => m_Wrapper.m_Building_LeftMouseButtonUp;
         public InputAction @RightMouseButtonDown => m_Wrapper.m_Building_RightMouseButtonDown;
         public InputAction @Rotate => m_Wrapper.m_Building_Rotate;
+        public InputAction @BuildingInven => m_Wrapper.m_Building_BuildingInven;
         public InputActionMap Get() { return m_Wrapper.m_Building; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1878,6 +1987,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Rotate.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRotate;
                 @Rotate.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRotate;
                 @Rotate.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnRotate;
+                @BuildingInven.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnBuildingInven;
+                @BuildingInven.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnBuildingInven;
+                @BuildingInven.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnBuildingInven;
             }
             m_Wrapper.m_BuildingActionsCallbackInterface = instance;
             if (instance != null)
@@ -1894,6 +2006,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Rotate.started += instance.OnRotate;
                 @Rotate.performed += instance.OnRotate;
                 @Rotate.canceled += instance.OnRotate;
+                @BuildingInven.started += instance.OnBuildingInven;
+                @BuildingInven.performed += instance.OnBuildingInven;
+                @BuildingInven.canceled += instance.OnBuildingInven;
             }
         }
     }
@@ -1908,6 +2023,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_LeftClick;
     private readonly InputAction m_Player_Interaction;
     private readonly InputAction m_Player_TankAttack;
+    private readonly InputAction m_Player_TankInven;
     public struct PlayerActions
     {
         private @InputControls m_Wrapper;
@@ -1918,6 +2034,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @LeftClick => m_Wrapper.m_Player_LeftClick;
         public InputAction @Interaction => m_Wrapper.m_Player_Interaction;
         public InputAction @TankAttack => m_Wrapper.m_Player_TankAttack;
+        public InputAction @TankInven => m_Wrapper.m_Player_TankInven;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1945,6 +2062,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @TankAttack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTankAttack;
                 @TankAttack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTankAttack;
                 @TankAttack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTankAttack;
+                @TankInven.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTankInven;
+                @TankInven.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTankInven;
+                @TankInven.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTankInven;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -1967,6 +2087,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @TankAttack.started += instance.OnTankAttack;
                 @TankAttack.performed += instance.OnTankAttack;
                 @TankAttack.canceled += instance.OnTankAttack;
+                @TankInven.started += instance.OnTankInven;
+                @TankInven.performed += instance.OnTankInven;
+                @TankInven.canceled += instance.OnTankInven;
             }
         }
     }
@@ -2145,6 +2268,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_EnergyCheck;
     private readonly InputAction m_HotKey_Overall;
     private readonly InputAction m_HotKey_GameStop;
+    private readonly InputAction m_HotKey_BasicUIBtnsSwap;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2156,6 +2280,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @EnergyCheck => m_Wrapper.m_HotKey_EnergyCheck;
         public InputAction @Overall => m_Wrapper.m_HotKey_Overall;
         public InputAction @GameStop => m_Wrapper.m_HotKey_GameStop;
+        public InputAction @BasicUIBtnsSwap => m_Wrapper.m_HotKey_BasicUIBtnsSwap;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2186,6 +2311,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @GameStop.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnGameStop;
                 @GameStop.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnGameStop;
                 @GameStop.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnGameStop;
+                @BasicUIBtnsSwap.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnBasicUIBtnsSwap;
+                @BasicUIBtnsSwap.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnBasicUIBtnsSwap;
+                @BasicUIBtnsSwap.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnBasicUIBtnsSwap;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2211,6 +2339,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @GameStop.started += instance.OnGameStop;
                 @GameStop.performed += instance.OnGameStop;
                 @GameStop.canceled += instance.OnGameStop;
+                @BasicUIBtnsSwap.started += instance.OnBasicUIBtnsSwap;
+                @BasicUIBtnsSwap.performed += instance.OnBasicUIBtnsSwap;
+                @BasicUIBtnsSwap.canceled += instance.OnBasicUIBtnsSwap;
             }
         }
     }
@@ -2480,6 +2611,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnLeftMouseButtonUp(InputAction.CallbackContext context);
         void OnRightMouseButtonDown(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+        void OnBuildingInven(InputAction.CallbackContext context);
     }
     public interface IPlayerActions
     {
@@ -2489,6 +2621,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnLeftClick(InputAction.CallbackContext context);
         void OnInteraction(InputAction.CallbackContext context);
         void OnTankAttack(InputAction.CallbackContext context);
+        void OnTankInven(InputAction.CallbackContext context);
     }
     public interface IUnitActions
     {
@@ -2519,6 +2652,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnEnergyCheck(InputAction.CallbackContext context);
         void OnOverall(InputAction.CallbackContext context);
         void OnGameStop(InputAction.CallbackContext context);
+        void OnBasicUIBtnsSwap(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

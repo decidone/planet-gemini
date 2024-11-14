@@ -13,12 +13,12 @@ public class TowerAttackFx : NetworkBehaviour
 
     protected NetworkObjectPool networkObjectPool;
 
-    protected bool slowDebuff;        // 공속 느리게
-    protected float slowTime;         // 디버프 시간
-    protected bool poisonTrueAttack;  // 추가 고정 데미지
-    protected float poisonDamage;     // 독 데미지
-    protected bool ignoreDdefense;    // 방어력 무시
-    protected float ignorePercent;     // 독 데미지
+    protected bool slowDebuff;          // 공속 느리게
+    protected float slowTime;           // 디버프 시간
+    protected bool poisonTrueAttack;    // 추가 고정 데미지
+    protected float poisonTime;         // 디버프 시간
+    protected bool ignoreDdefense;      // 방어력 무시
+    protected float ignorePercent;      // 방어력 무시 퍼센트
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -30,8 +30,8 @@ public class TowerAttackFx : NetworkBehaviour
     {
         if (IsServer)
         {
+            ResetOption();
             NetworkObject.Despawn();
-            Debug.Log("??");
         }
     }
 
@@ -41,10 +41,10 @@ public class TowerAttackFx : NetworkBehaviour
         slowTime = time;
     }
 
-    public void PoisonTrueAttackSet(float damage)
+    public void PoisonTrueAttackSet(float time)
     {
         poisonTrueAttack = true;
-        poisonDamage = damage;
+        poisonTime = time;
     }
 
     public void IgnoreDdefenseSet(float percent)
@@ -53,24 +53,30 @@ public class TowerAttackFx : NetworkBehaviour
         ignorePercent = percent;
     }
 
+    protected void ResetOption()
+    {
+        slowDebuff = false;
+        poisonTrueAttack = false;
+        ignoreDdefense = false;
+    }
+
     protected void TakeDamage(MonsterAi monster)
     {
         if (ignoreDdefense)
         {
             monster.TakeDamage(damage, 2, ignorePercent);
         }
+        else if (poisonTrueAttack)
+        {
+            monster.TakeDamage(damage, 3, poisonTime);
+        }
+        else if (slowDebuff)
+        {
+            monster.TakeDamage(damage, 4, slowTime);
+        }
         else
         {
             monster.TakeDamage(damage, 0);
-        }
-
-        if (slowDebuff)
-        {
-            monster.TakeSlowDebuff(slowTime);
-        }
-        else if (poisonTrueAttack)
-        {
-            monster.TakeDamage(poisonDamage, 1);
         }
     }
 

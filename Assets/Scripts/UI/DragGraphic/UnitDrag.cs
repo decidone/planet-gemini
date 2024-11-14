@@ -60,7 +60,8 @@ public class UnitDrag : DragFunc
         inputManager.controls.Unit.Patrol.performed -= Patrol;
         inputManager.controls.Unit.Hold.performed -= Hold;
     }
-    void Attack(InputAction.CallbackContext ctx)
+
+    public void Attack()
     {
         if (selectedObjects.Length > 0)
         {
@@ -71,7 +72,12 @@ public class UnitDrag : DragFunc
         }
     }
 
-    void Patrol(InputAction.CallbackContext ctx)
+    void Attack(InputAction.CallbackContext ctx)
+    {
+        Attack();
+    }
+
+    public void Patrol()
     {
         if (selectedObjects.Length > 0)
         {
@@ -82,12 +88,22 @@ public class UnitDrag : DragFunc
         }
     }
 
-    void Hold(InputAction.CallbackContext ctx)
+    void Patrol(InputAction.CallbackContext ctx)
+    {
+        Patrol();
+    }
+
+    public void Hold()
     {
         if (selectedObjects.Length > 0)
         {
             unitHoldSet?.Invoke();
         }
+    }
+
+    void Hold(InputAction.CallbackContext ctx)
+    {
+        Hold();
     }
 
     public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
@@ -152,6 +168,7 @@ public class UnitDrag : DragFunc
             {
                 addUnit?.Invoke(obj);
             }
+            BasicUIBtns.instance.SwapFunc(false);
             isSelectingUnits = true;
         }
     }
@@ -163,6 +180,7 @@ public class UnitDrag : DragFunc
         selectedObjects[0] = ray.collider.gameObject;
 
         addUnit?.Invoke(ray.collider.gameObject);
+        BasicUIBtns.instance.SwapFunc(false);
         isSelectingUnits = true;
     }
 
