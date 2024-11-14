@@ -121,6 +121,7 @@ public class Furnace : Production
         sInvenManager.SetProd(this);
         //sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.SetCooldownText(cooldown);
 
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
         List<Item> items = new List<Item>();

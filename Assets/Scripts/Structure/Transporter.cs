@@ -120,6 +120,7 @@ public class Transporter : Production
         sInvenManager.SetProd(this);
         //sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.SetCooldownText(cooldown);
         sInvenManager.TransporterSetting(isToggleOn, sendAmount);
 
         //if (takeBuild != null)

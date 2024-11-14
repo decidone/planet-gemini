@@ -83,6 +83,7 @@ public class Assembler : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
+        sInvenManager.SetCooldownText(effiCooldown - effiOverclock);
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);

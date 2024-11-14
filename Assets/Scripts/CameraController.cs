@@ -70,6 +70,8 @@ public class CameraController : MonoBehaviour
             zoomLevel = Mathf.Clamp(zoomLevel, 1, 5);
             pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(width / zoomLevel);
             pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(height / zoomLevel);
+
+            LootListManager.instance.InfoWindowPosChange(zoomLevel);
         }
         else if(scrollWheelInput > 0)
         {
@@ -77,6 +79,8 @@ public class CameraController : MonoBehaviour
             zoomLevel = Mathf.Clamp(zoomLevel, 1, 5);
             pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(width / zoomLevel);
             pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(height / zoomLevel);
+
+            LootListManager.instance.InfoWindowPosChange(zoomLevel);
         }
     }
 

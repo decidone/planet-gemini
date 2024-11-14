@@ -13,6 +13,7 @@ public class StructureInvenManager : InventoryManager
     GameObject structureInfoUI;
     public ProgressBar progressBar;
     public ProgressBar energyBar;
+    public Text cooldownText;
     public bool isOpened;
     [HideInInspector]
     public Production prod;
@@ -80,12 +81,25 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
+    public void SetCooldownText(float cooldown)
+    {
+        if (cooldown == 0)
+        {
+            cooldownText.text = "";
+        }
+        else
+        {
+            cooldownText.text = cooldown + "s";
+        }
+    }
+
     public void ReleaseInven()
     {
         ResetInvenOption();
         prod = null;
         progressBar.SetMaxProgress(1);
         energyBar.SetMaxProgress(1);
+        cooldownText.text = "";
     }
 
     public void ResetInvenOption()

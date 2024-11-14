@@ -27,7 +27,6 @@ public class MainPanelsManager : MonoBehaviour
     InputField seedInputField;
     SaveLoadMenu saveLoadPanel;
 
-    // Start is called before the first frame update
     void Start()
     {
         gameSetting = MainGameSetting.instance;
@@ -37,6 +36,9 @@ public class MainPanelsManager : MonoBehaviour
         mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
         difficultyLevelDropdown.onValueChanged.AddListener(delegate { DifficultyLevelDropdownFunc(difficultyLevelDropdown); });
         randomSeedToggle.onValueChanged.AddListener(delegate { RandomSeedToggleValue(); });
+        seedInputField.onValueChanged.AddListener(delegate { SeedInputValueChanged(); });
+
+        randomSeedToggle.isOn = true;
     }
 
     public void NewGamePanelSet(bool state)
@@ -84,18 +86,27 @@ public class MainPanelsManager : MonoBehaviour
     {
         if (randomSeedToggle.isOn)
         {
-            seedPanel.SetActive(false);
+            //seedPanel.SetActive(false);
+            seedInputField.text = SetRandomSeed().ToString();
+            seedInputField.interactable = false;
         }
         else
         {
-            seedPanel.SetActive(true);
+            //seedPanel.SetActive(true);
+            seedInputField.interactable = true;
         }
-
-        SetRandomSeed();
     }
 
-    void SetRandomSeed()
+    void SeedInputValueChanged()
     {
-        gameSetting.RandomSeedValue(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
+        if (seedInputField.text.Length > 0 && seedInputField.text[0] == '-')
+            seedInputField.text = seedInputField.text.Remove(0, 1);
+    }
+
+    int SetRandomSeed()
+    {
+        int seed = UnityEngine.Random.Range(0, 999999999);
+        gameSetting.RandomSeedValue(seed);
+        return seed;
     }
 }

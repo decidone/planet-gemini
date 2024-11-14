@@ -43,6 +43,7 @@ public abstract class Production : Structure
         cooldown = recipe.cooldown;
         effiCooldown = cooldown;
         sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
+        sInvenManager.SetCooldownText(effiCooldown - effiOverclock);
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
@@ -511,7 +512,10 @@ public abstract class Production : Structure
             }
 
             if (isUIOpened)
+            {
                 sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
+                sInvenManager.SetCooldownText(effiCooldown - effiOverclock);
+            }
         }
     }
 

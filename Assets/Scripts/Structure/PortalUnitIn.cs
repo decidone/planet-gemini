@@ -71,6 +71,7 @@ public class PortalUnitIn : PortalObj
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.SetCooldownText(cooldown);
         DisplaySlotChange();
     }
 

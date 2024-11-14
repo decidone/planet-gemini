@@ -8,6 +8,7 @@ public class LootListManager : MonoBehaviour
     public GameObject lootItemPrefab;
     public GameObject lootListContent;
     public ScrollRect scrollRect;
+    public float defaultYPos;
 
     List<GameObject> lootInfoList = new List<GameObject>();
     List<Item> lootList = new List<Item>();
@@ -31,6 +32,12 @@ public class LootListManager : MonoBehaviour
         instance = this;
     }
     #endregion
+
+    public void InfoWindowPosChange(int zoomLevel)
+    {
+        scrollRect.transform.localPosition
+            = new Vector3(scrollRect.transform.localPosition.x, defaultYPos + (50 * (zoomLevel - 1)), scrollRect.transform.localPosition.z);
+    }
 
     public void DisplayLootInfo(Item item, int amount)
     {
