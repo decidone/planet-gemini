@@ -16,7 +16,8 @@
   },
   "Furnace":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Furnace is a building used to smelt raw ores into ingots."}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Furnace is a building used to smelt raw ores into ingots."},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Furnace is a building used to smelt raw ores into ingots."}
     }
   },
   "Smelter":{

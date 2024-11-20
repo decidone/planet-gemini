@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// UTF-8 설정
-public class Furnace : Production
-{ 
+public class FurnaceUpgrade : Production
+{
     protected override void Start()
     {
         base.Start();
@@ -19,16 +18,8 @@ public class Furnace : Production
         {
             var slot = inventory.SlotCheck(0);
             var slot1 = inventory.SlotCheck(1);
-            var slot2 = inventory.SlotCheck(2);
 
-            if (fuel == 0 && slot1.item == itemDic["Coal"] && slot1.amount > 0)
-            {
-                if(IsServer)
-                    inventory.SubServerRpc(1, 1);
-                fuel = maxFuel;
-            }
-
-            if (slot.item != null)
+            if (slot.item != null && conn != null && conn.group != null && conn.group.efficiency > 0)
             {
                 foreach (Recipe _recipe in recipes)
                 {
@@ -38,19 +29,18 @@ public class Furnace : Production
                         output = itemDic[recipe.items[recipe.items.Count - 1]];
                     }
                 }
-     
-                if (fuel > 0 && slot.amount >= recipe.amounts[0] && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+
+                if (slot.amount >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                 {
-                    if (slot2.item == output || slot2.item == null)
+                    if (slot1.item == output || slot1.item == null)
                     {
                         prodTimer += Time.deltaTime;
                         if (prodTimer > cooldown)
                         {
-                            fuel -= 25;
                             if (IsServer)
                             {
                                 inventory.SubServerRpc(0, recipe.amounts[0]);
-                                inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
+                                inventory.SlotAdd(1, output, recipe.amounts[recipe.amounts.Count - 1]);
 
                                 Overall.instance.OverallConsumption(slot.item, recipe.amounts[0]);
                                 Overall.instance.OverallProd(output, recipe.amounts[recipe.amounts.Count - 1]);
@@ -74,7 +64,7 @@ public class Furnace : Production
                 prodTimer = 0;
             }
 
-            if (IsServer && slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot1.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -82,34 +72,6 @@ public class Furnace : Production
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
-            }
-        }
-    }
-
-    public override void WarningStateCheck()
-    {
-        if (!isPreBuilding && warningIcon != null)
-        {
-            if (fuel > 0)
-            {
-                if (warningIconCheck)
-                {
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warningIconCheck = false;
-                    warningIcon.enabled = false;
-                }
-            }
-            else
-            {
-                if (!warningIconCheck)
-                {
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warning = FlickeringIcon();
-                    StartCoroutine(warning);
-                    warningIconCheck = true;
-                }
             }
         }
     }
@@ -130,8 +92,7 @@ public class Furnace : Production
             items.Add(itemDic[recipe.items[0]]);
         }
         sInvenManager.slots[0].SetInputItem(items);
-        sInvenManager.slots[1].SetInputItem(ItemList.instance.itemDic["Coal"]);
-        sInvenManager.slots[2].outputSlot = true;
+        sInvenManager.slots[1].outputSlot = true;
     }
 
     public override void CloseUI()
@@ -143,10 +104,6 @@ public class Furnace : Production
     public override bool CanTakeItem(Item item)
     {
         var slot = inventory.SlotCheck(0);
-        var slot1 = inventory.SlotCheck(1);
-
-        if (itemDic["Coal"] == item && slot1.amount < 99)
-            return true;
 
         if (slot.item == null)
         {
@@ -167,17 +124,12 @@ public class Furnace : Production
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
-        if(IsServer)
+        if (IsServer)
         {
-            if (itemDic["Coal"] == itemProps.item)
-                inventory.SlotAdd(1, itemProps.item, itemProps.amount);
-            else
+            foreach (Recipe _recipe in recipes)
             {
-                foreach (Recipe _recipe in recipes)
-                {
-                    if (itemProps.item == itemDic[_recipe.items[0]])
-                        inventory.SlotAdd(0, itemProps.item, itemProps.amount);
-                }
+                if (itemProps.item == itemDic[_recipe.items[0]])
+                    inventory.SlotAdd(0, itemProps.item, itemProps.amount);
             }
         }
 
@@ -188,15 +140,10 @@ public class Furnace : Production
     {
         if (IsServer)
         {
-            if (itemDic["Coal"] == item)
-                inventory.SlotAdd(1, item, 1);
-            else
+            foreach (Recipe _recipe in recipes)
             {
-                foreach (Recipe _recipe in recipes)
-                {
-                    if (item == itemDic[_recipe.items[0]])
-                        inventory.SlotAdd(0, item, 1);
-                }
+                if (item == itemDic[_recipe.items[0]])
+                    inventory.SlotAdd(0, item, 1);
             }
         }
     }
@@ -206,7 +153,7 @@ public class Furnace : Production
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
         foreach (GameObject list in inventoryList.StructureStorageArr)
         {
-            if (list.name == "FurnaceLv1")
+            if (list.name == "FurnaceLv2")
             {
                 ui = list;
             }

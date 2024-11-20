@@ -845,9 +845,9 @@ public class MapGenerator : MonoBehaviour
         AstarData data = AstarPath.active.data;
         GridGraph gg = data.AddGraph(typeof(GridGraph)) as GridGraph;
         if(isHostMap)
-            gg.name = "Map1";
+            gg.name = "Map1PlayerUnit";
         else
-            gg.name = "Map2";
+            gg.name = "Map2PlayerUnit";
 
         gg.center = centerPos;
         gg.SetDimensions(width, height, 1);
@@ -859,6 +859,21 @@ public class MapGenerator : MonoBehaviour
         gg.collision.mask |= 1 << LayerMask.NameToLayer("MapObj");
         gg.collision.mask |= 1 << LayerMask.NameToLayer("Spawner");
         gg.collision.mask |= 1 << LayerMask.NameToLayer("PortalUnit");
+
+        gg = data.AddGraph(typeof(GridGraph)) as GridGraph;
+        if (isHostMap)
+            gg.name = "Map1MonsterUnit";
+        else
+            gg.name = "Map2MonsterUnit";
+
+        gg.center = centerPos;
+        gg.SetDimensions(width, height, 1);
+        gg.is2D = true;
+        gg.collision.use2D = true;
+        gg.collision.diameter = 0.8f;
+        gg.collision.mask |= 1 << LayerMask.NameToLayer("Map");
+        gg.collision.mask |= 1 << LayerMask.NameToLayer("MapObj");
+        gg.collision.mask |= 1 << LayerMask.NameToLayer("Spawner");
     }
 
     public void SetCorruption(Vector3 spawnerPos, int level)

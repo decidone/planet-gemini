@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
-  m_Name: BuildingAssembler
+  m_Name: BuildingFurnaceUpgrade
   m_EditorClassIdentifier: 
   type: Factory
-  scienceName: Assembler
-  item: {fileID: 11400000, guid: 46cb706fd7d0ec84c9d9a042249929ea, type: 2}
-  gameObj: {fileID: 1597667644691574791, guid: 05acae93fb48e384c98207ffcc0a2755, type: 3}
+  scienceName: FurnaceUpgrade
+  item: {fileID: 11400000, guid: e9b82aa1665ed894b85772447b95e0e4, type: 2}
+  gameObj: {fileID: 8759284699072132164, guid: 3462f4601c949c64cae35c51d70e5e2c, type: 3}
   sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 0
   isUnderObj: 0
-  isEnergyUse: 0
+  isEnergyUse: 1
   isEnergyStr: 0
   sprites:
-  - {fileID: 72252722, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  - {fileID: -1095850458, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   animatorController: []
-  level: 1
+  level: 2
   height: 2
   width: 2
   dirCount: 0

@@ -9,16 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7649eee2cce166345b3adb9b43376fcd, type: 3}
-  m_Name: Metal_blue
+  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
+  m_Name: ItemFurnaceUpgrade
   m_EditorClassIdentifier: 
-  unitName: Metal
-  maxHp: 150
-  damage: 25
-  moveSpeed: 7
-  attackDist: 2
-  attDelayTime: 1.5
-  colliderRadius: 20
-  minCollRad: 10
-  patrolRad: 5
-  defense: 20
+  name: Furnace
+  icon: {fileID: -1095850458, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  tier: -1

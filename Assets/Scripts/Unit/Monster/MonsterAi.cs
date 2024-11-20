@@ -469,7 +469,6 @@ public class MonsterAi : UnitCommonAi
                 AnimSetFloat(targetVec, true);
 
                 tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
-                //tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
 
                 if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                 {
@@ -477,11 +476,6 @@ public class MonsterAi : UnitCommonAi
 
                     if (currentWaypointIndex >= movePath.Count)
                     {
-                        //if (goalPathBlocked)
-                        //{
-                        //    goalPathBlocked = true;
-                        //    DestroyMapObject(wavePos);
-                        //}
                         return;
                     }
                 }
@@ -946,5 +940,17 @@ public class MonsterAi : UnitCommonAi
         data.waveWaiting = waveWaiting;
         data.isWaveColonyCallCheck = isWaveColonyCallCheck;
         return data;
+    }
+
+    public override void AStarSet(bool isHostMap)
+    {
+        GraphMask mask;
+        if (isHostMap)
+            mask = GraphMask.FromGraphName("Map1MonsterUnit");
+        else
+            mask = GraphMask.FromGraphName("Map2MonsterUnit");
+
+        isInHostMap = isHostMap;
+        seeker.graphMask = mask;
     }
 }

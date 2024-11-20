@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDPoisonTower
   m_EditorClassIdentifier: 
-  damage: 20
+  damage: 70
   attackDist: 8
-  attDelayTime: 2
+  attDelayTime: 1

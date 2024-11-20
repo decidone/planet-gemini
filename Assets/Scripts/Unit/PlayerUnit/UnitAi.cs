@@ -28,7 +28,7 @@ public class UnitAi : UnitCommonAi
     bool unitSelect = false;
     UnitGroupCtrl unitGroupCtrl;
     // 공격 관련 변수
-    List<Vector3> aggroPath = new List<Vector3>();    
+    List<Vector3> aggroPath = new List<Vector3>();
     private int aggropointIndex; // 현재 이동 중인 경로 점 인덱스
     bool isTargetSet = false;
     bool isAttackMove = true;
@@ -56,7 +56,7 @@ public class UnitAi : UnitCommonAi
 
             if (selfHealTimer >= selfHealInterval)
             {
-                SelfHealingServerRpc();              
+                SelfHealingServerRpc();
                 selfHealTimer = 0f;
             }
         }
@@ -98,7 +98,7 @@ public class UnitAi : UnitCommonAi
                 break;
             case AIState.AI_Patrol:
                 PatrolFunc();
-                break;                     
+                break;
             case AIState.AI_Attack:
                 if (attackState == AttackState.Waiting)
                 {
@@ -329,7 +329,7 @@ public class UnitAi : UnitCommonAi
         else
         {
             animator.SetBool("isMove", false);
-        }       
+        }
     }
 
     public void UnitSelImg(bool isOn)
@@ -472,7 +472,7 @@ public class UnitAi : UnitCommonAi
         hpBar.fillAmount = hp / maxHp;
         selfHealTimer = 0;
 
-        if(hp <= 0f && !dieCheck)
+        if (hp <= 0f && !dieCheck)
         {
             aIState = AIState.AI_Die;
             hp = 0f;
@@ -502,7 +502,7 @@ public class UnitAi : UnitCommonAi
 
         foreach (GameObject monster in targetList)
         {
-            if (monster != null && monster.TryGetComponent(out MonsterAi monsterAi)) 
+            if (monster != null && monster.TryGetComponent(out MonsterAi monsterAi))
             {
                 monsterAi.RemoveTarget(this.gameObject);
             }

@@ -421,13 +421,13 @@ public class UnitCommonAi : NetworkBehaviour
         }
     }
 
-    public void AStarSet(bool isHostMap)
+    public virtual void AStarSet(bool isHostMap)
     {
         GraphMask mask;
         if (isHostMap)
-            mask = GraphMask.FromGraphName("Map1");
+            mask = GraphMask.FromGraphName("Map1PlayerUnit");
         else
-            mask = GraphMask.FromGraphName("Map2");
+            mask = GraphMask.FromGraphName("Map2PlayerUnit");
 
         isInHostMap = isHostMap;
         seeker.graphMask = mask;

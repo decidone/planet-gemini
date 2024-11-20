@@ -17,7 +17,7 @@ MonoBehaviour:
   damage: 20
   moveSpeed: 5
   attackDist: 8
-  attDelayTime: 1.5
+  attDelayTime: 2
   colliderRadius: 20
   minCollRad: 10
   patrolRad: 5

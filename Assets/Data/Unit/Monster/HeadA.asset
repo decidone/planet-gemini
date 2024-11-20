@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: HeadA
   maxHp: 80
-  damage: 7
+  damage: 10
   moveSpeed: 3
   attackDist: 2
   attDelayTime: 1

@@ -3741,6 +3741,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7525422399260504465}
+    - target: {fileID: 2550254361214570314, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Inven
+      objectReference: {fileID: 0}
     - target: {fileID: 2582225667924625055, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -3901,6 +3905,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 632487663}
+    - target: {fileID: 6762808113236233401, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleMap
+      objectReference: {fileID: 0}
     - target: {fileID: 6831424266450558000, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -3945,6 +3953,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7525422399260504466}
+    - target: {fileID: 7960098335762425974, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DisplayOverall
+      objectReference: {fileID: 0}
     - target: {fileID: 8512804387153766411, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -4085,6 +4097,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7525422399260504465}
+    - target: {fileID: 9037874692212544707, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ScienceTree
+      objectReference: {fileID: 0}
     - target: {fileID: 9123667595409205450, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
