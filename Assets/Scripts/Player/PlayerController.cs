@@ -64,6 +64,8 @@ public class PlayerController : NetworkBehaviour
     float stopTime;
     TankCtrl nearTank;
     public TankCtrl onTankData;
+    public float visionRadius;
+    float fogTimer;
 
     void Awake()
     {
@@ -79,6 +81,7 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         teleportUI = TeleportUI.instance;
+        MapGenerator.instance.RemoveFogTile(new Vector3(transform.position.x, transform.position.y + 1, 0), visionRadius);
 
         if (!IsOwner) { return; }
 
@@ -120,6 +123,13 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
+        fogTimer += Time.deltaTime;
+        if (fogTimer > MapGenerator.instance.fogCheckCooldown)
+        {
+            MapGenerator.instance.RemoveFogTile(new Vector3(transform.position.x, transform.position.y + 1, 0), visionRadius);
+            fogTimer = 0;
+        }
+
         if (reloading)
         {
             reloadTimer += Time.deltaTime;
@@ -140,13 +150,14 @@ public class PlayerController : NetworkBehaviour
         if (!attackMotion)
         {
             movement = inputManager.controls.Player.Movement.ReadValue<Vector2>();
+            float speed = movement.sqrMagnitude;
             animator.SetFloat("Horizontal", movement.x);
             animator.SetFloat("Vertical", movement.y);
-            animator.SetFloat("Speed", movement.sqrMagnitude);
+            animator.SetFloat("Speed", speed);
             if (onTankData)
             {
                 onTankData.FillFuel();
-                if (movement.sqrMagnitude > 0)
+                if (speed > 0)
                 {
                     onTankData.TankMove();
                 }

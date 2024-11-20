@@ -508,11 +508,13 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
+  slowDebuffOn: 0
   name: Bounce Robot
   unitLastState: 0
   unitSelImg: {fileID: 4471495155955281645}
   selfHealingAmount: 0
   selfHealInterval: 0
+  visionRadius: 8
   attackFX: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!114 &3784004604832727098
 MonoBehaviour:
@@ -618,6 +620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
   m_Animator: {fileID: 8598225404917607297}
 --- !u!1 &8748009650792340866
 GameObject:

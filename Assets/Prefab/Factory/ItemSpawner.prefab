@@ -333,6 +333,7 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 528245509680818411}
+  visionRadius: 10
   maxAmount: 0
   cooldown: 0
   connectors: []
@@ -353,6 +354,7 @@ MonoBehaviour:
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
+  warningIconCheck: 0
   itemData: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
 --- !u!61 &4372891051652484693
 BoxCollider2D:

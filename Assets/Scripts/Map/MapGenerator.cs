@@ -29,11 +29,13 @@ public class MapGenerator : MonoBehaviour
     public Tilemap corruptionTilemap;
     public Tilemap resourcesTilemap;
     public Tilemap resourcesIconTilemap;
+    public Tilemap fogTilemap;
     public GameObject objects;
     public Transform mapFog;
 
     public Map hostMap;
     public Map clientMap;
+    public int[,] fogState; //0: 안개x, 1: 안개o
     [SerializeField] EdgeCollider2D hostMapCol;
     [SerializeField] EdgeCollider2D clientMapCol;
     public bool isMultiPlay;
@@ -56,6 +58,8 @@ public class MapGenerator : MonoBehaviour
     [Space]
     public List<Resource> resources = new List<Resource>();
     public List<Tile> resourcesIcon = new List<Tile>();
+    public Tile fogTile;
+    public float fogCheckCooldown;
 
     public AstarPath astar;
     public CompositeCollider2D comp;
@@ -130,7 +134,7 @@ public class MapGenerator : MonoBehaviour
     {
         SetSeed();
         GenerateMap();
-
+        SetFogTile();
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         spawnerPosSet = SpawnerSetManager.instance;
@@ -835,6 +839,65 @@ public class MapGenerator : MonoBehaviour
                         objInst.name = string.Format("map_x{0}_y{1}", x, y);
                         objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)((y + offsetY) + 0.5), 0);
                     }
+                }
+            }
+        }
+    }
+
+    void SetFogTile()
+    {
+        int offsetY = height + clientMapOffsetY;
+        fogState = new int[width, height + offsetY];
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                fogTilemap.SetTile(new Vector3Int(x, y, 0), fogTile);
+                fogTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), fogTile);
+            }
+        }
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height + offsetY; y++)
+            {
+                fogState[x, y] = 1;
+            }
+        }
+        Debug.Log(fogState[width - 1 , height+offsetY-1]);
+    }
+
+    public void RemoveFogTile(Vector3 pos, float radius)
+    {
+        for (int x = (int)(pos.x - radius); x < (int)(pos.x + radius); x++)
+        {
+            for (int y = (int)(pos.y - radius); y < (int)(pos.y + radius); y++)
+            {
+                if (0 <= x && x < width && 0 <= y && y < height + height + clientMapOffsetY)
+                {
+                    if (((pos.x - x) * (pos.x - x)) + ((pos.y - y) * (pos.y - y)) < radius * radius)
+                    {
+                        if (fogState[x, y] == 1)
+                        {
+                            fogTilemap.SetTile(new Vector3Int(x, y, 0), null);
+                            fogState[x, y] = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void LoadFogState(int[,] loadedFogState)
+    {
+        fogState = loadedFogState;
+        for (int x = 0; x < fogState.GetLength(0); x++)
+        {
+            for (int y = 0; y < fogState.GetLength(1); y++)
+            {
+                if (fogState[x, y] == 0)
+                {
+                    fogTilemap.SetTile(new Vector3Int(x, y, 0), null);
                 }
             }
         }

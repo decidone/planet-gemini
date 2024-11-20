@@ -221,6 +221,7 @@ MonoBehaviour:
   rb: {fileID: 2369682121264992858}
   animator: {fileID: 2369682121264992853}
   movement: {x: 0, y: 0}
+  tankOn: 0
   attackFX: {fileID: 3832536798139642931, guid: 1e24e7473d563d84dbb0d9059643c4d7, type: 3}
   reloadingBar: {fileID: 5545082739128524706}
   reloadingBackBar: {fileID: 5098955153355313691}
@@ -228,6 +229,7 @@ MonoBehaviour:
   slowdown: 3
   stopTime: 0.3
   onTankData: {fileID: 0}
+  visionRadius: 20
 --- !u!114 &7093100876002410941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,10 +247,13 @@ MonoBehaviour:
   hpBackBar: {fileID: 2979230931791318783}
   hp: 100
   maxHp: 100
+  tankHp: 0
+  tankMaxHp: 0
   selfHealingAmount: 1
   selfHealInterval: 5
   isPlayerInHostMap: 1
   isPlayerInMarket: 0
+  tankOn: 0
 --- !u!114 &569989346200370596
 MonoBehaviour:
   m_ObjectHideFlags: 0

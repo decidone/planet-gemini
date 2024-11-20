@@ -229,6 +229,8 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 7799777293925861064}
+  visionPos: {x: 0, y: 0, z: 0}
+  visionRadius: 5
   maxAmount: 0
   cooldown: 0
   connectors: []
@@ -249,6 +251,7 @@ MonoBehaviour:
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
+  warningIconCheck: 0
 --- !u!50 &262180438270614847
 Rigidbody2D:
   serializedVersion: 4

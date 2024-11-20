@@ -122,6 +122,8 @@ public class Structure : NetworkBehaviour
     public bool isPortalBuild = false;
 
     public GameObject myVision;
+    [HideInInspector] public Vector3 visionPos;
+    public float visionRadius;
 
     [HideInInspector]
     public int maxAmount;
@@ -203,6 +205,7 @@ public class Structure : NetworkBehaviour
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         destroyTimer = destroyInterval;
         warningIconCheck = false;
+        visionPos = transform.position;
     }
 
     protected virtual void Update()
@@ -313,7 +316,6 @@ public class Structure : NetworkBehaviour
             repairBar.enabled = true;
         }
     }
-
 
     //public void DestroyStart()
     //{
@@ -638,6 +640,7 @@ public class Structure : NetworkBehaviour
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         isSetBuildingOk = true;
+        MapGenerator.instance.RemoveFogTile(visionPos, visionRadius);
     }
     // 건물 설치 기능
 

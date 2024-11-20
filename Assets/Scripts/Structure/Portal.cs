@@ -20,6 +20,7 @@ public class Portal : Production
         //myVision.SetActive(false);
         portalSci = PortalSciManager.instance;
         inventory = this.GetComponent<Inventory>();
+        visionPos = new Vector3(transform.position.x, transform.position.y + 1, 0);
     }
 
     protected override void Start()

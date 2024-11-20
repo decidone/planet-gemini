@@ -189,12 +189,15 @@ public class SteamManager : MonoBehaviour
         for (int i = 0; i < totalChunks; i++)
         {
             int chunkSize = Mathf.Min(MaxChunkSize, data.Length - i * MaxChunkSize);
-            byte[] chunk = new byte[chunkSize + 3]; // Extra 3 bytes for metadata (index, flag, total chunks)
-            chunk[0] = (byte)i;  // Index of the chunk
-            chunk[1] = (byte)(i == totalChunks - 1 ? 1 : 0); // Last chunk flag
-            chunk[2] = (byte)totalChunks;  // Total number of chunks
+            byte[] chunk = new byte[chunkSize + 9]; // Extra 9 bytes for metadata (index, flag, total chunks)
+            byte[] index = BitConverter.GetBytes(i);
+            Array.Copy(index, 0, chunk, 0, index.Length);
+            byte[] total = BitConverter.GetBytes(totalChunks);
+            Array.Copy(total, 0, chunk, 4, total.Length);
+            chunk[8] = (byte)(i == totalChunks - 1 ? 1 : 0); // Last chunk flag
 
-            Array.Copy(data, i * MaxChunkSize, chunk, 3, chunkSize);
+            Debug.Log("chunkSize" + chunkSize);
+            Array.Copy(data, i * MaxChunkSize, chunk, 9, chunkSize);
 
             bool success = SteamNetworking.SendP2PPacket(opponentSteamId, chunk, chunk.Length);
             if (success)
@@ -222,12 +225,12 @@ public class SteamManager : MonoBehaviour
             if (packet.HasValue)
             {
                 byte[] data = packet.Value.Data;
-                int chunkIndex = data[0];  // Chunk index
-                bool isLastChunk = data[1] == 1;  // Last chunk flag
-                totalChunks = data[2];  // Total number of chunks
+                int chunkIndex = BitConverter.ToInt32(data, 0);
+                totalChunks = BitConverter.ToInt32(data, 4);
+                bool isLastChunk = data[8] == 1;  // Last chunk flag
 
                 // Add the chunk data to the receivedData list (excluding the first 3 bytes)
-                receivedData.AddRange(data.Skip(3));
+                receivedData.AddRange(data.Skip(9));
                 receivedChunkIndices.Add(chunkIndex);
 
                 // Check if it's the last chunk
@@ -373,9 +376,12 @@ public class SteamManager : MonoBehaviour
     public void LeaveGame()
     {
         SteamManager.instance.LeaveLobby();
-        NetworkManager.Singleton.gameObject.GetComponent<NetworkObject>().Despawn();
-        NetworkManager.Singleton.Shutdown();
-        Destroy(NetworkManager.Singleton.gameObject);
+        if (NetworkManager.Singleton != null)
+        {
+            //NetworkManager.Singleton.gameObject.GetComponent<NetworkObject>().Despawn();
+            NetworkManager.Singleton.Shutdown();
+            Destroy(NetworkManager.Singleton.gameObject);
+        }
         GameManager.instance.DestroyAllDontDestroyOnLoadObjects();
         SceneManager.LoadScene("MainMenuScene");
     }

@@ -43,11 +43,18 @@ public class LobbiesListManager : MonoBehaviour
     public void DisplayLobby(Lobby lobby)
     {
         GameObject createdItem = Instantiate(lobbyDataItemPrefab);
-        createdItem.GetComponent<LobbyDataEntry>().SetLobbyData(lobby);
-        createdItem.transform.SetParent(lobbyListContent.transform);
-        createdItem.transform.localScale = Vector3.one;
+        bool hasData = createdItem.GetComponent<LobbyDataEntry>().SetLobbyData(lobby);
+        if (hasData)
+        {
+            createdItem.transform.SetParent(lobbyListContent.transform);
+            createdItem.transform.localScale = Vector3.one;
 
-        listOfLobbies.Add(createdItem);
+            listOfLobbies.Add(createdItem);
+        }
+        else
+        {
+            Destroy(createdItem);
+        }
     }
 
     public void DestroyLobbies()

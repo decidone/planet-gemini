@@ -639,6 +639,8 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 7865794785333776810}
+  visionPos: {x: 0, y: 0, z: 0}
+  visionRadius: 10
   maxAmount: 0
   cooldown: 0
   connectors: []
@@ -679,7 +681,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.129787}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.1}
+    pivot: {x: 0.5, y: 0.175}
     oldSize: {x: 1.625, y: 2.8125}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5

@@ -344,6 +344,7 @@ MonoBehaviour:
   mainTrBuild: {fileID: 0}
   othTrBuild: {fileID: 0}
   trUnitState: 0
+  visionRadius: 5
 --- !u!114 &-6754138625246379473
 MonoBehaviour:
   m_ObjectHideFlags: 0

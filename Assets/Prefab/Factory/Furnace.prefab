@@ -615,6 +615,7 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 8441897952711716510}
+  visionRadius: 10
   maxAmount: 99
   cooldown: 3
   connectors: []

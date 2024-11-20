@@ -290,6 +290,8 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 2741883014321598009}
+  visionPos: {x: 0, y: 0, z: 0}
+  visionRadius: 10
   maxAmount: 0
   cooldown: 0
   connectors: []
@@ -310,6 +312,7 @@ MonoBehaviour:
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
+  warningIconCheck: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -337,7 +340,7 @@ MonoBehaviour:
   slowDebuff: 0
   slowTime: 0
   poisonTrueAttack: 0
-  poisonDamage: 0
+  poisonTime: 0
   ignoreDdefense: 0
   ignorePercent: 0
 --- !u!114 &-5580005005730672984

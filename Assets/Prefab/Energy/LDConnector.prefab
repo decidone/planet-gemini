@@ -735,6 +735,8 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 868971455955703356}
+  visionPos: {x: 0, y: 0, z: 0}
+  visionRadius: 10
   maxAmount: 0
   cooldown: 0
   connectors: []
@@ -755,6 +757,7 @@ MonoBehaviour:
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
+  warningIconCheck: 0
   connector: {fileID: 7265358927153795667}
   view: {fileID: 6363363537288611314}
   isBuildDone: 0

@@ -26,9 +26,17 @@ public class TransportUnit : UnitCommonAi
 
     bool mainBuildRemove = false;
 
+    public float visionRadius;
+    float fogTimer;
+
     protected override void Update()
     {
-
+        fogTimer += Time.deltaTime;
+        if (fogTimer > MapGenerator.instance.fogCheckCooldown)
+        {
+            MapGenerator.instance.RemoveFogTile(transform.position, visionRadius);
+            fogTimer = 0;
+        }
     }
 
     protected override void UnitAiCtrl()

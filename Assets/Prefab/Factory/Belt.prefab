@@ -624,6 +624,7 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 4916718282925787597}
+  visionRadius: 5
   maxAmount: 0
   cooldown: 0
   connectors: []
@@ -644,6 +645,7 @@ MonoBehaviour:
   connectedPosList: []
   canUpgrade: 1
   warningIcon: {fileID: 0}
+  warningIconCheck: 0
   beltGroupMgr: {fileID: 0}
   beltState: 0
   nextBelt: {fileID: 0}

@@ -12,4 +12,5 @@ public class MapSaveData
      */
 
     public List<SerializedVector3> objects = new List<SerializedVector3>();
+    public int[,] fogState;
 }

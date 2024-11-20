@@ -776,12 +776,19 @@ MonoBehaviour:
   unitSelImg: {fileID: 4471495155955281645}
   selfHealingAmount: 0
   selfHealInterval: 0
+  visionRadius: 8
   playerOnTank: 0
   reloadingBar: {fileID: 7526169894702306838}
   reloadingBackBar: {fileID: 1681697704853878572}
   reloading: 0
   reloadTimer: 0
   reloadInterval: 0
+  ui: {fileID: 0}
+  sInvenManager: {fileID: 0}
+  inventory: {fileID: 0}
+  rManager: {fileID: 0}
+  tankUIOpen: 0
+  fuel: 0
 --- !u!114 &8111393915013380435
 MonoBehaviour:
   m_ObjectHideFlags: 0

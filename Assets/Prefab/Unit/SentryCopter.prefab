@@ -260,11 +260,13 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
+  slowDebuffOn: 0
   name: Sentry Copter
   unitLastState: 0
   unitSelImg: {fileID: 6013075139773666233}
   selfHealingAmount: 0
   selfHealInterval: 0
+  visionRadius: 8
   attackFX: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!114 &-8952409389878889617
 MonoBehaviour:
@@ -370,6 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
   m_Animator: {fileID: 1885955664131610325}
 --- !u!1 &1962043307181760545
 GameObject:

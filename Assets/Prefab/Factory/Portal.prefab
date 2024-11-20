@@ -494,6 +494,7 @@ MonoBehaviour:
   hpBar: {fileID: 0}
   maxHp: 0
   hp: 0
+  RuinExplo: {fileID: 0}
   isRepair: 0
   repairBar: {fileID: 0}
   itemList: []
@@ -525,6 +526,8 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 3413289764151136508}
+  visionPos: {x: 0, y: 0, z: 0}
+  visionRadius: 10
   maxAmount: 0
   cooldown: 0
   connectors: []
@@ -544,6 +547,8 @@ MonoBehaviour:
   DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
+  warningIcon: {fileID: 0}
+  warningIconCheck: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}

@@ -184,11 +184,13 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
+  slowDebuffOn: 0
   name: Spin Robot
   unitLastState: 0
   unitSelImg: {fileID: 5345713938874468926}
   selfHealingAmount: 0
   selfHealInterval: 0
+  visionRadius: 8
 --- !u!114 &-4049017294882040239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,6 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
   m_Animator: {fileID: 248036444977090386}
 --- !u!1 &956196659816380753
 GameObject:

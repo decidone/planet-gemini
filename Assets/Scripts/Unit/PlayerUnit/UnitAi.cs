@@ -36,6 +36,8 @@ public class UnitAi : UnitCommonAi
     public float selfHealingAmount;
     public float selfHealInterval;
     protected float selfHealTimer;
+    public float visionRadius;
+    float fogTimer;
 
     protected override void Start()
     {
@@ -47,16 +49,25 @@ public class UnitAi : UnitCommonAi
 
     protected override void Update()
     {
+        fogTimer += Time.deltaTime;
+        if (fogTimer > MapGenerator.instance.fogCheckCooldown)
+        {
+            MapGenerator.instance.RemoveFogTile(transform.position, visionRadius);
+            fogTimer = 0;
+        }
+
         if (!IsServer)
             return;
+
         base.Update();
+
         if (hp != maxHp && aIState != AIState.AI_Die)
         {
             selfHealTimer += Time.deltaTime;
 
             if (selfHealTimer >= selfHealInterval)
             {
-                SelfHealingServerRpc();              
+                SelfHealingServerRpc();
                 selfHealTimer = 0f;
             }
         }

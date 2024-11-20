@@ -212,6 +212,7 @@ MonoBehaviour:
   isUIOpened: 0
   isPortalBuild: 0
   myVision: {fileID: 2892574706496085529}
+  visionRadius: 10
   maxAmount: 99
   cooldown: 3
   connectors: []
@@ -232,6 +233,7 @@ MonoBehaviour:
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 697589063798678774}
+  warningIconCheck: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}

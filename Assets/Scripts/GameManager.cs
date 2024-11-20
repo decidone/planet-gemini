@@ -21,7 +21,7 @@ public class GameManager : NetworkBehaviour
     [HideInInspector] public Map hostMap;
     [HideInInspector] public Map clientMap;
     [HideInInspector] public Map map;
-    public List<Vector3> destroyedMapObjects = new List<Vector3>();
+    public List<Vector3> destroyedMapObjectsPos = new List<Vector3>();
 
     public bool isPlayerInHostMap;
     public bool isPlayerInMarket;
@@ -1114,7 +1114,7 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RemoveMapObjServerRpc(Vector3 vector3, bool isHostMapRequest)
     {
-        destroyedMapObjects.Add(vector3);
+        destroyedMapObjectsPos.Add(vector3);
         RemoveMapObjClientRpc(vector3, isHostMapRequest);
     }
 
@@ -1396,10 +1396,12 @@ public class GameManager : NetworkBehaviour
     {
         MapSaveData data = new MapSaveData();
 
-        foreach (var obj in destroyedMapObjects)
+        foreach (var objPos in destroyedMapObjectsPos)
         {
-            data.objects.Add(Vector3Extensions.FromVector3(obj));
+            data.objects.Add(Vector3Extensions.FromVector3(objPos));
         }
+
+        data.fogState = MapGenerator.instance.fogState;
 
         return data;
     }
@@ -1414,9 +1416,11 @@ public class GameManager : NetworkBehaviour
                 isHostMap = false;
             }
 
-            destroyedMapObjects.Add(Vector3Extensions.ToVector3(obj));
+            destroyedMapObjectsPos.Add(Vector3Extensions.ToVector3(obj));
             RemoveMapObj(Vector3Extensions.ToVector3(obj), isHostMap);
         }
+
+        MapGenerator.instance.LoadFogState(data.fogState);
     }
 
     IEnumerator SetQuest()
