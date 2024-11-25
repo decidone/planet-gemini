@@ -545,22 +545,14 @@ public class MonsterAi : UnitCommonAi
             if (targetTags.Contains(targetTag))
             {
                 Structure structure = target.GetComponent<Structure>();
-                if (structure != null && structure.col.isTrigger)
-                {
-                    continue;
-                }
-                else if (!targetListSet.Contains(target))
+                if (structure && !targetListSet.Contains(target))
                 {
                     targetListSet.Add(target);
                     targetList.Add(target);
                 }
 
                 PlayerController player = target.GetComponent<PlayerController>();
-                if (player != null && !player.circleColl)
-                {
-                    continue;
-                }
-                else if (!targetListSet.Contains(target))
+                if (player && !targetListSet.Contains(target))
                 {
                     targetListSet.Add(target);
                     targetList.Add(target);

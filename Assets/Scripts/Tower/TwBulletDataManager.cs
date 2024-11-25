@@ -55,6 +55,7 @@ public class TwBulletDataManager : MonoBehaviour
     {
         BulletData[] bulletArray = new BulletData[]
         {
+        new BulletData("EnergyBullet", 0, 0, 0, true),
         new BulletData("CopperBullet", 5, 5, 5, false),
         new BulletData("IronBullet", 10, 4, 4, false),
         new BulletData("SteelBullet", 15, 3, 3, false),

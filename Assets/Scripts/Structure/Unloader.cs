@@ -34,17 +34,17 @@ public class Unloader : LogisticsCtrl
             {
                 if (inObj.Count > 0 && outObj.Count > 0 && !itemGetDelay)
                 {
-                    GetItem();
+                    GetAndSendItem();
                 }
             }
             if (DelayGetList.Count > 0 && inObj.Count > 0)
             {
                 GetDelayFunc(DelayGetList[0], 0);
             }
-            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
-            {
-                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
-            }
+            //if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            //{
+            //    SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
+            //}
         }
     }
 
@@ -108,11 +108,10 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-    protected override void GetItem()
+    protected void GetAndSendItem()
     {
         itemGetDelay = true;
         Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-
         if ((inObj[getItemIndex].TryGetComponent(out Production inObjScript)
                 && !inObjScript.UnloadItemCheck(GetComponent<Unloader>().selectItem))
                 || outFactory.isFull)
@@ -121,7 +120,7 @@ public class Unloader : LogisticsCtrl
             Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
             return;
         }
-
+        itemList.Add(selectItem);
         GetItemServerRpc(getItemIndex);
         GetItemIndexSet();
     }
@@ -152,7 +151,6 @@ public class Unloader : LogisticsCtrl
     [ClientRpc]
     public void SelectItemSetClientRpc(int itemIndex)
     {
-        Debug.Log(itemIndex);
         selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         UIReset();
     }

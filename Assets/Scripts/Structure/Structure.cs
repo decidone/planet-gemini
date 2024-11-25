@@ -86,9 +86,9 @@ public class Structure : NetworkBehaviour
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
-    [HideInInspector]
+    //[HideInInspector]
     public List<GameObject> inObj = new List<GameObject>();
-    [HideInInspector]
+    //[HideInInspector]
     public List<GameObject> outObj = new List<GameObject>();
     [HideInInspector]
     public List<GameObject> outSameList = new List<GameObject>();
@@ -1300,7 +1300,7 @@ public class Structure : NetworkBehaviour
                     unitCanvas.SetActive(false);
                 }
 
-                ColliderTriggerOnOff(false);
+                //ColliderTriggerOnOff(false);
             }
         }
         else
