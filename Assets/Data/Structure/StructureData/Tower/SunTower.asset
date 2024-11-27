@@ -27,7 +27,7 @@ MonoBehaviour:
   cooldown: 0
   isEnergyStr: 0
   production: 0
-  energyUse: 00
+  energyUse: 01
   consumption:
-  - 0
+  - 10
   removeGauge: 10

@@ -673,6 +673,19 @@ public class BeltCtrl : LogisticsCtrl
         else
             return null;
     }
+    public override void GameStartSpawnSet(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
+    {
+        level = _level;
+        dirNum = _beltDir;
+        height = objHeight;
+        width = objWidth;
+        buildingIndex = index;
+        isInHostMap = isHostMap;
+        settingEndCheck = true;
+        gameObject.AddComponent<DynamicGridObstacle>();
+        myVision.SetActive(true);
+        DataSet();
+    }
 
     [ClientRpc]
     public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
@@ -688,7 +701,7 @@ public class BeltCtrl : LogisticsCtrl
         beltState = BeltState.SoloBelt;
         SetBuild();
         DataSet();
-        ColliderTriggerOnOff(false);
+        ColliderTriggerOnOff(true);
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
     }

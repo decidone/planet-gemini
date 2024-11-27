@@ -38,7 +38,7 @@ public class Furnace : Production
                         output = itemDic[recipe.items[recipe.items.Count - 1]];
                     }
                 }
-
+     
                 if (fuel > 0 && slot.amount >= recipe.amounts[0] && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                 {
                     if (slot2.item == output || slot2.item == null)
@@ -204,10 +204,9 @@ public class Furnace : Production
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
-
         foreach (GameObject list in inventoryList.StructureStorageArr)
         {
-            if (list.name == "Furnace")
+            if (list.name == "FurnaceLv1")
             {
                 ui = list;
             }

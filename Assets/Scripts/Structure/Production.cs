@@ -521,6 +521,11 @@ public abstract class Production : Structure
 
     protected override void ItemDrop()
     {
+        if (inventory == null)
+        {
+            return;
+        }
+
         for (int i = 0; i < inventory.space; i++)
         {
             var invenItem = inventory.SlotCheck(i);

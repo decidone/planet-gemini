@@ -9,6 +9,7 @@ public class MainGameSetting : MonoBehaviour
     public int difficultylevel;
     public int loadDataIndex;
     public int randomSeed;
+    public bool isPublic;
 
     #region Singleton
     public static MainGameSetting instance;

@@ -884,6 +884,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "UIClose",
+                    "type": "Button",
+                    "id": "6652ffdb-3f9c-4cbf-ab31-b5a408d5214a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -972,6 +981,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "BasicUIBtnsSwap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "feb89cc3-29bc-4ca9-a27a-c7a3c754effd",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UIClose",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
+  m_Name: ItemFurnaceUpgrade
+  m_EditorClassIdentifier: 
+  name: Furnace
+  icon: {fileID: -1095850458, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  tier: -1

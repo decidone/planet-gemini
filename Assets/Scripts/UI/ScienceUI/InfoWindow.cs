@@ -66,7 +66,7 @@ public class InfoWindow : MonoBehaviour
 
         preSciInfoData = scienceInfoData;
 
-        nameText.text = $"{name} Lv.{level}";
+        nameText.text = $"{name}";
         if(coreLvText != null)
         {
             coreLvText.text = $"Core Lv.{scienceInfoData.coreLv}";

@@ -125,6 +125,7 @@ public abstract class InventoryManager : MonoBehaviour
             }
             else
             {
+                slotObjects[i].ClearSlot();
                 slotObjects[i].GetComponentInChildren<Image>().enabled = false;
             }
         }

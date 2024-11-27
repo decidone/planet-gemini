@@ -150,7 +150,8 @@ public class MapCameraController : MonoBehaviour
         else
         {
             mainCamController.ChangeZoomLv(mainCamZoom);
-            gameManager.OpenBasicUIs();
+            
+            if(!gameManager.isBasicUIClose) gameManager.OpenBasicUIs();
 
             CloseUI();
             inputManager.CloseMap();

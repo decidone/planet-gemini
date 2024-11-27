@@ -19,6 +19,7 @@ public class Storage : Production
         base.Update();
         SetDirNum();
         inventory.space = invenSize[level];
+        // 업글시 수정되는걸로
     }
 
     protected override void SetDirNum()
@@ -43,6 +44,7 @@ public class Storage : Production
         sInvenManager.energyBar.gameObject.SetActive(true);
         sInvenManager.ReleaseInven();
     }
+
     public override bool CanTakeItem(Item item)
     {
         bool canTake = false;
@@ -67,14 +69,14 @@ public class Storage : Production
     public override void OnFactoryItem(ItemProps itemProps)
     {
         if(IsServer)
-            inventory.Add(itemProps.item, itemProps.amount);
+            inventory.StorageAdd(itemProps.item, itemProps.amount);
         itemProps.itemPool.Release(itemProps.gameObject);
     }
 
     public override void OnFactoryItem(Item item)
     {
         if (IsServer)
-            inventory.Add(item, 1);
+            inventory.StorageAdd(item, 1);
     }
 
     public override (Item, int) QuickPullOut()

@@ -12,12 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDRepairTower
   m_EditorClassIdentifier: 
-  towerName: RepairTower
-  maxHp: 100
-  defense: 0
   damage: 10
   attackDist: 10
-  attDelayTime: 5
-  colliderRadius: 10
-  maxBuildingGauge: 100
-  maxRepairGauge: 70
+  attDelayTime: 1

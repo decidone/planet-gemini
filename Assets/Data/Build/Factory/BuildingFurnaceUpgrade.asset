@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
+  m_Name: BuildingFurnaceUpgrade
+  m_EditorClassIdentifier: 
+  type: Factory
+  scienceName: FurnaceUpgrade
+  item: {fileID: 11400000, guid: e9b82aa1665ed894b85772447b95e0e4, type: 2}
+  gameObj: {fileID: 8759284699072132164, guid: 3462f4601c949c64cae35c51d70e5e2c, type: 3}
+  sideObj: {fileID: 0}
+  isGetAnim: 0
+  isGetDirection: 0
+  isUnderObj: 0
+  isEnergyUse: 1
+  isEnergyStr: 0
+  sprites:
+  - {fileID: -1095850458, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  animatorController: []
+  level: 2
+  height: 2
+  width: 2
+  dirCount: 0

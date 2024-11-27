@@ -90,11 +90,14 @@ public class GetUnderBeltCtrl : LogisticsCtrl
                     {
                         break;
                     }
-                    else if(hitCollider.GetComponent<SendUnderBeltCtrl>() != null)
+                    else if(hitCollider.TryGetComponent(out SendUnderBeltCtrl sendUnderBelt))
                     {
-                        nearObj[index] = hits[i].collider.gameObject;
-                        callback(hitCollider.gameObject);
-                        break;
+                        if (sendUnderBelt.dirNum == dirNum)
+                        {
+                            nearObj[index] = hits[i].collider.gameObject;
+                            callback(hitCollider.gameObject);
+                            break;
+                        }
                     }
                 }
             }

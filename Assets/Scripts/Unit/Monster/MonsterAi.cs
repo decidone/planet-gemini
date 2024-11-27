@@ -469,7 +469,6 @@ public class MonsterAi : UnitCommonAi
                 AnimSetFloat(targetVec, true);
 
                 tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
-                //tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed);
 
                 if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                 {
@@ -477,11 +476,6 @@ public class MonsterAi : UnitCommonAi
 
                     if (currentWaypointIndex >= movePath.Count)
                     {
-                        //if (goalPathBlocked)
-                        //{
-                        //    goalPathBlocked = true;
-                        //    DestroyMapObject(wavePos);
-                        //}
                         return;
                     }
                 }
@@ -551,22 +545,14 @@ public class MonsterAi : UnitCommonAi
             if (targetTags.Contains(targetTag))
             {
                 Structure structure = target.GetComponent<Structure>();
-                if (structure != null && structure.col.isTrigger)
-                {
-                    continue;
-                }
-                else if (!targetListSet.Contains(target))
+                if (structure && !targetListSet.Contains(target))
                 {
                     targetListSet.Add(target);
                     targetList.Add(target);
                 }
 
                 PlayerController player = target.GetComponent<PlayerController>();
-                if (player != null && !player.circleColl)
-                {
-                    continue;
-                }
-                else if (!targetListSet.Contains(target))
+                if (player && !targetListSet.Contains(target))
                 {
                     targetListSet.Add(target);
                     targetList.Add(target);
@@ -946,5 +932,17 @@ public class MonsterAi : UnitCommonAi
         data.waveWaiting = waveWaiting;
         data.isWaveColonyCallCheck = isWaveColonyCallCheck;
         return data;
+    }
+
+    public override void AStarSet(bool isHostMap)
+    {
+        GraphMask mask;
+        if (isHostMap)
+            mask = GraphMask.FromGraphName("Map1MonsterUnit");
+        else
+            mask = GraphMask.FromGraphName("Map2MonsterUnit");
+
+        isInHostMap = isHostMap;
+        seeker.graphMask = mask;
     }
 }

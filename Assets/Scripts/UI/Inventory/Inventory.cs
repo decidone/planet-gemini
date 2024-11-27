@@ -109,6 +109,12 @@ public class Inventory : NetworkBehaviour
         AddServerRpc(itemIndex, amount);
     }
 
+    public void StorageAdd(Item item, int amount)
+    {
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+        StorageAddServerRpc(itemIndex, amount);
+    }
+
     public void RecipeInvenAdd(Item item, int amount)
     {
         int containableAmount = SpaceCheck(item);
@@ -233,6 +239,64 @@ public class Inventory : NetworkBehaviour
             if (tempAmount > 0)
             {
                 Drop(item, tempAmount, isHost);
+            }
+        }
+
+        onItemChangedCallback?.Invoke();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void StorageAddServerRpc(int itemIndex, int amount, ServerRpcParams serverRpcParams = default)
+    {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
+        bool isHost = clientId == 0;
+
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        int tempAmount = amount;
+
+        // 2. 이미 있던 칸에 수량 증가
+        for (int i = 0; i < space; i++)
+        {
+            if (items.ContainsKey(i))
+            {
+                if (items[i] == item)
+                {
+                    if (amounts[i] + tempAmount <= maxAmount)
+                    {
+                        SlotAdd(i, item, tempAmount);
+                        tempAmount = 0;
+                    }
+                    else
+                    {
+                        SlotAdd(i, item, maxAmount - amounts[i]);
+                        tempAmount -= (maxAmount - amounts[i]);
+                    }
+                }
+            }
+            if (tempAmount == 0)
+                break;
+        }
+
+        // 3. 2를 처리하고 남은 수량만큼 빈 칸에 배정
+        if (tempAmount > 0)
+        {
+            for (int i = 0; i < space; i++)
+            {
+                if (!items.ContainsKey(i))
+                {
+                    if (tempAmount <= maxAmount)
+                    {
+                        SlotAdd(i, item, tempAmount);
+                        tempAmount = 0;
+                    }
+                    else
+                    {
+                        SlotAdd(i, item, maxAmount);
+                        tempAmount -= maxAmount;
+                    }
+                }
+                if (tempAmount <= 0)
+                    break;
             }
         }
 

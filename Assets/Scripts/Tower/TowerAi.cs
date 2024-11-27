@@ -40,18 +40,21 @@ public class TowerAi : Production
     {
         base.Start();
         networkObjectPool = NetworkObjectPool.Singleton;
-        recipes = rManager.GetRecipeList("Tower", this);
-
-        bulletRecipe = new List<Item>();
-
-        foreach (Recipe recipeData in recipes)
+        if (!structureData.EnergyUse[level])
         {
-            if(recipeData.name == structureData.FactoryName)
+            recipes = rManager.GetRecipeList("Tower", this);
+
+            bulletRecipe = new List<Item>();
+
+            foreach (Recipe recipeData in recipes)
             {
-                recipe = recipeData;
-                foreach (string itemsName in recipe.items)
+                if(recipeData.name == structureData.FactoryName)
                 {
-                    bulletRecipe.Add(itemDic[itemsName]);
+                    recipe = recipeData;
+                    foreach (string itemsName in recipe.items)
+                    {
+                        bulletRecipe.Add(itemDic[itemsName]);
+                    }
                 }
             }
         }
@@ -169,6 +172,11 @@ public class TowerAi : Production
 
     public override Dictionary<Item, int> PopUpItemCheck()
     {
+        if (structureData.EnergyUse[level])
+        {
+            return null;
+        }
+
         Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
 
         if(bulletRecipe.Count > 0)

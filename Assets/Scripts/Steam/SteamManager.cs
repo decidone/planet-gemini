@@ -75,12 +75,15 @@ public class SteamManager : MonoBehaviour
     {
         if (result == Result.OK)
         {
-            lobby.SetPublic();
+            MainGameSetting setting = MainGameSetting.instance;
+            if (setting.isPublic)
+                lobby.SetPublic();
+            else
+                lobby.SetPrivate();
             lobby.SetJoinable(true);
             lobby.SetData("owner", lobby.Owner.Name);
-            lobby.SetData("mapSize", MainGameSetting.instance.mapSizeIndex.ToString());
-            lobby.SetData("mapSeed", MainGameSetting.instance.randomSeed.ToString());
-
+            lobby.SetData("mapSize", setting.mapSizeIndex.ToString());
+            lobby.SetData("mapSeed", setting.randomSeed.ToString());
             //NetworkManager.Singleton.StartHost();
         }
         else

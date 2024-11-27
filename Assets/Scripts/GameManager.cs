@@ -91,6 +91,7 @@ public class GameManager : NetworkBehaviour
     bool isConsoleOpened;
     InfoInteract info;
 
+    public bool isBasicUIClose;
     [SerializeField] GameObject basicUI;
     [SerializeField] GameObject chat;
 
@@ -219,6 +220,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.ScienceTree.performed += ScienceTree;
         inputManager.controls.HotKey.EnergyCheck.performed += EnergyCheck;
         inputManager.controls.HotKey.GameStop.performed += GameStopSet;
+        inputManager.controls.HotKey.UIClose.performed += BasicUIsClose;
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
 
@@ -232,6 +234,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.ScienceTree.performed -= ScienceTree;
         inputManager.controls.HotKey.EnergyCheck.performed -= EnergyCheck;
         inputManager.controls.HotKey.GameStop.performed -= GameStopSet;
+        inputManager.controls.HotKey.UIClose.performed -= BasicUIsClose;
         if (NetworkManager.Singleton != null)
         {
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
@@ -768,6 +771,21 @@ public class GameManager : NetworkBehaviour
                 break;
             }
         }
+    }
+
+    void BasicUIsClose(InputAction.CallbackContext ctx)
+    {
+        if (isBasicUIClose)
+        {
+            CloseBasicUIs();
+            inventoryUiCanvas.TryGetComponent(out ItemInfoWindow window);
+            window.CloseWindow();
+        }
+        else
+        {
+            OpenBasicUIs();
+        }
+        isBasicUIClose = !isBasicUIClose;
     }
 
     public void OpenBasicUIs()

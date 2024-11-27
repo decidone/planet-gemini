@@ -43,6 +43,15 @@ public class TowerSingleAttackFx : TowerAttackFx
         explosion = explo;
         timerCoroutine = StartCoroutine(nameof(RemoveTimer));
     }
+    public void GetTarget2(Vector3 target, float GetDamage, GameObject obj, bool explo)
+    {
+        moveNextStep = target;
+        damage = GetDamage;
+        attackUnit = obj;
+        alreadyHit = false;
+        explosion = explo;
+        timerCoroutine = StartCoroutine(nameof(RemoveTimer));
+    }
 
     IEnumerator RemoveTimer()
     {

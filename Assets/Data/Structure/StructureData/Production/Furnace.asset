@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: Furnace
   maxLevel: 1
-  maxHp: 32000000
+  maxHp: 3200000032000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
   sendSpeed:
   - 1
+  - 1
   sendFluidAmount: 0
   sendDelay:
+  - 0.2
   - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10
@@ -28,7 +30,8 @@ MonoBehaviour:
   cooldown: 3
   isEnergyStr: 0
   production: 0
-  energyUse: 00
+  energyUse: 0001
   consumption:
   - 0
+  - 5
   removeGauge: 10

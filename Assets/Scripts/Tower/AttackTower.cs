@@ -34,43 +34,116 @@ public class AttackTower : TowerAi
 
     protected override void Update()
     {
-        base.Update();
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
+        if (!removeState)
+        {
+            if (isRepair)
+            {
+                RepairFunc(false);
+            }
+            else if (isPreBuilding && isSetBuildingOk)
+            {
+                RepairFunc(true);
+            }
+
+            WarningStateCheck();
+        }
+
+        if (destroyStart)
+        {
+            destroyTimer -= Time.deltaTime;
+            repairBar.fillAmount = destroyTimer / destroyInterval;
+
+            if (destroyTimer <= 0)
+            {
+                ObjRemoveFunc();
+                destroyStart = false;
+            }
+        }
+
+        if (!structureData.EnergyUse[level])
+        {
+            if (isSetBuildingOk)
+            {
+                for (int i = 0; i < nearObj.Length; i++)
+                {
+                    if (nearObj[i] == null && sizeOneByOne)
+                    {
+                        CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    }
+                    else if (nearObj[i] == null && !sizeOneByOne)
+                    {
+                        int dirIndex = i / 2;
+                        CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                    }
+                }
+            }
+
+            if (IsServer && !isPreBuilding && checkObj)
+            {
+                if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
+                    GetItem();
+            }
+            if (DelayGetList.Count > 0 && inObj.Count > 0)
+            {
+                GetDelayFunc(DelayGetList[0], 0);
+            }
+        }
 
         if (!isPreBuilding)
         {
             if (IsServer)
             {
-                searchTimer += Time.deltaTime;
-
-                if (searchTimer >= searchInterval)
+                if ((structureData.EnergyUse[level] && conn != null && conn.group != null && conn.group.efficiency > 0)
+                    || !structureData.EnergyUse[level])
                 {
-                    SearchObjectsInRange();
-                    searchTimer = 0f; // 탐색 후 타이머 초기화
-                }
+                    searchTimer += Time.deltaTime;
 
-                if (monsterList.Count > 0)
-                {
-                    mstDisCheckTime += Time.deltaTime;
-                    if (mstDisCheckTime > mstDisCheckInterval)
+                    if (searchTimer >= searchInterval)
                     {
-                        mstDisCheckTime = 0f;
-                        AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
-                        RemoveObjectsOutOfRange();
+                        SearchObjectsInRange();
+                        searchTimer = 0f; // 탐색 후 타이머 초기화
                     }
-                    AttackTargetDisCheck();
 
-                    var slot = inventory.SlotCheck(0);
-                    if (slot.item != null && slot.amount > 0)
+                    if (monsterList.Count > 0)
                     {
-                        if (loadedBullet == null)
+                        mstDisCheckTime += Time.deltaTime;
+                        if (mstDisCheckTime > mstDisCheckInterval)
                         {
-                            BulletCheck();
+                            mstDisCheckTime = 0f;
+                            AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
+                            RemoveObjectsOutOfRange();
                         }
-                        AttackTowerAiCtrl();
-                    }
-                    else if (slot.item == null && loadedBullet != null)
-                    {
-                        loadedBullet = null;
+                        AttackTargetDisCheck();
+
+                        if (structureData.EnergyUse[level])
+                        {
+                            if (loadedBullet == null)
+                            {
+                                loadedBullet = bulletDic["EnergyBullet"];
+                            }
+                            AttackTowerAiCtrl();
+                        }
+                        else
+                        {
+                            var slot = inventory.SlotCheck(0);
+                            if (slot.item != null && slot.amount > 0)
+                            {
+                                if (loadedBullet == null)
+                                {
+                                    BulletCheck();
+                                }
+                                AttackTowerAiCtrl();
+                            }
+                            else if (slot.item == null && loadedBullet != null)
+                            {
+                                loadedBullet = null;
+                            }
+                        }
                     }
                 }
             }
@@ -217,7 +290,7 @@ public class AttackTower : TowerAi
                 else
                     rot = Quaternion.AngleAxis(angle, Vector3.forward);
 
-                if (IsServer)
+                if (IsServer && !structureData.EnergyUse[level])
                 {
                     var slot = inventory.SlotCheck(0);
                     Overall.instance.OverallConsumption(slot.item, 1); 
@@ -233,7 +306,7 @@ public class AttackTower : TowerAi
             }
             else
             {
-                if (IsServer)
+                if (IsServer && !structureData.EnergyUse[level])
                 {
                     var slot = inventory.SlotCheck(0);
                     Overall.instance.OverallConsumption(slot.item, 1);

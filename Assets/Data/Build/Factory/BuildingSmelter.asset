@@ -16,12 +16,16 @@ MonoBehaviour:
   scienceName: Smelter
   item: {fileID: 11400000, guid: 9a07fa09493831f4f9694cacf2306cd1, type: 2}
   gameObj: {fileID: 1934325794086783233, guid: 99affb2f7c120144e8d62a7d06279cef, type: 3}
+  sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 0
+  isUnderObj: 0
+  isEnergyUse: 0
+  isEnergyStr: 0
   sprites:
-  - {fileID: 1559316745, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
-  animations: []
+  - {fileID: 1701051910, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  animatorController: []
   level: 1
-  height: 1
-  width: 1
+  height: 2
+  width: 2
   dirCount: 0
