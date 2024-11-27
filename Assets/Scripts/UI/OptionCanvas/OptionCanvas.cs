@@ -52,6 +52,8 @@ public class OptionCanvas : MonoBehaviour
             AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
             AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(btn); });
             AddEvent(btn, EventTriggerType.PointerClick, delegate { OnExit(btn); });
+            ButtonStateWatcher watcher = btn.gameObject.AddComponent<ButtonStateWatcher>();
+            watcher.OnButtonDisabled += () => OnExit(btn);
         }
     }
 

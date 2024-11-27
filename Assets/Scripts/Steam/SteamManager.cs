@@ -75,12 +75,15 @@ public class SteamManager : MonoBehaviour
     {
         if (result == Result.OK)
         {
-            lobby.SetPublic();
+            MainGameSetting setting = MainGameSetting.instance;
+            if (setting.isPublic)
+                lobby.SetPublic();
+            else
+                lobby.SetPrivate();
             lobby.SetJoinable(true);
             lobby.SetData("owner", lobby.Owner.Name);
-            lobby.SetData("mapSize", MainGameSetting.instance.mapSizeIndex.ToString());
-            lobby.SetData("mapSeed", MainGameSetting.instance.randomSeed.ToString());
-
+            lobby.SetData("mapSize", setting.mapSizeIndex.ToString());
+            lobby.SetData("mapSeed", setting.randomSeed.ToString());
             //NetworkManager.Singleton.StartHost();
         }
         else
@@ -373,7 +376,15 @@ public class SteamManager : MonoBehaviour
     public void LeaveGame()
     {
         SteamManager.instance.LeaveLobby();
-        NetworkManager.Singleton.gameObject.GetComponent<NetworkObject>().Despawn();
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.gameObject != null)
+        {
+            var networkObject = NetworkManager.Singleton.gameObject.GetComponent<NetworkObject>();
+
+            if (networkObject != null && networkObject.IsSpawned)
+            {
+                networkObject.Despawn();
+            }
+        }
         NetworkManager.Singleton.Shutdown();
         Destroy(NetworkManager.Singleton.gameObject);
         GameManager.instance.DestroyAllDontDestroyOnLoadObjects();

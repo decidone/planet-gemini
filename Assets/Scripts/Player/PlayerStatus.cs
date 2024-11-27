@@ -100,6 +100,8 @@ public class PlayerStatus : NetworkBehaviour
             networkObjectReference.TryGet(out NetworkObject networkObject);
             playerController.onTankData = networkObject.GetComponent<TankCtrl>();
             playerController.tankOn = tankOnSync;
+            playerController.TankTurretSet(tankOnSync);
+
             Debug.Log(tankOnSync + " : " + networkObject.name);
         }
     }

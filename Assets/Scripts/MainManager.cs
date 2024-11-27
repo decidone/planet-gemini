@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -9,7 +10,9 @@ using UnityEngine.UI;
 public class MainManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject mainBtns;
+    GameObject[] btnArrs;
+    int btnIndex;
+
     [SerializeField]
     Button hostBtn;
     [SerializeField]
@@ -20,13 +23,18 @@ public class MainManager : MonoBehaviour
     Button quitBtn;
 
     [SerializeField]
-    GameObject hostBtns;
+    Button publicGameBtn;
+    [SerializeField]
+    Button privateBtn;
+    [SerializeField]
+    Text publicPrivatetext;
     [SerializeField]
     Button newGameBtn;
     [SerializeField]
     Button loadBtn;
+
     [SerializeField]
-    Button backBtn;
+    Button[] backBtns;
 
     [SerializeField]
     MainPanelsManager panelsManager;
@@ -52,30 +60,43 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        hostBtn.onClick.AddListener(() => HostBtnFunc());
+        hostBtn.onClick.AddListener(() => OpenUI(1));
         joinBtn.onClick.AddListener(() => JoinBtnFunc());
         settingsBtn.onClick.AddListener(() => SettingsBtnFunc());
         quitBtn.onClick.AddListener(() => QuitBtnFunc());
         newGameBtn.onClick.AddListener(() => NewGameBtnFunc());
         loadBtn.onClick.AddListener(() => LoadBtnFunc());
-        backBtn.onClick.AddListener(() => BackBtnFunc());
-
-        Button[] mainBtnArr = mainBtns.GetComponentsInChildren<Button>();
-        Button[] hostBtnsArr = hostBtns.GetComponentsInChildren<Button>();
-
-        foreach (Button btn in mainBtnArr)
+        privateBtn.onClick.AddListener(() =>
         {
-            AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
-            AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(btn); });
-            AddEvent(btn, EventTriggerType.PointerClick, delegate { OnExit(btn); });
+            MainGameSetting.instance.isPublic = false;
+            publicPrivatetext.text = "Private Game";
+            OpenUI(2);
+        }); 
+        publicGameBtn.onClick.AddListener(() =>
+        {
+            MainGameSetting.instance.isPublic = true;
+            publicPrivatetext.text = "Public Game";
+            OpenUI(2);
+        });
+
+        foreach (Button btn in backBtns)
+        {
+            btn.onClick.AddListener(BackBtnFunc);
         }
 
-        foreach (Button btn in hostBtnsArr)
+        foreach (GameObject btnObj in btnArrs)
         {
-            AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
-            AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(btn); });
-            AddEvent(btn, EventTriggerType.PointerClick, delegate { OnExit(btn); });
+            Button[] btnArr = btnObj.GetComponentsInChildren<Button>();
+            foreach (Button btn in btnArr)
+            {
+                AddEvent(btn, EventTriggerType.PointerEnter, delegate { OnEnter(btn); });
+                AddEvent(btn, EventTriggerType.PointerExit, delegate { OnExit(btn); });
+                ButtonStateWatcher watcher = btn.gameObject.AddComponent<ButtonStateWatcher>();
+                watcher.OnButtonDisabled += () => OnExit(btn);
+            }
         }
+        OpenUI(0);
+
         inputManager = InputManager.instance;
         inputManager.controls.HotKey.Escape.performed += Escape;
     }
@@ -83,14 +104,6 @@ public class MainManager : MonoBehaviour
     void OnDisable()
     {
         inputManager.controls.HotKey.Escape.performed -= Escape;
-    }
-
-
-    void HostBtnFunc()
-    {
-        mainBtns.SetActive(false);
-        hostBtns.SetActive(true);
-        OpenedUISet(hostBtns);
     }
 
     void JoinBtnFunc()
@@ -121,9 +134,21 @@ public class MainManager : MonoBehaviour
 
     void BackBtnFunc()
     {
-        mainBtns.SetActive(true);
-        hostBtns.SetActive(false);
+        OpenUI(btnIndex - 1);
         ClosedUISet();
+    }
+
+    void OpenUI(int index)
+    {
+        btnIndex = index;
+        for (int i = 0; i < btnArrs.Length; i++)
+        {
+            if (index == i)
+                btnArrs[i].SetActive(true);
+            else
+                btnArrs[i].SetActive(false);
+        }
+        OpenedUISet(btnArrs[index]);
     }
 
     void AddEvent(Button btn, EventTriggerType type, UnityAction<BaseEventData> action)
@@ -131,7 +156,7 @@ public class MainManager : MonoBehaviour
         EventTrigger.Entry eventTrigger = new EventTrigger.Entry();
         eventTrigger.eventID = type;
         eventTrigger.callback.AddListener(action);
-
+        
         EventTrigger trigger = btn.GetComponent<EventTrigger>();
         trigger.triggers.Add(eventTrigger);
     }
@@ -176,6 +201,9 @@ public class MainManager : MonoBehaviour
                 case "HostBtns":
                     BackBtnFunc();
                     break;
+                case "PublicAndPrivateBtns":
+                    BackBtnFunc();
+                    break;
                 case "NewGame":
                     panelsManager.NewGamePanelSet(false);
                     break;
@@ -194,5 +222,15 @@ public class MainManager : MonoBehaviour
 
             }
         }
+    }
+}
+
+public class ButtonStateWatcher : MonoBehaviour
+{
+    public event System.Action OnButtonDisabled;
+
+    private void OnDisable()
+    {
+        OnButtonDisabled?.Invoke();
     }
 }

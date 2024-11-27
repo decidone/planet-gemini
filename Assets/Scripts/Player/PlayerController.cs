@@ -64,6 +64,10 @@ public class PlayerController : NetworkBehaviour
     float stopTime;
     TankCtrl nearTank;
     public TankCtrl onTankData;
+    [SerializeField]
+    PlayerTankTurret playerTankTurret;
+    [SerializeField]
+    GameObject tankTurret;
 
     void Awake()
     {
@@ -344,9 +348,16 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public void TankTurretSet(bool on)
+    {
+        tankTurret.SetActive(on);
+        playerTankTurret.onTank = on;
+    }
+
     void TankOnFunc()
     {
         tankOn = true;
+        TankTurretSet(true);
         capsuleColl.size = new Vector2(2.25f, 2f);
         animator.Play("TankWalk");
 
@@ -372,6 +383,7 @@ public class PlayerController : NetworkBehaviour
         if (landData.Item1)
         {
             tankOn = false;
+            TankTurretSet(false);
             onTankData.PlayerTankOff(transform.position, status.tankHp, reloading, reloadTimer, reloadInterval);
             ReloadingUISet(false);
             status.TankOffServerRpc();
@@ -415,6 +427,7 @@ public class PlayerController : NetworkBehaviour
     public void TankDestoryClientRpc()
     {
         tankOn = false;
+        TankTurretSet(false);
         ReloadingUISet(false);
         onTankData.TankDestory();
         onTankData = null;
@@ -617,7 +630,8 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     void BulletSpawnServerRpc(Vector3 mousePos)
     {
-        Vector3 dir = mousePos - transform.position;
+        Vector2 spawnPos = playerTankTurret.TurretAttackPos();
+        Vector3 dir = mousePos - (Vector3)spawnPos;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
         var rot = Quaternion.identity;
@@ -627,13 +641,12 @@ public class PlayerController : NetworkBehaviour
             rot = Quaternion.AngleAxis(angle, Vector3.forward);
 
         dir.z = 0;
-        Vector2 spawnPos = transform.position + dir.normalized * 1;
 
         NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, new Vector2(spawnPos.x, spawnPos.y), rot);
         if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
         bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
-        fx.GetTarget(mousePos, 10, gameObject, false);
+        fx.GetTarget2(dir.normalized * 3, 10, gameObject, false);
         BulletSpawnClientRpc(dir);
     }
 
@@ -742,6 +755,8 @@ public class PlayerController : NetworkBehaviour
 
     void TankInven(InputAction.CallbackContext ctx)
     {
+        if (!IsOwner) { return; }
+
         TankInven();
     }
 }
