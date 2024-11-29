@@ -9,6 +9,8 @@ using UnityEngine.UI;
 // UTF-8 설정
 public class PlayerController : NetworkBehaviour
 {
+    public NetworkVariable<bool> isTeleporting = new NetworkVariable<bool>();
+
     GameManager gameManager;
     public PlayerStatus status;
     public List<GameObject> items = new List<GameObject>();
@@ -79,6 +81,7 @@ public class PlayerController : NetworkBehaviour
         status = GetComponent<PlayerStatus>();
         nearShop = null;
         isLoot = false;
+        PlayerTPSetServerRpc(true);
         ReloadingUISet(false);
     }
 
@@ -97,6 +100,8 @@ public class PlayerController : NetworkBehaviour
             status.LoadGame();
             gameObject.transform.position = GameManager.instance.playerDataPos;
         }
+
+        StartCoroutine(PlayerSet());
     }
 
     void OnEnable()
@@ -130,8 +135,11 @@ public class PlayerController : NetworkBehaviour
         fogTimer += Time.deltaTime;
         if (fogTimer > MapGenerator.instance.fogCheckCooldown)
         {
-            MapGenerator.instance.RemoveFogTile(new Vector3(transform.position.x, transform.position.y + 1, 0), visionRadius);
-            fogTimer = 0;
+            if (isTeleporting.Value == false)
+            {
+                MapGenerator.instance.RemoveFogTile(new Vector3(transform.position.x, transform.position.y + 1, 0), visionRadius);
+                fogTimer = 0;
+            }
         }
 
         if (reloading)
@@ -270,6 +278,18 @@ public class PlayerController : NetworkBehaviour
             nearShop = null;
             GameManager.instance.isShopOpened = false;
         }
+    }
+
+    IEnumerator PlayerSet()
+    {
+        yield return new WaitForSeconds(1f);
+        PlayerTPSetServerRpc(false);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void PlayerTPSetServerRpc(bool isTP)
+    {
+        isTeleporting.Value = isTP;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -495,10 +515,15 @@ public class PlayerController : NetworkBehaviour
 
     public bool TeleportLocal(Vector3 pos)
     {
+        if (isTeleporting.Value == true)
+            return false;
+
         if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal"))
             || circleColl.IsTouchingLayers(LayerMask.GetMask("LocalPortal")))
         {
-            this.transform.position = pos;
+            TeleportServerRpc(pos);
+            //StartCoroutine(Teleport(pos));
+            //this.transform.position = pos;
             return true;
         }
 
@@ -507,12 +532,17 @@ public class PlayerController : NetworkBehaviour
 
     void TeleportWorld()
     {
+        if (isTeleporting.Value == true)
+            return;
+
         if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
         {
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.Teleport();
-            this.transform.position = pos;
+            TeleportServerRpc(pos);
+            //StartCoroutine(Teleport(pos));
+            //this.transform.position = pos;
             SoundManager.instance.PlayerBgmMapCheck();
             onTeleportedCallback?.Invoke(0);
 
@@ -523,17 +553,46 @@ public class PlayerController : NetworkBehaviour
 
     void TeleportMarket()
     {
+        if (isTeleporting.Value == true)
+            return;
+
         if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
         {
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.TeleportMarket();
-            this.transform.position = pos;
+            TeleportServerRpc(pos);
+            //StartCoroutine(Teleport(pos));
+            //this.transform.position = pos;
             onTeleportedCallback?.Invoke(1);
 
             teleportUI.CloseUI();
             teleportUI.DisplayWorldName();
         }
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void TeleportServerRpc(Vector3 pos)
+    {
+        StartCoroutine(Teleport(pos));
+    }
+
+    [ClientRpc]
+    public void TeleportClientRpc(Vector3 pos)
+    {
+        if (IsOwner)
+            this.transform.position = pos;
+    }
+
+    IEnumerator Teleport(Vector3 pos)
+    {
+        isTeleporting.Value = true;
+
+        yield return new WaitForSeconds(0.3f);
+        TeleportClientRpc(pos);
+
+        yield return new WaitForSeconds(0.5f);
+        isTeleporting.Value = false;
     }
 
     void LootCheck(InputAction.CallbackContext ctx) { isLoot = !isLoot; }

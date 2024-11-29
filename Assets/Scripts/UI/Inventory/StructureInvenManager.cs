@@ -150,31 +150,41 @@ public class StructureInvenManager : InventoryManager
         tank = _tank;
     }
 
-
     public int InsertItem(Item item, int amount)
     {
         // input 슬롯으로 지정된 칸에 아이템을 넣을 때 사용
         int containable = 0;
-        bool canInsertItem = false;
+        bool isStorageBuilding = false;
 
         if (prod != null)
-            canInsertItem = prod.isStorageBuilding;
+            isStorageBuilding = prod.isStorageBuilding;
 
-        for (int i = 0; i < slots.Length; i++)
+        if (isStorageBuilding)
         {
-            Slot slot = slots[i];
-            if ((slot.inputItem.Contains(item) || canInsertItem) && (slot.item == item || slot.item == null)) 
+            containable = inventory.SpaceCheck(item);
+            if (containable >= amount)
+                containable = amount;
+
+            inventory.Add(item, containable);
+        }
+        else
+        {
+            for (int i = 0; i < slots.Length; i++)
             {
-                if (amount + slot.amount > inventory.maxAmount)
+                Slot slot = slots[i];
+                if ((slot.inputItem.Contains(item)) && (slot.item == item || slot.item == null))
                 {
-                    containable = inventory.maxAmount - slot.amount;
+                    if (amount + slot.amount > inventory.maxAmount)
+                    {
+                        containable = inventory.maxAmount - slot.amount;
+                    }
+                    else
+                    {
+                        containable = amount;
+                    }
+                    inventory.SlotAdd(slot.slotNum, item, containable);
+                    break;
                 }
-                else
-                {
-                    containable = amount;
-                }
-                inventory.SlotAdd(slot.slotNum, item, containable);
-                break;
             }
         }
 

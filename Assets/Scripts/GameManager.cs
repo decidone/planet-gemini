@@ -108,7 +108,7 @@ public class GameManager : NetworkBehaviour
     public bool isDay;                  // 밤 낮
     [SerializeField] float dayTime;     // 인게임 4시간을 현실 시간으로
     public float dayTimer;              // 게임 내 시간(타이머)
-    public int dayIndex = 0;                   // 24시간을 6등분해서 인덱스로 사용
+    public int dayIndex = 0;            // 24시간을 6등분해서 인덱스로 사용
     // 0 : 08:00 ~ 12:00
     // 1 : 12:00 ~ 16:00
     // 2 : 16:00 ~ 20:00
@@ -142,6 +142,8 @@ public class GameManager : NetworkBehaviour
     Text timeText;
     [SerializeField]
     Text dayText;
+    [SerializeField]
+    SpriteRenderer brightness;
 
     float hours;        // 시간 계산
     int displayHour;    // 시 부분
@@ -301,6 +303,7 @@ public class GameManager : NetworkBehaviour
             }
 
             timeImg.sprite = timeImgSet[dayIndex];
+            SetBrightness(dayIndex);
 
             if (dayIndex == 0)
             {
@@ -361,6 +364,34 @@ public class GameManager : NetworkBehaviour
                 autoSaveTimer = 0;
                 DataManager.instance.Save(0);
             }
+        }
+    }
+
+    void SetBrightness(int level)
+    {
+        switch (level)
+        {
+            case 0:
+                brightness.color = new Color32(0, 0, 0, 0);
+                break;
+            case 1:
+                brightness.color = new Color32(0, 0, 0, 0);
+                break;
+            case 2:
+                brightness.color = new Color32(0, 0, 0, 30);
+                break;
+            case 3:
+                brightness.color = new Color32(0, 0, 0, 60);
+                break;
+            case 4:
+                brightness.color = new Color32(0, 0, 0, 90);
+                break;
+            case 5:
+                brightness.color = new Color32(0, 0, 0, 30);
+                break;
+            default:
+                brightness.color = new Color32(0, 0, 0, 0);
+                break;
         }
     }
 
@@ -1015,7 +1046,6 @@ public class GameManager : NetworkBehaviour
             //}
         }
 
-
         SetPlayerLocationServerRpc(isPlayerInHostMap, isPlayerInMarket, IsServer);
         mainCam = Camera.main.gameObject.GetComponent<CameraController>();
         mainCam.target = player.transform;
@@ -1282,6 +1312,7 @@ public class GameManager : NetworkBehaviour
         violentValue = data.violentValue;
         violentDay = data.violentDay;
         timeImg.sprite = timeImgSet[dayIndex];
+        SetBrightness(dayIndex);
         dayText.text = "Day : " + day;
 
         finance.SetFinance(data.finance);

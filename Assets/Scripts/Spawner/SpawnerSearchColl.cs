@@ -50,7 +50,8 @@ public class SpawnerSearchColl : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!inObjList.Contains(collision.gameObject) && IsServer &&
-            (collision.GetComponent<TowerAi>() || collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>()))
+            (collision.GetComponent<TowerAi>() || collision.GetComponent<UnitAi>()
+            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting.Value)))
         {
             inObjList.Add(collision.gameObject);
         }
@@ -73,7 +74,8 @@ public class SpawnerSearchColl : NetworkBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (inObjList.Contains(collision.gameObject) && IsServer &&
-            (collision.GetComponent<TowerAi>() || collision.GetComponent<UnitAi>() || collision.GetComponent<PlayerController>()))
+            (collision.GetComponent<TowerAi>() || collision.GetComponent<UnitAi>()
+            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting.Value)))
         {
             inObjList.Remove(collision.gameObject);
         }

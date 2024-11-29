@@ -182,11 +182,11 @@ public class Inventory : NetworkBehaviour
 
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         int containableAmount = SpaceCheck(item);
-        int tempAmount = amount;
+        int totalAmount = amount;
 
         if (containableAmount < amount)
         {
-            tempAmount = containableAmount;
+            totalAmount = containableAmount;
             int dropAmount = amount - containableAmount;
             Drop(item, dropAmount, isHost);
         }
@@ -198,47 +198,48 @@ public class Inventory : NetworkBehaviour
             {
                 if (items[i] == item)
                 {
-                    if (amounts[i] + tempAmount <= maxAmount)
+                    int tempAmount = amounts[i];
+                    if (tempAmount + totalAmount <= maxAmount)
                     {
-                        SlotAdd(i, item, tempAmount);
-                        tempAmount = 0;
+                        SlotAdd(i, item, totalAmount);
+                        totalAmount = 0;
                     }
                     else
                     {
-                        SlotAdd(i, item, maxAmount - amounts[i]);
-                        tempAmount -= (maxAmount - amounts[i]);
+                        SlotAdd(i, item, maxAmount - tempAmount);
+                        totalAmount -= (maxAmount - tempAmount);
                     }
                 }
             }
-            if (tempAmount == 0)
+            if (totalAmount == 0)
                 break;
         }
 
         // 3. 2를 처리하고 남은 수량만큼 빈 칸에 배정
-        if (tempAmount > 0)
+        if (totalAmount > 0)
         {
             for (int i = 0; i < space; i++)
             {
                 if (!items.ContainsKey(i))
                 {
-                    if (tempAmount <= maxAmount)
+                    if (totalAmount <= maxAmount)
                     {
-                        SlotAdd(i, item, tempAmount);
-                        tempAmount = 0;
+                        SlotAdd(i, item, totalAmount);
+                        totalAmount = 0;
                     }
                     else
                     {
                         SlotAdd(i, item, maxAmount);
-                        tempAmount -= maxAmount;
+                        totalAmount -= maxAmount;
                     }
                 }
-                if (tempAmount <= 0)
+                if (totalAmount <= 0)
                     break;
             }
 
-            if (tempAmount > 0)
+            if (totalAmount > 0)
             {
-                Drop(item, tempAmount, isHost);
+                Drop(item, totalAmount, isHost);
             }
         }
 

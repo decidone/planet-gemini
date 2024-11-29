@@ -178,8 +178,8 @@ public class MapCameraController : MonoBehaviour
                 || hits[i].collider.gameObject.layer == LayerMask.NameToLayer("LocalPortal"))
             {
                 PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
-                bool isteleported = player.TeleportLocal(hits[i].collider.transform.position);
-                if (isteleported)
+                bool isTeleported = player.TeleportLocal(hits[i].collider.transform.position);
+                if (isTeleported)
                     ToggleMap();
             }
         }

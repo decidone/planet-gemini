@@ -82,6 +82,7 @@ public class InputManager : MonoBehaviour
             }
         }
     }
+
     void ShiftHold(InputAction.CallbackContext ctx)
     {
         shift = !shift;
@@ -96,6 +97,7 @@ public class InputManager : MonoBehaviour
             }
         }
     }
+
     void AltHold(InputAction.CallbackContext ctx) { alt = !alt; }
     void MouseLeftHold(InputAction.CallbackContext ctx) { mouseLeft = !mouseLeft; }
     void MouseRightHold(InputAction.CallbackContext ctx) { mouseRight = !mouseRight; }

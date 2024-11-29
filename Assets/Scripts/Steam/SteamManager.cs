@@ -79,7 +79,7 @@ public class SteamManager : MonoBehaviour
             if (setting.isPublic)
                 lobby.SetPublic();
             else
-                lobby.SetPrivate();
+                lobby.SetFriendsOnly();
             lobby.SetJoinable(true);
             lobby.SetData("owner", lobby.Owner.Name);
             lobby.SetData("mapSize", setting.mapSizeIndex.ToString());
