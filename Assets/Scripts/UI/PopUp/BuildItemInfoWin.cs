@@ -116,7 +116,7 @@ public class BuildItemInfoWin : MonoBehaviour
         UIItemSet(item);
     }
 
-    void UIItemSet(Dictionary<Item, int> getDic, bool energyUse, bool isEnergyStr,  EnergyGroup energyGroup)
+    void UIItemSet(Dictionary<Item, int> getDic, bool energyUse, bool isEnergyStr, EnergyGroup energyGroup)
     {
         if (getDic != null)
         {

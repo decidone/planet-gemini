@@ -641,14 +641,19 @@ public class MonsterAi : UnitCommonAi
         normalTraceTimer = 0;
     }
 
-    protected override void AttackStart()
+    protected override bool AttackStart()
     {
-        if(aggroTarget != null)
+        bool isAttacked = false;
+
+        if (aggroTarget != null)
         {
+            isAttacked = true;
             normalTraceTimer = 0;
             AttackSet(aggroTarget.transform);
             soundManager.PlaySFX(gameObject, "unitSFX", "MonsterAttack");
         }
+
+        return isAttacked;
     }
 
     protected override IEnumerator CheckPath(Vector3 targetPos, string moveFunc)

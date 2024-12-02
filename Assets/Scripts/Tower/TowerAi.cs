@@ -24,7 +24,7 @@ public class TowerAi : Production
     protected Animator animator;
 
     protected float searchTimer = 0f;
-    protected float searchInterval = 1f; // 딜레이 간격 설정
+    protected float searchInterval = 0.25f; // 딜레이 간격 설정
 
     List<Item> bulletRecipe;
 

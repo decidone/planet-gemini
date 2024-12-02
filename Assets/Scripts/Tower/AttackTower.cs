@@ -17,6 +17,8 @@ public class AttackTower : TowerAi
     public TwBulletDataManager bulletDataManager;
     public Dictionary<string, BulletData> bulletDic;
     BulletData loadedBullet;
+    public int energyBulletAmount;
+    public int energyBulletMaxAmount;
 
     public GameObject attackFX;
     [SerializeField]
@@ -30,6 +32,8 @@ public class AttackTower : TowerAi
         towerAttackOption = GetComponent<TowerAttackOption>();
         bulletDataManager = TwBulletDataManager.instance;
         bulletDic = bulletDataManager.bulletDic;
+        energyBulletAmount = 0;
+        energyBulletMaxAmount = 5;
     }
 
     protected override void Update()
@@ -115,8 +119,8 @@ public class AttackTower : TowerAi
                         if (mstDisCheckTime > mstDisCheckInterval)
                         {
                             mstDisCheckTime = 0f;
-                            AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
                             RemoveObjectsOutOfRange();
+                            AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
                         }
                         AttackTargetDisCheck();
 
@@ -190,7 +194,7 @@ public class AttackTower : TowerAi
             // 모든 몬스터에 대해 거리 계산
             foreach (GameObject monster in monsterList)
             {
-                if(monster != null)
+                if (monster != null)
                 {
                     float distance = Vector3.Distance(this.transform.position, monster.transform.position);
                     if (distance < closestDistance)
@@ -249,8 +253,14 @@ public class AttackTower : TowerAi
     {
         if (!isDelayAfterAttackCoroutine)
         {
-            towerState = TowerState.AttackDelay;
-            StartCoroutine(DelayAfterAttack(towerData.AttDelayTime + loadedBullet.fireRate)); // 1.5초 후 딜레이 적용            
+            if (AttackStart())
+            {
+                StartCoroutine(DelayAfterAttack(towerData.AttDelayTime + loadedBullet.fireRate)); // 1.5초 후 딜레이 적용
+            }
+            else
+            {
+                towerState = TowerState.Waiting;
+            }
         }
     }
 
@@ -267,7 +277,7 @@ public class AttackTower : TowerAi
     IEnumerator DelayAfterAttack(float delayTime)
     {
         isDelayAfterAttackCoroutine = true;
-        AttackStart();
+        towerState = TowerState.AttackDelay;
 
         yield return new WaitForSeconds(delayTime);
 
@@ -275,8 +285,10 @@ public class AttackTower : TowerAi
         isDelayAfterAttackCoroutine = false;
     }
 
-    protected void AttackStart()  
+    protected bool AttackStart()
     {
+        bool isAttacked = false;
+
         if (aggroTarget != null)
         {
             if (isSingleAttack)
@@ -293,7 +305,7 @@ public class AttackTower : TowerAi
                 if (IsServer && !structureData.EnergyUse[level])
                 {
                     var slot = inventory.SlotCheck(0);
-                    Overall.instance.OverallConsumption(slot.item, 1); 
+                    Overall.instance.OverallConsumption(slot.item, 1);
                     inventory.SubServerRpc(0, 1);
                 }
 
@@ -322,8 +334,11 @@ public class AttackTower : TowerAi
             }
 
             Debug.Log("Attack");
+            isAttacked = true;
             soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
         }
+
+        return isAttacked;
     }
 
     public void RemoveMonster(GameObject monster)

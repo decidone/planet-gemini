@@ -888,6 +888,21 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    public int CheckFogState(Vector2 pos)
+    {
+        // 0: 안개x, 1: 안개o
+        int state = 1;
+        int x = Mathf.FloorToInt(pos.x);
+        int y = Mathf.FloorToInt(pos.y);
+        bool isOnMap = (0 <= x && x < width) && (0 <= y && y < height + height + clientMapOffsetY);
+        if (isOnMap)
+        {
+            state = fogState[x, y];
+        }
+
+        return state;
+    }
+
     public void LoadFogState(int[,] loadedFogState)
     {
         fogState = loadedFogState;

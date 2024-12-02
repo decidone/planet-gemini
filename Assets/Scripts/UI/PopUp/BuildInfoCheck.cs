@@ -101,7 +101,8 @@ public class BuildInfoCheck : MonoBehaviour
             }
             else if (cell.resource != null)
             {
-                PopUpPosSetResource(mousePos, cell.resource.item);
+                if (MapGenerator.instance.CheckFogState(pos) == 0)
+                    PopUpPosSetResource(mousePos, cell.resource.item);
             }
             else
             {

@@ -8,15 +8,19 @@ public class BounceRobot : UnitAi
 {
     public GameObject attackFX;
 
-    protected override void AttackStart()
+    protected override bool AttackStart()
     {
-        //AnimPlayCtrl("Attack");
-        //AnimBoolCtrl("isAttack", true);
-        animator.Play("Attack", -1, 0);
-        animator.SetBool("isAttack", true);
+        Debug.Log("aggroTarget: " + aggroTarget);
+        bool isAttacked = false;
 
         if (aggroTarget != null)
         {
+            //AnimPlayCtrl("Attack");
+            //AnimBoolCtrl("isAttack", true);
+            animator.Play("Attack", -1, 0);
+            animator.SetBool("isAttack", true);
+            isAttacked = true;
+
             Vector3 dir = aggroTarget.transform.position - transform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
@@ -40,5 +44,7 @@ public class BounceRobot : UnitAi
             bulletPool.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, unitCommonData.Damage, gameObject);
             soundManager.PlaySFX(gameObject, "unitSFX", "laserAttack");
         }
+
+        return isAttacked;
     }
 }

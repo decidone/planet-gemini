@@ -156,10 +156,14 @@ public class UnitCommonAi : NetworkBehaviour
                 if (tarDisCheckTime > tarDisCheckInterval)
                 {
                     tarDisCheckTime = 0f;
-                    AttackTargetCheck();
                     RemoveObjectsOutOfRange();
+                    AttackTargetCheck();
                 }
                 AttackTargetDisCheck();
+            }
+            else
+            {
+                targetDist = 0;
             }
         }
     }
@@ -233,6 +237,10 @@ public class UnitCommonAi : NetworkBehaviour
             targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
             targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
         }
+        else
+        {
+            targetDist = 0;
+        }
     }
 
     protected virtual IEnumerator CheckPath(Vector3 targetPos, string moveFunc) { yield return null; }
@@ -244,7 +252,7 @@ public class UnitCommonAi : NetworkBehaviour
         if (targetDist == 0)
             return;
 
-        else if (targetDist > unitCommonData.AttackDist)  // 공격 범위 밖으로 나갈 때
+        if (targetDist > unitCommonData.AttackDist)  // 공격 범위 밖으로 나갈 때
         {
             animator.SetBool("isAttack", false);
             aIState = AIState.AI_NormalTrace;
@@ -263,14 +271,21 @@ public class UnitCommonAi : NetworkBehaviour
 
         if (!isDelayAfterAttackCoroutine)
         {
-            attackState = AttackState.AttackDelay;
-            StartCoroutine(DelayAfterAttack(slowDebuffOn ? unitCommonData.AttDelayTime * 1.6f : unitCommonData.AttDelayTime));
+            if (AttackStart())
+            {
+                attackState = AttackState.AttackDelay;
+                StartCoroutine(DelayAfterAttack(slowDebuffOn ? unitCommonData.AttDelayTime * 1.6f : unitCommonData.AttDelayTime));
+            }
+            else
+            {
+                AttackEnd();
+            }
         }
     }
+
     protected IEnumerator DelayAfterAttack(float delayTime)
     {
         isDelayAfterAttackCoroutine = true;
-        AttackStart();
         //SwBodyType(false);
 
         while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f)
@@ -283,15 +298,16 @@ public class UnitCommonAi : NetworkBehaviour
         isDelayAfterAttackCoroutine = false;
     }
 
-    protected virtual void AttackStart() { }
+    protected virtual bool AttackStart() { return false; }
 
     protected virtual void AttackEnd()
     {
+        Debug.Log("AttackEnd");
         animator.SetBool("isAttack", false);
         animator.SetBool("isMove", false);
-        if(IsServer)
+        if (IsServer)
             AnimSetFloat(targetVec, false);
-        attackState = AttackState.Waiting;        
+        attackState = AttackState.Waiting;
     }
 
     //attackType : 0 일반 공격, 1 고정 데미지, 2 방어력 무시 데미지, 3 독 공격, 4 슬로우 공격
