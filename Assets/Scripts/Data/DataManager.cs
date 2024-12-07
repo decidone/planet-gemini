@@ -76,7 +76,7 @@ public class DataManager : MonoBehaviour
         InventorySaveData clientMapInventoryData = GameManager.instance.clientMapInven.SaveData();
         saveData.clientMapInvenData = clientMapInventoryData;
 
-        foreach (ScienceBtn scienceBtn in TempScienceDb.instance.scienceBtns)
+        foreach (ScienceBtn scienceBtn in ScienceDb.instance.scienceBtns)
         {
             ScienceData scienceData = scienceBtn.SaveData();
             saveData.scienceData.Add(scienceData);
@@ -178,7 +178,7 @@ public class DataManager : MonoBehaviour
         // 행성 인벤토리
         GameManager.instance.hostMapInven.LoadData(saveData.hostMapInvenData);
         GameManager.instance.clientMapInven.LoadData(saveData.clientMapInvenData);
-        TempScienceDb.instance.LoadSet(saveData.scienceData);
+        ScienceDb.instance.LoadSet(saveData.scienceData);
         Overall.instance.LoadData(saveData.overallData);
         GameManager.instance.LoadMapData(saveData.mapData);
     }

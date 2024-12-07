@@ -36,7 +36,7 @@ public class ScienceCoreLvCtrl : MonoBehaviour
         else
         {
             scienceBtn = coreBtnObj.AddComponent<ScienceBtn>();
-            scienceBtn.SetInfo("Core", coreLv, coreLv, time, true, "Core");
+            scienceBtn.SetInfo("Core", coreLv, coreLv, time, true, "Core", false);
         }
     }
 
@@ -51,7 +51,7 @@ public class ScienceCoreLvCtrl : MonoBehaviour
             Item itemData = itemList.FindDataGetLevel(data.Item1[i], data.Item2[i]);
             sciTreeIconCtrl.icon.sprite = itemData.icon;
             string name = InGameNameDataGet.instance.ReturnName(data.Item2[i], data.Item1[i]);
-            sciTreeIconCtrl.SetIcon(data.Item1[i], data.Item2[i], data.Item3[i], data.Item4[i], name);   //이름, 레벨, 코어레벨, 시간
+            sciTreeIconCtrl.SetIcon(data.Item1[i], data.Item2[i], data.Item3[i], data.Item4[i], name, data.Item5[i]);   //이름, 레벨, 코어레벨, 시간
         }
     }
 }

@@ -39,7 +39,7 @@ public class ScienceManager : MonoBehaviour
     protected GameManager gameManager;
     protected ScienceBtn focusedSciBtn;
 
-    TempScienceDb scienceDb;
+    ScienceDb scienceDb;
     BuildingInven buildingInven;
 
     float popupWidth;
@@ -70,15 +70,14 @@ public class ScienceManager : MonoBehaviour
 
     void Start()
     {
-        UISetting();
-
         gameManager = GameManager.instance;
-        scienceDb = TempScienceDb.instance;
+        scienceDb = ScienceDb.instance;
         buildingInven = gameManager.GetComponent<BuildingInven>();
         sciItemSetWindow = itemInputWindow.GetComponent<SciItemSetWindow>();
         portalSciManager = PortalSciManager.instance;
         soundManager = SoundManager.instance;
         onToggleMapChangeCallback += OnExit;
+        UISetting();
 
         contents[0].SetActive(true);
         contents[1].SetActive(false);
@@ -128,19 +127,6 @@ public class ScienceManager : MonoBehaviour
 
             // 위치 설정
             infoWindow[0].transform.localPosition = new Vector2(clampedX, clampedY);
-
-
-            //mousePos = Input.mousePosition;
-
-            //if (mousePos.x + popupWidth > Screen.width)
-            //{
-            //    mousePos.x = Screen.width - popupWidth - 10.0f;
-            //}
-            //else if (mousePos.x < 0)
-            //{
-            //    mousePos.x = 0;
-            //}
-            //infoWindow[0].transform.position = mousePos;
         }
         else if (infoWindow[1].activeSelf)
         {
@@ -158,6 +144,21 @@ public class ScienceManager : MonoBehaviour
             infoWindow[1].transform.localPosition = new Vector2(clampedX, clampedY);
             //mousePos = Input.mousePosition;
             //infoWindow[1].transform.position = mousePos;
+        }
+        else if (infoWindow[2].activeSelf)
+        {
+            mousePos = Input.mousePosition;
+            Vector2 anchoredPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
+
+            float popupWidth = infoWindowObj[2].GetComponent<RectTransform>().rect.width;
+            float popupHeight = infoWindowObj[2].GetComponent<RectTransform>().rect.height;
+
+            float clampedX = Mathf.Clamp(anchoredPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth);
+            float clampedY = Mathf.Clamp(anchoredPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight);
+
+            // 위치 설정
+            infoWindow[2].transform.localPosition = new Vector2(clampedX, clampedY);
         }
     }
 
@@ -236,13 +237,24 @@ public class ScienceManager : MonoBehaviour
 
             if (focusedSciBtn.isCore)
             {
-                infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
-                infoWindow[1].SetActive(true);
+                if (!focusedSciBtn.upgrade)
+                {
+                    infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
+                    infoWindow[1].SetActive(true);
+                }
             }
             else
             {
-                infoWindow[0].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
-                infoWindow[0].SetActive(true);
+                if (focusedSciBtn.upgrade)
+                {
+                    infoWindow[2].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.isCore);
+                    infoWindow[2].SetActive(true);
+                }
+                else
+                {
+                    infoWindow[0].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
+                    infoWindow[0].SetActive(true);
+                }
             }
         }
     }
@@ -311,7 +323,7 @@ public class ScienceManager : MonoBehaviour
 
         isAnyUpgradeCompleted = true;
         onUpgradeCompletedCallback?.Invoke(40);
-
+        Debug.Log(sciName + " : " + sciLevel + " : " + coreLv);
         scienceDb.SaveSciDb(sciName, sciLevel, coreLv, isLoad);
         buildingInven.Refresh();
     }
@@ -321,6 +333,7 @@ public class ScienceManager : MonoBehaviour
         focusedSciBtn = null;
         infoWindow[0].SetActive(false);
         infoWindow[1].SetActive(false);
+        infoWindow[2].SetActive(false);
     }
 
     public void OpenUI()

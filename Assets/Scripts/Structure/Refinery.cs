@@ -18,12 +18,16 @@ public class Refinery : FluidFactoryCtrl
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
         hp = maxHp;
+        getDelay = 0.01f;
+        sendDelay = structureData.SendDelay[level]; 
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         destroyInterval = structureData.RemoveGauge;
         soundManager = SoundManager.instance;
         destroyTimer = destroyInterval;
+        onEffectUpgradeCheck += IncreasedStructureCheck;
+        onEffectUpgradeCheck.Invoke();
         #endregion
 
         #region FluidFactoryAwake
@@ -137,7 +141,7 @@ public class Refinery : FluidFactoryCtrl
                         {
                             isOperate = true;
                             prodTimer += Time.deltaTime;
-                            if (prodTimer > effiCooldown - effiOverclock)
+                            if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                             {
                                 saveFluidNum -= recipe.amounts[0];
                                 if (IsServer)
@@ -206,8 +210,8 @@ public class Refinery : FluidFactoryCtrl
 
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
-        sInvenManager.SetCooldownText(effiCooldown - effiOverclock);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+        sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);

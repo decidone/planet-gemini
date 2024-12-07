@@ -119,6 +119,25 @@ public class MonsterAi : UnitCommonAi
         }
     }
 
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        MonsterScriptSetServerRpc(isScriptActive);
+        FlipSyncServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void FlipSyncServerRpc()
+    {
+        FlipSyncClientRpc(isFlip);
+    }
+
+    [ClientRpc]
+    void FlipSyncClientRpc(bool flip)
+    {
+        isFlip = flip;
+    }
+
     protected override void AnimSetFloat(Vector3 direction, bool isNotLast)
     {
         float moveStep = unitCommonData.MoveSpeed * Time.fixedDeltaTime * slowSpeedPer;
@@ -506,13 +525,13 @@ public class MonsterAi : UnitCommonAi
             if (Obj != null)
             {
                 if (Obj.GetComponent<PlayerStatus>())
-                    Obj.GetComponent<PlayerStatus>().TakeDamage(unitCommonData.Damage);
+                    Obj.GetComponent<PlayerStatus>().TakeDamage(damage);
                 else if (Obj.GetComponent<UnitAi>())
-                    Obj.GetComponent<UnitAi>().TakeDamage(unitCommonData.Damage, 0);
+                    Obj.GetComponent<UnitAi>().TakeDamage(damage, 0);
                 else if (Obj.GetComponent<TowerAi>())
-                    Obj.GetComponent<TowerAi>().TakeDamage(unitCommonData.Damage);
+                    Obj.GetComponent<TowerAi>().TakeDamage(damage);
                 else if (Obj.GetComponent<Structure>())
-                    Obj.GetComponent<Structure>().TakeDamage(unitCommonData.Damage);
+                    Obj.GetComponent<Structure>().TakeDamage(damage);
             }
         }
     }

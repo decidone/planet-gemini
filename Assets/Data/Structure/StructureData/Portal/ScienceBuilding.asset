@@ -15,11 +15,16 @@ MonoBehaviour:
   factoryName: ScienceBuilding
   maxLevel: 1
   maxHp: 2c010000
+  upgradeMaxHp: 2c010000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
-  sendSpeed: []
+  sendSpeed:
+  - 0
   sendFluidAmount: 0
-  sendDelay: 0
+  sendDelay:
+  - 0
+  upgradeSendDelay:
+  - 0
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

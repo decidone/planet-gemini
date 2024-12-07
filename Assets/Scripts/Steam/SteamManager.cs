@@ -292,17 +292,17 @@ public class SteamManager : MonoBehaviour
 
     private void HandleOpponentDataPacket(byte[] dataPacket)
     {
-        try
-        {
+        //try
+        //{
             string opponentDataSent = ConvertByteArrayToString(dataPacket);
             DataManager.instance.Load(opponentDataSent);
             Debug.Log("Get Data");
             getData = true;
-        }
-        catch
-        {
-            Debug.Log("Failed to process incoming opponent data packet");
-        }
+        //}
+        //catch
+        //{
+        //    Debug.Log("Failed to process incoming opponent data packet");
+        //}
     }
 
     private string ConvertByteArrayToString(byte[] byteArrayToConvert)

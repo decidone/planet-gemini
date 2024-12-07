@@ -46,12 +46,13 @@ public class ScienceInfoGet : MonoBehaviour
         return null;
     }
 
-    public (List<string>, List<int>, List<int>, List<float>) GetSciLevelData(string desiredClass, int desiredLevel)
+    public (List<string>, List<int>, List<int>, List<float>, List<bool>) GetSciLevelData(string desiredClass, int desiredLevel)
     {
         List<string> name = new List<string>();
         List<int> coreLevel = new List<int>();
         List<int> level = new List<int>();
         List<float> time = new List<float>();
+        List<bool> basicScience = new List<bool>();
 
         foreach (var scienceCategory in scienceInfoDataDic)
         {
@@ -73,13 +74,14 @@ public class ScienceInfoGet : MonoBehaviour
                             level.Add(levelEntry.Key);
                             time.Add(levelEntry.Value.time);
                             coreLevel.Add(levelEntry.Value.coreLv);
+                            basicScience.Add(levelEntry.Value.basicScience);
                         }
                     }
                 }
             }
         }
 
-        return (name, level, coreLevel, time);
+        return (name, level, coreLevel, time, basicScience);
     }
 
     public float CoreUpgradeTime(int level)

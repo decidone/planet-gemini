@@ -22,7 +22,7 @@ public class InfoWindow : MonoBehaviour
     public bool totalAmountsEnough = false;
 
     ScienceInfoData preSciInfoData;
-    TempScienceDb scienceDb;
+    ScienceDb scienceDb;
 
     public static InfoWindow instance;
     BuildingInven buildingInven;
@@ -48,6 +48,23 @@ public class InfoWindow : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
+    public void SetNeedItem(ScienceInfoData scienceInfoData, string name, bool isCore)
+    {
+        instance = this;
+
+        needItems.Clear();
+        nameText.text = $"{name}";
+        if (coreLvText != null)
+        {
+            coreLvText.text = $"Core Lv.{scienceInfoData.coreLv}";
+        }
+
+        if (!isCore)
+        {
+            infoText.text = scienceInfoData.info;
+        }
+    }
+
     public void SetNeedItem(ScienceInfoData scienceInfoData, string name, int level ,bool isCore , ScienceBtn sciBtn)
     {
         instance = this;
@@ -62,7 +79,7 @@ public class InfoWindow : MonoBehaviour
             itemsList = gameManager.GetComponent<ItemList>().itemList;
         }
         if(scienceDb == null)
-            scienceDb = gameManager.GetComponent<TempScienceDb>();
+            scienceDb = gameManager.GetComponent<ScienceDb>();
 
         preSciInfoData = scienceInfoData;
 

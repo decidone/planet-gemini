@@ -129,7 +129,7 @@ public class InfoUI : MonoBehaviour
         nameText.text = unit.name;
         SetUnitHp();
         unit.onHpChangedCallback += SetUnitHp;
-        firstBattleText.text = "ATK " + unit.unitCommonData.Damage + " DEF " + unit.unitCommonData.Defense;
+        firstBattleText.text = "ATK " + unit.damage + " DEF " + unit.defense;
         secondBattleText.text = "ATK Delay " + unit.unitCommonData.AttDelayTime + " ATK Range " + unit.unitCommonData.AttackDist;
     }
 
@@ -169,7 +169,7 @@ public class InfoUI : MonoBehaviour
         nameText.text = monster.name;
         SetMonsterHp();
         monster.onHpChangedCallback += SetMonsterHp;
-        firstBattleText.text = "ATK " + monster.unitCommonData.Damage + " DEF " + monster.unitCommonData.Defense;
+        firstBattleText.text = "ATK " + monster.damage + " DEF " + monster.defense;
         secondBattleText.text = "ATK Delay " + monster.unitCommonData.AttDelayTime + " ATK Range " + monster.unitCommonData.AttackDist;
     }
 

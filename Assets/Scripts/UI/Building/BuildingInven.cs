@@ -11,7 +11,7 @@ public class BuildingInven : MonoBehaviour
 
     private List<Building> buildingDataList;
     public Dictionary<int, Building> buildingDic = new Dictionary<int, Building>();
-    private TempScienceDb scienceDb;
+    private ScienceDb scienceDb;
     private Button[] buildingTagsBtn;
     private int preBtnIndex = 0;
     public static BuildingInven instance;
@@ -35,7 +35,7 @@ public class BuildingInven : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.instance;
-        scienceDb = TempScienceDb.instance;
+        scienceDb = ScienceDb.instance;
         soundManager = SoundManager.instance;
         buildingDataList = BuildingList.instance.buildingListSO.buildingSOList;
         buildingTagsBtn = buildingTagsPanel.GetComponentsInChildren<Button>();

@@ -15,8 +15,8 @@ public class SciTreeIconCtrl : MonoBehaviour
         scienceBtn = iconBtn.GetComponent<ScienceBtn>();
     }
 
-    public void SetIcon(string sciName, int level, int coreLv, float time, string gameName)
+    public void SetIcon(string sciName, int level, int coreLv, float time, string gameName, bool basicScience)
     {
-        scienceBtn.SetInfo(sciName, level, coreLv, time, false, gameName);
+        scienceBtn.SetInfo(sciName, level, coreLv, time, false, gameName, basicScience);
     }
 }

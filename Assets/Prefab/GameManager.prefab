@@ -314,7 +314,7 @@ MonoBehaviour:
   hostMap: {fileID: 0}
   clientMap: {fileID: 0}
   map: {fileID: 0}
-  destroyedMapObjects: []
+  destroyedMapObjectsPos: []
   isPlayerInHostMap: 0
   isPlayerInMarket: 0
   player: {fileID: 0}
@@ -350,6 +350,7 @@ MonoBehaviour:
   hostPlayerSpawnPos: {x: 0, y: 0, z: 0}
   clientPlayerSpawnPos: {x: 0, y: 0, z: 0}
   consoleUI: {fileID: 0}
+  isBasicUIClose: 0
   basicUI: {fileID: 0}
   chat: {fileID: 0}
   scienceBuildingSet: 0
@@ -525,6 +526,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a3020250a4044e341af1fee415ecb042, type: 2}
   - {fileID: 11400000, guid: f85f44175b0c2834b9c1e8228ec967a2, type: 2}
   - {fileID: 11400000, guid: 5d4d534ddf4f44e47b3f1285491464ea, type: 2}
+  - {fileID: 11400000, guid: b26e1667ffb42d5429b56b6ff35bc0bb, type: 2}
+  - {fileID: 11400000, guid: 697685c8873704c48af579659ccbe33c, type: 2}
+  - {fileID: 11400000, guid: bb636df70b8233247b1362f431790843, type: 2}
+  - {fileID: 11400000, guid: b26e1667ffb42d5429b56b6ff35bc0bb, type: 2}
+  - {fileID: 11400000, guid: a00a79727fcdbf44991e52670dc8c96e, type: 2}
+  - {fileID: 11400000, guid: dec230058075c264089748ad9fc7f151, type: 2}
+  - {fileID: 11400000, guid: ec58ad309d0b8b1449083949185d120c, type: 2}
+  - {fileID: 11400000, guid: fc1cbc2529550b74988dd09a7883c402, type: 2}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -591,6 +600,8 @@ MonoBehaviour:
   scienceBtns: []
   coreLevelUpgrade: 0000000000000000000000000000000000000000
   coreLevel: 1
+  increasedStructure: 000000
+  increasedUnit: 00000000
 --- !u!114 &4059864358883353247
 MonoBehaviour:
   m_ObjectHideFlags: 0

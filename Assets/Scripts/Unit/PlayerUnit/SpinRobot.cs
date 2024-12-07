@@ -17,13 +17,20 @@ public class SpinRobot : UnitAi
         base.AttackEnd();
         if (IsServer && aggroTarget != null)
         {
-            if (aggroTarget.TryGetComponent(out MonsterAi monster))
+            foreach (GameObject gameObject in targetList)
             {
-                monster.TakeDamage(unitCommonData.Damage, 0);
-            }
-            else if (aggroTarget.TryGetComponent(out MonsterSpawner spawner))
-            {
-                spawner.TakeDamage(unitCommonData.Damage, gameObject);
+                float distance = Vector3.Distance(tr.position, gameObject.transform.position);
+                if (distance > unitCommonData.AttackDist)
+                    continue;
+
+                if (gameObject.TryGetComponent(out MonsterAi monster))
+                {
+                    monster.TakeDamage(damage, 0);
+                }
+                else if (gameObject.TryGetComponent(out MonsterSpawner spawner))
+                {
+                    spawner.TakeDamage(damage, gameObject);
+                }
             }
         }
     }

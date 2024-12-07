@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Splitter
   m_EditorClassIdentifier: 
   factoryName: Splitter
-  maxLevel: 3
+  maxLevel: 2
   maxHp: 320000003c000000
+  upgradeMaxHp: 640000006e000000
   maxItemStorageLimit: 5
   maxFulidStorageLimit: 0
   sendSpeed:
@@ -22,7 +23,10 @@ MonoBehaviour:
   sendFluidAmount: 0
   sendDelay:
   - 0.2
-  - 0.01
+  - 0.2
+  upgradeSendDelay:
+  - 0.1
+  - 0.1
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

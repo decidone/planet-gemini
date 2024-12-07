@@ -38,7 +38,7 @@ public class PipeCtrl : FluidFactoryCtrl
                 {
                     sendDelayTimer += Time.deltaTime;
 
-                    if (sendDelayTimer > structureData.SendDelay[level])
+                    if (sendDelayTimer > sendDelay)
                     {
                         if (saveFluidNum >= structureData.SendFluidAmount)
                             SendFluid();

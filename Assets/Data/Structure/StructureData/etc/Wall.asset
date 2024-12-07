@@ -15,11 +15,28 @@ MonoBehaviour:
   factoryName: Wall
   maxLevel: 5
   maxHp: 6400000096000000c8000000fa0000002c010000
+  upgradeMaxHp: 96000000c8000000fa0000002c0100005e010000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
-  sendSpeed: []
+  sendSpeed:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   sendFluidAmount: 0
-  sendDelay: []
+  sendDelay:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  upgradeSendDelay:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

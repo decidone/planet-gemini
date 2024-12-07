@@ -309,5 +309,17 @@
   },
   "VoidShard": {
     "1": "Void Shard"
+  },
+  "StructureUpgrade": {
+    "1": "Production Speed Upgrade",
+    "2": "Hp Upgrade",
+    "3": "Input/Output Speed Upgrade",
+    "4": "Reduced Energy Consumption"
+  },
+  "UnitUpgrade": {
+    "1": "Hp Upgrade",
+    "2": "Damage Upgrade",
+    "3": "Attack Speed Upgrade",
+    "4": "Defense Upgrade"
   }
 }

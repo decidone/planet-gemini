@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PortalSciManager : MonoBehaviour
 {
-    TempScienceDb scienceDb;
+    ScienceDb scienceDb;
     public string[] portalSciName;
     public Dictionary<string, bool> portalSciDic = new Dictionary<string, bool>();
     GameManager gameManager;
@@ -28,7 +28,7 @@ public class PortalSciManager : MonoBehaviour
 
     private void Start()
     {
-        scienceDb = TempScienceDb.instance;
+        scienceDb = ScienceDb.instance;
         gameManager = GameManager.instance;
         canvas = gameManager.inventoryUiCanvas;
         GetUIFunc();

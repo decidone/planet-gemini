@@ -39,12 +39,20 @@ public class UnitAi : UnitCommonAi
     public float visionRadius;
     float fogTimer;
 
+    public delegate void OnEffectUpgradeCheck();
+    public OnEffectUpgradeCheck onEffectUpgradeCheck;
+
+    protected bool[] increasedUnit = new bool[4];
+    // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
+
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
         selfHealInterval = 5;
         selfHealingAmount = 5f;
+        onEffectUpgradeCheck += IncreasedStructureCheck;
+        onEffectUpgradeCheck.Invoke();
     }
 
     protected override void Update()
@@ -474,7 +482,7 @@ public class UnitAi : UnitCommonAi
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
 
-        float reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
+        float reducedDamage = Mathf.Max(damage - defense, 5);
 
         hp -= reducedDamage;
         if (hp < 0f)
@@ -502,6 +510,7 @@ public class UnitAi : UnitCommonAi
     protected override void DieFuncClientRpc()
     {
         base.DieFuncClientRpc();
+        onEffectUpgradeCheck -= IncreasedStructureCheck;
 
         if (InfoUI.instance.unit == this)
             InfoUI.instance.SetDefault();
@@ -530,6 +539,7 @@ public class UnitAi : UnitCommonAi
     public override void RemoveTarget(GameObject target)
     {
         base.RemoveTarget(target);
+        Debug.Log(targetList.Count + " : " + aggroTarget + " : " + isLastStateOn);
         if (targetList.Count == 0 && isLastStateOn)
         {
             aIState = unitLastState;
@@ -666,5 +676,34 @@ public class UnitAi : UnitCommonAi
         data.moveStartPos = Vector3Extensions.FromVector3(patrolPos);
 
         return data;
+    }
+
+    public void IncreasedStructureCheck()
+    {
+        increasedUnit = ScienceDb.instance.IncreasedStructureCheck(false);
+
+        if (increasedUnit[0])
+        {
+            bool isHpFull = false;
+            if (maxHp == hp)
+            {
+                isHpFull = true;
+            }
+            maxHp = unitCommonData.UpgradeMaxHp;
+            if (isHpFull)
+                hp = maxHp;
+        }
+        if (increasedUnit[1])
+        {
+            damage = unitCommonData.UpgradeDamage;
+        }
+        if (increasedUnit[2])
+        {
+            attackSpeed = unitCommonData.UpgradeAttDelayTime;
+        }
+        if (increasedUnit[3])
+        {
+            defense = unitCommonData.UpgradeDefense;
+        }
     }
 }
