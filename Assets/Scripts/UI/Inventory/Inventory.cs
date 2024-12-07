@@ -34,7 +34,6 @@ public class Inventory : NetworkBehaviour
                 totalItems.Add(item, 0);
             }
         }
-
     }
 
     public override void OnNetworkSpawn()
@@ -663,6 +662,12 @@ public class Inventory : NetworkBehaviour
         items.Clear();
         amounts.Clear();
         totalItems.Clear();
+
+        if (itemList == null)
+        {
+            itemList = ItemList.instance.itemList;
+        }
+
         foreach (Item item in itemList)
         {
             totalItems.Add(item, 0);

@@ -21,6 +21,8 @@ public class Portal : Production
         portalSci = PortalSciManager.instance;
         inventory = this.GetComponent<Inventory>();
         visionPos = new Vector3(transform.position.x, transform.position.y + 1, 0);
+        onEffectUpgradeCheck += IncreasedStructureCheck;
+        onEffectUpgradeCheck.Invoke();
     }
 
     protected override void Start()
@@ -220,4 +222,5 @@ public class Portal : Production
             spawnobj.GetComponent<ScienceBuilding>().SetPortal(isInHostMap);
         }
     }
+    public override void IncreasedStructureCheck() { }
 }

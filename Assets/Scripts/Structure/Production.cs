@@ -42,8 +42,8 @@ public abstract class Production : Structure
         sInvenManager.ResetInvenOption();
         cooldown = recipe.cooldown;
         effiCooldown = cooldown;
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
-        sInvenManager.SetCooldownText(effiCooldown - effiOverclock);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+        sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
@@ -513,8 +513,8 @@ public abstract class Production : Structure
 
             if (isUIOpened)
             {
-                sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
-                sInvenManager.SetCooldownText(effiCooldown - effiOverclock);
+                sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+                sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
             }
         }
     }

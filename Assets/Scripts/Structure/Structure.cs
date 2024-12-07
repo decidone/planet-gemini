@@ -1,12 +1,10 @@
+using Pathfinding;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Pool;
-using UnityEngine.Rendering;
-using Unity.Netcode;
-using System;
-using Pathfinding;
 
 // UTF-8 설정
 public class Structure : NetworkBehaviour
@@ -86,6 +84,9 @@ public class Structure : NetworkBehaviour
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
+    protected float getDelay;
+    protected float sendDelay;
+
     //[HideInInspector]
     public List<GameObject> inObj = new List<GameObject>();
     //[HideInInspector]
@@ -114,7 +115,11 @@ public class Structure : NetworkBehaviour
     [HideInInspector]
     public Overclock overclockTower;
     protected float effiOverclock;
-    public float overclockAmount;
+    [SerializeField]
+    protected float overclockPer;
+    protected float effiCooldownUpgradeAmount;
+    [SerializeField]
+    protected float effiCooldownUpgradePer;
 
     public bool isStorageBuilding;
     public bool isMainSource;
@@ -140,7 +145,7 @@ public class Structure : NetworkBehaviour
     public float energyProduction;
     [HideInInspector]
     public float energyConsumption;
-
+    float upgradeConsumptionPer = 10;
     public bool isOperate;
     [HideInInspector]
     public float efficiency;
@@ -174,6 +179,12 @@ public class Structure : NetworkBehaviour
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
 
+    public delegate void OnEffectUpgradeCheck();
+    public OnEffectUpgradeCheck onEffectUpgradeCheck;
+
+    bool[] increasedStructure;
+    // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도
+
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -184,6 +195,8 @@ public class Structure : NetworkBehaviour
         maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
         hp = structureData.MaxHp[level];
+        getDelay = 0.01f;
+        sendDelay = structureData.SendDelay[level];
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         isStorageBuilding = false;
@@ -206,6 +219,8 @@ public class Structure : NetworkBehaviour
         destroyTimer = destroyInterval;
         warningIconCheck = false;
         visionPos = transform.position;
+        increasedStructure = new bool[4];
+        onEffectUpgradeCheck += IncreasedStructureCheck;
     }
 
     protected virtual void Update()
@@ -388,6 +403,7 @@ public class Structure : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
+
         if (IsServer && !GetComponent<Portal>())
         {
             NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
@@ -472,6 +488,7 @@ public class Structure : NetworkBehaviour
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         CheckPos();
+        onEffectUpgradeCheck.Invoke();
     }
 
     [ClientRpc]
@@ -523,6 +540,8 @@ public class Structure : NetworkBehaviour
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         energyUse = structureData.EnergyUse[level];
         energyConsumption = structureData.Consumption[level];
+        sendDelay = structureData.SendDelay[level];
+        onEffectUpgradeCheck.Invoke();
     }
 
     public virtual void Focused() { }
@@ -539,6 +558,7 @@ public class Structure : NetworkBehaviour
         height = _height;
         width = _width;
         dirCount = _dirCount;
+        onEffectUpgradeCheck.Invoke();
     }
 
     protected virtual void SetDirNum()
@@ -839,26 +859,26 @@ public class Structure : NetworkBehaviour
             if (!belt.isItemStop)
             {
                 GetItemIndexSet();
-                Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
+                Invoke(nameof(DelayGetItem), getDelay);
                 return;
             }
             else if (TryGetComponent(out Production production) && belt.itemObjList.Count > 0 && !production.CanTakeItem(belt.itemObjList[0].item))
             {
                 GetItemIndexSet();
-                Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
+                Invoke(nameof(DelayGetItem), getDelay);
                 return;
             }
         }
         else if (TryGetComponent(out Unloader unloader) && inObj[getItemIndex].TryGetComponent(out Production inObjScript) && !inObjScript.UnloadItemCheck(unloader.selectItem))
         {
             GetItemIndexSet();
-            Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
+            Invoke(nameof(DelayGetItem), getDelay);
             return;
         }
         else if (!GetComponent<Unloader>() && inObj[getItemIndex].GetComponent<Structure>())
         {
             GetItemIndexSet();
-            Invoke(nameof(DelayGetItem), structureData.SendDelay[level]);
+            Invoke(nameof(DelayGetItem), getDelay);
             return;
         }
 
@@ -1013,7 +1033,7 @@ public class Structure : NetworkBehaviour
                 setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
         }
 
-        Invoke(nameof(DelaySetItem), structureData.SendDelay[level]);
+        Invoke(nameof(DelaySetItem), sendDelay);
     }
     
     protected void SendDelaySet(int itemIndex, int outObjIndex)
@@ -1583,6 +1603,7 @@ public class Structure : NetworkBehaviour
         }
 
         NetworkObjManager.instance.NetObjRemove(gameObject);
+        onEffectUpgradeCheck -= IncreasedStructureCheck;
 
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
@@ -1667,6 +1688,8 @@ public class Structure : NetworkBehaviour
         }
 
         maxHp = structureData.MaxHp[level];
+        sendDelay = structureData.SendDelay[level];
+        onEffectUpgradeCheck.Invoke();
     }
 
     public virtual Dictionary<Item, int> PopUpItemCheck() { return null; }
@@ -1762,7 +1785,7 @@ public class Structure : NetworkBehaviour
     {
         if (isOn)
         {
-            effiOverclock = effiCooldown * overclockAmount / 100;
+            effiOverclock = effiCooldown * overclockPer / 100;
         }
         else
         {
@@ -1817,24 +1840,34 @@ public class Structure : NetworkBehaviour
         return data;
     }
 
+    public virtual void IncreasedStructureCheck()
+    {
+        increasedStructure = ScienceDb.instance.IncreasedStructureCheck(true);
+        // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 소비량 감소
 
-    //public override void OnDestroy()
-    //{
-    //    if (NetworkObject != null)
-    //    {
-    //        // 부모 NetworkObject가 파괴될 때 자식 NetworkObject를 처리
-    //        NetworkObject[] children = NetworkObject.GetComponentsInChildren<NetworkObject>();
+        if (increasedStructure[0])
+        {
+            effiCooldownUpgradeAmount = effiCooldown * effiCooldownUpgradePer / 100;
+        }
+        if (increasedStructure[1])
+        {
+            bool isHpFull = false;
+            if (maxHp == hp)
+            {
+                isHpFull = true;
+            }
 
-    //        foreach (var child in children)
-    //        {
-    //            if (child != NetworkObject)
-    //            {
-    //                // 자식 NetworkObject를 적절히 처리 (예: 파괴)
-    //                Destroy(child.gameObject);
-    //            }
-    //        }
-    //    }
-    //    Debug.Log("OnDestroy : " + gameObject.name );
-    //    base.OnDestroy();
-    //}
+            maxHp = structureData.UpgradeMaxHp[level];
+            if (isHpFull)
+                hp = maxHp;
+        }
+        if (increasedStructure[2])
+        {
+            sendDelay = structureData.UpgradeSendDelay[level];
+        }
+        if (increasedStructure[3])
+        {
+            energyConsumption = structureData.Consumption[level] - (structureData.Consumption[level] * upgradeConsumptionPer / 100);
+        }
+    }
 }

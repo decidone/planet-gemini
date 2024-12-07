@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BuildingFurnaceUpgrade
   m_EditorClassIdentifier: 
   type: Factory
-  scienceName: FurnaceUpgrade
+  scienceName: Furnace
   item: {fileID: 11400000, guid: e9b82aa1665ed894b85772447b95e0e4, type: 2}
   gameObj: {fileID: 8759284699072132164, guid: 3462f4601c949c64cae35c51d70e5e2c, type: 3}
   sideObj: {fileID: 0}

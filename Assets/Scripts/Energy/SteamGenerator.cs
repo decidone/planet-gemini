@@ -30,12 +30,16 @@ public class SteamGenerator : FluidFactoryCtrl
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
         hp = maxHp;
+        getDelay = 0.01f;
+        sendDelay = structureData.SendDelay[level];
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         destroyInterval = structureData.RemoveGauge;
         soundManager = SoundManager.instance;
         destroyTimer = destroyInterval;
+        onEffectUpgradeCheck += IncreasedStructureCheck;
+        onEffectUpgradeCheck.Invoke();
 
         #endregion
         #region FluidFactoryAwake

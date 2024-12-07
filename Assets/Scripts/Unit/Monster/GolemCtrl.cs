@@ -23,6 +23,6 @@ public class GolemCtrl : MonsterAi
             return;
 
         golemFX = Instantiate(golemAttackFX, new Vector2(getTargetTr.position.x, getTargetTr.position.y), getTargetTr.rotation);
-        golemFX.GetComponentInChildren<GolemFXCtrl>().TargetPosAndDamage(unitCommonData.Damage);
+        golemFX.GetComponentInChildren<GolemFXCtrl>().TargetPosAndDamage(damage);
     }
 }

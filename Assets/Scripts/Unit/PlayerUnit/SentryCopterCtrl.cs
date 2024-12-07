@@ -41,7 +41,7 @@ public class SentryCopterCtrl : UnitAi
             //else
             //    bulletPool.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-            bulletPool.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, unitCommonData.Damage, gameObject);
+            bulletPool.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, damage, gameObject);
             soundManager.PlaySFX(gameObject, "unitSFX", "laserAttack");
         }
 

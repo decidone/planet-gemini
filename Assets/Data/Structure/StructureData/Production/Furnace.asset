@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Furnace
   m_EditorClassIdentifier: 
   factoryName: Furnace
-  maxLevel: 1
-  maxHp: 3200000032000000
+  maxLevel: 2
+  maxHp: 3200000064000000
+  upgradeMaxHp: 6400000096000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
   sendSpeed:
@@ -24,6 +25,9 @@ MonoBehaviour:
   sendDelay:
   - 0.2
   - 0.2
+  upgradeSendDelay:
+  - 0.1
+  - 0.1
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

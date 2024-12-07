@@ -15,6 +15,7 @@ MonoBehaviour:
   factoryName: PortalItemIn
   maxLevel: 1
   maxHp: 2c010000
+  upgradeMaxHp: 5e010000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0
   sendSpeed:
@@ -22,6 +23,8 @@ MonoBehaviour:
   sendFluidAmount: 0
   sendDelay:
   - 0.2
+  upgradeSendDelay:
+  - 0.1
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

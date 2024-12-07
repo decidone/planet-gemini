@@ -15,13 +15,16 @@ MonoBehaviour:
   factoryName: SteamGenerator
   maxLevel: 1
   maxHp: 32000000
+  upgradeMaxHp: 64000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 100
   sendSpeed:
-  - 1
+  - 0
   sendFluidAmount: 0
   sendDelay:
   - 0.2
+  upgradeSendDelay:
+  - 0
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

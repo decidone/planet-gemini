@@ -91,6 +91,10 @@ public class UnitCommonAi : NetworkBehaviour
     protected float slowSpeedPer = 1;
     protected bool takePoisonDamgae;
 
+    public float damage;
+    public float attackSpeed;
+    public float defense;
+
     protected virtual void Awake()
     {
         tr = GetComponent<Transform>();
@@ -103,13 +107,14 @@ public class UnitCommonAi : NetworkBehaviour
         maxHp = unitCommonData.MaxHp;
         hpBar.fillAmount = hp / maxHp;
         unitCanvas.SetActive(false);
-
+        damage = unitCommonData.Damage;
+        attackSpeed = unitCommonData.AttDelayTime;
+        defense = unitCommonData.Defense;
         isFlip = unitSprite.flipX;
         searchInterval = 0.3f;
         tarDisCheckInterval = 0.3f;
         patrolPos = Vector3.zero;
         unitName = unitCommonData.UnitName;
-        //hp = 100.0f;
         aIState = AIState.AI_Idle;
         attackState = AttackState.Waiting;
     }
@@ -342,7 +347,7 @@ public class UnitCommonAi : NetworkBehaviour
 
         if (attackType == 0 || attackType == 4)
         {
-            reducedDamage = Mathf.Max(damage - unitCommonData.Defense, 5);
+            reducedDamage = Mathf.Max(damage - defense, 5);
             if (attackType == 4)
             {
                 StartCoroutine(SlowDebuffDamage(option));
@@ -350,7 +355,7 @@ public class UnitCommonAi : NetworkBehaviour
         }
         else if (attackType == 2)
         {
-            reducedDamage = Mathf.Max(damage - (unitCommonData.Defense * (option / 100)), 5);
+            reducedDamage = Mathf.Max(damage - (defense * (option / 100)), 5);
         }
         else if (attackType == 3)
         {
@@ -426,7 +431,8 @@ public class UnitCommonAi : NetworkBehaviour
     }
 
     public virtual void RemoveTarget(GameObject target) 
-    {            
+    {
+        Debug.Log(name  + " : " + target.name);
         if (targetList.Contains(target))
         {
             targetList.Remove(target);

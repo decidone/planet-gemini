@@ -38,7 +38,7 @@ public class BuildingInfo : MonoBehaviour
 
     public void BuildingClick()
     {
-        if (ItemDragManager.instance.isDrag) return;
+        if (ItemDragManager.instance.isDrag || GameManager.instance.isPlayerInMarket) return;
         
         if (selectBuildingData != null)
         {

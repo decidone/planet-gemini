@@ -36,6 +36,8 @@ public class FluidFactoryCtrl : Production
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
         hp = maxHp;
+        getDelay = 0.01f;
+        sendDelay = structureData.SendDelay[level]; 
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         mainSource = null;
@@ -54,6 +56,8 @@ public class FluidFactoryCtrl : Production
         soundManager = SoundManager.instance;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         destroyTimer = destroyInterval;
+        onEffectUpgradeCheck += IncreasedStructureCheck;
+        onEffectUpgradeCheck.Invoke();
     }
 
     protected override void Update()

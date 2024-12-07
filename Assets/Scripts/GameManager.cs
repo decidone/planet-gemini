@@ -808,13 +808,13 @@ public class GameManager : NetworkBehaviour
     {
         if (isBasicUIClose)
         {
-            CloseBasicUIs();
-            inventoryUiCanvas.TryGetComponent(out ItemInfoWindow window);
-            window.CloseWindow();
+            OpenBasicUIs();
         }
         else
         {
-            OpenBasicUIs();
+            CloseBasicUIs();
+            inventoryUiCanvas.TryGetComponent(out ItemInfoWindow window);
+            window.CloseWindow();
         }
         isBasicUIClose = !isBasicUIClose;
     }
@@ -963,7 +963,7 @@ public class GameManager : NetworkBehaviour
         while (!SteamManager.instance.getData)
         {
             SteamManager.instance.ReceiveP2PPacket();
-            yield return new WaitForSecondsRealtime(1f);
+            yield return new WaitForSecondsRealtime(5f);
         }
 
         Debug.Log("ClientDataGet And StartClient");

@@ -97,7 +97,7 @@ public class RecipeManager : InventoryManager
             }
             else
             {
-                TempScienceDb scienceDb = TempScienceDb.instance;
+                ScienceDb scienceDb = ScienceDb.instance;
                 for (int i = 0; i < recipes.Count; i++)
                 {
                     if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))

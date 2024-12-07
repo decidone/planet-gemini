@@ -18,7 +18,7 @@ public class ScienceBtn : MonoBehaviour
     Button scBtn;
     bool isLock = true;
     bool upgradeStart = false;
-    bool upgrade = false;
+    public bool upgrade = false;
     public bool isCore = false;
     public bool isMain;
     ScienceManager scienceManager;
@@ -26,6 +26,7 @@ public class ScienceBtn : MonoBehaviour
     public ScienceInfoData scienceInfoData;
     public List<(int, int)> itemAmountList = new List<(int, int)>();    // 저장량 / 최대량
     public ScienceBtn othCoreBtn;
+    bool basicScience;
 
     void Start()
     {
@@ -46,6 +47,10 @@ public class ScienceBtn : MonoBehaviour
             lockUI = transform.Find("LockUi").gameObject;
         upgradeImg = lockUI.transform.Find("Upgrade").gameObject.GetComponent<Image>();
         btnImage = GetComponent<Image>();
+        if (basicScience)
+        {
+            UpgradeFunc(true);
+        }
     }
 
     void ButtonFunc()
@@ -107,7 +112,7 @@ public class ScienceBtn : MonoBehaviour
         }
     }
 
-    public void SetInfo(string name, int lv, int coreLv, float time, bool core, string _gameName)
+    public void SetInfo(string name, int lv, int coreLv, float time, bool core, string _gameName, bool _basicScience)
     {
         sciName = name;
         gameName = _gameName;
@@ -122,6 +127,8 @@ public class ScienceBtn : MonoBehaviour
         {
             itemAmountList.Add((0, data));
         }
+
+        basicScience = _basicScience;
     }
 
     public void ItemAddAmount(int index, int amount)

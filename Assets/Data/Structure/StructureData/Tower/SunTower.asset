@@ -14,13 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: SunTower
   maxLevel: 1
-  maxHp: 2c0100005e01000090010000
+  maxHp: 2c010000
+  upgradeMaxHp: 5e010000
   maxItemStorageLimit: 50
   maxFulidStorageLimit: 0
-  sendSpeed: []
+  sendSpeed:
+  - 0
   sendFluidAmount: 0
   sendDelay:
-  - 1
+  - 0
+  upgradeSendDelay:
+  - 0
   maxBuildingGauge: 100
   maxRepairGauge: 70
   colliderRadius: 10

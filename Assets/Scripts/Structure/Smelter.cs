@@ -29,7 +29,7 @@ public class Smelter : Production
                         {
                             isOperate = true;
                             prodTimer += Time.deltaTime;
-                            if (prodTimer > effiCooldown - effiOverclock)
+                            if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                             {
                                 if (IsServer)
                                 {
@@ -83,8 +83,8 @@ public class Smelter : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
-        sInvenManager.SetCooldownText(effiCooldown - effiOverclock);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+        sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);

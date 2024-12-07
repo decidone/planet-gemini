@@ -19,6 +19,10 @@ public class StructureData : ScriptableObject
     public int[] MaxHp { get { return maxHp; } }
 
     [SerializeField]
+    private int[] upgradeMaxHp;
+    public int[] UpgradeMaxHp { get { return upgradeMaxHp; } }
+
+    [SerializeField]
     private int maxItemStorageLimit;
     public int MaxItemStorageLimit { get { return maxItemStorageLimit; } }
 
@@ -37,6 +41,10 @@ public class StructureData : ScriptableObject
     [SerializeField]
     private float[] sendDelay;
     public float[] SendDelay { get { return sendDelay; } }
+
+    [SerializeField]
+    private float[] upgradeSendDelay;
+    public float[] UpgradeSendDelay { get { return upgradeSendDelay; } }
 
     [SerializeField]
     private float maxBuildingGauge;

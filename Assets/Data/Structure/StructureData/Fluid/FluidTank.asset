@@ -15,11 +15,15 @@ MonoBehaviour:
   factoryName: FluidTank
   maxLevel: 1
   maxHp: 32000000
+  upgradeMaxHp: 64000000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 300
-  sendSpeed: []
+  sendSpeed:
+  - 0
   sendFluidAmount: 1
   sendDelay:
+  - 0.02
+  upgradeSendDelay:
   - 0.02
   maxBuildingGauge: 10
   maxRepairGauge: 10

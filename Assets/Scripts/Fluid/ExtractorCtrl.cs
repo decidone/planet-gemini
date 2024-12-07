@@ -37,7 +37,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
             if (!isPreBuilding && checkObj)
             {
                 sendDelayTimer += Time.deltaTime;
-                if (sendDelayTimer > structureData.SendDelay[level])
+                if (sendDelayTimer > sendDelay)
                 {
                     SendFluid();
                     sendDelayTimer = 0;

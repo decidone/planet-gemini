@@ -288,7 +288,7 @@ public class SplitterCtrl : LogisticsCtrl
         itemListRemove();
         ItemNumCheck();
         
-        Invoke(nameof(DelaySetItem), structureData.SendDelay[level]);
+        Invoke(nameof(DelaySetItem), sendDelay);
     }
 
     bool ItemFilterFullCheck(Item item)

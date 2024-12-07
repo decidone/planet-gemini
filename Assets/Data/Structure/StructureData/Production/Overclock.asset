@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Overclock
   m_EditorClassIdentifier: 
   factoryName: Overclock
-  maxLevel: 3
-  maxHp: 320000003c00000046000000
+  maxLevel: 1
+  maxHp: 32000000
+  upgradeMaxHp: 64000000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed:
@@ -22,6 +23,8 @@ MonoBehaviour:
   sendFluidAmount: 0
   sendDelay:
   - 0.2
+  upgradeSendDelay:
+  - 0.1
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

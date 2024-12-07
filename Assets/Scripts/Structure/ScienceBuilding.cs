@@ -43,4 +43,6 @@ public class ScienceBuilding : PortalObj
     {
         return null;
     }
+
+    public override void IncreasedStructureCheck() { }
 }
