@@ -15,3 +15,5 @@ MonoBehaviour:
   damage: 70
   attackDist: 7
   attDelayTime: 1
+  maxEnergyBulletAmount: 5
+  reloadCooldown: 2

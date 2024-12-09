@@ -150,12 +150,13 @@ public class BuildInfoCheck : MonoBehaviour
         //Vector2 newPos = new Vector2(pos.x + popUpRect.rect.width / 2, pos.y - popUpRect.rect.height / 2);
         //buildItemInfoWin.gameObject.transform.position = newPos;
         Dictionary<Item, int> getDic = structure.PopUpItemCheck();
-        (bool, bool, EnergyGroup) energyState = structure.PopUpEnergyCheck();
+        (bool, bool, bool, EnergyGroup, float) energyState = structure.PopUpEnergyCheck();
+        (float, float) storedState = structure.PopUpStoredCheck();
 
         if ((getDic != null && getDic.Count > 0) || energyState.Item1 || energyState.Item2)
         {
             BuildItemInfoPopUpOn();
-            buildItemInfoWin.UiSetting(getDic, energyState.Item1, energyState.Item2, energyState.Item3);
+            buildItemInfoWin.UiSetting(getDic, energyState.Item1, energyState.Item2, energyState.Item3, energyState.Item4, energyState.Item5, storedState.Item1, storedState.Item2);
         }
         else
             BuildItemInfoPopUpOff();

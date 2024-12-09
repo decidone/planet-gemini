@@ -167,13 +167,13 @@ public class LDConnector : Structure
 
         return data;
     }
-    public override (bool, bool, EnergyGroup) PopUpEnergyCheck()
+    public override (bool, bool, bool, EnergyGroup, float) PopUpEnergyCheck()
     {
         if (connector != null && connector.group != null)
         {
-            return (energyUse, isEnergyStr, connector.group);
+            return (energyUse, isEnergyStr, false, connector.group, energyConsumption);
         }
 
-        return (false, false, null);
+        return (false, false, false, null, 0);
     }
 }

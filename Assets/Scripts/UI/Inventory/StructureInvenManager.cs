@@ -172,7 +172,7 @@ public class StructureInvenManager : InventoryManager
             for (int i = 0; i < slots.Length; i++)
             {
                 Slot slot = slots[i];
-                if ((slot.inputItem.Contains(item)) && (slot.item == item || slot.item == null))
+                if ((slot.inputItem.Contains(item)) && (slot.item == item || slot.item == null) && !slot.outputSlot)
                 {
                     if (amount + slot.amount > inventory.maxAmount)
                     {

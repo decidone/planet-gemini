@@ -105,7 +105,7 @@ public class EnergyGenerator : Production
             prodTimer += Time.deltaTime;
             if (prodTimer > cooldown)
             {
-                if (fuel >= fuelRequirement)
+                if (fuel >= fuelRequirement && !destroyStart)
                 {
                     fuel -= fuelRequirement;
                     isOperate = true;
@@ -224,13 +224,13 @@ public class EnergyGenerator : Production
         }
     }
 
-    public override (bool, bool, EnergyGroup) PopUpEnergyCheck()
+    public override (bool, bool, bool, EnergyGroup, float) PopUpEnergyCheck()
     {
         if (connector != null && connector.group != null)
         {
-            return (energyUse, isEnergyStr, connector.group);
+            return (energyUse, isEnergyStr, false, connector.group, energyProduction);
         }
 
-        return (false, false, null);
+        return (false, false, false, null, 0);
     }
 }

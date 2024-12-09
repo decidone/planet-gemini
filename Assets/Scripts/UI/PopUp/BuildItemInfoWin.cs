@@ -12,25 +12,32 @@ public class BuildItemInfoWin : MonoBehaviour
     [SerializeField]
     RectTransform energyPanelWindow;
     [SerializeField]
+    RectTransform bulletPanelWindow;
+    [SerializeField]
     GameObject panel;
     [SerializeField]
     Image energyBar;
     [SerializeField]
     Text energyText;
+    [SerializeField]
+    Image bulletBar;
+    [SerializeField]
+    Text bulletText;
     List<GameObject> icon = new List<GameObject>();
     public RectTransform rectTransform;
     public GameObject elsePrefab;
     bool isOverIndex = false;
     int[] widthSize = { 105, 160, 215, 270, 325 };  // 에너지 건물일시 270 이상 세팅해줘야함
-    int[] heightSize = { 85, 130 };                 // 에너지 건물일시 130 으로
+    int[] heightSize = { 85, 115, 130 };            // 에너지 건물일시 130 으로
 
-    public void UiSetting(Dictionary<Item, int> getDic, bool energyUse, bool isEnergyStr, EnergyGroup energyGroup)
+    public void UiSetting(Dictionary<Item, int> getDic, bool energyUse, bool isEnergyStr, bool isBatt, EnergyGroup energyGroup, float energyVariation,
+        float storedAmount, float storedMaxAmount)
     {
-        if(getDic != null)
+        if (getDic != null)
         {
-            if(icon.Count != getDic.Count)
+            if (icon.Count != getDic.Count)
             {
-                if(icon.Count > getDic.Count)
+                if (icon.Count > getDic.Count)
                 {
                     int n = icon.Count - getDic.Count;
 
@@ -62,7 +69,7 @@ public class BuildItemInfoWin : MonoBehaviour
                     }
                 }
             }
-            if(getDic.Count > 0 && getDic.Count < 5 && isOverIndex)
+            if (getDic.Count > 0 && getDic.Count < 5 && isOverIndex)
             {
                 elsePrefab.SetActive(false);
                 isOverIndex = false;
@@ -73,7 +80,7 @@ public class BuildItemInfoWin : MonoBehaviour
             ResetUi();
         }
 
-        UIItemSet(getDic, energyUse, isEnergyStr, energyGroup);
+        UIItemSet(getDic, energyUse, isEnergyStr, isBatt, energyGroup, energyVariation, storedAmount, storedMaxAmount);
     }
 
     public void UiSetting(Item item)
@@ -116,29 +123,36 @@ public class BuildItemInfoWin : MonoBehaviour
         UIItemSet(item);
     }
 
-    void UIItemSet(Dictionary<Item, int> getDic, bool energyUse, bool isEnergyStr, EnergyGroup energyGroup)
+    void UIItemSet(Dictionary<Item, int> getDic, bool energyUse, bool isEnergyStr, bool isBatt, EnergyGroup energyGroup, float energyVariation,
+        float storedAmount, float storedMaxAmount)
     {
         if (getDic != null)
         {
-            if(getDic.Count < 5)
+            bulletPanelWindow.gameObject.SetActive(false);
+
+            if (getDic.Count < 5)
             {
                 if (energyUse || isEnergyStr)
                 {
                     float newWidth = widthSize[3];
                     rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
                     itemPanelWindow.sizeDelta = new Vector2(newWidth, itemPanelWindow.sizeDelta.y);
-                    float newheight = heightSize[1];
+                    float newheight = heightSize[2];
                     rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
                     energyPanelWindow.gameObject.SetActive(true);
                     energyBar.fillAmount = energyGroup.efficiency;
 
-                    if(energyUse)
+                    string energy = "";
+                    if (energyVariation > 0)
+                        energy = "(" + energyVariation + ")";
+
+                    if (energyUse)
                     {
-                        energyText.text = "Energy";
+                        energyText.text = "Energy : " + energyGroup.consumption + energy + " / " + energyGroup.energy;
                     }
                     else if (isEnergyStr)
                     {
-                        energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy;
+                        energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy + energy;
                     }
                 }
                 else
@@ -155,18 +169,22 @@ public class BuildItemInfoWin : MonoBehaviour
             {
                 if (energyUse || isEnergyStr)
                 {
-                    float newheight = heightSize[1];
+                    float newheight = heightSize[2];
                     rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
                     energyPanelWindow.gameObject.SetActive(true);
                     energyBar.fillAmount = energyGroup.efficiency;
 
+                    string energy = "";
+                    if (energyVariation > 0)
+                        energy = "(" + energyVariation + ")";
+
                     if (energyUse)
                     {
-                        energyText.text = "Energy";
+                        energyText.text = "Energy : " + energyGroup.consumption + energy + " / " + energyGroup.energy;
                     }
                     else if (isEnergyStr)
                     {
-                        energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy;
+                        energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy + energy;
                     }
                 }
                 else
@@ -202,14 +220,56 @@ public class BuildItemInfoWin : MonoBehaviour
         }
         else
         {
-            float newWidth = widthSize[3];
-            rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
-            itemPanelWindow.sizeDelta = new Vector2(newWidth, itemPanelWindow.sizeDelta.y);
-            float newheight = heightSize[0];
-            rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
-            energyPanelWindow.gameObject.SetActive(true);
-            energyBar.fillAmount = energyGroup.efficiency;
-            energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy;
+            if (isBatt)
+            {
+                float newWidth = widthSize[3];
+                rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
+                itemPanelWindow.sizeDelta = new Vector2(newWidth, itemPanelWindow.sizeDelta.y);
+                float newheight = heightSize[0];
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
+                energyPanelWindow.gameObject.SetActive(true);
+                bulletPanelWindow.gameObject.SetActive(false);
+                energyBar.fillAmount = storedAmount / storedMaxAmount;
+                energyText.text = "Stored : " + Mathf.RoundToInt(storedAmount) + " / " + storedMaxAmount;
+            }
+            else if (storedMaxAmount == 0)
+            {
+                float newWidth = widthSize[3];
+                rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
+                itemPanelWindow.sizeDelta = new Vector2(newWidth, itemPanelWindow.sizeDelta.y);
+                float newheight = heightSize[0];
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
+                energyPanelWindow.gameObject.SetActive(true);
+                bulletPanelWindow.gameObject.SetActive(false);
+                energyBar.fillAmount = energyGroup.efficiency;
+
+                string energy = "";
+                if (energyVariation > 0)
+                    energy = "(" + energyVariation + ")";
+
+                if (energyUse)
+                {
+                    energyText.text = "Energy : " + energyGroup.consumption + energy + " / " + energyGroup.energy;
+                }
+                else if (isEnergyStr)
+                {
+                    energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy + energy;
+                }
+            }
+            else
+            {
+                float newWidth = widthSize[3];
+                rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
+                itemPanelWindow.sizeDelta = new Vector2(newWidth, itemPanelWindow.sizeDelta.y);
+                float newheight = heightSize[1];
+                rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
+                energyPanelWindow.gameObject.SetActive(true);
+                bulletPanelWindow.gameObject.SetActive(true);
+                energyBar.fillAmount = energyGroup.efficiency;
+                energyText.text = "Energy : " + energyGroup.consumption + "(" + energyVariation + ")" + " / " + energyGroup.energy;
+                bulletBar.fillAmount = storedAmount / storedMaxAmount;
+                bulletText.text = "Bullet : " + storedAmount + " / " + storedMaxAmount;
+            }
         }        
     }
 
@@ -221,6 +281,7 @@ public class BuildItemInfoWin : MonoBehaviour
         float newheight = heightSize[0];
         rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
         energyPanelWindow.gameObject.SetActive(false);
+        bulletPanelWindow.gameObject.SetActive(false);
 
         icon[0].GetComponent<BuildingImgCtrl>().AddItem(item);
         icon[0].SetActive(true);

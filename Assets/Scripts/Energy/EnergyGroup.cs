@@ -225,40 +225,70 @@ public class EnergyGroup
 
     public void EfficiencyCheck()
     {
-        if (consumption == 0f)
-        {
-            if (energy == 0f)
-            {
-                efficiency = 0f;
-            }
-            else
-            {
-                StoreEnergy(energy);
-                efficiency = 1f;
-            }
-        }
-        else
-        {
-            BatteryCheck();
-        }
+        BatteryCheck();
+
+        //if (consumption == 0f)
+        //{
+        //    if (energy == 0f)
+        //    {
+        //        efficiency = 0f;
+        //    }
+        //    else
+        //    {
+        //        StoreEnergy(energy);
+        //        efficiency = 1f;
+        //    }
+        //}
+        //else
+        //{
+        //    BatteryCheck();
+        //}
     }
 
     void BatteryCheck()
     {
-        if (energy >= consumption)
+        if (energy > consumption)
         {
             StoreEnergy(energy - consumption);
             efficiency = 1;
+        }
+        else if (energy == consumption)
+        {
+            if (energy == 0)
+            {
+                float stored = 0;
+                for (int i = 0; i < connectors.Count; i++)
+                {
+                    for (int j = 0; j < connectors[i].batteries.Count; j++)
+                    {
+                        stored = connectors[i].batteries[j].GetStatus();
+                        if (stored != 0)
+                        {
+                            efficiency = 1;
+                            return;
+                        }
+                    }
+                }
+
+                if (stored == 0)
+                {
+                    efficiency = 0;
+                    return;
+                }
+            }
+            else
+            {
+                efficiency = 1;
+            }
         }
         else
         {
             float lack = (consumption - energy) * syncFrequency;
             for (int i = 0; i < connectors.Count; i++)
             {
-                for (int j = 0; j < connectors[i].batterys.Count; j++)
+                for (int j = 0; j < connectors[i].batteries.Count; j++)
                 {
-                    lack = connectors[i].batterys[j].PullEnergy(lack);
-
+                    lack = connectors[i].batteries[j].PullEnergy(lack);
                     if (lack == 0)
                     {
                         efficiency = 1;
@@ -267,7 +297,7 @@ public class EnergyGroup
                 }
             }
 
-            if (energy == 0)
+            if (energy == 0 && lack == (consumption - energy) * syncFrequency)
             {
                 efficiency = 0;
                 return;
@@ -283,9 +313,9 @@ public class EnergyGroup
         surplus *= syncFrequency;
         for (int i = 0; i < connectors.Count; i++)
         {
-            for (int j = 0; j < connectors[i].batterys.Count; j++)
+            for (int j = 0; j < connectors[i].batteries.Count; j++)
             {
-                surplus = connectors[i].batterys[j].StoreEnergy(surplus);
+                surplus = connectors[i].batteries[j].StoreEnergy(surplus);
 
                 if (surplus == 0)
                     return;

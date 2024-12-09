@@ -254,6 +254,11 @@ public class DataManager : MonoBehaviour
                         portal.SetPortalObjEnd(structure.structureData.FactoryName, spawnobj);
                     }
                 }
+
+                if (structure.TryGetComponent(out AttackTower tower))
+                {
+                    tower.energyBulletAmount = saveData.energyBulletAmount;
+                }
             }
             else
             {

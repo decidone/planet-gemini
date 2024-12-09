@@ -248,6 +248,7 @@ public class Structure : NetworkBehaviour
         {
             destroyTimer -= Time.deltaTime;
             repairBar.fillAmount = destroyTimer / destroyInterval;
+            isOperate = false;
 
             if (destroyTimer <= 0)
             {
@@ -1694,15 +1695,20 @@ public class Structure : NetworkBehaviour
 
     public virtual Dictionary<Item, int> PopUpItemCheck() { return null; }
 
-    public virtual (bool, bool , EnergyGroup) PopUpEnergyCheck()
+    public virtual (bool, bool , bool, EnergyGroup, float) PopUpEnergyCheck()
     {
         if (energyUse && conn != null && conn.group != null)
         {
-            return (energyUse, isEnergyStr, conn.group);
+            // 발전기류는 energyConsumption 변수 자리에 생산량을 리턴함
+            return (energyUse, isEnergyStr, false, conn.group, energyConsumption);
         }
 
-        return (false, false, null);
+        return (false, false, false, null, 0f);
     }
+
+    public virtual (float, float) PopUpStoredCheck() { return (0f, 0f); }
+
+    public virtual (float, float) PopUpStoredEnergyCheck() { return (0f, 0f); }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

@@ -27,6 +27,8 @@ public class StructureSaveData
     public List<int> itemIndex = new List<int>();   // 물류 건물 아이템 저장
     public float storedEnergy = 0;  // 배터리 저장량
 
+    public int energyBulletAmount = 0;  // 에너지 타워 탄약 수
+
     public int fluidType = -1;      // -1: 기본, 0: 물, 1: 석유
     public float storedFluid = 0;   // 액체 저장량
 

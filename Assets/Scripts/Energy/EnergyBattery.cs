@@ -81,6 +81,11 @@ public class EnergyBattery : Structure
         }
     }
 
+    public float GetStatus()
+    {
+        return stored;
+    }
+
     public override void AddConnector(EnergyGroupConnector connector)
     {
         if (!connectors.Contains(connector))
@@ -110,5 +115,21 @@ public class EnergyBattery : Structure
                 }
             }
         }
+    }
+
+    public override (bool, bool, bool, EnergyGroup, float) PopUpEnergyCheck()
+    {
+        if (conn != null && conn.group != null)
+        {
+            // 발전기류는 energyConsumption 변수 자리에 생산량을 리턴함
+            return (energyUse, isEnergyStr, true, conn.group, 0);
+        }
+
+        return (false, false, false, null, 0f);
+    }
+
+    public override (float, float) PopUpStoredCheck()
+    {
+        return (stored, capacity);
     }
 }

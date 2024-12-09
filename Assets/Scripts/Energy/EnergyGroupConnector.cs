@@ -48,7 +48,7 @@ public class EnergyGroupConnector : MonoBehaviour
     public List<Structure> nearbyStr;
     public List<Structure> consumptions;
     public List<EnergyBattery> nearbyBat;
-    public List<EnergyBattery> batterys;
+    public List<EnergyBattery> batteries;
     //[HideInInspector]
     public EnergyGroup group;   //속한 에너지 그룹. 그룹매니저랑 구분
     [SerializeField]
@@ -234,17 +234,17 @@ public class EnergyGroupConnector : MonoBehaviour
 
     public void AddBattery(EnergyBattery bat)
     {
-        if (!batterys.Contains(bat))
+        if (!batteries.Contains(bat))
         {
-            batterys.Add(bat);
+            batteries.Add(bat);
         }
     }
 
     public void RemoveBattery(EnergyBattery bat)
     {
-        if (batterys.Contains(bat))
+        if (batteries.Contains(bat))
         {
-            batterys.Remove(bat);
+            batteries.Remove(bat);
         }
     }
 
