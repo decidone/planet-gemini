@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
-  m_Name: TDIceTower
+  m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
+  m_Name: ItemTowerIncreasedDamage
   m_EditorClassIdentifier: 
-  damage: 70
-  attackDist: 7
-  attDelayTime: 1
-  upgradeDamage: 75
-  upgradeAttDelayTime: 0.5
+  name: TowerUpgrade
+  icon: {fileID: 286180040, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
+  tier: -1

@@ -29,6 +29,7 @@ public class SteamGenerator : FluidFactoryCtrl
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
+        defense = structureData.Defense[level];
         hp = maxHp;
         getDelay = 0.01f;
         sendDelay = structureData.SendDelay[level];

@@ -316,6 +316,10 @@
     "3": "Input/Output Speed Upgrade",
     "4": "Reduced Energy Consumption"
   },
+  "TowerUpgrade": {
+    "1": "Damage Upgrade",
+    "2": "Attack Speed Upgrade"
+  },
   "UnitUpgrade": {
     "1": "Hp Upgrade",
     "2": "Damage Upgrade",

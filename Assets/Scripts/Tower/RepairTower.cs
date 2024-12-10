@@ -89,7 +89,7 @@ public class RepairTower : TowerAi
     {
         if (!isDelayRepairCoroutine)
         {
-            StartCoroutine(DelayRepair(towerData.AttDelayTime));
+            StartCoroutine(DelayRepair(attDelayTime));
         }
     }
 
@@ -113,11 +113,11 @@ public class RepairTower : TowerAi
 
             if (towerAi != null)
             {
-                towerAi.RepairFunc(towerData.Damage);
+                towerAi.RepairFunc(damage);
             }
             else if (factory != null)
             {
-                factory.RepairFunc(towerData.Damage);
+                factory.RepairFunc(damage);
             }
         }
     }

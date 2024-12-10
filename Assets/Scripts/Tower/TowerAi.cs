@@ -30,9 +30,19 @@ public class TowerAi : Production
 
     protected NetworkObjectPool networkObjectPool;
 
+    // 타워
+    bool[] increasedTower;
+    // 0 공격력, 1 공격 속도
+
+    public float attDelayTime;
+    public float damage;
+
     protected override void Awake()
     {
         base.Awake();
+        attDelayTime = towerData.AttDelayTime;
+        damage = towerData.Damage;
+        increasedStructure = new bool[2];
         col = GetComponent<CapsuleCollider2D>();
     }
 
@@ -215,5 +225,22 @@ public class TowerAi : Production
         }
         else
             return null;
+    }
+
+    public override void IncreasedStructureCheck()
+    {
+        base.IncreasedStructureCheck();
+
+        increasedTower = ScienceDb.instance.IncreasedStructureCheck(1);
+        // 0 공격력, 1 공격속도
+
+        if (increasedTower[0])
+        {
+            damage = towerData.UpgradeDamage;
+        }
+        if (increasedTower[1])
+        {
+            attDelayTime = towerData.UpgradeAttDelayTime;
+        }
     }
 }

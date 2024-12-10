@@ -19,6 +19,14 @@ public class Slot : MonoBehaviour
     public bool outputSlot;
     public string inGameName;
 
+    // 건물 UI 전용
+    public bool strDataSet;
+    public bool isBuildingUI;
+    public bool isEnergyUse; 
+    public bool isEnergyStr;
+    public float energyConsumption;
+    public float energyProduction;
+
     void Start()
     {
         onSlotChangedCallback += SlotChanged;
@@ -126,5 +134,26 @@ public class Slot : MonoBehaviour
         needAmount = _needAmount;
 
         onSlotChangedCallback?.Invoke();
+    }
+
+    public void StrData(Building building)
+    {
+        isEnergyStr = false;
+        isEnergyUse = false;
+        strDataSet = false;
+
+        isEnergyStr = building.isEnergyStr;
+        isEnergyUse = building.isEnergyUse;
+        if (!isEnergyStr && !isEnergyUse)
+            return;
+
+        building.gameObj.TryGetComponent(out Structure str);
+        energyConsumption = str.structureData.Consumption[building.level - 1];
+        energyProduction = str.structureData.Production;
+
+        if (isEnergyStr && energyProduction == 0)
+            return;
+
+        strDataSet = true;
     }
 }

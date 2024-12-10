@@ -187,14 +187,6 @@
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get unit to another planet.","basicScience" : false}
     }
   },
-  "StructureUpgrade":{
-    "Build":{
-      "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased production speed of structures.","basicScience" : false},
-      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased hp of structures.","basicScience" : false},
-      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased input/output speed of structures.","basicScience" : false},
-      "4":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Reduced energy consumption.","basicScience" : false}
-     }
-  },
   "Wall":{
     "Battle":{
       "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"A defensive wall made of bricks.","basicScience" : false},
@@ -264,12 +256,27 @@
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"A tank for the player that requires ammunition and fuel.","basicScience" : false}
     }
   },
+  "StructureUpgrade":{
+    "Build":{
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased production speed of structures.","basicScience" : false},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased hp of structures.","basicScience" : false},
+      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased input/output speed of structures.","basicScience" : false},
+      "4":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Reduced energy consumption.","basicScience" : false},
+      "5":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased defense of structures.","basicScience" : false}
+     }
+  },
+  "TowerUpgrade":{
+    "Battle":{
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased damage of towers.","basicScience" : false},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased attak speed of towers.","basicScience" : false}
+     }
+  },
   "UnitUpgrade":{
     "Battle":{
       "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased hp of units.","basicScience" : false},
       "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased damage of units.","basicScience" : false},
       "3":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased attack speed of units.","basicScience" : false},
-      "4":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased defense of units.","basicScience" : false}
+      "4":{"items":["Module","Battery","ControlUnit","AdamantitePlate","Engine","ManaStone"],"amounts":[1,1,1,1,1,1],"coreLv":1,"time":1,"Info":"Increased defense of units.","basicScience" : false}
     }
   }
 }

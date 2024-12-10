@@ -107,8 +107,8 @@ public class InfoUI : MonoBehaviour
 
         if (str.gameObject.TryGetComponent<AttackTower>(out AttackTower tower))
         {
-            firstBattleText.text = "ATK " + tower.towerData.Damage;
-            secondBattleText.text = "ATK Delay " + tower.towerData.AttDelayTime + " ATK Range " + tower.towerData.AttackDist;
+            firstBattleText.text = "ATK " + tower.damage;
+            secondBattleText.text = "ATK Delay " + tower.attDelayTime + " ATK Range " + tower.towerData.AttackDist;
         }
     }
 

@@ -15,3 +15,5 @@ MonoBehaviour:
   damage: 70
   attackDist: 8
   attDelayTime: 1
+  upgradeDamage: 75
+  upgradeAttDelayTime: 0.5

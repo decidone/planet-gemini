@@ -13,4 +13,12 @@ public class TowerData : ScriptableObject
     [SerializeField]
     private float attDelayTime;//공격 딜레이
     public float AttDelayTime { get { return attDelayTime; } }
+
+    [SerializeField]
+    private int upgradeDamage;//데미지
+    public int UpgradeDamage { get { return upgradeDamage; } }
+
+    [SerializeField]
+    private float upgradeAttDelayTime;//공격 딜레이
+    public float UpgradeAttDelayTime { get { return upgradeAttDelayTime; } }
 }

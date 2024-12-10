@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11349268dbc52c54c93594d966909c07, type: 3}
-  m_Name: ItemStructureIncreasedProductionSpeed 1
+  m_Name: ItemStructureIncreasedProductionSpeed
   m_EditorClassIdentifier: 
   name: StructureUpgrade
   icon: {fileID: 286180040, guid: b2133c5e746dee349a65f95a528ace90, type: 3}

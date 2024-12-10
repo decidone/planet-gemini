@@ -680,7 +680,7 @@ public class UnitAi : UnitCommonAi
 
     public void IncreasedStructureCheck()
     {
-        increasedUnit = ScienceDb.instance.IncreasedStructureCheck(false);
+        increasedUnit = ScienceDb.instance.IncreasedStructureCheck(2);
 
         if (increasedUnit[0])
         {

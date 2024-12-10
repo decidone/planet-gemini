@@ -14,8 +14,12 @@ public class ScienceDb : NetworkBehaviour
     public int coreLevel = 1;
 
     // 건물
-    bool[] increasedStructure = new bool[4];
-    // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 에너지 소비량 감소
+    bool[] increasedStructure = new bool[5];
+    // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 소비량 감소, 4 방어력
+
+    // 타워
+    bool[] increasedTower = new bool[2];
+    // 0 공격력, 1 공격 속도
 
     // 유닛
     bool[] increasedUnit = new bool[4];
@@ -93,12 +97,17 @@ public class ScienceDb : NetworkBehaviour
         if (sciName == "StructureUpgrade")
         {
             increasedStructure[sciLv - 1] = true;
-            EffectUpgrade(true);
+            EffectUpgrade(0);
+        }
+        else if (sciName == "TowerUpgrade")
+        {
+            increasedTower[sciLv - 1] = true;
+            EffectUpgrade(1);
         }
         else if (sciName == "UnitUpgrade")
         {
             increasedUnit[sciLv - 1] = true;
-            EffectUpgrade(false);
+            EffectUpgrade(2);
         }
 
         if (!isLoad)
@@ -107,35 +116,60 @@ public class ScienceDb : NetworkBehaviour
         }
     }
 
-    void EffectUpgrade(bool isStr)
+    void EffectUpgrade(int index)   // index : 0 Structure, 1 Tower, 2 Unit
     {
-        if (isStr)
+        switch (index)
         {
-            Structure[] scripts = FindObjectsOfType<Structure>();
-            foreach (Structure script in scripts)
-            {
-                script.onEffectUpgradeCheck.Invoke();
-            }
-        }
-        else
-        {
-            UnitAi[] scripts = FindObjectsOfType<UnitAi>();
-            foreach (UnitAi script in scripts)
-            {
-                script.onEffectUpgradeCheck.Invoke();
-            }
+            case 0:
+                {
+                    Structure[] scripts = FindObjectsOfType<Structure>();
+                    foreach (Structure script in scripts)
+                    {
+                        script.onEffectUpgradeCheck.Invoke();
+                    }
+                    break;
+                }
+            case 1:
+                {
+                    TowerAi[] scripts = FindObjectsOfType<TowerAi>();
+                    foreach (TowerAi script in scripts)
+                    {
+                        script.onEffectUpgradeCheck.Invoke();
+                    }
+                    break;
+                }
+            case 2:
+                {
+                    UnitAi[] scripts = FindObjectsOfType<UnitAi>();
+                    foreach (UnitAi script in scripts)
+                    {
+                        script.onEffectUpgradeCheck.Invoke();
+                    }
+                    break;
+                }
+            default:
+                break;
         }
     }
         
-    public bool[] IncreasedStructureCheck(bool isStr)
+    public bool[] IncreasedStructureCheck(int index)
     {
-        if (isStr)
+        switch (index)
         {
-            return increasedStructure;
-        }
-        else
-        {
-            return increasedUnit;
+            case 0:
+                {
+                    return increasedStructure;
+                }
+            case 1:
+                {
+                    return increasedTower;
+                }
+            case 2:
+                {
+                    return increasedUnit;
+                }
+            default:
+                return null;
         }
     }
 
