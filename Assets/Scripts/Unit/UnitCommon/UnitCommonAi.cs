@@ -279,7 +279,7 @@ public class UnitCommonAi : NetworkBehaviour
             if (AttackStart())
             {
                 attackState = AttackState.AttackDelay;
-                StartCoroutine(DelayAfterAttack(slowDebuffOn ? unitCommonData.AttDelayTime * 1.6f : unitCommonData.AttDelayTime));
+                StartCoroutine(DelayAfterAttack(slowDebuffOn ? attackSpeed * 1.6f : attackSpeed));
             }
             else
             {
@@ -307,7 +307,6 @@ public class UnitCommonAi : NetworkBehaviour
 
     protected virtual void AttackEnd()
     {
-        Debug.Log("AttackEnd");
         animator.SetBool("isAttack", false);
         animator.SetBool("isMove", false);
         if (IsServer)
@@ -432,7 +431,6 @@ public class UnitCommonAi : NetworkBehaviour
 
     public virtual void RemoveTarget(GameObject target) 
     {
-        Debug.Log(name  + " : " + target.name);
         if (targetList.Contains(target))
         {
             targetList.Remove(target);

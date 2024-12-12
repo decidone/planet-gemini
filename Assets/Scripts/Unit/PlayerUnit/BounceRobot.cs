@@ -8,7 +8,6 @@ public class BounceRobot : UnitAi
 {
     protected override bool AttackStart()
     {
-        Debug.Log("aggroTarget: " + aggroTarget);
         bool isAttacked = false;
 
         if (aggroTarget != null)

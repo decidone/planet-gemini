@@ -16,11 +16,15 @@ MonoBehaviour:
   scienceName: Manufacturer
   item: {fileID: 11400000, guid: 4dd78497b0a424d428c9bccb431e5a7f, type: 2}
   gameObj: {fileID: 1875794501085088104, guid: 0d06fb23ed4102848b23ec68d7f1b80a, type: 3}
+  sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 0
+  isUnderObj: 0
+  isEnergyUse: 1
+  isEnergyStr: 0
   sprites:
   - {fileID: 471881988, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
-  animations: []
+  animatorController: []
   level: 1
   height: 2
   width: 2

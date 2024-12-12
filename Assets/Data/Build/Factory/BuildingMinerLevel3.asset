@@ -20,7 +20,7 @@ MonoBehaviour:
   isGetAnim: 1
   isGetDirection: 0
   isUnderObj: 0
-  isEnergyUse: 0
+  isEnergyUse: 1
   isEnergyStr: 0
   sprites: []
   animatorController:

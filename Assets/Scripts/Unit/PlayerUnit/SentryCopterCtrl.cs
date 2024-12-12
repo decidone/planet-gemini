@@ -10,7 +10,6 @@ public class SentryCopterCtrl : UnitAi
 
     protected override bool AttackStart()
     {
-        Debug.Log("aggroTarget: " + aggroTarget);
         bool isAttacked = false;
 
         if (aggroTarget != null)
@@ -32,14 +31,6 @@ public class SentryCopterCtrl : UnitAi
                 rot = Quaternion.AngleAxis(angle, Vector3.forward);
             NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
             if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
-
-            //bulletPool.transform.position = new Vector2(this.transform.position.x, this.transform.position.y);
-
-            //bulletPool = Instantiate(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), this.transform.rotation);
-            //if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
-            //    bulletPool.transform.rotation = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-            //else
-            //    bulletPool.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
             bulletPool.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, damage, gameObject);
             soundManager.PlaySFX(gameObject, "unitSFX", "laserAttack");

@@ -16,11 +16,15 @@ MonoBehaviour:
   scienceName: ChemicalPlant
   item: {fileID: 11400000, guid: 3499b32e1f48213419831acfa8bb70dd, type: 2}
   gameObj: {fileID: 375400609723545137, guid: 640cf292502abb54097588785ea33c45, type: 3}
+  sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 0
+  isUnderObj: 0
+  isEnergyUse: 1
+  isEnergyStr: 0
   sprites:
   - {fileID: -255326444, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
-  animations: []
+  animatorController: []
   level: 1
   height: 1
   width: 1

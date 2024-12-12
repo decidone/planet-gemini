@@ -20,7 +20,7 @@ MonoBehaviour:
   isGetAnim: 0
   isGetDirection: 0
   isUnderObj: 0
-  isEnergyUse: 0
+  isEnergyUse: 1
   isEnergyStr: 0
   sprites:
   - {fileID: 72252722, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}

@@ -185,7 +185,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             monsterSpawners.Add(key, new List<MonsterSpawner>());
         }
-        Debug.Log(key.map + " : " + key.area);
         monsterSpawners[key].Add(spawner);
     }
 
