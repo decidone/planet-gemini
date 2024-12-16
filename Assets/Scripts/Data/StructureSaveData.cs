@@ -25,8 +25,8 @@ public class StructureSaveData
     public int direction = 0;       // 방향 - 0: 위, 1: 오른쪽, 2: 아래, 3: 왼쪽, 방향 상관 없는 건물: 0
     public InventorySaveData inven = new InventorySaveData();   // 건물 인벤토리
     public List<int> itemIndex = new List<int>();   // 물류 건물 아이템 저장
-    public float storedEnergy = 0;  // 배터리 저장량
 
+    public float storedEnergy = 0;  // 배터리 저장량
     public int energyBulletAmount = 0;  // 에너지 타워 탄약 수
 
     public int fluidType = -1;      // -1: 기본, 0: 물, 1: 석유
@@ -40,6 +40,8 @@ public class StructureSaveData
 
     // 필터 - 스플리터 같은 경우 3개의 필터 조건이 들어갈 수 있음
     public List<FilterSaveData> filters = new List<FilterSaveData>();
+
+    public string portalName;
 
     public bool isPreBuilding;
     public bool isSetBuildingOk;

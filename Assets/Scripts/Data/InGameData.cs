@@ -23,4 +23,7 @@ public class InGameData
     public int finance;             // 재화
     public int scrap;               // 고철
     public int questIndex;          // 퀘스트 번호
+
+    public string hostPortalName;   // 맵ui 상 포탈 이름
+    public string clientPortalName;
 }

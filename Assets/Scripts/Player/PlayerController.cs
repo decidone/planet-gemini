@@ -513,6 +513,15 @@ public class PlayerController : NetworkBehaviour
         teleportUI.CloseUI();
     }
 
+    public bool IsTeleportable()
+    {
+        if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal"))
+            || circleColl.IsTouchingLayers(LayerMask.GetMask("LocalPortal")))
+            return true;
+
+        return false;
+    }
+
     public bool TeleportLocal(Vector3 pos)
     {
         if (isTeleporting.Value == true)

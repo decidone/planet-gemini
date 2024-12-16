@@ -1319,6 +1319,9 @@ public class GameManager : NetworkBehaviour
         scrap.SetScrap(data.scrap);
         shopScrap.SetScrap(data.scrap);
         questData = data.questIndex;
+
+        portal[0].portalName = data.hostPortalName;
+        portal[1].portalName = data.clientPortalName;
     }
 
     [ServerRpc(RequireOwnership = false)]

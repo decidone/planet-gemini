@@ -78,9 +78,12 @@ public class MapCameraController : MonoBehaviour
 
     void FixedUpdate()
     {
-        camPos.x = Mathf.Clamp(camPos.x + ((movement.x * dragSpeed) / zoomLevel), borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
-        camPos.y = Mathf.Clamp(camPos.y + ((movement.y * dragSpeed) / zoomLevel), mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
-        transform.position = camPos;
+        if (!LocalPortalListManager.instance.isEditOpened)
+        {
+            camPos.x = Mathf.Clamp(camPos.x + ((movement.x * dragSpeed) / zoomLevel), borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
+            camPos.y = Mathf.Clamp(camPos.y + ((movement.y * dragSpeed) / zoomLevel), mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
+            transform.position = camPos;
+        }
     }
 
     void Update()
@@ -96,6 +99,9 @@ public class MapCameraController : MonoBehaviour
         camPos = transform.position;
         movement = inputManager.controls.MapCamera.Movement.ReadValue<Vector2>();
         scrollWheelInput = inputManager.controls.MapCamera.Zoom.ReadValue<float>();
+
+        if (scrollWheelInput == 0 || RaycastUtility.IsPointerOverUI(Input.mousePosition))
+            return;
 
         if (scrollWheelInput != 0)
         {
@@ -177,10 +183,7 @@ public class MapCameraController : MonoBehaviour
             if (hits[i].collider.gameObject.layer == LayerMask.NameToLayer("Portal")
                 || hits[i].collider.gameObject.layer == LayerMask.NameToLayer("LocalPortal"))
             {
-                PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
-                bool isTeleported = player.TeleportLocal(hits[i].collider.transform.position);
-                if (isTeleported)
-                    ToggleMap();
+                PlayerLocalTP(hits[i].collider.transform.position);
             }
         }
 
@@ -263,6 +266,14 @@ public class MapCameraController : MonoBehaviour
         tempEvent = null;
     }
 
+    public void PlayerLocalTP(Vector3 pos)
+    {
+        PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
+        bool isTeleported = player.TeleportLocal(pos);
+        if (isTeleported)
+            ToggleMap();
+    }
+
     void SetFocus()
     {
         focusedEvent = tempEvent;
@@ -298,10 +309,21 @@ public class MapCameraController : MonoBehaviour
         ScienceManager.instance.onToggleMapChangeCallback?.Invoke();
 
         CameraObj.SetActive(true);
+        PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
+        if (player.IsTeleportable())
+            LocalPortalListManager.instance.OpenUI();
     }
 
     void CloseUI()
     {
         CameraObj.SetActive(false);
+        LocalPortalListManager.instance.CloseUI();
+    }
+
+    public void Move(float posX, float posY)
+    {
+        camPos.x = posX;
+        camPos.y = posY;
+        transform.position = camPos;
     }
 }

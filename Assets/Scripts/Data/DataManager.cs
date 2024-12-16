@@ -56,6 +56,8 @@ public class DataManager : MonoBehaviour
         InGameData inGameData = GameManager.instance.SaveData();
         saveData.InGameData = inGameData;
         saveData.InGameData.fileName = fileName;
+        saveData.InGameData.hostPortalName = GameManager.instance.portal[0].portalName;
+        saveData.InGameData.clientPortalName = GameManager.instance.portal[1].portalName;
 
         // 플레이어
         saveData.hostPlayerData = GameManager.instance.PlayerSaveData(true);
@@ -214,6 +216,9 @@ public class DataManager : MonoBehaviour
             structure.StructureStateSet(saveData.isPreBuilding, saveData.isSetBuildingOk, saveData.destroyStart, saveData.hp, saveData.repairGauge, saveData.destroyTimer);
             structure.GameStartRecipeSet(saveData.recipeId);
             structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(saveData.tileSetPos));
+
+            if (saveData.portalName != "")
+                structure.portalName = saveData.portalName;
 
             if (saveData.connectedStrPos.Count > 0)
             {

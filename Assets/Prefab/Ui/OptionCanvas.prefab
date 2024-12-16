@@ -3515,7 +3515,7 @@ GameObject:
   - component: {fileID: 7086579001798062513}
   - component: {fileID: 3147631466976000630}
   m_Layer: 5
-  m_Name: CanelBtn
+  m_Name: CancelBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7567,7 +7567,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Canel
+  m_Text: Cancel
 --- !u!1 &6280788572115000212
 GameObject:
   m_ObjectHideFlags: 0

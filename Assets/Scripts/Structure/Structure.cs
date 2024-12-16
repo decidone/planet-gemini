@@ -152,12 +152,13 @@ public class Structure : NetworkBehaviour
     [HideInInspector]
     public float effiCooldown;
 
+    public string portalName = "";
+
     //public bool isMainEnergyColony;
     public SoundManager soundManager;
 
     public bool isInHostMap;
     public Vector3 tileSetPos;
-
     
     public bool destroyStart;
     protected float destroyInterval;
@@ -1836,6 +1837,7 @@ public class Structure : NetworkBehaviour
         data.destroyStart = destroyStart;
         data.repairGauge = repairGauge;
         data.destroyTimer = destroyTimer;
+        data.portalName = portalName;
 
         foreach (Item items in itemList)
         {
@@ -1875,5 +1877,22 @@ public class Structure : NetworkBehaviour
         {
             energyConsumption = structureData.Consumption[level] - (structureData.Consumption[level] * upgradeConsumptionPer / 100);
         }
+    }
+
+    public void SetPortalName(string str)
+    {
+        SetPortalNameServerRpc(str);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void SetPortalNameServerRpc(string str)
+    {
+        SetPortalNameClientRpc(str);
+    }
+
+    [ClientRpc]
+    public void SetPortalNameClientRpc(string str)
+    {
+        portalName = str;
     }
 }
