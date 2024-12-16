@@ -22975,8 +22975,8 @@ MonoBehaviour:
   displayText: {fileID: 3465084676135596944}
   displayTime: 3
   displayMarketName: Market
-  displayHostWorldName: Host
-  displayClientWorldName: Client
+  displayHostWorldName: Castor
+  displayClientWorldName: Pollux
 --- !u!1 &4655682621102056974
 GameObject:
   m_ObjectHideFlags: 0

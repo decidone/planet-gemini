@@ -65,11 +65,11 @@ public class PlayerInvenManager : InventoryManager
         inventoryUI.SetActive(true);
         if (inventory == GameManager.instance.hostMapInven)
         {
-            title.text = "Host";
+            title.text = "Castor";
         }
         else
         {
-            title.text = "Client";
+            title.text = "Pollux";
         }
 
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
