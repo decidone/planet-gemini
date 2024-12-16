@@ -25,11 +25,12 @@ public class SpawnerSetManager : NetworkBehaviour
     GameObject spawnerGroup;
 
     public AreaLevelData[] arealevelData;
-    int[] basicSpawnerCount = new int[4] { 8, 16, 24, 32 }; //  구역별 기본 스포너 개수
+    int[] basicSpawnerCount = new int[4] { 16, 24, 32, 40 }; //  구역별 기본 스포너 개수
     int[] spawnCount;
     int[] subSpawnerCount;
     int[] upgradeSpawnerSetCount;
     Vector3 basePos;
+    List<Vector3> basePosList = new List<Vector3>();
 
     [SerializeField]
     MonsterSpawnerManager monsterSpawnerManager;
@@ -99,11 +100,17 @@ public class SpawnerSetManager : NetworkBehaviour
                 int x = Math.Abs(centerNum - i);
                 int y = Math.Abs(centerNum - j);
 
-                if (x == 0 && y == 0)
+                //if (x == 0 && y == 0)
+                //{
+                //    basePos = areaCenter;
+                //}
+
+                if (x <= 1 && y <= 1)
                 {
-                    basePos = areaCenter;
+                    basePosList.Add(areaCenter);
                 }
-                areaPosLevel.Add(areaCenter, Math.Max(x, y));    // 구역의 중앙 좌표 + 구역 레벨
+
+                areaPosLevel.Add(areaCenter, Math.Max(x, y) - 1);    // 구역의 중앙 좌표 + 구역 레벨
             }
         }
 
@@ -133,7 +140,7 @@ public class SpawnerSetManager : NetworkBehaviour
 
         foreach (var data in areaPosLevel)
         {
-            if(basePos == (Vector3)data.Key)
+            if (basePosList.Contains(data.Key))
             {
                 xIndex++;
                 if (xIndex >= splitCount)
@@ -144,6 +151,17 @@ public class SpawnerSetManager : NetworkBehaviour
 
                 continue;
             }
+            //if(basePos == (Vector3)data.Key)
+            //{
+            //    xIndex++;
+            //    if (xIndex >= splitCount)
+            //    {
+            //        xIndex = 0;
+            //        yIndex++;
+            //    }
+
+            //    continue;
+            //}
 
             Vector2 centerPos = data.Key;
             int areaLevel = data.Value;
@@ -156,16 +174,29 @@ public class SpawnerSetManager : NetworkBehaviour
                 continue;
             }
 
-            //AreaLevelData levelData = arealevelData[areaLevel - 1];
-            AreaLevelData levelData = arealevelData[(areaLevel * 2) - 2];
+            //AreaLevelData levelData = arealevelData[(areaLevel - 1) * 2];
+            AreaLevelData levelData = arealevelData[0];
+
+            if (splitCount == 7)
+            {
+                levelData = arealevelData[(areaLevel - 1) * 4];
+            }
+            else if (splitCount == 9)
+            {
+                levelData = arealevelData[(areaLevel - 1) * 3];
+            }
+            else if (splitCount == 11)
+            {
+                levelData = arealevelData[(areaLevel - 1) * 2];
+            }
 
             float xRadius;
             float yRadius;
 
             //if(areaLevel == Mathf.RoundToInt(splitCount/2) || areaLevel == 1)
             //{
-                xRadius = areaWSize / 2 - 20;
-                yRadius = areaHSize / 2 - 20;
+                xRadius = areaWSize / 2 - 10;
+                yRadius = areaHSize / 2 - 10;
             //}
             //else
             //{
@@ -236,10 +267,26 @@ public class SpawnerSetManager : NetworkBehaviour
                 if (random < upgradeSpawnerSetCount[areaLevel - 1])
                 {
                     upgradeSpawnerSetCount[areaLevel - 1] -= 1;
-                    levelSet += 1;
+                    if (splitCount == 7)
+                    {
+                        levelSet += 2;
+                    }
+                    else if (splitCount == 9)
+                    {
+                        levelSet += 2;
+                        if (levelSet > 8)
+                        {
+                            levelSet = 8;
+                        }
+                    }
+                    else if (splitCount == 11)
+                    {
+                        levelSet += 1;
+                    }
                     levelDataSet = arealevelData[levelSet - 1];
                 }
             }
+            Debug.Log("Level : " + levelSet);
 
             MapGenerator.instance.SetCorruption(map, newPoint, levelSet);
 

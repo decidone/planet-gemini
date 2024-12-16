@@ -49,8 +49,15 @@ public class ScienceBtn : MonoBehaviour
         btnImage = GetComponent<Image>();
         if (basicScience)
         {
-            UpgradeFunc(true);
+            Debug.Log("Start");
+            Invoke(nameof(UpgradeFuncInvoke), 0.2f);
         }
+    }
+
+    void UpgradeFuncInvoke()
+    {
+        UpgradeFunc(true);
+        Debug.Log("End");
     }
 
     void ButtonFunc()
@@ -92,7 +99,6 @@ public class ScienceBtn : MonoBehaviour
         LockUiActiveFalse();
         upgrade = true;
         btnImage.color = new Color(255, 255, 255);
-
         if (isCore)
         {
             othCoreBtn.upgrade = true;
