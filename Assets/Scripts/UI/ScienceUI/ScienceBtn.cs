@@ -49,7 +49,6 @@ public class ScienceBtn : MonoBehaviour
         btnImage = GetComponent<Image>();
         if (basicScience)
         {
-            Debug.Log("Start");
             Invoke(nameof(UpgradeFuncInvoke), 0.2f);
         }
     }
@@ -57,7 +56,6 @@ public class ScienceBtn : MonoBehaviour
     void UpgradeFuncInvoke()
     {
         UpgradeFunc(true);
-        Debug.Log("End");
     }
 
     void ButtonFunc()

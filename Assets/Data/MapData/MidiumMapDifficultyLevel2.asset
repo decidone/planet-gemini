@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MidiumMapDifficultyLevel2
   m_EditorClassIdentifier: 
   mapSize: 765
-  countOfSpawnersByLevel: 100000001800000020000000
-  upgradeSpawnerSet: 05000000080000000b000000
+  countOfSpawnersByLevel: 08000000100000001800000020000000
+  upgradeSpawnerSet: 0200000005000000080000000b000000
   mapSplitCount: 9

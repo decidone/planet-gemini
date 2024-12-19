@@ -1259,15 +1259,27 @@ public class GameManager : NetworkBehaviour
 
     public void WaveStartSet(int coreLevel)
     {
-        //int mapSize = MainGameSetting.instance.mapSizeIndex;
-        //int waveLevel = 0;
-
-        //if (waveLevelsByMapSize.ContainsKey(mapSize))
-        //{
-        //    waveLevel = waveLevelsByMapSize[mapSize][coreLevel - 2];
-        //}
-        Debug.Log(coreLevel - 1);
-        MonsterSpawnerManager.instance.WavePointSet(coreLevel - 1, sciBuildingMap);
+        Debug.Log("WaveLevel : " + (coreLevel - 1));
+        int waveLevel = coreLevel - 1;
+        if (mapGenerator.mapSizeData.MapSplitCount == 7)
+        {
+            if (waveLevel == 1)
+            {
+                MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
+            }
+            else if (waveLevel == 2 || waveLevel == 3)
+            {
+                MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
+            }
+            else if (waveLevel == 4)
+            {
+                MonsterSpawnerManager.instance.WavePointSet(3, sciBuildingMap);
+            }
+        }
+        else
+        {
+            MonsterSpawnerManager.instance.WavePointSet(waveLevel, sciBuildingMap);
+        }
     }
 
     public void SciBuildingSet(bool map)

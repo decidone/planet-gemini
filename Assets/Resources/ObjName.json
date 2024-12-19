@@ -311,10 +311,11 @@
     "1": "Void Shard"
   },
   "StructureUpgrade": {
-    "1": "Production Speed Upgrade for Structures",
+    "1": "Production Speed Upgrade",
     "2": "HP Upgrade for Structures",
-    "3": "Input/Output Speed Upgrade for Structures",
-    "4": "Reduced Energy Consumption for Structures"
+    "3": "Input/Output Speed Upgrade",
+    "4": "Reduced Energy Consumption",
+    "5": "Defense Upgrade for Structures"
   },
   "TowerUpgrade": {
     "1": "Damage Upgrade for Towers",
