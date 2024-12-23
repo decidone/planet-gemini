@@ -24,25 +24,25 @@ public class Overclock : Production
     {
         base.Update();
 
-        if (gameManager.focusedStructure == null)
-        {
-            if (preBuilding.isBuildingOn && !removeState)
-            {
-                if (!preBuildingCheck)
-                {
-                    preBuildingCheck = true;
-                    view.enabled = true;
-                }
-            }
-            else
-            {
-                if (preBuildingCheck)
-                {
-                    preBuildingCheck = false;
-                    view.enabled = false;
-                }
-            }
-        }
+        //if (gameManager.focusedStructure == null)
+        //{
+        //    if (preBuilding.isBuildingOn && !removeState)
+        //    {
+        //        if (!preBuildingCheck)
+        //        {
+        //            preBuildingCheck = true;
+        //            view.enabled = true;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (preBuildingCheck)
+        //        {
+        //            preBuildingCheck = false;
+        //            view.enabled = false;
+        //        }
+        //    }
+        //}
         if (!isPreBuilding && IsServer)
         {
             searchTimer += Time.deltaTime;

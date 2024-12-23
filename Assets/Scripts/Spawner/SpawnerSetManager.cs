@@ -25,7 +25,7 @@ public class SpawnerSetManager : NetworkBehaviour
     GameObject spawnerGroup;
 
     public AreaLevelData[] arealevelData;
-    int[] basicSpawnerCount = new int[5] { 8, 16, 24, 32, 40 }; //  구역별 기본 스포너 개수
+    int[] basicSpawnerCount = new int[4] { 8, 16, 24, 32 }; //  구역별 기본 스포너 개수
     int[] spawnCount;
     int[] subSpawnerCount;
     int[] upgradeSpawnerSetCount;
@@ -36,14 +36,9 @@ public class SpawnerSetManager : NetworkBehaviour
 
     public GameObject[,] spawnerMap1Matrix;
     public GameObject[,] spawnerMap2Matrix;
-    //int xIndex;
-    //int yIndex;
 
     Map hostMap;
     Map clientMap;
-
-    //[SerializeField]
-    //Sprite[] spawnerSprite;
 
     #region Singleton
     public static SpawnerSetManager instance;
@@ -58,16 +53,6 @@ public class SpawnerSetManager : NetworkBehaviour
         instance = this;
     }
     #endregion
-
-    private void Start()
-    {
-        //hostMap = GameManager.instance.hostMap;
-        //clientMap = GameManager.instance.clientMap;
-        //spawnerMap1Matrix = new GameObject[splitCount, splitCount];
-        //spawnerMap2Matrix = new GameObject[splitCount, splitCount];
-        //xIndex = 0;
-        //yIndex = 0;
-    }
 
     public void AreaMapSet(Vector2 centerPos, int mapSplitCount, bool isHostMap)
     {
@@ -160,33 +145,7 @@ public class SpawnerSetManager : NetworkBehaviour
             //AreaLevelData levelData = arealevelData[(areaLevel - 1) * 2];
             AreaLevelData levelData = arealevelData[0];
 
-            if (splitCount == 7)
-            {
-                levelData = arealevelData[(areaLevel - 1) * 3];
-            }
-            else if (splitCount == 9)
-            {
-                levelData = arealevelData[(areaLevel - 1) * 2];
-            }
-            else if (splitCount == 11)
-            {
-                if (areaLevel < 4)
-                {
-                    levelData = arealevelData[(areaLevel - 1) * 2];
-                }
-                else
-                {
-                    if (areaLevel == 4)
-                    {
-                        levelData = arealevelData[6];
-
-                    }
-                    else if (areaLevel == 5)
-                    {
-                        levelData = arealevelData[7];
-                    }
-                }
-            }
+            levelData = arealevelData[(areaLevel - 1) * 2];
 
             float xRadius;
             float yRadius;
@@ -222,13 +181,12 @@ public class SpawnerSetManager : NetworkBehaviour
                     newPoint = centerPos + new Vector2(x, y);
 
                     float distance = Vector3.Distance(basePos, newPoint);
-                    if (distance < 90)
+                    if (distance < 100)
                     {
                         cantPos.Add(newPoint);
                         whileCheck = true;
                         continue;
                     }
-                    Debug.Log(distance);
                 }
                 else
                 {
@@ -290,26 +248,13 @@ public class SpawnerSetManager : NetworkBehaviour
                 if (random < upgradeSpawnerSetCount[areaLevel - 1])
                 {
                     upgradeSpawnerSetCount[areaLevel - 1] -= 1;
-                    if (splitCount == 7)
-                    {
-                        levelSet += 2;
-                        if (levelSet > 8)
-                        {
-                            levelSet = 8;
-                        }
-                    }
-                    else if (splitCount == 9)
-                    {
-                        levelSet += 1;
-                    }
-                    else if (splitCount == 11)
-                    {
-                        levelSet += 1;
-                    }
+
+                    levelSet += 1;
+    
                     levelDataSet = arealevelData[levelSet - 1];
                 }
             }
-            Debug.Log("Level : " + levelSet);
+            Debug.Log("HostMap : " + isHostMap + "Level : " + levelSet);
 
             MapGenerator.instance.SetCorruption(map, newPoint, levelSet);
 
