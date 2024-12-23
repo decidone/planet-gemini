@@ -289,7 +289,7 @@ public class AttackTower : TowerAi
         {
             if (AttackStart())
             {
-                StartCoroutine(DelayAfterAttack(towerData.AttDelayTime + loadedBullet.fireRate)); // 1.5초 후 딜레이 적용
+                StartCoroutine(DelayAfterAttack(attDelayTime + loadedBullet.fireRate)); // 1.5초 후 딜레이 적용
             }
             else
             {
@@ -355,7 +355,7 @@ public class AttackTower : TowerAi
 
                 bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
                 towerAttackOption.TowerAttackFxSet(fx);
-                fx.GetTarget(aggroTarget.transform.position, towerData.Damage + loadedBullet.damage, gameObject, loadedBullet.explosion);
+                fx.GetTarget(aggroTarget.transform.position, damage + loadedBullet.damage, gameObject, loadedBullet.explosion);
             }
             else
             {
@@ -378,7 +378,7 @@ public class AttackTower : TowerAi
 
                 bulletPool.TryGetComponent(out TowerAreaAttackFx fx);
                 towerAttackOption.TowerAttackFxSet(fx);
-                fx.GetTarget(towerData.Damage + loadedBullet.damage, gameObject);
+                fx.GetTarget(damage + loadedBullet.damage, gameObject);
             }
 
             Debug.Log("Attack");

@@ -129,8 +129,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c92e2d3d0c7a27d4bbb0c2c6c495bb6d, type: 3}
   materials:
   - {fileID: 2100000, guid: 745d3a8a5b523604eaadab06e6434223, type: 2}
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
   isEnergyUse: 0
 --- !u!61 &3115862835984988997
 BoxCollider2D:
@@ -229,7 +228,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 618645769
-  m_SortingLayer: 1
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 8ae5dcf00ef1c154fb7cfc030cecb678, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

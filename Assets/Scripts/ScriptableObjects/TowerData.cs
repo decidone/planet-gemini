@@ -23,4 +23,11 @@ public class TowerData : ScriptableObject
     [SerializeField]
     private float reloadCooldown;  //에너지 타워 탄약 보충 쿨타임
     public float ReloadCooldown { get { return reloadCooldown; } }
+    
+    private int upgradeDamage;//데미지
+    public int UpgradeDamage { get { return upgradeDamage; } }
+
+    [SerializeField]
+    private float upgradeAttDelayTime;//공격 딜레이
+    public float UpgradeAttDelayTime { get { return upgradeAttDelayTime; } }
 }

@@ -16,11 +16,15 @@ MonoBehaviour:
   scienceName: Constructor
   item: {fileID: 11400000, guid: 313f675245c0c7a43801065795b15fc9, type: 2}
   gameObj: {fileID: 375400609723545137, guid: cb993bd292cd4ef419bc785b8c135e23, type: 3}
+  sideObj: {fileID: 0}
   isGetAnim: 0
   isGetDirection: 0
+  isUnderObj: 0
+  isEnergyUse: 1
+  isEnergyStr: 0
   sprites:
   - {fileID: -479922552, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
-  animations: []
+  animatorController: []
   level: 1
   height: 1
   width: 1

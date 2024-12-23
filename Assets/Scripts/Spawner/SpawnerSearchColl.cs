@@ -6,9 +6,7 @@ using Unity.Netcode;
 public class SpawnerSearchColl : NetworkBehaviour
 {
     MonsterSpawner monsterSpawner;
-    public List<GameObject> inObjList = new List<GameObject>();
     public List<Structure> structures = new List<Structure>();
-    bool nearUserObjExist = false;
     int level;
     public CircleCollider2D coll;
     int[] collSize = new int[8] { 55, 65, 75, 85, 95, 95, 95, 95 }; // 레벨 별 콜라이더 크기
@@ -30,32 +28,12 @@ public class SpawnerSearchColl : NetworkBehaviour
 
     public void DieFunc()
     {
-        foreach (GameObject target in inObjList)
-        {
-            if (target != null)
-            {
-                if (target.TryGetComponent(out UnitAi unit))
-                {
-                    unit.RemoveTarget(monsterSpawner.gameObject);
-                }
-                else if (target.TryGetComponent(out AttackTower tower))
-                {
-                    tower.RemoveMonster(monsterSpawner.gameObject);
-                }
-            }
-        }
         coll.enabled = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!inObjList.Contains(collision.gameObject) && IsServer &&
-            (collision.GetComponent<TowerAi>() || collision.GetComponent<UnitAi>()
-            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting.Value)))
-        {
-            inObjList.Add(collision.gameObject);
-        }
-        else if (IsServer && collision.TryGetComponent(out Structure structure))
+        if (IsServer && collision.TryGetComponent(out Structure structure))
         {
             if (!structures.Contains(structure))
             {
@@ -63,40 +41,17 @@ public class SpawnerSearchColl : NetworkBehaviour
                 monsterSpawner.energyUseStrs.Add(structure, structure.energyConsumption);
             }
         }
-
-        if (!nearUserObjExist && (inObjList.Count > 0 || structures.Count > 0))
-        {
-            nearUserObjExist = true;
-            monsterSpawner.SearchObj(true);
-        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (inObjList.Contains(collision.gameObject) && IsServer &&
-            (collision.GetComponent<TowerAi>() || collision.GetComponent<UnitAi>()
-            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting.Value)))
-        {
-            inObjList.Remove(collision.gameObject);
-        }
-        else if (IsServer && collision.TryGetComponent(out Structure structure))
+        if (IsServer && collision.TryGetComponent(out Structure structure))
         {
             if (structures.Contains(structure))
             {
                 structures.Remove(structure);
                 monsterSpawner.energyUseStrs.Remove(structure);
             }
-        }
-
-        if (nearUserObjExist && inObjList.Count == 0 && structures.Count == 0)
-        {
-            if (!NetworkObject.IsSpawned)
-            {
-                return;
-            }
-
-            nearUserObjExist = false;
-            monsterSpawner.SearchObj(false);
         }
     }
 

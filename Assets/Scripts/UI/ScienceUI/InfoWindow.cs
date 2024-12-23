@@ -8,8 +8,15 @@ using System.Linq;
 public class InfoWindow : MonoBehaviour
 {
     public Text nameText;
-    public Text coreLvText;
     public Text infoText;
+    [SerializeField]
+    RectTransform infoRT;
+    float[] infoPosYSize = new float[2] { -303, -240 };
+    [SerializeField]
+    RectTransform menuRT;
+    float[] menuHeightSize = new float[2] { 400, 337 };
+    float[] menuCoreHeightSize = new float[2] { 280, 200 };
+
     public List<GameObject> needItemObj = new List<GameObject>();
     public GameObject needItemUI;
     public GameObject needItemRoot;
@@ -33,11 +40,14 @@ public class InfoWindow : MonoBehaviour
 
     private void Awake()
     {
-        for (int i = 0; i < 6; i++) 
+        if (needItemRoot != null)
         {
-            GameObject uI = Instantiate(needItemUI);
-            uI.transform.SetParent(needItemRoot.transform, false);
-            needItemObj.Add(uI);
+            for (int i = 0; i < 6; i++) 
+            {
+                GameObject uI = Instantiate(needItemUI);
+                uI.transform.SetParent(needItemRoot.transform, false);
+                needItemObj.Add(uI);
+            }
         }
     }
 
@@ -54,10 +64,6 @@ public class InfoWindow : MonoBehaviour
 
         needItems.Clear();
         nameText.text = $"{name}";
-        if (coreLvText != null)
-        {
-            coreLvText.text = $"Core Lv.{scienceInfoData.coreLv}";
-        }
 
         if (!isCore)
         {
@@ -83,20 +89,40 @@ public class InfoWindow : MonoBehaviour
 
         preSciInfoData = scienceInfoData;
 
-        nameText.text = $"{name}";
-        if(coreLvText != null)
+        if (!isCore)
         {
-            coreLvText.text = $"Core Lv.{scienceInfoData.coreLv}";
-
-            if (scienceInfoData.coreLv <= scienceDb.coreLevel)
-                coreLvText.color = Color.white;
-            else
-                coreLvText.color = Color.red;
-        }
-
-        if(!isCore)
-        {
+            nameText.text = $"{name}";
             infoText.text = scienceInfoData.info;
+            Vector2 anchoredPosition = infoRT.anchoredPosition;
+            Vector2 sizeDelta = menuRT.sizeDelta;
+
+            if (scienceInfoData.items.Count > 3)
+            {
+                anchoredPosition.y = infoPosYSize[0];
+                sizeDelta.y = menuHeightSize[0];
+            }
+            else
+            {
+                anchoredPosition.y = infoPosYSize[1];
+                sizeDelta.y = menuHeightSize[1];
+            }
+            infoRT.anchoredPosition = anchoredPosition;
+            menuRT.sizeDelta = sizeDelta;
+        }
+        else
+        {
+            nameText.text = $"{name} Lv." + level;
+            Vector2 sizeDelta = menuRT.sizeDelta;
+
+            if (scienceInfoData.items.Count > 3)
+            {
+                sizeDelta.y = menuCoreHeightSize[0];
+            }
+            else
+            {
+                sizeDelta.y = menuCoreHeightSize[1];
+            }
+            menuRT.sizeDelta = sizeDelta;
         }
 
         totalAmountsEnough = true;

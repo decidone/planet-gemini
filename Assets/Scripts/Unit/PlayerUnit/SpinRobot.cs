@@ -7,7 +7,6 @@ public class SpinRobot : UnitAi
 {
     protected override bool AttackStart()
     {
-        Debug.Log("aggroTarget: " + aggroTarget);
         bool isAttacked = false;
 
         if (aggroTarget != null)
@@ -26,19 +25,24 @@ public class SpinRobot : UnitAi
         base.AttackEnd();
         if (IsServer && aggroTarget != null)
         {
-            foreach (GameObject gameObject in targetList)
+            for (int i = targetList.Count - 1; i >= 0; i--)
             {
-                float distance = Vector3.Distance(tr.position, gameObject.transform.position);
+                if (targetList[i] == null)
+                {
+                    Debug.Log("error Null");
+                }
+
+                float distance = Vector3.Distance(tr.position, targetList[i].transform.position);
                 if (distance > unitCommonData.AttackDist)
                     continue;
 
-                if (gameObject.TryGetComponent(out MonsterAi monster))
+                if (targetList[i].TryGetComponent(out MonsterAi monster))
                 {
                     monster.TakeDamage(damage, 0);
                 }
-                else if (gameObject.TryGetComponent(out MonsterSpawner spawner))
+                else if (targetList[i].TryGetComponent(out MonsterSpawner spawner))
                 {
-                    spawner.TakeDamage(damage, gameObject);
+                    spawner.TakeDamage(damage, targetList[i]);
                 }
             }
         }

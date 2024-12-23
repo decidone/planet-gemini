@@ -39,3 +39,9 @@ MonoBehaviour:
   - 0
   - 5
   removeGauge: 10
+  defense:
+  - 5
+  - 7
+  upgradedefense:
+  - 7
+  - 9

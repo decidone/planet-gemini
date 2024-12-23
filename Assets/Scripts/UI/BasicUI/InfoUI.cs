@@ -107,8 +107,8 @@ public class InfoUI : MonoBehaviour
 
         if (str.gameObject.TryGetComponent<AttackTower>(out AttackTower tower))
         {
-            firstBattleText.text = "ATK " + tower.towerData.Damage;
-            secondBattleText.text = "ATK Delay " + tower.towerData.AttDelayTime + " ATK Range " + tower.towerData.AttackDist;
+            firstBattleText.text = "ATK " + tower.damage;
+            secondBattleText.text = "ATK Delay " + tower.attDelayTime + " ATK Range " + tower.towerData.AttackDist;
         }
     }
 
@@ -130,7 +130,7 @@ public class InfoUI : MonoBehaviour
         SetUnitHp();
         unit.onHpChangedCallback += SetUnitHp;
         firstBattleText.text = "ATK " + unit.damage + " DEF " + unit.defense;
-        secondBattleText.text = "ATK Delay " + unit.unitCommonData.AttDelayTime + " ATK Range " + unit.unitCommonData.AttackDist;
+        secondBattleText.text = "ATK Delay " + unit.attackSpeed + " ATK Range " + unit.unitCommonData.AttackDist;
     }
 
     public void SetUnitHp()
@@ -170,7 +170,7 @@ public class InfoUI : MonoBehaviour
         SetMonsterHp();
         monster.onHpChangedCallback += SetMonsterHp;
         firstBattleText.text = "ATK " + monster.damage + " DEF " + monster.defense;
-        secondBattleText.text = "ATK Delay " + monster.unitCommonData.AttDelayTime + " ATK Range " + monster.unitCommonData.AttackDist;
+        secondBattleText.text = "ATK Delay " + monster.attackSpeed + " ATK Range " + monster.unitCommonData.AttackDist;
     }
 
     public void SetMonsterHp()

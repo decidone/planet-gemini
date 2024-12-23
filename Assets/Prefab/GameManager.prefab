@@ -372,6 +372,7 @@ MonoBehaviour:
   timeImg: {fileID: 0}
   timeText: {fileID: 0}
   dayText: {fileID: 0}
+  brightness: {fileID: 0}
   autoSaveTimer: 0
   autoSaveinterval: 0
 --- !u!114 &762871311885926033
@@ -526,14 +527,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a3020250a4044e341af1fee415ecb042, type: 2}
   - {fileID: 11400000, guid: f85f44175b0c2834b9c1e8228ec967a2, type: 2}
   - {fileID: 11400000, guid: 5d4d534ddf4f44e47b3f1285491464ea, type: 2}
-  - {fileID: 11400000, guid: b26e1667ffb42d5429b56b6ff35bc0bb, type: 2}
+  - {fileID: 11400000, guid: 93478df408c69be44b336448acc43ade, type: 2}
   - {fileID: 11400000, guid: 697685c8873704c48af579659ccbe33c, type: 2}
   - {fileID: 11400000, guid: bb636df70b8233247b1362f431790843, type: 2}
+  - {fileID: 11400000, guid: 56ee55e72e5f9694c9d1856df244b670, type: 2}
   - {fileID: 11400000, guid: b26e1667ffb42d5429b56b6ff35bc0bb, type: 2}
   - {fileID: 11400000, guid: a00a79727fcdbf44991e52670dc8c96e, type: 2}
   - {fileID: 11400000, guid: dec230058075c264089748ad9fc7f151, type: 2}
   - {fileID: 11400000, guid: ec58ad309d0b8b1449083949185d120c, type: 2}
   - {fileID: 11400000, guid: fc1cbc2529550b74988dd09a7883c402, type: 2}
+  - {fileID: 11400000, guid: ab776f6225a0e314c9e2aacf978ece70, type: 2}
+  - {fileID: 11400000, guid: 4a926143e0629664889912080e81599e, type: 2}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,8 +604,6 @@ MonoBehaviour:
   scienceBtns: []
   coreLevelUpgrade: 0000000000000000000000000000000000000000
   coreLevel: 1
-  increasedStructure: 000000
-  increasedUnit: 00000000
 --- !u!114 &4059864358883353247
 MonoBehaviour:
   m_ObjectHideFlags: 0

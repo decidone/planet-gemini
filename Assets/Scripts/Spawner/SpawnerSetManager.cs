@@ -36,14 +36,9 @@ public class SpawnerSetManager : NetworkBehaviour
 
     public GameObject[,] spawnerMap1Matrix;
     public GameObject[,] spawnerMap2Matrix;
-    //int xIndex;
-    //int yIndex;
 
     Map hostMap;
     Map clientMap;
-
-    //[SerializeField]
-    //Sprite[] spawnerSprite;
 
     #region Singleton
     public static SpawnerSetManager instance;
@@ -58,16 +53,6 @@ public class SpawnerSetManager : NetworkBehaviour
         instance = this;
     }
     #endregion
-
-    private void Start()
-    {
-        //hostMap = GameManager.instance.hostMap;
-        //clientMap = GameManager.instance.clientMap;
-        //spawnerMap1Matrix = new GameObject[splitCount, splitCount];
-        //spawnerMap2Matrix = new GameObject[splitCount, splitCount];
-        //xIndex = 0;
-        //yIndex = 0;
-    }
 
     public void AreaMapSet(Vector2 centerPos, int mapSplitCount, bool isHostMap)
     {
@@ -103,6 +88,7 @@ public class SpawnerSetManager : NetworkBehaviour
                 {
                     basePos = areaCenter;
                 }
+
                 areaPosLevel.Add(areaCenter, Math.Max(x, y));    // 구역의 중앙 좌표 + 구역 레벨
             }
         }
@@ -133,7 +119,7 @@ public class SpawnerSetManager : NetworkBehaviour
 
         foreach (var data in areaPosLevel)
         {
-            if(basePos == (Vector3)data.Key)
+            if (basePos == (Vector3)data.Key)
             {
                 xIndex++;
                 if (xIndex >= splitCount)
@@ -156,22 +142,16 @@ public class SpawnerSetManager : NetworkBehaviour
                 continue;
             }
 
-            //AreaLevelData levelData = arealevelData[areaLevel - 1];
-            AreaLevelData levelData = arealevelData[(areaLevel * 2) - 2];
+            //AreaLevelData levelData = arealevelData[(areaLevel - 1) * 2];
+            AreaLevelData levelData = arealevelData[0];
+
+            levelData = arealevelData[(areaLevel - 1) * 2];
 
             float xRadius;
             float yRadius;
 
-            //if(areaLevel == Mathf.RoundToInt(splitCount/2) || areaLevel == 1)
-            //{
-                xRadius = areaWSize / 2 - 20;
-                yRadius = areaHSize / 2 - 20;
-            //}
-            //else
-            //{
-            //    xRadius = areaWSize / 2 - 10;
-            //    yRadius = areaHSize / 2 - 10;
-            //}
+            xRadius = areaWSize / 2 - 15;
+            yRadius = areaHSize / 2 - 15;
 
             Vector2 newPoint;
             bool whileCheck = false;
@@ -179,10 +159,42 @@ public class SpawnerSetManager : NetworkBehaviour
 
             do
             {
-                int x = (int)Random.Range(-xRadius, xRadius);
-                int y = (int)Random.Range(-yRadius, yRadius);
+                int x;
+                int y;
 
-                newPoint = centerPos + new Vector2(x, y);
+                //x = (int)Random.Range(-xRadius, xRadius);
+                //y = (int)Random.Range(-yRadius, yRadius);
+
+                //newPoint = centerPos + new Vector2(x, y);
+
+                //if (areaLevel == 1)
+                //{
+                //    float distance = Vector3.Distance(basePos, newPoint);
+                //    Debug.Log(distance);
+                //}
+
+                if (areaLevel == 1)
+                {
+                    x = (int)Random.Range(-xRadius, xRadius);
+                    y = (int)Random.Range(-yRadius, yRadius);
+
+                    newPoint = centerPos + new Vector2(x, y);
+
+                    float distance = Vector3.Distance(basePos, newPoint);
+                    if (distance < 100)
+                    {
+                        cantPos.Add(newPoint);
+                        whileCheck = true;
+                        continue;
+                    }
+                }
+                else
+                {
+                    x = (int)Random.Range(-xRadius, xRadius);
+                    y = (int)Random.Range(-yRadius, yRadius);
+
+                    newPoint = centerPos + new Vector2(x, y);
+                }
 
                 if (cantPos.Contains(newPoint))
                 {
@@ -236,10 +248,13 @@ public class SpawnerSetManager : NetworkBehaviour
                 if (random < upgradeSpawnerSetCount[areaLevel - 1])
                 {
                     upgradeSpawnerSetCount[areaLevel - 1] -= 1;
+
                     levelSet += 1;
+    
                     levelDataSet = arealevelData[levelSet - 1];
                 }
             }
+            Debug.Log("HostMap : " + isHostMap + "Level : " + levelSet);
 
             MapGenerator.instance.SetCorruption(map, newPoint, levelSet);
 

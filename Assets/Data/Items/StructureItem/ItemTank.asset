@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ItemTank
   m_EditorClassIdentifier: 
   name: Tank
-  icon: {fileID: 1708248631, guid: c51c20bab1d913343a396e1f868c4d75, type: 3}
+  icon: {fileID: -595318312, guid: b4cbfd3b22973f541acce457c9624309, type: 3}
   tier: -1

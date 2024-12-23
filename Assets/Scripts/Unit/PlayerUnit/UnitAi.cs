@@ -154,13 +154,21 @@ public class UnitAi : UnitCommonAi
         isPatrolMove = true;
         lastMoveDirection = (targetPosition - tr.position).normalized;
         //aIState = AIState.AI_Move;
-
+        NomalTraceCheck(AIState.AI_Move);
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
         else
         {
             StopCoroutine(checkPathCoroutine);
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
+        }
+    }
+
+    void NomalTraceCheck(AIState ai)
+    {
+        if (aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack)
+        {
+            unitLastState = ai;
         }
     }
 
@@ -294,6 +302,7 @@ public class UnitAi : UnitCommonAi
 
         lastMoveDirection = (targetPosition - tr.position).normalized;
         //aIState = AIState.AI_Patrol;
+        NomalTraceCheck(AIState.AI_Patrol);
 
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Patrol"));
@@ -539,7 +548,6 @@ public class UnitAi : UnitCommonAi
     public override void RemoveTarget(GameObject target)
     {
         base.RemoveTarget(target);
-        Debug.Log(targetList.Count + " : " + aggroTarget + " : " + isLastStateOn);
         if (targetList.Count == 0 && isLastStateOn)
         {
             aIState = unitLastState;
@@ -680,7 +688,7 @@ public class UnitAi : UnitCommonAi
 
     public void IncreasedStructureCheck()
     {
-        increasedUnit = ScienceDb.instance.IncreasedStructureCheck(false);
+        increasedUnit = ScienceDb.instance.IncreasedStructureCheck(2);
 
         if (increasedUnit[0])
         {

@@ -10,14 +10,14 @@
   "Miner":{
     "Build":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Mines Coal, Stone, Iron, and Copper.","basicScience" : true},
-      "2":{"items":["SteelPlate","Cogwheel"],"amounts":[5,1],"coreLv":2,"time":1,"Info":"Mines in a 2x2 size and requires energy.","basicScience" : false},
-      "3":{"items":["ControlUnit","Motor"],"amounts":[5,1],"coreLv":4,"time":1,"Info":"Can mine Adamantium.","basicScience" : false}
+      "2":{"items":["SteelPlate","Cogwheel"],"amounts":[5,1],"coreLv":2,"time":1,"Info":"Mines in a 2x2 size. requires energy.","basicScience" : false},
+      "3":{"items":["ControlUnit","Motor"],"amounts":[5,1],"coreLv":4,"time":1,"Info":"Can mine Adamantium, Mines in a 2x2 size. requires energy.","basicScience" : false}
     }
   },
   "Furnace":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Smelts ores into ingots using coal.","basicScience" : true},
-      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"Smelts ores into ingots using energy.","basicScience" : false}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Smelts ores into ingots. requires coal.","basicScience" : true},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"Smelts ores into ingots. requires energy.","basicScience" : false}
     }
   },
   "Belt":{
@@ -36,22 +36,22 @@
   },
   "Smelter":{
     "Build":{
-      "1":{"items":["IronPlate","Coal"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Smelts two ores into an alloy ingot.","basicScience" : false}
+      "1":{"items":["IronPlate","Coal"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Smelts two ores into an alloy ingot. requires energy.","basicScience" : false}
     }
   },
   "Constructor":{
     "Build":{
-      "1":{"items":["IronPlate","CopperPlate"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"Produces components from a single material.","basicScience" : false}
+      "1":{"items":["IronPlate","CopperPlate"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"Produces components from a single material. requires energy.","basicScience" : false}
     }
   },
   "Assembler":{
     "Build":{
-      "1":{"items":["SteelPlate","Screw"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Produces components from two material.","basicScience" : false}
+      "1":{"items":["SteelPlate","Screw"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Produces components from two material. requires energy.","basicScience" : false}
     }
   },
   "Manufacturer":{
     "Build":{
-      "1":{"items":["Module","Motor"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Produces components from three material.","basicScience" : false}
+      "1":{"items":["Module","Motor"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Produces components from three material. requires energy.","basicScience" : false}
     }
   },
   "Splitter":{
@@ -84,7 +84,7 @@
   },
   "Transporter":{
     "Build":{
-      "1":{"items":["Module","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Transports items to other transporter buildings, with up to three units carrying them.","basicScience" : false}
+      "1":{"items":["Module","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"A building for long-distance transportation. Can be connected to other transports on the map, with up to three units carrying them.","basicScience" : false}
     }
   },
   "Pump":{
@@ -114,12 +114,12 @@
   },
   "Refinery":{
     "Build":{
-      "1":{"items":["Motor"],"amounts":[1],"coreLv":3,"time":1,"Info":"Refining crude oil.","basicScience" : false}
+      "1":{"items":["Motor"],"amounts":[1],"coreLv":3,"time":1,"Info":"Refining crude oil. requires energy.","basicScience" : false}
     }
   },
   "ChemicalPlant":{
     "Build":{
-      "1":{"items":["Naphtha"],"amounts":[5],"coreLv":3,"time":1,"Info":"Manufacture chemicals.","basicScience" : false}
+      "1":{"items":["Naphtha"],"amounts":[5],"coreLv":3,"time":1,"Info":"separates refined oil into naphtha and fuel through fractional distillation. requires energy.","basicScience" : false}
     }
   },
   "Overclock":{
@@ -139,12 +139,12 @@
   },
   "LDConnector":{
     "Build":{
-      "1":{"items":["ManaStone","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Energy can be connected to another 'LDConnector'","basicScience" : false}
+      "1":{"items":["ManaStone","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"A building that connects energy over long distances. Can be connected to other LDConnector on the map.","basicScience" : false}
     }
   },
   "EnergyBattery":{
     "Build":{
-      "1":{"items":["Battery"],"amounts":[5],"coreLv":3,"time":1,"Info":"Stores energy","basicScience" : false}
+      "1":{"items":["Battery"],"amounts":[5],"coreLv":3,"time":1,"Info":"Stores energy and supplies it to the energy group when there is a shortage.","basicScience" : false}
     }
   },
   "CoalGenerator":{
@@ -186,14 +186,6 @@
     "Build":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get unit to another planet.","basicScience" : false}
     }
-  },
-  "StructureUpgrade":{
-    "Build":{
-      "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased production speed of structures.","basicScience" : false},
-      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased hp of structures.","basicScience" : false},
-      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased input/output speed of structures.","basicScience" : false},
-      "4":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Reduced energy consumption.","basicScience" : false}
-     }
   },
   "Wall":{
     "Battle":{
@@ -246,7 +238,7 @@
   },
   "BounceRobot":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"TBD","basicScience" : false}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"A unit that attacks nearby enemies.","basicScience" : false}
     }
   },
   "SpinRobot":{
@@ -264,12 +256,27 @@
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"A tank for the player that requires ammunition and fuel.","basicScience" : false}
     }
   },
+  "StructureUpgrade":{
+    "Build":{
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased production speed of structures.","basicScience" : false},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased hp of structures.","basicScience" : false},
+      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased input/output speed of structures.","basicScience" : false},
+      "4":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Reduced energy consumption.","basicScience" : false},
+      "5":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased defense of structures.","basicScience" : false}
+     }
+  },
+  "TowerUpgrade":{
+    "Battle":{
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased damage of towers.","basicScience" : false},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Reduces Attack Delay Time of towers.","basicScience" : false}
+     }
+  },
   "UnitUpgrade":{
     "Battle":{
-      "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased hp of units.","basicScience" : false},
-      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased damage of units.","basicScience" : false},
-      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased attack speed of units.","basicScience" : false},
-      "4":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Increased defense of units.","basicScience" : false}
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased hp of units.","basicScience" : false},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased damage of units.","basicScience" : false},
+      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Reduces Attack Delay Time of units.","basicScience" : false},
+      "4":{"items":["Module","Battery","ControlUnit","AdamantitePlate","Engine","ManaStone"],"amounts":[1,1,1,1,1,1],"coreLv":4,"time":1,"Info":"Increased defense of units.","basicScience" : false}
     }
   }
 }

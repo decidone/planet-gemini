@@ -81,4 +81,12 @@ public class StructureData : ScriptableObject
     [SerializeField]
     private float removeGauge;
     public float RemoveGauge { get { return removeGauge; } }
+
+    [SerializeField]
+    private float[] defense;
+    public float[] Defense { get { return defense; } }
+
+    [SerializeField]
+    private float[] upgradedefense;
+    public float[] UpgradeDefense { get { return upgradedefense; } }
 }

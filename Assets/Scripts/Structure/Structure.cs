@@ -49,6 +49,7 @@ public class Structure : NetworkBehaviour
     protected Image hpBar;
     public float maxHp;
     public float hp;
+    protected float defense;
     protected RepairEffectFunc repairEffect;
     protected bool dieCheck = false;
     public GameObject RuinExplo;
@@ -183,8 +184,8 @@ public class Structure : NetworkBehaviour
     public delegate void OnEffectUpgradeCheck();
     public OnEffectUpgradeCheck onEffectUpgradeCheck;
 
-    bool[] increasedStructure;
-    // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도
+    protected bool[] increasedStructure;
+    // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 소비량 감소, 4 방어력
 
     protected virtual void Awake()
     {
@@ -195,6 +196,7 @@ public class Structure : NetworkBehaviour
 
         maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
+        defense = structureData.Defense[level];
         hp = structureData.MaxHp[level];
         getDelay = 0.01f;
         sendDelay = structureData.SendDelay[level];
@@ -220,7 +222,7 @@ public class Structure : NetworkBehaviour
         destroyTimer = destroyInterval;
         warningIconCheck = false;
         visionPos = transform.position;
-        increasedStructure = new bool[4];
+        increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
     }
 
@@ -538,6 +540,7 @@ public class Structure : NetworkBehaviour
     protected virtual void DataSet()
     {
         maxHp = structureData.MaxHp[level];
+        defense = structureData.Defense[level];
         hp = maxHp;
         hpBar.fillAmount = hp / structureData.MaxHp[level];
         energyUse = structureData.EnergyUse[level];
@@ -1163,8 +1166,9 @@ public class Structure : NetworkBehaviour
 
         if (hp <= 0f)
             return;
+        float reducedDamage = Mathf.Max(damage - defense, 5);
 
-        hp -= damage;
+        hp -= reducedDamage;
         if (hp < 0f)
             hp = 0f;
         onHpChangedCallback?.Invoke();
@@ -1690,6 +1694,7 @@ public class Structure : NetworkBehaviour
         }
 
         maxHp = structureData.MaxHp[level];
+        defense = structureData.Defense[level];
         sendDelay = structureData.SendDelay[level];
         onEffectUpgradeCheck.Invoke();
     }
@@ -1850,8 +1855,8 @@ public class Structure : NetworkBehaviour
 
     public virtual void IncreasedStructureCheck()
     {
-        increasedStructure = ScienceDb.instance.IncreasedStructureCheck(true);
-        // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 소비량 감소
+        increasedStructure = ScienceDb.instance.IncreasedStructureCheck(0);
+        // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 소비량 감소, 4 방어력
 
         if (increasedStructure[0])
         {
@@ -1876,6 +1881,10 @@ public class Structure : NetworkBehaviour
         if (increasedStructure[3])
         {
             energyConsumption = structureData.Consumption[level] - (structureData.Consumption[level] * upgradeConsumptionPer / 100);
+        }
+        if (increasedStructure[4])
+        {
+            defense = structureData.UpgradeDefense[level];
         }
     }
 

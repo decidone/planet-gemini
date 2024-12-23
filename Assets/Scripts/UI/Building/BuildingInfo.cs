@@ -93,6 +93,11 @@ public class BuildingInfo : MonoBehaviour
             buildingNeedList[i].gameObject.SetActive(true);
             buildingNeedList[i].AddItem(ItemList.instance.itemDic[selectBuildingData.items[i]], selectBuildingData.amounts[i], isEnough);
         }
+
+        if (GameManager.instance.debug)
+        {
+            totalAmountsEnough = true;
+        }
     }
 
     public void SetItemSlot()
@@ -123,14 +128,18 @@ public class BuildingInfo : MonoBehaviour
 
     public void BuildingEnd(int amount)
     {
-        for (int i = 0; i < buildingNeedList.Length; i++)
+        if(!GameManager.instance.debug)
         {
-            if (buildingNeedList[i].item != null)
+            for (int i = 0; i < buildingNeedList.Length; i++)
             {
-                GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
-                Overall.instance.OverallConsumption(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
+                if (buildingNeedList[i].item != null)
+                {
+                    GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
+                    Overall.instance.OverallConsumption(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
+                }
             }
         }
+
         GameManager.instance.BuildAndSciUiReset();
         SetItemSlot();
     }
@@ -158,10 +167,10 @@ public class BuildingInfo : MonoBehaviour
                 if (isEnough)
                 {
                     int maxAmount = 0;
-                    if(selectBuildingData.amounts[i] > 0)
+                    if (selectBuildingData.amounts[i] > 0)
                         maxAmount = (value / selectBuildingData.amounts[i]);
 
-                    if (amount == 0 || amount > maxAmount)             
+                    if (amount == 0 || amount > maxAmount)
                         amount = maxAmount;
                 }
                 else
@@ -170,6 +179,11 @@ public class BuildingInfo : MonoBehaviour
                     break;
                 }
             }
+        }
+
+        if (GameManager.instance.debug)
+        {
+            amount = 100;
         }
 
         return amount;

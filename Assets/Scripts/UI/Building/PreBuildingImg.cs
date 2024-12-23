@@ -63,7 +63,7 @@ public class PreBuildingImg : MonoBehaviour
                 break;
             case 3: //RepairTower
                 territoryView.transform.localScale = new Vector3(1.56f, 1.56f, 1f);
-                spriteRenderer.material = materials[2];
+                spriteRenderer.material = materials[1];
                 spriteRenderer.sprite = sprites[1];
                 newColor = new Color32(45, 70, 195, 100);
                 spriteRenderer.color = newColor;

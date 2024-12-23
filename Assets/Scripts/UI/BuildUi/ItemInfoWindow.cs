@@ -53,7 +53,26 @@ public class ItemInfoWindow : MonoBehaviour
         {
             image.SetActive(true);
             IsOpen = true;
-            winText.text = slot.inGameName;
+
+            if (slot.strDataSet)
+            {
+                Vector2 sizeDelta = winText.rectTransform.sizeDelta;
+                sizeDelta.y = 60;
+                winText.rectTransform.sizeDelta = sizeDelta;
+
+                if (slot.isEnergyStr)
+                {
+                    winText.text = slot.inGameName + System.Environment.NewLine + "Energy Produce : " + slot.energyProduction;
+                }
+                else if (slot.isEnergyUse)
+                {
+                    winText.text = slot.inGameName + System.Environment.NewLine + "Energy Consume : " + slot.energyConsumption;
+                }
+            }
+            else
+            {
+                winText.text = slot.inGameName;
+            }
         }
     }
 
@@ -75,5 +94,8 @@ public class ItemInfoWindow : MonoBehaviour
     {
         image.SetActive(false);
         IsOpen = false;
+        Vector2 sizeDelta = winText.rectTransform.sizeDelta;
+        sizeDelta.y = 20;
+        winText.rectTransform.sizeDelta = sizeDelta;
     }
 }

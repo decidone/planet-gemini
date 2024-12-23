@@ -312,14 +312,19 @@
   },
   "StructureUpgrade": {
     "1": "Production Speed Upgrade",
-    "2": "Hp Upgrade",
+    "2": "HP Upgrade for Structures",
     "3": "Input/Output Speed Upgrade",
-    "4": "Reduced Energy Consumption"
+    "4": "Reduced Energy Consumption",
+    "5": "Defense Upgrade for Structures"
+  },
+  "TowerUpgrade": {
+    "1": "Damage Upgrade for Towers",
+    "2": "Attack Speed Upgrade for Towers"
   },
   "UnitUpgrade": {
-    "1": "Hp Upgrade",
-    "2": "Damage Upgrade",
-    "3": "Attack Speed Upgrade",
-    "4": "Defense Upgrade"
+    "1": "HP Upgrade for Units",
+    "2": "Damage Upgrade for Units",
+    "3": "Attack Speed Upgrade for Units",
+    "4": "Defense Upgrade for Units"
   }
 }

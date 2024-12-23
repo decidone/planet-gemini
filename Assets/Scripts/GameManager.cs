@@ -116,7 +116,7 @@ public class GameManager : NetworkBehaviour
     // 4 : 24:00 ~ 04:00
     // 5 : 04:00 ~ 08:00
 
-    int safeDay = 30;                   // 게임 초기 안전한 날
+    int safeDay = 10;                   // 게임 초기 안전한 날
     int[] randomStackValue = new int[2] { 20, 80 }; // 스택 랜덤 범위
     [SerializeField]
     float violentValue;                 // 광폭화의날 스택
@@ -1259,15 +1259,39 @@ public class GameManager : NetworkBehaviour
 
     public void WaveStartSet(int coreLevel)
     {
-        //int mapSize = MainGameSetting.instance.mapSizeIndex;
-        //int waveLevel = 0;
+        Debug.Log("WaveLevel : " + (coreLevel - 1));
+        int waveLevel = coreLevel - 1;
 
-        //if (waveLevelsByMapSize.ContainsKey(mapSize))
-        //{
-        //    waveLevel = waveLevelsByMapSize[mapSize][coreLevel - 2];
-        //}
-        Debug.Log(coreLevel - 1);
-        MonsterSpawnerManager.instance.WavePointSet(coreLevel - 1, sciBuildingMap);
+        if (mapGenerator.mapSizeData.MapSplitCount == 5)
+        {
+            if (waveLevel == 1 || waveLevel == 2)
+            {
+                MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
+            }
+            else if (waveLevel == 3 || waveLevel == 4)
+            {
+                MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
+            }
+        }
+        else if (mapGenerator.mapSizeData.MapSplitCount == 7)
+        {
+            if (waveLevel == 1)
+            {
+                MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
+            }
+            else if (waveLevel == 2 || waveLevel == 3)
+            {
+                MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
+            }
+            else if (waveLevel == 4)
+            {
+                MonsterSpawnerManager.instance.WavePointSet(3, sciBuildingMap);
+            }
+        }
+        else
+        {
+            MonsterSpawnerManager.instance.WavePointSet(waveLevel, sciBuildingMap);
+        }
     }
 
     public void SciBuildingSet(bool map)

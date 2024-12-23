@@ -577,6 +577,13 @@ public class MonsterAi : UnitCommonAi
                     targetList.Add(target);
                 }
 
+                UnitAi unit = target.GetComponent<UnitAi>();
+                if (unit && !targetListSet.Contains(target))
+                {
+                    targetListSet.Add(target);
+                    targetList.Add(target);
+                }
+
                 waveFindObj = true;
             }
         }

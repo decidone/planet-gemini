@@ -71,7 +71,10 @@ public class MonsterSpawner : NetworkBehaviour
 
     [SerializeField]
     GameObject searchColl;
+    [SerializeField]
+    GameObject awakeColl;
     SpawnerSearchColl spawnerSearchColl;
+    SpawnerAwake spawnerAwakeColl;
     float[] energyAggroMaxValue = new float[8] {3000, 6000, 8000, 10000, 12000, 12000, 12000, 12000 }; // 어그로 최대 임계치
     float[] violentEnergyAggroMaxValue = new float[8] {5000, 8000, 10000, 12000, 14000, 14000, 14000, 14000 }; // 광폭화시 최대 임계치
     public float energyAggroValue; // 어그로 현 임계치
@@ -117,6 +120,7 @@ public class MonsterSpawner : NetworkBehaviour
         guardian = GeminiNetworkManager.instance.unitListSO.guardian[0];
         capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         spawnerSearchColl = searchColl.GetComponent<SpawnerSearchColl>();
+        spawnerAwakeColl = awakeColl.GetComponent<SpawnerAwake>();
     }
 
     void Start()
@@ -126,7 +130,10 @@ public class MonsterSpawner : NetworkBehaviour
         maxExtraSpawn = 10;
         extraSpawn = false;
         if (!IsServer)
+        {
             searchColl.SetActive(false);
+            awakeColl.SetActive(false);
+        }
         if (!gameLodeSet)
             InitializeMonsterSpawn();
         spawnerSearchColl.violentCollSize = violentCollSize;
@@ -578,6 +585,7 @@ public class MonsterSpawner : NetworkBehaviour
         GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, 1, transform.position);
 
         spawnerSearchColl.DieFunc();
+        spawnerAwakeColl.DieFunc();
     }
 
     public void DieFuncLoad()
@@ -588,6 +596,7 @@ public class MonsterSpawner : NetworkBehaviour
         MapGenerator.instance.ClearCorruption(transform.position, sppawnerLevel);
         icon.enabled = false;
         spawnerSearchColl.DieFunc();
+        spawnerAwakeColl.DieFunc();
     }
 
     public void SearchObj(bool find)
@@ -882,7 +891,9 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         if (violentDay)
+        {
             spawnerSearchColl.SearchCollReduction();
+        }
 
         battleBGM.ColonyCallAddMonster(monsters, isInHostMap);
         WarningWindowSetServerRpc();
