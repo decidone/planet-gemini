@@ -1165,4 +1165,41 @@ public class MapGenerator : MonoBehaviour
         colliderPoints[4] = new Vector2(0, offsetY);
         clientMapCol.points = colliderPoints;
     }
+
+    public Vector3 GetNearGroundPos(Vector3 playerPos)
+    {
+        Map map = (GameManager.instance.isPlayerInHostMap) ? hostMap : clientMap;
+        int posX = Mathf.FloorToInt(playerPos.x);
+        int posY = Mathf.FloorToInt(playerPos.y);
+        int range = 3;
+
+        if (map.IsOnMap(posX, posY))
+        {
+            Cell cell = map.GetCellDataFromPos(posX, posY);
+            if (cell.biome != cliff && cell.biome != lake)
+            {
+                return new Vector3(posX, posY, 0);
+            }
+        }
+        
+        while (true)
+        {
+            for (int i = posX - range; i <= posX + range; i++)
+            {
+                for (int j = posY - range; j <= posY + range; j++)
+                {
+                    if (map.IsOnMap(i, j))
+                    {
+                        Cell cell = map.GetCellDataFromPos(i, j);
+                        if (cell.biome != cliff && cell.biome != lake)
+                        {
+                            return new Vector3(i, j, 0);
+                        }
+                    }
+                }
+            }
+
+            range += 2;
+        }
+    }
 }

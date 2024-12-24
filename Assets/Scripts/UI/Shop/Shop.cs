@@ -56,6 +56,12 @@ public class Shop : MonoBehaviour
         {
             GameManager.instance.inventory.onItemChangedCallback -= SetUIAmount;
         }
+
+        foreach (Merch merch in merchList)
+        {
+            merch.ResetValue();
+        }
+
         this.gameObject.SetActive(false);
         GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
     }

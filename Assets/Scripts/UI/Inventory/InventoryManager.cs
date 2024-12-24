@@ -33,7 +33,7 @@ public abstract class InventoryManager : MonoBehaviour
 
     protected virtual void Start()
     {
-        splitCooldown = 0.12f;
+        splitCooldown = 0.08f;
         slotRightClickHold = false;
         gameManager = GameManager.instance;
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();

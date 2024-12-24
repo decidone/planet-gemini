@@ -1513,4 +1513,10 @@ public class GameManager : NetworkBehaviour
     {
         autoSaveinterval = interval;
     }
+
+    public void PlayerEscapeFromStuck()
+    {
+        Vector3 pos = MapGenerator.instance.GetNearGroundPos(player.transform.position);
+        player.transform.position = pos;
+    }
 }

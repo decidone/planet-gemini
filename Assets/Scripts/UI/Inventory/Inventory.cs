@@ -19,16 +19,19 @@ public class Inventory : NetworkBehaviour
     public Dictionary<int, int> amounts = new Dictionary<int, int>();
 
     // 아이템 총량 관리
+    public ItemListSO itemListSO;
     List<Item> itemList;
     public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
 
     ulong[] singleTarget = new ulong[1];
 
-    void Start()
+    void Awake()
     {
+        itemListSO = Resources.Load<ItemListSO>("SOList/ItemListSO");
+        itemList = itemListSO.itemSOList;
+
         if (totalItems.Count == 0)
-        {        
-            itemList = ItemList.instance.itemList;
+        {
             foreach (Item item in itemList)
             {
                 totalItems.Add(item, 0);
@@ -658,15 +661,9 @@ public class Inventory : NetworkBehaviour
     public void ResetInven()
     {
         Debug.Log("ResetInven");
-        // 얜 로컬에서만 쓰는 듯? 일단 회의때 다시 확인
         items.Clear();
         amounts.Clear();
         totalItems.Clear();
-
-        if (itemList == null)
-        {
-            itemList = ItemList.instance.itemList;
-        }
 
         foreach (Item item in itemList)
         {

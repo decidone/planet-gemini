@@ -351,11 +351,15 @@ public class Structure : NetworkBehaviour
 
     protected void ObjRemoveFunc()
     {
+        if (IsServer)
+        {
+            ItemDrop();
+            RefundCost();
+        }
+
         //AddInvenItem();
-        ItemDrop();
         RemoveObjServerRpc();
         //DestroyFuncServerRpc();
-        RefundCost();
         soundManager.PlayUISFX("BuildingRemove");
         GameManager.instance.BuildAndSciUiReset();
     }
@@ -1200,10 +1204,11 @@ public class Structure : NetworkBehaviour
         ColliderTriggerOnOff(true);
         Instantiate(RuinExplo, transform.position, Quaternion.identity);
         soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
-        ItemDrop();
 
         if (!IsServer)
             return;
+
+        ItemDrop();
 
         if (!isPreBuilding)
         {

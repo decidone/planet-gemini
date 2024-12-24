@@ -10,6 +10,8 @@ using UnityEngine.Events;
 public class OptionCanvas : MonoBehaviour
 {
     [SerializeField]
+    Button EscapeBtn;
+    [SerializeField]
     Button SettingsBtn;
     [SerializeField]
     Button SaveBtn;
@@ -40,12 +42,13 @@ public class OptionCanvas : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
 
+        EscapeBtn.onClick.AddListener(() => EscapeBtnFunc());
         SettingsBtn.onClick.AddListener(() => SettingsBtnFunc());
         SaveBtn.onClick.AddListener(() => SaveBtnFunc());
         LoadBtn.onClick.AddListener(() => LoadBtnFunc());
         quitBtn.onClick.AddListener(() => QuitBtnFunc());
 
-        Button[] btnArr = new Button[] { SettingsBtn, SaveBtn, LoadBtn, quitBtn };
+        Button[] btnArr = new Button[] { EscapeBtn, SettingsBtn, SaveBtn, LoadBtn, quitBtn };
 
         foreach (Button btn in btnArr)
         {
@@ -54,6 +57,14 @@ public class OptionCanvas : MonoBehaviour
             AddEvent(btn, EventTriggerType.PointerClick, delegate { OnExit(btn); });
             ButtonStateWatcher watcher = btn.gameObject.AddComponent<ButtonStateWatcher>();
             watcher.OnButtonDisabled += () => OnExit(btn);
+        }
+    }
+
+    public void EscapeBtnFunc()
+    {
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.PlayerEscapeFromStuck();
         }
     }
 
@@ -133,11 +144,11 @@ public class OptionCanvas : MonoBehaviour
         RectTransform rect = quitBtn.gameObject.GetComponent<RectTransform>();
         if (on)
         {
-            rect.anchoredPosition = new Vector2(0, -50);
+            rect.anchoredPosition = new Vector2(0, -150);
         }
         else
         {
-            rect.anchoredPosition = new Vector2(0, 50);
+            rect.anchoredPosition = new Vector2(0, -50);
         }
     }
 }
