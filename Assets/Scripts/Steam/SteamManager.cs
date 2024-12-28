@@ -112,10 +112,6 @@ public class SteamManager : MonoBehaviour
 
             LoadingUICtrl.Instance.LoadScene("GameScene", false);
         }
-        else
-        {
-            //LoadingUICtrl.Instance.LoadScene("GameScene", true);
-        }
     }
 
     void ClientConnect(Lobby lobby, Friend friend)
@@ -214,14 +210,21 @@ public class SteamManager : MonoBehaviour
         }
     }
 
-    public void ReceiveP2PPacket()
+    public bool ReceiveP2PPacket()
     {
         bool packetAvailable = SteamNetworking.IsP2PPacketAvailable();
+        Debug.Log("1 ReceiveP2PPacket : " + packetAvailable);
+
+        if (!packetAvailable)
+        {
+            return packetAvailable;
+        }
+
         List<byte> receivedData = new List<byte>();
         bool isLastChunkReceived = false;
         int totalChunks = 0;
         HashSet<int> receivedChunkIndices = new HashSet<int>();
-        Debug.Log("ReceiveP2PPacket : " + packetAvailable);
+        Debug.Log("2 ReceiveP2PPacket : " + packetAvailable);
         while (packetAvailable && !isLastChunkReceived)
         {
             var packet = SteamNetworking.ReadP2PPacket();
@@ -278,6 +281,8 @@ public class SteamManager : MonoBehaviour
             clientCallCount = 0;
             RequestMissingPackets();
         }
+
+        return packetAvailable;
     }
 
     // 누락된 패킷 요청 함수
@@ -292,17 +297,10 @@ public class SteamManager : MonoBehaviour
 
     private void HandleOpponentDataPacket(byte[] dataPacket)
     {
-        //try
-        //{
-            string opponentDataSent = ConvertByteArrayToString(dataPacket);
-            DataManager.instance.Load(opponentDataSent);
-            Debug.Log("Get Data");
-            getData = true;
-        //}
-        //catch
-        //{
-        //    Debug.Log("Failed to process incoming opponent data packet");
-        //}
+        string opponentDataSent = ConvertByteArrayToString(dataPacket);
+        DataManager.instance.Load(opponentDataSent);
+        Debug.Log("Get Data");
+        getData = true;
     }
 
     private string ConvertByteArrayToString(byte[] byteArrayToConvert)
@@ -372,13 +370,18 @@ public class SteamManager : MonoBehaviour
                 LeaveGame();
             }
         }
+        else if(lobby.Owner.Id != friend.Id)
+        {
+            Debug.Log("Client left");
+            GameManager.instance.TimeScaleServerRpc();
+        }
         //Debug.Log(lobby.Owner.Id);
         //Debug.Log(friend.Id);
     }
 
     public void LeaveGame()
     {
-        SteamManager.instance.LeaveLobby();
+        LeaveLobby();
         if (NetworkManager.Singleton != null)
         {
             //NetworkManager.Singleton.gameObject.GetComponent<NetworkObject>().Despawn();

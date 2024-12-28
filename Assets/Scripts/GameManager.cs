@@ -960,10 +960,18 @@ public class GameManager : NetworkBehaviour
 
     IEnumerator DataSync()
     {
+        float time = 15f;
+
         while (!SteamManager.instance.getData)
         {
-            SteamManager.instance.ReceiveP2PPacket();
-            yield return new WaitForSecondsRealtime(5f);
+            bool packetAvailable = SteamManager.instance.ReceiveP2PPacket();
+            Debug.Log(packetAvailable + " : DataSync packetAvailable Check");
+            if (!packetAvailable)
+                time = 3;
+            else
+                time = 15f;
+            
+            yield return new WaitForSecondsRealtime(time);
         }
 
         Debug.Log("ClientDataGet And StartClient");

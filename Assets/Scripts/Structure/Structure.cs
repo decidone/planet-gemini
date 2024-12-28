@@ -65,7 +65,7 @@ public class Structure : NetworkBehaviour
 
     [HideInInspector]
     public List<Item> itemList = new List<Item>();
-    [HideInInspector]
+    //[HideInInspector]
     public List<ItemProps> itemObjList = new List<ItemProps>();
 
     [HideInInspector]
@@ -87,6 +87,8 @@ public class Structure : NetworkBehaviour
 
     protected float getDelay;
     protected float sendDelay;
+    [HideInInspector]
+    public bool takeItemDelay = false;
 
     //[HideInInspector]
     public List<GameObject> inObj = new List<GameObject>();
@@ -905,14 +907,15 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     protected virtual void GetItemClientRpc(int inObjIndex)
     {
-        if (IsServer)
-        {
-            GetItemFunc(inObjIndex);
-        }
-        else if (settingEndCheck)
-        {
-            GetDelaySet(inObjIndex);
-        }
+        GetItemFunc(inObjIndex);
+        //if (IsServer)
+        //{
+        //    GetItemFunc(inObjIndex);
+        //}
+        //else if (settingEndCheck)
+        //{
+        //    GetDelaySet(inObjIndex);
+        //}
     }
 
     protected virtual void GetItemFunc(int inObjIndex)
@@ -947,8 +950,7 @@ public class Structure : NetworkBehaviour
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-
-        if (outFactory.isFull)
+        if (outFactory.isFull || outFactory.takeItemDelay)
         {
             SendItemIndexSet();
             itemSetDelay = false;
@@ -970,7 +972,7 @@ public class Structure : NetworkBehaviour
             itemSetDelay = false;
             return;
         }
-
+        outFactory.takeItemDelay = true;
         SendItemServerRpc(itemIndex, sendItemIndex);
 
         SendItemIndexSet();
@@ -992,14 +994,15 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex)
     {
-        if (IsServer)
-        {
-            SendItemFunc(itemIndex, outObjIndex);
-        }
-        else if (settingEndCheck)
-        {
-            SendDelaySet(itemIndex, outObjIndex);
-        }
+        SendItemFunc(itemIndex, outObjIndex);
+        //if (IsServer)
+        //{
+        //    SendItemFunc(itemIndex, outObjIndex);
+        //}
+        //else if (settingEndCheck)
+        //{
+        //    SendDelaySet(itemIndex, outObjIndex);
+        //}
     }
 
     protected virtual void SendItemFunc(int itemIndex, int outObjIndex)
@@ -1007,7 +1010,7 @@ public class Structure : NetworkBehaviour
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
         Structure outFactory = outObj[outObjIndex].GetComponent<Structure>();
-
+        Debug.Log(outFactory.name + " : " + itemIndex + " : " + outObjIndex);
         if (outObj[outObjIndex].TryGetComponent(out BeltCtrl beltCtrl))
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
@@ -1042,6 +1045,7 @@ public class Structure : NetworkBehaviour
                 setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
         }
 
+        outFactory.takeItemDelay = false;
         Invoke(nameof(DelaySetItem), sendDelay);
     }
     

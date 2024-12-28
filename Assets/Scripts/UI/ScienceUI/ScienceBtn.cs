@@ -17,8 +17,11 @@ public class ScienceBtn : MonoBehaviour
     public Image upgradeImg; 
     Button scBtn;
     bool isLock = true;
-    bool upgradeStart = false;
+    [HideInInspector]
+    public bool upgradeStart = false;
+    [HideInInspector]
     public bool upgrade = false;
+    [HideInInspector]
     public bool isCore = false;
     public bool isMain;
     ScienceManager scienceManager;
