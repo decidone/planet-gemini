@@ -31,7 +31,7 @@ public class BeltCtrl : LogisticsCtrl
     public BeltCtrl nextBelt;
     public BeltCtrl preBelt;
 
-    Vector2[] nextPos = new Vector2[3];
+    public Vector2[] nextPos = new Vector2[3];
 
     public bool isItemStop = false;
 
@@ -324,6 +324,43 @@ public class BeltCtrl : LogisticsCtrl
 
         ItemSend();
     }
+
+
+    public bool OnBeltItem(ItemProps itemObj)
+    {
+        Debug.Log("BeltItemCount : " + itemObjList.Count);
+
+        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        {
+            if (nextBelt != null && beltState != BeltState.EndBelt)
+            {
+                if (!nextBelt.isFull && !nextBelt.destroyStart && itemObjList.Count > 0)
+                {
+                    nextBelt.BeltGroupSendItem(itemObjList[0]);
+                    itemObjList.Remove(itemObjList[0]);
+                    ItemNumCheck();
+                }
+            }
+        }
+
+        //if (itemObjList.Count < structureData.MaxItemStorageLimit)
+        //{
+        itemObjList.Add(itemObj);
+
+        if (GetComponent<BeltCtrl>())
+            GetComponent<BeltCtrl>().beltGroupMgr.groupItem.Add(itemObj);
+
+        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+            isFull = true;
+        else
+            isFull = false;
+
+        //    return true;
+        //}
+
+        return true;
+    }
+
 
     void AddNewItem(ItemProps newItem)
     {
@@ -639,8 +676,28 @@ public class BeltCtrl : LogisticsCtrl
             return;
         }
 
-        ItemProps item = itemObjList[index];
-        itemObjList.RemoveAt(index);
+        if (itemObjList.Count < index + 1)
+        {
+            nextBelt.ItemRootSync();
+        }
+        else
+        {        
+            ItemProps item = itemObjList[index];
+            itemObjList.RemoveAt(index);
+            item.itemPool.Release(item.gameObject);
+        }
+
+        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+            isFull = true;
+        else
+            isFull = false;
+    }
+
+    public void ItemRootSync()
+    {
+        Debug.Log("ItemRootSync : " + itemObjList.Count);
+        ItemProps item = itemObjList[itemObjList.Count - 1];
+        itemObjList.RemoveAt(itemObjList.Count - 1);
         item.itemPool.Release(item.gameObject);
 
         if (itemObjList.Count >= structureData.MaxItemStorageLimit)

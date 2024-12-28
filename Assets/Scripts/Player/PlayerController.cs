@@ -638,12 +638,12 @@ public class PlayerController : NetworkBehaviour
                     LootListManager.instance.DisplayLootInfo(itemProps.item, itemProps.amount);
                     beltCtrl.PlayerRootFunc(itemProps);
                 }
-                else if (containableAmount != 0)
-                {
-                    gameManager.inventory.Add(itemProps.item, containableAmount);
-                    LootListManager.instance.DisplayLootInfo(itemProps.item, containableAmount);
-                    itemProps.amount -= containableAmount;
-                }
+                //else if (containableAmount != 0)
+                //{
+                //    gameManager.inventory.Add(itemProps.item, containableAmount);
+                //    LootListManager.instance.DisplayLootInfo(itemProps.item, containableAmount);
+                //    itemProps.amount -= containableAmount;
+                //}
                 else
                 {
                     Debug.Log("not enough space");

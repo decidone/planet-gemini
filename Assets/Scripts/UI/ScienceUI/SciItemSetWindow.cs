@@ -179,11 +179,10 @@ public class SciItemSetWindow : MonoBehaviour
     void OkBtnFunc()
     {
         int financeIndex = 0;
-        for (int i = 0; i < scienceInfoData.items.Count; i++) 
+        for (int i = 0; i < scienceInfoData.items.Count; i++)
         {
             string itemName = scienceInfoData.items[i];
             Item item = itemsList.FirstOrDefault(x => x.name == itemName);
-
 
             if (item != null)
             {
@@ -196,16 +195,37 @@ public class SciItemSetWindow : MonoBehaviour
                     continue;
                 }
 
-                if(item.tier != -1)
-                    gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
+                int maxInputItemAmount = scienceBtn.itemAmountList[i].Item2 - scienceBtn.itemAmountList[i].Item1;
+
+                if (maxInputItemAmount == 0)
+                {
+                    continue;
+                }
+                else if (maxInputItemAmount > textInt)
+                {
+                    if (item.tier != -1)
+                        gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], maxInputItemAmount);
+                    else
+                    {
+                        Debug.Log(financeIndex);
+                        GameManager.instance.SubFinanceServerRpc(useAmountList[financeIndex]);
+                        financeIndex++;
+                    }
+                }
                 else
                 {
-                    Debug.Log(financeIndex);
-                    GameManager.instance.SubFinanceServerRpc(useAmountList[financeIndex]);
-                    financeIndex++;
+                    if (item.tier != -1)
+                        gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
+                    else
+                    {
+                        Debug.Log(financeIndex);
+                        GameManager.instance.SubFinanceServerRpc(useAmountList[financeIndex]);
+                        financeIndex++;
+                    }
                 }
+
                 scienceBtn.ItemAddAmount(i, textInt);
-                gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
+                //gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
                 Overall.instance.OverallConsumption(ItemList.instance.itemDic[itemName], textInt);
                 itemObjList[i].GetComponent<InfoNeedItemUi>().AmountSet(scienceBtn.itemAmountList[i].Item1, scienceBtn.itemAmountList[i].Item2);
             }

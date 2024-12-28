@@ -26,26 +26,6 @@ public class LogisticsCtrl : Structure
             isFull = false;
     }
 
-    public bool OnBeltItem(ItemProps itemObj)
-    {
-        if (itemObjList.Count < structureData.MaxItemStorageLimit)
-        {
-            itemObjList.Add(itemObj);
-
-            if (GetComponent<BeltCtrl>())
-                GetComponent<BeltCtrl>().beltGroupMgr.groupItem.Add(itemObj);
-
-            if (itemObjList.Count >= structureData.MaxItemStorageLimit)
-                isFull = true;
-            else
-                isFull = false;
-
-            return true;
-        }
-
-        return false;
-    }
-
     public override void OnFactoryItem(ItemProps itemProps)
     {
         if (IsServer)
