@@ -35,69 +35,11 @@ public class Biome : MonoBehaviour
     public List<GameObject> objects;
     public float objectsSpawnrate;
 
-    public void RoughBiomeSmoother(Map map, int x, int y, bool isSpecificDiffBiome)
+    public int BiomeSmoother(Map map, int x, int y, bool isSpecificDiffBiome)
     {
         List<Cell> neighbors = new List<Cell>();
         List<int> nearDiff = new List<int>();
         List<int> diagonalDiff = new List<int>();
-
-        for (int i = 0; i < 8; i++)
-            neighbors.Add(new Cell());
-
-        for (int i = 0; i < 9; i++)
-        {
-            int nx = x + (i % 3) - 1;
-            int ny = y + -((i / 3) - 1);
-
-            if (i != 4)
-            {
-                int j = (i < 4) ? i : i - 1;
-                if (map.IsOnMapData(nx, ny))
-                {
-                    neighbors[j] = map.mapData[nx][ny];
-                    if (isSpecificDiffBiome)
-                    {
-                        if (neighbors[j].biome.biome == diffBiome)
-                        {
-                            if (i % 2 == 0)
-                            {
-                                diagonalDiff.Add(j);
-                            }
-                            else
-                            {
-                                nearDiff.Add(j);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (neighbors[j].biome != map.mapData[x][y].biome)
-                        {
-                            if (i % 2 == 0)
-                            {
-                                diagonalDiff.Add(j);
-                            }
-                            else
-                            {
-                                nearDiff.Add(j);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (nearDiff.Count >= 3)
-            map.mapData[x][y].biome = neighbors[nearDiff[0]].biome;
-    }
-
-    public void BiomeSmoother(Map map, int x, int y, bool isSpecificDiffBiome)
-    {
-        List<Cell> neighbors = new List<Cell>();
-        List<int> nearDiff = new List<int>();
-        List<int> diagonalDiff = new List<int>();
-        bool isBorder = false;
-        bool hasTile = false;
 
         for (int i = 0; i < 8; i++)
             neighbors.Add(new Cell());
@@ -147,31 +89,64 @@ public class Biome : MonoBehaviour
 
         if (nearDiff.Count > 0 || diagonalDiff.Count > 0)
         {
-            isBorder = true;
-
             if (nearDiff.Count == 1)
             {
-                hasTile = true;
+                if (nearDiff.Contains(1) && !diagonalDiff.Contains(5) && !diagonalDiff.Contains(7) && top.Count > 0)
+                {
+                    return 0;
+                }
+                else if (nearDiff.Contains(3) && !diagonalDiff.Contains(2) && !diagonalDiff.Contains(7) && left.Count > 0)
+                {
+                    return 0;
+                }
+                else if (nearDiff.Contains(4) && !diagonalDiff.Contains(0) && !diagonalDiff.Contains(5) && right.Count > 0)
+                {
+                    return 0;
+                }
+                else if (nearDiff.Contains(6) && !diagonalDiff.Contains(0) && !diagonalDiff.Contains(2) && bottom.Count > 0)
+                {
+                    return 0;
+                }
             }
-            else if (nearDiff.Count == 2)
+            else if (nearDiff.Count == 2 && corner.Count > 0)
             {
-                if (nearDiff.Contains(1) && nearDiff.Contains(3))
-                    hasTile = true;
-                else if (nearDiff.Contains(1) && nearDiff.Contains(4))
-                    hasTile = true;
-                else if (nearDiff.Contains(6) && nearDiff.Contains(3))
-                    hasTile = true;
-                else if (nearDiff.Contains(6) && nearDiff.Contains(4))
-                    hasTile = true;
+                if (nearDiff.Contains(1) && nearDiff.Contains(3) && !diagonalDiff.Contains(7))
+                {
+                    return 0;
+                }
+                else if (nearDiff.Contains(1) && nearDiff.Contains(4) && !diagonalDiff.Contains(5))
+                {
+                    return 0;
+                }
+                else if (nearDiff.Contains(6) && nearDiff.Contains(3) && !diagonalDiff.Contains(2))
+                {
+                    return 0;
+                }
+                else if (nearDiff.Contains(6) && nearDiff.Contains(4) && !diagonalDiff.Contains(0))
+                {
+                    return 0;
+                }
             }
-            else if (nearDiff.Count == 0 && diagonalDiff.Count == 1)
+            else if (nearDiff.Count == 0 && diagonalDiff.Count == 1 && innerCorner.Count > 0)
             {
-                hasTile = true;
+                if (diagonalDiff.Contains(0))
+                {
+                    return 0;
+                }
+                else if (diagonalDiff.Contains(2))
+                {
+                    return 0;
+                }
+                else if (diagonalDiff.Contains(5))
+                {
+                    return 0;
+                }
+                else if (diagonalDiff.Contains(7))
+                {
+                    return 0;
+                }
             }
-        }
 
-        if (isBorder && !hasTile)
-        {
             Biome diffBiome;
             if (nearDiff.Count > 0)
                 diffBiome = neighbors[nearDiff[0]].biome;
@@ -179,7 +154,10 @@ public class Biome : MonoBehaviour
                 diffBiome = neighbors[diagonalDiff[0]].biome;
 
             map.mapData[x][y].biome = diffBiome;
+            return 1;
         }
+
+        return 0;
     }
 
     public (Tile tile, string form) SetTile(System.Random random, Map map, int x, int y)
@@ -229,38 +207,38 @@ public class Biome : MonoBehaviour
                 if (nearDiff.Count == 1)
                 {
                     form = "side";
-                    if (nearDiff.Contains(1) && top.Count > 0)
+                    if (nearDiff.Contains(1) && !diagonalDiff.Contains(5) && !diagonalDiff.Contains(7) && top.Count > 0)
                     {
                         tile = top[random.Next(0, top.Count)];
                     }
-                    else if (nearDiff.Contains(3) && left.Count > 0)
+                    else if (nearDiff.Contains(3) && !diagonalDiff.Contains(2) && !diagonalDiff.Contains(7) && left.Count > 0)
                     {
                         tile = left[random.Next(0, left.Count)];
                     }
-                    else if (nearDiff.Contains(4) && right.Count > 0)
+                    else if (nearDiff.Contains(4) && !diagonalDiff.Contains(0) && !diagonalDiff.Contains(5) && right.Count > 0)
                     {
                         tile = right[random.Next(0, right.Count)];
                     }
-                    else if (nearDiff.Contains(6) && bottom.Count > 0)
+                    else if (nearDiff.Contains(6) && !diagonalDiff.Contains(0) && !diagonalDiff.Contains(2) && bottom.Count > 0)
                     {
                         tile = bottom[random.Next(0, bottom.Count)];
                     }
                 }
                 else if (nearDiff.Count == 2 && corner.Count > 0)
                 {
-                    if (nearDiff.Contains(1) && nearDiff.Contains(3))
+                    if (nearDiff.Contains(1) && nearDiff.Contains(3) && !diagonalDiff.Contains(7))
                     {
                         tile = corner[0];
                     }
-                    else if (nearDiff.Contains(1) && nearDiff.Contains(4))
+                    else if (nearDiff.Contains(1) && nearDiff.Contains(4) && !diagonalDiff.Contains(5))
                     {
                         tile = corner[1];
                     }
-                    else if (nearDiff.Contains(6) && nearDiff.Contains(3))
+                    else if (nearDiff.Contains(6) && nearDiff.Contains(3) && !diagonalDiff.Contains(2))
                     {
                         tile = corner[2];
                     }
-                    else if (nearDiff.Contains(6) && nearDiff.Contains(4))
+                    else if (nearDiff.Contains(6) && nearDiff.Contains(4) && !diagonalDiff.Contains(0))
                     {
                         tile = corner[3];
                     }

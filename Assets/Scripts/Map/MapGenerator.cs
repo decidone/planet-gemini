@@ -534,49 +534,44 @@ public class MapGenerator : MonoBehaviour
 
     void SmoothBiome(Map map)
     {
-        for (int x = 0; x < width; x++)
+        for (int i = 0; i < 10; i++)
         {
-            for (int y = 0; y < height; y++)
+            int exception = 0;
+            for (int x = 0; x < width; x++)
             {
-                Cell cell = map.mapData[x][y];
-                Biome biome = cell.biome;
-                biome.RoughBiomeSmoother(map, x, y, true);
+                for (int y = 0; y < height; y++)
+                {
+                    Cell cell = map.mapData[x][y];
+                    Biome biome = cell.biome;
+                    exception += biome.BiomeSmoother(map, x, y, true);
+                }
             }
-        }
 
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                Cell cell = map.mapData[x][y];
-                Biome biome = cell.biome;
-                biome.BiomeSmoother(map, x, y, true);
-            }
+            Debug.Log("rot: " + i + ", exception: " + exception);
+            if (exception == 0)
+                return;
         }
     }
 
     void SmoothCliff(Map map)
     {
-        for (int x = 0; x < width; x++)
+        for (int i = 0; i < 10; i++)
         {
-            for (int y = 0; y < height; y++)
+            int exception = 0;
+            for (int x = 0; x < width; x++)
             {
-                Cell cell = map.mapData[x][y];
-                Biome biome = cell.biome;
-                if (biome == cliff)
-                    biome.RoughBiomeSmoother(map, x, y, false);
+                for (int y = 0; y < height; y++)
+                {
+                    Cell cell = map.mapData[x][y];
+                    Biome biome = cell.biome;
+                    if (biome == cliff)
+                        exception += biome.BiomeSmoother(map, x, y, false);
+                }
             }
-        }
 
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                Cell cell = map.mapData[x][y];
-                Biome biome = cell.biome;
-                if (biome == cliff)
-                    biome.BiomeSmoother(map, x, y, false);
-            }
+            Debug.Log("cliff rot: " + i + ", exception: " + exception);
+            if (exception == 0)
+                return;
         }
     }
 
