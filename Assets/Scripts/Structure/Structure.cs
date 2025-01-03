@@ -1067,66 +1067,29 @@ public class Structure : NetworkBehaviour
 
     protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
     {
-        var itemPool = ItemPoolManager.instance.Pool.Get();
-        ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
-        SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
-        sprite.color = new Color(1f, 1f, 1f, 0f);
-
-        spawnItem.transform.position = this.transform.position;
-
-        var targetPos = outFac.transform.position;
-        var startTime = Time.time;
-        var distance = Vector3.Distance(spawnItem.transform.position, targetPos);
-
-        while (spawnItem != null && spawnItem.transform.position != targetPos)
+        if (CanSendItemCheck())
         {
-            var elapsed = Time.time - startTime;
-            var t = Mathf.Clamp01(elapsed / (distance / structureData.SendSpeed[0]));
-
-            spawnItem.transform.position = Vector3.Lerp(spawnItem.transform.position, targetPos, t);
-
-            yield return null;
-        }
-
-        if (spawnItem != null && spawnItem.transform.position == targetPos)
-        {
-            if (CanSendItemCheck())
+            if (checkObj && outObj.Count > 0 && outFac != null)
             {
-                if (checkObj && outObj.Count > 0 && outFac != null)
+                if (outFac.TryGetComponent(out Structure outFactory))
                 {
-                    if (outFac.TryGetComponent(out Structure outFactory))
-                    {
-                        outFactory.OnFactoryItem(item);
-                    }
+                    outFactory.OnFactoryItem(item);
                 }
-                else
-                {
-                    sprite.color = new Color(1f, 1f, 1f, 1f);
-                    spawnItem.itemPool.Release(itemPool);
-                    spawnItem = null;
-                }
-                if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
-                {
-                    itemListRemove();
-                    ItemNumCheck();
-                }
-                else if (GetComponent<Production>())
-                {
-                    SubFromInventory();
-                }
+            }
+
+            if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
+            {
+                itemListRemove();
+                ItemNumCheck();
+            }
+            else if (GetComponent<Production>())
+            {
+                SubFromInventory();
             }
         }
 
-        if (spawnItem != null)
-        {
-            sprite.color = new Color(1f, 1f, 1f, 1f);
-            setFacDelayCoroutine = null;
-            spawnItem.itemPool.Release(itemPool);
-        }
-        else
-        {
-            setFacDelayCoroutine = null;
-        }
+        setFacDelayCoroutine = null;
+        yield return null;
     }
 
     bool CanSendItemCheck()

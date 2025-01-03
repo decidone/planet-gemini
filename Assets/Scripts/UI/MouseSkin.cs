@@ -43,6 +43,14 @@ public class MouseSkin : MonoBehaviour
         }
     }
 
+    void OnApplicationFocus(bool focus)
+    {
+        if (!focus && UpgradeRemoveBtn.instance != null)
+        {
+            ResetCursor();
+        }
+    }
+
     void CursorSetting(Texture2D texture)
     {
         setTexture = texture;

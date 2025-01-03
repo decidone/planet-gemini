@@ -59,6 +59,7 @@ public class DragGraphic : MonoBehaviour
         isShiftDrag = false;
         preBuilding = PreBuilding.instance;
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -67,6 +68,7 @@ public class DragGraphic : MonoBehaviour
         inputManager.controls.MainCamera.RightMouseButtonDown.performed += RightMouseButtonDown;
         inputManager.controls.MainCamera.RightMouseButtonUp.performed += RightMouseButtonUp;
     }
+
     void OnDisable()
     {
         inputManager.controls.MainCamera.LeftMouseButtonDown.performed -= LeftMouseButtonDown;
@@ -74,6 +76,7 @@ public class DragGraphic : MonoBehaviour
         inputManager.controls.MainCamera.RightMouseButtonDown.performed -= RightMouseButtonDown;
         inputManager.controls.MainCamera.RightMouseButtonUp.performed -= RightMouseButtonUp;
     }
+
     private void Update()
     {
         if (Time.timeScale == 0)
@@ -88,6 +91,14 @@ public class DragGraphic : MonoBehaviour
 
             if (((isCtrlDrag && !inputManager.ctrl) && !upgradeBtnOn) || ((isShiftDrag && !inputManager.shift) && !removeBtnOn))
                 DisableFunc();
+        }
+    }
+
+    void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            DisableFunc();
         }
     }
 

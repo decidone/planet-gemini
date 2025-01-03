@@ -3,19 +3,19 @@
     "1":{"items":["IronPlate"],"amounts":[1],"cooldown":3}
   },
   "Miner":{
-    "1":{"items":["IronPlate","Brick"],"amounts":[2,5],"cooldown":3},
+    "1":{"items":["IronBar","Brick"],"amounts":[2,5],"cooldown":3},
     "2":{"items":["SteelPlate","IronPlate"],"amounts":[5,10],"cooldown":3},
     "3":{"items":["ControlUnit","SteelBeam"],"amounts":[5,15],"cooldown":3}
   },
   "Furnace":{
     "1":{"items":["Brick"],"amounts":[5],"cooldown":3},
-    "2":{"items":["Brick"],"amounts":[10],"cooldown":3}
+    "2":{"items":["SteelBeam","Brick"],"amounts":[5,10],"cooldown":3}
   },
   "Smelter":{
     "1":{"items":["IronPlate","Brick"],"amounts":[5,10],"cooldown":3}
   },
   "Constructor":{
-    "1":{"items":["IronPlate","Brick"],"amounts":[5,10],"cooldown":3}
+    "1":{"items":["IronBar","Brick"],"amounts":[5,10],"cooldown":3}
   },
   "Assembler":{
     "1":{"items":["SteelPlate","Screw","Wire"],"amounts":[4,10,12],"cooldown":3}
@@ -89,16 +89,16 @@
     "1":{"items":["IronPlate","CopperPlate"],"amounts":[1,1,1],"cooldown":3}
   },
   "FireTower":{
-    "1":{"items":["AdamantitePlate","Coal","ManaStone"],"amounts":[1,1,1],"cooldown":3}
+    "1":{"items":["IronPlate","Coal","ManaStone"],"amounts":[1,1,1],"cooldown":3}
   },
   "IceTower":{
-    "1":{"items":["AdamantitePlate","ManaStone"],"amounts":[1,1],"cooldown":3}
+    "1":{"items":["SteelBeam","ManaStone"],"amounts":[1,1],"cooldown":3}
   },
   "PoisonTower":{
-    "1":{"items":["AdamantitePlate","ToxicPlant","ManaStone"],"amounts":[1,1,1],"cooldown":3}
+    "1":{"items":["SteelBeam","ToxicPlant","ManaStone"],"amounts":[1,1,1],"cooldown":3}
   },
   "StormTower":{
-    "1":{"items":["Battery","AdamantitePlate","ManaStone"],"amounts":[1,1,1],"cooldown":3}
+    "1":{"items":["AdamantitePlate","Battery","ManaStone"],"amounts":[1,1,1],"cooldown":3}
   },
   "SunTower":{
     "1":{"items":["AdamantitePlate","ManaStone"],"amounts":[1,1],"cooldown":3}

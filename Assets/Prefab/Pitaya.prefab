@@ -251,6 +251,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50336a7f32918024a91ed1621f8d203c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTeleporting:
+    m_InternalValue: 0
   status: {fileID: 7093100876002410941}
   items: []
   circleColl: {fileID: 0}
@@ -289,8 +291,8 @@ MonoBehaviour:
   maxHp: 100
   tankHp: 0
   tankMaxHp: 0
-  selfHealingAmount: 1
-  selfHealInterval: 5
+  selfHealingAmount: 3
+  selfHealInterval: 2
   isPlayerInHostMap: 1
   isPlayerInMarket: 0
   tankOn: 0

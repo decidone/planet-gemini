@@ -68,6 +68,18 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            ctrl = false;
+            shift = false;
+            alt = false;
+            mouseLeft = false;
+            mouseRight = false;
+        }
+    }
+
     void CtrlHold(InputAction.CallbackContext ctx)
     {
         ctrl = !ctrl;
