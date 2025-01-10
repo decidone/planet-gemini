@@ -25,14 +25,14 @@ public class UpgradeWindow : MonoBehaviour
     {
         scienceBtn = btn;
         isCoreWaring = false;
-        if (btn.isCore)
-        {
-            text.text = "Upgrading the core will trigger a monster wave.";
-        }
-        else
-        {
+        //if (btn.isCore)
+        //{
+        //    text.text = "Upgrading the core will trigger a monster wave.";
+        //}
+        //else
+        //{
             text.text = "Would you like to upgrade the science " + scienceBtn.gameName + "?";
-        }
+        //}
     }
 
     public void CoreWaring(int needToUpgradeCount)

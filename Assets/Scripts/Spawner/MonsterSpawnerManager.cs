@@ -204,6 +204,11 @@ public class MonsterSpawnerManager : NetworkBehaviour
         MonsterSpawner waveSpawner = null;
 
         (int map, int area) key = (isInHostMap ? 1 : 2, waveLevel);
+        if (!monsterSpawners.ContainsKey(key))
+        {
+            Debug.Log("Spawners is not found");
+            return;
+        }
 
         waveSpawner = monsterSpawners[key][Random.Range(0, monsterSpawners[key].Count)];
         if (waveSpawner == null)

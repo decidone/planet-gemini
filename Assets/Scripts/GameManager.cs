@@ -964,12 +964,15 @@ public class GameManager : NetworkBehaviour
 
         while (!SteamManager.instance.getData)
         {
-            bool packetAvailable = SteamManager.instance.ReceiveP2PPacket();
-            Debug.Log(packetAvailable + " : DataSync packetAvailable Check");
-            if (!packetAvailable)
-                time = 3;
-            else
-                time = 15f;
+            if (!SteamManager.instance.clientConnTry)
+            {
+                bool packetAvailable = SteamManager.instance.ReceiveP2PPacket();
+                Debug.Log(packetAvailable + " : DataSync packetAvailable Check");
+                if (!packetAvailable)
+                    time = 3;
+                else
+                    time = 15f;
+            }
             
             yield return new WaitForSecondsRealtime(time);
         }
@@ -1265,42 +1268,42 @@ public class GameManager : NetworkBehaviour
         Time.timeScale = 1;
     }
 
-    public void WaveStartSet(int coreLevel)
-    {
-        Debug.Log("WaveLevel : " + (coreLevel - 1));
-        int waveLevel = coreLevel - 1;
+    //public void WaveStartSet(int coreLevel)
+    //{
+    //    Debug.Log("WaveLevel : " + (coreLevel - 1));
+    //    int waveLevel = coreLevel - 1;
 
-        if (mapGenerator.mapSizeData.MapSplitCount == 5)
-        {
-            if (waveLevel == 1 || waveLevel == 2)
-            {
-                MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
-            }
-            else if (waveLevel == 3 || waveLevel == 4)
-            {
-                MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
-            }
-        }
-        else if (mapGenerator.mapSizeData.MapSplitCount == 7)
-        {
-            if (waveLevel == 1)
-            {
-                MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
-            }
-            else if (waveLevel == 2 || waveLevel == 3)
-            {
-                MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
-            }
-            else if (waveLevel == 4)
-            {
-                MonsterSpawnerManager.instance.WavePointSet(3, sciBuildingMap);
-            }
-        }
-        else
-        {
-            MonsterSpawnerManager.instance.WavePointSet(waveLevel, sciBuildingMap);
-        }
-    }
+    //    if (mapGenerator.mapSizeData.MapSplitCount == 5)
+    //    {
+    //        if (waveLevel == 1 || waveLevel == 2)
+    //        {
+    //            MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
+    //        }
+    //        else if (waveLevel == 3 || waveLevel == 4)
+    //        {
+    //            MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
+    //        }
+    //    }
+    //    else if (mapGenerator.mapSizeData.MapSplitCount == 7)
+    //    {
+    //        if (waveLevel == 1)
+    //        {
+    //            MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
+    //        }
+    //        else if (waveLevel == 2 || waveLevel == 3)
+    //        {
+    //            MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
+    //        }
+    //        else if (waveLevel == 4)
+    //        {
+    //            MonsterSpawnerManager.instance.WavePointSet(3, sciBuildingMap);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        MonsterSpawnerManager.instance.WavePointSet(waveLevel, sciBuildingMap);
+    //    }
+    //}
 
     public void SciBuildingSet(bool map)
     {

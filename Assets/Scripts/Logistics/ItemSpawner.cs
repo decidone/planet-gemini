@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 
 // UTF-8 설정
 public class ItemSpawner : LogisticsCtrl

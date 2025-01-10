@@ -9,8 +9,8 @@ using System.Linq;
 // UTF-8 설정
 public class ScienceManager : MonoBehaviour
 {
-    [SerializeField]
-    Button[] tagBtns;
+    //[SerializeField]
+    //Button[] tagBtns;
     [SerializeField]
     GameObject[] contents;
     [SerializeField]
@@ -31,7 +31,7 @@ public class ScienceManager : MonoBehaviour
     public ScienceBtn[] scienceBtns;
 
     ScienceCoreLvCtrl[] buildContent = new ScienceCoreLvCtrl[5];
-    ScienceCoreLvCtrl[] battleContent = new ScienceCoreLvCtrl[5];
+    //ScienceCoreLvCtrl[] battleContent = new ScienceCoreLvCtrl[5];
     int[] canCoreUpgradeCount = new int[5] {0, 1, 2, 3, 4 };  
     public GameObject scienceTreeUI;
 
@@ -80,19 +80,19 @@ public class ScienceManager : MonoBehaviour
         UISetting();
 
         contents[0].SetActive(true);
-        contents[1].SetActive(false);
+        //contents[1].SetActive(false);
         popupWidth = infoWindow[0].transform.Find("Menu").gameObject.GetComponent<RectTransform>().rect.width;
 
-        for (int i = 0; i < tagBtns.Length; i++)
-        {
-            int buttonIndex = i;
-            tagBtns[i].onClick.AddListener(() => SwContent(buttonIndex));
-        }
+        //for (int i = 0; i < tagBtns.Length; i++)
+        //{
+        //    int buttonIndex = i;
+        //    tagBtns[i].onClick.AddListener(() => SwContent(buttonIndex));
+        //}
 
         scienceBtns = contents[0].GetComponentsInChildren<ScienceBtn>();
-        ScienceBtn[] additionalBtns = contents[1].GetComponentsInChildren<ScienceBtn>();
+        //ScienceBtn[] additionalBtns = contents[1].GetComponentsInChildren<ScienceBtn>();
 
-        scienceBtns = scienceBtns.Concat(additionalBtns).ToArray();
+        //scienceBtns = scienceBtns.Concat(additionalBtns).ToArray();
 
         for (int i = 0; i < scienceBtns.Length; i++)
         {
@@ -171,51 +171,51 @@ public class ScienceManager : MonoBehaviour
             buildContent[i] = buildUI.GetComponent<ScienceCoreLvCtrl>();
             buildContent[i].UISetting(i, "Build");
 
-            GameObject battleUI = Instantiate(coreLvUI);
-            battleUI.transform.SetParent(contents[1].transform, false);
-            battleContent[i] = battleUI.GetComponent<ScienceCoreLvCtrl>();
-            battleContent[i].UISetting(i, "Battle");
+            //GameObject battleUI = Instantiate(coreLvUI);
+            //battleUI.transform.SetParent(contents[1].transform, false);
+            //battleContent[i] = battleUI.GetComponent<ScienceCoreLvCtrl>();
+            //battleContent[i].UISetting(i, "Battle");
         }
 
-        for (int i = 1; i < 5; i++)
-        {
-            buildContent[i].scienceBtn.itemAmountList = battleContent[i].scienceBtn.itemAmountList;
-            buildContent[i].scienceBtn.isMain = true;
-            buildContent[i].scienceBtn.CoreSet(battleContent[i].scienceBtn);
-            battleContent[i].scienceBtn.CoreSet(buildContent[i].scienceBtn);
-        }
+        //for (int i = 1; i < 5; i++)
+        //{
+        //    buildContent[i].scienceBtn.itemAmountList = battleContent[i].scienceBtn.itemAmountList;
+        //    buildContent[i].scienceBtn.isMain = true;
+        //    buildContent[i].scienceBtn.CoreSet(battleContent[i].scienceBtn);
+        //    battleContent[i].scienceBtn.CoreSet(buildContent[i].scienceBtn);
+        //}
     }
 
-    void SciDbGet(int index)
-    {
-        ScienceBtn[] btns = contents[index].GetComponentsInChildren<ScienceBtn>();
-        for (int i = 0; i < btns.Length; i++)
-        {
-            ScienceBtn btn = btns[i];
+    //void SciDbGet(int index)
+    //{
+    //    ScienceBtn[] btns = contents[index].GetComponentsInChildren<ScienceBtn>();
+    //    for (int i = 0; i < btns.Length; i++)
+    //    {
+    //        ScienceBtn btn = btns[i];
 
-            if (scienceDb.scienceNameDb.TryGetValue(btn.sciName, out Dictionary<int, int> levels))
-            {
-                bool sciNameFound = levels.ContainsKey(btn.level);
+    //        if (scienceDb.scienceNameDb.TryGetValue(btn.sciName, out Dictionary<int, int> levels))
+    //        {
+    //            bool sciNameFound = levels.ContainsKey(btn.level);
 
-                if (sciNameFound)
-                {
-                    btn.LockUiActiveFalse();
-                }
-            }
-        }
-    }
+    //            if (sciNameFound)
+    //            {
+    //                btn.LockUiActiveFalse();
+    //            }
+    //        }
+    //    }
+    //}
 
-    void SwContent(int index)
-    {
-        scrollRect.content = contents[index].GetComponent<RectTransform>();
-        sciItemSetWindow.CloseUI();
-        upgradeWindow.CloseUI();
-        for (int i = 0; i < contents.Length; i++)
-        {
-            contents[i].SetActive(i == index);
-            SciDbGet(index);
-        }
-    }
+    //void SwContent(int index)
+    //{
+    //    scrollRect.content = contents[index].GetComponent<RectTransform>();
+    //    sciItemSetWindow.CloseUI();
+    //    upgradeWindow.CloseUI();
+    //    for (int i = 0; i < contents.Length; i++)
+    //    {
+    //        contents[i].SetActive(i == index);
+    //        SciDbGet(index);
+    //    }
+    //}
 
     void AddEvent(ScienceBtn btn, EventTriggerType type, UnityAction<BaseEventData> action)
     {
@@ -283,11 +283,11 @@ public class ScienceManager : MonoBehaviour
         //mousePos = Input.mousePosition;
         //upgradeWindow.transform.position = mousePos;
         upgradeWindow.gameObject.SetActive(true);
-        if (focusedSciBtn.isCore && !focusedSciBtn.isMain)
-        {
-            upgradeWindow.SetBtn(focusedSciBtn.othCoreBtn);
-        }
-        else
+        //if (focusedSciBtn.isCore && !focusedSciBtn.isMain)
+        //{
+        //    upgradeWindow.SetBtn(focusedSciBtn.othCoreBtn);
+        //}
+        //else
             upgradeWindow.SetBtn(focusedSciBtn);
     }
 
@@ -303,11 +303,11 @@ public class ScienceManager : MonoBehaviour
     {
         //btn.ItemSaveEnd();
         scienceDb.SciBtnUpgradeServerRpc(btn.btnIndex);
-        if (btn.isCore)
-        {
-            gameManager.WaveStartSet(btn.coreLevel);
-            //웨이브 발생 코드
-        }
+        //if (btn.isCore)
+        //{
+        //    gameManager.WaveStartSet(btn.coreLevel);
+        //    //웨이브 발생 코드
+        //}
     }
 
     public void SciUpgradeEnd(string sciName, int sciLevel, int coreLv, bool isLoad)
@@ -369,15 +369,15 @@ public class ScienceManager : MonoBehaviour
         return canUpgrade;
     }
 
-    public bool CoreSaveCheck(ScienceBtn btn)
-    {
-        for (int i = 1; i < 5; i++)
-        {
-            if (battleContent[i].scienceBtn == btn)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+    //public bool CoreSaveCheck(ScienceBtn btn)
+    //{
+    //    for (int i = 1; i < 5; i++)
+    //    {
+    //        if (battleContent[i].scienceBtn == btn)
+    //        {
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
 }

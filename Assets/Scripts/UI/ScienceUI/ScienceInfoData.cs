@@ -5,6 +5,7 @@ using UnityEngine;
 // UTF-8 설정
 public class ScienceInfoData
 {
+    public int sortIndex;
     public List<string> items;
     public List<int> amounts;
     public int coreLv;

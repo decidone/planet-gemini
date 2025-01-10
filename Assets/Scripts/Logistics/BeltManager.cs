@@ -41,7 +41,7 @@ public class BeltManager : NetworkBehaviour
         Destroy(secGroupMgr.gameObject);
     }
 
-    public void BeltDivide(BeltGroupMgr beltGroup, GameObject removeBelt)
+    public bool BeltDivide(BeltGroupMgr beltGroup, GameObject removeBelt)
     {
         if (beltGroup.beltList.Count <= 1)
         {
@@ -53,7 +53,7 @@ public class BeltManager : NetworkBehaviour
                 destroyObj.Despawn();
             }
             Destroy(beltGroup.gameObject);
-            return;
+            return false;
         }
 
         List<BeltCtrl> groupAList = new List<BeltCtrl>();
@@ -90,6 +90,7 @@ public class BeltManager : NetworkBehaviour
                 CreateNewBeltGroup(groupBList);
             }
         }
+        return true;
     }
 
     private void UpdateBeltGroup(BeltGroupMgr beltGroup, List<BeltCtrl> beltList)

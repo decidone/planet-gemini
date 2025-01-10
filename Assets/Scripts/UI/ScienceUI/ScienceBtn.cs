@@ -28,7 +28,7 @@ public class ScienceBtn : MonoBehaviour
     SciUpgradeFunc upgradeFunc;
     public ScienceInfoData scienceInfoData;
     public List<(int, int)> itemAmountList = new List<(int, int)>();    // 저장량 / 최대량
-    public ScienceBtn othCoreBtn;
+    //public ScienceBtn othCoreBtn;
     bool basicScience;
 
     void Start()
@@ -86,10 +86,10 @@ public class ScienceBtn : MonoBehaviour
         }
     }
 
-    public void CoreSet(ScienceBtn btn)
-    {
-        othCoreBtn = btn;
-    }
+    //public void CoreSet(ScienceBtn btn)
+    //{
+    //    othCoreBtn = btn;
+    //}
 
     public void UpgradeFunc(bool isLoad)
     {
@@ -100,11 +100,11 @@ public class ScienceBtn : MonoBehaviour
         LockUiActiveFalse();
         upgrade = true;
         btnImage.color = new Color(255, 255, 255);
-        if (isCore)
-        {
-            othCoreBtn.upgrade = true;
-            othCoreBtn.btnImage.color = new Color(255, 255, 255);
-        }
+        //if (isCore)
+        //{
+        //    othCoreBtn.upgrade = true;
+        //    othCoreBtn.btnImage.color = new Color(255, 255, 255);
+        //}
     }
 
     public void LockUiActiveFalse()
@@ -112,11 +112,11 @@ public class ScienceBtn : MonoBehaviour
         lockUI.SetActive(false);
         isLock = false;
 
-        if (isCore)
-        {
-            othCoreBtn.lockUI.SetActive(false);
-            othCoreBtn.isLock = false;
-        }
+        //if (isCore)
+        //{
+        //    othCoreBtn.lockUI.SetActive(false);
+        //    othCoreBtn.isLock = false;
+        //}
     }
 
     public void SetInfo(string name, int lv, int coreLv, float time, bool core, string _gameName, bool _basicScience)
@@ -153,10 +153,10 @@ public class ScienceBtn : MonoBehaviour
         if (ItemFullCheck())
         {
             btnImage.color = new Color(0, 255, 100);
-            if(isCore)
-            {
-                othCoreBtn.btnImage.color = new Color(0, 255, 100);
-            }
+            //if(isCore)
+            //{
+            //    othCoreBtn.btnImage.color = new Color(0, 255, 100);
+            //}
         }
     }
 
@@ -187,11 +187,11 @@ public class ScienceBtn : MonoBehaviour
         upgradeImg.enabled = true;
         upgradeFunc.CoroutineSet(this, upgradeTime);
 
-        if (isCore)
-        {
-            othCoreBtn.upgradeStart = true;
-            othCoreBtn.upgradeImg.enabled = true;
-        }
+        //if (isCore)
+        //{
+        //    othCoreBtn.upgradeStart = true;
+        //    othCoreBtn.upgradeImg.enabled = true;
+        //}
     }
 
     public void LoadItemAddAmount(int index, int amount)
@@ -212,10 +212,10 @@ public class ScienceBtn : MonoBehaviour
             if (ItemFullCheck())
             {
                 btnImage.color = new Color(0, 255, 100);
-                if (isCore)
-                {
-                    othCoreBtn.btnImage.color = new Color(0, 255, 100);
-                }
+                //if (isCore)
+                //{
+                //    othCoreBtn.btnImage.color = new Color(0, 255, 100);
+                //}
             }
         }
         else if (upgradeState == 1)
@@ -225,27 +225,27 @@ public class ScienceBtn : MonoBehaviour
             upgradeFunc.LoadCoroutineSet(this, upgradeTime, upgradeTimeSet);
             btnImage.color = new Color(0, 255, 100);
 
-            if (isCore)
-            {
-                othCoreBtn.upgradeImg.enabled = true;
-                othCoreBtn.upgradeStart = true;
-                othCoreBtn.btnImage.color = new Color(0, 255, 100);
-            }
+            //if (isCore)
+            //{
+            //    othCoreBtn.upgradeImg.enabled = true;
+            //    othCoreBtn.upgradeStart = true;
+            //    othCoreBtn.btnImage.color = new Color(0, 255, 100);
+            //}
         }
         else if (upgradeState == 2)
         {
             upgradeStart = true;
-            if (isCore)
-            {
-                othCoreBtn.upgradeStart = true;
-            }
+            //if (isCore)
+            //{
+            //    othCoreBtn.upgradeStart = true;
+            //}
             UpgradeFunc(true);
         }
         isLock = isLockCheck;
-        if (isCore)
-        {
-            othCoreBtn.isLock = isLockCheck;
-        }
+        //if (isCore)
+        //{
+        //    othCoreBtn.isLock = isLockCheck;
+        //}
     }
 
     public ScienceData SaveData()

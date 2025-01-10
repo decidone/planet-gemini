@@ -129,7 +129,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2456876719754976287}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -609,6 +609,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   checkObj: 1
+  takeItemDelay: 0
   inObj: []
   outObj: []
   outSameList: []
@@ -638,6 +639,7 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}
@@ -648,11 +650,14 @@ MonoBehaviour:
   canUpgrade: 1
   warningIcon: {fileID: 0}
   warningIconCheck: 0
-  increasedStructure: 00000000
   beltGroupMgr: {fileID: 0}
   beltState: 0
   nextBelt: {fileID: 0}
   preBelt: {fileID: 0}
+  nextPos:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
   isItemStop: 0
 --- !u!114 &-7211525418415439537
 MonoBehaviour:

@@ -358,12 +358,23 @@ public class Structure : NetworkBehaviour
             ItemDrop();
             RefundCost();
         }
-
+        //else
+        //    ClientItemDrop();
         //AddInvenItem();
         RemoveObjServerRpc();
         //DestroyFuncServerRpc();
         soundManager.PlayUISFX("BuildingRemove");
         GameManager.instance.BuildAndSciUiReset();
+    }
+
+    void OnDisable()
+    {
+        if(!IsServer && GameManager.instance && soundManager)
+        {
+            ClientItemDrop();
+            soundManager.PlayUISFX("BuildingRemove");
+            GameManager.instance.BuildAndSciUiReset();
+        }
     }
 
     void RefundCost()
@@ -394,9 +405,9 @@ public class Structure : NetworkBehaviour
     }
 
     protected virtual void OnClientConnectedCallback(ulong clientId)
-    {
-        RepairGaugeServerRpc();
+    {        
         ClientConnectSyncServerRpc();
+        RepairGaugeServerRpc();
         ItemSyncServerRpc();
     }
 
@@ -490,6 +501,7 @@ public class Structure : NetworkBehaviour
             return;
 
         level = syncLevel;
+        maxHp = structureData.MaxHp[level];
         dirNum = syncDir;
         height = syncHeight;
         width = syncWidth;
@@ -730,6 +742,7 @@ public class Structure : NetworkBehaviour
         hp = hpSet;
         isPreBuilding = preBuilding;
         isSetBuildingOk = setBuildingOk;
+        Debug.Log(isSetBuildingOk + " : " + name);
         destroyStart = destroy;
 
         if (destroyStart)
@@ -907,15 +920,15 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     protected virtual void GetItemClientRpc(int inObjIndex)
     {
-        GetItemFunc(inObjIndex);
-        //if (IsServer)
-        //{
-        //    GetItemFunc(inObjIndex);
-        //}
-        //else if (settingEndCheck)
-        //{
-        //    GetDelaySet(inObjIndex);
-        //}
+        //GetItemFunc(inObjIndex);
+        if (IsServer)
+        {
+            GetItemFunc(inObjIndex);
+        }
+        else if (settingEndCheck)
+        {
+            GetDelaySet(inObjIndex);
+        }
     }
 
     protected virtual void GetItemFunc(int inObjIndex)
@@ -923,15 +936,12 @@ public class Structure : NetworkBehaviour
         if (inObj[inObjIndex].TryGetComponent(out BeltCtrl belt))
         {
             OnFactoryItem(belt.itemObjList[0]);
-            belt.itemObjList[0].transform.position = this.transform.position;
             belt.isItemStop = false;
             belt.itemObjList.RemoveAt(0);
-            if (IsServer)
-                belt.beltGroupMgr.groupItem.RemoveAt(0);
+            belt.beltGroupMgr.groupItem.RemoveAt(0);
             belt.ItemNumCheck();
-            DelayGetItem();
-            //Invoke(nameof(DelayGetItem), structureData.SendDelay);
         }
+        DelayGetItem();
     }
 
     protected void GetDelaySet(int inObjIndex)
@@ -950,7 +960,7 @@ public class Structure : NetworkBehaviour
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-        if (outFactory.isFull || outFactory.takeItemDelay)
+        if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
         {
             SendItemIndexSet();
             itemSetDelay = false;
@@ -988,21 +998,92 @@ public class Structure : NetworkBehaviour
     [ServerRpc]
     protected virtual void SendItemServerRpc(int itemIndex, int outObjIndex)
     {
-        SendItemClientRpc(itemIndex, outObjIndex);
+        if (outObj[outObjIndex].TryGetComponent(out BeltCtrl beltCtrl))
+        {
+            int beltGroupIndex = 0;
+            int groupItemCount = beltCtrl.beltGroupMgr.groupItem.Count;
+
+            if (groupItemCount > 0)
+            {
+                beltGroupIndex = beltCtrl.beltGroupMgr.groupItem[groupItemCount - 1].beltGroupIndex;
+
+                if (beltGroupIndex == int.MaxValue)
+                {
+                    beltGroupIndex = 0;
+                }
+                else
+                {
+                    beltGroupIndex++;
+                }
+            }
+            SendItemClientRpc(itemIndex, outObjIndex, beltGroupIndex);
+        }
+        else
+            SendItemClientRpc(itemIndex, outObjIndex);
     }
 
     [ClientRpc]
     protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex)
     {
-        SendItemFunc(itemIndex, outObjIndex);
-        //if (IsServer)
-        //{
-        //    SendItemFunc(itemIndex, outObjIndex);
-        //}
-        //else if (settingEndCheck)
-        //{
-        //    SendDelaySet(itemIndex, outObjIndex);
-        //}
+        //SendItemFunc(itemIndex, outObjIndex);
+        if (IsServer)
+        {
+            SendItemFunc(itemIndex, outObjIndex);
+        }
+        else if (settingEndCheck)
+        {
+            SendDelaySet(itemIndex, outObjIndex);
+        }
+    }
+
+    [ClientRpc]
+    protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex, int beltGroupIndex)
+    {
+        SendItemFunc(itemIndex, outObjIndex, beltGroupIndex);
+    }
+
+    protected virtual void SendItemFunc(int itemIndex, int outObjIndex, int beltGroupIndex)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+
+        Structure outFactory = outObj[outObjIndex].GetComponent<Structure>();
+        if (outObj[outObjIndex].TryGetComponent(out BeltCtrl beltCtrl))
+        {
+            var itemPool = ItemPoolManager.instance.Pool.Get();
+            ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
+            spawnItem.beltGroupIndex = beltGroupIndex;
+            if (beltCtrl.OnBeltItem(spawnItem))
+            {
+                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                sprite.sprite = item.icon;
+                sprite.sortingOrder = 2;
+                spawnItem.item = item;
+                spawnItem.amount = 1;
+                spawnItem.transform.position = transform.position;
+                spawnItem.isOnBelt = true;
+                spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
+
+                if (GetComponent<Production>())
+                {
+                    SubFromInventory();
+                }
+                else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>() && !GetComponent<Unloader>())
+                {
+                    itemList.RemoveAt(0);
+                    ItemNumCheck();
+                }
+            }
+        }
+        else if (!outFactory.isMainSource)
+        {
+            if (outObj[outObjIndex].GetComponent<LogisticsCtrl>())
+                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
+            else if (outObj[outObjIndex].TryGetComponent(out Production production) && production.CanTakeItem(item))
+                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
+        }
+
+        outFactory.takeItemDelay = false;
+        Invoke(nameof(DelaySetItem), sendDelay);
     }
 
     protected virtual void SendItemFunc(int itemIndex, int outObjIndex)
@@ -1010,7 +1091,6 @@ public class Structure : NetworkBehaviour
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
         Structure outFactory = outObj[outObjIndex].GetComponent<Structure>();
-        Debug.Log(outFactory.name + " : " + itemIndex + " : " + outObjIndex);
         if (outObj[outObjIndex].TryGetComponent(out BeltCtrl beltCtrl))
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
@@ -1173,7 +1253,10 @@ public class Structure : NetworkBehaviour
         soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
 
         if (!IsServer)
+        {
+            ClientItemDrop();
             return;
+        }
 
         ItemDrop();
 
@@ -1238,8 +1321,20 @@ public class Structure : NetworkBehaviour
 
     protected virtual void ItemDrop() { }
 
+    protected virtual void ClientItemDrop()
+    {
+        if (itemObjList.Count > 0)
+        {
+            foreach (ItemProps itemProps in itemObjList)
+            {
+                itemProps.ClientResetItemProps();
+            }
+        }
+    }
+
     public void RepairFunc(float heal)
     {
+        Debug.Log("heal : " + heal);
         if (hp == maxHp)
         {
             return;
@@ -1247,17 +1342,12 @@ public class Structure : NetworkBehaviour
         else if (hp + heal > maxHp)
         {
             hp = maxHp;
-            if (!isRepair)
-                unitCanvas.SetActive(false);
         }
         else
         {
             hp += heal;
-            RepairServerRpc(hp);
         }
-
-        onHpChangedCallback?.Invoke();
-        hpBar.fillAmount = hp / maxHp;
+        RepairServerRpc(hp);
     }
 
     [ServerRpc]
@@ -1271,6 +1361,13 @@ public class Structure : NetworkBehaviour
     {
         hp = currentHp;
         repairEffect.EffectStart();
+        onHpChangedCallback?.Invoke();
+        if (maxHp > hp)
+        {
+            hpBar.fillAmount = hp / maxHp;
+        }
+        else
+            unitCanvas.SetActive(false);
     }
 
     public void RepairSet(bool repair)
@@ -1486,7 +1583,9 @@ public class Structure : NetworkBehaviour
         {
             BeltManager beltManager = GetComponentInParent<BeltManager>();
             BeltGroupMgr beltGroup = GetComponentInParent<BeltGroupMgr>();
-            beltManager.BeltDivide(beltGroup, gameObject);
+            bool canDivide = beltManager.BeltDivide(beltGroup, gameObject);
+            if(canDivide)
+                beltGroup.ClientBeltSyncServerRpc();
         }
         else if (TryGetComponent(out FluidFactoryCtrl fluid))
         {
@@ -1505,7 +1604,7 @@ public class Structure : NetworkBehaviour
         {
             GameManager.instance.focusedStructure = null;
         }
-
+        Debug.Log("????");
 
         //GameManager gameManager = GameManager.instance;
         //int x = Mathf.FloorToInt(transform.position.x);

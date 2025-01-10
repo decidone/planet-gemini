@@ -299,11 +299,11 @@ public class DataManager : MonoBehaviour
 
     void SpawnBeltGroup(BeltGroupSaveData saveData)
     {
-        GameObject spawnobj = Instantiate(beltGroup);
-        spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
-        spawnobj.transform.parent = beltMgr.transform;
-        spawnobj.TryGetComponent(out BeltGroupMgr beltGroupMgr);
+        GameObject beltGroupObj = Instantiate(beltGroup);
+        beltGroupObj.TryGetComponent(out NetworkObject netObj);
+        if (!netObj.IsSpawned) beltGroupObj.GetComponent<NetworkObject>().Spawn(true);
+        beltGroupObj.transform.parent = beltMgr.transform;
+        beltGroupObj.TryGetComponent(out BeltGroupMgr beltGroupMgr);
 
         foreach (var beltData in saveData.beltList)
         {
@@ -336,6 +336,7 @@ public class DataManager : MonoBehaviour
         }
 
         beltGroupMgr.SetBeltData();
+        beltGroupMgr.ItemIndexSet();
         beltGroupMgr.isSetBuildingOk = true;
     }
 

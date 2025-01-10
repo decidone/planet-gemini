@@ -217,9 +217,12 @@ public class PlayerController : NetworkBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        BeltCtrl belt = collision.GetComponent<BeltCtrl>();
+        if (belt && !beltList.Contains(collision.gameObject))
+            beltList.Add(collision.gameObject);
+
         if (!IsOwner) { return; }
         ItemProps itemProps = collision.GetComponent<ItemProps>();
-        BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Interactable interactable = collision.GetComponent<Interactable>();
         NPCInteract shop = collision.GetComponent<NPCInteract>();
 
@@ -234,8 +237,6 @@ public class PlayerController : NetworkBehaviour
 
         if (itemProps && !items.Contains(collision.gameObject))
             items.Add(collision.gameObject);
-        else if (belt && !beltList.Contains(collision.gameObject))
-            beltList.Add(collision.gameObject);
 
         if (shop && !GameManager.instance.isShopOpened)
         {
@@ -247,9 +248,12 @@ public class PlayerController : NetworkBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
+        BeltCtrl belt = collision.GetComponent<BeltCtrl>();
+        if (belt && beltList.Contains(collision.gameObject))
+            beltList.Remove(collision.gameObject);
+
         if (!IsOwner) { return; }
         ItemProps itemProps = collision.GetComponent<ItemProps>();
-        BeltCtrl belt = collision.GetComponent<BeltCtrl>();
         Portal portal = collision.GetComponent<Portal>();
         MarketPortal marketPortal = collision.GetComponent<MarketPortal>();
         Interactable interactable = collision.GetComponent<Interactable>();
@@ -266,8 +270,6 @@ public class PlayerController : NetworkBehaviour
 
         if (itemProps && items.Contains(collision.gameObject))
             items.Remove(collision.gameObject);
-        else if (belt && beltList.Contains(collision.gameObject))
-            beltList.Remove(collision.gameObject);
 
         if (portal || marketPortal)
             teleportUI.CloseUI();
@@ -620,6 +622,42 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
+        if (beltList.Count > 0)
+        {
+            BeltLootServerRpc(IsServer);
+        }
+
+        //foreach (GameObject belt in beltList)
+        //{
+        //    List<ItemProps> beltItems = new List<ItemProps>();
+
+        //    if (belt.TryGetComponent(out BeltCtrl beltCtrl))
+        //    {
+        //        beltItems = beltCtrl.PlayerRootItemCheck();
+        //    }
+
+        //    foreach (ItemProps itemProps in beltItems)
+        //    {
+        //        int containableAmount = gameManager.inventory.SpaceCheck(itemProps.item);
+        //        if (itemProps.amount <= containableAmount)
+        //        {
+        //            gameManager.inventory.Add(itemProps.item, itemProps.amount);
+        //            LootListManager.instance.DisplayLootInfo(itemProps.item, itemProps.amount);
+        //            beltCtrl.PlayerRootFunc(itemProps);
+        //        }
+        //        else
+        //        {
+        //            Debug.Log("not enough space");
+        //        }
+        //    }
+        //}
+
+        GameManager.instance.BuildAndSciUiReset();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void BeltLootServerRpc(bool isServer)
+    {        
         foreach (GameObject belt in beltList)
         {
             List<ItemProps> beltItems = new List<ItemProps>();
@@ -635,22 +673,16 @@ public class PlayerController : NetworkBehaviour
                 if (itemProps.amount <= containableAmount)
                 {
                     gameManager.inventory.Add(itemProps.item, itemProps.amount);
-                    LootListManager.instance.DisplayLootInfo(itemProps.item, itemProps.amount);
-                    beltCtrl.PlayerRootFunc(itemProps);
+                    //LootListManager.instance.DisplayLootInfo(itemProps.item, itemProps.amount);
+                    beltCtrl.beltGroupMgr.GroupItemLoot(beltCtrl, itemProps.beltGroupIndex, isServer);
+                    //beltCtrl.PlayerRootFunc(itemProps);
                 }
-                //else if (containableAmount != 0)
-                //{
-                //    gameManager.inventory.Add(itemProps.item, containableAmount);
-                //    LootListManager.instance.DisplayLootInfo(itemProps.item, containableAmount);
-                //    itemProps.amount -= containableAmount;
-                //}
                 else
                 {
                     Debug.Log("not enough space");
                 }
             }
         }
-        GameManager.instance.BuildAndSciUiReset();
     }
 
     public void ItemDestroyed()

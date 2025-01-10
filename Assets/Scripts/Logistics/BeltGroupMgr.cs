@@ -23,12 +23,20 @@ public class BeltGroupMgr : NetworkBehaviour
 
     public bool isSetBuildingOk = false;
 
+    bool beltSyncCheck;
+
     [HideInInspector]
     public NetworkObjManager networkObjManager;
 
     void Start()
     {
         networkObjManager = NetworkObjManager.instance;
+        Debug.Log("BeltGroup Start : " + beltSyncCheck);
+        if (!beltSyncCheck && !IsServer) 
+        {
+            beltSyncCheck = true;
+            Invoke(nameof(ClientBeltInvoke), 0.2f);
+        }
     }
 
     void Update()
@@ -250,9 +258,107 @@ public class BeltGroupMgr : NetworkBehaviour
         //nextBelt.beltState = BeltState.EndBelt;
     }
 
-    //벨트 그룹 병합
+    [ServerRpc(RequireOwnership = false)]
+    public void ClientBeltSyncServerRpc()
+    {
+        ClientBeltSyncClientRpc();
+    }
+
+    [ClientRpc]
+    void ClientBeltSyncClientRpc()
+    {
+        if (IsServer) return;
+        beltSyncCheck = true;
+        Invoke(nameof(ClientBeltInvoke), 0.2f);
+    }
+
+    void ClientBeltInvoke()
+    {
+        int index = 0;
+        BeltCtrl[] beltArr = GetComponentsInChildren<BeltCtrl>();
+        Debug.Log("beltArr : " + beltArr.Length);
+
+        beltList.Clear();
+        BeltCtrl startbelt = null;
+        if (beltArr.Length == 0)
+        {
+            return;
+        }
+        else if (beltArr.Length == 1)
+        {
+            startbelt = beltArr[0];
+        }
+        else
+        {
+            foreach (BeltCtrl belt in beltArr)
+            {
+                if (belt.beltState == BeltState.StartBelt)
+                {
+                    startbelt = belt;
+                }
+            }
+        }
+
+        if (startbelt)
+        {
+            bool isFindEndBelt = true;
+            BeltCtrl belt = startbelt;
+            if (!beltList.Contains(belt))
+            {
+                beltList.Add(belt);
+            }
+
+            while (isFindEndBelt)
+            {
+                belt = beltList[beltList.Count - 1];
+                if (belt.beltState == BeltState.EndBelt || belt.nextBelt == null)
+                {
+                    Debug.Log("END");
+                    isFindEndBelt = false;
+                    break;
+                }
+                else
+                {
+                    belt = belt.nextBelt;
+                    Debug.Log("NextBelt");
+
+                    if (beltList.Contains(belt))
+                    {
+                        Debug.Log("Contains");
+
+                        continue;
+                    }
+                    beltList.Add(belt);
+                }
+            }
+        }
+
+        foreach (BeltCtrl belt in beltArr)
+        {
+            if (beltList.Count - 1 > index)
+            {
+                BeltModelSet(belt, beltList[index + 1]);
+                index++;
+            }
+            belt.beltGroupMgr = this;
+        }
+
+        groupItem.Clear();
+
+        foreach (BeltCtrl belt in beltList)
+        {
+            foreach (ItemProps item in belt.itemObjList)
+            {
+                groupItem.Add(item);
+            }
+        }
+
+        beltSyncCheck = false;
+    }
+
     public void Reconfirm()
     {
+        if (!IsServer) return;
         groupItem.Clear();
 
         int index = 0;
@@ -269,6 +375,14 @@ public class BeltGroupMgr : NetworkBehaviour
             }
             else
                 return;
+        }
+    }
+
+    public void ItemIndexSet()
+    {
+        for (int i = 0; i < groupItem.Count; i++)
+        {
+            groupItem[i].beltGroupIndex = i;
         }
     }
 
@@ -410,6 +524,7 @@ public class BeltGroupMgr : NetworkBehaviour
         if (isNextFind)
         {
             beltManager.BeltCombine(this, otherBelt.beltGroupMgr);
+            otherBelt.beltGroupMgr.ClientBeltSyncServerRpc();
             ulong thisId = belt.GetComponent<NetworkObject>().NetworkObjectId;
             ulong othId = otherBelt.GetComponent<NetworkObject>().NetworkObjectId;
             NextBeltSetClientRpc(thisId, othId);
@@ -428,6 +543,7 @@ public class BeltGroupMgr : NetworkBehaviour
         BeltManager beltManager = this.GetComponentInParent<BeltManager>();
 
         beltManager.BeltCombine(this, beltGroupMgr);
+        beltGroupMgr.ClientBeltSyncServerRpc();
         ulong thisId = belt.GetComponent<NetworkObject>().NetworkObjectId;
         ulong othId = otherBelt.GetComponent<NetworkObject>().NetworkObjectId;
         PreBeltSetClientRpc(thisId, othId);
@@ -531,5 +647,82 @@ public class BeltGroupMgr : NetworkBehaviour
         }
 
         return data;
+    }
+
+    public void ItemRoot(ItemProps item)
+    {
+        if (groupItem.Contains(item))
+        {
+            groupItem.Remove(item);
+        }
+    }
+
+    public void GroupItemLoot(BeltCtrl belt ,int beltGroupIndex, bool isServer)
+    {
+        int index = beltList.IndexOf(belt);
+        GroupItemLootServerRpc(index, beltGroupIndex, isServer);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void GroupItemLootServerRpc(int beltIndex, int beltGroupIndex, bool isServer)
+    {
+        GroupItemLootClientRpc(beltIndex, beltGroupIndex, isServer);
+    }
+
+    [ClientRpc]
+    public void GroupItemLootClientRpc(int beltIndex, int beltGroupIndex, bool isServer)
+    {
+        ItemProps findItemProps = null;
+
+        foreach (ItemProps itemProps in beltList[beltIndex].itemObjList)
+        {
+            if (itemProps.beltGroupIndex == beltGroupIndex)
+            {
+                findItemProps = itemProps;
+                beltList[beltIndex].PlayerRootFuncTest(findItemProps);
+                break;
+            }
+        }
+
+        if (!findItemProps)
+        {
+            int previousIndex = beltIndex - 1;
+            if (previousIndex >= 0)
+            {
+                foreach (ItemProps itemProps in beltList[previousIndex].itemObjList)
+                {
+                    if (itemProps.beltGroupIndex == beltGroupIndex)
+                    {
+                        findItemProps = itemProps;
+                        beltList[previousIndex].PlayerRootFuncTest(findItemProps);
+                        break;
+                    }
+                }
+            }
+
+            int nextIndex = beltIndex + 1;
+            if (!findItemProps && nextIndex < beltList.Count)
+            {
+                foreach (ItemProps itemProps in beltList[nextIndex].itemObjList)
+                {
+                    if (itemProps.beltGroupIndex == beltGroupIndex)
+                    {
+                        findItemProps = itemProps;
+                        beltList[nextIndex].PlayerRootFuncTest(findItemProps);
+                        break;
+                    }
+                }
+            }
+
+            if (!findItemProps)
+            {
+                Debug.Log("Can't Found Item Index" + beltGroupIndex);
+            }
+        }
+
+        if (findItemProps && isServer == IsServer)
+        {
+            LootListManager.instance.DisplayLootInfo(findItemProps.item, findItemProps.amount);
+        }
     }
 }

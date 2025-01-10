@@ -201,7 +201,8 @@ public class ScienceDb : NetworkBehaviour
     {
         for (int i = 0; i < scienceBtns.Length; i++)
         {
-            if (scienceBtns[i].isCore && ScienceManager.instance.CoreSaveCheck(scienceBtns[i]))
+            if (scienceBtns[i].isCore)
+            //if (scienceBtns[i].isCore && ScienceManager.instance.CoreSaveCheck(scienceBtns[i]))
                 continue;
             for (int j = 0; j < data[i].saveItemCount.Count; j++)
             {
