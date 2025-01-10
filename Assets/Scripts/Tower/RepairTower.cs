@@ -9,39 +9,10 @@ public class RepairTower : TowerAi
     bool isDelayRepairCoroutine = false;
     [SerializeField]
     SpriteRenderer view;
-    //GameManager gameManager;
-    //PreBuilding preBuilding;
-    //bool preBuildingCheck;
-
-    protected override void Start()
-    {
-        base.Start();
-        //gameManager = GameManager.instance;
-        //preBuilding = PreBuilding.instance;
-    }
 
     protected override void Update()
     {
         base.Update();
-        //if (gameManager.focusedStructure == null)
-        //{
-        //    if (preBuilding.isBuildingOn && !removeState)
-        //    {
-        //        if (!preBuildingCheck)
-        //        {
-        //            preBuildingCheck = true;
-        //            view.enabled = true;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (preBuildingCheck)
-        //        {
-        //            preBuildingCheck = false;
-        //            view.enabled = false;
-        //        }
-        //    }
-        //}
         if (!isPreBuilding && IsServer)
         {
             searchTimer += Time.deltaTime;

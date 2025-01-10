@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 using UnityEngine.Pool;
 
 // UTF-8 설정
@@ -18,6 +19,7 @@ public class ItemProps : MonoBehaviour
     public bool isOnBelt = false;
     [HideInInspector]
     public BeltCtrl setOnBelt;
+    public int beltGroupIndex;
 
     private void Start()
     {
@@ -31,7 +33,13 @@ public class ItemProps : MonoBehaviour
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
             GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, amount, transform.position);
         }
+        Debug.Log("drop : " + beltGroupIndex);
+        itemPool.Release(gameObject);
+    }
 
+    public void ClientResetItemProps()
+    {
+        Debug.Log("beltGroupIndex : " + beltGroupIndex);
         itemPool.Release(gameObject);
     }
 }

@@ -22,6 +22,7 @@ public class SteamManager : MonoBehaviour
     bool clientReceive;
     int clientCallCount;
     private const int MaxChunkSize = 1024;
+    public bool clientConnTry;
     //[SerializeField] GameObject MainMenu;
     //[SerializeField] GameObject InLobbyMenu;
 
@@ -227,6 +228,7 @@ public class SteamManager : MonoBehaviour
         Debug.Log("2 ReceiveP2PPacket : " + packetAvailable);
         while (packetAvailable && !isLastChunkReceived)
         {
+            clientConnTry = true;
             var packet = SteamNetworking.ReadP2PPacket();
             if (packet.HasValue)
             {
@@ -293,6 +295,7 @@ public class SteamManager : MonoBehaviour
         string message = "LossPacket";
         byte[] data = Encoding.UTF8.GetBytes(message);
         SteamNetworking.SendP2PPacket(opponentSteamId, data);
+        clientConnTry = false;
     }
 
     private void HandleOpponentDataPacket(byte[] dataPacket)
@@ -301,6 +304,7 @@ public class SteamManager : MonoBehaviour
         DataManager.instance.Load(opponentDataSent);
         Debug.Log("Get Data");
         getData = true;
+        clientConnTry = false;
     }
 
     private string ConvertByteArrayToString(byte[] byteArrayToConvert)

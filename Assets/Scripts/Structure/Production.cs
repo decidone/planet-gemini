@@ -56,8 +56,8 @@ public abstract class Production : Structure
 
     protected override void OnClientConnectedCallback(ulong clientId)
     {
-        RepairGaugeServerRpc();
         ClientConnectSyncServerRpc();
+        RepairGaugeServerRpc();
         if(recipeIndex != -1)
             SetRecipeServerRpc(recipeIndex);
         if(inventory != null)
@@ -379,18 +379,12 @@ public abstract class Production : Structure
             if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
             {
                 OnFactoryItem(belt.itemObjList[0]);
-                belt.itemObjList[0].transform.position = this.transform.position;
                 belt.isItemStop = false;
                 belt.itemObjList.RemoveAt(0);
-                if (IsServer)
-                    belt.beltGroupMgr.groupItem.RemoveAt(0);
+                belt.beltGroupMgr.groupItem.RemoveAt(0);
                 belt.ItemNumCheck();
-
-                DelayGetItem();
-                //Invoke(nameof(DelayGetItem), structureData.SendDelay);
             }
-            else
-                DelayGetItem();
+            DelayGetItem();
         }
     }
 

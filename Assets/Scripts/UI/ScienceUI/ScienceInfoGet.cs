@@ -46,13 +46,14 @@ public class ScienceInfoGet : MonoBehaviour
         return null;
     }
 
-    public (List<string>, List<int>, List<int>, List<float>, List<bool>) GetSciLevelData(string desiredClass, int desiredLevel)
+    public SortedDictionary<int ,(string, int, int, float, bool)> GetSciLevelData(int desiredLevel)
     {
-        List<string> name = new List<string>();
-        List<int> coreLevel = new List<int>();
-        List<int> level = new List<int>();
-        List<float> time = new List<float>();
-        List<bool> basicScience = new List<bool>();
+        SortedDictionary<int, (string, int, int, float, bool)> data = new SortedDictionary<int, (string, int, int, float, bool)>();
+        //List<string> name = new List<string>();
+        //List<int> coreLevel = new List<int>();
+        //List<int> level = new List<int>();
+        //List<float> time = new List<float>();
+        //List<bool> basicScience = new List<bool>();
 
         foreach (var scienceCategory in scienceInfoDataDic)
         {
@@ -60,7 +61,8 @@ public class ScienceInfoGet : MonoBehaviour
 
             foreach (var classData in categoryData)
             {
-                if (classData.Key == desiredClass)
+                if (classData.Key != "Core")
+                //if (classData.Key == desiredClass)
                 {
                     var levelData = classData.Value;
 
@@ -70,18 +72,20 @@ public class ScienceInfoGet : MonoBehaviour
 
                         if (scienceInfo.coreLv == desiredLevel)
                         {
-                            name.Add(scienceCategory.Key);
-                            level.Add(levelEntry.Key);
-                            time.Add(levelEntry.Value.time);
-                            coreLevel.Add(levelEntry.Value.coreLv);
-                            basicScience.Add(levelEntry.Value.basicScience);
+                            data.Add(levelEntry.Value.sortIndex, (scienceCategory.Key, levelEntry.Key, levelEntry.Value.coreLv, levelEntry.Value.time, levelEntry.Value.basicScience));
+                            //name.Add(scienceCategory.Key);
+                            //level.Add(levelEntry.Key);
+                            //coreLevel.Add(levelEntry.Value.coreLv);
+                            //time.Add(levelEntry.Value.time);
+                            //basicScience.Add(levelEntry.Value.basicScience);
                         }
                     }
                 }
             }
         }
 
-        return (name, level, coreLevel, time, basicScience);
+        //return (name, level, coreLevel, time, basicScience);
+        return data;
     }
 
     public float CoreUpgradeTime(int level)

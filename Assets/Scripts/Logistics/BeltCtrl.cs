@@ -66,17 +66,20 @@ public class BeltCtrl : LogisticsCtrl
 
     private void FixedUpdate()
     {
+        if (destroyStart)
+            return;
+
         if (itemObjList.Count > 0)
             ItemMove();
         else if (itemObjList.Count == 0 && isItemStop)
             isItemStop = false;
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
-    {
-        ClientConnectSyncServerRpc();
-        ItemSyncServerRpc();
-    }
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    ClientConnectSyncServerRpc();
+    //    ItemSyncServerRpc();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
@@ -92,7 +95,7 @@ public class BeltCtrl : LogisticsCtrl
         for (int i = 0; i < itemObjList.Count; i++)
         {
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemObjList[i].item);
-            ItemSyncClientRpc(itemIndex, itemObjList[i].transform.position);
+            ItemSyncClientRpc(itemIndex, itemObjList[i].transform.position, itemObjList[i].beltGroupIndex);
         }
     }
 
@@ -137,7 +140,7 @@ public class BeltCtrl : LogisticsCtrl
     }
 
     [ClientRpc]
-    public void ItemSyncClientRpc(int itemIndex, Vector3 tr)
+    public void ItemSyncClientRpc(int itemIndex, Vector3 tr, int beltGroupIndex)
     {
         if (IsServer)
             return;
@@ -153,6 +156,7 @@ public class BeltCtrl : LogisticsCtrl
         spawn.transform.position = tr;
         spawn.isOnBelt = true;
         spawn.setOnBelt = this;
+        spawn.beltGroupIndex = beltGroupIndex;
         itemObjList.Add(spawn);
 
         if (itemObjList.Count >= structureData.MaxItemStorageLimit)
@@ -310,7 +314,10 @@ public class BeltCtrl : LogisticsCtrl
     {
         for (int i = 0; i < itemObjList.Count; i++)
         {
-            itemObjList[i].transform.position = Vector3.MoveTowards(itemObjList[i].transform.position, nextPos[i], Time.deltaTime * structureData.SendSpeed[level]);
+            if (nextPos.Length > i)
+            {
+                itemObjList[i].transform.position = Vector3.MoveTowards(itemObjList[i].transform.position, nextPos[i], Time.deltaTime * structureData.SendSpeed[level]);
+            }
         }
 
         if (Vector2.Distance(itemObjList[0].transform.position, nextPos[0]) < 0.001f)
@@ -322,14 +329,13 @@ public class BeltCtrl : LogisticsCtrl
             isItemStop = false;
         }
 
-        ItemSend();
+        if(IsServer)
+            ItemSend();
     }
 
 
     public bool OnBeltItem(ItemProps itemObj)
     {
-        Debug.Log("BeltItemCount : " + itemObjList.Count);
-
         if (itemObjList.Count >= structureData.MaxItemStorageLimit)
         {
             if (nextBelt != null && beltState != BeltState.EndBelt)
@@ -403,12 +409,27 @@ public class BeltCtrl : LogisticsCtrl
                 Vector2 fstItemPos = itemObjList[0].transform.position;
                 if (fstItemPos == nextPos[0])
                 {
-                    nextBelt.BeltGroupSendItem(itemObjList[0]);
-                    itemObjList.Remove(itemObjList[0]);
-                    ItemNumCheck();
+                    SendItemServerRpc();
+                    //nextBelt.BeltGroupSendItem(itemObjList[0]);
+                    //itemObjList.Remove(itemObjList[0]);
+                    //ItemNumCheck();
                 }
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void SendItemServerRpc()
+    {
+        SendItemClientRpc();
+    }
+
+    [ClientRpc]
+    void SendItemClientRpc()
+    {
+        nextBelt.BeltGroupSendItem(itemObjList[0]);
+        itemObjList.Remove(itemObjList[0]);
+        ItemNumCheck();
     }
 
     public void BeltModelSet()
@@ -635,7 +656,9 @@ public class BeltCtrl : LogisticsCtrl
 
     public List<ItemProps> PlayerRootItemCheck()
     {
-        List<ItemProps> sendItemList = new List<ItemProps>(itemObjList);
+        List<ItemProps> sendItemList = new List<ItemProps>();
+
+        sendItemList = new List<ItemProps>(itemObjList);
 
         return sendItemList;
     }
@@ -646,9 +669,9 @@ public class BeltCtrl : LogisticsCtrl
         {
             int index = itemObjList.IndexOf(item);
             if (index != -1)
-                PlayerRootFuncServerRpc(index, IsServer);
-
+                PlayerRootFuncServerRpc(index);
             itemObjList.Remove(item);
+            beltGroupMgr.ItemRoot(item);
             item.itemPool.Release(item.gameObject);
 
             if (itemObjList.Count >= structureData.MaxItemStorageLimit)
@@ -659,39 +682,93 @@ public class BeltCtrl : LogisticsCtrl
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PlayerRootFuncServerRpc(int index, bool isServer)
+    public void PlayerRootFuncServerRpc(int index)
     {
-        PlayerRootFuncClientRpc(index, isServer);
+        PlayerRootFuncClientRpc(index);
     }
 
     [ClientRpc]
-    public void PlayerRootFuncClientRpc(int index, bool isServer)
+    public void PlayerRootFuncClientRpc(int index)
     {
-        if (isServer && IsServer)
-        {
-            return;
-        }
-        else if (!isServer && !IsServer)
-        {
-            return;
-        }
-
-        if (itemObjList.Count < index + 1)
-        {
-            nextBelt.ItemRootSync();
-        }
-        else
-        {        
-            ItemProps item = itemObjList[index];
-            itemObjList.RemoveAt(index);
-            item.itemPool.Release(item.gameObject);
-        }
+        if (IsServer) return;
+        Debug.Log(itemObjList.Count + " : "+ index);
+        ItemProps item = itemObjList[index];
+        beltGroupMgr.ItemRoot(item);
+        itemObjList.RemoveAt(index);
+        item.itemPool.Release(item.gameObject);
 
         if (itemObjList.Count >= structureData.MaxItemStorageLimit)
             isFull = true;
         else
             isFull = false;
     }
+
+    public void PlayerRootFuncTest(ItemProps item)
+    {
+        itemObjList.Remove(item);
+        beltGroupMgr.ItemRoot(item);
+        item.itemPool.Release(item.gameObject);
+
+        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+            isFull = true;
+        else
+            isFull = false;
+    }
+
+    //public void PlayerRootFunc(ItemProps item)
+    //{
+    //    if (itemObjList.Contains(item))
+    //    {
+    //        int index = itemObjList.IndexOf(item);
+    //        if (index != -1)
+    //            PlayerRootFuncServerRpc(index, IsServer);
+
+    //        itemObjList.Remove(item);
+    //        beltGroupMgr.ItemRoot(item);
+    //        item.itemPool.Release(item.gameObject);
+
+    //        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+    //            isFull = true;
+    //        else
+    //            isFull = false;
+    //    }
+    //}
+
+    //[ServerRpc(RequireOwnership = false)]
+    //public void PlayerRootFuncServerRpc(int index, bool isServer)
+    //{
+    //    PlayerRootFuncClientRpc(index, isServer);
+    //}
+
+    //[ClientRpc]
+    //public void PlayerRootFuncClientRpc(int index, bool isServer)
+    //{
+    //    if (isServer && IsServer)
+    //    {
+    //        return;
+    //    }
+    //    else if (!isServer && !IsServer)
+    //    {
+    //        return;
+    //    }
+
+    //    if (itemObjList.Count < index + 1)
+    //    {
+    //        nextBelt.ItemRootSync();
+    //    }
+    //    else
+    //    {
+    //        ItemProps item = itemObjList[index];
+    //        beltGroupMgr.ItemRoot(item);
+    //        itemObjList.RemoveAt(index);
+    //        item.itemPool.Release(item.gameObject);
+    //    }
+
+    //    if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+    //        isFull = true;
+    //    else
+    //        isFull = false;
+    //}
 
     public void ItemRootSync()
     {
@@ -799,4 +876,6 @@ public class BeltCtrl : LogisticsCtrl
 
         return data;
     }
+
+    public override void ColliderTriggerOnOff(bool isOn) { }
 }

@@ -59,7 +59,7 @@ public class ItemList : MonoBehaviour
                 findLevel ++;
             }
         }
-        Debug.Log("null");
+        Debug.Log("Not found : " + getBuildName);
         return null;
     }
 }
