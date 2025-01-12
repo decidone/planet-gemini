@@ -124,6 +124,7 @@ public class InputManager : MonoBehaviour
         controls.Structure.Enable();
         controls.Inventory.Enable();
         controls.HotKey.Enable();
+        controls.Chat.Enable();
         controls.State.Enable();
     }
 
@@ -137,7 +138,19 @@ public class InputManager : MonoBehaviour
         controls.Structure.Disable();
         controls.Inventory.Disable();
         controls.HotKey.Disable();
+        controls.Chat.Disable();
         controls.State.Disable();
+    }
+
+    public void CommonDisableControls()
+    {
+        DisableControls();
+    }
+
+    public void CommonEnableControls()
+    {
+        EnableControls();
+        controls.MapCamera.Disable();
     }
 
     public void OpenMap()
@@ -168,7 +181,6 @@ public class InputManager : MonoBehaviour
         controls.Player.Enable();
         controls.Inventory.Enable();
         controls.HotKey.Enable();
-        controls.Hold.Enable();
         controls.Chat.Enable();
     }
 
@@ -178,8 +190,7 @@ public class InputManager : MonoBehaviour
         controls.Player.Disable();
         controls.Inventory.Disable();
         controls.HotKey.Disable();
-        //controls.Hold.Disable();
-        //controls.Chat.Disable();
+        controls.Chat.Disable();
 
         EnableControls();
         controls.MapCamera.Disable();
@@ -188,22 +199,28 @@ public class InputManager : MonoBehaviour
     public void OpenChat()
     {
         DisableControls();
+
+        controls.Chat.Enable();
     }
 
     public void CloseChat()
     {
+        //controls.Chat.Disable();
+
         EnableControls();
+        controls.MapCamera.Disable();
     }
 
-    public void OpenConsole()
+    public void WaitingRespawn()
     {
         DisableControls();
-        controls.Chat.Disable();
+
+        controls.Chat.Enable();
     }
 
-    public void CloseConsole()
+    public void Respawn()
     {
         EnableControls();
-        controls.Chat.Enable();
+        controls.MapCamera.Disable();
     }
 }

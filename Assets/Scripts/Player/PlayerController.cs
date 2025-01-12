@@ -444,7 +444,7 @@ public class PlayerController : NetworkBehaviour
         {
             onTankData.PlayerTankOff(transform.position, status.tankHp, reloading, reloadTimer, reloadInterval);
         }
-        if (IsServer)
+        if (IsServer && !GameManager.instance.isGameOver)
         {
             DataManager.instance.Save(0);
         }

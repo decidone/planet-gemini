@@ -61,7 +61,7 @@ public class SteamManager : MonoBehaviour
         SteamMatchmaking.OnLobbyMemberDisconnected += LobbyMemberLeft;
         SteamMatchmaking.OnLobbyMemberLeave += LobbyMemberLeft;
         SteamFriends.OnGameLobbyJoinRequested += GameLobbyJoinRequested;
-        SteamMatchmaking.OnLobbyMemberJoined += ClientConnect;
+        SteamMatchmaking.OnLobbyMemberJoined += ClientConnected;
     }
 
     private void OnDisable()
@@ -69,7 +69,7 @@ public class SteamManager : MonoBehaviour
         SteamMatchmaking.OnLobbyCreated -= LobbyCreated;
         SteamMatchmaking.OnLobbyEntered -= LobbyEntered;
         SteamFriends.OnGameLobbyJoinRequested -= GameLobbyJoinRequested;
-        SteamMatchmaking.OnLobbyMemberJoined -= ClientConnect;
+        SteamMatchmaking.OnLobbyMemberJoined -= ClientConnected;
     }
 
     private void LobbyCreated(Result result, Lobby lobby)
@@ -115,7 +115,7 @@ public class SteamManager : MonoBehaviour
         }
     }
 
-    void ClientConnect(Lobby lobby, Friend friend)
+    void ClientConnected(Lobby lobby, Friend friend)
     {
         if (friend.Id != PlayerSteamId)
         {
@@ -124,6 +124,11 @@ public class SteamManager : MonoBehaviour
             AcceptP2P(opponentSteamId);
             clientReceive = true;
             //clientConnCheck = true;
+
+            if (Chat.instance != null)
+            {
+                Chat.instance.SendMessageServerRpc(friend.Name + " joined!");
+            }
         }
     }
 
@@ -364,6 +369,9 @@ public class SteamManager : MonoBehaviour
     {
         if (!GameManager.instance.isHost)
         {
+            if (GameManager.instance.isGameOver)
+                return;
+
             Debug.Log("Host left");
             if (DisconnectedPopup.instance != null)
             {
@@ -378,6 +386,11 @@ public class SteamManager : MonoBehaviour
         {
             Debug.Log("Client left");
             GameManager.instance.TimeScaleServerRpc();
+
+            if (Chat.instance != null)
+            {
+                Chat.instance.SendMessageServerRpc(friend.Name + " has left.");
+            }
         }
         //Debug.Log(lobby.Owner.Id);
         //Debug.Log(friend.Id);

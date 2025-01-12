@@ -33,31 +33,36 @@ public class Chat : NetworkBehaviour
     {
         isChatOpened = false;
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
         inputManager.controls.Chat.Enter.performed += Enter;
     }
+
     void OnDisable()
     {
         inputManager.controls.Chat.Enter.performed -= Enter;
     }
+
     void Update()
     {
         if (input.isFocused && input.gameObject == EventSystem.current.currentSelectedGameObject)
         {
             if (!isChatOpened)
             {
-                inputManager.OpenChat();
                 isChatOpened = true;
+                if (!GameManager.instance.isGameOver && !GameManager.instance.isWaitingForRespawn)
+                    inputManager.OpenChat();
             }
         }
         else
         {
             if (isChatOpened)
             {
-                inputManager.CloseChat();
                 isChatOpened = false;
+                if (!GameManager.instance.isGameOver && !GameManager.instance.isWaitingForRespawn)
+                    inputManager.CloseChat();
             }
         }
     }
@@ -79,6 +84,32 @@ public class Chat : NetworkBehaviour
         string userInput = input.text;
         if (!string.IsNullOrWhiteSpace(userInput))
         {
+            if (userInput[0] == '/')
+            {
+                // '/'로 시작하는 경우 명령어 체크
+                string message = "";
+                switch (userInput)
+                {
+                    case "/debug":
+                        GameManager.instance.DebugMode();
+                        break;
+                    case "/seed":
+                        message = "seed: " + MapGenerator.instance.seed;
+                        break;
+                    case "/respawn":
+                        GameManager.instance.SetRespawnUI();
+                        break;
+                    case "/gameover":
+                        GameManager.instance.SetGameOverUI();
+                        break;
+                }
+
+                if (message != "")
+                    chat.text += "\n" + message;
+                input.text = string.Empty;
+                return;
+            }
+
             userInput = SteamManager.instance.userName + ": " + input.text;
             SendMessageServerRpc(userInput.Trim());
         }

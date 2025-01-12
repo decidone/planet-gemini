@@ -100,7 +100,7 @@ public class Structure : NetworkBehaviour
     protected int getItemIndex = 0;
     protected int sendItemIndex = 0;
 
-    protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
+    //protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
     [SerializeField]
     protected Sprite[] modelNum;
@@ -1077,9 +1077,9 @@ public class Structure : NetworkBehaviour
         else if (!outFactory.isMainSource)
         {
             if (outObj[outObjIndex].GetComponent<LogisticsCtrl>())
-                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
+                SendFacDelay(outObj[outObjIndex], item);
             else if (outObj[outObjIndex].TryGetComponent(out Production production) && production.CanTakeItem(item))
-                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
+                SendFacDelay(outObj[outObjIndex], item);
         }
 
         outFactory.takeItemDelay = false;
@@ -1120,9 +1120,9 @@ public class Structure : NetworkBehaviour
         else if (!outFactory.isMainSource)
         {
             if (outObj[outObjIndex].GetComponent<LogisticsCtrl>())
-                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
+                SendFacDelay(outObj[outObjIndex], item);
             else if (outObj[outObjIndex].TryGetComponent(out Production production) && production.CanTakeItem(item))
-                setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[outObjIndex], item));
+                SendFacDelay(outObj[outObjIndex], item);
         }
 
         outFactory.takeItemDelay = false;
@@ -1140,12 +1140,7 @@ public class Structure : NetworkBehaviour
         DelaySendList.RemoveAt(listIndex);
     }
 
-    protected IEnumerator SendFacDelayArguments(GameObject game, Item item)
-    {
-        yield return StartCoroutine(SendFacDelay(game, item));
-    }
-
-    protected virtual IEnumerator SendFacDelay(GameObject outFac, Item item)
+    protected void SendFacDelay(GameObject outFac, Item item)
     {
         if (CanSendItemCheck())
         {
@@ -1167,9 +1162,6 @@ public class Structure : NetworkBehaviour
                 SubFromInventory();
             }
         }
-
-        setFacDelayCoroutine = null;
-        yield return null;
     }
 
     bool CanSendItemCheck()

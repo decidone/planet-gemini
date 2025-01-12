@@ -94,7 +94,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
         if (!outFactory.isFull)
         {
-            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObj[0], item));
+            SendFacDelay(outObj[0], item);
         }
 
         Invoke(nameof(DelaySetItem), sendDelay);

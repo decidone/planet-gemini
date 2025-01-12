@@ -247,11 +247,6 @@ public class SplitterCtrl : LogisticsCtrl
     [ClientRpc]
     void FilterSetItemClientRpc(int index)
     {
-        if (setFacDelayCoroutine != null)
-        {
-            return;
-        }
-
         itemSetDelay = true;
         Item sendItem = itemList[0];
 
@@ -278,11 +273,11 @@ public class SplitterCtrl : LogisticsCtrl
         }
         else if (outObject.GetComponent<LogisticsCtrl>())
         {
-            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
+            SendFacDelay(outObject, sendItem);
         }
         else if (outObject.TryGetComponent(out Production production) && production.CanTakeItem(sendItem))
         {
-            setFacDelayCoroutine = StartCoroutine(SendFacDelayArguments(outObject, sendItem));
+            SendFacDelay(outObject, sendItem);
         }
         Debug.Log("sp");
         itemListRemove();

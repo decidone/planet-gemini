@@ -138,7 +138,7 @@ public class PlayerStatus : NetworkBehaviour
 
         if (!IsOwner) { return; }
 
-        if (hp != maxHp)
+        if (hp != maxHp && !GameManager.instance.isWaitingForRespawn)
         {
             selfHealTimer += Time.deltaTime;
 
@@ -148,6 +148,24 @@ public class PlayerStatus : NetworkBehaviour
                 selfHealTimer = 0f;
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetHpServerRpc(float value)
+    {
+        SetHpClientRpc(value);
+    }
+
+    [ClientRpc]
+    public void SetHpClientRpc(float value)
+    {
+        hp = value;
+        if (hp >= maxHp)
+        {
+            hp = maxHp;
+            HPUISet(false);
+        }
+        onHpChangedCallback?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]

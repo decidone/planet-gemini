@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System;
+using UnityEngine.SceneManagement;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -25,9 +26,12 @@ public class GameManager : NetworkBehaviour
 
     public bool isPlayerInHostMap;
     public bool isPlayerInMarket;
+    public bool isGameOver;
+    public bool isWaitingForRespawn;
 
     public GameObject player;
     public PlayerStatus playerStatus;
+    public float playerMaxHp = 100.0f;
     public float playerDataHp = -1;
     public Vector3 playerDataPos = Vector3.zero;
     bool loadTankOn;
@@ -194,6 +198,8 @@ public class GameManager : NetworkBehaviour
         map = hostMap;
         isPlayerInHostMap = true;
         isPlayerInMarket = false;
+        isGameOver = false;
+        isWaitingForRespawn = false;
         isShopOpened = false;
 
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
@@ -274,6 +280,20 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    void GameStop(bool stop)
+    {
+        if (stop)
+        {
+            Time.timeScale = 0;
+            gameStop = stop;
+        }
+        else
+        {
+            Time.timeScale = 1;
+            gameStop = stop;
+        }
+    }
+
     private void Update()
     {
         if (Time.timeScale == 0)
@@ -343,7 +363,7 @@ public class GameManager : NetworkBehaviour
         {
             if (consoleUI.activeSelf)
             {
-                inputManager.OpenConsole();
+                inputManager.CommonDisableControls();
                 isConsoleOpened = true;
             }
         }
@@ -351,7 +371,7 @@ public class GameManager : NetworkBehaviour
         {
             if (!consoleUI.activeSelf)
             {
-                inputManager.CloseConsole();
+                inputManager.CommonEnableControls();
                 isConsoleOpened = false;
             }
         }
@@ -685,7 +705,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void DebugMode(InputAction.CallbackContext ctx)
+    public void DebugMode()
     {
         Debug.Log(LobbySaver.instance.currentLobby?.Id);
         Debug.Log(EventSystem.current.currentSelectedGameObject);
@@ -693,6 +713,11 @@ public class GameManager : NetworkBehaviour
         Debug.Log("debug : " + debug);
 
         //QuestManager.instance.SetQuest(questData);
+    }
+
+    public void DebugMode(InputAction.CallbackContext ctx)
+    {
+        DebugMode();
     }
 
     void Supply(InputAction.CallbackContext ctx)
@@ -1465,14 +1490,48 @@ public class GameManager : NetworkBehaviour
             SetPlayerLocationServerRpc(data.isPlayerInHostMap, data.isPlayerInMarket, IsServer);
             isPlayerInHostMap = data.isPlayerInHostMap;
             isPlayerInMarket = data.isPlayerInMarket;
-            player.transform.position = Vector3Extensions.ToVector3(data.pos);
+
+            //리스폰 중 플레이어 데이터가 저장됐을 때
+            if (data.hp == 0)
+            {
+                playerStatus.hp = playerMaxHp;
+                if (isPlayerInHostMap)
+                {
+                    player.transform.position = hostPlayerSpawnPos;
+                }
+                else
+                {
+                    player.transform.position = clientPlayerSpawnPos;
+                }
+            }
+            else
+            {
+                player.transform.position = Vector3Extensions.ToVector3(data.pos);
+            }
         }
         else
         {
             playerDataHp = data.hp;
             isPlayerInHostMap = data.isPlayerInHostMap;
             isPlayerInMarket = data.isPlayerInMarket;
-            playerDataPos = Vector3Extensions.ToVector3(data.pos);
+
+            //리스폰 중 플레이어 데이터가 저장됐을 때
+            if (data.hp == 0)
+            {
+                playerDataHp = playerMaxHp;
+                if (isPlayerInHostMap)
+                {
+                    playerDataPos = hostPlayerSpawnPos;
+                }
+                else
+                {
+                    playerDataPos = clientPlayerSpawnPos;
+                }
+            }
+            else
+            {
+                playerDataPos = Vector3Extensions.ToVector3(data.pos);
+            }
         }
 
         loadTankOn = data.tankOn;
@@ -1529,5 +1588,62 @@ public class GameManager : NetworkBehaviour
     {
         Vector3 pos = MapGenerator.instance.GetNearGroundPos(player.transform.position);
         player.transform.position = pos;
+    }
+
+    public void SetRespawnUI()
+    {
+        isWaitingForRespawn = true;
+        PlayerStatus status = player.GetComponent<PlayerStatus>();
+        status.SetHpServerRpc(0); // 명령어로 동작시킬 경우를 생각해서 hp를 0으로 만들기 위해 넣음
+        GameStatePopup.instance.SetRespawnUI();
+    }
+
+    public void PlayerRespawn()
+    {
+        isWaitingForRespawn = false;
+        PlayerStatus status = player.GetComponent<PlayerStatus>();
+        status.SetHpServerRpc(playerMaxHp);
+        if (isPlayerInHostMap)
+        {
+            player.transform.position = hostPlayerSpawnPos;
+        }
+        else
+        {
+            player.transform.position = clientPlayerSpawnPos;
+        }
+    }
+
+    public void SetGameOverUI()
+    {
+        GameOverServerRpc();
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void GameOverServerRpc()
+    {
+        SteamManager.instance.LeaveLobby();
+        NetworkManager.Singleton.Shutdown();
+        Destroy(NetworkManager.Singleton.gameObject);
+
+        GameOverClientRpc();
+    }
+
+    [ClientRpc]
+    public void GameOverClientRpc()
+    {
+        isGameOver = true;
+        GameStop(true);
+        CloseAllOpenedUI();
+        OptionCanvas.instance.MainPanelSet(false);
+        GameStatePopup.instance.SetGameOverUI();
+    }
+
+    public void GameOver()
+    {
+        //GameStopSetServerRpc();
+        GameStop(false);
+        //OptionCanvas.instance.QuitFunc();
+        GameManager.instance.DestroyAllDontDestroyOnLoadObjects();
+        SceneManager.LoadScene("MainMenuScene");
     }
 }
