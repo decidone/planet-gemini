@@ -108,6 +108,15 @@ public class OptionCanvas : MonoBehaviour
     public void MainPanelSet(bool open)
     {
         mainPanel.SetActive(open);
+
+        if (open)
+        {
+            InputManager.instance.OpenOption();
+        }
+        else
+        {
+            InputManager.instance.CloseOption();
+        }
     }
 
     void AddEvent(Button btn, EventTriggerType type, UnityAction<BaseEventData> action)

@@ -88,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a160d838ff8b4b4693ac20007e008c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AssetsPPU: 16
+  m_AssetsPPU: 8
   m_RefResolutionX: 1920
   m_RefResolutionY: 1080
   m_UpscaleRT: 1
@@ -145,7 +145,7 @@ MonoBehaviour:
   offset: {x: 0, y: -1, z: 10}
   CameraObj: {fileID: 4042225372588344087}
   canvas: {fileID: 0}
-  dragSpeed: 1.5
+  dragSpeed: 2.5
   borderX: 60
   borderY: 34
   cam: {fileID: 0}

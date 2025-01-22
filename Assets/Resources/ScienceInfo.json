@@ -3,108 +3,108 @@
     "Core":{
       "2":{"items":["Wire","Cogwheel","ManaStone"],"amounts":[1,1,1],"coreLv":1,"time":1,"basicScience" : false, "sortIndex":0},
       "3":{"items":["Wire","Cogwheel","SteelPlate","ManaStone"],"amounts":[1,1,1,1],"coreLv":2,"time":1,"basicScience" : false,"sortIndex":0},
-      "4":{"items":["SteelBeam","Motor","Plastic","Rubber","ManaStone"],"amounts":[1,1,1,1,1],"coreLv":3,"time":1,"basicScience" : false,"sortIndex":1},
+      "4":{"items":["SteelBeam","Motor","Plastic","Rubber","ManaStone"],"amounts":[1,1,1,1,1],"coreLv":3,"time":1,"basicScience" : false,"sortIndex":0},
       "5":{"items":["Module","Battery","ControlUnit","AdamantitePlate","Engine","ManaStone"],"amounts":[1,1,1,1,1,1],"coreLv":4,"time":1,"basicScience" : false,"sortIndex":0}
     }
   },
   "PortalItemIn":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Sends items to another planet.","basicScience" : true,"sortIndex":11}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Sends items to another planet.","basicScience" : true,"sortIndex":1}
     }
   },
   "PortalItemOut":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get items to another planet.","basicScience" : true,"sortIndex":12}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get items to another planet.","basicScience" : true,"sortIndex":2}
     }
   },
   "PortalUnitIn":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Sends unit to another planet.","basicScience" : true,"sortIndex":13}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Sends unit to another planet.","basicScience" : true,"sortIndex":3}
     }
   },
   "PortalUnitOut":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get unit to another planet.","basicScience" : true,"sortIndex":14}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get unit to another planet.","basicScience" : true,"sortIndex":4}
     }
   },
   "Miner":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Mines Coal, Stone, Iron, and Copper.","basicScience" : true,"sortIndex":1},
-      "2":{"items":["SteelPlate","Cogwheel"],"amounts":[5,1],"coreLv":2,"time":1,"Info":"Mines in a 2x2 size. requires energy.","basicScience" : false,"sortIndex":1},
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Mines Coal, Stone, Iron, and Copper.","basicScience" : true,"sortIndex":5},
+      "2":{"items":["SteelPlate","Cogwheel"],"amounts":[5,1],"coreLv":2,"time":1,"Info":"Mines in a 2x2 size. requires energy.","basicScience" : false,"sortIndex":2},
       "3":{"items":["ControlUnit","Motor"],"amounts":[5,1],"coreLv":4,"time":1,"Info":"Can mine Adamantium, Mines in a 2x2 size. requires energy.","basicScience" : false,"sortIndex":1}
     }
   },
   "Furnace":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Smelts ores into ingots. requires coal.","basicScience" : true,"sortIndex":2},
-      "2":{"items":["SteelBeam","ManaStone"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Smelts ores into ingots. requires energy.","basicScience" : false,"sortIndex":2}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Smelts ores into ingots. requires coal.","basicScience" : true,"sortIndex":6},
+      "2":{"items":["SteelBeam","ManaStone"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Smelts ores into ingots. requires energy.","basicScience" : false,"sortIndex":1}
     }
   },
   "Belt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items between buildings.","basicScience" : true,"sortIndex":3},
-      "2":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Faster than lv1 Belts.","basicScience" : false,"sortIndex":2},
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items between buildings.","basicScience" : true,"sortIndex":7},
+      "2":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Faster than lv1 Belts.","basicScience" : false,"sortIndex":4},
       "3":{"items":["SteelPlate","Rubber"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"Faster than lv2 Belts.","basicScience" : false,"sortIndex":2}
     }
   },
   "UnderBelt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items underground.","basicScience" : true,"sortIndex":4},
-      "2":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Faster than lv1 UnderBelt.","basicScience" : false,"sortIndex":3},
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items underground.","basicScience" : true,"sortIndex":8},
+      "2":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Faster than lv1 UnderBelt.","basicScience" : false,"sortIndex":5},
       "3":{"items":["SteelPlate","Rubber"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"Faster than lv2 UnderBelt.","basicScience" : false,"sortIndex":3}
     }
   },
   "Smelter":{
     "Build":{
-      "1":{"items":["IronPlate","Coal"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Smelts two ores into an alloy ingot. requires energy.","basicScience" : false,"sortIndex":4}
+      "1":{"items":["IronPlate","Coal"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Smelts two ores into an alloy ingot. requires energy.","basicScience" : false,"sortIndex":1}
     }
   },
   "Constructor":{
     "Build":{
-      "1":{"items":["IronBar","CopperBar"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"Produces components from a single material. requires energy.","basicScience" : false,"sortIndex":5}
+      "1":{"items":["IronBar","CopperBar"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"Produces components from a single material. requires energy.","basicScience" : true,"sortIndex":10}
     }
   },
   "Assembler":{
     "Build":{
-      "1":{"items":["SteelPlate","Screw"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Produces components from two material. requires energy.","basicScience" : false,"sortIndex":5}
+      "1":{"items":["SteelPlate","Screw"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Produces components from two material. requires energy.","basicScience" : false,"sortIndex":3}
     }
   },
   "Manufacturer":{
     "Build":{
-      "1":{"items":["Module","Motor"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Produces components from three material. requires energy.","basicScience" : false,"sortIndex":3}
+      "1":{"items":["Module","Motor"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Produces components from three material. requires energy.","basicScience" : false,"sortIndex":6}
     }
   },
   "Splitter":{
     "Build":{
-      "1":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items from one input direction to three output directions.","basicScience" : false,"sortIndex":6},
-      "2":{"items":["ControlUnit"],"amounts":[1],"coreLv":3,"time":1,"Info":"Allows configuration of directions and items for distribution.","basicScience" : false, "sortIndex":4}
+      "1":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items from one input direction to three output directions.","basicScience" : false,"sortIndex":11},
+      "2":{"items":["ControlUnit"],"amounts":[1],"coreLv":3,"time":1,"Info":"Allows configuration of directions and items for distribution.","basicScience" : false, "sortIndex":8}
     }
   },
   "Merger":{
     "Build":{
-      "1":{"items":["Cogwheel"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items from three input directions to one output direction.","basicScience" : false, "sortIndex":7}
+      "1":{"items":["Cogwheel"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items from three input directions to one output direction.","basicScience" : false, "sortIndex":12}
     }
   },
   "Storage":{
     "Build":{
-      "1":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"A storage space with 6 inventory slots.","basicScience" : false, "sortIndex":8},
-      "2":{"items":["IronPlate"],"amounts":[1],"coreLv":2,"time":1,"Info":"A storage space with 12 inventory slots.","basicScience" : false, "sortIndex":6},
-      "3":{"items":["SteelPlate"],"amounts":[1],"coreLv":3,"time":1,"Info":"A storage space with 18 inventory slots.","basicScience" : false, "sortIndex":5}
+      "1":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"A storage space with 6 inventory slots.","basicScience" : false, "sortIndex":15},
+      "2":{"items":["IronPlate"],"amounts":[1],"coreLv":2,"time":1,"Info":"A storage space with 12 inventory slots.","basicScience" : false, "sortIndex":14},
+      "3":{"items":["SteelPlate"],"amounts":[1],"coreLv":3,"time":1,"Info":"A storage space with 18 inventory slots.","basicScience" : false, "sortIndex":2}
     }
   },
   "Disintegrator":{
     "Build":{
-      "1":{"items":["SteelPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Crush items to obtain a trade resource called 'Scrap'.","basicScience" : false, "sortIndex":7}
+      "1":{"items":["SteelPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Crush items to obtain a trade resource called 'Scrap'.","basicScience" : false, "sortIndex":16}
     }
   },
   "Unloader":{
     "Build":{
-      "1":{"items":["Motor"],"amounts":[1],"coreLv":2,"time":1,"Info":"Unloads the selected items from storage","basicScience" : false, "sortIndex":8}
+      "1":{"items":["Motor"],"amounts":[1],"coreLv":2,"time":1,"Info":"Unloads the selected items from storage","basicScience" : false, "sortIndex":15}
     }
   },
   "Transporter":{
     "Build":{
-      "1":{"items":["Module","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"A building for long-distance transportation. Can be connected to other transports on the map, with up to three units carrying them.","basicScience" : false, "sortIndex":6}
+      "1":{"items":["Module","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"A building for long-distance transportation. Can be connected to other transports on the map, with up to three units carrying them.","basicScience" : false, "sortIndex":7}
     }
   },
   "Pump":{
@@ -129,47 +129,47 @@
   },
   "Extractor":{
     "Build":{
-      "1":{"items":["SteelBeam","Motor"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Extract crude oil out of oil nodes.","basicScience" : false, "sortIndex":7}
+      "1":{"items":["SteelBeam","Motor"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Extract crude oil out of oil nodes.","basicScience" : false, "sortIndex":3}
     }
   },
   "Refinery":{
     "Build":{
-      "1":{"items":["Motor"],"amounts":[1],"coreLv":3,"time":1,"Info":"Refining crude oil. requires energy.","basicScience" : false, "sortIndex":8}
+      "1":{"items":["Motor"],"amounts":[1],"coreLv":3,"time":1,"Info":"Refining crude oil. requires energy.","basicScience" : false, "sortIndex":4}
     }
   },
   "ChemicalPlant":{
     "Build":{
-      "1":{"items":["Naphtha"],"amounts":[5],"coreLv":3,"time":1,"Info":"separates refined oil into naphtha and fuel through fractional distillation. requires energy.","basicScience" : false, "sortIndex":9}
+      "1":{"items":["Naphtha"],"amounts":[5],"coreLv":3,"time":1,"Info":"separates refined oil into naphtha and fuel through fractional distillation. requires energy.","basicScience" : false, "sortIndex":5}
     }
   },
   "Overclock":{
     "Build":{
-      "1":{"items":["ControlUnit"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increases the productivity of nearby buildings.","basicScience" : false, "sortIndex":4}
+      "1":{"items":["ControlUnit"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increases the productivity of nearby buildings.","basicScience" : false, "sortIndex":5}
     }
   },
   "EnergyRepeater":{
     "Build":{
-      "1":{"items":["Wire"],"amounts":[1],"coreLv":1,"time":1,"Info":"Supply energy to nearby buildings.","basicScience" : false, "sortIndex":9}
+      "1":{"items":["Wire"],"amounts":[1],"coreLv":1,"time":1,"Info":"Supply energy to nearby buildings.","basicScience" : false, "sortIndex":14}
     }
   },
   "ImprovedRepeater":{
     "Build":{
-      "1":{"items":["Cable"],"amounts":[1],"coreLv":3,"time":1,"Info":"Supply energy to a larger area.","basicScience" : false, "sortIndex":10}
+      "1":{"items":["Cable"],"amounts":[1],"coreLv":3,"time":1,"Info":"Supply energy to a larger area.","basicScience" : false, "sortIndex":9}
     }
   },
   "LDConnector":{
     "Build":{
-      "1":{"items":["ManaStone","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"A building that connects energy over long distances. Can be connected to other LDConnector on the map.","basicScience" : false, "sortIndex":11}
+      "1":{"items":["ManaStone","Cable"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"A building that connects energy over long distances. Can be connected to other LDConnector on the map.","basicScience" : false, "sortIndex":10}
     }
   },
   "EnergyBattery":{
     "Build":{
-      "1":{"items":["ManaStone","Battery"],"amounts":[1,5],"coreLv":3,"time":1,"Info":"Stores energy and supplies it to the energy group when there is a shortage.","basicScience" : false,"sortIndex":12}
+      "1":{"items":["ManaStone","Battery"],"amounts":[1,5],"coreLv":3,"time":1,"Info":"Stores energy and supplies it to the energy group when there is a shortage.","basicScience" : false,"sortIndex":11}
     }
   },
   "CoalGenerator":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Generates energy from coal","basicScience" : false, "sortIndex":10}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Generates energy from coal","basicScience" : true, "sortIndex":9}
     }
   },
   "SteamGenerator":{
@@ -179,104 +179,104 @@
   },
   "ManaGenerator":{
     "Build":{
-      "1":{"items":["ManaStone"],"amounts":[1],"coreLv":3,"time":1,"Info":"Generates energy from mana stones","basicScience" : false, "sortIndex":13}
+      "1":{"items":["ManaStone"],"amounts":[1],"coreLv":4,"time":1,"Info":"Generates energy from mana stones","basicScience" : false, "sortIndex":4}
     }
   },
   "LocalPortal":{
     "Build":{
-      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":2,"time":1,"Info":"Allows travel to another portal.","basicScience" : false, "sortIndex":14}
+      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":3,"time":1,"Info":"Allows travel to another portal.","basicScience" : false, "sortIndex":14}
     }
   },
   "Wall":{
     "Battle":{
-      "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"A defensive wall made of bricks.","basicScience" : false, "sortIndex":15},
-      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"A defensive wall made of CopperPlates.","basicScience" : false, "sortIndex":16},
-      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"A defensive wall made of IronPlates.","basicScience" : false, "sortIndex":17},
-      "4":{"items":["SteelPlate"],"amounts":[1],"coreLv":2,"time":1,"Info":"A defensive wall made of SteelPlates.","basicScience" : false, "sortIndex":15},
-      "5":{"items":["AdamantitePlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"A defensive wall made of AdamantitePlates.","basicScience" : false, "sortIndex":5}
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":1,"time":1,"Info":"A defensive wall made of bricks.","basicScience" : false, "sortIndex":17},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"A defensive wall made of CopperPlates.","basicScience" : false, "sortIndex":18},
+      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":1,"time":1,"Info":"A defensive wall made of IronPlates.","basicScience" : false, "sortIndex":19},
+      "4":{"items":["SteelPlate"],"amounts":[1],"coreLv":2,"time":1,"Info":"A defensive wall made of SteelPlates.","basicScience" : false, "sortIndex":17},
+      "5":{"items":["AdamantitePlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"A defensive wall made of AdamantitePlates.","basicScience" : false, "sortIndex":6}
     }
   },
   "BasicTower":{
     "Battle":{
-      "1":{"items":["IronPlate","CopperPlate"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"A tower that requires bullet.","basicScience" : false,"sortIndex":18}
+      "1":{"items":["IronPlate","CopperPlate"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"A tower that requires bullet.","basicScience" : false,"sortIndex":16}
     }
   },
   "FireTower":{
     "Battle":{
-      "1":{"items":["ManaStone","Coal"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"A tower that performs area-of-effect attacks and consumes energy.","basicScience" : false,"sortIndex":26}
+      "1":{"items":["ManaStone","Coal"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"A tower that performs area-of-effect attacks and consumes energy.","basicScience" : false,"sortIndex":19}
     }
   },
   "IceTower":{
     "Battle":{
-      "1":{"items":["ManaStone","SteelBeam"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"A tower that inflicts slowing effects with its attacks and consumes energy.","basicScience" : false,"sortIndex":99}
+      "1":{"items":["ManaStone","SteelBeam"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"A tower that inflicts slowing effects with its attacks and consumes energy.","basicScience" : false,"sortIndex":13}
     }
   },
   "PoisonTower":{
     "Battle":{
-      "1":{"items":["ManaStone","ToxicPlant"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"A tower that deals damage over time and consumes energy.","basicScience" : false,"sortIndex":20}
+      "1":{"items":["ManaStone","ToxicPlant"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"A tower that deals damage over time and consumes energy.","basicScience" : false,"sortIndex":18}
     }
   },
   "StormTower":{
     "Battle":{
-      "1":{"items":["ManaStone","AdamantitePlate"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"A tower with a high attack speed that consumes energy.","basicScience" : false,"sortIndex":6}
+      "1":{"items":["ManaStone","AdamantitePlate"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"A tower with a high attack speed that consumes energy.","basicScience" : false,"sortIndex":7}
     }
   },
   "SunTower":{
     "Battle":{
-      "1":{"items":["ManaStone","AdamantitePlate"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"A tower that ignores some armor and consumes energy.","basicScience" : false,"sortIndex":99}
+      "1":{"items":["ManaStone","AdamantitePlate"],"amounts":[1,1],"coreLv":5,"time":1,"Info":"A tower that ignores some armor and consumes energy.","basicScience" : false,"sortIndex":2}
     }
   },
   "RepairTower":{
     "Battle":{
-      "1":{"items":["ManaStone"],"amounts":[1],"coreLv":2,"time":1,"Info":"Heals the health of nearby buildings and consumes energy.","basicScience" : false,"sortIndex":30}
+      "1":{"items":["ManaStone"],"amounts":[1],"coreLv":2,"time":1,"Info":"Heals the health of nearby buildings and consumes energy.","basicScience" : false,"sortIndex":20}
     }
   },
   "UnitFactory":{
     "Battle":{
-      "1":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"A factory that produces units.","basicScience" : false,"sortIndex":31}
+      "1":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"A factory that produces units.","basicScience" : false,"sortIndex":6}
     }
   },
   "BounceRobot":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that attacks nearby enemies.","basicScience" : false,"sortIndex":32}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that attacks nearby enemies.","basicScience" : false,"sortIndex":7}
     }
   },
   "SpinRobot":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"A unit that performs area-of-effect attacks in the surrounding area.","basicScience" : false,"sortIndex":33}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"A unit that performs area-of-effect attacks in the surrounding area.","basicScience" : false,"sortIndex":12}
     }
   },
   "SentryCopter":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that performs ranged attacks.","basicScience" : false,"sortIndex":34}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that performs ranged attacks.","basicScience" : false,"sortIndex":8}
     }
   },
   "Tank":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"A tank for the player that requires ammunition and fuel.","basicScience" : false,"sortIndex":26}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":5,"time":1,"Info":"A tank for the player that requires ammunition and fuel.","basicScience" : false,"sortIndex":1}
     }
   },
   "StructureUpgrade":{
     "Build":{
-      "1":{"items":["Brick"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased production speed of structures.","basicScience" : false, "sortIndex":7},
-      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased hp of structures.","basicScience" : false, "sortIndex":8},
-      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased input/output speed of structures.","basicScience" : false, "sortIndex":9},
-      "4":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Reduced energy consumption.","basicScience" : false, "sortIndex":10},
-      "5":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased defense of structures.","basicScience" : false, "sortIndex":11}
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased production speed of structures.","basicScience" : false, "sortIndex":8},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":5,"time":1,"Info":"Increased hp of structures.","basicScience" : false, "sortIndex":3},
+      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":3,"time":1,"Info":"Increased input/output speed of structures.","basicScience" : false, "sortIndex":15},
+      "4":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Reduced energy consumption.","basicScience" : false, "sortIndex":9},
+      "5":{"items":["IronPlate"],"amounts":[1],"coreLv":5,"time":1,"Info":"Increased defense of structures.","basicScience" : false, "sortIndex":4}
      }
   },
   "TowerUpgrade":{
     "Battle":{
-      "1":{"items":["Brick"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased damage of towers.","basicScience" : false, "sortIndex":12},
-      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Reduces Attack Delay Time of towers.","basicScience" : false, "sortIndex":13}
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":5,"time":1,"Info":"Increased damage of towers.","basicScience" : false, "sortIndex":5},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":5,"time":1,"Info":"Reduces Attack Delay Time of towers.","basicScience" : false, "sortIndex":6}
      }
   },
   "UnitUpgrade":{
     "Battle":{
-      "1":{"items":["Brick"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased hp of units.","basicScience" : false, "sortIndex":14},
-      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased damage of units.","basicScience" : false, "sortIndex":15},
-      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Reduces Attack Delay Time of units.","basicScience" : false, "sortIndex":16},
-      "4":{"items":["Module","Battery","ControlUnit","AdamantitePlate","Engine","ManaStone"],"amounts":[1,1,1,1,1,1],"coreLv":4,"time":1,"Info":"Increased defense of units.","basicScience" : false, "sortIndex":17}
+      "1":{"items":["Brick"],"amounts":[1],"coreLv":5,"time":1,"Info":"Increased hp of units.","basicScience" : false, "sortIndex":7},
+      "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":5,"time":1,"Info":"Increased damage of units.","basicScience" : false, "sortIndex":8},
+      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":5,"time":1,"Info":"Reduces Attack Delay Time of units.","basicScience" : false, "sortIndex":9},
+      "4":{"items":["Module","Battery","ControlUnit","AdamantitePlate","Engine","ManaStone"],"amounts":[1,1,1,1,1,1],"coreLv":5,"time":1,"Info":"Increased defense of units.","basicScience" : false, "sortIndex":10}
     }
   }
 }
