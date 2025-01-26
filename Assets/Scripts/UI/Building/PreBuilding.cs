@@ -1068,6 +1068,7 @@ public class PreBuilding : NetworkBehaviour
             isEnergyStr = prefabObj.GetComponentInChildren<Structure>().structureData.IsEnergyStr;
             isEnergyUse = prefabObj.GetComponentInChildren<Structure>().structureData.EnergyUse[level];
 
+            preBuildingImg.PreStrSet(prefabObj.GetComponentInChildren<Structure>());
             preBuildingImg.EnergyUseCheck(isEnergyUse);
 
             if (isEnergyStr && !prefabObj.GetComponentInChildren<EnergyBattery>())
@@ -1084,6 +1085,10 @@ public class PreBuilding : NetworkBehaviour
             else if (prefabObj.GetComponentInChildren<RepairTower>())
             {
                 preBuildingImg.TerritoryViewSet(3);
+            }
+            else if (prefabObj.GetComponentInChildren<SunTower>())
+            {
+                preBuildingImg.TerritoryViewSet(4);
             }
         }
         else

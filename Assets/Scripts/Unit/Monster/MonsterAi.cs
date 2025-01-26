@@ -38,6 +38,21 @@ public class MonsterAi : UnitCommonAi
     float normalTraceInterval = 10f;
     bool stopTrace;
 
+    public bool isDebuffed;
+    float debuffTimer;
+    float debuffDuration = 2f;  // 등대 디버프 지속시간 2초, 등대 범위 내에 몬스터가 있을 때 디버프 갱신 시간 1초
+
+    Transform _t;
+    Effects _effects;
+
+    protected override void Start()
+    {
+        base.Start();
+
+        _t = transform;
+        _effects = Effects.instance;
+    }
+
     protected override void FixedUpdate()
     {
         if (isScriptActive)
@@ -66,7 +81,31 @@ public class MonsterAi : UnitCommonAi
     protected override void Update()
     {
         if (isScriptActive)
+        {
             base.Update();
+            if (isDebuffed)
+            {
+                debuffTimer += Time.deltaTime;
+
+                if (debuffTimer > debuffDuration)
+                {
+                    isDebuffed = false;
+                    debuffTimer = 0f;
+                }
+            }
+        }
+    }
+
+    public void RefreshDebuff()
+    {
+        if (!isDebuffed)
+        {
+            TriggerEffects("dark");
+        }
+
+        isDebuffed = true;
+        debuffTimer = 0f;
+
     }
 
     protected override void UnitAiCtrl()
@@ -975,5 +1014,27 @@ public class MonsterAi : UnitCommonAi
 
         isInHostMap = isHostMap;
         seeker.graphMask = mask;
+    }
+
+    public void TriggerEffects(string effect)
+    {
+        switch (effect)
+        {
+            case ("dark"):
+                _effects.TriggerDark(this.gameObject);
+                break;
+        }
+
+        //StartCoroutine(Test());
+    }
+
+    IEnumerator Test()
+    {
+        yield return new WaitForSeconds(.333f);
+        while (true)
+        {
+            _effects.TriggerDark(this.gameObject);
+            yield return new WaitForSeconds(Random.Range(.5f, 1f));
+        }
     }
 }

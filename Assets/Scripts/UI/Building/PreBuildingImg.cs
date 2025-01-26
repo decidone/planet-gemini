@@ -17,10 +17,16 @@ public class PreBuildingImg : MonoBehaviour
     Material[] materials;
 
     public bool isEnergyUse;
+    public Structure structure;
 
     private void Start()
     {
         canBuilding = true;
+    }
+
+    public void PreStrSet(Structure str)
+    {
+        structure = str;
     }
 
     public void PreSpriteSet(Sprite _sprite)
@@ -66,6 +72,13 @@ public class PreBuildingImg : MonoBehaviour
                 spriteRenderer.material = materials[1];
                 spriteRenderer.sprite = sprites[1];
                 newColor = new Color32(45, 70, 195, 100);
+                spriteRenderer.color = newColor;
+                break;
+            case 4: //SunTower
+                territoryView.transform.localScale = new Vector3(3.12f, 3.12f, 1f);
+                spriteRenderer.material = materials[1];
+                spriteRenderer.sprite = sprites[1];
+                newColor = new Color32(148, 0, 211, 100);
                 spriteRenderer.color = newColor;
                 break;
         }

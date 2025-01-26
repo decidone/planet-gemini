@@ -18,12 +18,16 @@ public class ViewOnOff : MonoBehaviour
     {
         if (collision.TryGetComponent(out PreBuildingImg pre))
         {
-            if(structureName == "Overclock")
+            if (structureName == "Overclock" && pre.structure.structureData.factoryName == "Overclock")
             {
                 if(pre.isEnergyUse)
                     structure.Focused();
             }
-            else if(structureName == "RepairTower")
+            else if (structureName == "RepairTower" && pre.structure.structureData.factoryName == "RepairTower")
+            {
+                structure.Focused();
+            }
+            else if (structureName == "SunTower" && pre.structure.structureData.factoryName == "SunTower")
             {
                 structure.Focused();
             }

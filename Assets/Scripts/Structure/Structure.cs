@@ -108,7 +108,6 @@ public class Structure : NetworkBehaviour
 
     public ItemProps spawnItem;
 
-    [HideInInspector]
     public List<GameObject> monsterList = new List<GameObject>();
 
     [HideInInspector]
