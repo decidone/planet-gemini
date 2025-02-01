@@ -105,6 +105,7 @@ public class GameManager : NetworkBehaviour
     OptionCanvas optionCanvas;
 
     ScienceBuildingInfo scienceBuildingInfo;
+    ScienceManager scienceManager;
 
     public int day;                     // 일 수
     public bool isDay;                  // 밤 낮
@@ -211,6 +212,7 @@ public class GameManager : NetworkBehaviour
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
         scienceBuildingInfo = inventoryUiCanvas.GetComponent<ScienceBuildingInfo>();
+        scienceManager = ScienceManager.instance;
 
         day = 0;
         isDay = true;
@@ -918,7 +920,14 @@ public class GameManager : NetworkBehaviour
 
     public void ScienceTree()
     {
-        scienceBuildingInfo.OpenUI();
+        if (!scienceManager.isOpen)
+        {
+            scienceManager.OpenUI();
+        }
+        else
+        {
+            scienceManager.CloseUI();
+        }
     }
 
     void UIChanged(GameObject ui)

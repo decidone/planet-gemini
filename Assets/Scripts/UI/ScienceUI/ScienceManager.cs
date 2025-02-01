@@ -55,6 +55,8 @@ public class ScienceManager : MonoBehaviour
     
     public delegate void ToggleMapChange();
     public ToggleMapChange onToggleMapChangeCallback;
+    [HideInInspector]
+    public bool isOpen;
 
 
     public static ScienceManager instance;
@@ -338,12 +340,14 @@ public class ScienceManager : MonoBehaviour
 
     public void OpenUI()
     {
+        isOpen = true;
         scienceTreeUI.SetActive(true);
         gameManager.onUIChangedCallback?.Invoke(scienceTreeUI);
     }
 
     public void CloseUI()
     {
+        isOpen = false;
         scienceTreeUI.SetActive(false);
         sciItemSetWindow.CloseUI();
         upgradeWindow.CloseUI();
