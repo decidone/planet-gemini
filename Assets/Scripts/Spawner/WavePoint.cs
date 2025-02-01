@@ -18,13 +18,14 @@ public class WavePoint : MonoBehaviour
     [SerializeField]
     GameObject lineObj;
 
-    LineRenderer map1LineRenderer;
-    LineRenderer map2LineRenderer;
+    //LineRenderer map1LineRenderer;
+    //LineRenderer map2LineRenderer;
 
-    Vector3 map1BasePos;
-    Vector3 map2BasePos;
+    //Vector3 map1BasePos;
+    //Vector3 map2BasePos;
 
     GameManager gameManager;
+    bool mapCameraOpen;
 
     #region Singleton
     public static WavePoint instance;
@@ -60,33 +61,37 @@ public class WavePoint : MonoBehaviour
 
         if (player != null)
         {
-            if (isMap1WaveStart && gameManager.isPlayerInHostMap && !gameManager.isPlayerInMarket)
+            if (isMap1WaveStart && gameManager.isPlayerInHostMap && !gameManager.isPlayerInMarket && !mapCameraOpen)
             {
                 SetIndicator(true);
             }
-            else if (isMap2WaveStart && !gameManager.isPlayerInHostMap && !gameManager.isPlayerInMarket)
+            else if (isMap2WaveStart && !gameManager.isPlayerInHostMap && !gameManager.isPlayerInMarket && !mapCameraOpen)
             {
                 SetIndicator(false);
             }
             else
             {
                 canvasObj.SetActive(false);
-                mapObj.SetActive(false);
             }
         }
     }
 
-    public void SpawnPos(bool isHostPos, Vector2 pos)
+    public void MapCameraOpen(bool isOpen)
     {
-        if (isHostPos)
-        {
-            map1BasePos = pos;
-        }
-        else
-        {
-            map2BasePos = pos;
-        }
+        mapCameraOpen = isOpen;
     }
+
+    //public void SpawnPos(bool isHostPos, Vector2 pos)
+    //{
+    //    if (isHostPos)
+    //    {
+    //        map1BasePos = pos;
+    //    }
+    //    else
+    //    {
+    //        map2BasePos = pos;
+    //    }
+    //}
 
     public void PlayerSet(GameObject _player)
     {
@@ -99,34 +104,33 @@ public class WavePoint : MonoBehaviour
         {
             map1WavePos = wavePos;
             isMap1WaveStart = true;
+            //GameObject currentLine;
 
-            GameObject currentLine;
+            //if (map1LineRenderer == null)
+            //{
+            //    currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
+            //    map1LineRenderer = currentLine.GetComponent<LineRenderer>();
+            //}
 
-            if (map1LineRenderer == null)
-            {
-                currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
-                map1LineRenderer = currentLine.GetComponent<LineRenderer>();
-            }
-
-            map1LineRenderer.positionCount = 2;
-            map1LineRenderer.SetPosition(0, map1WavePos);
-            map1LineRenderer.SetPosition(1, map1BasePos);
+            //map1LineRenderer.positionCount = 2;
+            //map1LineRenderer.SetPosition(0, map1WavePos);
+            //map1LineRenderer.SetPosition(1, map1BasePos);
         }
         else
         {
             map2WavePos = wavePos;
             isMap2WaveStart = true;
-            GameObject currentLine;
+            //GameObject currentLine;
 
-            if (map2LineRenderer == null)
-            {
-                currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
-                map2LineRenderer = currentLine.GetComponent<LineRenderer>();
-            }
+            //if (map2LineRenderer == null)
+            //{
+            //    currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
+            //    map2LineRenderer = currentLine.GetComponent<LineRenderer>();
+            //}
 
-            map2LineRenderer.positionCount = 2;
-            map2LineRenderer.SetPosition(0, map2WavePos);
-            map2LineRenderer.SetPosition(1, map2BasePos);
+            //map2LineRenderer.positionCount = 2;
+            //map2LineRenderer.SetPosition(0, map2WavePos);
+            //map2LineRenderer.SetPosition(1, map2BasePos);
         }
     }
 
@@ -155,13 +159,13 @@ public class WavePoint : MonoBehaviour
         if (isInHostMap)
         {
             isMap1WaveStart = false;
-            Destroy(map1LineRenderer);
         }
         else
         {
             isMap2WaveStart = false;
-            Destroy(map2LineRenderer);
         }
+        canvasObj.SetActive(false);
+        mapObj.SetActive(false);
     }
 
     public void SetIndicator(bool isInHostMap)

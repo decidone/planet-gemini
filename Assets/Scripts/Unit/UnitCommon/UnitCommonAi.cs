@@ -79,19 +79,19 @@ public class UnitCommonAi : NetworkBehaviour
     protected bool dieCheck = false;
 
     public SoundManager soundManager;
-    protected BattleBGMCtrl battleBGM;
+    //protected BattleBGMCtrl battleBGM;
 
     protected NetworkObjectPool networkObjectPool;
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
 
-    [SerializeField]
     protected bool slowDebuffOn;
     protected float slowSpeedPer = 1;
     protected bool takePoisonDamgae;
 
     public float damage;
+    protected bool damageEffectOn;
     public float attackSpeed;
     public float defense;
 
@@ -122,7 +122,7 @@ public class UnitCommonAi : NetworkBehaviour
     protected virtual void Start()
     {
         soundManager = SoundManager.instance;
-        battleBGM = BattleBGMCtrl.instance;
+        //battleBGM = BattleBGMCtrl.instance;
         networkObjectPool = NetworkObjectPool.Singleton;
     }
 
@@ -349,7 +349,8 @@ public class UnitCommonAi : NetworkBehaviour
             reducedDamage = Mathf.Max(damage - defense, 5);
             if (attackType == 4)
             {
-                StartCoroutine(SlowDebuffDamage(option));
+                if(!slowDebuffOn)
+                    StartCoroutine(SlowDebuffDamage(option));
             }
         }
         else if (attackType == 2)
@@ -359,7 +360,13 @@ public class UnitCommonAi : NetworkBehaviour
         else if (attackType == 3)
         {
             reducedDamage = 0;
-            StartCoroutine(PoisonDamage(damage, option));
+            if(!takePoisonDamgae)
+                StartCoroutine(PoisonDamage(damage, option));
+        }
+
+        if (!slowDebuffOn && !takePoisonDamgae && !damageEffectOn)
+        {
+            StartCoroutine(TakeDamageEffect());
         }
 
         hp -= reducedDamage;
@@ -377,7 +384,7 @@ public class UnitCommonAi : NetworkBehaviour
         }
     }
 
-    IEnumerator SlowDebuffDamage(float time)
+    protected IEnumerator SlowDebuffDamage(float time)
     {
         slowDebuffOn = true;
         
@@ -392,7 +399,7 @@ public class UnitCommonAi : NetworkBehaviour
         slowDebuffOn = false;
     }
 
-    IEnumerator PoisonDamage(float damageAmount, float time)
+    protected IEnumerator PoisonDamage(float damageAmount, float time)
     {
         takePoisonDamgae = true;
 
@@ -412,6 +419,19 @@ public class UnitCommonAi : NetworkBehaviour
         unitSprite.color = new Color32(255, 255, 255, 255);
 
         takePoisonDamgae = false;
+    }
+
+    protected IEnumerator TakeDamageEffect()
+    {
+        damageEffectOn = true;
+
+        unitSprite.color = new Color32(255, 100, 100, 255);
+
+        yield return new WaitForSeconds(0.3f);
+
+        unitSprite.color = new Color32(255, 255, 255, 255);
+
+        damageEffectOn = false;
     }
 
     [ServerRpc]

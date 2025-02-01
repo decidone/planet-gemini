@@ -26,7 +26,7 @@ public class MonsterAi : UnitCommonAi
 
     [SerializeField]
     protected bool waveState = false;
-    bool waveWaiting = false;
+    //bool waveWaiting = false;
     public bool waveArrivePos = false;
     //bool goingBase = false;
     Vector3 wavePos; // 나중에 웨이브 대상으로 변경해야함 (현 맵 중심으로 이동하게)
@@ -318,8 +318,8 @@ public class MonsterAi : UnitCommonAi
             patrolMainPos = wavePos;
         }
 
-        if (waveWaiting)
-            return;
+        //if (waveWaiting)
+        //    return;
 
         float spawnDis = (tr.position - patrolMainPos).magnitude;
 
@@ -388,8 +388,6 @@ public class MonsterAi : UnitCommonAi
                 enabled = false;
                 animator.enabled = false;
                 capsule2D.enabled = false;
-                battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
-
             }
             stopTrace = false;
 
@@ -408,8 +406,6 @@ public class MonsterAi : UnitCommonAi
                     enabled = false;
                     animator.enabled = false;
                     capsule2D.enabled = false;
-                    battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
-
                 }
                 stopTrace = false;
 
@@ -588,32 +584,27 @@ public class MonsterAi : UnitCommonAi
             }
         }
 
-        if(targetList.Count > 0)
-        {
-            battleBGM.BattleAddMonster(gameObject, isInHostMap);
-        }
-        else
+        if (targetList.Count == 0)
         {
             aggroTarget = null;
         }
 
-        if((aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack) && targetList.Count == 0)
+        if ((aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack) && targetList.Count == 0)
         {
             if (!waveState)
             {
                 idle = 0;
                 aIState = AIState.AI_Idle;
                 attackState = AttackState.Waiting;
-                battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
                 return;
             }
             else if (!waveArrivePos && waveFindObj)
             {
                 WaveStart(wavePos);
             }
-            else if (waveState && waveArrivePos && !waveWaiting)
+            //else if (waveState && waveArrivePos && !waveWaiting)
+            else if (waveState && waveArrivePos)
             {
-                battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
                 checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
             }
             //else if (!goingBase)
@@ -757,6 +748,14 @@ public class MonsterAi : UnitCommonAi
             AttackObjCheck(aggroTarget);        
     }
 
+
+    [ServerRpc]
+    protected override void DieFuncServerRpc()
+    {
+        base.DieFuncServerRpc();
+        MonsterSpawnerManager.instance.BattleRemoveMonster(gameObject);
+    }
+
     [ClientRpc]
     protected override void DieFuncClientRpc()
     {
@@ -787,7 +786,7 @@ public class MonsterAi : UnitCommonAi
         {
             spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType, waveState);
         }
-        battleBGM.BattleRemoveMonster(gameObject, isInHostMap);
+
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
             NetworkObject.Despawn();
@@ -813,7 +812,6 @@ public class MonsterAi : UnitCommonAi
     public void MonsterScriptSetClientRpc(bool scriptState)
     {
         isScriptActive = scriptState;
-
         if(scriptState)
         {
             enabled = true;
@@ -887,7 +885,7 @@ public class MonsterAi : UnitCommonAi
     public void WaveStart(Vector3 _wavePos)
     {
         waveState = true;
-        waveWaiting = false;
+        //waveWaiting = false;
 
         int x = (int)Random.Range(-5, 5);
         int y = (int)Random.Range(-5, 5);
@@ -906,49 +904,49 @@ public class MonsterAi : UnitCommonAi
         checkPathCoroutine = StartCoroutine(CheckPath(wavePos, "NormalTrace"));
     }
 
-    public void WaveSetMoveMonster(Vector3 pos)
-    {
-        if (checkPathCoroutine == null)
-        {
-            waveState = true;
-            checkPathCoroutine = StartCoroutine(CheckPath(pos, "NormalTrace"));
-        }
-    }
+    //public void WaveSetMoveMonster(Vector3 pos)
+    //{
+    //    if (checkPathCoroutine == null)
+    //    {
+    //        waveState = true;
+    //        checkPathCoroutine = StartCoroutine(CheckPath(pos, "NormalTrace"));
+    //    }
+    //}
 
-    public void WaveTeleport(Vector3 teleportPos, Vector3 setWavePos)
-    {
-        Map map;
+    //public void WaveTeleport(Vector3 teleportPos, Vector3 setWavePos)
+    //{
+    //    Map map;
 
-        if (isInHostMap)
-            map = GameManager.instance.hostMap;
-        else
-            map = GameManager.instance.clientMap;
-        Vector3 newWavePos;
-        if (aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
-        {
-            do
-            {
-                int x = (int)Random.Range(-20, 20);
-                int y = (int)Random.Range(-20, 20);
+    //    if (isInHostMap)
+    //        map = GameManager.instance.hostMap;
+    //    else
+    //        map = GameManager.instance.clientMap;
+    //    Vector3 newWavePos;
+    //    if (aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
+    //    {
+    //        do
+    //        {
+    //            int x = (int)Random.Range(-20, 20);
+    //            int y = (int)Random.Range(-20, 20);
 
-                newWavePos = teleportPos + new Vector3(x, y);
+    //            newWavePos = teleportPos + new Vector3(x, y);
 
-            } while (map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "lake" 
-            || map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "cliff");
+    //        } while (map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "lake" 
+    //        || map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "cliff");
 
-            wavePos = setWavePos;
-            waveState = true;
-            waveWaiting = true;
-            transform.position = newWavePos;
-        }
-    }
+    //        wavePos = setWavePos;
+    //        waveState = true;
+    //        waveWaiting = true;
+    //        transform.position = newWavePos;
+    //    }
+    //}
 
     public override void GameStartSet(UnitSaveData unitSaveData)
     {
         base.GameStartSet(unitSaveData);
 
         waveState = unitSaveData.waveState;
-        waveWaiting = unitSaveData.waveWaiting;
+        //waveWaiting = unitSaveData.waveWaiting;
         monsterType = unitSaveData.monsterType;
     }
 
@@ -960,7 +958,7 @@ public class MonsterAi : UnitCommonAi
         data.monsterType = monsterType;
         data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.waveState = waveState;
-        data.waveWaiting = waveWaiting;
+        //data.waveWaiting = waveWaiting;
         data.isWaveColonyCallCheck = isWaveColonyCallCheck;
         return data;
     }

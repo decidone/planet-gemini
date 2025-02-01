@@ -33,8 +33,6 @@ public class ScienceBuilding : PortalObj
 
     void SciBuildingRepairEnd()
     {
-        GameManager gameManager = GameManager.instance;
-        gameManager.SciBuildingSet(isInHostMap);
         buildingIndex = BuildingList.instance.FindBuildingListIndex("BuildingScienceBuilding");
         PortalSciManager.instance.UISet();
     }

@@ -48,6 +48,7 @@ public class MonsterSpawner : NetworkBehaviour
     float spawnTimer;
 
     public bool nearUserObjExist;
+    public bool nearEnergyObjExist;
 
     public SpriteRenderer unitSprite;
     public GameObject unitCanvas;
@@ -66,17 +67,17 @@ public class MonsterSpawner : NetworkBehaviour
     public float waveTimer;
     bool waveState;
 
-    BattleBGMCtrl battleBGM;
+    //BattleBGMCtrl battleBGM;
     MonsterSpawnerManager monsterSpawnerManager;
 
     [SerializeField]
     GameObject searchColl;
     [SerializeField]
     GameObject awakeColl;
-    SpawnerSearchColl spawnerSearchColl;
+    public SpawnerSearchColl spawnerSearchColl;
     SpawnerAwake spawnerAwakeColl;
     float[] energyAggroMaxValue = new float[8] {3000, 6000, 8000, 10000, 12000, 12000, 12000, 12000 }; // 어그로 최대 임계치
-    float[] violentEnergyAggroMaxValue = new float[8] {5000, 8000, 10000, 12000, 14000, 14000, 14000, 14000 }; // 광폭화시 최대 임계치
+    //float[] violentEnergyAggroMaxValue = new float[8] {5000, 8000, 10000, 12000, 14000, 14000, 14000, 14000 }; // 광폭화시 최대 임계치
     public float energyAggroValue; // 어그로 현 임계치
     float[] energyAggroInterval = new float[8] { 120, 150, 180, 200, 220, 220, 220, 220 }; // 어그로 수치 체크타임
     float energyAggroTimer;
@@ -98,13 +99,16 @@ public class MonsterSpawner : NetworkBehaviour
     float restAggroTimer;
     public Dictionary<Structure, float> energyUseStrs = new Dictionary<Structure, float>();
 
-    bool globalWave;
-
     public bool isInHostMap;
     bool gameLodeSet = false;
 
-    bool violentDay;
+    [HideInInspector]
+    public bool violentDay;
     public float violentCollSize;
+    [SerializeField]
+    int safeAmount;
+    [HideInInspector]
+    public int safeCount; 
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
@@ -112,7 +116,7 @@ public class MonsterSpawner : NetworkBehaviour
     void Awake()
     {
         monsterSpawn = MonsterSpawnerManager.instance;
-        battleBGM = BattleBGMCtrl.instance;
+        //battleBGM = BattleBGMCtrl.instance;
         monsterSpawnerManager = MonsterSpawnerManager.instance;
         weakMonster = GeminiNetworkManager.instance.unitListSO.weakMonsterList;
         normalMonster = GeminiNetworkManager.instance.unitListSO.normalMonsterList;
@@ -189,15 +193,13 @@ public class MonsterSpawner : NetworkBehaviour
         {
             ExtraMonsterSpawn();
         }
-
-
-
-        if (!globalWave && nearUserObjExist && energyUseStrs.Count > 0)
+        
+        if (!violentDay && nearEnergyObjExist && energyUseStrs.Count > 0)
         {
             if (restTime)
             {
                 restAggroTimer += Time.deltaTime;
-
+                Debug.Log(attackLevelTier);
                 if (restAggroTimer >= restAggroIntervals[sppawnerLevel - 1][attackLevelTier])
                 {
                     restTime = false;
@@ -217,18 +219,7 @@ public class MonsterSpawner : NetworkBehaviour
 
                 if (energyAggroTimer >= energyAggroInterval[sppawnerLevel - 1])
                 {
-                    float maxAggroValue = violentDay ? violentEnergyAggroMaxValue[sppawnerLevel - 1] : energyAggroMaxValue[sppawnerLevel - 1];
-
-                    // 공통 조건을 사용하여 로직 단순화
-                    if (energyAggroValue > maxAggroValue)
-                    {
-                        restTime = true;
-                        attackLevelTier = (int)(energyAggroTimer / (energyAggroInterval[sppawnerLevel - 1] / restAggroIntervals[sppawnerLevel - 1].Length));
-                        EnergyUseStrAttack();
-                    }
-
                     energyAggroValue = 0;
-                    checkAggroTimer = 0;
                     energyAggroTimer = 0;
                 }
             }
@@ -243,14 +234,14 @@ public class MonsterSpawner : NetworkBehaviour
             }
         }
 
-        if (waveState)
-        {
-            waveTimer += Time.deltaTime;
-            if (waveTimer >= waveInterval)
-            {
-                WaveStart();
-            }
-        }
+        //if (waveState)
+        //{
+        //    waveTimer += Time.deltaTime;
+        //    if (waveTimer >= waveInterval)
+        //    {
+        //        WaveStart();
+        //    }
+        //}
     }
 
     protected virtual void OnClientConnectedCallback(ulong clientId)
@@ -624,16 +615,16 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public void WaveTeleport(Vector3 pos)
-    {
-        waveState = true;
-        waveTimer = 0;
-        MonsterScriptSet(true, false);
-        foreach (MonsterAi monster in totalMonsterList)
-        {
-            monster.WaveTeleport(pos, wavePos);
-        }
-    }
+    //public void WaveTeleport(Vector3 pos)
+    //{
+    //    waveState = true;
+    //    waveTimer = 0;
+    //    MonsterScriptSet(true, false);
+    //    foreach (MonsterAi monster in totalMonsterList)
+    //    {
+    //        monster.WaveTeleport(pos, wavePos);
+    //    }
+    //}
 
     public void WaveStart()
     {
@@ -646,7 +637,7 @@ public class MonsterSpawner : NetworkBehaviour
             monsters.Add(monster.gameObject);
         }
 
-        battleBGM.WaveAddMonster(monsters);
+        monsterSpawnerManager.WaveAddMonster(monsters);
 
         waveMonsterList.AddRange(totalMonsterList);
 
@@ -654,31 +645,6 @@ public class MonsterSpawner : NetworkBehaviour
         currentWeakSpawn = 0;
         currentNormalSpawn = 0;
         currentStrongSpawn = 0;
-    }
-
-    public void ColonyCall(EnergyColony colony)
-    {
-        if (!IsServer)
-            return;
-
-        MonsterScriptSet(true, false);
-        List<GameObject> monsters = new List<GameObject>();
-        foreach (MonsterAi monster in totalMonsterList)
-        {
-            monster.ColonyAttackStart(colony.transform.position);
-            monsters.Add(monster.gameObject);
-        }
-
-        battleBGM.ColonyCallAddMonster(monsters, isInHostMap);
-
-        waveMonsterList.AddRange(totalMonsterList);
-
-        totalMonsterList.Clear();
-        currentWeakSpawn = 0;
-        currentNormalSpawn = 0;
-        currentStrongSpawn = 0;
-
-        WarningWindow.instance.WarningTextSet("Attack detected on", isInHostMap);
     }
 
     public void GameStartSet(SpawnerSaveData spawnerSaveData, AreaLevelData levelData, Vector3 _basePos, bool isHostMap, int groupIndex)
@@ -693,8 +659,11 @@ public class MonsterSpawner : NetworkBehaviour
         sppawnerLevel = spawnerSaveData.level;
         extraSpawnNum = spawnerSaveData.extraSpawnNum;
         nearUserObjExist = spawnerSaveData.nearUserObjExist;
+        nearEnergyObjExist = spawnerSaveData.nearEnergyObjExist;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
+        safeCount = spawnerSaveData.safeCount;
+        violentDay = spawnerSaveData.violentDay;
         sppawnerLevelData = levelData;
         sppawnerLevel = levelData.sppawnerLevel;
         maxWeakSpawn = levelData.maxWeakSpawn;
@@ -712,47 +681,47 @@ public class MonsterSpawner : NetworkBehaviour
         waveTimer = waveTimerSet;
     }
 
-    public GameObject WaveWaitingMonsterSpawn(int monserType, int monsterIndex, bool isInHostMap)
-    {
-        GameObject newMonster = null;
-        if (monserType == 0)
-        {
-            newMonster = Instantiate(weakMonster[monsterIndex]);
-            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
-            currentWeakSpawn++;
-        }
-        else if (monserType == 1)
-        {
-            newMonster = Instantiate(normalMonster[monsterIndex]);
-            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
-            currentNormalSpawn++;
-        }
-        else if (monserType == 2)
-        {
-            newMonster = Instantiate(strongMonster[monsterIndex]);
-            totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
-            currentStrongSpawn++;
-        }
-        else if (monserType == 3)
-        {
-            newMonster = Instantiate(guardian);
-            guardianList.Add(newMonster.GetComponent<GuardianAi>());
-        }
+    //public GameObject WaveWaitingMonsterSpawn(int monserType, int monsterIndex, bool isInHostMap)
+    //{
+    //    GameObject newMonster = null;
+    //    if (monserType == 0)
+    //    {
+    //        newMonster = Instantiate(weakMonster[monsterIndex]);
+    //        totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
+    //        currentWeakSpawn++;
+    //    }
+    //    else if (monserType == 1)
+    //    {
+    //        newMonster = Instantiate(normalMonster[monsterIndex]);
+    //        totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
+    //        currentNormalSpawn++;
+    //    }
+    //    else if (monserType == 2)
+    //    {
+    //        newMonster = Instantiate(strongMonster[monsterIndex]);
+    //        totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
+    //        currentStrongSpawn++;
+    //    }
+    //    else if (monserType == 3)
+    //    {
+    //        newMonster = Instantiate(guardian);
+    //        guardianList.Add(newMonster.GetComponent<GuardianAi>());
+    //    }
 
-        NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
-        if (!networkObject.IsSpawned) networkObject.Spawn(true);
+    //    NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
+    //    if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
-        newMonster.transform.SetParent(this.transform, false);
+    //    newMonster.transform.SetParent(this.transform, false);
 
-        MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
-        monsterAi.MonsterSpawnerSet(this, monserType);
-        monsterAi.AStarSet(isInHostMap);
+    //    MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
+    //    monsterAi.MonsterSpawnerSet(this, monserType);
+    //    monsterAi.AStarSet(isInHostMap);
 
-        if (IsServer)
-            monsterAi.MonsterScriptSetServerRpc(true);
+    //    if (IsServer)
+    //        monsterAi.MonsterScriptSetServerRpc(true);
 
-        return newMonster;
-    }
+    //    return newMonster;
+    //}
 
     public GameObject WaveMonsterSpawn(int monserType, int monsterIndex, bool isInHostMap, bool isWaveColonyCallCheck)
     {
@@ -783,16 +752,19 @@ public class MonsterSpawner : NetworkBehaviour
         monsterAi.AStarSet(isInHostMap);
 
         if (IsServer)
+        {
             monsterAi.MonsterScriptSetServerRpc(true);
+            monsterSpawnerManager.WaveAddMonster(newMonster);
+        }
 
-        if (isWaveColonyCallCheck)
-        {
-            battleBGM.WaveAddMonster(newMonster);
-        }
-        else
-        {
-            battleBGM.ColonyCallAddMonster(newMonster, isInHostMap);
-        }
+        //if (isWaveColonyCallCheck)
+        //{
+        //    battleBGM.WaveAddMonster(newMonster);
+        //}
+        //else
+        //{
+        //    battleBGM.ColonyCallAddMonster(newMonster, isInHostMap);
+        //}
 
         return newMonster;
     }
@@ -807,9 +779,8 @@ public class MonsterSpawner : NetworkBehaviour
             }
         }
 
-        float maxAggroValue = violentDay ? violentEnergyAggroMaxValue[sppawnerLevel - 1] : energyAggroMaxValue[sppawnerLevel - 1];
+        float maxAggroValue = energyAggroMaxValue[sppawnerLevel - 1];
 
-        // 공통 조건을 사용하여 로직 단순화
         if (energyAggroValue > maxAggroValue)
         {
             restTime = true;
@@ -817,13 +788,15 @@ public class MonsterSpawner : NetworkBehaviour
             energyAggroValue = 0;
             checkAggroTimer = 0;
             energyAggroTimer = 0;
-            EnergyUseStrAttack();
+            Debug.Log("lv : " +attackLevelTier);
+            EnergyUseStrAttack(attackLevelTier);
         }
     }
 
-    void EnergyUseStrAttack()
+    public void EnergyUseStrAttack(int attackLevel)
     {
-        float attackPercentage = GetSpawnPercentage(attackLevelTier);
+        Debug.Log("EnergyUseStrAttack");
+        float attackPercentage = GetSpawnPercentage(attackLevel);
         int monstersToAttackCount = Mathf.CeilToInt(totalMonsterList.Count * attackPercentage);
         List<GameObject> monsters = new List<GameObject>();
         List<Structure> structures = new List<Structure>(energyUseStrs.Keys);
@@ -844,7 +817,7 @@ public class MonsterSpawner : NetworkBehaviour
         for (int i = 0; i < monstersToAttackCount; i++)
         {
             MonsterAi monsterAi = totalMonsterList[i];
-
+            monsterAi.MonsterScriptSetServerRpc(true);
             // 가중치를 기반으로 랜덤하게 구조물을 선택합니다.
             float randomWeight = Random.Range(0f, totalWeight);
             float cumulativeWeight = 0f;
@@ -890,12 +863,7 @@ public class MonsterSpawner : NetworkBehaviour
             totalMonsterList.Remove(monster.GetComponent<MonsterAi>());
         }
 
-        if (violentDay)
-        {
-            spawnerSearchColl.SearchCollReduction();
-        }
-
-        battleBGM.ColonyCallAddMonster(monsters, isInHostMap);
+        //battleBGM.ColonyCallAddMonster(monsters, isInHostMap);
         WarningWindowSetServerRpc();
     }
 
@@ -930,10 +898,10 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public void GlobalWaveState(bool wave)
-    {
-        globalWave = wave;
-    }
+    //public void GlobalWaveState(bool wave)
+    //{
+    //    globalWave = wave;
+    //}
 
     public SpawnerSaveData SaveData()
     {
@@ -948,8 +916,11 @@ public class MonsterSpawner : NetworkBehaviour
         data.waveTimer = waveTimer;
         data.dieCheck = dieCheck;
         data.spawnerGroupIndex = spawnerGroupIndex;
+        data.safeCount = safeCount;
+        data.violentDay = violentDay;
         data.violentCollSize = spawnerSearchColl.violentCollSize;
         data.nearUserObjExist = nearUserObjExist;
+        data.nearEnergyObjExist = nearEnergyObjExist;
         foreach (MonsterAi monster in totalMonsterList)
         {
             data.monsterList.Add(monster.SaveData());
@@ -975,12 +946,39 @@ public class MonsterSpawner : NetworkBehaviour
     public void SearchCollExtend()
     {
         spawnerSearchColl.SearchCollExtend();
-        violentDay = true;
+    }
+
+    public float EnergyUseCheck()
+    {
+        float aggroValue = 0;
+        foreach (var data in energyUseStrs)
+        {
+            if (data.Key.isOperate)
+            {
+                aggroValue += data.Value;
+            }
+        }
+        return aggroValue;
     }
 
     public void SearchCollReturn()
     {
         spawnerSearchColl.SearchCollReturn();
         violentDay = false;
+    }
+
+    public void ViolentDaySet()
+    {
+        violentDay = true;
+        safeCount = safeAmount;
+    }
+
+    public void SafeCountDown()
+    {
+        safeCount--;
+        if (safeCount < 0)
+        {
+            safeCount = 0;
+        }
     }
 }

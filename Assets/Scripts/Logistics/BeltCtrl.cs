@@ -846,10 +846,17 @@ public class BeltCtrl : LogisticsCtrl
         beltState = (BeltState)beltStateNum;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void BeltDirSetServerRpc()
+    {
+        BeltDirSetClientRpc(dirNum);
+    }
+
     [ClientRpc]
     public void BeltDirSetClientRpc(int num)
     {
         dirNum = num;
+        BeltModelSet();
     }
 
     [ClientRpc]

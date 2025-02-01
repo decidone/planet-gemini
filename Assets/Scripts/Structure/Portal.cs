@@ -32,6 +32,8 @@ public class Portal : Production
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         GetUIFunc();
         tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
+        if(IsServer)
+            SetScienceBuildingServerRpc();
     }
 
     protected override void Update() { }
@@ -210,17 +212,14 @@ public class Portal : Production
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     public void SetScienceBuildingServerRpc()
     {
-        if (IsServer)
-        {
-            GameObject spawnobj = Instantiate(scienceBuilding, transform.position, Quaternion.identity);
-            spawnobj.TryGetComponent(out NetworkObject netObj);
-            if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
-            spawnobj.transform.parent = transform;
-            spawnobj.GetComponent<ScienceBuilding>().SetPortal(isInHostMap);
-        }
+        GameObject spawnobj = Instantiate(scienceBuilding, transform.position, Quaternion.identity);
+        spawnobj.TryGetComponent(out NetworkObject netObj);
+        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+        spawnobj.transform.parent = transform;
+        spawnobj.GetComponent<ScienceBuilding>().SetPortal(isInHostMap);
     }
     public override void IncreasedStructureCheck() { }
 }

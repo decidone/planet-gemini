@@ -100,8 +100,6 @@ public class GameManager : NetworkBehaviour
 
     OptionCanvas optionCanvas;
 
-    public bool scienceBuildingSet;
-    public bool sciBuildingMap;
     ScienceBuildingInfo scienceBuildingInfo;
 
     public int day;                     // 일 수
@@ -116,18 +114,25 @@ public class GameManager : NetworkBehaviour
     // 4 : 24:00 ~ 04:00
     // 5 : 04:00 ~ 08:00
 
-    int safeDay = 10;                   // 게임 초기 안전한 날
+    [SerializeField]
+    int safeDay;                        // 게임 초기 안전한 날
     int[] randomStackValue = new int[2] { 20, 80 }; // 스택 랜덤 범위
     [SerializeField]
     float violentValue;                 // 광폭화의날 스택
     float violentMaxValue = 100;        // 광폭화의날 최대 값
+    
     [SerializeField]
-    bool violentDay;                    // true면 광폭화의 날
+    bool violentDayCheck;                    // true면 광폭화의 날
+    public bool violentDay;
+    [SerializeField]
+    int violentCycle;
+    [SerializeField]
+    int clientMapDateDifference;
 
     /// <summary>
     /// 광폭화 시스템
     /// 인게임 하루 = 현실 10분
-    /// 안전한날 30일 = 현실 5시간
+    /// 안전한날 20일 = 현실 3시간 20분
     /// 20분에 1번 발생 한다면
     /// 인게임 2일 = 현실 20분
     /// 2일간 100 스택이 쌓이면 광폭화 발생이라 하면 평균 스택 50으로 잡고 상한선 80 하한선 20 으로 잡으면
@@ -309,33 +314,30 @@ public class GameManager : NetworkBehaviour
             {
                 isDay = true;
                 SoundManager.instance.PlayBgmMapCheck();
-                if (violentDay)
-                {
-                    violentDay = false;
-                    timeImg.color = new Color32(255, 255, 255, 255);
-                    MonsterSpawnerManager.instance.ViolentDayOff();
-                }
+                violentDay = false;
+                violentDayCheck = false;
+                timeImg.color = new Color32(255, 255, 255, 255);
             }
             else if (dayIndex == 3)
             {
                 isDay = false;
                 SoundManager.instance.PlayBgmMapCheck();
-                if (day > safeDay)
+                if (violentDayCheck)
                 {
-                    violentValue += UnityEngine.Random.Range(randomStackValue[0], randomStackValue[1] + 1);
-                    if (violentValue > violentMaxValue)
-                    {
-                        violentDay = true;
-                        violentValue = 0;
-                        timeImg.color = new Color32(255, 50, 50, 255);
-                        MonsterSpawnerManager.instance.ViolentDayOn();
-                    }
+                    violentDay = true;
+                    timeImg.color = new Color32(255, 50, 50, 255);
                 }
             }
             else if (dayIndex == 4)
             {
                 day++;
                 dayText.text = "Day : " + day;
+
+                if (IsServer)
+                {
+                    SyncTimeServerRpc();
+                    ViolentDayOnServerRpc();
+                }
             }
         }
 
@@ -365,6 +367,42 @@ public class GameManager : NetworkBehaviour
                 DataManager.instance.Save(0);
             }
         }
+    }
+
+    [ServerRpc]
+    void ViolentDayOnServerRpc()
+    {
+        bool violentDaySync = false;
+
+        if (violentDayCheck)
+        {
+            MonsterSpawnerManager.instance.ViolentDayStart();
+            violentDaySync = false;
+        }
+        else
+        {
+            if (day >= safeDay)
+            {
+                if (day % violentCycle == 0)    // 호스트맵
+                {
+                    violentDaySync = true;
+                    MonsterSpawnerManager.instance.ViolentDayOn(true);
+                }
+                else if ((day - clientMapDateDifference) % violentCycle == 0)    // 클라이언트 맵
+                {
+                    violentDaySync = true;
+                    MonsterSpawnerManager.instance.ViolentDayOn(false);
+                }
+            }
+        }
+
+        ViolentDayOnClientRpc(violentDaySync);
+    }
+
+    [ClientRpc]
+    void ViolentDayOnClientRpc(bool violentDaySync)
+    {
+        violentDayCheck = violentDaySync;
     }
 
     void SetBrightness(int level)
@@ -848,18 +886,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    //void Building()
-    //{
-    //    if (!bManager.buildingInventoryUI.activeSelf)
-    //    {
-    //        bManager.OpenUI();
-    //    }
-    //    else
-    //    {
-    //        bManager.CloseUI();
-    //    }
-    //}
-
     void ScienceTree(InputAction.CallbackContext ctx)
     {
         ScienceTree();
@@ -867,21 +893,7 @@ public class GameManager : NetworkBehaviour
 
     public void ScienceTree()
     {
-        if (scienceBuildingSet)
-        {
-            if (!sTreeManager.scienceTreeUI.activeSelf)
-            {
-                sTreeManager.OpenUI();
-            }
-            else
-            {
-                sTreeManager.CloseUI();
-            }
-        }
-        else
-        {
-            scienceBuildingInfo.OpenUI();
-        }
+        scienceBuildingInfo.OpenUI();
     }
 
     void UIChanged(GameObject ui)
@@ -1076,7 +1088,7 @@ public class GameManager : NetworkBehaviour
         else
             clientPlayerSpawnPos = spawnPos;
 
-        WavePoint.instance.SpawnPos(isHostPos, spawnPos);
+        //WavePoint.instance.SpawnPos(isHostPos, spawnPos);
         //player.transform.position = playerSpawnPos;
     }
 
@@ -1268,49 +1280,6 @@ public class GameManager : NetworkBehaviour
         Time.timeScale = 1;
     }
 
-    //public void WaveStartSet(int coreLevel)
-    //{
-    //    Debug.Log("WaveLevel : " + (coreLevel - 1));
-    //    int waveLevel = coreLevel - 1;
-
-    //    if (mapGenerator.mapSizeData.MapSplitCount == 5)
-    //    {
-    //        if (waveLevel == 1 || waveLevel == 2)
-    //        {
-    //            MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
-    //        }
-    //        else if (waveLevel == 3 || waveLevel == 4)
-    //        {
-    //            MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
-    //        }
-    //    }
-    //    else if (mapGenerator.mapSizeData.MapSplitCount == 7)
-    //    {
-    //        if (waveLevel == 1)
-    //        {
-    //            MonsterSpawnerManager.instance.WavePointSet(1, sciBuildingMap);
-    //        }
-    //        else if (waveLevel == 2 || waveLevel == 3)
-    //        {
-    //            MonsterSpawnerManager.instance.WavePointSet(2, sciBuildingMap);
-    //        }
-    //        else if (waveLevel == 4)
-    //        {
-    //            MonsterSpawnerManager.instance.WavePointSet(3, sciBuildingMap);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        MonsterSpawnerManager.instance.WavePointSet(waveLevel, sciBuildingMap);
-    //    }
-    //}
-
-    public void SciBuildingSet(bool map)
-    {
-        scienceBuildingSet = true;
-        sciBuildingMap = map;
-    }
-
     public InGameData SaveData()
     {
         InGameData inGameData = new InGameData();
@@ -1328,7 +1297,7 @@ public class GameManager : NetworkBehaviour
         inGameData.dayIndex = dayIndex;
 
         inGameData.violentValue = violentValue;
-        inGameData.violentDay = violentDay;
+        inGameData.violentDayCheck = violentDayCheck;
 
         inGameData.finance = finance.GetFinance();
         inGameData.scrap = scrap.GetScrap();
@@ -1345,6 +1314,7 @@ public class GameManager : NetworkBehaviour
         dayIndex = data.dayIndex;
         SoundManager.instance.GameSceneLoad();
         violentValue = data.violentValue;
+        violentDayCheck = data.violentDayCheck;
         violentDay = data.violentDay;
         timeImg.sprite = timeImgSet[dayIndex];
         SetBrightness(dayIndex);
@@ -1362,25 +1332,28 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SyncTimeServerRpc()
     {
-        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentValue, violentDay);
+        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentValue, violentDayCheck, violentDay);
     }
 
     [ClientRpc]
     public void SyncTimeClientRpc(int serverDay, bool serverIsDay, float serverDayTimer,
-        int serverDayIndex, float serverViolentValue, bool serverViolentDay)
+        int serverDayIndex, float serverViolentValue, bool serverViolentDayCheck, bool serverViolentDay)
     {
         day = serverDay;
         isDay = serverIsDay;
         dayTimer = serverDayTimer;
         dayIndex = serverDayIndex;
         violentValue = serverViolentValue;
+        violentDayCheck = serverViolentDayCheck;
         violentDay = serverViolentDay;
 
         timeImg.sprite = timeImgSet[dayIndex];
         dayText.text = "Day : " + day;
 
-        if(violentDay)
+        if (violentDay)
+        {
             timeImg.color = new Color32(255, 50, 50, 255);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

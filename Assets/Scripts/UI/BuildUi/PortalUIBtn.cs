@@ -92,10 +92,10 @@ public class PortalUIBtn : MonoBehaviour
     public void OkBtnFunc()
     {
         confirmPanel.SetActive(false);
-        if (!gameManager.scienceBuildingSet)
-        {
-            portal.SetScienceBuildingServerRpc();
-        }
+        //if (!gameManager.scienceBuildingSet)
+        //{
+        //    portal.SetScienceBuildingServerRpc();
+        //}
     }
 
     public void CanselBtnFunc()

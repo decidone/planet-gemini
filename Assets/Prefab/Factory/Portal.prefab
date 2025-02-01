@@ -511,6 +511,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   checkObj: 1
+  takeItemDelay: 0
   inObj: []
   outObj: []
   outSameList: []
@@ -520,7 +521,8 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
-  overclockAmount: 0
+  overclockPer: 0
+  effiCooldownUpgradePer: 0
   isStorageBuilding: 0
   isMainSource: 0
   isUIOpened: 0
@@ -539,6 +541,7 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}
@@ -592,6 +595,7 @@ MonoBehaviour:
   space: 0
   maxAmount: 0
   itemPref: {fileID: 0}
+  itemListSO: {fileID: 0}
 --- !u!114 &8396903158391217390
 MonoBehaviour:
   m_ObjectHideFlags: 0

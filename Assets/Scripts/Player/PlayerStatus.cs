@@ -20,10 +20,11 @@ public class PlayerStatus : NetworkBehaviour
     public float selfHealingAmount;
     public float selfHealInterval;
     float selfHealTimer;
+    bool damageEffectOn;
 
     public bool isPlayerInHostMap = true;
     public bool isPlayerInMarket = false;
-
+    protected SpriteRenderer unitSprite;
     public bool tankOn;
 
     public delegate void OnHpChanged();
@@ -32,6 +33,7 @@ public class PlayerStatus : NetworkBehaviour
     void Awake()
     {
         playerController = gameObject.GetComponent<PlayerController>();
+        unitSprite = GetComponent<SpriteRenderer>();
         hpBar.fillAmount = hp / maxHp;
         HPUISet(false);
     }
@@ -189,6 +191,11 @@ public class PlayerStatus : NetworkBehaviour
     {
         HPUISet(true);
 
+        if (!damageEffectOn)
+        {
+            StartCoroutine(TakeDamageEffect());
+        }
+
         if (!tankOn)
         {
             if (hp <= 0f)
@@ -217,6 +224,18 @@ public class PlayerStatus : NetworkBehaviour
             onHpChangedCallback?.Invoke();
             hpBar.fillAmount = tankHp / tankMaxHp;
         }
+    }
+    protected IEnumerator TakeDamageEffect()
+    {
+        damageEffectOn = true;
+
+        unitSprite.color = new Color32(255, 100, 100, 255);
+
+        yield return new WaitForSeconds(0.3f);
+
+        unitSprite.color = new Color32(255, 255, 255, 255);
+
+        damageEffectOn = false;
     }
 
     public void HPUISet(bool isOn)
