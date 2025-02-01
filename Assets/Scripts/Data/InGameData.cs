@@ -18,7 +18,8 @@ public class InGameData
     public int dayIndex;            // 24시간을 6등분해서 인덱스로 사용
 
     public float violentValue;      // 광폭화 스택
-    public bool violentDay;         // 광폭화 날인지
+    public bool violentDayCheck;    // 광폭화 체크
+    public bool violentDay;         // 광폭화 날
 
     public int finance;             // 재화
     public int scrap;               // 고철

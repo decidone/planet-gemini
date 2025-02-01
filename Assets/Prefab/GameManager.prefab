@@ -92,6 +92,7 @@ MonoBehaviour:
   space: 1
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!1 &2626022104716720057
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,6 +140,7 @@ MonoBehaviour:
   space: 60
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!1 &2852855281402203645
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +188,7 @@ MonoBehaviour:
   space: 16
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!1 &3268826976656388762
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,6 +236,7 @@ MonoBehaviour:
   space: 12
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!1 &3986364635626952762
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,15 +357,16 @@ MonoBehaviour:
   isBasicUIClose: 0
   basicUI: {fileID: 0}
   chat: {fileID: 0}
-  scienceBuildingSet: 0
-  sciBuildingMap: 0
   day: 0
   isDay: 0
   dayTime: 100
   dayTimer: 0
   dayIndex: 0
+  safeDay: 12
   violentValue: 0
   violentDay: 0
+  violentCycle: 6
+  clientMapDateDifference: 3
   timeImgSet:
   - {fileID: -856865314, guid: c61cd31f9d0bb224f841a1eeffaf83b7, type: 3}
   - {fileID: 4351435, guid: c61cd31f9d0bb224f841a1eeffaf83b7, type: 3}
@@ -806,6 +811,8 @@ MonoBehaviour:
       finance: 0
       scrap: 0
       questIndex: 0
+      hostPortalName: 
+      clientPortalName: 
     hostPlayerData:
       pos:
         x: 0
@@ -949,6 +956,7 @@ MonoBehaviour:
   space: 60
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!1 &7525422398918600961
 GameObject:
   m_ObjectHideFlags: 0
@@ -996,6 +1004,7 @@ MonoBehaviour:
   space: 12
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!1 &9206760005223835618
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,3 +1052,4 @@ MonoBehaviour:
   space: 1
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}

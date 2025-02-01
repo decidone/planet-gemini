@@ -144,6 +144,11 @@ public class BuildingInfo : MonoBehaviour
         SetItemSlot();
     }
 
+    public void RefundCost(int buildingIndex)
+    {
+
+    }
+
     public bool AmountsEnoughCheck()
     {
         SetItemSlot();

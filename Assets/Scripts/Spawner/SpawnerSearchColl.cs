@@ -40,6 +40,12 @@ public class SpawnerSearchColl : NetworkBehaviour
                 structures.Add(structure);
                 monsterSpawner.energyUseStrs.Add(structure, structure.energyConsumption);
             }
+
+            if (structures.Count > 0)
+            {
+                monsterSpawner.nearEnergyObjExist = true;
+            }
+            Debug.Log("Find obj");
         }
     }
 
@@ -51,6 +57,11 @@ public class SpawnerSearchColl : NetworkBehaviour
             {
                 structures.Remove(structure);
                 monsterSpawner.energyUseStrs.Remove(structure);
+            }
+
+            if (structures.Count == 0)
+            {
+                monsterSpawner.nearEnergyObjExist = false;
             }
         }
     }

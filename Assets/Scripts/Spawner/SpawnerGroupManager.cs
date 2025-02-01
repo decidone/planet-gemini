@@ -31,13 +31,13 @@ public class SpawnerGroupManager : NetworkBehaviour
         }
     }
 
-    public void WaveSet(Vector3 WaveCenterPos)
-    {
-        foreach (MonsterSpawner spawner in spawnerList)
-        {
-            spawner.WaveTeleport(WaveCenterPos);
-        }
-    }
+    //public void WaveSet(Vector3 WaveCenterPos)
+    //{
+    //    foreach (MonsterSpawner spawner in spawnerList)
+    //    {
+    //        spawner.WaveTeleport(WaveCenterPos);
+    //    }
+    //}
 
     public List<MonsterSpawner> MonsterSpawnerListData()
     {

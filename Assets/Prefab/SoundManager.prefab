@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3287065697107536719}
   - component: {fileID: 3287065697107536718}
-  - component: {fileID: 619806628872661649}
   m_Layer: 0
   m_Name: SoundManager
   m_TagString: Untagged
@@ -56,17 +55,5 @@ MonoBehaviour:
   musicMasterToggle: {fileID: 0}
   musicBGMToggle: {fileID: 0}
   musicSFXToggle: {fileID: 0}
---- !u!114 &619806628872661649
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3287065697107536712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e83b2a2c9fd191e43b7a08975bfa2aff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  battleMonsters: []
-  waveMonsters: []
+  isHostMapWaveOn: 0
+  isClientMapWaveOn: 0

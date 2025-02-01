@@ -289,12 +289,6 @@ public class DataManager : MonoBehaviour
                 }
             }
         }
-
-        if (structure.GetComponent<ScienceBuilding>())
-        {
-            GameManager gameManager = GameManager.instance;
-            gameManager.SciBuildingSet(saveData.planet);
-        }
     }
 
     void SpawnBeltGroup(BeltGroupSaveData saveData)
@@ -435,6 +429,8 @@ public class DataManager : MonoBehaviour
                 monsterSpawner.GameStartWaveSet(spawnerSaveData.waveTimer);
             SetSpawner(monsterSpawner, spawnerSaveData, planet, spawnerSaveData.waveState);
             monsterSpawner.violentCollSize = spawnerSaveData.violentCollSize;
+            if(spawnerSaveData.waveState)
+                SoundManager.instance.BattleStateSet(planet, spawnerSaveData.waveState);
         }
 
         return spawnerGroupObj;
@@ -452,17 +448,17 @@ public class DataManager : MonoBehaviour
             }
             else
             {
-                if (waveState)
-                {
-                    monster = monsterSpawner.WaveWaitingMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet);
-                    monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
-                }
-                else
-                {
+                //if (waveState)
+                //{
+                //    monster = monsterSpawner.WaveWaitingMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet);
+                //    monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
+                //}
+                //else
+                //{
                     monster = monsterSpawner.WaveMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet, unitSaveData.isWaveColonyCallCheck);
                     monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
                     monster.GetComponent<MonsterAi>().WaveStart(Vector3Extensions.ToVector3(unitSaveData.wavePos));
-                }
+                //}
             }
 
             monster.GetComponent<MonsterAi>().GameStartSet(unitSaveData);

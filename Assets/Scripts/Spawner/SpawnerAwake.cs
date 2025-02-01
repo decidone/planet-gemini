@@ -48,12 +48,12 @@ public class SpawnerAwake : NetworkBehaviour
             || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting.Value)))
         {
             inObjList.Add(collision.gameObject);
-        }
 
-        if (!nearUserObjExist && inObjList.Count > 0)
-        {
-            nearUserObjExist = true;
-            monsterSpawner.SearchObj(true);
+            if (inObjList.Count > 0)
+            {
+                nearUserObjExist = true;
+                monsterSpawner.SearchObj(true);
+            }
         }
     }
 
@@ -64,17 +64,17 @@ public class SpawnerAwake : NetworkBehaviour
             || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting.Value)))
         {
             inObjList.Remove(collision.gameObject);
-        }
 
-        if (nearUserObjExist && inObjList.Count == 0)
-        {
-            if (!NetworkObject.IsSpawned)
+            if (nearUserObjExist && inObjList.Count == 0)
             {
-                return;
-            }
+                if (!NetworkObject.IsSpawned)
+                {
+                    return;
+                }
 
-            nearUserObjExist = false;
-            monsterSpawner.SearchObj(false);
+                nearUserObjExist = false;
+                monsterSpawner.SearchObj(false);
+            }
         }
     }
 }

@@ -149,7 +149,7 @@ public class MapCameraController : MonoBehaviour
             mainCamController.ChangeZoomLv(1);
             gameManager.CloseAllOpenedUI();
             gameManager.CloseBasicUIs();
-
+            WavePoint.instance.MapCameraOpen(true);
             OpenUI();
             inputManager.OpenMap();
         }
@@ -158,7 +158,7 @@ public class MapCameraController : MonoBehaviour
             mainCamController.ChangeZoomLv(mainCamZoom);
             
             if(!gameManager.isBasicUIClose) gameManager.OpenBasicUIs();
-
+            WavePoint.instance.MapCameraOpen(false);
             CloseUI();
             inputManager.CloseMap();
         }

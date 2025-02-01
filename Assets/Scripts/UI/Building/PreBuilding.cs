@@ -842,8 +842,11 @@ public class PreBuilding : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ServerBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int buildingIndex)
     {
-        GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
+        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level);
+        if (!notFound)
+            return;
 
+        GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
         GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
         if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
@@ -867,6 +870,10 @@ public class PreBuilding : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ServerUnderObjBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, bool isSend, bool isUnderBelt, int buildingIndex)
     {
+        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level);
+        if (!notFound)
+            return;
+
         GameObject prefabObj;
         GameObject spawnobj;
          
@@ -888,6 +895,17 @@ public class PreBuilding : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ServerPortalObjBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int portalIndex, int buildingIndex)
     {
+        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level);
+        if (!notFound)
+            return;
+        //Cell cell = gameManager.map.GetCellDataFromPos((int)spawnPos.x, (int)spawnPos.y);
+
+        //if (cell.structure)
+        //{
+        //    Debug.Log("already");
+        //    return;
+        //}
+
         GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
 
         GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
@@ -901,6 +919,54 @@ public class PreBuilding : NetworkBehaviour
             spawnobj.transform.parent = gameManager.portal[portalIndex].transform;
             MapDataCheck(spawnobj, spawnPos);
         }
+    }
+
+    bool ReCheck(Vector3 spawnPos, int objHeight, int objWidth, int itemIndex, int level)
+    {
+        int x = Mathf.FloorToInt(spawnPos.x);
+        int y = Mathf.FloorToInt(spawnPos.y);
+
+        List<int> xList = new List<int>();
+        List<int> yList = new List<int>();
+
+        if (objHeight == 1 && objWidth == 1)
+        {
+            xList.Add(x);
+            yList.Add(y);
+        }
+        else if (objHeight == 2 && objWidth == 2)
+        {
+            xList.Add(x);
+            xList.Add(x + 1);
+            yList.Add(y);
+            yList.Add(y + 1);
+        }
+
+        foreach (int newX in xList)
+        {
+            foreach (int newY in yList)
+            {
+                Cell cell = gameManager.map.GetCellDataFromPos(newX, newY);
+                if (cell.structure)
+                {
+                    Debug.Log("already");
+                    GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
+                    string name = prefabObj.GetComponent<Structure>().structureData.FactoryName;
+                    Debug.Log(name + " : " + level);
+                    BuildingData data = BuildingDataGet.instance.GetBuildingName(name, level + 1);
+                    Debug.Log(data.items.Count);
+
+                    for (int i = 0; i < data.GetItemCount(); i++)
+                    {
+                        GameManager.instance.inventory.Add(ItemList.instance.itemDic[data.items[i]], data.amounts[i]);
+                    }
+
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     void MapDataCheck(GameObject obj, Vector2 pos)
@@ -1232,7 +1298,6 @@ public class PreBuilding : NetworkBehaviour
         int x = Mathf.FloorToInt(pos.x);
         int y = Mathf.FloorToInt(pos.y);
 
-
         List<int> xList = new List<int>();
         List<int> yList = new List<int>();
 
@@ -1308,7 +1373,6 @@ public class PreBuilding : NetworkBehaviour
                         Miner miner = null;
                         PumpCtrl pump = null;
                         ExtractorCtrl extractor = null;
-                        
                         if (buildData.gameObj.TryGetComponent(out miner) || buildData.gameObj.TryGetComponent(out pump) || buildData.gameObj.TryGetComponent(out extractor))
                         {
                             if ((miner && cell.BuildCheck("miner") &&
@@ -1335,7 +1399,6 @@ public class PreBuilding : NetworkBehaviour
                 }
             }
         }
-
         return canBuild;
     }
 

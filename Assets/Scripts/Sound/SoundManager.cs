@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
-using Unity.Netcode;
 using UnityEngine.SceneManagement;
 
-public class SoundManager : NetworkBehaviour
+public class SoundManager : MonoBehaviour
 {
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 
@@ -56,8 +55,8 @@ public class SoundManager : NetworkBehaviour
     float unitDelayTimer = 0.0f;
     float unitDelayInterval = 0.05f;
 
-    public bool isHostMapBattleOn = false;
-    public bool isClientMapBattleOn = false;
+    //public bool isHostMapBattleOn = false;
+    //public bool isClientMapBattleOn = false;
     public bool isHostMapWaveOn = false;
     public bool isClientMapWaveOn = false;
 
@@ -272,15 +271,15 @@ public class SoundManager : NetworkBehaviour
     {
         if (GameManager.instance != null)
         {
-            if (isHostMapBattleOn != isClientMapBattleOn || isHostMapWaveOn != isClientMapWaveOn)
+            if (isHostMapWaveOn != isClientMapWaveOn)
             {
                 if (GameManager.instance.isPlayerInHostMap)
                 {
-                    PlayBGM(isHostMapBattleOn, isHostMapWaveOn);
+                    PlayBGM(isHostMapWaveOn);
                 }
                 else
                 {
-                    PlayBGM(isClientMapBattleOn, isClientMapWaveOn);
+                    PlayBGM(isClientMapWaveOn);
                 }
             }
         }
@@ -327,11 +326,11 @@ public class SoundManager : NetworkBehaviour
             }
             else if (GameManager.instance.isPlayerInHostMap)
             {
-                PlayBGM(isHostMapBattleOn, isHostMapWaveOn);
+                PlayBGM(isHostMapWaveOn);
             }
             else
             {
-                PlayBGM(isClientMapBattleOn, isClientMapWaveOn);
+                PlayBGM(isClientMapWaveOn);
             }
         }
     }
@@ -384,15 +383,11 @@ public class SoundManager : NetworkBehaviour
         return newAuido;
     }
 
-    void PlayBGM(bool isBattle, bool isWave)
+    void PlayBGM(bool isWave)
     {
         if (isWave)
         {
             bgmPlayer.clip = audioClipRefsSO.waveBgm[Random.Range(0, audioClipRefsSO.waveBgm.Length)];
-        }
-        else if (isBattle)
-        {
-            bgmPlayer.clip = audioClipRefsSO.battleBgm[Random.Range(0, audioClipRefsSO.battleBgm.Length)];
         }
         else
         {
@@ -403,46 +398,59 @@ public class SoundManager : NetworkBehaviour
         StartCoroutine(nameof(SoundFadeIn));
     }
 
-    [ServerRpc]
-    public void BattleStateSetServerRpc(bool isBattle, bool isWave, bool isHostMap)
-    {
-        BattleStateSetClientRpc(isBattle, isWave, isHostMap);
-    }
-
-    [ClientRpc]
-    public void BattleStateSetClientRpc(bool isBattle, bool isWave, bool isHostMap)
+    public void BattleStateSet(bool isHostMap, bool waveState)
     {
         if (isHostMap)
+            isHostMapWaveOn = waveState;
+        else
+            isClientMapWaveOn = waveState;
+
+        if (!GameManager.instance.isPlayerInMarket && GameManager.instance.isPlayerInHostMap == isHostMap)
         {
-            if (isHostMapBattleOn == isBattle && isHostMapWaveOn == isWave)
-            {
-                return;
-            }
-            isHostMapBattleOn = isBattle;
-            isHostMapWaveOn = isWave;
-            if (GameManager.instance.isPlayerInMarket)
-            {
-                return;
-            }
             PlayBgmMapCheck();
-            //StartCoroutine(nameof(SoundFadeOut));
-        }
-        else if(!isHostMap)
-        {
-            if (isClientMapBattleOn == isBattle && isClientMapWaveOn == isWave)
-            {
-                return;
-            }
-            isClientMapBattleOn = isBattle;
-            isClientMapWaveOn = isWave;
-            if (GameManager.instance.isPlayerInMarket)
-            {
-                return;
-            }
-            PlayBgmMapCheck();
-            //StartCoroutine(nameof(SoundFadeOut));
         }
     }
+
+    //[ServerRpc]
+    //public void BattleStateSetServerRpc(bool isBattle, bool isWave, bool isHostMap)
+    //{
+    //    BattleStateSetClientRpc(isBattle, isWave, isHostMap);
+    //}
+
+    //[ClientRpc]
+    //public void BattleStateSetClientRpc(bool isBattle, bool isWave, bool isHostMap)
+    //{
+    //    if (isHostMap)
+    //    {
+    //        if (isHostMapBattleOn == isBattle && isHostMapWaveOn == isWave)
+    //        {
+    //            return;
+    //        }
+    //        isHostMapBattleOn = isBattle;
+    //        isHostMapWaveOn = isWave;
+    //        if (GameManager.instance.isPlayerInMarket)
+    //        {
+    //            return;
+    //        }
+    //        PlayBgmMapCheck();
+    //        //StartCoroutine(nameof(SoundFadeOut));
+    //    }
+    //    else if(!isHostMap)
+    //    {
+    //        if (isClientMapBattleOn == isBattle && isClientMapWaveOn == isWave)
+    //        {
+    //            return;
+    //        }
+    //        isClientMapBattleOn = isBattle;
+    //        isClientMapWaveOn = isWave;
+    //        if (GameManager.instance.isPlayerInMarket)
+    //        {
+    //            return;
+    //        }
+    //        PlayBgmMapCheck();
+    //        //StartCoroutine(nameof(SoundFadeOut));
+    //    }
+    //}
 
     IEnumerator SoundFadeIn() // 점점 커지는
     {

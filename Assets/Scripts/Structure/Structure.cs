@@ -53,6 +53,8 @@ public class Structure : NetworkBehaviour
     protected RepairEffectFunc repairEffect;
     protected bool dieCheck = false;
     public GameObject RuinExplo;
+    bool damageEffectOn;
+    protected SpriteRenderer unitSprite;
 
     //[HideInInspector]
     //public bool isRuin = false;
@@ -194,6 +196,7 @@ public class Structure : NetworkBehaviour
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
+        unitSprite = GetComponent<SpriteRenderer>();
 
         maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
@@ -1210,6 +1213,11 @@ public class Structure : NetworkBehaviour
             return;
         float reducedDamage = Mathf.Max(damage - defense, 5);
 
+        if (!damageEffectOn)
+        {
+            StartCoroutine(TakeDamageEffect());
+        }
+
         hp -= reducedDamage;
         if (hp < 0f)
             hp = 0f;
@@ -1221,6 +1229,19 @@ public class Structure : NetworkBehaviour
             hp = 0f;
             DieFuncServerRpc();
         }
+    }
+
+    protected IEnumerator TakeDamageEffect()
+    {
+        damageEffectOn = true;
+
+        unitSprite.color = new Color32(255, 100, 100, 255);
+
+        yield return new WaitForSeconds(0.3f);
+
+        unitSprite.color = new Color32(255, 255, 255, 255);
+
+        damageEffectOn = false;
     }
 
     [ServerRpc]

@@ -1592,6 +1592,10 @@ PrefabInstance:
       propertyPath: instanceObj
       value: 
       objectReference: {fileID: 535051106}
+    - target: {fileID: 6843446920161672078, guid: ce929f62b949f9445a5d360a1bb3f143, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce929f62b949f9445a5d360a1bb3f143, type: 3}
 --- !u!1 &745844382 stripped
@@ -3428,6 +3432,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 7525422399260504465}
+    - target: {fileID: 941218905, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1059931655, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_Type
       value: 3
@@ -4609,6 +4617,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8603474882824653205}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: hostMapViolentCycle
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: mapCameraController
       value: 
       objectReference: {fileID: 632487663}
@@ -4620,6 +4632,10 @@ PrefabInstance:
       propertyPath: portal.Array.data[1]
       value: 
       objectReference: {fileID: 359781442}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: clientMapViolentCycle
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: marketPortalTransform
       value: 
