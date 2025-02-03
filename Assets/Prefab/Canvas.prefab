@@ -19804,8 +19804,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.4239, y: -57.648}
-  m_SizeDelta: {x: 1550, y: 600}
+  m_AnchoredPosition: {x: 0, y: -10}
+  m_SizeDelta: {x: 1550, y: 650}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8461922573180385370
 CanvasRenderer:
@@ -33762,6 +33762,7 @@ MonoBehaviour:
   scienceBtns: []
   scienceTreeUI: {fileID: 3708228166959310970}
   isAnyUpgradeCompleted: 0
+  isOpen: 0
 --- !u!114 &989437541392182476
 MonoBehaviour:
   m_ObjectHideFlags: 0

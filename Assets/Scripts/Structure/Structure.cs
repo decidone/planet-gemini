@@ -204,6 +204,7 @@ public class Structure : NetworkBehaviour
         hp = structureData.MaxHp[level];
         getDelay = 0.01f;
         sendDelay = structureData.SendDelay[level];
+        hpBar.enabled = false;
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         isStorageBuilding = false;
@@ -880,7 +881,13 @@ public class Structure : NetworkBehaviour
     {
         itemGetDelay = true;
 
-        if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt))
+        if (inObj.Count < getItemIndex)
+        {
+            GetItemIndexSet();
+            Invoke(nameof(DelayGetItem), getDelay);
+            return;
+        }
+        else if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt))
         {
             if (!belt.isItemStop)
             {
@@ -962,7 +969,14 @@ public class Structure : NetworkBehaviour
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-        if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
+
+        if (outObj.Count < sendItemIndex)
+        {
+            SendItemIndexSet();
+            itemSetDelay = false;
+            return;
+        }
+        else if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
         {
             SendItemIndexSet();
             itemSetDelay = false;
@@ -970,6 +984,7 @@ public class Structure : NetworkBehaviour
         }
         else if (outFactory.TryGetComponent(out Production production))
         {
+            Debug.Log(itemIndex);
             Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
             if (!production.CanTakeItem(item))
             {
