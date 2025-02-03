@@ -966,6 +966,8 @@ public class Structure : NetworkBehaviour
 
     protected virtual void SendItem(int itemIndex)
     {
+        if (itemIndex < 0) return;
+
         itemSetDelay = true;
 
         Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
@@ -984,7 +986,6 @@ public class Structure : NetworkBehaviour
         }
         else if (outFactory.TryGetComponent(out Production production))
         {
-            Debug.Log(itemIndex);
             Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
             if (!production.CanTakeItem(item))
             {
