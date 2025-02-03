@@ -11,13 +11,16 @@ public class SunTower : TowerAi
     protected override void Update()
     {
         base.Update();
-        if (!isPreBuilding && IsServer)
+        if (!isPreBuilding && conn != null && conn.group != null && conn.group.efficiency > 0)
         {
             debuffTimer += Time.deltaTime;
 
             if (debuffTimer >= debuffInterval)
             {
+                EfficiencyCheck();
+
                 Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
+                bool isMonsterNearby = false;
 
                 foreach (Collider2D collider in colliders)
                 {
@@ -26,9 +29,20 @@ public class SunTower : TowerAi
                     {
                         if (monster.TryGetComponent(out MonsterAi mon))
                         {
-                            mon.RefreshDebuff();
+                            isMonsterNearby = true;
+                            mon.RefreshDebuff(conn.group.efficiency);    // 서버, 클라이언트 상관없이 디버프 띄워주는데 데미지 계산은 서버 디버프 유무로만 계산
                         }
                     }
+                }
+
+                if (isMonsterNearby)
+                {
+                    isOperate = true;
+                    isMonsterNearby = false;
+                }
+                else
+                {
+                    isOperate = false;
                 }
                 
                 debuffTimer = 0f;

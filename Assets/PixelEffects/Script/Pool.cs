@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 namespace ca.HenrySoftware.Rage
 {
@@ -6,7 +6,7 @@ namespace ca.HenrySoftware.Rage
 	{
 		[SerializeField] private int _count = 12;
 		[SerializeField] private GameObject _prefab = null;
-		private List<GameObject> _pool;
+		public List<GameObject> _pool;
 		private const string _name = "Pool";
 		private Transform _t;
 		private void Awake()
@@ -29,11 +29,16 @@ namespace ca.HenrySoftware.Rage
 		}
 		public GameObject Enter()
 		{
-			GameObject o = null;
-			for (var i = 0; (i < _pool.Count) && (o == null); i++)
+            _pool.RemoveAll(x => !x);
+
+            GameObject o = null;
+            for (var i = 0; (i < _pool.Count) && (o == null); i++)
 			{
-				if (!_pool[i].activeInHierarchy)
-					o = _pool[i];
+                if (!_pool[i].activeInHierarchy)
+                {
+                    o = _pool[i];
+                    break;
+                }
 			}
 			if (o == null)
 			{

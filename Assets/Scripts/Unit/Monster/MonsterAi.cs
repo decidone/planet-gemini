@@ -41,6 +41,7 @@ public class MonsterAi : UnitCommonAi
     public bool isDebuffed;
     float debuffTimer;
     float debuffDuration = 2f;  // 등대 디버프 지속시간 2초, 등대 범위 내에 몬스터가 있을 때 디버프 갱신 시간 1초
+    float debuffRate;           // 등대가 속한 에너지 그룹의 에너지 효율 상태에 따른 디버프 배율 계산
 
     Transform _t;
     Effects _effects;
@@ -96,13 +97,14 @@ public class MonsterAi : UnitCommonAi
         }
     }
 
-    public void RefreshDebuff()
+    public void RefreshDebuff(float efficiency)
     {
         if (!isDebuffed)
         {
             TriggerEffects("dark");
         }
 
+        debuffRate = efficiency;
         isDebuffed = true;
         debuffTimer = 0f;
 
