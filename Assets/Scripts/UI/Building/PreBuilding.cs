@@ -299,7 +299,11 @@ public class PreBuilding : NetworkBehaviour
                 if (isGetAnim)
                 {
                     if (isGetDir)
+                    {
                         preBuildingImg.AnimSetFloat("DirNum", dirNum);
+                        if(isBeltObj)
+                            preBuildingImg.AnimSetFloat("Level", level);
+                    }
                 }
                 else
                 {
@@ -1048,7 +1052,11 @@ public class PreBuilding : NetworkBehaviour
             {
                 preBuildingImg.PreAnimatorSet(buildData.animatorController[0]);
                 if (isGetDir)
+                {
                     preBuildingImg.AnimSetFloat("DirNum", dirNum);
+                    if (isBeltObj)
+                        preBuildingImg.AnimSetFloat("Level", level);
+                }
             }
             else
             {
@@ -1088,15 +1096,6 @@ public class PreBuilding : NetworkBehaviour
 
         isGetAnim = buildData.isGetAnim;
 
-        if (isGetAnim)
-        {
-            preBuildingImg.PreAnimatorSet(buildData.animatorController[0]);
-        }
-        else
-        {
-            spriteList = buildData.sprites;
-            preBuildingImg.PreSpriteSet(spriteList[0]);
-        }
 
         if (buildData.isGetDirection)
             isGetDir = true;
@@ -1107,6 +1106,23 @@ public class PreBuilding : NetworkBehaviour
             isUnderObj = true;
         else
             isUnderObj = false;
+
+
+        if (isGetAnim)
+        {
+            preBuildingImg.PreAnimatorSet(buildData.animatorController[0]);
+            if (isGetDir)
+            {
+                preBuildingImg.AnimSetFloat("DirNum", dirNum);
+                if (isBeltObj)
+                    preBuildingImg.AnimSetFloat("Level", level);
+            }
+        }
+        else
+        {
+            spriteList = buildData.sprites;
+            preBuildingImg.PreSpriteSet(spriteList[0]);
+        }
 
         if (buildData.item.name.Contains("Tower"))
         {
@@ -1444,8 +1460,12 @@ public class PreBuilding : NetworkBehaviour
 
         if (isGetAnim)
         {
-            if(isGetDir)
+            if (isGetDir)
+            {
                 preBuildingImg.AnimSetFloat("DirNum", dirNum);
+                if (isBeltObj)
+                    preBuildingImg.AnimSetFloat("Level", level);
+            }
         }
         else
         {

@@ -907,11 +907,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 3
+        y: 0
         width: 32
-        height: 32
+        height: 35
       alignment: 9
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0.5, y: 0.45714286}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -978,7 +978,7 @@ TextureImporter:
     nameFileIdTable:
       Structure2x2_5: -797419743
       Structure2x2_9: -606412521
-      Structure2x2_10: -1012359957
+      Structure2x2_22: 1286835789
       Structure2x2_20: 1120759098
       Structure2x2_34: -767895989
       Structure2x2_19: -1247953400
@@ -1016,7 +1016,7 @@ TextureImporter:
       Structure2x2_6: -1504127690
       Structure2x2_0: -1932201936
       Structure2x2_26: -848525065
-      Structure2x2_22: 1286835789
+      Structure2x2_10: -1012359957
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -990,6 +990,7 @@ public class GameManager : NetworkBehaviour
     public void HostConnected()
     {
         isHost = true;
+        Time.timeScale = 0;
         ItemDragManager.instance.SetInven(hostDragInven);
         GeminiNetworkManager.instance.HostSpawnServerRPC();
         Debug.Log("HostConnected??");
@@ -1053,10 +1054,10 @@ public class GameManager : NetworkBehaviour
     public void LoadingEnd()
     {
         GenerationComplete?.Invoke();
+        TimeScaleServerRpc();
 
         if (!isHost)
         {
-            TimeScaleServerRpc();
             SyncTimeServerRpc();
         }
     }
