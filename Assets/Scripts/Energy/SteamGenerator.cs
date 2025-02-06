@@ -192,7 +192,7 @@ public class SteamGenerator : FluidFactoryCtrl
             {
                 if (IsServer)
                 {
-                    inventory.SubServerRpc(0, 1);
+                    inventory.SlotSubServerRpc(0, 1);
                     Overall.instance.OverallConsumption(slot.item, 1);
                 }
                 fuel += 50;

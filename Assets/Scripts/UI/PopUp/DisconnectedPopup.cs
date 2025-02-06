@@ -30,6 +30,7 @@ public class DisconnectedPopup : MonoBehaviour
 
     public void OpenUI()
     {
+        GameManager.instance.CloseAllOpenedUI();
         obj.SetActive(true);
     }
 

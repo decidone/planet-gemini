@@ -112,20 +112,6 @@ public class BuildingInfo : MonoBehaviour
             selectBuildingData = null;        
     }
 
-    public void BuildingEnd()
-    {
-        for (int i = 0; i < buildingNeedList.Length; i++)
-        {
-            if(buildingNeedList[i].item != null)
-            {
-                GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount);
-                Overall.instance.OverallConsumption(buildingNeedList[i].item, buildingNeedList[i].amount);
-            }
-        }
-        GameManager.instance.BuildAndSciUiReset();
-        SetItemSlot();
-    }
-
     public void BuildingEnd(int amount)
     {
         if(!GameManager.instance.debug)
@@ -142,11 +128,6 @@ public class BuildingInfo : MonoBehaviour
 
         GameManager.instance.BuildAndSciUiReset();
         SetItemSlot();
-    }
-
-    public void RefundCost(int buildingIndex)
-    {
-
     }
 
     public bool AmountsEnoughCheck()

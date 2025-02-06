@@ -225,21 +225,6 @@ public class InfoWindow : MonoBehaviour
     {
         SetNeedItem(preSciInfoData, preSciName, preSciLevel, isCoreSel, scienceBtn);
     }
-
-    public void SciUpgradeStart()
-    {
-        List<NeedItem> itemsCopy = new List<NeedItem>(needItems);
-
-        foreach (var needItem in itemsCopy)
-        {
-            if (needItem.item != null)
-            {
-                gameManager.inventory.Sub(needItem.item, needItem.amount);
-            }
-        }
-        SetNeedItem();
-        totalAmountsEnough = false;
-    }
 }
 
 public class NeedItem

@@ -7,15 +7,6 @@ using Unity.Netcode;
 // UTF-8 설정
 public class LogisticsCtrl : Structure
 {
-    public List<Item> PlayerGetItemList()
-    {
-        List<Item> itemListCopy = new List<Item>(itemList);
-        itemList.Clear();
-        ItemNumCheck();
-
-        return itemListCopy;
-    }
-
     public void BeltGroupSendItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);

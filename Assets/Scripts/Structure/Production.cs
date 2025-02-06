@@ -313,7 +313,7 @@ public abstract class Production : Structure
     protected override void SubFromInventory()
     {
         if(IsServer)
-            inventory.SubServerRpc(inventory.space - 1, 1);
+            inventory.SlotSubServerRpc(inventory.space - 1, 1);
     }
 
     public virtual bool CanTakeItem(Item item) 
@@ -339,13 +339,13 @@ public abstract class Production : Structure
             return false;
     }
 
-    public virtual (Item, int) QuickPullOut()
-    {
-        var slot = inventory.SlotCheck(inventory.space - 1);
-        if (slot.amount > 0)
-            inventory.SubServerRpc(inventory.space - 1, slot.amount);
-        return slot;
-    }
+    //public virtual (Item, int) QuickPullOut()
+    //{
+    //    var slot = inventory.SlotCheck(inventory.space - 1);
+    //    if (slot.amount > 0)
+    //        inventory.SubServerRpc(inventory.space - 1, slot.amount);
+    //    return slot;
+    //}
 
     //[ClientRpc]
     //protected override void GetItemClientRpc(int inObjIndex)

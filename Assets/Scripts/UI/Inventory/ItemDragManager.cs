@@ -160,12 +160,12 @@ public class ItemDragManager : MonoBehaviour
         if (isHostTask)
         {
             if (hostInven.items.Count > 0)
-                hostInven.SubServerRpc(0, amount);
+                hostInven.SlotSubServerRpc(0, amount);
         }
         else
         {
             if (clientInven.items.Count > 0)
-                clientInven.SubServerRpc(0, amount);
+                clientInven.SlotSubServerRpc(0, amount);
         }
     }
 }

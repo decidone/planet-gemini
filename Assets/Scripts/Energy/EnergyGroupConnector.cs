@@ -43,7 +43,7 @@ public class EnergyGroupConnector : MonoBehaviour
     public Structure structure;
     public bool isBuildDone;
     EnergyGroupManager groupManager;
-    List<EnergyGroupConnector> tempConnectors;
+    public List<EnergyGroupConnector> tempConnectors;
     public List<EnergyGroupConnector> connectors;
     public List<Structure> nearbyStr;
     public List<Structure> consumptions;
@@ -166,8 +166,16 @@ public class EnergyGroupConnector : MonoBehaviour
         }
         else
         {
-            group = connectors[0].group;
-            group.AddConnector(this, connectors);
+            for (int i = 0; i < connectors.Count; i++)
+            {
+                if (connectors[i].group != null)
+                    group = connectors[i].group;
+            }
+
+            if (group == null)
+                group = new EnergyGroup(groupManager, this);
+            else
+                group.AddConnector(this, connectors);
         }
     }
 
@@ -188,6 +196,16 @@ public class EnergyGroupConnector : MonoBehaviour
         if (group != null)
         {
             group.RemoveConnector(this);
+            group = null;
+        }
+    }
+
+    public void RemoveGroup()
+    {
+        if (group != null)
+        {
+            group.RemoveConnectorWithoutCheck(this);
+            group = null;
         }
     }
 

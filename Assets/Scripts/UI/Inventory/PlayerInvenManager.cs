@@ -42,12 +42,8 @@ public class PlayerInvenManager : InventoryManager
         {
             if (focusedSlot.item != null)
             {
-                int amount = sManager.InsertItem(focusedSlot.item, focusedSlot.amount);
-                if (amount > 0)
-                {
-                    inventory.SubServerRpc(focusedSlot.slotNum, amount);
-                    soundManager.PlayUISFX("ItemSelect");
-                }
+                sManager.PlayerToStrInven(focusedSlot.slotNum, focusedSlot.item, focusedSlot.amount);
+                soundManager.PlayUISFX("ItemSelect");
             }
         }
     }

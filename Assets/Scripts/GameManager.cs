@@ -438,16 +438,16 @@ public class GameManager : NetworkBehaviour
                 brightness.color = new Color32(0, 0, 0, 0);
                 break;
             case 2:
-                brightness.color = new Color32(0, 0, 0, 30);
+                brightness.color = new Color32(0, 0, 0, 10);
                 break;
             case 3:
-                brightness.color = new Color32(0, 0, 0, 60);
+                brightness.color = new Color32(0, 0, 0, 20);
                 break;
             case 4:
-                brightness.color = new Color32(0, 0, 0, 90);
+                brightness.color = new Color32(0, 0, 0, 30);
                 break;
             case 5:
-                brightness.color = new Color32(0, 0, 0, 30);
+                brightness.color = new Color32(0, 0, 0, 10);
                 break;
             default:
                 brightness.color = new Color32(0, 0, 0, 0);

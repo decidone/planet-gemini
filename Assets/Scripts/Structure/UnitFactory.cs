@@ -50,9 +50,9 @@ public class UnitFactory : Production
                             {
                                 if (IsServer)
                                 {
-                                    inventory.SubServerRpc(0, recipe.amounts[0]);
-                                    inventory.SubServerRpc(1, recipe.amounts[1]);
-                                    inventory.SubServerRpc(2, recipe.amounts[2]);
+                                    inventory.SlotSubServerRpc(0, recipe.amounts[0]);
+                                    inventory.SlotSubServerRpc(1, recipe.amounts[1]);
+                                    inventory.SlotSubServerRpc(2, recipe.amounts[2]);
 
                                     Overall.instance.OverallConsumption(slot.item, recipe.amounts[0]);
                                     Overall.instance.OverallConsumption(slot1.item, recipe.amounts[1]);

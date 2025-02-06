@@ -1632,7 +1632,6 @@ public class Structure : NetworkBehaviour
         {
             GameManager.instance.focusedStructure = null;
         }
-        Debug.Log("????");
 
         //GameManager gameManager = GameManager.instance;
         //int x = Mathf.FloorToInt(transform.position.x);

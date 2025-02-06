@@ -67,25 +67,8 @@ public class StructureInvenManager : InventoryManager
         {
             if (focusedSlot.item != null)
             {
-                playerInven = gameManager.inventory;
-
-                int containableAmount = playerInven.SpaceCheck(focusedSlot.item);
-                if (focusedSlot.amount <= containableAmount)
-                {
-                    playerInven.Add(focusedSlot.item, focusedSlot.amount);
-                    inventory.RemoveServerRpc(focusedSlot.slotNum);
-                    soundManager.PlayUISFX("ItemSelect");
-                }
-                else if (containableAmount != 0)
-                {
-                    playerInven.Add(focusedSlot.item, containableAmount);
-                    inventory.SubServerRpc(focusedSlot.slotNum, containableAmount);
-                    soundManager.PlayUISFX("ItemSelect");
-                }
-                else
-                {
-                    Debug.Log("not enough space");
-                }
+                inventory.StrToPlayer(focusedSlot.slotNum);
+                soundManager.PlayUISFX("ItemSelect");
             }
         }
     }
@@ -150,10 +133,9 @@ public class StructureInvenManager : InventoryManager
         tank = _tank;
     }
 
-    public int InsertItem(Item item, int amount)
+    public void PlayerToStrInven(int pInvenSlotNum, Item item, int amount)
     {
         // input 슬롯으로 지정된 칸에 아이템을 넣을 때 사용
-        int containable = 0;
         bool isStorageBuilding = false;
 
         if (prod != null)
@@ -161,11 +143,7 @@ public class StructureInvenManager : InventoryManager
 
         if (isStorageBuilding)
         {
-            containable = inventory.SpaceCheck(item);
-            if (containable >= amount)
-                containable = amount;
-
-            inventory.Add(item, containable);
+            inventory.PlayerToStorage(pInvenSlotNum);
         }
         else
         {
@@ -174,21 +152,22 @@ public class StructureInvenManager : InventoryManager
                 Slot slot = slots[i];
                 if ((slot.inputItem.Contains(item)) && (slot.item == item || slot.item == null) && !slot.outputSlot)
                 {
-                    if (amount + slot.amount > inventory.maxAmount)
-                    {
-                        containable = inventory.maxAmount - slot.amount;
-                    }
-                    else
-                    {
-                        containable = amount;
-                    }
-                    inventory.SlotAdd(slot.slotNum, item, containable);
+                    //if (amount + slot.amount > inventory.maxAmount)
+                    //{
+                    //    containable = inventory.maxAmount - slot.amount;
+                    //}
+                    //else
+                    //{
+                    //    containable = amount;
+                    //}
+                    //inventory.SlotAdd(slot.slotNum, item, containable);
+
+                    inventory.PlayerToStr(pInvenSlotNum, slot.slotNum);
+
                     break;
                 }
             }
         }
-
-        return containable;
     }
 
     public void EmptySlot()

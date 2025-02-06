@@ -102,6 +102,9 @@ public class Chat : NetworkBehaviour
                     case "/gameover":
                         GameManager.instance.SetGameOverUI();
                         break;
+                    case "/test":
+                        NetworkObjManager.instance.InitConnectors();
+                        break;
                 }
 
                 if (message != "")

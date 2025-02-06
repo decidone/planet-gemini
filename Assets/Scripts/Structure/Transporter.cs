@@ -236,6 +236,9 @@ public class Transporter : Production
 
     public void UnitSendOpen()
     {
+        // 애니메이션 트리거로 사용
+        // 지금 클라이언트에 애니메이션이 적용되지 않아서 이 메서드가 호출되지 않는 문제가 있음
+        // 클라이언트에서 이 메서드를 돌린다고 쳤을 때 인벤 관련 부분을 서버만 돌리게 하면 될 듯?
         if (invItemCheckDicAni != null && invItemCheckDicAni.Count > 0)
         {
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
@@ -283,11 +286,6 @@ public class Transporter : Production
     {
         if (IsServer)
             inventory.StorageAdd(item, 1);
-    }
-
-    public override (Item, int) QuickPullOut()
-    {
-        return (null, 0);
     }
 
     public override void GetUIFunc()

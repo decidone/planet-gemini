@@ -134,11 +134,6 @@ public class Disintegrator : Production
             inventory.StorageAdd(item, 1);
     }
 
-    public override (Item, int) QuickPullOut()
-    {
-        return (null, 0);
-    }
-
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();

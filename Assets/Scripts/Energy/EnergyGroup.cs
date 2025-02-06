@@ -27,9 +27,9 @@ public class EnergyGroup
      */
 
     EnergyGroupManager groupManager;
-    public List<EnergyGroupConnector> connectors;
-    List<EnergyGroupConnector> tempConnectors;
-    List<EnergyGroupConnector> splitConnectors;
+    public List<EnergyGroupConnector> connectors = new List<EnergyGroupConnector>();
+    List<EnergyGroupConnector> tempConnectors = new List<EnergyGroupConnector>();
+    List<EnergyGroupConnector> splitConnectors = new List<EnergyGroupConnector>();
 
     public float energy;   //생산량, 저장량 나눠야 할 듯
     public float consumption;
@@ -60,9 +60,6 @@ public class EnergyGroup
 
     public void Init()
     {
-        connectors = new List<EnergyGroupConnector>();
-        tempConnectors = new List<EnergyGroupConnector>();
-        splitConnectors = new List<EnergyGroupConnector>();
         syncFrequency = EnergyGroupManager.instance.syncFrequency;
         energy = 0;
     }
@@ -76,7 +73,7 @@ public class EnergyGroup
 
         for (int i = 0; i < connList.Count; i++)
         {
-            if (connList[i].group != this)
+            if (connList[i].group != this && connList[i].group != null)
             {
                 MergeGroup(connList[i].group);
             }
@@ -97,6 +94,20 @@ public class EnergyGroup
         else
         {
             ConnectionCheck(0);
+        }
+    }
+
+    public void RemoveConnectorWithoutCheck(EnergyGroupConnector conn)
+    {
+        // 클라이언트 입장 시 그룹 재정렬을 위한 초기화용 메서드
+        if (connectors.Contains(conn))
+        {
+            connectors.Remove(conn);
+        }
+
+        if (connectors.Count == 0)
+        {
+            RemoveGroup();
         }
     }
 

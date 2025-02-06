@@ -41,9 +41,4 @@ public class PortalObj : Production
     {
         return false;
     }
-
-    public override (Item, int) QuickPullOut()
-    {
-        return (null, 0);
-    }
 }

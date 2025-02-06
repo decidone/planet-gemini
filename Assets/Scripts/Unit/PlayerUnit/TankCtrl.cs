@@ -112,7 +112,7 @@ public class TankCtrl : UnitAi
         var slot = inventory.SlotCheck(1);
         if (fuel <= maxFuel / 2 && slot.amount > 0)
         {
-            inventory.SubServerRpc(1, 1);
+            inventory.SlotSubServerRpc(1, 1);
             Overall.instance.OverallConsumption(slot.item, 1);
             fuel += maxFuel / 2;
             soundManager.PlaySFX(gameObject, "structureSFX", "Flames");

@@ -33,8 +33,8 @@ public class Assembler : Production
                             {
                                 if(IsServer)
                                 {
-                                    inventory.SubServerRpc(0, recipe.amounts[0]);
-                                    inventory.SubServerRpc(1, recipe.amounts[1]);
+                                    inventory.SlotSubServerRpc(0, recipe.amounts[0]);
+                                    inventory.SlotSubServerRpc(1, recipe.amounts[1]);
                                     inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
 
                                     Overall.instance.OverallConsumption(slot.item, recipe.amounts[0]);

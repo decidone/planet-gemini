@@ -342,7 +342,7 @@ public class AttackTower : TowerAi
                     {
                         var slot = inventory.SlotCheck(0);
                         Overall.instance.OverallConsumption(slot.item, 1);
-                        inventory.SubServerRpc(0, 1);
+                        inventory.SlotSubServerRpc(0, 1);
                     }
                     else
                     {
@@ -365,7 +365,7 @@ public class AttackTower : TowerAi
                     {
                         var slot = inventory.SlotCheck(0);
                         Overall.instance.OverallConsumption(slot.item, 1);
-                        inventory.SubServerRpc(0, 1);
+                        inventory.SlotSubServerRpc(0, 1);
                     }
                     else
                     {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -301,6 +302,11 @@ public class Inventory : NetworkBehaviour
                 if (tempAmount <= 0)
                     break;
             }
+
+            if (tempAmount > 0)
+            {
+                Drop(item, tempAmount, isHost);
+            }
         }
 
         onItemChangedCallback?.Invoke();
@@ -313,30 +319,60 @@ public class Inventory : NetworkBehaviour
         LootListManager.instance.DisplayLootInfo(item, amount);
     }
 
-    public void Swap(int slotNum)
+    public void SwapOrMerge(int slotNum)
     {
-        SwapServerRpc(slotNum);
+        SwapOrMergeServerRpc(slotNum, GameManager.instance.isHost);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void SwapServerRpc(int slotNum, ServerRpcParams serverRpcParams = default)
+    [ServerRpc (RequireOwnership = false)]
+    public void SwapOrMergeServerRpc(int slotNum, bool isHostRequest)
     {
-        ulong clientId = serverRpcParams.Receive.SenderClientId;
-        bool isHost = clientId == 0;
+        Item dragItem = ItemDragManager.instance.GetItem(isHostRequest);
 
-        Item dragItem = ItemDragManager.instance.GetItem(isHost);
-        int dragAmount = ItemDragManager.instance.GetAmount(isHost);
+        if (dragItem == null)
+        {
+            if (items.ContainsKey(slotNum))
+            {
+                Swap(slotNum, isHostRequest);
+            }
+        }
+        else
+        {
+            if (!items.ContainsKey(slotNum))
+            {
+                Swap(slotNum, isHostRequest);
+            }
+            else
+            {
+                if (dragItem != items[slotNum])
+                {
+                    Swap(slotNum, isHostRequest);
+                }
+                else
+                {
+                    Merge(slotNum, isHostRequest);
+                }
+            }
+        }
+    }
+
+    public void Swap(int slotNum, bool isHostRequest)
+    {
+        if (!IsHost) return;
+
+        Item dragItem = ItemDragManager.instance.GetItem(isHostRequest);
+        int dragAmount = ItemDragManager.instance.GetAmount(isHostRequest);
 
         if (!items.ContainsKey(slotNum))
         {
             // 타겟 슬롯이 비어있는 경우
             SlotAdd(slotNum, dragItem, dragAmount);
-            ItemDragManager.instance.Clear(isHost);
+            ItemDragManager.instance.Clear(isHostRequest);
         }
-        else if ((!ItemDragManager.instance.IsDragging(isHost) && isHost) || (!ItemDragManager.instance.IsDragging(isHost) && !isHost))
+        else if ((!ItemDragManager.instance.IsDragging(isHostRequest) && isHostRequest) || (!ItemDragManager.instance.IsDragging(isHostRequest) && !isHostRequest))
         {
             // 드래그 슬롯이 비어있는 경우
-            ItemDragManager.instance.Add(items[slotNum], amounts[slotNum], isHost);
+            ItemDragManager.instance.Add(items[slotNum], amounts[slotNum], isHostRequest);
             RemoveServerRpc(slotNum);
         }
         else
@@ -345,38 +381,31 @@ public class Inventory : NetworkBehaviour
             int tempAmount = amounts[slotNum];
             RemoveServerRpc(slotNum);
             SlotAdd(slotNum, dragItem, dragAmount);
-            ItemDragManager.instance.Clear(isHost);
-            ItemDragManager.instance.Add(tempItem, tempAmount, isHost);
+            ItemDragManager.instance.Clear(isHostRequest);
+            ItemDragManager.instance.Add(tempItem, tempAmount, isHostRequest);
         }
 
         onItemChangedCallback?.Invoke();
     }
 
-    public void Merge(int slotNum)
+    public void Merge(int slotNum, bool isHostRequest)
     {
-        MergeServerRpc(slotNum);
-    }
+        if (!IsHost) return;
 
-    [ServerRpc(RequireOwnership = false)]
-    public void MergeServerRpc(int slotNum, ServerRpcParams serverRpcParams = default)
-    {
-        ulong clientId = serverRpcParams.Receive.SenderClientId;
-        bool isHost = clientId == 0;
-
-        Item dragItem = ItemDragManager.instance.GetItem(isHost);
-        int dragAmount = ItemDragManager.instance.GetAmount(isHost);
+        Item dragItem = ItemDragManager.instance.GetItem(isHostRequest);
+        int dragAmount = ItemDragManager.instance.GetAmount(isHostRequest);
         int mergeAmount = dragAmount + amounts[slotNum];
 
         if (mergeAmount > maxAmount)
         {
             int tempAmount = amounts[slotNum];
             SlotAdd(slotNum, dragItem, maxAmount - amounts[slotNum]);
-            ItemDragManager.instance.Sub(maxAmount - tempAmount, isHost);
+            ItemDragManager.instance.Sub(maxAmount - tempAmount, isHostRequest);
         }
         else
         {
             SlotAdd(slotNum, dragItem, dragAmount);
-            ItemDragManager.instance.Clear(isHost);
+            ItemDragManager.instance.Clear(isHostRequest);
         }
 
         onItemChangedCallback?.Invoke();
@@ -398,6 +427,7 @@ public class Inventory : NetworkBehaviour
 
     public void SlotAdd(int slotNum, Item item, int amount)
     {
+        // 서버 검증작업 문제없이 다 처리됨
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
         SlotAddServerRpc(slotNum, itemIndex, amount);
     }
@@ -411,7 +441,7 @@ public class Inventory : NetworkBehaviour
     [ClientRpc]
     public void SlotAddClientRpc(int slotNum, int itemIndex, int amount)
     {
-        if(TryGetComponent(out Structure structure))
+        if (TryGetComponent(out Structure structure))
         {
             if (!IsServer && !structure.settingEndCheck)
                 return;
@@ -459,13 +489,13 @@ public class Inventory : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SubServerRpc(int slotNum, int amount)
+    public void SlotSubServerRpc(int slotNum, int amount)
     {
-        SubClientRpc(slotNum, amount);
+        SlotSubClientRpc(slotNum, amount);
     }
 
     [ClientRpc]
-    public void SubClientRpc(int slotNum, int amount)
+    public void SlotSubClientRpc(int slotNum, int amount)
     {
         if (TryGetComponent(out Structure structure))
         {
@@ -486,17 +516,25 @@ public class Inventory : NetworkBehaviour
 
     public void Sub(Item item, int amount)
     {
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+        SubServerRpc(itemIndex, amount);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void SubServerRpc(int itemIndex, int amount)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         int slotNum = FindItemSlot(item);
         if (slotNum != -1)
         {
             var slotData = SlotCheck(slotNum);
-            if(slotData.amount >= amount)
+            if (slotData.amount >= amount)
             {
-                SubServerRpc(slotNum, amount);
+                SlotSubServerRpc(slotNum, amount);
             }
             else
             {
-                SubServerRpc(slotNum, slotData.amount);
+                SlotSubServerRpc(slotNum, slotData.amount);
                 Sub(item, amount - slotData.amount);
             }
         }
@@ -537,7 +575,7 @@ public class Inventory : NetworkBehaviour
                 if (dragAmount < maxAmount)
                 {
                     ItemDragManager.instance.Add(items[slotNum], 1, isHost);
-                    SubServerRpc(slotNum, 1);
+                    SlotSubServerRpc(slotNum, 1);
                 }
 
                 onItemChangedCallback?.Invoke();
@@ -783,5 +821,105 @@ public class Inventory : NetworkBehaviour
         amounts = data.amounts;
 
         Refresh();
+    }
+
+    public void PlayerToStorage(int pInvenSlotNum)
+    {
+        PlayerToStorageServerRpc(pInvenSlotNum);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void PlayerToStorageServerRpc(int pInvenSlotNum)
+    {
+        Structure str = GetComponent<Structure>();
+        Inventory playerInven;
+        int containable = 0;
+
+        if (str.isInHostMap)
+            playerInven = GameManager.instance.hostMapInven;
+        else
+            playerInven = GameManager.instance.clientMapInven;
+
+        var slot = playerInven.SlotCheck(pInvenSlotNum);
+        containable = SpaceCheck(slot.item);
+        if (containable >= slot.amount)
+            containable = slot.amount;
+
+        Add(slot.item, containable);
+        playerInven.SlotSubServerRpc(pInvenSlotNum, containable);
+    }
+
+    public void PlayerToStr(int pInvenSlotNum, int sInvenSlotNum)
+    {
+        PlayerToStrServerRpc(pInvenSlotNum, sInvenSlotNum);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayerToStrServerRpc(int pInvenSlotNum, int sInvenSlotNum)
+    {
+        Structure str = GetComponent<Structure>();
+        Inventory playerInven;
+        int containable;
+
+        if (str.isInHostMap)
+            playerInven = GameManager.instance.hostMapInven;
+        else
+            playerInven = GameManager.instance.clientMapInven;
+
+        var playerSlot = playerInven.SlotCheck(pInvenSlotNum);
+
+        int sInvenAmount;
+        if (items.ContainsKey(sInvenSlotNum))
+            sInvenAmount = amounts[sInvenSlotNum];
+        else
+            sInvenAmount = 0;
+
+        if (sInvenAmount + playerSlot.amount > maxAmount)
+        {
+            containable = maxAmount - sInvenAmount;
+        }
+        else
+        {
+            containable = playerSlot.amount;
+        }
+
+        SlotAdd(sInvenSlotNum, playerSlot.item, containable);
+        playerInven.SlotSubServerRpc(pInvenSlotNum, containable);
+    }
+
+    public void StrToPlayer(int slotNum)
+    {
+        StrToPlayerServerRpc(slotNum);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void StrToPlayerServerRpc(int slotNum)
+    {
+        if (!items.ContainsKey(slotNum))
+            return;
+
+        Structure str = GetComponent<Structure>();
+        Inventory playerInven;
+
+        if (str.isInHostMap)
+            playerInven = GameManager.instance.hostMapInven;
+        else
+            playerInven = GameManager.instance.clientMapInven;
+
+        int containable = playerInven.SpaceCheck(items[slotNum]);
+        if (amounts[slotNum] <= containable)
+        {
+            playerInven.Add(items[slotNum], amounts[slotNum]);
+            RemoveServerRpc(slotNum);
+        }
+        else if (containable != 0)
+        {
+            playerInven.Add(items[slotNum], containable);
+            SlotSubServerRpc(slotNum, containable);
+        }
+        else
+        {
+            //Debug.Log("not enough space");
+        }
     }
 }

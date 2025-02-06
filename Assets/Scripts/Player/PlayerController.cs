@@ -88,7 +88,6 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         teleportUI = TeleportUI.instance;
-        MapGenerator.instance.RemoveFogTile(new Vector3(transform.position.x, transform.position.y + 1, 0), visionRadius);
 
         if (!IsOwner) { return; }
 
@@ -285,7 +284,10 @@ public class PlayerController : NetworkBehaviour
     IEnumerator PlayerSet()
     {
         yield return new WaitForSeconds(1f);
+
         PlayerTPSetServerRpc(false);
+        if (!IsHost)
+            NetworkObjManager.instance.InitConnectors();
     }
 
     [ServerRpc (RequireOwnership = false)]
@@ -694,26 +696,6 @@ public class PlayerController : NetworkBehaviour
 
     void RightClick(InputAction.CallbackContext ctx)
     {
-        if (inputManager.ctrl)
-        {
-            Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
-            if (hit.collider != null && hit.collider.TryGetComponent(out LogisticsCtrl factoryCtrl))
-            {
-                List<Item> factItemList = factoryCtrl.PlayerGetItemList();
-                for (int i = 0; i < factItemList.Count; i++)
-                {
-                    gameManager.inventory.Add(factItemList[i], 1);
-                }
-            }
-            else if (hit.collider != null && hit.collider.TryGetComponent(out Production production))
-            {
-                var item = production.QuickPullOut();
-                if (item.Item1 != null && item.Item2 > 0)
-                    gameManager.inventory.Add(item.Item1, item.Item2);
-            }
-        }
-
         if (tankAttackKeyPressed && IsOwner)
         {
             TankAttackEnd();
@@ -732,7 +714,7 @@ public class PlayerController : NetworkBehaviour
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             if (onTankData.TankAttackCheck())
             {
-                onTankData.inventory.SubServerRpc(0, 1);
+                onTankData.inventory.SlotSubServerRpc(0, 1);
                 BulletSpawnServerRpc(mousePos);
             }
         }

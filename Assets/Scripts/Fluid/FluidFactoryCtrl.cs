@@ -432,11 +432,6 @@ public class FluidFactoryCtrl : Production
             return null;
     }
 
-    public override (Item, int) QuickPullOut()
-    {
-        return (null, 0);
-    }
-
     protected override void ItemDrop()
     {
         if (itemList.Count > 0)
