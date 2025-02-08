@@ -68,7 +68,6 @@ public class PortalUIBtn : MonoBehaviour
 
     void OnExit()
     {
-        Debug.Log("OnExit");
         itemInfoWindow.CloseWindow();
     }
 

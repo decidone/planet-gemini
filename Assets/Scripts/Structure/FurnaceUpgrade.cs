@@ -34,6 +34,7 @@ public class FurnaceUpgrade : Production
                 {
                     if (slot1.item == output || slot1.item == null)
                     {
+                        OperateStateSet(true);
                         prodTimer += Time.deltaTime;
                         if (prodTimer > cooldown)
                         {
@@ -51,16 +52,19 @@ public class FurnaceUpgrade : Production
                     }
                     else
                     {
+                        OperateStateSet(false);
                         prodTimer = 0;
                     }
                 }
                 else
                 {
+                    OperateStateSet(false);
                     prodTimer = 0;
                 }
             }
             else
             {
+                OperateStateSet(false);
                 prodTimer = 0;
             }
 
@@ -158,5 +162,9 @@ public class FurnaceUpgrade : Production
                 ui = list;
             }
         }
+    }
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];
     }
 }

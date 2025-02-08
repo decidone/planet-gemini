@@ -10,7 +10,7 @@ public class Unloader : LogisticsCtrl
 
     void Start()
     {
-        setModel = GetComponent<SpriteRenderer>();
+        //setModel = GetComponent<SpriteRenderer>();
         clickEvent = GetComponent<LogisticsClickEvent>();
         isMainSource = true;
         CheckPos();

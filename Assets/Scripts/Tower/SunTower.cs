@@ -37,14 +37,14 @@ public class SunTower : TowerAi
 
                 if (isMonsterNearby)
                 {
-                    isOperate = true;
+                    OperateStateSet(true);
                     isMonsterNearby = false;
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                 }
-                
+
                 debuffTimer = 0f;
             }
         }

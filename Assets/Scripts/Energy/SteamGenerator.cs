@@ -41,6 +41,13 @@ public class SteamGenerator : FluidFactoryCtrl
         destroyTimer = destroyInterval;
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
+        setModel = GetComponent<SpriteRenderer>();
+        if (TryGetComponent(out Animator anim))
+        {
+            getAnim = true;
+            animator = anim;
+        }
+        NonOperateStateSet(isOperate);
 
         #endregion
         #region FluidFactoryAwake
@@ -205,12 +212,12 @@ public class SteamGenerator : FluidFactoryCtrl
                 {
                     saveFluidNum -= waterRequirement;
                     fuel -= fuelRequirement;
-                    isOperate = true;
+                    OperateStateSet(true);
                     prodTimer = 0;
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                 }
             }
         }
@@ -282,8 +289,8 @@ public class SteamGenerator : FluidFactoryCtrl
     [ServerRpc(RequireOwnership = false)]
     public override void RemoveObjServerRpc()
     {
-                DisableFocused();
-connector.RemoveFromGroup();
+        DisableFocused();
+        connector.RemoveFromGroup();
         base.RemoveObjServerRpc();
     }
 
@@ -395,5 +402,10 @@ connector.RemoveFromGroup();
         }
 
         return (false, false, false, null, 0);
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];
     }
 }

@@ -9,7 +9,7 @@ public class MergerCtrl : LogisticsCtrl
 {
     void Start()
     {
-        setModel = GetComponent<SpriteRenderer>();
+        //setModel = GetComponent<SpriteRenderer>();
         CheckPos();
     }
 

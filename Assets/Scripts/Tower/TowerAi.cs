@@ -20,9 +20,6 @@ public class TowerAi : Production
     [HideInInspector]
     public TowerState towerState = TowerState.Waiting;
 
-    [SerializeField]
-    protected Animator animator;
-
     protected float searchTimer = 0f;
     protected float searchInterval = 0.25f; // 딜레이 간격 설정
 

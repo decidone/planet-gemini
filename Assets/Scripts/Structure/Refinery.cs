@@ -29,6 +29,13 @@ public class Refinery : FluidFactoryCtrl
         destroyTimer = destroyInterval;
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
+        setModel = GetComponent<SpriteRenderer>();
+        if (TryGetComponent(out Animator anim))
+        {
+            getAnim = true;
+            animator = anim;
+        }
+        NonOperateStateSet(isOperate);
         #endregion
 
         #region FluidFactoryAwake
@@ -140,7 +147,7 @@ public class Refinery : FluidFactoryCtrl
 
                         if (slot.item == output || slot.item == null)
                         {
-                            isOperate = true;
+                            OperateStateSet(true);
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                             {
@@ -156,19 +163,19 @@ public class Refinery : FluidFactoryCtrl
                         }
                         else
                         {
-                            isOperate = false;
+                            OperateStateSet(false);
                             prodTimer = 0;
                         }
                     }
                     else
                     {
-                        isOperate = false;
+                        OperateStateSet(false);
                         prodTimer = 0;
                     }
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                     prodTimer = 0;
                 }
             }
@@ -304,5 +311,10 @@ public class Refinery : FluidFactoryCtrl
                 ItemToItemProps(invenItem.item, invenItem.amount);
             }
         }
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];
     }
 }

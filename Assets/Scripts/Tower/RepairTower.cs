@@ -23,7 +23,7 @@ public class RepairTower : TowerAi
                 searchTimer = 0f; // 탐색 후 타이머 초기화
             }
 
-            RepairTowerAiCtrl();            
+            RepairTowerAiCtrl();
         }
     }
 
@@ -79,14 +79,9 @@ public class RepairTower : TowerAi
     {
         foreach (GameObject tower in BuildingList)
         {
-            TowerAi towerAi = tower.GetComponent<TowerAi>();
             Structure factory = tower.GetComponent<Structure>();
 
-            if (towerAi != null)
-            {
-                towerAi.RepairFunc(damage);
-            }
-            else if (factory != null)
+            if (factory.maxHp > factory.hp)
             {
                 factory.RepairFunc(damage);
             }

@@ -190,6 +190,12 @@ public class Structure : NetworkBehaviour
     protected bool[] increasedStructure;
     // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 소비량 감소, 4 방어력
 
+    [SerializeField]
+    protected bool getAnim;
+    protected Animator animator;
+    [SerializeField]
+    protected Sprite[] strImg;  // 0번은 멈춤, 1번은 작동(애니메이션이 있는 오브젝트는 멈춤만 등록)
+
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -229,6 +235,13 @@ public class Structure : NetworkBehaviour
         visionPos = transform.position;
         increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
+        setModel = GetComponent<SpriteRenderer>(); 
+        if (TryGetComponent(out Animator anim))
+        {
+            getAnim = true;
+            animator = anim;
+        }
+        NonOperateStateSet(isOperate);
     }
 
     protected virtual void Update()
@@ -256,8 +269,7 @@ public class Structure : NetworkBehaviour
         {
             destroyTimer -= Time.deltaTime;
             repairBar.fillAmount = destroyTimer / destroyInterval;
-            isOperate = false;
-
+            OperateStateSet(false);
             if (destroyTimer <= 0)
             {
                 ObjRemoveFunc();
@@ -1362,7 +1374,6 @@ public class Structure : NetworkBehaviour
 
     public void RepairFunc(float heal)
     {
-        Debug.Log("heal : " + heal);
         if (hp == maxHp)
         {
             return;
@@ -1493,7 +1504,6 @@ public class Structure : NetworkBehaviour
 
         if (obj.GetComponent<WallCtrl>())
         {
-            Debug.Log("wall");
             yield break;
         }
 
@@ -1632,7 +1642,6 @@ public class Structure : NetworkBehaviour
         {
             GameManager.instance.focusedStructure = null;
         }
-        Debug.Log("????");
 
         //GameManager gameManager = GameManager.instance;
         //int x = Mathf.FloorToInt(transform.position.x);
@@ -2003,4 +2012,15 @@ public class Structure : NetworkBehaviour
     {
         portalName = str;
     }
+
+    protected void OperateStateSet(bool isOn)
+    {
+        if(isOperate != isOn)
+        {
+            isOperate = isOn;
+            NonOperateStateSet(isOn);
+        }
+    }
+
+    protected virtual void NonOperateStateSet(bool isOn) { }
 }

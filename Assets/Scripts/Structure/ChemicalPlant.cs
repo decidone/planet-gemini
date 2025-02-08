@@ -25,7 +25,7 @@ public class ChemicalPlant : Production
                         
                         if (slot1.item == output || slot1.item == null)
                         {
-                            isOperate = true;
+                            OperateStateSet(true);
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                             {
@@ -44,19 +44,19 @@ public class ChemicalPlant : Production
                         }
                         else
                         {
-                            isOperate = false;
+                            OperateStateSet(false);
                             prodTimer = 0;
                         }
                     }
                     else
                     {
-                        isOperate = false;
+                        OperateStateSet(false);
                         prodTimer = 0;
                     }
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                     prodTimer = 0;
                 }
             }
@@ -127,5 +127,10 @@ public class ChemicalPlant : Production
                 ui = list;
             }
         }
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];
     }
 }

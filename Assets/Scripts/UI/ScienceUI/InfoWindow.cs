@@ -229,7 +229,7 @@ public class InfoWindow : MonoBehaviour
     public void SciUpgradeStart()
     {
         List<NeedItem> itemsCopy = new List<NeedItem>(needItems);
-
+        Debug.Log("??");
         foreach (var needItem in itemsCopy)
         {
             if (needItem.item != null)

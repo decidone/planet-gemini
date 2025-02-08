@@ -515,8 +515,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2, y: 2}
+    pivot: {x: 0.5, y: 0.45714286}
+    oldSize: {x: 2, y: 2.1875}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -555,6 +555,7 @@ MonoBehaviour:
   space: 3
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!114 &2933665410225861189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,6 +601,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   checkObj: 1
+  takeItemDelay: 0
   inObj: []
   outObj: []
   outSameList: []
@@ -629,6 +631,7 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}
@@ -639,7 +642,10 @@ MonoBehaviour:
   canUpgrade: 0
   warningIcon: {fileID: 7349115766363272535}
   warningIconCheck: 0
-  increasedStructure: 000000
+  getAnim: 0
+  strImg:
+  - {fileID: -971368273, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  - {fileID: 1181377152, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}

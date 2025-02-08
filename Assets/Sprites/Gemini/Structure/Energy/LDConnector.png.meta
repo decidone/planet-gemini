@@ -230,6 +230,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: LDConnector_6
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 16
+        height: 59
+      alignment: 9
+      pivot: {x: 0.5, y: 0.135}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7217ed2906ade14a8b69beca43471b4
+      internalID: 421126587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -242,6 +263,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       LDConnector_2: 204380963
+      LDConnector_6: 421126587
       LDConnector_4: -1720014928
       LDConnector_3: 26834263
       LDConnector_0: 237773114

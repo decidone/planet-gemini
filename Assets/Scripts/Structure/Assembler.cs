@@ -27,7 +27,7 @@ public class Assembler : Production
 
                         if (slot2.item == output || slot2.item == null)
                         {
-                            isOperate = true;
+                            OperateStateSet(true);
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                             {
@@ -47,19 +47,19 @@ public class Assembler : Production
                         }
                         else
                         {
-                            isOperate = false;
+                            OperateStateSet(false);
                             prodTimer = 0;
                         }
                     }
                     else
                     {
-                        isOperate = false;
+                        OperateStateSet(false);
                         prodTimer = 0;
                     }
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                     prodTimer = 0;
                 }
             }
@@ -133,5 +133,10 @@ public class Assembler : Production
                 ui = list;
             }
         }
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];
     }
 }

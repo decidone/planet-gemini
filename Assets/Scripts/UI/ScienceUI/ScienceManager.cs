@@ -115,52 +115,32 @@ public class ScienceManager : MonoBehaviour
             return;
         }
 
-        if (infoWindow[0].activeSelf)
+        for (int i = 0; i < infoWindow.Length; i++)
         {
-            mousePos = Input.mousePosition;
-            Vector2 anchoredPos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
+            if (infoWindow[i].activeSelf)
+            {
+                mousePos = Input.mousePosition;
+                Vector2 anchoredPos;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
 
-            float popupWidth = infoWindowObj[0].GetComponent<RectTransform>().rect.width;
-            float popupHeight = infoWindowObj[0].GetComponent<RectTransform>().rect.height;
+                float popupWidth = infoWindowObj[i].GetComponent<RectTransform>().rect.width;
 
-            float clampedX = Mathf.Clamp(anchoredPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth);
-            float clampedY = Mathf.Clamp(anchoredPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight);
+                float halfCanvasWidth = canvasRectTransform.rect.width / 2;
 
-            // 위치 설정
-            infoWindow[0].transform.localPosition = new Vector2(clampedX, clampedY);
-        }
-        else if (infoWindow[1].activeSelf)
-        {
-            mousePos = Input.mousePosition;
-            Vector2 anchoredPos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
+                // 마우스 오른쪽 기본 위치
+                float targetX = anchoredPos.x;
+                float targetY = anchoredPos.y;
 
-            float popupWidth = infoWindowObj[1].GetComponent<RectTransform>().rect.width;
-            float popupHeight = infoWindowObj[1].GetComponent<RectTransform>().rect.height;
+                // 오른쪽을 벗어나면 왼쪽으로 배치
+                if (targetX + popupWidth > halfCanvasWidth)
+                {
+                    targetX = anchoredPos.x - popupWidth;
+                }
 
-            float clampedX = Mathf.Clamp(anchoredPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth);
-            float clampedY = Mathf.Clamp(anchoredPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight);
-
-            // 위치 설정
-            infoWindow[1].transform.localPosition = new Vector2(clampedX, clampedY);
-            //mousePos = Input.mousePosition;
-            //infoWindow[1].transform.position = mousePos;
-        }
-        else if (infoWindow[2].activeSelf)
-        {
-            mousePos = Input.mousePosition;
-            Vector2 anchoredPos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
-
-            float popupWidth = infoWindowObj[2].GetComponent<RectTransform>().rect.width;
-            float popupHeight = infoWindowObj[2].GetComponent<RectTransform>().rect.height;
-
-            float clampedX = Mathf.Clamp(anchoredPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth);
-            float clampedY = Mathf.Clamp(anchoredPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight);
-
-            // 위치 설정
-            infoWindow[2].transform.localPosition = new Vector2(clampedX, clampedY);
+                // 위치 설정
+                infoWindow[i].transform.localPosition = new Vector2(targetX, targetY);
+                break; // 한 개만 활성화되므로 반복문 종료
+            }
         }
     }
 
@@ -172,52 +152,8 @@ public class ScienceManager : MonoBehaviour
             buildUI.transform.SetParent(contents[0].transform, false);
             buildContent[i] = buildUI.GetComponent<ScienceCoreLvCtrl>();
             buildContent[i].UISetting(i, "Build");
-
-            //GameObject battleUI = Instantiate(coreLvUI);
-            //battleUI.transform.SetParent(contents[1].transform, false);
-            //battleContent[i] = battleUI.GetComponent<ScienceCoreLvCtrl>();
-            //battleContent[i].UISetting(i, "Battle");
         }
-
-        //for (int i = 1; i < 5; i++)
-        //{
-        //    buildContent[i].scienceBtn.itemAmountList = battleContent[i].scienceBtn.itemAmountList;
-        //    buildContent[i].scienceBtn.isMain = true;
-        //    buildContent[i].scienceBtn.CoreSet(battleContent[i].scienceBtn);
-        //    battleContent[i].scienceBtn.CoreSet(buildContent[i].scienceBtn);
-        //}
     }
-
-    //void SciDbGet(int index)
-    //{
-    //    ScienceBtn[] btns = contents[index].GetComponentsInChildren<ScienceBtn>();
-    //    for (int i = 0; i < btns.Length; i++)
-    //    {
-    //        ScienceBtn btn = btns[i];
-
-    //        if (scienceDb.scienceNameDb.TryGetValue(btn.sciName, out Dictionary<int, int> levels))
-    //        {
-    //            bool sciNameFound = levels.ContainsKey(btn.level);
-
-    //            if (sciNameFound)
-    //            {
-    //                btn.LockUiActiveFalse();
-    //            }
-    //        }
-    //    }
-    //}
-
-    //void SwContent(int index)
-    //{
-    //    scrollRect.content = contents[index].GetComponent<RectTransform>();
-    //    sciItemSetWindow.CloseUI();
-    //    upgradeWindow.CloseUI();
-    //    for (int i = 0; i < contents.Length; i++)
-    //    {
-    //        contents[i].SetActive(i == index);
-    //        SciDbGet(index);
-    //    }
-    //}
 
     void AddEvent(ScienceBtn btn, EventTriggerType type, UnityAction<BaseEventData> action)
     {
@@ -266,16 +202,6 @@ public class ScienceManager : MonoBehaviour
         if (scienceInfoData.coreLv > scienceDb.coreLevel)
             return;
 
-        //mousePos = Input.mousePosition;
-        //if (mousePos.x + popupWidth > Screen.width)
-        //{
-        //    mousePos.x = Screen.width - popupWidth - 10.0f;
-        //}
-        //else if (mousePos.x < 0)
-        //{
-        //    mousePos.x = 0;
-        //}
-        //itemInputWindow.transform.position = mousePos;
         itemInputWindow.SetActive(true);
         sciItemSetWindow.SetUI(focusedSciBtn);
     }
@@ -325,7 +251,6 @@ public class ScienceManager : MonoBehaviour
 
         isAnyUpgradeCompleted = true;
         onUpgradeCompletedCallback?.Invoke(40);
-        Debug.Log(sciName + " : " + sciLevel + " : " + coreLv);
         scienceDb.SaveSciDb(sciName, sciLevel, coreLv, isLoad);
         buildingInven.Refresh();
     }
@@ -372,16 +297,4 @@ public class ScienceManager : MonoBehaviour
 
         return canUpgrade;
     }
-
-    //public bool CoreSaveCheck(ScienceBtn btn)
-    //{
-    //    for (int i = 1; i < 5; i++)
-    //    {
-    //        if (battleContent[i].scienceBtn == btn)
-    //        {
-    //            return true;
-    //        }
-    //    }
-    //    return false;
-    //}
 }

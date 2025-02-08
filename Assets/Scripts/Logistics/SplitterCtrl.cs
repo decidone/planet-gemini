@@ -26,7 +26,7 @@ public class SplitterCtrl : LogisticsCtrl
 
     void Start()
     {
-        setModel = GetComponent<SpriteRenderer>();
+        //setModel = GetComponent<SpriteRenderer>();
         CheckPos();
         clickEvent = GetComponent<LogisticsClickEvent>();
     }

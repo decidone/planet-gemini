@@ -7,10 +7,10 @@ using System;
 // UTF-8 설정
 public class GetUnderBeltCtrl : LogisticsCtrl
 {
-    void Start()
-    {
-        setModel = GetComponent<SpriteRenderer>();
-    }
+    //void Start()
+    //{
+    //    setModel = GetComponent<SpriteRenderer>();
+    //}
 
     protected override void Update()
     {
@@ -86,7 +86,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
                     hitCollider.GetComponent<Structure>().isSetBuildingOk &&
                     hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
                 {
-                    if (hitCollider.GetComponent<GetUnderBeltCtrl>())                    
+                    if (hitCollider.TryGetComponent(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)                    
                     {
                         break;
                     }
@@ -135,8 +135,9 @@ public class GetUnderBeltCtrl : LogisticsCtrl
                 StartCoroutine(OutCheck(obj));
             }
             outObj.Add(obj);
+            StartCoroutine(UnderBeltConnectCheck(obj));
         }
-        checkObj = true;
+        //checkObj = true;
     }
 
     protected override IEnumerator SetInObjCoroutine(GameObject obj)

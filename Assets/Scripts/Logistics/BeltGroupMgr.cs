@@ -276,7 +276,6 @@ public class BeltGroupMgr : NetworkBehaviour
     {
         int index = 0;
         BeltCtrl[] beltArr = GetComponentsInChildren<BeltCtrl>();
-        Debug.Log("beltArr : " + beltArr.Length);
 
         beltList.Clear();
         BeltCtrl startbelt = null;

@@ -26,6 +26,7 @@ public class AttackTower : TowerAi
 
     TowerAttackOption towerAttackOption;
 
+
     protected override void Start()
     {
         base.Start();
@@ -105,7 +106,7 @@ public class AttackTower : TowerAi
             {
                 EfficiencyCheck();
 
-                isOperate = true;
+                OperateStateSet(true);
                 prodTimer += Time.deltaTime;
                 if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                 {
@@ -118,7 +119,7 @@ public class AttackTower : TowerAi
             }
             else
             {
-                isOperate = false;
+                OperateStateSet(false);
                 prodTimer = 0;
             }
         }

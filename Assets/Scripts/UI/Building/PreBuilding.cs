@@ -61,9 +61,13 @@ public class PreBuilding : NetworkBehaviour
     [SerializeField]
     float maxBuildDist;
 
+    [SerializeField]
     bool isBeltObj = false;
+    [SerializeField]
     bool reversSet = false;
+    [SerializeField]
     bool isPortalObj = false;
+    [SerializeField]
     bool isScienceBuilding = false;
     Portal portalScript;
     int portalIndex;
@@ -824,6 +828,7 @@ public class PreBuilding : NetworkBehaviour
         }
         else
         {
+            Debug.Log("SetBuilding");
             if (BuildingInfo.instance.AmountsEnoughCheck())
             {
                 if (!isUnderObj)
@@ -846,7 +851,7 @@ public class PreBuilding : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ServerBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int buildingIndex)
     {
-        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level);
+        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level, isInHostMap);
         if (!notFound)
             return;
 
@@ -874,7 +879,7 @@ public class PreBuilding : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ServerUnderObjBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, bool isSend, bool isUnderBelt, int buildingIndex)
     {
-        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level);
+        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level, isInHostMap);
         if (!notFound)
             return;
 
@@ -899,7 +904,7 @@ public class PreBuilding : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ServerPortalObjBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int portalIndex, int buildingIndex)
     {
-        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level);
+        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level, isInHostMap);
         if (!notFound)
             return;
         //Cell cell = gameManager.map.GetCellDataFromPos((int)spawnPos.x, (int)spawnPos.y);
@@ -925,7 +930,7 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    bool ReCheck(Vector3 spawnPos, int objHeight, int objWidth, int itemIndex, int level)
+    bool ReCheck(Vector3 spawnPos, int objHeight, int objWidth, int itemIndex, int level, bool isHostMap)
     {
         int x = Mathf.FloorToInt(spawnPos.x);
         int y = Mathf.FloorToInt(spawnPos.y);
@@ -950,7 +955,17 @@ public class PreBuilding : NetworkBehaviour
         {
             foreach (int newY in yList)
             {
-                Cell cell = gameManager.map.GetCellDataFromPos(newX, newY);
+                Cell cell;
+
+                if (isHostMap)
+                {
+                    cell = gameManager.hostMap.GetCellDataFromPos(newX, newY);
+                }
+                else
+                {
+                    cell = gameManager.clientMap.GetCellDataFromPos(newX, newY);
+                }
+
                 if (cell.structure)
                 {
                     Debug.Log("already");

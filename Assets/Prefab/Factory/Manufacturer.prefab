@@ -151,6 +151,7 @@ MonoBehaviour:
   space: 4
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!114 &1875794501085088103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,6 +197,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   checkObj: 1
+  takeItemDelay: 0
   inObj: []
   outObj: []
   outSameList: []
@@ -225,6 +227,7 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}
@@ -235,7 +238,10 @@ MonoBehaviour:
   canUpgrade: 0
   warningIcon: {fileID: 8857369796136610668}
   warningIconCheck: 0
-  increasedStructure: 000000
+  getAnim: 0
+  strImg:
+  - {fileID: 471881988, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  - {fileID: -1901409918, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
