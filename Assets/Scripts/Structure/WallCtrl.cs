@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class WallCtrl : Structure
 {
-    void Start()
-    {
-        setModel = GetComponent<SpriteRenderer>();
-    }
+    //void Start()
+    //{
+    //    setModel = GetComponent<SpriteRenderer>();
+    //}
 
     protected override void Update()
     {

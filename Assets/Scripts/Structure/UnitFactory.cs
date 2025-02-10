@@ -40,7 +40,7 @@ public class UnitFactory : Production
                     if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
                     && slot2.amount >= recipe.amounts[2])
                     {
-                        isOperate = true;
+                        OperateStateSet(true);
                         prodTimer += Time.deltaTime;
                         if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                         {
@@ -69,13 +69,13 @@ public class UnitFactory : Production
                     }
                     else
                     {
-                        isOperate = false;
+                        OperateStateSet(false);
                         prodTimer = 0;
                     }
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                     prodTimer = 0;
                 }
             }
@@ -270,5 +270,10 @@ public class UnitFactory : Production
         }
 
         return data;
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];
     }
 }

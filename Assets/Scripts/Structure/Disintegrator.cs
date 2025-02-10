@@ -8,14 +8,11 @@ public class Disintegrator : Production
     [SerializeField] MerchandiseListSO merchandiseList;
     Button confirmBtn;
     public Scrap scrap;
-    [SerializeField]
-    Animator animator;
 
     protected override void Start()
     {
         base.Start();
         isStorageBuilding = true;
-        animator = GetComponent<Animator>();
     }
 
     protected override void Update()

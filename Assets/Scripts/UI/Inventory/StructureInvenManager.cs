@@ -237,7 +237,6 @@ public class StructureInvenManager : InventoryManager
     {
         structureInfoUI.SetActive(true);
         inventoryUI.SetActive(true);
-        Debug.Log("strOpenUI");
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
         isOpened = true;
     }
@@ -248,7 +247,6 @@ public class StructureInvenManager : InventoryManager
         structureInfoUI.SetActive(false);
         inventoryUI.SetActive(false);
         itemInfoWindow.CloseWindow();
-        Debug.Log("strCloseUI");
         gameManager.onUIChangedCallback?.Invoke(structureInfoUI);
         isOpened = false;
     }

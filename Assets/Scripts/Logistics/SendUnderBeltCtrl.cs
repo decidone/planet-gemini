@@ -7,10 +7,10 @@ using Unity.Netcode;
 // UTF-8 설정
 public class SendUnderBeltCtrl : LogisticsCtrl
 {
-    void Start()
-    {
-        setModel = GetComponent<SpriteRenderer>();
-    }
+    //void Start()
+    //{
+    //    setModel = GetComponent<SpriteRenderer>();
+    //}
 
     protected override void Update()
     {

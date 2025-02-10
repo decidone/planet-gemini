@@ -35,7 +35,7 @@ public class MonsterAi : UnitCommonAi
     //bool goalPathBlocked = false;
 
     public float normalTraceTimer;
-    float normalTraceInterval = 10f;
+    float normalTraceInterval = 20f;
     bool stopTrace;
 
     public bool isDebuffed;
@@ -49,6 +49,7 @@ public class MonsterAi : UnitCommonAi
     protected override void Start()
     {
         base.Start();
+        normalTraceInterval = Random.Range(15, 25);
 
         _t = transform;
         _effects = Effects.instance;
@@ -64,6 +65,7 @@ public class MonsterAi : UnitCommonAi
                 normalTraceTimer += Time.deltaTime;
                 if (normalTraceTimer > normalTraceInterval)
                 {
+                    normalTraceInterval = Random.Range(15, 25);
                     normalTraceTimer = 0f;
                     stopTrace = true;
                     TargetListReset();
@@ -699,6 +701,63 @@ public class MonsterAi : UnitCommonAi
         normalTraceTimer = 0;
     }
 
+
+    [ClientRpc]
+    public override void TakeDamageClientRpc(float damage, int attackType, float option)
+    {
+        //if (hp <= 0f)
+        //    return;
+        if (!unitCanvas.activeSelf)
+            unitCanvas.SetActive(true);
+
+        float reducedDamage = damage;
+
+        if (attackType == 0 || attackType == 4)
+        {
+            reducedDamage = Mathf.Max(damage - defense, 5);
+            if (attackType == 4)
+            {
+                if (!slowDebuffOn)
+                {
+                    StartCoroutine(SlowDebuffDamage(option));
+                    TriggerEffects("ice");
+                }
+            }
+        }
+        else if (attackType == 2)
+        {
+            reducedDamage = Mathf.Max(damage - (defense * (option / 100)), 5);
+        }
+        else if (attackType == 3)
+        {
+            reducedDamage = 0;
+            if (!takePoisonDamgae)
+            {
+                StartCoroutine(PoisonDamage(damage, option));
+                TriggerEffects("poison");
+            }
+        }
+
+        if (!slowDebuffOn && !takePoisonDamgae && !damageEffectOn)
+        {
+            StartCoroutine(TakeDamageEffect());
+        }
+
+        hp -= reducedDamage;
+        if (hp < 0f)
+            hp = 0f;
+        onHpChangedCallback?.Invoke();
+        hpBar.fillAmount = hp / maxHp;
+
+        if (IsServer && hp <= 0f && !dieCheck)
+        {
+            aIState = AIState.AI_Die;
+            hp = 0f;
+            dieCheck = true;
+            DieFuncServerRpc();
+        }
+    }
+
     protected override bool AttackStart()
     {
         bool isAttacked = false;
@@ -1022,6 +1081,12 @@ public class MonsterAi : UnitCommonAi
         {
             case ("dark"):
                 _effects.TriggerDark(this.gameObject);
+                break;
+            case ("ice"):
+                _effects.TriggerIce(this.gameObject);
+                break;
+            case ("poison"):
+                _effects.TriggerPoison(this.gameObject);
                 break;
         }
 

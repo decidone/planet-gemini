@@ -117,6 +117,5 @@ public class CameraController : MonoBehaviour
         width = widthSize;
         height = heightSize;
         ChangeZoomLv(lv);
-        Debug.Log(width + " : " + height);
     }
 }

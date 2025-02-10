@@ -27,7 +27,7 @@ public class Smelter : Production
 
                         if (slot2.item == output || slot2.item == null)
                         {
-                            isOperate = true;
+                            OperateStateSet(true);
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                             {
@@ -48,19 +48,19 @@ public class Smelter : Production
                         }
                         else
                         {
-                            isOperate = false;
+                            OperateStateSet(false);
                             prodTimer = 0;
                         }
                     }
                     else
                     {
-                        isOperate = false;
+                        OperateStateSet(false);
                         prodTimer = 0;
                     }
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                     prodTimer = 0;
                 }
             }
@@ -134,5 +134,10 @@ public class Smelter : Production
                 ui = list;
             }
         }
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];
     }
 }

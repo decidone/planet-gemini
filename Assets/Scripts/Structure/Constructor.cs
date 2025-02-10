@@ -25,7 +25,7 @@ public class Constructor : Production
                         
                         if (slot1.item == output || slot1.item == null)
                         {
-                            isOperate = true;
+                            OperateStateSet(true);
                             prodTimer += Time.deltaTime;
                             if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                             {
@@ -44,19 +44,19 @@ public class Constructor : Production
                         }
                         else
                         {
-                            isOperate = false;
+                            OperateStateSet(false);
                             prodTimer = 0;
                         }
                     }
                     else
                     {
-                        isOperate = false;
+                        OperateStateSet(false);
                         prodTimer = 0;
                     }
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                     prodTimer = 0;
                 }
             }
@@ -128,5 +128,10 @@ public class Constructor : Production
                 ui = list;
             }
         }
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];
     }
 }

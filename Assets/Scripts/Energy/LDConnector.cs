@@ -74,6 +74,18 @@ public class LDConnector : Structure
                 isBuildDone = true;
             }
         }
+
+        if (connector != null && connector.group != null)
+        {
+            if (connector.group.efficiency > 0)
+            {
+                OperateStateSet(true);
+            }
+            else
+            {
+                OperateStateSet(false);
+            }
+        }
     }
 
     protected override void OnClientConnectedCallback(ulong clientId)
@@ -175,5 +187,14 @@ public class LDConnector : Structure
         }
 
         return (false, false, false, null, 0);
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        animator.enabled = isOn;
+        if (!isOn)
+        {
+            setModel.sprite = strImg[0];
+        }
     }
 }

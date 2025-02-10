@@ -22,7 +22,6 @@ public class Transporter : Production
     float transportInterval;
     float transportTimeer;
 
-    Animator animator;
     Transporter othBuildAni;
     Dictionary<Item, int> invItemCheckDicAni = new Dictionary<Item, int>();
 
@@ -32,7 +31,6 @@ public class Transporter : Production
         maxFuel = 100;
         transportTimeer = 1.0f;
         isStorageBuilding = true;
-        animator = GetComponent<Animator>();
     }
 
     protected override void Update()

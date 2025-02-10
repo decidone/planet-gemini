@@ -665,6 +665,9 @@ MonoBehaviour:
   canUpgrade: 0
   warningIcon: {fileID: 0}
   warningIconCheck: 0
+  getAnim: 0
+  strImg:
+  - {fileID: -652255027, guid: 9abbba1ba31b56b449007ede1966eb72, type: 3}
   connector: {fileID: 3796074299410655006}
   view: {fileID: 8889250720948334388}
   isImprovedRepeater: 1

@@ -39,7 +39,6 @@ public class GeminiNetworkManager : NetworkBehaviour
     [ServerRpc]
     public void HostSpawnServerRPC(ServerRpcParams serverRpcParams = default)
     {
-        Debug.Log("RPC");
         ulong clientId = serverRpcParams.Receive.SenderClientId;
         Transform playerTransform = Instantiate(hostChar);
         GameManager.instance.hostPlayerTransform = playerTransform;

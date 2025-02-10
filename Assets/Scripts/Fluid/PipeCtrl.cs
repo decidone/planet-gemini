@@ -10,10 +10,10 @@ public class PipeCtrl : FluidFactoryCtrl
     public bool isDown = false;
     public bool isLeft = false;
 
-    protected override void Start()
-    {
-        setModel = GetComponent<SpriteRenderer>();
-    }
+    //protected override void Start()
+    //{
+    //    setModel = GetComponent<SpriteRenderer>();
+    //}
 
     protected override void Update()
     {

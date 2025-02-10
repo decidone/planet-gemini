@@ -108,12 +108,12 @@ public class EnergyGenerator : Production
                 if (fuel >= fuelRequirement && !destroyStart)
                 {
                     fuel -= fuelRequirement;
-                    isOperate = true;
+                    OperateStateSet(true);
                     prodTimer = 0;
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                 }
             }
         }
@@ -232,5 +232,10 @@ public class EnergyGenerator : Production
         }
 
         return (false, false, false, null, 0);
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        setModel.sprite = strImg[isOn ? 1 : 0];        
     }
 }

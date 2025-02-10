@@ -29,7 +29,7 @@ public class Miner : Production
 
                     if (output != null && slot.amount < maxAmount)
                     {
-                        isOperate = true;
+                        OperateStateSet(true);
                         prodTimer += Time.deltaTime;
                         if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                         {
@@ -58,13 +58,13 @@ public class Miner : Production
                     }
                     else
                     {
-                        isOperate = false;
+                        OperateStateSet(false);
                         prodTimer = 0;
                     }
                 }
                 else
                 {
-                    isOperate = false;
+                    OperateStateSet(false);
                     prodTimer = 0;
                 }
             }
@@ -72,6 +72,7 @@ public class Miner : Production
             {
                 if (output != null && slot.amount < maxAmount)
                 {
+                    OperateStateSet(true);
                     prodTimer += Time.deltaTime;
                     if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
                     {
@@ -97,6 +98,10 @@ public class Miner : Production
                             prodTimer = 0;
                         }
                     }
+                }
+                else
+                {
+                    OperateStateSet(false);
                 }
             }
 
@@ -247,5 +252,10 @@ public class Miner : Production
                 ui = list;
             }
         }
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        animator.enabled = isOn;
     }
 }

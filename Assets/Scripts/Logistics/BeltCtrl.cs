@@ -40,12 +40,59 @@ public class BeltCtrl : LogisticsCtrl
     bool isDown = false;
     bool isLeft = false;
 
+    protected override void Awake()
+    {
+        GameManager gameManager = GameManager.instance;
+        playerInven = gameManager.inventory;
+        buildName = structureData.FactoryName;
+        col = GetComponent<BoxCollider2D>();
+        unitSprite = GetComponent<SpriteRenderer>();
+
+        maxLevel = structureData.MaxLevel;
+        maxHp = structureData.MaxHp[level];
+        defense = structureData.Defense[level];
+        hp = structureData.MaxHp[level];
+        getDelay = 0.01f;
+        sendDelay = structureData.SendDelay[level];
+        hpBar.enabled = false;
+        hpBar.fillAmount = hp / maxHp;
+        repairBar.fillAmount = 0;
+        isStorageBuilding = false;
+        isMainSource = false;
+        isUIOpened = false;
+        myVision.SetActive(false);
+        maxAmount = structureData.MaxItemStorageLimit;
+        cooldown = structureData.Cooldown;
+        connectors = new List<EnergyGroupConnector>();
+        conn = null;
+        efficiency = 0;
+        effiCooldown = 0;
+        energyUse = structureData.EnergyUse[level];
+        isEnergyStr = structureData.IsEnergyStr;
+        energyProduction = structureData.Production;
+        energyConsumption = structureData.Consumption[level];
+        destroyInterval = structureData.RemoveGauge;
+        soundManager = SoundManager.instance;
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
+        destroyTimer = destroyInterval;
+        warningIconCheck = false;
+        visionPos = transform.position;
+        increasedStructure = new bool[5];
+        onEffectUpgradeCheck += IncreasedStructureCheck;
+        if (TryGetComponent(out Animator anim))
+        {
+            getAnim = true;
+            animator = anim;
+        }
+    }
+
     void Start()
     {
         beltManager = GameObject.Find("BeltManager");
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
+        isOperate = true;
         BeltModelSet();
     }
 
@@ -488,7 +535,15 @@ public class BeltCtrl : LogisticsCtrl
         {
             isTurn = false;
         }
+        BeltDataServerRpc();
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void BeltDataServerRpc()
+    {
+        ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
+    }
+
 
     public void FactoryPosCheck(Structure factory)
     {
@@ -624,6 +679,8 @@ public class BeltCtrl : LogisticsCtrl
         }
         else
             isTurn = false;
+
+        BeltDataServerRpc();
     }
 
     public override void ResetCheckObj(GameObject game)
@@ -885,4 +942,9 @@ public class BeltCtrl : LogisticsCtrl
     }
 
     public override void ColliderTriggerOnOff(bool isOn) { }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        animator.enabled = isOn;
+    }
 }

@@ -1265,17 +1265,14 @@ public class GameManager : NetworkBehaviour
     
     public void GameStartSet()
     {
-        Debug.Log("NetworkManager.Singleton.IsHost: " + NetworkManager.Singleton.IsHost);
         if (NetworkManager.Singleton.IsHost)
         {
-            Debug.Log("Host");
             optionCanvas.SaveBtnOnOff(true);
             SteamManager.instance.HostLobby();
             HostConnected();
             MapGenerator.instance.SpawnerAreaMapSet();
             if (MainGameSetting.instance.isNewGame)
             {
-                Debug.Log("New Game");
                 SetStartingItem();
             }
             else
@@ -1311,7 +1308,6 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     void TimeScaleClientRpc()
     {
-        Debug.Log("TimeScaleClientRpc");
         Time.timeScale = 1;
     }
 

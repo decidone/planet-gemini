@@ -9,7 +9,7 @@ public class Storage : Production
     protected override void Start()
     {
         base.Start();
-        setModel = GetComponent<SpriteRenderer>();
+        //setModel = GetComponent<SpriteRenderer>();
         isStorageBuilding = true;
         invenSize = new int[5] { 6, 12, 18, 24, 30 };
     }

@@ -171,7 +171,7 @@ public class UpgradeBuild : DragFunc
     {   // 벨트 스프리터 벽 창고
         if (obj.TryGetComponent(out Structure structure) && structure.canUpgrade && !structure.isPreBuilding)
         {
-            if (structure.structureData.MaxLevel == structure.level + 1)
+            if (structure.structureData.MaxLevel == structure.level + 1 || !ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
                 return null;
 
             buildingData = new BuildingData();

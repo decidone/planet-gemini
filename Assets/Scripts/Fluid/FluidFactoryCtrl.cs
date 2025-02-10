@@ -59,6 +59,13 @@ public class FluidFactoryCtrl : Production
         destroyTimer = destroyInterval;
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
+        setModel = GetComponent<SpriteRenderer>();
+        if (TryGetComponent(out Animator anim))
+        {
+            getAnim = true;
+            animator = anim;
+        }
+        NonOperateStateSet(isOperate);
     }
 
     protected override void Update()

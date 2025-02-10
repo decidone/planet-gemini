@@ -66,6 +66,18 @@ public class EnergyRepeater : Structure
                 isBuildDone = true;
             }
         }
+
+        if (connector != null && connector.group != null)
+        {
+            if (connector.group.efficiency > 0)
+            {
+                OperateStateSet(true);
+            }
+            else
+            {
+                OperateStateSet(false);
+            }
+        }
     }
 
     public override void Focused()
@@ -100,5 +112,14 @@ public class EnergyRepeater : Structure
         }
 
         return (false, false, false, null, 0);
+    }
+
+    protected override void NonOperateStateSet(bool isOn)
+    {
+        animator.enabled = isOn;
+        if (!isOn)
+        {
+            setModel.sprite = strImg[0];
+        }
     }
 }
