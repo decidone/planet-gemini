@@ -845,6 +845,9 @@ public class GameManager : NetworkBehaviour
             case "ScienceBuildingInfo":
                 scienceBuildingInfo.CloseUI();
                 break;
+            case "ShopPopup":
+                ShopPopup.instance.CloseUI();
+                break;
             default:
                 if (openedUI[order].gameObject.TryGetComponent<Shop>(out Shop shop))
                     shop.CloseUI();

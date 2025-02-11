@@ -17,7 +17,10 @@ public class Merch : MonoBehaviour
     [SerializeField] Button minusButton;
     [SerializeField] Text amountText;
 
+    MerchandiseListSO merchandiseListSO;
+    List<Merchandise> merchandiseList;
     Shop shop;
+    public int merchNum;
     public Item item;
     public int price;
     public int amount;
@@ -31,9 +34,16 @@ public class Merch : MonoBehaviour
 
     public void SetMerch(Shop _shop, Merchandise merchandise, bool isPurchase)
     {
+        merchandiseListSO = Resources.Load<MerchandiseListSO>("SOList/MerchandiseListSO");
+        merchandiseList = merchandiseListSO.MerchandiseSOList;
         shop = _shop;
         item = merchandise.item;
         icon.sprite = item.icon;
+        for (int i = 0; i < merchandiseList.Count; i++)
+        {
+            if (merchandiseList[i].item == item)
+                merchNum = i;
+        }
 
         if (isPurchase)
             price = merchandise.buyPrice;

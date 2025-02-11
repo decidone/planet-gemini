@@ -24,12 +24,17 @@ public class Inventory : NetworkBehaviour
     List<Item> itemList;
     public Dictionary<Item, int> totalItems = new Dictionary<Item, int>();
 
+    MerchandiseListSO merchandiseListSO;
+    List<Merchandise> merchandiseList;
+
     ulong[] singleTarget = new ulong[1];
 
     void Awake()
     {
         itemListSO = Resources.Load<ItemListSO>("SOList/ItemListSO");
         itemList = itemListSO.itemSOList;
+        merchandiseListSO = Resources.Load<MerchandiseListSO>("SOList/MerchandiseListSO");
+        merchandiseList = merchandiseListSO.MerchandiseSOList;
 
         if (totalItems.Count == 0)
         {
@@ -103,6 +108,41 @@ public class Inventory : NetworkBehaviour
         else
             containable = true;
         
+        return containable;
+    }
+
+    public bool MultipleSpaceCheck(int[] merchNum, int[] merchAmount)
+    {
+        // 각 상품들은 99개를 초과하지 않음
+        bool containable;
+        int emptySlots = space - items.Count;
+        int emptySlotsRequirement = 0;
+
+        for (int i = 0; i < merchNum.Length; i++)
+        {
+            int merchItemSlotRemaining = 0;
+
+            for (int j = 0; j < space; j++)
+            {
+                if (items.ContainsKey(j))
+                {
+                    if (items[j] == merchandiseList[merchNum[i]].item)
+                    {
+                        merchItemSlotRemaining += (maxAmount - amounts[j]);
+                    }
+                }
+            }
+            if (merchAmount[i] > merchItemSlotRemaining)
+            {
+                emptySlotsRequirement++;
+            }
+        }
+
+        if (emptySlots < emptySlotsRequirement)
+            containable = false;
+        else
+            containable = true;
+
         return containable;
     }
 
@@ -920,6 +960,84 @@ public class Inventory : NetworkBehaviour
         else
         {
             //Debug.Log("not enough space");
+        }
+    }
+
+    public void BuyMerch(Merch[] merchList, int totalPrice)
+    {
+        int[] merchNum = new int[merchList.Length];
+        int[] amount = new int[merchList.Length];
+
+        for (int i = 0; i < merchList.Length; i++)
+        {
+            merchNum[i] = merchList[i].merchNum;
+            amount[i] = merchList[i].amount;
+        }
+
+        BuyMerchServerRpc(merchNum, amount, totalPrice);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void BuyMerchServerRpc(int[] merchNum, int[] amount, int totalPrice)
+    {
+        if (MultipleSpaceCheck(merchNum, amount))
+        {
+            if (GameManager.instance.finance.finance >= totalPrice)
+            {
+                for (int i = 0; i < merchNum.Length; i++)
+                {
+                    Overall.instance.OverallPurchased(merchandiseList[merchNum[i]].item, amount[i]);
+                    GameManager.instance.SubFinanceServerRpc(merchandiseList[merchNum[i]].buyPrice * amount[i]);
+                    Add(merchandiseList[merchNum[i]].item, amount[i]);
+                }
+            }
+            else
+            {
+                Debug.Log("Not enough money");
+            }
+        }
+        else
+        {
+            Debug.Log("Not enough space");
+        }
+    }
+
+    public void SellMerch(Merch[] merchList)
+    {
+        int[] merchNum = new int[merchList.Length];
+        int[] amount = new int[merchList.Length];
+
+        for (int i = 0; i < merchList.Length; i++)
+        {
+            merchNum[i] = merchList[i].merchNum;
+            amount[i] = merchList[i].amount;
+        }
+
+        SellMerchServerRpc(merchNum, amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SellMerchServerRpc(int[] merchNum, int[] amount)
+    {
+        bool isEnough = true;
+        for (int i = 0; i < merchNum.Length; i++)
+        {
+            int itemAmount = GetItemAmount(merchandiseList[merchNum[i]].item);
+            if (itemAmount < amount[i])
+            {
+                isEnough = false;
+                break;
+            }
+        }
+
+        if (isEnough)
+        {
+            for (int i = 0; i < merchNum.Length; i++)
+            {
+                Overall.instance.OverallSold(merchandiseList[merchNum[i]].item, amount[i]);
+                GameManager.instance.AddFinanceServerRpc(merchandiseList[merchNum[i]].sellPrice * amount[i]);
+                Sub(merchandiseList[merchNum[i]].item, amount[i]);
+            }
         }
     }
 }

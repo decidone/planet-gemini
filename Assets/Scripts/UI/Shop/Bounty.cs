@@ -27,8 +27,12 @@ public class Bounty : MonoBehaviour
         overall = Overall.instance;
         newSpawnerCount = overall.spawnerDestroyCount - overall.spawnerBountyReceived;
         newMonsterCount = overall.monsterKillCount - overall.monsterBountyReceived;
-        spawnerText.text = overall.spawnerBountyReceived + " +" + newSpawnerCount;
-        monsterText.text = overall.monsterBountyReceived + " +" + newMonsterCount;
+        spawnerText.text = overall.spawnerBountyReceived + "";
+        if (newSpawnerCount != 0)
+            spawnerText.text += " +" + newSpawnerCount;
+        monsterText.text = overall.monsterBountyReceived + "";
+        if (newMonsterCount != 0)
+            monsterText.text += " +" + newMonsterCount;
 
         bounty = (overall.spawnerDestroyCount - overall.spawnerBountyReceived) * 100;
         bounty += (overall.monsterKillCount - overall.monsterBountyReceived) * 5;

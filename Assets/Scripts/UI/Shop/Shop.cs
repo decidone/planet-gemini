@@ -42,6 +42,7 @@ public class Shop : MonoBehaviour
     public void OpenUI()
     {
         this.gameObject.SetActive(true);
+        btn.interactable = false;
         GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
         if (!isPurchase)
         {
@@ -89,31 +90,43 @@ public class Shop : MonoBehaviour
             if (totalPrice <= GameManager.instance.finance.GetFinance())
             {
                 finance.SetFinance(totalPrice);
+                btn.interactable = true;
             }
             else
             {
                 finance.SetFinance(totalPrice, false);
+                btn.interactable = false;
+            }
+
+            if (totalPrice == 0)
+            {
+                btn.interactable = false;
             }
         }
         else
         {
             finance.SetFinance(totalPrice);
+            if (totalPrice > 0)
+            {
+                btn.interactable = true;
+            }
+            else
+            {
+                btn.interactable = false;
+            }
         }
     }
 
     public void BuyMerch()
     {
+        //GameManager.instance.inventory.BuyMerch(merchList, totalPrice);
+
         if (GameManager.instance.inventory.MultipleSpaceCheck(merchList))
         {
             if (GameManager.instance.finance.finance >= totalPrice)
             {
-                foreach (Merch merch in merchList)
-                {
-                    Overall.instance.OverallPurchased(merch.item, merch.amount);
-                    GameManager.instance.SubFinanceServerRpc(merch.price * merch.amount);
-                    GameManager.instance.inventory.Add(merch.item, merch.amount);
-                    merch.ResetValue();
-                }
+                GameManager.instance.inventory.BuyMerch(merchList, totalPrice);
+                ResetMerchList();
             }
             else
             {
@@ -123,16 +136,20 @@ public class Shop : MonoBehaviour
         else
         {
             Debug.Log("Not enough space");
+            ShopPopup.instance.NotEnoughSpacePopup();
         }
     }
 
     public void SellMerch()
     {
+        GameManager.instance.inventory.SellMerch(merchList);
+        ResetMerchList();
+    }
+
+    void ResetMerchList()
+    {
         foreach (Merch merch in merchList)
         {
-            Overall.instance.OverallSold(merch.item, merch.amount);
-            GameManager.instance.AddFinanceServerRpc(merch.price * merch.amount);
-            GameManager.instance.inventory.Sub(merch.item, merch.amount);
             merch.ResetValue();
         }
     }
