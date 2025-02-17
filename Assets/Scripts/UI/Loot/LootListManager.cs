@@ -51,7 +51,6 @@ public class LootListManager : MonoBehaviour
 
             lootList.Add(item);
             lootInfoList.Add(createdItem);
-            StartCoroutine(DestroyLootInfo(createdItem));
         }
         else
         {
@@ -62,24 +61,6 @@ public class LootListManager : MonoBehaviour
                 {
                     lootUI.SetLootData(item, lootUI.amount + amount);
                 }
-            }
-        }
-    }
-
-    IEnumerator DestroyLootInfo(GameObject obj)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.5f);
-
-            LootItemUI lootUI = obj.GetComponent<LootItemUI>();
-            if (lootUI.timer > 5f)
-            {
-                lootList.Remove(lootUI.item);
-                lootInfoList.Remove(obj);
-                Destroy(obj);
-                SetScrollToBottom();
-                yield break;
             }
         }
     }
@@ -96,7 +77,6 @@ public class LootListManager : MonoBehaviour
 
             dropList.Add(item);
             dropInfoList.Add(createdItem);
-            StartCoroutine(DestroyDropInfo(createdItem));
         }
         else
         {
@@ -111,26 +91,9 @@ public class LootListManager : MonoBehaviour
         }
     }
 
-    IEnumerator DestroyDropInfo(GameObject obj)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.5f);
-
-            LootItemUI lootUI = obj.GetComponent<LootItemUI>();
-            if (lootUI.timer > 5f)
-            {
-                dropList.Remove(lootUI.item);
-                dropInfoList.Remove(obj);
-                Destroy(obj);
-                SetScrollToBottom();
-                yield break;
-            }
-        }
-    }
-
     public void DisplayInfoMessage(string message)
     {
+        // 마켓에서 아이템을 버리려고 할 때 뜨는 메시지
         if (isDropMessageDisplayed)
             return;
 
@@ -140,25 +103,6 @@ public class LootListManager : MonoBehaviour
         createdItem.transform.localScale = Vector3.one;
         SetScrollToBottom();
         isDropMessageDisplayed = true;
-
-        StartCoroutine(DestroyInfoMessage(createdItem));
-    }
-
-    IEnumerator DestroyInfoMessage(GameObject obj)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(0.5f);
-
-            LootItemUI lootUI = obj.GetComponent<LootItemUI>();
-            if (lootUI.timer > 5f)
-            {
-                isDropMessageDisplayed = false;
-                Destroy(obj);
-                SetScrollToBottom();
-                yield break;
-            }
-        }
     }
 
     void SetScrollToBottom()
@@ -167,5 +111,34 @@ public class LootListManager : MonoBehaviour
         scrollRect.content.GetComponent<VerticalLayoutGroup>().CalculateLayoutInputVertical();
         scrollRect.content.GetComponent<ContentSizeFitter>().SetLayoutVertical();
         scrollRect.verticalNormalizedPosition = 0f;
+    }
+
+    public void RemoveListItem(GameObject obj)
+    {
+        LootItemUI lootUI = obj.GetComponent<LootItemUI>();
+        if (lootUI.isMessage)
+        {
+            isDropMessageDisplayed = false;
+            Destroy(obj);
+            SetScrollToBottom();
+        }
+        else
+        {
+            Item item = lootUI.item;
+            if (lootInfoList.Contains(obj))
+            {
+                lootList.Remove(item);
+                lootInfoList.Remove(obj);
+                Destroy(obj);
+                SetScrollToBottom();
+            }
+            else if (dropInfoList.Contains(obj))
+            {
+                dropList.Remove(item);
+                dropInfoList.Remove(obj);
+                Destroy(obj);
+                SetScrollToBottom();
+            }
+        }
     }
 }
