@@ -243,7 +243,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 4
   m_Sprite: {fileID: 1057548600, guid: 594fb2646d95996438ab6483c751bbe9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -340,7 +340,9 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
-  slowDebuffOn: 0
+  damage: 0
+  attackSpeed: 0
+  defense: 0
   mainTrBuild: {fileID: 0}
   othTrBuild: {fileID: 0}
   trUnitState: 0

@@ -231,72 +231,126 @@ public class PreBuilding : NetworkBehaviour
 
                 if (canBuild)
                 {
-                    int posIndex = 0;
+                    Vector3[] pos = new Vector3[buildingList.Count];
 
-                    if (isBeltObj)
+                    for (int i = 0; i < buildingList.Count; i++) 
                     {
-                        BeltGroupSpawnServerRpc();
+                        pos[i] = buildingList[i].transform.position;
+                    }
 
-                        if (reversSet)
-                        {
-                            posIndex = posList.Count - 1;
-                            for (int i = buildingList.Count - 1; i >= 0; i--)
-                            {
-                                GameObject obj = buildingList[i];
-                                SetBuilding(obj, posList[posIndex]);
-                                posIndex--;
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < buildingList.Count; i++)
-                            {
-                                GameObject obj = buildingList[i];
-                                SetBuilding(obj, posList[posIndex]);
-                                posIndex++;
-                            }
-                        }
-
-                        BeltGroupSetEndServerRpc();
+                    if (!nonNetObj.GetComponent<UnderObjBuilding>())
+                    {
+                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dirNum, isBeltObj, reversSet);
                     }
                     else
                     {
-                        foreach (GameObject obj in buildingList)
+                        int[] dir = new int[buildingList.Count];
+                        bool underBelt = isUnderBelt;
+                        bool[] sideObj = new bool[buildingList.Count];
+
+                        for (int i = 0; i < buildingList.Count; i++)
                         {
-                            SetBuilding(obj, posList[posIndex]); 
-                            posIndex++;
+                            UnderObjBuilding unObj = buildingList[i].GetComponent<UnderObjBuilding>();
+                            dir[i] = unObj.dirNum;
+                            sideObj[i] = unObj.isSendObj;
                         }
+                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, underBelt, sideObj);
                     }
-           
-                    if (isPortalObj)
-                    {
-                        //portalScript.SetPortalObjEnd(buildData.name, buildingList[0]);
-                        isEnough = false;
-                        canBuildCount = 0;
-                    }
-                    else
-                    {
-                        BuildingInfo.instance.BuildingEnd(buildingList.Count);
-                        isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-                        canBuildCount = BuildingInfo.instance.CanBuildAmount();
-                    }
-                    foreach (GameObject obj in buildingList)
-                    {
-                        Destroy(obj);
-                    }
-                    soundManager.PlayUISFX("BuildingOk");
                 }
-                else
+
+                //bool canBuild = false;
+                //int index = 0;
+                //foreach (GameObject obj in buildingList)
+                //{
+                //    if (GroupBuildCheck(obj, posList[index]))
+                //        canBuild = true;
+                //    else
+                //    {
+                //        canBuild = false;
+                //        break;
+                //    }
+                //    index++;
+                //}
+
+                //if (canBuild)
+                //{
+                //    int posIndex = 0;
+
+                //    if (isBeltObj)
+                //    {
+                //        BeltGroupSpawnServerRpc();
+
+                //        if (reversSet)
+                //        {
+                //            posIndex = posList.Count - 1;
+                //            for (int i = buildingList.Count - 1; i >= 0; i--)
+                //            {
+                //                GameObject obj = buildingList[i];
+                //                SetBuilding(obj, posList[posIndex]);
+                //                posIndex--;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            for (int i = 0; i < buildingList.Count; i++)
+                //            {
+                //                GameObject obj = buildingList[i];
+                //                SetBuilding(obj, posList[posIndex]);
+                //                posIndex++;
+                //            }
+                //        }
+
+                //        BeltGroupSetEndServerRpc();
+                //    }
+                //    else
+                //    {
+                //        foreach (GameObject obj in buildingList)
+                //        {
+                //            SetBuilding(obj, posList[posIndex]); 
+                //            posIndex++;
+                //        }
+                //    }
+
+                //    if (isPortalObj)
+                //    {
+                //        //portalScript.SetPortalObjEnd(buildData.name, buildingList[0]);
+                //        isEnough = false;
+                //        canBuildCount = 0;
+                //    }
+                //    else
+                //    {
+                //        BuildingInfo.instance.BuildingEnd(buildingList.Count);
+                //        isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+                //        canBuildCount = BuildingInfo.instance.CanBuildAmount();
+                //    }
+                //    foreach (GameObject obj in buildingList)
+                //    {
+                //        Destroy(obj);
+                //    }
+                //    soundManager.PlayUISFX("BuildingOk");
+                //}
+                //else
+                //{
+                //    soundManager.PlayUISFX("BuildingCancel");
+                //    foreach (GameObject build in buildingList)
+                //    {
+                //        Destroy(build);
+                //    }
+                //}
+
+                foreach (GameObject build in buildingList)
                 {
-                    soundManager.PlayUISFX("BuildingCancel");
-                    foreach (GameObject build in buildingList)
-                    {
-                        Destroy(build);
-                    }
+                    Destroy(build);
                 }
 
                 buildingList.Clear();
                 nonNetObj.SetActive(true);
+
+                isEnough = BuildingInfo.instance.AmountsEnoughCheck(); 
+                canBuildCount = BuildingInfo.instance.CanBuildAmount();
+
+                if (isPortalObj)
+                    Invoke(nameof(CancelBuild), 0.1f);
 
                 PreBuildingImg preBuildingImg = nonNetObj.GetComponent<PreBuildingImg>();
 
@@ -324,6 +378,214 @@ public class PreBuilding : NetworkBehaviour
             }
 
             mouseHoldCheck = false;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int dir, bool isBelt, bool reversSet)
+    {
+        int spawnCount = setPos.Length;
+        Building building = buildingListSO.FindBuildingData(bIndex);
+        Debug.Log(building.item.name + " : " + building.level);
+        BuildingData buildingData = BuildingDataGet.instance.GetBuildingName(building.item.name, building.level);
+
+        Vector3 correctPos = Vector3.zero;
+        if (building.height == 2 && building.width == 2)
+        {
+            correctPos = new Vector3(-0.5f, -0.5f);
+        }
+
+        // 아이템이 충분한지 체크
+        if (building.type != "Portal")
+        {
+            bool costEnough = false;
+            for (int i = 0; i < buildingData.GetItemCount(); i++)
+            {
+                int value;
+                Inventory inven;
+                if (isHostMap)
+                    inven = gameManager.hostMapInven;
+                else
+                    inven = gameManager.clientMapInven;
+
+                bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
+                costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
+                Debug.Log("costEnough : " + costEnough);
+
+                if (!costEnough)
+                    return;
+            }
+        }
+        else
+        {
+            Debug.Log(isHostMap + " : " + building.item.name);
+            if (gameManager.portal[isHostMap ? 0 : 1].PortalObjFind(building.item.name))
+                return;
+        }
+        // 여기서는 셀에 다른 건물이 있는지만 체크
+        for (int i = 0; i < spawnCount; i++)
+        {
+            int x = Mathf.FloorToInt(setPos[i].x + correctPos.x);
+            int y = Mathf.FloorToInt(setPos[i].y + correctPos.y);
+
+            List<int> xList = new List<int>();
+            List<int> yList = new List<int>();
+
+            if (building.height == 1 && building.width == 1)
+            {
+                xList.Add(x);
+                yList.Add(y);
+            }
+            else if (building.height == 2 && building.width == 2)
+            {
+                xList.Add(x);
+                xList.Add(x + 1);
+                yList.Add(y);
+                yList.Add(y + 1);
+            }
+            foreach (int newX in xList)
+            {
+                foreach (int newY in yList)
+                {
+                    Cell cell;
+                    if (isHostMap)
+                        cell = gameManager.hostMap.GetCellDataFromPos(newX, newY);
+                    else
+                        cell = gameManager.clientMap.GetCellDataFromPos(newX, newY);
+
+                    if (cell.structure != null)
+                    {
+                        Debug.Log("Found oth Obj : " + newX + " : " + newY);
+                        return;
+                    }
+                    Debug.Log("Can not Found oth Obj : " + newX + " : " + newY);
+                }
+            }
+        }
+        // 위 조건 만족시 설치
+        if (isBelt)
+        {
+            BeltGroupSpawnServerRpc();
+
+            if (reversSet)
+            {
+                for (int i = spawnCount - 1; i >= 0; i--)
+                {
+                    SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir, building.height, building.width, false, false, false, false);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < spawnCount; i++)
+                {
+                    SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir, building.height, building.width, false, false, false, false);
+                }
+            }
+
+            BeltGroupSetEndServerRpc();
+        }
+        else
+        {
+            for (int i = spawnCount - 1; i >= 0; i--)
+            {
+                SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir, building.height, building.width, building.type == "Portal", false, false, false);
+            }
+        }
+        PayCost(buildingData, spawnCount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int[] dir, bool underBelt, bool[] sideObj) // 지하 오브젝트 같이 한 방향이 아닐때
+    {
+        int spawnCount = setPos.Length;
+        Building building = buildingListSO.FindBuildingData(bIndex);
+        Debug.Log(building.item.name + " : " + building.level);
+        BuildingData buildingData = BuildingDataGet.instance.GetBuildingName(building.item.name, building.level);
+
+        Vector3 correctPos = Vector3.zero;
+        if (building.height == 2 && building.width == 2)
+        {
+            correctPos = new Vector3(-0.5f, -0.5f);
+        }
+
+        // 아이템이 충분한지 체크
+        bool costEnough = false;
+        for (int i = 0; i < buildingData.GetItemCount(); i++)
+        {
+            int value;
+            Inventory inven;
+            if (isHostMap)
+                inven = gameManager.hostMapInven;
+            else
+                inven = gameManager.clientMapInven;
+
+            bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
+            costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
+            Debug.Log("costEnough : " + costEnough);
+
+            if (!costEnough)
+                return;
+        }
+        // 여기서는 셀에 다른 건물이 있는지만 체크
+        for (int i = 0; i < spawnCount; i++)
+        {
+            int x = Mathf.FloorToInt(setPos[i].x + correctPos.x);
+            int y = Mathf.FloorToInt(setPos[i].y + correctPos.y);
+
+            List<int> xList = new List<int>();
+            List<int> yList = new List<int>();
+
+            if (building.height == 1 && building.width == 1)
+            {
+                xList.Add(x);
+                yList.Add(y);
+            }
+            else if (building.height == 2 && building.width == 2)
+            {
+                xList.Add(x);
+                xList.Add(x + 1);
+                yList.Add(y);
+                yList.Add(y + 1);
+            }
+            foreach (int newX in xList)
+            {
+                foreach (int newY in yList)
+                {
+                    Cell cell;
+                    if (isHostMap)
+                        cell = gameManager.hostMap.GetCellDataFromPos(newX, newY);
+                    else
+                        cell = gameManager.clientMap.GetCellDataFromPos(newX, newY);
+
+                    if (cell.structure != null)
+                    {
+                        Debug.Log("Found oth Obj : " + newX + " : " + newY);
+                        return;
+                    }
+                    Debug.Log("Can not Found oth Obj : " + newX + " : " + newY);
+                }
+            }
+        }
+        // 위 조건 만족시 설치
+
+        for (int i = 0; i < spawnCount; i++)
+        {
+            SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, false, true, underBelt, sideObj[i]);
+        }
+        PayCost(buildingData, spawnCount);
+    }
+
+    void PayCost(BuildingData buildingData, int amount)
+    {
+        if (buildingData == null)
+            return;
+
+        for (int i = 0; i < buildingData.GetItemCount(); i++)
+        {
+            Item item = ItemList.instance.itemDic[buildingData.items[i]];
+            int cost = buildingData.amounts[i];
+            GameManager.instance.inventory.Sub(item, cost * amount);
+            Overall.instance.OverallConsumption(item, cost * amount);
         }
     }
 
@@ -820,43 +1082,61 @@ public class PreBuilding : NetworkBehaviour
             return false;
     }
 
-    void SetBuilding(GameObject obj, Vector3 spawnPos)
+    void SetBuilding(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, bool isPortalObj, bool isUnderObj, bool isUnderBelt, bool sendObjCheck)
     {
         if (isPortalObj)
         {
-            ServerPortalObjBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, portalIndex, buildingIndex);
+            ServerPortalObjBuildConfirmServerRpc(spawnPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, isInHostMap ? 0 : 1);
         }
         else
         {
-            Debug.Log("SetBuilding");
-            if (BuildingInfo.instance.AmountsEnoughCheck())
+            if (!isUnderObj)
             {
-                if (!isUnderObj)
-                {
-                    ServerBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, buildingIndex);
-                }
-                else
-                {
-                    spawnPos = obj.transform.position;
-                    UnderObjBuilding underObj = obj.GetComponent<UnderObjBuilding>();
-                    bool sendObjCheck = underObj.isSendObj;
-                    int newDir = underObj.dirNum;
-                    ServerUnderObjBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, newDir, objHeight, objWidth, sendObjCheck, isUnderBelt, buildingIndex);
-                }
+                ServerBuildConfirmServerRpc(spawnPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth);
+            }
+            else
+            {
+                ServerUnderObjBuildConfirmServerRpc(spawnPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, sendObjCheck, isUnderBelt);
             }
         }
-        setBuild = null;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void ServerBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int buildingIndex)
-    {
-        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level, isInHostMap);
-        if (!notFound)
-            return;
+    //void SetBuilding(GameObject obj, Vector3 spawnPos)
+    //{
+    //    if (isPortalObj)
+    //    {
+    //        ServerPortalObjBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, portalIndex);
+    //    }
+    //    else
+    //    {
+    //        if (BuildingInfo.instance.AmountsEnoughCheck())
+    //        {
+    //            if (!isUnderObj)
+    //            {
+    //                ServerBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth);
+    //            }
+    //            else
+    //            {
+    //                spawnPos = obj.transform.position;
+    //                UnderObjBuilding underObj = obj.GetComponent<UnderObjBuilding>();
+    //                bool sendObjCheck = underObj.isSendObj;
+    //                int newDir = underObj.dirNum;
+    //                ServerUnderObjBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, newDir, objHeight, objWidth, sendObjCheck, isUnderBelt);
+    //            }
+    //        }
+    //    }
+    //    setBuild = null;
+    //}
 
-        GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
-        GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
+    [ServerRpc(RequireOwnership = false)]
+    public void ServerBuildConfirmServerRpc(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth)
+    {
+        //bool notFound = ReCheck(spawnPos, objHeight, objWidth, buildingIndex, level, isInHostMap);
+        //if (!notFound)
+        //    return;
+
+        GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
+        GameObject spawnobj = Instantiate(prefabObj, spawnPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
         if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
 
@@ -865,33 +1145,33 @@ public class PreBuilding : NetworkBehaviour
             if(netObj.GetComponent<BeltCtrl>())
             {
                 BeltGroupMgr beltGroupMgr = beltGroupSet.GetComponent<BeltGroupMgr>();
-                beltGroupMgr.SetBelt(spawnobj, level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
+                beltGroupMgr.SetBelt(spawnobj, level, dirNum, objHeight, objWidth, isInHostMap, this.buildingIndex);
                 MapDataCheck(spawnobj, spawnPos);
             }
             else
             {
-                structure.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
+                structure.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, this.buildingIndex);
                 MapDataCheck(spawnobj, spawnPos);
             }
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ServerUnderObjBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, bool isSend, bool isUnderBelt, int buildingIndex)
+    public void ServerUnderObjBuildConfirmServerRpc(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, bool isSend, bool isUnderBelt)
     {
-        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level, isInHostMap);
-        if (!notFound)
-            return;
+        //bool notFound = ReCheck(spawnPos, objHeight, objWidth, buildingIndex, level, isInHostMap);
+        //if (!notFound)
+        //    return;
 
         GameObject prefabObj;
         GameObject spawnobj;
          
         if(isUnderBelt && !isSend)
-            prefabObj = buildingListSO.FindSideBuildingListObj(itemIndex);
+            prefabObj = buildingListSO.FindSideBuildingListObj(buildingIndex);
         else
-            prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
+            prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
 
-        spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
+        spawnobj = Instantiate(prefabObj, spawnPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
         if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
         if (netObj.TryGetComponent(out Structure structure))
@@ -902,91 +1182,85 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ServerPortalObjBuildConfirmServerRpc(Vector3 spawnPos, Vector3 setPos, int itemIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int portalIndex, int buildingIndex)
+    public void ServerPortalObjBuildConfirmServerRpc(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int portalIndex)
     {
-        bool notFound = ReCheck(spawnPos, objHeight, objWidth, itemIndex, level, isInHostMap);
-        if (!notFound)
-            return;
-        //Cell cell = gameManager.map.GetCellDataFromPos((int)spawnPos.x, (int)spawnPos.y);
-
-        //if (cell.structure)
-        //{
-        //    Debug.Log("already");
+        //bool notFound = ReCheck(spawnPos, objHeight, objWidth, buildingIndex, level, isInHostMap);
+        //if (!notFound)
         //    return;
-        //}
 
-        GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
+        GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
 
-        GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
+        //GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
+        GameObject spawnobj = Instantiate(prefabObj, spawnPos , Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
         if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
 
         if (netObj.TryGetComponent(out PortalObj portal))
         {
-            portal.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
+            portal.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, this.buildingIndex);
             gameManager.portal[portalIndex].SetPortalObjEnd(portal.structureData.FactoryName, spawnobj);
             spawnobj.transform.parent = gameManager.portal[portalIndex].transform;
             MapDataCheck(spawnobj, spawnPos);
         }
     }
 
-    bool ReCheck(Vector3 spawnPos, int objHeight, int objWidth, int itemIndex, int level, bool isHostMap)
-    {
-        int x = Mathf.FloorToInt(spawnPos.x);
-        int y = Mathf.FloorToInt(spawnPos.y);
+    //bool ReCheck(Vector3 spawnPos, int objHeight, int objWidth, int itemIndex, int level, bool isHostMap)
+    //{
+    //    int x = Mathf.FloorToInt(spawnPos.x);
+    //    int y = Mathf.FloorToInt(spawnPos.y);
 
-        List<int> xList = new List<int>();
-        List<int> yList = new List<int>();
+    //    List<int> xList = new List<int>();
+    //    List<int> yList = new List<int>();
 
-        if (objHeight == 1 && objWidth == 1)
-        {
-            xList.Add(x);
-            yList.Add(y);
-        }
-        else if (objHeight == 2 && objWidth == 2)
-        {
-            xList.Add(x);
-            xList.Add(x + 1);
-            yList.Add(y);
-            yList.Add(y + 1);
-        }
+    //    if (objHeight == 1 && objWidth == 1)
+    //    {
+    //        xList.Add(x);
+    //        yList.Add(y);
+    //    }
+    //    else if (objHeight == 2 && objWidth == 2)
+    //    {
+    //        xList.Add(x);
+    //        xList.Add(x + 1);
+    //        yList.Add(y);
+    //        yList.Add(y + 1);
+    //    }
 
-        foreach (int newX in xList)
-        {
-            foreach (int newY in yList)
-            {
-                Cell cell;
+    //    foreach (int newX in xList)
+    //    {
+    //        foreach (int newY in yList)
+    //        {
+    //            Cell cell;
 
-                if (isHostMap)
-                {
-                    cell = gameManager.hostMap.GetCellDataFromPos(newX, newY);
-                }
-                else
-                {
-                    cell = gameManager.clientMap.GetCellDataFromPos(newX, newY);
-                }
+    //            if (isHostMap)
+    //            {
+    //                cell = gameManager.hostMap.GetCellDataFromPos(newX, newY);
+    //            }
+    //            else
+    //            {
+    //                cell = gameManager.clientMap.GetCellDataFromPos(newX, newY);
+    //            }
 
-                if (cell.structure)
-                {
-                    Debug.Log("already");
-                    GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
-                    string name = prefabObj.GetComponent<Structure>().structureData.FactoryName;
-                    Debug.Log(name + " : " + level);
-                    BuildingData data = BuildingDataGet.instance.GetBuildingName(name, level + 1);
-                    Debug.Log(data.items.Count);
+    //            if (cell.structure)
+    //            {
+    //                Debug.Log("already");
+    //                GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
+    //                string name = prefabObj.GetComponent<Structure>().structureData.FactoryName;
+    //                Debug.Log(name + " : " + level);
+    //                BuildingData data = BuildingDataGet.instance.GetBuildingName(name, level + 1);
+    //                Debug.Log(data.items.Count);
 
-                    for (int i = 0; i < data.GetItemCount(); i++)
-                    {
-                        GameManager.instance.inventory.Add(ItemList.instance.itemDic[data.items[i]], data.amounts[i]);
-                    }
+    //                for (int i = 0; i < data.GetItemCount(); i++)
+    //                {
+    //                    GameManager.instance.inventory.Add(ItemList.instance.itemDic[data.items[i]], data.amounts[i]);
+    //                }
 
-                    return false;
-                }
-            }
-        }
+    //                return false;
+    //            }
+    //        }
+    //    }
 
-        return true;
-    }
+    //    return true;
+    //}
 
     void MapDataCheck(GameObject obj, Vector2 pos)
     {

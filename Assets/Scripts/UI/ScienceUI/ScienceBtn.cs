@@ -30,12 +30,13 @@ public class ScienceBtn : MonoBehaviour
     public List<(int, int)> itemAmountList = new List<(int, int)>();    // 저장량 / 최대량
     //public ScienceBtn othCoreBtn;
     bool basicScience;
-
-    void Start()
+    private void Awake()
     {
         scienceManager = GameManager.instance.inventoryUiCanvas.GetComponent<ScienceManager>();
         scBtn = GetComponent<Button>();
-
+    }
+    void Start()
+    {
         if (scBtn != null)
             scBtn.onClick.AddListener(ButtonFunc);
     }

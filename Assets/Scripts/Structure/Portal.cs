@@ -139,6 +139,7 @@ public class Portal : Production
         if (!portalObjList.ContainsKey(objName))
         {
             portalObjList.Add(objName, obj);
+
             //ObjSyncServerRpc(objName, NetworkObjManager.instance.FindNetObjID(obj));
             var objId = NetworkObjManager.instance.FindNetObjID(obj);
 

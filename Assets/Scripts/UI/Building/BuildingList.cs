@@ -42,6 +42,11 @@ public class BuildingList : MonoBehaviour
         return index;
     }
 
+    public Building FindBuildingData(int index)
+    {
+        return buildingListSO.buildingSOList[index];
+    }
+
     public GameObject FindBuildingListObj(int index)
     {
         return buildingListSO.buildingSOList[index].gameObj;

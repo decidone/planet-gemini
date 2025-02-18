@@ -178,7 +178,6 @@ public class SciItemSetWindow : MonoBehaviour
 
     void OkBtnFunc()
     {
-        int financeIndex = 0;
         for (int i = 0; i < scienceInfoData.items.Count; i++)
         {
             string itemName = scienceInfoData.items[i];
@@ -190,8 +189,6 @@ public class SciItemSetWindow : MonoBehaviour
 
                 if (!int.TryParse(inputField.text, out int textInt))
                 {
-                    if(item.tier == -1)
-                        financeIndex++;
                     continue;
                 }
 
@@ -201,33 +198,8 @@ public class SciItemSetWindow : MonoBehaviour
                 {
                     continue;
                 }
-                else if (maxInputItemAmount > textInt)
-                {
-                    if (item.tier != -1)
-                        gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], maxInputItemAmount);
-                    else
-                    {
-                        Debug.Log(financeIndex);
-                        GameManager.instance.SubFinanceServerRpc(useAmountList[financeIndex]);
-                        financeIndex++;
-                    }
-                }
-                else
-                {
-                    if (item.tier != -1)
-                        gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
-                    else
-                    {
-                        Debug.Log(financeIndex);
-                        GameManager.instance.SubFinanceServerRpc(useAmountList[financeIndex]);
-                        financeIndex++;
-                    }
-                }
 
-                scienceBtn.ItemAddAmount(i, textInt);
-                //gameManager.inventory.Sub(ItemList.instance.itemDic[itemName], textInt);
-                Overall.instance.OverallConsumption(ItemList.instance.itemDic[itemName], textInt);
-                itemObjList[i].GetComponent<InfoNeedItemUi>().AmountSet(scienceBtn.itemAmountList[i].Item1, scienceBtn.itemAmountList[i].Item2);
+                ScienceDb.instance.ScienceWindowItemAdd(item, i, textInt, scienceBtn.btnIndex);
             }
         }
         CloseUI();

@@ -64,31 +64,6 @@ public class Transporter : Production
                     }
                 }
             }
-            //if (takeBuild != null && sendItemUnit.Count <= 3 && takeBuild.TryGetComponent(out Transporter othBuild) && othBuild.unitItemList.Count == 0)
-            //{
-            //    prodTimer += Time.deltaTime;
-            //    if (prodTimer > cooldown)
-            //    {
-            //        if (sendItemUnit.Count < 3)
-            //        {
-            //            if (!isToggleOn)
-            //            {
-            //                if(IsServer)
-            //                    SendTransportItemDicCheck(othBuild);
-            //                prodTimer = 0;
-            //            }
-            //            else
-            //            {
-            //                if (sendAmount != 0 && inventory.TotalItemsAmountLimitCheck(sendAmount))
-            //                {
-            //                    if (IsServer)
-            //                        SendTransportItemDicCheck(othBuild);
-            //                    prodTimer = 0;
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
             else
                 prodTimer = 0;
 
@@ -222,14 +197,26 @@ public class Transporter : Production
         othBuildAni = othBuild;
         invItemCheckDicAni = invItemCheckDic;
 
-        animator.Play("Open", -1, 0);
+        OpenAnimServerRpc("Open");
+    }
+
+    [ServerRpc]
+    void OpenAnimServerRpc(string optionName)
+    {
+        OpenAnimClientRpc(optionName);
+    }
+
+    [ClientRpc]
+    void OpenAnimClientRpc(string optionName)
+    {
+        animator.Play(optionName, -1, 0);
     }
 
     public void RemoveUnit(GameObject returnUnit)
     {
         sendItemUnit.Remove(returnUnit);
         Destroy(returnUnit);
-        animator.Play("ItemGetOpen", -1, 0);
+        OpenAnimServerRpc("ItemGetOpen");
     }
 
     public void UnitSendOpen()
@@ -237,7 +224,7 @@ public class Transporter : Production
         // 애니메이션 트리거로 사용
         // 지금 클라이언트에 애니메이션이 적용되지 않아서 이 메서드가 호출되지 않는 문제가 있음
         // 클라이언트에서 이 메서드를 돌린다고 쳤을 때 인벤 관련 부분을 서버만 돌리게 하면 될 듯?
-        if (invItemCheckDicAni != null && invItemCheckDicAni.Count > 0)
+        if (IsServer &&invItemCheckDicAni != null && invItemCheckDicAni.Count > 0)
         {
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
             unit.TryGetComponent(out NetworkObject netObj);
@@ -354,7 +341,7 @@ public class Transporter : Production
             unitItemList.Add(new Dictionary<Item, int>(_itemDic));
             getItemUnit.Add(takeUnit);
             ExStorageCheck();
-            animator.Play("ItemGetOpen", -1, 0);
+            OpenAnimServerRpc("ItemGetOpen");
         }
     }
 
