@@ -22,19 +22,36 @@ public class UpgradeBuild : DragFunc
 
     public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
     {
+        upgradeItemDic.Clear();
+        enoughItemDic.Clear();
+        notEnoughItemDic.Clear();
+
         if (startPos != endPos)
             GroupSelectedObjects(startPos, endPos, structureLayer);
         else
             UpgradeClick(startPos);
-
-        upgradeItemDic.Clear();
-        enoughItemDic.Clear();
-        notEnoughItemDic.Clear();
     }
 
     protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
     {
-        base.GroupSelectedObjects(startPosition, endPosition, layer);
+        Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << layer);
+
+        List<GameObject> selectedObjectsList = new List<GameObject>();
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (layer == LayerMask.NameToLayer("Obj") && collider.GetComponent<Structure>() == null)
+                continue;
+            Structure structure = collider.GetComponent<Structure>();
+            if (collider.GetComponent<Portal>() || collider.GetComponent<ScienceBuilding>())
+                continue;
+            if (structure.structureData.MaxLevel == structure.level + 1 || !ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
+                continue;
+
+            selectedObjectsList.Add(collider.gameObject);
+        }
+
+        selectedObjects = selectedObjectsList.ToArray();
 
         foreach (GameObject obj in selectedObjects)
         {
@@ -63,7 +80,7 @@ public class UpgradeBuild : DragFunc
 
     void UpgradeCheck()
     {
-        if(selectedObjects.Length > 0)
+        if (selectedObjects.Length > 0)
         {
             EnoughCheck();
             if (enoughItemDic.Count == 0 && notEnoughItemDic.Count == 0)
@@ -77,10 +94,11 @@ public class UpgradeBuild : DragFunc
     {
         if (isOk)
         {
-            foreach (GameObject obj in selectedObjects)
-            {
-                ObjUpgradeFunc(obj);
-            }
+            gameManager.StructureUpgrade(selectedObjects);
+            //foreach (GameObject obj in selectedObjects)
+            //{
+            //    ObjUpgradeFunc(obj);
+            //}
             gameManager.BuildAndSciUiReset();
         }
         selectedObjects = new GameObject[0];
@@ -89,7 +107,7 @@ public class UpgradeBuild : DragFunc
         notEnoughItemDic.Clear();
     }
 
-    void GroupUpgradeCost(GameObject obj)
+    void GroupUpgradeCost(GameObject obj)   // 업그레이드 가격 측정
     {
         BuildingData buildUpgradeData = new BuildingData();
         buildUpgradeData = CanUpgradeCheck(obj);
@@ -145,7 +163,7 @@ public class UpgradeBuild : DragFunc
         else
             return;
     }
-    
+
 
     void EnoughCheck()
     {
@@ -171,9 +189,6 @@ public class UpgradeBuild : DragFunc
     {   // 벨트 스프리터 벽 창고
         if (obj.TryGetComponent(out Structure structure) && structure.canUpgrade && !structure.isPreBuilding)
         {
-            if (structure.structureData.MaxLevel == structure.level + 1 || !ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
-                return null;
-
             buildingData = new BuildingData();
             buildingData = BuildingDataGet.instance.GetBuildingName(structure.buildName, structure.level + 1);
             BuildingData buildUpgradeData = new BuildingData();
@@ -184,8 +199,8 @@ public class UpgradeBuild : DragFunc
         return null;
     }
 
-    void ObjUpgradeFunc(GameObject obj)
-    {
+    public void ObjUpgradeFunc(GameObject obj) // 인벤토리에서 가격을 확인 후 처리
+    {                                   // 이부분을 서버에서 확인 후 처리로 변경
         BuildingData buildUpgradeData = new BuildingData();
         buildUpgradeData = CanUpgradeCheck(obj);
 
@@ -259,5 +274,5 @@ public class UpgradeBuild : DragFunc
         }
         else
             return;
-        }
+    }
 }

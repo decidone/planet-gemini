@@ -31,7 +31,6 @@ public class BeltGroupMgr : NetworkBehaviour
     void Start()
     {
         networkObjManager = NetworkObjManager.instance;
-        Debug.Log("BeltGroup Start : " + beltSyncCheck);
         if (!beltSyncCheck && !IsServer) 
         {
             beltSyncCheck = true;

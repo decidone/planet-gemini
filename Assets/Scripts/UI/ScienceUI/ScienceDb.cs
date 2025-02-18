@@ -197,6 +197,35 @@ public class ScienceDb : NetworkBehaviour
         return false;
     }
 
+    public void ScienceWindowItemAdd(Item item, int scienceInfoDataIndex, int inputAmount, int btnIndex)
+    {
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+        ScienceWindowItemAddServerRpc(itemIndex, scienceInfoDataIndex, inputAmount, btnIndex);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ScienceWindowItemAddServerRpc(int itemIndex, int scienceInfoDataIndex, int inputAmount, int btnIndex)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        ScienceBtn btn = ScienceManager.instance.scienceBtns[btnIndex];
+
+        int maxInputItemAmount = btn.itemAmountList[scienceInfoDataIndex].Item2 - btn.itemAmountList[scienceInfoDataIndex].Item1;
+        GameManager gameManager = GameManager.instance;
+        int invenItemAmount = gameManager.inventory.totalItems[item];
+
+        if (inputAmount > invenItemAmount)   // 인벤 아이템보다 요청이 많은 경우
+        {
+            inputAmount = invenItemAmount;
+        }
+
+        if (inputAmount == 0 || maxInputItemAmount == 0)
+            return;
+
+        gameManager.inventory.Sub(item, inputAmount);
+        btn.ItemAddAmount(scienceInfoDataIndex, maxInputItemAmount);
+        Overall.instance.OverallConsumption(item, maxInputItemAmount);
+    }
+
     public void LoadData(List<ScienceData> data)
     {
         for (int i = 0; i < scienceBtns.Length; i++)

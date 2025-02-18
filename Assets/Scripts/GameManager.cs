@@ -1628,4 +1628,200 @@ public class GameManager : NetworkBehaviour
         GameManager.instance.DestroyAllDontDestroyOnLoadObjects();
         SceneManager.LoadScene("MainMenuScene");
     }
+
+    public void StructureUpgrade(GameObject[] upgradeObjs)
+    {
+        NetworkObjectReference[] networkObjectReference = new NetworkObjectReference[upgradeObjs.Length];
+        int[] level = new int[upgradeObjs.Length];
+        for (int i = 0; i < upgradeObjs.Length; i++)
+        {   //만약 다른 사람이 지우는 경우 예외 처리 해야함
+            if (upgradeObjs[i] && upgradeObjs[i].TryGetComponent(out Structure str) && !str.destroyStart)
+            {
+                if (upgradeObjs[i].TryGetComponent(out NetworkObject netObj))
+                {
+                    networkObjectReference[i] = netObj;
+                    level[i] = upgradeObjs[i].GetComponent<Structure>().level;
+                }
+            }
+            else
+                return;
+        }
+
+        StructureUpgradeServerRpc(networkObjectReference, level);
+    }
+
+    Dictionary<Item, int> upgradeItemDic = new Dictionary<Item, int>();
+    Dictionary<Item, int> returnItemDic = new Dictionary<Item, int>();
+
+    [ServerRpc(RequireOwnership = false)]
+    void StructureUpgradeServerRpc(NetworkObjectReference[] networkObjectReference, int[] level)
+    {
+        upgradeItemDic.Clear();
+        returnItemDic.Clear();
+
+        Structure[] str = new Structure[networkObjectReference.Length];
+        for (int i = 0; i < networkObjectReference.Length; i++)
+        {
+            networkObjectReference[i].TryGet(out NetworkObject itemNetworkObject);
+            str[i] = itemNetworkObject.GetComponent<Structure>();
+        }
+
+        List<int> cantUpgrade = new List<int>();
+
+        for (int i = 0; i < str.Length; i++)
+        {
+            if (str[i].level == level[i])
+            {
+                UpgradeCostCheck(str[i]);
+            }
+            else
+                cantUpgrade.Add(i);
+        }
+
+        bool isEnough;
+
+        foreach (var data in upgradeItemDic)
+        {
+            int value;
+            bool hasItem = inventory.totalItems.TryGetValue(data.Key, out value);
+            isEnough = hasItem && value >= data.Value;
+
+            if (!isEnough)
+                return;
+        }
+
+        foreach (var data in returnItemDic)
+        {
+            inventory.Add(data.Key, data.Value);
+            Overall.instance.OverallConsumptionCancel(data.Key, data.Value);
+        }
+        foreach (var data in upgradeItemDic)
+        {
+            inventory.Sub(data.Key, data.Value);
+            Overall.instance.OverallConsumption(data.Key, data.Value);
+        }
+
+        for (int i = 0; i < str.Length; i++)
+        {
+            if (cantUpgrade.Contains(i))
+            {
+                continue;
+            }
+            else
+            {
+                str[i].UpgradeFuncServerRpc();
+            }
+        }
+    }
+
+    void UpgradeCostCheck(Structure str)
+    {
+        BuildingData buildingData = BuildingDataGet.instance.GetBuildingName(str.buildName, str.level + 1);
+        BuildingData buildUpgradeData = BuildingDataGet.instance.GetBuildingName(str.buildName, str.level + 2);
+
+        BuildingData UpgradeCost = new BuildingData(new List<string>(), new List<int>(), 0);
+        BuildingData ReturnCost = new BuildingData(new List<string>(), new List<int>(), 0);
+
+        int index;
+        int difference;
+
+        foreach (string item in buildingData.items)
+        {
+            if (buildUpgradeData.items.Contains(item)) // 아이템이 겹치는게 존재할 경우 차액만큼 인벤토리에서 차감
+            {
+                index = buildingData.items.IndexOf(item);
+                difference = buildUpgradeData.amounts[index] - buildingData.amounts[index];
+                UpgradeCost.items.Add(item);
+                UpgradeCost.amounts.Add(difference);
+            }
+            else // 아이템이 겹치는게 존재하지 않을 경우 인벤토리에 추가
+            {
+                index = buildingData.items.IndexOf(item);
+                difference = buildingData.amounts[index];
+                ReturnCost.items.Add(item);
+                ReturnCost.amounts.Add(difference);
+            }
+        }
+        foreach (string item in buildUpgradeData.items)
+        {
+            if (!buildingData.items.Contains(item)) // 업그레이드에 필요한 추가적인 아이템이 존재할 경우 인벤토리에서 차감
+            {
+                index = buildUpgradeData.items.IndexOf(item);
+                difference = buildUpgradeData.amounts[index];
+                UpgradeCost.items.Add(item);
+                UpgradeCost.amounts.Add(difference);
+            }
+        }
+
+        for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
+        {
+            Item item = ItemList.instance.itemDic[UpgradeCost.items[i]];
+
+            if (UpgradeCost.amounts[i] == 0)
+            {
+                continue;
+            }
+            else if (upgradeItemDic.ContainsKey(item))
+            {
+                int currentValue = upgradeItemDic[item];
+                int newValue = currentValue + UpgradeCost.amounts[i];
+                upgradeItemDic[item] = newValue;
+            }
+            else
+            {
+                upgradeItemDic.Add(item, UpgradeCost.amounts[i]);
+            }
+        }
+
+        for (int i = 0; i < ReturnCost.GetItemCount(); i++)
+        {
+            Item item = ItemList.instance.itemDic[ReturnCost.items[i]];
+
+            if (ReturnCost.amounts[i] == 0)
+            {
+                continue;
+            }
+            else if (returnItemDic.ContainsKey(item))
+            {
+                int currentValue = returnItemDic[item];
+                int newValue = currentValue + ReturnCost.amounts[i];
+                returnItemDic[item] = newValue;
+            }
+            else
+            {
+                returnItemDic.Add(item, ReturnCost.amounts[i]);
+            }
+        }
+
+        //bool totalAmountsEnough = true;
+        //bool isEnough;
+
+        //for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
+        //{
+        //    int value;
+        //    bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[UpgradeCost.items[i]], out value);
+        //    isEnough = hasItem && value >= UpgradeCost.amounts[i];
+
+        //    if (isEnough && totalAmountsEnough)
+        //        totalAmountsEnough = true;
+        //    else
+        //        totalAmountsEnough = false;
+        //}
+
+        //if (totalAmountsEnough)
+        //{
+        //    for (int i = 0; i < ReturnUpgradeCost.GetItemCount(); i++)
+        //    {
+        //        inventory.Add(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
+        //        Overall.instance.OverallConsumptionCancel(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
+        //    }
+
+        //    for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
+        //    {
+        //        inventory.Sub(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
+        //        Overall.instance.OverallConsumption(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
+        //    }
+        //    str.UpgradeFuncServerRpc();
+        //}
+    }
 }
