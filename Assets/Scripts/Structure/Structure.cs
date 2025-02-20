@@ -196,6 +196,8 @@ public class Structure : NetworkBehaviour
     [SerializeField]
     protected Sprite[] strImg;  // 0번은 멈춤, 1번은 작동(애니메이션이 있는 오브젝트는 멈춤만 등록)
 
+    public bool isAuto;    // 분쇄기 자동화 체크
+
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -1951,6 +1953,7 @@ public class Structure : NetworkBehaviour
         data.repairGauge = repairGauge;
         data.destroyTimer = destroyTimer;
         data.portalName = portalName;
+        data.isAuto = isAuto;
 
         foreach (Item items in itemList)
         {

@@ -122,6 +122,7 @@ public class SteamGenerator : FluidFactoryCtrl
                 {
                     int dirIndex = i / 2;
                     CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => FluidSetOutObj(obj));
+                    CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
             }
         }

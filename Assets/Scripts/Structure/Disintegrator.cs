@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,17 +8,32 @@ public class Disintegrator : Production
 {
     [SerializeField] MerchandiseListSO merchandiseList;
     Button confirmBtn;
+    Toggle autoToggle;
     public Scrap scrap;
 
     protected override void Start()
     {
         base.Start();
         isStorageBuilding = true;
+        cooldown = 10f;
+        effiCooldown = cooldown;
     }
 
     protected override void Update()
     {
         base.Update();
+        if (!isPreBuilding)
+        {
+            if (isAuto)
+            {
+                prodTimer += Time.deltaTime;
+                if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
+                {
+                    if (IsServer)
+                        ConfirmBtnClicked();
+                }
+            }
+        }
     }
 
     public void CheckTotalAmount()
@@ -44,6 +60,12 @@ public class Disintegrator : Production
 
     public void ConfirmBtnClicked()
     {
+        GrindServerRpc();
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void GrindServerRpc()
+    {
         bool confirm = false;
         for (int i = 0; i < inventory.space; i++)
         {
@@ -64,9 +86,47 @@ public class Disintegrator : Production
 
         if (confirm)
         {
-            animator.Play("StartAction", -1, 0);
-            soundManager.PlaySFX(gameObject, "structureSFX", "Disintegrator");
+            PlayAnimClientRpc();
+            ResetTimerClientRpc();
         }
+    }
+
+    [ClientRpc]
+    public void PlayAnimClientRpc()
+    {
+        animator.Play("StartAction", -1, 0);
+        soundManager.PlaySFX(gameObject, "structureSFX", "Disintegrator");
+    }
+
+    [ClientRpc]
+    public void ResetTimerClientRpc()
+    {
+        prodTimer = 0;
+    }
+
+    public void SetAuto(bool auto)
+    {
+        SetAutoServerRpc(auto);
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void SetAutoServerRpc(bool auto)
+    {
+        SetAutoClientRpc(auto);
+        ResetTimerClientRpc();
+    }
+
+    [ClientRpc]
+    public void SetAutoClientRpc(bool auto)
+    {
+        isAuto = auto;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void ClientConnectSyncServerRpc()
+    {
+        base.ClientConnectSyncServerRpc();
+        SetAutoClientRpc(isAuto);
     }
 
     public override void OpenUI()
@@ -74,13 +134,17 @@ public class Disintegrator : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.gameObject.SetActive(false);
-        sInvenManager.energyBar.gameObject.SetActive(false);
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+        sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
 
         scrap = ui.GetComponentInChildren<Scrap>();
         if (confirmBtn == null)
             confirmBtn = ui.transform.Find("ConfirmBtn").GetComponent<Button>();
         confirmBtn.onClick.AddListener(ConfirmBtnClicked);
+        if (autoToggle == null)
+            autoToggle = ui.transform.Find("AutoToggle").GetComponent<Toggle>();
+        autoToggle.isOn = isAuto;
+        autoToggle.onValueChanged.AddListener(SetAuto);
         inventory.onItemChangedCallback += CheckTotalAmount;
         CheckTotalAmount();
     }
@@ -88,12 +152,12 @@ public class Disintegrator : Production
     public override void CloseUI()
     {
         base.CloseUI();
-        sInvenManager.progressBar.gameObject.SetActive(true);
-        sInvenManager.energyBar.gameObject.SetActive(true);
         sInvenManager.ReleaseInven();
 
         inventory.onItemChangedCallback -= CheckTotalAmount;
         confirmBtn.onClick.RemoveAllListeners();
+        autoToggle.onValueChanged.RemoveAllListeners();
+        autoToggle.isOn = false;
         scrap = null;
     }
 

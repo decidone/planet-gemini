@@ -264,6 +264,11 @@ public class DataManager : MonoBehaviour
                 {
                     tower.energyBulletAmount = saveData.energyBulletAmount;
                 }
+
+                if (structure.TryGetComponent(out Disintegrator disintegrator))
+                {
+                    disintegrator.SetAuto(saveData.isAuto);
+                }
             }
             else
             {

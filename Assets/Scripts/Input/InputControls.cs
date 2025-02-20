@@ -915,6 +915,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""InfoDictionary"",
+                    ""type"": ""Button"",
+                    ""id"": ""6acc9250-82b3-47b9-a79d-fe944ccfaed6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1014,6 +1023,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""UIClose"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""97c0270a-3a39-4f6f-9737-cdb1e8b78595"",
+                    ""path"": ""<Keyboard>/f1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""InfoDictionary"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1775,6 +1795,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_GameStop = m_HotKey.FindAction("GameStop", throwIfNotFound: true);
         m_HotKey_BasicUIBtnsSwap = m_HotKey.FindAction("BasicUIBtnsSwap", throwIfNotFound: true);
         m_HotKey_UIClose = m_HotKey.FindAction("UIClose", throwIfNotFound: true);
+        m_HotKey_InfoDictionary = m_HotKey.FindAction("InfoDictionary", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -2291,6 +2312,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_GameStop;
     private readonly InputAction m_HotKey_BasicUIBtnsSwap;
     private readonly InputAction m_HotKey_UIClose;
+    private readonly InputAction m_HotKey_InfoDictionary;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2304,6 +2326,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @GameStop => m_Wrapper.m_HotKey_GameStop;
         public InputAction @BasicUIBtnsSwap => m_Wrapper.m_HotKey_BasicUIBtnsSwap;
         public InputAction @UIClose => m_Wrapper.m_HotKey_UIClose;
+        public InputAction @InfoDictionary => m_Wrapper.m_HotKey_InfoDictionary;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2340,6 +2363,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @UIClose.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnUIClose;
                 @UIClose.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnUIClose;
                 @UIClose.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnUIClose;
+                @InfoDictionary.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnInfoDictionary;
+                @InfoDictionary.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnInfoDictionary;
+                @InfoDictionary.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnInfoDictionary;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2371,6 +2397,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @UIClose.started += instance.OnUIClose;
                 @UIClose.performed += instance.OnUIClose;
                 @UIClose.canceled += instance.OnUIClose;
+                @InfoDictionary.started += instance.OnInfoDictionary;
+                @InfoDictionary.performed += instance.OnInfoDictionary;
+                @InfoDictionary.canceled += instance.OnInfoDictionary;
             }
         }
     }
@@ -2683,6 +2712,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnGameStop(InputAction.CallbackContext context);
         void OnBasicUIBtnsSwap(InputAction.CallbackContext context);
         void OnUIClose(InputAction.CallbackContext context);
+        void OnInfoDictionary(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

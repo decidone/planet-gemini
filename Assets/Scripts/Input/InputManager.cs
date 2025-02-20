@@ -238,4 +238,21 @@ public class InputManager : MonoBehaviour
         EnableControls();
         controls.MapCamera.Disable();
     }
+
+    public void OpenInfoDic()
+    {
+        DisableControls();
+
+        controls.HotKey.Escape.Enable();
+        controls.HotKey.InfoDictionary.Enable();
+    }
+
+    public void CloseInfoDic()
+    {
+        controls.HotKey.Escape.Disable();
+        controls.HotKey.InfoDictionary.Disable();
+
+        EnableControls();
+        controls.MapCamera.Disable();
+    }
 }

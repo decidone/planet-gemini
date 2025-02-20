@@ -41,6 +41,8 @@ public class StructureSaveData
     // 필터 - 스플리터 같은 경우 3개의 필터 조건이 들어갈 수 있음
     public List<FilterSaveData> filters = new List<FilterSaveData>();
 
+    public bool isAuto = false;     // 분쇄기 자동화 체크
+
     public string portalName;
 
     public bool isPreBuilding;

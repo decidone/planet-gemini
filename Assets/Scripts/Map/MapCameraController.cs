@@ -316,6 +316,9 @@ public class MapCameraController : MonoBehaviour
 
     void CloseUI()
     {
+        if (isLineRendered)
+            CancelRender();
+        CancelFocus();
         CameraObj.SetActive(false);
         LocalPortalListManager.instance.CloseUI();
     }

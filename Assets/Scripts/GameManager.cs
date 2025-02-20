@@ -233,6 +233,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.Escape.performed += Escape;
         inputManager.controls.Inventory.PlayerInven.performed += Inven;
         inputManager.controls.HotKey.ScienceTree.performed += ScienceTree;
+        inputManager.controls.HotKey.InfoDictionary.performed += InfoDictionaryUI;
         inputManager.controls.HotKey.EnergyCheck.performed += EnergyCheck;
         inputManager.controls.HotKey.GameStop.performed += GameStopSet;
         inputManager.controls.HotKey.UIClose.performed += BasicUIsClose;
@@ -247,6 +248,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.Escape.performed -= Escape;
         inputManager.controls.Inventory.PlayerInven.performed -= Inven;
         inputManager.controls.HotKey.ScienceTree.performed -= ScienceTree;
+        inputManager.controls.HotKey.InfoDictionary.performed -= InfoDictionaryUI;
         inputManager.controls.HotKey.EnergyCheck.performed -= EnergyCheck;
         inputManager.controls.HotKey.GameStop.performed -= GameStopSet;
         inputManager.controls.HotKey.UIClose.performed -= BasicUIsClose;
@@ -330,7 +332,7 @@ public class GameManager : NetworkBehaviour
             }
 
             timeImg.sprite = timeImgSet[dayIndex];
-            SetBrightness(dayIndex);
+            //SetBrightness(dayIndex);
 
             if (dayIndex == 0)
             {
@@ -848,6 +850,9 @@ public class GameManager : NetworkBehaviour
             case "ShopPopup":
                 ShopPopup.instance.CloseUI();
                 break;
+            case "InfoDictionary":
+                InfoDictionary.instance.CloseUI();
+                break;
             default:
                 if (openedUI[order].gameObject.TryGetComponent<Shop>(out Shop shop))
                     shop.CloseUI();
@@ -930,6 +935,23 @@ public class GameManager : NetworkBehaviour
         else
         {
             scienceManager.CloseUI();
+        }
+    }
+
+    void InfoDictionaryUI(InputAction.CallbackContext ctx)
+    {
+        InfoDictionaryUI();
+    }
+
+    void InfoDictionaryUI()
+    {
+        if (!InfoDictionary.instance.isOpen)
+        {
+            InfoDictionary.instance.OpenUI();
+        }
+        else
+        {
+            InfoDictionary.instance.CloseUI();
         }
     }
 
@@ -1351,7 +1373,7 @@ public class GameManager : NetworkBehaviour
         violentDayCheck = data.violentDayCheck;
         violentDay = data.violentDay;
         timeImg.sprite = timeImgSet[dayIndex];
-        SetBrightness(dayIndex);
+        //SetBrightness(dayIndex);
         dayText.text = "Day : " + day;
 
         finance.SetFinance(data.finance);

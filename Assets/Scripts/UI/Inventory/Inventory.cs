@@ -802,7 +802,7 @@ public class Inventory : NetworkBehaviour
         foreach (var itemDic in totalItems)
         {
             amounts += itemDic.Value;
-            if (amounts > amountLimit)
+            if (amounts >= amountLimit && amounts != 0)
             {
                 return true;
             }

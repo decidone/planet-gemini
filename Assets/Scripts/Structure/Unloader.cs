@@ -48,7 +48,6 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {

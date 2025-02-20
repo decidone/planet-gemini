@@ -893,6 +893,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "InfoDictionary",
+                    "type": "Button",
+                    "id": "6acc9250-82b3-47b9-a79d-fe944ccfaed6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Tap",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -992,6 +1001,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "UIClose",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97c0270a-3a39-4f6f-9737-cdb1e8b78595",
+                    "path": "<Keyboard>/f1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "InfoDictionary",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
