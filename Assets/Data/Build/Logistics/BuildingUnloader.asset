@@ -16,12 +16,16 @@ MonoBehaviour:
   scienceName: Unloader
   item: {fileID: 11400000, guid: 6d4b51c5e38f1b346ab22ecd118f4934, type: 2}
   gameObj: {fileID: 3940149716510884824, guid: df021915966b5ed4792ac93c368e69d7, type: 3}
+  sideObj: {fileID: 0}
+  dragCancel: 1
   isGetAnim: 0
   isGetDirection: 0
   isUnderObj: 0
+  isEnergyUse: 0
+  isEnergyStr: 0
   sprites:
   - {fileID: 286180040, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
-  animations: []
+  animatorController: []
   level: 1
   height: 1
   width: 1

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 721077934532301787}
   - component: {fileID: 721077934532301785}
   - component: {fileID: 721077934532301786}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: PortalObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 721077935472781494}
   - component: {fileID: 721077935472781493}
   - component: {fileID: 721077935472781492}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: PortalObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -233,7 +233,7 @@ GameObject:
   - component: {fileID: 721077935555031509}
   - component: {fileID: 721077935555031499}
   - component: {fileID: 721077935555031508}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: PortalObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -552,6 +552,8 @@ MonoBehaviour:
   canUpgrade: 0
   warningIcon: {fileID: 0}
   warningIconCheck: 0
+  getAnim: 0
+  strImg: []
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -622,7 +624,7 @@ GameObject:
   - component: {fileID: 721077936004993817}
   - component: {fileID: 721077936004993823}
   - component: {fileID: 721077936004993816}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: PortalObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}

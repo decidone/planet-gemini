@@ -17,13 +17,14 @@ public class Transporter : Production
     public bool isToggleOn = false;
     public int sendAmount;
     List<Dictionary<Item, int>> unitItemList = new List<Dictionary<Item, int>>();
+    int standbyUnitCount;
     List<TransportUnit> getItemUnit = new List<TransportUnit>();
 
     float transportInterval;
     float transportTimeer;
 
-    Transporter othBuildAni;
-    Dictionary<Item, int> invItemCheckDicAni = new Dictionary<Item, int>();
+    Transporter othTransporter;
+    Dictionary<Item, int> invItemCheckDic = new Dictionary<Item, int>();
 
     protected override void Start()
     {
@@ -38,16 +39,16 @@ public class Transporter : Production
         base.Update();
         if (!isPreBuilding)
         {
-            if (takeBuild != null)
+            if (takeBuild != null && sendItemUnit.Count < 3 && standbyUnitCount < 1)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
                     if (!isToggleOn)
                     {
-                        if (IsServer && sendItemUnit.Count < 3 && takeBuild.TryGetComponent(out Transporter othBuild) && othBuild.unitItemList.Count == 0)
+                        if (IsServer)
                         {
-                            SendTransportItemDicCheck(othBuild);
+                            SendTransportItemDicCheck(takeBuild);
                         }
                         prodTimer = 0;
                     }
@@ -55,9 +56,9 @@ public class Transporter : Production
                     {
                         if (sendAmount != 0 && inventory.TotalItemsAmountLimitCheck(sendAmount))
                         {
-                            if (IsServer && sendItemUnit.Count < 3 && takeBuild.TryGetComponent(out Transporter othBuild) && othBuild.unitItemList.Count == 0)
+                            if (IsServer)
                             {
-                                SendTransportItemDicCheck(othBuild);
+                                SendTransportItemDicCheck(takeBuild);
                             }
                             prodTimer = 0;
                         }
@@ -112,6 +113,7 @@ public class Transporter : Production
     {
         base.OnClientConnectedCallback(clientId);
         ConnectedSetServerRpc();
+        SendFuncSetServerRpc(isToggleOn, sendAmount);
     }
 
 
@@ -194,8 +196,8 @@ public class Transporter : Production
             }
         }
 
-        othBuildAni = othBuild;
-        invItemCheckDicAni = invItemCheckDic;
+        othTransporter = othBuild;
+        this.invItemCheckDic = invItemCheckDic;
 
         OpenAnimServerRpc("Open");
     }
@@ -222,17 +224,15 @@ public class Transporter : Production
     public void UnitSendOpen()
     {
         // 애니메이션 트리거로 사용
-        // 지금 클라이언트에 애니메이션이 적용되지 않아서 이 메서드가 호출되지 않는 문제가 있음
-        // 클라이언트에서 이 메서드를 돌린다고 쳤을 때 인벤 관련 부분을 서버만 돌리게 하면 될 듯?
-        if (IsServer &&invItemCheckDicAni != null && invItemCheckDicAni.Count > 0)
+        if (IsServer &&invItemCheckDic != null && invItemCheckDic.Count > 0)
         {
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
             unit.TryGetComponent(out NetworkObject netObj);
             if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
             
             sendItemUnit.Add(unit);
-            unit.GetComponent<TransportUnit>().MovePosSet(this, othBuildAni, invItemCheckDicAni);
-            foreach (var dicData in invItemCheckDicAni)
+            unit.GetComponent<TransportUnit>().MovePosSet(this, othTransporter, invItemCheckDic);
+            foreach (var dicData in invItemCheckDic)
             {
                 inventory.Sub(dicData.Key, dicData.Value);
             }
@@ -334,11 +334,24 @@ public class Transporter : Production
             return null;
     }
 
+    [ServerRpc]
+    void UnitItemListSyncServerRpc()
+    {
+        UnitItemListSyncClientRpc(unitItemList.Count);
+    }
+
+    [ClientRpc]
+    void UnitItemListSyncClientRpc(int listCount)
+    {
+        standbyUnitCount = listCount;
+    }
+
     public void TakeTransportItem(TransportUnit takeUnit, Dictionary<Item, int> _itemDic)
     {
         if (_itemDic != null && _itemDic.Count > 0)
         {
             unitItemList.Add(new Dictionary<Item, int>(_itemDic));
+            UnitItemListSyncServerRpc();
             getItemUnit.Add(takeUnit);
             ExStorageCheck();
             OpenAnimServerRpc("ItemGetOpen");
@@ -362,25 +375,37 @@ public class Transporter : Production
             }
             else
             {
-                Debug.Log("not enough space");
                 break;
             }
         }
 
-        Debug.Log(unitItemList[0].Count);
-
         if (unitItemList[0].Count == 0)
         {
             unitItemList.RemoveAt(0);
+            UnitItemListSyncServerRpc();
             getItemUnit[0].TakeItemEnd();
             getItemUnit.RemoveAt(0);
         }
     }
 
-    public void SendFuncSet(bool toggleOn, int amount)
+    //public void SendFuncSet(bool toggleOn, int amount)
+    //{
+    //    isToggleOn = toggleOn;
+    //    sendAmount = amount;
+    //}
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SendFuncSetServerRpc(bool toggleOn, int amount)
+    {
+        SendFuncSetClientRpc(toggleOn, amount);
+    }
+
+    [ClientRpc]
+    void SendFuncSetClientRpc(bool toggleOn, int amount)
     {
         isToggleOn = toggleOn;
         sendAmount = amount;
+        sInvenManager.TransporterResetUI();
     }
 
     public override void DestroyLineRenderer()
@@ -436,6 +461,40 @@ public class Transporter : Production
         }
     }
 
+    public void UnitLoad(Vector3 spawnPos, Transporter othTransporter, Dictionary<int, int> itemDic)
+    {
+        GameObject unit = Instantiate(trUnit, spawnPos, Quaternion.identity);
+        unit.TryGetComponent(out NetworkObject netObj);
+        if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+
+        Dictionary<Item, int> item = new Dictionary<Item, int>();
+        foreach (var data in itemDic)
+        {
+            item.Add(GeminiNetworkManager.instance.GetItemSOFromIndex(data.Key), data.Value);
+        }
+
+        sendItemUnit.Add(unit);
+        unit.GetComponent<TransportUnit>().MovePosSet(this, othTransporter, item);
+    }
+
+    public void UnitLoad(Vector3 spawnPos, Dictionary<int, int> itemDic)
+    {
+        GameObject unit = Instantiate(trUnit, spawnPos, Quaternion.identity);
+        unit.TryGetComponent(out NetworkObject netObj);
+        if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+
+        Dictionary<Item, int> item = new Dictionary<Item, int>();
+        foreach (var data in itemDic)
+        {
+            item.Add(GeminiNetworkManager.instance.GetItemSOFromIndex(data.Key), data.Value);
+        }
+
+        sendItemUnit.Add(unit);
+        TransportUnit unitScript = unit.GetComponent<TransportUnit>();
+        unitScript.MovePosSet(this, this, item);
+        unitScript.TakeItemEnd();
+    }
+
     public override StructureSaveData SaveData()
     {
         StructureSaveData data = base.SaveData();
@@ -443,6 +502,25 @@ public class Transporter : Production
         if(takeBuild != null)
         {
             data.connectedStrPos.Add(Vector3Extensions.FromVector3(takeBuild.tileSetPos));
+        }
+
+        if (sendItemUnit.Count > 0)
+        {
+            for (int i = 0; i < sendItemUnit.Count; i++)
+            {
+                SerializedVector3 vector3 = Vector3Extensions.FromVector3(sendItemUnit[i].transform.position);
+                TransportUnit unit = sendItemUnit[i].GetComponent<TransportUnit>();
+                data.trUnitPosData.Add(vector3);
+                Dictionary<int, int> itemSave = new Dictionary<int, int>();
+                foreach (var itemData in unit.itemDic)
+                {
+                    itemSave.Add(GeminiNetworkManager.instance.GetItemSOIndex(itemData.Key), itemData.Value);
+                }
+
+                Dictionary<int, Dictionary<int, int>> itemDataSave = new Dictionary<int, Dictionary<int, int>>();
+                itemDataSave.Add(i, itemSave);
+                data.trUnitItemData = itemDataSave;
+            }
         }
 
         return data;

@@ -16,6 +16,8 @@ MonoBehaviour:
   scienceName: UnitFactory
   item: {fileID: 11400000, guid: ca1f84517c112664296ab16f1c0a1fa2, type: 2}
   gameObj: {fileID: 941880205020935685, guid: 5be6d7913088e414ead76c9c3ef41294, type: 3}
+  sideObj: {fileID: 0}
+  dragCancel: 1
   isGetAnim: 0
   isGetDirection: 0
   isUnderObj: 0

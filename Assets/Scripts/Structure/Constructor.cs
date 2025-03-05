@@ -27,7 +27,7 @@ public class Constructor : Production
                         {
                             OperateStateSet(true);
                             prodTimer += Time.deltaTime;
-                            if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
+                            if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
                             {
                                 if (IsServer)
                                 {
@@ -79,8 +79,8 @@ public class Constructor : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
-        sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);

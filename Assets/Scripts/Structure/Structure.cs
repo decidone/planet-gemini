@@ -118,7 +118,9 @@ public class Structure : NetworkBehaviour
     public RepairTower repairTower;
     [HideInInspector]
     public Overclock overclockTower;
-    protected float effiOverclock;
+
+    [SerializeField]
+    protected bool overclockOn;
     [SerializeField]
     protected float overclockPer;
     protected float effiCooldownUpgradeAmount;
@@ -757,7 +759,6 @@ public class Structure : NetworkBehaviour
         hp = hpSet;
         isPreBuilding = preBuilding;
         isSetBuildingOk = setBuildingOk;
-        Debug.Log(isSetBuildingOk + " : " + name);
         destroyStart = destroy;
 
         if (destroyStart)
@@ -780,8 +781,6 @@ public class Structure : NetworkBehaviour
             hpBar.fillAmount = hp / maxHp;
             unitCanvas.SetActive(true);
         }
-
-        Debug.Log(repairGauge + " : " + preBuilding + " : " + setBuildingOk);
     }
 
     public void ConnectedPosListPosSet(Vector3 pos)
@@ -941,15 +940,15 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     protected virtual void GetItemClientRpc(int inObjIndex)
     {
-        //GetItemFunc(inObjIndex);
-        if (IsServer)
-        {
-            GetItemFunc(inObjIndex);
-        }
-        else if (settingEndCheck)
-        {
-            GetDelaySet(inObjIndex);
-        }
+        GetItemFunc(inObjIndex);
+        //if (IsServer)
+        //{
+        //    GetItemFunc(inObjIndex);
+        //}
+        //else if (settingEndCheck)
+        //{
+        //    GetDelaySet(inObjIndex);
+        //}
     }
 
     protected virtual void GetItemFunc(int inObjIndex)
@@ -959,7 +958,8 @@ public class Structure : NetworkBehaviour
             OnFactoryItem(belt.itemObjList[0]);
             belt.isItemStop = false;
             belt.itemObjList.RemoveAt(0);
-            belt.beltGroupMgr.groupItem.RemoveAt(0);
+            if(belt.beltGroupMgr.groupItem.Count != 0)
+                belt.beltGroupMgr.groupItem.RemoveAt(0);
             belt.ItemNumCheck();
         }
         DelayGetItem();
@@ -1055,15 +1055,15 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex)
     {
-        //SendItemFunc(itemIndex, outObjIndex);
-        if (IsServer)
-        {
-            SendItemFunc(itemIndex, outObjIndex);
-        }
-        else if (settingEndCheck)
-        {
-            SendDelaySet(itemIndex, outObjIndex);
-        }
+        SendItemFunc(itemIndex, outObjIndex);
+        //if (IsServer)
+        //{
+        //    SendItemFunc(itemIndex, outObjIndex);
+        //}
+        //else if (settingEndCheck)
+        //{
+        //    SendDelaySet(itemIndex, outObjIndex);
+        //}
     }
 
     [ClientRpc]
@@ -1612,8 +1612,8 @@ public class Structure : NetworkBehaviour
         }
         if (repairTower != null)
             repairTower.RemoveObjectsOutOfRange(gameObject);
-        if(overclockTower != null)
-            overclockTower.RemoveObjectsOutOfRange(this);
+        if(overclockTower != null && TryGetComponent(out Production prod))
+            overclockTower.RemoveObjectsOutOfRange(prod);
 
         CloseUI();
 
@@ -1638,44 +1638,20 @@ public class Structure : NetworkBehaviour
             portalObj.RemovePortalData();
         }
 
+        if (TryGetComponent(out GetUnderBeltCtrl getUnder))
+        {
+            getUnder.EndRenderer();
+        }
+        else if (TryGetComponent(out SendUnderBeltCtrl sendUnder))
+        {
+            sendUnder.EndRenderer();
+        }
+
         if (GameManager.instance.focusedStructure == this)
         {
             GameManager.instance.focusedStructure = null;
         }
 
-        //GameManager gameManager = GameManager.instance;
-        //int x = Mathf.FloorToInt(transform.position.x);
-        //int y = Mathf.FloorToInt(transform.position.y);
-        //Cell cell = gameManager.map.GetCellDataFromPos(x, y);
-        //bool isOnMap = gameManager.map.IsOnMap(x, y);
-
-        //if (sizeOneByOne)
-        //{
-        //    if (isOnMap && cell.structure == gameObject)
-        //    {
-        //        cell.structure = null;
-        //    }
-        //}
-        //else
-        //{
-        //    if (isOnMap && cell.structure == gameObject)
-        //    {
-        //        for (int i = 0; i < height; i++)
-        //        {
-        //            for (int j = 0; j < width; j++)
-        //            {
-        //                gameManager.map.GetCellDataFromPos(x + j, y + i).structure = null;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //NetworkObjManager.instance.NetObjRemove(gameObject);
-
-        //if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
-        //{
-        //    NetworkObject.Despawn();
-        //}
         DestroyFuncServerRpc();
     }
 
@@ -1901,24 +1877,17 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public void OverclockSet(bool isOn)
-    {
-        if (isOn)
-        {
-            effiOverclock = effiCooldown * overclockPer / 100;
-        }
-        else
-        {
-            effiOverclock = 0;
-        }
-    }
-
     public virtual void EfficiencyCheck() { }
 
     [ClientRpc]
     public void MapDataSaveClientRpc(Vector3 pos)
     {
-        tileSetPos = pos;
+        if (width == 2  && height == 2)
+        {
+            tileSetPos = new Vector3(pos.x - 0.5f, pos.y - 0.5f);
+        }
+        else
+            tileSetPos = pos;
 
         int x = Mathf.FloorToInt(tileSetPos.x);
         int y = Mathf.FloorToInt(tileSetPos.y);

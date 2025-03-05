@@ -8,24 +8,34 @@ public class RemoveBuild : DragFunc
     protected GameObject canvas;
     BuildingData buildingData;
     Inventory inventory;
-    int structureLayer;
     public bool isRemovePopUpOn = false;
 
     protected override void Start()
     {
         base.Start();
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
-        structureLayer = LayerMask.NameToLayer("Obj");
     }
 
     public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
     {
-        GroupSelectedObjects(startPos, endPos, structureLayer);
+        GroupSelectedObjects(startPos, endPos, 0);
     }
 
     protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
     {
-        base.GroupSelectedObjects(startPosition, endPosition, layer);
+        Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, (1 << LayerMask.NameToLayer("Obj")) | (1 << LayerMask.NameToLayer("LocalPortal")));
+
+        List<GameObject> selectedObjectsList = new List<GameObject>();
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.GetComponent<Portal>() || collider.GetComponent<ScienceBuilding>())
+                continue;
+            selectedObjectsList.Add(collider.gameObject);
+        }
+
+        selectedObjects = selectedObjectsList.ToArray();
+
         if (selectedObjects.Length > 0) 
             gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
     }
@@ -34,10 +44,11 @@ public class RemoveBuild : DragFunc
     {
         if (isOk)
         {
-            foreach (GameObject obj in selectedObjects)
+            for(int i = 0;  i < selectedObjects.Length; i++)
             {
-                if (obj.TryGetComponent(out Structure structure))
+                if (selectedObjects[i] != null)
                 {
+                    selectedObjects[i].TryGetComponent(out Structure structure);
                     structure.DestroyServerRpc();
                 }
             }

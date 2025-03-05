@@ -42,8 +42,8 @@ public abstract class Production : Structure
         sInvenManager.ResetInvenOption();
         cooldown = recipe.cooldown;
         effiCooldown = cooldown;
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
-        sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
         //sInvenManager.progressBar.SetMaxProgress(cooldown);
     }
 
@@ -381,7 +381,8 @@ public abstract class Production : Structure
                 OnFactoryItem(belt.itemObjList[0]);
                 belt.isItemStop = false;
                 belt.itemObjList.RemoveAt(0);
-                belt.beltGroupMgr.groupItem.RemoveAt(0);
+                if (belt.beltGroupMgr.groupItem.Count != 0)
+                    belt.beltGroupMgr.groupItem.RemoveAt(0);
                 belt.ItemNumCheck();
             }
             DelayGetItem();
@@ -507,9 +508,18 @@ public abstract class Production : Structure
 
             if (isUIOpened)
             {
-                sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
-                sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+                sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+                sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
             }
+        }
+    }
+
+    public void OverclockSet(bool isOn)
+    {
+        overclockOn = isOn;
+        if (isUIOpened)
+        {
+            sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
         }
     }
 

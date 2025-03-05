@@ -25,6 +25,7 @@ public class DragFunc : MonoBehaviour
 
         foreach (Collider2D collider in colliders)
         {
+            Debug.Log("collider : " + collider.name);
             if (layer == LayerMask.NameToLayer("Obj") && collider.GetComponent<Structure>() == null)
                 continue;
             if (collider.GetComponent<Portal>() || collider.GetComponent<ScienceBuilding>())

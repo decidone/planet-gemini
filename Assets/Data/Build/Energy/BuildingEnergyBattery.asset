@@ -16,6 +16,8 @@ MonoBehaviour:
   scienceName: EnergyBattery
   item: {fileID: 11400000, guid: ad6f3fc4b10c08b4caa6a19413a61414, type: 2}
   gameObj: {fileID: 7372674185409712110, guid: e2e0eaf4131b65640a824d9ee2f8897d, type: 3}
+  sideObj: {fileID: 0}
+  dragCancel: 0
   isGetAnim: 0
   isGetDirection: 0
   isUnderObj: 0
