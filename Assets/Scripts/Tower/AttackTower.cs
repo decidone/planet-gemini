@@ -108,7 +108,7 @@ public class AttackTower : TowerAi
 
                 OperateStateSet(true);
                 prodTimer += Time.deltaTime;
-                if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
+                if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
                 {
                     if (IsServer)
                     {

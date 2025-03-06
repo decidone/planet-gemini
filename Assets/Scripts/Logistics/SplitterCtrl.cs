@@ -100,9 +100,16 @@ public class SplitterCtrl : LogisticsCtrl
             if (arrFilter[a].selItem == null)
                 continue;
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(arrFilter[a].selItem);
-            ulong objID = arrFilter[a].outObj.GetComponent<Structure>().ObjFindId();
-
-            ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex, objID);
+            if(arrFilter[a].outObj != null)
+            {
+                arrFilter[a].outObj.TryGetComponent(out Structure str);
+                ulong objID = str.ObjFindId();
+                ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex, objID);
+            }
+            else
+            {
+                ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex);
+            }
         }
     }
 
@@ -114,6 +121,15 @@ public class SplitterCtrl : LogisticsCtrl
 
         NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(objID);
         arrFilter[num].outObj = obj.gameObject;
+        GameStartFillterSet(num, filterOn, reverseFilterOn, itemIndex);
+    }
+
+    [ClientRpc]
+    void ClientFillterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
+    {
+        if (IsServer)
+            return;
+
         GameStartFillterSet(num, filterOn, reverseFilterOn, itemIndex);
     }
 

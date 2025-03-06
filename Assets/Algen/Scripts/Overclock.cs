@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Overclock : Production
 {
-    public List<Structure> buildingList = new List<Structure>();
+    public List<Production> buildingList = new List<Production>();
     protected float searchTimer = 1f;
     protected float searchInterval = 1f; // 딜레이 간격 설정
     [SerializeField]
@@ -12,6 +12,7 @@ public class Overclock : Production
     GameManager gameManager;
     PreBuilding preBuilding;
     bool preBuildingCheck;
+    bool isOperated;
 
     protected override void Start()
     {
@@ -53,6 +54,15 @@ public class Overclock : Production
                 searchTimer = 0f; // 탐색 후 타이머 초기화
             }
         }
+
+        if (conn != null && conn.group != null)
+        {
+            if(conn.group.efficiency > 0 && !isOperated)
+                OverclockOn(true);
+            else if(conn.group.efficiency == 0 && isOperated)
+                OverclockOn(false);
+
+        }
     }
 
     private void SearchObjectsInRange()
@@ -63,23 +73,23 @@ public class Overclock : Production
         {
             GameObject building = collider.gameObject;
 
-            if (building.TryGetComponent(out Structure structure))
+            if (building.TryGetComponent(out Production production))
             {
-                if (structure.overclockTower == null && !structure.isPreBuilding
-                    && !buildingList.Contains(structure) && !structure.GetComponent<Portal>())
+                if (production.overclockTower == null && !production.isPreBuilding
+                    && !buildingList.Contains(production) && !production.GetComponent<Portal>())
                 {
-                    buildingList.Add(structure);
-                    structure.overclockTower = this;
+                    buildingList.Add(production);
+                    production.overclockTower = this;
                     if (conn != null && conn.group != null && conn.group.efficiency > 0)
                     {
-                        structure.OverclockSet(true);
+                        production.OverclockSet(true);
                     }
                 }
             }
         }
     }
 
-    public void RemoveObjectsOutOfRange(Structure obj)//근쳐 타워 삭제시 발동되게
+    public void RemoveObjectsOutOfRange(Production obj)//근쳐 타워 삭제시 발동되게
     {
         if (buildingList.Contains(obj))
         {
@@ -87,23 +97,33 @@ public class Overclock : Production
         }
     }
 
-    public override void AddConnector(EnergyGroupConnector connector)
+    void OverclockOn(bool isOn)
     {
-        base.AddConnector(connector);
-        foreach (Structure building in buildingList)
+        Debug.Log(isOn);
+        foreach (Production building in buildingList)
         {
-            building.OverclockSet(true);
+            building.OverclockSet(isOn);
         }
+        isOperated = isOn;
     }
 
-    public override void RemoveConnector(EnergyGroupConnector connector)
-    {
-        base.RemoveConnector(connector);
-        foreach (Structure building in buildingList)
-        {
-            building.OverclockSet(false);
-        }
-    }
+    //public override void AddConnector(EnergyGroupConnector connector)
+    //{
+    //    base.AddConnector(connector);
+    //    foreach (Production building in buildingList)
+    //    {
+    //        building.OverclockSet(true);
+    //    }
+    //}
+
+    //public override void RemoveConnector(EnergyGroupConnector connector)
+    //{
+    //    base.RemoveConnector(connector);
+    //    foreach (Production building in buildingList)
+    //    {
+    //        building.OverclockSet(false);
+    //    }
+    //}
 
     public override Dictionary<Item, int> PopUpItemCheck() { return null; }
 

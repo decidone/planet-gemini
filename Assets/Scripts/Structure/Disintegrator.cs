@@ -27,7 +27,7 @@ public class Disintegrator : Production
             if (isAuto)
             {
                 prodTimer += Time.deltaTime;
-                if (prodTimer > effiCooldown - (effiOverclock + effiCooldownUpgradeAmount))
+                if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
                 {
                     if (IsServer)
                         ConfirmBtnClicked();
@@ -134,8 +134,8 @@ public class Disintegrator : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
-        sInvenManager.SetCooldownText(effiCooldown - (effiOverclock + effiCooldownUpgradeAmount));
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
 
         scrap = ui.GetComponentInChildren<Scrap>();
         if (confirmBtn == null)

@@ -15,7 +15,8 @@ public class DataManager : MonoBehaviour
     GameObject beltGroup;
     [SerializeField]
     GameObject beltMgr;
-    List<Transporter> transporters = new List<Transporter>();
+    Dictionary<Transporter, StructureSaveData> transporters = new Dictionary<Transporter, StructureSaveData>();
+    //List<Transporter> transporters = new List<Transporter>();
     List<LDConnector> lDConnectors = new List<LDConnector>();
     [SerializeField]
     GameObject spawner;
@@ -224,7 +225,7 @@ public class DataManager : MonoBehaviour
             {
                 if (structure.TryGetComponent(out Transporter transporter))
                 {
-                    transporters.Add(transporter);
+                    transporters.Add(transporter, saveData);
                     structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));                    
                 }
                 else if (structure.TryGetComponent(out UnitFactory unitFactory))
@@ -341,12 +342,39 @@ public class DataManager : MonoBehaviour
 
     void SetConnectedFunc()
     {
-        foreach (Transporter transporter in transporters)
+        foreach (var transporterData in transporters)
         {
+            Transporter transporter = transporterData.Key;
+            StructureSaveData strData = transporterData.Value;
+            Transporter takeTransporter = null;
             GameObject findObj = CellObjFind(transporter.connectedPosList[0], transporter.isInHostMap);
-            if (findObj != null && findObj.TryGetComponent(out Transporter takeTransporter))
+            if (findObj != null && findObj.TryGetComponent(out takeTransporter))
             {
                 transporter.TakeBuildSet(takeTransporter);
+            }
+
+            if (strData.trUnitPosData.Count > 0)
+            {
+                for (int i = 0; i < strData.trUnitPosData.Count; i++)
+                {
+                    Vector3 spawnPos = Vector3Extensions.ToVector3(strData.trUnitPosData[i]);
+
+                    Dictionary<int, int> itemDic = new Dictionary<int, int>();
+
+                    if (strData.trUnitItemData.ContainsKey(i))
+                    {
+                        itemDic = strData.trUnitItemData[i]; 
+                    }
+
+                    if (takeTransporter != null)
+                    {
+                        transporter.UnitLoad(spawnPos, takeTransporter, itemDic);
+                    }
+                    else
+                    {
+                        transporter.UnitLoad(spawnPos, itemDic);
+                    }
+                }
             }
         }
 

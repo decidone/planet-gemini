@@ -45,21 +45,27 @@ public class UnloaderManager : MonoBehaviour
     {
         //unloader.selectItem = _item;
 
-        if (slot.item == null)
+        if (slot.item == _item)
         {
-            slot.AddItem(_item, 1);
+            unloader.SelectItemResetServerRpc();
         }
-        else if (slot.item != _item)
+        else
         {
-            slot.ClearSlot();
-            slot.AddItem(_item, 1);
-        }
-        else if (slot.item == _item)
-            return;
+            if (slot.item == null)
+            {
+                slot.AddItem(_item, 1);
+            }
+            else if (slot.item != _item)
+            {
+                slot.ClearSlot();
+                slot.AddItem(_item, 1);
+            }
 
-        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(_item);
-        if (itemIndex != -1)
-            unloader.SelectItemSetServerRpc(itemIndex);
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(_item);
+            if (itemIndex != -1)
+                unloader.SelectItemSetServerRpc(itemIndex);
+        }
+
     }
 
     public void OpenUI()
@@ -87,7 +93,14 @@ public class UnloaderManager : MonoBehaviour
     {
         if(unloader != null)
         {
-            slot.AddItem(unloader.selectItem, 1);
+            if (unloader.selectItem != null)
+            {
+                slot.AddItem(unloader.selectItem, 1);
+            }
+            else
+            {
+                slot.ClearSlot();
+            }
         }
         gameManager.onUIChangedCallback?.Invoke(unloaderUI);
     }

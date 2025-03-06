@@ -47,6 +47,15 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         } 
     }
 
+    public void EndRenderer()
+    {
+        if (outObj.Count > 0)
+        {
+            outObj[0].TryGetComponent(out GetUnderBeltCtrl get);
+            get.EndRenderer();
+        }
+    }
+
     protected override void SetDirNum()
     {
         setModel.sprite = modelNum[dirNum + (level * 4)];

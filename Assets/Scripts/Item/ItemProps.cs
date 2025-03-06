@@ -39,7 +39,6 @@ public class ItemProps : MonoBehaviour
 
     public void ClientResetItemProps()
     {
-        Debug.Log("beltGroupIndex : " + beltGroupIndex);
         itemPool.Release(gameObject);
     }
 }

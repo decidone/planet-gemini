@@ -38,6 +38,9 @@ public class StructureSaveData
 
     public List<SerializedVector3> connectedStrPos = new List<SerializedVector3>(); // 트랜스포터, 장거리 커넥터 등 라인 연결해야 하는 건물 좌표값
 
+    public List<SerializedVector3> trUnitPosData = new List<SerializedVector3>(); // 트랜스포터 유닛 위치 정보
+    public Dictionary<int, Dictionary<int, int>> trUnitItemData = new Dictionary<int, Dictionary<int, int>>(); // 트랜스포터 유닛 인덱스, 아이템+개수 정보
+
     // 필터 - 스플리터 같은 경우 3개의 필터 조건이 들어갈 수 있음
     public List<FilterSaveData> filters = new List<FilterSaveData>();
 

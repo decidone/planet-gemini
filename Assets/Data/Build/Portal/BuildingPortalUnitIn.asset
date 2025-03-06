@@ -17,6 +17,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 2d10fd7c00517014cad7e36aa3d700e2, type: 2}
   gameObj: {fileID: 941880205020935685, guid: 3dcbdd3893e733a458bf18243a598778, type: 3}
   sideObj: {fileID: 0}
+  dragCancel: 1
   isGetAnim: 1
   isGetDirection: 0
   isUnderObj: 0

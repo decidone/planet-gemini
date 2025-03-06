@@ -11,6 +11,8 @@ public class Building : ScriptableObject
     public Item item = null;
     public GameObject gameObj = null;
     public GameObject sideObj = null;
+
+    public bool dragCancel;
     public bool isGetAnim;
     public bool isGetDirection;
     public bool isUnderObj;

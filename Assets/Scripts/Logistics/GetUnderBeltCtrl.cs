@@ -7,10 +7,20 @@ using System;
 // UTF-8 설정
 public class GetUnderBeltCtrl : LogisticsCtrl
 {
-    //void Start()
-    //{
-    //    setModel = GetComponent<SpriteRenderer>();
-    //}
+    GameManager gameManager;
+    PreBuilding preBuilding;
+    bool preBuildingCheck;
+    [SerializeField]
+    protected GameObject lineObj;
+    public LineRenderer lineRenderer;
+    protected Vector3 startLine;
+    protected Vector3 endLine;
+
+    void Start()
+    {
+        gameManager = GameManager.instance;
+        preBuilding = PreBuilding.instance;
+    }
 
     protected override void Update()
     {
@@ -45,7 +55,49 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             {
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
+
+            if (gameManager.focusedStructure == null)
+            {
+                if (preBuilding.isBuildingOn && preBuilding.isUnderBelt)
+                {
+                    if (!preBuildingCheck)
+                    {                       
+                        StartRenderer();
+                    }
+                }
+                else
+                {
+                    if (preBuildingCheck)
+                    {
+                        EndRenderer();
+                    }
+                }
+            }
         }
+    }
+
+    void StartRenderer()
+    {
+        if (inObj.Count > 0)
+        {
+            startLine = new Vector3(inObj[0].transform.position.x, inObj[0].transform.position.y, -1);
+            GameObject currentLine = Instantiate(lineObj, startLine, Quaternion.identity);
+            lineRenderer = currentLine.GetComponent<LineRenderer>();
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0, startLine);
+            endLine = new Vector3(transform.position.x, transform.position.y, -1);
+            lineRenderer.SetPosition(1, endLine);
+            preBuildingCheck = true;
+        }
+    }
+
+    public void EndRenderer()
+    {
+        if (lineRenderer != null)
+        {
+            Destroy(lineRenderer.gameObject);
+        }
+        preBuildingCheck = false;
     }
 
     protected override void SetDirNum()
@@ -158,6 +210,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
     public void ResetInObj()
     {
         nearObj[2] = null;
+        EndRenderer();
         inObj.Clear();
     }
 

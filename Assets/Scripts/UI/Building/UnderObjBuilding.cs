@@ -13,10 +13,18 @@ public class UnderObjBuilding : MonoBehaviour
     PreBuildingImg nonNetObj;
     List<Sprite> spriteList = new List<Sprite>();
 
+    bool setLine;
+    public GameObject lineObj;
+    public LineRenderer lineRenderer;
+    protected Vector3 startLine;
+    protected Vector3 endLine;
+    PreBuilding preBuilding;
+
     // Start is called before the first frame update
     void Start()
     {
         nonNetObj = GetComponent<PreBuildingImg>();
+        preBuilding = PreBuilding.instance;
         isSendObj = true;
     }
 
@@ -68,6 +76,8 @@ public class UnderObjBuilding : MonoBehaviour
                         if(othGetUnderBelt.dirNum == dirNum)
                         {
                             IsSendObjSet();
+                            preBuilding.dragCancel = true;
+                            EndRenderer();
                             return;
                         }
                     }
@@ -76,6 +86,12 @@ public class UnderObjBuilding : MonoBehaviour
                         if (othSendUnderBelt.dirNum == dirNum)
                         {
                             IsGetObjSet();
+                            othSendUnderBelt.EndRenderer();
+                            preBuilding.dragCancel = true;
+                            if (!setLine)
+                                StartRenderer(othSendUnderBelt.transform.position);
+                            else
+                                RendererReset(othSendUnderBelt.transform.position);
                             return;
                         }
                     }
@@ -91,11 +107,14 @@ public class UnderObjBuilding : MonoBehaviour
                         if (othUnderBelt.isSendObj)
                         {
                             IsGetObjSet();
+                            if (!setLine)
+                                StartRenderer(othUnderBelt.transform.position);
                             return;
                         }
                         else
                         {
                             IsSendObjSet();
+                            EndRenderer();
                             return;
                         }
                     }
@@ -111,8 +130,12 @@ public class UnderObjBuilding : MonoBehaviour
             }
         }
 
-        if(isUnderBelt)
+        if (isUnderBelt)
+        {
             IsSendObjSet();
+            EndRenderer();
+            preBuilding.dragCancel = false;
+        }
     }
 
     void IsSendObjSet()
@@ -125,6 +148,39 @@ public class UnderObjBuilding : MonoBehaviour
     {
         nonNetObj.PreSpriteSet(spriteList[dirNum + 4]);
         isSendObj = false;
+    }
+
+    void EndRenderer()
+    {
+        if (lineRenderer != null)
+        {
+            Destroy(lineRenderer.gameObject);
+        }
+        setLine = false;
+    }
+
+    void StartRenderer(Vector3 target)
+    {
+        setLine = true;
+        startLine = new Vector3(target.x, target.y, -1);
+        GameObject currentLine = Instantiate(lineObj, startLine, Quaternion.identity);
+        currentLine.transform.parent = transform;
+        lineRenderer = currentLine.GetComponent<LineRenderer>();
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, startLine);
+        endLine = new Vector3(transform.position.x, transform.position.y, -1);
+        lineRenderer.SetPosition(1, endLine);
+    }
+
+    void RendererReset(Vector3 target)
+    {
+        if (lineRenderer != null)
+        {
+            startLine = new Vector3(target.x, target.y, -1);
+            lineRenderer.SetPosition(0, startLine);
+            endLine = new Vector3(transform.position.x, transform.position.y, -1);
+            lineRenderer.SetPosition(1, endLine);
+        }
     }
 
     void TurnDir(int preDir)

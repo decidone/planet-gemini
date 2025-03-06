@@ -19,7 +19,8 @@ public class TransportUnit : UnitCommonAi
     public Transporter othTrBuild;
     Vector3 endPos;
 
-    Dictionary<Item, int> itemDic = new Dictionary<Item, int>();
+    [HideInInspector]
+    public Dictionary<Item, int> itemDic = new Dictionary<Item, int>();
 
     [HideInInspector]
     public TrUnitState trUnitState = TrUnitState.idle;

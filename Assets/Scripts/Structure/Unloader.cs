@@ -63,7 +63,10 @@ public class Unloader : LogisticsCtrl
         if (IsServer)
             return;
 
-        SelectItemSetClientRpc(itemIndex);
+        if (itemIndex >= 0)
+        {
+            SelectItemSetClientRpc(itemIndex);
+        }
     }
 
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)
@@ -153,6 +156,20 @@ public class Unloader : LogisticsCtrl
         selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         UIReset();
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SelectItemResetServerRpc()
+    {
+        SelectItemResetClientRpc();
+    }
+
+    [ClientRpc]
+    public void SelectItemResetClientRpc()
+    {
+        selectItem = null;
+        UIReset();
+    }
+
 
     void UIReset()
     {

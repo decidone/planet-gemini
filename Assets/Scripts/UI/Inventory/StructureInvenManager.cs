@@ -189,17 +189,18 @@ public class StructureInvenManager : InventoryManager
     //Transporter UI 전용
     public void ToggleControl()
     {
+        // 켄버스 토글 옵션 OnValueChange 에서 사용
         if (prod != null && prod.TryGetComponent(out Transporter trBuild))
         {
             int parsedValue;
 
             if (int.TryParse(inputField.text, out parsedValue))
             {
-                trBuild.SendFuncSet(toggle.isOn, parsedValue);
+                trBuild.SendFuncSetServerRpc(toggle.isOn, parsedValue);
             }
             else if(inputField.text == "")
             {
-                trBuild.SendFuncSet(toggle.isOn, 0);
+                trBuild.SendFuncSetServerRpc(toggle.isOn, 0);
             }
         }
     }
@@ -219,6 +220,26 @@ public class StructureInvenManager : InventoryManager
             inputField.text = amount.ToString();
         else
             inputField.text = "";
+    }
+
+    public void TransporterResetUI()
+    {
+        if (prod != null && prod.TryGetComponent(out Transporter trBuild))
+        {
+            if (trBuild.isToggleOn)
+            {
+                toggle.SetIsOnWithoutNotify(true);
+            }
+            else
+            {
+                toggle.SetIsOnWithoutNotify(false);
+            }
+
+            if (trBuild.sendAmount > 0)
+                inputField.text = trBuild.sendAmount.ToString();
+            else
+                inputField.text = "";
+        }
     }
     //Transporter UI 전용
 
@@ -253,11 +274,13 @@ public class StructureInvenManager : InventoryManager
 
     public void OpenTankUI()
     {
+        // 켄버스 탱크 버튼에서 사용
         inventoryUI.SetActive(true);
     }
 
     public void CloseTankUI()
     {
+        // 켄버스 탱크 버튼에서 사용
         focusedSlot = null;
         inventoryUI.SetActive(false);
         itemInfoWindow.CloseWindow();

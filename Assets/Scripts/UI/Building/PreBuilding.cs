@@ -50,6 +50,7 @@ public class PreBuilding : NetworkBehaviour
     public bool isPreObjSend;
     Vector3 mousePos;
     bool isDrag = false;
+    public bool dragCancel;
     Coroutine setBuild;
 
     //bool isTempBuild;
@@ -88,9 +89,12 @@ public class PreBuilding : NetworkBehaviour
     public bool isEnergyUse;
     public bool isEnergyStr;
 
-    bool isUnderBelt;
+    public bool isUnderBelt;
 
     bool isInHostMap;
+
+    [SerializeField]
+    protected GameObject lineObj;
 
     #region Singleton
     public static PreBuilding instance;
@@ -258,86 +262,6 @@ public class PreBuilding : NetworkBehaviour
                     }
                 }
 
-                //bool canBuild = false;
-                //int index = 0;
-                //foreach (GameObject obj in buildingList)
-                //{
-                //    if (GroupBuildCheck(obj, posList[index]))
-                //        canBuild = true;
-                //    else
-                //    {
-                //        canBuild = false;
-                //        break;
-                //    }
-                //    index++;
-                //}
-
-                //if (canBuild)
-                //{
-                //    int posIndex = 0;
-
-                //    if (isBeltObj)
-                //    {
-                //        BeltGroupSpawnServerRpc();
-
-                //        if (reversSet)
-                //        {
-                //            posIndex = posList.Count - 1;
-                //            for (int i = buildingList.Count - 1; i >= 0; i--)
-                //            {
-                //                GameObject obj = buildingList[i];
-                //                SetBuilding(obj, posList[posIndex]);
-                //                posIndex--;
-                //            }
-                //        }
-                //        else
-                //        {
-                //            for (int i = 0; i < buildingList.Count; i++)
-                //            {
-                //                GameObject obj = buildingList[i];
-                //                SetBuilding(obj, posList[posIndex]);
-                //                posIndex++;
-                //            }
-                //        }
-
-                //        BeltGroupSetEndServerRpc();
-                //    }
-                //    else
-                //    {
-                //        foreach (GameObject obj in buildingList)
-                //        {
-                //            SetBuilding(obj, posList[posIndex]); 
-                //            posIndex++;
-                //        }
-                //    }
-
-                //    if (isPortalObj)
-                //    {
-                //        //portalScript.SetPortalObjEnd(buildData.name, buildingList[0]);
-                //        isEnough = false;
-                //        canBuildCount = 0;
-                //    }
-                //    else
-                //    {
-                //        BuildingInfo.instance.BuildingEnd(buildingList.Count);
-                //        isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-                //        canBuildCount = BuildingInfo.instance.CanBuildAmount();
-                //    }
-                //    foreach (GameObject obj in buildingList)
-                //    {
-                //        Destroy(obj);
-                //    }
-                //    soundManager.PlayUISFX("BuildingOk");
-                //}
-                //else
-                //{
-                //    soundManager.PlayUISFX("BuildingCancel");
-                //    foreach (GameObject build in buildingList)
-                //    {
-                //        Destroy(build);
-                //    }
-                //}
-
                 foreach (GameObject build in buildingList)
                 {
                     Destroy(build);
@@ -386,7 +310,6 @@ public class PreBuilding : NetworkBehaviour
     {
         int spawnCount = setPos.Length;
         Building building = buildingListSO.FindBuildingData(bIndex);
-        Debug.Log(building.item.name + " : " + building.level);
         BuildingData buildingData = BuildingDataGet.instance.GetBuildingName(building.item.name, building.level);
 
         Vector3 correctPos = Vector3.zero;
@@ -410,7 +333,6 @@ public class PreBuilding : NetworkBehaviour
 
                 bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
                 costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
-                Debug.Log("costEnough : " + costEnough);
 
                 if (!costEnough)
                     return;
@@ -418,7 +340,6 @@ public class PreBuilding : NetworkBehaviour
         }
         else
         {
-            Debug.Log(isHostMap + " : " + building.item.name);
             if (gameManager.portal[isHostMap ? 0 : 1].PortalObjFind(building.item.name))
                 return;
         }
@@ -455,10 +376,8 @@ public class PreBuilding : NetworkBehaviour
 
                     if (cell.structure != null)
                     {
-                        Debug.Log("Found oth Obj : " + newX + " : " + newY);
                         return;
                     }
-                    Debug.Log("Can not Found oth Obj : " + newX + " : " + newY);
                 }
             }
         }
@@ -499,7 +418,6 @@ public class PreBuilding : NetworkBehaviour
     {
         int spawnCount = setPos.Length;
         Building building = buildingListSO.FindBuildingData(bIndex);
-        Debug.Log(building.item.name + " : " + building.level);
         BuildingData buildingData = BuildingDataGet.instance.GetBuildingName(building.item.name, building.level);
 
         Vector3 correctPos = Vector3.zero;
@@ -521,7 +439,6 @@ public class PreBuilding : NetworkBehaviour
 
             bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
             costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
-            Debug.Log("costEnough : " + costEnough);
 
             if (!costEnough)
                 return;
@@ -559,10 +476,8 @@ public class PreBuilding : NetworkBehaviour
 
                     if (cell.structure != null)
                     {
-                        Debug.Log("Found oth Obj : " + newX + " : " + newY);
                         return;
                     }
-                    Debug.Log("Can not Found oth Obj : " + newX + " : " + newY);
                 }
             }
         }
@@ -652,7 +567,7 @@ public class PreBuilding : NetworkBehaviour
         isEnergyUse = false;
         isBeltObj = false;
         reversSet = false;
-
+        dragCancel = false;
         MouseSkin.instance.ResetCursor();
     }
 
@@ -844,7 +759,7 @@ public class PreBuilding : NetworkBehaviour
         }
         else
         {
-            SetPos();
+            SetPos();            
         }
     }
 
@@ -855,7 +770,7 @@ public class PreBuilding : NetworkBehaviour
         if (startBuildPos.x == endBuildPos.x && startBuildPos.y == endBuildPos.y)
             notMove = true;
 
-        if (notMove)
+        if (notMove || dragCancel)
         {
             Vector3 position = new Vector3(startBuildPos.x, startBuildPos.y, 0);
             PosListContainCheck(position);
@@ -1396,6 +1311,7 @@ public class PreBuilding : NetworkBehaviour
         else
             isUnderObj = false;
 
+        dragCancel = buildData.dragCancel;
 
         if (isGetAnim)
         {
@@ -1421,16 +1337,18 @@ public class PreBuilding : NetworkBehaviour
         {
             nonNetObj.transform.localScale = new Vector3(1, 1, 1);
         }
+        isUnderBelt = false;
 
         if (isUnderObj)
         {
             nonNetObj.AddComponent<UnderObjBuilding>();
+
             if (buildData.item.name == "UnderBelt")
                 isUnderBelt = true;
-            else
-                isUnderBelt = false;
 
-            nonNetObj.GetComponent<UnderObjBuilding>().Setting(dirNum, isUnderBelt, buildData.sprites);
+            UnderObjBuilding underObj = nonNetObj.GetComponent<UnderObjBuilding>();
+            underObj.Setting(dirNum, isUnderBelt, buildData.sprites);
+            underObj.lineObj = lineObj;
         }
 
         GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
@@ -1524,13 +1442,17 @@ public class PreBuilding : NetworkBehaviour
 
         isGetAnim = buildData.isGetAnim;
 
+        GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
+        preBuildingImg.PreStrSet(prefabObj.GetComponentInChildren<Structure>());
         preBuildingImg.PreAnimatorSet(buildData.animatorController[0]);        
 
         isGetDir = false;
         isUnderObj = false;
 
         isEnergyStr = false;
-        isEnergyUse = false;        
+        isEnergyUse = false;
+
+        dragCancel = buildData.dragCancel;
 
         setPos = new Vector3(-0.5f, -0.5f);
         isNeedSetPos = true;

@@ -51,7 +51,7 @@ public class PortalUnitIn : PortalObj
         base.Update();
         if (!isPreBuilding)
         {
-            if (sendUnitList.Count > 0)
+            if (sendUnitList.Count > 0 && portalUnitOut != null)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
