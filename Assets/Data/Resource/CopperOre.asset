@@ -15,7 +15,7 @@ MonoBehaviour:
   name: CopperOre
   type: ore
   distribution: 10
-  scale: 0.05
+  scale: 0.07
   tiles:
   - {fileID: 11400000, guid: 80507d088439f834ea394ef5ffcafcf7, type: 2}
   - {fileID: 11400000, guid: b56c7679a7677c04aab0bcd8d4da0023, type: 2}
@@ -29,7 +29,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d381c5536c792574983b6ede372a212b, type: 2}
   - {fileID: 11400000, guid: e8025ab38ba01164eb1475ac665a9174, type: 2}
   item: {fileID: 11400000, guid: 122c8e814a0257d49b21e2bdfda7a450, type: 2}
-  efficiency: 4
+  efficiency: 6
   level: 1
   biome:
   - plain

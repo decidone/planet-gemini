@@ -5,7 +5,7 @@ using UnityEngine;
 // UTF-8 설정
 public class ExtractorCtrl : FluidFactoryCtrl
 {
-    float pumpFluid = 15.0f;
+    float pumpFluid = 20.0f;
     float pumpTimer;
     public float pumpInterval = 3;
 
@@ -32,7 +32,6 @@ public class ExtractorCtrl : FluidFactoryCtrl
                     }
                 }
             }
-
 
             if (!isPreBuilding && checkObj)
             {

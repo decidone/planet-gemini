@@ -717,7 +717,6 @@ public class MapGenerator : MonoBehaviour
 
                                     if (canSetResource)
                                     {
-                                        
                                         int randomSprite = UnityEngine.Random.Range(0, 2);
                                         int spriteIndex = 0;
 
@@ -748,30 +747,6 @@ public class MapGenerator : MonoBehaviour
                                         }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                // 사막, 빙하 바이옴이 아닌 경우 사막, 빙하 바이옴의 1/10 확률로 1칸 젠
-                                //int diffBiomeRandomNum = random.Next(1, 10);
-                                //if (diffBiomeRandomNum <= 1)
-                                //{
-                                //    if (biome != lake && biome != cliff && cell.resource == null)
-                                //    {
-                                //        if (cell.tileType == "normal")
-                                //        {
-                                //            Tile mapTile = cell.biome.SetNormalTile(random);
-                                //            tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), mapTile);
-                                //        }
-
-                                //        //Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
-                                //        Tile resourceTile = resource.tiles[random.Next(0, 3)];
-                                //        resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
-                                //        resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
-                                //        cell.resource = resource;
-
-                                //        cell.buildable.Add("extractor");
-                                //    }
-                                //}
                             }
                         }
                     }

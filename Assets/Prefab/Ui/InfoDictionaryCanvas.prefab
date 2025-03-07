@@ -650,7 +650,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.69803923}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -772,7 +772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.69803923}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -974,7 +974,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.69803923}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2806,11 +2806,11 @@ MonoBehaviour:
   listItemPref: {fileID: 7838643556942953947, guid: 097f775cd707d83499226b9f4cfc517c, type: 3}
   content: {fileID: 6745680790545975148}
   inputField: {fileID: 6745680789313931264}
-  AllBtn: {fileID: 2192670210519925311}
-  SystemBtn: {fileID: 4392973494156425836}
-  StrBtn: {fileID: 3432496521338876621}
-  UnitBtn: {fileID: 6548757773970767571}
-  ItemBtn: {fileID: 7956190785214869285}
+  allBtn: {fileID: 2192670210519925311}
+  systemBtn: {fileID: 4392973494156425836}
+  strBtn: {fileID: 3432496521338876621}
+  unitBtn: {fileID: 6548757773970767571}
+  itemBtn: {fileID: 7956190785214869285}
   layout1: {fileID: 6745680790074305957}
   layout1Name: {fileID: 1246977102}
   layout1Explanation: {fileID: 15671689}
@@ -3009,7 +3009,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.69803923}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

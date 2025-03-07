@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Stone
   type: ore
   distribution: 10
-  scale: 0.05
+  scale: 0.07
   tiles:
   - {fileID: 11400000, guid: cb119cb934b53d043a0bf578855f7181, type: 2}
   - {fileID: 11400000, guid: 1bd50395d705ac84eb8af01cc0369b05, type: 2}
@@ -29,7 +29,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 838a1959270adc24ca898808ede9bdeb, type: 2}
   - {fileID: 11400000, guid: 3635a4a36eede2b4e8bde7637d70bd80, type: 2}
   item: {fileID: 11400000, guid: c5a82ea7dfa96c24893abe127b74a61c, type: 2}
-  efficiency: 4
+  efficiency: 6
   level: 0
   biome:
   - plain

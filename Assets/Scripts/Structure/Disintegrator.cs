@@ -120,6 +120,7 @@ public class Disintegrator : Production
     public void SetAutoClientRpc(bool auto)
     {
         isAuto = auto;
+        autoToggle.SetIsOnWithoutNotify(auto);
     }
 
     [ServerRpc(RequireOwnership = false)]

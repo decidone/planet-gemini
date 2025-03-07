@@ -16,4 +16,4 @@ MonoBehaviour:
   type: 1
   explanation: Explanation
   layout: 1
-  videoClip: {fileID: 0}
+  videoClip: {fileID: 32900000, guid: 832dbef619e9b5149b00442c34fb0db2, type: 3}

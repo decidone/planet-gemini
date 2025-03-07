@@ -15,11 +15,17 @@ public class InfoDictionary : MonoBehaviour
     [SerializeField] InputField inputField;
 
     [Space]
-    [SerializeField] Button AllBtn;
-    [SerializeField] Button SystemBtn;
-    [SerializeField] Button StrBtn;
-    [SerializeField] Button UnitBtn;
-    [SerializeField] Button ItemBtn;
+    List<Button> buttonList = new List<Button>();
+    [SerializeField] Button allBtn;
+    [SerializeField] Button systemBtn;
+    [SerializeField] Button strBtn;
+    [SerializeField] Button unitBtn;
+    [SerializeField] Button itemBtn;
+    bool allBtnClicked;
+    bool systemBtnClicked;
+    bool strBtnClicked;
+    bool unitBtnClicked;
+    bool itemBtnClicked;
     int sortType = -1;   // -1: 전체, 0: 시스템, 1: 건물, 2: 유닛, 3: 아이템
 
     [Space]
@@ -59,11 +65,123 @@ public class InfoDictionary : MonoBehaviour
 
     private void Start()
     {
-        AllBtn.onClick.AddListener(() => SetType(-1));
-        SystemBtn.onClick.AddListener(() => SetType(0));
-        StrBtn.onClick.AddListener(() => SetType(1));
-        UnitBtn.onClick.AddListener(() => SetType(2));
-        ItemBtn.onClick.AddListener(() => SetType(3));
+        allBtnClicked = false;
+        systemBtnClicked = false;
+        strBtnClicked = false;
+        unitBtnClicked = false;
+        itemBtnClicked = false;
+
+        buttonList.Add(allBtn);
+        buttonList.Add(systemBtn);
+        buttonList.Add(strBtn);
+        buttonList.Add(unitBtn);
+        buttonList.Add(itemBtn);
+
+        allBtn.onClick.AddListener(() => BtnClicked(allBtn, -1));
+        systemBtn.onClick.AddListener(() => BtnClicked(systemBtn, 0));
+        strBtn.onClick.AddListener(() => BtnClicked(strBtn, 1));
+        unitBtn.onClick.AddListener(() => BtnClicked(unitBtn, 2));
+        itemBtn.onClick.AddListener(() => BtnClicked(itemBtn, 3));
+    }
+
+    void BtnClicked(Button btn, int btnNum)
+    {
+        // -1: 전체, 0: 시스템, 1: 건물, 2: 유닛, 3: 아이템
+        switch (btnNum)
+        {
+            case -1:
+                allBtnClicked = true;
+                systemBtnClicked = false;
+                strBtnClicked = false;
+                unitBtnClicked = false;
+                itemBtnClicked = false;
+                BtnToggle(btn, allBtnClicked);
+                SetType(btnNum);
+                break;
+            case 0:
+                systemBtnClicked = !systemBtnClicked;
+                allBtnClicked = false;
+                strBtnClicked = false;
+                unitBtnClicked = false;
+                itemBtnClicked = false;
+                BtnToggle(btn, systemBtnClicked);
+                if (systemBtnClicked)
+                    SetType(btnNum);
+                else
+                    SetType(-1);
+                break;
+            case 1:
+                strBtnClicked = !strBtnClicked;
+                allBtnClicked = false;
+                systemBtnClicked = false;
+                unitBtnClicked = false;
+                itemBtnClicked = false;
+                BtnToggle(btn, strBtnClicked);
+                if (strBtnClicked)
+                    SetType(btnNum);
+                else
+                    SetType(-1);
+                break;
+            case 2:
+                unitBtnClicked = !unitBtnClicked;
+                allBtnClicked = false;
+                systemBtnClicked = false;
+                strBtnClicked = false;
+                itemBtnClicked = false;
+                BtnToggle(btn, unitBtnClicked);
+                if (unitBtnClicked)
+                    SetType(btnNum);
+                else
+                    SetType(-1);
+                break;
+            case 3:
+                itemBtnClicked = !itemBtnClicked;
+                allBtnClicked = false;
+                systemBtnClicked = false;
+                strBtnClicked = false;
+                unitBtnClicked = false;
+                BtnToggle(btn, itemBtnClicked);
+                if (itemBtnClicked)
+                    SetType(btnNum);
+                else
+                    SetType(-1);
+                break;
+        }
+    }
+
+    void ResetButtons(bool isAllOn)
+    {
+        foreach (Button btn in buttonList)
+        {
+            Image image = btn.GetComponent<Image>();
+            if (isAllOn && btn == allBtn)
+            {
+                image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
+                continue;
+            }
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.7f);
+        }
+    }
+
+    void BtnToggle(Button btn, bool isOn)
+    {
+        Image image = btn.GetComponent<Image>();
+        if (isOn)
+        {
+            ResetButtons(false);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
+        }
+        else
+        {
+            ResetButtons(true);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.7f);
+        }
+    }
+
+    public void SetType(int type)
+    {
+        sortType = type;
+        Search(inputField.text);
     }
 
     void CreateListItem()
@@ -98,12 +216,6 @@ public class InfoDictionary : MonoBehaviour
                 ClearRenderTexture();
             }
         }
-    }
-
-    public void SetType(int type)
-    {
-        sortType = type;
-        Search(inputField.text);
     }
 
     void ClearRenderTexture()
@@ -171,6 +283,7 @@ public class InfoDictionary : MonoBehaviour
         sortType = -1;
         inputField.text = string.Empty;
         ResetList();
+        BtnClicked(allBtn, -1);
         ClearRenderTexture();
         InputManager.instance.CloseInfoDic();
 
