@@ -85,6 +85,11 @@ public class InputManager : MonoBehaviour
         ctrl = !ctrl;
         if (GameManager.instance != null)
         {
+            if (PreBuilding.instance.isBuildingOn || BeltPreBuilding.instanceBeltBuilding.isBuildingOn)
+            {
+                return;
+            }
+
             if (!UpgradeRemoveBtn.instance.clickBtn)
             {
                 if (ctrl)
@@ -100,6 +105,11 @@ public class InputManager : MonoBehaviour
         shift = !shift;
         if (GameManager.instance != null)
         {
+            if (PreBuilding.instance.isBuildingOn || BeltPreBuilding.instanceBeltBuilding.isBuildingOn)
+            {
+                return;
+            }
+
             if (!UpgradeRemoveBtn.instance.clickBtn)
             {
                 if (shift)

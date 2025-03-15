@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class BeltPreBuilding : PreBuilding
 {
+    bool shiftKey;
+
     #region Singleton
     public static BeltPreBuilding instanceBeltBuilding;
 
@@ -39,6 +41,50 @@ public class BeltPreBuilding : PreBuilding
                 }
             }
         }
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        inputManager.controls.Building.ShiftBuildingDown.performed += ShiftKeyDown;
+        inputManager.controls.Building.ShiftBuildingUp.performed += ShiftKeyUp;
+    }
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        inputManager.controls.Building.ShiftBuildingDown.performed -= ShiftKeyDown;
+        inputManager.controls.Building.ShiftBuildingUp.performed -= ShiftKeyUp;
+    }
+
+    protected void ShiftKeyDown(InputAction.CallbackContext ctx)
+    {
+        shiftKey = true;
+
+        if (isBuildingOn)
+        {
+            if (dirNum ==  0 || dirNum == 2)
+            {
+                MouseSkin.instance.BuildingCursorSet(2);
+            }
+            else if (dirNum == 1 || dirNum == 3)
+            {
+                MouseSkin.instance.BuildingCursorSet(1);
+            }
+        }
+
+    }
+
+    protected void ShiftKeyUp(InputAction.CallbackContext ctx)
+    {
+        shiftKey = false;
+        if (mouseHoldCheck)
+        {
+            float tempDeltaX = endBuildPos.x - posList[posList.Count - 1].x;
+            float tempDeltaY = endBuildPos.y - posList[posList.Count - 1].y;
+
+            CheckPos(endBuildPos, (int)tempDeltaX, (int)tempDeltaY);
+        }
+        MouseSkin.instance.BuildingCursorSet(0);
     }
 
     [Command]
@@ -115,43 +161,33 @@ public class BeltPreBuilding : PreBuilding
             moveY == 0 ? 0 : Mathf.Sign(moveY)
         );
 
-        if (posList.Count == 0)
+        if (!shiftKey)
         {
-            RotationDirChcek(dir);
-            SetPos(startBuildPos);
-        }
-
-        if (!posList.Contains(setPos))
-        {
-            Vector2 newPos;
-
-            int moveXPos = Mathf.Abs(moveX);
-            int moveYPos = Mathf.Abs(moveY);
-
-            if (moveXPos > 0 && moveYPos > 0) // 대각선으로 이동
+            if (posList.Count == 0)
             {
-                int moveXCount = moveXPos;
-                int moveYCount = moveYPos;
-                int setCount;
-                while (moveXCount != 0 && moveYCount != 0)
+                RotationDirChcek(dir);
+                SetPos(startBuildPos);
+            }
+
+            if (!posList.Contains(setPos))
+            {
+                Vector2 newPos;
+
+                int moveXPos = Mathf.Abs(moveX);
+                int moveYPos = Mathf.Abs(moveY);
+
+                if (moveXPos > 0 && moveYPos > 0) // 대각선으로 이동
                 {
-                    if (Mathf.Abs(moveXCount) > Mathf.Abs(moveYCount))    // x가 더 큰경우
+                    int moveXCount = moveXPos;
+                    int moveYCount = moveYPos;
+                    int setCount;
+                    while (moveXCount != 0 && moveYCount != 0)
                     {
-                        setCount = Mathf.FloorToInt(moveXCount / 3);
-                        RotationDirChcek(new Vector2(dir.x, 0));
-                        if (setCount == 0)
+                        if (Mathf.Abs(moveXCount) > Mathf.Abs(moveYCount))    // x가 더 큰경우
                         {
-                            newPos = new Vector2(posList[posList.Count - 1].x + dir.x, posList[posList.Count - 1].y);
-                            if (posList.Contains(newPos))
-                            {
-                                RemoveSet(newPos);
-                            }
-                            SetPos(newPos);
-                            moveXCount--;
-                        }
-                        else
-                        {
-                            for (int i = 0; i < setCount; i++)
+                            setCount = Mathf.FloorToInt(moveXCount / 3);
+                            RotationDirChcek(new Vector2(dir.x, 0));
+                            if (setCount == 0)
                             {
                                 newPos = new Vector2(posList[posList.Count - 1].x + dir.x, posList[posList.Count - 1].y);
                                 if (posList.Contains(newPos))
@@ -161,25 +197,25 @@ public class BeltPreBuilding : PreBuilding
                                 SetPos(newPos);
                                 moveXCount--;
                             }
-                        }
-                    }
-                    else if (Mathf.Abs(moveXCount) < Mathf.Abs(moveYCount))    // y가 더 큰경우
-                    {
-                        setCount = Mathf.FloorToInt(moveYCount / 3);
-                        RotationDirChcek(new Vector2(0, dir.y));
-                        if (setCount == 0)
-                        {
-                            newPos = new Vector2(posList[posList.Count - 1].x, posList[posList.Count - 1].y + dir.y);
-                            if (posList.Contains(newPos))
+                            else
                             {
-                                RemoveSet(newPos);
+                                for (int i = 0; i < setCount; i++)
+                                {
+                                    newPos = new Vector2(posList[posList.Count - 1].x + dir.x, posList[posList.Count - 1].y);
+                                    if (posList.Contains(newPos))
+                                    {
+                                        RemoveSet(newPos);
+                                    }
+                                    SetPos(newPos);
+                                    moveXCount--;
+                                }
                             }
-                            SetPos(newPos);
-                            moveYCount--;
                         }
-                        else
+                        else if (Mathf.Abs(moveXCount) < Mathf.Abs(moveYCount))    // y가 더 큰경우
                         {
-                            for (int i = 0; i < setCount; i++)
+                            setCount = Mathf.FloorToInt(moveYCount / 3);
+                            RotationDirChcek(new Vector2(0, dir.y));
+                            if (setCount == 0)
                             {
                                 newPos = new Vector2(posList[posList.Count - 1].x, posList[posList.Count - 1].y + dir.y);
                                 if (posList.Contains(newPos))
@@ -189,48 +225,102 @@ public class BeltPreBuilding : PreBuilding
                                 SetPos(newPos);
                                 moveYCount--;
                             }
+                            else
+                            {
+                                for (int i = 0; i < setCount; i++)
+                                {
+                                    newPos = new Vector2(posList[posList.Count - 1].x, posList[posList.Count - 1].y + dir.y);
+                                    if (posList.Contains(newPos))
+                                    {
+                                        RemoveSet(newPos);
+                                    }
+                                    SetPos(newPos);
+                                    moveYCount--;
+                                }
+                            }
+                        }
+                        else    // 같은 경우
+                        {
+                            RotationDirChcek(new Vector2(dir.x, 0));
+                            newPos = new Vector2(posList[posList.Count - 1].x + dir.x, posList[posList.Count - 1].y);
+                            if (posList.Contains(newPos))
+                            {
+                                RemoveSet(newPos);
+                            }
+                            SetPos(newPos);
+
+                            RotationDirChcek(new Vector2(0, dir.y));
+                            newPos = new Vector2(posList[posList.Count - 1].x, posList[posList.Count - 1].y + dir.y);
+                            if (posList.Contains(newPos))
+                            {
+                                RemoveSet(newPos);
+                            }
+                            SetPos(newPos);
+                            moveXCount--;
+                            moveYCount--;
                         }
                     }
-                    else    // 같은 경우
+                }
+                else // 직선으로 이동
+                {
+                    if (moveXPos > 0)
                     {
                         RotationDirChcek(new Vector2(dir.x, 0));
-                        newPos = new Vector2(posList[posList.Count - 1].x + dir.x, posList[posList.Count - 1].y);
-                        if (posList.Contains(newPos))
+                        for (int i = 0; i < moveXPos; i++)
                         {
-                            RemoveSet(newPos);
+                            newPos = new Vector2(posList[posList.Count - 1].x + dir.x, posList[posList.Count - 1].y);
+                            if (posList.Contains(newPos))
+                            {
+                                RemoveSet(newPos);
+                                RotationDirChcek(new Vector2(dir.x, 0));
+                            }
+                            SetPos(newPos);
                         }
-                        SetPos(newPos);
-
+                    }
+                    else if (moveYPos > 0)
+                    {
                         RotationDirChcek(new Vector2(0, dir.y));
-                        newPos = new Vector2(posList[posList.Count - 1].x, posList[posList.Count - 1].y + dir.y);
-                        if (posList.Contains(newPos))
+                        for (int j = 0; j < moveYPos; j++)
                         {
-                            RemoveSet(newPos);
+                            newPos = new Vector2(posList[posList.Count - 1].x, posList[posList.Count - 1].y + dir.y);
+                            if (posList.Contains(newPos))
+                            {
+                                RemoveSet(newPos);
+                                RotationDirChcek(new Vector2(0, dir.y));
+                            }
+                            SetPos(newPos);
                         }
-                        SetPos(newPos);
-                        moveXCount--;
-                        moveYCount--;
                     }
                 }
             }
-            else // 직선으로 이동
+            else
             {
-                if (moveXPos > 0)
+                RemoveSet(setPos);
+            }
+        }
+        else
+        {
+            Vector2 newPos;
+            if (posList.Count == 0)
+            {
+                RotationDirChcek(dir);
+                SetPos(startBuildPos);
+            }
+
+            if (dirNum == 1 || dirNum == 3) //x 방향 이동 시 y방향 락
+            {
+                setPos = new Vector3(setPos.x, posList[posList.Count - 1].y);
+            }
+            else if (dirNum == 0 || dirNum == 2) //y 방향 이동 시 x방향 락
+            {
+                setPos = new Vector3(posList[posList.Count - 1].x, setPos.y);
+            }
+
+            if (!posList.Contains(setPos))
+            {
+                if (dirNum == 0 || dirNum == 2) // 위 아래로 움직이게
                 {
-                    RotationDirChcek(new Vector2(dir.x, 0));
-                    for (int i = 0; i < moveXPos; i++)
-                    {
-                        newPos = new Vector2(posList[posList.Count - 1].x + dir.x, posList[posList.Count - 1].y);
-                        if (posList.Contains(newPos))
-                        {
-                            RemoveSet(newPos);
-                            RotationDirChcek(new Vector2(dir.x, 0));
-                        }
-                        SetPos(newPos);
-                    }
-                }
-                else if (moveYPos > 0)
-                {
+                    int moveYPos = Mathf.Abs(moveY);
                     RotationDirChcek(new Vector2(0, dir.y));
                     for (int j = 0; j < moveYPos; j++)
                     {
@@ -243,11 +333,27 @@ public class BeltPreBuilding : PreBuilding
                         SetPos(newPos);
                     }
                 }
+                else if(dirNum == 1 || dirNum == 3) // 좌 우 움직이게
+                {
+                    int moveXPos = Mathf.Abs(moveX);
+                    RotationDirChcek(new Vector2(dir.x, 0));
+                    for (int i = 0; i < moveXPos; i++)
+                    {
+                        newPos = new Vector2(posList[posList.Count - 1].x + dir.x, posList[posList.Count - 1].y);
+                        if (posList.Contains(newPos))
+                        {
+                            RemoveSet(newPos);
+                            RotationDirChcek(new Vector2(dir.x, 0));
+                        }
+                        SetPos(newPos);
+                    }
+                }
             }
-        }
-        else
-        {
-            RemoveSet(setPos);
+            else
+            {
+                Debug.Log("RemoveSet : " + setPos);
+                RemoveSet(setPos);
+            }
         }
     }
 
@@ -279,41 +385,140 @@ public class BeltPreBuilding : PreBuilding
         {
             buildingList[buildingList.Count - 1].TryGetComponent(out PreBuildingImg preBuildingImg1);
             buildingList[buildingList.Count - 2].TryGetComponent(out PreBuildingImg preBuildingImg2);
+
             preBuildingImg1.AnimSetFloat("DirNum", (int)preBuildingImg2.animator.GetFloat("DirNum"));
             preBuildingImg1.AnimSetFloat("ModelNum", 0);
+        }
+        else
+        {
+            buildingList[buildingList.Count - 1].TryGetComponent(out PreBuildingImg preBuildingImg1);
+            preBuildingImg1.AnimSetFloat("DirNum", dirNum);
         }
     }
 
     void RotationDirChcek(Vector2 movePos)
     {
+        PreBuildingImg preBuildingImg = null;
+        float preDir = 0;
+
+        if (buildingList.Count > 0)
+        {
+            preBuildingImg = buildingList[buildingList.Count - 1].GetComponent<PreBuildingImg>();
+            preDir = preBuildingImg.animator.GetFloat("DirNum");
+        }
+
         if (movePos.x == 0 && movePos.y == 1) // 위
         {
-            dirNum = 0;
+            if (!shiftKey)
+            {
+                dirNum = 0;
+            }
+            else
+            {
+                if (preBuildingImg != null && preDir != dirNum)
+                {
+                    if (preDir == 2)
+                    {
+                        dirNum = 2;
+                    }
+                    else
+                    {
+                        dirNum = 0;
+                    }
+                }
+                else
+                {
+                    dirNum = 0;
+                }
+            }
         }
         else if (movePos.x == 1 && movePos.y == 0) // 오른쪽
         {
-            dirNum = 1;
+            if (!shiftKey)
+            {
+                dirNum = 1;
+            }
+            else
+            {
+                if (preBuildingImg != null && preDir != dirNum)
+                {
+                    if (preDir == 3)
+                    {
+                        dirNum = 3;
+                    }
+                    else
+                    {
+                        dirNum = 1;
+                    }
+                }
+                else
+                {
+                    dirNum = 1;
+                }
+            }
         }
         else if (movePos.x == 0 && movePos.y == -1) // 아래
         {
-            dirNum = 2;
+            if (!shiftKey)
+            {
+                dirNum = 2;
+            }
+            else
+            {
+                if (preBuildingImg != null && preDir != dirNum)
+                {
+                    if (preDir == 0)
+                    {
+                        dirNum = 0;
+                    }
+                    else
+                    {
+                        dirNum = 2;
+                    }
+                }
+                else
+                {
+                    dirNum = 2;
+                }
+            }
         }
         else if (movePos.x == -1 && movePos.y == 0) // 왼쪽
         {
-            dirNum = 3;
+            if (!shiftKey)
+            {
+                dirNum = 3;
+            }
+            else
+            {
+                if (preBuildingImg != null && preDir != dirNum)
+                {
+                    if (preDir == 1)
+                    {
+                        dirNum = 1;
+                    }
+                    else
+                    {
+                        dirNum = 3;
+                    }
+                }
+                else
+                {
+                    dirNum = 3;
+                }
+            }
         }
         else
-            Debug.Log("Check");
+        {
+            return;
+        }
 
         if (buildingList.Count == canBuildCount)
         {
             return;
         }
 
-        if (buildingList.Count > 0)
+        if (preBuildingImg != null)
         {
-            buildingList[buildingList.Count - 1].TryGetComponent(out PreBuildingImg preBuildingImg);
-            float preDir = preBuildingImg.animator.GetFloat("DirNum");
             int modelNum = ModelCheck(preDir, dirNum);
             if (buildingList.Count != 1)
             {

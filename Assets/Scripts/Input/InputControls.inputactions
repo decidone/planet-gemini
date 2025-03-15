@@ -269,6 +269,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ShiftBuildingDown",
+                    "type": "Button",
+                    "id": "626d6f00-0972-4377-83ea-4725acc6c16d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShiftBuildingUp",
+                    "type": "Button",
+                    "id": "9b228df8-28c0-47dc-8967-353b95b28051",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -368,6 +386,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "BuildingInven",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ea0d43e8-8073-4b8c-a39b-25dd45b66307",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShiftBuildingDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d035bcf-4db7-40b7-a0ab-b34a848e5b44",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShiftBuildingUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

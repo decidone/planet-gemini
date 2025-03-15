@@ -121,7 +121,7 @@ public class PreBuilding : NetworkBehaviour
         soundManager = SoundManager.instance;
         buildingListSO = BuildingList.instance;
     }
-    protected void OnEnable()
+    protected virtual void OnEnable()
     {
         inputManager = InputManager.instance;
         inputManager.controls.Building.LeftMouseButtonDown.performed += LeftMouseButtonDown;
@@ -129,7 +129,7 @@ public class PreBuilding : NetworkBehaviour
         inputManager.controls.Building.RightMouseButtonDown.performed += CancelBuild;
         inputManager.controls.Building.Rotate.performed += Rotate;
     }
-    protected void OnDisable()
+    protected virtual void OnDisable()
     {
         inputManager.controls.Building.LeftMouseButtonDown.performed -= LeftMouseButtonDown;
         inputManager.controls.Building.LeftMouseButtonUp.performed -= LeftMouseButtonUpCommand;
@@ -1427,7 +1427,7 @@ public class PreBuilding : NetworkBehaviour
         {
             Destroy(nonNetObj);
         }
-        MouseSkin.instance.BuildingCursorSet();
+        MouseSkin.instance.BuildingCursorSet(0);
 
         nonNetObj = Instantiate(preBuildingNonNet);
 
@@ -1559,7 +1559,7 @@ public class PreBuilding : NetworkBehaviour
         canBuildCount = 1;
         portalScript = portal;
         isInHostMap = _isInHostMap;
-        MouseSkin.instance.BuildingCursorSet();
+        MouseSkin.instance.BuildingCursorSet(0);
 
         if (gameManager.portal[0] == portal)        
             portalIndex = 0;

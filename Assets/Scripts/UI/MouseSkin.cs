@@ -62,7 +62,7 @@ public class MouseSkin : MonoBehaviour
 
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
         {
-            if (texture == cursorSkin.buildingCursor)
+            if (texture == cursorSkin.buildingCursor[0])
             {
                 Cursor.SetCursor(texture, Vector2.zero, CursorMode.Auto);
             }
@@ -85,9 +85,9 @@ public class MouseSkin : MonoBehaviour
             CursorSetting(cursorSkin.dragCursor[1]);
     }
 
-    public void BuildingCursorSet()
+    public void BuildingCursorSet(int index)
     {
-        CursorSetting(cursorSkin.buildingCursor);
+        CursorSetting(cursorSkin.buildingCursor[index]);
     }
 
     public void UnitCursorCursorSet(bool state)
