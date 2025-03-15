@@ -21,6 +21,7 @@ public class PreBuildingImg : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("start");
         canBuilding = true;
     }
 

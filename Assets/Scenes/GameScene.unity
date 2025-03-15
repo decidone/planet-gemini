@@ -5820,6 +5820,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 147892816971504255, guid: 315f71dd78fda254095cd53ca95f5c07, type: 3}
+      propertyPath: beltMgr
+      value: 
+      objectReference: {fileID: 745844382}
     - target: {fileID: 4830095796484941333, guid: 315f71dd78fda254095cd53ca95f5c07, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1

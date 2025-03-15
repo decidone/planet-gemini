@@ -61,7 +61,6 @@ public class Overclock : Production
                 OverclockOn(true);
             else if(conn.group.efficiency == 0 && isOperated)
                 OverclockOn(false);
-
         }
     }
 
@@ -82,7 +81,7 @@ public class Overclock : Production
                     production.overclockTower = this;
                     if (conn != null && conn.group != null && conn.group.efficiency > 0)
                     {
-                        production.OverclockSet(true);
+                        production.OverclockSyncServerRpc(true);
                     }
                 }
             }
@@ -97,14 +96,23 @@ public class Overclock : Production
         }
     }
 
-    void OverclockOn(bool isOn)
+    public void OverclockOn(bool isOn)
     {
         Debug.Log(isOn);
         foreach (Production building in buildingList)
         {
-            building.OverclockSet(isOn);
+            building.OverclockSyncServerRpc(isOn);
         }
         isOperated = isOn;
+    }
+
+    public void OverclockRemove()
+    {
+        foreach (Production building in buildingList)
+        {
+            building.overclockTower = null;
+            building.OverclockSyncServerRpc(false);
+        }
     }
 
     //public override void AddConnector(EnergyGroupConnector connector)

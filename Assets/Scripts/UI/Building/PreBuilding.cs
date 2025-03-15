@@ -10,88 +10,88 @@ using UnityEngine.InputSystem;
 // UTF-8 설정
 public class PreBuilding : NetworkBehaviour
 {
-    SpriteRenderer spriteRenderer;
-    GameObject nonNetObj;
+    protected SpriteRenderer spriteRenderer;
+    protected GameObject nonNetObj;
     public GameObject beltGroupSet;
 
     public GameObject beltMgr;
     public GameObject beltGroup;
 
-    bool isNeedSetPos = false;
-    Vector3 setPos;
+    protected bool isNeedSetPos = false;
+    protected Vector3 setPos;
 
-    private Tilemap tilemap;
+    protected Tilemap tilemap;
 
     [HideInInspector]
     public bool isBuildingOk = true;
-    int layNumTemp = 0;
+    protected int layNumTemp = 0;
 
-    int objHeight = 1;
-    int objWidth = 1;
-    bool isGetDir = false;
-    int level;
-    int dirNum = 0;
+    protected int objHeight = 1;
+    protected int objWidth = 1;
+    protected bool isGetDir = false;
+    protected int level;
+    protected int dirNum = 0;
 
-    Vector3 startBuildPos;
-    Vector3 endBuildPos;
+    protected Vector3 startBuildPos;
+    protected Vector3 endBuildPos;
 
-    bool isUnderObj = false;
+    protected bool isUnderObj = false;
     [HideInInspector]
     public bool isEnough = true;
-    int canBuildCount;
+    protected int canBuildCount;
 
-    List<GameObject> buildingList = new List<GameObject>();
-    Vector3 tempPos;
+    protected List<GameObject> buildingList = new List<GameObject>();
+    protected Vector3 tempPos;
     public List<Vector3> posList = new List<Vector3>();
-    bool isMoveX = true; 
-    bool tempMoveX;
-    bool moveDir;
-    bool tempMoveDir;
+    protected bool isMoveX = true;
+    protected bool tempMoveX;
+    protected bool moveDir;
+    protected bool tempMoveDir;
     public bool isPreObjSend;
-    Vector3 mousePos;
-    bool isDrag = false;
+    protected Vector3 mousePos;
+    protected bool isDrag = false;
     public bool dragCancel;
-    Coroutine setBuild;
+    protected Coroutine setBuild;
 
     //bool isTempBuild;
-    bool mouseHoldCheck;   //기존 isLeftMouse기능 대체+a 역할이라 실제 hold감지는 InputManager의 hold를 사용
+    protected bool mouseHoldCheck;   //기존 isLeftMouse기능 대체+a 역할이라 실제 hold감지는 InputManager의 hold를 사용
 
-    GameManager gameManager;
-    InputManager inputManager;
-
-    [SerializeField]
-    float maxBuildDist;
+    protected GameManager gameManager;
+    protected InputManager inputManager;
 
     [SerializeField]
-    bool isBeltObj = false;
+    protected float maxBuildDist;
+
     [SerializeField]
-    bool reversSet = false;
+    protected bool isBeltObj = false;
     [SerializeField]
-    bool isPortalObj = false;
+    protected bool reversSet = false;
     [SerializeField]
-    bool isScienceBuilding = false;
+    protected bool isPortalObj = false;
+    [SerializeField]
+    protected bool isScienceBuilding = false;
     Portal portalScript;
-    int portalIndex;
+    protected int portalIndex;
 
-    BuildingInvenManager buildingInven;
+    protected BuildingInvenManager buildingInven;
 
-    SoundManager soundManager;
+    protected SoundManager soundManager;
 
-    BuildingList buildingListSO;
-    int buildingIndex;
+    protected BuildingList buildingListSO;
+    protected int buildingIndex;
 
     public bool isBuildingOn = false;
     public GameObject preBuildingNonNet;
-    List<Sprite> spriteList = new List<Sprite>();
-    bool isGetAnim;
-    Building buildData;
+    protected List<Sprite> spriteList = new List<Sprite>();
+    protected bool isGetAnim;
+    protected Building buildData;
 
     public bool isEnergyUse;
     public bool isEnergyStr;
 
     public bool isUnderBelt;
 
-    bool isInHostMap;
+    protected bool isInHostMap;
 
     [SerializeField]
     protected GameObject lineObj;
@@ -99,7 +99,7 @@ public class PreBuilding : NetworkBehaviour
     #region Singleton
     public static PreBuilding instance;
 
-    void Awake()
+    protected virtual void Awake()
     {
         if (instance != null)
         {
@@ -111,7 +111,7 @@ public class PreBuilding : NetworkBehaviour
     }
     #endregion
 
-    void Start()
+    protected void Start()
     {
         mouseHoldCheck = false;
         tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
@@ -121,7 +121,7 @@ public class PreBuilding : NetworkBehaviour
         soundManager = SoundManager.instance;
         buildingListSO = BuildingList.instance;
     }
-    void OnEnable()
+    protected void OnEnable()
     {
         inputManager = InputManager.instance;
         inputManager.controls.Building.LeftMouseButtonDown.performed += LeftMouseButtonDown;
@@ -129,7 +129,7 @@ public class PreBuilding : NetworkBehaviour
         inputManager.controls.Building.RightMouseButtonDown.performed += CancelBuild;
         inputManager.controls.Building.Rotate.performed += Rotate;
     }
-    void OnDisable()
+    protected void OnDisable()
     {
         inputManager.controls.Building.LeftMouseButtonDown.performed -= LeftMouseButtonDown;
         inputManager.controls.Building.LeftMouseButtonUp.performed -= LeftMouseButtonUpCommand;
@@ -137,7 +137,7 @@ public class PreBuilding : NetworkBehaviour
         inputManager.controls.Building.Rotate.performed -= Rotate;
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (Time.timeScale == 0)
         {
@@ -151,7 +151,7 @@ public class PreBuilding : NetworkBehaviour
             Vector3 cellCenter = tilemap.GetCellCenterWorld(cellPosition);
             cellCenter.z = transform.position.z;
             transform.position = cellCenter;
-            if (nonNetObj)
+            if (nonNetObj && !(mouseHoldCheck && dragCancel))
                 nonNetObj.transform.position = this.transform.position - setPos;
 
             if (spriteRenderer != null)
@@ -159,11 +159,11 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
-        if(isEnough && mouseHoldCheck && isBuildingOn)
+        if (isEnough && mouseHoldCheck && isBuildingOn)
         {
-            if(BuildingInfo.instance.AmountsEnoughCheck())
+            if (buildingList.Count <= canBuildCount)
             {
                 tempPos = transform.position;
                 float tempDeltaX = tempPos.x - endBuildPos.x;
@@ -192,7 +192,7 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    void LeftMouseButtonDown(InputAction.CallbackContext ctx)
+    protected void LeftMouseButtonDown(InputAction.CallbackContext ctx)
     {
         if (isBuildingOn)
         {
@@ -204,7 +204,7 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [Command]
-    void LeftMouseButtonUpCommand(InputAction.CallbackContext ctx)
+    protected virtual void LeftMouseButtonUpCommand(InputAction.CallbackContext ctx)
     {
         if (isBuildingOn)
         {
@@ -306,7 +306,7 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int dir, bool isBelt, bool reversSet)
+    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int dir, bool isBelt, bool reversSet)
     {
         int spawnCount = setPos.Length;
         Building building = buildingListSO.FindBuildingData(bIndex);
@@ -414,7 +414,115 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int[] dir, bool underBelt, bool[] sideObj) // 지하 오브젝트 같이 한 방향이 아닐때
+    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int[] dir, bool isBelt, bool reversSet)
+    {
+        int spawnCount = setPos.Length;
+        Building building = buildingListSO.FindBuildingData(bIndex);
+        BuildingData buildingData = BuildingDataGet.instance.GetBuildingName(building.item.name, building.level);
+
+        Vector3 correctPos = Vector3.zero;
+        if (building.height == 2 && building.width == 2)
+        {
+            correctPos = new Vector3(-0.5f, -0.5f);
+        }
+
+        // 아이템이 충분한지 체크
+        if (building.type != "Portal")
+        {
+            bool costEnough = false;
+            for (int i = 0; i < buildingData.GetItemCount(); i++)
+            {
+                int value;
+                Inventory inven;
+                if (isHostMap)
+                    inven = gameManager.hostMapInven;
+                else
+                    inven = gameManager.clientMapInven;
+
+                bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
+                costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
+
+                if (!costEnough)
+                    return;
+            }
+        }
+        else
+        {
+            if (gameManager.portal[isHostMap ? 0 : 1].PortalObjFind(building.item.name))
+                return;
+        }
+        // 여기서는 셀에 다른 건물이 있는지만 체크
+        for (int i = 0; i < spawnCount; i++)
+        {
+            int x = Mathf.FloorToInt(setPos[i].x + correctPos.x);
+            int y = Mathf.FloorToInt(setPos[i].y + correctPos.y);
+
+            List<int> xList = new List<int>();
+            List<int> yList = new List<int>();
+
+            if (building.height == 1 && building.width == 1)
+            {
+                xList.Add(x);
+                yList.Add(y);
+            }
+            else if (building.height == 2 && building.width == 2)
+            {
+                xList.Add(x);
+                xList.Add(x + 1);
+                yList.Add(y);
+                yList.Add(y + 1);
+            }
+            foreach (int newX in xList)
+            {
+                foreach (int newY in yList)
+                {
+                    Cell cell;
+                    if (isHostMap)
+                        cell = gameManager.hostMap.GetCellDataFromPos(newX, newY);
+                    else
+                        cell = gameManager.clientMap.GetCellDataFromPos(newX, newY);
+
+                    if (cell.structure != null)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        // 위 조건 만족시 설치
+        if (isBelt)
+        {
+            BeltGroupSpawnServerRpc();
+
+            if (reversSet)
+            {
+                for (int i = spawnCount - 1; i >= 0; i--)
+                {
+                    SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, false, false, false, false);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < spawnCount; i++)
+                {
+                    SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, false, false, false, false);
+                }
+            }
+
+            BeltGroupSetEndServerRpc();
+        }
+        else
+        {
+            for (int i = spawnCount - 1; i >= 0; i--)
+            {
+                SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, building.type == "Portal", false, false, false);
+            }
+        }
+        PayCost(buildingData, spawnCount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int[] dir, bool underBelt, bool[] sideObj) // 지하 오브젝트 같이 한 방향이 아닐때
     {
         int spawnCount = setPos.Length;
         Building building = buildingListSO.FindBuildingData(bIndex);
@@ -490,7 +598,7 @@ public class PreBuilding : NetworkBehaviour
         PayCost(buildingData, spawnCount);
     }
 
-    void PayCost(BuildingData buildingData, int amount)
+    protected void PayCost(BuildingData buildingData, int amount)
     {
         if (buildingData == null)
             return;
@@ -505,7 +613,7 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void BeltGroupSpawnServerRpc()
+    protected void BeltGroupSpawnServerRpc()
     {
         beltGroupSet = Instantiate(beltGroup);
         beltGroupSet.TryGetComponent(out NetworkObject netObj);
@@ -515,20 +623,20 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [ClientRpc]
-    void BeltGroupSpawnClientRpc(ulong Id)
+    protected void BeltGroupSpawnClientRpc(ulong Id)
     {
         beltGroupSet = NetworkObjManager.instance.FindNetworkObj(Id).gameObject;
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void BeltGroupSetEndServerRpc()
+    protected void BeltGroupSetEndServerRpc()
     {
         BeltGroupSetEndClientRpc();
     }
 
 
     [ClientRpc]
-    void BeltGroupSetEndClientRpc()
+    protected void BeltGroupSetEndClientRpc()
     {
         if (!IsServer)
             return;
@@ -571,7 +679,31 @@ public class PreBuilding : NetworkBehaviour
         MouseSkin.instance.ResetCursor();
     }
 
-    void Rotate(InputAction.CallbackContext ctx)
+    public void SwapBuilding() // 벨트 프리빌딩 전환용
+    {
+        mouseHoldCheck = false;
+
+        if (setBuild == null)
+        {
+            foreach (GameObject build in buildingList)
+            {
+                Destroy(build);
+            }
+
+            buildingList.Clear();
+            ReSetImage();
+            posList.Clear();
+            isDrag = false;
+        }
+        isBuildingOn = false;
+        isEnergyStr = false;
+        isEnergyUse = false;
+        isBeltObj = false;
+        reversSet = false;
+        dragCancel = false;
+    }
+
+    protected void Rotate(InputAction.CallbackContext ctx)
     {
         if (nonNetObj != null && !inputManager.mouseLeft)
         {
@@ -579,9 +711,15 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    void CheckPos()
+    protected virtual void CheckPos()
     {
-        if(posList.Count > 0)
+        if (dragCancel)
+        {
+            nonNetObj.SetActive(false);
+            Vector3 position = new Vector3(startBuildPos.x, startBuildPos.y, 0);
+            PosListContainCheck(position);
+        }
+        else if (posList.Count > 0)
         {
             if (!isGetDir && isMoveX != tempMoveX)
             {
@@ -653,7 +791,7 @@ public class PreBuilding : NetworkBehaviour
                                 if (tempPos.x < buildingList[b].transform.position.x - 0.5f)
                                 {
                                     Destroy(buildingList[b]);
-                                    objectsToRemove.Add(buildingList[b]); 
+                                    objectsToRemove.Add(buildingList[b]);
                                     isRemoe = true;
                                 }
                             }
@@ -679,7 +817,7 @@ public class PreBuilding : NetworkBehaviour
                 }
                 tempMoveX = true;
             }
-            else if((!isGetDir && !isMoveX) || (isGetDir && (dirNum == 0 || dirNum == 2)))
+            else if ((!isGetDir && !isMoveX) || (isGetDir && (dirNum == 0 || dirNum == 2)))
             {
                 if (posList.Contains(new Vector3(startBuildPos.x, tempPos.y, 0)))
                 {
@@ -695,8 +833,8 @@ public class PreBuilding : NetworkBehaviour
                                 }
                             }
                             for (int b = buildingList.Count - 1; b > 0; b--)
-                            { 
-                                if(tempPos.y > buildingList[b].transform.position.y)
+                            {
+                                if (tempPos.y > buildingList[b].transform.position.y)
                                 {
                                     Destroy(buildingList[b]);
                                     objectsToRemove.Add(buildingList[b]);
@@ -759,18 +897,18 @@ public class PreBuilding : NetworkBehaviour
         }
         else
         {
-            SetPos();            
+            SetPos();
         }
     }
 
-    void SetPos()
+    protected void SetPos()
     {
         bool notMove = false;
 
         if (startBuildPos.x == endBuildPos.x && startBuildPos.y == endBuildPos.y)
             notMove = true;
 
-        if (notMove || dragCancel)
+        if (notMove)
         {
             Vector3 position = new Vector3(startBuildPos.x, startBuildPos.y, 0);
             PosListContainCheck(position);
@@ -978,7 +1116,7 @@ public class PreBuilding : NetworkBehaviour
         nonNetObj.SetActive(false);
     }
 
-    void PosListContainCheck(Vector3 pos)
+    protected void PosListContainCheck(Vector3 pos)
     {
         if (!posList.Contains(pos))
         {
@@ -987,7 +1125,7 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    bool GroupBuildCheck(GameObject obj, Vector2 pos)
+    protected bool GroupBuildCheck(GameObject obj, Vector2 pos)
     {
         PreBuildingImg preBuildingImg = obj.GetComponent<PreBuildingImg>();
 
@@ -997,7 +1135,7 @@ public class PreBuilding : NetworkBehaviour
             return false;
     }
 
-    void SetBuilding(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, bool isPortalObj, bool isUnderObj, bool isUnderBelt, bool sendObjCheck)
+    protected void SetBuilding(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, bool isPortalObj, bool isUnderObj, bool isUnderBelt, bool sendObjCheck)
     {
         if (isPortalObj)
         {
@@ -1177,12 +1315,12 @@ public class PreBuilding : NetworkBehaviour
     //    return true;
     //}
 
-    void MapDataCheck(GameObject obj, Vector2 pos)
+    protected void MapDataCheck(GameObject obj, Vector2 pos)
     {
         obj.GetComponent<Structure>().MapDataSaveClientRpc(pos);   
     }
 
-    void CreateObj(Vector3 pos)
+    protected void CreateObj(Vector3 pos)
     {
         if (isNeedSetPos)
         {
@@ -1239,9 +1377,9 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    void AddBuildingToList(Vector3 pos)
+    protected void AddBuildingToList(Vector3 pos)
     {
-        if(buildingList.Count < canBuildCount)
+        if (buildingList.Count < canBuildCount)
         {
             GameObject obj = Instantiate(nonNetObj, pos, Quaternion.identity);
             obj.TryGetComponent(out PreBuildingImg preBuildingImg);
@@ -1467,7 +1605,7 @@ public class PreBuilding : NetworkBehaviour
         startBuildPos = transform.position;
         endBuildPos = transform.position;
     }
-    void SetColor(SpriteRenderer sprite, Color color, float alpha)
+    protected void SetColor(SpriteRenderer sprite, Color color, float alpha)
     {
         Color slotColor = sprite.color;
         slotColor = color;
@@ -1475,7 +1613,7 @@ public class PreBuilding : NetworkBehaviour
         sprite.color = slotColor;
     }
 
-    void BuildingListSetColor()
+    protected void BuildingListSetColor()
     {
         if(buildingList.Count > 0)
         {
@@ -1517,7 +1655,7 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    bool CellCheck(GameObject obj, Vector2 pos)
+    protected bool CellCheck(GameObject obj, Vector2 pos)
     {
         if (isUnderObj)
             pos = obj.transform.position;
@@ -1629,7 +1767,7 @@ public class PreBuilding : NetworkBehaviour
         return canBuild;
     }
 
-    bool DistCheck(Vector3 pos)
+    protected bool DistCheck(Vector3 pos)
     {
         bool canBuild = false;
 
@@ -1658,7 +1796,7 @@ public class PreBuilding : NetworkBehaviour
     }
 
 
-    void RotationImg(GameObject obj)
+    protected void RotationImg(GameObject obj)
     {
         if (!isGetDir)
             return;

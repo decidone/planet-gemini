@@ -80,6 +80,14 @@ public class SpawnerSearchColl : NetworkBehaviour
         }
     }
 
+    public void SearchCollFullExtend()
+    {
+        coll.radius = maxCollSize[level];
+        violentCollSize = coll.radius;
+        Debug.Log("coll.radius : " + coll.radius);
+    }
+
+
     public void SearchCollReduction()
     {
         float reSize = violentCollSize - ((violentCollSize - collSize[level]) / 2);

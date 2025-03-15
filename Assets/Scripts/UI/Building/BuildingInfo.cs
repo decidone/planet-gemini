@@ -14,6 +14,7 @@ public class BuildingInfo : MonoBehaviour
     Building selectBuilding = null;
     BuildingData selectBuildingData = null;
     PreBuilding preBuilding;
+    BeltPreBuilding beltPreBuilding;
 
     bool totalAmountsEnough = false;
 
@@ -34,6 +35,7 @@ public class BuildingInfo : MonoBehaviour
     private void Start()
     {
         preBuilding = PreBuilding.instance;
+        beltPreBuilding = BeltPreBuilding.instanceBeltBuilding;
     }
 
     public void BuildingClick()
@@ -42,10 +44,20 @@ public class BuildingInfo : MonoBehaviour
         
         if (selectBuildingData != null)
         {
-            //preBuilding.SetActive(true);
             int sendAmount = CanBuildAmount();
-            preBuilding.SetImage(selectBuilding, sendAmount, GameManager.instance.isPlayerInHostMap);
-            preBuilding.isEnough = AmountsEnoughCheck();
+            if (selectBuilding.item.name != "Belt")
+            {
+                beltPreBuilding.SwapBuilding();
+                preBuilding.SetImage(selectBuilding, sendAmount, GameManager.instance.isPlayerInHostMap);
+                preBuilding.isEnough = AmountsEnoughCheck();
+            }
+            else
+            {
+                preBuilding.SwapBuilding();
+                beltPreBuilding.SetImage(selectBuilding, sendAmount, GameManager.instance.isPlayerInHostMap);
+                beltPreBuilding.isEnough = AmountsEnoughCheck();
+            }
+
         }
     }
 
@@ -63,11 +75,25 @@ public class BuildingInfo : MonoBehaviour
     public void SetItemSlot(BuildingData buildingDatas, Building select)
     {
         ClearArr();
-        if (preBuilding.isBuildingOn)
+
+        if (select.item.name != "Belt")
         {
-            if (selectBuilding != null && selectBuilding != select)
+            if (preBuilding.isBuildingOn)
             {
-                preBuilding.ReSetImage();
+                if (selectBuilding != null && selectBuilding != select)
+                {
+                    preBuilding.ReSetImage();
+                }
+            }
+        }
+        else
+        {
+            if (beltPreBuilding.isBuildingOn)
+            {
+                if (selectBuilding != null && selectBuilding != select)
+                {
+                    beltPreBuilding.ReSetImage();
+                }
             }
         }
 
@@ -93,11 +119,6 @@ public class BuildingInfo : MonoBehaviour
             buildingNeedList[i].gameObject.SetActive(true);
             buildingNeedList[i].AddItem(ItemList.instance.itemDic[selectBuildingData.items[i]], selectBuildingData.amounts[i], isEnough);
         }
-
-        if (GameManager.instance.debug)
-        {
-            totalAmountsEnough = true;
-        }
     }
 
     public void SetItemSlot()
@@ -114,18 +135,14 @@ public class BuildingInfo : MonoBehaviour
 
     public void BuildingEnd(int amount)
     {
-        if(!GameManager.instance.debug)
+        for (int i = 0; i < buildingNeedList.Length; i++)
         {
-            for (int i = 0; i < buildingNeedList.Length; i++)
+            if (buildingNeedList[i].item != null)
             {
-                if (buildingNeedList[i].item != null)
-                {
-                    GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
-                    Overall.instance.OverallConsumption(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
-                }
+                GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
+                Overall.instance.OverallConsumption(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
             }
         }
-
         GameManager.instance.BuildAndSciUiReset();
         SetItemSlot();
     }
@@ -165,11 +182,6 @@ public class BuildingInfo : MonoBehaviour
                     break;
                 }
             }
-        }
-
-        if (GameManager.instance.debug)
-        {
-            amount = 100;
         }
 
         return amount;

@@ -17,7 +17,7 @@ public class Transporter : Production
     public bool isToggleOn = false;
     public int sendAmount;
     List<Dictionary<Item, int>> unitItemList = new List<Dictionary<Item, int>>();
-    int standbyUnitCount;
+    public int standbyUnitCount;
     List<TransportUnit> getItemUnit = new List<TransportUnit>();
 
     float transportInterval;
@@ -39,7 +39,7 @@ public class Transporter : Production
         base.Update();
         if (!isPreBuilding)
         {
-            if (takeBuild != null && sendItemUnit.Count < 3 && standbyUnitCount < 1)
+            if (takeBuild != null && sendItemUnit.Count < 3 && takeBuild.standbyUnitCount < 2)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)

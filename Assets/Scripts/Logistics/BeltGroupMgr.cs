@@ -311,19 +311,14 @@ public class BeltGroupMgr : NetworkBehaviour
                 belt = beltList[beltList.Count - 1];
                 if (belt.beltState == BeltState.EndBelt || belt.nextBelt == null)
                 {
-                    Debug.Log("END");
                     isFindEndBelt = false;
                     break;
                 }
                 else
                 {
                     belt = belt.nextBelt;
-                    Debug.Log("NextBelt");
-
                     if (beltList.Contains(belt))
                     {
-                        Debug.Log("Contains");
-
                         continue;
                     }
                     beltList.Add(belt);
@@ -518,6 +513,7 @@ public class BeltGroupMgr : NetworkBehaviour
 
     void CombineFunc(BeltCtrl belt, BeltCtrl otherBelt, bool isNextFind)
     {
+        Debug.Log("isNextFind : " + isNextFind);
         BeltManager beltManager = this.GetComponentInParent<BeltManager>();
         if (isNextFind)
         {
@@ -541,14 +537,14 @@ public class BeltGroupMgr : NetworkBehaviour
         BeltManager beltManager = this.GetComponentInParent<BeltManager>();
 
         beltManager.BeltCombine(this, beltGroupMgr);
-        beltGroupMgr.ClientBeltSyncServerRpc();
         ulong thisId = belt.GetComponent<NetworkObject>().NetworkObjectId;
         ulong othId = otherBelt.GetComponent<NetworkObject>().NetworkObjectId;
         PreBeltSetClientRpc(thisId, othId);
         NextBeltSetClientRpc(othId, thisId);
-
-        otherBelt.BeltDirSetServerRpc();
+        otherBelt.dirNum = belt.dirNum;
         otherBelt.BeltModelSet();
+        otherBelt.BeltDirSetServerRpc();
+        ClientBeltSyncServerRpc();
     }
 
     [ClientRpc]

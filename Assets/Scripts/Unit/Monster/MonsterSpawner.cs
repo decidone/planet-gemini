@@ -948,6 +948,11 @@ public class MonsterSpawner : NetworkBehaviour
         spawnerSearchColl.SearchCollExtend();
     }
 
+    public void SearchCollFullExtend()
+    {
+        spawnerSearchColl.SearchCollFullExtend();
+    }
+
     public float EnergyUseCheck()
     {
         float aggroValue = 0;

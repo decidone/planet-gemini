@@ -105,6 +105,9 @@ public class Chat : NetworkBehaviour
                     case "/test":
                         NetworkObjManager.instance.InitConnectors();
                         break;
+                    case "/wave":
+                        GameManager.instance.WaveForcedOperation();
+                        break;
                 }
 
                 if (message != "")

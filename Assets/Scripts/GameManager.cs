@@ -44,6 +44,7 @@ public class GameManager : NetworkBehaviour
     CameraController mainCam;
     public MapCameraController mapCameraController;
     PreBuilding preBuilding;
+    BeltPreBuilding beltPreBuilding;
     //public GameObject preBuildingObj;
     public Finance finance;
     public Scrap scrap;
@@ -130,6 +131,8 @@ public class GameManager : NetworkBehaviour
     bool violentDayCheck;                    // true면 광폭화의 날
     public bool violentDay;
     [SerializeField]
+    bool forcedOperation;
+    [SerializeField]
     int violentCycle;
     [SerializeField]
     int clientMapDateDifference;
@@ -211,6 +214,7 @@ public class GameManager : NetworkBehaviour
         Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
+        beltPreBuilding = BeltPreBuilding.instanceBeltBuilding;
         scienceBuildingInfo = inventoryUiCanvas.GetComponent<ScienceBuildingInfo>();
         scienceManager = ScienceManager.instance;
 
@@ -338,9 +342,13 @@ public class GameManager : NetworkBehaviour
             {
                 isDay = true;
                 SoundManager.instance.PlayBgmMapCheck();
-                violentDay = false;
-                violentDayCheck = false;
-                timeImg.color = new Color32(255, 255, 255, 255);
+                if (violentDay)
+                {
+                    violentDay = false;
+                    violentDayCheck = false;
+                    forcedOperation = false;
+                    timeImg.color = new Color32(255, 255, 255, 255);
+                }
             }
             else if (dayIndex == 3)
             {
@@ -410,12 +418,12 @@ public class GameManager : NetworkBehaviour
                 if (day % violentCycle == 0)    // 호스트맵
                 {
                     violentDaySync = true;
-                    MonsterSpawnerManager.instance.ViolentDayOn(true);
+                    MonsterSpawnerManager.instance.ViolentDayOn(true, forcedOperation);
                 }
                 else if ((day - clientMapDateDifference) % violentCycle == 0)    // 클라이언트 맵
                 {
                     violentDaySync = true;
-                    MonsterSpawnerManager.instance.ViolentDayOn(false);
+                    MonsterSpawnerManager.instance.ViolentDayOn(false, forcedOperation);
                 }
             }
         }
@@ -427,6 +435,17 @@ public class GameManager : NetworkBehaviour
     void ViolentDayOnClientRpc(bool violentDaySync)
     {
         violentDayCheck = violentDaySync;
+    }
+
+    public void WaveForcedOperation()
+    {
+        WaveForcedOperationServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void WaveForcedOperationServerRpc()
+    {
+        forcedOperation = true;
     }
 
     void SetBrightness(int level)
@@ -539,7 +558,7 @@ public class GameManager : NetworkBehaviour
             return;
         if (rManager.isOpened)
             return;
-        if (preBuilding.isBuildingOn)
+        if (preBuilding.isBuildingOn || beltPreBuilding.isBuildingOn)
             return;
 
         //건물 위 오브젝트가 있을때 클릭이 안되서 Raycast > RaycastAll로 변경
@@ -1000,11 +1019,10 @@ public class GameManager : NetworkBehaviour
         {
             BuildingInfo.instance.SetItemSlot();
 
-            if (PreBuilding.instance.isBuildingOn)
-                PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-
-            //if(PreBuilding.instance != null)
-            //    PreBuilding.instance.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+            if (preBuilding.isBuildingOn)
+                preBuilding.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+            else if(beltPreBuilding.isBuildingOn)
+                beltPreBuilding.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
         }
         if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
         {
