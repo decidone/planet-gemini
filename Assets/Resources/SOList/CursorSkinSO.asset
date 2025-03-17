@@ -16,7 +16,10 @@ MonoBehaviour:
   dragCursor:
   - {fileID: 2800000, guid: d86271061c724b7448a91d9e79268b83, type: 3}
   - {fileID: 2800000, guid: eb7643b42a0ca714383bf5d0a0a52d04, type: 3}
-  buildingCursor: {fileID: 2800000, guid: 048fa331c80cd1f4cb81f53672711ad1, type: 3}
+  buildingCursor:
+  - {fileID: 2800000, guid: 1f6a5e3340a01374d91d9a2438a164ce, type: 3}
+  - {fileID: 2800000, guid: 98548aa9710898f49b49d3f4783509da, type: 3}
+  - {fileID: 2800000, guid: cb4be36bf4190fe4da18dfbca6ce0442, type: 3}
   unitCursor:
   - {fileID: 2800000, guid: 0ee329defd1520a49908dc6e5c84ce19, type: 3}
   - {fileID: 2800000, guid: bed661a05bea2e4418321348f98d8725, type: 3}

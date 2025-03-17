@@ -291,6 +291,24 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShiftBuildingDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""626d6f00-0972-4377-83ea-4725acc6c16d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShiftBuildingUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b228df8-28c0-47dc-8967-353b95b28051"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -390,6 +408,28 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""BuildingInven"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ea0d43e8-8073-4b8c-a39b-25dd45b66307"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftBuildingDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6d035bcf-4db7-40b7-a0ab-b34a848e5b44"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShiftBuildingUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1758,6 +1798,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_Building_RightMouseButtonDown = m_Building.FindAction("RightMouseButtonDown", throwIfNotFound: true);
         m_Building_Rotate = m_Building.FindAction("Rotate", throwIfNotFound: true);
         m_Building_BuildingInven = m_Building.FindAction("BuildingInven", throwIfNotFound: true);
+        m_Building_ShiftBuildingDown = m_Building.FindAction("ShiftBuildingDown", throwIfNotFound: true);
+        m_Building_ShiftBuildingUp = m_Building.FindAction("ShiftBuildingUp", throwIfNotFound: true);
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
@@ -1999,6 +2041,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Building_RightMouseButtonDown;
     private readonly InputAction m_Building_Rotate;
     private readonly InputAction m_Building_BuildingInven;
+    private readonly InputAction m_Building_ShiftBuildingDown;
+    private readonly InputAction m_Building_ShiftBuildingUp;
     public struct BuildingActions
     {
         private @InputControls m_Wrapper;
@@ -2008,6 +2052,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @RightMouseButtonDown => m_Wrapper.m_Building_RightMouseButtonDown;
         public InputAction @Rotate => m_Wrapper.m_Building_Rotate;
         public InputAction @BuildingInven => m_Wrapper.m_Building_BuildingInven;
+        public InputAction @ShiftBuildingDown => m_Wrapper.m_Building_ShiftBuildingDown;
+        public InputAction @ShiftBuildingUp => m_Wrapper.m_Building_ShiftBuildingUp;
         public InputActionMap Get() { return m_Wrapper.m_Building; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2032,6 +2078,12 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @BuildingInven.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnBuildingInven;
                 @BuildingInven.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnBuildingInven;
                 @BuildingInven.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnBuildingInven;
+                @ShiftBuildingDown.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnShiftBuildingDown;
+                @ShiftBuildingDown.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnShiftBuildingDown;
+                @ShiftBuildingDown.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnShiftBuildingDown;
+                @ShiftBuildingUp.started -= m_Wrapper.m_BuildingActionsCallbackInterface.OnShiftBuildingUp;
+                @ShiftBuildingUp.performed -= m_Wrapper.m_BuildingActionsCallbackInterface.OnShiftBuildingUp;
+                @ShiftBuildingUp.canceled -= m_Wrapper.m_BuildingActionsCallbackInterface.OnShiftBuildingUp;
             }
             m_Wrapper.m_BuildingActionsCallbackInterface = instance;
             if (instance != null)
@@ -2051,6 +2103,12 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @BuildingInven.started += instance.OnBuildingInven;
                 @BuildingInven.performed += instance.OnBuildingInven;
                 @BuildingInven.canceled += instance.OnBuildingInven;
+                @ShiftBuildingDown.started += instance.OnShiftBuildingDown;
+                @ShiftBuildingDown.performed += instance.OnShiftBuildingDown;
+                @ShiftBuildingDown.canceled += instance.OnShiftBuildingDown;
+                @ShiftBuildingUp.started += instance.OnShiftBuildingUp;
+                @ShiftBuildingUp.performed += instance.OnShiftBuildingUp;
+                @ShiftBuildingUp.canceled += instance.OnShiftBuildingUp;
             }
         }
     }
@@ -2670,6 +2728,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnRightMouseButtonDown(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
         void OnBuildingInven(InputAction.CallbackContext context);
+        void OnShiftBuildingDown(InputAction.CallbackContext context);
+        void OnShiftBuildingUp(InputAction.CallbackContext context);
     }
     public interface IPlayerActions
     {

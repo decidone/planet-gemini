@@ -10,7 +10,7 @@ public class SpawnerSearchColl : NetworkBehaviour
     int level;
     public CircleCollider2D coll;
     int[] collSize = new int[8] { 55, 65, 75, 85, 95, 95, 95, 95 }; // 레벨 별 콜라이더 크기
-    int[] maxCollSize = new int[8] { 105, 135, 175, 225, 285, 285, 285, 285 }; // 광폭화 시 최대 콜라이더 크기
+    int[] maxCollSize = new int[8] { 135, 155, 175, 225, 285, 285, 285, 285 }; // 광폭화 시 최대 콜라이더 크기
     int increaseSize = 10; // 광폭화의날 콜라이더 크기 증가
     public float violentCollSize;
 
@@ -79,6 +79,14 @@ public class SpawnerSearchColl : NetworkBehaviour
             violentCollSize = coll.radius;
         }
     }
+
+    public void SearchCollFullExtend()
+    {
+        coll.radius = maxCollSize[level];
+        violentCollSize = coll.radius;
+        Debug.Log("coll.radius : " + coll.radius);
+    }
+
 
     public void SearchCollReduction()
     {

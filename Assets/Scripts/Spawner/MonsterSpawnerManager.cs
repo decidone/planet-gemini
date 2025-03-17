@@ -16,15 +16,10 @@ public class MonsterSpawnerManager : NetworkBehaviour
     int xIndex;
     int yIndex;
 
-    [SerializeField]
-    bool viDayOn = false;
-    [SerializeField]
-    bool viDayOff = false;
-
     WavePoint wavePoint;
 
     bool waveState;
-    bool hostMapWave;
+    public bool hostMapWave;
     Vector3 wavePos;
     Vector3 targetPos;
 
@@ -57,17 +52,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
         if (Time.timeScale == 0)
         {
             return;
-        }
-
-        if (viDayOn)
-        {
-            ViolentDayOn(true);
-            viDayOn = false;
-        }
-        if (viDayOff)
-        {
-            ViolentDayOff();
-            viDayOff = false;
         }
     }
 
@@ -176,8 +160,9 @@ public class MonsterSpawnerManager : NetworkBehaviour
             spawners[i].SetCorruption();
     }
 
-    public void ViolentDayOn(bool hostMap)
+    public void ViolentDayOn(bool hostMap, bool forcedOperation)
     {
+        Debug.Log("forcedOperation : " + forcedOperation);
         float maxAggroAmount = 0;
         MonsterSpawner aggroSpawner = null;
         foreach (var data in monsterSpawners)
@@ -188,7 +173,10 @@ public class MonsterSpawnerManager : NetworkBehaviour
                 {
                     if (spawner.safeCount == 0)
                     {
-                        spawner.SearchCollExtend();
+                        if (!forcedOperation)
+                            spawner.SearchCollExtend();
+                        else
+                            spawner.SearchCollFullExtend();
 
                         Collider2D[] colliders = Physics2D.OverlapCircleAll(spawner.transform.position, spawner.spawnerSearchColl.violentCollSize);
                         float aggroValue = 0;
@@ -266,8 +254,13 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
     }
 
+    public void WavePointOff()
+    {
+        WavePointOffServerRpc(hostMapWave);
+    }
+
     [ServerRpc]
-    void WavePointOffServerRpc(bool hostMap)
+    public void WavePointOffServerRpc(bool hostMap)
     {
         WavePointOffClientRpc(hostMap);
     }
@@ -359,7 +352,14 @@ public class MonsterSpawnerManager : NetworkBehaviour
             }
         }
         waveState = false;
-        WavePointOffServerRpc(hostMapWave);
         SoundManager.instance.BattleStateSet(hostMapWave, waveState);
+    }
+
+    public void WaveMonsterReturn()
+    {
+        foreach (var monster in waveMonsters)
+        {
+            monster.GetComponent<MonsterAi>().WaveEnd();
+        }
     }
 }

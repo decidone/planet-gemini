@@ -743,7 +743,8 @@ public class MapGenerator : MonoBehaviour
                                             resourcesIconTilemap.SetTile(new Vector3Int(tempCell.x, (tempCell.y + offsetY), 0), resourcesIcon[i]);
                                             tempCell.resource = resource;
 
-                                            tempCell.buildable.Add("extractor");
+                                            if (tempCell.buildable.Count == 0)
+                                                tempCell.buildable.Add("extractor");
                                         }
                                     }
                                 }
@@ -776,7 +777,7 @@ public class MapGenerator : MonoBehaviour
                                 resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
                                 cell.resource = resource;
 
-                                if (resource.type == "ore")
+                                if (resource.type == "ore" && cell.buildable.Count == 0)
                                     cell.buildable.Add("miner");
                             }
                         }

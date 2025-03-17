@@ -26,6 +26,9 @@ public class MonsterAi : UnitCommonAi
 
     [SerializeField]
     protected bool waveState = false;
+    [SerializeField]
+    protected bool waveStateEnd = false;
+
     //bool waveWaiting = false;
     public bool waveArrivePos = false;
     //bool goingBase = false;
@@ -366,9 +369,13 @@ public class MonsterAi : UnitCommonAi
 
         float spawnDis = (tr.position - patrolMainPos).magnitude;
 
-        if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck && !waveState)
+        if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck && !waveState && !waveStateEnd)
         {
             checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
+        }
+        else if (waveStateEnd)
+        {
+            checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
         }
         else if (spawnDis > maxSpawnDist)
         {
@@ -515,31 +522,66 @@ public class MonsterAi : UnitCommonAi
         }
         else if(waveState)
         {
-            float basePosDist = Vector3.Distance(tr.position, wavePos);
-            if (basePosDist > unitCommonData.AttackDist)
+            if (!waveStateEnd)
             {
-                if (currentWaypointIndex >= movePath.Count)
-                    return;
-
-                Vector3 targetWaypoint = movePath[currentWaypointIndex];
-                direction = targetWaypoint - tr.position;
-                direction.Normalize();
-                AnimSetFloat(targetVec, true);
-
-                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
-
-                if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+                float basePosDist = Vector3.Distance(tr.position, wavePos);
+                if (basePosDist > unitCommonData.AttackDist)
                 {
-                    currentWaypointIndex++;
-
                     if (currentWaypointIndex >= movePath.Count)
-                    {
                         return;
+
+                    Vector3 targetWaypoint = movePath[currentWaypointIndex];
+                    direction = targetWaypoint - tr.position;
+                    direction.Normalize();
+                    AnimSetFloat(targetVec, true);
+
+                    tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
+
+                    if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+                    {
+                        currentWaypointIndex++;
+
+                        if (currentWaypointIndex >= movePath.Count)
+                        {
+                            return;
+                        }
                     }
                 }
+                else
+                    waveArrivePos = true;
             }
             else
-                waveArrivePos = true;
+            {
+                float basePosDist = Vector3.Distance(tr.position, spawnPos.position);
+                if (basePosDist > unitCommonData.AttackDist)
+                {
+                    if (currentWaypointIndex >= movePath.Count)
+                        return;
+
+                    Vector3 targetWaypoint = movePath[currentWaypointIndex];
+                    direction = targetWaypoint - tr.position;
+                    direction.Normalize();
+                    AnimSetFloat(targetVec, true);
+
+                    tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
+
+                    if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+                    {
+                        currentWaypointIndex++;
+
+                        if (currentWaypointIndex >= movePath.Count)
+                        {
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    spawnerScript.ReturnMonster(this);
+                    waveState = false;
+                    waveStateEnd = false;
+                }
+            }
         }
     }
 
@@ -1004,6 +1046,12 @@ public class MonsterAi : UnitCommonAi
         checkPathCoroutine = StartCoroutine(CheckPath(wavePos, "NormalTrace"));
     }
 
+    public void WaveEnd()
+    {
+        waveStateEnd = true;
+        checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
+    }
+
     //public void WaveSetMoveMonster(Vector3 pos)
     //{
     //    if (checkPathCoroutine == null)
@@ -1046,6 +1094,7 @@ public class MonsterAi : UnitCommonAi
         base.GameStartSet(unitSaveData);
 
         waveState = unitSaveData.waveState;
+        waveStateEnd = unitSaveData.waveStateEnd;
         //waveWaiting = unitSaveData.waveWaiting;
         monsterType = unitSaveData.monsterType;
     }
@@ -1058,6 +1107,7 @@ public class MonsterAi : UnitCommonAi
         data.monsterType = monsterType;
         data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.waveState = waveState;
+        data.waveStateEnd = waveStateEnd;
         //data.waveWaiting = waveWaiting;
         data.isWaveColonyCallCheck = isWaveColonyCallCheck;
         return data;

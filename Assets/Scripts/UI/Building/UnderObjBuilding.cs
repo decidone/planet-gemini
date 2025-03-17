@@ -76,7 +76,6 @@ public class UnderObjBuilding : MonoBehaviour
                         if(othGetUnderBelt.dirNum == dirNum)
                         {
                             IsSendObjSet();
-                            preBuilding.dragCancel = true;
                             EndRenderer();
                             return;
                         }
@@ -87,7 +86,6 @@ public class UnderObjBuilding : MonoBehaviour
                         {
                             IsGetObjSet();
                             othSendUnderBelt.EndRenderer();
-                            preBuilding.dragCancel = true;
                             if (!setLine)
                                 StartRenderer(othSendUnderBelt.transform.position);
                             else
@@ -134,7 +132,6 @@ public class UnderObjBuilding : MonoBehaviour
         {
             IsSendObjSet();
             EndRenderer();
-            preBuilding.dragCancel = false;
         }
     }
 

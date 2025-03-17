@@ -13,6 +13,7 @@ public class DragGraphic : MonoBehaviour
     Vector2 mousePos;
 
     PreBuilding preBuilding;
+    BeltPreBuilding beltPreBuilding;
 
     UnitDrag unitDrag;
     RemoveBuild removeBuild;
@@ -58,6 +59,7 @@ public class DragGraphic : MonoBehaviour
         isCtrlDrag = false;
         isShiftDrag = false;
         preBuilding = PreBuilding.instance;
+        beltPreBuilding = BeltPreBuilding.instanceBeltBuilding;
     }
 
     void OnEnable()
@@ -84,7 +86,7 @@ public class DragGraphic : MonoBehaviour
             return;
         }
 
-        if (!preBuilding.isBuildingOn && isDrag)
+        if ((!preBuilding.isBuildingOn && !beltPreBuilding.isBuildingOn) && isDrag)
         {
             endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             BoxSizeChange();
@@ -104,7 +106,7 @@ public class DragGraphic : MonoBehaviour
 
     void LeftMouseButtonDown(InputAction.CallbackContext ctx)
     {
-        if (preBuilding.isBuildingOn) return;
+        if (preBuilding.isBuildingOn || beltPreBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
 
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
@@ -148,7 +150,7 @@ public class DragGraphic : MonoBehaviour
 
     void LeftMouseButtonUp(InputAction.CallbackContext ctx)
     {
-        if (preBuilding.isBuildingOn) return;
+        if (preBuilding.isBuildingOn || beltPreBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
         if (!isDrag) return;
 
@@ -165,7 +167,7 @@ public class DragGraphic : MonoBehaviour
 
     void RightMouseButtonDown(InputAction.CallbackContext ctx)
     {
-        if (preBuilding.isBuildingOn) return;
+        if (preBuilding.isBuildingOn || beltPreBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
 
         DisableFunc();
@@ -173,7 +175,7 @@ public class DragGraphic : MonoBehaviour
 
     void RightMouseButtonUp(InputAction.CallbackContext ctx)
     {
-        if (preBuilding.isBuildingOn) return;
+        if (preBuilding.isBuildingOn || beltPreBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
 
         endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

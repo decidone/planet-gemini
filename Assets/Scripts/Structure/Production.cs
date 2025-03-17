@@ -58,9 +58,9 @@ public abstract class Production : Structure
     {
         ClientConnectSyncServerRpc();
         RepairGaugeServerRpc();
-        if(recipeIndex != -1)
+        if (recipeIndex != -1)
             SetRecipeServerRpc(recipeIndex);
-        if(inventory != null)
+        if (inventory != null)
             ItemSyncServerRpc();
     }
 
@@ -96,9 +96,9 @@ public abstract class Production : Structure
         }
     }
 
-    public override void GameStartRecipeSet(int recipeId) 
+    public override void GameStartRecipeSet(int recipeId)
     {
-        if(recipeId != -1)
+        if (recipeId != -1)
             SetRecipeClientRpc(recipeId);
     }
 
@@ -111,8 +111,8 @@ public abstract class Production : Structure
             var slot = inventory.SlotCheck(i);
 
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
-            if(itemIndex != -1)
-                ItemSyncClientRpc(i ,itemIndex, slot.amount);
+            if (itemIndex != -1)
+                ItemSyncClientRpc(i, itemIndex, slot.amount);
         }
     }
 
@@ -137,7 +137,7 @@ public abstract class Production : Structure
 
     public void GameStartItemSet(InventorySaveData data)
     {
-        if(inventory != null)
+        if (inventory != null)
             inventory.LoadData(data);
     }
 
@@ -157,7 +157,7 @@ public abstract class Production : Structure
     protected virtual void Start()
     {
         itemDic = ItemList.instance.itemDic;
-        if(recipe == null)
+        if (recipe == null)
             recipe = new Recipe();
         output = null;
 
@@ -181,7 +181,7 @@ public abstract class Production : Structure
                 {
                     CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
-                else if (nearObj[i] == null && !sizeOneByOne) 
+                else if (nearObj[i] == null && !sizeOneByOne)
                 {
                     int dirIndex = i / 2;
                     CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
@@ -234,7 +234,7 @@ public abstract class Production : Structure
     {
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
-        
+
         if (obj.GetComponent<WallCtrl>())
             yield break;
 
@@ -312,11 +312,11 @@ public abstract class Production : Structure
 
     protected override void SubFromInventory()
     {
-        if(IsServer)
+        if (IsServer)
             inventory.SlotSubServerRpc(inventory.space - 1, 1);
     }
 
-    public virtual bool CanTakeItem(Item item) 
+    public virtual bool CanTakeItem(Item item)
     {
         if (recipe == null || recipe.items == null)
             return false;
@@ -514,7 +514,14 @@ public abstract class Production : Structure
         }
     }
 
-    public void OverclockSet(bool isOn)
+    [ServerRpc]
+    public void OverclockSyncServerRpc(bool isOn)
+    {
+        OverclockSyncClientRpc(isOn);
+    }
+
+    [ClientRpc]
+    void OverclockSyncClientRpc(bool isOn)
     {
         overclockOn = isOn;
         if (isUIOpened)

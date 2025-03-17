@@ -17,6 +17,7 @@ public class InGameData
     public float dayTimer;          // 인게임 시간
     public int dayIndex;            // 24시간을 6등분해서 인덱스로 사용
 
+    public bool wavePlanet;         // 광폭화 행성
     public float violentValue;      // 광폭화 스택
     public bool violentDayCheck;    // 광폭화 체크
     public bool violentDay;         // 광폭화 날

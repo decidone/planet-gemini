@@ -1639,6 +1639,10 @@ public class Structure : NetworkBehaviour
         {
             portalObj.RemovePortalData();
         }
+        else if (TryGetComponent(out Overclock overclock))
+        {
+            overclock.OverclockRemove();
+        }
 
         if (TryGetComponent(out GetUnderBeltCtrl getUnder))
         {
