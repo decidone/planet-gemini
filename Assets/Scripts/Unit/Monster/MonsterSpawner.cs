@@ -459,6 +459,25 @@ public class MonsterSpawner : NetworkBehaviour
         return newMonster;
     }
 
+    public void ReturnMonster(MonsterAi monsterAi)
+    {
+        if (monsterAi.monsterType == 0)
+        {
+            totalMonsterList.Add(monsterAi);
+            currentWeakSpawn++;
+        }
+        else if (monsterAi.monsterType == 1)
+        {
+            totalMonsterList.Add(monsterAi);
+            currentNormalSpawn++;
+        }
+        else if (monsterAi.monsterType == 2)
+        {
+            totalMonsterList.Add(monsterAi);
+            currentStrongSpawn++;
+        }
+    }
+
     public void MonsterScriptSet(bool scriptState, bool guardianState)
     {
         foreach (MonsterAi monster in totalMonsterList)

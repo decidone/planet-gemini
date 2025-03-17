@@ -19,7 +19,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     WavePoint wavePoint;
 
     bool waveState;
-    bool hostMapWave;
+    public bool hostMapWave;
     Vector3 wavePos;
     Vector3 targetPos;
 
@@ -254,8 +254,13 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
     }
 
+    public void WavePointOff()
+    {
+        WavePointOffServerRpc(hostMapWave);
+    }
+
     [ServerRpc]
-    void WavePointOffServerRpc(bool hostMap)
+    public void WavePointOffServerRpc(bool hostMap)
     {
         WavePointOffClientRpc(hostMap);
     }
@@ -347,7 +352,14 @@ public class MonsterSpawnerManager : NetworkBehaviour
             }
         }
         waveState = false;
-        WavePointOffServerRpc(hostMapWave);
         SoundManager.instance.BattleStateSet(hostMapWave, waveState);
+    }
+
+    public void WaveMonsterReturn()
+    {
+        foreach (var monster in waveMonsters)
+        {
+            monster.GetComponent<MonsterAi>().WaveEnd();
+        }
     }
 }

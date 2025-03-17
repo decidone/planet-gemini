@@ -165,6 +165,7 @@ public class GameManager : NetworkBehaviour
 
     public float autoSaveTimer;
     public float autoSaveinterval;
+    bool wavePlanet;
 
     Dictionary<int, int[]> waveLevelsByMapSize = new Dictionary<int, int[]>
     {
@@ -347,6 +348,9 @@ public class GameManager : NetworkBehaviour
                     violentDay = false;
                     violentDayCheck = false;
                     forcedOperation = false;
+                    MonsterSpawnerManager.instance.WavePointOff();
+                    if(IsServer)
+                        MonsterSpawnerManager.instance.WaveMonsterReturn();
                     timeImg.color = new Color32(255, 255, 255, 255);
                 }
             }
@@ -417,11 +421,13 @@ public class GameManager : NetworkBehaviour
             {
                 if (day % violentCycle == 0)    // 호스트맵
                 {
+                    wavePlanet = true;
                     violentDaySync = true;
                     MonsterSpawnerManager.instance.ViolentDayOn(true, forcedOperation);
                 }
                 else if ((day - clientMapDateDifference) % violentCycle == 0)    // 클라이언트 맵
                 {
+                    wavePlanet = false;
                     violentDaySync = true;
                     MonsterSpawnerManager.instance.ViolentDayOn(false, forcedOperation);
                 }
@@ -1369,7 +1375,8 @@ public class GameManager : NetworkBehaviour
         inGameData.isDay = isDay;
         inGameData.dayTimer = dayTimer;
         inGameData.dayIndex = dayIndex;
-
+        inGameData.wavePlanet = wavePlanet;
+        inGameData.violentDay = violentDay;
         inGameData.violentValue = violentValue;
         inGameData.violentDayCheck = violentDayCheck;
 
@@ -1390,8 +1397,16 @@ public class GameManager : NetworkBehaviour
         violentValue = data.violentValue;
         violentDayCheck = data.violentDayCheck;
         violentDay = data.violentDay;
+        wavePlanet = data.wavePlanet;
         timeImg.sprite = timeImgSet[dayIndex];
-        //SetBrightness(dayIndex);
+
+        if (violentDay)
+        {
+            timeImg.color = new Color32(255, 50, 50, 255);
+            SoundManager.instance.BattleStateSet(wavePlanet, violentDay);
+            SoundManager.instance.PlayBgmMapCheck();
+        }
+
         dayText.text = "Day : " + day;
 
         finance.SetFinance(data.finance);
@@ -1427,6 +1442,7 @@ public class GameManager : NetworkBehaviour
         if (violentDay)
         {
             timeImg.color = new Color32(255, 50, 50, 255);
+            SoundManager.instance.PlayBgmMapCheck();
         }
     }
 

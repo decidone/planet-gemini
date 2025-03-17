@@ -351,7 +351,6 @@ public class BeltPreBuilding : PreBuilding
             }
             else
             {
-                Debug.Log("RemoveSet : " + setPos);
                 RemoveSet(setPos);
             }
         }
