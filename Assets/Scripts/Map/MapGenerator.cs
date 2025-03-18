@@ -58,6 +58,7 @@ public class MapGenerator : MonoBehaviour
     [Space]
     public List<Resource> resources = new List<Resource>();
     public List<Tile> resourcesIcon = new List<Tile>();
+    int minimumChunkSize = 7;
     public Tile fogTile;
     public float fogCheckCooldown;
 
@@ -672,6 +673,9 @@ public class MapGenerator : MonoBehaviour
 
     void CreateResource(Map map, bool isHostMap)
     {
+        int resourceCount = 0;
+        Dictionary<int, int> chunkDic = new Dictionary<int, int>();
+
         int offsetY = 0;
         if (!isHostMap)
             offsetY = height + clientMapOffsetY;
@@ -754,9 +758,9 @@ public class MapGenerator : MonoBehaviour
                     else
                     {
                         float oreNoise = Mathf.PerlinNoise(
-                        (x - oreX) / resource.distribution,
-                        (y - oreY) / resource.distribution
-                    );
+                            (x - oreX) / resource.distribution,
+                            (y - oreY) / resource.distribution
+                        );
 
                         if (oreNoise < resource.scale)
                         {
@@ -768,6 +772,7 @@ public class MapGenerator : MonoBehaviour
                             {
                                 if (cell.tileType == "normal")
                                 {
+                                    // 포인트 타일과 생성된 자원이 겹치는걸 방지해주기 위해 기본타일로 교체
                                     Tile mapTile = cell.biome.SetNormalTile(random);
                                     tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), mapTile);
                                 }
@@ -777,9 +782,61 @@ public class MapGenerator : MonoBehaviour
                                 resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[i]);
                                 cell.resource = resource;
 
+                                for (int n = 0; n < 9; n++)
+                                {
+                                    // 근처 8칸에 같은 자원이 있는지 확인 후 있으면 셀 데이터의 청크넘버 동기화
+                                    int nx = x + (n % 3) - 1;
+                                    int ny = y + -((n / 3) - 1);
+
+                                    if (n != 4)
+                                    {
+                                        if (map.IsOnMapData(nx, ny))
+                                        {
+                                            if (map.mapData[nx][ny].resource == resource && map.mapData[nx][ny].resourceChunkNum >= 0)
+                                            {
+                                                cell.resourceChunkNum = map.mapData[nx][ny].resourceChunkNum;
+                                                chunkDic[cell.resourceChunkNum]++;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (cell.resourceChunkNum < 0)
+                                {
+                                    // 근처 8칸에 청크넘버를 가진 동일한 자원이 없을 때 새로운 그룹 생성
+                                    cell.resourceChunkNum = resourceCount;
+                                    chunkDic.Add(resourceCount, 1);
+                                    resourceCount++;
+                                }
+
                                 if (resource.type == "ore" && cell.buildable.Count == 0)
                                     cell.buildable.Add("miner");
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        // minimumChunkSize 보다 작게 생성된 광물 청크 제거
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell cell = map.mapData[x][y];
+
+                if (cell.resource != null)
+                {
+                    if (cell.resource.type == "ore" && chunkDic.ContainsKey(cell.resourceChunkNum))
+                    {
+                        if (chunkDic[cell.resourceChunkNum] < minimumChunkSize)
+                        {
+                            resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), null);
+                            resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), null);
+                            cell.resource = null;
+                            if (cell.buildable.Contains("miner"))
+                                cell.buildable.Remove("miner");
                         }
                     }
                 }

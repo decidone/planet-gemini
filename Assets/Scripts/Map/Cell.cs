@@ -10,6 +10,7 @@ public class Cell
     public string tileType;
     public Biome biome;
     public Resource resource;
+    public int resourceChunkNum = -1;
     public GameObject obj;
     public GameObject structure;
     public List<string> buildable = new List<string>();
