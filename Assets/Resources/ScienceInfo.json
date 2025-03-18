@@ -182,9 +182,19 @@
       "1":{"items":["ManaStone"],"amounts":[1],"coreLv":4,"time":1,"Info":"Generates energy from mana stones","basicScience" : false, "sortIndex":4}
     }
   },
+  "AutoBuyer":{
+    "Build":{
+      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":3,"time":1,"Info":"TBD","basicScience" : false, "sortIndex":14}
+    }
+  },
+  "AutoSeller":{
+    "Build":{
+      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":3,"time":1,"Info":"TBD","basicScience" : false, "sortIndex":15}
+    }
+  },
   "LocalPortal":{
     "Build":{
-      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":3,"time":1,"Info":"Allows travel to another portal.","basicScience" : false, "sortIndex":14}
+      "1":{"items":["VoidShard"],"amounts":[1],"coreLv":3,"time":1,"Info":"Allows travel to another portal.","basicScience" : false, "sortIndex":16}
     }
   },
   "Wall":{
@@ -260,7 +270,7 @@
     "Build":{
       "1":{"items":["Brick"],"amounts":[1],"coreLv":4,"time":1,"Info":"Increased production speed of structures.","basicScience" : false, "sortIndex":8},
       "2":{"items":["CopperPlate"],"amounts":[1],"coreLv":5,"time":1,"Info":"Increased hp of structures.","basicScience" : false, "sortIndex":3},
-      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":3,"time":1,"Info":"Increased input/output speed of structures.","basicScience" : false, "sortIndex":15},
+      "3":{"items":["IronPlate"],"amounts":[1],"coreLv":3,"time":1,"Info":"Increased input/output speed of structures.","basicScience" : false, "sortIndex":17},
       "4":{"items":["IronPlate"],"amounts":[1],"coreLv":4,"time":1,"Info":"Reduced energy consumption.","basicScience" : false, "sortIndex":9},
       "5":{"items":["IronPlate"],"amounts":[1],"coreLv":5,"time":1,"Info":"Increased defense of structures.","basicScience" : false, "sortIndex":4}
      }

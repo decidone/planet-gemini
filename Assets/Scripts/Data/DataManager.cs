@@ -118,6 +118,9 @@ public class DataManager : MonoBehaviour
         List<NetItemPropsData> netItemPropsDatas = NetworkItemPoolSync.instance.NetItemSaveData();
         saveData.netItemData = netItemPropsDatas;
 
+        List<HomelessDroneSaveData> homelessDroneSaveData = HomelessDroneManager.instance.SaveDroneData();
+        saveData.homelessDroneData = homelessDroneSaveData;
+
         // Json 저장
         Debug.Log("saved: " + path);
         string json = JsonConvert.SerializeObject(saveData);
@@ -149,17 +152,20 @@ public class DataManager : MonoBehaviour
         {
             SpawnStructure(structureSave);
         }
+
         foreach (BeltGroupSaveData beltGroupSave in saveData.beltGroupData)
         {
             SpawnBeltGroup(beltGroupSave);
         }
 
-        foreach(UnitSaveData unitSave in saveData.unitData)
+        foreach (UnitSaveData unitSave in saveData.unitData)
         {
             SpawnUnit(unitSave);
         }
 
         NetworkItemPoolSync.instance.NetItemLoadData(saveData.netItemData);
+
+        HomelessDroneManager.instance.LoadDroneData(saveData.homelessDroneData);
 
         SetSpawnerManager(saveData.spawnerManagerSaveData);
 
@@ -221,26 +227,26 @@ public class DataManager : MonoBehaviour
             if (saveData.portalName != "")
                 structure.portalName = saveData.portalName;
 
-            if (saveData.connectedStrPos.Count > 0)
-            {
-                if (structure.TryGetComponent(out Transporter transporter))
-                {
-                    transporters.Add(transporter, saveData);
-                    structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));                    
-                }
-                else if (structure.TryGetComponent(out UnitFactory unitFactory))
-                {
-                    unitFactory.UnitSpawnPosSetServerRpc(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
-                }
-                else if (structure.TryGetComponent(out LDConnector lDConnector))
-                {
-                    lDConnectors.Add(lDConnector);
-                    for (int i = 0; i < saveData.connectedStrPos.Count; i++)
-                    {
-                        structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[i]));
-                    }                    
-                }
-            }            
+            //if (saveData.connectedStrPos.Count > 0) //아래로 뺐음
+            //{
+            //    if (structure.TryGetComponent(out Transporter transporter))
+            //    {
+            //        transporters.Add(transporter, saveData);
+            //        structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
+            //    }
+            //    else if (structure.TryGetComponent(out UnitFactory unitFactory))
+            //    {
+            //        unitFactory.UnitSpawnPosSetServerRpc(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
+            //    }
+            //    else if (structure.TryGetComponent(out LDConnector lDConnector))
+            //    {
+            //        lDConnectors.Add(lDConnector);
+            //        for (int i = 0; i < saveData.connectedStrPos.Count; i++)
+            //        {
+            //            structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[i]));
+            //        }
+            //    }
+            //}
 
             if (structure.TryGetComponent(out Production prod))
             {
@@ -270,6 +276,61 @@ public class DataManager : MonoBehaviour
                 {
                     disintegrator.SetAuto(saveData.isAuto);
                 }
+
+                if (structure.TryGetComponent(out AutoSeller autoSeller))
+                {
+                    if (saveData.trUnitPosData.Count > 0)
+                    {
+                        for (int i = 0; i < saveData.trUnitPosData.Count; i++)
+                        {
+                            Vector3 unitSpawnPos = Vector3Extensions.ToVector3(saveData.trUnitPosData[i]);
+
+                            Dictionary<int, int> itemDic = new Dictionary<int, int>();
+
+                            if (saveData.trUnitItemData.ContainsKey(i))
+                            {
+                                itemDic = saveData.trUnitItemData[i];
+                            }
+
+                            autoSeller.UnitLoad(unitSpawnPos, itemDic);
+                        }
+                    }
+                }
+
+                if (structure.TryGetComponent(out AutoBuyer autoBuyer))
+                {
+                    autoBuyer.maxBuyAmount = saveData.maxBuyAmount;
+                    autoBuyer.minBuyAmount = saveData.minBuyAmount;
+
+                    if (saveData.trUnitPosData.Count > 0)
+                    {
+                        for (int i = 0; i < saveData.trUnitPosData.Count; i++)
+                        {
+                            Vector3 unitSpawnPos = Vector3Extensions.ToVector3(saveData.trUnitPosData[i]);
+
+                            Dictionary<int, int> itemDic = new Dictionary<int, int>();
+
+                            if (saveData.trUnitItemData.ContainsKey(i))
+                            {
+                                itemDic = saveData.trUnitItemData[i];
+                            }
+
+                            autoBuyer.UnitLoad(unitSpawnPos, itemDic);
+                        }
+                    }
+                }
+
+                if (structure.TryGetComponent(out Transporter transporter))
+                {
+                    transporters.Add(transporter, saveData);
+                    if (saveData.connectedStrPos.Count > 0)
+                        structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
+                }
+                else if (structure.TryGetComponent(out UnitFactory unitFactory))
+                {
+                    if (saveData.connectedStrPos.Count > 0)
+                        unitFactory.UnitSpawnPosSetServerRpc(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
+                }
             }
             else
             {
@@ -287,6 +348,17 @@ public class DataManager : MonoBehaviour
                     FilterSaveData filterSaveData = saveData.filters[0];
                     if (filterSaveData.filterItemIndex != -1)
                         unloader.GameStartFillterSet(filterSaveData.filterItemIndex);
+                }
+                else if (structure.TryGetComponent(out LDConnector lDConnector))
+                {
+                    lDConnectors.Add(lDConnector);
+                    if (saveData.connectedStrPos.Count > 0)
+                    {
+                        for (int i = 0; i < saveData.connectedStrPos.Count; i++)
+                        {
+                            structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[i]));
+                        }
+                    }
                 }
 
                 foreach (int itemIndex in saveData.itemIndex)
@@ -347,11 +419,12 @@ public class DataManager : MonoBehaviour
             Transporter transporter = transporterData.Key;
             StructureSaveData strData = transporterData.Value;
             Transporter takeTransporter = null;
-            GameObject findObj = CellObjFind(transporter.connectedPosList[0], transporter.isInHostMap);
+            GameObject findObj = null;
+            if (transporter.connectedPosList.Count > 0)
+                findObj = CellObjFind(transporter.connectedPosList[0], transporter.isInHostMap);
+
             if (findObj != null && findObj.TryGetComponent(out takeTransporter))
-            {
                 transporter.TakeBuildSet(takeTransporter);
-            }
 
             if (strData.trUnitPosData.Count > 0)
             {

@@ -62,5 +62,16 @@
     "TankInven":[
         {"name":"Tank","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":3},
         {"name":"TankFuel","items":["Fuel"],"amounts":[0],"cooldown":3}
+    ],
+    "AutoBuyer":[
+        {"name":"Coal","items":["Coal"],"amounts":[1],"cooldown":3},
+        {"name":"Brick","items":["Brick"],"amounts":[1],"cooldown":3},
+        {"name":"CopperBar","items":["CopperBar"],"amounts":[1],"cooldown":3},
+        {"name":"CopperPlate","items":["CopperPlate"],"amounts":[1],"cooldown":3},
+        {"name":"IronBar","items":["IronBar"],"amounts":[1],"cooldown":3},
+        {"name":"IronPlate","items":["IronPlate"],"amounts":[1],"cooldown":3},
+        {"name":"ManaStone","items":["ManaStone"],"amounts":[1],"cooldown":3},
+        {"name":"SlimyPlant","items":["SlimyPlant"],"amounts":[1],"cooldown":3},
+        {"name":"ToxicPlant","items":["ToxicPlant"],"amounts":[1],"cooldown":3}
     ]
 }

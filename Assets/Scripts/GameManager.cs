@@ -12,6 +12,9 @@ using UnityEngine.SceneManagement;
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
 {
+    public delegate void OnFinanceChanged();
+    public OnFinanceChanged onFinanceChangedCallback;
+
     public GameObject inventoryUiCanvas;
     public bool isMultiPlay;
     public Inventory inventory;
@@ -161,7 +164,7 @@ public class GameManager : NetworkBehaviour
     float hours;        // 시간 계산
     int displayHour;    // 시 부분
     int displayMinute;  // 분 부분
-    string timeDisplay; // 시간표시용 
+    string timeDisplay; // 시간표시용
 
     public float autoSaveTimer;
     public float autoSaveinterval;
@@ -1218,6 +1221,7 @@ public class GameManager : NetworkBehaviour
     public void AddFinanceServerRpc(int money)
     {
         AddFinanceClientRpc(money);
+        onFinanceChangedCallback?.Invoke();
     }
 
     [ClientRpc]
@@ -1229,8 +1233,8 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SubFinanceServerRpc(int money)
     {
-        Debug.Log("SubFinanceServerRpc");
         SubFinanceClientRpc(money);
+        onFinanceChangedCallback?.Invoke();
     }
 
     [ClientRpc]

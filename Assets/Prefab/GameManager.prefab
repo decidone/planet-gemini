@@ -263,6 +263,7 @@ GameObject:
   - component: {fileID: 198327214828012134}
   - component: {fileID: 8119477237859809883}
   - component: {fileID: 1592428971395791709}
+  - component: {fileID: 314531824626125028}
   - component: {fileID: 6855278147112794435}
   - component: {fileID: 7245252683046581172}
   m_Layer: 0
@@ -321,8 +322,11 @@ MonoBehaviour:
   destroyedMapObjectsPos: []
   isPlayerInHostMap: 0
   isPlayerInMarket: 0
+  isGameOver: 0
+  isWaitingForRespawn: 0
   player: {fileID: 0}
   playerStatus: {fileID: 0}
+  playerMaxHp: 100
   playerDataHp: -1
   playerDataPos: {x: 0, y: 0, z: 0}
   playerController: {fileID: 0}
@@ -364,7 +368,9 @@ MonoBehaviour:
   dayIndex: 0
   safeDay: 12
   violentValue: 0
+  violentDayCheck: 0
   violentDay: 0
+  forcedOperation: 0
   violentCycle: 6
   clientMapDateDifference: 3
   timeImgSet:
@@ -543,6 +549,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fc1cbc2529550b74988dd09a7883c402, type: 2}
   - {fileID: 11400000, guid: ab776f6225a0e314c9e2aacf978ece70, type: 2}
   - {fileID: 11400000, guid: 4a926143e0629664889912080e81599e, type: 2}
+  - {fileID: 11400000, guid: e8c4884fee26b32409db41aa4fb2d757, type: 2}
+  - {fileID: 11400000, guid: 15c8033a9ead8104991eac3097b1f86e, type: 2}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -722,6 +730,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4effaa8a51221c5458a96473a35673db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &314531824626125028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c218c6acb7668d84eb753fd9cdabdbe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trUnit: {fileID: 4728483135223444395, guid: 3497393f39f650e4c89243555f2f5d67, type: 3}
+  drones: []
 --- !u!114 &6855278147112794435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,7 +828,9 @@ MonoBehaviour:
       isDay: 0
       dayTimer: 0
       dayIndex: 0
+      wavePlanet: 0
       violentValue: 0
+      violentDayCheck: 0
       violentDay: 0
       finance: 0
       scrap: 0

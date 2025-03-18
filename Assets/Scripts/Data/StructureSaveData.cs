@@ -36,6 +36,9 @@ public class StructureSaveData
 
     public int prodItemIndex = -1;  // 채굴기 - 생산 가능한 아이템 인덱스
 
+    public int maxBuyAmount;        // 자동 구매기 최대 구매 수량
+    public int minBuyAmount;        // 자동 구매기 구매 트리거 수량
+
     public List<SerializedVector3> connectedStrPos = new List<SerializedVector3>(); // 트랜스포터, 장거리 커넥터 등 라인 연결해야 하는 건물 좌표값
 
     public List<SerializedVector3> trUnitPosData = new List<SerializedVector3>(); // 트랜스포터 유닛 위치 정보

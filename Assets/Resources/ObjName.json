@@ -157,6 +157,12 @@
   "ManaGenerator": {
     "1": "Mana Generator"
   },
+  "AutoBuyer": {
+    "1": "Auto Buyer"
+  },
+  "AutoSeller": {
+    "1": "Auto Seller"
+  },
   "LocalPortal": {
     "1": "Portal"
   },

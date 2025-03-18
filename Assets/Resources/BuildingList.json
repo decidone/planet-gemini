@@ -130,6 +130,12 @@
   "ManaGenerator":{
     "1":{"items":["ControlUnit","Motor","SteelBeam"],"amounts":[2,8,16],"cooldown":3}
   },
+  "AutoBuyer":{
+    "1":{"items":["IronPlate","SteelPlate"],"amounts":[1,1],"cooldown":3}
+  },
+  "AutoSeller":{
+    "1":{"items":["IronPlate","SteelPlate"],"amounts":[1,1],"cooldown":3}
+  },
   "LocalPortal":{
     "1":{"items":["VoidShard","ManaStone"],"amounts":[1,60],"cooldown":3}
   }

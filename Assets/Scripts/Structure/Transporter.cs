@@ -11,6 +11,7 @@ public class Transporter : Production
 
     [SerializeField]
     GameObject trUnit;
+    bool isTransportable;
     List<GameObject> sendItemUnit = new List<GameObject>();
 
     int maxSendAmount;
@@ -20,41 +21,47 @@ public class Transporter : Production
     public int standbyUnitCount;
     List<TransportUnit> getItemUnit = new List<TransportUnit>();
 
+    float transportTimer;
     float transportInterval;
-    float transportTimeer;
 
+    [HideInInspector]
+    public MapClickEvent clickEvent;
     Transporter othTransporter;
     Dictionary<Item, int> invItemCheckDic = new Dictionary<Item, int>();
 
     protected override void Start()
     {
         base.Start();
+        isRunning = true;
         maxFuel = 100;
-        transportTimeer = 1.0f;
+        transportInterval = 1.0f;
         isStorageBuilding = true;
+        clickEvent = GetComponent<MapClickEvent>();
+
+        inventory.onItemChangedCallback += TransportableCheck;
     }
 
     protected override void Update()
     {
         base.Update();
-        if (!isPreBuilding)
+
+        if (isDestroying)
         {
-            if (takeBuild != null && sendItemUnit.Count < 3 && takeBuild.standbyUnitCount < 2)
+            isDestroying = false;
+            isRunning = false;
+            RemoveFunc();
+        }
+
+        if (!isPreBuilding && isRunning)
+        {
+            if (takeBuild != null && isTransportable)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    if (!isToggleOn)
+                    if (sendItemUnit.Count < 3 && takeBuild.standbyUnitCount < 2)
                     {
-                        if (IsServer)
-                        {
-                            SendTransportItemDicCheck(takeBuild);
-                        }
-                        prodTimer = 0;
-                    }
-                    else
-                    {
-                        if (sendAmount != 0 && inventory.TotalItemsAmountLimitCheck(sendAmount))
+                        if (!isToggleOn)
                         {
                             if (IsServer)
                             {
@@ -62,27 +69,58 @@ public class Transporter : Production
                             }
                             prodTimer = 0;
                         }
+                        else
+                        {
+                            if (sendAmount != 0 && inventory.TotalItemsAmountLimitCheck(sendAmount))
+                            {
+                                if (IsServer)
+                                {
+                                    SendTransportItemDicCheck(takeBuild);
+                                }
+                                prodTimer = 0;
+                            }
+                        }
                     }
                 }
             }
             else
                 prodTimer = 0;
 
-
             if (IsServer) 
             {
                 if (unitItemList.Count > 0)
                 {
-                    transportInterval += Time.deltaTime;
-                    if (transportInterval > transportTimeer)
+                    transportTimer += Time.deltaTime;
+                    if (transportTimer > transportInterval)
                     {
                         if (IsServer)
                             ExStorageCheck();
-                        transportInterval = 0;
+                        transportTimer = 0;
                     }
                 }
                 else
-                    transportInterval = 0;
+                    transportTimer = 0;
+            }
+        }
+    }
+
+    public void TransportableCheck()
+    {
+        // 서버 보내야 할 듯
+
+        if (IsServer)
+        {
+            isTransportable = false;
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var invenItem = inventory.SlotCheck(i);
+
+                if (invenItem.item != null)
+                {
+                    isTransportable = true;
+                    break;
+                }
             }
         }
     }
@@ -106,7 +144,8 @@ public class Transporter : Production
         base.CloseUI();
         sInvenManager.ReleaseInven();
 
-        base.DestroyLineRenderer();
+        // ???
+        //base.DestroyLineRenderer();
     }
 
     protected override void OnClientConnectedCallback(ulong clientId)
@@ -158,7 +197,7 @@ public class Transporter : Production
             if (TryGetComponent(out MapClickEvent mapClick) && takeTransporter.TryGetComponent(out MapClickEvent othMapClick))
             {
                 mapClick.GameStartSetRenderer(othMapClick);
-            } 
+            }
         }
     }
 
@@ -172,7 +211,7 @@ public class Transporter : Production
         int Sendcalculate = 0;
         Dictionary<Item, int> invItemCheckDic = new Dictionary<Item, int>();
 
-        for (int i = 0; i < 18; i++)
+        for (int i = 0; i < inventory.space; i++)
         {
             var invenItem = inventory.SlotCheck(i);
 
@@ -286,19 +325,19 @@ public class Transporter : Production
         }
     }
 
-    public override void AddInvenItem()
-    {
-        base.AddInvenItem();
-        for (int i = 0; i < 18; i++)
-        {
-            var invenItem = inventory.SlotCheck(i);
+    //public override void AddInvenItem()
+    //{
+    //    base.AddInvenItem();
+    //    for (int i = 0; i < inventory.space; i++)
+    //    {
+    //        var invenItem = inventory.SlotCheck(i);
 
-            if (invenItem.item != null && invenItem.amount > 0)
-            {
-                playerInven.Add(invenItem.item, invenItem.amount);
-            }
-        }
-    }
+    //        if (invenItem.item != null && invenItem.amount > 0)
+    //        {
+    //            playerInven.Add(invenItem.item, invenItem.amount);
+    //        }
+    //    }
+    //}
 
     public override Dictionary<Item, int> PopUpItemCheck()
     {
@@ -306,7 +345,7 @@ public class Transporter : Production
 
         int itemsCount = 0;
         //다른 슬롯의 같은 아이템도 개수 추가하도록
-        for (int i = 0; i < 18; i++)
+        for (int i = 0; i < inventory.space; i++)
         {
             var invenItem = inventory.SlotCheck(i);
 
@@ -356,6 +395,10 @@ public class Transporter : Production
             ExStorageCheck();
             OpenAnimServerRpc("ItemGetOpen");
         }
+        else
+        {
+            takeUnit.TakeItemEnd(false);
+        }
     }
 
     void ExStorageCheck()
@@ -383,7 +426,7 @@ public class Transporter : Production
         {
             unitItemList.RemoveAt(0);
             UnitItemListSyncServerRpc();
-            getItemUnit[0].TakeItemEnd();
+            getItemUnit[0].TakeItemEnd(true);
             getItemUnit.RemoveAt(0);
         }
     }
@@ -408,11 +451,11 @@ public class Transporter : Production
         sInvenManager.TransporterResetUI();
     }
 
-    public override void DestroyLineRenderer()
-    {
-        base.DestroyLineRenderer();
-        takeBuild = null;
-    }
+    //public override void DestroyLineRenderer()
+    //{
+    //    base.DestroyLineRenderer();
+    //    takeBuild = null;
+    //}
 
     public void TakeBuildReset()
     {
@@ -427,6 +470,13 @@ public class Transporter : Production
 
     public void RemoveFunc()
     {
+        clickEvent.RemoveAllLines();
+
+        if (takeBuild != null && takeBuild.sendBuildList.Contains(this))
+        {
+            takeBuild.sendBuildList.Remove(this);
+        }
+
         foreach (GameObject trUnit in sendItemUnit)
         {
             trUnit.GetComponent<TransportUnit>().MainTrBuildRemove();
@@ -434,31 +484,31 @@ public class Transporter : Production
 
         foreach (Transporter transport in sendBuildList)
         {
-            transport.DestroyLineRenderer();
+            transport.RemoveTakeBuild();
             foreach (GameObject trUnit in transport.sendItemUnit)
             {
-                trUnit.GetComponent<TransportUnit>().TakeItemEnd();
+                trUnit.GetComponent<TransportUnit>().TakeItemEnd(false);
             }
         }
     }
 
-    protected override void ItemDrop()
+    public void TrUnitToHomelessDrone()
     {
-        if (itemList.Count > 0)
+        //건물이 파괴될 때 소유한 드론이 있는 경우 HomelessDroneManager에 인계
+        if (sendItemUnit.Count > 0)
         {
-            foreach (Item item in itemList)
+            foreach (GameObject trUnit in sendItemUnit)
             {
-                ItemToItemProps(item, 1);
+                if (trUnit != null)
+                    HomelessDroneManager.instance.AddDrone(trUnit.GetComponent<TransportUnit>());
             }
         }
+    }
 
-        if (itemObjList.Count > 0)
-        {
-            foreach (ItemProps itemProps in itemObjList)
-            {
-                itemProps.ResetItemProps();
-            }
-        }
+    public void RemoveTakeBuild()
+    {
+        clickEvent.RemoveAllLines();
+        takeBuild = null;
     }
 
     public void UnitLoad(Vector3 spawnPos, Transporter othTransporter, Dictionary<int, int> itemDic)
@@ -492,7 +542,7 @@ public class Transporter : Production
         sendItemUnit.Add(unit);
         TransportUnit unitScript = unit.GetComponent<TransportUnit>();
         unitScript.MovePosSet(this, this, item);
-        unitScript.TakeItemEnd();
+        unitScript.TakeItemEnd(false);
     }
 
     public override StructureSaveData SaveData()
@@ -506,6 +556,8 @@ public class Transporter : Production
 
         if (sendItemUnit.Count > 0)
         {
+            Dictionary<int, Dictionary<int, int>> itemDataSave = new Dictionary<int, Dictionary<int, int>>();
+
             for (int i = 0; i < sendItemUnit.Count; i++)
             {
                 SerializedVector3 vector3 = Vector3Extensions.FromVector3(sendItemUnit[i].transform.position);
@@ -517,10 +569,10 @@ public class Transporter : Production
                     itemSave.Add(GeminiNetworkManager.instance.GetItemSOIndex(itemData.Key), itemData.Value);
                 }
 
-                Dictionary<int, Dictionary<int, int>> itemDataSave = new Dictionary<int, Dictionary<int, int>>();
                 itemDataSave.Add(i, itemSave);
-                data.trUnitItemData = itemDataSave;
             }
+
+            data.trUnitItemData = itemDataSave;
         }
 
         return data;

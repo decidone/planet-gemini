@@ -165,8 +165,11 @@ public class Structure : NetworkBehaviour
 
     public bool isInHostMap;
     public Vector3 tileSetPos;
-    
-    public bool destroyStart;
+
+    public bool isManualDestroy;    //사용자가 철거 명령을 하는 경우 true. 철거로 인해 파괴되는지 몬스터에 의해 파괴되는지 구분하기 위해 사용
+    public bool destroyStart;       //철거 시작하고 나서 계속 돌아감
+    public bool isDestroying;       //철거 시작하는 순간 한 번만 돌아감
+    public bool isRunning;          //isOperate쓰기 애매한 건물에 작동 체크용(드론운송 관련 건물들)
     protected float destroyInterval;
     protected float destroyTimer;
 
@@ -349,7 +352,9 @@ public class Structure : NetworkBehaviour
         Debug.Log("DestroyClientRpc : " + destroyStart + " : " + !isPreBuilding);
         if (!destroyStart && !isPreBuilding && destroyTimer > 0)
         {
+            isManualDestroy = true;
             destroyStart = true;
+            isDestroying = true;
             isPreBuilding = true;
             isSetBuildingOk = false;
             unitCanvas.SetActive(true);
@@ -1627,13 +1632,27 @@ public class Structure : NetworkBehaviour
             if(canDivide)
                 beltGroup.ClientBeltSyncServerRpc();
         }
+        else if (TryGetComponent(out Transporter transporter))
+        {
+            if (!transporter.isManualDestroy)
+                transporter.RemoveFunc();
+            transporter.TrUnitToHomelessDrone();
+        }
+        else if (TryGetComponent(out AutoSeller autoSeller))
+        {
+            if (!autoSeller.isManualDestroy)
+                autoSeller.RemoveFunc();
+            autoSeller.TrUnitToHomelessDrone();
+        }
+        else if (TryGetComponent(out AutoBuyer autoBuyer))
+        {
+            if (!autoBuyer.isManualDestroy)
+                autoBuyer.RemoveFunc();
+            autoBuyer.TrUnitToHomelessDrone();
+        }
         else if (TryGetComponent(out FluidFactoryCtrl fluid))
         {
             fluid.RemoveMainSource(true);
-        }
-        else if (TryGetComponent(out Transporter trBuild))
-        {
-            trBuild.RemoveFunc();
         }
         else if (TryGetComponent(out PortalObj portalObj))
         {
