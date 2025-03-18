@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Pathfinding;
+using ToJ;
+using QFSW.QC.Actions;
 
 public class WavePoint : MonoBehaviour
 {
@@ -17,15 +20,13 @@ public class WavePoint : MonoBehaviour
 
     [SerializeField]
     GameObject lineObj;
-
-    //LineRenderer map1LineRenderer;
-    //LineRenderer map2LineRenderer;
-
-    //Vector3 map1BasePos;
-    //Vector3 map2BasePos;
-
+    LineRenderer lineRenderer;
     GameManager gameManager;
     bool mapCameraOpen;
+    protected Seeker seeker;
+    protected int currentWaypointIndex;                 // 현재 이동 중인 경로 점 인덱스
+    [SerializeField]
+    protected List<Vector3> movePath = new List<Vector3>();
 
     #region Singleton
     public static WavePoint instance;
@@ -46,11 +47,11 @@ public class WavePoint : MonoBehaviour
     {
         gameManager = GameManager.instance;
         canvasObj.transform.localScale = new Vector3(1, 1, 1);
+        seeker = GetComponent<Seeker>();
 
         Vector2 dir = new Vector2(Screen.width, Screen.height);
         defaultAngle = Vector2.Angle(new Vector2(0, 1), dir);
     }
-
 
     void Update()
     {
@@ -81,18 +82,6 @@ public class WavePoint : MonoBehaviour
         mapCameraOpen = isOpen;
     }
 
-    //public void SpawnPos(bool isHostPos, Vector2 pos)
-    //{
-    //    if (isHostPos)
-    //    {
-    //        map1BasePos = pos;
-    //    }
-    //    else
-    //    {
-    //        map2BasePos = pos;
-    //    }
-    //}
-
     public void PlayerSet(GameObject _player)
     {
         player = _player;
@@ -104,33 +93,62 @@ public class WavePoint : MonoBehaviour
         {
             map1WavePos = wavePos;
             isMap1WaveStart = true;
-            //GameObject currentLine;
-
-            //if (map1LineRenderer == null)
-            //{
-            //    currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
-            //    map1LineRenderer = currentLine.GetComponent<LineRenderer>();
-            //}
-
-            //map1LineRenderer.positionCount = 2;
-            //map1LineRenderer.SetPosition(0, map1WavePos);
-            //map1LineRenderer.SetPosition(1, map1BasePos);
         }
         else
         {
             map2WavePos = wavePos;
             isMap2WaveStart = true;
-            //GameObject currentLine;
+        }
+        StartCoroutine(CheckPath(wavePos, isInHostMap));
+    }
 
-            //if (map2LineRenderer == null)
-            //{
-            //    currentLine = Instantiate(lineObj, wavePos, Quaternion.identity);
-            //    map2LineRenderer = currentLine.GetComponent<LineRenderer>();
-            //}
+    protected IEnumerator CheckPath(Vector3 wavePos, bool isHostMap)
+    {
+        GraphMask mask;
+        Vector3 targetPos;
+        if (isHostMap)
+        {
+            mask = GraphMask.FromGraphName("Map1MonsterUnit");
+            targetPos = gameManager.hostPlayerSpawnPos;
+        }
+        else
+        {
+            mask = GraphMask.FromGraphName("Map2MonsterUnit");
+            targetPos = gameManager.clientPlayerSpawnPos;
+        }
+        seeker.graphMask = mask;
 
-            //map2LineRenderer.positionCount = 2;
-            //map2LineRenderer.SetPosition(0, map2WavePos);
-            //map2LineRenderer.SetPosition(1, map2BasePos);
+        ABPath path = ABPath.Construct(wavePos, targetPos, null);
+        seeker.CancelCurrentPathRequest();
+        seeker.StartPath(path);
+
+        yield return StartCoroutine(path.WaitForPath());
+
+        currentWaypointIndex = 1;
+        movePath = path.vectorPath;
+
+        SetLine(true);
+    }
+
+    void SetLine(bool isSet)
+    {
+        if (isSet)
+        {
+            Vector3 startLine = new Vector3(transform.position.x, transform.position.y, -1);
+
+            GameObject currentLine = Instantiate(lineObj, startLine, Quaternion.identity);
+            lineRenderer = currentLine.GetComponent<LineRenderer>();
+            Vector3[] movePathArr = movePath.ToArray();
+            lineRenderer.positionCount = movePathArr.Length;
+            lineRenderer.SetPositions(movePathArr);
+        }
+        else
+        {
+            if (lineRenderer != null)
+            {
+                Destroy(lineRenderer.gameObject);
+                movePath = null;
+            }
         }
     }
 
@@ -150,7 +168,6 @@ public class WavePoint : MonoBehaviour
         }
 
         WaveStart(loadWaveData.Item1, loadWaveData.Item2);
-        Debug.Log("WaveStart");
     }
 
 
@@ -166,6 +183,7 @@ public class WavePoint : MonoBehaviour
         }
         canvasObj.SetActive(false);
         mapObj.SetActive(false);
+        SetLine(false);
     }
 
     public void SetIndicator(bool isInHostMap)

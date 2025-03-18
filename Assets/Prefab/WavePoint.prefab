@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 427091327029894567}
   - component: {fileID: 2284849099493950391}
+  - component: {fileID: 1373934453211157952}
   m_Layer: 0
   m_Name: WavePoint
   m_TagString: Untagged
@@ -47,8 +48,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasObj: {fileID: 0}
   mapObj: {fileID: 6843446920161672078}
-  attackPointObj: {fileID: 0}
   lineObj: {fileID: 5696256792421437546, guid: 5fb3e817f22b0d04aa5d1f5cddfdc154, type: 3}
+--- !u!114 &1373934453211157952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 427091327029894568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
 --- !u!1 &6843446920161672078
 GameObject:
   m_ObjectHideFlags: 0

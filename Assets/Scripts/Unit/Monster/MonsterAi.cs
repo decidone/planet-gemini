@@ -373,7 +373,7 @@ public class MonsterAi : UnitCommonAi
         {
             checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
         }
-        else if (waveStateEnd)
+        else if (waveState && waveStateEnd)
         {
             checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
         }
@@ -577,6 +577,7 @@ public class MonsterAi : UnitCommonAi
                 }
                 else
                 {
+                    MonsterSpawnerManager.instance.BattleRemoveMonster(gameObject);
                     spawnerScript.ReturnMonster(this);
                     waveState = false;
                     waveStateEnd = false;
@@ -687,8 +688,11 @@ public class MonsterAi : UnitCommonAi
             {
                 WaveStart(wavePos);
             }
-            //else if (waveState && waveArrivePos && !waveWaiting)
-            else if (waveState && waveArrivePos)
+            else if (waveStateEnd)
+            {
+                checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
+            }
+            else if (waveArrivePos)
             {
                 checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
             }
