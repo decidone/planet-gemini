@@ -24,6 +24,7 @@ public class StructureInvenManager : InventoryManager
     public Toggle toggle;
     public InputField inputField;
     public Button subBtn;
+    public Button sortBtn;
 
     void OnEnable()
     {

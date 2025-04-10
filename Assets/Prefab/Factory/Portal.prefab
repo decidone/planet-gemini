@@ -419,7 +419,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: -1458949346, guid: df4b72de7857186488a836abf77829f1, type: 3}
+  m_Sprite: {fileID: -548289585, guid: fa42af2d6e12cd242a650248721b72be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -440,7 +440,7 @@ Animator:
   m_GameObject: {fileID: 721077935684597043}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 76ddf76a825fa224eb7dc3e221bd87cb, type: 2}
+  m_Controller: {fileID: 9100000, guid: a0da56fac47ccbd49b02780b551ed0bd, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -521,6 +521,7 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
+  overclockOn: 0
   overclockPer: 0
   effiCooldownUpgradePer: 0
   isStorageBuilding: 0
@@ -545,7 +546,10 @@ MonoBehaviour:
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
@@ -554,6 +558,7 @@ MonoBehaviour:
   warningIconCheck: 0
   getAnim: 0
   strImg: []
+  isAuto: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -863,7 +868,7 @@ PrefabInstance:
     - target: {fileID: 696061268899102188, guid: cc9c7c98d8981764891bec759cf0fc85, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 793659e038f0b5c43b98689c866d57f2, type: 3}
+      objectReference: {fileID: 21300000, guid: 716678812e3e37c4b9434ada3be6f5fa, type: 3}
     - target: {fileID: 4579693361766934189, guid: cc9c7c98d8981764891bec759cf0fc85, type: 3}
       propertyPath: m_RootOrder
       value: 6

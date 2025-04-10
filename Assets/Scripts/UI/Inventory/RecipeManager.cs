@@ -25,15 +25,15 @@ public class RecipeManager : InventoryManager
     void OnEnable()
     {
         inputManager = InputManager.instance;
-        inputManager.controls.Inventory.SlotLeftClick.performed += SlotLeftClick;
-        inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
+        //inputManager.controls.Inventory.SlotLeftClick.performed += SlotLeftClick;
+        //inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
         inputManager.controls.Inventory.Recipe.performed += SlotClick;
     }
 
     void OnDisable()
     {
-        inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
-        inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
+        //inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
+        //inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
         inputManager.controls.Inventory.Recipe.performed -= SlotClick;
     }
 
@@ -43,14 +43,16 @@ public class RecipeManager : InventoryManager
         {
             if (focusedSlot.item != null)
             {
-                for (int i = 0; i < recipes.Count; i++)
-                {
-                    if(recipes[i].name == focusedSlot.item.name)
-                    {
-                        prod.SetRecipeServerRpc(i);
-                        break;
-                    }
-                }
+                prod.SetRecipeServerRpc(focusedSlot.slotNum);
+
+                //for (int i = 0; i < recipes.Count; i++)
+                //{
+                //    if(recipes[i].name == focusedSlot.item.name)
+                //    {
+                //        prod.SetRecipeServerRpc(i);
+                //        break;
+                //    }
+                //}
 
                 focusedSlot = null;
                 CloseUI();

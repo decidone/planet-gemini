@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mono.CSharp;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,10 @@ public class SaveLoadBtn : MonoBehaviour
     Text slotText;
     [SerializeField]
     Text contentsText;
+    [SerializeField]
+    Button mainBtn;
+    [SerializeField]
+    Button deleteBtn;
     SaveLoadMenu saveLoadMenu;
     bool saveLoadState; // true : save 버튼, false : load 버튼
     int slotNum;
@@ -17,7 +22,7 @@ public class SaveLoadBtn : MonoBehaviour
     private void Start()
     {
         saveLoadMenu = SaveLoadMenu.instance;
-        GetComponent<Button>().onClick.AddListener(() => BtnFunc());
+        mainBtn.onClick.AddListener(() => BtnFunc());
     }
 
     public void SetSlotData(int slotCount, string saveDate, string fileName, int mapDataIndex, int diffLevel)
@@ -30,11 +35,17 @@ public class SaveLoadBtn : MonoBehaviour
             //contentsText.text = saveDate + System.Environment.NewLine + mapSizeString + " " + diffLevelString + " " + fileName;
             contentsText.text = saveDate + System.Environment.NewLine + fileName;
             loadEnable = true;
+
+            deleteBtn.gameObject.SetActive(true);
+            deleteBtn.onClick.AddListener(() => DeleteBtnFunc());
         }
         else
         {
             contentsText.text = "Empty";
             loadEnable = false;
+
+            deleteBtn.gameObject.SetActive(false);
+            deleteBtn.onClick.RemoveAllListeners();
         }
 
         slotNum = slotCount;
@@ -55,6 +66,15 @@ public class SaveLoadBtn : MonoBehaviour
         }
 
         slotNum = slotCount;
+    }
+
+    public void RemoveSlotData()
+    {
+        contentsText.text = "Empty";
+        loadEnable = false;
+
+        deleteBtn.gameObject.SetActive(false);
+        deleteBtn.onClick.RemoveAllListeners();
     }
 
     string MapSizeString(int mapDataIndex)
@@ -137,7 +157,20 @@ public class SaveLoadBtn : MonoBehaviour
             }
             saveLoadMenu.MenuClose();
             OptionCanvas.instance.MainPanelSet(false);
+        }
+    }
 
+    void DeleteBtnFunc()
+    {
+        ConfirmPanel.instance.CallDeleteConfirm(this, slotNum);
+    }
+
+    public void DeleteBtnConfirm(bool confirmState)
+    {
+        if (confirmState)
+        {
+            saveLoadMenu.Delete(slotNum);
+            RemoveSlotData();
         }
     }
 }

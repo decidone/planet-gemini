@@ -217,7 +217,7 @@ public class MainManager : MonoBehaviour
                     SaveLoadMenu.instance.MenuClose();
                     break;
                 case "ConfirmPanel":
-                    ConfirmPanel.instance.CanelBtnFunc();
+                    ConfirmPanel.instance.CancelBtnFunc();
                     break;
 
             }

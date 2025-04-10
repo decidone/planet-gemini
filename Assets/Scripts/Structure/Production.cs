@@ -403,6 +403,14 @@ public abstract class Production : Structure
         }
     }
 
+    public void SortInven()
+    {
+        if (!ItemDragManager.instance.isDrag)
+        {
+            inventory.SortServerRpc();
+        }
+    }
+
     public override Dictionary<Item, int> PopUpItemCheck()
     {
         Dictionary<Item, int> returnDic = new Dictionary<Item, int>();

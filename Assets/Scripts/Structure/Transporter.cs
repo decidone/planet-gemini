@@ -134,6 +134,8 @@ public class Transporter : Production
         sInvenManager.progressBar.SetMaxProgress(cooldown);
         sInvenManager.SetCooldownText(cooldown);
         sInvenManager.TransporterSetting(isToggleOn, sendAmount);
+        sInvenManager.sortBtn.gameObject.SetActive(true);
+        sInvenManager.sortBtn.onClick.AddListener(SortInven);
 
         //if (takeBuild != null)
         //    LineRendererSet(takeBuild.transform.position);
@@ -142,6 +144,8 @@ public class Transporter : Production
     public override void CloseUI()
     {
         base.CloseUI();
+        sInvenManager.sortBtn.gameObject.SetActive(false);
+        sInvenManager.sortBtn.onClick.RemoveAllListeners();
         sInvenManager.ReleaseInven();
 
         // ???

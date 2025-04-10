@@ -30,6 +30,7 @@ public class ConfirmPanel : MonoBehaviour
     float countdownInterval;
 
     float windowTimer = 16;
+    bool isSaveLoadDelete;
 
     #region Singleton
     public static ConfirmPanel instance;
@@ -49,7 +50,7 @@ public class ConfirmPanel : MonoBehaviour
     void Start()
     {
         OkBtn.onClick.AddListener(() => OkBtnFunc());
-        CanelBtn.onClick.AddListener(() => CanelBtnFunc());
+        CanelBtn.onClick.AddListener(() => CancelBtnFunc());
         inputManager = InputManager.instance;
     }
 
@@ -66,7 +67,7 @@ public class ConfirmPanel : MonoBehaviour
             countdownText.text = ((int)countdownTimer).ToString();
             if (countdownTimer < countdownInterval)
             {
-                CanelBtnFunc();
+                CancelBtnFunc();
             }
         }
     }
@@ -82,6 +83,7 @@ public class ConfirmPanel : MonoBehaviour
     {
         PanelSetBtn(true);
         saveLoadBtn = btn;
+        isSaveLoadDelete = false;
         if (saveLoadState)
         {
             contentText.text = "Do you want to save to slot " + slotNum + "?";
@@ -92,6 +94,19 @@ public class ConfirmPanel : MonoBehaviour
         {
             contentText.text = "Do you want to load to slot " + slotNum + "?";
         }
+        if (GameManager.instance != null)
+            GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
+        else
+            MainManager.instance.OpenedUISet(confirmPanel);
+    }
+
+    public void CallDeleteConfirm(SaveLoadBtn btn, int slotNum)
+    {
+        PanelSetBtn(true);
+        saveLoadBtn = btn;
+        isSaveLoadDelete = true;
+        contentText.text = "Do you really want to delete saved data at slot " + slotNum + "?";
+        
         if (GameManager.instance != null)
             GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);
         else
@@ -156,7 +171,14 @@ public class ConfirmPanel : MonoBehaviour
     {
         if(saveLoadBtn)
         {
-            saveLoadBtn.BtnConfirm(true, inputField.text);
+            if (isSaveLoadDelete)
+            {
+                saveLoadBtn.DeleteBtnConfirm(true);
+            }
+            else
+            {
+                saveLoadBtn.BtnConfirm(true, inputField.text);
+            }
         }
         else if (windowSetting)
         {
@@ -173,11 +195,18 @@ public class ConfirmPanel : MonoBehaviour
         UIClose();
     }
 
-    public void CanelBtnFunc()
+    public void CancelBtnFunc()
     {
         if (saveLoadBtn)
         {
-            saveLoadBtn.BtnConfirm(false, inputField.text);
+            if (isSaveLoadDelete)
+            {
+                saveLoadBtn.DeleteBtnConfirm(false);
+            }
+            else
+            {
+                saveLoadBtn.BtnConfirm(false, inputField.text);
+            }
         }
         else if (windowSetting)
         {

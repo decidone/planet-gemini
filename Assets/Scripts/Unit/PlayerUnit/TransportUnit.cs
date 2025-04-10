@@ -18,7 +18,7 @@ public class TransportUnit : UnitCommonAi
     [HideInInspector]
     public Transporter othTrBuild;
     public Vector3 endPos;
-
+    float unitSpeedMag;     //유닛 스피드 배율(아이템 적재 여부에 따라 달라짐)
     [HideInInspector]
     AutoSeller autoSeller;
     [HideInInspector]
@@ -67,6 +67,20 @@ public class TransportUnit : UnitCommonAi
         }
     }
 
+    void SetUnitSpeedMag()
+    {
+        if (isBuyerUnit)
+        {
+            // 바이어 드론은 갈 떄 아이템이 2개, 올 때 1개 적재된 상태
+            unitSpeedMag = (itemDic.Count > 1) ? 2f : 1f;
+        }
+        else
+        {
+            // 일반 드론은 아이템 적재 여부에 따라 속도 조정
+            unitSpeedMag = (itemDic.Count > 0) ? 1f : 2f;
+        }
+    }
+
     public void SetHomelessDrone(HomelessDroneSaveData saveData)
     {
         isHomelessUnit = true;
@@ -103,12 +117,14 @@ public class TransportUnit : UnitCommonAi
         {
             itemDic.Add(GeminiNetworkManager.instance.GetItemSOFromIndex(data.Key), data.Value);
         }
+
+        SetUnitSpeedMag();
     }
 
     public void HomelessDroneMove()
     {
         // homeless drone은 이동 후 아이템을 뿌려주기만 하면 되기 때문에 TrUnitState를 쓰지 않음
-        tr.position = Vector3.MoveTowards(tr.position, endPos, Time.deltaTime * unitCommonData.MoveSpeed / 2);
+        tr.position = Vector3.MoveTowards(tr.position, endPos, Time.deltaTime * unitCommonData.MoveSpeed * unitSpeedMag);
 
         if (tr.position == endPos)
         {
@@ -124,6 +140,7 @@ public class TransportUnit : UnitCommonAi
         endPos = othTrBuild.transform.position;
 
         itemDic = _itemDic;
+        SetUnitSpeedMag();
         trUnitState = TrUnitState.trMove;
     }
 
@@ -136,6 +153,7 @@ public class TransportUnit : UnitCommonAi
 
         itemDic = _itemDic;
         price = _price;
+        SetUnitSpeedMag();
         trUnitState = TrUnitState.trMove;
     }
 
@@ -147,15 +165,13 @@ public class TransportUnit : UnitCommonAi
         endPos = portalPos;
 
         itemDic = _itemDic;
+        SetUnitSpeedMag();
         trUnitState = TrUnitState.trMove;
     }
 
     void MoveFunc()
     {
-        if (isBuyerUnit)
-            tr.position = Vector3.MoveTowards(tr.position, endPos, Time.deltaTime * unitCommonData.MoveSpeed / 2);
-        else
-            tr.position = Vector3.MoveTowards(tr.position, endPos, Time.deltaTime * unitCommonData.MoveSpeed / 2);
+        tr.position = Vector3.MoveTowards(tr.position, endPos, Time.deltaTime * unitCommonData.MoveSpeed * unitSpeedMag);
 
         if (tr.position == endPos)
         {
@@ -211,14 +227,13 @@ public class TransportUnit : UnitCommonAi
             trUnitState = TrUnitState.returnBuild;
         else
             DestroyTrUnit();
+
+        SetUnitSpeedMag();
     }
 
     void ReturnToBuild()
     {
-        if (isBuyerUnit)
-            tr.position = Vector3.MoveTowards(tr.position, startPos, Time.deltaTime * unitCommonData.MoveSpeed / 2);
-        else
-            tr.position = Vector3.MoveTowards(tr.position, startPos, Time.deltaTime * unitCommonData.MoveSpeed / 2);
+        tr.position = Vector3.MoveTowards(tr.position, startPos, Time.deltaTime * unitCommonData.MoveSpeed * unitSpeedMag);
 
         if (tr.position == startPos)
         {

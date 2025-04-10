@@ -35,6 +35,8 @@ public class Storage : Production
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.gameObject.SetActive(false);
         sInvenManager.energyBar.gameObject.SetActive(false);
+        sInvenManager.sortBtn.gameObject.SetActive(true);
+        sInvenManager.sortBtn.onClick.AddListener(SortInven);
     }
 
     public override void CloseUI()
@@ -42,6 +44,8 @@ public class Storage : Production
         base.CloseUI();
         sInvenManager.progressBar.gameObject.SetActive(true);
         sInvenManager.energyBar.gameObject.SetActive(true);
+        sInvenManager.sortBtn.gameObject.SetActive(false);
+        sInvenManager.sortBtn.onClick.RemoveAllListeners();
         sInvenManager.ReleaseInven();
     }
 

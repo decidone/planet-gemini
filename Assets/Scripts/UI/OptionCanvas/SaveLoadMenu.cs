@@ -25,9 +25,11 @@ public class SaveLoadMenu : MonoBehaviour
     [SerializeField]
     GameObject btnObj;
     [SerializeField]
-    SaveLoadBtn[] buttons;
-    [SerializeField]
     Button backBtn;
+
+    SaveLoadBtn[] buttons;
+    int saveCount = 21;
+
     #region Singleton
     public static SaveLoadMenu instance;
 
@@ -46,6 +48,7 @@ public class SaveLoadMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        buttons = new SaveLoadBtn[saveCount];
         LoadSaveData();
         backBtn.onClick.AddListener(() => BackBtnFunc());
     }
@@ -68,7 +71,7 @@ public class SaveLoadMenu : MonoBehaviour
             buttons[0].SetSlotData(0, null);
         }
 
-        for (int i = 1; i < 11; i++)
+        for (int i = 1; i < saveCount; i++)
         {
             GameObject btn = Instantiate(btnObj);
             btn.transform.SetParent(content.transform, false);
@@ -175,6 +178,16 @@ public class SaveLoadMenu : MonoBehaviour
             //SteamManager.instance.HostLobby();
             NetworkManager.Singleton.StartHost();
             LoadingUICtrl.Instance.LoadScene("GameScene", true);
+        }
+    }
+
+    public void Delete(int slotNum)
+    {
+        string filePath = path + slotNum.ToString() + ".json";
+
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
         }
     }
 

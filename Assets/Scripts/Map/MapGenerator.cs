@@ -381,6 +381,7 @@ public class MapGenerator : MonoBehaviour
 
         CreateResource(hostMap, true);
         CreateObj(hostMap, true);
+        RemoveNearPortalObj(hostMap);
 
         if (isMultiPlay)
         {
@@ -400,6 +401,7 @@ public class MapGenerator : MonoBehaviour
 
             CreateResource(clientMap, false);
             CreateObj(clientMap, false);
+            RemoveNearPortalObj(clientMap);
         }
 
         SetMapFog();
@@ -862,10 +864,31 @@ public class MapGenerator : MonoBehaviour
                     if (obj != null)
                     {
                         GameObject objInst = Instantiate(obj, objects.transform);
+                        if (objInst.TryGetComponent<MapObject>(out MapObject mapObj))
+                            mapObj.isInHostmap = isHostMap;
                         cell.obj = objInst;
 
                         objInst.name = string.Format("map_x{0}_y{1}", x, y);
                         objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)((y + offsetY) + 0.5), 0);
+                    }
+                }
+            }
+        }
+    }
+
+    void RemoveNearPortalObj(Map map)
+    {
+        var spawnPos = map.spawnTile;
+        int removeRadius = 5;
+        for (int x = spawnPos.x - removeRadius; x < spawnPos.x + removeRadius; x++)
+        {
+            for (int y = spawnPos.y - removeRadius; y < spawnPos.y + removeRadius; y++)
+            {
+                if (map.mapData[x][y].obj != null)
+                {
+                    if (map.mapData[x][y].obj.TryGetComponent<MapObject>(out MapObject obj))
+                    {
+                        obj.RemoveMapObj();
                     }
                 }
             }

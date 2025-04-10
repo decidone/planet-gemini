@@ -160,57 +160,12 @@ public class Inventory : NetworkBehaviour
 
     public void RecipeInvenAdd(Item item, int amount)
     {
-        int containableAmount = SpaceCheck(item);
-        int tempAmount = amount;
-
-        if (containableAmount < amount)
-        {
-            tempAmount = containableAmount;
-        }
-
-        // 2. 이미 있던 칸에 수량 증가
         for (int i = 0; i < space; i++)
         {
-            if (items.ContainsKey(i))
+            if (!items.ContainsKey(i))
             {
-                if (items[i] == item)
-                {
-                    if (amounts[i] + tempAmount <= maxAmount)
-                    {
-                        RecipeSlotAdd(i, item, tempAmount);
-                        tempAmount = 0;
-                    }
-                    else
-                    {
-                        RecipeSlotAdd(i, item, maxAmount - amounts[i]);
-                        tempAmount -= (maxAmount - amounts[i]);
-                    }
-                }
-            }
-            if (tempAmount == 0)
+                RecipeSlotAdd(i, item, amount);
                 break;
-        }
-
-        // 3. 2를 처리하고 남은 수량만큼 빈 칸에 배정
-        if (tempAmount > 0)
-        {
-            for (int i = 0; i < space; i++)
-            {
-                if (!items.ContainsKey(i))
-                {
-                    if (tempAmount <= maxAmount)
-                    {
-                        RecipeSlotAdd(i, item, tempAmount);
-                        tempAmount = 0;
-                    }
-                    else
-                    {
-                        RecipeSlotAdd(i, item, maxAmount);
-                        tempAmount -= maxAmount;
-                    }
-                }
-                if (tempAmount <= 0)
-                    break;
             }
         }
 
