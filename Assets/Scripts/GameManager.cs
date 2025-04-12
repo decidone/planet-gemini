@@ -119,6 +119,8 @@ public class GameManager : NetworkBehaviour
     // 3 : 20:00 ~ 24:00
     // 4 : 24:00 ~ 04:00
     // 5 : 04:00 ~ 08:00
+    [SerializeField]
+    bool clickToNextTime;
 
     [SerializeField]
     int safeDay;                        // 게임 초기 안전한 날
@@ -139,7 +141,7 @@ public class GameManager : NetworkBehaviour
 
     /// <summary>
     /// 광폭화 시스템
-    /// 인게임 하루 = 현실 10분
+    /// 인게임 하루 = 현실 12분
     /// 안전한날 20일 = 현실 3시간 20분
     /// 20분에 1번 발생 한다면
     /// 인게임 2일 = 현실 20분
@@ -155,6 +157,10 @@ public class GameManager : NetworkBehaviour
     Text timeText;
     [SerializeField]
     Text dayText;
+    [SerializeField]
+    Text dDayHostMap;
+    [SerializeField]
+    Text dDayClientMap;
     [SerializeField]
     SpriteRenderer brightness;
 
@@ -226,6 +232,7 @@ public class GameManager : NetworkBehaviour
         OtherPortalSet(); 
         SoundManager.instance.GameSceneLoad();
         autoSaveinterval = SettingsMenu.instance.autoSaveInterval;
+        SyncTimeServerRpc();
         //GameStartSet();
     }
 
@@ -315,6 +322,12 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
+        if(clickToNextTime)
+        {
+            dayTimer = dayTime;
+            clickToNextTime = false;
+        }
+
         dayTimer += Time.deltaTime;
         hours = (dayTimer / 25f) + (dayIndex * 4) + 8;
         hours = Mathf.Repeat(hours, 24f);
@@ -343,36 +356,41 @@ public class GameManager : NetworkBehaviour
             {
                 isDay = true;
                 SoundManager.instance.PlayBgmMapCheck();
-                if (violentDay)
+                if (violentDayCheck)
                 {
-                    violentDay = false;
-                    violentDayCheck = false;
-                    forcedOperation = false;
-                    MonsterSpawnerManager.instance.WavePointOff();
-                    if(IsServer)
-                        MonsterSpawnerManager.instance.WaveMonsterReturn();
-                    timeImg.color = new Color32(255, 255, 255, 255);
+                    violentDay = true;
+                    timeImg.color = new Color32(255, 50, 50, 255);
+                    if (IsServer)
+                    {
+                        MonsterSpawnerManager.instance.ViolentDayStart();
+                    }
                 }
             }
             else if (dayIndex == 3)
             {
                 isDay = false;
                 SoundManager.instance.PlayBgmMapCheck();
-                if (violentDayCheck)
-                {
-                    violentDay = true;
-                    timeImg.color = new Color32(255, 50, 50, 255);
-                }
             }
             else if (dayIndex == 4)
             {
                 day++;
                 dayText.text = "Day : " + day;
 
+                if (violentDay)
+                {
+                    violentDay = false;
+                    violentDayCheck = false;
+                    forcedOperation = false;
+                    MonsterSpawnerManager.instance.WavePointOff();
+                    if (IsServer)
+                        MonsterSpawnerManager.instance.WaveEndSet();
+                    MonsterSpawnerManager.instance.ViolentDayOff();
+                    timeImg.color = new Color32(255, 255, 255, 255);
+                }
+
                 if (IsServer)
                 {
-                    SyncTimeServerRpc();
-                    ViolentDayOnServerRpc();
+                    SyncTimeServerRpc();                    
                 }
             }
         }
@@ -409,38 +427,46 @@ public class GameManager : NetworkBehaviour
     void ViolentDayOnServerRpc()
     {
         bool violentDaySync = false;
+        bool violentDayOnCheck = false;
 
-        if (violentDayCheck)
+        if (!violentDayCheck && day >= safeDay)
         {
-            MonsterSpawnerManager.instance.ViolentDayStart();
-            violentDaySync = false;
-        }
-        else
-        {
-            if (day >= safeDay)
+            if (day % violentCycle == 0)    // 호스트맵
             {
-                if (day % violentCycle == 0)    // 호스트맵
-                {
-                    wavePlanet = true;
-                    violentDaySync = true;
-                    MonsterSpawnerManager.instance.ViolentDayOn(true, forcedOperation);
-                }
-                else if ((day - clientMapDateDifference) % violentCycle == 0)    // 클라이언트 맵
-                {
-                    wavePlanet = false;
-                    violentDaySync = true;
-                    MonsterSpawnerManager.instance.ViolentDayOn(false, forcedOperation);
-                }
+                wavePlanet = true;
+                violentDaySync = true;
+                violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(true, forcedOperation);
+            }
+            else if ((day - clientMapDateDifference) % violentCycle == 0)    // 클라이언트 맵
+            {
+                wavePlanet = false;
+                violentDaySync = true;
+                violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(false, forcedOperation);
             }
         }
 
-        ViolentDayOnClientRpc(violentDaySync);
+        int hostDday = CalculateDday(day, safeDay, violentCycle);
+        int clientDday = CalculateDday(day - clientMapDateDifference, safeDay, violentCycle);
+
+        ViolentDayOnClientRpc(violentDaySync, violentDayOnCheck, hostDday, clientDday);
     }
 
     [ClientRpc]
-    void ViolentDayOnClientRpc(bool violentDaySync)
+    void ViolentDayOnClientRpc(bool violentDaySync, bool violentDayOnCheck, int hostDday, int clientDday)
     {
         violentDayCheck = violentDaySync;
+
+        dDayHostMap.text = "D - " + ((violentDayOnCheck && hostDday == violentCycle) ? "Day" : hostDday);
+        dDayClientMap.text = "D - " + ((violentDayOnCheck && clientDday == violentCycle) ? "Day" : clientDday);
+    }
+
+    int CalculateDday(int currentDay, int safeDay, int cycle)
+    {
+        if (currentDay < safeDay)
+            return safeDay - currentDay; // 안전 기간 동안은 첫 번째 바이올런트 데이까지 남은 일수 계산
+
+        int nextViolentDay = ((currentDay / cycle) + 1) * cycle;
+        return nextViolentDay - currentDay;
     }
 
     public void WaveForcedOperation()
@@ -1422,6 +1448,7 @@ public class GameManager : NetworkBehaviour
     public void SyncTimeServerRpc()
     {
         SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentValue, violentDayCheck, violentDay);
+        ViolentDayOnServerRpc();
     }
 
     [ClientRpc]

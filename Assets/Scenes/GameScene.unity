@@ -3296,6 +3296,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1611442678}
   m_CullTransparentMesh: 1
+--- !u!114 &1690123863 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5689034758363006910, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1690123864 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5822720168690495249, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1757935407
 GameObject:
   m_ObjectHideFlags: 0
@@ -5512,6 +5534,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1095768246952270825}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: dDayHostMap
+      value: 
+      objectReference: {fileID: 1690123864}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: isMultiPlay
       value: 1
       objectReference: {fileID: 0}
@@ -5527,6 +5553,10 @@ PrefabInstance:
       propertyPath: sTreeManager
       value: 
       objectReference: {fileID: 8603474882824653211}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: dDayClientMap
+      value: 
+      objectReference: {fileID: 1690123863}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: pInvenManager
       value: 

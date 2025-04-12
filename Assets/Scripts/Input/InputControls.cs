@@ -964,6 +964,24 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TimeUIUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""19e711e4-a8d1-44e1-a11f-354c4e538211"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TimeUIDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""5904349d-b85a-43a7-bf76-9990fdc79ae8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1074,6 +1092,28 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""InfoDictionary"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""97154de2-7118-4b31-adb8-a8baa34dafcf"",
+                    ""path"": ""<Keyboard>/pageUp"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TimeUIUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""96958800-6dcf-4bb3-94ef-e9b6dd84886c"",
+                    ""path"": ""<Keyboard>/pageDown"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TimeUIDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1838,6 +1878,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_BasicUIBtnsSwap = m_HotKey.FindAction("BasicUIBtnsSwap", throwIfNotFound: true);
         m_HotKey_UIClose = m_HotKey.FindAction("UIClose", throwIfNotFound: true);
         m_HotKey_InfoDictionary = m_HotKey.FindAction("InfoDictionary", throwIfNotFound: true);
+        m_HotKey_TimeUIUp = m_HotKey.FindAction("TimeUIUp", throwIfNotFound: true);
+        m_HotKey_TimeUIDown = m_HotKey.FindAction("TimeUIDown", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -2371,6 +2413,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_BasicUIBtnsSwap;
     private readonly InputAction m_HotKey_UIClose;
     private readonly InputAction m_HotKey_InfoDictionary;
+    private readonly InputAction m_HotKey_TimeUIUp;
+    private readonly InputAction m_HotKey_TimeUIDown;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2385,6 +2429,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @BasicUIBtnsSwap => m_Wrapper.m_HotKey_BasicUIBtnsSwap;
         public InputAction @UIClose => m_Wrapper.m_HotKey_UIClose;
         public InputAction @InfoDictionary => m_Wrapper.m_HotKey_InfoDictionary;
+        public InputAction @TimeUIUp => m_Wrapper.m_HotKey_TimeUIUp;
+        public InputAction @TimeUIDown => m_Wrapper.m_HotKey_TimeUIDown;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2424,6 +2470,12 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @InfoDictionary.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnInfoDictionary;
                 @InfoDictionary.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnInfoDictionary;
                 @InfoDictionary.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnInfoDictionary;
+                @TimeUIUp.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIUp;
+                @TimeUIUp.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIUp;
+                @TimeUIUp.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIUp;
+                @TimeUIDown.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIDown;
+                @TimeUIDown.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIDown;
+                @TimeUIDown.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIDown;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2458,6 +2510,12 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @InfoDictionary.started += instance.OnInfoDictionary;
                 @InfoDictionary.performed += instance.OnInfoDictionary;
                 @InfoDictionary.canceled += instance.OnInfoDictionary;
+                @TimeUIUp.started += instance.OnTimeUIUp;
+                @TimeUIUp.performed += instance.OnTimeUIUp;
+                @TimeUIUp.canceled += instance.OnTimeUIUp;
+                @TimeUIDown.started += instance.OnTimeUIDown;
+                @TimeUIDown.performed += instance.OnTimeUIDown;
+                @TimeUIDown.canceled += instance.OnTimeUIDown;
             }
         }
     }
@@ -2773,6 +2831,8 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnBasicUIBtnsSwap(InputAction.CallbackContext context);
         void OnUIClose(InputAction.CallbackContext context);
         void OnInfoDictionary(InputAction.CallbackContext context);
+        void OnTimeUIUp(InputAction.CallbackContext context);
+        void OnTimeUIDown(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

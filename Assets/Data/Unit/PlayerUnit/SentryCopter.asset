@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: SentryCopter
   m_EditorClassIdentifier: 
   unitName: SentryCopter
-  maxHp: 150
-  upgradeMaxHp: 200
-  damage: 30
-  upgradeDamage: 40
+  maxHp: 100
+  upgradeMaxHp: 150
+  damage: 20
+  upgradeDamage: 30
   moveSpeed: 8
   attackDist: 4
-  attDelayTime: 1.5
-  upgradeAttDelayTime: 1
+  attDelayTime: 2
+  upgradeAttDelayTime: 1.5
   colliderRadius: 10
   minCollRad: 0
   defense: 5

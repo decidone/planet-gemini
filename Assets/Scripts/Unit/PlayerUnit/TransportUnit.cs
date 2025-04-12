@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Pathfinding;
 
 public enum TrUnitState
 {
@@ -29,6 +30,28 @@ public class TransportUnit : UnitCommonAi
 
     public float visionRadius;
     float fogTimer;
+
+    protected override void Awake()
+    {
+        tr = GetComponent<Transform>();
+        seeker = GetComponent<Seeker>();
+        animator = GetComponent<Animator>();
+
+        hp = unitCommonData.MaxHp;
+        maxHp = unitCommonData.MaxHp;
+        hpBar.fillAmount = hp / maxHp;
+        unitCanvas.SetActive(false);
+        damage = unitCommonData.Damage;
+        attackSpeed = unitCommonData.AttDelayTime;
+        defense = unitCommonData.Defense;
+        isFlip = unitSprite.flipX;
+        searchInterval = 0.3f;
+        tarDisCheckInterval = 0.3f;
+        patrolPos = Vector3.zero;
+        unitName = unitCommonData.UnitName;
+        aIState = AIState.AI_Idle;
+        attackState = AttackState.Waiting;
+    }
 
     protected override void Update()
     {

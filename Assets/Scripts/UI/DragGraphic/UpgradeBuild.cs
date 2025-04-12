@@ -7,7 +7,6 @@ public class UpgradeBuild : DragFunc
 {
     protected GameObject canvas;
     BuildingData buildingData;
-    int structureLayer;
 
     Dictionary<Item, int> upgradeItemDic = new Dictionary<Item, int>();
     Dictionary<Item, int> enoughItemDic = new Dictionary<Item, int>();
@@ -17,7 +16,6 @@ public class UpgradeBuild : DragFunc
     {
         base.Start();
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
-        structureLayer = LayerMask.NameToLayer("Obj");
     }
 
     public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
@@ -27,28 +25,28 @@ public class UpgradeBuild : DragFunc
         notEnoughItemDic.Clear();
 
         if (startPos != endPos)
-            GroupSelectedObjects(startPos, endPos, structureLayer);
+            GroupSelectedObjects(startPos, endPos);
         else
             UpgradeClick(startPos);
     }
 
-    protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
+    protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition)
     {
-        Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << layer);
+        Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << interactLayer);
 
         List<GameObject> selectedObjectsList = new List<GameObject>();
 
         foreach (Collider2D collider in colliders)
         {
-            if (layer == LayerMask.NameToLayer("Obj") && collider.GetComponent<Structure>() == null)
+            if (collider.GetComponentInParent<Structure>() == null)
                 continue;
-            Structure structure = collider.GetComponent<Structure>();
-            if (collider.GetComponent<Portal>() || collider.GetComponent<ScienceBuilding>())
+            Structure structure = collider.GetComponentInParent<Structure>();
+            if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
                 continue;
             if (structure.structureData.MaxLevel == structure.level + 1 || !ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
                 continue;
 
-            selectedObjectsList.Add(collider.gameObject);
+            selectedObjectsList.Add(structure.gameObject);
         }
 
         selectedObjects = selectedObjectsList.ToArray();

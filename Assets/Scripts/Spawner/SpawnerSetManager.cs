@@ -254,7 +254,6 @@ public class SpawnerSetManager : NetworkBehaviour
                     levelDataSet = arealevelData[levelSet - 1];
                 }
             }
-            Debug.Log("HostMap : " + isHostMap + "Level : " + levelSet);
 
             MapGenerator.instance.SetCorruption(map, newPoint, levelSet);
 

@@ -18,20 +18,32 @@ public class RemoveBuild : DragFunc
 
     public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
     {
-        GroupSelectedObjects(startPos, endPos, 0);
+        GroupSelectedObjects(startPos, endPos);
     }
 
-    protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
+    protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition)
     {
-        Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, (1 << LayerMask.NameToLayer("Obj")) | (1 << LayerMask.NameToLayer("LocalPortal")));
+        Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << interactLayer);
+        //Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, (1 << LayerMask.NameToLayer("Obj")) | (1 << LayerMask.NameToLayer("LocalPortal")));
 
         List<GameObject> selectedObjectsList = new List<GameObject>();
 
         foreach (Collider2D collider in colliders)
         {
-            if (collider.GetComponent<Portal>() || collider.GetComponent<ScienceBuilding>())
+            var structure = collider.GetComponentInParent<Structure>();
+            var portal = collider.GetComponentInParent<Portal>();
+            var portalObj = collider.GetComponentInParent<PortalObj>();
+            var scienceBuilding = collider.GetComponentInParent<ScienceBuilding>();
+
+            // Structure가 없으면 제외
+            if (structure == null)
                 continue;
-            selectedObjectsList.Add(collider.gameObject);
+
+            // Portal이 있는 경우, PortalObj가 없거나 ScienceBuilding이 있으면 제외
+            if (portal != null && (portalObj == null || scienceBuilding != null))
+                continue;
+
+            selectedObjectsList.Add(structure.gameObject);
         }
 
         selectedObjects = selectedObjectsList.ToArray();

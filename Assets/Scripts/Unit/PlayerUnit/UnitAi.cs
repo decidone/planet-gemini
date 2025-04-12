@@ -21,7 +21,7 @@ public class UnitAi : UnitCommonAi
     bool isHold = false;
 
     // 유닛 상태 관련
-    bool isLastStateOn = false;
+    protected bool isLastStateOn = false;
 
     public AIState unitLastState = AIState.AI_Idle;
     public SpriteRenderer unitSelImg;
@@ -30,24 +30,26 @@ public class UnitAi : UnitCommonAi
     // 공격 관련 변수
     List<Vector3> aggroPath = new List<Vector3>();
     private int aggropointIndex; // 현재 이동 중인 경로 점 인덱스
-    bool isTargetSet = false;
+    protected bool isTargetSet = false;
     bool isAttackMove = true;
     GameObject selectTarget;
     public float selfHealingAmount;
     public float selfHealInterval;
     protected float selfHealTimer;
     public float visionRadius;
-    float fogTimer;
+    protected float fogTimer;
+    protected RepairEffectFunc repairEffect;
 
     public delegate void OnEffectUpgradeCheck();
     public OnEffectUpgradeCheck onEffectUpgradeCheck;
-
+    bool portalUnitIn = false;
     protected bool[] increasedUnit = new bool[4];
     // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
 
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
         selfHealInterval = 5;
         selfHealingAmount = 5f;
@@ -82,6 +84,16 @@ public class UnitAi : UnitCommonAi
     }
 
     [ServerRpc(RequireOwnership = false)]
+    public override void ClientConnectSyncServerRpc()
+    {
+        base.ClientConnectSyncServerRpc();
+        if (portalUnitIn)
+        {
+            PortalUnitInFuncClientRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     protected void SelfHealingServerRpc()
     {
         hp += selfHealingAmount;
@@ -97,6 +109,8 @@ public class UnitAi : UnitCommonAi
             hp = maxHp;
         onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / maxHp;
+        repairEffect.EffectStart();
+
         if (hp >= maxHp)
             unitCanvas.SetActive(false);
     }
@@ -246,7 +260,7 @@ public class UnitAi : UnitCommonAi
         //Debug.Log("x : " + verticalValueX + " : y : "+ verticalValueY);
     }
 
-    void MoveFunc()
+    protected void MoveFunc()
     {
         if (movePath == null)
             return;
@@ -314,7 +328,7 @@ public class UnitAi : UnitCommonAi
         //direction = targetPosition - tr.position;
     }
 
-    void PatrolFunc()
+    protected void PatrolFunc()
     {
         if (movePath == null)
             return;
@@ -459,6 +473,10 @@ public class UnitAi : UnitCommonAi
             animator.SetBool("isMove", false);
             return;
         }
+        if (animator.GetBool("isAttack"))
+        {
+            return;
+        }
 
         animator.SetBool("isMove", true);
         AnimSetFloat(targetVec, true);
@@ -484,6 +502,12 @@ public class UnitAi : UnitCommonAi
         }
     }
 
+    [ServerRpc]
+    public void RepairServerRpc(float repairAmount)
+    {
+        hp += repairAmount;
+        SelfHealingClientRpc(hp);
+    }
 
     [ClientRpc]
     public override void TakeDamageClientRpc(float damage, int attackType, float option)
@@ -604,6 +628,7 @@ public class UnitAi : UnitCommonAi
             UnitSelImg(false);
             unitGroupCtrl.DieUnitCheck(gameObject);
         }
+        portalUnitIn = true;
         gameObject.SetActive(false);
     }
 

@@ -898,13 +898,24 @@ public class Inventory : NetworkBehaviour
     public void PlayerToStrServerRpc(int pInvenSlotNum, int sInvenSlotNum)
     {
         Structure str = GetComponent<Structure>();
+        TankCtrl tank = GetComponent<TankCtrl>();
         Inventory playerInven;
         int containable;
 
-        if (str.isInHostMap)
-            playerInven = GameManager.instance.hostMapInven;
+        if (str)
+        {
+            if (str.isInHostMap)
+                playerInven = GameManager.instance.hostMapInven;
+            else
+                playerInven = GameManager.instance.clientMapInven;
+        }
         else
-            playerInven = GameManager.instance.clientMapInven;
+        {
+            if (tank.isInHostMap)
+                playerInven = GameManager.instance.hostMapInven;
+            else
+                playerInven = GameManager.instance.clientMapInven;
+        }
 
         var playerSlot = playerInven.SlotCheck(pInvenSlotNum);
 

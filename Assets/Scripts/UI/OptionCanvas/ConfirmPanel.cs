@@ -78,13 +78,14 @@ public class ConfirmPanel : MonoBehaviour
         confirmPanel.SetActive(true);
     }
 
-    public void CallConfirm(SaveLoadBtn btn, bool saveLoadState, int slotNum)
+    public void CallConfirm(SaveLoadBtn btn, bool saveLoadState, int slotNum, string saveFileName)
     {
         PanelSetBtn(true);
         saveLoadBtn = btn;
         if (saveLoadState)
         {
             contentText.text = "Do you want to save to slot " + slotNum + "?";
+            inputField.text = saveFileName;
             inputObj.SetActive(true);
             InputManager.instance.OpenChat();
         }

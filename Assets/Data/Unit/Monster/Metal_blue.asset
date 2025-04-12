@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: Metal_blue
   m_EditorClassIdentifier: 
   unitName: Metal
-  maxHp: 150
-  damage: 25
-  moveSpeed: 7
+  maxHp: 180
+  upgradeMaxHp: 0
+  damage: 22
+  upgradeDamage: 0
+  moveSpeed: 6
   attackDist: 2
-  attDelayTime: 1.5
+  attDelayTime: 1.2
+  upgradeAttDelayTime: 0
   colliderRadius: 20
   minCollRad: 10
+  defense: 10
+  upgradeDefense: 0
   patrolRad: 5
-  defense: 20

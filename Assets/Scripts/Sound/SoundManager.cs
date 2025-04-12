@@ -310,6 +310,15 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBgmMapCheck()
     {
+        //웨이브 상태에서 BGM이 바뀌지 않게 예외처리
+        bool playerMap = GameManager.instance.isPlayerInHostMap;
+        bool isWaveActive = (playerMap && isHostMapWaveOn) || (!playerMap && isClientMapWaveOn);
+
+        if (!GameManager.instance.isPlayerInMarket && isWaveActive)
+        {
+            return;
+        }
+
         StartCoroutine(nameof(SoundFadeOut));
         StartCoroutine(BgmChange());
     }

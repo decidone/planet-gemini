@@ -480,7 +480,7 @@ public class Structure : NetworkBehaviour
             ulong objID = inObj[i].GetComponent<Structure>().ObjFindId();
             InOutObjSyncClientRpc(objID, true);
         }
-        MapDataSaveClientRpc(tileSetPos);
+        ClientConnectTileSetClientRpc(tileSetPos);
         ConnectCheckClientRpc(true);
     }
 
@@ -781,6 +781,7 @@ public class Structure : NetworkBehaviour
         {
             repairBar.enabled = false;
             hpBar.fillAmount = hp / maxHp;
+            hpBar.enabled = true;
             unitCanvas.SetActive(true);
         }
     }
@@ -1894,6 +1895,25 @@ public class Structure : NetworkBehaviour
         }
         else
             tileSetPos = pos;
+
+        int x = Mathf.FloorToInt(tileSetPos.x);
+        int y = Mathf.FloorToInt(tileSetPos.y);
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                if (isInHostMap)
+                    GameManager.instance.hostMap.GetCellDataFromPos(x + j, y + i).structure = this.gameObject;
+                else
+                    GameManager.instance.clientMap.GetCellDataFromPos(x + j, y + i).structure = this.gameObject;
+            }
+        }
+    }
+
+    [ClientRpc]
+    public void ClientConnectTileSetClientRpc(Vector3 pos)
+    {
+        tileSetPos = pos;
 
         int x = Mathf.FloorToInt(tileSetPos.x);
         int y = Mathf.FloorToInt(tileSetPos.y);

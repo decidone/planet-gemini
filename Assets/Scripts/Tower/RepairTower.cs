@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // UTF-8 설정
@@ -9,6 +10,8 @@ public class RepairTower : TowerAi
     bool isDelayRepairCoroutine = false;
     [SerializeField]
     SpriteRenderer view;
+    [SerializeField]
+    int repairFullAmount;
 
     protected override void Update()
     {
@@ -77,13 +80,27 @@ public class RepairTower : TowerAi
 
     void RepairStart()
     {
-        foreach (GameObject tower in BuildingList)
-        {
-            Structure factory = tower.GetComponent<Structure>();
+        int repairAmount = repairFullAmount;
 
-            if (factory.maxHp > factory.hp)
+        var sortedUnitTargets = BuildingList
+            .Where(target => target != null)
+            .Select(target => target.GetComponent<Structure>())
+            .Where(structure => structure != null)
+            .OrderByDescending(structure => structure.maxHp - structure.hp) // 정렬
+            .Take(repairAmount)
+            .ToList();
+
+        foreach (Structure str in sortedUnitTargets)
+        {
+            if (str.hp != str.maxHp)
             {
-                factory.RepairFunc(damage);
+                repairAmount--;
+                str.RepairFunc(damage);
+
+                if (repairAmount == 0)
+                {
+                    return;
+                }
             }
         }
     }

@@ -13,6 +13,7 @@ public class SaveLoadBtn : MonoBehaviour
     bool saveLoadState; // true : save 버튼, false : load 버튼
     int slotNum;
     bool loadEnable;
+    string saveFileName;
 
     private void Start()
     {
@@ -29,11 +30,13 @@ public class SaveLoadBtn : MonoBehaviour
         {
             //contentsText.text = saveDate + System.Environment.NewLine + mapSizeString + " " + diffLevelString + " " + fileName;
             contentsText.text = saveDate + System.Environment.NewLine + fileName;
+            saveFileName = fileName;
             loadEnable = true;
         }
         else
         {
             contentsText.text = "Empty";
+            saveFileName = "";
             loadEnable = false;
         }
 
@@ -118,7 +121,7 @@ public class SaveLoadBtn : MonoBehaviour
         }
         else
         {
-            ConfirmPanel.instance.CallConfirm(this, saveLoadState, slotNum);
+            ConfirmPanel.instance.CallConfirm(this, saveLoadState, slotNum, saveFileName);
         }
     }
 

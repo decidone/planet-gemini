@@ -28,6 +28,7 @@ public class MonsterAi : UnitCommonAi
     protected bool waveState = false;
     [SerializeField]
     protected bool waveStateEnd = false;
+    float waveSpeed = 9;
 
     //bool waveWaiting = false;
     public bool waveArrivePos = false;
@@ -45,9 +46,14 @@ public class MonsterAi : UnitCommonAi
     float debuffTimer;
     float debuffDuration = 2f;  // 등대 디버프 지속시간 2초, 등대 범위 내에 몬스터가 있을 때 디버프 갱신 시간 1초
     float debuffRate;           // 등대가 속한 에너지 그룹의 에너지 효율 상태에 따른 디버프 배율 계산
+    float reducedDefensePer;    // 방어력 감소 퍼센트
 
     Transform _t;
     Effects _effects;
+
+    public float justTraceTimer = 0f;
+    [SerializeField]
+    public float justTraceInterval;
 
     protected override void Start()
     {
@@ -96,13 +102,31 @@ public class MonsterAi : UnitCommonAi
                 if (debuffTimer > debuffDuration)
                 {
                     isDebuffed = false;
+                    reducedDefensePer = 0;
                     debuffTimer = 0f;
                 }
+            }
+
+            if (!waveState && justTraceTimer < justTraceInterval)
+            {
+                justTraceTimer += Time.deltaTime;
             }
         }
     }
 
-    public void RefreshDebuff(float efficiency)
+    [ServerRpc(RequireOwnership = false)]
+    public void RefreshDebuffServerRpc(float efficiency, float reducedPer)
+    {
+        RefreshDebuffClientRpc(efficiency, reducedPer);
+    }
+
+    [ClientRpc]
+    void RefreshDebuffClientRpc(float efficiency, float reducedPer)
+    {
+        RefreshDebuff(efficiency, reducedPer);
+    }
+
+    public void RefreshDebuff(float efficiency, float reducedPer)
     {
         if (!isDebuffed)
         {
@@ -111,8 +135,12 @@ public class MonsterAi : UnitCommonAi
 
         debuffRate = efficiency;
         isDebuffed = true;
+        float reducedDefensePerCheck = reducedPer * efficiency;
+        if (reducedDefensePer < reducedDefensePerCheck)
+        {
+            reducedDefensePer = reducedDefensePerCheck;
+        }
         debuffTimer = 0f;
-
     }
 
     protected override void UnitAiCtrl()
@@ -494,6 +522,10 @@ public class MonsterAi : UnitCommonAi
             aIState = AIState.AI_Idle;
             return;
         }
+        if (animator.GetBool("isAttack"))
+        {
+            return;
+        }
 
         animator.SetBool("isMove", true);
 
@@ -509,7 +541,7 @@ public class MonsterAi : UnitCommonAi
                 direction.Normalize();
                 AnimSetFloat(targetVec, true);
 
-                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
+                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, waveState ? Time.deltaTime * waveSpeed : (Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer));
 
                 if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                 {
@@ -535,7 +567,7 @@ public class MonsterAi : UnitCommonAi
                     direction.Normalize();
                     AnimSetFloat(targetVec, true);
 
-                    tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
+                    tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * waveSpeed);
 
                     if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                     {
@@ -599,10 +631,10 @@ public class MonsterAi : UnitCommonAi
 
     protected void AttackObjCheck(GameObject Obj)
     {
-        if (targetDist > unitCommonData.AttackDist)
+        if (targetDist > unitCommonData.AttackDist + 2)
             return;
 
-        else if (IsServer && targetDist <= unitCommonData.AttackDist)
+        else if (IsServer)
         {
             if (Obj != null)
             {
@@ -751,16 +783,20 @@ public class MonsterAi : UnitCommonAi
     [ClientRpc]
     public override void TakeDamageClientRpc(float damage, int attackType, float option)
     {
-        //if (hp <= 0f)
-        //    return;
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
 
         float reducedDamage = damage;
+        float reducedDefense = defense;
+
+        if (isDebuffed)
+        {
+            reducedDefense = defense - Mathf.Floor(defense * reducedDefensePer / 100);
+        }
 
         if (attackType == 0 || attackType == 4)
         {
-            reducedDamage = Mathf.Max(damage - defense, 5);
+            reducedDamage = Mathf.Max(damage - reducedDefense, 5);
             if (attackType == 4)
             {
                 if (!slowDebuffOn)
@@ -772,7 +808,7 @@ public class MonsterAi : UnitCommonAi
         }
         else if (attackType == 2)
         {
-            reducedDamage = Mathf.Max(damage - (defense * (option / 100)), 5);
+            reducedDamage = Mathf.Max(damage - (reducedDefense * (option / 100)), 5);
         }
         else if (attackType == 3)
         {
@@ -982,14 +1018,19 @@ public class MonsterAi : UnitCommonAi
         }
     }
 
-    public void SpawnerCallCheck()
+    public virtual void SpawnerCallCheck(GameObject obj)
     {
-        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol)
-        {
-            targetVec = (new Vector3(spawnPos.transform.position.x, spawnPos.transform.position.y, 0) - tr.position).normalized;
+        if (obj == null)
+            return;
 
-            checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.transform.position, "SpawnerCall"));
+        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol || justTraceTimer >= justTraceInterval)
+        {
+            aggroTarget = obj;
+            targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
+
+            checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
             aIState = AIState.AI_SpawnerCall;
+            justTraceTimer = 0;
         }
     }
 

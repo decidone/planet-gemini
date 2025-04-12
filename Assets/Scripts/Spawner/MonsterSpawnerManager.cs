@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using QFSW.QC;
+using Mono.CSharp;
 
 public class MonsterSpawnerManager : NetworkBehaviour
 {
@@ -94,9 +95,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
         (int map, int area) key = (isHostMap ? 1 : 2, groupNum);
 
         if (!monsterSpawners.ContainsKey(key))
-        {
             monsterSpawners.Add(key, new List<MonsterSpawner>());
-        }
+        
         monsterSpawners[key].Add(spawner);
     }
 
@@ -104,10 +104,19 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         (int map, int area) key = (isInHostMap ? 1 : 2, groupNum);
 
-        monsterSpawners[key].Remove(spawner);
+        if (monsterSpawners.ContainsKey(key))
+        {
+            monsterSpawners[key].Remove(spawner);
 
-        if (monsterSpawners[key].Count == 0)
-            monsterSpawners.Remove(key);
+            if (monsterSpawners[key].Count == 0)
+                monsterSpawners.Remove(key);
+        }
+    }
+
+    public void AreaGroupLevelUp(MonsterSpawner spawner, int preGroupNum, int groupNum, bool isHostMap)
+    {
+        AreaGroupRemove(spawner, preGroupNum, isHostMap);
+        AreaGroupSet(spawner, groupNum, isHostMap);
     }
 
     public void WaveStateLoad(SpawnerManagerSaveData data)
@@ -160,11 +169,11 @@ public class MonsterSpawnerManager : NetworkBehaviour
             spawners[i].SetCorruption();
     }
 
-    public void ViolentDayOn(bool hostMap, bool forcedOperation)
+    public bool ViolentDayOn(bool hostMap, bool forcedOperation)
     {
-        Debug.Log("forcedOperation : " + forcedOperation);
         float maxAggroAmount = 0;
         MonsterSpawner aggroSpawner = null;
+
         foreach (var data in monsterSpawners)
         {
             foreach (MonsterSpawner spawner in data.Value)
@@ -212,7 +221,10 @@ public class MonsterSpawnerManager : NetworkBehaviour
             wavePos = aggroSpawner.transform.position;
             WavePointOnServerRpc(wavePos, hostMap);
             Debug.Log("Aggro Spawner transform is :" + wavePos + ", maxAggroAmount : " + maxAggroAmount);
+            return true;
         }
+        else
+            return false;
     }
 
     [ServerRpc]
@@ -238,7 +250,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
     }
 
-
     public void ViolentDayStart()
     {
         foreach (var data in monsterSpawners)
@@ -248,7 +259,9 @@ public class MonsterSpawnerManager : NetworkBehaviour
                 if (spawner.violentDay)
                 {
                     spawner.WaveStart();
+                    spawner.SpawnerLevelUp();
                     spawner.SearchCollReturn();
+                    return;
                 }
             }
         }
@@ -355,7 +368,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         SoundManager.instance.BattleStateSet(hostMapWave, waveState);
     }
 
-    public void WaveMonsterReturn()
+    public void WaveEndSet()
     {
         foreach (var monster in waveMonsters)
         {

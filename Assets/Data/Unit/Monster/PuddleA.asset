@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: PuddleA
   m_EditorClassIdentifier: 
   unitName: PuddleA
-  maxHp: 80
-  damage: 10
-  moveSpeed: 3
+  maxHp: 140
+  upgradeMaxHp: 0
+  damage: 18
+  upgradeDamage: 0
+  moveSpeed: 5
   attackDist: 2
-  attDelayTime: 1
+  attDelayTime: 1.8
+  upgradeAttDelayTime: 0
   colliderRadius: 20
   minCollRad: 10
+  defense: 8
+  upgradeDefense: 0
   patrolRad: 3
-  defense: 15

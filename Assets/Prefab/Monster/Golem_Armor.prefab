@@ -266,13 +266,21 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
+  damage: 0
+  attackSpeed: 0
+  defense: 0
   name: Armor Golem
   spawner: {fileID: 0}
   maxSpawnDist: 20
+  isScriptActive: 0
   monsterType: 0
   waveState: 0
+  waveStateEnd: 0
   waveArrivePos: 0
   normalTraceTimer: 0
+  isDebuffed: 0
+  justTraceTimer: 0
+  justTraceInterval: 3
   golemAttackFX: {fileID: 3455073265877218510, guid: cd93eff768044de4eba4c9eb476f1bb8, type: 3}
 --- !u!70 &7454456902833923465
 CapsuleCollider2D:

@@ -73,6 +73,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     GameObject tankTurret;
 
+
     void Awake()
     {
         gameManager = GameManager.instance;
@@ -713,15 +714,17 @@ public class PlayerController : NetworkBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             if (onTankData.TankAttackCheck())
-            {
+            {                
+                var bulletData = onTankData.inventory.SlotCheck(0);
                 onTankData.inventory.SlotSubServerRpc(0, 1);
-                BulletSpawnServerRpc(mousePos);
+
+                BulletSpawnServerRpc(mousePos, bulletData.item.name);
             }
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void BulletSpawnServerRpc(Vector3 mousePos)
+    void BulletSpawnServerRpc(Vector3 mousePos, string bulletName)
     {
         Vector2 spawnPos = playerTankTurret.TurretAttackPos();
         Vector3 dir = mousePos - (Vector3)spawnPos;
@@ -734,12 +737,13 @@ public class PlayerController : NetworkBehaviour
             rot = Quaternion.AngleAxis(angle, Vector3.forward);
 
         dir.z = 0;
+        BulletData bulletData = TwBulletDataManager.instance.bulletDic[bulletName];
 
         NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, new Vector2(spawnPos.x, spawnPos.y), rot);
         if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
         bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
-        fx.GetTarget2(dir.normalized * 3, 10, gameObject, false);
+        fx.GetTarget2(dir.normalized * 3, bulletData.damage, gameObject, bulletData.explosion);
         BulletSpawnClientRpc(dir);
     }
 

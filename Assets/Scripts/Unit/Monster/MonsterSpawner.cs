@@ -141,23 +141,7 @@ public class MonsterSpawner : NetworkBehaviour
         if (!gameLodeSet)
             InitializeMonsterSpawn();
         spawnerSearchColl.violentCollSize = violentCollSize;
-        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-
-        if (sppawnerLevel >= 7)
-        {
-            sprite.sprite = monsterSpawnerManager.spawnerSprite[2];
-            capsuleCollider2D.size = new Vector2(5f, 1.8f);
-        }
-        else if (sppawnerLevel <= 3)
-        {
-            sprite.sprite = monsterSpawnerManager.spawnerSprite[0];
-            capsuleCollider2D.size = new Vector2(2.6f, 0.9f);
-        }
-        else
-        {
-            sprite.sprite = monsterSpawnerManager.spawnerSprite[1];
-            capsuleCollider2D.size = new Vector2(3.5f, 1f);
-        }
+        SpriteSet();
     }
 
     void Update()
@@ -530,7 +514,7 @@ public class MonsterSpawner : NetworkBehaviour
         if (!takeDamageCheck)
         {
             GuardianCall(attackObj);
-            MonsterCall();
+            MonsterCall(attackObj);
         }
 
         if (!dieCheck)
@@ -626,11 +610,11 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    void MonsterCall()
+    void MonsterCall(GameObject attackObj)
     {
         foreach (MonsterAi monster in totalMonsterList)
         {
-            monster.SpawnerCallCheck();
+            monster.SpawnerCallCheck(attackObj);
         }
     }
 
@@ -995,6 +979,36 @@ public class MonsterSpawner : NetworkBehaviour
     {
         violentDay = true;
         safeCount = safeAmount;
+        spawnerSearchColl.ViolentCollSizeReduction();
+    }
+
+    public void SpawnerLevelUp()
+    {
+        if (sppawnerLevel < SpawnerSetManager.instance.arealevelData.Length)
+        {
+            sppawnerLevel++;
+            monsterSpawnerManager.AreaGroupLevelUp(this, sppawnerLevel - 1, sppawnerLevel, isInHostMap);
+            sppawnerLevelData = SpawnerSetManager.instance.arealevelData[sppawnerLevel - 1];
+            hp = structureData.MaxHp[sppawnerLevel - 1];
+            maxHp = structureData.MaxHp[sppawnerLevel - 1];
+
+            maxWeakSpawn = sppawnerLevelData.maxWeakSpawn;
+            maxNormalSpawn = sppawnerLevelData.maxNormalSpawn;
+            maxStrongSpawn = sppawnerLevelData.maxStrongSpawn;
+            maxGuardianSpawn = sppawnerLevelData.maxGuardianSpawn;
+            totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
+            SpriteSet();
+        }
+
+        if (guardianList.Count < maxGuardianSpawn)
+        {
+            int guardianSpawnAmount = maxGuardianSpawn - guardianList.Count;
+
+            for (int i = 0; i < guardianSpawnAmount; i++)
+            {
+                SpawnMonster(3, 0, isInHostMap);
+            }
+        }
     }
 
     public void SafeCountDown()
@@ -1003,6 +1017,28 @@ public class MonsterSpawner : NetworkBehaviour
         if (safeCount < 0)
         {
             safeCount = 0;
+        }
+    }
+
+
+    void SpriteSet()
+    {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+
+        if (sppawnerLevel >= 7)
+        {
+            sprite.sprite = monsterSpawnerManager.spawnerSprite[2];
+            capsuleCollider2D.size = new Vector2(5f, 1.8f);
+        }
+        else if (sppawnerLevel <= 3)
+        {
+            sprite.sprite = monsterSpawnerManager.spawnerSprite[0];
+            capsuleCollider2D.size = new Vector2(2.6f, 0.9f);
+        }
+        else
+        {
+            sprite.sprite = monsterSpawnerManager.spawnerSprite[1];
+            capsuleCollider2D.size = new Vector2(3.5f, 1f);
         }
     }
 }

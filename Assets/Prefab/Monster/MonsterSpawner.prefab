@@ -318,6 +318,7 @@ MonoBehaviour:
   waveMonsterList: []
   sppawnerLevel: 0
   nearUserObjExist: 0
+  nearEnergyObjExist: 0
   unitSprite: {fileID: 4028291071532341099}
   unitCanvas: {fileID: 5496904829296565877}
   hpBar: {fileID: 4936597692029941388}
@@ -328,9 +329,13 @@ MonoBehaviour:
   waveTimer: 0
   searchColl: {fileID: 7283164378971898256}
   awakeColl: {fileID: 596819544238933767}
+  spawnerSearchColl: {fileID: 0}
   energyAggroValue: 0
   isInHostMap: 0
+  violentDay: 0
   violentCollSize: 0
+  safeAmount: 3
+  safeCount: 0
 --- !u!50 &5546485786390217281
 Rigidbody2D:
   serializedVersion: 4

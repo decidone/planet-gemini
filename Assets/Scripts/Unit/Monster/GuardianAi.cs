@@ -93,7 +93,7 @@ public class GuardianAi : MonsterAi
         }
     } 
 
-    public void SpawnerCallCheck(GameObject obj)
+    public override void SpawnerCallCheck(GameObject obj)
     {
         if (obj == null)
             return;

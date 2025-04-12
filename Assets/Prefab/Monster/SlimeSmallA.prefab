@@ -480,13 +480,21 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
+  damage: 0
+  attackSpeed: 0
+  defense: 0
   name: Purple Slime
   spawner: {fileID: 0}
   maxSpawnDist: 20
+  isScriptActive: 0
   monsterType: 0
   waveState: 0
+  waveStateEnd: 0
   waveArrivePos: 0
   normalTraceTimer: 0
+  isDebuffed: 0
+  justTraceTimer: 0
+  justTraceInterval: 3
 --- !u!70 &8580768404875729042
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

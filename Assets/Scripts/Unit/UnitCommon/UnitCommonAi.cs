@@ -218,21 +218,23 @@ public class UnitCommonAi : NetworkBehaviour
     protected virtual void SearchObjectsInRange() { }
     protected virtual void AttackTargetCheck() { }
 
-    protected void RemoveObjectsOutOfRange()
+    protected virtual void RemoveObjectsOutOfRange()
     {
-        for (int i = targetList.Count - 1; i >= 0; i--)
-        {
-            if (!targetList[i])
-                targetList.RemoveAt(i);
-            else
-            {
-                GameObject target = targetList[i];
-                if (Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius)
-                {
-                    targetList.RemoveAt(i);
-                }
-            }
-        }
+        targetList.RemoveAll(target =>
+            !target || Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius);
+        //for (int i = targetList.Count - 1; i >= 0; i--)
+        //{
+        //    if (!targetList[i])
+        //        targetList.RemoveAt(i);
+        //    else
+        //    {
+        //        GameObject target = targetList[i];
+        //        if (Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius)
+        //        {
+        //            targetList.RemoveAt(i);
+        //        }
+        //    }
+        //}
     }
 
     protected virtual void AttackTargetDisCheck()
@@ -259,6 +261,10 @@ public class UnitCommonAi : NetworkBehaviour
 
         if (targetDist > unitCommonData.AttackDist)  // 공격 범위 밖으로 나갈 때
         {
+            if (animator.GetBool("isAttack"))
+            {
+                return;
+            }
             animator.SetBool("isAttack", false);
             aIState = AIState.AI_NormalTrace;
             attackState = AttackState.Waiting;

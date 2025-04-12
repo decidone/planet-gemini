@@ -93,8 +93,11 @@ public class DataManager : MonoBehaviour
 
         foreach (BeltGroupMgr beltGroup in netObjMgr.netBeltGroupMgrs)
         {
-            BeltGroupSaveData beltGroupSaveData = beltGroup.SaveData();
-            saveData.beltGroupData.Add(beltGroupSaveData);
+            if (beltGroup.beltList.Count > 0)
+            {
+                BeltGroupSaveData beltGroupSaveData = beltGroup.SaveData();
+                saveData.beltGroupData.Add(beltGroupSaveData);
+            }
         }
 
         foreach (UnitCommonAi unitAi in netObjMgr.netUnitCommonAis)
