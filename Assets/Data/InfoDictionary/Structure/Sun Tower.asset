@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Sun Tower
   type: 1
   explanation: Explanation
+  strData: {fileID: 11400000, guid: a533b809bf0b6604398bbdcbe050286f, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 3068bbfd6ce1ea14e8668a19a05e6d38, type: 3}

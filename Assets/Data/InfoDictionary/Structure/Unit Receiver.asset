@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Unit Receiver
   type: 1
   explanation: Explanation
+  strData: {fileID: 11400000, guid: a20b586bddb8da54eaf361eb3eef1525, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 832dbef619e9b5149b00442c34fb0db2, type: 3}

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseCursor: {fileID: 2800000, guid: 0cb588ad94f06314e8b20daa4beff806, type: 3}
   dragCursor:
-  - {fileID: 2800000, guid: d86271061c724b7448a91d9e79268b83, type: 3}
-  - {fileID: 2800000, guid: eb7643b42a0ca714383bf5d0a0a52d04, type: 3}
+  - {fileID: 2800000, guid: 3866213fb50f0d44680e18710eae15bf, type: 3}
+  - {fileID: 2800000, guid: 8ab2cd47ec3aaaf46b64a9c5df5b1f99, type: 3}
   buildingCursor:
   - {fileID: 2800000, guid: 1f6a5e3340a01374d91d9a2438a164ce, type: 3}
   - {fileID: 2800000, guid: 98548aa9710898f49b49d3f4783509da, type: 3}

@@ -5,6 +5,31 @@ using UnityEngine.UI;
 
 public class InfoUI : MonoBehaviour
 {
+    [SerializeField] Text nameText;
+    [SerializeField] Text onlyNameText;
+    [SerializeField] Text hpText;
+    //[SerializeField] Text energyText;
+    //[SerializeField] Text firstBattleText;
+    //[SerializeField] Text secondBattleText;
+    [SerializeField] Button upgradeBtn;
+    [SerializeField] Button dicBtn;
+    [SerializeField] Button removeBtn;
+
+    [Space]
+    public Material outlintMat;
+    public Material noOutlineMat;
+
+    [Space]
+    public PlayerStatus player = null;
+    public MapObject obj = null;
+    public Structure str = null;
+    public UnitAi unit = null;
+    public MonsterSpawner spawner = null;
+    public MonsterAi monster = null;
+
+    RemoveBuild removeBuild;
+    UpgradeBuild upgradeBuild;
+
     #region Singleton
     public static InfoUI instance;
 
@@ -20,35 +45,27 @@ public class InfoUI : MonoBehaviour
     }
     #endregion
 
-    [SerializeField] Text nameText;
-    [SerializeField] Text hpText;
-    [SerializeField] Text energyText;
-    [SerializeField] Text firstBattleText;
-    [SerializeField] Text secondBattleText;
-    [SerializeField] Button btn;
-
-    [Space]
-    public Material outlintMat;
-    public Material noOutlineMat;
-
-    [Space]
-    public PlayerStatus player = null;
-    public MapObject obj = null;
-    public Structure str = null;
-    public UnitAi unit = null;
-    public MonsterSpawner spawner = null;
-    public MonsterAi monster = null;
+    private void Start()
+    {
+        removeBuild = GameManager.instance.GetComponent<RemoveBuild>();
+        upgradeBuild = GameManager.instance.GetComponent<UpgradeBuild>();
+    }
 
     public void SetDefault()
     {
         ReleaseInfo();
         nameText.text = "";
+        onlyNameText.text = "";
         hpText.text = "";
-        energyText.text = "";
-        firstBattleText.text = "";
-        secondBattleText.text = "";
-        btn.onClick.RemoveAllListeners();
-        btn.gameObject.SetActive(false);
+        //energyText.text = "";
+        //firstBattleText.text = "";
+        //secondBattleText.text = "";
+        upgradeBtn.onClick.RemoveAllListeners();
+        upgradeBtn.gameObject.SetActive(false);
+        dicBtn.onClick.RemoveAllListeners();
+        dicBtn.gameObject.SetActive(false);
+        removeBtn.onClick.RemoveAllListeners();
+        removeBtn.gameObject.SetActive(false);
     }
 
     public void SetPlayerInfo(PlayerStatus _player)
@@ -76,9 +93,9 @@ public class InfoUI : MonoBehaviour
         obj = _obj;
         SpriteRenderer spriteRenderer = obj.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
-        nameText.text = obj.name;
-        btn.gameObject.SetActive(true);
-        btn.onClick.AddListener(() => CutDownBtnFucn());
+        onlyNameText.text = obj.name;
+        removeBtn.gameObject.SetActive(true);
+        removeBtn.onClick.AddListener(() => CutDownBtnFucn());
     }
 
     void CutDownBtnFucn()
@@ -96,20 +113,50 @@ public class InfoUI : MonoBehaviour
         nameText.text = InGameNameDataGet.instance.ReturnName(str.level + 1, str.buildName);
         SetStructureHp();
         str.onHpChangedCallback += SetStructureHp;
-        if (str.energyUse)
+
+        if (!str.isPreBuilding)
         {
-            energyText.text = "Energy Consume: " + str.energyConsumption;
-        }
-        else if (str.isEnergyStr && str.energyProduction > 0)
-        {
-            energyText.text = "Energy Produce: " + str.energyProduction;
+            if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
+            {
+                if (str.structureData.MaxLevel != str.level + 1)
+                {
+                    if (ScienceDb.instance.IsLevelExists(str.buildName, str.level + 2))
+                    {
+                        // 업그레이드 가능
+                        upgradeBtn.gameObject.SetActive(true);
+                        upgradeBtn.onClick.AddListener(() => upgradeBuild.UpgradeBtnClicked(str));
+                    }
+                    else
+                    {
+                        // 상위 테크 건물은 있는데 아직 연구가 완료되지 않은 경우
+                        Debug.Log("need to research next level building");
+                    }
+                }
+            }
         }
 
-        if (str.gameObject.TryGetComponent<AttackTower>(out AttackTower tower))
+        dicBtn.gameObject.SetActive(true);
+        dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(str));
+
+        if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
         {
-            firstBattleText.text = "ATK " + tower.damage;
-            secondBattleText.text = "ATK Delay " + tower.attDelayTime + " ATK Range " + tower.towerData.AttackDist;
+            removeBtn.gameObject.SetActive(true);
+            removeBtn.onClick.AddListener(() => removeBuild.RemoveBtnClicked(str));
         }
+        //if (str.energyUse)
+        //{
+        //    energyText.text = "Energy Consume: " + str.energyConsumption;
+        //}
+        //else if (str.isEnergyStr && str.energyProduction > 0)
+        //{
+        //    energyText.text = "Energy Produce: " + str.energyProduction;
+        //}
+
+        //if (str.gameObject.TryGetComponent<AttackTower>(out AttackTower tower))
+        //{
+        //    firstBattleText.text = "ATK " + tower.damage;
+        //    secondBattleText.text = "ATK Delay " + tower.attDelayTime + " ATK Range " + tower.towerData.AttackDist;
+        //}
     }
 
     public void SetStructureHp()
@@ -117,6 +164,14 @@ public class InfoUI : MonoBehaviour
         if (str != null)
         {
             hpText.text = str.hp + "/" + str.maxHp;
+        }
+    }
+
+    public void RefreshStrInfo()
+    {
+        if (str != null)
+        {
+            SetStructureInfo(str);
         }
     }
 
@@ -129,8 +184,8 @@ public class InfoUI : MonoBehaviour
         nameText.text = unit.name;
         SetUnitHp();
         unit.onHpChangedCallback += SetUnitHp;
-        firstBattleText.text = "ATK " + unit.damage + " DEF " + unit.defense;
-        secondBattleText.text = "ATK Delay " + unit.attackSpeed + " ATK Range " + unit.unitCommonData.AttackDist;
+        //firstBattleText.text = "ATK " + unit.damage + " DEF " + unit.defense;
+        //secondBattleText.text = "ATK Delay " + unit.attackSpeed + " ATK Range " + unit.unitCommonData.AttackDist;
     }
 
     public void SetUnitHp()
@@ -169,8 +224,8 @@ public class InfoUI : MonoBehaviour
         nameText.text = monster.name;
         SetMonsterHp();
         monster.onHpChangedCallback += SetMonsterHp;
-        firstBattleText.text = "ATK " + monster.damage + " DEF " + monster.defense;
-        secondBattleText.text = "ATK Delay " + monster.attackSpeed + " ATK Range " + monster.unitCommonData.AttackDist;
+        //firstBattleText.text = "ATK " + monster.damage + " DEF " + monster.defense;
+        //secondBattleText.text = "ATK Delay " + monster.attackSpeed + " ATK Range " + monster.unitCommonData.AttackDist;
     }
 
     public void SetMonsterHp()

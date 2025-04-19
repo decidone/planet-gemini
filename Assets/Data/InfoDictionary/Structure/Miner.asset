@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Miner
   type: 1
   explanation: Miner Explanation
+  strData: {fileID: 11400000, guid: 49e145897899dc040a8a7f471b9615a9, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 2c1eb9533e608214a86ea4a023197922, type: 3}

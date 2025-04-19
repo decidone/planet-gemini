@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Portal
   type: 1
   explanation: Explanation
+  strData: {fileID: 11400000, guid: 94688b3199361bd4cbca34caf1cf2a27, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 16a11eebe848b1f42a53920f65ceadb9, type: 3}

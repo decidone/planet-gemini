@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Robot Manufacturer
   type: 1
   explanation: Explanation
+  strData: {fileID: 11400000, guid: ee7fe0a8811eed443ba23fd81389a861, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 39c690be9d3a5094d9ec8fb2347da506, type: 3}

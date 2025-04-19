@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Chemical Plant
   type: 1
   explanation: Explanation
+  strData: {fileID: 11400000, guid: 1e635523522854b468d53e4f3e317780, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 482785cdb37f6ab449153a76cbd03a8d, type: 3}

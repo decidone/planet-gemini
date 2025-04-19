@@ -88,7 +88,7 @@ public class ConfirmPanel : MonoBehaviour
         {
             contentText.text = "Do you want to save to slot " + slotNum + "?";
             inputObj.SetActive(true);
-            InputManager.instance.OpenChat();
+            //InputManager.instance.OpenChat();
         }
         else
         {
@@ -219,7 +219,8 @@ public class ConfirmPanel : MonoBehaviour
     {
         confirmPanel.SetActive(false);
         inputObj.SetActive(false);
-        InputManager.instance.CloseChat();
+        inputField.text = string.Empty;
+        //InputManager.instance.CloseChat();
 
         if (GameManager.instance != null)
             GameManager.instance.onUIChangedCallback?.Invoke(confirmPanel);

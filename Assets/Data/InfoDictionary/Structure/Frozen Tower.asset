@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Frozen Tower
   type: 1
   explanation: Explanation
+  strData: {fileID: 11400000, guid: 1491e26ad5fc7e9498ee0983d8f64ea9, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 79e213020d82f9b4fb7cbd00e08c2cc0, type: 3}

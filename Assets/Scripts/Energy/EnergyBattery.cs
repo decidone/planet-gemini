@@ -124,8 +124,10 @@ public class EnergyBattery : Structure
             // 발전기류는 energyConsumption 변수 자리에 생산량을 리턴함
             return (energyUse, isEnergyStr, true, conn.group, 0);
         }
-
-        return (false, false, false, null, 0f);
+        else
+        {
+            return (energyUse, isEnergyStr, true, null, 0);
+        }
     }
 
     public override (float, float) PopUpStoredCheck()

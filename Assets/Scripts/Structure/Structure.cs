@@ -359,6 +359,8 @@ public class Structure : NetworkBehaviour
             isSetBuildingOk = false;
             unitCanvas.SetActive(true);
             repairBar.enabled = true;
+
+            CloseUI();
         }
     }
 
@@ -1728,6 +1730,8 @@ public class Structure : NetworkBehaviour
 
     void CloseUI()
     {
+        if (!isUIOpened) return;
+
         if (TryGetComponent(out LogisticsClickEvent solidFacClickEvent))
         {
             if (solidFacClickEvent.LogisticsUI != null)
@@ -1812,10 +1816,17 @@ public class Structure : NetworkBehaviour
 
     public virtual (bool, bool , bool, EnergyGroup, float) PopUpEnergyCheck()
     {
-        if (energyUse && conn != null && conn.group != null)
+        if (energyUse || isEnergyStr)
         {
-            // 발전기류는 energyConsumption 변수 자리에 생산량을 리턴함
-            return (energyUse, isEnergyStr, false, conn.group, energyConsumption);
+            if (conn != null && conn.group != null)
+            {
+                // 발전기류는 energyConsumption 변수 자리에 생산량을 리턴함
+                return (energyUse, isEnergyStr, false, conn.group, energyConsumption);
+            }
+            else
+            {
+                return (energyUse, isEnergyStr, false, null, energyConsumption);
+            }
         }
 
         return (false, false, false, null, 0f);

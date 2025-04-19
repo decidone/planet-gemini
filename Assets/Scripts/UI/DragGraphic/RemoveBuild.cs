@@ -19,6 +19,11 @@ public class RemoveBuild : DragFunc
     public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
     {
         GroupSelectedObjects(startPos, endPos, 0);
+
+        if (startPos != endPos)
+            GroupSelectedObjects(startPos, endPos, 0);
+        else
+            RemoveClick(startPos);
     }
 
     protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
@@ -38,6 +43,36 @@ public class RemoveBuild : DragFunc
 
         if (selectedObjects.Length > 0) 
             gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
+    }
+
+    void RemoveClick(Vector2 mousePos)
+    {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
+        selectedObjects = new GameObject[1];
+        if (hits.Length > 0)
+        {
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
+                {
+                    if (!(structure.GetComponent<Portal>() || structure.GetComponent<ScienceBuilding>()))
+                    {
+                        selectedObjects[0] = hit.collider.gameObject;
+                        gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
+                    }
+                }
+            }
+        }
+    }
+
+    public void RemoveBtnClicked(Structure str)
+    {
+        if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
+        {
+            selectedObjects = new GameObject[1];
+            selectedObjects[0] = str.gameObject;
+            gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
+        }
     }
 
     public void ConfirmEnd(bool isOk)

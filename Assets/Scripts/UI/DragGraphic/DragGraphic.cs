@@ -17,7 +17,7 @@ public class DragGraphic : MonoBehaviour
 
     UnitDrag unitDrag;
     RemoveBuild removeBuild;
-    UpgradeBuild UpgradeBuild;
+    UpgradeBuild upgradeBuild;
 
     GameObject selectedBuild;
 
@@ -50,7 +50,7 @@ public class DragGraphic : MonoBehaviour
     {
         unitDrag = GameManager.instance.GetComponent<UnitDrag>();
         removeBuild = GameManager.instance.GetComponent<RemoveBuild>();
-        UpgradeBuild = GameManager.instance.GetComponent<UpgradeBuild>();
+        upgradeBuild = GameManager.instance.GetComponent<UpgradeBuild>();
         boxVisual = GetComponent<Transform>();
         sprite = GetComponent<SpriteRenderer>();
         sprite.enabled = false;
@@ -156,7 +156,7 @@ public class DragGraphic : MonoBehaviour
 
 
         if (isCtrlDrag || upgradeBtnOn)
-            UpgradeBuild.LeftMouseUp(startPosition, endPosition);
+            upgradeBuild.LeftMouseUp(startPosition, endPosition);
         else if (isShiftDrag || removeBtnOn)
             removeBuild.LeftMouseUp(startPosition, endPosition);
         else

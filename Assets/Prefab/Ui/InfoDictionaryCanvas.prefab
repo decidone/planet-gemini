@@ -2801,7 +2801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6133dd9f722fbb43b0dee2a8c16befd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InfoDictionaryListSO: {fileID: 11400000, guid: e937075907f2cfa49961efacd6e5721f, type: 2}
+  infoDictionaryListSO: {fileID: 11400000, guid: e937075907f2cfa49961efacd6e5721f, type: 2}
   InfoDicObj: {fileID: 6745680789593043242}
   listItemPref: {fileID: 7838643556942953947, guid: 097f775cd707d83499226b9f4cfc517c, type: 3}
   content: {fileID: 6745680790545975148}

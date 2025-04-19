@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Manufacturer
   type: 1
   explanation: Explanation
+  strData: {fileID: 11400000, guid: da03f6b75f47e3e498de3ee78cea808f, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 0ad0c6097b775be4589cf664bba9fa27, type: 3}

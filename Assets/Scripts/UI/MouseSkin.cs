@@ -25,7 +25,7 @@ public class MouseSkin : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        hotspot = new Vector2(16, 16);
+        hotspot = new Vector2(16, 12);
         CursorSetting(cursorSkin.baseCursor);
     }
 
@@ -65,6 +65,14 @@ public class MouseSkin : MonoBehaviour
             if (texture == cursorSkin.buildingCursor[0])
             {
                 Cursor.SetCursor(texture, Vector2.zero, CursorMode.Auto);
+            }
+            else if (texture == cursorSkin.dragCursor[0])
+            {
+                Cursor.SetCursor(texture, new Vector2(2, 12), CursorMode.Auto);
+            }
+            else if (texture == cursorSkin.dragCursor[1])
+            {
+                Cursor.SetCursor(texture, new Vector2(4, 12), CursorMode.Auto);
             }
             else
             {

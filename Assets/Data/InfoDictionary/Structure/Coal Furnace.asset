@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Coal Furnace
   type: 1
   explanation: Furnace Explanation
+  strData: {fileID: 11400000, guid: a8c8d2c5653fbda498c749e453b14ebf, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: c714143e7276d214b8b8eab3f3b3507c, type: 3}

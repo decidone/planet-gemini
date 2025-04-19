@@ -621,6 +621,9 @@ public class GameManager : NetworkBehaviour
             AstarPath.active.UpdateGraphs(guo);
         }
 
+        if (inputManager.ctrl || inputManager.shift)
+            return;
+
         if (hits.Length > 0)
         {
             List<InfoInteract> infoList = new List<InfoInteract>();

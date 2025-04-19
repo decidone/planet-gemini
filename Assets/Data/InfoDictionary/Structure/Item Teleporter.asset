@@ -15,5 +15,6 @@ MonoBehaviour:
   name: Item Teleporter
   type: 1
   explanation: Explanation
+  strData: {fileID: 11400000, guid: 0fd34327f681a6c4585fd363b4e0a46b, type: 2}
   layout: 1
   videoClip: {fileID: 32900000, guid: 0766372666261d243a0317d74bcb94f2, type: 3}

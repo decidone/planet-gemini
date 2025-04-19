@@ -8,7 +8,7 @@ using UnityEngine.Video;
 
 public class InfoDictionary : MonoBehaviour
 {
-    [SerializeField] InfoDictionaryListSO InfoDictionaryListSO;
+    [SerializeField] InfoDictionaryListSO infoDictionaryListSO;
     [SerializeField] GameObject InfoDicObj;
     [SerializeField] GameObject listItemPref;
     [SerializeField] GameObject content;
@@ -186,7 +186,7 @@ public class InfoDictionary : MonoBehaviour
 
     void CreateListItem()
     {
-        List<InfoDictionarySO> list = InfoDictionaryListSO.infoDictionarySOList;
+        List<InfoDictionarySO> list = infoDictionaryListSO.infoDictionarySOList;
 
         foreach (InfoDictionarySO item in list)
         {
@@ -256,6 +256,26 @@ public class InfoDictionary : MonoBehaviour
                     obj.SetActive(false);
                 }
             }
+        }
+    }
+
+    public void Search(Structure str)
+    {
+        //Debug.Log("str.name " + str.name);
+        //Debug.Log("InGameNameDataGet.instance.ReturnName(str.name) " + InGameNameDataGet.instance.ReturnName(str.level + 1, str.buildName));
+
+        InfoDictionarySO info = new InfoDictionarySO();
+        foreach (InfoDictionarySO infoSO in infoDictionaryListSO.infoDictionarySOList)
+        {
+            if (infoSO.strDataList.Contains(str.structureData))
+            {
+                info = infoSO;
+            }
+        }
+        if (info != null)
+        {
+            OpenUI();
+            SelectItem(info);
         }
     }
 

@@ -43,6 +43,8 @@ public class UpgradeBuild : DragFunc
             if (layer == LayerMask.NameToLayer("Obj") && collider.GetComponent<Structure>() == null)
                 continue;
             Structure structure = collider.GetComponent<Structure>();
+            if (structure.isPreBuilding)
+                continue;
             if (collider.GetComponent<Portal>() || collider.GetComponent<ScienceBuilding>())
                 continue;
             if (structure.structureData.MaxLevel == structure.level + 1 || !ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
@@ -68,11 +70,54 @@ public class UpgradeBuild : DragFunc
         {
             foreach (RaycastHit2D hit in hits)
             {
-                if (hit.collider.TryGetComponent(out BeltCtrl structure) && !structure.isPreBuilding)
+                if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
                 {
-                    selectedObjects[0] = hit.collider.gameObject;
-                    GroupUpgradeCost(selectedObjects[0]);
-                    UpgradeCheck();
+                    if (!(structure.GetComponent<Portal>() || structure.GetComponent<ScienceBuilding>()))
+                    {
+                        if (structure.structureData.MaxLevel != structure.level + 1)
+                        {
+                            if (ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
+                            {
+                                // 업그레이드 가능
+                                selectedObjects[0] = hit.collider.gameObject;
+                                GroupUpgradeCost(selectedObjects[0]);
+                                UpgradeCheck();
+                            }
+                            else
+                            {
+                                // 상위 테크 건물은 있는데 아직 연구가 완료되지 않은 경우
+                                Debug.Log("need to research next level building");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void UpgradeBtnClicked(Structure str)
+    {
+        if (!str.isPreBuilding)
+        {
+            if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
+            {
+                if (str.structureData.MaxLevel != str.level + 1)
+                {
+                    if (ScienceDb.instance.IsLevelExists(str.buildName, str.level + 2))
+                    {
+                        // 업그레이드 가능
+                        selectedObjects = new GameObject[1];
+                        selectedObjects[0] = str.gameObject;
+                        GroupUpgradeCost(selectedObjects[0]);
+                        UpgradeCheck();
+                    }
+                    else
+                    {
+                        // 상위 테크 건물은 있는데 아직 연구가 완료되지 않은 경우
+                        // 여기서는 ui동기화에 문제가 생겨서 이미 업그레이드가 됐는데 버튼이 남아있는 경우를 처리
+                        Debug.Log("need to research next level building");
+                        InfoUI.instance.RefreshStrInfo();
+                    }
                 }
             }
         }
@@ -100,6 +145,8 @@ public class UpgradeBuild : DragFunc
             //    ObjUpgradeFunc(obj);
             //}
             gameManager.BuildAndSciUiReset();
+
+            InfoUI.instance.RefreshStrInfo();
         }
         selectedObjects = new GameObject[0];
         upgradeItemDic.Clear();
@@ -164,7 +211,6 @@ public class UpgradeBuild : DragFunc
             return;
     }
 
-
     void EnoughCheck()
     {
         bool isEnough;
@@ -199,8 +245,8 @@ public class UpgradeBuild : DragFunc
         return null;
     }
 
-    public void ObjUpgradeFunc(GameObject obj) // 인벤토리에서 가격을 확인 후 처리
-    {                                   // 이부분을 서버에서 확인 후 처리로 변경
+    public void ObjUpgradeFunc(GameObject obj)  // 인벤토리에서 가격을 확인 후 처리
+    {                                           // 이부분을 서버에서 확인 후 처리로 변경
         BuildingData buildUpgradeData = new BuildingData();
         buildUpgradeData = CanUpgradeCheck(obj);
 

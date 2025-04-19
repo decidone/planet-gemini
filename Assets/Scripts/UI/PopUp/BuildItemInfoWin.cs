@@ -140,7 +140,10 @@ public class BuildItemInfoWin : MonoBehaviour
                     float newheight = heightSize[2];
                     rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
                     energyPanelWindow.gameObject.SetActive(true);
-                    energyBar.fillAmount = energyGroup.efficiency;
+                    if (energyGroup != null)
+                        energyBar.fillAmount = energyGroup.efficiency;
+                    else
+                        energyBar.fillAmount = 0;
 
                     string energy = "";
                     if (energyVariation > 0)
@@ -148,11 +151,17 @@ public class BuildItemInfoWin : MonoBehaviour
 
                     if (energyUse)
                     {
-                        energyText.text = "Energy : " + energyGroup.consumption + energy + " / " + energyGroup.energy;
+                        if (energyGroup != null)
+                            energyText.text = energyGroup.consumption + energy + " / " + energyGroup.energy;
+                        else
+                            energyText.text = "disconnected";
                     }
                     else if (isEnergyStr)
                     {
-                        energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy + energy;
+                        if (energyGroup != null)
+                            energyText.text = energyGroup.consumption + " / " + energyGroup.energy + energy;
+                        else
+                            energyText.text = "disconnected";
                     }
                 }
                 else
@@ -172,7 +181,10 @@ public class BuildItemInfoWin : MonoBehaviour
                     float newheight = heightSize[2];
                     rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
                     energyPanelWindow.gameObject.SetActive(true);
-                    energyBar.fillAmount = energyGroup.efficiency;
+                    if (energyGroup != null)
+                        energyBar.fillAmount = energyGroup.efficiency;
+                    else
+                        energyBar.fillAmount = 0;
 
                     string energy = "";
                     if (energyVariation > 0)
@@ -180,11 +192,17 @@ public class BuildItemInfoWin : MonoBehaviour
 
                     if (energyUse)
                     {
-                        energyText.text = "Energy : " + energyGroup.consumption + energy + " / " + energyGroup.energy;
+                        if (energyGroup != null)
+                            energyText.text = energyGroup.consumption + energy + " / " + energyGroup.energy;
+                        else
+                            energyText.text = "disconnected";
                     }
                     else if (isEnergyStr)
                     {
-                        energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy + energy;
+                        if (energyGroup != null)
+                            energyText.text = energyGroup.consumption + " / " + energyGroup.energy + energy;
+                        else
+                            energyText.text = "disconnected";
                     }
                 }
                 else
@@ -241,7 +259,10 @@ public class BuildItemInfoWin : MonoBehaviour
                 rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
                 energyPanelWindow.gameObject.SetActive(true);
                 bulletPanelWindow.gameObject.SetActive(false);
-                energyBar.fillAmount = energyGroup.efficiency;
+                if (energyGroup != null)
+                    energyBar.fillAmount = energyGroup.efficiency;
+                else
+                    energyBar.fillAmount = 0;
 
                 string energy = "";
                 if (energyVariation > 0)
@@ -249,11 +270,17 @@ public class BuildItemInfoWin : MonoBehaviour
 
                 if (energyUse)
                 {
-                    energyText.text = "Energy : " + energyGroup.consumption + energy + " / " + energyGroup.energy;
+                    if (energyGroup != null)
+                        energyText.text = energyGroup.consumption + energy + " / " + energyGroup.energy;
+                    else
+                        energyText.text = "disconnected";
                 }
                 else if (isEnergyStr)
                 {
-                    energyText.text = "Energy : " + energyGroup.consumption + " / " + energyGroup.energy + energy;
+                    if (energyGroup != null)
+                        energyText.text = energyGroup.consumption + " / " + energyGroup.energy + energy;
+                    else
+                        energyText.text = "disconnected";
                 }
             }
             else
@@ -265,8 +292,16 @@ public class BuildItemInfoWin : MonoBehaviour
                 rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, newheight);
                 energyPanelWindow.gameObject.SetActive(true);
                 bulletPanelWindow.gameObject.SetActive(true);
-                energyBar.fillAmount = energyGroup.efficiency;
-                energyText.text = "Energy : " + energyGroup.consumption + "(" + energyVariation + ")" + " / " + energyGroup.energy;
+                if (energyGroup != null)
+                {
+                    energyBar.fillAmount = energyGroup.efficiency;
+                    energyText.text = energyGroup.consumption + "(" + energyVariation + ")" + " / " + energyGroup.energy;
+                }
+                else
+                {
+                    energyBar.fillAmount = 0;
+                    energyText.text = "disconnected";
+                }
                 bulletBar.fillAmount = storedAmount / storedMaxAmount;
                 bulletText.text = "Bullet : " + storedAmount + " / " + storedMaxAmount;
             }
