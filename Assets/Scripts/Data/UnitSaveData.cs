@@ -21,6 +21,8 @@ public class UnitSaveData
     public bool patrolDir;  // 페트롤 이동 방향
     public SerializedVector3 moveTragetPos = new SerializedVector3();   // 이동해야 하는 좌표
     public SerializedVector3 moveStartPos = new SerializedVector3();    // 이동 시작 좌표
+    public bool portalUnitIn;
+    public bool hostClientUnitIn;
     // 유저 유닛
 
     // 몬스터

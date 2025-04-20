@@ -9,12 +9,14 @@ using QFSW.QC.Actions;
 public class WavePoint : MonoBehaviour
 {
     GameObject player;
-    public GameObject canvasObj;
+    public GameObject waveObj;
+    public Image waveObjGauge;
     public GameObject mapObj;
     private float defaultAngle;
 
     bool isMap1WaveStart = false;
     bool isMap2WaveStart = false;
+
     Vector2 map1WavePos;
     Vector2 map2WavePos;
 
@@ -46,7 +48,7 @@ public class WavePoint : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.instance;
-        canvasObj.transform.localScale = new Vector3(1, 1, 1);
+        waveObj.transform.localScale = new Vector3(1, 1, 1);
         seeker = GetComponent<Seeker>();
 
         Vector2 dir = new Vector2(Screen.width, Screen.height);
@@ -72,7 +74,7 @@ public class WavePoint : MonoBehaviour
             }
             else
             {
-                canvasObj.SetActive(false);
+                waveObj.SetActive(false);
             }
         }
     }
@@ -99,7 +101,9 @@ public class WavePoint : MonoBehaviour
             map2WavePos = wavePos;
             isMap2WaveStart = true;
         }
+
         StartCoroutine(CheckPath(wavePos, isInHostMap));
+        StartCoroutine(gameManager.GaugeCountDown());
     }
 
     protected IEnumerator CheckPath(Vector3 wavePos, bool isHostMap)
@@ -181,7 +185,7 @@ public class WavePoint : MonoBehaviour
         {
             isMap2WaveStart = false;
         }
-        canvasObj.SetActive(false);
+        waveObj.SetActive(false);
         mapObj.SetActive(false);
         SetLine(false);
     }
@@ -193,7 +197,7 @@ public class WavePoint : MonoBehaviour
         else
             transform.position = map2WavePos;
 
-        canvasObj.SetActive(true);
+        waveObj.SetActive(true);
         mapObj.SetActive(true);
 
         if (!isOffScreen())
@@ -208,7 +212,7 @@ public class WavePoint : MonoBehaviour
         float x = target.x - 0.5f;
         float y = target.y - 0.5f;
 
-        RectTransform indicatorRect = canvasObj.GetComponent<RectTransform>();
+        RectTransform indicatorRect = waveObj.GetComponent<RectTransform>();
 
         if (-defaultAngle <= angle && angle <= defaultAngle)
         {
@@ -268,12 +272,12 @@ public class WavePoint : MonoBehaviour
         Vector2 vec = Camera.main.WorldToViewportPoint(transform.position);
         if (vec.x >= 0 && vec.x <= 1 && vec.y >= 0 && vec.y <= 1)
         {
-            canvasObj.SetActive(false);
+            waveObj.SetActive(false);
             return false;
         }
         else
         {
-            canvasObj.SetActive(true);
+            waveObj.SetActive(true);
             return true;
         }
     }

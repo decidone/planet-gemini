@@ -48,6 +48,7 @@ public class MonsterAi : UnitCommonAi
     float debuffRate;           // 등대가 속한 에너지 그룹의 에너지 효율 상태에 따른 디버프 배율 계산
     float reducedDefensePer;    // 방어력 감소 퍼센트
 
+    float speedMove = 7;
     Transform _t;
     Effects _effects;
 
@@ -94,22 +95,29 @@ public class MonsterAi : UnitCommonAi
     {
         if (isScriptActive)
         {
-            base.Update();
-            if (isDebuffed)
+            if (aIState != AIState.AI_SpawnerCall)
             {
-                debuffTimer += Time.deltaTime;
-
-                if (debuffTimer > debuffDuration)
+                base.Update();
+                if (isDebuffed)
                 {
-                    isDebuffed = false;
-                    reducedDefensePer = 0;
-                    debuffTimer = 0f;
+                    debuffTimer += Time.deltaTime;
+
+                    if (debuffTimer > debuffDuration)
+                    {
+                        isDebuffed = false;
+                        reducedDefensePer = 0;
+                        debuffTimer = 0f;
+                    }
                 }
             }
-
+         
             if (!waveState && justTraceTimer < justTraceInterval)
             {
                 justTraceTimer += Time.deltaTime;
+                if (justTraceTimer >= justTraceInterval)
+                {
+                    stopTrace = true;
+                }
             }
         }
     }
@@ -456,7 +464,7 @@ public class MonsterAi : UnitCommonAi
         direction = targetWaypoint - tr.position;
         direction.Normalize();
 
-        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 7) * slowSpeedPer);
+        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + speedMove) * slowSpeedPer);
         if (Vector3.Distance(tr.position, spawnPos.position) <= 0.3f)
         {
             aIState = AIState.AI_Idle;
@@ -633,7 +641,6 @@ public class MonsterAi : UnitCommonAi
     {
         if (targetDist > unitCommonData.AttackDist + 2)
             return;
-
         else if (IsServer)
         {
             if (Obj != null)
@@ -648,6 +655,8 @@ public class MonsterAi : UnitCommonAi
                     Obj.GetComponent<Structure>().TakeDamage(damage);
             }
         }
+        justTraceTimer = 0;
+        stopTrace = false;
     }
 
     void TargetListReset()
@@ -771,12 +780,16 @@ public class MonsterAi : UnitCommonAi
     {
         base.TakeDamage(damage, attackType, ignorePercent);
         normalTraceTimer = 0;
+        justTraceTimer = 0;
+        stopTrace = false;
     }
 
     public override void TakeDamage(float damage, int attackType)
     {
         base.TakeDamage(damage, attackType);
         normalTraceTimer = 0;
+        justTraceTimer = 0;
+        stopTrace = false;
     }
 
 
@@ -927,7 +940,7 @@ public class MonsterAi : UnitCommonAi
     {
         base.AttackEnd();
         if (aggroTarget != null)
-            AttackObjCheck(aggroTarget);        
+            AttackObjCheck(aggroTarget);
     }
 
 
@@ -1041,31 +1054,51 @@ public class MonsterAi : UnitCommonAi
 
         AnimSetFloat(targetVec, true);
 
-        targetDist = Vector3.Distance(tr.position, spawnPos.transform.position);
+        if (currentWaypointIndex >= movePath.Count)
+            return;
 
-        if (targetDist > unitCommonData.AttackDist)
+        Vector3 targetWaypoint = movePath[currentWaypointIndex];
+        direction = targetWaypoint - tr.position;
+        direction.Normalize();
+
+        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + speedMove) * slowSpeedPer);
+
+        if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
         {
+            currentWaypointIndex++;
+
             if (currentWaypointIndex >= movePath.Count)
-                return;
-
-            Vector3 targetWaypoint = movePath[currentWaypointIndex];
-            direction = targetWaypoint - tr.position;
-            direction.Normalize();
-
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
-
-            if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
             {
-                currentWaypointIndex++;
-
-                if (currentWaypointIndex >= movePath.Count)
-                    return;
+                aIState = AIState.AI_NormalTrace;
+                return;
             }
         }
-        else
-        {
-            aIState = AIState.AI_NormalTrace;
-        }
+        
+        //targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
+
+        //if (targetDist > unitCommonData.AttackDist)
+        //{
+        //    if (currentWaypointIndex >= movePath.Count)
+        //        return;
+
+        //    Vector3 targetWaypoint = movePath[currentWaypointIndex];
+        //    direction = targetWaypoint - tr.position;
+        //    direction.Normalize();
+
+        //    tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
+
+        //    if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+        //    {
+        //        currentWaypointIndex++;
+
+        //        if (currentWaypointIndex >= movePath.Count)
+        //            return;
+        //    }
+        //}
+        //else
+        //{
+        //    aIState = AIState.AI_NormalTrace;
+        //}
     }
 
 

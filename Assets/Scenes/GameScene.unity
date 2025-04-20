@@ -468,6 +468,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
+--- !u!114 &229731994 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6531714670014293681, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &298971887
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1811,6 +1822,10 @@ PrefabInstance:
       value: WavePoint
       objectReference: {fileID: 0}
     - target: {fileID: 2284849099493950391, guid: ce929f62b949f9445a5d360a1bb3f143, type: 3}
+      propertyPath: waveObj
+      value: 
+      objectReference: {fileID: 535051106}
+    - target: {fileID: 2284849099493950391, guid: ce929f62b949f9445a5d360a1bb3f143, type: 3}
       propertyPath: canvasObj
       value: 
       objectReference: {fileID: 535051106}
@@ -1818,6 +1833,10 @@ PrefabInstance:
       propertyPath: instanceObj
       value: 
       objectReference: {fileID: 535051106}
+    - target: {fileID: 2284849099493950391, guid: ce929f62b949f9445a5d360a1bb3f143, type: 3}
+      propertyPath: waveObjGauge
+      value: 
+      objectReference: {fileID: 229731994}
     - target: {fileID: 6843446920161672078, guid: ce929f62b949f9445a5d360a1bb3f143, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -4260,6 +4279,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1872946875903624661, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_Name
+      value: DangerImgGauge
+      objectReference: {fileID: 0}
     - target: {fileID: 2094746947307958713, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -4903,6 +4926,14 @@ PrefabInstance:
     - target: {fileID: 6523948728470703079, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6531714670014293681, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593803152913368338, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6762808113236233401, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

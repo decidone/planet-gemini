@@ -277,6 +277,14 @@ public class PortalUnitIn : PortalObj
         DisplaySlotChange();
     }
 
+    public void LoadUnitData(GameObject unit)
+    {
+        sendUnitList.Add(unit);
+        unit.TryGetComponent(out UnitAi unitAi);
+        unitAi.transform.position = new Vector3(-100, -100, 0);
+        unitAi.PortalUnitInFuncServerRpc(isInHostMap);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!IsServer)
@@ -286,7 +294,9 @@ public class PortalUnitIn : PortalObj
         {
             var objID = NetworkObjManager.instance.FindNetObjID(collision.gameObject);
             UnitListAddServerRpc(objID);
-            unitAi.PortalUnitInFuncServerRpc();
+            unitAi.transform.position = new Vector3(-100, -100, 0);
+
+            unitAi.PortalUnitInFuncServerRpc(isInHostMap);
         }
     }
 }

@@ -110,7 +110,7 @@ public class GameManager : NetworkBehaviour
 
     public int day;                     // 일 수
     public bool isDay;                  // 밤 낮
-    [SerializeField] float dayTime;     // 인게임 4시간을 현실 시간으로
+    public float dayTime;     // 인게임 4시간을 현실 시간으로
     public float dayTimer;              // 게임 내 시간(타이머)
     public int dayIndex = 0;            // 24시간을 6등분해서 인덱스로 사용
     // 0 : 08:00 ~ 12:00
@@ -363,6 +363,7 @@ public class GameManager : NetworkBehaviour
                     if (IsServer)
                     {
                         MonsterSpawnerManager.instance.ViolentDayStart();
+                        WaveStartWarrningServerRpc();
                     }
                 }
             }
@@ -1875,36 +1876,35 @@ public class GameManager : NetworkBehaviour
                 returnItemDic.Add(item, ReturnCost.amounts[i]);
             }
         }
+    }
 
-        //bool totalAmountsEnough = true;
-        //bool isEnough;
+    [ServerRpc]
+    void WaveStartWarrningServerRpc()
+    {
+        WaveStartWarrningClientRpc();
+    }
 
-        //for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
-        //{
-        //    int value;
-        //    bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[UpgradeCost.items[i]], out value);
-        //    isEnough = hasItem && value >= UpgradeCost.amounts[i];
+    [ClientRpc]
+    void WaveStartWarrningClientRpc()
+    {
+        WarningWindow.instance.WarningTextSet("Wave Incoming");
+    }
 
-        //    if (isEnough && totalAmountsEnough)
-        //        totalAmountsEnough = true;
-        //    else
-        //        totalAmountsEnough = false;
-        //}
+    public IEnumerator GaugeCountDown()
+    {
+        while (true)
+        {
+            yield return null;
+            float index = (dayIndex == 5) ? dayTime : 0;
+            float totalDayTime = dayTime * 2;
 
-        //if (totalAmountsEnough)
-        //{
-        //    for (int i = 0; i < ReturnUpgradeCost.GetItemCount(); i++)
-        //    {
-        //        inventory.Add(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
-        //        Overall.instance.OverallConsumptionCancel(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
-        //    }
-
-        //    for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
-        //    {
-        //        inventory.Sub(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
-        //        Overall.instance.OverallConsumption(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
-        //    }
-        //    str.UpgradeFuncServerRpc();
-        //}
+            if (dayIndex == 4 || dayIndex == 5)
+                WavePoint.instance.waveObjGauge.fillAmount = (totalDayTime - (dayTimer + index)) / totalDayTime;
+            else
+            {
+                WavePoint.instance.waveObjGauge.fillAmount = 0;
+                yield break; // 코루틴 종료
+            }
+        }
     }
 }

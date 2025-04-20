@@ -43,6 +43,7 @@ public class UnitAi : UnitCommonAi
     public delegate void OnEffectUpgradeCheck();
     public OnEffectUpgradeCheck onEffectUpgradeCheck;
     bool portalUnitIn = false;
+    bool hostClientUnitIn = false;
     protected bool[] increasedUnit = new bool[4];
     // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
 
@@ -71,7 +72,7 @@ public class UnitAi : UnitCommonAi
 
         base.Update();
 
-        if (hp != maxHp && aIState != AIState.AI_Die)
+        if (targetList.Count == 0 && hp != maxHp && aIState != AIState.AI_Die)
         {
             selfHealTimer += Time.deltaTime;
 
@@ -89,7 +90,7 @@ public class UnitAi : UnitCommonAi
         base.ClientConnectSyncServerRpc();
         if (portalUnitIn)
         {
-            PortalUnitInFuncClientRpc();
+            PortalUnitInFuncClientRpc(hostClientUnitIn);
         }
     }
 
@@ -615,13 +616,13 @@ public class UnitAi : UnitCommonAi
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PortalUnitInFuncServerRpc()
+    public void PortalUnitInFuncServerRpc(bool mapIndex)
     {
-        PortalUnitInFuncClientRpc();
+        PortalUnitInFuncClientRpc(mapIndex);
     }
 
     [ClientRpc]
-    public void PortalUnitInFuncClientRpc()
+    public void PortalUnitInFuncClientRpc(bool mapIndex)
     {
         if (unitSelect)
         {
@@ -629,6 +630,7 @@ public class UnitAi : UnitCommonAi
             unitGroupCtrl.DieUnitCheck(gameObject);
         }
         portalUnitIn = true;
+        hostClientUnitIn = mapIndex;
         gameObject.SetActive(false);
     }
 
@@ -730,6 +732,8 @@ public class UnitAi : UnitCommonAi
         data.patrolDir = isPatrolMove;
         data.moveTragetPos = Vector3Extensions.FromVector3(targetPosition);
         data.moveStartPos = Vector3Extensions.FromVector3(patrolPos);
+        data.portalUnitIn = portalUnitIn;
+        data.hostClientUnitIn = hostClientUnitIn;
 
         return data;
     }

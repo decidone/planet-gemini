@@ -62,9 +62,9 @@ public class WarningWindow : MonoBehaviour
     {
         string mapselect;
         if (isHostMap)
-            mapselect = "Map 1.";
+            mapselect = "CASTOR Planet.";
         else
-            mapselect = "Map 2.";
+            mapselect = "POLLUX Planet.";
 
         warningText.text = text + " " + mapselect;
         WarningState(true);

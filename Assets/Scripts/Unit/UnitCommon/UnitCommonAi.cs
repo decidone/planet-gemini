@@ -166,7 +166,7 @@ public class UnitCommonAi : NetworkBehaviour
                 }
                 AttackTargetDisCheck();
             }
-            else
+            else if (!aggroTarget)
             {
                 targetDist = 0;
             }

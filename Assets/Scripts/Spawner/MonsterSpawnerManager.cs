@@ -237,6 +237,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     void WavePointOnClientRpc(Vector3 pos, bool hostMap)
     {
         wavePoint.WaveStart(pos, hostMap);
+        WarningWindow.instance.WarningTextSet("Warning! 8:00 Wave Incoming on", hostMap);
     }
 
     public void ViolentDayOff()

@@ -52,7 +52,7 @@ public class RepairerDrone : UnitAi
                 AttackTargetDisCheck();
                 RepairAiCtrl();
             }
-            else
+            else if (!aggroTarget)
             {
                 targetDist = 0;
             }
