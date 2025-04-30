@@ -199,7 +199,7 @@ public class UnitCommonAi : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public virtual void ClientConnectSyncServerRpc()
     {
-        ClientConnectSyncClientRpc(hp);
+        ClientConnectSyncClientRpc(hp); // ??? 여기 클라이언트쪽 오브젝트 스폰 전에 콜 되는 듯(트랜스포터 있으면 에러뜸)
     }
     
     [ClientRpc]

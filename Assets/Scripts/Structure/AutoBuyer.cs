@@ -105,10 +105,54 @@ public class AutoBuyer : Production
         }
     }
 
+    public void MaxSliderUIValueChanged(int amount)
+    {
+        MaxSliderValueSyncServerRpc(amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void MaxSliderValueSyncServerRpc(int amount)
+    {
+        MaxSliderValueSyncClientRpc(amount);
+    }
+
+    [ClientRpc]
+    public void MaxSliderValueSyncClientRpc(int amount)
+    {
+        AutoBuyerManager buyerManager = AutoBuyerManager.instance;
+        if (isUIOpened && buyerManager.buyer == this)
+        {
+            buyerManager.SetMaxSliderValue(amount);
+        }
+        maxBuyAmount = amount;
+        TransportableCheck();
+    }
+
+    public void MinSliderUIValueChanged(int amount)
+    {
+        MinSliderValueSyncServerRpc(amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void MinSliderValueSyncServerRpc(int amount)
+    {
+        MinSliderValueSyncClientRpc(amount);
+    }
+
+    [ClientRpc]
+    public void MinSliderValueSyncClientRpc(int amount)
+    {
+        AutoBuyerManager buyerManager = AutoBuyerManager.instance;
+        if (isUIOpened && buyerManager.buyer == this)
+        {
+            buyerManager.SetMinSliderValue(amount);
+        }
+        minBuyAmount = amount;
+        TransportableCheck();
+    }
+
     public void TransportableCheck()
     {
-        // 서버 보내야 할 듯
-
         if (IsServer)
         {
             var slot = inventory.SlotCheck(0);
@@ -211,7 +255,23 @@ public class AutoBuyer : Production
     protected override void OnClientConnectedCallback(ulong clientId)
     {
         base.OnClientConnectedCallback(clientId);
-        // 여기서 구매량 설정값 동기화 해줘야 함
+        ClientBuyerSyncServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ClientBuyerSyncServerRpc()
+    {
+        ClientBuyerSyncClientRpc(maxBuyAmount, minBuyAmount);
+    }
+
+    [ClientRpc]
+    public void ClientBuyerSyncClientRpc(int max, int min)
+    {
+        if (!IsHost)
+        {
+            maxBuyAmount = max;
+            minBuyAmount = min;
+        }
     }
 
     void SendTransportItemDicCheck()
@@ -244,7 +304,8 @@ public class AutoBuyer : Production
     {
         isUnitInStr = true;
         transportUnit = null;
-        Destroy(returnUnit);
+        //Destroy(returnUnit);
+        returnUnit.GetComponent<TransportUnit>().DestroyFunc();
     }
 
     public void UnitSendOpen()

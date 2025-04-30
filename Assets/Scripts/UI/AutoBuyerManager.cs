@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static Steamworks.InventoryItem;
 
 public class AutoBuyerManager : MonoBehaviour
 {
@@ -18,7 +17,7 @@ public class AutoBuyerManager : MonoBehaviour
     [SerializeField] Button minMinusBtn;
     [SerializeField] Text minText;
 
-    AutoBuyer buyer;
+    public AutoBuyer buyer;
 
     #region Singleton
     public static AutoBuyerManager instance;
@@ -49,29 +48,42 @@ public class AutoBuyerManager : MonoBehaviour
     public void SetBuyer(AutoBuyer autoBuyer)
     {
         buyer = autoBuyer;
-        maxSlider.value = buyer.maxBuyAmount;
-        minSlider.value = buyer.minBuyAmount;
-        minSlider.maxValue = buyer.maxBuyAmount;
+        SetMaxSliderValue(buyer.maxBuyAmount);
+        SetMinSliderValue(buyer.minBuyAmount);
         selectBtn.onClick.RemoveAllListeners();
         selectBtn.onClick.AddListener(buyer.OpenRecipe);
+    }
+
+    public void SetMaxSliderValue(int value)
+    {
+        maxSlider.SetValueWithoutNotify(value);
+
+        if (maxSlider.value != 0)
+            maxText.text = value.ToString();
+        else
+            maxText.text = "";
+
+        minSlider.maxValue = value;
+    }
+
+    public void SetMinSliderValue(int value)
+    {
+        minSlider.SetValueWithoutNotify(value);
+
+        if (minSlider.value != 0)
+            minText.text = value.ToString();
+        else
+            minText.text = "";
     }
 
     void MaxSliderValueChanged()
     {
         int amount = (int)maxSlider.value;
-
-        if (maxSlider.value != 0)
-            maxText.text = amount.ToString();
-        else
-            maxText.text = "";
-
+        
         if (buyer != null)
         {
-            buyer.maxBuyAmount = amount;
-            buyer.TransportableCheck();
+            buyer.MaxSliderUIValueChanged(amount);
         }
-
-        minSlider.maxValue = amount;
     }
 
     void MaxPlusButtonClicked()
@@ -88,15 +100,9 @@ public class AutoBuyerManager : MonoBehaviour
     {
         int amount = (int)minSlider.value;
 
-        if (minSlider.value != 0)
-            minText.text = amount.ToString();
-        else
-            minText.text = "";
-
         if (buyer != null)
         {
-            buyer.minBuyAmount = amount;
-            buyer.TransportableCheck();
+            buyer.MinSliderUIValueChanged(amount);
         }
     }
 
@@ -114,8 +120,10 @@ public class AutoBuyerManager : MonoBehaviour
     {
         buyer = null;
         maxSlider.value = 0;
+        maxText.text = "";
         minSlider.value = 0;
         minSlider.maxValue = 0;
+        minText.text = "";
         selectBtn.onClick.RemoveAllListeners();
     }
 }

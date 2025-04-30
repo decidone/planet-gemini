@@ -260,7 +260,8 @@ public class Transporter : Production
     public void RemoveUnit(GameObject returnUnit)
     {
         sendItemUnit.Remove(returnUnit);
-        Destroy(returnUnit);
+        //Destroy(returnUnit);
+        returnUnit.GetComponent<TransportUnit>().DestroyFunc();
         OpenAnimServerRpc("ItemGetOpen");
     }
 

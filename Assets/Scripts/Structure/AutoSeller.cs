@@ -167,7 +167,8 @@ public class AutoSeller : Production
     {
         isUnitInStr = true;
         transportUnit = null;
-        Destroy(returnUnit);
+        //Destroy(returnUnit);
+        returnUnit.GetComponent<TransportUnit>().DestroyFunc();
         //OpenAnimServerRpc("ItemGetOpen");
     }
 

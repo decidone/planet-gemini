@@ -272,7 +272,7 @@ public class TransportUnit : UnitCommonAi
         }
     }
 
-    void DestroyTrUnit()
+    public void DestroyTrUnit()
     {
         HomelessDroneManager.instance.RemoveDrone(this);
 
@@ -286,7 +286,17 @@ public class TransportUnit : UnitCommonAi
             itemDic.Clear();
         }
 
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        DestroyFunc();
+    }
+
+    public void DestroyFunc()
+    {
+        if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
+        {
+            Debug.Log("Despawn : " + gameObject.name);
+            NetworkObject.Despawn();
+        }
     }
 
     public void MainTrBuildRemove()

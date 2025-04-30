@@ -287,7 +287,10 @@ public class PlayerController : NetworkBehaviour
 
         PlayerTPSetServerRpc(false);
         if (!IsHost)
+        {
             NetworkObjManager.instance.InitConnectors();
+            MonsterSpawnerManager.instance.SetCorruption();
+        }
     }
 
     [ServerRpc (RequireOwnership = false)]
