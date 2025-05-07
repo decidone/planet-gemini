@@ -7,6 +7,7 @@ public class MapObject : MonoBehaviour
 {
     public new string name;
     public bool isInHostmap;
+    public int objNum;
 
     public void RemoveMapObjRequest()
     {

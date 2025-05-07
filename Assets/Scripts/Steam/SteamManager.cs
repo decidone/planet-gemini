@@ -187,7 +187,9 @@ public class SteamManager : MonoBehaviour
     public void SendP2PPacket()
     {
         string message = GeminiNetworkManager.instance.RequestJson();
-        byte[] data = Encoding.UTF8.GetBytes(message);
+        byte[] data = Compression.Compress(message);
+        //byte[] data = Encoding.UTF8.GetBytes(message);
+
         int totalChunks = Mathf.CeilToInt((float)data.Length / MaxChunkSize);
 
         // Send each chunk
@@ -305,7 +307,8 @@ public class SteamManager : MonoBehaviour
 
     private void HandleOpponentDataPacket(byte[] dataPacket)
     {
-        string opponentDataSent = ConvertByteArrayToString(dataPacket);
+        string opponentDataSent = Compression.Decompress(dataPacket);
+        //string opponentDataSent = ConvertByteArrayToString(dataPacket);
         DataManager.instance.Load(opponentDataSent);
         Debug.Log("Get Data");
         getData = true;

@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 // UTF-8 설정
 public class Biome : MonoBehaviour
 {
+    public int biomeNum;    // 0: plain, 1: forest, 2: desert, 3: snow, 4: frozen, 5: lake, 6: cliff
     public string biome;
     public string diffBiome;
 
@@ -34,6 +35,29 @@ public class Biome : MonoBehaviour
     [Header("Objects")]
     public List<GameObject> objects;
     public float objectsSpawnrate;
+
+    public List<Tile> GetTilesList()
+    {
+        List<Tile> tilesList = new();
+
+        tilesList.AddRange(tiles);
+        tilesList.AddRange(pointTiles);
+        tilesList.AddRange(exceptionalTiles);
+        tilesList.AddRange(top);
+        tilesList.AddRange(left);
+        tilesList.AddRange(right);
+        tilesList.AddRange(bottom);
+        tilesList.AddRange(corner);
+        tilesList.AddRange(innerCorner);
+        tilesList.AddRange(cliffWall);
+        tilesList.AddRange(cliffDarkWall);
+        tilesList.AddRange(cliffLeftCornerWall);
+        tilesList.AddRange(cliffRightCornerWall);
+        tilesList.AddRange(cliffBottomLeftCornerWall);
+        tilesList.AddRange(cliffBottomRightCornerWall);
+
+        return tilesList;
+    }
 
     public int BiomeSmoother(Map map, int x, int y, bool isSpecificDiffBiome)
     {
@@ -153,7 +177,15 @@ public class Biome : MonoBehaviour
             else
                 diffBiome = neighbors[diagonalDiff[0]].biome;
 
-            map.mapData[x][y].biome = diffBiome;
+            if (biome == "cliff" && diffBiome.biome == "lake")
+            {
+                map.mapData[x][y].biome = MapGenerator.instance.forest;
+            }
+            else
+            {
+                map.mapData[x][y].biome = diffBiome;
+            }
+
             return 1;
         }
 
@@ -291,7 +323,7 @@ public class Biome : MonoBehaviour
         return tiles[random.Next(0, tiles.Count)];
     }
 
-    public Tile SetCliffTile(System.Random random, Map map, int x, int y)
+    public (Tile, bool) SetCliffTile(System.Random random, Map map, int x, int y)
     {
         Tile tile = null;
         bool isBorder = false;
@@ -417,7 +449,7 @@ public class Biome : MonoBehaviour
         if (!isBorder)
             tile = tiles[random.Next(0, tiles.Count)];
 
-        return (tile);
+        return (tile, isBorder);
     }
 
     public Tile SetCliffWallTile(System.Random random, Map map, int x, int y, int distance)

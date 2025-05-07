@@ -77,6 +77,7 @@ public class LoadingUICtrl : MonoBehaviour
 
     public void LoadScene(string sceneName, bool isHost)
     {
+        MainGameSetting.instance.StartStopwatch();
         timer = 0;
         timeoutLimit = sceneLoadTimeoutLimit;
         isTimerOn = true;
@@ -105,6 +106,7 @@ public class LoadingUICtrl : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+        MainGameSetting.instance.StartStopwatch();
         timer = 0;
         timeoutLimit = sceneLoadTimeoutLimit;
         isTimerOn = true;

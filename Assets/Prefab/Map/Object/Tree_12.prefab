@@ -58,15 +58,15 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.1873406, y: 0.39408922}
+    - - {x: -0.22259866, y: 1.2684894}
       - {x: -0.20840284, y: -0.076762915}
       - {x: 0.20331946, y: -0.078430414}
-      - {x: 0.148967, y: 0.39244592}
-      - {x: 0.5247865, y: 0.66095686}
-      - {x: 0.4171919, y: 1.5795932}
-      - {x: -0.01973623, y: 2.1977654}
-      - {x: -0.382064, y: 1.578304}
-      - {x: -0.5147405, y: 0.6022579}
+      - {x: 0.1419154, y: 1.2738975}
+      - {x: 0.5388897, y: 1.3590666}
+      - {x: 0.48065642, y: 2.6091287}
+      - {x: -0.06909752, y: 3.58635}
+      - {x: -0.5654059, y: 2.6360462}
+      - {x: -0.6980825, y: 1.4272966}
 --- !u!114 &6072285657642335554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,7 +242,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 777354487, guid: 2152b590684cbc34cbac9324f77ce3db, type: 3}
+  m_Sprite: {fileID: -1216151406, guid: 2152b590684cbc34cbac9324f77ce3db, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -282,7 +282,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 5840517287869072887
+  uniqueID: 956902708123757444
   updateError: 1
   checkTime: 0.2
 --- !u!114 &-8703233095279760996
@@ -298,3 +298,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name: Tree
+  isInHostmap: 0
+  objNum: 12

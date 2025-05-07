@@ -10,6 +10,7 @@ public class MainGameSetting : MonoBehaviour
     public int loadDataIndex;
     public int randomSeed;
     public bool isPublic;
+    System.Diagnostics.Stopwatch timer = new();
 
     #region Singleton
     public static MainGameSetting instance;
@@ -49,5 +50,16 @@ public class MainGameSetting : MonoBehaviour
     public void RandomSeedValue(int index)
     {
         randomSeed = index;
+    }
+
+    public void StartStopwatch()
+    {
+        timer.Start();
+    }
+
+    public void StopStopwatch()
+    {
+        timer.Stop();
+        Debug.Log("Load Time: " + timer.ElapsedMilliseconds + "ms");
     }
 }

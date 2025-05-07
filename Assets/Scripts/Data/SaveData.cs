@@ -24,7 +24,7 @@ public class SaveData
     public SpawnerManagerSaveData spawnerManagerSaveData = new SpawnerManagerSaveData();
 
     public OverallSaveData overallData = new OverallSaveData();
-    public MapSaveData mapData = new MapSaveData();
+    //public MapsSaveData mapData = new MapsSaveData();
     public List<NetItemPropsData> netItemData = new List<NetItemPropsData>();
     public List<HomelessDroneSaveData> homelessDroneData = new List<HomelessDroneSaveData>();
 }

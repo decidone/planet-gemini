@@ -563,6 +563,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: 5
   biome: lake
   diffBiome: forest
   tiles:
@@ -787,6 +788,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: -1
   biome: corruption
   diffBiome: 
   tiles:
@@ -888,7 +890,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2480601898737974143}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2480601897812969366
 MonoBehaviour:
@@ -902,6 +904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: 1
   biome: forest
   diffBiome: plain
   tiles:
@@ -1013,6 +1016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: 3
   biome: snow
   diffBiome: plain
   tiles:
@@ -1111,7 +1115,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2480601898737974143}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2480601898082089276
 MonoBehaviour:
@@ -1125,6 +1129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: 2
   biome: desert
   diffBiome: plain
   tiles:
@@ -1203,6 +1208,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2480601898731471625}
   - component: {fileID: 2480601898731471734}
+  - component: {fileID: 4151173238543123717}
   - component: {fileID: 7378487733200588626}
   m_Layer: 3
   m_Name: Map
@@ -1287,19 +1293,19 @@ MonoBehaviour:
   NormalCorruption: {fileID: 7764677073027398908}
   HardCorruption: {fileID: 3302591637482025035}
   resources:
-  - {fileID: 11400000, guid: 51582f1d0251b214d8a03053ae6d33b9, type: 2}
-  - {fileID: 11400000, guid: ccb239f947622374f9a95480af3ea143, type: 2}
-  - {fileID: 11400000, guid: 2c2613a7495a81e4ca384c2c0b710018, type: 2}
-  - {fileID: 11400000, guid: f4265b437db2e674294728a4b29231ac, type: 2}
   - {fileID: 11400000, guid: e1c9948475d2f0a45b89460e72fe29a8, type: 2}
   - {fileID: 11400000, guid: 8b035726b6a2f844799379f69a3cd309, type: 2}
+  - {fileID: 11400000, guid: f4265b437db2e674294728a4b29231ac, type: 2}
+  - {fileID: 11400000, guid: 2c2613a7495a81e4ca384c2c0b710018, type: 2}
+  - {fileID: 11400000, guid: ccb239f947622374f9a95480af3ea143, type: 2}
+  - {fileID: 11400000, guid: 51582f1d0251b214d8a03053ae6d33b9, type: 2}
   resourcesIcon:
-  - {fileID: 11400000, guid: 8dc830c7183ee1c4295c2276837ed0ed, type: 2}
-  - {fileID: 11400000, guid: b702cc5afee17db438232e600d466039, type: 2}
-  - {fileID: 11400000, guid: a95442ebbfc78a5439b2b26342aa885c, type: 2}
-  - {fileID: 11400000, guid: f49735c2bb41e7c4e8943eb985d8b309, type: 2}
   - {fileID: 11400000, guid: 3014c5a237450f44fb8750cf482525c7, type: 2}
   - {fileID: 11400000, guid: f2e8519c9f817c74783b8e4acba6865f, type: 2}
+  - {fileID: 11400000, guid: f49735c2bb41e7c4e8943eb985d8b309, type: 2}
+  - {fileID: 11400000, guid: a95442ebbfc78a5439b2b26342aa885c, type: 2}
+  - {fileID: 11400000, guid: b702cc5afee17db438232e600d466039, type: 2}
+  - {fileID: 11400000, guid: 8dc830c7183ee1c4295c2276837ed0ed, type: 2}
   fogTile: {fileID: 11400000, guid: 9140bd3dfaa669548af813d9e5e60f1c, type: 2}
   fogCheckCooldown: 0.2
   astar: {fileID: 7378487733200588626}
@@ -1308,6 +1314,53 @@ MonoBehaviour:
   spawnerSet: 1
   corruptionRadius: 20
   corruptionClearRadius: 2
+--- !u!114 &4151173238543123717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2480601898731471735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f2829b069634a6418b8a7a2ebfb6902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  biomes:
+  - {fileID: 2480601898745360442}
+  - {fileID: 2480601897812969366}
+  - {fileID: 2480601898082089276}
+  - {fileID: 2480601897858781119}
+  - {fileID: 2480601899821529544}
+  - {fileID: 1272315146}
+  - {fileID: 7272305282230657611}
+  resources:
+  - {fileID: 11400000, guid: e1c9948475d2f0a45b89460e72fe29a8, type: 2}
+  - {fileID: 11400000, guid: 8b035726b6a2f844799379f69a3cd309, type: 2}
+  - {fileID: 11400000, guid: f4265b437db2e674294728a4b29231ac, type: 2}
+  - {fileID: 11400000, guid: 2c2613a7495a81e4ca384c2c0b710018, type: 2}
+  - {fileID: 11400000, guid: ccb239f947622374f9a95480af3ea143, type: 2}
+  - {fileID: 11400000, guid: 51582f1d0251b214d8a03053ae6d33b9, type: 2}
+  mapObj:
+  - {fileID: 2557397671702435269, guid: 0317abe437244da46846ca7f94deecd1, type: 3}
+  - {fileID: 7020412104492794120, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
+  - {fileID: 8159159478609809111, guid: fc76007f987c05749a8db6c1f51e00eb, type: 3}
+  - {fileID: 4009096746150404129, guid: 1f9a7be67f8ed1b4e9138b769a45c43b, type: 3}
+  - {fileID: 2557397671702435269, guid: 2e72e32d611b04646ac525159af196b3, type: 3}
+  - {fileID: 2557397671702435269, guid: d8181acac4135c2469784a9142784fb0, type: 3}
+  - {fileID: 2557397671702435269, guid: 553a04ff6196cdd4586d4207d53fd43b, type: 3}
+  - {fileID: 2557397671702435269, guid: 1bbc5131e36e2e54397b1a1cb7321942, type: 3}
+  - {fileID: 2557397671702435269, guid: 62c294dcff4a850499bcec6bd5eec1cf, type: 3}
+  - {fileID: 8159159478609809111, guid: f3a6f3ceb7421804bb9c3861a265bc84, type: 3}
+  - {fileID: 8159159478609809111, guid: 1164bf944e6051c4a941a5e6d6c056a1, type: 3}
+  - {fileID: 8159159478609809111, guid: fca630f9b90bd834c815401eb2040f9c, type: 3}
+  - {fileID: 8159159478609809111, guid: d4536b192ed263b4f86c2a3b7b37ca69, type: 3}
+  - {fileID: 8159159478609809111, guid: e72cac07b1f1d634a8239ff3568d7556, type: 3}
+  buildable:
+  - none
+  - miner
+  - pump
+  - extractor
 --- !u!114 &7378487733200588626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1392,8 +1445,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2480601898745360443}
-  - {fileID: 2480601898082089277}
   - {fileID: 2480601897812969367}
+  - {fileID: 2480601898082089277}
   - {fileID: 2480601897858781116}
   - {fileID: 2480601899821529545}
   - {fileID: 1272315145}
@@ -1448,6 +1501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: 0
   biome: plain
   diffBiome: 
   tiles:
@@ -1570,6 +1624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: 4
   biome: frozen
   diffBiome: snow
   tiles:
@@ -1677,6 +1732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: -1
   biome: corruption
   diffBiome: 
   tiles:
@@ -1976,6 +2032,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: 6
   biome: cliff
   diffBiome: 
   tiles:
@@ -2329,6 +2386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300f8f037a20d342a05813b55f3001a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  biomeNum: -1
   biome: corruption
   diffBiome: 
   tiles:

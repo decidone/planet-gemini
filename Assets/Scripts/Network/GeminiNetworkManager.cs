@@ -225,7 +225,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         clientData.clientMapInvenData = saveData.clientMapInvenData;
         clientData.scienceData = saveData.scienceData;
         clientData.overallData = saveData.overallData;
-        clientData.mapData = saveData.mapData;
+        //clientData.mapData = saveData.mapData;
 
         return JsonConvert.SerializeObject(clientData);
     }
@@ -244,7 +244,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         clientData.clientMapInvenData = saveData.clientMapInvenData;
         clientData.scienceData = saveData.scienceData;
         clientData.overallData = saveData.overallData;
-        clientData.mapData = saveData.mapData;
+        //clientData.mapData = saveData.mapData;
 
         string clientJson = JsonConvert.SerializeObject(clientData);
 

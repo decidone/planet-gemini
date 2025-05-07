@@ -65,6 +65,7 @@ public class MapGenerator : MonoBehaviour
     public AstarPath astar;
     public CompositeCollider2D comp;
     public bool isCompositeDone;
+    bool mapLoadComplete;
     Vector3 map1CenterPos;
     Vector3 map2CenterPos;
 
@@ -128,14 +129,29 @@ public class MapGenerator : MonoBehaviour
             AddGridGraph(map2CenterPos, false);
         }
         isCompositeDone = false;
+        mapLoadComplete = false;
         comp = lakeTilemap.GetComponent<CompositeCollider2D>();
     }
 
     void Start()
     {
         SetSeed();
-        GenerateMap();
-        SetFogTile();
+        if (gameSetting.isNewGame)
+        {
+            mapLoadComplete = true;
+            GenerateMap();
+            SetFogTile();
+        }
+        else
+        {
+            int saveSlot = MainGameSetting.instance.loadDataIndex;
+            MapsSaveData saveData = DataManager.instance.GetMapDataFromFile(saveSlot);
+            LoadData(saveData);
+            mapLoadComplete = true;
+
+            SetFogTile();
+            LoadFogState(saveData.fogState);
+        }
         // 현 테스트 중 맵 사이즈가 작아야 하는 상황이라서 예외처리 나중에 제거해야함
         // mapSizeData로만 세팅하도록
         spawnerPosSet = SpawnerSetManager.instance;
@@ -167,8 +183,13 @@ public class MapGenerator : MonoBehaviour
             {
                 astar.Scan();
                 isCompositeDone = true;
-                GameManager.instance.GameStartSet();
             }
+        }
+
+        if (isCompositeDone && mapLoadComplete)
+        {
+            mapLoadComplete = false;
+            GameManager.instance.GameStartSet();
         }
     }
 
@@ -628,7 +649,9 @@ public class MapGenerator : MonoBehaviour
                 
                 if (biome == cliff)
                 {
-                    Tile tile = biome.SetCliffTile(random, map, x, y);
+                    (Tile tile, bool isBorder) = biome.SetCliffTile(random, map, x, y);
+                    if (isBorder)   // 가장자리인 경우에만 이전 바이옴 타일을 저장
+                        cell.exTile = cell.tile;
                     cell.tile = tile;
                     cliffTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile);
                 }
@@ -723,14 +746,11 @@ public class MapGenerator : MonoBehaviour
 
                                     if (canSetResource)
                                     {
-                                        int randomSprite = UnityEngine.Random.Range(0, 2);
-                                        int spriteIndex = 0;
+                                        map.mapData[x][y].oilTile = 0;
+                                        map.mapData[x + 1][y].oilTile = 1;
+                                        map.mapData[x][y + 1].oilTile = 2;
+                                        map.mapData[x + 1][y + 1].oilTile = 3;
 
-                                        if(randomSprite == 0)                                        
-                                            spriteIndex = 3;                                        
-                                        else
-                                            spriteIndex = 7;
-                                        
                                         int cellListIndex = 0;
 
                                         foreach (Cell tempCell in cellList)
@@ -738,11 +758,12 @@ public class MapGenerator : MonoBehaviour
                                             if (tempCell.tileType == "normal")
                                             {
                                                 Tile mapTile = tempCell.biome.SetNormalTile(random);
+                                                tempCell.tile = mapTile;
                                                 tilemap.SetTile(new Vector3Int(tempCell.x, (tempCell.y + offsetY), 0), mapTile);
                                             }
 
                                             //Tile resourceTile = resource.tiles[random.Next(0, resource.tiles.Count)];
-                                            Tile resourceTile = resource.tiles[spriteIndex + cellListIndex];
+                                            Tile resourceTile = resource.tiles[cellListIndex];
                                             cellListIndex++;
 
                                             resourcesTilemap.SetTile(new Vector3Int(tempCell.x, (tempCell.y + offsetY), 0), resourceTile);
@@ -865,7 +886,10 @@ public class MapGenerator : MonoBehaviour
                     {
                         GameObject objInst = Instantiate(obj, objects.transform);
                         if (objInst.TryGetComponent<MapObject>(out MapObject mapObj))
+                        {
                             mapObj.isInHostmap = isHostMap;
+                            cell.objNum = mapObj.objNum;
+                        }
                         cell.obj = objInst;
 
                         objInst.name = string.Format("map_x{0}_y{1}", x, y);
@@ -1251,6 +1275,196 @@ public class MapGenerator : MonoBehaviour
             }
 
             range += 2;
+        }
+    }
+
+    public MapsSaveData SaveData()
+    {
+        MapsSaveData data = new MapsSaveData();
+        data.seed = seed;
+        data.width = width;
+        data.height = height;
+        data.offsetY = clientMapOffsetY;
+        data.fogState = fogState;
+
+        //host
+        MapSaveData hostMapSave = new MapSaveData();
+        hostMapSave.spawnTileX = hostMap.spawnTile.x;
+        hostMapSave.spawnTileY = hostMap.spawnTile.y;
+
+        CellSaveData[,] hostMapData = new CellSaveData[width, height];
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                CellSaveData cell = new CellSaveData();
+                cell = MapDataManager.instance.SaveCellData(hostMap.mapData[x][y]);
+                hostMapData[x, y] = cell;
+            }
+        }
+
+        hostMapSave.mapData = hostMapData;
+        data.hostMap = hostMapSave;
+
+
+        //client
+        MapSaveData clientMapSave = new MapSaveData();
+        clientMapSave.spawnTileX = clientMap.spawnTile.x;
+        clientMapSave.spawnTileY = clientMap.spawnTile.y;
+
+        CellSaveData[,] clientMapData = new CellSaveData[width, height];
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                CellSaveData cell = new CellSaveData();
+                cell = MapDataManager.instance.SaveCellData(clientMap.mapData[x][y]);
+                clientMapData[x, y] = cell;
+            }
+        }
+
+        clientMapSave.mapData = clientMapData;
+        data.clientMap = clientMapSave;
+
+        return data;
+    }
+
+    public void LoadData(MapsSaveData mapsSaveData)
+    {
+        Debug.Log("Seed: " + mapsSaveData.seed);
+        LoadMap(mapsSaveData, hostMap);
+        LoadMap(mapsSaveData, clientMap);
+
+        SetMapFog();
+        SetMapBorderCol();
+    }
+
+    public void LoadMap(MapsSaveData mapsSaveData, Map map)
+    {
+        bool isHostMap;
+        map.width = mapsSaveData.width;
+        map.height = mapsSaveData.height;
+        if (map == hostMap)
+        {
+            isHostMap = true;
+            map.spawnTile = (mapsSaveData.hostMap.spawnTileX, mapsSaveData.hostMap.spawnTileY);
+            map.offsetY = 0;
+        }
+        else
+        {
+            isHostMap = false;
+            map.spawnTile = (mapsSaveData.clientMap.spawnTileX, mapsSaveData.clientMap.spawnTileY);
+            map.offsetY = height + mapsSaveData.offsetY;
+        }
+
+        List<List<Cell>> tempMap = new List<List<Cell>>();
+
+        // 데이터 기반 맵 생성
+        for (int x = 0; x < width; x++)
+        {
+            List<Cell> cells = new List<Cell>();
+            for (int y = 0; y < height; y++)
+            {
+                CellSaveData cellData;
+                if (map == hostMap)
+                {
+                    cellData = mapsSaveData.hostMap.mapData[x, y];
+                }
+                else
+                {
+                    cellData = mapsSaveData.clientMap.mapData[x, y];
+                }
+
+                Cell cell = new Cell();
+                cell = MapDataManager.instance.LoadCellData(cellData);
+                cells.Add(cell);
+                // 바이옴 따라서 맞는 타일맵에 타일 생성하고 위에 오브젝트 있으면 그거까지 설치
+
+                //타일 생성
+                int offsetY = 0;
+                if (map == clientMap)
+                    offsetY = height + clientMapOffsetY;
+
+                if (cell.biome == lake)
+                {
+                    Tile backgroundTile = forest.SetNormalTile(random);
+                    tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), backgroundTile);
+
+                    lakeTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), cell.tile);
+                }
+                else if (cell.biome == cliff)
+                {
+                    if (cell.exTile != null)
+                        tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), cell.exTile);
+
+                    cliffTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), cell.tile);
+                }
+                else
+                {
+                    tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), cell.tile);
+                }
+
+                //자원 생성
+                if (cell.resourceNum != -1)
+                {
+                    if (cell.resourceNum < 5)
+                    {
+                        //ore
+                        Tile resourceTile = cell.resource.tiles[random.Next(0, cell.resource.tiles.Count)];
+                        resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
+                        resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[cell.resourceNum]);
+                    }
+                    else
+                    {
+                        //oil
+                        Tile resourceTile = cell.resource.tiles[cell.oilTile];
+                        resourcesTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourceTile);
+                        resourcesIconTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), resourcesIcon[resources.Count - 1]);
+                    }
+                }
+
+                //오브젝트 생성
+                if (cell.objNum != -1)
+                {
+                    GameObject objInst = Instantiate(MapDataManager.instance.GetMapObjByNum(cell.objNum), objects.transform);
+                    if (objInst.TryGetComponent<MapObject>(out MapObject mapObj))
+                    {
+                        mapObj.isInHostmap = isHostMap;
+                    }
+                    cell.obj = objInst;
+
+                    objInst.name = string.Format("map_x{0}_y{1}", x, y);
+                    objInst.transform.localPosition = new Vector3((float)(x + 0.5), (float)((y + offsetY) + 0.5), 0);
+                }
+
+
+
+            }
+            tempMap.Add(cells);
+        }
+
+
+        map.mapData = tempMap;
+
+
+        Portal[] portal = GameManager.instance.portal;
+        if (isHostMap)
+        {
+            float posX = mapsSaveData.hostMap.spawnTileX;
+            float posY = mapsSaveData.hostMap.spawnTileY;
+            portal[0].transform.position = new Vector3(posX, (posY + map.offsetY), 0);
+            portal[0].MapDataSet(map);
+
+            GameManager.instance.SetPlayerPos(posX, (posY + map.offsetY), isHostMap);
+        }
+        else
+        {
+            float posX = mapsSaveData.clientMap.spawnTileX;
+            float posY = mapsSaveData.clientMap.spawnTileY;
+            portal[1].transform.position = new Vector3(posX, (posY + map.offsetY), 0);
+            portal[1].MapDataSet(map);
+
+            GameManager.instance.SetPlayerPos(posX, (posY + map.offsetY), isHostMap);
         }
     }
 }

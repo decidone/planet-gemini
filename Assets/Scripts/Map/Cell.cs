@@ -6,16 +6,20 @@ using UnityEngine.Tilemaps;
 // UTF-8 설정
 public class Cell
 {
+    public int x;
+    public int y;
     public Tile tile;
+    public Tile exTile;     //절벽 바이옴으로 바뀔 때 기존에 있던 일반 바이옴 타일을 저장
     public string tileType;
     public Biome biome;
     public Resource resource;
+    public int resourceNum;
+    public int oilTile;
     public int resourceChunkNum = -1;
     public GameObject obj;
+    public int objNum = -1;
     public GameObject structure;
     public List<string> buildable = new List<string>();
-    public int x;
-    public int y;
 
     public bool isCorrupted;
     public GameObject corruptionObj;

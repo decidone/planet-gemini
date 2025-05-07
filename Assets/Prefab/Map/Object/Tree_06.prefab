@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 316091681, guid: f074a19685a4d5d4dbe3014945815683, type: 3}
+  m_Sprite: {fileID: 1142036466, guid: f074a19685a4d5d4dbe3014945815683, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  uniqueID: 2778350982201979642
+  uniqueID: 5915697665435565182
   updateError: 1
   checkTime: 0.2
 --- !u!114 &4389923903191500947
@@ -134,6 +134,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name: Tree
+  isInHostmap: 0
+  objNum: 6
 --- !u!1 &2914158583414024411
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,13 +291,13 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.0136074945, y: 3.4776773}
-      - {x: -1.179394, y: 2.7489839}
-      - {x: -0.90838814, y: 2.2149434}
-      - {x: -0.5243015, y: 2.0634518}
-      - {x: -0.21145245, y: 1.7623813}
+    - - {x: -0.010724831, y: 2.7602568}
+      - {x: -0.6767088, y: 2.388597}
+      - {x: -0.9506552, y: 2.0167608}
+      - {x: -0.58363366, y: 1.6154869}
+      - {x: -0.2209089, y: 1.3803792}
       - {x: -0.18548086, y: -0.15564871}
       - {x: 0.23645422, y: -0.15638351}
-      - {x: 0.25843036, y: 1.9309988}
-      - {x: 0.7491757, y: 2.2406998}
-      - {x: 1.1767393, y: 3.0309422}
+      - {x: 0.20613232, y: 1.4426148}
+      - {x: 0.6403717, y: 1.7486821}
+      - {x: 0.81267184, y: 2.3270152}

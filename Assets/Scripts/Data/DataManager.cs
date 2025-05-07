@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Unity.Netcode;
+using System.Text;
 
 public class DataManager : MonoBehaviour
 {
@@ -112,8 +113,10 @@ public class DataManager : MonoBehaviour
         OverallSaveData overallSaveData = Overall.instance.SaveData();
         saveData.overallData = overallSaveData;
 
-        MapSaveData mapSaveData = GameManager.instance.SaveMapData();
-        saveData.mapData = mapSaveData;
+        MapsSaveData mapsSaveData = MapGenerator.instance.SaveData();
+        //saveData.mapData = mapsSaveData;
+        //MapSaveData mapSaveData = GameManager.instance.SaveMapData();
+        //saveData.mapData = mapSaveData;
 
         List<NetItemPropsData> netItemPropsDatas = NetworkItemPoolSync.instance.NetItemSaveData();
         saveData.netItemData = netItemPropsDatas;
@@ -125,7 +128,13 @@ public class DataManager : MonoBehaviour
         Debug.Log("saved: " + path);
         string json = JsonConvert.SerializeObject(saveData);
         File.WriteAllText(path + saveSlotNum.ToString() + ".json", json);
+
+        string mapJson = JsonConvert.SerializeObject(mapsSaveData);
+        var compData = Compression.Compress(mapJson);
+        File.WriteAllBytes(path + saveSlotNum.ToString() + ".maps", compData);
+
         selectedSlot = saveSlotNum;
+
         return json;
     }
 
@@ -133,6 +142,16 @@ public class DataManager : MonoBehaviour
     {
         string json = File.ReadAllText(path + saveSlotNum.ToString() + ".json");
         return json;
+    }
+
+    public MapsSaveData GetMapDataFromFile(int saveSlotNum)
+    {
+        byte[] json = File.ReadAllBytes(path + saveSlotNum.ToString() + ".maps");
+        string decompData = Compression.Decompress(json);
+        MapsSaveData mapData = new MapsSaveData();
+        mapData = JsonConvert.DeserializeObject<MapsSaveData>(decompData);
+
+        return mapData;
     }
 
     public void Load(int saveSlotNum)
@@ -189,7 +208,8 @@ public class DataManager : MonoBehaviour
         GameManager.instance.clientMapInven.LoadData(saveData.clientMapInvenData);
         ScienceDb.instance.LoadSet(saveData.scienceData);
         Overall.instance.LoadData(saveData.overallData);
-        GameManager.instance.LoadMapData(saveData.mapData);
+        //MapGenerator.instance.LoadData(saveData.mapData);
+        //GameManager.instance.LoadMapData(saveData.mapData);
     }
 
     public void Clear()

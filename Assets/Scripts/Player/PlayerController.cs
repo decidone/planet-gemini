@@ -100,6 +100,7 @@ public class PlayerController : NetworkBehaviour
             gameObject.transform.position = GameManager.instance.playerDataPos;
         }
 
+        MainGameSetting.instance.StopStopwatch();
         StartCoroutine(PlayerSet());
     }
 
