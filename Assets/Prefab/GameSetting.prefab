@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6571043982151404239}
   - component: {fileID: 6077433384381535719}
+  - component: {fileID: 1367094335892759848}
   m_Layer: 0
   m_Name: GameSetting
   m_TagString: Untagged
@@ -44,3 +45,89 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 145a1499e295a144aa4f970e7a0538e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1367094335892759848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6571043982151404236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f475d19637e54894a8b9a4677049db00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loadedData:
+    InGameData:
+      fileName: 
+      saveDate: 
+      mapSizeIndex: 0
+      difficultyLevel: 0
+      seed: 0
+      day: 0
+      isDay: 0
+      dayTimer: 0
+      dayIndex: 0
+      wavePlanet: 0
+      violentValue: 0
+      violentDayCheck: 0
+      violentDay: 0
+      finance: 0
+      scrap: 0
+      questIndex: 0
+      hostPortalName: 
+      clientPortalName: 
+    hostPlayerData:
+      pos:
+        x: 0
+        y: 0
+        z: 0
+      hp: 0
+      isPlayerInHostMap: 0
+      isPlayerInMarket: 0
+      tankOn: 0
+      tankHp: 0
+      tankMaxHp: 0
+      clientFirstConnection: 0
+    clientPlayerData:
+      pos:
+        x: 0
+        y: 0
+        z: 0
+      hp: 0
+      isPlayerInHostMap: 0
+      isPlayerInMarket: 0
+      tankOn: 0
+      tankHp: 0
+      tankMaxHp: 0
+      clientFirstConnection: 0
+    scienceData: []
+    structureData: []
+    beltGroupData: []
+    unitData: []
+    spawnerManagerSaveData:
+      splitCount: 0
+      waveState: 0
+      hostMapWave: 0
+      wavePos:
+        x: 0
+        y: 0
+        z: 0
+    overallData:
+      spawnerDestroyCount: 0
+      spawnerBountyReceived: 0
+      monsterKillCount: 0
+      monsterBountyReceived: 0
+    netItemData: []
+    homelessDroneData: []
+  loadedMapData:
+    seed: 0
+    width: 0
+    height: 0
+    offsetY: 0
+    hostMap:
+      spawnTileX: 0
+      spawnTileY: 0
+    clientMap:
+      spawnTileX: 0
+      spawnTileY: 0

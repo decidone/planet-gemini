@@ -138,28 +138,33 @@ public class DataManager : MonoBehaviour
         return json;
     }
 
-    public string GetJsonFromFile(int saveSlotNum)
-    {
-        string json = File.ReadAllText(path + saveSlotNum.ToString() + ".json");
-        return json;
-    }
+    //public string GetJsonFromFile(int saveSlotNum)
+    //{
+    //    string json = File.ReadAllText(path + saveSlotNum.ToString() + ".json");
+    //    return json;
+    //}
 
-    public MapsSaveData GetMapDataFromFile(int saveSlotNum)
-    {
-        byte[] json = File.ReadAllBytes(path + saveSlotNum.ToString() + ".maps");
-        string decompData = Compression.Decompress(json);
-        MapsSaveData mapData = new MapsSaveData();
-        mapData = JsonConvert.DeserializeObject<MapsSaveData>(decompData);
+    //public MapsSaveData GetMapDataFromFile(int saveSlotNum)
+    //{
+    //    byte[] json = File.ReadAllBytes(path + saveSlotNum.ToString() + ".maps");
+    //    string decompData = Compression.Decompress(json);
+    //    MapsSaveData mapData = new MapsSaveData();
+    //    mapData = JsonConvert.DeserializeObject<MapsSaveData>(decompData);
 
-        return mapData;
-    }
+    //    return mapData;
+    //}
 
-    public void Load(int saveSlotNum)
+    public void Load()
     {
+        //??? 인게임Load 안쓰는걸로 보고 로드매니저에서 받아서 로드하게 바꿈 회의때 확인 필요
+
         // 호스트가 파일로부터 json을 불러와서 동기화
-        string json = GetJsonFromFile(saveSlotNum);
-        selectedSlot = saveSlotNum;
-        saveData = JsonConvert.DeserializeObject<SaveData>(json);
+
+        saveData = LoadManager.instance.GetSaveData();
+
+        //string json = GetJsonFromFile(saveSlotNum);
+        //selectedSlot = saveSlotNum;
+        //saveData = JsonConvert.DeserializeObject<SaveData>(json);
         LoadData(saveData);
 
         transporters.Clear();
@@ -212,7 +217,7 @@ public class DataManager : MonoBehaviour
         //GameManager.instance.LoadMapData(saveData.mapData);
     }
 
-    public void Clear()
+    public void Clear() //??? 이거 쓰나?
     {
         //selectedSlot = -1;
         saveData = new SaveData();

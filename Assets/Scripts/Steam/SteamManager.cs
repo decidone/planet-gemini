@@ -176,6 +176,7 @@ public class SteamManager : MonoBehaviour
             else if (opponentDataSent == "DataGetEnd")
             {
                 clientReceive = false;
+                // 여기서 맵 보내면 될 듯?
             }
             else
             {
@@ -187,6 +188,7 @@ public class SteamManager : MonoBehaviour
     public void SendP2PPacket()
     {
         string message = GeminiNetworkManager.instance.RequestJson();
+        // 여기서 데이터에 합쳐서 보내기? 근데 그러면 받을 때 구분할 수 있어야 함. 대충 지금 마지막 청크 플래그로 쓰는 9번 데이터를 10번으로 밀고 9번에 두면 될 듯
         byte[] data = Compression.Compress(message);
         //byte[] data = Encoding.UTF8.GetBytes(message);
 
@@ -299,7 +301,7 @@ public class SteamManager : MonoBehaviour
     {
         Debug.Log("RequestMissingPackets");
         // 누락된 패킷 요청 로직 (호스트에게 요청 메시지를 보냄)
-        string message = "LossPacket";
+        string message = "LossPacket";  //??? 여기 확인 필요
         byte[] data = Encoding.UTF8.GetBytes(message);
         SteamNetworking.SendP2PPacket(opponentSteamId, data);
         clientConnTry = false;

@@ -437,6 +437,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    //??? 이거 서버에서만 실행되는 것 같은데 서버-클라RPC 호출 구조로 되어있음
     [ServerRpc(RequireOwnership = false)]
     public void ClientDisConnServerRpc()
     {

@@ -1331,7 +1331,7 @@ public class GameManager : NetworkBehaviour
             }
             else
             {
-                DataManager.instance.Load(MainGameSetting.instance.loadDataIndex);
+                DataManager.instance.Load();
             }
         }
         else

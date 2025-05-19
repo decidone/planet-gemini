@@ -32,7 +32,7 @@ public class OptionDataManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);  //??? 이거 중복해서 호출한 이유?
 
         settingsMenu = SettingsMenu.instance;
         soundManager = SoundManager.instance;

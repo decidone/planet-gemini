@@ -226,10 +226,12 @@ public class GeminiNetworkManager : NetworkBehaviour
         clientData.scienceData = saveData.scienceData;
         clientData.overallData = saveData.overallData;
         //clientData.mapData = saveData.mapData;
+        Debug.Log("request 1");
 
         return JsonConvert.SerializeObject(clientData);
     }
 
+    //??? 이거는 안 쓰는 듯?
     [ServerRpc(RequireOwnership = false)]
     public void RequestJsonServerRpc()
     {
@@ -245,11 +247,10 @@ public class GeminiNetworkManager : NetworkBehaviour
         clientData.scienceData = saveData.scienceData;
         clientData.overallData = saveData.overallData;
         //clientData.mapData = saveData.mapData;
-
+        Debug.Log("request 2");
         string clientJson = JsonConvert.SerializeObject(clientData);
 
         RequestJsonClientRpc(clientJson);
-
     }
 
     [ClientRpc]

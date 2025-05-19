@@ -129,11 +129,9 @@ public class SaveLoadMenu : MonoBehaviour
 
     public (bool, string) GetJsonFromFile(int saveSlotNum)
     {
-        string filePath = path + saveSlotNum.ToString() + ".json";
-
         try
         {
-            string json = File.ReadAllText(filePath);
+            string json = File.ReadAllText(path + saveSlotNum.ToString() + ".json");
             return (true, json);
         }
         catch (FileNotFoundException e)
@@ -141,6 +139,16 @@ public class SaveLoadMenu : MonoBehaviour
             // 파일이 없을 때의 처리
             return (false, string.Empty);
         }
+    }
+
+    public MapsSaveData GetMapDataFromFile(int saveSlotNum)
+    {
+        byte[] json = File.ReadAllBytes(path + saveSlotNum.ToString() + ".maps");
+        string decompData = Compression.Decompress(json);
+        MapsSaveData mapData = new MapsSaveData();
+        mapData = JsonConvert.DeserializeObject<MapsSaveData>(decompData);
+
+        return mapData;
     }
 
     public void Save(int slotNum, string fileName)
@@ -152,11 +160,12 @@ public class SaveLoadMenu : MonoBehaviour
         buttons[slotNum].SetSlotData(slotNum, inGameData.saveDate, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
     }
 
-    public void Load(int slotNum) // 인게임에서 로드와 로비씬에서 로드를 구분해야함
-    {
-        DataManager.instance.Load(slotNum);
-        Debug.Log(slotNum + " : Load");
-    }
+    //??? 이거 이제 안쓰지 않나?
+    //public void Load(int slotNum) // 인게임에서 로드와 로비씬에서 로드를 구분해야함
+    //{
+    //    DataManager.instance.Load(slotNum);
+    //    Debug.Log(slotNum + " : Load");
+    //}
 
     public void LoadConfirm(int slotNum)
     {
@@ -164,10 +173,15 @@ public class SaveLoadMenu : MonoBehaviour
         MainGameSetting.instance.LoadDataIndexSet(slotNum);
         var data = GetJsonFromFile(slotNum);
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
+        LoadManager.instance.SetSaveData(saveData);
+
         InGameData inGameData = saveData.InGameData;
         MainGameSetting.instance.MapSizeSet(inGameData.mapSizeIndex);
         MainGameSetting.instance.RandomSeedValue(inGameData.seed);
         //MainGameSetting.instance.LoadMapData(saveData.mapData);
+
+        MapsSaveData mapsSaveData = GetMapDataFromFile(slotNum);
+        LoadManager.instance.SetMapSaveData(mapsSaveData);
 
         if (GameManager.instance != null)
         {
