@@ -72,6 +72,7 @@ public class LoadingUICtrl : MonoBehaviour
             timer = 0;
             isTimerOn = false;
             Debug.Log("timeout, limit: " + timeoutLimit);
+            // 여기 연결실패 관련 처리 필요함
         }
     }
 

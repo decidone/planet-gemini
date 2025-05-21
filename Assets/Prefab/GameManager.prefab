@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 314531824626125028}
   - component: {fileID: 6855278147112794435}
   - component: {fileID: 7245252683046581172}
+  - component: {fileID: 7131987286442069813}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -311,7 +312,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryUiCanvas: {fileID: 0}
-  isMultiPlay: 0
   inventory: {fileID: 7207882295930772508}
   hostMapInven: {fileID: 7207882295930772508}
   clientMapInven: {fileID: 477784653606117902}
@@ -319,7 +319,6 @@ MonoBehaviour:
   hostMap: {fileID: 0}
   clientMap: {fileID: 0}
   map: {fileID: 0}
-  destroyedMapObjectsPos: []
   isPlayerInHostMap: 0
   isPlayerInMarket: 0
   isGameOver: 0
@@ -773,6 +772,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92c25844b79f2b54f85b0ae2ea66d3d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7131987286442069813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &4287165206276915524
 GameObject:
   m_ObjectHideFlags: 0
@@ -878,9 +893,8 @@ MonoBehaviour:
       spawnerBountyReceived: 0
       monsterKillCount: 0
       monsterBountyReceived: 0
-    mapData:
-      objects: []
     netItemData: []
+    homelessDroneData: []
   path: 
   selectedSlot: 0
   beltGroup: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
@@ -931,8 +945,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fogOfWar: {fileID: 0}
-  outlintMat: {fileID: 0}
-  noOutlineMat: {fileID: 0}
+  outlintMat: {fileID: 2100000, guid: 2eaf895611ce8f6438c10f04172f98a2, type: 2}
+  noOutlineMat: {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
 --- !u!1 &7414352785637535675
 GameObject:
   m_ObjectHideFlags: 0

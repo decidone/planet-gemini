@@ -37801,6 +37801,7 @@ MonoBehaviour:
   minPlusBtn: {fileID: 1168199318}
   minMinusBtn: {fileID: 761343373}
   minText: {fileID: 1697997364}
+  buyer: {fileID: 0}
 --- !u!1 &8669813805235515723
 GameObject:
   m_ObjectHideFlags: 0

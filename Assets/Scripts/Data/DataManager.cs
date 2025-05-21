@@ -45,12 +45,12 @@ public class DataManager : MonoBehaviour
         netObjMgr = NetworkObjManager.instance;
     }
 
-    public string Save(int saveSlotNum)
+    public (string, byte[]) Save(int saveSlotNum)
     {
         return Save(saveSlotNum, null);
     }
 
-    public string Save(int saveSlotNum, string fileName)
+    public (string, byte[]) Save(int saveSlotNum, string fileName)
     {
         PlayerSaveData lastClientSaveData = saveData.clientPlayerData;
         saveData = new SaveData();
@@ -135,7 +135,7 @@ public class DataManager : MonoBehaviour
 
         selectedSlot = saveSlotNum;
 
-        return json;
+        return (json, compData);
     }
 
     //public string GetJsonFromFile(int saveSlotNum)
@@ -156,10 +156,7 @@ public class DataManager : MonoBehaviour
 
     public void Load()
     {
-        //??? 인게임Load 안쓰는걸로 보고 로드매니저에서 받아서 로드하게 바꿈 회의때 확인 필요
-
         // 호스트가 파일로부터 json을 불러와서 동기화
-
         saveData = LoadManager.instance.GetSaveData();
 
         //string json = GetJsonFromFile(saveSlotNum);
@@ -196,11 +193,11 @@ public class DataManager : MonoBehaviour
         SetConnectedFunc();
     }
 
-    public void Load(string json)
+    public void LoadClient()
     {
         // 클라이언트가 접속 시 호스트로부터 json을 받아서 동기화
         // 네트워크 오브젝트라서 스폰을 시킬 필요가 없는 경우 등등 호스트가 파일을 불러와서 동기화 하는 과정과는 좀 달라질 예정
-        saveData = JsonConvert.DeserializeObject<SaveData>(json);
+        SaveData saveData = LoadManager.instance.GetSaveData();
         LoadData(saveData);
     }
 
@@ -208,19 +205,15 @@ public class DataManager : MonoBehaviour
     {
         GameManager.instance.LoadData(saveData.InGameData);
         GameManager.instance.LoadPlayerData(saveData.hostPlayerData, saveData.clientPlayerData);
+
         // 행성 인벤토리
         GameManager.instance.hostMapInven.LoadData(saveData.hostMapInvenData);
         GameManager.instance.clientMapInven.LoadData(saveData.clientMapInvenData);
+
         ScienceDb.instance.LoadSet(saveData.scienceData);
         Overall.instance.LoadData(saveData.overallData);
         //MapGenerator.instance.LoadData(saveData.mapData);
         //GameManager.instance.LoadMapData(saveData.mapData);
-    }
-
-    public void Clear() //??? 이거 쓰나?
-    {
-        //selectedSlot = -1;
-        saveData = new SaveData();
     }
 
     void SpawnStructure(StructureSaveData saveData)

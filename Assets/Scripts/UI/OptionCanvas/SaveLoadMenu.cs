@@ -160,13 +160,6 @@ public class SaveLoadMenu : MonoBehaviour
         buttons[slotNum].SetSlotData(slotNum, inGameData.saveDate, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
     }
 
-    //??? 이거 이제 안쓰지 않나?
-    //public void Load(int slotNum) // 인게임에서 로드와 로비씬에서 로드를 구분해야함
-    //{
-    //    DataManager.instance.Load(slotNum);
-    //    Debug.Log(slotNum + " : Load");
-    //}
-
     public void LoadConfirm(int slotNum)
     {
         MainGameSetting.instance.NewGameState(false);

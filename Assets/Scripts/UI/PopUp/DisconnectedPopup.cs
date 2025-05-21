@@ -18,8 +18,8 @@ public class DisconnectedPopup : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         instance = this;
+        DontDestroyOnLoad(gameObject);
     }
     #endregion
 

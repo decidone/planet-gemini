@@ -16,7 +16,6 @@ public class GameManager : NetworkBehaviour
     public OnFinanceChanged onFinanceChangedCallback;
 
     public GameObject inventoryUiCanvas;
-    public bool isMultiPlay;
     public Inventory inventory;
     public Inventory hostMapInven;
     public Inventory clientMapInven;
@@ -1044,7 +1043,7 @@ public class GameManager : NetworkBehaviour
     public void HostConnected()
     {
         isHost = true;
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
         ItemDragManager.instance.SetInven(hostDragInven);
         GeminiNetworkManager.instance.HostSpawnServerRPC();
         Debug.Log("HostConnected??");
@@ -1053,56 +1052,10 @@ public class GameManager : NetworkBehaviour
     public void ClientConnected()
     {
         ItemDragManager.instance.SetInven(clientDragInven);
-        Time.timeScale = 0;
-        Debug.Log("Time.timeScale = 0;");
-        StartCoroutine(DataSync());
+        //Time.timeScale = 0;
+        //Debug.Log("Time.timeScale = 0;");
+        //StartCoroutine(DataSync());
         //StartCoroutine(WaitForNetworkConnection());
-    }
-
-    IEnumerator DataSync()
-    {
-        float time = 15f;
-
-        while (!SteamManager.instance.getData)
-        {
-            if (!SteamManager.instance.clientConnTry)
-            {
-                bool packetAvailable = SteamManager.instance.ReceiveP2PPacket();
-                Debug.Log(packetAvailable + " : DataSync packetAvailable Check");
-                if (!packetAvailable)
-                    time = 3;
-                else
-                    time = 15f;
-            }
-            
-            yield return new WaitForSecondsRealtime(time);
-        }
-
-        Debug.Log("ClientDataGet And StartClient");
-
-        NetworkManager.Singleton.StartClient();
-        StartCoroutine(WaitForNetworkConnection());
-    }
-
-    private IEnumerator WaitForNetworkConnection()
-    {
-        Debug.Log("Wait for Network connection");
-
-        while (!NetworkManager.Singleton.IsConnectedClient)
-        {
-            //yield return null;
-            yield return new WaitForEndOfFrame();
-        }
-
-        TestServerRpc();
-        GeminiNetworkManager.instance.ClientSpawnServerRPC();
-        Debug.Log("Connected to Network");
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    void TestServerRpc()
-    {
-        Debug.Log("TestServerRpc");
     }
 
     public void LoadingEnd()
@@ -1336,11 +1289,14 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            SteamManager.instance.ClientConnectSend();
+            //SteamManager.instance.ClientConnectSend();
             //NetworkManager.Singleton.StartClient();
             //Debug.Log("Client");
             optionCanvas.SaveBtnOnOff(false);
             ClientConnected();
+
+            DataManager.instance.LoadClient();
+            //DataManager.instance.LoadData(LoadManager.instance.GetSaveData());
         }
 
         StartCoroutine(SetQuest());
@@ -1363,6 +1319,7 @@ public class GameManager : NetworkBehaviour
     void TimeScaleClientRpc()
     {
         Time.timeScale = 1;
+        LoadingPopup.instance.CloseUI();
     }
 
     public InGameData SaveData()
@@ -1581,36 +1538,36 @@ public class GameManager : NetworkBehaviour
         loadTankData = (data.tankHp, data.tankMaxHp);
     }
 
-    public MapSaveData SaveMapData()
-    {
-        MapSaveData data = new MapSaveData();
+    //public MapSaveData SaveMapData()
+    //{
+    //    MapSaveData data = new MapSaveData();
 
-        //foreach (var objPos in destroyedMapObjectsPos)
-        //{
-        //    data.objects.Add(Vector3Extensions.FromVector3(objPos));
-        //}
+    //    //foreach (var objPos in destroyedMapObjectsPos)
+    //    //{
+    //    //    data.objects.Add(Vector3Extensions.FromVector3(objPos));
+    //    //}
 
-        //data.fogState = MapGenerator.instance.fogState;
+    //    //data.fogState = MapGenerator.instance.fogState;
 
-        return data;
-    }
+    //    return data;
+    //}
 
-    public void LoadMapData(MapSaveData data)
-    {
-        //foreach(var obj in data.objects)
-        //{
-        //    bool isHostMap = true;
-        //    if (obj.y > map.height)
-        //    {
-        //        isHostMap = false;
-        //    }
+    //public void LoadMapData(MapSaveData data)
+    //{
+    //    //foreach(var obj in data.objects)
+    //    //{
+    //    //    bool isHostMap = true;
+    //    //    if (obj.y > map.height)
+    //    //    {
+    //    //        isHostMap = false;
+    //    //    }
 
-        //    destroyedMapObjectsPos.Add(Vector3Extensions.ToVector3(obj));
-        //    RemoveMapObj(Vector3Extensions.ToVector3(obj), isHostMap);
-        //}
+    //    //    destroyedMapObjectsPos.Add(Vector3Extensions.ToVector3(obj));
+    //    //    RemoveMapObj(Vector3Extensions.ToVector3(obj), isHostMap);
+    //    //}
 
-        //MapGenerator.instance.LoadFogState(data.fogState);
-    }
+    //    //MapGenerator.instance.LoadFogState(data.fogState);
+    //}
 
     IEnumerator SetQuest()
     {

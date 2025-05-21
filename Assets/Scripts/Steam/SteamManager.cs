@@ -1,4 +1,5 @@
 using Netcode.Transports.Facepunch;
+using Newtonsoft.Json;
 using Steamworks;
 using Steamworks.Data;
 using System;
@@ -111,8 +112,24 @@ public class SteamManager : MonoBehaviour
             data = lobby.GetData("mapSeed");
             MainGameSetting.instance.RandomSeedValue(int.Parse(data));
 
-            LoadingUICtrl.Instance.LoadScene("GameScene", false);
+            TimeStopServerRpc();
+            ClientConnectSend();
+            StartCoroutine(DataSync());
+            //LoadingUICtrl.Instance.LoadScene("GameScene", false);
         }
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void TimeStopServerRpc()
+    {
+        TimeStopClientRpc();
+    }
+
+    [ClientRpc]
+    public void TimeStopClientRpc()
+    {
+        LoadingPopup.instance.OpenUI("waiting for network connection");
+        Time.timeScale = 0;
     }
 
     void ClientConnected(Lobby lobby, Friend friend)
@@ -169,6 +186,7 @@ public class SteamManager : MonoBehaviour
 
             if (opponentDataSent == "ClientConnect")
             {
+                LoadingPopup.instance.OpenUI("waiting for client");
                 Time.timeScale = 0;
                 Debug.Log("Time.timeScale = 0 and send;");
                 SendP2PPacket();
@@ -176,9 +194,8 @@ public class SteamManager : MonoBehaviour
             else if (opponentDataSent == "DataGetEnd")
             {
                 clientReceive = false;
-                // 여기서 맵 보내면 될 듯?
             }
-            else
+            else if (opponentDataSent == "LossPacket")
             {
                 SendP2PPacket();
             }
@@ -187,35 +204,65 @@ public class SteamManager : MonoBehaviour
 
     public void SendP2PPacket()
     {
-        string message = GeminiNetworkManager.instance.RequestJson();
-        // 여기서 데이터에 합쳐서 보내기? 근데 그러면 받을 때 구분할 수 있어야 함. 대충 지금 마지막 청크 플래그로 쓰는 9번 데이터를 10번으로 밀고 9번에 두면 될 듯
-        byte[] data = Compression.Compress(message);
-        //byte[] data = Encoding.UTF8.GetBytes(message);
+        var message = GeminiNetworkManager.instance.RequestJson();
 
-        int totalChunks = Mathf.CeilToInt((float)data.Length / MaxChunkSize);
+        // 맵, 게임 데이터를 합쳐서 보내고 청크의 [9]바이트로 구분
+        byte[] data = Compression.Compress(message.Item1);
+        byte[] mapData = message.Item2;
+
+        int mapChunks = Mathf.CeilToInt((float)mapData.Length / MaxChunkSize);
+        int totalChunks = mapChunks + Mathf.CeilToInt((float)data.Length / MaxChunkSize);
 
         // Send each chunk
         for (int i = 0; i < totalChunks; i++)
         {
-            int chunkSize = Mathf.Min(MaxChunkSize, data.Length - i * MaxChunkSize);
-            byte[] chunk = new byte[chunkSize + 9]; // Extra 9 bytes for metadata (index, flag, total chunks)
-            byte[] index = BitConverter.GetBytes(i);
-            Array.Copy(index, 0, chunk, 0, index.Length);
-            byte[] total = BitConverter.GetBytes(totalChunks);
-            Array.Copy(total, 0, chunk, 4, total.Length);
-            chunk[8] = (byte)(i == totalChunks - 1 ? 1 : 0); // Last chunk flag
-
-            Debug.Log("chunkSize" + chunkSize);
-            Array.Copy(data, i * MaxChunkSize, chunk, 9, chunkSize);
-
-            bool success = SteamNetworking.SendP2PPacket(opponentSteamId, chunk, chunk.Length);
-            if (success)
+            if (i < mapChunks)
             {
-                Debug.Log($"Packet {i + 1}/{totalChunks} Send Success!");
+                int chunkSize = Mathf.Min(MaxChunkSize, mapData.Length - i * MaxChunkSize);
+                byte[] chunk = new byte[chunkSize + 10]; // Extra 10 bytes for metadata (index, flag, total chunks, map or game data)
+                byte[] index = BitConverter.GetBytes(i);
+                Array.Copy(index, 0, chunk, 0, index.Length);
+                byte[] total = BitConverter.GetBytes(totalChunks);
+                Array.Copy(total, 0, chunk, 4, total.Length);
+                chunk[8] = (byte)(i == totalChunks - 1 ? 1 : 0); // Last chunk flag
+                chunk[9] = (byte)0; // map data = 0, game data = 1
+
+                Debug.Log("chunkSize" + chunkSize);
+                Array.Copy(mapData, i * MaxChunkSize, chunk, 10, chunkSize);
+
+                bool success = SteamNetworking.SendP2PPacket(opponentSteamId, chunk, chunk.Length);
+                if (success)
+                {
+                    Debug.Log($"Map Packet {i + 1}/{totalChunks} Send Success!");
+                }
+                else
+                {
+                    Debug.LogError($"Map Packet {i + 1}/{totalChunks} Send Failed!");
+                }
             }
             else
             {
-                Debug.LogError($"Packet {i + 1}/{totalChunks} Send Failed!");
+                int chunkSize = Mathf.Min(MaxChunkSize, data.Length - (i - mapChunks) * MaxChunkSize);
+                byte[] chunk = new byte[chunkSize + 10]; // Extra 9 bytes for metadata (index, flag, total chunks)
+                byte[] index = BitConverter.GetBytes(i);
+                Array.Copy(index, 0, chunk, 0, index.Length);
+                byte[] total = BitConverter.GetBytes(totalChunks);
+                Array.Copy(total, 0, chunk, 4, total.Length);
+                chunk[8] = (byte)(i == totalChunks - 1 ? 1 : 0); // Last chunk flag
+                chunk[9] = (byte)1; // map data = 0, game data = 1
+
+                Debug.Log("chunkSize" + chunkSize);
+                Array.Copy(data, (i - mapChunks) * MaxChunkSize, chunk, 10, chunkSize);
+
+                bool success = SteamNetworking.SendP2PPacket(opponentSteamId, chunk, chunk.Length);
+                if (success)
+                {
+                    Debug.Log($"Packet {i + 1}/{totalChunks} Send Success!");
+                }
+                else
+                {
+                    Debug.LogError($"Packet {i + 1}/{totalChunks} Send Failed!");
+                }
             }
         }
     }
@@ -231,6 +278,7 @@ public class SteamManager : MonoBehaviour
         }
 
         List<byte> receivedData = new List<byte>();
+        List<byte> receivedMapData = new List<byte>();
         bool isLastChunkReceived = false;
         int totalChunks = 0;
         HashSet<int> receivedChunkIndices = new HashSet<int>();
@@ -247,7 +295,14 @@ public class SteamManager : MonoBehaviour
                 bool isLastChunk = data[8] == 1;  // Last chunk flag
 
                 // Add the chunk data to the receivedData list (excluding the first 3 bytes)
-                receivedData.AddRange(data.Skip(9));
+                if (data[9] == 0)
+                {
+                    receivedMapData.AddRange(data.Skip(10));
+                }
+                else
+                {
+                    receivedData.AddRange(data.Skip(10));
+                }
                 receivedChunkIndices.Add(chunkIndex);
 
                 // Check if it's the last chunk
@@ -256,8 +311,6 @@ public class SteamManager : MonoBehaviour
                     isLastChunkReceived = true;
                 }
             }
-  
-            packetAvailable = SteamNetworking.IsP2PPacketAvailable();
         }
 
         if (receivedChunkIndices.Count > 0)
@@ -272,12 +325,15 @@ public class SteamManager : MonoBehaviour
         if (isLastChunkReceived)
         {
             if (receivedChunkIndices.Count == totalChunks)
-            {            
+            {
                 Debug.Log("GetDataEnd");
+                LoadManager.instance.SetMapSaveData(receivedMapData.ToArray());
                 HandleOpponentDataPacket(receivedData.ToArray());
                 string message = "DataGetEnd";
                 byte[] data = Encoding.UTF8.GetBytes(message);
                 SteamNetworking.SendP2PPacket(opponentSteamId, data);
+
+                LoadingUICtrl.Instance.LoadScene("GameScene", false);
             }
             else
             {
@@ -301,7 +357,7 @@ public class SteamManager : MonoBehaviour
     {
         Debug.Log("RequestMissingPackets");
         // 누락된 패킷 요청 로직 (호스트에게 요청 메시지를 보냄)
-        string message = "LossPacket";  //??? 여기 확인 필요
+        string message = "LossPacket";
         byte[] data = Encoding.UTF8.GetBytes(message);
         SteamNetworking.SendP2PPacket(opponentSteamId, data);
         clientConnTry = false;
@@ -311,16 +367,18 @@ public class SteamManager : MonoBehaviour
     {
         string opponentDataSent = Compression.Decompress(dataPacket);
         //string opponentDataSent = ConvertByteArrayToString(dataPacket);
-        DataManager.instance.Load(opponentDataSent);
+        //DataManager.instance.Load(opponentDataSent);
+        SaveData saveData = JsonConvert.DeserializeObject<SaveData>(opponentDataSent);
+        LoadManager.instance.SetSaveData(saveData);
         Debug.Log("Get Data");
         getData = true;
         clientConnTry = false;
     }
 
-    private string ConvertByteArrayToString(byte[] byteArrayToConvert)
-    {
-        return Encoding.UTF8.GetString(byteArrayToConvert);
-    }
+    //private string ConvertByteArrayToString(byte[] byteArrayToConvert)
+    //{
+    //    return Encoding.UTF8.GetString(byteArrayToConvert);
+    //}
 
     private async void GameLobbyJoinRequested(Lobby lobby, SteamId SteamId)
     {
@@ -428,5 +486,40 @@ public class SteamManager : MonoBehaviour
                 LobbiesListManager.instance.DisplayLobby(lobby);
             }
         }
+    }
+
+    IEnumerator DataSync()
+    {
+        float time = 0.3f;
+
+        while (!getData)
+        {
+            if (!clientConnTry)
+            {
+                bool packetAvailable = ReceiveP2PPacket();
+                Debug.Log(packetAvailable + " : DataSync packetAvailable Check");
+            }
+
+            yield return new WaitForSecondsRealtime(time);
+        }
+
+        Debug.Log("ClientDataGet And StartClient");
+
+        NetworkManager.Singleton.StartClient();
+        StartCoroutine(WaitForNetworkConnection());
+    }
+
+    IEnumerator WaitForNetworkConnection()
+    {
+        Debug.Log("Wait for Network connection");
+
+        while (!NetworkManager.Singleton.IsConnectedClient)
+        {
+            //yield return null;
+            yield return new WaitForEndOfFrame();
+        }
+
+        GeminiNetworkManager.instance.ClientSpawnServerRPC();
+        Debug.Log("Connected to Network");
     }
 }

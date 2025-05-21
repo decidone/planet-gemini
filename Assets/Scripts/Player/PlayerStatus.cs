@@ -124,7 +124,7 @@ public class PlayerStatus : NetworkBehaviour
                     {
                         playerCt.onTankData.ClientUISet();
                     }
-                    playerCt.ClientDisConnServerRpc();
+                    playerCt.ClientDisConn();
                 }
             }
         }

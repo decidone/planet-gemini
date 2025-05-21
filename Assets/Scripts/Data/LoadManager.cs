@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class LoadManager : MonoBehaviour
@@ -29,6 +30,15 @@ public class LoadManager : MonoBehaviour
 
     public void SetMapSaveData(MapsSaveData mapData)
     {
+        loadedMapData = mapData;
+    }
+
+    public void SetMapSaveData(byte[] bytes)
+    {
+        string decompData = Compression.Decompress(bytes);
+        MapsSaveData mapData = new MapsSaveData();
+        mapData = JsonConvert.DeserializeObject<MapsSaveData>(decompData);
+
         loadedMapData = mapData;
     }
 

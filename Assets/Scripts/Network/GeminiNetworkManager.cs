@@ -212,9 +212,10 @@ public class GeminiNetworkManager : NetworkBehaviour
         }
     }
 
-    public string RequestJson()
+    public (string, byte[]) RequestJson()
     {
-        string json = DataManager.instance.Save(0);
+        var data = DataManager.instance.Save(0);
+        string json = data.Item1;
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
         SaveData clientData = new SaveData();
 
@@ -228,39 +229,17 @@ public class GeminiNetworkManager : NetworkBehaviour
         //clientData.mapData = saveData.mapData;
         Debug.Log("request 1");
 
-        return JsonConvert.SerializeObject(clientData);
+        return (JsonConvert.SerializeObject(clientData), data.Item2);
     }
 
-    //??? 이거는 안 쓰는 듯?
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestJsonServerRpc()
-    {
-        string json = DataManager.instance.Save(0);
-        SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
-        SaveData clientData = new SaveData();
+    //[ClientRpc]
+    //public void RequestJsonClientRpc(string json)
+    //{
+    //    if (IsServer)
+    //        return;
 
-        clientData.InGameData = saveData.InGameData;
-        clientData.hostPlayerData = saveData.hostPlayerData;
-        clientData.clientPlayerData = saveData.clientPlayerData;
-        clientData.hostMapInvenData = saveData.hostMapInvenData;
-        clientData.clientMapInvenData = saveData.clientMapInvenData;
-        clientData.scienceData = saveData.scienceData;
-        clientData.overallData = saveData.overallData;
-        //clientData.mapData = saveData.mapData;
-        Debug.Log("request 2");
-        string clientJson = JsonConvert.SerializeObject(clientData);
-
-        RequestJsonClientRpc(clientJson);
-    }
-
-    [ClientRpc]
-    public void RequestJsonClientRpc(string json)
-    {
-        if (IsServer)
-            return;
-
-        DataManager.instance.Load(json);
-        MonsterSpawnerManager.instance.SetCorruption();
-        GameManager.instance.SyncTimeServerRpc();
-    }
+    //    DataManager.instance.Load(json);
+    //    MonsterSpawnerManager.instance.SetCorruption();
+    //    GameManager.instance.SyncTimeServerRpc();
+    //}
 }

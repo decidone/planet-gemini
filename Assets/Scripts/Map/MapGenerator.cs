@@ -38,7 +38,6 @@ public class MapGenerator : MonoBehaviour
     public int[,] fogState; //0: 안개x, 1: 안개o
     [SerializeField] EdgeCollider2D hostMapCol;
     [SerializeField] EdgeCollider2D clientMapCol;
-    public bool isMultiPlay;
     public int clientMapOffsetY;
 
     [Space]
@@ -98,11 +97,8 @@ public class MapGenerator : MonoBehaviour
         {
             hostMap.width = width;
             hostMap.height = height;
-            if (isMultiPlay)
-            {
-                clientMap.width = width;
-                clientMap.height = height;
-            }
+            clientMap.width = width;
+            clientMap.height = height;
         }
         else
         {
@@ -110,24 +106,19 @@ public class MapGenerator : MonoBehaviour
             height = mapSizeData.MapSize;
             hostMap.width = mapSizeData.MapSize;
             hostMap.height = mapSizeData.MapSize;
-            if (isMultiPlay)
-            {
-                clientMap.width = mapSizeData.MapSize;
-                clientMap.height = mapSizeData.MapSize;
-            }
+            clientMap.width = mapSizeData.MapSize;
+            clientMap.height = mapSizeData.MapSize;
+            
         }
 
         hostMap.mapData = new List<List<Cell>>();
-        if (isMultiPlay)
-            clientMap.mapData = new List<List<Cell>>();
+        clientMap.mapData = new List<List<Cell>>();
 
         map1CenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt(height / 2));
         AddGridGraph(map1CenterPos, true);
-        if (isMultiPlay)
-        {
-            map2CenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt((height / 2) + height + clientMapOffsetY));
-            AddGridGraph(map2CenterPos, false);
-        }
+        map2CenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt((height / 2) + height + clientMapOffsetY));
+        AddGridGraph(map2CenterPos, false);
+        
         isCompositeDone = false;
         mapLoadComplete = false;
         comp = lakeTilemap.GetComponent<CompositeCollider2D>();
@@ -173,8 +164,7 @@ public class MapGenerator : MonoBehaviour
         if (spawnerSet && spawnerPosSet && mapSizeData != null)
         {
             spawnerPosSet.AreaMapSet(map1CenterPos, mapSizeData.MapSplitCount, true);
-            if (isMultiPlay)
-                spawnerPosSet.AreaMapSet(map2CenterPos, mapSizeData.MapSplitCount, false);
+            spawnerPosSet.AreaMapSet(map2CenterPos, mapSizeData.MapSplitCount, false);
         }
     }
 
@@ -390,43 +380,34 @@ public class MapGenerator : MonoBehaviour
     void GenerateMap()
     {
         hostMap.SetOffsetY(0);
-
         SetBiomeTable(true);
         SetBiome(hostMap);
         SmoothBiome(hostMap);
         CreateTile(hostMap, true);
         SetSpawnPos(hostMap, true);
         SetSpawnArea(hostMap);
-
         SetCliff(hostMap);
         SmoothCliff(hostMap);
         CreateCliffTile(hostMap, true);
         CreateCliffWallTile(hostMap, true);
-
         CreateResource(hostMap, true);
         CreateObj(hostMap, true);
         RemoveNearPortalObj(hostMap);
 
-        if (isMultiPlay)
-        {
-            clientMap.SetOffsetY(height + clientMapOffsetY);
-
-            SetBiomeTable(false);
-            SetBiome(clientMap);
-            SmoothBiome(clientMap);
-            CreateTile(clientMap, false);
-            SetSpawnPos(clientMap, false);
-            SetSpawnArea(clientMap);
-
-            SetCliff(clientMap);
-            SmoothCliff(clientMap);
-            CreateCliffTile(clientMap, false);
-            CreateCliffWallTile(clientMap, false);
-
-            CreateResource(clientMap, false);
-            CreateObj(clientMap, false);
-            RemoveNearPortalObj(clientMap);
-        }
+        clientMap.SetOffsetY(height + clientMapOffsetY);
+        SetBiomeTable(false);
+        SetBiome(clientMap);
+        SmoothBiome(clientMap);
+        CreateTile(clientMap, false);
+        SetSpawnPos(clientMap, false);
+        SetSpawnArea(clientMap);
+        SetCliff(clientMap);
+        SmoothCliff(clientMap);
+        CreateCliffTile(clientMap, false);
+        CreateCliffWallTile(clientMap, false);
+        CreateResource(clientMap, false);
+        CreateObj(clientMap, false);
+        RemoveNearPortalObj(clientMap);
 
         SetMapFog();
         SetMapBorderCol();
@@ -436,18 +417,9 @@ public class MapGenerator : MonoBehaviour
     {
         float width;
         float height;
-
-        if (!isMultiPlay)
-        {
-            width = hostMap.width;
-            height = hostMap.height;
-        }
-        else
-        {
-            width = hostMap.width;
-            height = hostMap.height + clientMap.height + clientMapOffsetY;
-        }
-
+        width = hostMap.width;
+        height = hostMap.height + clientMap.height + clientMapOffsetY;
+        
         mapFog.localScale = new Vector3(width, height, 1);
         mapFog.position = new Vector3(width / 2, height / 2, 1);
     }
@@ -1446,9 +1418,7 @@ public class MapGenerator : MonoBehaviour
             tempMap.Add(cells);
         }
 
-
         map.mapData = tempMap;
-
 
         Portal[] portal = GameManager.instance.portal;
         if (isHostMap)
