@@ -590,7 +590,7 @@ public class PreBuilding : NetworkBehaviour
             }
         }
         // 위 조건 만족시 설치
-
+        Debug.Log("portalObj set");
         for (int i = 0; i < spawnCount; i++)
         {
             SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, false, true, underBelt, sideObj[i]);

@@ -19,12 +19,13 @@ public class KeyBindingsBtn : MonoBehaviour
     [SerializeField]
     private Text bindingDisplayNameText = null;
     bool keybindingFalse;
-
+    SoundManager soundManager;
     private InputActionRebindingExtensions.RebindingOperation rebindingOperation;
 
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         if (setKey != "F")
             GetComponent<Button>().onClick.AddListener(() => BtnFunc());
         else
@@ -93,6 +94,7 @@ public class KeyBindingsBtn : MonoBehaviour
             .Start();
 
         keybindingFalse = false;
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     private bool IsControlAlreadyBound(InputControl control, InputAction action, int bindingIndex)

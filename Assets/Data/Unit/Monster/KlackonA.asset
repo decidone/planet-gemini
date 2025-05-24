@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: KlackonA
   m_EditorClassIdentifier: 
   unitName: KlackonA
-  maxHp: 80
-  damage: 10
-  moveSpeed: 3
+  maxHp: 150
+  upgradeMaxHp: 0
+  damage: 20
+  upgradeDamage: 0
+  moveSpeed: 5
   attackDist: 2
-  attDelayTime: 1
+  attDelayTime: 1.2
+  upgradeAttDelayTime: 0
   colliderRadius: 20
   minCollRad: 10
+  defense: 8
+  upgradeDefense: 0
   patrolRad: 3
-  defense: 10

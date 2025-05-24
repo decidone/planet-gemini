@@ -14,14 +14,15 @@ public class SciItemSetWindow : MonoBehaviour
     Button cancelBtn;
     [SerializeField]
     GameObject itemsRoot;
-
+    [SerializeField]
+    Text titleText;
     GameManager gameManager;
     List<Item> itemsList = new List<Item>();
     public List<ItemInputField> itemInputFields = new List<ItemInputField>();
     public List<GameObject> itemObjList = new List<GameObject>();
     ScienceBtn scienceBtn;
     ScienceInfoData scienceInfoData;
-
+    SoundManager soundManager;
     List<(string, ItemInputField)> financeInputField = new List<(string, ItemInputField)>();
     List<int> useAmountList = new List<int>();
 
@@ -45,6 +46,7 @@ public class SciItemSetWindow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         gameManager = GameManager.instance;
         itemsList = gameManager.GetComponent<ItemList>().itemList;
 
@@ -56,6 +58,7 @@ public class SciItemSetWindow : MonoBehaviour
         InputFieldReset();
         scienceBtn = sciBtn;
         scienceInfoData = scienceBtn.scienceInfoData;
+        titleText.text = sciBtn.gameName;
         int financeIndex = 0;
 
         for (int index = 0; index < itemObjList.Count; index++)
@@ -203,11 +206,13 @@ public class SciItemSetWindow : MonoBehaviour
             }
         }
         CloseUI();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void CancelBtnFunc()
     {
         CloseUI();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void InputFieldReset()

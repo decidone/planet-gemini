@@ -10,7 +10,7 @@ public class OverallDisplay : MonoBehaviour
     [SerializeField] ItemListSO itemListSO;
     List<Item> itemList;
     List<OverallSlot> overallSlots;
-
+    SoundManager soundManager;
     #region Singleton
     public static OverallDisplay instance;
 
@@ -30,6 +30,7 @@ public class OverallDisplay : MonoBehaviour
 
     void Start()
     {
+        soundManager = SoundManager.instance;
         overallSlots = new List<OverallSlot>();
 
         for (int i = 0; i < itemList.Count; i++)
@@ -83,11 +84,13 @@ public class OverallDisplay : MonoBehaviour
     {
         displayObj.SetActive(true);
         GameManager.instance.onUIChangedCallback?.Invoke(displayObj);
+        soundManager.PlayUISFX("SidebarClick");
     }
 
     public void CloseUI()
     {
         displayObj.SetActive(false);
         GameManager.instance.onUIChangedCallback?.Invoke(displayObj);
+        soundManager.PlayUISFX("CloseUI");
     }
 }

@@ -32,7 +32,7 @@ public class Portal : Production
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         GetUIFunc();
         tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
-        if(IsServer)
+        if(IsServer && MainGameSetting.instance.isNewGame)
             SetScienceBuildingServerRpc();
     }
 
@@ -222,5 +222,6 @@ public class Portal : Production
         spawnobj.transform.parent = transform;
         spawnobj.GetComponent<ScienceBuilding>().SetPortal(isInHostMap);
     }
+
     public override void IncreasedStructureCheck() { }
 }

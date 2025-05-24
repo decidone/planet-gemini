@@ -24,6 +24,7 @@ public class SteamManager : MonoBehaviour
     int clientCallCount;
     private const int MaxChunkSize = 1024;
     public bool clientConnTry;
+    SoundManager soundManager;
     //[SerializeField] GameObject MainMenu;
     //[SerializeField] GameObject InLobbyMenu;
 
@@ -45,6 +46,7 @@ public class SteamManager : MonoBehaviour
     private void Start()
     {
         PlayerSteamId = SteamClient.SteamId;
+        soundManager = SoundManager.instance;   
     }
 
     private void Update()
@@ -255,14 +257,14 @@ public class SteamManager : MonoBehaviour
                 Array.Copy(data, (i - mapChunks) * MaxChunkSize, chunk, 10, chunkSize);
 
                 bool success = SteamNetworking.SendP2PPacket(opponentSteamId, chunk, chunk.Length);
-                if (success)
-                {
-                    Debug.Log($"Packet {i + 1}/{totalChunks} Send Success!");
-                }
-                else
-                {
-                    Debug.LogError($"Packet {i + 1}/{totalChunks} Send Failed!");
-                }
+                //if (success)
+                //{
+                //    Debug.Log($"Packet {i + 1}/{totalChunks} Send Success!");
+                //}
+                //else
+                //{
+                //    Debug.LogError($"Packet {i + 1}/{totalChunks} Send Failed!");
+                //}
             }
         }
     }
@@ -313,14 +315,7 @@ public class SteamManager : MonoBehaviour
             }
         }
 
-        if (receivedChunkIndices.Count > 0)
-        {
-            Debug.Log("count : " + receivedChunkIndices.Count);
-            foreach (var data in receivedChunkIndices)
-            {
-                Debug.Log("data : " + data);
-            }
-        }
+        Debug.Log("count : " + receivedChunkIndices.Count + ", totalChunks : " + totalChunks);
 
         if (isLastChunkReceived)
         {
@@ -343,6 +338,7 @@ public class SteamManager : MonoBehaviour
         }
 
         clientCallCount++;
+
         if (clientCallCount > 10)
         {
             clientCallCount = 0;
@@ -420,6 +416,7 @@ public class SteamManager : MonoBehaviour
                 return;
             }
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void LeaveLobby()
@@ -521,5 +518,10 @@ public class SteamManager : MonoBehaviour
 
         GeminiNetworkManager.instance.ClientSpawnServerRPC();
         Debug.Log("Connected to Network");
+    }
+
+    public void GetLobbiesListButtonSound()
+    {
+        soundManager.PlayUISFX("ButtonClick");
     }
 }

@@ -59,7 +59,6 @@ public class ItemInfoWindow : MonoBehaviour
                 Vector2 sizeDelta = winText.rectTransform.sizeDelta;
                 sizeDelta.y = 60;
                 winText.rectTransform.sizeDelta = sizeDelta;
-
                 if (slot.isEnergyStr)
                 {
                     winText.text = slot.inGameName + System.Environment.NewLine + "Energy Produce : " + slot.energyProduction;
@@ -105,6 +104,7 @@ public class ItemInfoWindow : MonoBehaviour
     public void CloseWindow()
     {
         image.SetActive(false);
+        winText.color = Color.white;
         IsOpen = false;
         Vector2 sizeDelta = winText.rectTransform.sizeDelta;
         sizeDelta.y = 20;

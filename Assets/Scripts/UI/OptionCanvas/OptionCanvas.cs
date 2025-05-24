@@ -22,6 +22,8 @@ public class OptionCanvas : MonoBehaviour
 
     public GameObject mainPanel;
 
+    SoundManager soundManager;
+
     #region Singleton
     public static OptionCanvas instance;
 
@@ -47,7 +49,7 @@ public class OptionCanvas : MonoBehaviour
         SaveBtn.onClick.AddListener(() => SaveBtnFunc());
         LoadBtn.onClick.AddListener(() => LoadBtnFunc());
         quitBtn.onClick.AddListener(() => QuitBtnFunc());
-
+        soundManager = SoundManager.instance;
         Button[] btnArr = new Button[] { EscapeBtn, SettingsBtn, SaveBtn, LoadBtn, quitBtn };
 
         foreach (Button btn in btnArr)
@@ -66,16 +68,19 @@ public class OptionCanvas : MonoBehaviour
         {
             GameManager.instance.PlayerEscapeFromStuck();
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void SettingsBtnFunc()
     {
         SettingsMenu.instance.MenuOpen();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void SaveBtnFunc()
     {
         SaveLoadMenu.instance.MenuOpen(true);
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void LoadBtnFunc()
@@ -93,6 +98,7 @@ public class OptionCanvas : MonoBehaviour
         {
             QuitFunc();
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void QuitFunc()
@@ -132,7 +138,7 @@ public class OptionCanvas : MonoBehaviour
     void OnEnter(Button btn)
     {
         btn.TryGetComponent(out Image img);
-
+        soundManager.PlayUISFX("MouseOnUI");
         Color newColor = img.color;
         newColor.a = 50 / 255f;
         img.color = newColor;

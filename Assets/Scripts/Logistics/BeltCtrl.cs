@@ -895,6 +895,8 @@ public class BeltCtrl : LogisticsCtrl
         ColliderTriggerOnOff(true);
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
+        soundManager.PlaySFX(gameObject, "structureSFX", "BuildingSound");
+
     }
 
     [ClientRpc]

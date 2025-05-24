@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: Mecha-stone Golem
   m_EditorClassIdentifier: 
   unitName: Mecha-stone Golem
-  maxHp: 300
-  damage: 20
-  moveSpeed: 3
+  maxHp: 500
+  upgradeMaxHp: 0
+  damage: 50
+  upgradeDamage: 0
+  moveSpeed: 4
   attackDist: 4
-  attDelayTime: 2
+  attDelayTime: 3
+  upgradeAttDelayTime: 0
   colliderRadius: 20
   minCollRad: 10
-  patrolRad: 3
   defense: 30
+  upgradeDefense: 0
+  patrolRad: 3

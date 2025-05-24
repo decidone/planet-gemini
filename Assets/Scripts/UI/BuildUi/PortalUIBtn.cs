@@ -37,9 +37,11 @@ public class PortalUIBtn : MonoBehaviour
     [SerializeField]
     Button canselBtn;
     ItemInfoWindow itemInfoWindow;
+    SoundManager soundManager;
 
     private void Start()
     {
+        soundManager = SoundManager.instance;
         preBuilding = PreBuilding.instance;
         gameManager = GameManager.instance;
         btn.onClick.AddListener(() => ButtonFunc());
@@ -80,6 +82,7 @@ public class PortalUIBtn : MonoBehaviour
             {
                 preBuilding.SetPortalImage(building, portal, gameManager.isPlayerInHostMap, isPortalObj);
                 preBuilding.isEnough = true;
+                soundManager.PlayUISFX("ButtonClick");
             }
             else
             {

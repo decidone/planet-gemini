@@ -45,7 +45,6 @@ public class SpawnerSearchColl : NetworkBehaviour
             {
                 monsterSpawner.nearEnergyObjExist = true;
             }
-            Debug.Log("Find obj");
         }
     }
 
@@ -84,7 +83,6 @@ public class SpawnerSearchColl : NetworkBehaviour
     {
         coll.radius = maxCollSize[level];
         violentCollSize = coll.radius;
-        Debug.Log("coll.radius : " + coll.radius);
     }
 
 
@@ -92,6 +90,12 @@ public class SpawnerSearchColl : NetworkBehaviour
     {
         float reSize = violentCollSize - ((violentCollSize - collSize[level]) / 2);
         coll.radius = reSize;
+    }
+
+    public void ViolentCollSizeReduction()
+    {
+        violentCollSize = (violentCollSize - collSize[level]) / 2;
+        coll.radius = violentCollSize;
     }
 
     public void SearchCollReturn()

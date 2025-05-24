@@ -15,14 +15,14 @@ MonoBehaviour:
   unitName: SpinRobot
   maxHp: 200
   upgradeMaxHp: 250
-  damage: 20
-  upgradeDamage: 30
+  damage: 25
+  upgradeDamage: 35
   moveSpeed: 8
   attackDist: 2
   attDelayTime: 2
   upgradeAttDelayTime: 1.5
   colliderRadius: 10
   minCollRad: 0
-  defense: 5
-  upgradeDefense: 10
+  defense: 12
+  upgradeDefense: 17
   patrolRad: 0

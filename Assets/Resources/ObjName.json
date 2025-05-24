@@ -133,6 +133,12 @@
   "SentryCopter": {
     "1": "Sentry Copter"
   },
+  "CorrosionDrone": {
+    "1": "CorrosionDrone"
+  },
+  "RepairerDrone": {
+    "1": "RepairDrone"
+  },
   "Tank": {
     "1": "Tank"
   },

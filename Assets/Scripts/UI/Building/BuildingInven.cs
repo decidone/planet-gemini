@@ -21,6 +21,7 @@ public class BuildingInven : MonoBehaviour
     InputManager inputManager;
 
     SoundManager soundManager;
+    ScienceManager scienceManager;
     void Awake()
     {
         if (instance != null)
@@ -37,6 +38,7 @@ public class BuildingInven : MonoBehaviour
         gameManager = GameManager.instance;
         scienceDb = ScienceDb.instance;
         soundManager = SoundManager.instance;
+        scienceManager = ScienceManager.instance;
         buildingDataList = BuildingList.instance.buildingListSO.buildingSOList;
         buildingTagsBtn = buildingTagsPanel.GetComponentsInChildren<Button>();
 
@@ -45,7 +47,7 @@ public class BuildingInven : MonoBehaviour
             int buttonIndex = i;
             buildingTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
         }
-        ButtonClicked(0);
+        ButtonClickedStart();
     }
     void OnEnable()
     {
@@ -63,11 +65,22 @@ public class BuildingInven : MonoBehaviour
         Refresh();
     }
 
+    void ButtonClickedStart()
+    {
+        string itemType = GetItemType(0);
+        AddDicType(itemType);
+    }
+
     private void ButtonClicked(int buttonIndex)
     {
+        if (scienceManager.isOpen)
+        {
+            return;
+        }
         string itemType = GetItemType(buttonIndex);
         AddDicType(itemType);
         preBtnIndex = buttonIndex;
+        soundManager.PlayUISFX("SidebarClick");
     }
 
     private void OnBuildingInvenPerformed(InputAction.CallbackContext context)
@@ -150,7 +163,6 @@ public class BuildingInven : MonoBehaviour
             }
         }
 
-        soundManager.PlayUISFX("SidebarClick");
         onItemChangedCallback?.Invoke();
     }
 

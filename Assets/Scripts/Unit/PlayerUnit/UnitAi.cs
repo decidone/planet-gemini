@@ -21,7 +21,7 @@ public class UnitAi : UnitCommonAi
     bool isHold = false;
 
     // 유닛 상태 관련
-    bool isLastStateOn = false;
+    protected bool isLastStateOn = false;
 
     public AIState unitLastState = AIState.AI_Idle;
     public SpriteRenderer unitSelImg;
@@ -30,24 +30,27 @@ public class UnitAi : UnitCommonAi
     // 공격 관련 변수
     List<Vector3> aggroPath = new List<Vector3>();
     private int aggropointIndex; // 현재 이동 중인 경로 점 인덱스
-    bool isTargetSet = false;
+    protected bool isTargetSet = false;
     bool isAttackMove = true;
     GameObject selectTarget;
     public float selfHealingAmount;
     public float selfHealInterval;
     protected float selfHealTimer;
     public float visionRadius;
-    float fogTimer;
+    protected float fogTimer;
+    protected RepairEffectFunc repairEffect;
 
     public delegate void OnEffectUpgradeCheck();
     public OnEffectUpgradeCheck onEffectUpgradeCheck;
-
+    bool portalUnitIn = false;
+    bool hostClientUnitIn = false;
     protected bool[] increasedUnit = new bool[4];
     // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
 
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
         selfHealInterval = 5;
         selfHealingAmount = 5f;
@@ -69,7 +72,7 @@ public class UnitAi : UnitCommonAi
 
         base.Update();
 
-        if (hp != maxHp && aIState != AIState.AI_Die)
+        if (targetList.Count == 0 && hp != maxHp && aIState != AIState.AI_Die)
         {
             selfHealTimer += Time.deltaTime;
 
@@ -78,6 +81,16 @@ public class UnitAi : UnitCommonAi
                 SelfHealingServerRpc();
                 selfHealTimer = 0f;
             }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void ClientConnectSyncServerRpc()
+    {
+        base.ClientConnectSyncServerRpc();
+        if (portalUnitIn)
+        {
+            PortalUnitInFuncClientRpc(hostClientUnitIn);
         }
     }
 
@@ -97,6 +110,8 @@ public class UnitAi : UnitCommonAi
             hp = maxHp;
         onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / maxHp;
+        repairEffect.EffectStart();
+
         if (hp >= maxHp)
             unitCanvas.SetActive(false);
     }
@@ -246,7 +261,7 @@ public class UnitAi : UnitCommonAi
         //Debug.Log("x : " + verticalValueX + " : y : "+ verticalValueY);
     }
 
-    void MoveFunc()
+    protected void MoveFunc()
     {
         if (movePath == null)
             return;
@@ -314,7 +329,7 @@ public class UnitAi : UnitCommonAi
         //direction = targetPosition - tr.position;
     }
 
-    void PatrolFunc()
+    protected void PatrolFunc()
     {
         if (movePath == null)
             return;
@@ -438,10 +453,12 @@ public class UnitAi : UnitCommonAi
         }
     }
 
-    public void TargetSet(GameObject obj)
+    [ServerRpc(RequireOwnership = false)]
+    public void TargetSetServerRpc(NetworkObjectReference networkObjectReference)
     {
         isTargetSet = true;
-        aggroTarget = obj;
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        aggroTarget = networkObject.gameObject;
         AttackTargetDisCheck();
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
@@ -457,6 +474,10 @@ public class UnitAi : UnitCommonAi
         if (isHold || aggroTarget == null)
         {
             animator.SetBool("isMove", false);
+            return;
+        }
+        if (animator.GetBool("isAttack"))
+        {
             return;
         }
 
@@ -484,6 +505,12 @@ public class UnitAi : UnitCommonAi
         }
     }
 
+    [ServerRpc]
+    public void RepairServerRpc(float repairAmount)
+    {
+        hp += repairAmount;
+        SelfHealingClientRpc(hp);
+    }
 
     [ClientRpc]
     public override void TakeDamageClientRpc(float damage, int attackType, float option)
@@ -524,7 +551,7 @@ public class UnitAi : UnitCommonAi
         onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / maxHp;
 
-        if (IsServer && hp <= 0f && !dieCheck)
+        if (hp <= 0f && !dieCheck)
         {
             aIState = AIState.AI_Die;
             hp = 0f;
@@ -535,7 +562,7 @@ public class UnitAi : UnitCommonAi
             {
                 DieFuncServerRpc();
             }
-        }
+        }       
     }
 
     [ClientRpc]
@@ -591,19 +618,21 @@ public class UnitAi : UnitCommonAi
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PortalUnitInFuncServerRpc()
+    public void PortalUnitInFuncServerRpc(bool mapIndex)
     {
-        PortalUnitInFuncClientRpc();
+        PortalUnitInFuncClientRpc(mapIndex);
     }
 
     [ClientRpc]
-    public void PortalUnitInFuncClientRpc()
+    public void PortalUnitInFuncClientRpc(bool mapIndex)
     {
         if (unitSelect)
         {
             UnitSelImg(false);
             unitGroupCtrl.DieUnitCheck(gameObject);
         }
+        portalUnitIn = true;
+        hostClientUnitIn = mapIndex;
         gameObject.SetActive(false);
     }
 
@@ -705,6 +734,8 @@ public class UnitAi : UnitCommonAi
         data.patrolDir = isPatrolMove;
         data.moveTragetPos = Vector3Extensions.FromVector3(targetPosition);
         data.moveStartPos = Vector3Extensions.FromVector3(patrolPos);
+        data.portalUnitIn = portalUnitIn;
+        data.hostClientUnitIn = hostClientUnitIn;
 
         return data;
     }

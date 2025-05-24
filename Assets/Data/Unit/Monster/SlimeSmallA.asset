@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: SlimeSmallA
   m_EditorClassIdentifier: 
   unitName: SlimeSmallA
-  maxHp: 80
-  damage: 5
-  moveSpeed: 3
+  maxHp: 100
+  upgradeMaxHp: 0
+  damage: 10
+  upgradeDamage: 0
+  moveSpeed: 4
   attackDist: 2
-  attDelayTime: 1
+  attDelayTime: 1.5
+  upgradeAttDelayTime: 0
   colliderRadius: 20
   minCollRad: 10
+  defense: 3
+  upgradeDefense: 0
   patrolRad: 3
-  defense: 5

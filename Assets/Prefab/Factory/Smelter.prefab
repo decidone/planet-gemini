@@ -283,6 +283,7 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
+  overclockOn: 0
   overclockPer: 10
   effiCooldownUpgradePer: 10
   isStorageBuilding: 0
@@ -318,6 +319,7 @@ MonoBehaviour:
   strImg:
   - {fileID: 1701051910, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   - {fileID: 1291779050, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  isAuto: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -379,7 +381,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.9}
+  m_AnchoredPosition: {x: 0, y: 1.57}
   m_SizeDelta: {x: 1.5, y: 0.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1934325794344875489

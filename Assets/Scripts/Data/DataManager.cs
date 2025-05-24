@@ -94,8 +94,11 @@ public class DataManager : MonoBehaviour
 
         foreach (BeltGroupMgr beltGroup in netObjMgr.netBeltGroupMgrs)
         {
-            BeltGroupSaveData beltGroupSaveData = beltGroup.SaveData();
-            saveData.beltGroupData.Add(beltGroupSaveData);
+            if (beltGroup.beltList.Count > 0)
+            {
+                BeltGroupSaveData beltGroupSaveData = beltGroup.SaveData();
+                saveData.beltGroupData.Add(beltGroupSaveData);
+            }
         }
 
         foreach (UnitCommonAi unitAi in netObjMgr.netUnitCommonAis)
@@ -496,6 +499,18 @@ public class DataManager : MonoBehaviour
 
         spawnobj.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
         spawnobj.GetComponent<UnitAi>().GameStartSet(unitSaveData);
+
+        if (unitSaveData.portalUnitIn)
+        {
+            if (unitSaveData.hostClientUnitIn)
+            {
+                GameManager.instance.portal[0].GetComponentInChildren<PortalUnitIn>().LoadUnitData(spawnobj);
+            }
+            else
+            {
+                GameManager.instance.portal[1].GetComponentInChildren<PortalUnitIn>().LoadUnitData(spawnobj);
+            }
+        }
     }
 
     void SetSpawnerManager(SpawnerManagerSaveData spawnerManagerSaveData)

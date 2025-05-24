@@ -129,7 +129,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b80f3fe12832da9428c0b96ac5dd466c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3f660b814123633428aeccbb0324c2d5, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 0
@@ -282,7 +282,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 846619681, guid: 5e106a86825938f4cb02fd6ad417b413, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -293,7 +293,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!114 &4751259464911499681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,19 +318,25 @@ MonoBehaviour:
   waveMonsterList: []
   sppawnerLevel: 0
   nearUserObjExist: 0
+  nearEnergyObjExist: 0
   unitSprite: {fileID: 4028291071532341099}
   unitCanvas: {fileID: 5496904829296565877}
   hpBar: {fileID: 4936597692029941388}
   hp: 0
   maxHp: 0
+  defense: 0
   dieCheck: 0
   extraSpawn: 0
   waveTimer: 0
   searchColl: {fileID: 7283164378971898256}
   awakeColl: {fileID: 596819544238933767}
+  spawnerSearchColl: {fileID: 0}
   energyAggroValue: 0
   isInHostMap: 0
+  violentDay: 0
   violentCollSize: 0
+  safeAmount: 3
+  safeCount: 0
 --- !u!50 &5546485786390217281
 Rigidbody2D:
   serializedVersion: 4
@@ -382,7 +388,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 2.5, y: 1}
+  m_Size: {x: 2.7, y: 1}
   m_Direction: 1
 --- !u!1 &4582274715098405497
 GameObject:
@@ -478,7 +484,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4150930106503943050
 RectTransform:
   m_ObjectHideFlags: 0
@@ -488,7 +494,7 @@ RectTransform:
   m_GameObject: {fileID: 5496904829296565877}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.96, y: 0.96, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5776189054090241519}
@@ -498,7 +504,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 2.5}
+  m_AnchoredPosition: {x: 0, y: 3.58}
   m_SizeDelta: {x: 1.5, y: 0.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &9117852499488787800

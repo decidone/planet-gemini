@@ -18,9 +18,11 @@ public class SaveLoadBtn : MonoBehaviour
     bool saveLoadState; // true : save 버튼, false : load 버튼
     int slotNum;
     bool loadEnable;
-
+    string saveFileName;
+    SoundManager soundManager;
     private void Start()
     {
+        soundManager = SoundManager.instance;
         saveLoadMenu = SaveLoadMenu.instance;
         mainBtn.onClick.AddListener(() => BtnFunc());
     }
@@ -34,6 +36,7 @@ public class SaveLoadBtn : MonoBehaviour
         {
             //contentsText.text = saveDate + System.Environment.NewLine + mapSizeString + " " + diffLevelString + " " + fileName;
             contentsText.text = saveDate + System.Environment.NewLine + fileName;
+            saveFileName = fileName;
             loadEnable = true;
 
             deleteBtn.gameObject.SetActive(true);
@@ -42,6 +45,7 @@ public class SaveLoadBtn : MonoBehaviour
         else
         {
             contentsText.text = "Empty";
+            saveFileName = "";
             loadEnable = false;
 
             deleteBtn.gameObject.SetActive(false);
@@ -138,8 +142,9 @@ public class SaveLoadBtn : MonoBehaviour
         }
         else
         {
-            ConfirmPanel.instance.CallConfirm(this, saveLoadState, slotNum);
+            ConfirmPanel.instance.CallConfirm(this, saveLoadState, slotNum, saveFileName);
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void BtnConfirm(bool confirmState, string fileName)

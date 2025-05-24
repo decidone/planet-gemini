@@ -7,6 +7,7 @@ public class SunTower : TowerAi
     [SerializeField] SpriteRenderer view;
     [SerializeField] float debuffTimer;
     [SerializeField] float debuffInterval;
+    [SerializeField] float debuffPer;
 
     protected override void Update()
     {
@@ -30,7 +31,7 @@ public class SunTower : TowerAi
                         if (monster.TryGetComponent(out MonsterAi mon))
                         {
                             isMonsterNearby = true;
-                            mon.RefreshDebuff(conn.group.efficiency);    // 서버, 클라이언트 상관없이 디버프 띄워주는데 데미지 계산은 서버 디버프 유무로만 계산
+                            mon.RefreshDebuff(conn.group.efficiency, debuffPer);    // 서버, 클라이언트 상관없이 디버프 띄워주는데 데미지 계산은 서버 디버프 유무로만 계산
                         }
                     }
                 }

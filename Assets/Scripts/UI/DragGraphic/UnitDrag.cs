@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,9 +8,9 @@ using UnityEngine.InputSystem;
 // UTF-8 설정
 public class UnitDrag : DragFunc
 {
-    int unitLayer;
-    int monsterLayer;
-    int spawnerLayer;
+    //int unitLayer;
+    //int monsterLayer;
+    //int spawnerLayer;
 
     public delegate void AddUnitDelegate(GameObject obj);
     public static event AddUnitDelegate addUnit;
@@ -41,12 +42,13 @@ public class UnitDrag : DragFunc
 
     InputManager inputManager;
 
-    protected override void Start()
-    {
-        unitLayer = LayerMask.NameToLayer("Unit");
-        monsterLayer = LayerMask.NameToLayer("Monster");
-        spawnerLayer = LayerMask.NameToLayer("Spawner");
-    }
+    //protected override void Start()
+    //{
+    //    interactLayer = LayerMask.NameToLayer("Interact");
+    //    unitLayer = LayerMask.NameToLayer("Unit");
+    //    monsterLayer = LayerMask.NameToLayer("Monster");
+    //    spawnerLayer = LayerMask.NameToLayer("Spawner");
+    //}
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -111,10 +113,10 @@ public class UnitDrag : DragFunc
         if (!unitCtrlKeyPressed)
         {
             if (startPos != endPos)
-                GroupSelectedObjects(startPos, endPos, unitLayer);
+                GroupSelectedObjects(startPos, endPos);
             else
             {
-                RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << unitLayer);
+                RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
                 if (hit)
                     SelectedObjects(hit);
                 else
@@ -133,16 +135,20 @@ public class UnitDrag : DragFunc
         }
         else if (isAKeyPressed)
         {
-            int layerMask = (1 << monsterLayer) | (1 << spawnerLayer);
-            RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, layerMask);
-            if (hit)
-            {
-                monsterTargetSet?.Invoke(hit.collider.gameObject);
-            }
-            else
+            RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
+            if (!hit)
             {
                 SetTargetPosition(true, endPos);
             }
+            else if (hit.collider.GetComponentInParent<MonsterAi>())
+            {
+                monsterTargetSet?.Invoke(hit.collider.GetComponentInParent<MonsterAi>().gameObject);
+            }
+            else if (hit.collider.GetComponentInParent<MonsterSpawner>())
+            {
+                monsterTargetSet?.Invoke(hit.collider.GetComponentInParent<MonsterSpawner>().gameObject);
+            }
+
             UnitMovePos.instance.AnimStart(endPos);
         }
         MouseSkin.instance.ResetCursor();
@@ -157,9 +163,22 @@ public class UnitDrag : DragFunc
         ReSetBool();
     }
 
-    protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
+    protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition)
     {
-        base.GroupSelectedObjects(startPosition, endPosition, layer);
+        Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << interactLayer);
+        List<GameObject> selectedObjectsList = new List<GameObject>();
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.GetComponentInParent<UnitAi>() == null || collider.GetComponentInParent<TankCtrl>())
+                continue;
+            if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
+                continue;
+
+            selectedObjectsList.Add(collider.GetComponentInParent<UnitAi>().gameObject);
+        }
+        selectedObjects = selectedObjectsList.ToArray();
+        
         removeUnit?.Invoke();
 
         if (selectedObjects.Length > 0)
@@ -175,11 +194,14 @@ public class UnitDrag : DragFunc
 
     private void SelectedObjects(RaycastHit2D ray)
     {
+        if (!ray.collider.GetComponentInParent<UnitAi>() || ray.collider.GetComponentInParent<TankCtrl>())
+            return;
+        GameObject gameObject = ray.collider.GetComponentInParent<UnitAi>().gameObject; 
         removeUnit?.Invoke();
         selectedObjects = new GameObject[1];
-        selectedObjects[0] = ray.collider.gameObject;
+        selectedObjects[0] = gameObject;
 
-        addUnit?.Invoke(ray.collider.gameObject);
+        addUnit?.Invoke(gameObject);
         BasicUIBtns.instance.SwapFunc(false);
         isSelectingUnits = true;
     }

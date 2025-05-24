@@ -51,6 +51,7 @@ public class StructureClickEvent : MonoBehaviour
             drag.SelectBuild(this.gameObject);
         gameManager.SelectPointSpawn(prod.gameObject);
         sInvenManager.OpenUI();
+        soundManager.PlayUISFX("SidebarClick");
     }
 
     public void CloseUI()
@@ -60,7 +61,17 @@ public class StructureClickEvent : MonoBehaviour
         if (prod.isGetLine)
             drag.CancelBuild();
         gameManager.SelectPointRemove();
+        sInvenManager.CloseUI();
         soundManager.PlayUISFX("CloseUI");
+    }
+
+    public void CloseUINoSound()
+    {
+        openUI = false;
+        prod.CloseUI();
+        if (prod.isGetLine)
+            drag.CancelBuild();
+        gameManager.SelectPointRemove();
         sInvenManager.CloseUI();
     }
 }

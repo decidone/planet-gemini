@@ -75,7 +75,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 22.3
 --- !u!1 &3056275102833498193
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,14 +508,15 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
-  slowDebuffOn: 0
+  damage: 0
+  attackSpeed: 0
+  defense: 0
   name: Bounce Robot
   unitLastState: 0
   unitSelImg: {fileID: 4471495155955281645}
   selfHealingAmount: 0
   selfHealInterval: 0
   visionRadius: 8
-  attackFX: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!114 &3784004604832727098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -684,12 +685,12 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 525c9589b3a9724459ceebaab805181a, type: 3}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0

@@ -184,7 +184,9 @@ MonoBehaviour:
   aIState: 0
   attackState: 0
   soundManager: {fileID: 0}
-  slowDebuffOn: 0
+  damage: 0
+  attackSpeed: 0
+  defense: 0
   name: Spin Robot
   unitLastState: 0
   unitSelImg: {fileID: 5345713938874468926}

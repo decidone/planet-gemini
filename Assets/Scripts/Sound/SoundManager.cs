@@ -7,6 +7,14 @@ using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
 {
+    enum SceneIndex
+    {
+        MainScene = 0,
+        GameScene = 1
+    }
+
+    SceneIndex sceneIndex;
+
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 
     public static SoundManager instance { get; private set; }
@@ -26,8 +34,8 @@ public class SoundManager : MonoBehaviour
 
     AudioSource uiSfxPlayer;
 
-    private float bgmVolume = .8f;
-    private float sfxVolume = .8f;
+    private float bgmVolume = .6f;
+    private float sfxVolume = 1f;
 
     [SerializeField]
     Camera mainCamera;
@@ -101,11 +109,11 @@ public class SoundManager : MonoBehaviour
             case 0:
                 bgmPlayer.clip = audioClipRefsSO.mainSceneBgm[Random.Range(0, audioClipRefsSO.mainSceneBgm.Length)];
                 bgmPlayer.Play();
+                sceneIndex = SceneIndex.MainScene;
                 break;
-            //case 1:
-            //    bgmPlayer.clip = audioClipRefsSO.inGameBgm[Random.Range(0, audioClipRefsSO.inGameBgm.Length)];
-            //    bgmPlayer.Play();
-            //    break;
+            case 1:
+                sceneIndex = SceneIndex.GameScene;
+                break;
         }
     }
 
@@ -205,6 +213,7 @@ public class SoundManager : MonoBehaviour
         {
             audioMixer.SetFloat("Master", -80);
         }
+        PlayUISFX("ButtonClick");
     }
 
     public void SetBGMVolume()
@@ -230,6 +239,7 @@ public class SoundManager : MonoBehaviour
         {
             audioMixer.SetFloat("BGM", -80);
         }
+        PlayUISFX("ButtonClick");
     }
 
     public void SetSFXVolume()
@@ -255,6 +265,7 @@ public class SoundManager : MonoBehaviour
         {
             audioMixer.SetFloat("SFX", -80);
         }
+        PlayUISFX("ButtonClick");
     }
 
     #endregion
@@ -269,7 +280,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayerBgmMapCheck()
     {
-        if (GameManager.instance != null)
+        if (sceneIndex == SceneIndex.GameScene)
         {
             if (isHostMapWaveOn != isClientMapWaveOn)
             {
@@ -310,6 +321,18 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBgmMapCheck()
     {
+        //웨이브 상태에서 BGM이 바뀌지 않게 예외처리
+        if (sceneIndex == SceneIndex.GameScene)
+        {
+            bool playerMap = GameManager.instance.isPlayerInHostMap;
+            bool isWaveActive = (playerMap && isHostMapWaveOn) || (!playerMap && isClientMapWaveOn);
+
+            if (!GameManager.instance.isPlayerInMarket && isWaveActive)
+            {
+                return;
+            }
+        }
+ 
         StartCoroutine(nameof(SoundFadeOut));
         StartCoroutine(BgmChange());
     }
@@ -318,7 +341,7 @@ public class SoundManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(fadeSeconds);
 
-        if (GameManager.instance != null)
+        if (sceneIndex == SceneIndex.GameScene)
         {
             if (GameManager.instance.isPlayerInMarket)
             {
@@ -332,6 +355,12 @@ public class SoundManager : MonoBehaviour
             {
                 PlayBGM(isClientMapWaveOn);
             }
+        }
+        else
+        {
+            bgmPlayer.clip = audioClipRefsSO.mainSceneBgm[Random.Range(0, audioClipRefsSO.mainSceneBgm.Length)];
+            bgmPlayer.Play();
+            StartCoroutine(nameof(SoundFadeIn));
         }
     }
 
@@ -611,7 +640,7 @@ public class SoundManager : MonoBehaviour
         if(PlayerPrefs.GetInt("MasterMute", 0) == 0)
         {
             musicMasterToggle.isOn = true;
-            musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterValume", 0);
+            musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterValume", -10);
         }
         else
         {
@@ -624,7 +653,7 @@ public class SoundManager : MonoBehaviour
         if (PlayerPrefs.GetInt("BGMMute", 0) == 0)
         {
             musicBGMToggle.isOn = true;
-            musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMValume", 0);
+            musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMValume", -10);
         }
         else
         {
@@ -637,7 +666,7 @@ public class SoundManager : MonoBehaviour
         if (PlayerPrefs.GetInt("SFXMute", 0) == 0)
         {
             musicSFXToggle.isOn = true;
-            musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXValume", 0);
+            musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXValume", -10);
         }
         else
         {

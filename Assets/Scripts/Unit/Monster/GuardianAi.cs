@@ -6,13 +6,13 @@ using UnityEngine;
 // UTF-8 설정
 public class GuardianAi : MonsterAi
 {
-    protected override void Update()
-    {
-        if (aIState != AIState.AI_SpawnerCall)
-        {
-            base.Update();
-        }
-    }
+    //protected override void Update()
+    //{
+    //    if (aIState != AIState.AI_SpawnerCall)
+    //    {
+    //        base.Update();
+    //    }
+    //}
 
     protected override void UnitAiCtrl()
     {
@@ -54,53 +54,61 @@ public class GuardianAi : MonsterAi
             case AIState.AI_SpawnerCall:
                 {
                     SpawnerCall();
+                    if (aggroTarget)
+                        AttackCheck();
                 }
                 break;
         }
     }
 
-    public override void SpawnerCall()
-    {
-        //AnimBoolCtrl("isMove", true);
-        animator.SetBool("isMove", true);
+    //public override void SpawnerCall()
+    //{
+    //    //AnimBoolCtrl("isMove", true);
+    //    animator.SetBool("isMove", true);
 
-        AnimSetFloat(targetVec, true);
+    //    AnimSetFloat(targetVec, true);
 
-        targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
+    //    targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
  
-        if (targetDist > unitCommonData.AttackDist)
-        {
-            if (currentWaypointIndex >= movePath.Count)
-                return;
+    //    if (targetDist > unitCommonData.AttackDist)
+    //    {
+    //        if (currentWaypointIndex >= movePath.Count)
+    //            return;
 
-            Vector3 targetWaypoint = movePath[currentWaypointIndex];
-            direction = targetWaypoint - tr.position;
-            direction.Normalize();
+    //        Vector3 targetWaypoint = movePath[currentWaypointIndex];
+    //        direction = targetWaypoint - tr.position;
+    //        direction.Normalize();
 
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 10) * slowSpeedPer);
+    //        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 10) * slowSpeedPer);
 
-            if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
-            {
-                currentWaypointIndex++;
+    //        if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
+    //        {
+    //            currentWaypointIndex++;
 
-                if (currentWaypointIndex >= movePath.Count)
-                    return;
-            }
-        }
-        else
-        {
-            aIState = AIState.AI_NormalTrace;
-        }
-    } 
+    //            if (currentWaypointIndex >= movePath.Count)
+    //                return;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        aIState = AIState.AI_NormalTrace;
+    //    }
+    //} 
 
-    public void SpawnerCallCheck(GameObject obj)
+    public override void SpawnerCallCheck(GameObject obj)
     {
         if (obj == null)
             return;
-        aggroTarget = obj;
-        targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
 
-        checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
-        aIState = AIState.AI_SpawnerCall;
+        if (justTraceTimer >= justTraceInterval)
+        {
+            spawnerPhaseOn = true;
+            aggroTarget = obj;
+            targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
+
+            checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
+            aIState = AIState.AI_SpawnerCall;
+            justTraceTimer = 0;
+        }
     }
 }

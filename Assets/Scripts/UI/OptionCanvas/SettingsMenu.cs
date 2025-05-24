@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -40,7 +43,7 @@ public class SettingsMenu : MonoBehaviour
     public Slider autoSaveSlider;
     bool isInputChanging = false;
     bool isSliderChanging = false;
-
+    SoundManager soundManager;
     #region Singleton
     public static SettingsMenu instance;
 
@@ -60,6 +63,7 @@ public class SettingsMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         saveBtn.onClick.AddListener(() => SaveBtnFunc());
         resetBtn.onClick.AddListener(() => ResetBtnFunc());
         tutorialQuestToggle.onValueChanged.AddListener(delegate { TutorialQuestToggleValue(); });
@@ -98,7 +102,6 @@ public class SettingsMenu : MonoBehaviour
         {
             windowModeDropdown.options.Add(new Dropdown.OptionData(winSize.Value.Item1));
         }
-        //WindowModeDropdownFunc(windowModeDropdown);
         windowModeDropdown.onValueChanged.AddListener(delegate { WindowModeDropdownFunc(windowModeDropdown); });
     }
 
@@ -157,6 +160,7 @@ public class SettingsMenu : MonoBehaviour
                 QuestManager.instance.UIClose();
             }
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     #endregion
@@ -206,6 +210,7 @@ public class SettingsMenu : MonoBehaviour
     void ResetBtnFunc()
     {
         ConfirmPanel.instance.KeyBindingResetConfirm();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void ResetToDefault()
@@ -221,6 +226,7 @@ public class SettingsMenu : MonoBehaviour
     void SaveBtnFunc()
     {
         MenuClose();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void SaveData()

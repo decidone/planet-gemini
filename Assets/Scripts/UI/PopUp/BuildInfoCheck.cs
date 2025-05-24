@@ -9,16 +9,23 @@ public class BuildInfoCheck : MonoBehaviour
     public RectTransform imageRectTransform;  // 팝업 이미지의 RectTransform
     public BuildItemInfoWin buildItemInfoWin;
     Structure selectedStr;
+    bool isUIOpen;
     Vector2 mousePos;
-    bool isMouseOnStr;
     GameManager gameManager;
     InputManager inputManager;
+
+    Vector2 newPos;
+    Vector2 lastPos;
+
+    float timer = 0f;
+    float delay = 0.2f;
 
     void Start()
     {
         buildItemInfoWin = GameManager.instance.inventoryUiCanvas.GetComponent<PopUpManager>().buildItemInfo;
         inputManager = InputManager.instance;
         gameManager = GameManager.instance;
+        lastPos = new Vector2(-1, -1);
     }
 
     void Update()
@@ -49,67 +56,59 @@ public class BuildInfoCheck : MonoBehaviour
         x = Mathf.FloorToInt(pos.x);
         y = Mathf.FloorToInt(pos.y);
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
-        if (hits.Length > 0)
+        newPos = new Vector2(x, y);
+
+        if (newPos != lastPos)
         {
-            isMouseOnStr = false;
-            selectedStr = null;
-            for (int i = 0; i < hits.Length; i++)
+            lastPos = newPos;
+            if (gameManager.map.IsOnMap(x, y) &&
+                (mousePos.x >= 0 && mousePos.x <= Screen.width && mousePos.y >= 0 && mousePos.y <= Screen.height))
             {
-                if (hits[i].collider.TryGetComponent(out InfoInteract info))
+                Cell cell = gameManager.map.GetCellDataFromPos(x, y);
+
+                if (cell.structure)
                 {
-                    GameObject parent = info.transform.parent.gameObject;
-                    if (parent.TryGetComponent(out Structure str))
+                    cell.structure.TryGetComponent(out Structure str);
+                    if (!str.isPreBuilding)
                     {
-                        isMouseOnStr = true;
-                        selectedStr = str;
+                        PopUpPosSetStructure(str);
+                        isUIOpen = true;
                     }
+
+                    selectedStr = str;
+                }
+                else if (cell.resource)
+                {
+                    if (MapGenerator.instance.CheckFogState(pos) == 0)
+                    {
+                        PopUpPosSetResource(cell.resource.item);
+                        isUIOpen = true;
+                    }
+                    selectedStr = null;
+                }
+                else
+                {
+                    selectedStr = null;
+                    isUIOpen = false;
+                    BuildItemInfoPopUpOff();
                 }
             }
-        }
-        else
-        {
-            selectedStr = null;
-            isMouseOnStr = false;
-            BuildItemInfoPopUpOff();
         }
 
-        if (gameManager.map.IsOnMap(x, y) && 
-            (mousePos.x >= 0 && mousePos.x <= Screen.width && mousePos.y >= 0 && mousePos.y <= Screen.height))
+        if (selectedStr)
         {
-            Cell cell = gameManager.map.GetCellDataFromPos(x, y);
-            if (isMouseOnStr)
+            timer += Time.deltaTime;
+            if (timer >= delay)
             {
-                if (!inputManager.isMapOpened && !selectedStr.isPreBuilding)
-                {
-                    PopUpPosSetStructure(mousePos, selectedStr);
-                }
-                else if (cell.structure != null)
-                {
-                    if (inputManager.isMapOpened && cell.structure.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
-                    {
-                        PopUpPosSetStructure(mousePos, structure);
-                    }
-                }
+                timer = 0;
+
+                PopUpPosSetStructure(selectedStr);
             }
-            else if (cell.structure != null)
-            {
-                if (inputManager.isMapOpened && cell.structure.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
-                {
-                    PopUpPosSetStructure(mousePos, structure);
-                }
-            }
-            else if (cell.resource != null)
-            {
-                if (MapGenerator.instance.CheckFogState(pos) == 0)
-                    PopUpPosSetResource(mousePos, cell.resource.item);
-            }
-            else
-            {
-                selectedStr = null;
-                isMouseOnStr = false;
-                BuildItemInfoPopUpOff();
-            }
+        }
+
+        if (isUIOpen)
+        {
+            PopUpPosSet(mousePos);
         }
     }
 
@@ -124,31 +123,8 @@ public class BuildInfoCheck : MonoBehaviour
         buildItemInfoWin.gameObject.SetActive(false);
     }
 
-    void PopUpPosSetStructure(Vector2 pos, Structure structure)
+    void PopUpPosSetStructure(Structure structure)
     {
-        Vector2 mousePos = Input.mousePosition;
-
-        // 캔버스 공간에서의 마우스 좌표로 변환
-        Vector2 anchoredPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
-
-        // 팝업 이미지의 크기 가져오기
-        float popupWidth = imageRectTransform.rect.width;
-        float popupHeight = imageRectTransform.rect.height;
-
-        // 새 좌표 계산 (마우스 위치에 대해 오프셋 적용)
-        // 왼쪽 위에 위치하도록 마우스 좌표에서 팝업 크기만큼 뺌
-        Vector2 newPos = new Vector2(anchoredPos.x + popupWidth / 2, anchoredPos.y + popupHeight / 2);
-        // 팝업이 화면 밖으로 나가지 않도록 클램핑
-        float clampedX = Mathf.Clamp(newPos.x, -canvasRectTransform.rect.width / 2 + popupWidth / 2, canvasRectTransform.rect.width / 2 - popupWidth / 2);
-        float clampedY = Mathf.Clamp(newPos.y, -canvasRectTransform.rect.height / 2 + popupHeight / 2, canvasRectTransform.rect.height / 2 - popupHeight / 2);
-
-        // 위치 설정
-        buildItemInfoWin.gameObject.transform.localPosition = new Vector2(clampedX, clampedY);
-
-        //RectTransform popUpRect = buildItemInfoWin.GetComponent<RectTransform>();
-        //Vector2 newPos = new Vector2(pos.x + popUpRect.rect.width / 2, pos.y - popUpRect.rect.height / 2);
-        //buildItemInfoWin.gameObject.transform.position = newPos;
         Dictionary<Item, int> getDic = structure.PopUpItemCheck();
         (bool, bool, bool, EnergyGroup, float) energyState = structure.PopUpEnergyCheck();
         (float, float) storedState = structure.PopUpStoredCheck();
@@ -162,13 +138,17 @@ public class BuildInfoCheck : MonoBehaviour
             BuildItemInfoPopUpOff();
     }
 
-    void PopUpPosSetResource(Vector2 pos, Item item)
+    void PopUpPosSetResource(Item item)
     {
-        Vector2 mousePos = Input.mousePosition;
+        BuildItemInfoPopUpOn();
+        buildItemInfoWin.UiSetting(item);
+    }
 
+    void PopUpPosSet(Vector2 pos)
+    {
         // 캔버스 공간에서의 마우스 좌표로 변환
         Vector2 anchoredPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, pos, null, out anchoredPos);
 
         // 팝업 이미지의 크기 가져오기
         float popupWidth = imageRectTransform.rect.width;
@@ -183,12 +163,5 @@ public class BuildInfoCheck : MonoBehaviour
 
         // 위치 설정
         buildItemInfoWin.gameObject.transform.localPosition = new Vector2(clampedX, clampedY);
-
-        //RectTransform popUpRect = buildItemInfoWin.GetComponent<RectTransform>();
-        //Vector2 newPos = new Vector2(pos.x + popUpRect.rect.width / 2, pos.y - popUpRect.rect.height / 2);
-        //buildItemInfoWin.gameObject.transform.position = newPos;
-
-        BuildItemInfoPopUpOn();
-        buildItemInfoWin.UiSetting(item);
     }
 }

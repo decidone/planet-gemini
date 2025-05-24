@@ -26,6 +26,7 @@ public class SaveLoadMenu : MonoBehaviour
     GameObject btnObj;
     [SerializeField]
     Button backBtn;
+    SoundManager soundManager;
 
     SaveLoadBtn[] buttons;
     int saveCount = 21;
@@ -48,6 +49,7 @@ public class SaveLoadMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         buttons = new SaveLoadBtn[saveCount];
         LoadSaveData();
         backBtn.onClick.AddListener(() => BackBtnFunc());
@@ -202,5 +204,6 @@ public class SaveLoadMenu : MonoBehaviour
     void BackBtnFunc()
     {
         MenuClose();
+        soundManager.PlayUISFX("ButtonClick");
     }
 }

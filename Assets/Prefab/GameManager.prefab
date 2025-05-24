@@ -362,7 +362,7 @@ MonoBehaviour:
   chat: {fileID: 0}
   day: 0
   isDay: 0
-  dayTime: 100
+  dayTime: 120
   dayTimer: 0
   dayIndex: 0
   safeDay: 12
@@ -548,6 +548,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fc1cbc2529550b74988dd09a7883c402, type: 2}
   - {fileID: 11400000, guid: ab776f6225a0e314c9e2aacf978ece70, type: 2}
   - {fileID: 11400000, guid: 4a926143e0629664889912080e81599e, type: 2}
+  - {fileID: 11400000, guid: 715ad2ba0f345504480666162e289a39, type: 2}
+  - {fileID: 11400000, guid: f75c7b724989bf44ca7f916d11143a42, type: 2}
   - {fileID: 11400000, guid: e8c4884fee26b32409db41aa4fb2d757, type: 2}
   - {fileID: 11400000, guid: 15c8033a9ead8104991eac3097b1f86e, type: 2}
 --- !u!114 &762871311885926062
@@ -716,6 +718,8 @@ MonoBehaviour:
   - {fileID: 8598225404917607298, guid: b51e05c41bd7d664aad1ca10a4dd19fd, type: 3}
   - {fileID: 1885955664131610326, guid: 15142411a933d1245b957f009a3493eb, type: 3}
   - {fileID: 248036444977090385, guid: d70a8f4e456ddd94b96397d2f52b11c8, type: 3}
+  - {fileID: 248036444977090385, guid: 78db12d939154754dbf61896da39231c, type: 3}
+  - {fileID: 248036444977090385, guid: 2aa524a4ca73c5640a17387023180662, type: 3}
   - {fileID: 8598225404917607298, guid: 98d989c3dc70fad4f863f229717bee75, type: 3}
 --- !u!114 &1592428971395791709
 MonoBehaviour:

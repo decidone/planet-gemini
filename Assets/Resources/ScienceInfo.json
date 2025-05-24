@@ -261,6 +261,16 @@
       "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that performs ranged attacks.","basicScience" : false,"sortIndex":8}
     }
   },
+  "CorrosionDrone":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"   ","basicScience" : false,"sortIndex":18}
+    }
+  },
+  "RepairerDrone":{
+    "Battle":{
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"   ","basicScience" : false,"sortIndex":19}
+    }
+  },
   "Tank":{
     "Battle":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":5,"time":1,"Info":"A tank for the player that requires ammunition and fuel.","basicScience" : false,"sortIndex":1}

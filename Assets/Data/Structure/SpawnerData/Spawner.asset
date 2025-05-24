@@ -15,12 +15,14 @@ MonoBehaviour:
   factoryName: Spawner
   maxLevel: 5
   maxHp: 580200008a020000bc020000ee02000020030000200300002003000020030000
+  upgradeMaxHp: 
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed: []
   sendFluidAmount: 0
   sendDelay:
   - 0
+  upgradeSendDelay: []
   maxBuildingGauge: 0
   maxRepairGauge: 0
   colliderRadius: 0
@@ -30,3 +32,13 @@ MonoBehaviour:
   energyUse: 
   consumption: []
   removeGauge: 10
+  defense:
+  - 20
+  - 23
+  - 26
+  - 29
+  - 32
+  - 35
+  - 38
+  - 41
+  upgradedefense: []

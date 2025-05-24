@@ -942,6 +942,24 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TimeUIUp",
+                    "type": "Button",
+                    "id": "19e711e4-a8d1-44e1-a11f-354c4e538211",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TimeUIDown",
+                    "type": "Button",
+                    "id": "5904349d-b85a-43a7-bf76-9990fdc79ae8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1052,6 +1070,28 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "InfoDictionary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97154de2-7118-4b31-adb8-a8baa34dafcf",
+                    "path": "<Keyboard>/pageUp",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TimeUIUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "96958800-6dcf-4bb3-94ef-e9b6dd84886c",
+                    "path": "<Keyboard>/pageDown",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TimeUIDown",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

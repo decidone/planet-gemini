@@ -26,11 +26,12 @@ public class MainPanelsManager : MonoBehaviour
     [SerializeField]
     InputField seedInputField;
     SaveLoadMenu saveLoadPanel;
-
+    SoundManager soundManager;
     void Start()
     {
         gameSetting = MainGameSetting.instance;
         saveLoadPanel = SaveLoadMenu.instance;
+        soundManager = SoundManager.instance;
         gameStartBtn.onClick.AddListener(() => GameStartBtnFunc());
         backBtn.onClick.AddListener(() => NewGamePanelSet(false));
         mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
@@ -48,6 +49,7 @@ public class MainPanelsManager : MonoBehaviour
             MainManager.instance.OpenedUISet(gameObject);
         else
             MainManager.instance.ClosedUISet();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void GameStartBtnFunc()
@@ -65,6 +67,7 @@ public class MainPanelsManager : MonoBehaviour
         gameSetting.NewGameState(true);
         NetworkManager.Singleton.StartHost();
         LoadingUICtrl.Instance.LoadScene("GameScene", true);
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void MapSizeDropdownFunc(Dropdown dropdown)

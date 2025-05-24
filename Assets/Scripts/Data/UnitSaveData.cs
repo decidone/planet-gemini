@@ -21,6 +21,8 @@ public class UnitSaveData
     public bool patrolDir;  // 페트롤 이동 방향
     public SerializedVector3 moveTragetPos = new SerializedVector3();   // 이동해야 하는 좌표
     public SerializedVector3 moveStartPos = new SerializedVector3();    // 이동 시작 좌표
+    public bool portalUnitIn;
+    public bool hostClientUnitIn;
     // 유저 유닛
 
     // 몬스터
@@ -29,6 +31,7 @@ public class UnitSaveData
     public bool waveStateEnd;      // 웨이브 상태
     public bool isWaveColonyCallCheck;  // true: 웨이브, false: 콜로니 콜
     public SerializedVector3 wavePos = new SerializedVector3(); // 웨이브, 콜로니콜 위치
+    public bool spawnerLastPhaseOn;
     // 몬스터
 
     // 탱크

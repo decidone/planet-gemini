@@ -40,6 +40,7 @@ public class LoadingUICtrl : MonoBehaviour
     float timeoutLimit;
     [SerializeField] float sceneLoadTimeoutLimit;
     [SerializeField] float gameSetTimeoutLimit;
+
     public static LoadingUICtrl Create()
     {
         var SceneLoaderPrefab = Resources.Load<LoadingUICtrl>("LoadingUI");

@@ -484,6 +484,7 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
+  overclockOn: 0
   overclockPer: 0
   effiCooldownUpgradePer: 0
   isStorageBuilding: 0
@@ -515,6 +516,9 @@ MonoBehaviour:
   canUpgrade: 0
   warningIcon: {fileID: 4486244622352369276}
   warningIconCheck: 0
+  getAnim: 0
+  strImg: []
+  isAuto: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -523,12 +527,12 @@ MonoBehaviour:
   isGetLine: 0
   towerData: {fileID: 11400000, guid: d43c8e4b54efa8a4995bb4533ca1c1a3, type: 2}
   towerState: 0
-  animator: {fileID: 1280046767442360778}
   attDelayTime: 0
   damage: 0
   view: {fileID: 7010886276834253721}
   debuffTimer: 0
   debuffInterval: 1
+  debuffPer: 40
 --- !u!114 &7459600353829133190
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -84,7 +84,8 @@ public class BeltPreBuilding : PreBuilding
 
             CheckPos(endBuildPos, (int)tempDeltaX, (int)tempDeltaY);
         }
-        MouseSkin.instance.BuildingCursorSet(0);
+        if(isBuildingOn)
+            MouseSkin.instance.BuildingCursorSet(0);
     }
 
     [Command]

@@ -204,27 +204,21 @@ public class ScienceManager : MonoBehaviour
 
         itemInputWindow.SetActive(true);
         sciItemSetWindow.SetUI(focusedSciBtn);
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void OpenUpgradeWindow()
     {
-        //mousePos = Input.mousePosition;
-        //upgradeWindow.transform.position = mousePos;
         upgradeWindow.gameObject.SetActive(true);
-        //if (focusedSciBtn.isCore && !focusedSciBtn.isMain)
-        //{
-        //    upgradeWindow.SetBtn(focusedSciBtn.othCoreBtn);
-        //}
-        //else
-            upgradeWindow.SetBtn(focusedSciBtn);
+        upgradeWindow.SetBtn(focusedSciBtn);
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void CoreUpgradeWarningWindow(int coreLevel)
     {
-        //mousePos = Input.mousePosition;
-        //upgradeWindow.transform.position = mousePos;
         upgradeWindow.gameObject.SetActive(true);
         upgradeWindow.CoreWaring(canCoreUpgradeCount[coreLevel - 1]);
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void UpgradeStart(ScienceBtn btn)

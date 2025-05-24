@@ -254,6 +254,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   checkObj: 1
+  takeItemDelay: 0
   inObj: []
   outObj: []
   outSameList: []
@@ -263,7 +264,9 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
-  overclockAmount: 0
+  overclockOn: 0
+  overclockPer: 0
+  effiCooldownUpgradePer: 0
   isStorageBuilding: 0
   isMainSource: 0
   isUIOpened: 0
@@ -282,6 +285,7 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
   tileSetPos: {x: 0, y: 0, z: 0}
@@ -292,6 +296,10 @@ MonoBehaviour:
   canUpgrade: 0
   warningIcon: {fileID: 0}
   warningIconCheck: 0
+  getAnim: 0
+  strImg: []
+  isAuto: 0
+  selectPointSetPos: 0.7
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -300,8 +308,11 @@ MonoBehaviour:
   isGetLine: 0
   towerData: {fileID: 11400000, guid: a7ac47c33b560e0499f8bde59af26131, type: 2}
   towerState: 0
-  animator: {fileID: 0}
+  attDelayTime: 0
+  damage: 0
   bulletDataManager: {fileID: 0}
+  energyBulletAmount: 0
+  energyBulletMaxAmount: 0
   attackFX: {fileID: 3832536798139642931, guid: 1e24e7473d563d84dbb0d9059643c4d7, type: 3}
   isSingleAttack: 1
 --- !u!114 &8933625885351530757
@@ -352,6 +363,7 @@ MonoBehaviour:
   space: 1
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!114 &5045978984777892132
 MonoBehaviour:
   m_ObjectHideFlags: 0

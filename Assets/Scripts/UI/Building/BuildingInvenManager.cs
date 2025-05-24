@@ -111,6 +111,7 @@ public class BuildingInvenManager : MonoBehaviour
             selectSlot = focusedSlot;
             Image slotImage = selectSlot.GetComponentInChildren<Image>();
             SetSlotColor(slotImage, Color.blue, 0.5f);
+            soundManager.PlayUISFX("ButtonClick");
         }
         else if (selectSlot != focusedSlot)
         {
@@ -120,6 +121,7 @@ public class BuildingInvenManager : MonoBehaviour
             selectSlot = focusedSlot;
             Image currSlotImage = selectSlot.GetComponentInChildren<Image>();
             SetSlotColor(currSlotImage, Color.blue, 0.5f);
+            soundManager.PlayUISFX("ButtonClick");
         }
 
         global::BuildingInfo.instance.BuildingClick();

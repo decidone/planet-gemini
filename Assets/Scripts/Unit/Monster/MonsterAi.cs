@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
+using UnityEngine.Networking;
 
 // UTF-8 설정
 public class MonsterAi : UnitCommonAi
@@ -28,6 +30,7 @@ public class MonsterAi : UnitCommonAi
     protected bool waveState = false;
     [SerializeField]
     protected bool waveStateEnd = false;
+    float waveSpeed = 9;
 
     //bool waveWaiting = false;
     public bool waveArrivePos = false;
@@ -45,15 +48,24 @@ public class MonsterAi : UnitCommonAi
     float debuffTimer;
     float debuffDuration = 2f;  // 등대 디버프 지속시간 2초, 등대 범위 내에 몬스터가 있을 때 디버프 갱신 시간 1초
     float debuffRate;           // 등대가 속한 에너지 그룹의 에너지 효율 상태에 따른 디버프 배율 계산
+    float reducedDefensePer;    // 방어력 감소 퍼센트
 
+    float speedMove = 10;
+    public bool targetOn;
     Transform _t;
     Effects _effects;
+
+    public float justTraceTimer = 0f;
+    [SerializeField]
+    public float justTraceInterval;
+
+    protected bool spawnerPhaseOn;
+    protected bool spawnerLastPhaseOn;
 
     protected override void Start()
     {
         base.Start();
         normalTraceInterval = Random.Range(15, 25);
-
         _t = transform;
         _effects = Effects.instance;
     }
@@ -86,23 +98,71 @@ public class MonsterAi : UnitCommonAi
 
     protected override void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
+        if (!IsServer)
+            return;
+
         if (isScriptActive)
         {
-            base.Update();
-            if (isDebuffed)
+            if (aIState != AIState.AI_SpawnerCall && !targetOn)
             {
-                debuffTimer += Time.deltaTime;
-
-                if (debuffTimer > debuffDuration)
+                base.Update();
+                if (isDebuffed)
                 {
-                    isDebuffed = false;
-                    debuffTimer = 0f;
+                    debuffTimer += Time.deltaTime;
+
+                    if (debuffTimer > debuffDuration)
+                    {
+                        isDebuffed = false;
+                        reducedDefensePer = 0;
+                        debuffTimer = 0f;
+                    }
+                }
+            }
+            else if (aggroTarget)
+            {
+                tarDisCheckTime += Time.deltaTime;
+                if (tarDisCheckTime > tarDisCheckInterval)
+                {
+                    tarDisCheckTime = 0f;
+                    AttackTargetDisCheck();
+                    SpawnerCallCheck(aggroTarget);
+                }
+            }
+            else
+            {
+                targetOn = false;
+                aIState = AIState.AI_Idle;
+            }
+
+            if (!waveState && justTraceTimer < justTraceInterval)
+            {
+                justTraceTimer += Time.deltaTime;
+                if (justTraceTimer >= justTraceInterval)
+                {
+                    stopTrace = true;
                 }
             }
         }
     }
 
-    public void RefreshDebuff(float efficiency)
+    [ServerRpc(RequireOwnership = false)]
+    public void RefreshDebuffServerRpc(float efficiency, float reducedPer)
+    {
+        RefreshDebuffClientRpc(efficiency, reducedPer);
+    }
+
+    [ClientRpc]
+    void RefreshDebuffClientRpc(float efficiency, float reducedPer)
+    {
+        RefreshDebuff(efficiency, reducedPer);
+    }
+
+    public void RefreshDebuff(float efficiency, float reducedPer)
     {
         if (!isDebuffed)
         {
@@ -111,8 +171,12 @@ public class MonsterAi : UnitCommonAi
 
         debuffRate = efficiency;
         isDebuffed = true;
+        float reducedDefensePerCheck = reducedPer * efficiency;
+        if (reducedDefensePer < reducedDefensePerCheck)
+        {
+            reducedDefensePer = reducedDefensePerCheck;
+        }
         debuffTimer = 0f;
-
     }
 
     protected override void UnitAiCtrl()
@@ -160,6 +224,17 @@ public class MonsterAi : UnitCommonAi
             case AIState.AI_SpawnerCall:
                 {
                     SpawnerCall();
+                    if (aggroTarget)
+                    {
+                        if (targetDist == 0)
+                            return;
+
+                        if (targetDist <= unitCommonData.AttackDist)  // 공격 범위 내로 들어왔을 때        
+                        {
+                            aIState = AIState.AI_Attack;
+                            attackState = AttackState.AttackStart;
+                        }
+                    }
                 }
                 break;
         }
@@ -373,7 +448,7 @@ public class MonsterAi : UnitCommonAi
         {
             checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
         }
-        else if (waveStateEnd)
+        else if (waveState && waveStateEnd)
         {
             checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
         }
@@ -428,7 +503,7 @@ public class MonsterAi : UnitCommonAi
         direction = targetWaypoint - tr.position;
         direction.Normalize();
 
-        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 7) * slowSpeedPer);
+        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * speedMove * slowSpeedPer);
         if (Vector3.Distance(tr.position, spawnPos.position) <= 0.3f)
         {
             aIState = AIState.AI_Idle;
@@ -440,7 +515,6 @@ public class MonsterAi : UnitCommonAi
                 capsule2D.enabled = false;
             }
             stopTrace = false;
-
             return;
         }
         if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
@@ -458,7 +532,6 @@ public class MonsterAi : UnitCommonAi
                     capsule2D.enabled = false;
                 }
                 stopTrace = false;
-
                 return;
             }
         }
@@ -494,6 +567,10 @@ public class MonsterAi : UnitCommonAi
             aIState = AIState.AI_Idle;
             return;
         }
+        if (animator.GetBool("isAttack"))
+        {
+            return;
+        }
 
         animator.SetBool("isMove", true);
 
@@ -509,7 +586,7 @@ public class MonsterAi : UnitCommonAi
                 direction.Normalize();
                 AnimSetFloat(targetVec, true);
 
-                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
+                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, waveState ? Time.deltaTime * waveSpeed : (Time.deltaTime * (spawnerLastPhaseOn ?  speedMove : unitCommonData.MoveSpeed) * slowSpeedPer));
 
                 if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                 {
@@ -535,7 +612,7 @@ public class MonsterAi : UnitCommonAi
                     direction.Normalize();
                     AnimSetFloat(targetVec, true);
 
-                    tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * 6);
+                    tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * waveSpeed);
 
                     if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                     {
@@ -577,6 +654,7 @@ public class MonsterAi : UnitCommonAi
                 }
                 else
                 {
+                    MonsterSpawnerManager.instance.BattleRemoveMonster(gameObject);
                     spawnerScript.ReturnMonster(this);
                     waveState = false;
                     waveStateEnd = false;
@@ -598,10 +676,9 @@ public class MonsterAi : UnitCommonAi
 
     protected void AttackObjCheck(GameObject Obj)
     {
-        if (targetDist > unitCommonData.AttackDist)
+        if (targetDist > unitCommonData.AttackDist + 2)
             return;
-
-        else if (IsServer && targetDist <= unitCommonData.AttackDist)
+        else if (IsServer)
         {
             if (Obj != null)
             {
@@ -614,6 +691,13 @@ public class MonsterAi : UnitCommonAi
                 else if (Obj.GetComponent<Structure>())
                     Obj.GetComponent<Structure>().TakeDamage(damage);
             }
+        }
+        justTraceTimer = 0;
+        stopTrace = false;
+        if (targetOn)
+        {
+            targetOn = false;
+            aIState = AIState.AI_Idle;
         }
     }
 
@@ -687,8 +771,11 @@ public class MonsterAi : UnitCommonAi
             {
                 WaveStart(wavePos);
             }
-            //else if (waveState && waveArrivePos && !waveWaiting)
-            else if (waveState && waveArrivePos)
+            else if (waveStateEnd)
+            {
+                checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
+            }
+            else if (waveArrivePos)
             {
                 checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
             }
@@ -728,35 +815,43 @@ public class MonsterAi : UnitCommonAi
                 StopCoroutine(checkPathCoroutine);
                 checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
             }
-        }        
+        }
     }
 
     public override void TakeDamage(float damage, int attackType, float ignorePercent)
     {
         base.TakeDamage(damage, attackType, ignorePercent);
         normalTraceTimer = 0;
+        justTraceTimer = 0;
+        stopTrace = false;
     }
 
     public override void TakeDamage(float damage, int attackType)
     {
         base.TakeDamage(damage, attackType);
         normalTraceTimer = 0;
+        justTraceTimer = 0;
+        stopTrace = false;
     }
 
 
     [ClientRpc]
     public override void TakeDamageClientRpc(float damage, int attackType, float option)
     {
-        //if (hp <= 0f)
-        //    return;
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
 
         float reducedDamage = damage;
+        float reducedDefense = defense;
+
+        if (isDebuffed)
+        {
+            reducedDefense = defense - Mathf.Floor(defense * reducedDefensePer / 100);
+        }
 
         if (attackType == 0 || attackType == 4)
         {
-            reducedDamage = Mathf.Max(damage - defense, 5);
+            reducedDamage = Mathf.Max(damage - reducedDefense, 5);
             if (attackType == 4)
             {
                 if (!slowDebuffOn)
@@ -768,7 +863,7 @@ public class MonsterAi : UnitCommonAi
         }
         else if (attackType == 2)
         {
-            reducedDamage = Mathf.Max(damage - (defense * (option / 100)), 5);
+            reducedDamage = Mathf.Max(damage - (reducedDefense * (option / 100)), 5);
         }
         else if (attackType == 3)
         {
@@ -887,9 +982,8 @@ public class MonsterAi : UnitCommonAi
     {
         base.AttackEnd();
         if (aggroTarget != null)
-            AttackObjCheck(aggroTarget);        
+            AttackObjCheck(aggroTarget);
     }
-
 
     [ServerRpc]
     protected override void DieFuncServerRpc()
@@ -973,19 +1067,32 @@ public class MonsterAi : UnitCommonAi
                 else if(!waveState)
                 {
                     checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
+                    if (targetOn)
+                    {
+                        targetOn = false;
+                        aIState = AIState.AI_Idle;
+                    }
                 }
             }
         }
     }
 
-    public void SpawnerCallCheck()
+    public virtual void SpawnerCallCheck(GameObject obj)
     {
-        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol)
-        {
-            targetVec = (new Vector3(spawnPos.transform.position.x, spawnPos.transform.position.y, 0) - tr.position).normalized;
+        if (obj == null)
+            return;
 
-            checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.transform.position, "SpawnerCall"));
+        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol || (justTraceTimer >= justTraceInterval && aggroTarget))
+        {
+            spawnerPhaseOn = true;
+            aggroTarget = obj;
+            targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
+
             aIState = AIState.AI_SpawnerCall;
+            targetOn = true;
+            checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
+
+            justTraceTimer = 0;
         }
     }
 
@@ -996,31 +1103,26 @@ public class MonsterAi : UnitCommonAi
 
         AnimSetFloat(targetVec, true);
 
-        targetDist = Vector3.Distance(tr.position, spawnPos.transform.position);
+        if (currentWaypointIndex >= movePath.Count)
+            return;
 
-        if (targetDist > unitCommonData.AttackDist)
+        Vector3 targetWaypoint = movePath[currentWaypointIndex];
+        direction = targetWaypoint - tr.position;
+        direction.Normalize();
+
+        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * speedMove * slowSpeedPer);
+
+        if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
         {
+            currentWaypointIndex++;
+
             if (currentWaypointIndex >= movePath.Count)
-                return;
-
-            Vector3 targetWaypoint = movePath[currentWaypointIndex];
-            direction = targetWaypoint - tr.position;
-            direction.Normalize();
-
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
-
-            if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
             {
-                currentWaypointIndex++;
-
-                if (currentWaypointIndex >= movePath.Count)
-                    return;
+                Debug.Log("near unit");
+                //aIState = AIState.AI_NormalTrace;
+                return;
             }
-        }
-        else
-        {
-            aIState = AIState.AI_NormalTrace;
-        }
+        }       
     }
 
 
@@ -1052,43 +1154,6 @@ public class MonsterAi : UnitCommonAi
         checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
     }
 
-    //public void WaveSetMoveMonster(Vector3 pos)
-    //{
-    //    if (checkPathCoroutine == null)
-    //    {
-    //        waveState = true;
-    //        checkPathCoroutine = StartCoroutine(CheckPath(pos, "NormalTrace"));
-    //    }
-    //}
-
-    //public void WaveTeleport(Vector3 teleportPos, Vector3 setWavePos)
-    //{
-    //    Map map;
-
-    //    if (isInHostMap)
-    //        map = GameManager.instance.hostMap;
-    //    else
-    //        map = GameManager.instance.clientMap;
-    //    Vector3 newWavePos;
-    //    if (aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
-    //    {
-    //        do
-    //        {
-    //            int x = (int)Random.Range(-20, 20);
-    //            int y = (int)Random.Range(-20, 20);
-
-    //            newWavePos = teleportPos + new Vector3(x, y);
-
-    //        } while (map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "lake" 
-    //        || map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "cliff");
-
-    //        wavePos = setWavePos;
-    //        waveState = true;
-    //        waveWaiting = true;
-    //        transform.position = newWavePos;
-    //    }
-    //}
-
     public override void GameStartSet(UnitSaveData unitSaveData)
     {
         base.GameStartSet(unitSaveData);
@@ -1097,6 +1162,7 @@ public class MonsterAi : UnitCommonAi
         waveStateEnd = unitSaveData.waveStateEnd;
         //waveWaiting = unitSaveData.waveWaiting;
         monsterType = unitSaveData.monsterType;
+        spawnerLastPhaseOn = unitSaveData.spawnerLastPhaseOn;
     }
 
     public override UnitSaveData SaveData()
@@ -1110,6 +1176,7 @@ public class MonsterAi : UnitCommonAi
         data.waveStateEnd = waveStateEnd;
         //data.waveWaiting = waveWaiting;
         data.isWaveColonyCallCheck = isWaveColonyCallCheck;
+        data.spawnerLastPhaseOn = spawnerLastPhaseOn;
         return data;
     }
 
@@ -1151,5 +1218,10 @@ public class MonsterAi : UnitCommonAi
             _effects.TriggerDark(this.gameObject);
             yield return new WaitForSeconds(Random.Range(.5f, 1f));
         }
+    }
+
+    public void LastPhase()
+    {
+        spawnerLastPhaseOn = true;
     }
 }

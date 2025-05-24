@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: EarthA
   m_EditorClassIdentifier: 
   unitName: EarthA
-  maxHp: 80
-  damage: 10
+  maxHp: 200
+  upgradeMaxHp: 0
+  damage: 20
+  upgradeDamage: 0
   moveSpeed: 3
   attackDist: 2
-  attDelayTime: 1
+  attDelayTime: 2
+  upgradeAttDelayTime: 0
   colliderRadius: 20
   minCollRad: 10
-  patrolRad: 3
   defense: 15
+  upgradeDefense: 0
+  patrolRad: 3

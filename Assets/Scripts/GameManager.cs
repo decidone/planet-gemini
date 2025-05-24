@@ -111,7 +111,7 @@ public class GameManager : NetworkBehaviour
 
     public int day;                     // 일 수
     public bool isDay;                  // 밤 낮
-    [SerializeField] float dayTime;     // 인게임 4시간을 현실 시간으로
+    public float dayTime;     // 인게임 4시간을 현실 시간으로
     public float dayTimer;              // 게임 내 시간(타이머)
     public int dayIndex = 0;            // 24시간을 6등분해서 인덱스로 사용
     // 0 : 08:00 ~ 12:00
@@ -120,6 +120,8 @@ public class GameManager : NetworkBehaviour
     // 3 : 20:00 ~ 24:00
     // 4 : 24:00 ~ 04:00
     // 5 : 04:00 ~ 08:00
+    [SerializeField]
+    bool clickToNextTime;
 
     [SerializeField]
     int safeDay;                        // 게임 초기 안전한 날
@@ -127,7 +129,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField]
     float violentValue;                 // 광폭화의날 스택
     float violentMaxValue = 100;        // 광폭화의날 최대 값
-    
+
     [SerializeField]
     bool violentDayCheck;                    // true면 광폭화의 날
     public bool violentDay;
@@ -140,7 +142,7 @@ public class GameManager : NetworkBehaviour
 
     /// <summary>
     /// 광폭화 시스템
-    /// 인게임 하루 = 현실 10분
+    /// 인게임 하루 = 현실 12분
     /// 안전한날 20일 = 현실 3시간 20분
     /// 20분에 1번 발생 한다면
     /// 인게임 2일 = 현실 20분
@@ -156,6 +158,10 @@ public class GameManager : NetworkBehaviour
     Text timeText;
     [SerializeField]
     Text dayText;
+    [SerializeField]
+    Text dDayHostMap;
+    [SerializeField]
+    Text dDayClientMap;
     [SerializeField]
     SpriteRenderer brightness;
 
@@ -178,6 +184,8 @@ public class GameManager : NetworkBehaviour
     public static event Action GenerationComplete;
 
     bool gameStop;
+
+    SoundManager soundManager;
 
     #region Singleton
     public static GameManager instance;
@@ -212,8 +220,8 @@ public class GameManager : NetworkBehaviour
         isGameOver = false;
         isWaitingForRespawn = false;
         isShopOpened = false;
-
-        Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
+        soundManager = SoundManager.instance;
+        Vector3 playerSpawnPos = new Vector3(map.width / 2, map.height / 2, 0);
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
         beltPreBuilding = BeltPreBuilding.instanceBeltBuilding;
@@ -224,9 +232,10 @@ public class GameManager : NetworkBehaviour
         isDay = true;
         dayTimer = 0;
 
-        OtherPortalSet(); 
+        OtherPortalSet();
         SoundManager.instance.GameSceneLoad();
         autoSaveinterval = SettingsMenu.instance.autoSaveInterval;
+        SyncTimeServerRpc();
         //GameStartSet();
     }
 
@@ -315,6 +324,24 @@ public class GameManager : NetworkBehaviour
         {
             return;
         }
+        if (Input.GetKeyDown(KeyCode.F10))
+        {
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = 10;
+            Debug.Log("Frame drop");
+        }
+        else if (Input.GetKeyDown(KeyCode.F11))
+        {
+            QualitySettings.vSyncCount = 1;
+            Application.targetFrameRate = -1;
+            Debug.Log("normal Frame");
+        }
+
+        if (clickToNextTime)
+        {
+            dayTimer = dayTime;
+            clickToNextTime = false;
+        }
 
         dayTimer += Time.deltaTime;
         hours = (dayTimer / 25f) + (dayIndex * 4) + 8;
@@ -344,36 +371,42 @@ public class GameManager : NetworkBehaviour
             {
                 isDay = true;
                 SoundManager.instance.PlayBgmMapCheck();
-                if (violentDay)
+                if (violentDayCheck)
                 {
-                    violentDay = false;
-                    violentDayCheck = false;
-                    forcedOperation = false;
-                    MonsterSpawnerManager.instance.WavePointOff();
-                    if(IsServer)
-                        MonsterSpawnerManager.instance.WaveMonsterReturn();
-                    timeImg.color = new Color32(255, 255, 255, 255);
+                    violentDay = true;
+                    timeImg.color = new Color32(255, 50, 50, 255);
+                    if (IsServer)
+                    {
+                        MonsterSpawnerManager.instance.ViolentDayStart();
+                        WaveStartWarrningServerRpc();
+                    }
                 }
             }
             else if (dayIndex == 3)
             {
                 isDay = false;
                 SoundManager.instance.PlayBgmMapCheck();
-                if (violentDayCheck)
-                {
-                    violentDay = true;
-                    timeImg.color = new Color32(255, 50, 50, 255);
-                }
             }
             else if (dayIndex == 4)
             {
                 day++;
                 dayText.text = "Day : " + day;
 
+                if (violentDay)
+                {
+                    violentDay = false;
+                    violentDayCheck = false;
+                    forcedOperation = false;
+                    MonsterSpawnerManager.instance.WavePointOff();
+                    if (IsServer)
+                        MonsterSpawnerManager.instance.WaveEndSet();
+                    MonsterSpawnerManager.instance.ViolentDayOff();
+                    timeImg.color = new Color32(255, 255, 255, 255);
+                }
+
                 if (IsServer)
                 {
                     SyncTimeServerRpc();
-                    ViolentDayOnServerRpc();
                 }
             }
         }
@@ -410,38 +443,46 @@ public class GameManager : NetworkBehaviour
     void ViolentDayOnServerRpc()
     {
         bool violentDaySync = false;
+        bool violentDayOnCheck = false;
 
-        if (violentDayCheck)
+        if (!violentDayCheck && day >= safeDay)
         {
-            MonsterSpawnerManager.instance.ViolentDayStart();
-            violentDaySync = false;
-        }
-        else
-        {
-            if (day >= safeDay)
+            if (day % violentCycle == 0)    // 호스트맵
             {
-                if (day % violentCycle == 0)    // 호스트맵
-                {
-                    wavePlanet = true;
-                    violentDaySync = true;
-                    MonsterSpawnerManager.instance.ViolentDayOn(true, forcedOperation);
-                }
-                else if ((day - clientMapDateDifference) % violentCycle == 0)    // 클라이언트 맵
-                {
-                    wavePlanet = false;
-                    violentDaySync = true;
-                    MonsterSpawnerManager.instance.ViolentDayOn(false, forcedOperation);
-                }
+                wavePlanet = true;
+                violentDaySync = true;
+                violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(true, forcedOperation);
+            }
+            else if ((day - clientMapDateDifference) % violentCycle == 0)    // 클라이언트 맵
+            {
+                wavePlanet = false;
+                violentDaySync = true;
+                violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(false, forcedOperation);
             }
         }
 
-        ViolentDayOnClientRpc(violentDaySync);
+        int hostDday = CalculateDday(day, safeDay, violentCycle);
+        int clientDday = CalculateDday(day - clientMapDateDifference, safeDay, violentCycle);
+
+        ViolentDayOnClientRpc(violentDaySync, violentDayOnCheck, hostDday, clientDday);
     }
 
     [ClientRpc]
-    void ViolentDayOnClientRpc(bool violentDaySync)
+    void ViolentDayOnClientRpc(bool violentDaySync, bool violentDayOnCheck, int hostDday, int clientDday)
     {
         violentDayCheck = violentDaySync;
+
+        dDayHostMap.text = "D - " + ((violentDayOnCheck && hostDday == violentCycle) ? "Day" : hostDday);
+        dDayClientMap.text = "D - " + ((violentDayOnCheck && clientDday == violentCycle) ? "Day" : clientDday);
+    }
+
+    int CalculateDday(int currentDay, int safeDay, int cycle)
+    {
+        if (currentDay < safeDay)
+            return safeDay - currentDay; // 안전 기간 동안은 첫 번째 바이올런트 데이까지 남은 일수 계산
+
+        int nextViolentDay = ((currentDay / cycle) + 1) * cycle;
+        return nextViolentDay - currentDay;
     }
 
     public void WaveForcedOperation()
@@ -648,12 +689,12 @@ public class GameManager : NetworkBehaviour
                             playerController.onTankData.CloseUI();
                         }
                     }
-                    
+
                     if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
                         if (clickEvent != null && clickEvent.openUI)
                         {
-                            clickEvent.CloseUI();
+                            clickEvent.CloseUINoSound();
                         }
                         if (logisticsClickEvent != null && logisticsClickEvent.openUI)
                         {
@@ -672,7 +713,7 @@ public class GameManager : NetworkBehaviour
                         }
                         if (clickEvent != null && clickEvent.openUI)
                         {
-                            clickEvent.CloseUI();
+                            clickEvent.CloseUINoSound();
                         }
 
                         logisticsClickEvent = newLogisticsClickEvent;
@@ -825,7 +866,7 @@ public class GameManager : NetworkBehaviour
                 pInvenManager.CloseUI();
                 break;
             case "StructureInfo":
-                if(clickEvent)
+                if (clickEvent)
                 {
                     clickEvent.CloseUI();
                 }
@@ -943,6 +984,7 @@ public class GameManager : NetworkBehaviour
         if (!pInvenManager.inventoryUI.activeSelf)
         {
             pInvenManager.OpenUI();
+            soundManager.PlayUISFX("SidebarClick");
         }
         else
         {
@@ -960,6 +1002,7 @@ public class GameManager : NetworkBehaviour
         if (!scienceManager.isOpen)
         {
             scienceManager.OpenUI();
+            soundManager.PlayUISFX("SidebarClick");
         }
         else
         {
@@ -1031,7 +1074,7 @@ public class GameManager : NetworkBehaviour
 
             if (preBuilding.isBuildingOn)
                 preBuilding.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-            else if(beltPreBuilding.isBuildingOn)
+            else if (beltPreBuilding.isBuildingOn)
                 beltPreBuilding.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
         }
         if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
@@ -1148,7 +1191,11 @@ public class GameManager : NetworkBehaviour
         Vector3 spawnPos = new Vector3(build.transform.position.x, build.transform.position.y + 0.7f, 0);
         selectPoint.transform.parent = build.transform;
         selectPoint.transform.position = spawnPos;
-
+        if (build.TryGetComponent(out Structure str) && str.selectPointSetPos != 0)
+        {
+            float offset = spawnPos.y + str.selectPointSetPos;
+            spawnPos.y = offset;
+        }
         selectPoint.GetComponent<SelectPointMovement>().initialPosition = spawnPos;
 
         return selectPoint;
@@ -1165,7 +1212,7 @@ public class GameManager : NetworkBehaviour
         if (debug)
             EnergyGroupManager.instance.CheckGroups();
     }
-    
+
     void OtherPortalSet()
     {
         portal[0].OtherPortalSet(portal[1]);
@@ -1269,7 +1316,7 @@ public class GameManager : NetworkBehaviour
             }
         }
     }
-    
+
     public void GameStartSet()
     {
         if (NetworkManager.Singleton.IsHost)
@@ -1384,6 +1431,7 @@ public class GameManager : NetworkBehaviour
     public void SyncTimeServerRpc()
     {
         SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentValue, violentDayCheck, violentDay);
+        ViolentDayOnServerRpc();
     }
 
     [ClientRpc]
@@ -1441,7 +1489,7 @@ public class GameManager : NetworkBehaviour
         PlayerSaveData data = new PlayerSaveData();
         data.hp = -1;
         PlayerStatus[] players = GameObject.FindObjectsOfType<PlayerStatus>();
-        foreach(PlayerStatus p in players)
+        foreach (PlayerStatus p in players)
         {
             if (isHost && p.name == "Desire")
             {
@@ -1618,7 +1666,7 @@ public class GameManager : NetworkBehaviour
         GameOverServerRpc();
     }
 
-    [ServerRpc (RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)]
     public void GameOverServerRpc()
     {
         SteamManager.instance.LeaveLobby();
@@ -1810,36 +1858,35 @@ public class GameManager : NetworkBehaviour
                 returnItemDic.Add(item, ReturnCost.amounts[i]);
             }
         }
+    }
 
-        //bool totalAmountsEnough = true;
-        //bool isEnough;
+    [ServerRpc]
+    void WaveStartWarrningServerRpc()
+    {
+        WaveStartWarrningClientRpc();
+    }
 
-        //for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
-        //{
-        //    int value;
-        //    bool hasItem = inventory.totalItems.TryGetValue(ItemList.instance.itemDic[UpgradeCost.items[i]], out value);
-        //    isEnough = hasItem && value >= UpgradeCost.amounts[i];
+    [ClientRpc]
+    void WaveStartWarrningClientRpc()
+    {
+        WarningWindow.instance.WarningTextSet("Wave Incoming");
+    }
 
-        //    if (isEnough && totalAmountsEnough)
-        //        totalAmountsEnough = true;
-        //    else
-        //        totalAmountsEnough = false;
-        //}
+    public IEnumerator GaugeCountDown()
+    {
+        while (true)
+        {
+            yield return null;
+            float index = (dayIndex == 5) ? dayTime : 0;
+            float totalDayTime = dayTime * 2;
 
-        //if (totalAmountsEnough)
-        //{
-        //    for (int i = 0; i < ReturnUpgradeCost.GetItemCount(); i++)
-        //    {
-        //        inventory.Add(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
-        //        Overall.instance.OverallConsumptionCancel(ItemList.instance.itemDic[ReturnUpgradeCost.items[i]], ReturnUpgradeCost.amounts[i]);
-        //    }
-
-        //    for (int i = 0; i < UpgradeCost.GetItemCount(); i++)
-        //    {
-        //        inventory.Sub(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
-        //        Overall.instance.OverallConsumption(ItemList.instance.itemDic[UpgradeCost.items[i]], UpgradeCost.amounts[i]);
-        //    }
-        //    str.UpgradeFuncServerRpc();
-        //}
+            if (dayIndex == 4 || dayIndex == 5)
+                WavePoint.instance.waveObjGauge.fillAmount = (totalDayTime - (dayTimer + index)) / totalDayTime;
+            else
+            {
+                WavePoint.instance.waveObjGauge.fillAmount = 0;
+                yield break; // 코루틴 종료
+            }
+        }
     }
 }

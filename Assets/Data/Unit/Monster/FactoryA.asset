@@ -13,12 +13,16 @@ MonoBehaviour:
   m_Name: FactoryA
   m_EditorClassIdentifier: 
   unitName: FactoryA
-  maxHp: 80
-  damage: 10
-  moveSpeed: 3
+  maxHp: 350
+  upgradeMaxHp: 0
+  damage: 25
+  upgradeDamage: 0
+  moveSpeed: 4
   attackDist: 2
-  attDelayTime: 1
+  attDelayTime: 3
+  upgradeAttDelayTime: 0
   colliderRadius: 20
   minCollRad: 10
+  defense: 25
+  upgradeDefense: 0
   patrolRad: 3
-  defense: 15

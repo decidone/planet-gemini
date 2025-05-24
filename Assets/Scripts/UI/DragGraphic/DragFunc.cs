@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DragFunc : MonoBehaviour
 {
+    protected int interactLayer;
+
     public GameObject[] selectedObjects;
     protected GameManager gameManager;
     protected SoundManager soundManager;
@@ -12,27 +14,11 @@ public class DragFunc : MonoBehaviour
     {
         gameManager = GameManager.instance;
         soundManager = SoundManager.instance;
+        interactLayer = LayerMask.NameToLayer("Interact");
     }
 
     public virtual void LeftMouseUp(Vector2 startPos, Vector2 endPos) { }
     public virtual void RightMouseUp(Vector2 startPos, Vector2 endPos) { }
 
-    protected virtual void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition, int layer)
-    {
-        Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << layer);
-
-        List<GameObject> selectedObjectsList = new List<GameObject>();
-
-        foreach (Collider2D collider in colliders)
-        {
-            Debug.Log("collider : " + collider.name);
-            if (layer == LayerMask.NameToLayer("Obj") && collider.GetComponent<Structure>() == null)
-                continue;
-            if (collider.GetComponent<Portal>() || collider.GetComponent<ScienceBuilding>())
-                continue;
-            selectedObjectsList.Add(collider.gameObject);
-        }
-
-        selectedObjects = selectedObjectsList.ToArray();
-    }
+    protected virtual void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition) { }
 }

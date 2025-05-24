@@ -42,6 +42,8 @@ public class PortalUnitIn : PortalObj
             slot.SetInputItem(itemLists.FindData("SpinRobot"));
             slot.SetInputItem(itemLists.FindData("SentryCopter"));
             slot.SetInputItem(itemLists.FindData("BounceRobot"));
+            slot.SetInputItem(itemLists.FindData("CorrosionDrone"));
+            slot.SetInputItem(itemLists.FindData("RepairerDrone"));
         }
         isStorageBuilding = true;
     }
@@ -145,6 +147,35 @@ public class PortalUnitIn : PortalObj
         base.DestroyLineRenderer();
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public override void ItemSyncServerRpc()
+    {
+        for (int i = 0; i < displaySlots.Length; i++)
+        {
+            if (sendUnitList.Count > i)
+            {
+                int itemIndex = -1;
+                itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(displaySlots[i].item);
+                var objID = NetworkObjManager.instance.FindNetObjID(sendUnitList[i]);
+                ItemSyncClientRpc(i, itemIndex, 1, objID);
+            }
+            else
+                break;
+        }
+    }
+
+    [ClientRpc]
+    protected void ItemSyncClientRpc(int slotNum, int itemIndex, int itemAmount, ulong unitId, ClientRpcParams rpcParams = default)
+    {
+        if (IsServer)
+            return;
+
+        GameObject unit = NetworkObjManager.instance.FindNetworkObj(unitId).gameObject;
+        sendUnitList.Add(unit);
+
+        DisplaySlotChange();
+    }
+
     void DisplaySlotChange()
     {
         if (sInvenManager.prod == this)
@@ -185,7 +216,25 @@ public class PortalUnitIn : PortalObj
     public override void RemovePortalData()
     {
         base.RemovePortalData();
-        WithdrawBtnFunc();
+
+        for (int i = 0; i < sendUnitList.Count; i++)
+        {
+            SpawnUnitCheck(sendUnitList[i]);
+        }
+        UnitListClearServerRpc();
+    }
+
+    public void SpawnUnitCheck(GameObject unit)
+    {
+        if (IsServer)
+        {
+            unit.TryGetComponent(out NetworkObject netObj);
+            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+        }
+
+        UnitAi unitAi = unit.GetComponent<UnitAi>();
+        unitAi.PortalUnitOutFuncServerRpc(isInHostMap, transform.position);
+        unitAi.MovePosSetServerRpc(transform.position, 0, true);
     }
 
     [ServerRpc]
@@ -228,6 +277,14 @@ public class PortalUnitIn : PortalObj
         DisplaySlotChange();
     }
 
+    public void LoadUnitData(GameObject unit)
+    {
+        sendUnitList.Add(unit);
+        unit.TryGetComponent(out UnitAi unitAi);
+        unitAi.transform.position = new Vector3(-100, -100, 0);
+        unitAi.PortalUnitInFuncServerRpc(isInHostMap);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!IsServer)
@@ -237,7 +294,9 @@ public class PortalUnitIn : PortalObj
         {
             var objID = NetworkObjManager.instance.FindNetObjID(collision.gameObject);
             UnitListAddServerRpc(objID);
-            unitAi.PortalUnitInFuncServerRpc();
+            unitAi.transform.position = new Vector3(-100, -100, 0);
+
+            unitAi.PortalUnitInFuncServerRpc(isInHostMap);
         }
     }
 }

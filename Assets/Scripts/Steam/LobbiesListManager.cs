@@ -8,7 +8,7 @@ public class LobbiesListManager : MonoBehaviour
     public GameObject lobbiesList;
     public GameObject lobbyDataItemPrefab;
     public GameObject lobbyListContent;
-
+    SoundManager soundManager;
     //public GameObject lobbiesButton, hostButton;
 
     public List<GameObject> listOfLobbies = new List<GameObject>();
@@ -25,6 +25,7 @@ public class LobbiesListManager : MonoBehaviour
         }
 
         instance = this;
+        soundManager = SoundManager.instance;
     }
     #endregion
 
@@ -38,6 +39,7 @@ public class LobbiesListManager : MonoBehaviour
     {
         lobbiesList.SetActive(false);
         MainManager.instance.ClosedUISet();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void DisplayLobby(Lobby lobby)

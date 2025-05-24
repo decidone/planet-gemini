@@ -203,6 +203,8 @@ public class Structure : NetworkBehaviour
 
     public bool isAuto;    // 분쇄기 자동화 체크
 
+    public float selectPointSetPos;
+
     protected virtual void Awake()
     {
         GameManager gameManager = GameManager.instance;
@@ -466,7 +468,7 @@ public class Structure : NetworkBehaviour
     public virtual void ClientConnectSyncServerRpc()
     {
         //ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, isSetBuildingOk, isPreBuilding);
-        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap);
+        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, hp);
         for (int i = 0; i < nearObj.Length; i++)
         {
             if (nearObj[i] == null)
@@ -487,7 +489,7 @@ public class Structure : NetworkBehaviour
             ulong objID = inObj[i].GetComponent<Structure>().ObjFindId();
             InOutObjSyncClientRpc(objID, true);
         }
-        MapDataSaveClientRpc(tileSetPos);
+        ClientConnectTileSetClientRpc(tileSetPos);
         ConnectCheckClientRpc(true);
     }
 
@@ -521,17 +523,19 @@ public class Structure : NetworkBehaviour
     }
 
     [ClientRpc]
-    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap)
+    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, float syncHp)
     {
         if (IsServer)
             return;
 
         level = syncLevel;
+        DataSet();
         maxHp = structureData.MaxHp[level];
         dirNum = syncDir;
         height = syncHeight;
         width = syncWidth;
         isInHostMap = syncMap;
+        hp = syncHp;
         ColliderTriggerOnOff(false);
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
@@ -737,6 +741,7 @@ public class Structure : NetworkBehaviour
             TriggerObj.transform.position = Vector3.zero;
             StartCoroutine(Move(TriggerObj));
         }
+        soundManager.PlaySFX(gameObject, "structureSFX", "BuildingSound");
     }
 
     IEnumerator Move(GameObject obj)
@@ -788,6 +793,7 @@ public class Structure : NetworkBehaviour
         {
             repairBar.enabled = false;
             hpBar.fillAmount = hp / maxHp;
+            hpBar.enabled = true;
             unitCanvas.SetActive(true);
         }
     }
@@ -1924,6 +1930,25 @@ public class Structure : NetworkBehaviour
         }
         else
             tileSetPos = pos;
+
+        int x = Mathf.FloorToInt(tileSetPos.x);
+        int y = Mathf.FloorToInt(tileSetPos.y);
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                if (isInHostMap)
+                    GameManager.instance.hostMap.GetCellDataFromPos(x + j, y + i).structure = this.gameObject;
+                else
+                    GameManager.instance.clientMap.GetCellDataFromPos(x + j, y + i).structure = this.gameObject;
+            }
+        }
+    }
+
+    [ClientRpc]
+    public void ClientConnectTileSetClientRpc(Vector3 pos)
+    {
+        tileSetPos = pos;
 
         int x = Mathf.FloorToInt(tileSetPos.x);
         int y = Mathf.FloorToInt(tileSetPos.y);
