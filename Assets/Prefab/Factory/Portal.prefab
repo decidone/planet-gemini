@@ -521,6 +521,7 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
+  overclockOn: 0
   overclockPer: 0
   effiCooldownUpgradePer: 0
   isStorageBuilding: 0
@@ -554,6 +555,8 @@ MonoBehaviour:
   warningIconCheck: 0
   getAnim: 0
   strImg: []
+  isAuto: 0
+  selectPointSetPos: 1.7
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}

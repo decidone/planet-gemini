@@ -28,6 +28,7 @@ public class SaveLoadMenu : MonoBehaviour
     SaveLoadBtn[] buttons;
     [SerializeField]
     Button backBtn;
+    SoundManager soundManager;
     #region Singleton
     public static SaveLoadMenu instance;
 
@@ -46,6 +47,7 @@ public class SaveLoadMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         LoadSaveData();
         backBtn.onClick.AddListener(() => BackBtnFunc());
     }
@@ -181,5 +183,6 @@ public class SaveLoadMenu : MonoBehaviour
     void BackBtnFunc()
     {
         MenuClose();
+        soundManager.PlayUISFX("ButtonClick");
     }
 }

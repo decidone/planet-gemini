@@ -170,7 +170,7 @@ public class UnitDrag : DragFunc
 
         foreach (Collider2D collider in colliders)
         {
-            if (collider.GetComponentInParent<UnitAi>() == null)
+            if (collider.GetComponentInParent<UnitAi>() == null || collider.GetComponentInParent<TankCtrl>())
                 continue;
             if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
                 continue;
@@ -194,7 +194,7 @@ public class UnitDrag : DragFunc
 
     private void SelectedObjects(RaycastHit2D ray)
     {
-        if (!ray.collider.GetComponentInParent<UnitAi>())
+        if (!ray.collider.GetComponentInParent<UnitAi>() || ray.collider.GetComponentInParent<TankCtrl>())
             return;
         GameObject gameObject = ray.collider.GetComponentInParent<UnitAi>().gameObject; 
         removeUnit?.Invoke();

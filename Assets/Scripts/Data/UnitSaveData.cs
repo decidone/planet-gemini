@@ -31,6 +31,7 @@ public class UnitSaveData
     public bool waveStateEnd;      // 웨이브 상태
     public bool isWaveColonyCallCheck;  // true: 웨이브, false: 콜로니 콜
     public SerializedVector3 wavePos = new SerializedVector3(); // 웨이브, 콜로니콜 위치
+    public bool spawnerLastPhaseOn;
     // 몬스터
 
     // 탱크

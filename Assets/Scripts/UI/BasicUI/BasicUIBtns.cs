@@ -28,7 +28,7 @@ public class BasicUIBtns : MonoBehaviour
     private int currentStage = 0; // 현재 단계 (0~2)
     private readonly float[] positions = { 625f, 525f, 425f }; // Y 좌표 목록
     private bool isSliding = false; // 슬라이드 중인지 확인
-
+    SoundManager soundManager;
     #region Singleton
     public static BasicUIBtns instance;
 
@@ -46,6 +46,7 @@ public class BasicUIBtns : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         itemInfoWindow = GameManager.instance.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
         SwapFunc(true);
         KeyValueSet();
@@ -117,6 +118,7 @@ public class BasicUIBtns : MonoBehaviour
         {
             itemInfoWindow.CloseWindow();
         }
+        soundManager.PlayUISFX("SidebarClick");
     }
 
     public void UnitCtrlSwapBtn()
@@ -155,6 +157,7 @@ public class BasicUIBtns : MonoBehaviour
     private void ChangeStage(int direction)
     {
         if (isSliding) return; // 슬라이드 중이면 클릭 방지
+        soundManager.PlayUISFX("SidebarClick");
 
         int newStage = Mathf.Clamp(currentStage + direction, 0, positions.Length - 1);
         if (newStage != currentStage)

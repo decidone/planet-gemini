@@ -453,10 +453,12 @@ public class UnitAi : UnitCommonAi
         }
     }
 
-    public void TargetSet(GameObject obj)
+    [ServerRpc(RequireOwnership = false)]
+    public void TargetSetServerRpc(NetworkObjectReference networkObjectReference)
     {
         isTargetSet = true;
-        aggroTarget = obj;
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        aggroTarget = networkObject.gameObject;
         AttackTargetDisCheck();
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
@@ -549,7 +551,7 @@ public class UnitAi : UnitCommonAi
         onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / maxHp;
 
-        if (IsServer && hp <= 0f && !dieCheck)
+        if (hp <= 0f && !dieCheck)
         {
             aIState = AIState.AI_Die;
             hp = 0f;
@@ -560,7 +562,7 @@ public class UnitAi : UnitCommonAi
             {
                 DieFuncServerRpc();
             }
-        }
+        }       
     }
 
     [ClientRpc]

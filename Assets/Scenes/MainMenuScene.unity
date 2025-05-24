@@ -3589,6 +3589,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1623363832}
+        m_TargetAssemblyTypeName: SteamManager, Assembly-CSharp
+        m_MethodName: GetLobbiesListButtonSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &539676754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9638,6 +9650,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1803172173770402006, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
+      propertyPath: m_MaxValue
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1803172173770402006, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
+      propertyPath: m_MinValue
+      value: -40
+      objectReference: {fileID: 0}
     - target: {fileID: 1824517779421240073, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -9745,6 +9765,14 @@ PrefabInstance:
     - target: {fileID: 3505352053421419177, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
       propertyPath: m_Name
       value: OptionCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3736949198288579700, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
+      propertyPath: m_MaxValue
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3736949198288579700, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
+      propertyPath: m_MinValue
+      value: -40
       objectReference: {fileID: 0}
     - target: {fileID: 3820153410674273650, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
       propertyPath: m_IsActive
@@ -9857,6 +9885,14 @@ PrefabInstance:
     - target: {fileID: 7041901866372857913, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
       propertyPath: m_AnchorMin.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7254624922558403004, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
+      propertyPath: m_MaxValue
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7254624922558403004, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
+      propertyPath: m_MinValue
+      value: -40
       objectReference: {fileID: 0}
     - target: {fileID: 7652644026725291408, guid: 810f25ccb022b244a81cb07c551867cf, type: 3}
       propertyPath: m_AnchorMax.x

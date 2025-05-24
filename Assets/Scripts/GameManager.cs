@@ -128,7 +128,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField]
     float violentValue;                 // 광폭화의날 스택
     float violentMaxValue = 100;        // 광폭화의날 최대 값
-    
+
     [SerializeField]
     bool violentDayCheck;                    // true면 광폭화의 날
     public bool violentDay;
@@ -184,6 +184,8 @@ public class GameManager : NetworkBehaviour
 
     bool gameStop;
 
+    SoundManager soundManager;
+
     #region Singleton
     public static GameManager instance;
 
@@ -217,8 +219,8 @@ public class GameManager : NetworkBehaviour
         isGameOver = false;
         isWaitingForRespawn = false;
         isShopOpened = false;
-
-        Vector3 playerSpawnPos = new Vector3(map.width/2, map.height/2, 0);
+        soundManager = SoundManager.instance;
+        Vector3 playerSpawnPos = new Vector3(map.width / 2, map.height / 2, 0);
         mapCameraController.SetCamRange(map);
         preBuilding = PreBuilding.instance;
         beltPreBuilding = BeltPreBuilding.instanceBeltBuilding;
@@ -229,7 +231,7 @@ public class GameManager : NetworkBehaviour
         isDay = true;
         dayTimer = 0;
 
-        OtherPortalSet(); 
+        OtherPortalSet();
         SoundManager.instance.GameSceneLoad();
         autoSaveinterval = SettingsMenu.instance.autoSaveInterval;
         SyncTimeServerRpc();
@@ -321,8 +323,20 @@ public class GameManager : NetworkBehaviour
         {
             return;
         }
+        if (Input.GetKeyDown(KeyCode.F10))
+        {
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = 10;
+            Debug.Log("Frame drop");
+        }
+        else if (Input.GetKeyDown(KeyCode.F11))
+        {
+            QualitySettings.vSyncCount = 1;
+            Application.targetFrameRate = -1;
+            Debug.Log("normal Frame");
+        }
 
-        if(clickToNextTime)
+        if (clickToNextTime)
         {
             dayTimer = dayTime;
             clickToNextTime = false;
@@ -391,7 +405,7 @@ public class GameManager : NetworkBehaviour
 
                 if (IsServer)
                 {
-                    SyncTimeServerRpc();                    
+                    SyncTimeServerRpc();
                 }
             }
         }
@@ -671,12 +685,12 @@ public class GameManager : NetworkBehaviour
                             playerController.onTankData.CloseUI();
                         }
                     }
-                    
+
                     if (newClickEvent != null && !newClickEvent.GetComponentInParent<Structure>().isPreBuilding)
                     {
                         if (clickEvent != null && clickEvent.openUI)
                         {
-                            clickEvent.CloseUI();
+                            clickEvent.CloseUINoSound();
                         }
                         if (logisticsClickEvent != null && logisticsClickEvent.openUI)
                         {
@@ -695,7 +709,7 @@ public class GameManager : NetworkBehaviour
                         }
                         if (clickEvent != null && clickEvent.openUI)
                         {
-                            clickEvent.CloseUI();
+                            clickEvent.CloseUINoSound();
                         }
 
                         logisticsClickEvent = newLogisticsClickEvent;
@@ -848,7 +862,7 @@ public class GameManager : NetworkBehaviour
                 pInvenManager.CloseUI();
                 break;
             case "StructureInfo":
-                if(clickEvent)
+                if (clickEvent)
                 {
                     clickEvent.CloseUI();
                 }
@@ -966,6 +980,7 @@ public class GameManager : NetworkBehaviour
         if (!pInvenManager.inventoryUI.activeSelf)
         {
             pInvenManager.OpenUI();
+            soundManager.PlayUISFX("SidebarClick");
         }
         else
         {
@@ -983,6 +998,7 @@ public class GameManager : NetworkBehaviour
         if (!scienceManager.isOpen)
         {
             scienceManager.OpenUI();
+            soundManager.PlayUISFX("SidebarClick");
         }
         else
         {
@@ -1054,7 +1070,7 @@ public class GameManager : NetworkBehaviour
 
             if (preBuilding.isBuildingOn)
                 preBuilding.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-            else if(beltPreBuilding.isBuildingOn)
+            else if (beltPreBuilding.isBuildingOn)
                 beltPreBuilding.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
         }
         if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
@@ -1083,7 +1099,7 @@ public class GameManager : NetworkBehaviour
 
     IEnumerator DataSync()
     {
-        float time = 15f;
+        float time = 0.3f;
 
         while (!SteamManager.instance.getData)
         {
@@ -1091,12 +1107,8 @@ public class GameManager : NetworkBehaviour
             {
                 bool packetAvailable = SteamManager.instance.ReceiveP2PPacket();
                 Debug.Log(packetAvailable + " : DataSync packetAvailable Check");
-                if (!packetAvailable)
-                    time = 3;
-                else
-                    time = 15f;
             }
-            
+
             yield return new WaitForSecondsRealtime(time);
         }
 
@@ -1217,7 +1229,11 @@ public class GameManager : NetworkBehaviour
         Vector3 spawnPos = new Vector3(build.transform.position.x, build.transform.position.y + 0.7f, 0);
         selectPoint.transform.parent = build.transform;
         selectPoint.transform.position = spawnPos;
-
+        if (build.TryGetComponent(out Structure str) && str.selectPointSetPos != 0)
+        {
+            float offset = spawnPos.y + str.selectPointSetPos;
+            spawnPos.y = offset;
+        }
         selectPoint.GetComponent<SelectPointMovement>().initialPosition = spawnPos;
 
         return selectPoint;
@@ -1234,7 +1250,7 @@ public class GameManager : NetworkBehaviour
         if (debug)
             EnergyGroupManager.instance.CheckGroups();
     }
-    
+
     void OtherPortalSet()
     {
         portal[0].OtherPortalSet(portal[1]);
@@ -1338,7 +1354,7 @@ public class GameManager : NetworkBehaviour
             }
         }
     }
-    
+
     public void GameStartSet()
     {
         if (NetworkManager.Singleton.IsHost)
@@ -1507,7 +1523,7 @@ public class GameManager : NetworkBehaviour
         PlayerSaveData data = new PlayerSaveData();
         data.hp = -1;
         PlayerStatus[] players = GameObject.FindObjectsOfType<PlayerStatus>();
-        foreach(PlayerStatus p in players)
+        foreach (PlayerStatus p in players)
         {
             if (isHost && p.name == "Desire")
             {
@@ -1620,7 +1636,7 @@ public class GameManager : NetworkBehaviour
 
     public void LoadMapData(MapSaveData data)
     {
-        foreach(var obj in data.objects)
+        foreach (var obj in data.objects)
         {
             bool isHostMap = true;
             if (obj.y > map.height)
@@ -1684,7 +1700,7 @@ public class GameManager : NetworkBehaviour
         GameOverServerRpc();
     }
 
-    [ServerRpc (RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)]
     public void GameOverServerRpc()
     {
         SteamManager.instance.LeaveLobby();

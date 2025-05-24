@@ -557,6 +557,7 @@ public class PlayerController : NetworkBehaviour
             TeleportServerRpc(pos);
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
+            SoundManager.instance.PlaySFX(gameObject, "structureSFX", "PortalSound");
             SoundManager.instance.PlayerBgmMapCheck();
             onTeleportedCallback?.Invoke(0);
 
@@ -579,6 +580,7 @@ public class PlayerController : NetworkBehaviour
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
             onTeleportedCallback?.Invoke(1);
+            SoundManager.instance.PlaySFX(gameObject, "structureSFX", "PortalSound");
 
             teleportUI.CloseUI();
             teleportUI.DisplayWorldName();

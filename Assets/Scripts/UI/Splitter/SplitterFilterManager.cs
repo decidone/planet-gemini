@@ -23,12 +23,12 @@ public class SplitterFilterManager : MonoBehaviour
     ToggleButton[] fillterOnOffBtns;
     [SerializeField]
     Toggle[] reverseToggle;
-
+    SoundManager soundManager;
     void Start()
     {
         gameManager = GameManager.instance;
         //SetInven(buildingInventory, sliterFilterUI);
-
+        soundManager = SoundManager.instance;
         for (int i = 0; i < slots.Length; i++)
         {
             slots[i].amountText.gameObject.SetActive(false);
@@ -148,6 +148,7 @@ public class SplitterFilterManager : MonoBehaviour
 
     void SentFillterInfo(int i)
     {
+        soundManager.PlayUISFX("ButtonClick");
         if (slots[i].item != null)
         {
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slots[i].item);

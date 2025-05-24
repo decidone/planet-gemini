@@ -30,7 +30,7 @@ public class ConfirmPanel : MonoBehaviour
     float countdownInterval;
 
     float windowTimer = 16;
-
+    SoundManager soundManager;
     #region Singleton
     public static ConfirmPanel instance;
 
@@ -48,6 +48,7 @@ public class ConfirmPanel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         OkBtn.onClick.AddListener(() => OkBtnFunc());
         CanelBtn.onClick.AddListener(() => CanelBtnFunc());
         inputManager = InputManager.instance;
@@ -172,6 +173,7 @@ public class ConfirmPanel : MonoBehaviour
             OptionCanvas.instance.QuitFunc();
         }
         UIClose();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void CanelBtnFunc()
@@ -185,6 +187,7 @@ public class ConfirmPanel : MonoBehaviour
             SettingsMenu.instance.WindowSizeConfirm(false);
         }
         UIClose();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void UIClose()

@@ -23,6 +23,7 @@ public class SteamManager : MonoBehaviour
     int clientCallCount;
     private const int MaxChunkSize = 1024;
     public bool clientConnTry;
+    SoundManager soundManager;
     //[SerializeField] GameObject MainMenu;
     //[SerializeField] GameObject InLobbyMenu;
 
@@ -44,6 +45,7 @@ public class SteamManager : MonoBehaviour
     private void Start()
     {
         PlayerSteamId = SteamClient.SteamId;
+        soundManager = SoundManager.instance;   
     }
 
     private void Update()
@@ -205,14 +207,14 @@ public class SteamManager : MonoBehaviour
             Array.Copy(data, i * MaxChunkSize, chunk, 9, chunkSize);
 
             bool success = SteamNetworking.SendP2PPacket(opponentSteamId, chunk, chunk.Length);
-            if (success)
-            {
-                Debug.Log($"Packet {i + 1}/{totalChunks} Send Success!");
-            }
-            else
-            {
-                Debug.LogError($"Packet {i + 1}/{totalChunks} Send Failed!");
-            }
+            //if (success)
+            //{
+            //    Debug.Log($"Packet {i + 1}/{totalChunks} Send Success!");
+            //}
+            //else
+            //{
+            //    Debug.LogError($"Packet {i + 1}/{totalChunks} Send Failed!");
+            //}
         }
     }
 
@@ -252,37 +254,26 @@ public class SteamManager : MonoBehaviour
                     isLastChunkReceived = true;
                 }
             }
-  
-            packetAvailable = SteamNetworking.IsP2PPacketAvailable();
         }
 
-        if (receivedChunkIndices.Count > 0)
-        {
-            Debug.Log("count : " + receivedChunkIndices.Count);
-            foreach (var data in receivedChunkIndices)
-            {
-                Debug.Log("data : " + data);
-            }
-        }
+        Debug.Log("count : " + receivedChunkIndices.Count + ", totalChunks : " + totalChunks);
 
-        if (isLastChunkReceived)
+        if (receivedChunkIndices.Count == totalChunks)
+        {            
+            Debug.Log("GetDataEnd");
+            HandleOpponentDataPacket(receivedData.ToArray());
+            string message = "DataGetEnd";
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            SteamNetworking.SendP2PPacket(opponentSteamId, data);
+        }
+        else
         {
-            if (receivedChunkIndices.Count == totalChunks)
-            {            
-                Debug.Log("GetDataEnd");
-                HandleOpponentDataPacket(receivedData.ToArray());
-                string message = "DataGetEnd";
-                byte[] data = Encoding.UTF8.GetBytes(message);
-                SteamNetworking.SendP2PPacket(opponentSteamId, data);
-            }
-            else
-            {
-                Debug.LogWarning($"Packet Loss: {receivedChunkIndices.Count}/{totalChunks} recive Call");
-                RequestMissingPackets();
-            }
+            Debug.LogWarning($"Packet Loss: {receivedChunkIndices.Count}/{totalChunks} recive Call");
+            RequestMissingPackets();
         }
 
         clientCallCount++;
+
         if (clientCallCount > 10)
         {
             clientCallCount = 0;
@@ -357,6 +348,7 @@ public class SteamManager : MonoBehaviour
                 return;
             }
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void LeaveLobby()
@@ -423,5 +415,10 @@ public class SteamManager : MonoBehaviour
                 LobbiesListManager.instance.DisplayLobby(lobby);
             }
         }
+    }
+
+    public void GetLobbiesListButtonSound()
+    {
+        soundManager.PlayUISFX("ButtonClick");
     }
 }

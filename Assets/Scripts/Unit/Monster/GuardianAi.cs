@@ -6,13 +6,13 @@ using UnityEngine;
 // UTF-8 설정
 public class GuardianAi : MonsterAi
 {
-    protected override void Update()
-    {
-        if (aIState != AIState.AI_SpawnerCall)
-        {
-            base.Update();
-        }
-    }
+    //protected override void Update()
+    //{
+    //    if (aIState != AIState.AI_SpawnerCall)
+    //    {
+    //        base.Update();
+    //    }
+    //}
 
     protected override void UnitAiCtrl()
     {
@@ -54,6 +54,8 @@ public class GuardianAi : MonsterAi
             case AIState.AI_SpawnerCall:
                 {
                     SpawnerCall();
+                    if (aggroTarget)
+                        AttackCheck();
                 }
                 break;
         }
@@ -100,6 +102,7 @@ public class GuardianAi : MonsterAi
 
         if (justTraceTimer >= justTraceInterval)
         {
+            spawnerPhaseOn = true;
             aggroTarget = obj;
             targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
 

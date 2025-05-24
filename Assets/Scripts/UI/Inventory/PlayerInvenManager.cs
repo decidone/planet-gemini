@@ -54,6 +54,7 @@ public class PlayerInvenManager : InventoryManager
         {
             inventory.SortServerRpc();
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public override void OpenUI()

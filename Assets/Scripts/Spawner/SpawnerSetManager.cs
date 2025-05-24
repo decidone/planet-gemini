@@ -98,6 +98,8 @@ public class SpawnerSetManager : NetworkBehaviour
 
     void SpawnerSet(bool isHostMap)
     {
+        System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
         Map map;
         if (isHostMap)
             map = hostMap;
@@ -150,8 +152,8 @@ public class SpawnerSetManager : NetworkBehaviour
             float xRadius;
             float yRadius;
 
-            xRadius = areaWSize / 2 - 15;
-            yRadius = areaHSize / 2 - 15;
+            xRadius = areaWSize / 2 - 20;
+            yRadius = areaHSize / 2 - 20;
 
             Vector2 newPoint;
             bool whileCheck = false;
@@ -161,17 +163,6 @@ public class SpawnerSetManager : NetworkBehaviour
             {
                 int x;
                 int y;
-
-                //x = (int)Random.Range(-xRadius, xRadius);
-                //y = (int)Random.Range(-yRadius, yRadius);
-
-                //newPoint = centerPos + new Vector2(x, y);
-
-                //if (areaLevel == 1)
-                //{
-                //    float distance = Vector3.Distance(basePos, newPoint);
-                //    Debug.Log(distance);
-                //}
 
                 if (areaLevel == 1)
                 {
@@ -283,6 +274,8 @@ public class SpawnerSetManager : NetworkBehaviour
             }
         }
         monsterSpawnerManager.MatrixSet(splitCount, spawnerMap1Matrix, spawnerMap2Matrix, isHostMap);
+        stopwatch.Stop();
+        Debug.Log((isHostMap? "host" : "client") + " spawnerSet Time : " + stopwatch.ElapsedMilliseconds.ToString() + "ms");
     }
 
     public GameObject SpawnerGroupSet(Vector2 pos)

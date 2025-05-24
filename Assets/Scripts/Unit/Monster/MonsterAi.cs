@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
+using UnityEngine.Networking;
 
 // UTF-8 설정
 public class MonsterAi : UnitCommonAi
@@ -48,7 +50,8 @@ public class MonsterAi : UnitCommonAi
     float debuffRate;           // 등대가 속한 에너지 그룹의 에너지 효율 상태에 따른 디버프 배율 계산
     float reducedDefensePer;    // 방어력 감소 퍼센트
 
-    float speedMove = 7;
+    float speedMove = 10;
+    public bool targetOn;
     Transform _t;
     Effects _effects;
 
@@ -56,11 +59,13 @@ public class MonsterAi : UnitCommonAi
     [SerializeField]
     public float justTraceInterval;
 
+    protected bool spawnerPhaseOn;
+    protected bool spawnerLastPhaseOn;
+
     protected override void Start()
     {
         base.Start();
         normalTraceInterval = Random.Range(15, 25);
-
         _t = transform;
         _effects = Effects.instance;
     }
@@ -93,9 +98,17 @@ public class MonsterAi : UnitCommonAi
 
     protected override void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            return;
+        }
+
+        if (!IsServer)
+            return;
+
         if (isScriptActive)
         {
-            if (aIState != AIState.AI_SpawnerCall)
+            if (aIState != AIState.AI_SpawnerCall && !targetOn)
             {
                 base.Update();
                 if (isDebuffed)
@@ -110,7 +123,22 @@ public class MonsterAi : UnitCommonAi
                     }
                 }
             }
-         
+            else if (aggroTarget)
+            {
+                tarDisCheckTime += Time.deltaTime;
+                if (tarDisCheckTime > tarDisCheckInterval)
+                {
+                    tarDisCheckTime = 0f;
+                    AttackTargetDisCheck();
+                    SpawnerCallCheck(aggroTarget);
+                }
+            }
+            else
+            {
+                targetOn = false;
+                aIState = AIState.AI_Idle;
+            }
+
             if (!waveState && justTraceTimer < justTraceInterval)
             {
                 justTraceTimer += Time.deltaTime;
@@ -196,6 +224,17 @@ public class MonsterAi : UnitCommonAi
             case AIState.AI_SpawnerCall:
                 {
                     SpawnerCall();
+                    if (aggroTarget)
+                    {
+                        if (targetDist == 0)
+                            return;
+
+                        if (targetDist <= unitCommonData.AttackDist)  // 공격 범위 내로 들어왔을 때        
+                        {
+                            aIState = AIState.AI_Attack;
+                            attackState = AttackState.AttackStart;
+                        }
+                    }
                 }
                 break;
         }
@@ -464,7 +503,7 @@ public class MonsterAi : UnitCommonAi
         direction = targetWaypoint - tr.position;
         direction.Normalize();
 
-        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + speedMove) * slowSpeedPer);
+        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * speedMove * slowSpeedPer);
         if (Vector3.Distance(tr.position, spawnPos.position) <= 0.3f)
         {
             aIState = AIState.AI_Idle;
@@ -476,7 +515,6 @@ public class MonsterAi : UnitCommonAi
                 capsule2D.enabled = false;
             }
             stopTrace = false;
-
             return;
         }
         if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
@@ -494,7 +532,6 @@ public class MonsterAi : UnitCommonAi
                     capsule2D.enabled = false;
                 }
                 stopTrace = false;
-
                 return;
             }
         }
@@ -549,7 +586,7 @@ public class MonsterAi : UnitCommonAi
                 direction.Normalize();
                 AnimSetFloat(targetVec, true);
 
-                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, waveState ? Time.deltaTime * waveSpeed : (Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer));
+                tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, waveState ? Time.deltaTime * waveSpeed : (Time.deltaTime * (spawnerLastPhaseOn ?  speedMove : unitCommonData.MoveSpeed) * slowSpeedPer));
 
                 if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                 {
@@ -657,6 +694,11 @@ public class MonsterAi : UnitCommonAi
         }
         justTraceTimer = 0;
         stopTrace = false;
+        if (targetOn)
+        {
+            targetOn = false;
+            aIState = AIState.AI_Idle;
+        }
     }
 
     void TargetListReset()
@@ -773,7 +815,7 @@ public class MonsterAi : UnitCommonAi
                 StopCoroutine(checkPathCoroutine);
                 checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
             }
-        }        
+        }
     }
 
     public override void TakeDamage(float damage, int attackType, float ignorePercent)
@@ -943,7 +985,6 @@ public class MonsterAi : UnitCommonAi
             AttackObjCheck(aggroTarget);
     }
 
-
     [ServerRpc]
     protected override void DieFuncServerRpc()
     {
@@ -1026,6 +1067,11 @@ public class MonsterAi : UnitCommonAi
                 else if(!waveState)
                 {
                     checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
+                    if (targetOn)
+                    {
+                        targetOn = false;
+                        aIState = AIState.AI_Idle;
+                    }
                 }
             }
         }
@@ -1036,13 +1082,16 @@ public class MonsterAi : UnitCommonAi
         if (obj == null)
             return;
 
-        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol || justTraceTimer >= justTraceInterval)
+        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol || (justTraceTimer >= justTraceInterval && aggroTarget))
         {
+            spawnerPhaseOn = true;
             aggroTarget = obj;
             targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
 
-            checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
             aIState = AIState.AI_SpawnerCall;
+            targetOn = true;
+            checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
+
             justTraceTimer = 0;
         }
     }
@@ -1061,7 +1110,7 @@ public class MonsterAi : UnitCommonAi
         direction = targetWaypoint - tr.position;
         direction.Normalize();
 
-        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + speedMove) * slowSpeedPer);
+        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * speedMove * slowSpeedPer);
 
         if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
         {
@@ -1069,36 +1118,11 @@ public class MonsterAi : UnitCommonAi
 
             if (currentWaypointIndex >= movePath.Count)
             {
-                aIState = AIState.AI_NormalTrace;
+                Debug.Log("near unit");
+                //aIState = AIState.AI_NormalTrace;
                 return;
             }
-        }
-        
-        //targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
-
-        //if (targetDist > unitCommonData.AttackDist)
-        //{
-        //    if (currentWaypointIndex >= movePath.Count)
-        //        return;
-
-        //    Vector3 targetWaypoint = movePath[currentWaypointIndex];
-        //    direction = targetWaypoint - tr.position;
-        //    direction.Normalize();
-
-        //    tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
-
-        //    if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
-        //    {
-        //        currentWaypointIndex++;
-
-        //        if (currentWaypointIndex >= movePath.Count)
-        //            return;
-        //    }
-        //}
-        //else
-        //{
-        //    aIState = AIState.AI_NormalTrace;
-        //}
+        }       
     }
 
 
@@ -1130,43 +1154,6 @@ public class MonsterAi : UnitCommonAi
         checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
     }
 
-    //public void WaveSetMoveMonster(Vector3 pos)
-    //{
-    //    if (checkPathCoroutine == null)
-    //    {
-    //        waveState = true;
-    //        checkPathCoroutine = StartCoroutine(CheckPath(pos, "NormalTrace"));
-    //    }
-    //}
-
-    //public void WaveTeleport(Vector3 teleportPos, Vector3 setWavePos)
-    //{
-    //    Map map;
-
-    //    if (isInHostMap)
-    //        map = GameManager.instance.hostMap;
-    //    else
-    //        map = GameManager.instance.clientMap;
-    //    Vector3 newWavePos;
-    //    if (aIState != AIState.AI_NormalTrace && aIState != AIState.AI_Attack)
-    //    {
-    //        do
-    //        {
-    //            int x = (int)Random.Range(-20, 20);
-    //            int y = (int)Random.Range(-20, 20);
-
-    //            newWavePos = teleportPos + new Vector3(x, y);
-
-    //        } while (map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "lake" 
-    //        || map.GetCellDataFromPos((int)newWavePos.x, (int)newWavePos.y).biome.biome == "cliff");
-
-    //        wavePos = setWavePos;
-    //        waveState = true;
-    //        waveWaiting = true;
-    //        transform.position = newWavePos;
-    //    }
-    //}
-
     public override void GameStartSet(UnitSaveData unitSaveData)
     {
         base.GameStartSet(unitSaveData);
@@ -1175,6 +1162,7 @@ public class MonsterAi : UnitCommonAi
         waveStateEnd = unitSaveData.waveStateEnd;
         //waveWaiting = unitSaveData.waveWaiting;
         monsterType = unitSaveData.monsterType;
+        spawnerLastPhaseOn = unitSaveData.spawnerLastPhaseOn;
     }
 
     public override UnitSaveData SaveData()
@@ -1188,6 +1176,7 @@ public class MonsterAi : UnitCommonAi
         data.waveStateEnd = waveStateEnd;
         //data.waveWaiting = waveWaiting;
         data.isWaveColonyCallCheck = isWaveColonyCallCheck;
+        data.spawnerLastPhaseOn = spawnerLastPhaseOn;
         return data;
     }
 
@@ -1229,5 +1218,10 @@ public class MonsterAi : UnitCommonAi
             _effects.TriggerDark(this.gameObject);
             yield return new WaitForSeconds(Random.Range(.5f, 1f));
         }
+    }
+
+    public void LastPhase()
+    {
+        spawnerLastPhaseOn = true;
     }
 }

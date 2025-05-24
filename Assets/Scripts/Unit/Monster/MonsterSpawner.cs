@@ -44,7 +44,7 @@ public class MonsterSpawner : NetworkBehaviour
     string biome;
     int spawnerGroupIndex;
 
-    float spawnInterval;
+    float spawnInterval = 20.0f;
     float spawnTimer;
 
     public bool nearUserObjExist;
@@ -55,12 +55,10 @@ public class MonsterSpawner : NetworkBehaviour
     public Image hpBar;
     public float hp;
     public float maxHp;
+    public float defense;
     public bool dieCheck = false;
     protected CapsuleCollider2D capsuleCollider2D;
     public bool extraSpawn;
-    bool takeDamageCheck;
-    float guardianCallInterval;
-    float guardianCallTimer;
 
     Vector3 wavePos;
     float waveInterval = 40;
@@ -108,7 +106,9 @@ public class MonsterSpawner : NetworkBehaviour
     [SerializeField]
     int safeAmount;
     [HideInInspector]
-    public int safeCount; 
+    public int safeCount;
+    int ragePhase = 0;
+    int maxRagePhase = 5;
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
@@ -129,17 +129,14 @@ public class MonsterSpawner : NetworkBehaviour
 
     void Start()
     {
-        spawnInterval = 20;
-        guardianCallInterval = 2;
-        maxExtraSpawn = 10;
         extraSpawn = false;
         if (!IsServer)
         {
             searchColl.SetActive(false);
             awakeColl.SetActive(false);
         }
-        if (!gameLodeSet)
-            InitializeMonsterSpawn();
+        //if (!gameLodeSet)
+        //    InitializeMonsterSpawn();
         spawnerSearchColl.violentCollSize = violentCollSize;
         SpriteSet();
     }
@@ -168,7 +165,7 @@ public class MonsterSpawner : NetworkBehaviour
             spawnTimer += Time.deltaTime;
             if (spawnTimer >= spawnInterval)
             {
-                ExtraSpawnCount();
+                extraSpawnNum++;
                 spawnTimer = 0;
             }
         }
@@ -183,7 +180,7 @@ public class MonsterSpawner : NetworkBehaviour
             if (restTime)
             {
                 restAggroTimer += Time.deltaTime;
-                Debug.Log(attackLevelTier);
+
                 if (restAggroTimer >= restAggroIntervals[sppawnerLevel - 1][attackLevelTier])
                 {
                     restTime = false;
@@ -206,15 +203,6 @@ public class MonsterSpawner : NetworkBehaviour
                     energyAggroValue = 0;
                     energyAggroTimer = 0;
                 }
-            }
-        }
-
-        if (takeDamageCheck)
-        {
-            guardianCallTimer += Time.deltaTime;
-            if (guardianCallTimer >= guardianCallInterval)
-            {
-                takeDamageCheck = false;
             }
         }
 
@@ -278,18 +266,21 @@ public class MonsterSpawner : NetworkBehaviour
         spawnerGroupIndex = groupIndex;
         hp = structureData.MaxHp[levelData.sppawnerLevel - 1];
         maxHp = structureData.MaxHp[levelData.sppawnerLevel - 1];
-
+        defense = structureData.Defense[levelData.sppawnerLevel - 1];
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
         maxGuardianSpawn = levelData.maxGuardianSpawn;
         totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
-
+        maxExtraSpawn = Mathf.RoundToInt(10 * ((float)sppawnerLevel / 2));
+        extraSpawnNum = maxExtraSpawn;
         wavePos = _basePos;
     }
 
     public void InitializeMonsterSpawn()
     {
+        System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
         for (int a = 0; a < maxWeakSpawn; a++)
         {
             RandomMonsterSpawn(0);
@@ -306,6 +297,8 @@ public class MonsterSpawner : NetworkBehaviour
         {
             SpawnMonster(3, 0, isInHostMap);
         }
+        stopwatch.Stop();
+        Debug.Log("monster "+ totalSpawnNum + " spawn Time : " + stopwatch.ElapsedMilliseconds.ToString() + "ms");
     }
 
     void MonsterSpawn()
@@ -344,11 +337,6 @@ public class MonsterSpawner : NetworkBehaviour
                 }
             }
         }
-    }
-
-    void ExtraSpawnCount()
-    {
-        extraSpawnNum++;
     }
 
     void ExtraMonsterSpawn()
@@ -397,32 +385,32 @@ public class MonsterSpawner : NetworkBehaviour
         GameObject newMonster = null;
         if (monserType == 0)
         {
-            newMonster = Instantiate(weakMonster[monsterIndex]);
+            newMonster = Instantiate(weakMonster[monsterIndex], transform.position, Quaternion.identity, transform);
             totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentWeakSpawn++;
         }
         else if (monserType == 1)
         {
-            newMonster = Instantiate(normalMonster[monsterIndex]);
+            newMonster = Instantiate(normalMonster[monsterIndex], transform.position, Quaternion.identity, transform);
             totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentNormalSpawn++;
         }
         else if (monserType == 2)
         {
-            newMonster = Instantiate(strongMonster[monsterIndex]);
+            newMonster = Instantiate(strongMonster[monsterIndex], transform.position, Quaternion.identity, transform);
             totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentStrongSpawn++;
         }
         else if (monserType == 3)
         {
-            newMonster = Instantiate(guardian);
+            newMonster = Instantiate(guardian, transform.position, Quaternion.identity, transform);
             guardianList.Add(newMonster.GetComponent<GuardianAi>());
         }
 
         NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
         if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
-        newMonster.transform.SetParent(this.transform, false);
+        //newMonster.transform.SetParent(this.transform, false);
         //newMonster.transform.position = transform.position;
 
         MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
@@ -511,14 +499,27 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void TakeDamage(float damage, GameObject attackObj)
     {
-        if (!takeDamageCheck)
-        {
-            GuardianCall(attackObj);
-            MonsterCall(attackObj);
-        }
+        CheckRagePattern(attackObj);
 
         if (!dieCheck)
             TakeDamageServerRpc(damage);
+    }
+
+    void CheckRagePattern(GameObject attackObj)
+    {
+        float expectedPhase = (maxHp - hp) / (maxHp / maxRagePhase);
+
+        if(expectedPhase >= 1 && ragePhase < expectedPhase)
+        {
+            ragePhase++;
+            TriggerRage(ragePhase, attackObj);
+        }
+    }
+
+    void TriggerRage(int phase, GameObject attackObj)
+    {
+        GuardianCall(phase, attackObj);
+        MonsterCall(phase, attackObj);
     }
 
     [ServerRpc]
@@ -532,8 +533,8 @@ public class MonsterSpawner : NetworkBehaviour
     {
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
-
-        hp -= damage;
+        float reducedDamage = Mathf.Max(damage - defense, 5);
+        hp -= reducedDamage;
         if (hp < 0f)
             hp = 0f;
         onHpChangedCallback?.Invoke();
@@ -600,21 +601,27 @@ public class MonsterSpawner : NetworkBehaviour
         nearUserObjExist = find;
     }
 
-    void GuardianCall(GameObject attackObj)
+    void GuardianCall(int phase, GameObject attackObj)
     {
-        takeDamageCheck = true;
-
         foreach (GuardianAi guardian in guardianList)
         {
             guardian.SpawnerCallCheck(attackObj);
+            if (phase == maxRagePhase - 1)
+            {
+                guardian.LastPhase();
+            }
         }
     }
 
-    void MonsterCall(GameObject attackObj)
+    void MonsterCall(int phase, GameObject attackObj)
     {
         foreach (MonsterAi monster in totalMonsterList)
         {
             monster.SpawnerCallCheck(attackObj);
+            if (phase == maxRagePhase - 1)
+            {
+                monster.LastPhase();
+            }
         }
     }
 
@@ -654,6 +661,8 @@ public class MonsterSpawner : NetworkBehaviour
     {
         hp = spawnerSaveData.hp;
         maxHp = structureData.MaxHp[spawnerSaveData.level - 1];
+        defense = structureData.Defense[levelData.sppawnerLevel - 1];
+
         if (hp < maxHp)
         {
             hpBar.fillAmount = hp / maxHp;
@@ -663,6 +672,7 @@ public class MonsterSpawner : NetworkBehaviour
         extraSpawnNum = spawnerSaveData.extraSpawnNum;
         nearUserObjExist = spawnerSaveData.nearUserObjExist;
         nearEnergyObjExist = spawnerSaveData.nearEnergyObjExist;
+        ragePhase = spawnerSaveData.ragePhase;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
         safeCount = spawnerSaveData.safeCount;
@@ -924,6 +934,8 @@ public class MonsterSpawner : NetworkBehaviour
         data.violentCollSize = spawnerSearchColl.violentCollSize;
         data.nearUserObjExist = nearUserObjExist;
         data.nearEnergyObjExist = nearEnergyObjExist;
+        data.ragePhase = ragePhase;
+
         foreach (MonsterAi monster in totalMonsterList)
         {
             data.monsterList.Add(monster.SaveData());
@@ -991,6 +1003,7 @@ public class MonsterSpawner : NetworkBehaviour
             sppawnerLevelData = SpawnerSetManager.instance.arealevelData[sppawnerLevel - 1];
             hp = structureData.MaxHp[sppawnerLevel - 1];
             maxHp = structureData.MaxHp[sppawnerLevel - 1];
+            defense = structureData.Defense[sppawnerLevel - 1];
 
             maxWeakSpawn = sppawnerLevelData.maxWeakSpawn;
             maxNormalSpawn = sppawnerLevelData.maxNormalSpawn;

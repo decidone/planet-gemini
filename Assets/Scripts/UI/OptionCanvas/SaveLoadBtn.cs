@@ -14,9 +14,10 @@ public class SaveLoadBtn : MonoBehaviour
     int slotNum;
     bool loadEnable;
     string saveFileName;
-
+    SoundManager soundManager;
     private void Start()
     {
+        soundManager = SoundManager.instance;
         saveLoadMenu = SaveLoadMenu.instance;
         GetComponent<Button>().onClick.AddListener(() => BtnFunc());
     }
@@ -123,6 +124,7 @@ public class SaveLoadBtn : MonoBehaviour
         {
             ConfirmPanel.instance.CallConfirm(this, saveLoadState, slotNum, saveFileName);
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void BtnConfirm(bool confirmState, string fileName)

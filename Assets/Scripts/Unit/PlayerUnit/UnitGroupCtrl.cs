@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class UnitGroupCtrl : MonoBehaviour
@@ -146,7 +147,7 @@ public class UnitGroupCtrl : MonoBehaviour
     {
         for (int i = 0; i < unitList.Count; i++)
         {
-            unitList[i].GetComponent<UnitAi>().TargetSet(obj);
+            unitList[i].GetComponent<UnitAi>().TargetSetServerRpc(obj.GetComponent<NetworkObject>());
         }
     }
 }

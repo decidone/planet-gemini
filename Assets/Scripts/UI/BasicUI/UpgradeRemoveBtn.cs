@@ -17,7 +17,7 @@ public class UpgradeRemoveBtn : MonoBehaviour
 
     [SerializeField]
     Sprite[] images;
-
+    SoundManager soundManager;
     #region Singleton
     public static UpgradeRemoveBtn instance;
 
@@ -35,6 +35,7 @@ public class UpgradeRemoveBtn : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         dragGraphic = DragGraphic.instance;
         upgradeBtn.onClick.AddListener(() => UpgradeBtnFunc());
         removeBtn.onClick.AddListener(() => RemoveBtnFunc());
@@ -58,6 +59,7 @@ public class UpgradeRemoveBtn : MonoBehaviour
             ReSetColor(removeBtn);
             MouseSkin.instance.DragCursorSet(false);
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void RemoveBtnFunc()
@@ -78,6 +80,7 @@ public class UpgradeRemoveBtn : MonoBehaviour
             ReSetColor(upgradeBtn);
             MouseSkin.instance.DragCursorSet(true);
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void SetColor(Button button)

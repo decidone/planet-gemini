@@ -34,6 +34,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d2d2baa9c3ed8e9408437e8b611e46be, type: 3}
   - {fileID: 8300000, guid: 88a2068476d007843b76aa2df69e91d4, type: 3}
   - {fileID: 8300000, guid: e9afb5c53eaca7e42979cd79c5a59b6c, type: 3}
+  - {fileID: 8300000, guid: 0e041babb93b73a48b307bed5c332fb4, type: 3}
+  - {fileID: 8300000, guid: 58f86bb5b35e97648b0632bfe1adb792, type: 3}
+  - {fileID: 8300000, guid: 134904234d288a8459d82c6cc9728e9e, type: 3}
   uiSfx:
   - {fileID: 8300000, guid: 117ec4820734e0d48b4a5b14c5b73e59, type: 3}
   - {fileID: 8300000, guid: 28c0d55c33ae1124d96dc26bb0fac685, type: 3}
@@ -42,6 +45,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 2df3c43295654734ca217be95b9b74d1, type: 3}
   - {fileID: 8300000, guid: 9b05bf85194a6994e87a326b55b12087, type: 3}
   - {fileID: 8300000, guid: 9ff02af4375d73347bdf304a03748e9c, type: 3}
+  - {fileID: 8300000, guid: 5594bc5f98e44a648a68ef0403686419, type: 3}
+  - {fileID: 8300000, guid: 000b65365c32f6143bdd345c6b6b01a1, type: 3}
   unitSfx:
   - {fileID: 8300000, guid: e39ba8bd82bacb64db8ced9b6a1651a3, type: 3}
   - {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}

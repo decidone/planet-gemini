@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 // UTF-8 설정
@@ -10,6 +11,7 @@ public class Miner : Production
     protected override void Start()
     {
         base.Start();
+        Debug.Log("Miner Start");
         Init();
         isMainSource = true;
     }
@@ -118,6 +120,25 @@ public class Miner : Production
         }
     }
 
+    protected override void OnClientConnectedCallback(ulong clientId)
+    { 
+        base.OnClientConnectedCallback(clientId);
+        initStartServerRpc();
+    }
+
+    [ServerRpc]
+    void initStartServerRpc()
+    {
+        initStartClientRpc();
+    }
+
+    [ClientRpc]
+    void initStartClientRpc()
+    {
+        if(!IsServer)
+            Init();
+    }
+
     void Init()
     {
         Map map;
@@ -207,7 +228,9 @@ public class Miner : Production
                 }
 
                 if(highestItem != null)
+                {
                     SetResource(highestItem, highestLevel, highestEfficiency, highestQuantity);
+                }
             }
         }
     }

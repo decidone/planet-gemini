@@ -42,6 +42,8 @@ public class MapCameraController : MonoBehaviour
 
     public static MapCameraController instance;
 
+    SoundManager soundManager;
+
     void Awake()
     {
         if (instance != null)
@@ -59,6 +61,7 @@ public class MapCameraController : MonoBehaviour
 
     void Start()
     {
+        soundManager = SoundManager.instance;
         gameManager = GameManager.instance;
         mainCamController = Camera.main.GetComponent<CameraController>();
     }
@@ -152,6 +155,7 @@ public class MapCameraController : MonoBehaviour
             WavePoint.instance.MapCameraOpen(true);
             OpenUI();
             inputManager.OpenMap();
+            soundManager.PlayUISFX("SidebarClick");
         }
         else
         {
@@ -161,6 +165,7 @@ public class MapCameraController : MonoBehaviour
             WavePoint.instance.MapCameraOpen(false);
             CloseUI();
             inputManager.CloseMap();
+            soundManager.PlayUISFX("CloseUI");
         }
 
         GameManager.instance.onUIChangedCallback?.Invoke(CameraObj);

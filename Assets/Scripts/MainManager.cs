@@ -41,7 +41,7 @@ public class MainManager : MonoBehaviour
 
     InputManager inputManager;
     public List<GameObject> openedUI = new List<GameObject>();
-
+    SoundManager soundManager;
     #region Singleton
     public static MainManager instance;
 
@@ -60,6 +60,7 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.instance;
         hostBtn.onClick.AddListener(() => OpenUI(1));
         joinBtn.onClick.AddListener(() => JoinBtnFunc());
         settingsBtn.onClick.AddListener(() => SettingsBtnFunc());
@@ -95,7 +96,7 @@ public class MainManager : MonoBehaviour
                 watcher.OnButtonDisabled += () => OnExit(btn);
             }
         }
-        OpenUI(0);
+        //OpenUI(0);
 
         inputManager = InputManager.instance;
         inputManager.controls.HotKey.Escape.performed += Escape;
@@ -109,12 +110,13 @@ public class MainManager : MonoBehaviour
     void JoinBtnFunc()
     {
         SteamManager.instance.GetLobbiesList();
-        //LoadingSceneManager.LoadScene("LobbyScene");
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void SettingsBtnFunc()
     {
         OptionCanvas.instance.SettingsBtnFunc();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void QuitBtnFunc()
@@ -125,11 +127,13 @@ public class MainManager : MonoBehaviour
     void NewGameBtnFunc()
     {
         panelsManager.NewGamePanelSet(true);
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void LoadBtnFunc()
     {
         panelsManager.SaveLoadPanelSet();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void BackBtnFunc()
@@ -149,6 +153,7 @@ public class MainManager : MonoBehaviour
                 btnArrs[i].SetActive(false);
         }
         OpenedUISet(btnArrs[index]);
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void AddEvent(Button btn, EventTriggerType type, UnityAction<BaseEventData> action)
@@ -164,7 +169,7 @@ public class MainManager : MonoBehaviour
     void OnEnter(Button btn)
     {
         btn.TryGetComponent(out Image img);
-
+        soundManager.PlayUISFX("MouseOnUI");
         Color newColor = img.color;
         newColor.a = 50 / 255f;
         img.color = newColor;
