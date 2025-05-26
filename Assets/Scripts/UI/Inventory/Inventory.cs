@@ -76,6 +76,14 @@ public class Inventory : NetworkBehaviour
         return containableAmount;
     }
 
+    public bool IsInvenEmpty()
+    {
+        if (items.Count == 0)
+            return true;
+        else
+            return false;
+    }
+
     public bool MultipleSpaceCheck(Merch[] merchList)
     {
         // 각 상품들은 99개를 초과하지 않음

@@ -21,7 +21,7 @@ public class Constructor : Production
 
                     if (slot.amount >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        output = itemDic[recipe.items[recipe.items.Count - 1]];
+                        //output = itemDic[recipe.items[recipe.items.Count - 1]];
                         
                         if (slot1.item == output || slot1.item == null)
                         {
@@ -115,6 +115,11 @@ public class Constructor : Production
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
         sInvenManager.slots[1].SetNeedAmount(recipe.amounts[1]);
         sInvenManager.slots[1].outputSlot = true;
+    }
+
+    public override void SetOutput(Recipe recipe)
+    {
+        output = itemDic[recipe.items[recipe.items.Count - 1]];
     }
 
     public override void GetUIFunc()

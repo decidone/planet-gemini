@@ -1,4 +1,4 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,6 +35,16 @@ namespace QFSW.QC.UI
         public void ZoomDown()
         {
             _scaler.ZoomMagnification = ClampAndSnapZoom(_scaler.ZoomMagnification - _zoomIncrement);
+        }
+
+        public float GetZoom()
+        {
+            return _scaler.ZoomMagnification;
+        }
+
+        public void SetZoom(float zoomMag)
+        {
+            _scaler.ZoomMagnification = zoomMag;
         }
 
         private void Update()

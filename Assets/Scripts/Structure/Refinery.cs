@@ -143,7 +143,7 @@ public class Refinery : FluidFactoryCtrl
 
                     if (saveFluidNum >= recipe.amounts[0] && (slot.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        output = itemDic[recipe.items[recipe.items.Count - 1]];
+                        //output = itemDic[recipe.items[recipe.items.Count - 1]];
 
                         if (slot.item == output || slot.item == null)
                         {
@@ -254,6 +254,11 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[1]]);
         sInvenManager.slots[0].SetNeedAmount(recipe.amounts[1]);
         sInvenManager.slots[0].outputSlot = true;
+    }
+
+    public override void SetOutput(Recipe recipe)
+    {
+        output = itemDic[recipe.items[recipe.items.Count - 1]];
     }
 
     public override void GetUIFunc()

@@ -9,7 +9,8 @@ public class AutoSeller : Production
     [SerializeField]
     GameObject trUnit;
     TransportUnit transportUnit;
-    bool isUnitInStr;
+    NetworkVariable<bool> isUnitInStr = new NetworkVariable<bool>();
+    //bool isUnitInStr;
     bool isTransportable;
     [SerializeField]
     MerchandiseListSO toolShopMerchListSO;
@@ -31,7 +32,8 @@ public class AutoSeller : Production
         maxFuel = 100;
         //transportTimer = 1.0f;
         isStorageBuilding = true;
-        isUnitInStr = (transportUnit == null);
+        if (IsServer)
+            isUnitInStr.Value = (transportUnit == null);
 
         merchList = toolShopMerchListSO.MerchandiseSOList;
         foreach (var merch in merchList)
@@ -63,7 +65,7 @@ public class AutoSeller : Production
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    if (isUnitInStr)
+                    if (isUnitInStr.Value)
                     {
                         if (IsServer)
                         {
@@ -82,21 +84,16 @@ public class AutoSeller : Production
 
     public void TransportableCheck()
     {
-        // 서버 보내야 할 듯
+        isTransportable = false;
 
-        if (IsServer)
+        for (int i = 0; i < inventory.space; i++)
         {
-            isTransportable = false;
+            var invenItem = inventory.SlotCheck(i);
 
-            for (int i = 0; i < inventory.space; i++)
+            if (invenItem.item != null && merchItems.Contains(invenItem.item))
             {
-                var invenItem = inventory.SlotCheck(i);
-
-                if (invenItem.item != null && merchItems.Contains(invenItem.item))
-                {
-                    isTransportable = true;
-                    break;
-                }
+                isTransportable = true;
+                break;
             }
         }
     }
@@ -165,7 +162,8 @@ public class AutoSeller : Production
 
     public void RemoveUnit(GameObject returnUnit)
     {
-        isUnitInStr = true;
+        if (IsServer)
+            isUnitInStr.Value = true;
         transportUnit = null;
         //Destroy(returnUnit);
         returnUnit.GetComponent<TransportUnit>().DestroyFunc();
@@ -179,8 +177,8 @@ public class AutoSeller : Production
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
             unit.TryGetComponent(out NetworkObject netObj);
             if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
-
-            isUnitInStr = false;
+            if (IsServer)
+                isUnitInStr.Value = false;
             transportUnit = unit.GetComponent<TransportUnit>();
 
             Vector3 portalPos;
@@ -358,7 +356,8 @@ public class AutoSeller : Production
 
         TransportUnit unitScript = unit.GetComponent<TransportUnit>();
         transportUnit = unitScript;
-        isUnitInStr = false;
+        if (IsServer)
+            isUnitInStr.Value = false;
         unitScript.MovePosSet(this, portalPos, item, totalPrice);
         if (item.Count == 0)
             unitScript.TakeItemEnd(false);

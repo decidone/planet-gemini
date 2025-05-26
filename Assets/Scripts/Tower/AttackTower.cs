@@ -26,7 +26,6 @@ public class AttackTower : TowerAi
 
     TowerAttackOption towerAttackOption;
 
-
     protected override void Start()
     {
         base.Start();
@@ -176,6 +175,27 @@ public class AttackTower : TowerAi
                     }
                 }
             }
+        }
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        ClientTowerSyncServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ClientTowerSyncServerRpc()
+    {
+        ClientTowerSyncClientRpc(energyBulletAmount);
+    }
+
+    [ClientRpc]
+    public void ClientTowerSyncClientRpc(int amount)
+    {
+        if (!IsServer)
+        {
+            energyBulletAmount = amount;
         }
     }
 

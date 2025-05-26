@@ -44,6 +44,7 @@ public class SettingsMenu : MonoBehaviour
     bool isInputChanging = false;
     bool isSliderChanging = false;
     SoundManager soundManager;
+
     #region Singleton
     public static SettingsMenu instance;
 
@@ -60,7 +61,6 @@ public class SettingsMenu : MonoBehaviour
     }
     #endregion
 
-    // Start is called before the first frame update
     void Start()
     {
         soundManager = SoundManager.instance;
@@ -162,7 +162,6 @@ public class SettingsMenu : MonoBehaviour
         }
         soundManager.PlayUISFX("ButtonClick");
     }
-
     #endregion
 
     #region KeyBindings
@@ -220,7 +219,6 @@ public class SettingsMenu : MonoBehaviour
             btn.ResetToDefault();
         }
     }
-
     #endregion
 
     void SaveBtnFunc()

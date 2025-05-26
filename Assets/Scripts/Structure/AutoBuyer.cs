@@ -10,7 +10,7 @@ public class AutoBuyer : Production
     [SerializeField]
     GameObject trUnit;
     TransportUnit transportUnit;
-    bool isUnitInStr;
+    NetworkVariable<bool> isUnitInStr = new NetworkVariable<bool>();
     bool isTransportable;
     bool isBuyable;
     [SerializeField]
@@ -36,7 +36,8 @@ public class AutoBuyer : Production
         maxFuel = 100;
         transportInterval = 1.0f;
         isStorageBuilding = false;
-        isUnitInStr = (transportUnit == null);
+        if (IsServer)
+            isUnitInStr.Value = (transportUnit == null);
 
         merchList = oreShopMerchListSO.MerchandiseSOList.Concat(manaStoneShopMerchListSO.MerchandiseSOList).ToList();
         inventory.onItemChangedCallback += TransportableCheck;
@@ -61,7 +62,7 @@ public class AutoBuyer : Production
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    if (isUnitInStr && isBuyable)
+                    if (isUnitInStr.Value && isBuyable)
                     {
                         if (IsServer)
                         {
@@ -153,37 +154,34 @@ public class AutoBuyer : Production
 
     public void TransportableCheck()
     {
-        if (IsServer)
-        {
-            var slot = inventory.SlotCheck(0);
+        var slot = inventory.SlotCheck(0);
 
-            if (output == null)
+        if (output == null)
+        {
+            isTransportable = false;
+        }
+        else
+        {
+            if (slot.item == null)
             {
-                isTransportable = false;
-            }
-            else
-            {
-                if (slot.item == null)
+                if (maxBuyAmount > 0)
                 {
-                    if (maxBuyAmount > 0)
-                    {
-                        isTransportable = true;
-                    }
-                    else
-                    {
-                        isTransportable = false;
-                    }
+                    isTransportable = true;
                 }
                 else
                 {
-                    isTransportable = (slot.amount < minBuyAmount);
+                    isTransportable = false;
                 }
             }
-
-            if (isTransportable)
+            else
             {
-                BuyableCheck();
+                isTransportable = (slot.amount < minBuyAmount);
             }
+        }
+
+        if (isTransportable)
+        {
+            BuyableCheck();
         }
     }
 
@@ -238,7 +236,7 @@ public class AutoBuyer : Production
 
     public override void OpenRecipe()
     {
-        if (!isUnitInStr) return;
+        if (!isUnitInStr.Value) return;
 
         rManager.OpenUI();
         rManager.SetRecipeUI("AutoBuyer", this);
@@ -247,9 +245,13 @@ public class AutoBuyer : Production
     public override void SetRecipe(Recipe _recipe, int index)
     {
         base.SetRecipe(_recipe, index);
-        output = itemDic[recipe.items[0]];
+        //output = itemDic[recipe.items[0]];
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[0].outputSlot = true;
+    }
+    public override void SetOutput(Recipe recipe)
+    {
+        output = itemDic[recipe.items[0]];
     }
 
     protected override void OnClientConnectedCallback(ulong clientId)
@@ -267,7 +269,7 @@ public class AutoBuyer : Production
     [ClientRpc]
     public void ClientBuyerSyncClientRpc(int max, int min)
     {
-        if (!IsHost)
+        if (!IsServer)
         {
             maxBuyAmount = max;
             minBuyAmount = min;
@@ -302,7 +304,8 @@ public class AutoBuyer : Production
 
     public void RemoveUnit(GameObject returnUnit)
     {
-        isUnitInStr = true;
+        if (IsServer)
+            isUnitInStr.Value = true;
         transportUnit = null;
         //Destroy(returnUnit);
         returnUnit.GetComponent<TransportUnit>().DestroyFunc();
@@ -328,7 +331,8 @@ public class AutoBuyer : Production
                 unit.TryGetComponent(out NetworkObject netObj);
                 if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
 
-                isUnitInStr = false;
+                if (IsServer)
+                    isUnitInStr.Value = false;
                 transportUnit = unit.GetComponent<TransportUnit>();
 
                 Vector3 portalPos;
@@ -507,7 +511,8 @@ public class AutoBuyer : Production
 
         TransportUnit unitScript = unit.GetComponent<TransportUnit>();
         transportUnit = unitScript;
-        isUnitInStr = false;
+        if (IsServer)
+            isUnitInStr.Value = false;
         unitScript.MovePosSet(this, portalPos, item);
 
         //보낼 때 체크용 아이템을 하나 넣어두고 리턴할 때 삭제함. 따라서 아이템이 1개 있는 경우 돌아오는 드론

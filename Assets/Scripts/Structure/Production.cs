@@ -85,15 +85,24 @@ public abstract class Production : Structure
         if (selectRecipe != null)
         {
             if (isUIOpened)
+            {
                 SetRecipe(selectRecipe, index);
+                SetOutput(selectRecipe);
+            }
             else
             {
                 recipe = selectRecipe;
                 recipeIndex = index;
                 cooldown = recipe.cooldown;
                 effiCooldown = cooldown;
+                SetOutput(recipe);
             }
         }
+    }
+
+    public virtual void SetOutput(Recipe recipe)
+    {
+        // 건물 레시피 따라서 output을 바꿔줘야 하는 경우 오버라이딩
     }
 
     public override void GameStartRecipeSet(int recipeId)

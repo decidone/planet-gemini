@@ -9,14 +9,25 @@ public class Disintegrator : Production
     [SerializeField] MerchandiseListSO merchandiseList;
     Button confirmBtn;
     Toggle autoToggle;
+    bool isInvenEmpty;
     public Scrap scrap;
 
     protected override void Start()
     {
         base.Start();
         isStorageBuilding = true;
+        isInvenEmpty = false;
         cooldown = 10f;
         effiCooldown = cooldown;
+        inventory.onItemChangedCallback += IsInvenEmptyCheck;
+    }
+
+    public void IsInvenEmptyCheck()
+    {
+        if (inventory.IsInvenEmpty())
+            isInvenEmpty = true;
+        else
+            isInvenEmpty = false;
     }
 
     protected override void Update()
@@ -24,7 +35,7 @@ public class Disintegrator : Production
         base.Update();
         if (!isPreBuilding)
         {
-            if (isAuto)
+            if (isAuto && !isInvenEmpty)
             {
                 prodTimer += Time.deltaTime;
                 if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
@@ -32,6 +43,10 @@ public class Disintegrator : Production
                     if (IsServer)
                         ConfirmBtnClicked();
                 }
+            }
+            else
+            {
+                prodTimer = 0;
             }
         }
     }
@@ -120,7 +135,8 @@ public class Disintegrator : Production
     public void SetAutoClientRpc(bool auto)
     {
         isAuto = auto;
-        autoToggle.SetIsOnWithoutNotify(auto);
+        if (autoToggle != null)
+            autoToggle.SetIsOnWithoutNotify(auto);
     }
 
     [ServerRpc(RequireOwnership = false)]

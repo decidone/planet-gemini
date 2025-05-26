@@ -123,17 +123,17 @@ public class Miner : Production
     protected override void OnClientConnectedCallback(ulong clientId)
     { 
         base.OnClientConnectedCallback(clientId);
-        initStartServerRpc();
+        InitStartServerRpc();
     }
 
     [ServerRpc]
-    void initStartServerRpc()
+    void InitStartServerRpc()
     {
-        initStartClientRpc();
+        InitStartClientRpc();
     }
 
     [ClientRpc]
-    void initStartClientRpc()
+    void InitStartClientRpc()
     {
         if(!IsServer)
             Init();

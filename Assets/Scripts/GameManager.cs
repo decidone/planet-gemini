@@ -324,6 +324,7 @@ public class GameManager : NetworkBehaviour
         {
             return;
         }
+
         if (Input.GetKeyDown(KeyCode.F10))
         {
             QualitySettings.vSyncCount = 0;
