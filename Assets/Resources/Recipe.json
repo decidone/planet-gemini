@@ -32,9 +32,9 @@
         {"name":"ExplosiveBullet","items":["Sulfur","Coal","ExplosiveBullet"],"amounts":[2,6,3],"cooldown":10}
     ],
     "Manufacturer":[
-        {"name":"Battery","items":["Sulfur","Plastic","CopperPlate","Battery"],"amounts":[4,6,16,1],"cooldown":12},
-        {"name":"ControlUnit","items":["Module","Cable","Plastic","ControlUnit"],"amounts":[4,10,20,1],"cooldown":16},
-        {"name":"Engine","items":["AdamantitePlate","Motor","Plastic","Engine"],"amounts":[4,8,16,1],"cooldown":16},
+        {"name":"Battery","items":["Sulfur","IronPlate","CopperPlate","Battery"],"amounts":[4,12,12,1],"cooldown":12},
+        {"name":"ControlUnit","items":["Module","Cable","Plastic","ControlUnit"],"amounts":[4,10,12,1],"cooldown":16},
+        {"name":"Engine","items":["AdamantitePlate","Motor","Rubber","Engine"],"amounts":[4,8,16,1],"cooldown":16},
         {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[1,8,5,1],"cooldown":16},
         {"name":"ManablastBullet","items":["ManaStone","Sulfur","Coal","ManablastBullet"],"amounts":[1,4,10,3],"cooldown":12}
     ],

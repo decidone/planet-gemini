@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ToxicPlant
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: bebfec2a0e4cd2e448a5ff22bba1d79f, type: 2}
-  buyPrice: 9999
+  buyPrice: 10
   sellPrice: 1

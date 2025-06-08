@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e139826bb128dd14ba8e71cc4f6c4f27, type: 3}
   m_Name: BuildingDisintegrator
   m_EditorClassIdentifier: 
-  type: Logistics
+  type: Factory
   scienceName: Disintegrator
   item: {fileID: 11400000, guid: 1b9237df4afe0994f9d8c5bef19d8023, type: 2}
   gameObj: {fileID: 5999188213166003493, guid: 0e4da6ea7156e3343bc1072e230255c6, type: 3}

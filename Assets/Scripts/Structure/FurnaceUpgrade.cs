@@ -9,6 +9,7 @@ public class FurnaceUpgrade : Production
         base.Start();
         maxFuel = 100;
         recipes = rManager.GetRecipeList("Furnace", this);
+        inventory.onItemChangedCallback += SetFurnaceRecipe;
     }
 
     protected override void Update()
@@ -21,15 +22,6 @@ public class FurnaceUpgrade : Production
 
             if (slot.item != null && conn != null && conn.group != null && conn.group.efficiency > 0)
             {
-                foreach (Recipe _recipe in recipes)
-                {
-                    if (slot.item == itemDic[_recipe.items[0]])
-                    {
-                        recipe = _recipe;
-                        output = itemDic[recipe.items[recipe.items.Count - 1]];
-                    }
-                }
-
                 if (slot.amount >= recipe.amounts[0] && (slot1.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                 {
                     if (slot1.item == output || slot1.item == null)
@@ -76,6 +68,19 @@ public class FurnaceUpgrade : Production
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
+            }
+        }
+    }
+
+    public void SetFurnaceRecipe()
+    {
+        var slot = inventory.SlotCheck(0);
+        foreach (Recipe _recipe in recipes)
+        {
+            if (slot.item == itemDic[_recipe.items[0]])
+            {
+                recipe = _recipe;
+                output = itemDic[recipe.items[recipe.items.Count - 1]];
             }
         }
     }
