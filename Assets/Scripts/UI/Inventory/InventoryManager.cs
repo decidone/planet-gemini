@@ -40,17 +40,20 @@ public abstract class InventoryManager : MonoBehaviour
         soundManager = SoundManager.instance;
         preBuilding = PreBuilding.instance;
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
         inputManager.controls.Inventory.SlotLeftClick.performed += SlotLeftClick;
         inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
     }
+
     void OnDisable()
     {
         inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
         inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
     }
+
     protected virtual void Update()
     {
         if (Time.timeScale == 0)

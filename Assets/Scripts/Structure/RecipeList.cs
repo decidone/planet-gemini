@@ -20,6 +20,7 @@ public class RecipeList : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        DontDestroyOnLoad(gameObject);
 
         instance = this;
         recipeDic = new Dictionary<string, List<Recipe>>();

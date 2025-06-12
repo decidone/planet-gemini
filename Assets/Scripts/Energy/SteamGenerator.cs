@@ -71,7 +71,6 @@ public class SteamGenerator : FluidFactoryCtrl
         itemDic = ItemList.instance.itemDic;
         if (recipe == null)
             recipe = new Recipe();
-        output = null;
         fluidName = "Water";
 
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;

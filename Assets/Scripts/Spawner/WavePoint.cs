@@ -19,6 +19,7 @@ public class WavePoint : MonoBehaviour
 
     Vector2 map1WavePos;
     Vector2 map2WavePos;
+    (Vector3, bool) loadWaveData;
 
     [SerializeField]
     GameObject lineObj;
@@ -156,8 +157,6 @@ public class WavePoint : MonoBehaviour
         }
     }
 
-    (Vector3, bool) loadWaveData;
-
     public void LoadWaveStart(Vector3 wavePos, bool isInHostMap)
     {
         loadWaveData = (wavePos, isInHostMap);
@@ -173,7 +172,6 @@ public class WavePoint : MonoBehaviour
 
         WaveStart(loadWaveData.Item1, loadWaveData.Item2);
     }
-
 
     public void WaveEnd(bool isInHostMap)
     {
@@ -200,7 +198,7 @@ public class WavePoint : MonoBehaviour
         waveObj.SetActive(true);
         mapObj.SetActive(true);
 
-        if (!isOffScreen())
+        if (!IsOffScreen())
             return;
 
         float angle = Vector2.Angle(new Vector2(0, 1), transform.position - player.transform.position);
@@ -266,8 +264,7 @@ public class WavePoint : MonoBehaviour
         indicatorRect.anchoredPosition = new Vector3(0, 0, 0);
     }
 
-
-    private bool isOffScreen()
+    private bool IsOffScreen()
     {
         Vector2 vec = Camera.main.WorldToViewportPoint(transform.position);
         if (vec.x >= 0 && vec.x <= 1 && vec.y >= 0 && vec.y <= 1)

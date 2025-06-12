@@ -21,7 +21,7 @@ public class ScienceCoreLvCtrl : MonoBehaviour
 
     private void Awake()
     {
-        itemList = GameManager.instance.GetComponent<ItemList>();
+        itemList = ItemList.instance;
     }
 
     public void UISetting(int level, string getSciClass)

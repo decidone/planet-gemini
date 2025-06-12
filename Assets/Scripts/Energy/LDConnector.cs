@@ -159,7 +159,7 @@ public class LDConnector : Structure
     [ServerRpc(RequireOwnership = false)]
     public override void RemoveObjServerRpc()
     {
-        //여기서 건물 철거 전 처리(삭제가 아니여도 비활성화가 필요하니 그거 생각해서 만들 것)
+        //건물 철거 전 처리
         DisableFocused();
         connector.RemoveFromGroup();
         clickEvent.RemoveAllLines();

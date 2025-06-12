@@ -23,6 +23,7 @@ public class ItemList : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        DontDestroyOnLoad(gameObject);
 
         instance = this;
         itemList = itemListSO.itemSOList;

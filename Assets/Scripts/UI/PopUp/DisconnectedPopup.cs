@@ -7,6 +7,7 @@ public class DisconnectedPopup : MonoBehaviour
 {
     [SerializeField] GameObject obj;
     [SerializeField] Button btn;
+    [SerializeField] Text text;
 
     #region Singleton
     public static DisconnectedPopup instance;
@@ -28,9 +29,10 @@ public class DisconnectedPopup : MonoBehaviour
         btn.onClick.AddListener(BtnClicked);
     }
 
-    public void OpenUI()
+    public void OpenUI(string message)
     {
         GameManager.instance.CloseAllOpenedUI();
+        text.text = message;
         obj.SetActive(true);
     }
 

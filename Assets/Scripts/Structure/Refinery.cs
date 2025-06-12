@@ -68,7 +68,6 @@ public class Refinery : FluidFactoryCtrl
         itemDic = ItemList.instance.itemDic;
         if (recipe == null)
             recipe = new Recipe();
-        output = null;
         fluidName = "CrudeOil";
 
         GameManager gameManager = GameManager.instance;

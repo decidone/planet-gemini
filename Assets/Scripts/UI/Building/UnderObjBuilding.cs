@@ -20,7 +20,6 @@ public class UnderObjBuilding : MonoBehaviour
     protected Vector3 endLine;
     PreBuilding preBuilding;
 
-    // Start is called before the first frame update
     void Start()
     {
         nonNetObj = GetComponent<PreBuildingImg>();
@@ -28,7 +27,6 @@ public class UnderObjBuilding : MonoBehaviour
         isSendObj = true;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Time.timeScale == 0)

@@ -81,8 +81,6 @@ public class Overall : NetworkBehaviour
     {
         for (int i = 0; i < itemList.Count; i++)
         {
-            // 여기서 아이템 티어별로 딕셔너리에 넣을지 말지 결정 일단 지금은 다 넣음
-            // 아니면 그냥 아랫단에서 조정해도 되긴 하는데 일단 나중에 생각
             itemsProduction.Add(i, 0);
             itemsConsumption.Add(i, 0);
             purchasedItems.Add(i, 0);

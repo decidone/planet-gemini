@@ -18,7 +18,7 @@ public class ItemSpManager : InventoryManager
     protected override void Start()
     {
         gameManager = GameManager.instance;
-        itemsList = gameManager.GetComponent<ItemList>().itemList;
+        itemsList = ItemList.instance.itemList;
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
 
         for (int i = 0; i < slots.Length; i++)

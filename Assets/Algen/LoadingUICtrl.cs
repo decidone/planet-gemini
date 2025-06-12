@@ -68,12 +68,19 @@ public class LoadingUICtrl : MonoBehaviour
     {
         if (isTimerOn)
             timer += Time.deltaTime;
+        else
+            return;
+
         if (timer > timeoutLimit)
         {
             timer = 0;
             isTimerOn = false;
             Debug.Log("timeout, limit: " + timeoutLimit);
-            // 여기 연결실패 관련 처리 필요함
+
+            if (DisconnectedPopup.instance != null)
+            {
+                DisconnectedPopup.instance.OpenUI("Connection Timeout.");
+            }
         }
     }
 

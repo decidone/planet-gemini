@@ -24,17 +24,10 @@ public class ConnecTimeStop : NetworkBehaviour
     }
     #endregion
 
-    // Start is called before the first frame update
     void Start()
     {
         clientConnect = false;
         connEnd = false;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     [ServerRpc(RequireOwnership = false)]
