@@ -421,6 +421,7 @@ GameObject:
   - component: {fileID: 8167675957967065272}
   - component: {fileID: 5141181565966273476}
   - component: {fileID: 7272727718341943578}
+  - component: {fileID: -4321582170942509209}
   m_Layer: 8
   m_Name: Transporter
   m_TagString: Factory
@@ -592,6 +593,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   checkObj: 1
+  takeItemDelay: 0
   inObj: []
   outObj: []
   outSameList: []
@@ -601,6 +603,7 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
+  overclockOn: 0
   overclockPer: 10
   effiCooldownUpgradePer: 10
   isStorageBuilding: 0
@@ -621,17 +624,23 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
   warningIconCheck: 0
-  increasedStructure: 000000
+  getAnim: 0
+  strImg: []
+  isAuto: 0
+  selectPointSetPos: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -643,6 +652,8 @@ MonoBehaviour:
   trUnit: {fileID: 4728483135223444395, guid: 3497393f39f650e4c89243555f2f5d67, type: 3}
   isToggleOn: 0
   sendAmount: 0
+  standbyUnitCount: 0
+  clickEvent: {fileID: 0}
 --- !u!114 &5999188213166003495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -673,6 +684,7 @@ MonoBehaviour:
   space: 18
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
+  itemListSO: {fileID: 0}
 --- !u!114 &8167675957967065272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -728,6 +740,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-4321582170942509209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5999188213166003493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 5
 --- !u!1001 &3276147997449902050
 PrefabInstance:
   m_ObjectHideFlags: 0

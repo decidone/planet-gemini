@@ -175,6 +175,7 @@ GameObject:
   - component: {fileID: -6754138625246379473}
   - component: {fileID: 1370861021348599480}
   - component: {fileID: 435375303516100113}
+  - component: {fileID: -203065845486038932}
   m_Layer: 6
   m_Name: TransportUnit
   m_TagString: Unit
@@ -286,6 +287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: 0b85621c1a3b38d49a0d36d5964e7907, type: 2}
+  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 4728483135223444392}
@@ -305,7 +307,12 @@ MonoBehaviour:
   attackSpeed: 0
   defense: 0
   mainTrBuild: {fileID: 0}
+  startPos: {x: 0, y: 0, z: 0}
   othTrBuild: {fileID: 0}
+  endPos: {x: 0, y: 0, z: 0}
+  isSellerUnit: 0
+  isBuyerUnit: 0
+  isHomelessUnit: 0
   trUnitState: 0
   visionRadius: 5
 --- !u!114 &-6754138625246379473
@@ -364,6 +371,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList: []
   m_Animator: {fileID: 4728483135223444392}
+--- !u!114 &-203065845486038932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4728483135223444395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 0
 --- !u!1 &5740636266888414635
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,7 +19,7 @@ public class SpawnerAwake : NetworkBehaviour
 
     void Start()
     {
-        level = monsterSpawner.sppawnerLevel - 1;
+        level = monsterSpawner.spawnerLevel - 1;
     }
 
     public void DieFunc()

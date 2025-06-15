@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 8851864001997260240}
   - component: {fileID: 1633296053984840463}
   - component: {fileID: -1179022828837211550}
+  - component: {fileID: 184720383723092126}
   m_Layer: 6
   m_Name: SpinRobot
   m_TagString: Unit
@@ -169,6 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: 7e6bfdb3a59425449ba28190033bf392, type: 2}
+  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 248036444977090386}
@@ -299,6 +301,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList: []
   m_Animator: {fileID: 248036444977090386}
+--- !u!114 &184720383723092126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248036444977090385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 6
+  aggroAmount: 0
 --- !u!1 &956196659816380753
 GameObject:
   m_ObjectHideFlags: 0

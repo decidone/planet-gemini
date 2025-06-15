@@ -326,14 +326,12 @@ public class GameManager : NetworkBehaviour
         }
         if (Input.GetKeyDown(KeyCode.F10))
         {
-            QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = 10;
             Debug.Log("Frame drop");
         }
         else if (Input.GetKeyDown(KeyCode.F11))
         {
-            QualitySettings.vSyncCount = 1;
-            Application.targetFrameRate = -1;
+            Application.targetFrameRate = 144;
             Debug.Log("normal Frame");
         }
 
@@ -378,7 +376,6 @@ public class GameManager : NetworkBehaviour
                     if (IsServer)
                     {
                         MonsterSpawnerManager.instance.ViolentDayStart();
-                        WaveStartWarrningServerRpc();
                     }
                 }
             }
@@ -1324,10 +1321,12 @@ public class GameManager : NetworkBehaviour
             optionCanvas.SaveBtnOnOff(true);
             SteamManager.instance.HostLobby();
             HostConnected();
-            MapGenerator.instance.SpawnerAreaMapSet();
+
             if (MainGameSetting.instance.isNewGame)
             {
                 SetStartingItem();
+                if(MainGameSetting.instance.difficultylevel != 0)
+                    MapGenerator.instance.SpawnerAreaMapSet();
             }
             else
             {
@@ -1858,18 +1857,6 @@ public class GameManager : NetworkBehaviour
                 returnItemDic.Add(item, ReturnCost.amounts[i]);
             }
         }
-    }
-
-    [ServerRpc]
-    void WaveStartWarrningServerRpc()
-    {
-        WaveStartWarrningClientRpc();
-    }
-
-    [ClientRpc]
-    void WaveStartWarrningClientRpc()
-    {
-        WarningWindow.instance.WarningTextSet("Wave Incoming");
     }
 
     public IEnumerator GaugeCountDown()

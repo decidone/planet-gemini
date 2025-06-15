@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -23,11 +24,10 @@ public class MonsterSpawner : NetworkBehaviour
     int maxWeakSpawn;
     int maxNormalSpawn;
     int maxStrongSpawn;
-    int maxExtraSpawn;
     int maxGuardianSpawn;
 
-    int totalSpawnNum;  // 가딘언을 제외한 최대 소환 수
-    public int extraSpawnNum;  // 임시 저장 소환 수
+    int totalSpawnNum;  // 가딘언을 제외한 최대 소환 수    
+    public int spawnNum;       // 일반 소환해야 하는 몬스터 수
 
     // 현재 소환 개수 정보
     public int currentWeakSpawn;
@@ -39,8 +39,8 @@ public class MonsterSpawner : NetworkBehaviour
     public List<MonsterAi> waveMonsterList = new List<MonsterAi>();
     // 가디언은 초기에 배치하고 그 이후로는 관리 안함
 
-    public int sppawnerLevel;
-    AreaLevelData sppawnerLevelData;
+    public int spawnerLevel;
+    AreaLevelData spawnerLevelData;
     string biome;
     int spawnerGroupIndex;
 
@@ -58,12 +58,8 @@ public class MonsterSpawner : NetworkBehaviour
     public float defense;
     public bool dieCheck = false;
     protected CapsuleCollider2D capsuleCollider2D;
-    public bool extraSpawn;
 
     Vector3 wavePos;
-    float waveInterval = 40;
-    public float waveTimer;
-    bool waveState;
 
     //BattleBGMCtrl battleBGM;
     MonsterSpawnerManager monsterSpawnerManager;
@@ -109,6 +105,7 @@ public class MonsterSpawner : NetworkBehaviour
     public int safeCount;
     int ragePhase = 0;
     int maxRagePhase = 5;
+    int[] ragePhaseSpawnCount = new int[5] { 2, 4, 6, 8, 10 };
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
@@ -129,14 +126,11 @@ public class MonsterSpawner : NetworkBehaviour
 
     void Start()
     {
-        extraSpawn = false;
         if (!IsServer)
         {
             searchColl.SetActive(false);
             awakeColl.SetActive(false);
         }
-        //if (!gameLodeSet)
-        //    InitializeMonsterSpawn();
         spawnerSearchColl.violentCollSize = violentCollSize;
         SpriteSet();
     }
@@ -156,32 +150,29 @@ public class MonsterSpawner : NetworkBehaviour
             spawnTimer += Time.deltaTime;
             if (spawnTimer >= spawnInterval)
             {
-                MonsterSpawn();
-                spawnTimer = 0;
-            }
-        }
-        else if (maxExtraSpawn > extraSpawnNum)
-        {
-            spawnTimer += Time.deltaTime;
-            if (spawnTimer >= spawnInterval)
-            {
-                extraSpawnNum++;
+                if (nearUserObjExist)
+                {
+                    MonsterSpawn();
+                }
+                else
+                {
+                    spawnNum++;
+                    if (totalMonsterList.Count + spawnNum > totalSpawnNum)
+                    {
+                        spawnNum = totalSpawnNum - totalMonsterList.Count;
+                    }
+                }
                 spawnTimer = 0;
             }
         }
 
-        if (!extraSpawn && nearUserObjExist && totalMonsterList.Count < totalSpawnNum / 2 && extraSpawnNum > 0)
-        {
-            ExtraMonsterSpawn();
-        }
-        
         if (!violentDay && nearEnergyObjExist && energyUseStrs.Count > 0)
         {
             if (restTime)
             {
                 restAggroTimer += Time.deltaTime;
 
-                if (restAggroTimer >= restAggroIntervals[sppawnerLevel - 1][attackLevelTier])
+                if (restAggroTimer >= restAggroIntervals[spawnerLevel - 1][attackLevelTier])
                 {
                     restTime = false;
                     restAggroTimer = 0;
@@ -198,22 +189,13 @@ public class MonsterSpawner : NetworkBehaviour
                     checkAggroTimer = 0;
                 }
 
-                if (energyAggroTimer >= energyAggroInterval[sppawnerLevel - 1])
+                if (energyAggroTimer >= energyAggroInterval[spawnerLevel - 1])
                 {
                     energyAggroValue = 0;
                     energyAggroTimer = 0;
                 }
             }
         }
-
-        //if (waveState)
-        //{
-        //    waveTimer += Time.deltaTime;
-        //    if (waveTimer >= waveInterval)
-        //    {
-        //        WaveStart();
-        //    }
-        //}
     }
 
     protected virtual void OnClientConnectedCallback(ulong clientId)
@@ -259,8 +241,8 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos, bool isHostMap, int groupIndex)
     {
-        sppawnerLevelData = levelData;
-        sppawnerLevel = levelData.sppawnerLevel;
+        spawnerLevelData = levelData;
+        spawnerLevel = levelData.sppawnerLevel;
         biome = _biome;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
@@ -272,33 +254,8 @@ public class MonsterSpawner : NetworkBehaviour
         maxStrongSpawn = levelData.maxStrongSpawn;
         maxGuardianSpawn = levelData.maxGuardianSpawn;
         totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
-        maxExtraSpawn = Mathf.RoundToInt(10 * ((float)sppawnerLevel / 2));
-        extraSpawnNum = maxExtraSpawn;
+        spawnNum = totalSpawnNum;
         wavePos = _basePos;
-    }
-
-    public void InitializeMonsterSpawn()
-    {
-        System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-        stopwatch.Start();
-        for (int a = 0; a < maxWeakSpawn; a++)
-        {
-            RandomMonsterSpawn(0);
-        }
-        for (int a = 0; a < maxNormalSpawn; a++)
-        {
-            RandomMonsterSpawn(1);
-        }
-        for (int a = 0; a < maxStrongSpawn; a++)
-        {
-            RandomMonsterSpawn(2);
-        }
-        for (int a = 0; a < maxGuardianSpawn; a++)
-        {
-            SpawnMonster(3, 0, isInHostMap);
-        }
-        stopwatch.Stop();
-        Debug.Log("monster "+ totalSpawnNum + " spawn Time : " + stopwatch.ElapsedMilliseconds.ToString() + "ms");
     }
 
     void MonsterSpawn()
@@ -306,55 +263,72 @@ public class MonsterSpawner : NetworkBehaviour
         float weakSpawnWeight = (float)maxWeakSpawn / totalSpawnNum;
         float normalSpawnWeight = (float)maxNormalSpawn / totalSpawnNum;
 
-        bool canSpawn = true;
+        // 현재 각 타입별로 더 소환할 수 있는지 미리 확인
+        bool canWeak = maxWeakSpawn > currentWeakSpawn;
+        bool canNormal = maxNormalSpawn > currentNormalSpawn;
+        bool canStrong = maxStrongSpawn > currentStrongSpawn;
 
-        while (canSpawn)
+        // 소환 가능한 타입이 없으면 바로 리턴
+        if (!canWeak && !canNormal && !canStrong)
         {
-            float spawnRandom = Random.Range(0f, 1f);
+            return;
+        }
 
-            if (spawnRandom < weakSpawnWeight)
+        // 소환 가능한 타입만 가중치 재계산
+        float totalWeight = 0f;
+        float wWeight = canWeak ? weakSpawnWeight : 0f;
+        float nWeight = canNormal ? normalSpawnWeight : 0f;
+        float sWeight = canStrong ? 1f - weakSpawnWeight - normalSpawnWeight : 0f;
+        totalWeight = wWeight + nWeight + sWeight;
+
+         float spawnRandom = Random.Range(0f, totalWeight);
+        float cumulative = 0f;
+  
+        if (canWeak)
+        {
+            cumulative += wWeight;
+            if (spawnRandom < cumulative)
             {
-                if (maxWeakSpawn > currentWeakSpawn)
-                {
-                    RandomMonsterSpawn(0);
-                    canSpawn = false;
-                }
+                RandomMonsterSpawn(0);
             }
-            else if (spawnRandom < weakSpawnWeight + normalSpawnWeight)
+        }
+        if (canNormal)
+        {
+            cumulative += nWeight;
+            if (spawnRandom < cumulative)
             {
-                if (maxNormalSpawn > currentNormalSpawn)
-                {
-                    RandomMonsterSpawn(1);
-                    canSpawn = false;
-                }
+                RandomMonsterSpawn(1);
             }
-            else
-            {
-                if (maxStrongSpawn > currentStrongSpawn)
-                {
-                    RandomMonsterSpawn(2);
-                    canSpawn = false;
-                }
-            }
+        }
+        if (canStrong)
+        {
+            RandomMonsterSpawn(2);
         }
     }
 
-    void ExtraMonsterSpawn()
+    public IEnumerator ExtraMonsterSpawnCoroutine(int phase)
     {
-        extraSpawn = true;
-        for (int i = 0; i < extraSpawnNum; i++)
-        {
-            if (totalMonsterList.Count == totalSpawnNum)
-            {
-                extraSpawn = false;
-                return;
-            }
-            MonsterSpawn();
-            extraSpawnNum--;
-        }
+        int spawnCount = ragePhaseSpawnCount[phase - 1] + spawnerLevel;
 
-        extraSpawn = false;
+        for (int i = 0; i < spawnCount; i++)
+        {
+            int monsterType = GetWeightedMonsterType(spawnerLevel);
+            RandomMonsterSpawn(monsterType);
+
+            yield return null; // 매 프레임 한 마리씩 생성
+        }
     }
+
+    //void ExtraMonsterSpawn(int phase)
+    //{
+    //    int spawCount = ragePhaseSpawnCount[phase - 1] + spawnerLevel;
+
+    //    for (int i = 0; i < spawCount; i++)
+    //    {
+    //        int monsterType = GetWeightedMonsterType(spawnerLevel);
+    //        RandomMonsterSpawn(monsterType);
+    //    }
+    //}
 
     GameObject RandomMonsterSpawn(int monsterType)
     {
@@ -380,38 +354,55 @@ public class MonsterSpawner : NetworkBehaviour
         return monster;
     }
 
+    int GetWeightedMonsterType(int spawnerLevel)
+    {
+        // 정규화된 스포너 레벨 (0~1)
+        float t = Mathf.InverseLerp(1f, 8f, spawnerLevel);
+
+        // 가중치 계산 (0~1 사이 가중치에서 선형 보간)
+        float weight0 = Mathf.Lerp(0.6f, 0.1f, t);  // 약한 몬스터
+        float weight1 = Mathf.Lerp(0.3f, 0.3f, t);  // 보통 몬스터 (변화 없음)
+        float weight2 = Mathf.Lerp(0.1f, 0.6f, t);  // 강한 몬스터
+
+        float total = weight0 + weight1 + weight2;
+        float rand = Random.value * total;
+
+        if (rand < weight0) return 0;
+        else if (rand < weight0 + weight1) return 1;
+        else return 2;
+    }
+
     public GameObject SpawnMonster(int monserType, int monsterIndex, bool isInHostMap)
     {
         GameObject newMonster = null;
         if (monserType == 0)
         {
-            newMonster = Instantiate(weakMonster[monsterIndex], transform.position, Quaternion.identity, transform);
+            newMonster = Instantiate(weakMonster[monsterIndex], transform.position, Quaternion.identity, this.transform);
             totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentWeakSpawn++;
         }
         else if (monserType == 1)
         {
-            newMonster = Instantiate(normalMonster[monsterIndex], transform.position, Quaternion.identity, transform);
+            newMonster = Instantiate(normalMonster[monsterIndex], transform.position, Quaternion.identity, this.transform);
             totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentNormalSpawn++;
         }
         else if (monserType == 2)
         {
-            newMonster = Instantiate(strongMonster[monsterIndex], transform.position, Quaternion.identity, transform);
+            newMonster = Instantiate(strongMonster[monsterIndex], transform.position, Quaternion.identity, this.transform);
             totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
             currentStrongSpawn++;
         }
         else if (monserType == 3)
         {
-            newMonster = Instantiate(guardian, transform.position, Quaternion.identity, transform);
+            newMonster = Instantiate(guardian, transform.position, Quaternion.identity, this.transform);
             guardianList.Add(newMonster.GetComponent<GuardianAi>());
         }
 
         NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
         if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
-        //newMonster.transform.SetParent(this.transform, false);
-        //newMonster.transform.position = transform.position;
+        newMonster.transform.parent = this.transform;
 
         MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
         monsterAi.MonsterSpawnerSet(this, monserType);
@@ -512,7 +503,9 @@ public class MonsterSpawner : NetworkBehaviour
         if(expectedPhase >= 1 && ragePhase < expectedPhase)
         {
             ragePhase++;
+            StartCoroutine(ExtraMonsterSpawnCoroutine(ragePhase));
             TriggerRage(ragePhase, attackObj);
+            Debug.Log("ragePhase : " + ragePhase);
         }
     }
 
@@ -521,6 +514,7 @@ public class MonsterSpawner : NetworkBehaviour
         GuardianCall(phase, attackObj);
         MonsterCall(phase, attackObj);
     }
+
 
     [ServerRpc]
     void TakeDamageServerRpc(float damage)
@@ -567,13 +561,13 @@ public class MonsterSpawner : NetworkBehaviour
         GameObject InfoObj = GetComponentInChildren<InfoInteract>().gameObject;
         InfoObj.SetActive(false);
 
-        MapGenerator.instance.ClearCorruption(transform.position, sppawnerLevel);
+        MapGenerator.instance.ClearCorruption(transform.position, spawnerLevel);
         icon.enabled = false;
 
         if (!IsServer)
             return;
         
-        monsterSpawnerManager.AreaGroupRemove(this, sppawnerLevel, isInHostMap);
+        monsterSpawnerManager.AreaGroupRemove(this, spawnerLevel, isInHostMap);
         Overall.instance.OverallCount(0);
 
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(ItemList.instance.itemDic["VoidShard"]);
@@ -588,7 +582,7 @@ public class MonsterSpawner : NetworkBehaviour
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
         capsuleCollider2D.enabled = false;
-        MapGenerator.instance.ClearCorruption(transform.position, sppawnerLevel);
+        MapGenerator.instance.ClearCorruption(transform.position, spawnerLevel);
         icon.enabled = false;
         spawnerSearchColl.DieFunc();
         spawnerAwakeColl.DieFunc();
@@ -599,6 +593,43 @@ public class MonsterSpawner : NetworkBehaviour
         if (!dieCheck)
             MonsterScriptSet(find, true);
         nearUserObjExist = find;
+        if (nearUserObjExist)
+        {
+            StartCoroutine(MonsterSpawnStartCoroutine());
+        }
+    }
+
+    //void MonsterSpawnStart()
+    //{
+    //    int spawnCount = spawnNum;
+    //    if (spawnNum + totalMonsterList.Count > totalSpawnNum)
+    //    {
+    //        spawnCount = totalSpawnNum - totalMonsterList.Count;
+    //    }
+
+    //    for (int i = 0; i < spawnCount; i++)
+    //    {
+    //        MonsterSpawn();
+    //        spawnNum--;
+    //    }
+    //}
+
+    public IEnumerator MonsterSpawnStartCoroutine()
+    {
+        int spawnCount = spawnNum;
+
+        if (spawnNum + totalMonsterList.Count > totalSpawnNum)
+        {
+            spawnCount = totalSpawnNum - totalMonsterList.Count;
+        }
+
+        for (int i = 0; i < spawnCount; i++)
+        {
+            MonsterSpawn();
+            spawnNum--;
+
+            yield return null; // 매 프레임 한 마리씩 생성
+        }
     }
 
     void GuardianCall(int phase, GameObject attackObj)
@@ -625,21 +656,47 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    //public void WaveTeleport(Vector3 pos)
-    //{
-    //    waveState = true;
-    //    waveTimer = 0;
-    //    MonsterScriptSet(true, false);
-    //    foreach (MonsterAi monster in totalMonsterList)
-    //    {
-    //        monster.WaveTeleport(pos, wavePos);
-    //    }
-    //}
-
     public void WaveStart()
     {
-        waveState = false;
+        StartCoroutine(WaveStartCoroutine());
+
+        //if (spawnNum > 0)
+        //{
+        //    MonsterSpawnStart();
+        //}
+
+        //ExtraMonsterSpawn(Mathf.CeilToInt(spawnerLevel / 2) + 1);
+        //MonsterScriptSet(true, false);
+
+        //List<GameObject> monsters = new List<GameObject>();
+        //foreach (MonsterAi monster in totalMonsterList)
+        //{
+        //    monster.WaveStart(wavePos);
+        //    monsters.Add(monster.gameObject);
+        //}
+
+        //monsterSpawnerManager.WaveAddMonster(monsters);
+
+        //waveMonsterList.AddRange(totalMonsterList);
+
+        //totalMonsterList.Clear();
+        //currentWeakSpawn = 0;
+        //currentNormalSpawn = 0;
+        //currentStrongSpawn = 0;
+    }
+
+    private IEnumerator WaveStartCoroutine()
+    {
+        if (spawnNum > 0)
+        {
+            yield return StartCoroutine(MonsterSpawnStartCoroutine()); // 코루틴이면 이렇게
+        }
+
+        yield return StartCoroutine(ExtraMonsterSpawnCoroutine(Mathf.CeilToInt(spawnerLevel / 2) + 1));
+
+        // 아래는 몬스터가 전부 생성된 후 실행됨
         MonsterScriptSet(true, false);
+
         List<GameObject> monsters = new List<GameObject>();
         foreach (MonsterAi monster in totalMonsterList)
         {
@@ -648,7 +705,6 @@ public class MonsterSpawner : NetworkBehaviour
         }
 
         monsterSpawnerManager.WaveAddMonster(monsters);
-
         waveMonsterList.AddRange(totalMonsterList);
 
         totalMonsterList.Clear();
@@ -668,8 +724,8 @@ public class MonsterSpawner : NetworkBehaviour
             hpBar.fillAmount = hp / maxHp;
             unitCanvas.SetActive(true);
         }
-        sppawnerLevel = spawnerSaveData.level;
-        extraSpawnNum = spawnerSaveData.extraSpawnNum;
+        spawnerLevel = spawnerSaveData.level;
+        spawnNum = spawnerSaveData.spawnNum;
         nearUserObjExist = spawnerSaveData.nearUserObjExist;
         nearEnergyObjExist = spawnerSaveData.nearEnergyObjExist;
         ragePhase = spawnerSaveData.ragePhase;
@@ -677,8 +733,8 @@ public class MonsterSpawner : NetworkBehaviour
         spawnerGroupIndex = groupIndex;
         safeCount = spawnerSaveData.safeCount;
         violentDay = spawnerSaveData.violentDay;
-        sppawnerLevelData = levelData;
-        sppawnerLevel = levelData.sppawnerLevel;
+        spawnerLevelData = levelData;
+        spawnerLevel = levelData.sppawnerLevel;
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
@@ -687,54 +743,6 @@ public class MonsterSpawner : NetworkBehaviour
         wavePos = _basePos;
         gameLodeSet = true;
     }
-
-    public void GameStartWaveSet(float waveTimerSet)
-    {
-        waveState = true;
-        waveTimer = waveTimerSet;
-    }
-
-    //public GameObject WaveWaitingMonsterSpawn(int monserType, int monsterIndex, bool isInHostMap)
-    //{
-    //    GameObject newMonster = null;
-    //    if (monserType == 0)
-    //    {
-    //        newMonster = Instantiate(weakMonster[monsterIndex]);
-    //        totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
-    //        currentWeakSpawn++;
-    //    }
-    //    else if (monserType == 1)
-    //    {
-    //        newMonster = Instantiate(normalMonster[monsterIndex]);
-    //        totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
-    //        currentNormalSpawn++;
-    //    }
-    //    else if (monserType == 2)
-    //    {
-    //        newMonster = Instantiate(strongMonster[monsterIndex]);
-    //        totalMonsterList.Add(newMonster.GetComponent<MonsterAi>());
-    //        currentStrongSpawn++;
-    //    }
-    //    else if (monserType == 3)
-    //    {
-    //        newMonster = Instantiate(guardian);
-    //        guardianList.Add(newMonster.GetComponent<GuardianAi>());
-    //    }
-
-    //    NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
-    //    if (!networkObject.IsSpawned) networkObject.Spawn(true);
-
-    //    newMonster.transform.SetParent(this.transform, false);
-
-    //    MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
-    //    monsterAi.MonsterSpawnerSet(this, monserType);
-    //    monsterAi.AStarSet(isInHostMap);
-
-    //    if (IsServer)
-    //        monsterAi.MonsterScriptSetServerRpc(true);
-
-    //    return newMonster;
-    //}
 
     public GameObject WaveMonsterSpawn(int monserType, int monsterIndex, bool isInHostMap, bool isWaveColonyCallCheck)
     {
@@ -770,15 +778,6 @@ public class MonsterSpawner : NetworkBehaviour
             monsterSpawnerManager.WaveAddMonster(newMonster);
         }
 
-        //if (isWaveColonyCallCheck)
-        //{
-        //    battleBGM.WaveAddMonster(newMonster);
-        //}
-        //else
-        //{
-        //    battleBGM.ColonyCallAddMonster(newMonster, isInHostMap);
-        //}
-
         return newMonster;
     }
 
@@ -792,12 +791,12 @@ public class MonsterSpawner : NetworkBehaviour
             }
         }
 
-        float maxAggroValue = energyAggroMaxValue[sppawnerLevel - 1];
+        float maxAggroValue = energyAggroMaxValue[spawnerLevel - 1];
 
         if (energyAggroValue > maxAggroValue)
         {
             restTime = true;
-            attackLevelTier = (int)(energyAggroTimer / (energyAggroInterval[sppawnerLevel - 1] / restAggroIntervals[sppawnerLevel - 1].Length));
+            attackLevelTier = (int)(energyAggroTimer / (energyAggroInterval[spawnerLevel - 1] / restAggroIntervals[spawnerLevel - 1].Length));
             energyAggroValue = 0;
             checkAggroTimer = 0;
             energyAggroTimer = 0;
@@ -808,6 +807,91 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void EnergyUseStrAttack(int attackLevel)
     {
+        StartCoroutine(EnergyUseStrAttackCoroutine(attackLevel));
+        //if (spawnNum > 0)
+        //{
+        //    MonsterSpawnStart();
+        //}
+
+        //Debug.Log("EnergyUseStrAttack");
+        //float attackPercentage = GetSpawnPercentage(attackLevel);
+        //int monstersToAttackCount = Mathf.CeilToInt(totalMonsterList.Count * attackPercentage);
+        //List<GameObject> monsters = new List<GameObject>();
+        //List<Structure> structures = new List<Structure>(energyUseStrs.Keys);
+
+        //// 총 가중치 합을 계산합니다.
+        //float totalWeight = 0f;
+        //foreach (var entry in energyUseStrs)
+        //{
+        //    totalWeight += entry.Value;
+        //}
+
+        //if (totalWeight == 0f)
+        //{
+        //    Debug.LogWarning("No structures with positive energy usage for attack.");
+        //    return;
+        //}
+
+        //for (int i = 0; i < monstersToAttackCount; i++)
+        //{
+        //    MonsterAi monsterAi = totalMonsterList[i];
+        //    monsterAi.MonsterScriptSetServerRpc(true);
+        //    // 가중치를 기반으로 랜덤하게 구조물을 선택합니다.
+        //    float randomWeight = Random.Range(0f, totalWeight);
+        //    float cumulativeWeight = 0f;
+        //    Structure selectedStructure = null;
+
+        //    foreach (var entry in energyUseStrs)
+        //    {
+        //        cumulativeWeight += entry.Value;
+
+        //        if (randomWeight <= cumulativeWeight)
+        //        {
+        //            selectedStructure = entry.Key;
+        //            break;
+        //        }
+        //    }
+        //    Debug.Log(selectedStructure);
+        //    // 선택된 구조물로 몬스터를 공격하게 합니다.
+        //    if (selectedStructure != null)
+        //    {
+        //        monsterAi.ColonyAttackStart(selectedStructure.transform.position);
+        //    }
+
+        //    monsters.Add(monsterAi.gameObject);
+        //    waveMonsterList.Add(monsterAi);
+
+        //    // 몬스터 타입에 따라 카운트를 감소시킵니다.
+        //    if (monsterAi.monsterType == 0)
+        //    {
+        //        currentWeakSpawn--;
+        //    }
+        //    else if (monsterAi.monsterType == 1)
+        //    {
+        //        currentNormalSpawn--;
+        //    }
+        //    else if (monsterAi.monsterType == 2)
+        //    {
+        //        currentStrongSpawn--;
+        //    }
+        //}
+
+        //foreach (var monster in monsters)
+        //{
+        //    totalMonsterList.Remove(monster.GetComponent<MonsterAi>());
+        //}
+
+        ////battleBGM.ColonyCallAddMonster(monsters, isInHostMap);
+        //WarningWindowSetServerRpc();
+    }
+
+    private IEnumerator EnergyUseStrAttackCoroutine(int attackLevel)
+    {
+        if (spawnNum > 0)
+        {
+            yield return StartCoroutine(MonsterSpawnStartCoroutine()); // 코루틴이면 이렇게
+        }
+
         Debug.Log("EnergyUseStrAttack");
         float attackPercentage = GetSpawnPercentage(attackLevel);
         int monstersToAttackCount = Mathf.CeilToInt(totalMonsterList.Count * attackPercentage);
@@ -819,12 +903,6 @@ public class MonsterSpawner : NetworkBehaviour
         foreach (var entry in energyUseStrs)
         {
             totalWeight += entry.Value;
-        }
-
-        if (totalWeight == 0f)
-        {
-            Debug.LogWarning("No structures with positive energy usage for attack.");
-            return;
         }
 
         for (int i = 0; i < monstersToAttackCount; i++)
@@ -911,22 +989,15 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    //public void GlobalWaveState(bool wave)
-    //{
-    //    globalWave = wave;
-    //}
-
     public SpawnerSaveData SaveData()
     {
         SpawnerSaveData data = new SpawnerSaveData();
 
         data.hp = hp;
-        data.level = sppawnerLevel;
+        data.level = spawnerLevel;
         data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.spawnerPos = Vector3Extensions.FromVector3(transform.position);
-        data.extraSpawnNum = extraSpawnNum;
-        data.waveState = waveState;
-        data.waveTimer = waveTimer;
+        data.spawnNum = spawnNum;
         data.dieCheck = dieCheck;
         data.spawnerGroupIndex = spawnerGroupIndex;
         data.safeCount = safeCount;
@@ -955,7 +1026,7 @@ public class MonsterSpawner : NetworkBehaviour
     public void SetCorruption()
     {
         if (!dieCheck)
-            MapGenerator.instance.SetCorruption(transform.position, sppawnerLevel);
+            MapGenerator.instance.SetCorruption(transform.position, spawnerLevel);
     }
 
     public void SearchCollExtend()
@@ -996,19 +1067,19 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void SpawnerLevelUp()
     {
-        if (sppawnerLevel < SpawnerSetManager.instance.arealevelData.Length)
+        if (spawnerLevel < SpawnerSetManager.instance.arealevelData.Length)
         {
-            sppawnerLevel++;
-            monsterSpawnerManager.AreaGroupLevelUp(this, sppawnerLevel - 1, sppawnerLevel, isInHostMap);
-            sppawnerLevelData = SpawnerSetManager.instance.arealevelData[sppawnerLevel - 1];
-            hp = structureData.MaxHp[sppawnerLevel - 1];
-            maxHp = structureData.MaxHp[sppawnerLevel - 1];
-            defense = structureData.Defense[sppawnerLevel - 1];
+            spawnerLevel++;
+            monsterSpawnerManager.AreaGroupLevelUp(this, spawnerLevel - 1, spawnerLevel, isInHostMap);
+            spawnerLevelData = SpawnerSetManager.instance.arealevelData[spawnerLevel - 1];
+            hp = structureData.MaxHp[spawnerLevel - 1];
+            maxHp = structureData.MaxHp[spawnerLevel - 1];
+            defense = structureData.Defense[spawnerLevel - 1];
 
-            maxWeakSpawn = sppawnerLevelData.maxWeakSpawn;
-            maxNormalSpawn = sppawnerLevelData.maxNormalSpawn;
-            maxStrongSpawn = sppawnerLevelData.maxStrongSpawn;
-            maxGuardianSpawn = sppawnerLevelData.maxGuardianSpawn;
+            maxWeakSpawn = spawnerLevelData.maxWeakSpawn;
+            maxNormalSpawn = spawnerLevelData.maxNormalSpawn;
+            maxStrongSpawn = spawnerLevelData.maxStrongSpawn;
+            maxGuardianSpawn = spawnerLevelData.maxGuardianSpawn;
             totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
             SpriteSet();
         }
@@ -1038,12 +1109,12 @@ public class MonsterSpawner : NetworkBehaviour
     {
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
 
-        if (sppawnerLevel >= 7)
+        if (spawnerLevel >= 7)
         {
             sprite.sprite = monsterSpawnerManager.spawnerSprite[2];
             capsuleCollider2D.size = new Vector2(5f, 1.8f);
         }
-        else if (sppawnerLevel <= 3)
+        else if (spawnerLevel <= 3)
         {
             sprite.sprite = monsterSpawnerManager.spawnerSprite[0];
             capsuleCollider2D.size = new Vector2(2.6f, 0.9f);

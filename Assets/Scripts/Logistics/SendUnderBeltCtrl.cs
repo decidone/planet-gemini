@@ -124,30 +124,42 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     {
         itemSetDelay = true;
 
-        Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-        if (outFactory.isFull || outFactory.destroyStart || outFactory.isPreBuilding)
+        if (outObj.Count <= sendItemIndex)
         {
             SendItemIndexSet();
             itemSetDelay = false;
             return;
         }
-        else if (outFactory.TryGetComponent(out Production production))
+        else
         {
-            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-            if (!production.CanTakeItem(item))
+            Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
+
+            if (outFactory.isFull || outFactory.destroyStart || outFactory.isPreBuilding)
             {
                 SendItemIndexSet();
                 itemSetDelay = false;
                 return;
             }
+            else if (outFactory.TryGetComponent(out Production production))
+            {
+                Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+                if (!production.CanTakeItem(item))
+                {
+                    SendItemIndexSet();
+                    itemSetDelay = false;
+                    return;
+                }
+            }
+            else if (outFactory.isMainSource)
+            {
+                SendItemIndexSet();
+                itemSetDelay = false;
+                return;
+            }
+            outFactory.takeItemDelay = true;
         }
-        else if (outFactory.isMainSource)
-        {
-            SendItemIndexSet();
-            itemSetDelay = false;
-            return;
-        }
-        outFactory.takeItemDelay = true;
+
+
         SendItemServerRpc(itemIndex, sendItemIndex);
 
         SendItemIndexSet();

@@ -47,9 +47,12 @@ public class UnitAi : UnitCommonAi
     protected bool[] increasedUnit = new bool[4];
     // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
 
+    protected AggroAmount aggroAmount;
+
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
+        aggroAmount = GetComponent<AggroAmount>();
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
         selfHealInterval = 5;

@@ -19,7 +19,7 @@ public class CorrosionDrone : UnitAi
             {
                 foreach (GameObject obj in targetList)
                 {
-                    if (obj.CompareTag("Monster"))
+                    if (!obj && obj.CompareTag("Monster"))
                     {
                         if (obj.TryGetComponent(out MonsterAi mon))
                         {

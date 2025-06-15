@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1875794501085088100}
   - component: {fileID: 1875794501085088103}
   - component: {fileID: 2245751470897592747}
+  - component: {fileID: 3573041437486522217}
   m_Layer: 8
   m_Name: Manufacturer
   m_TagString: Factory
@@ -207,6 +208,7 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
+  overclockOn: 0
   overclockPer: 10
   effiCooldownUpgradePer: 10
   isStorageBuilding: 0
@@ -230,8 +232,10 @@ MonoBehaviour:
   portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
@@ -242,6 +246,8 @@ MonoBehaviour:
   strImg:
   - {fileID: 471881988, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   - {fileID: -1901409918, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  isAuto: 0
+  selectPointSetPos: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -264,6 +270,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &3573041437486522217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875794501085088104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 5
 --- !u!1 &1875794501812464135
 GameObject:
   m_ObjectHideFlags: 0

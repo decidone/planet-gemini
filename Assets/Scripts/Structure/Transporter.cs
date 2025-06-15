@@ -556,7 +556,7 @@ public class Transporter : Production
 
         if(takeBuild != null)
         {
-            data.connectedStrPos.Add(Vector3Extensions.FromVector3(takeBuild.tileSetPos));
+            data.connectedStrPos.Add(Vector3Extensions.FromVector3(takeBuild.transform.position));
         }
 
         if (sendItemUnit.Count > 0)

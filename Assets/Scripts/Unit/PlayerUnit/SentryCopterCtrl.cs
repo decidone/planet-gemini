@@ -34,6 +34,8 @@ public class SentryCopterCtrl : UnitAi
 
             bulletPool.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, damage, gameObject);
             soundManager.PlaySFX(gameObject, "unitSFX", "laserAttack");
+
+            aggroAmount.SetAggroAmount(damage, attackSpeed);
         }
 
         return isAttacked;

@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 9113408284949583421}
   - component: {fileID: -3613212761563754259}
   - component: {fileID: 4746401571730464259}
+  - component: {fileID: 2535448625556783359}
+  - component: {fileID: 7641498886084110436}
   m_Layer: 0
   m_Name: MonsterSpawnManager
   m_TagString: Untagged
@@ -45,22 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b089ca7d7e7c5ac409327a811e8f850c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map1Wave1Start: 0
-  map1Wave2Start: 0
-  map1Wave3Start: 0
-  map1Wave4Start: 0
-  map1Wave5Start: 0
-  map2Wave1Start: 0
-  map2Wave2Start: 0
-  map2Wave3Start: 0
-  map2Wave4Start: 0
-  map2Wave5Start: 0
-  viDayOn: 0
-  viDayOff: 0
+  hostMapWave: 0
   spawnerSprite:
   - {fileID: 846619681, guid: 5e106a86825938f4cb02fd6ad417b413, type: 3}
   - {fileID: 111823750, guid: ce129a5ecbb5580458afc70f4401c1e1, type: 3}
   - {fileID: 1330350005, guid: 72d8f35b4a1f29d4cb6325fc19466f60, type: 3}
+  waveMonsters: []
 --- !u!114 &4746401571730464259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,3 +80,44 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 546785d654ee67d469cde82e07ce42b6, type: 2}
   - {fileID: 11400000, guid: a6501a1e339e1794aa663d2ac1cd52e9, type: 2}
   monsterSpawnerManager: {fileID: -3613212761563754259}
+--- !u!114 &2535448625556783359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9113408284949583420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b08d887124b60f4e982e8c8846525d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movePath: []
+--- !u!114 &7641498886084110436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9113408284949583420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1

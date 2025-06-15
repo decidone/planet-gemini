@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 8021879270789177578}
   - component: {fileID: 2404147784598303516}
   - component: {fileID: 717895800371076390}
+  - component: {fileID: -9028666121704696031}
   m_Layer: 8
   m_Name: GetUnderBelt
   m_TagString: Factory
@@ -462,6 +463,7 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
+  overclockOn: 0
   overclockPer: 0
   effiCooldownUpgradePer: 0
   isStorageBuilding: 0
@@ -485,8 +487,10 @@ MonoBehaviour:
   portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
@@ -495,6 +499,8 @@ MonoBehaviour:
   warningIconCheck: 0
   getAnim: 0
   strImg: []
+  isAuto: 0
+  selectPointSetPos: 0
   lineObj: {fileID: 5696256792421437546, guid: cbdbe5c72a980ab48ae089d8e6293634, type: 3}
   lineRenderer: {fileID: 0}
 --- !u!114 &717895800371076390
@@ -513,6 +519,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-9028666121704696031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5450028805572291566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 5
 --- !u!1 &6554100838646963673
 GameObject:
   m_ObjectHideFlags: 0

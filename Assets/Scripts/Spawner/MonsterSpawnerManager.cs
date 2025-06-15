@@ -122,15 +122,12 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public void WaveStateLoad(SpawnerManagerSaveData data)
     {
         waveState = data.waveState;
-        Debug.Log("Load waveState" + waveState);
         hostMapWave = data.hostMapWave;
         wavePos = Vector3Extensions.ToVector3(data.wavePos);
 
         if (waveState)
         {
             wavePoint.LoadWaveStart(wavePos, hostMapWave);
-            //if (IsServer)
-            //    BattleBGMCtrl.instance.WaveStart(hostMapWave);
         }
     }
 
@@ -262,10 +259,23 @@ public class MonsterSpawnerManager : NetworkBehaviour
                     spawner.WaveStart();
                     spawner.SpawnerLevelUp();
                     spawner.SearchCollReturn();
+                    WaveStartWarrningServerRpc();
                     return;
                 }
             }
         }
+    }
+
+    [ServerRpc]
+    void WaveStartWarrningServerRpc()
+    {
+        WaveStartWarrningClientRpc();
+    }
+
+    [ClientRpc]
+    void WaveStartWarrningClientRpc()
+    {
+        WarningWindow.instance.WarningTextSet("Wave Incoming");
     }
 
     public void WavePointOff()

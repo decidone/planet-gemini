@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Pathfinding;
 using ToJ;
 using QFSW.QC.Actions;
 
@@ -25,10 +24,6 @@ public class WavePoint : MonoBehaviour
     LineRenderer lineRenderer;
     GameManager gameManager;
     bool mapCameraOpen;
-    protected Seeker seeker;
-    protected int currentWaypointIndex;                 // 현재 이동 중인 경로 점 인덱스
-    [SerializeField]
-    protected List<Vector3> movePath = new List<Vector3>();
 
     #region Singleton
     public static WavePoint instance;
@@ -49,7 +44,6 @@ public class WavePoint : MonoBehaviour
     {
         gameManager = GameManager.instance;
         waveObj.transform.localScale = new Vector3(1, 1, 1);
-        seeker = GetComponent<Seeker>();
 
         Vector2 dir = new Vector2(Screen.width, Screen.height);
         defaultAngle = Vector2.Angle(new Vector2(0, 1), dir);
@@ -102,39 +96,11 @@ public class WavePoint : MonoBehaviour
             isMap2WaveStart = true;
         }
 
-        StartCoroutine(CheckPath(wavePos, isInHostMap));
+        StartCoroutine(MonsterBaseMapCheck.instance.CheckPath(wavePos, isInHostMap));
         StartCoroutine(gameManager.GaugeCountDown());
     }
 
-    protected IEnumerator CheckPath(Vector3 wavePos, bool isHostMap)
-    {
-        GraphMask mask;
-        Vector3 targetPos;
-        if (isHostMap)
-        {
-            mask = GraphMask.FromGraphName("Map1MonsterUnit");
-            targetPos = gameManager.hostPlayerSpawnPos;
-        }
-        else
-        {
-            mask = GraphMask.FromGraphName("Map2MonsterUnit");
-            targetPos = gameManager.clientPlayerSpawnPos;
-        }
-        seeker.graphMask = mask;
-
-        ABPath path = ABPath.Construct(wavePos, targetPos, null);
-        seeker.CancelCurrentPathRequest();
-        seeker.StartPath(path);
-
-        yield return StartCoroutine(path.WaitForPath());
-
-        currentWaypointIndex = 1;
-        movePath = path.vectorPath;
-
-        SetLine(true);
-    }
-
-    void SetLine(bool isSet)
+    public void SetLine(bool isSet, List<Vector3> movePath)
     {
         if (isSet)
         {
@@ -187,7 +153,7 @@ public class WavePoint : MonoBehaviour
         }
         waveObj.SetActive(false);
         mapObj.SetActive(false);
-        SetLine(false);
+        SetLine(false, null);
     }
 
     public void SetIndicator(bool isInHostMap)

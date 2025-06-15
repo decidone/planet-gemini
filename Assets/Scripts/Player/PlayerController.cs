@@ -628,33 +628,6 @@ public class PlayerController : NetworkBehaviour
         {
             BeltLootServerRpc(IsServer);
         }
-
-        //foreach (GameObject belt in beltList)
-        //{
-        //    List<ItemProps> beltItems = new List<ItemProps>();
-
-        //    if (belt.TryGetComponent(out BeltCtrl beltCtrl))
-        //    {
-        //        beltItems = beltCtrl.PlayerRootItemCheck();
-        //    }
-
-        //    foreach (ItemProps itemProps in beltItems)
-        //    {
-        //        int containableAmount = gameManager.inventory.SpaceCheck(itemProps.item);
-        //        if (itemProps.amount <= containableAmount)
-        //        {
-        //            gameManager.inventory.Add(itemProps.item, itemProps.amount);
-        //            LootListManager.instance.DisplayLootInfo(itemProps.item, itemProps.amount);
-        //            beltCtrl.PlayerRootFunc(itemProps);
-        //        }
-        //        else
-        //        {
-        //            Debug.Log("not enough space");
-        //        }
-        //    }
-        //}
-
-        GameManager.instance.BuildAndSciUiReset();
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -440,47 +440,6 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    //[ServerRpc]
-    //public void BattleStateSetServerRpc(bool isBattle, bool isWave, bool isHostMap)
-    //{
-    //    BattleStateSetClientRpc(isBattle, isWave, isHostMap);
-    //}
-
-    //[ClientRpc]
-    //public void BattleStateSetClientRpc(bool isBattle, bool isWave, bool isHostMap)
-    //{
-    //    if (isHostMap)
-    //    {
-    //        if (isHostMapBattleOn == isBattle && isHostMapWaveOn == isWave)
-    //        {
-    //            return;
-    //        }
-    //        isHostMapBattleOn = isBattle;
-    //        isHostMapWaveOn = isWave;
-    //        if (GameManager.instance.isPlayerInMarket)
-    //        {
-    //            return;
-    //        }
-    //        PlayBgmMapCheck();
-    //        //StartCoroutine(nameof(SoundFadeOut));
-    //    }
-    //    else if(!isHostMap)
-    //    {
-    //        if (isClientMapBattleOn == isBattle && isClientMapWaveOn == isWave)
-    //        {
-    //            return;
-    //        }
-    //        isClientMapBattleOn = isBattle;
-    //        isClientMapWaveOn = isWave;
-    //        if (GameManager.instance.isPlayerInMarket)
-    //        {
-    //            return;
-    //        }
-    //        PlayBgmMapCheck();
-    //        //StartCoroutine(nameof(SoundFadeOut));
-    //    }
-    //}
-
     IEnumerator SoundFadeIn() // 점점 커지는
     {
         float time = 0.0f;

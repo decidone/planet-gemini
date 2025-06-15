@@ -291,6 +291,7 @@ GameObject:
   - component: {fileID: 5669448373235209629}
   - component: {fileID: 7459600353829133190}
   - component: {fileID: 3925590484988123203}
+  - component: {fileID: 568211807762610817}
   m_Layer: 8
   m_Name: SunTower
   m_TagString: Tower
@@ -508,8 +509,10 @@ MonoBehaviour:
   portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
@@ -519,6 +522,7 @@ MonoBehaviour:
   getAnim: 0
   strImg: []
   isAuto: 0
+  selectPointSetPos: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -567,6 +571,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &568211807762610817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280046767442360781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 12
 --- !u!1 &2895939835691524872
 GameObject:
   m_ObjectHideFlags: 0

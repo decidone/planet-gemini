@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1994786528307354725}
   - component: {fileID: 406768690718756365}
+  - component: {fileID: -330206159619314096}
   m_Layer: 0
   m_Name: UnderPipeBuild
   m_TagString: Untagged
@@ -49,7 +50,22 @@ MonoBehaviour:
   isPreBuilding: 0
   underPipeObj: {fileID: 0}
   pipeScipt: {fileID: 0}
+  isSendPipe: 1
   dirNum: 0
+  buildEnd: 0
+--- !u!114 &-330206159619314096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7906025083900182912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 0
 --- !u!1001 &4392169103074289058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57,6 +73,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1994786528307354725}
     m_Modifications:
+    - target: {fileID: -1885034664435557966, guid: 214359c066b22fe43a28346c6febe3db, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
+      objectReference: {fileID: 0}
     - target: {fileID: 2000658444983299214, guid: 214359c066b22fe43a28346c6febe3db, type: 3}
       propertyPath: m_RootOrder
       value: 0

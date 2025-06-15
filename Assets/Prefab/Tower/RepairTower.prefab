@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 90368467031128400}
   - component: {fileID: 7182665562401536423}
   - component: {fileID: -9198654496963000203}
+  - component: {fileID: 9075289350443297531}
   m_Layer: 8
   m_Name: RepairTower
   m_TagString: Tower
@@ -232,8 +233,10 @@ MonoBehaviour:
   portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
@@ -242,6 +245,8 @@ MonoBehaviour:
   warningIconCheck: 0
   getAnim: 0
   strImg: []
+  isAuto: 0
+  selectPointSetPos: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -254,6 +259,7 @@ MonoBehaviour:
   damage: 0
   BuildingList: []
   view: {fileID: 5840086398164157876}
+  repairFullAmount: 0
 --- !u!114 &-9198654496963000203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,6 +276,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &9075289350443297531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90368467031128404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 9
 --- !u!1 &1317787849305595216
 GameObject:
   m_ObjectHideFlags: 0

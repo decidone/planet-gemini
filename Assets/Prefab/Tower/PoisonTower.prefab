@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 3071676049119730513}
   - component: {fileID: 6171355717169676434}
   - component: {fileID: 1508699750045435114}
+  - component: {fileID: -4828808976775388839}
   m_Layer: 8
   m_Name: PoisonTower
   m_TagString: Tower
@@ -439,6 +440,7 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   checkObj: 1
+  takeItemDelay: 0
   inObj: []
   outObj: []
   outSameList: []
@@ -448,7 +450,9 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
-  overclockAmount: 0
+  overclockOn: 0
+  overclockPer: 0
+  effiCooldownUpgradePer: 0
   isStorageBuilding: 0
   isMainSource: 0
   isUIOpened: 0
@@ -467,16 +471,23 @@ MonoBehaviour:
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
+  portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 7538742440104216862}
   warningIconCheck: 0
+  getAnim: 0
+  strImg: []
+  isAuto: 0
+  selectPointSetPos: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -485,8 +496,11 @@ MonoBehaviour:
   isGetLine: 0
   towerData: {fileID: 11400000, guid: c60351257ca74154f881ab126f349d73, type: 2}
   towerState: 0
-  animator: {fileID: 7592073746180229603}
+  attDelayTime: 0
+  damage: 0
   bulletDataManager: {fileID: 0}
+  energyBulletAmount: 0
+  energyBulletMaxAmount: 0
   attackFX: {fileID: 3832536798139642931, guid: fdb8544d40d9b5e4a92423109023958f, type: 3}
   isSingleAttack: 1
 --- !u!114 &6171355717169676434
@@ -523,6 +537,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-4828808976775388839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7592073746180229604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 9
 --- !u!1 &8011384680271846714
 GameObject:
   m_ObjectHideFlags: 0

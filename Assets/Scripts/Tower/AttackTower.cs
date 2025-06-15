@@ -25,11 +25,12 @@ public class AttackTower : TowerAi
     bool isSingleAttack;
 
     TowerAttackOption towerAttackOption;
-
+    AggroAmount aggroAmount;
 
     protected override void Start()
     {
         base.Start();
+        aggroAmount = GetComponent<AggroAmount>();
         towerAttackOption = GetComponent<TowerAttackOption>();
         bulletDataManager = TwBulletDataManager.instance;
         bulletDic = bulletDataManager.bulletDic;
@@ -385,6 +386,7 @@ public class AttackTower : TowerAi
             Debug.Log("Attack");
             isAttacked = true;
             soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
+            aggroAmount.SetAggroAmount(damage, attDelayTime + loadedBullet.fireRate);
         }
 
         return isAttacked;

@@ -37,12 +37,14 @@ public class UnitCommonAi : NetworkBehaviour
     protected Rigidbody2D rg;
     protected Seeker seeker;
     protected Coroutine checkPathCoroutine;             // 실행 중인 코루틴을 저장하는 변수
+    [SerializeField]
     protected int currentWaypointIndex;                 // 현재 이동 중인 경로 점 인덱스
     protected Vector3 targetPosition;
     protected Vector2 lastMoveDirection = Vector2.zero; // 마지막으로 이동한 방향
     protected Vector3 direction = Vector3.zero;
     protected Vector3 targetVec = Vector3.zero;
     protected List<Vector3> movePath = new List<Vector3>();
+    protected List<Vector3> waveMovePath = new List<Vector3>();
 
     protected float searchInterval;
     protected float searchTimer;
@@ -112,7 +114,7 @@ public class UnitCommonAi : NetworkBehaviour
         defense = unitCommonData.Defense;
         isFlip = unitSprite.flipX;
         searchInterval = 0.3f;
-        tarDisCheckInterval = 0.3f;
+        tarDisCheckInterval = 0.5f;
         patrolPos = Vector3.zero;
         unitName = unitCommonData.UnitName;
         aIState = AIState.AI_Idle;
@@ -387,6 +389,7 @@ public class UnitCommonAi : NetworkBehaviour
             hp = 0f;
             dieCheck = true;
             DieFuncServerRpc();
+            StopAllCoroutines();
         }
     }
 

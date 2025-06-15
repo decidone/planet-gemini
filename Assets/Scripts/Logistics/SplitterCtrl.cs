@@ -213,6 +213,8 @@ public class SplitterCtrl : LogisticsCtrl
 
     void FilterSendItem()
     {
+        itemSetDelay = true;
+
         Filter filter = arrFilter[filterindex];
         Item sendItem = itemList[0];
         Item selectedFilterItem = filter.selItem;
@@ -220,18 +222,21 @@ public class SplitterCtrl : LogisticsCtrl
         if (filter.outObj == null || !filter.isFilterOn)
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }
 
         if (filter.isReverseFilterOn && selectedFilterItem == sendItem)
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }
 
         if (!filter.isReverseFilterOn && selectedFilterItem != sendItem)
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }        
 
@@ -241,14 +246,15 @@ public class SplitterCtrl : LogisticsCtrl
         if (outFactory.isFull)
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }
         else if (outObject.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }
-
         FilterSetItemClientRpc(filterindex);
         FilterindexSet();
     }
@@ -263,7 +269,6 @@ public class SplitterCtrl : LogisticsCtrl
     [ClientRpc]
     void FilterSetItemClientRpc(int index)
     {
-        itemSetDelay = true;
         Item sendItem = itemList[0];
 
         Filter filter = arrFilter[index];
@@ -286,6 +291,7 @@ public class SplitterCtrl : LogisticsCtrl
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl;
             }
+            itemListRemove();
         }
         else if (outObject.GetComponent<LogisticsCtrl>())
         {
@@ -295,8 +301,6 @@ public class SplitterCtrl : LogisticsCtrl
         {
             SendFacDelay(outObject, sendItem);
         }
-        Debug.Log("sp");
-        itemListRemove();
         ItemNumCheck();
         
         Invoke(nameof(DelaySetItem), sendDelay);

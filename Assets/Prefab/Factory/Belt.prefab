@@ -418,6 +418,7 @@ GameObject:
   - component: {fileID: 8826970519567855509}
   - component: {fileID: 8257279358658315011}
   - component: {fileID: -7211525418415439537}
+  - component: {fileID: -1456469255909229209}
   m_Layer: 8
   m_Name: Belt
   m_TagString: Factory
@@ -619,6 +620,7 @@ MonoBehaviour:
   col: {fileID: 0}
   repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
+  overclockOn: 0
   overclockPer: 0
   effiCooldownUpgradePer: 0
   isStorageBuilding: 0
@@ -642,14 +644,20 @@ MonoBehaviour:
   portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
   canUpgrade: 1
   warningIcon: {fileID: 0}
   warningIconCheck: 0
+  getAnim: 0
+  strImg: []
+  isAuto: 0
+  selectPointSetPos: 0
   beltGroupMgr: {fileID: 0}
   beltState: 0
   nextBelt: {fileID: 0}
@@ -675,6 +683,19 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-1456469255909229209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8826970519567855532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 5
 --- !u!1001 &2246933021524632816
 PrefabInstance:
   m_ObjectHideFlags: 0

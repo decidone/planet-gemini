@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using static SplitterCtrl;
 
 public class Unloader : LogisticsCtrl
 {
@@ -32,18 +33,33 @@ public class Unloader : LogisticsCtrl
 
             if (IsServer && !isPreBuilding && checkObj)
             {
-                if (inObj.Count > 0 && outObj.Count > 0 && !itemGetDelay)
+                if (inObj.Count > 0 && !isFull && !itemGetDelay)
+                    GetItem();
+                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
-                    GetAndSendItem();
+                    int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
+                    SendItem(itemIndex);
                 }
+            }
+            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+            {
+                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
             if (DelayGetList.Count > 0 && inObj.Count > 0)
             {
                 GetDelayFunc(DelayGetList[0], 0);
             }
-            //if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
+
+            //if (IsServer && !isPreBuilding && checkObj)
             //{
-            //    SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
+            //    if (inObj.Count > 0 && outObj.Count > 0 && !itemGetDelay)
+            //    {
+            //        GetAndSendItem();
+            //    }
+            //}
+            //if (DelayGetList.Count > 0 && inObj.Count > 0)
+            //{
+            //    GetDelayFunc(DelayGetList[0], 0);
             //}
         }
     }
@@ -110,22 +126,31 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-    protected void GetAndSendItem()
-    {
-        itemGetDelay = true;
-        Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-        if ((inObj[getItemIndex].TryGetComponent(out Production inObjScript)
-                && !inObjScript.UnloadItemCheck(GetComponent<Unloader>().selectItem))
-                || outFactory.isFull)
-        {
-            GetItemIndexSet();
-            Invoke(nameof(DelayGetItem), getDelay);
-            return;
-        }
-        itemList.Add(selectItem);
-        GetItemServerRpc(getItemIndex);
-        GetItemIndexSet();
-    }
+    //protected void GetAndSendItem()
+    //{
+    //    itemGetDelay = true;
+    //    Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
+
+    //    if (inObj[getItemIndex].TryGetComponent(out Production inObjScript)
+    //        && !inObjScript.UnloadItemCheck(GetComponent<Unloader>().selectItem))
+    //    {
+    //        GetItemIndexSet();
+
+    //        Invoke(nameof(DelayGetItem), getDelay);
+    //        return;
+    //    }
+
+    //    if (outFactory.isFull)
+    //    {
+    //        SendItemIndexSet();
+
+    //        Invoke(nameof(DelayGetItem), getDelay);
+    //        return;
+    //    }
+
+    //    GetItemServerRpc(getItemIndex);
+    //    GetItemIndexSet();
+    //}
 
     protected override void GetItemFunc(int inObjIndex)
     {
@@ -136,20 +161,48 @@ public class Unloader : LogisticsCtrl
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
                 if (IsServer)
                 {
+                    OnFactoryItem(selectItem);
                     production.UnloadItem(selectItem);
-                    SendItem(itemIndex);
                 }
             }
             Invoke(nameof(DelayGetItem), getDelay);
         }
     }
 
+
+    //protected override void SendItem(int itemIndex)
+    //{
+    //    if (itemIndex < 0) return;
+
+    //    Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
+
+    //    if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
+    //    {
+    //        return;
+    //    }
+    //    else if (outFactory.TryGetComponent(out Production production))
+    //    {
+    //        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+    //        if (!production.CanTakeItem(item))
+    //        {
+    //            return;
+    //        }
+    //    }
+    //    else if (outFactory.isMainSource)
+    //    {
+    //        return;
+    //    }
+    //    outFactory.takeItemDelay = true;
+        
+    //    SendItemServerRpc(itemIndex, sendItemIndex);
+    //}
+
     [ServerRpc(RequireOwnership = false)]
     public void SelectItemSetServerRpc(int itemIndex)
     {
         SelectItemSetClientRpc(itemIndex);
     }
-
+     
     [ClientRpc]
     public void SelectItemSetClientRpc(int itemIndex)
     {

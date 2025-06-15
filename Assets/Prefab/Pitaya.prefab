@@ -140,6 +140,7 @@ GameObject:
   - component: {fileID: 6454353647784178198}
   - component: {fileID: 2369682121264992858}
   - component: {fileID: 8215385598605780433}
+  - component: {fileID: 3670971969316646178}
   m_Layer: 0
   m_Name: Pitaya
   m_TagString: Player
@@ -437,6 +438,19 @@ MonoBehaviour:
   - {fileID: 2820809106726265187}
   - {fileID: 1844617110754545428}
   onTank: 0
+--- !u!114 &3670971969316646178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2369682121264992856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 0
 --- !u!1 &2430728725410488932
 GameObject:
   m_ObjectHideFlags: 0

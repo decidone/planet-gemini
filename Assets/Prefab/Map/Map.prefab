@@ -1252,12 +1252,15 @@ MonoBehaviour:
   seed: 3
   mapSizeData: {fileID: 11400000, guid: 40c1909d136d22e4ebe4662258f93e22, type: 2}
   mapSizeDatas:
+  - {fileID: 11400000, guid: 2dcbeac278f11e24ab1ce28fd73a4a77, type: 2}
   - {fileID: 11400000, guid: b16c2a840ecf83b409fee5c0e7e32591, type: 2}
   - {fileID: 11400000, guid: 331ca8db025e95b42a01fa39a62eba25, type: 2}
   - {fileID: 11400000, guid: 40c1909d136d22e4ebe4662258f93e22, type: 2}
+  - {fileID: 11400000, guid: 5b57fa638ff9ff546b92e6e734d190d9, type: 2}
   - {fileID: 11400000, guid: 8a91ffc8b949a9d4292b92454ed49848, type: 2}
   - {fileID: 11400000, guid: 1c060111d3441d54eaab51f41a88004e, type: 2}
   - {fileID: 11400000, guid: 82b31e49e51d9ba43a8b4b1e6d78ea3f, type: 2}
+  - {fileID: 11400000, guid: 1919fe1128f2f4547856a8c6437c70ca, type: 2}
   - {fileID: 11400000, guid: 4635ec793b181ad488ad388f55215980, type: 2}
   - {fileID: 11400000, guid: e3dfcb66339806c41bb93748cb2c6c1a, type: 2}
   - {fileID: 11400000, guid: 4d93ea517f162b14abbdf1379ec7e7d4, type: 2}
@@ -1280,7 +1283,6 @@ MonoBehaviour:
   clientMap: {fileID: 1233895887}
   hostMapCol: {fileID: 6571952992782214896}
   clientMapCol: {fileID: 2467318846739657865}
-  isMultiPlay: 1
   clientMapOffsetY: 20
   plain: {fileID: 2480601898745360442}
   desert: {fileID: 2480601898082089276}
@@ -1342,20 +1344,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ccb239f947622374f9a95480af3ea143, type: 2}
   - {fileID: 11400000, guid: 51582f1d0251b214d8a03053ae6d33b9, type: 2}
   mapObj:
-  - {fileID: 2557397671702435269, guid: 0317abe437244da46846ca7f94deecd1, type: 3}
-  - {fileID: 7020412104492794120, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
-  - {fileID: 8159159478609809111, guid: fc76007f987c05749a8db6c1f51e00eb, type: 3}
-  - {fileID: 4009096746150404129, guid: 1f9a7be67f8ed1b4e9138b769a45c43b, type: 3}
+  - {fileID: 2557397671702435269, guid: 246542d1d57977846926bed73d113210, type: 3}
+  - {fileID: 7020412104492794120, guid: 0317abe437244da46846ca7f94deecd1, type: 3}
+  - {fileID: 8159159478609809111, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
+  - {fileID: 4009096746150404129, guid: fc76007f987c05749a8db6c1f51e00eb, type: 3}
+  - {fileID: 2557397671702435269, guid: 1f9a7be67f8ed1b4e9138b769a45c43b, type: 3}
   - {fileID: 2557397671702435269, guid: 2e72e32d611b04646ac525159af196b3, type: 3}
   - {fileID: 2557397671702435269, guid: d8181acac4135c2469784a9142784fb0, type: 3}
   - {fileID: 2557397671702435269, guid: 553a04ff6196cdd4586d4207d53fd43b, type: 3}
   - {fileID: 2557397671702435269, guid: 1bbc5131e36e2e54397b1a1cb7321942, type: 3}
-  - {fileID: 2557397671702435269, guid: 62c294dcff4a850499bcec6bd5eec1cf, type: 3}
+  - {fileID: 8159159478609809111, guid: 62c294dcff4a850499bcec6bd5eec1cf, type: 3}
   - {fileID: 8159159478609809111, guid: f3a6f3ceb7421804bb9c3861a265bc84, type: 3}
   - {fileID: 8159159478609809111, guid: 1164bf944e6051c4a941a5e6d6c056a1, type: 3}
   - {fileID: 8159159478609809111, guid: fca630f9b90bd834c815401eb2040f9c, type: 3}
   - {fileID: 8159159478609809111, guid: d4536b192ed263b4f86c2a3b7b37ca69, type: 3}
-  - {fileID: 8159159478609809111, guid: e72cac07b1f1d634a8239ff3568d7556, type: 3}
   buildable:
   - none
   - miner
