@@ -13,8 +13,8 @@ public class ItemSpawner : LogisticsCtrl
 
     void Start()
     {
-        CheckPos();
         isMainSource = true;
+        StrBuilt();
     }
 
     protected override void Update()
@@ -22,16 +22,16 @@ public class ItemSpawner : LogisticsCtrl
         base.Update();
         if (!removeState)
         {
-            if (isSetBuildingOk)
-            {
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    }
-                }
-            }
+            //if (isSetBuildingOk)
+            //{
+            //    for (int i = 0; i < nearObj.Length; i++)
+            //    {
+            //        if (nearObj[i] == null)
+            //        {
+            //            CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            //        }
+            //    }
+            //}
 
             if (IsServer && !isPreBuilding && checkObj)
             {
@@ -50,6 +50,19 @@ public class ItemSpawner : LogisticsCtrl
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         } 
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

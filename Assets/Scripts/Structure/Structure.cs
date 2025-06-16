@@ -1,4 +1,5 @@
 using Pathfinding;
+using Pathfinding.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,9 +36,6 @@ public class Structure : NetworkBehaviour
 
     [HideInInspector]
     public bool isPreBuilding = true;
-    [HideInInspector]
-    public bool isSetBuildingOk = false;
-
     protected bool removeState = false;
 
     [SerializeField]
@@ -164,6 +162,7 @@ public class Structure : NetworkBehaviour
     public SoundManager soundManager;
 
     public bool isInHostMap;
+    public Map map;
     public Vector3 tileSetPos;
 
     public bool isManualDestroy;    //사용자가 철거 명령을 하는 경우 true. 철거로 인해 파괴되는지 몬스터에 의해 파괴되는지 구분하기 위해 사용
@@ -204,6 +203,9 @@ public class Structure : NetworkBehaviour
     public bool isAuto;    // 분쇄기 자동화 체크
 
     public float selectPointSetPos;
+
+    protected int[,] oneDirections = new int[,] { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } }; // 1x1, 2x2 건물의 주변 좌표
+    protected int[,] twoDirections = new int[,] { { -1, 1 }, { 0, 1 }, { 1, 0 }, { 1, -1 }, { 0, -2 }, { -1, -2 }, { -2, -1 }, { -2, 0 } };
 
     protected virtual void Awake()
     {
@@ -266,7 +268,7 @@ public class Structure : NetworkBehaviour
             {
                 RepairFunc(false);
             }
-            else if (isPreBuilding && isSetBuildingOk)
+            else if (isPreBuilding)
             {
                 RepairFunc(true);
             }
@@ -285,6 +287,21 @@ public class Structure : NetworkBehaviour
                 destroyStart = false;
             }
         }
+    }
+
+    void OnDisable()
+    {
+        if (!IsServer && GameManager.instance && soundManager)
+        {
+            ClientItemDrop();
+            soundManager.PlayUISFX("BuildingRemove");
+            GameManager.instance.BuildAndSciUiReset();
+        }
+    }
+
+    public virtual void CheckSlotState()
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
     }
 
     public virtual void WarningStateCheck()
@@ -358,7 +375,6 @@ public class Structure : NetworkBehaviour
             destroyStart = true;
             isDestroying = true;
             isPreBuilding = true;
-            isSetBuildingOk = false;
             unitCanvas.SetActive(true);
             repairBar.enabled = true;
 
@@ -393,16 +409,6 @@ public class Structure : NetworkBehaviour
         //DestroyFuncServerRpc();
         soundManager.PlayUISFX("BuildingRemove");
         GameManager.instance.BuildAndSciUiReset();
-    }
-
-    void OnDisable()
-    {
-        if(!IsServer && GameManager.instance && soundManager)
-        {
-            ClientItemDrop();
-            soundManager.PlayUISFX("BuildingRemove");
-            GameManager.instance.BuildAndSciUiReset();
-        }
     }
 
     void RefundCost()
@@ -507,13 +513,13 @@ public class Structure : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     protected void RepairGaugeServerRpc()
     {
-        RepairGaugeClientRpc(isPreBuilding, isSetBuildingOk, destroyStart, hp, repairGauge, destroyTimer);
+        RepairGaugeClientRpc(isPreBuilding, destroyStart, hp, repairGauge, destroyTimer);
     }
 
     [ClientRpc]
-    protected virtual void RepairGaugeClientRpc(bool preBuilding, bool setBuildingOk, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    protected virtual void RepairGaugeClientRpc(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
     {
-        StructureStateSet(preBuilding, setBuildingOk, destroy, hpSet, repairGaugeSet, destroyTimerSet);
+        StructureStateSet(preBuilding, destroy, hpSet, repairGaugeSet, destroyTimerSet);
     }
 
     [ClientRpc]
@@ -539,8 +545,8 @@ public class Structure : NetworkBehaviour
         ColliderTriggerOnOff(false);
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
-        CheckPos();
         onEffectUpgradeCheck.Invoke();
+        StrBuilt();
     }
 
     [ClientRpc]
@@ -614,11 +620,62 @@ public class Structure : NetworkBehaviour
         onEffectUpgradeCheck.Invoke();
     }
 
-    protected virtual void SetDirNum()
+    public virtual void StrBuilt()
     {
-        setModel.sprite = modelNum[dirNum];
+        // 건설 시 근처 건물들이 NearStrBuilt()를 실행하도록 알림을 보냄
+        if (isInHostMap)
+            map = GameManager.instance.hostMap;
+        else
+            map = GameManager.instance.clientMap;
+
+        NearStrBuilt();
+
+        int posX = (int)transform.position.x;
+        int posY = (int)transform.position.y;
+        Cell cell;
+        if (width == 1 && height == 1)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                int nearX = posX + oneDirections[i, 0];
+                int nearY = posY + oneDirections[i, 1];
+                cell = map.GetCellDataFromPos(nearX, nearY);
+                if (cell.structure != null)
+                {
+                    cell.structure.GetComponent<Structure>().NearStrBuilt();
+                }
+            }
+        }
+        else if (width == 2 && height == 2)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                int nearX = posX + twoDirections[i, 0];
+                int nearY = posY + twoDirections[i, 1];
+                cell = map.GetCellDataFromPos(nearX, nearY);
+
+                if (cell.structure != null)
+                {
+                    cell.structure.GetComponent<Structure>().NearStrBuilt();
+                }
+            }
+        }
+
+        CheckSlotState();
+    }
+
+    public virtual void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        // 필요한 경우 SetDirNum()이나 CheckPos()도 호출해서 방향, 스프라이트를 잡아줌
         CheckPos();
     }
+
+    //protected virtual void SetDirNum()
+    //{
+    //    CheckPos();
+    //    setModel.sprite = modelNum[dirNum];
+    //}
 
     // 건물의 방향 설정
     protected virtual void CheckPos()
@@ -633,15 +690,6 @@ public class Structure : NetworkBehaviour
                 checkPos[i] = dirs[(dirNum + i) % 4];
             }
         }
-        else if (width == 2 && height == 1)
-        {
-            sizeOneByOne = false;
-            nearObj = new GameObject[6];
-            indices = new int[] { 1, 0, 0, 0, 1, 1 };
-            startTransform = new Vector2[] { new Vector2(0.5f, -1f), new Vector2(-0.5f, -1f) };
-            directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };
-
-        }
         else if (width == 2 && height == 2)
         {
             sizeOneByOne = false;
@@ -652,54 +700,75 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    // 1x1 사이즈 근처 오브젝트 찻는 위치(상하좌우) 설정
+    // 1x1 사이즈 근처 오브젝트 찾는 위치(상하좌우) 설정
     protected virtual void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, 1f);
-
-        for (int i = 0; i < hits.Length; i++)
+        if (map == null)
         {
-            Collider2D hitCollider = hits[i].collider;
+            if (isInHostMap)
+                map = GameManager.instance.hostMap;
+            else
+                map = GameManager.instance.clientMap;
+        }
 
+        int nearX = (int)(transform.position.x + direction.x);
+        int nearY = (int)(transform.position.y + direction.y);
+        Cell cell = map.GetCellDataFromPos(nearX, nearY);
+        if (cell == null)
+            return;
+
+        GameObject obj = cell.structure;
+        if (obj != null)
+        {
             if (GetComponent<LogisticsCtrl>() || (GetComponent<Production>() && !GetComponent<FluidFactoryCtrl>()))
             {
-                if (hitCollider.GetComponent<FluidFactoryCtrl>() && !hitCollider.GetComponent<Refinery>() && !hitCollider.GetComponent<SteamGenerator>())
+                if (obj.GetComponent<FluidFactoryCtrl>() && !obj.GetComponent<Refinery>() && !obj.GetComponent<SteamGenerator>())
                 {
-                    continue;
+                    return;
                 }
             }
             else if (GetComponent<FluidFactoryCtrl>() && !GetComponent<Refinery>() && !GetComponent<SteamGenerator>())
             {
-                if (hitCollider.GetComponent<LogisticsCtrl>())
+                if (obj.GetComponent<LogisticsCtrl>())
                 {
-                    continue;
+                    return;
                 }
             }
 
-            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-                hits[i].collider.gameObject != this.gameObject)
+            if (obj.CompareTag("Factory"))
             {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
+                nearObj[index] = obj;
+                callback(obj);
             }
         }
     }
 
-    // 2x2 사이즈 근처 오브젝트 찻는 위치(상하좌우) 설정
-    protected virtual void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback)
+    // 2x2 사이즈 근처 오브젝트 찾는 위치(상하좌우) 설정
+    protected virtual void CheckNearObj(int index, Action<GameObject> callback)
     {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
-
-        for (int i = 0; i < hits.Length; i++)
+        if (map == null)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-                hits[i].collider.gameObject != this.gameObject)
+            if (isInHostMap)
+                map = GameManager.instance.hostMap;
+            else
+                map = GameManager.instance.clientMap;
+        }
+
+        int posX = (int)transform.position.x;
+        int posY = (int)transform.position.y;
+        int nearX = posX + twoDirections[index, 0];
+        int nearY = posY + twoDirections[index, 1];
+        Cell cell = map.GetCellDataFromPos(nearX, nearY);
+        if (cell == null)
+            return;
+
+        GameObject obj = cell.structure;
+        if (obj != null)
+        {
+            if (obj.CompareTag("Factory"))
             {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
+                nearObj[index] = obj;
+                callback(obj);
             }
         }
     }
@@ -712,10 +781,8 @@ public class Structure : NetworkBehaviour
         repairBar.enabled = true;
         repairGauge = 0;
         repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
-        isSetBuildingOk = true;
         MapGenerator.instance.RemoveFogTile(visionPos, visionRadius);
     }
-    // 건물 설치 기능
 
     [ClientRpc]
     public virtual void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
@@ -768,11 +835,10 @@ public class Structure : NetworkBehaviour
         DataSet();
     }
 
-    public virtual void StructureStateSet(bool preBuilding ,bool setBuildingOk, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    public virtual void StructureStateSet(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
     {
         hp = hpSet;
         isPreBuilding = preBuilding;
-        isSetBuildingOk = setBuildingOk;
         destroyStart = destroy;
 
         if (destroyStart)
@@ -782,7 +848,7 @@ public class Structure : NetworkBehaviour
             repairBar.fillAmount = destroyTimer / destroyInterval;
             unitCanvas.SetActive(true);
         }
-        else if (isPreBuilding && isSetBuildingOk)
+        else if (isPreBuilding)
         {
             hpBar.enabled = false;
             repairGauge = repairGaugeSet;
@@ -1601,7 +1667,6 @@ public class Structure : NetworkBehaviour
         RemoveObjClientRpc();
     }
 
-
     [ClientRpc]
     void RemoveObjClientRpc()
     {
@@ -1976,7 +2041,6 @@ public class Structure : NetworkBehaviour
         data.level = level;
         data.direction = dirNum;
         data.isPreBuilding = isPreBuilding;
-        data.isSetBuildingOk = isSetBuildingOk;
         data.destroyStart = destroyStart;
         data.repairGauge = repairGauge;
         data.destroyTimer = destroyTimer;

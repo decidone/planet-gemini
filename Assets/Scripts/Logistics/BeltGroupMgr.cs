@@ -21,8 +21,6 @@ public class BeltGroupMgr : NetworkBehaviour
     public bool nextCheck = true;
     public bool preCheck = true;
 
-    public bool isSetBuildingOk = false;
-
     bool beltSyncCheck;
 
     [HideInInspector]
@@ -48,7 +46,7 @@ public class BeltGroupMgr : NetworkBehaviour
         if (!IsServer)
             return;
 
-        if (isSetBuildingOk && beltList.Count > 0)
+        if (beltList.Count > 0)
         {
             if (nextCheck)
             {
@@ -115,8 +113,6 @@ public class BeltGroupMgr : NetworkBehaviour
             }
         }
 
-        ClientConnectSyncClientRpc(isSetBuildingOk);
-
         if(nextObj)
         {
             var objID = networkObjManager.FindNetObjID(nextObj);
@@ -127,17 +123,6 @@ public class BeltGroupMgr : NetworkBehaviour
             var objID = networkObjManager.FindNetObjID(preObj);
             NearObjSetClientRpc(objID, false);
         }
-    }
-
-    [ClientRpc]
-    public virtual void ClientConnectSyncClientRpc(bool syncSetBuilding)
-    {
-        if (IsServer)
-            return;
-
-        isSetBuildingOk = syncSetBuilding;
-        //NetworkObjManager.instance.NetObjAdd(gameObject);
-        //ConnecTimeStop.instance.RemoveNetObj(gameObject);
     }
 
     public void SetBelt(GameObject belt, int level, int beltDir, int objHeight, int objWidth, bool isHostMap, int index)
@@ -221,8 +206,7 @@ public class BeltGroupMgr : NetworkBehaviour
         {
             Collider2D collider = raycastHits[a].collider;
 
-            if ((collider.CompareTag("Factory") || collider.CompareTag("Tower")) && collider.GetComponent<Structure>().isSetBuildingOk &&
-                collider.GetComponent<BeltCtrl>() != belt)
+            if ((collider.CompareTag("Factory") || collider.CompareTag("Tower")) && collider.GetComponent<BeltCtrl>() != belt)
             {
                 if (collider.TryGetComponent(out BeltCtrl otherBelt))
                 {
@@ -407,8 +391,7 @@ public class BeltGroupMgr : NetworkBehaviour
         {
             Collider2D collider = raycastHits[a].collider;
 
-            if ((collider.CompareTag("Factory") || collider.CompareTag("Tower")) && collider.GetComponent<Structure>().isSetBuildingOk && 
-                collider.GetComponent<BeltCtrl>() != belt)
+            if ((collider.CompareTag("Factory") || collider.CompareTag("Tower")) && collider.GetComponent<BeltCtrl>() != belt)
             {
                 if (collider.TryGetComponent(out BeltCtrl otherBelt))
                 {

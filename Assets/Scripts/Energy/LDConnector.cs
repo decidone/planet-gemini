@@ -10,7 +10,6 @@ public class LDConnector : Structure
     SpriteRenderer view;
     [HideInInspector]
     public bool isBuildDone;
-    bool isPlaced;
     GameManager gameManager;
     PreBuilding preBuilding;
     Structure preBuildingStr;
@@ -26,24 +25,16 @@ public class LDConnector : Structure
 
     protected void Start()
     {
-        isPlaced = false;
         clickEvent = GetComponent<MapClickEvent>();
         gameManager = GameManager.instance;
         preBuilding = PreBuilding.instance;
+        view.enabled = false;
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (!isPlaced)
-        {
-            if (isSetBuildingOk)
-            {
-                view.enabled = false;
-                isPlaced = true;
-            }
-        }
         if (gameManager.focusedStructure == null)
         {
             if (preBuilding.isBuildingOn && !removeState)

@@ -10,7 +10,6 @@ public class EnergyRepeater : Structure
     SpriteRenderer view;
     public bool isImprovedRepeater;
     bool isBuildDone;
-    bool isPlaced;
     GameManager gameManager;
     PreBuilding preBuilding;
     Structure preBuildingStr;
@@ -19,23 +18,15 @@ public class EnergyRepeater : Structure
     protected void Start()
     {
         isBuildDone = false;
-        isPlaced = false;
         gameManager = GameManager.instance;
         preBuilding = PreBuilding.instance;
+        view.enabled = false;
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (!isPlaced)
-        {
-            if (isSetBuildingOk)
-            {
-                view.enabled = false;
-                isPlaced = true;
-            }
-        }
         if (gameManager.focusedStructure == null)
         {
             if (preBuilding.isBuildingOn && !removeState)

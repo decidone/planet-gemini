@@ -10,7 +10,8 @@ public class MergerCtrl : LogisticsCtrl
     void Start()
     {
         //setModel = GetComponent<SpriteRenderer>();
-        CheckPos();
+        //CheckPos();
+        StrBuilt();
     }
 
     protected override void Update()
@@ -18,24 +19,24 @@ public class MergerCtrl : LogisticsCtrl
         base.Update();
         if (!removeState)
         {
-            SetDirNum();
-            if (isSetBuildingOk)
-            {
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        if (i == 0)
-                            CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                        else if (i == 1)
-                            CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetInObjCoroutine(obj)));
-                        else if (i == 2)
-                            CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
-                        else if (i == 3)
-                            CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetInObjCoroutine(obj)));
-                    }
-                }
-            }
+            //SetDirNum();
+            //if (isSetBuildingOk)
+            //{
+            //    for (int i = 0; i < nearObj.Length; i++)
+            //    {
+            //        if (nearObj[i] == null)
+            //        {
+            //            if (i == 0)
+            //                CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            //            else if (i == 1)
+            //                CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetInObjCoroutine(obj)));
+            //            else if (i == 2)
+            //                CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+            //            else if (i == 3)
+            //                CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetInObjCoroutine(obj)));
+            //        }
+            //    }
+            //}
 
             if (IsServer && !isPreBuilding && checkObj)
             {
@@ -51,6 +52,7 @@ public class MergerCtrl : LogisticsCtrl
                     //SendItem(itemList[0]);
                 }
             }
+
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
@@ -60,5 +62,26 @@ public class MergerCtrl : LogisticsCtrl
                 GetDelayFunc(DelayGetList[0], 0);
             }
         }
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                if (i == 0)
+                    CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                else if (i == 1)
+                    CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetInObjCoroutine(obj)));
+                else if (i == 2)
+                    CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+                else if (i == 3)
+                    CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetInObjCoroutine(obj)));
+            }
+        }
+        setModel.sprite = modelNum[dirNum];
     }
 }

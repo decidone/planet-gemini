@@ -143,6 +143,5 @@ public class BeltManager : NetworkBehaviour
             newBeltGroup.beltList[0].BeltStateSetClientRpc((int)BeltState.SoloBelt);
             newBeltGroup.beltList[0].FactoryModelSet();
         }
-        newBeltGroup.isSetBuildingOk = true;
     }
 }

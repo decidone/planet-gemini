@@ -10,27 +10,29 @@ public class PipeCtrl : FluidFactoryCtrl
     public bool isDown = false;
     public bool isLeft = false;
 
-    //protected override void Start()
-    //{
-    //    setModel = GetComponent<SpriteRenderer>();
-    //}
+    protected override void Start()
+    {
+        base.Start();
+
+        StrBuilt();
+    }
 
     protected override void Update()
     {
         base.Update();
         if (!removeState)
         {
-            SetDirNum();
-            if (isSetBuildingOk)
-            {                
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj, checkPos[i]));
-                    }
-                }
-            }
+            //SetDirNum();
+            //if (isSetBuildingOk)
+            //{                
+            //    for (int i = 0; i < nearObj.Length; i++)
+            //    {
+            //        if (nearObj[i] == null)
+            //        {
+            //            CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj, checkPos[i]));
+            //        }
+            //    }
+            //}
 
             if (!isPreBuilding && checkObj)
             {
@@ -47,6 +49,20 @@ public class PipeCtrl : FluidFactoryCtrl
                 }
             }
         }
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj, checkPos[i]));
+            }
+        }
+        setModel.sprite = modelNum[dirNum];
     }
 
     protected override void CheckPos()
@@ -70,9 +86,9 @@ public class PipeCtrl : FluidFactoryCtrl
             }
             if (obj.GetComponent<UnderPipeCtrl>() != null)
             {
-                StartCoroutine("UnderPipeConnectCheck", obj);
+                StartCoroutine(nameof(UnderPipeConnectCheck), obj);
             }
-            StartCoroutine("MainSourceCheck", factoryCtrl);
+            StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
         }
         ObjCheck(obj, vec);
     }

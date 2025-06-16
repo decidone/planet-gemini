@@ -10,24 +10,19 @@ public class Manufacturer : Production
         base.Update();
         if (!isPreBuilding)
         {
-            var slot = inventory.SlotCheck(0);
-            var slot1 = inventory.SlotCheck(1);
-            var slot2 = inventory.SlotCheck(2);
-            var slot3 = inventory.SlotCheck(3);
-
             if (recipe.name != null)
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
                     EfficiencyCheck();
 
-                    if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
-                    && slot2.amount >= recipe.amounts[2]
-                    && (slot3.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                    if (slot.Item2 >= recipe.amounts[0] && slot1.Item2 >= recipe.amounts[1]
+                    && slot2.Item2 >= recipe.amounts[2]
+                    && (slot3.Item2 + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
                         //output = itemDic[recipe.items[recipe.items.Count - 1]];
 
-                        if (slot3.item == output || slot3.item == null)
+                        if (slot3.Item1 == output || slot3.Item1 == null)
                         {
                             OperateStateSet(true);
                             prodTimer += Time.deltaTime;
@@ -35,14 +30,15 @@ public class Manufacturer : Production
                             {
                                 if (IsServer)
                                 {
+                                    Overall.instance.OverallConsumption(slot.Item1, recipe.amounts[0]);
+                                    Overall.instance.OverallConsumption(slot1.Item1, recipe.amounts[1]);
+                                    Overall.instance.OverallConsumption(slot2.Item1, recipe.amounts[2]);
+
                                     inventory.SlotSubServerRpc(0, recipe.amounts[0]);
                                     inventory.SlotSubServerRpc(1, recipe.amounts[1]);
                                     inventory.SlotSubServerRpc(2, recipe.amounts[2]);
                                     inventory.SlotAdd(3, output, recipe.amounts[recipe.amounts.Count - 1]);
 
-                                    Overall.instance.OverallConsumption(slot.item, recipe.amounts[0]);
-                                    Overall.instance.OverallConsumption(slot1.item, recipe.amounts[1]);
-                                    Overall.instance.OverallConsumption(slot2.item, recipe.amounts[2]);
                                     Overall.instance.OverallProd(output, recipe.amounts[recipe.amounts.Count - 1]);
                                 }
 
@@ -69,7 +65,7 @@ public class Manufacturer : Production
                 }
             }
 
-            if (IsServer && slot3.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot3.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -80,6 +76,15 @@ public class Manufacturer : Production
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         }
+    }
+
+    public override void CheckSlotState()
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
+        slot1 = inventory.SlotCheck(1);
+        slot2 = inventory.SlotCheck(2);
+        slot3 = inventory.SlotCheck(3);
     }
 
     public override void OpenUI()

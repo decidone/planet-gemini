@@ -93,8 +93,7 @@ public class AutoBuyer : Production
                     transportTimer = 0;
             }
 
-            var slot = inventory.SlotCheck(0);
-            if (IsServer && slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -104,6 +103,12 @@ public class AutoBuyer : Production
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         }
+    }
+
+    public override void CheckSlotState()
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
     }
 
     public void MaxSliderUIValueChanged(int amount)
@@ -154,15 +159,13 @@ public class AutoBuyer : Production
 
     public void TransportableCheck()
     {
-        var slot = inventory.SlotCheck(0);
-
         if (output == null)
         {
             isTransportable = false;
         }
         else
         {
-            if (slot.item == null)
+            if (slot.Item1 == null)
             {
                 if (maxBuyAmount > 0)
                 {
@@ -175,7 +178,7 @@ public class AutoBuyer : Production
             }
             else
             {
-                isTransportable = (slot.amount < minBuyAmount);
+                isTransportable = (slot.Item2 < minBuyAmount);
             }
         }
 
@@ -187,12 +190,10 @@ public class AutoBuyer : Production
 
     public void BuyableCheck()
     {
-        var slot = inventory.SlotCheck(0);
-
         int availableAmount = 0;
-        if (slot.item != null)
+        if (slot.Item1 != null)
         {
-            availableAmount = maxBuyAmount - slot.amount;
+            availableAmount = maxBuyAmount - slot.Item2;
         }
         else
         {

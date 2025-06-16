@@ -18,29 +18,52 @@ public class PortalUnitOut : PortalObj
         isGetLine = true;
     }
 
-    protected override void Update()
+    protected override void CheckNearObj(int index, Action<GameObject> callback)
     {
-        base.Update();
-    }
+        if (map == null)
+        {
+            if (isInHostMap)
+                map = GameManager.instance.hostMap;
+            else
+                map = GameManager.instance.clientMap;
+        }
 
-    protected override void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback)
-    {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
+        int posX = (int)transform.position.x;
+        int posY = (int)transform.position.y;
+        int nearX = posX + twoDirections[index, 0];
+        int nearY = posY + twoDirections[index, 1];
+        Cell cell = map.GetCellDataFromPos(nearX, nearY);
+        if (cell == null)
+            return;
 
         if (nearPos[index] != null)
-            nearPos[index] = this.transform.position + startVec + endVec;
+            nearPos[index] = new Vector2(nearX, nearY);
 
-        for (int i = 0; i < hits.Length; i++)
+        GameObject obj = cell.structure;
+        if (obj != null)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-                hits[i].collider.gameObject != this.gameObject)
+            if (obj.CompareTag("Factory"))
             {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
+                nearObj[index] = obj;
+                callback(obj);
             }
         }
+
+        //RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
+
+        //if (nearPos[index] != null)
+        //    nearPos[index] = this.transform.position + startVec + endVec;
+
+        //for (int i = 0; i < hits.Length; i++)
+        //{
+        //    Collider2D hitCollider = hits[i].collider;
+        //    if (hitCollider.CompareTag("Factory") && hits[i].collider.gameObject != this.gameObject)
+        //    {
+        //        nearObj[index] = hits[i].collider.gameObject;
+        //        callback(hitCollider.gameObject);
+        //        break;
+        //    }
+        //}
     }
 
     public void SpawnUnitCheck(GameObject unit)

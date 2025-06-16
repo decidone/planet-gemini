@@ -13,7 +13,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
     {
         mainSource = myFluidScript;
         fluidName = "CrudeOil";
-        CheckPos();
+        StrBuilt();
     }
 
     protected override void Update()
@@ -22,16 +22,16 @@ public class ExtractorCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            if (isSetBuildingOk)
-            {
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
-                    }
-                }
-            }
+            //if (isSetBuildingOk)
+            //{
+            //    for (int i = 0; i < nearObj.Length; i++)
+            //    {
+            //        if (nearObj[i] == null)
+            //        {
+            //            CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
+            //        }
+            //    }
+            //}
 
             if (!isPreBuilding && checkObj)
             {
@@ -48,6 +48,19 @@ public class ExtractorCtrl : FluidFactoryCtrl
                     PumpUp();
                     pumpTimer = 0;
                 }
+            }
+        }
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
             }
         }
     }

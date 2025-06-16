@@ -15,6 +15,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         //setModel = GetComponent<SpriteRenderer>();
         nearObj = new GameObject[2];
         checkPos = new Vector2[2];
+
+        StrBuilt();
     }
 
     protected override void Update()
@@ -22,20 +24,20 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         base.Update();
         if (!removeState)
         {
-            SetDirNum();
-            if (isSetBuildingOk)
-            {
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        if (i == 0)
-                            CheckNearObj(checkPos[0], 0, obj => UnderPipeSetInObj(obj));
-                        else if (i == 1)
-                            CheckNearObj(checkPos[1], 1,  obj => UnderPipeSetOutObj(obj));
-                    }
-                }
-            }
+            //SetDirNum();
+            //if (isSetBuildingOk)
+            //{
+            //    for (int i = 0; i < nearObj.Length; i++)
+            //    {
+            //        if (nearObj[i] == null)
+            //        {
+            //            if (i == 0)
+            //                CheckNearObj(checkPos[0], 0, obj => UnderPipeSetInObj(obj));
+            //            else if (i == 1)
+            //                CheckNearObj(checkPos[1], 1,  obj => UnderPipeSetOutObj(obj));
+            //        }
+            //    }
+            //}
 
             if (!isPreBuilding && checkObj)
             {
@@ -52,6 +54,23 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                 }
             }
         }
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                if (i == 0)
+                    CheckNearObj(checkPos[0], 0, obj => UnderPipeSetInObj(obj));
+                else if (i == 1)
+                    CheckNearObj(checkPos[1], 1, obj => UnderPipeSetOutObj(obj));
+            }
+        }
+        setModel.sprite = modelNum[dirNum];
     }
 
     protected override void CheckPos()
@@ -92,8 +111,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-                hits[i].collider.gameObject != this.gameObject)
+            if (hitCollider.CompareTag("Factory") && hits[i].collider.gameObject != this.gameObject)
             {
                 if (index == 0)
                 {
@@ -155,7 +173,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                         othUnderPipe.connectUnderPipe.GetComponent<UnderPipeCtrl>().DisCntObj();
                     othUnderPipe.DisCntObj();
                 }
-                StartCoroutine("MainSourceCheck", factoryCtrl);
+                StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
             }
         }
     }
@@ -183,7 +201,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             {
                 otherPipe.GetComponent<PipeCtrl>().FactoryVecCheck(this.gameObject);
             }
-            StartCoroutine("MainSourceCheck", factoryCtrl);
+            StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
         }
     }
 

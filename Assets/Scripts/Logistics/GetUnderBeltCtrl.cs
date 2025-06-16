@@ -20,6 +20,8 @@ public class GetUnderBeltCtrl : LogisticsCtrl
     {
         gameManager = GameManager.instance;
         preBuilding = PreBuilding.instance;
+
+        StrBuilt();
     }
 
     protected override void Update()
@@ -27,20 +29,20 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         base.Update();
         if (!removeState)
         {
-            SetDirNum();
-            if (isSetBuildingOk)
-            {
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        if (i == 0)
-                            CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                        else if (i == 2) 
-                            CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
-                    }
-                }
-            }                
+            //SetDirNum();
+            //if (isSetBuildingOk)
+            //{
+            //    for (int i = 0; i < nearObj.Length; i++)
+            //    {
+            //        if (nearObj[i] == null)
+            //        {
+            //            if (i == 0)
+            //                CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            //            else if (i == 2) 
+            //                CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+            //        }
+            //    }
+            //}
 
             if (IsServer && !isPreBuilding && checkObj)
             {
@@ -100,10 +102,21 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         preBuildingCheck = false;
     }
 
-    protected override void SetDirNum()
+    public override void NearStrBuilt()
     {
-        setModel.sprite = modelNum[dirNum + (level * 4)];
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
         CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                if (i == 0)
+                    CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                else if (i == 2)
+                    CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+            }
+        }
+        setModel.sprite = modelNum[dirNum + (level * 4)];
     }
 
     protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
@@ -122,9 +135,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             if (index != 2)
             {
                 Collider2D hitCollider = hits[i].collider;
-                if (hitCollider.CompareTag("Factory") &&
-                    hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-                    hits[i].collider.gameObject != this.gameObject)
+                if (hitCollider.CompareTag("Factory") && hits[i].collider.gameObject != this.gameObject)
                 {
                     nearObj[index] = hits[i].collider.gameObject;
                     callback(hitCollider.gameObject);
@@ -134,9 +145,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             else
             {
                 Collider2D hitCollider = hits[i].collider;
-                if (hitCollider.CompareTag("Factory") &&
-                    hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-                    hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
+                if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
                 {
                     if (hitCollider.TryGetComponent(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)                    
                     {

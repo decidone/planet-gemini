@@ -18,22 +18,18 @@ public class Furnace : Production
         base.Update();
         if (!isPreBuilding)
         {
-            var slot = inventory.SlotCheck(0);
-            var slot1 = inventory.SlotCheck(1);
-            var slot2 = inventory.SlotCheck(2);
-
-            if (fuel == 0 && slot1.item == itemDic["Coal"] && slot1.amount > 0)
+            if (fuel == 0 && slot1.Item1 == itemDic["Coal"] && slot1.Item2 > 0)
             {
                 if(IsServer)
                     inventory.SlotSubServerRpc(1, 1);
                 fuel = maxFuel;
             }
 
-            if (slot.item != null)
+            if (slot.Item1 != null)
             {
-                if (fuel > 0 && slot.amount >= recipe.amounts[0] && (slot2.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                if (fuel > 0 && slot.Item2 >= recipe.amounts[0] && (slot2.Item2 + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                 {
-                    if (slot2.item == output || slot2.item == null)
+                    if (slot2.Item1 == output || slot2.Item1 == null)
                     {
                         OperateStateSet(true);
                         prodTimer += Time.deltaTime;
@@ -42,10 +38,11 @@ public class Furnace : Production
                             fuel -= 25;
                             if (IsServer)
                             {
+                                Overall.instance.OverallConsumption(slot.Item1, recipe.amounts[0]);
+
                                 inventory.SlotSubServerRpc(0, recipe.amounts[0]);
                                 inventory.SlotAdd(2, output, recipe.amounts[recipe.amounts.Count - 1]);
 
-                                Overall.instance.OverallConsumption(slot.item, recipe.amounts[0]);
                                 Overall.instance.OverallProd(output, recipe.amounts[recipe.amounts.Count - 1]);
                             }
                             soundManager.PlaySFX(gameObject, "structureSFX", "Flames");
@@ -70,7 +67,7 @@ public class Furnace : Production
                 prodTimer = 0;
             }
 
-            if (IsServer && slot2.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot2.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -82,12 +79,19 @@ public class Furnace : Production
         }
     }
 
+    public override void CheckSlotState()
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
+        slot1 = inventory.SlotCheck(1);
+        slot2 = inventory.SlotCheck(2);
+    }
+
     public void SetFurnaceRecipe()
     {
-        var slot = inventory.SlotCheck(0);
         foreach (Recipe _recipe in recipes)
         {
-            if (slot.item == itemDic[_recipe.items[0]])
+            if (slot.Item1 == itemDic[_recipe.items[0]])
             {
                 recipe = _recipe;
                 output = itemDic[recipe.items[recipe.items.Count - 1]];
@@ -151,13 +155,10 @@ public class Furnace : Production
 
     public override bool CanTakeItem(Item item)
     {
-        var slot = inventory.SlotCheck(0);
-        var slot1 = inventory.SlotCheck(1);
-
-        if (itemDic["Coal"] == item && slot1.amount < 99)
+        if (itemDic["Coal"] == item && slot1.Item2 < 99)
             return true;
 
-        if (slot.item == null)
+        if (slot.Item1 == null)
         {
             if (recipes != null)
             {
@@ -168,7 +169,7 @@ public class Furnace : Production
                 }
             }
         }
-        else if (slot.item == item && slot.amount < 99)
+        else if (slot.Item1 == item && slot.Item2 < 99)
             return true;
 
         return false;

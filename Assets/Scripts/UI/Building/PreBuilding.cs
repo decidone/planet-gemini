@@ -607,8 +607,8 @@ public class PreBuilding : NetworkBehaviour
         {
             Item item = ItemList.instance.itemDic[buildingData.items[i]];
             int cost = buildingData.amounts[i];
-            GameManager.instance.inventory.Sub(item, cost * amount);
             Overall.instance.OverallConsumption(item, cost * amount);
+            GameManager.instance.inventory.Sub(item, cost * amount);
         }
     }
 
@@ -644,7 +644,6 @@ public class PreBuilding : NetworkBehaviour
         if (beltGroupSet.TryGetComponent(out BeltGroupMgr beltGroupMgr))
         {
             beltGroupMgr.SetBeltData();
-            beltGroupMgr.isSetBuildingOk = true;
         }
     }
 

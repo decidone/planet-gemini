@@ -1764,8 +1764,8 @@ public class GameManager : NetworkBehaviour
         }
         foreach (var data in upgradeItemDic)
         {
-            inventory.Sub(data.Key, data.Value);
             Overall.instance.OverallConsumption(data.Key, data.Value);
+            inventory.Sub(data.Key, data.Value);
         }
 
         for (int i = 0; i < str.Length; i++)

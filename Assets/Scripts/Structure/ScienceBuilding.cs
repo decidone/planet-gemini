@@ -19,10 +19,16 @@ public class ScienceBuilding : PortalObj
         base.OnClientConnectedCallback(clientId);
     }
 
-    [ClientRpc]
-    protected override void RepairGaugeClientRpc(bool preBuilding, bool setBuildingOk, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    public override void NearStrBuilt()
     {
-        StructureStateSet(preBuilding, setBuildingOk, destroy, hpSet, repairGaugeSet, destroyTimerSet);
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        //CheckPos();
+    }
+
+    [ClientRpc]
+    protected override void RepairGaugeClientRpc(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    {
+        StructureStateSet(preBuilding, destroy, hpSet, repairGaugeSet, destroyTimerSet);
         SciBuildingRepairEnd();
     }
 

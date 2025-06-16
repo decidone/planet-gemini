@@ -221,9 +221,9 @@ public class ScienceDb : NetworkBehaviour
         if (inputAmount == 0 || maxInputItemAmount == 0)
             return;
 
+        Overall.instance.OverallConsumption(item, maxInputItemAmount);
         gameManager.inventory.Sub(item, inputAmount);
         btn.ItemAddAmount(scienceInfoDataIndex, maxInputItemAmount);
-        Overall.instance.OverallConsumption(item, maxInputItemAmount);
     }
 
     public void LoadData(List<ScienceData> data)

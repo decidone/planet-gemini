@@ -27,8 +27,10 @@ public class SplitterCtrl : LogisticsCtrl
     void Start()
     {
         //setModel = GetComponent<SpriteRenderer>();
-        CheckPos();
+        //CheckPos();
         clickEvent = GetComponent<LogisticsClickEvent>();
+
+        StrBuilt();
     }
 
     protected override void Update()
@@ -37,25 +39,25 @@ public class SplitterCtrl : LogisticsCtrl
 
         if (!removeState)
         {
-            SetDirNum();
+            //SetDirNum();
 
-            if (isSetBuildingOk)
-            {
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null)
-                    {
-                        if (i == 0)
-                            CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
-                        else if (i == 1)
-                            CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj, 2)));
-                        else if (i == 2)
-                            CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
-                        else if (i == 3)
-                            CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
-                    }
-                }
-            }               
+            //if (isSetBuildingOk)
+            //{
+            //    for (int i = 0; i < nearObj.Length; i++)
+            //    {
+            //        if (nearObj[i] == null)
+            //        {
+            //            if (i == 0)
+            //                CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
+            //            else if (i == 1)
+            //                CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj, 2)));
+            //            else if (i == 2)
+            //                CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+            //            else if (i == 3)
+            //                CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
+            //        }
+            //    }
+            //}
 
             if (IsServer && !isPreBuilding && checkObj)
             { 
@@ -85,10 +87,25 @@ public class SplitterCtrl : LogisticsCtrl
         }
     }
 
-    protected override void SetDirNum()
+    public override void NearStrBuilt()
     {
-        setModel.sprite = modelNum[dirNum + (level * 4)];
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
         CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                if (i == 0)
+                    CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
+                else if (i == 1)
+                    CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj, 2)));
+                else if (i == 2)
+                    CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+                else if (i == 3)
+                    CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
+            }
+        }
+        setModel.sprite = modelNum[dirNum + (level * 4)];
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -295,7 +312,6 @@ public class SplitterCtrl : LogisticsCtrl
         {
             SendFacDelay(outObject, sendItem);
         }
-        Debug.Log("sp");
         itemListRemove();
         ItemNumCheck();
         

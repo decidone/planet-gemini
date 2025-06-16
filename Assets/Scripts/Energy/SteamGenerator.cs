@@ -15,7 +15,6 @@ public class SteamGenerator : FluidFactoryCtrl
     [SerializeField]
     SpriteRenderer view;
     bool isBuildDone;
-    bool isPlaced;
     PreBuilding preBuilding;
     Structure preBuildingStr;
     bool preBuildingCheck;
@@ -26,6 +25,7 @@ public class SteamGenerator : FluidFactoryCtrl
     {
         #region ProductionAwake
         inventory = this.GetComponent<Inventory>();
+        inventory.onItemChangedCallback += CheckSlotState;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
@@ -77,18 +77,18 @@ public class SteamGenerator : FluidFactoryCtrl
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        CheckPos();
+        StrBuilt();
         #endregion
 
         maxFuel = 100;
         isBuildDone = false;
-        isPlaced = false;
         preBuildingCheck = false;
         preBuilding = PreBuilding.instance;
         prodTimer = cooldown;
 
         displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
         displaySlot.AddItem(ItemList.instance.itemDic["Water"], 0);
+        view.enabled = false;
     }
 
     protected override void Update()
@@ -105,7 +105,7 @@ public class SteamGenerator : FluidFactoryCtrl
             {
                 RepairFunc(false);
             }
-            else if (isPreBuilding && isSetBuildingOk)
+            else if (isPreBuilding)
             {
                 RepairFunc(true);
             }
@@ -113,18 +113,18 @@ public class SteamGenerator : FluidFactoryCtrl
             WarningStateCheck();
         }
 
-        if (isSetBuildingOk)
-        {
-            for (int i = 0; i < nearObj.Length; i++)
-            {
-                if (nearObj[i] == null)
-                {
-                    int dirIndex = i / 2;
-                    CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => FluidSetOutObj(obj));
-                    CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                }
-            }
-        }
+        //if (isSetBuildingOk)
+        //{
+        //    for (int i = 0; i < nearObj.Length; i++)
+        //    {
+        //        if (nearObj[i] == null)
+        //        {
+        //            int dirIndex = i / 2;
+        //            CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => FluidSetOutObj(obj));
+        //            CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+        //        }
+        //    }
+        //}
 
         if (IsServer && !isPreBuilding)
         {
@@ -151,15 +151,6 @@ public class SteamGenerator : FluidFactoryCtrl
         #endregion
 
         base.Update();
-
-        if (!isPlaced)
-        {
-            if (isSetBuildingOk)
-            {
-                view.enabled = false;
-                isPlaced = true;
-            }
-        }
 
         if (gameManager.focusedStructure == null)
         {
@@ -194,13 +185,12 @@ public class SteamGenerator : FluidFactoryCtrl
                 isBuildDone = true;
             }
 
-            var slot = inventory.SlotCheck(0);
-            if (fuel <= 50 && slot.item == FuelItem && slot.amount > 0)
+            if (fuel <= 50 && slot.Item1 == FuelItem && slot.Item2 > 0)
             {
                 if (IsServer)
                 {
+                    Overall.instance.OverallConsumption(slot.Item1, 1);
                     inventory.SlotSubServerRpc(0, 1);
-                    Overall.instance.OverallConsumption(slot.item, 1);
                 }
                 fuel += 50;
             }
@@ -219,6 +209,26 @@ public class SteamGenerator : FluidFactoryCtrl
                 {
                     OperateStateSet(false);
                 }
+            }
+        }
+    }
+
+    public override void CheckSlotState()
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                CheckNearObj(i, obj => FluidSetOutObj(obj));
+                CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }
         }
     }
@@ -296,8 +306,7 @@ public class SteamGenerator : FluidFactoryCtrl
 
     public override bool CanTakeItem(Item item)
     {
-        var slot = inventory.SlotCheck(0);
-        if (FuelItem == item && slot.amount < 99)
+        if (FuelItem == item && slot.Item2 < 99)
             return true;
 
         return false;
@@ -356,11 +365,10 @@ public class SteamGenerator : FluidFactoryCtrl
             playerInven = GameManager.instance.hostMapInven;
         else
             playerInven = GameManager.instance.clientMapInven;
-        var slot = inventory.SlotCheck(0);
-
-        if (slot.item != null)
+        
+        if (slot.Item1 != null)
         {
-            playerInven.Add(slot.item, slot.amount);
+            playerInven.Add(slot.Item1, slot.Item2);
         }
     }
 
@@ -371,9 +379,8 @@ public class SteamGenerator : FluidFactoryCtrl
             Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
             returnDic.Add(ItemList.instance.itemDic[fluidName], (int)saveFluidNum);
 
-            var slot = inventory.SlotCheck(0);
-            if (slot.item != null && slot.amount > 0)
-                returnDic.Add(slot.item, slot.amount);
+            if (slot.Item1 != null && slot.Item2 > 0)
+                returnDic.Add(slot.Item1, slot.Item2);
 
             return returnDic;
         }

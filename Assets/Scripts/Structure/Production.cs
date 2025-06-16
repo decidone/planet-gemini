@@ -35,10 +35,16 @@ public abstract class Production : Structure
     protected Vector3 endLine;
     public bool isGetLine;
 
+    protected (Item, int) slot = (null, 0);
+    protected (Item, int) slot1 = (null, 0);
+    protected (Item, int) slot2 = (null, 0);
+    protected (Item, int) slot3 = (null, 0);
+
     protected override void Awake()
     {
         base.Awake();
         inventory = this.GetComponent<Inventory>();
+        inventory.onItemChangedCallback += CheckSlotState;
         isGetLine = false;
         isStorageBuilding = false;
         itemDic = ItemList.instance.itemDic;
@@ -55,28 +61,30 @@ public abstract class Production : Structure
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        CheckPos();
+        //CheckPos();
+
+        StrBuilt();
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (isSetBuildingOk)
-        {
-            for (int i = 0; i < nearObj.Length; i++)
-            {
-                if (nearObj[i] == null && sizeOneByOne)
-                {
-                    CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                }
-                else if (nearObj[i] == null && !sizeOneByOne)
-                {
-                    int dirIndex = i / 2;
-                    CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                }
-            }
-        }
+        //if (isSetBuildingOk)
+        //{
+        //    for (int i = 0; i < nearObj.Length; i++)
+        //    {
+        //        if (nearObj[i] == null && sizeOneByOne)
+        //        {
+        //            CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+        //        }
+        //        else if (nearObj[i] == null && !sizeOneByOne)
+        //        {
+        //            int dirIndex = i / 2;
+        //            CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+        //        }
+        //    }
+        //}
 
         if (IsServer && !isPreBuilding && checkObj)
         {
@@ -86,6 +94,24 @@ public abstract class Production : Structure
         if (DelayGetList.Count > 0 && inObj.Count > 0)
         {
             GetDelayFunc(DelayGetList[0], 0);
+        }
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        // 필요한 경우 SetDirNum()이나 CheckPos()도 호출해서 방향, 스프라이트를 잡아줌
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null && sizeOneByOne)
+            {
+                CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
+            else if (nearObj[i] == null && !sizeOneByOne)
+            {
+                CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
         }
     }
 

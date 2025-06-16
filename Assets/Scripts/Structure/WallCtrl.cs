@@ -12,12 +12,9 @@ public class WallCtrl : Structure
     protected override void Update()
     {
         base.Update();
-        SetDirNum();
-    }
 
-    protected override void SetDirNum()
-    {
-        setModel.sprite = modelNum[dirNum + level];
+        // 여기 업글 시 수정되게
         CheckPos();
+        setModel.sprite = modelNum[dirNum + level];
     }
 }
