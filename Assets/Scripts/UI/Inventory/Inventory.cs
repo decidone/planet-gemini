@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
+using static Inventory;
 
 // UTF-8 설정
 public class Inventory : NetworkBehaviour
 {
-    public delegate void OnItemChanged();
+    public delegate void OnItemChanged(int slotindex);
     public OnItemChanged onItemChangedCallback;
+
+    public delegate void InvenAllSlotUpdate();
+    public InvenAllSlotUpdate invenAllSlotUpdate;
 
     public int space;   // 아이템 슬롯 상한, 드래그용 슬롯 번호를 겸 함
     public int maxAmount;   // 한 슬롯 당 최대 수량
@@ -172,12 +176,10 @@ public class Inventory : NetworkBehaviour
         {
             if (!items.ContainsKey(i))
             {
-                RecipeSlotAdd(i, item, amount);
+                NonNetSlotAdd(i, item, amount);
                 break;
             }
         }
-
-        onItemChangedCallback?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -248,8 +250,6 @@ public class Inventory : NetworkBehaviour
                 Drop(item, totalAmount, isHost);
             }
         }
-
-        onItemChangedCallback?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -311,8 +311,6 @@ public class Inventory : NetworkBehaviour
                 Drop(item, tempAmount, isHost);
             }
         }
-
-        onItemChangedCallback?.Invoke();
     }
 
     [ClientRpc]
@@ -387,8 +385,6 @@ public class Inventory : NetworkBehaviour
             ItemDragManager.instance.Clear(isHostRequest);
             ItemDragManager.instance.Add(tempItem, tempAmount, isHostRequest);
         }
-
-        onItemChangedCallback?.Invoke();
     }
 
     public void Merge(int slotNum, bool isHostRequest)
@@ -410,8 +406,6 @@ public class Inventory : NetworkBehaviour
             SlotAdd(slotNum, dragItem, dragAmount);
             ItemDragManager.instance.Clear(isHostRequest);
         }
-
-        onItemChangedCallback?.Invoke();
     }
 
     public (Item item, int amount) SlotCheck(int slotNum)
@@ -467,10 +461,34 @@ public class Inventory : NetworkBehaviour
             Debug.Log("Slot Add Error");
         }
 
-        onItemChangedCallback?.Invoke();
+        onItemChangedCallback?.Invoke(slotNum);
     }
 
-    public void RecipeSlotAdd(int slotNum, Item item, int amount)
+    public void NonNetSlotsAdd(int[] slotNum, Item[] item, int[] amount, int index) // 레시피나 로드된 유저의 인벤토리용
+    {
+        for (int i = 0; i < index; i++)
+        {
+            if (!items.ContainsKey(slotNum[i]))
+            {
+                items.Add(slotNum[i], item[i]);
+                amounts.Add(slotNum[i], amount[i]);
+                totalItems[item[i]] += amount[i];
+            }
+            else if (items[slotNum[i]] == item[i])
+            {
+                amounts[slotNum[i]] += amount[i];
+                totalItems[items[slotNum[i]]] += amount[i];
+            }
+            else
+            {
+                Debug.Log("Slot Add Error");
+            }
+        }
+
+        invenAllSlotUpdate?.Invoke();
+    }
+
+    public void NonNetSlotAdd(int slotNum, Item item, int amount) // 레시피나 로드된 유저의 인벤토리용
     {
         if (!items.ContainsKey(slotNum))
         {
@@ -488,7 +506,7 @@ public class Inventory : NetworkBehaviour
             Debug.Log("Slot Add Error");
         }
 
-        onItemChangedCallback?.Invoke();
+        onItemChangedCallback?.Invoke(slotNum);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -514,7 +532,7 @@ public class Inventory : NetworkBehaviour
             amounts.Remove(slotNum);
         }
 
-        onItemChangedCallback?.Invoke();
+        onItemChangedCallback?.Invoke(slotNum);
     }
 
     public void Sub(Item item, int amount)
@@ -580,8 +598,6 @@ public class Inventory : NetworkBehaviour
                     ItemDragManager.instance.Add(items[slotNum], 1, isHost);
                     SlotSubServerRpc(slotNum, 1);
                 }
-
-                onItemChangedCallback?.Invoke();
             }
         }
     }
@@ -632,7 +648,7 @@ public class Inventory : NetworkBehaviour
 
     public void Refresh()
     {
-        onItemChangedCallback?.Invoke();
+        invenAllSlotUpdate?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -650,7 +666,7 @@ public class Inventory : NetworkBehaviour
             items.Remove(slotNum);
             amounts.Remove(slotNum);
 
-            onItemChangedCallback?.Invoke();
+            onItemChangedCallback?.Invoke(slotNum);
         }
     }
 
@@ -679,7 +695,7 @@ public class Inventory : NetworkBehaviour
         Drop(dragItem, dragAmount, isHost);
         ItemDragManager.instance.Clear(isHost);
 
-        onItemChangedCallback?.Invoke();
+        invenAllSlotUpdate?.Invoke();
     }
 
     public void Drop(Item item, int amount, bool isHost)
@@ -701,7 +717,6 @@ public class Inventory : NetworkBehaviour
 
     public void ResetInven()
     {
-        Debug.Log("ResetInven");
         items.Clear();
         amounts.Clear();
         totalItems.Clear();
@@ -755,7 +770,7 @@ public class Inventory : NetworkBehaviour
             }
         }
 
-        onItemChangedCallback?.Invoke();
+        invenAllSlotUpdate?.Invoke();
     }
 
     public bool TotalItemsAmountLimitCheck(int amountLimit)

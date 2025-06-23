@@ -25,10 +25,12 @@ public class AttackTower : TowerAi
     bool isSingleAttack;
 
     TowerAttackOption towerAttackOption;
+    AggroAmount aggroAmount;
 
     protected override void Start()
     {
         base.Start();
+        aggroAmount = GetComponent<AggroAmount>();
         towerAttackOption = GetComponent<TowerAttackOption>();
         bulletDataManager = TwBulletDataManager.instance;
         bulletDic = bulletDataManager.bulletDic;
@@ -178,7 +180,7 @@ public class AttackTower : TowerAi
         }
     }
 
-    public override void CheckSlotState()
+    public override void CheckSlotState(int slotindex)
     {
         // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
         slot = inventory.SlotCheck(0);
@@ -424,6 +426,7 @@ public class AttackTower : TowerAi
             Debug.Log("Attack");
             isAttacked = true;
             soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
+            aggroAmount.SetAggroAmount(damage, attDelayTime + loadedBullet.fireRate);
         }
 
         return isAttacked;

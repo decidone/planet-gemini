@@ -22,7 +22,7 @@ public class Disintegrator : Production
         inventory.onItemChangedCallback += IsInvenEmptyCheck;
     }
 
-    public void IsInvenEmptyCheck()
+    public void IsInvenEmptyCheck(int slotindex)
     {
         if (inventory.IsInvenEmpty())
             isInvenEmpty = true;
@@ -52,6 +52,11 @@ public class Disintegrator : Production
     }
 
     public void CheckTotalAmount()
+    {
+        CheckTotalAmount(0);
+    }
+
+    public void CheckTotalAmount(int slotindex)
     {
         int totalAmount = 0;
 
@@ -163,6 +168,7 @@ public class Disintegrator : Production
         autoToggle.isOn = isAuto;
         autoToggle.onValueChanged.AddListener(SetAuto);
         inventory.onItemChangedCallback += CheckTotalAmount;
+        inventory.invenAllSlotUpdate += CheckTotalAmount;
         CheckTotalAmount();
     }
 
@@ -172,6 +178,7 @@ public class Disintegrator : Production
         sInvenManager.ReleaseInven();
 
         inventory.onItemChangedCallback -= CheckTotalAmount;
+        inventory.invenAllSlotUpdate -= CheckTotalAmount;
         confirmBtn.onClick.RemoveAllListeners();
         autoToggle.onValueChanged.RemoveAllListeners();
         autoToggle.isOn = false;

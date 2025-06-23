@@ -91,7 +91,6 @@ public class Slot : MonoBehaviour
         icon.enabled = false;
         amountText.text = null;
         amountText.enabled = false;
-
         onSlotChangedCallback?.Invoke();
     }
 

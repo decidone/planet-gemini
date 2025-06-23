@@ -70,14 +70,14 @@ public class FurnaceUpgrade : Production
         }
     }
 
-    public override void CheckSlotState()
+    public override void CheckSlotState(int slotindex)
     {
         // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
         slot = inventory.SlotCheck(0);
         slot1 = inventory.SlotCheck(1);
     }
 
-    public void SetFurnaceRecipe()
+    public void SetFurnaceRecipe(int slotindex)
     {
         foreach (Recipe _recipe in recipes)
         {

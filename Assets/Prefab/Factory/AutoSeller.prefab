@@ -419,6 +419,8 @@ GameObject:
   - component: {fileID: 5999188213166003495}
   - component: {fileID: 5197040497763038552}
   - component: {fileID: 7990887795855875503}
+  - component: {fileID: -8268143765734000777}
+  - component: {fileID: 7858862032222254553}
   m_Layer: 8
   m_Name: AutoSeller
   m_TagString: Factory
@@ -487,7 +489,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 1100553181, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
+  m_Sprite: {fileID: 550135571, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -624,8 +626,10 @@ MonoBehaviour:
   portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
+  isManualDestroy: 0
   destroyStart: 0
+  isDestroying: 0
+  isRunning: 0
   settingEndCheck: 0
   DelayGetList: 
   connectedPosList: []
@@ -635,6 +639,7 @@ MonoBehaviour:
   getAnim: 0
   strImg: []
   isAuto: 0
+  selectPointSetPos: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -643,7 +648,6 @@ MonoBehaviour:
   isGetLine: 0
   trUnit: {fileID: 4728483135223444395, guid: 3497393f39f650e4c89243555f2f5d67, type: 3}
   toolShopMerchListSO: {fileID: 11400000, guid: efa2e799c3416cb45a1f53f994610a14, type: 2}
-  sendAmount: 0
 --- !u!114 &5999188213166003495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -691,6 +695,40 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-8268143765734000777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5999188213166003493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 5
+  aggroAmount: 0
+--- !u!95 &7858862032222254553
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5999188213166003493}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ed3765f78f2628e4db9c34617d219b1a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1639140561294105402
 PrefabInstance:
   m_ObjectHideFlags: 0

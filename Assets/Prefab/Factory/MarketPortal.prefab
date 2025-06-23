@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 721077935684597047}
   - component: {fileID: 721077935684597046}
   - component: {fileID: 8425814093664681245}
+  - component: {fileID: 1106269566025139823}
   m_Layer: 8
   m_Name: MarketPortal
   m_TagString: Untagged
@@ -137,6 +138,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f552c53a88b954d806f61051ccff9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1106269566025139823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721077935684597043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 5
 --- !u!1001 &721077935722914329
 PrefabInstance:
   m_ObjectHideFlags: 0

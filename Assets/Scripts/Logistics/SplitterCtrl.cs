@@ -8,8 +8,10 @@ using Unity.Netcode;
 // UTF-8 설정
 public class SplitterCtrl : LogisticsCtrl
 {
-    bool filterOn = false;
+    bool canSend = false;
     int filterindex = 0;
+    int cantSentItemCount = 0;
+    int smartFilterItemIndex = 0;
     LogisticsClickEvent clickEvent;
 
     [Serializable]
@@ -17,8 +19,6 @@ public class SplitterCtrl : LogisticsCtrl
     {
         public GameObject outObj;
         public bool isFilterOn;
-        public bool isFullFilterOn;
-        public bool isItemFilterOn;
         public bool isReverseFilterOn;
         public Item selItem;
     }
@@ -27,7 +27,11 @@ public class SplitterCtrl : LogisticsCtrl
     void Start()
     {
         //setModel = GetComponent<SpriteRenderer>();
-        //CheckPos();
+        for (int i = 0; i < arrFilter.Length; i++)
+        {
+            arrFilter[i].isFilterOn = true;
+        }
+        CanSendCheck();
         clickEvent = GetComponent<LogisticsClickEvent>();
 
         StrBuilt();
@@ -63,17 +67,12 @@ public class SplitterCtrl : LogisticsCtrl
             { 
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                     GetItem();
-                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+                if (canSend && itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
-                    if (filterOn && level > 0) 
-                    {
-                        FilterSendItem();
-                    }
-                    else
-                    {
-                        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
-                        SendItem(itemIndex);
-                    }
+                    if(level == 1)
+                        FilterSendItem(true);
+                    else if(level == 0)
+                        FilterSendItem(false);
                 }
             }
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
@@ -114,9 +113,12 @@ public class SplitterCtrl : LogisticsCtrl
         base.ClientConnectSyncServerRpc();
         for (int a = 0; a < arrFilter.Length; a++)
         {
-            if (arrFilter[a].selItem == null)
-                continue;
-            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(arrFilter[a].selItem);
+            int itemIndex = -1;
+            if (arrFilter[a].selItem != null)
+            {
+                itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(arrFilter[a].selItem);
+            }
+
             if(arrFilter[a].outObj != null)
             {
                 arrFilter[a].outObj.TryGetComponent(out Structure str);
@@ -154,24 +156,10 @@ public class SplitterCtrl : LogisticsCtrl
     {
         arrFilter[num].isFilterOn = filterOn;
         arrFilter[num].isReverseFilterOn = reverseFilterOn;
-        arrFilter[num].selItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        ItemFilterCheck();
-    }
-
-    bool FilterCheck()
-    {
-        for (int a = 0; a < arrFilter.Length; a++)
+        if (itemIndex != -1)
         {
-            if (arrFilter[a].isFilterOn)                
-                return true;
+            arrFilter[num].selItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         }
-
-        return false;
-    }
-
-    public void ItemFilterCheck()
-    {
-        filterOn = FilterCheck();
     }
 
     void FilterArr(GameObject obj, int num)
@@ -181,9 +169,16 @@ public class SplitterCtrl : LogisticsCtrl
 
 
     [ServerRpc(RequireOwnership = false)]
-    public void FilterSetServerRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
+    public void FilterSetServerRpc(int num, bool reverseFilterOn, int itemIndex)
     {
-        FilterSetClientRpc(num, filterOn, reverseFilterOn, itemIndex);
+        FilterSetClientRpc(num, true, reverseFilterOn, itemIndex);
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void FilterSetServerRpc(int num, bool filterOn)
+    {
+        FilterSetClientRpc(num, filterOn, false, -1);
     }
 
     [ClientRpc]
@@ -191,10 +186,41 @@ public class SplitterCtrl : LogisticsCtrl
     {
         arrFilter[num].isFilterOn = filterOn;
         arrFilter[num].isReverseFilterOn = reverseFilterOn;
-        arrFilter[num].selItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        Debug.Log(arrFilter[num].selItem);
-        ItemFilterCheck();
+        if (itemIndex != -1)
+        {
+            arrFilter[num].selItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        }
         UIReset();
+        CanSendCheck();
+    }
+
+    void CanSendCheck()
+    {
+        bool canSendCheck = false;
+        if (level == 1)
+        {
+            for (int i = 0; i < arrFilter.Length; i++)
+            {
+                if (arrFilter[i].selItem != null)
+                {
+                    canSendCheck = true;
+                    break;
+                }
+            }
+        }
+        else if (level == 0)
+        {
+            for (int i = 0; i < arrFilter.Length; i++)
+            {
+                if (arrFilter[i].isFilterOn)
+                {
+                    canSendCheck = true;
+                    break;
+                }
+            }
+        }
+
+        canSend = canSendCheck;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -209,7 +235,6 @@ public class SplitterCtrl : LogisticsCtrl
         arrFilter[num].isFilterOn = false;
         arrFilter[num].isReverseFilterOn = false;
         arrFilter[num].selItem = null;
-        ItemFilterCheck();
         UIReset();
     }
 
@@ -219,38 +244,50 @@ public class SplitterCtrl : LogisticsCtrl
             clickEvent.sFilterManager.UIReset();
     }
 
-    void FilterIndexCheck()
+    void FilterSendItem(bool isSmart)
     {
-        filterindex++;
-        if (filterindex >= arrFilter.Length)
-        {
-            filterindex = 0;
-        }
-    }
+        itemSetDelay = true;
 
-    void FilterSendItem()
-    {
         Filter filter = arrFilter[filterindex];
-        Item sendItem = itemList[0];
+        if (smartFilterItemIndex >= itemList.Count)
+        {
+            smartFilterItemIndex = 0;
+        }
+        Item sendItem = itemList[smartFilterItemIndex];
         Item selectedFilterItem = filter.selItem;
 
-        if (filter.outObj == null || !filter.isFilterOn)
+        if (filter.outObj == null)
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }
 
-        if (filter.isReverseFilterOn && selectedFilterItem == sendItem)
+        if (!isSmart && !filter.isFilterOn)
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }
 
-        if (!filter.isReverseFilterOn && selectedFilterItem != sendItem)
+        if (isSmart)
         {
-            FilterindexSet();
-            return;
-        }        
+            if (filter.isReverseFilterOn && selectedFilterItem == sendItem)
+            {
+                FilterindexSet();
+                itemSetDelay = false;
+                CantSendItemIndexSet();
+                return;
+            }
+
+            if (!filter.isReverseFilterOn && selectedFilterItem != sendItem)
+            {
+                FilterindexSet();
+                itemSetDelay = false;
+                CantSendItemIndexSet();
+                return;
+            }        
+        }
 
         GameObject outObject = filter.outObj;
         Structure outFactory = outObject.GetComponent<Structure>();
@@ -258,11 +295,13 @@ public class SplitterCtrl : LogisticsCtrl
         if (outFactory.isFull)
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }
         else if (outObject.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
         {
             FilterindexSet();
+            itemSetDelay = false;
             return;
         }
 
@@ -277,11 +316,23 @@ public class SplitterCtrl : LogisticsCtrl
             filterindex = 0;
     }
 
+    void CantSendItemIndexSet()
+    {
+        cantSentItemCount++;
+        if (cantSentItemCount > 3)
+        {
+            smartFilterItemIndex++;
+            if (smartFilterItemIndex >= itemList.Count)
+                smartFilterItemIndex = 0;
+
+            cantSentItemCount = 0;
+        }
+    }
+
     [ClientRpc]
     void FilterSetItemClientRpc(int index)
     {
-        itemSetDelay = true;
-        Item sendItem = itemList[0];
+        Item sendItem = itemList[smartFilterItemIndex];
 
         Filter filter = arrFilter[index];
 
@@ -303,6 +354,7 @@ public class SplitterCtrl : LogisticsCtrl
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl;
             }
+            itemList.RemoveAt(smartFilterItemIndex);
         }
         else if (outObject.GetComponent<LogisticsCtrl>())
         {
@@ -312,44 +364,9 @@ public class SplitterCtrl : LogisticsCtrl
         {
             SendFacDelay(outObject, sendItem);
         }
-        itemListRemove();
         ItemNumCheck();
         
         Invoke(nameof(DelaySetItem), sendDelay);
-    }
-
-    bool ItemFilterFullCheck(Item item)
-    {
-        bool isFacNotFull1 = true;
-        bool isFacNotFull2 = true;
-
-        for (int a = 0; a < arrFilter.Length; a++)
-        {
-            Filter filter = arrFilter[a];
-            if (filter.outObj == null) continue;
-
-            if (filter.isFilterOn && filter.isItemFilterOn)
-            {
-                Structure factoryCtrl = filter.outObj.GetComponent<Structure>();
-                if (factoryCtrl.TryGetComponent(out LogisticsCtrl fac))
-                {
-                    if (!fac.isFull)
-                    {
-                        if ((!filter.isReverseFilterOn && filter.selItem == item) ||
-                            (filter.isReverseFilterOn && filter.selItem != item))
-                        {
-                            if (!isFacNotFull1)
-                            {
-                                isFacNotFull2 = false;
-                                break;
-                            }
-                            isFacNotFull1 = false;
-                        }
-                    }
-                }
-            }
-        }
-        return !(isFacNotFull1 && isFacNotFull2);
     }
 
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)

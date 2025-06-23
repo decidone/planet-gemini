@@ -22,7 +22,7 @@ public class SpawnerSearchColl : NetworkBehaviour
 
     void Start()
     {
-        level = monsterSpawner.sppawnerLevel - 1;
+        level = monsterSpawner.spawnerLevel - 1;
         coll.radius = collSize[level];
     }
 
@@ -83,13 +83,6 @@ public class SpawnerSearchColl : NetworkBehaviour
     {
         coll.radius = maxCollSize[level];
         violentCollSize = coll.radius;
-    }
-
-
-    public void SearchCollReduction()
-    {
-        float reSize = violentCollSize - ((violentCollSize - collSize[level]) / 2);
-        coll.radius = reSize;
     }
 
     public void ViolentCollSizeReduction()

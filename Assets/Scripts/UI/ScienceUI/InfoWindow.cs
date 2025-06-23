@@ -94,6 +94,7 @@ public class InfoWindow : MonoBehaviour
         {
             nameText.text = $"{name}";
             infoText.text = scienceInfoData.info;
+            //에러뜨는문제있음
             Vector2 anchoredPosition = infoRT.anchoredPosition;
             Vector2 sizeDelta = menuRT.sizeDelta;
 

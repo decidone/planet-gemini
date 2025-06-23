@@ -141,14 +141,25 @@ public class TankCtrl : UnitAi
     public void ItemSyncServerRpc()
     {
         ItemListClearClientRpc();
+        List<int> slotNums = new List<int>();
+        List<int> itemIndexs = new List<int>();
+        List<int> itemAmounts = new List<int>();
+        int index = 0;
+
         for (int i = 0; i < inventory.space; i++)
         {
             var slot = inventory.SlotCheck(i);
 
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
             if (itemIndex != -1)
-                ItemSyncClientRpc(i, itemIndex, slot.amount);
+            {
+                index++;
+                slotNums.Add(i);
+                itemIndexs.Add(itemIndex);
+                itemAmounts.Add(slot.amount);
+            }
         }
+        ItemSyncClientRpc(slotNums.ToArray(), itemIndexs.ToArray(), itemAmounts.ToArray(), index);
     }
 
 
@@ -159,17 +170,20 @@ public class TankCtrl : UnitAi
             inventory.ResetInven();
     }
 
-
     [ClientRpc]
-    protected void ItemSyncClientRpc(int slotNum, int itemIndex, int itemAmount, ClientRpcParams rpcParams = default)
+    protected void ItemSyncClientRpc(int[] slotNum, int[] itemIndex, int[] itemAmount, int index, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
 
-        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        inventory.RecipeSlotAdd(slotNum, item, itemAmount);
+        Item[] items = new Item[index];
+        for (int i = 0; i < index; i++)
+        {
+            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
+            items[i] = item;
+        }
+        inventory.NonNetSlotsAdd(slotNum, items, itemAmount, index);
     }
-
 
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()

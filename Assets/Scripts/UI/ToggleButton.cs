@@ -8,7 +8,7 @@ using UnityEngine;
 public class ToggleButton : MonoBehaviour
 {
     public UnityEvent onToggleOn;
-    public bool isOn = false;
+    public bool isOn = true;
     public Sprite[] toggleImg = null;
     public GameObject toggleButtonObj = null;
     public RectTransform toggleSwObj = null;

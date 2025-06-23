@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: 93edbc800f24e6b46b92bff6d3af7e92, type: 2}
+  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -177,6 +178,7 @@ MonoBehaviour:
   waveArrivePos: 0
   normalTraceTimer: 0
   isDebuffed: 0
+  targetOn: 0
   justTraceTimer: 0
   justTraceInterval: 3
 --- !u!70 &1462048544358157173
@@ -222,7 +224,7 @@ MonoBehaviour:
   traversableTags: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
-    value: 1
+    value: -1
 --- !u!114 &-4815052803081399713
 MonoBehaviour:
   m_ObjectHideFlags: 0

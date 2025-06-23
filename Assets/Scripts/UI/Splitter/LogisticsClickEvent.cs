@@ -1,3 +1,4 @@
+using Steamworks.ServerList;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,14 +38,14 @@ public class LogisticsClickEvent : MonoBehaviour
 
         foreach (GameObject obj in inventoryList.InventoryArr)
         {
-            if (logisticsCtrl.TryGetComponent(out SplitterCtrl splitterCtrl) && splitterCtrl.level > 0 && obj.name == "LogisticsMenu")
+            if (logisticsCtrl.TryGetComponent(out SplitterCtrl splitterCtrl) && obj.name == "LogisticsMenu")
             {
                 LogisticsUI = obj;
                 logisticsCloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
                 logisticsCloseBtn.onClick.RemoveAllListeners();
                 logisticsCloseBtn.onClick.AddListener(CloseUI);
                 sFilterManager = canvas.GetComponent<SplitterFilterManager>();
-                inventoryList.LogisticsArr[0].gameObject.SetActive(true);
+
                 canOpen = true;
             }
             else if (logisticsCtrl.TryGetComponent(out Unloader unloader) && obj.name == "LogisticsMenu")
@@ -54,7 +55,7 @@ public class LogisticsClickEvent : MonoBehaviour
                 logisticsCloseBtn.onClick.RemoveAllListeners();
                 logisticsCloseBtn.onClick.AddListener(CloseUI);
                 unloaderManager = canvas.GetComponent<UnloaderManager>();
-                inventoryList.LogisticsArr[1].gameObject.SetActive(true);
+
                 canOpen = true;
             }
             else if (logisticsCtrl.GetComponent<ItemSpawner>() && obj.name == "ItemSpwanerFilter")
@@ -77,14 +78,28 @@ public class LogisticsClickEvent : MonoBehaviour
         if (logisticsCtrl.TryGetComponent(out SplitterCtrl splitter))
         {
             sFilterManager.SetSplitter(splitter);
-            inventoryList.LogisticsArr[0].gameObject.SetActive(true);
+
+            if (splitter.level == 1) // 스마트 스플리터
+            {
+                var uiList = inventoryList.LogisticsArr[0].GetComponent<SplitterMenu>().SetMenu(splitter.dirNum);
+                sFilterManager.GetObjArr(uiList.Item1, uiList.Item2, uiList.Item3, uiList.Item4, true);
+                inventoryList.LogisticsArr[0].gameObject.SetActive(true);
+            }
+            else if (splitter.level == 0) // 스플리터
+            {
+                var uiList = inventoryList.LogisticsArr[1].GetComponent<SplitterMenu>().SetMenu(splitter.dirNum);
+                sFilterManager.GetObjArr(uiList.Item1, uiList.Item2, uiList.Item3, uiList.Item4, false);
+                inventoryList.LogisticsArr[1].gameObject.SetActive(true);
+            }
+
+            //inventoryList.LogisticsArr[0].gameObject.SetActive(true);
             gameManager.SelectPointSpawn(splitter.gameObject);
             sFilterManager.OpenUI();
         }
         else if (logisticsCtrl.TryGetComponent(out Unloader unloader))
         {
             unloaderManager.SetUnloader(unloader);
-            inventoryList.LogisticsArr[1].gameObject.SetActive(true);
+            inventoryList.LogisticsArr[2].gameObject.SetActive(true);
             gameManager.SelectPointSpawn(unloader.gameObject);
             unloaderManager.OpenUI();
         }
@@ -99,17 +114,27 @@ public class LogisticsClickEvent : MonoBehaviour
     public void CloseUI()
     {
         openUI = false;
-        if (logisticsCtrl.GetComponent<SplitterCtrl>())
+        if (logisticsCtrl.TryGetComponent(out SplitterCtrl splitter))
         {
             sFilterManager.ReleaseInven();
-            inventoryList.LogisticsArr[0].gameObject.SetActive(false);
+
+            if (splitter.level == 1) // 스마트 스플리터
+            {
+                inventoryList.LogisticsArr[0].gameObject.SetActive(false);
+            }
+            else if (splitter.level == 0) // 스플리터
+            {
+                inventoryList.LogisticsArr[1].gameObject.SetActive(false);
+            }
+
+            //inventoryList.LogisticsArr[0].gameObject.SetActive(false);
             gameManager.SelectPointRemove();
             sFilterManager.CloseUI();
         }
         else if (logisticsCtrl.GetComponent<Unloader>())
         {
             unloaderManager.ReleaseInven();
-            inventoryList.LogisticsArr[1].gameObject.SetActive(false);
+            inventoryList.LogisticsArr[2].gameObject.SetActive(false);
             gameManager.SelectPointRemove();
             unloaderManager.CloseUI();
         }
@@ -122,26 +147,26 @@ public class LogisticsClickEvent : MonoBehaviour
         soundManager.PlayUISFX("CloseUI");
     }
 
-    public void CloseTest()
-    {
-        openUI = false;
-        if (logisticsCtrl.GetComponent<SplitterCtrl>())
-        {
-            sFilterManager.ReleaseInven();
-            inventoryList.LogisticsArr[0].gameObject.SetActive(false);
-            gameManager.SelectPointRemove();
-        }
-        else if (logisticsCtrl.GetComponent<Unloader>())
-        {
-            unloaderManager.ReleaseInven();
-            inventoryList.LogisticsArr[1].gameObject.SetActive(false);
-            gameManager.SelectPointRemove();
-        }
-        else if (logisticsCtrl.GetComponent<ItemSpawner>())
-        {
-            itemSpManager.ReleaseInven();
-            gameManager.SelectPointRemove();
-        }
-        soundManager.PlayUISFX("CloseUI");
-    }
+    //public void CloseTest()
+    //{
+    //    openUI = false;
+    //    if (logisticsCtrl.GetComponent<SplitterCtrl>())
+    //    {
+    //        sFilterManager.ReleaseInven();
+    //        inventoryList.LogisticsArr[0].gameObject.SetActive(false);
+    //        gameManager.SelectPointRemove();
+    //    }
+    //    else if (logisticsCtrl.GetComponent<Unloader>())
+    //    {
+    //        unloaderManager.ReleaseInven();
+    //        inventoryList.LogisticsArr[1].gameObject.SetActive(false);
+    //        gameManager.SelectPointRemove();
+    //    }
+    //    else if (logisticsCtrl.GetComponent<ItemSpawner>())
+    //    {
+    //        itemSpManager.ReleaseInven();
+    //        gameManager.SelectPointRemove();
+    //    }
+    //    soundManager.PlayUISFX("CloseUI");
+    //}
 }

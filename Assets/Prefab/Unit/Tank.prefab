@@ -499,6 +499,7 @@ GameObject:
   - component: {fileID: 3616240888158698672}
   - component: {fileID: 8111393915013380435}
   - component: {fileID: 8097920974603506236}
+  - component: {fileID: 9001381722490810436}
   m_Layer: 22
   m_Name: Tank
   m_TagString: Unit
@@ -755,6 +756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: c57e8ab1ed2969748ab7e77a0678118e, type: 2}
+  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 8598225404917607297}
@@ -822,6 +824,19 @@ MonoBehaviour:
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   itemListSO: {fileID: 0}
+--- !u!114 &9001381722490810436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8598225404917607298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 0
 --- !u!1 &8748009650792340866
 GameObject:
   m_ObjectHideFlags: 0

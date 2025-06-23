@@ -23,13 +23,16 @@ public class UnloaderManager : MonoBehaviour
         gameManager = GameManager.instance;
 
         slot.amountText.gameObject.SetActive(false);
+        Debug.Log("UnloaderManager Start");
         fillterMenuBtn.onClick.AddListener(() => UnloaderFillterMenu());
     }
+
     void UnloaderFillterMenu()
     {
         unloaderRecipe.OpenUI();
         unloaderRecipe.GetFillterNum(0, "UnloaderManager");
     }
+
     public void SetUnloader(Unloader _unloader)
     {
         unloader = _unloader;
@@ -43,36 +46,37 @@ public class UnloaderManager : MonoBehaviour
 
     public void SetItem(Item _item)
     {
-        //unloader.selectItem = _item;
-
-        if (slot.item == _item)
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(_item);
+        if (_item.name == "UICancel")
         {
             unloader.SelectItemResetServerRpc();
+            slot.ClearSlot();
+            itemIndex = -1;
         }
-        else
+        else if (slot.item == null)
         {
-            if (slot.item == null)
-            {
-                slot.AddItem(_item, 1);
-            }
-            else if (slot.item != _item)
-            {
-                slot.ClearSlot();
-                slot.AddItem(_item, 1);
-            }
-
-            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(_item);
-            if (itemIndex != -1)
-                unloader.SelectItemSetServerRpc(itemIndex);
+            slot.AddItem(_item, 1);
         }
+        else if (slot.item != _item)
+        {
+            slot.ClearSlot();
+            slot.AddItem(_item, 1);
+        }
+        else if (slot.item == _item)
+            return;
 
+        unloader.SelectItemSetServerRpc(itemIndex);
     }
 
     public void OpenUI()
     {
-        if (unloader != null && unloader.selectItem != null)
+        if (unloader)
         {
-            slot.AddItem(unloader.selectItem, 1);
+            unloader.isUIOpened = true;
+            if (unloader.selectItem != null)
+                slot.AddItem(unloader.selectItem, 1);
+            else
+                slot.ClearSlot();
         }
         else
             slot.ClearSlot();
@@ -84,6 +88,8 @@ public class UnloaderManager : MonoBehaviour
 
     public void CloseUI()
     {
+        if (unloader)
+            unloader.isUIOpened = false;
         unloaderUI.SetActive(false);
         unloaderRecipe.CloseUI();
         gameManager.onUIChangedCallback?.Invoke(unloaderUI);

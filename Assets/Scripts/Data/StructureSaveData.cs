@@ -17,7 +17,6 @@ public class StructureSaveData
     public int index;               // 건물 인덱스 번호
     public bool sideObj;            // 지하벨트 처럼 외형이 변경되야 하는 경우
     public SerializedVector3 pos = new SerializedVector3(); // 좌표값
-    public SerializedVector3 tileSetPos = new SerializedVector3(); // 설치 위치 좌표값
     public float hp;                // 현재 hp
     public bool planet;             // 건물이 지어진 행성 true: 호스트, false: 클라이언트
 

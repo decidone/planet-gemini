@@ -42,6 +42,8 @@ public class Transporter : Production
             isUnitInStr.Value = true;
 
         inventory.onItemChangedCallback += TransportableCheck;
+        inventory.invenAllSlotUpdate += TransportableCheck;
+
     }
 
     protected override void Update()
@@ -89,7 +91,7 @@ public class Transporter : Production
             else
                 prodTimer = 0;
 
-            if (IsServer) 
+            if (IsServer)
             {
                 if (unitItemList.Count > 0)
                 {
@@ -107,7 +109,12 @@ public class Transporter : Production
         }
     }
 
-    public void TransportableCheck()
+    void TransportableCheck()
+    {
+        TransportableCheck(0);
+    }
+
+    public void TransportableCheck(int slotindex)
     {
         isTransportable = false;
 
@@ -289,7 +296,10 @@ public class Transporter : Production
                     isUnitInStr.Value = false;
             }
 
-            unit.GetComponent<TransportUnit>().MovePosSet(this, othTransporter, invItemCheckDic);
+            TransportUnit transportUnit = unit.GetComponent<TransportUnit>();
+            transportUnit.SetUnitColorIndex(2);
+
+            transportUnit.MovePosSet(this, othTransporter, invItemCheckDic);
             foreach (var dicData in invItemCheckDic)
             {
                 inventory.Sub(dicData.Key, dicData.Value);
@@ -550,8 +560,9 @@ public class Transporter : Production
             else
                 isUnitInStr.Value = false;
         }
-
-        unit.GetComponent<TransportUnit>().MovePosSet(this, othTransporter, item);
+        TransportUnit transportUnit = unit.GetComponent<TransportUnit>();
+        transportUnit.SetUnitColorIndex(2);
+        transportUnit.MovePosSet(this, othTransporter, item);
     }
 
     public void UnitLoad(Vector3 spawnPos, Dictionary<int, int> itemDic)
@@ -586,7 +597,7 @@ public class Transporter : Production
 
         if(takeBuild != null)
         {
-            data.connectedStrPos.Add(Vector3Extensions.FromVector3(takeBuild.tileSetPos));
+            data.connectedStrPos.Add(Vector3Extensions.FromVector3(takeBuild.transform.position));
         }
 
         if (sendItemUnit.Count > 0)

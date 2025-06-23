@@ -48,8 +48,15 @@ public class ItemDragManager : MonoBehaviour
 
     public void SetInven(Inventory inven)
     {
+        if(inventory)
+        {
+            inventory.onItemChangedCallback -= UpdateUI;
+            inventory.invenAllSlotUpdate -= UpdateUI;
+        }
+
         inventory = inven;
         inventory.onItemChangedCallback += UpdateUI;
+        inventory.invenAllSlotUpdate += UpdateUI;
         hostInven = GameManager.instance.hostDragInven;
         clientInven = GameManager.instance.clientDragInven;
         slotObj = inventoryUI.transform.Find("Slot").gameObject;
@@ -66,6 +73,11 @@ public class ItemDragManager : MonoBehaviour
     }
 
     void UpdateUI()
+    {
+        UpdateUI(0);
+    }
+
+    void UpdateUI(int slotindex)
     {
         if (inventory.items.Count > 0)
         {

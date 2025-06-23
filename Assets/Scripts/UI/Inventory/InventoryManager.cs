@@ -12,7 +12,7 @@ public abstract class InventoryManager : MonoBehaviour
     public GameObject inventoryUI;
     public Inventory inventory;
 
-    [HideInInspector]
+    //[HideInInspector]
     public Slot[] slots;
     protected GameManager gameManager;
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
@@ -68,59 +68,34 @@ public abstract class InventoryManager : MonoBehaviour
         }
     }
 
-    public void SetInven(Inventory inven, GameObject invenUI)
+    public void SetInven(Inventory inven, GameObject invenUI = null, int? invenSize = null)
     {
-        inventory = inven;
-        inventoryUI = invenUI;
-        inventory.onItemChangedCallback += UpdateUI;
-        slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<Slot>();
-        for (int i = 0; i < slots.Length; i++)
+        if (inventory != null)
         {
-            Slot slot = slots[i];
-            slot.slotNum = i;
-            EventTrigger trigger = slot.GetComponent<EventTrigger>();
-            trigger.triggers.RemoveRange(0, trigger.triggers.Count);
-            AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-            AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(); });
+            inventory.onItemChangedCallback -= UpdateUI;
+            inventory.invenAllSlotUpdate -= UpdateAllUI;
         }
-        inventory.Refresh();
-    }
 
-    public void SetInven(Inventory inven)
-    {
-        if (inventoryUI != null)
-        {
-            inventory = inven;
-            inventory.onItemChangedCallback += UpdateUI;
-            slots = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<Slot>();
-            for (int i = 0; i < slots.Length; i++)
-            {
-                Slot slot = slots[i];
-                slot.slotNum = i;
-                EventTrigger trigger = slot.GetComponent<EventTrigger>();
-                trigger.triggers.RemoveRange(0, trigger.triggers.Count);
-                AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
-                AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(); });
-            }
-            inventory.Refresh();
-        }
-    }
-
-    public void SetSizeInven(Inventory inven, GameObject invenUI, int invenSize)
-    {
         inventory = inven;
-        inventoryUI = invenUI;
+
+        if (invenUI != null)
+            inventoryUI = invenUI;
+
         inventory.onItemChangedCallback += UpdateUI;
+        inventory.invenAllSlotUpdate += UpdateAllUI;
+
         Slot[] slotObjects = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<Slot>();
-        slots = new Slot[invenSize];
+        int size = invenSize ?? slotObjects.Length;
+        slots = new Slot[size];
 
         for (int i = 0; i < slotObjects.Length; i++)
         {
-            if (i < invenSize)
+            if (i < size)
             {
                 Slot slot = slots[i] = slotObjects[i];
                 slot.GetComponentInChildren<Image>().enabled = true;
                 slot.slotNum = i;
+
                 EventTrigger trigger = slot.GetComponent<EventTrigger>();
                 trigger.triggers.RemoveRange(0, trigger.triggers.Count);
                 AddEvent(slot, EventTriggerType.PointerEnter, delegate { OnEnter(slot); });
@@ -224,7 +199,7 @@ public abstract class InventoryManager : MonoBehaviour
         splitTimer = 0;
     }
 
-    void UpdateUI()
+    void UpdateAllUI()
     {
         for (int i = 0; i < slots.Length; i++)
         {
@@ -237,6 +212,14 @@ public abstract class InventoryManager : MonoBehaviour
                 slots[i].ClearSlot();
             }
         }
+    }
+
+    void UpdateUI(int slotindex)
+    {
+        if (inventory.items.ContainsKey(slotindex))
+            slots[slotindex].AddItem(inventory.items[slotindex], inventory.amounts[slotindex]);
+        else
+            slots[slotindex].ClearSlot();
     }
 
     void PreBuildEnable()

@@ -8,7 +8,6 @@ public class SteamGenerator : FluidFactoryCtrl
     GameManager gameManager;
     public Slot displaySlot;
     int preSaveFluidNum;
-    bool uiOpened;
 
     public EnergyGroupConnector connector;
     public Item FuelItem;
@@ -57,7 +56,6 @@ public class SteamGenerator : FluidFactoryCtrl
         mainSource = null;
         howFarSource = -1;
         preSaveFluidNum = 0;
-        uiOpened = false;
         myVision.SetActive(false);
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
@@ -213,7 +211,7 @@ public class SteamGenerator : FluidFactoryCtrl
         }
     }
 
-    public override void CheckSlotState()
+    public override void CheckSlotState(int slotindex)
     {
         // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
         slot = inventory.SlotCheck(0);
@@ -291,7 +289,7 @@ public class SteamGenerator : FluidFactoryCtrl
         if (preSaveFluidNum != (int)saveFluidNum)
         {
             preSaveFluidNum = (int)saveFluidNum;
-            if (uiOpened)
+            if (isUIOpened)
                 displaySlot.SetItemAmount((int)saveFluidNum);
         }
     }
@@ -329,7 +327,6 @@ public class SteamGenerator : FluidFactoryCtrl
     public override void OpenUI()
     {
         base.OpenUI();
-        uiOpened = true;
         displaySlot.SetItemAmount((int)saveFluidNum);
 
         sInvenManager.SetInven(inventory, ui);
@@ -342,7 +339,6 @@ public class SteamGenerator : FluidFactoryCtrl
     public override void CloseUI()
     {
         base.CloseUI();
-        uiOpened = false;
         sInvenManager.ReleaseInven();
     }
 

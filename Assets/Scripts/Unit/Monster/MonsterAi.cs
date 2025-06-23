@@ -3,8 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using System.Linq;
 using Unity.Netcode.Components;
 using UnityEngine.Networking;
+using Mono.CSharp;
+using Unity.VisualScripting;
+using static UnityEngine.GraphicsBuffer;
+using System.IO;
+using Unity.VisualScripting.FullSerializer;
 
 // UTF-8 설정
 public class MonsterAi : UnitCommonAi
@@ -41,7 +47,7 @@ public class MonsterAi : UnitCommonAi
     //bool goalPathBlocked = false;
 
     public float normalTraceTimer;
-    float normalTraceInterval = 20f;
+    float normalTraceInterval = 15f;
     bool stopTrace;
 
     public bool isDebuffed;
@@ -62,10 +68,13 @@ public class MonsterAi : UnitCommonAi
     protected bool spawnerPhaseOn;
     protected bool spawnerLastPhaseOn;
 
+    Coroutine selectTargetCo;
+    Coroutine checkPathCo;
+
     protected override void Start()
     {
         base.Start();
-        normalTraceInterval = Random.Range(15, 25);
+        normalTraceInterval = Random.Range(10, 20);
         _t = transform;
         _effects = Effects.instance;
     }
@@ -80,7 +89,7 @@ public class MonsterAi : UnitCommonAi
                 normalTraceTimer += Time.deltaTime;
                 if (normalTraceTimer > normalTraceInterval)
                 {
-                    normalTraceInterval = Random.Range(15, 25);
+                    normalTraceInterval = Random.Range(10, 20);
                     normalTraceTimer = 0f;
                     stopTrace = true;
                     TargetListReset();
@@ -110,7 +119,33 @@ public class MonsterAi : UnitCommonAi
         {
             if (aIState != AIState.AI_SpawnerCall && !targetOn)
             {
-                base.Update();
+                if (aIState != AIState.AI_Die)
+                {
+                    searchTimer += Time.deltaTime;
+
+                    if (searchTimer >= searchInterval)
+                    {
+                        SearchObjectsInRange();
+                        searchTimer = 0f; // 탐색 후 타이머 초기화
+                    }
+
+                    if (targetList.Count > 0)
+                    {
+                        tarDisCheckTime += Time.deltaTime;
+                        if (tarDisCheckTime > tarDisCheckInterval)
+                        {
+                            tarDisCheckTime = 0f;
+                            RemoveObjectsOutOfRange();
+                            AttackTargetCheck();
+                        }
+                        AttackTargetDisCheck();
+                    }
+                    else if (!aggroTarget)
+                    {
+                        targetDist = 0;
+                    }
+                }
+
                 if (isDebuffed)
                 {
                     debuffTimer += Time.deltaTime;
@@ -444,6 +479,11 @@ public class MonsterAi : UnitCommonAi
 
         float spawnDis = (tr.position - patrolMainPos).magnitude;
 
+        if (waveState && !waveStateEnd && !waveArrivePos)
+        {
+            return;
+        }
+
         if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck && !waveState && !waveStateEnd)
         {
             checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
@@ -617,7 +657,6 @@ public class MonsterAi : UnitCommonAi
                     if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
                     {
                         currentWaypointIndex++;
-
                         if (currentWaypointIndex >= movePath.Count)
                         {
                             return;
@@ -787,34 +826,236 @@ public class MonsterAi : UnitCommonAi
 
     protected override void AttackTargetCheck()
     {
-        if (aIState == AIState.AI_ReturnPos)
-            return;
-
-        float closestDistance = float.MaxValue;
-
-        foreach (GameObject target in targetList)
+        if (waveState)
         {
-            if (target != null)
+            float closestDistance = float.MaxValue;
+
+            foreach (GameObject target in targetList)
             {
-                float distance = Vector3.Distance(tr.position, target.transform.position);
-                if (distance < closestDistance)
+                if (target != null)
                 {
-                    closestDistance = distance;
-                    aggroTarget = target;
-                    //goingBase = false;
+                    float distance = Vector3.Distance(tr.position, target.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        aggroTarget = target;
+                        //goingBase = false;
+                    }
+                }
+            }
+
+            if (aggroTarget != null)
+            {
+                if (checkPathCoroutine == null)
+                    checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+                else
+                {
+                    StopCoroutine(checkPathCoroutine);
+                    checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+                }
+            }
+        }
+        else
+        {
+            if (selectTargetCo != null) StopCoroutine(selectTargetCo);
+            selectTargetCo = StartCoroutine(SelectTargetAndTrace());
+        }
+    }
+
+    IEnumerator SelectTargetAndTrace()
+    {
+        // 현재 상태가 복귀 중이면 타겟 탐색을 중단
+        if (aIState == AIState.AI_ReturnPos) yield break;
+
+        // 공격 가능한 타겟 후보 리스트와, 공격 불가능한 가장 가까운 타겟을 저장
+        var attackableCandidates = new List<(GameObject obj, float dist, float aggro)>();
+        GameObject nearestUnattackable = null;
+        float nearestUnattackDist = float.MaxValue;
+        float dist = 0;
+
+        // 모든 타겟에 대해 탐색
+        foreach (var target in targetList)
+        {
+            if (!target) continue;
+
+            dist = Vector3.Distance(tr.position, target.transform.position);
+
+            // 공격 가능한 대상인지 확인
+            bool isAttackable = target.GetComponent<UnitAi>() || target.GetComponent<TowerAi>() || target.GetComponent<PlayerController>();
+            if (!isAttackable)
+            {
+                // 공격 불가능하지만 가까운 타겟 저장
+                if (dist < nearestUnattackDist)
+                {
+                    nearestUnattackDist = dist;
+                    nearestUnattackable = target;
+                }
+                continue;
+            }
+
+            // 어그로 수치 가져오기
+            float aggro = 0f;
+            if (target.TryGetComponent(out AggroAmount aggroAmount)) 
+                aggro = aggroAmount.GetAggroAmount();
+
+            attackableCandidates.Add((target, dist, aggro));
+        }
+
+        // 가까운 공격 가능 타겟 최대 2개만 추출 (거리 기준 오름차순)
+        var nearestAttackables = attackableCandidates
+            .OrderByDescending(x => x.aggro * 1.5f - x.dist * 0.5f) // 가중치 조절 가능
+            .Take(4)
+            .Select(x => x.obj)
+            .ToList();
+
+        ABPath pathReq = null;
+        GameObject targetFind = null;
+
+        float margin = 4.0f; // fallback 선택 기준 거리 마진
+        float targetToDis = 5; // 실제 위치와 경로상의 차이
+        float bestFallbackDist = float.MaxValue;
+        float secondFallbackDist = float.MaxValue;
+        GameObject fallbackTarget = null;
+        bool cantFindAttack = false;
+        bool fallbackTargetCanAttack = false;
+        bool isFirst = true;
+        bool targetFound = false;
+
+        // 공격 가능 후보 2개에 대해 탐색 경로 시도
+        foreach (var target in nearestAttackables)
+        {
+            if (targetFound) break;
+            if (!target) continue;
+
+            bool finished = false;
+            bool canAttack = false;
+
+            // A* 경로 요청 생성
+            pathReq = ABPath.Construct(tr.position, target.transform.position, p =>
+            {
+                finished = true;
+
+                // 경로 계산 실패하거나 유효하지 않으면 무시
+                if (!target || p.error || p.vectorPath.Count == 0) return;
+
+                Vector3 last = p.vectorPath[^1]; // 마지막 지점
+                float lastMoveDist = Vector3.Distance(last, target.transform.position);
+
+                // 공격 사거리 안에 도달 가능한 경우
+                if (lastMoveDist <= unitCommonData.AttackDist)
+                {
+                    targetFind = target;         // 실제로 도달 가능한 공격 타겟
+                    cantFindAttack = true;
+                    canAttack = true;
+                    targetFound = true;
+                    return;
+                }
+
+                // fallback 후보 저장 (가장 가까운 타겟을 보조적으로 선택)
+                float dist = Vector3.Distance(transform.position, target.transform.position);
+
+                if (isFirst)
+                {
+                    bestFallbackDist = dist;
+                    fallbackTarget = target;
+                    fallbackTargetCanAttack = canAttack;
+                    isFirst = false;
+                }
+                else if (dist < bestFallbackDist)
+                {
+                    secondFallbackDist = bestFallbackDist;
+                    bestFallbackDist = dist;
+                    fallbackTarget = target;
+                    fallbackTargetCanAttack = canAttack;
+                }
+                else if (dist < secondFallbackDist)
+                {
+                    secondFallbackDist = dist;
+                }
+            });
+
+            // A* 경로 요청 시작
+            seeker.StartPath(pathReq);
+            yield return new WaitUntil(() => finished); // 경로 계산이 끝날 때까지 대기
+        }
+
+        bool hasResult = false;
+
+        // fallback 대상이 있는 경우 조건에 따라 사용 여부 결정
+        if (fallbackTarget)
+        {
+            if (secondFallbackDist - bestFallbackDist >= margin)
+            {
+                if (fallbackTargetCanAttack)
+                {
+                    targetFind = fallbackTarget;
+                }
+                else
+                {
+                    StartCoroutine(MonsterBaseMapCheck.instance.GetBlockingObjectToTarget(transform.position, fallbackTarget.transform.position, isInHostMap, (blockingObj) => {
+                        if (blockingObj)
+                        {
+                            targetFind = blockingObj;
+                        }
+                        else
+                        {
+                            cantFindAttack = false;
+                        }
+                        hasResult = true;
+                    }));
+                    yield return new WaitUntil(() => hasResult);
                 }
             }
         }
 
+        // 도달 가능한 공격 대상이 있다면 거리 비교로 재검증
+        if (targetFind)
+        {
+            if (pathReq != null)
+            {
+                float totalDistance = 0f;
+
+                // 경로상의 총 거리 계산
+                for (int i = 0; i < pathReq.vectorPath.Count - 1; i++)
+                {
+                    totalDistance += Vector3.Distance(pathReq.vectorPath[i], pathReq.vectorPath[i + 1]);
+                }
+
+                dist = Vector3.Distance(tr.position, targetFind.transform.position);
+
+                // 실제 위치와 경로상의 차이가 너무 크면 도달 불가로 판단
+                if (dist + targetToDis < totalDistance)
+                {
+                    StartCoroutine(MonsterBaseMapCheck.instance.GetBlockingObjectToTarget(transform.position, targetFind.transform.position, isInHostMap, (blockingObj) => {
+                        if (blockingObj)
+                        {
+                            targetFind = blockingObj;
+                        }
+                        else
+                        {
+                            cantFindAttack = false;
+                        }
+                        hasResult = true;
+                    }));
+                    yield return new WaitUntil(() => hasResult);
+                }
+            }
+        }
+
+        // 적절한 공격 대상을 찾지 못했을 경우, 가장 가까운 공격 불가능한 대상으로 fallback
+        if (!cantFindAttack || (!targetFind && nearestUnattackable))
+        {
+            targetFind = nearestUnattackable;
+        }
+
+        // 최종 타겟 설정
+        aggroTarget = targetFind;
+
+        // 추적 시작
         if (aggroTarget != null)
         {
-            if (checkPathCoroutine == null)
-                checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
-            else
-            {
-                StopCoroutine(checkPathCoroutine);
-                checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
-            }
+            if (checkPathCo != null) StopCoroutine(checkPathCo);
+            checkPathCo = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
         }
     }
 
@@ -947,24 +1188,6 @@ public class MonsterAi : UnitCommonAi
 
         direction = targetPos - tr.position;
         checkPathCoroutine = null;
-    }
-
-    void DestroyMapObject(Vector2 targetPos)
-    {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(targetPos, 5);
-
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            Collider2D collider = colliders[i];
-            GameObject target = collider.gameObject;
-            string targetTag = target.tag;
-
-            if (targetTag == "MapObj")
-            {
-                targetList.Add(target);
-            }
-        }
-        WaveStart(wavePos);
     }
 
     protected virtual void AttackSet(Transform targetTr)
@@ -1118,25 +1341,52 @@ public class MonsterAi : UnitCommonAi
 
             if (currentWaypointIndex >= movePath.Count)
             {
-                Debug.Log("near unit");
                 //aIState = AIState.AI_NormalTrace;
                 return;
             }
         }       
     }
 
-
     public void WaveStart(Vector3 _wavePos)
     {
         waveState = true;
-        //waveWaiting = false;
 
-        int x = (int)Random.Range(-5, 5);
-        int y = (int)Random.Range(-5, 5);
+        if (MonsterBaseMapCheck.instance.wavePath.vectorPath.Count > 0)
+        {
+            if (waveMovePath.Count == 0)
+                waveMovePath = new List<Vector3>(MonsterBaseMapCheck.instance.wavePath.vectorPath); // 복사
 
-        wavePos = _wavePos + new Vector3(x, y);
+            checkPathCoroutine = null;
+            StartCoroutine(ReturnToWavePath());
+        }
+    }
+    
+    protected IEnumerator ReturnToWavePath()
+    {
+        Vector3 closestPoint = Vector3.zero;
+        int closestIndex = -1;
+        float minDistance = float.MaxValue;
 
-        checkPathCoroutine = StartCoroutine(CheckPath(_wavePos, "NormalTrace"));
+        for (int i = 0; i < waveMovePath.Count; i++)
+        {
+            float distance = Vector3.Distance(tr.position, waveMovePath[i]);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestIndex = i;
+                closestPoint = waveMovePath[i];
+            }
+        }
+
+        ABPath wavePath = ABPath.Construct(tr.position, closestPoint, null);
+        seeker.CancelCurrentPathRequest();
+        seeker.StartPath(wavePath);
+
+        yield return StartCoroutine(wavePath.WaitForPath());
+        movePath = wavePath.vectorPath;
+        movePath.AddRange(waveMovePath.GetRange(closestIndex, waveMovePath.Count - closestIndex));
+        currentWaypointIndex = 1;
+        aIState = AIState.AI_NormalTrace;
     }
 
     public void ColonyAttackStart(Vector3 _wavePos)

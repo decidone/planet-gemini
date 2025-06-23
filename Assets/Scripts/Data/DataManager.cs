@@ -243,7 +243,7 @@ public class DataManager : MonoBehaviour
             structure.GameStartSpawnSet(saveData.level, saveData.direction, building.height, building.width, saveData.planet, saveData.index);
             structure.StructureStateSet(saveData.isPreBuilding, saveData.destroyStart, saveData.hp, saveData.repairGauge, saveData.destroyTimer);
             structure.GameStartRecipeSet(saveData.recipeId);
-            structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(saveData.tileSetPos));
+            structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(saveData.pos));
 
             if (saveData.portalName != "")
                 structure.portalName = saveData.portalName;
@@ -410,7 +410,7 @@ public class DataManager : MonoBehaviour
             {
                 structure.GameStartSpawnSet(beltData.Item2.level, beltData.Item2.direction, building.height, building.width, beltData.Item2.planet, beltData.Item2.index);
                 structure.StructureStateSet(beltData.Item2.isPreBuilding, beltData.Item2.destroyStart, beltData.Item2.hp, beltData.Item2.repairGauge, beltData.Item2.destroyTimer);
-                structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(beltData.Item2.tileSetPos));
+                structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(beltData.Item2.pos));
             }
 
             if (netBeltObj.TryGetComponent(out BeltCtrl belt))
@@ -518,6 +518,8 @@ public class DataManager : MonoBehaviour
         if(spawnerManagerSaveData.splitCount != 0)
             MonsterSpawnerManager.instance.SplitCountSet(spawnerManagerSaveData.splitCount);
 
+        MonsterSpawnerManager.instance.WaveStateLoad(spawnerManagerSaveData);
+
         for (int i = 0; i < spawnerManagerSaveData.splitCount; i++)
         {
             for (int j = 0; j < spawnerManagerSaveData.splitCount; j++)
@@ -537,8 +539,6 @@ public class DataManager : MonoBehaviour
                 }
             }
         }
-
-        MonsterSpawnerManager.instance.WaveStateLoad(spawnerManagerSaveData);
     }
 
     GameObject SetSpawnerGroupMgr(SpawnerGroupData spawnerGroupData, bool planet)
@@ -563,18 +563,14 @@ public class DataManager : MonoBehaviour
             MonsterSpawnerManager.instance.AreaGroupSet(monsterSpawner, spawnerSaveData.spawnerGroupIndex, planet);
             monsterSpawner.groupManager = spawnerGroup;
             monsterSpawner.GameStartSet(spawnerSaveData, levelData[spawnerSaveData.level - 1], Vector3Extensions.ToVector3(spawnerSaveData.wavePos), planet, spawnerSaveData.spawnerGroupIndex);
-            if(spawnerSaveData.waveState)
-                monsterSpawner.GameStartWaveSet(spawnerSaveData.waveTimer);
-            SetSpawner(monsterSpawner, spawnerSaveData, planet, spawnerSaveData.waveState);
+            SetSpawner(monsterSpawner, spawnerSaveData, planet);
             monsterSpawner.violentCollSize = spawnerSaveData.violentCollSize;
-            if(spawnerSaveData.waveState)
-                SoundManager.instance.BattleStateSet(planet, spawnerSaveData.waveState);
         }
 
         return spawnerGroupObj;
     }
 
-    void SetSpawner(MonsterSpawner monsterSpawner, SpawnerSaveData spawnerSaveData, bool planet, bool waveState)
+    void SetSpawner(MonsterSpawner monsterSpawner, SpawnerSaveData spawnerSaveData, bool planet)
     {
         foreach (UnitSaveData unitSaveData in spawnerSaveData.monsterList)
         {
@@ -586,19 +582,10 @@ public class DataManager : MonoBehaviour
             }
             else
             {
-                //if (waveState)
-                //{
-                //    monster = monsterSpawner.WaveWaitingMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet);
-                //    monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
-                //}
-                //else
-                //{
-                    monster = monsterSpawner.WaveMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet, unitSaveData.isWaveColonyCallCheck);
-                    monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
-                    monster.GetComponent<MonsterAi>().WaveStart(Vector3Extensions.ToVector3(unitSaveData.wavePos));
-                //}
+                monster = monsterSpawner.WaveMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet, unitSaveData.isWaveColonyCallCheck);
+                monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
+                monster.GetComponent<MonsterAi>().WaveStart(Vector3Extensions.ToVector3(unitSaveData.wavePos));
             }
-
             monster.GetComponent<MonsterAi>().GameStartSet(unitSaveData);
         }
     }

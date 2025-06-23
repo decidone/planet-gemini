@@ -38,12 +38,13 @@ public class UpgradeBuild : DragFunc
 
         foreach (Collider2D collider in colliders)
         {
-            if (collider.GetComponentInParent<Structure>() == null)
+            Structure structure = collider.GetComponentInParent<Structure>();
+
+            if (structure == null)
                 continue;
-            Structure structure = collider.GetComponent<Structure>();
             if (structure.isPreBuilding)
                 continue;
-            if (collider.GetComponent<Portal>() || collider.GetComponent<ScienceBuilding>())
+            if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
                 continue;
             if (structure.structureData.MaxLevel == structure.level + 1 || !ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
                 continue;
@@ -67,7 +68,7 @@ public class UpgradeBuild : DragFunc
         if (hits.Length > 0)
         {
             foreach (RaycastHit2D hit in hits)
-            {
+            { 
                 if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
                 {
                     if (!(structure.GetComponent<Portal>() || structure.GetComponent<ScienceBuilding>()))

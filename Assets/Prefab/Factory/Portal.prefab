@@ -349,6 +349,7 @@ GameObject:
   - component: {fileID: 721077935684597044}
   - component: {fileID: 721077935684597035}
   - component: {fileID: 8396903158391217390}
+  - component: {fileID: 1252820712915084728}
   m_Layer: 18
   m_Name: Portal
   m_TagString: Untagged
@@ -545,7 +546,6 @@ MonoBehaviour:
   portalName: 
   soundManager: {fileID: 0}
   isInHostMap: 0
-  tileSetPos: {x: 0, y: 0, z: 0}
   isManualDestroy: 0
   destroyStart: 0
   isDestroying: 0
@@ -619,6 +619,19 @@ MonoBehaviour:
   offsetX: 0.05
   offsetY: 3.6
   interactIconPref: {fileID: 6241834219993474235, guid: c777b19ad3a949141be9cfea7104c27c, type: 3}
+--- !u!114 &1252820712915084728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721077935684597043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 0
 --- !u!1 &721077936004993818
 GameObject:
   m_ObjectHideFlags: 0

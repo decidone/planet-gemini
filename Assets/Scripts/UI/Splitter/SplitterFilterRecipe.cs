@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -8,6 +9,8 @@ using UnityEngine.UI;
 public class SplitterFilterRecipe : InventoryManager
 {
     List<Item> itemsList;
+    [SerializeField]
+    Sprite removeUI;
     public SplitterFilterManager splitter;
     public UnloaderManager unloader;
     string selectManager;
@@ -65,6 +68,7 @@ public class SplitterFilterRecipe : InventoryManager
         for (int i = 0; i < 6; i++) //6은 -1을 제외한 아이템 Tier분류 수
         {
             List<Item> list = new List<Item>();
+
             for (int j = 0; j < itemsList.Count; j++)
             {
                 if (itemsList[j].tier == i)
@@ -79,12 +83,19 @@ public class SplitterFilterRecipe : InventoryManager
     void SetItemList(int tier)
     {
         inventory.ResetInven();
+        SetInven(inventory, inventoryUI);
+        int[] slotNums = new int[itemsTierList[tier].Count];
+        Item[] itemIndexs = new Item[itemsTierList[tier].Count];
+        int[] itemAmounts = new int[itemsTierList[tier].Count];
+
         for (int i = 0; i < itemsTierList[tier].Count; i++)
         {
-            inventory.RecipeInvenAdd(itemsTierList[tier][i], 1);
-            //inventory.Add(itemsTierList[tier][i], 1);
+            slotNums[i] = i;
+            itemAmounts[i] = 1;
         }
-        SetInven(inventory, inventoryUI);
+
+        itemIndexs = itemsTierList[tier].ToArray();
+        inventory.NonNetSlotsAdd(slotNums, itemIndexs, itemAmounts, itemsTierList[tier].Count);
     }
 
     public void GetFillterNum(int buttonIndex, string manager)

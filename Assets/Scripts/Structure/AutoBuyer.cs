@@ -41,6 +41,7 @@ public class AutoBuyer : Production
 
         merchList = oreShopMerchListSO.MerchandiseSOList.Concat(manaStoneShopMerchListSO.MerchandiseSOList).ToList();
         inventory.onItemChangedCallback += TransportableCheck;
+        inventory.invenAllSlotUpdate += TransportableCheck;
         GameManager.instance.onFinanceChangedCallback += BuyableCheck;
     }
 
@@ -105,7 +106,7 @@ public class AutoBuyer : Production
         }
     }
 
-    public override void CheckSlotState()
+    public override void CheckSlotState(int slotindex)
     {
         // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
         slot = inventory.SlotCheck(0);
@@ -131,7 +132,7 @@ public class AutoBuyer : Production
             buyerManager.SetMaxSliderValue(amount);
         }
         maxBuyAmount = amount;
-        TransportableCheck();
+        TransportableCheck(0);
     }
 
     public void MinSliderUIValueChanged(int amount)
@@ -157,7 +158,12 @@ public class AutoBuyer : Production
         TransportableCheck();
     }
 
-    public void TransportableCheck()
+    void TransportableCheck()
+    {
+        TransportableCheck(0);
+    }
+
+    public void TransportableCheck(int slotIndex)
     {
         if (output == null)
         {
@@ -235,6 +241,18 @@ public class AutoBuyer : Production
         AutoBuyerManager.instance.ResetValue();
     }
 
+    [ServerRpc]
+    void OpenAnimServerRpc(string optionName)
+    {
+        OpenAnimClientRpc(optionName);
+    }
+
+    [ClientRpc]
+    void OpenAnimClientRpc(string optionName)
+    {
+        animator.Play(optionName, -1, 0);
+    }
+
     public override void OpenRecipe()
     {
         if (!isUnitInStr.Value) return;
@@ -299,8 +317,8 @@ public class AutoBuyer : Production
         }
         this.invItemCheckDic = tempInvItemCheckDic;
 
-        UnitSendOpen();
-        //OpenAnimServerRpc("Open");
+        //UnitSendOpen();
+        OpenAnimServerRpc("Open");
     }
 
     public void RemoveUnit(GameObject returnUnit)
@@ -310,6 +328,7 @@ public class AutoBuyer : Production
         transportUnit = null;
         //Destroy(returnUnit);
         returnUnit.GetComponent<TransportUnit>().DestroyFunc();
+        OpenAnimServerRpc("ItemGetOpen");
     }
 
     public void UnitSendOpen()
@@ -335,7 +354,7 @@ public class AutoBuyer : Production
                 if (IsServer)
                     isUnitInStr.Value = false;
                 transportUnit = unit.GetComponent<TransportUnit>();
-
+                transportUnit.SetUnitColorIndex(0);
                 Vector3 portalPos;
                 if (this.isInHostMap)
                     portalPos = GameManager.instance.hostPlayerSpawnPos;
@@ -425,6 +444,7 @@ public class AutoBuyer : Production
             unitItemList.Add(new Dictionary<Item, int>(_itemDic));
             getItemUnit.Add(takeUnit);
             ExStorageCheck();
+            OpenAnimServerRpc("ItemGetOpen");
         }
     }
 
@@ -512,8 +532,7 @@ public class AutoBuyer : Production
 
         TransportUnit unitScript = unit.GetComponent<TransportUnit>();
         transportUnit = unitScript;
-        if (IsServer)
-            isUnitInStr.Value = false;
+        transportUnit.SetUnitColorIndex(0);
         unitScript.MovePosSet(this, portalPos, item);
 
         //보낼 때 체크용 아이템을 하나 넣어두고 리턴할 때 삭제함. 따라서 아이템이 1개 있는 경우 돌아오는 드론

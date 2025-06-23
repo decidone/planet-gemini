@@ -343,6 +343,7 @@ GameObject:
   - component: {fileID: 827395701944253524}
   - component: {fileID: -2916593883973233907}
   - component: {fileID: 5422362449870841172}
+  - component: {fileID: 656311985015655226}
   m_Layer: 6
   m_Name: BounceRobot
   m_TagString: Unit
@@ -493,6 +494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: d4523c5fa7df1244998568cd8862e84a, type: 2}
+  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 8598225404917607297}
@@ -623,6 +625,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList: []
   m_Animator: {fileID: 8598225404917607297}
+--- !u!114 &656311985015655226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8598225404917607298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseAggroAmount: 4
+  aggroAmount: 0
 --- !u!1 &8748009650792340866
 GameObject:
   m_ObjectHideFlags: 0

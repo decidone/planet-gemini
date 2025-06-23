@@ -23,7 +23,7 @@ MonoBehaviour:
   sendFluidAmount: 0
   sendDelay:
   - 0.2
-  - 0.2
+  - 0.1
   upgradeSendDelay:
   - 0.2
   - 0.2

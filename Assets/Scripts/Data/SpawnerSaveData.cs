@@ -19,9 +19,7 @@ public class SpawnerSaveData
     public int level;   // 스포너 레벨
     public bool nearUserObjExist;
     public bool nearEnergyObjExist;
-    public int extraSpawnNum;   // 임시 저장 소환 수
-    public bool waveState;      // 웨이브 상태 저장
-    public float waveTimer;     // 웨이브 시간 저장
+    public int spawnNum;   // 임시 저장 소환 수
     public bool dieCheck;       // 스포너 죽은 상태 체크
     public int spawnerGroupIndex;
     public int safeCount;

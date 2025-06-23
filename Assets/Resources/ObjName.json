@@ -322,6 +322,9 @@
   "VoidShard": {
     "1": "Void Shard"
   },
+  "UICancel": {
+    "1": "Cancel"
+  },
   "StructureUpgrade": {
     "1": "Production Speed Upgrade",
     "2": "HP Upgrade for Structures",

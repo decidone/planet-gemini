@@ -16,7 +16,7 @@ MonoBehaviour:
   maxLevel: 1
   maxHp: 32000000
   upgradeMaxHp: 64000000
-  maxItemStorageLimit: 5
+  maxItemStorageLimit: 1
   maxFulidStorageLimit: 0
   sendSpeed:
   - 1

@@ -45,6 +45,7 @@ public class AutoSeller : Production
         }
 
         inventory.onItemChangedCallback += TransportableCheck;
+        inventory.invenAllSlotUpdate += TransportableCheck;
     }
 
     protected override void Update()
@@ -82,7 +83,12 @@ public class AutoSeller : Production
         }
     }
 
-    public void TransportableCheck()
+    void TransportableCheck()
+    {
+        TransportableCheck(0);
+    }
+
+    public void TransportableCheck(int slotindex)
     {
         isTransportable = false;
 
@@ -124,6 +130,18 @@ public class AutoSeller : Production
         //SendFuncSetServerRpc(sendAmount);
     }
 
+    [ServerRpc]
+    void OpenAnimServerRpc(string optionName)
+    {
+        OpenAnimClientRpc(optionName);
+    }
+
+    [ClientRpc]
+    void OpenAnimClientRpc(string optionName)
+    {
+        animator.Play(optionName, -1, 0);
+    }
+
     void SendTransportItemDicCheck()
     {
         maxSendAmount = 99;
@@ -156,8 +174,8 @@ public class AutoSeller : Production
 
         this.invItemCheckDic = tempInvItemCheckDic;
 
-        UnitSendOpen();
-        //OpenAnimServerRpc("Open");
+        //UnitSendOpen();
+        OpenAnimServerRpc("Open");
     }
 
     public void RemoveUnit(GameObject returnUnit)
@@ -167,7 +185,7 @@ public class AutoSeller : Production
         transportUnit = null;
         //Destroy(returnUnit);
         returnUnit.GetComponent<TransportUnit>().DestroyFunc();
-        //OpenAnimServerRpc("ItemGetOpen");
+        OpenAnimServerRpc("ItemGetOpen");
     }
 
     public void UnitSendOpen()
@@ -180,6 +198,7 @@ public class AutoSeller : Production
             if (IsServer)
                 isUnitInStr.Value = false;
             transportUnit = unit.GetComponent<TransportUnit>();
+            transportUnit.SetUnitColorIndex(1);
 
             Vector3 portalPos;
             if (this.isInHostMap)
@@ -358,6 +377,7 @@ public class AutoSeller : Production
         transportUnit = unitScript;
         if (IsServer)
             isUnitInStr.Value = false;
+        transportUnit.SetUnitColorIndex(1);
         unitScript.MovePosSet(this, portalPos, item, totalPrice);
         if (item.Count == 0)
             unitScript.TakeItemEnd(false);

@@ -28,7 +28,7 @@ public class Storage : Production
     public override void OpenUI()
     {
         base.OpenUI();
-        sInvenManager.SetSizeInven(inventory, ui, invenSize[level]);
+        sInvenManager.SetInven(inventory, ui, invenSize[level]);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.gameObject.SetActive(false);
         sInvenManager.energyBar.gameObject.SetActive(false);

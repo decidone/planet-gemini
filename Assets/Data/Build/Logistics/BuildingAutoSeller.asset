@@ -24,7 +24,7 @@ MonoBehaviour:
   isEnergyUse: 0
   isEnergyStr: 0
   sprites:
-  - {fileID: 1100553181, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
+  - {fileID: 550135571, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
   animatorController: []
   level: 1
   height: 1

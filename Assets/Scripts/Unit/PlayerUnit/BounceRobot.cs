@@ -16,6 +16,7 @@ public class BounceRobot : UnitAi
             animator.Play("Attack", -1, 0);
             animator.SetBool("isAttack", true);
             soundManager.PlaySFX(gameObject, "unitSFX", "MeleeAttack");
+            aggroAmount.SetAggroAmount(damage, attackSpeed);
         }
 
         return isAttacked;
