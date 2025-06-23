@@ -34,7 +34,7 @@ public class SoundManager : MonoBehaviour
 
     AudioSource uiSfxPlayer;
 
-    private float bgmVolume = .6f;
+    private float bgmVolume = 1f;
     private float sfxVolume = 1f;
 
     [SerializeField]

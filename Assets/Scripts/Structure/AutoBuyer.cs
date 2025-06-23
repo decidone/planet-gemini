@@ -236,6 +236,18 @@ public class AutoBuyer : Production
         AutoBuyerManager.instance.ResetValue();
     }
 
+    [ServerRpc]
+    void OpenAnimServerRpc(string optionName)
+    {
+        OpenAnimClientRpc(optionName);
+    }
+
+    [ClientRpc]
+    void OpenAnimClientRpc(string optionName)
+    {
+        animator.Play(optionName, -1, 0);
+    }
+
     public override void OpenRecipe()
     {
         if (!isUnitInStr) return;
@@ -296,8 +308,8 @@ public class AutoBuyer : Production
         }
         this.invItemCheckDic = tempInvItemCheckDic;
 
-        UnitSendOpen();
-        //OpenAnimServerRpc("Open");
+        //UnitSendOpen();
+        OpenAnimServerRpc("Open");
     }
 
     public void RemoveUnit(GameObject returnUnit)
@@ -306,6 +318,7 @@ public class AutoBuyer : Production
         transportUnit = null;
         //Destroy(returnUnit);
         returnUnit.GetComponent<TransportUnit>().DestroyFunc();
+        OpenAnimServerRpc("ItemGetOpen");
     }
 
     public void UnitSendOpen()
@@ -330,7 +343,7 @@ public class AutoBuyer : Production
 
                 isUnitInStr = false;
                 transportUnit = unit.GetComponent<TransportUnit>();
-
+                transportUnit.SetUnitColorIndex(0);
                 Vector3 portalPos;
                 if (this.isInHostMap)
                     portalPos = GameManager.instance.hostPlayerSpawnPos;
@@ -420,6 +433,7 @@ public class AutoBuyer : Production
             unitItemList.Add(new Dictionary<Item, int>(_itemDic));
             getItemUnit.Add(takeUnit);
             ExStorageCheck();
+            OpenAnimServerRpc("ItemGetOpen");
         }
     }
 
@@ -507,6 +521,7 @@ public class AutoBuyer : Production
 
         TransportUnit unitScript = unit.GetComponent<TransportUnit>();
         transportUnit = unitScript;
+        transportUnit.SetUnitColorIndex(0);
         isUnitInStr = false;
         unitScript.MovePosSet(this, portalPos, item);
 

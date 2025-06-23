@@ -78,12 +78,19 @@ public class ItemSpManager : InventoryManager
     void SetItemList(int tier)
     {
         inventory.ResetInven();
+        SetInven(inventory, inventoryUI);
+        int[] slotNums = new int[itemsTierList[tier].Count];
+        Item[] itemIndexs = new Item[itemsTierList[tier].Count];
+        int[] itemAmounts = new int[itemsTierList[tier].Count];
+
         for (int i = 0; i < itemsTierList[tier].Count; i++)
         {
-            inventory.RecipeInvenAdd(itemsTierList[tier][i], 1);
-            //inventory.Add(itemsTierList[tier][i], 1);
+            slotNums[i] = i;
+            itemAmounts[i] = 1;
         }
-        SetInven(inventory, inventoryUI);
+
+        itemIndexs = itemsTierList[tier].ToArray();
+        inventory.NonNetSlotsAdd(slotNums, itemIndexs, itemAmounts, itemsTierList[tier].Count);
     }
 
     public void SetItemSp(ItemSpawner _itemSp)

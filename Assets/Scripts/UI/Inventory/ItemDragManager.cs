@@ -48,6 +48,11 @@ public class ItemDragManager : MonoBehaviour
 
     public void SetInven(Inventory inven)
     {
+        if(inventory)
+        {
+            inventory.onItemChangedCallback -= UpdateUI;
+        }
+
         inventory = inven;
         inventory.onItemChangedCallback += UpdateUI;
         hostInven = GameManager.instance.hostDragInven;

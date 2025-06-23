@@ -5,10 +5,12 @@
         {"name":"IronBar","items":["IronOre","IronBar"],"amounts":[1,1],"cooldown":4}
     ],
     "Smelter":[
+        {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"SteelBar","items":["IronBar","Coal","SteelBar"],"amounts":[1,1,1],"cooldown":6},
         {"name":"AdamantiteAlloy","items":["AdamantiteOre","SteelBar","AdamantiteAlloy"],"amounts":[1,1,1],"cooldown":10}
     ],
     "Constructor":[
+        {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"CopperPlate","items":["CopperBar","CopperPlate"],"amounts":[1,1],"cooldown":4},
         {"name":"Wire","items":["CopperPlate","Wire"],"amounts":[1,2],"cooldown":4},
         {"name":"CopperGoblet","items":["CopperPlate","CopperGoblet"],"amounts":[3,1],"cooldown":6},
@@ -22,6 +24,7 @@
         {"name":"IronBullet","items":["IronPlate","IronBullet"],"amounts":[2,3],"cooldown":6}
     ],
     "Assembler":[
+        {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"IronAxe","items":["IronPlate","Screw","IronAxe"],"amounts":[3,5,1],"cooldown":8},
         {"name":"Motor","items":["SteelPlate","Cogwheel","Motor"],"amounts":[2,8,1],"cooldown":8},
         {"name":"SteelSword","items":["SteelPlate","Screw","SteelSword"],"amounts":[5,15,1],"cooldown":12},
@@ -32,6 +35,7 @@
         {"name":"ExplosiveBullet","items":["Sulfur","Coal","ExplosiveBullet"],"amounts":[2,6,3],"cooldown":10}
     ],
     "Manufacturer":[
+        {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"Battery","items":["Sulfur","Plastic","CopperPlate","Battery"],"amounts":[4,6,16,1],"cooldown":12},
         {"name":"ControlUnit","items":["Module","Cable","Plastic","ControlUnit"],"amounts":[4,10,20,1],"cooldown":16},
         {"name":"Engine","items":["AdamantitePlate","Motor","Plastic","Engine"],"amounts":[4,8,16,1],"cooldown":16},
@@ -39,11 +43,13 @@
         {"name":"ManablastBullet","items":["ManaStone","Sulfur","Coal","ManablastBullet"],"amounts":[1,4,10,3],"cooldown":12}
     ],
     "Refinery":[
+        {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"Naphtha","items":["CrudeOil","Naphtha"],"amounts":[20,2],"cooldown":8},
         {"name":"Sulfur","items":["CrudeOil","Sulfur"],"amounts":[20,2],"cooldown":8},
         {"name":"Fuel","items":["CrudeOil","Fuel"],"amounts":[40,1],"cooldown":12}
     ],
     "ChemicalPlant":[
+        {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"Plastic","items":["Naphtha","Plastic"],"amounts":[1,2],"cooldown":8},
         {"name":"Rubber","items":["Naphtha","Rubber"],"amounts":[1,2],"cooldown":8},
         {"name":"Plastic","items":["SlimyPlant","Plastic"],"amounts":[1,4],"cooldown":8},
@@ -54,6 +60,7 @@
         {"name":"BasicTower","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":0}
     ],
     "UnitFactory":[
+        {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"BounceRobot","items":["IronPlate","IronBar","SteelBar","BounceRobot"],"amounts":[1,1,1,1],"cooldown":3},
         {"name":"SentryCopter","items":["IronPlate","IronBar","SteelBar","SentryCopter"],"amounts":[1,1,1,1],"cooldown":3},
         {"name":"SpinRobot","items":["IronPlate","IronBar","SteelBar","SpinRobot"],"amounts":[1,1,1,1],"cooldown":3},
@@ -66,6 +73,7 @@
         {"name":"TankFuel","items":["Fuel"],"amounts":[0],"cooldown":3}
     ],
     "AutoBuyer":[
+        {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"Coal","items":["Coal"],"amounts":[1],"cooldown":3},
         {"name":"Brick","items":["Brick"],"amounts":[1],"cooldown":3},
         {"name":"CopperBar","items":["CopperBar"],"amounts":[1],"cooldown":3},

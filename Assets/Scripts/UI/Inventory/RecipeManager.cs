@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -44,16 +45,6 @@ public class RecipeManager : InventoryManager
             if (focusedSlot.item != null)
             {
                 prod.SetRecipeServerRpc(focusedSlot.slotNum);
-
-                //for (int i = 0; i < recipes.Count; i++)
-                //{
-                //    if(recipes[i].name == focusedSlot.item.name)
-                //    {
-                //        prod.SetRecipeServerRpc(i);
-                //        break;
-                //    }
-                //}
-
                 focusedSlot = null;
                 CloseUI();
             }
@@ -86,15 +77,20 @@ public class RecipeManager : InventoryManager
         buildingName = str;
         recipes = new List<Recipe>();
         recipes = RecipeList.instance.GetRecipeInven(str);
+
+        int[] slotNums = new int[recipes.Count];
+        Item[] itemIndexs = new Item[recipes.Count];
+        int[] itemAmounts = new int[recipes.Count];
+
         if (_prod.GetComponent<UnitFactory>())
         {
             if (GameManager.instance.debug)
             {
                 for (int i = 0; i < recipes.Count; i++)
                 {
-                    Debug.Log(recipes[i].name);
-
-                    inventory.RecipeInvenAdd(itemDic[recipes[i].name], recipes[i].amounts[recipes[i].amounts.Count - 1]);
+                    slotNums[i] = i;
+                    itemAmounts[i] = 1;
+                    itemIndexs[i] = itemDic[recipes[i].name];
                 }
             }
             else
@@ -104,7 +100,9 @@ public class RecipeManager : InventoryManager
                 {
                     if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))
                     {
-                        inventory.RecipeInvenAdd(itemDic[recipes[i].name], recipes[i].amounts[recipes[i].amounts.Count - 1]);
+                        slotNums[i] = i;
+                        itemAmounts[i] = 1;
+                        itemIndexs[i] = itemDic[recipes[i].name];
                     }
                 }
             }
@@ -113,10 +111,13 @@ public class RecipeManager : InventoryManager
         {
             for (int i = 0; i < recipes.Count; i++)
             {
-                inventory.RecipeInvenAdd(itemDic[recipes[i].name], recipes[i].amounts[recipes[i].amounts.Count - 1]);
+                slotNums[i] = i;
+                itemAmounts[i] = 1;
+                itemIndexs[i] = itemDic[recipes[i].name];
             }
         }
 
+        inventory.NonNetSlotsAdd(slotNums, itemIndexs, itemAmounts, recipes.Count);
         SetInven(inventory, inventoryUI);
     }
 

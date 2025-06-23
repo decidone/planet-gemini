@@ -68,30 +68,54 @@ public abstract class Production : Structure
     public void SetRecipeClientRpc(int index)
     {
         Recipe selectRecipe = RecipeList.instance.GetRecipeIndex(structureData.factoryName, index);
-        if (recipe != null && recipe != selectRecipe)
+
+        if (selectRecipe.name != "UICancel")
         {
+            if (recipe != null && recipe != selectRecipe)
+            {
+                if (IsServer)
+                {
+                    AddInvenItem();
+                }
+                inventory.ResetInven();
+
+                if (isUIOpened)
+                {
+                    sInvenManager.ClearInvenOption();
+                }
+            }
+
+            if (selectRecipe != null)
+            {
+                if (isUIOpened)
+                    SetRecipe(selectRecipe, index);
+                else
+                {
+                    recipe = selectRecipe;
+                    recipeIndex = index;
+                    cooldown = recipe.cooldown;
+                    effiCooldown = cooldown;
+                }
+            }
+        }
+        else
+        {
+            recipe = new Recipe();
+            recipeIndex = -1;
+            cooldown = structureData.Cooldown;
+            effiCooldown = cooldown;
+            prodTimer = 0;
+            OperateStateSet(false);
+            sInvenManager.SetCooldownText(0);
             if (IsServer)
             {
                 AddInvenItem();
             }
             inventory.ResetInven();
-
             if (isUIOpened)
             {
                 sInvenManager.ClearInvenOption();
-            }
-        }
-
-        if (selectRecipe != null)
-        {
-            if (isUIOpened)
-                SetRecipe(selectRecipe, index);
-            else
-            {
-                recipe = selectRecipe;
-                recipeIndex = index;
-                cooldown = recipe.cooldown;
-                effiCooldown = cooldown;
+                sInvenManager.progressBar.SetProgress(0);
             }
         }
     }
@@ -106,14 +130,25 @@ public abstract class Production : Structure
     public override void ItemSyncServerRpc()
     {
         ItemListClearClientRpc();
+        List<int> slotNums = new List<int>();
+        List<int> itemIndexs = new List<int>();
+        List<int> itemAmounts = new List<int>();
+        int index = 0;
+
         for (int i = 0; i < inventory.space; i++)
         {
             var slot = inventory.SlotCheck(i);
 
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
             if (itemIndex != -1)
-                ItemSyncClientRpc(i, itemIndex, slot.amount);
+            {
+                index++;
+                slotNums.Add(i);
+                itemIndexs.Add(itemIndex);
+                itemAmounts.Add(slot.amount);
+            }
         }
+        ItemSyncClientRpc(slotNums.ToArray(), itemIndexs.ToArray(), itemAmounts.ToArray(), index);
     }
 
 
@@ -126,13 +161,18 @@ public abstract class Production : Structure
 
 
     [ClientRpc]
-    protected void ItemSyncClientRpc(int slotNum, int itemIndex, int itemAmount, ClientRpcParams rpcParams = default)
+    protected void ItemSyncClientRpc(int[] slotNum, int[] itemIndex, int[] itemAmount, int index, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
 
-        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        inventory.RecipeSlotAdd(slotNum, item, itemAmount);
+        Item[] items = new Item[index];
+        for (int i = 0; i < index; i++)
+        {
+            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
+            items[i] = item;
+        }
+        inventory.NonNetSlotsAdd(slotNum, items, itemAmount, index);
     }
 
     public void GameStartItemSet(InventorySaveData data)

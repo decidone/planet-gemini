@@ -12,7 +12,6 @@ public class Constructor : Production
         {
             var slot = inventory.SlotCheck(0);
             var slot1 = inventory.SlotCheck(1);
-
             if (recipe.name != null)
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)

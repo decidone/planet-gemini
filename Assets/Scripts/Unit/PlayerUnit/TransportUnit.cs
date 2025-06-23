@@ -102,6 +102,8 @@ public class TransportUnit : UnitCommonAi
             // 일반 드론은 아이템 적재 여부에 따라 속도 조정
             unitSpeedMag = (itemDic.Count > 0) ? 1f : 2f;
         }
+
+        animator.SetBool("IsItemOn", unitSpeedMag == 1f);
     }
 
     public void SetHomelessDrone(HomelessDroneSaveData saveData)
@@ -331,5 +333,10 @@ public class TransportUnit : UnitCommonAi
     {
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
         GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, itemAmount, transform.position);
+    }
+
+    public void SetUnitColorIndex(int index)
+    {
+        animator.SetFloat("ColorIndex", index);
     }
 }

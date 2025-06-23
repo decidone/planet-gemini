@@ -10,6 +10,9 @@ public class Inventory : NetworkBehaviour
     public delegate void OnItemChanged();
     public OnItemChanged onItemChangedCallback;
 
+    public delegate void OnItemChangedTest(int slotIndex);
+    public OnItemChangedTest onItemChangedCallbackTest;
+
     public int space;   // 아이템 슬롯 상한, 드래그용 슬롯 번호를 겸 함
     public int maxAmount;   // 한 슬롯 당 최대 수량
     [SerializeField]
@@ -164,12 +167,12 @@ public class Inventory : NetworkBehaviour
         {
             if (!items.ContainsKey(i))
             {
-                RecipeSlotAdd(i, item, amount);
+                NonNetSlotAdd(i, item, amount);
                 break;
             }
         }
 
-        onItemChangedCallback?.Invoke();
+        //onItemChangedCallback?.Invoke(); // RecipeSlotAdd 에 들어있어서 지움
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -462,7 +465,31 @@ public class Inventory : NetworkBehaviour
         onItemChangedCallback?.Invoke();
     }
 
-    public void RecipeSlotAdd(int slotNum, Item item, int amount)
+    public void NonNetSlotsAdd(int[] slotNum, Item[] item, int[] amount, int index) // 레시피나 로드된 유저의 인벤토리용
+    {
+        for (int i = 0; i < index; i++)
+        {
+            if (!items.ContainsKey(slotNum[i]))
+            {
+                items.Add(slotNum[i], item[i]);
+                amounts.Add(slotNum[i], amount[i]);
+                totalItems[item[i]] += amount[i];
+            }
+            else if (items[slotNum[i]] == item[i])
+            {
+                amounts[slotNum[i]] += amount[i];
+                totalItems[items[slotNum[i]]] += amount[i];
+            }
+            else
+            {
+                Debug.Log("Slot Add Error");
+            }
+        }
+
+        onItemChangedCallback?.Invoke();
+    }
+
+    public void NonNetSlotAdd(int slotNum, Item item, int amount) // 레시피나 로드된 유저의 인벤토리용
     {
         if (!items.ContainsKey(slotNum))
         {

@@ -996,7 +996,6 @@ public class Structure : NetworkBehaviour
 
         itemSetDelay = true;
 
-
         if (outObj.Count <= sendItemIndex)
         {
             SendItemIndexSet();

@@ -275,7 +275,10 @@ public class Transporter : Production
             if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
             
             sendItemUnit.Add(unit);
-            unit.GetComponent<TransportUnit>().MovePosSet(this, othTransporter, invItemCheckDic);
+            TransportUnit transportUnit = unit.GetComponent<TransportUnit>();
+            transportUnit.SetUnitColorIndex(2);
+
+            transportUnit.MovePosSet(this, othTransporter, invItemCheckDic);
             foreach (var dicData in invItemCheckDic)
             {
                 inventory.Sub(dicData.Key, dicData.Value);
@@ -529,7 +532,9 @@ public class Transporter : Production
         }
 
         sendItemUnit.Add(unit);
-        unit.GetComponent<TransportUnit>().MovePosSet(this, othTransporter, item);
+        TransportUnit transportUnit = unit.GetComponent<TransportUnit>();
+        transportUnit.SetUnitColorIndex(2);
+        transportUnit.MovePosSet(this, othTransporter, item);
     }
 
     public void UnitLoad(Vector3 spawnPos, Dictionary<int, int> itemDic)

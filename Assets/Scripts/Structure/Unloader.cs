@@ -49,18 +49,6 @@ public class Unloader : LogisticsCtrl
             {
                 GetDelayFunc(DelayGetList[0], 0);
             }
-
-            //if (IsServer && !isPreBuilding && checkObj)
-            //{
-            //    if (inObj.Count > 0 && outObj.Count > 0 && !itemGetDelay)
-            //    {
-            //        GetAndSendItem();
-            //    }
-            //}
-            //if (DelayGetList.Count > 0 && inObj.Count > 0)
-            //{
-            //    GetDelayFunc(DelayGetList[0], 0);
-            //}
         }
     }
 
@@ -126,32 +114,6 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-    //protected void GetAndSendItem()
-    //{
-    //    itemGetDelay = true;
-    //    Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-
-    //    if (inObj[getItemIndex].TryGetComponent(out Production inObjScript)
-    //        && !inObjScript.UnloadItemCheck(GetComponent<Unloader>().selectItem))
-    //    {
-    //        GetItemIndexSet();
-
-    //        Invoke(nameof(DelayGetItem), getDelay);
-    //        return;
-    //    }
-
-    //    if (outFactory.isFull)
-    //    {
-    //        SendItemIndexSet();
-
-    //        Invoke(nameof(DelayGetItem), getDelay);
-    //        return;
-    //    }
-
-    //    GetItemServerRpc(getItemIndex);
-    //    GetItemIndexSet();
-    //}
-
     protected override void GetItemFunc(int inObjIndex)
     {
         if (inObj[inObjIndex].TryGetComponent(out Production production))
@@ -169,34 +131,6 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-
-    //protected override void SendItem(int itemIndex)
-    //{
-    //    if (itemIndex < 0) return;
-
-    //    Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-
-    //    if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
-    //    {
-    //        return;
-    //    }
-    //    else if (outFactory.TryGetComponent(out Production production))
-    //    {
-    //        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-    //        if (!production.CanTakeItem(item))
-    //        {
-    //            return;
-    //        }
-    //    }
-    //    else if (outFactory.isMainSource)
-    //    {
-    //        return;
-    //    }
-    //    outFactory.takeItemDelay = true;
-        
-    //    SendItemServerRpc(itemIndex, sendItemIndex);
-    //}
-
     [ServerRpc(RequireOwnership = false)]
     public void SelectItemSetServerRpc(int itemIndex)
     {
@@ -206,7 +140,10 @@ public class Unloader : LogisticsCtrl
     [ClientRpc]
     public void SelectItemSetClientRpc(int itemIndex)
     {
-        selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        if (itemIndex != -1)
+        {
+            selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        }
         UIReset();
     }
 
@@ -222,7 +159,6 @@ public class Unloader : LogisticsCtrl
         selectItem = null;
         UIReset();
     }
-
 
     void UIReset()
     {

@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -13,43 +15,61 @@ public class SplitterFilterManager : MonoBehaviour
     SplitterFilterRecipe splitterFilterRecipe;
 
     SplitterCtrl splitter = null;
-
-    public Slot[] slots;
+    bool isSmartSp = false;
     protected GameManager gameManager;
 
     [SerializeField]
-    Button[] fillterMenuBtns;
+    Slot[] slots;
+    [SerializeField]
+    Button[] recipeMenuBtns;
     [SerializeField]
     ToggleButton[] fillterOnOffBtns;
     [SerializeField]
-    Toggle[] reverseToggle;
+    ToggleButton[] reverseToggle;
     SoundManager soundManager;
+
     void Start()
     {
         gameManager = GameManager.instance;
-        //SetInven(buildingInventory, sliterFilterUI);
         soundManager = SoundManager.instance;
+    }
+     
+    public void GetObjArr(Slot[] slotArr, Button[] fillterMenuBtnArr, ToggleButton[] fillterOnOffBtnArr, ToggleButton[] reverseToggleArr ,bool isSmart)
+    {
+        slots = slotArr.ToArray();
+        recipeMenuBtns = fillterMenuBtnArr.ToArray();
+        fillterOnOffBtns = fillterOnOffBtnArr.ToArray();
+        reverseToggle = reverseToggleArr.ToArray();
+        isSmartSp = isSmart;
+        SetMenu();
+    }
+
+    public void SetMenu()
+    {
         for (int i = 0; i < slots.Length; i++)
         {
             slots[i].amountText.gameObject.SetActive(false);
         }
 
-        for (int i = 0; i < fillterMenuBtns.Length; i++)
+        for (int i = 0; i < recipeMenuBtns.Length; i++)
         {
             int buttonIndex = i;
-            fillterMenuBtns[i].onClick.AddListener(() => OpenSplitterFillterMenu(buttonIndex));
+            recipeMenuBtns[i].onClick.RemoveAllListeners();
+            recipeMenuBtns[i].onClick.AddListener(() => OpenSplitterFillterMenu(buttonIndex));
         }
 
         for (int i = 0; i < fillterOnOffBtns.Length; i++)
         {
             int buttonIndex = i;
+            fillterOnOffBtns[i].onToggleOn.RemoveAllListeners();
             fillterOnOffBtns[i].onToggleOn.AddListener(() => SentFillterInfo(buttonIndex));
         }
 
         for (int i = 0; i < reverseToggle.Length; i++)
         {
             int toggleIndex = i;
-            reverseToggle[i].onValueChanged.AddListener(isOn => Function_Toggle(toggleIndex));
+            reverseToggle[i].onToggleOn.RemoveAllListeners();
+            reverseToggle[i].onToggleOn.AddListener(() => Function_Toggle(toggleIndex));
         }
     }
 
@@ -87,16 +107,15 @@ public class SplitterFilterManager : MonoBehaviour
 
     public void SetItem(Item _item, int slotIndex)
     {
-        if (_item == splitter.arrFilter[slotIndex].selItem)
+        if (isSmartSp)
         {
-            splitter.SlotResetServerRpc(slotIndex);
-            fillterOnOffBtns[slotIndex].ButtonSetModle(false);
-            reverseToggle[slotIndex].isOn = false;
-            slots[slotIndex].ClearSlot();
-        }
-        else
-        {
-            if (slots[slotIndex].item == null)
+            if (_item.name == "UICancel")
+            {
+                splitter.SlotResetServerRpc(slotIndex);
+                reverseToggle[slotIndex].isOn = false;
+                slots[slotIndex].ClearSlot();
+            }
+            else if (slots[slotIndex].item == null)
             {
                 slots[slotIndex].AddItem(_item, 1);
             }
@@ -107,9 +126,9 @@ public class SplitterFilterManager : MonoBehaviour
             }
             else if (slots[slotIndex].item == _item)
                 return;
-
-            SentFillterInfo(slotIndex);
         }
+
+        SentFillterInfo(slotIndex);
     }
 
     public void OpenUI()
@@ -135,29 +154,36 @@ public class SplitterFilterManager : MonoBehaviour
     {
         for (int i = 0; i < splitter.arrFilter.Length; i++)
         {
-            fillterOnOffBtns[i].OpenSetting(splitter.arrFilter[i].isFilterOn);
-            reverseToggle[i].isOn = splitter.arrFilter[i].isReverseFilterOn;
-            if (splitter.arrFilter[i].selItem != null)
+            if(fillterOnOffBtns.Length != 0)
+                fillterOnOffBtns[i].OpenSetting(splitter.arrFilter[i].isFilterOn);
+            if (reverseToggle.Length != 0)
+                reverseToggle[i].OpenSetting(splitter.arrFilter[i].isReverseFilterOn);
+            if (slots.Length != 0)
             {
-                slots[i].AddItem(splitter.arrFilter[i].selItem, 1);
+                if (splitter.arrFilter[i].selItem != null)
+                {
+                    slots[i].AddItem(splitter.arrFilter[i].selItem, 1);
+                }
+                else
+                    slots[i].ClearSlot();
             }
-            else
-                slots[i].ClearSlot();
         }
     }
 
     void SentFillterInfo(int i)
     {
         soundManager.PlayUISFX("ButtonClick");
-        if (slots[i].item != null)
+
+        if (isSmartSp && slots[i].item != null)
         {
-            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slots[i].item);
-            splitter.FilterSetServerRpc(i, fillterOnOffBtns[i].isOn, reverseToggle[i].isOn, itemIndex);
-            //splitter.FilterSetServerRpc(i, fillterOnOffBtns[i].isOn, false, true, reverseToggle[i].isOn, itemIndex);
-            splitter.ItemFilterCheck();
+            int itemIndex = -1; // -1은 아이템이 없음을 의미
+            itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slots[i].item);
+            splitter.FilterSetServerRpc(i, reverseToggle[i].isOn, itemIndex);
         }
-        else
-            return;
+        else if (!isSmartSp)
+        {
+            splitter.FilterSetServerRpc(i, fillterOnOffBtns[i].isOn);
+        }
     }
 
     public void UIReset()
