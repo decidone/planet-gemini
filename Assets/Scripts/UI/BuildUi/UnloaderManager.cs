@@ -70,9 +70,13 @@ public class UnloaderManager : MonoBehaviour
 
     public void OpenUI()
     {
-        if (unloader != null && unloader.selectItem != null)
+        if (unloader)
         {
-            slot.AddItem(unloader.selectItem, 1);
+            unloader.isUIOpened = true;
+            if (unloader.selectItem != null)
+                slot.AddItem(unloader.selectItem, 1);
+            else
+                slot.ClearSlot();
         }
         else
             slot.ClearSlot();
@@ -84,6 +88,8 @@ public class UnloaderManager : MonoBehaviour
 
     public void CloseUI()
     {
+        if (unloader)
+            unloader.isUIOpened = false;
         unloaderUI.SetActive(false);
         unloaderRecipe.CloseUI();
         gameManager.onUIChangedCallback?.Invoke(unloaderUI);

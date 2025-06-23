@@ -13,6 +13,7 @@ public class PortalItemOut : PortalObj
 
     public override void OpenUI()
     {
+        base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.gameObject.SetActive(false);

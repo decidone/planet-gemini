@@ -70,6 +70,7 @@ public class PortalUnitIn : PortalObj
 
     public override void OpenUI()
     {
+        base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);

@@ -108,6 +108,7 @@ public class BuildInfoCheck : MonoBehaviour
 
         if (isUIOpen)
         {
+            //Debug.Log("mousePos : " + mousePos + " , pos : " + pos);
             PopUpPosSet(mousePos);
         }
     }

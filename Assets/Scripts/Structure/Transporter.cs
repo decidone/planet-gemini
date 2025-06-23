@@ -39,6 +39,8 @@ public class Transporter : Production
         clickEvent = GetComponent<MapClickEvent>();
 
         inventory.onItemChangedCallback += TransportableCheck;
+        inventory.invenAllSlotUpdate += TransportableCheck;
+
     }
 
     protected override void Update()
@@ -86,7 +88,7 @@ public class Transporter : Production
             else
                 prodTimer = 0;
 
-            if (IsServer) 
+            if (IsServer)
             {
                 if (unitItemList.Count > 0)
                 {
@@ -104,7 +106,12 @@ public class Transporter : Production
         }
     }
 
-    public void TransportableCheck()
+    void TransportableCheck()
+    {
+        TransportableCheck(0);
+    }
+
+    public void TransportableCheck(int slotindex)
     {
         // 서버 보내야 할 듯
 

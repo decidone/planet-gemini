@@ -136,6 +136,7 @@ public class SplitterFilterManager : MonoBehaviour
         if (splitter != null)
         {
             GetFillterInfo();
+            splitter.isUIOpened = true;
         }
 
         spliterFilterUI.SetActive(true);
@@ -144,6 +145,8 @@ public class SplitterFilterManager : MonoBehaviour
 
     public void CloseUI()
     {
+        if (splitter)
+            splitter.isUIOpened = false;
         spliterFilterUI.SetActive(false);
         splitterFilterRecipe.CloseUI();
         gameManager.onUIChangedCallback?.Invoke(spliterFilterUI);

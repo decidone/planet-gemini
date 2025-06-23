@@ -1633,8 +1633,6 @@ public class Structure : NetworkBehaviour
         if(overclockTower != null && TryGetComponent(out Production prod))
             overclockTower.RemoveObjectsOutOfRange(prod);
 
-        CloseUI();
-
         if (IsServer && GetComponent<BeltCtrl>() && GetComponentInParent<BeltManager>() && GetComponentInParent<BeltGroupMgr>())
         {
             BeltManager beltManager = GetComponentInParent<BeltManager>();
@@ -1739,6 +1737,8 @@ public class Structure : NetworkBehaviour
 
     void CloseUI()
     {
+        Debug.Log("isUIOpened : " + isUIOpened);
+
         if (!isUIOpened) return;
 
         if (TryGetComponent(out LogisticsClickEvent solidFacClickEvent))
@@ -1749,6 +1749,8 @@ public class Structure : NetworkBehaviour
                 {
                     if (solidFacClickEvent.sFilterManager != null)
                         solidFacClickEvent.sFilterManager.CloseUI();
+                    else if (solidFacClickEvent.unloaderManager != null)
+                        solidFacClickEvent.unloaderManager.CloseUI();
                     else if (solidFacClickEvent.itemSpManager != null)
                         solidFacClickEvent.itemSpManager.CloseUI();
                 }
@@ -1763,7 +1765,6 @@ public class Structure : NetworkBehaviour
                     if (structureClickEvent.sInvenManager != null)
                     {
                         structureClickEvent.sInvenManager.ClearInvenOption();
-                        Debug.Log("str");
                         structureClickEvent.sInvenManager.CloseUI();
                     }
                 }

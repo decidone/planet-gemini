@@ -266,6 +266,7 @@ public abstract class Production : Structure
 
     public virtual void CloseUI()
     {
+        Debug.Log("CloseUI call");
         isUIOpened = false;
         GameManager.instance.CheckAndCancelFocus(this);
     }

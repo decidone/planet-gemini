@@ -136,6 +136,8 @@ public class ItemSpManager : InventoryManager
 
     public override void OpenUI()
     {
+        if(itemSpawner)
+            itemSpawner.isUIOpened = true;
         SetItemList(0);
         inventoryUI.SetActive(true);
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
@@ -143,6 +145,8 @@ public class ItemSpManager : InventoryManager
 
     public override void CloseUI()
     {
+        if (itemSpawner)
+            itemSpawner.isUIOpened = false;
         focusedSlot = null;
         inventoryUI.SetActive(false);
         itemInfoWindow.CloseWindow();

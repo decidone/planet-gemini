@@ -43,6 +43,7 @@ public class AutoSeller : Production
         }
 
         inventory.onItemChangedCallback += TransportableCheck;
+        inventory.invenAllSlotUpdate += TransportableCheck;
     }
 
     protected override void Update()
@@ -80,7 +81,12 @@ public class AutoSeller : Production
         }
     }
 
-    public void TransportableCheck()
+    void TransportableCheck()
+    {
+        TransportableCheck(0);
+    }
+
+    public void TransportableCheck(int slotindex)
     {
         // 서버 보내야 할 듯
 

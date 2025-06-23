@@ -8,7 +8,6 @@ public class Refinery : FluidFactoryCtrl
 {
     public Slot displaySlot;
     int preSaveFluidNum;
-    bool uiOpened;
 
     protected override void Awake()
     {
@@ -45,7 +44,6 @@ public class Refinery : FluidFactoryCtrl
         mainSource = null;
         howFarSource = -1;
         preSaveFluidNum = 0;
-        uiOpened = false;
         myVision.SetActive(false);
 
         connectors = new List<EnergyGroupConnector>();
@@ -205,7 +203,7 @@ public class Refinery : FluidFactoryCtrl
         if (preSaveFluidNum != (int)saveFluidNum)
         {
             preSaveFluidNum = (int)saveFluidNum;
-            if (uiOpened)
+            if (isUIOpened)
                 displaySlot.SetItemAmount((int)saveFluidNum);
         }
     }
@@ -213,7 +211,6 @@ public class Refinery : FluidFactoryCtrl
     public override void OpenUI()
     {
         base.OpenUI();
-        uiOpened = true;
         displaySlot.SetItemAmount((int)saveFluidNum);
 
         sInvenManager.SetInven(inventory, ui);
@@ -234,7 +231,6 @@ public class Refinery : FluidFactoryCtrl
     public override void CloseUI()
     {
         base.CloseUI();
-        uiOpened = false;
 
         sInvenManager.ReleaseInven();
 

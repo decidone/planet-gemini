@@ -48,6 +48,7 @@ public class Shop : MonoBehaviour
         {
             SetUIAmount();
             GameManager.instance.inventory.onItemChangedCallback += SetUIAmount;
+            GameManager.instance.inventory.invenAllSlotUpdate += SetUIAmount;
         }
     }
 
@@ -56,6 +57,7 @@ public class Shop : MonoBehaviour
         if (!isPurchase)
         {
             GameManager.instance.inventory.onItemChangedCallback -= SetUIAmount;
+            GameManager.instance.inventory.invenAllSlotUpdate -= SetUIAmount;
         }
 
         foreach (Merch merch in merchList)
@@ -67,7 +69,12 @@ public class Shop : MonoBehaviour
         GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
     }
 
-    public void SetUIAmount()
+    void SetUIAmount()
+    {
+        SetUIAmount(0);
+    }
+
+    public void SetUIAmount(int slotindex)
     {
         foreach (Merch merch in merchList)
         {

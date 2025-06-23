@@ -38,6 +38,11 @@ public class Disintegrator : Production
 
     public void CheckTotalAmount()
     {
+        CheckTotalAmount(0);
+    }
+
+    public void CheckTotalAmount(int slotindex)
+    {
         int totalAmount = 0;
 
         for (int i = 0; i < inventory.space; i++)
@@ -120,7 +125,8 @@ public class Disintegrator : Production
     public void SetAutoClientRpc(bool auto)
     {
         isAuto = auto;
-        autoToggle.SetIsOnWithoutNotify(auto);
+        if (autoToggle != null)
+            autoToggle.SetIsOnWithoutNotify(auto);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -147,6 +153,7 @@ public class Disintegrator : Production
         autoToggle.isOn = isAuto;
         autoToggle.onValueChanged.AddListener(SetAuto);
         inventory.onItemChangedCallback += CheckTotalAmount;
+        inventory.invenAllSlotUpdate += CheckTotalAmount;
         CheckTotalAmount();
     }
 
@@ -156,6 +163,7 @@ public class Disintegrator : Production
         sInvenManager.ReleaseInven();
 
         inventory.onItemChangedCallback -= CheckTotalAmount;
+        inventory.invenAllSlotUpdate -= CheckTotalAmount;
         confirmBtn.onClick.RemoveAllListeners();
         autoToggle.onValueChanged.RemoveAllListeners();
         autoToggle.isOn = false;

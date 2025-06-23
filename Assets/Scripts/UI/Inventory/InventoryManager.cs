@@ -70,6 +70,7 @@ public abstract class InventoryManager : MonoBehaviour
         if (inventory != null)
         {
             inventory.onItemChangedCallback -= UpdateUI;
+            inventory.invenAllSlotUpdate -= UpdateAllUI;
         }
 
         inventory = inven;
@@ -78,6 +79,7 @@ public abstract class InventoryManager : MonoBehaviour
             inventoryUI = invenUI;
 
         inventory.onItemChangedCallback += UpdateUI;
+        inventory.invenAllSlotUpdate += UpdateAllUI;
 
         Slot[] slotObjects = inventoryUI.transform.Find("Slots").gameObject.GetComponentsInChildren<Slot>();
         int size = invenSize ?? slotObjects.Length;
@@ -194,7 +196,7 @@ public abstract class InventoryManager : MonoBehaviour
         splitTimer = 0;
     }
 
-    void UpdateUI()
+    void UpdateAllUI()
     {
         for (int i = 0; i < slots.Length; i++)
         {
@@ -207,6 +209,14 @@ public abstract class InventoryManager : MonoBehaviour
                 slots[i].ClearSlot();
             }
         }
+    }
+
+    void UpdateUI(int slotindex)
+    {
+        if (inventory.items.ContainsKey(slotindex))
+            slots[slotindex].AddItem(inventory.items[slotindex], inventory.amounts[slotindex]);
+        else
+            slots[slotindex].ClearSlot();
     }
 
     void PreBuildEnable()

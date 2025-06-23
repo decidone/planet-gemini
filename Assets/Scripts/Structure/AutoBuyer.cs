@@ -40,6 +40,7 @@ public class AutoBuyer : Production
 
         merchList = oreShopMerchListSO.MerchandiseSOList.Concat(manaStoneShopMerchListSO.MerchandiseSOList).ToList();
         inventory.onItemChangedCallback += TransportableCheck;
+        inventory.invenAllSlotUpdate += TransportableCheck;
         GameManager.instance.onFinanceChangedCallback += BuyableCheck;
     }
 
@@ -125,7 +126,7 @@ public class AutoBuyer : Production
             buyerManager.SetMaxSliderValue(amount);
         }
         maxBuyAmount = amount;
-        TransportableCheck();
+        TransportableCheck(0);
     }
 
     public void MinSliderUIValueChanged(int amount)
@@ -151,7 +152,12 @@ public class AutoBuyer : Production
         TransportableCheck();
     }
 
-    public void TransportableCheck()
+    void TransportableCheck()
+    {
+        TransportableCheck(0);
+    }
+
+    public void TransportableCheck(int slotIndex)
     {
         if (IsServer)
         {
