@@ -48,7 +48,7 @@ public class SciItemSetWindow : MonoBehaviour
     {
         soundManager = SoundManager.instance;
         gameManager = GameManager.instance;
-        itemsList = gameManager.GetComponent<ItemList>().itemList;
+        itemsList = ItemList.instance.itemList;
 
         CloseUI();
     }

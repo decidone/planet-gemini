@@ -693,9 +693,9 @@ public class Structure : NetworkBehaviour
         {
             sizeOneByOne = false;
             nearObj = new GameObject[8];
-            indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
-            startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
-            directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };
+            //indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
+            //startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
+            //directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };
         }
     }
 

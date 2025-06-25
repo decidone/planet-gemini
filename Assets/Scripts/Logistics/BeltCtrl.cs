@@ -93,23 +93,23 @@ public class BeltCtrl : LogisticsCtrl
         animsync = beltManager.GetComponent<Animator>();
         anim = GetComponent<Animator>();
         isOperate = true;
-        BeltModelSet();
         StrBuilt();
+        BeltModelSet();
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (!removeState)
-        {
-            anim.SetFloat("DirNum", dirNum);
-            anim.SetFloat("ModelNum", modelMotion);
-            anim.SetFloat("Level", level);
+        //if (!removeState)
+        //{
+        //    anim.SetFloat("DirNum", dirNum);
+        //    anim.SetFloat("ModelNum", modelMotion);
+        //    anim.SetFloat("Level", level);
 
-            anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-            ModelSet();
-        }
+        //    anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        //    ModelSet();
+        //}
     }
 
     private void FixedUpdate()
@@ -121,6 +121,28 @@ public class BeltCtrl : LogisticsCtrl
             ItemMove();
         else if (itemObjList.Count == 0 && isItemStop)
             isItemStop = false;
+    }
+
+    public override void NearStrBuilt()
+    {
+        if (anim == null)
+        {
+            beltManager = GameObject.Find("BeltManager");
+            beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+            animsync = beltManager.GetComponent<Animator>();
+            anim = GetComponent<Animator>();
+        }
+
+        if (!removeState)
+        {
+            CheckPos();
+            ModelSet();
+
+            anim.SetFloat("DirNum", dirNum);
+            anim.SetFloat("ModelNum", modelMotion);
+            anim.SetFloat("Level", level);
+            anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        }
     }
 
     //protected override void OnClientConnectedCallback(ulong clientId)

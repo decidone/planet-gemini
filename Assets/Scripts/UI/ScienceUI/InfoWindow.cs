@@ -83,7 +83,7 @@ public class InfoWindow : MonoBehaviour
         if (itemsList.Count == 0)
         {
             itemsList = new List<Item>();
-            itemsList = gameManager.GetComponent<ItemList>().itemList;
+            itemsList = ItemList.instance.itemList;
         }
         if(scienceDb == null)
             scienceDb = gameManager.GetComponent<ScienceDb>();

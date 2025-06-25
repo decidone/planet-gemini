@@ -62,6 +62,7 @@ public class PipeCtrl : FluidFactoryCtrl
                 CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj, checkPos[i]));
             }
         }
+        ChangeModel();
         setModel.sprite = modelNum[dirNum];
     }
 
@@ -73,7 +74,7 @@ public class PipeCtrl : FluidFactoryCtrl
         {
             checkPos[i] = dirs[i];
         }
-        ChangeModel();
+        //ChangeModel();
     }
 
     protected void FluidSetOutObj(GameObject obj, Vector3 vec)

@@ -60,7 +60,7 @@ public class BeltGroupMgr : NetworkBehaviour
             if (preCheck)
             {
                 preObj = PreObjCheck();
-                if (! preCheck)
+                if (!preCheck)
                 {
                     var objID = networkObjManager.FindNetObjID(preObj);
                     NearObjSetClientRpc(objID, false);                    
@@ -551,7 +551,6 @@ public class BeltGroupMgr : NetworkBehaviour
         thisBelt.nextBelt = othBelt;
     }
 
-
     [ClientRpc]
     public void PreBeltSetClientRpc(ulong thisBeltID, ulong othBeltID, ClientRpcParams rpcParams = default)
     {
@@ -572,6 +571,8 @@ public class BeltGroupMgr : NetworkBehaviour
         }
 
         thisBelt.preBelt = othBelt;
+        othBelt.NearStrBuilt();
+        thisBelt.NearStrBuilt();
     }
 
     [ClientRpc]
