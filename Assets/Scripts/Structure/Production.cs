@@ -35,6 +35,96 @@ public abstract class Production : Structure
     protected Vector3 endLine;
     public bool isGetLine;
 
+    protected (Item, int) slot = (null, 0);
+    protected (Item, int) slot1 = (null, 0);
+    protected (Item, int) slot2 = (null, 0);
+    protected (Item, int) slot3 = (null, 0);
+
+    protected override void Awake()
+    {
+        base.Awake();
+        inventory = this.GetComponent<Inventory>();
+        inventory.onItemChangedCallback += CheckSlotState;
+        isGetLine = false;
+        isStorageBuilding = false;
+        itemDic = ItemList.instance.itemDic;
+    }
+
+    protected virtual void Start()
+    {
+        itemDic = ItemList.instance.itemDic;
+        if (recipe == null)
+            recipe = new Recipe();
+
+        GameManager gameManager = GameManager.instance;
+        canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
+        sInvenManager = canvas.GetComponent<StructureInvenManager>();
+        rManager = canvas.GetComponent<RecipeManager>();
+        GetUIFunc();
+        //CheckPos();
+
+        StrBuilt();
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        //if (isSetBuildingOk)
+        //{
+        //    for (int i = 0; i < nearObj.Length; i++)
+        //    {
+        //        if (nearObj[i] == null && sizeOneByOne)
+        //        {
+        //            CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+        //        }
+        //        else if (nearObj[i] == null && !sizeOneByOne)
+        //        {
+        //            int dirIndex = i / 2;
+        //            CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+        //        }
+        //    }
+        //}
+
+        if (IsServer && !isPreBuilding && checkObj)
+        {
+            if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
+                GetItem();
+        }
+        if (DelayGetList.Count > 0 && inObj.Count > 0)
+        {
+            GetDelayFunc(DelayGetList[0], 0);
+        }
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        // 필요한 경우 SetDirNum()이나 CheckPos()도 호출해서 방향, 스프라이트를 잡아줌
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null && sizeOneByOne)
+            {
+                CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
+            else if (nearObj[i] == null && !sizeOneByOne)
+            {
+                CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
+        }
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        ClientConnectSyncServerRpc();
+        RepairGaugeServerRpc();
+        if (recipeIndex != -1)
+            SetRecipeServerRpc(recipeIndex);
+        if (inventory != null)
+            ItemSyncServerRpc();
+    }
+
     public virtual void SetRecipe(Recipe _recipe, int index)
     {
         recipe = _recipe;
@@ -50,18 +140,9 @@ public abstract class Production : Structure
     [ServerRpc(RequireOwnership = false)]
     public void SetRecipeServerRpc(int index)
     {
-        itemDic = ItemList.instance.itemDic;
+        //if (itemDic == null)
+        //    itemDic = ItemList.instance.itemDic;
         SetRecipeClientRpc(index);
-    }
-
-    protected override void OnClientConnectedCallback(ulong clientId)
-    {
-        ClientConnectSyncServerRpc();
-        RepairGaugeServerRpc();
-        if (recipeIndex != -1)
-            SetRecipeServerRpc(recipeIndex);
-        if (inventory != null)
-            ItemSyncServerRpc();
     }
 
     [ClientRpc]
@@ -115,9 +196,31 @@ public abstract class Production : Structure
             if (isUIOpened)
             {
                 sInvenManager.ClearInvenOption();
+            }
+        }
+
+        if (selectRecipe != null)
+        {
+            if (isUIOpened)
+            {
+                SetRecipe(selectRecipe, index);
+                SetOutput(selectRecipe);
+            }
+            else
+            {
+                recipe = selectRecipe;
+                recipeIndex = index;
+                cooldown = recipe.cooldown;
+                effiCooldown = cooldown;
+                SetOutput(recipe);
                 sInvenManager.progressBar.SetProgress(0);
             }
         }
+    }
+
+    public virtual void SetOutput(Recipe recipe)
+    {
+        // 건물 레시피 따라서 output을 바꿔줘야 하는 경우 오버라이딩
     }
 
     public override void GameStartRecipeSet(int recipeId)
@@ -150,7 +253,6 @@ public abstract class Production : Structure
         }
         ItemSyncClientRpc(slotNums.ToArray(), itemIndexs.ToArray(), itemAmounts.ToArray(), index);
     }
-
 
     [ClientRpc]
     protected override void ItemListClearClientRpc()
@@ -185,60 +287,6 @@ public abstract class Production : Structure
     public virtual float GetFuel() { return fuel; }
     public virtual void OpenRecipe() { }
     public virtual void GetUIFunc() { }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        inventory = this.GetComponent<Inventory>();
-        isGetLine = false;
-        isStorageBuilding = false;
-    }
-
-    protected virtual void Start()
-    {
-        itemDic = ItemList.instance.itemDic;
-        if (recipe == null)
-            recipe = new Recipe();
-        output = null;
-
-        GameManager gameManager = GameManager.instance;
-        canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
-        sInvenManager = canvas.GetComponent<StructureInvenManager>();
-        rManager = canvas.GetComponent<RecipeManager>();
-        GetUIFunc();
-        CheckPos();
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-
-        if (isSetBuildingOk)
-        {
-            for (int i = 0; i < nearObj.Length; i++)
-            {
-                if (nearObj[i] == null && sizeOneByOne)
-                {
-                    CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                }
-                else if (nearObj[i] == null && !sizeOneByOne)
-                {
-                    int dirIndex = i / 2;
-                    CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                }
-            }
-        }
-
-        if (IsServer && !isPreBuilding && checkObj)
-        {
-            if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
-                GetItem();
-        }
-        if (DelayGetList.Count > 0 && inObj.Count > 0)
-        {
-            GetDelayFunc(DelayGetList[0], 0);
-        }
-    }
 
     public virtual void OpenUI()
     {

@@ -22,6 +22,7 @@ public class BuildingInven : MonoBehaviour
 
     SoundManager soundManager;
     ScienceManager scienceManager;
+
     void Awake()
     {
         if (instance != null)
@@ -49,17 +50,20 @@ public class BuildingInven : MonoBehaviour
         }
         ButtonClickedStart();
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
         inputManager.controls.HotKey.Debug.performed += DebugMode;
         inputManager.controls.Building.BuildingInven.performed += OnBuildingInvenPerformed;
     }
+
     void OnDisable()
     {
         inputManager.controls.HotKey.Debug.performed -= DebugMode;
         inputManager.controls.Building.BuildingInven.performed -= OnBuildingInvenPerformed;
     }
+
     void DebugMode(InputAction.CallbackContext ctx)
     {
         Refresh();

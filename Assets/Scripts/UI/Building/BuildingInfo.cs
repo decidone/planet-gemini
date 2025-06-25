@@ -57,7 +57,6 @@ public class BuildingInfo : MonoBehaviour
                 beltPreBuilding.SetImage(selectBuilding, sendAmount, GameManager.instance.isPlayerInHostMap);
                 beltPreBuilding.isEnough = AmountsEnoughCheck();
             }
-
         }
     }
 
@@ -139,8 +138,8 @@ public class BuildingInfo : MonoBehaviour
         {
             if (buildingNeedList[i].item != null)
             {
-                GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
                 Overall.instance.OverallConsumption(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
+                GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
             }
         }
         GameManager.instance.BuildAndSciUiReset();

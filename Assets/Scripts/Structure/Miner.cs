@@ -21,15 +21,13 @@ public class Miner : Production
         base.Update();
         if (!isPreBuilding)
         {
-            var slot = inventory.SlotCheck(0);
-
             if (energyUse)
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
                     EfficiencyCheck();
 
-                    if (output != null && slot.amount < maxAmount)
+                    if (output != null && slot.Item2 < maxAmount)
                     {
                         OperateStateSet(true);
                         prodTimer += Time.deltaTime;
@@ -37,7 +35,7 @@ public class Miner : Production
                         {
                             soundManager.PlaySFX(gameObject, "structureSFX", "Miner");
 
-                            if (slot.amount + minerCellCount <= maxAmount)
+                            if (slot.Item2 + minerCellCount <= maxAmount)
                             {
                                 if (IsServer)
                                 {
@@ -48,7 +46,7 @@ public class Miner : Production
                             }
                             else
                             {
-                                int addAmount = maxAmount - slot.amount;
+                                int addAmount = maxAmount - slot.Item2;
                                 if (IsServer)
                                 {
                                     inventory.Add(output, addAmount);
@@ -72,7 +70,7 @@ public class Miner : Production
             }
             else
             {
-                if (output != null && slot.amount < maxAmount)
+                if (output != null && slot.Item2 < maxAmount)
                 {
                     OperateStateSet(true);
                     prodTimer += Time.deltaTime;
@@ -80,7 +78,7 @@ public class Miner : Production
                     {
                         soundManager.PlaySFX(gameObject, "structureSFX", "Miner");
 
-                        if (slot.amount + minerCellCount <= maxAmount)
+                        if (slot.Item2 + minerCellCount <= maxAmount)
                         {
                             if (IsServer)
                             {
@@ -91,7 +89,7 @@ public class Miner : Production
                         }
                         else
                         {
-                            int addAmount = maxAmount - slot.amount;
+                            int addAmount = maxAmount - slot.Item2;
                             if (IsServer)
                             {
                                 inventory.Add(output, addAmount);
@@ -107,7 +105,7 @@ public class Miner : Production
                 }
             }
 
-            if (IsServer && slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -120,20 +118,26 @@ public class Miner : Production
         }
     }
 
+    public override void CheckSlotState(int slotindex)
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
+    }
+
     protected override void OnClientConnectedCallback(ulong clientId)
     { 
         base.OnClientConnectedCallback(clientId);
-        initStartServerRpc();
+        InitStartServerRpc();
     }
 
     [ServerRpc]
-    void initStartServerRpc()
+    void InitStartServerRpc()
     {
-        initStartClientRpc();
+        InitStartClientRpc();
     }
 
     [ClientRpc]
-    void initStartClientRpc()
+    void InitStartClientRpc()
     {
         if(!IsServer)
             Init();

@@ -7,23 +7,23 @@ using Unity.Netcode;
 // UTF-8 설정
 public class SendUnderBeltCtrl : LogisticsCtrl
 {
-    //void Start()
-    //{
-    //    setModel = GetComponent<SpriteRenderer>();
-    //}
+    void Start()
+    {
+        //setModel = GetComponent<SpriteRenderer>();
+        StrBuilt();
+    }
 
     protected override void Update()
     {
         base.Update();
         if (!removeState)
         {
-            SetDirNum();
-            if (isSetBuildingOk && nearObj[2] == null)
-                CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+            //SetDirNum();
+            //if (isSetBuildingOk && nearObj[2] == null)
+            //    CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
 
             if (IsServer && !isPreBuilding && checkObj)
             {
-
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                 {
                     GetItem();
@@ -34,8 +34,8 @@ public class SendUnderBeltCtrl : LogisticsCtrl
                     SendItem(itemIndex);
                     //SendItem(itemList[0]);
                 }
-
             }
+
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
@@ -56,11 +56,15 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
     }
 
-    protected override void SetDirNum()
+    public override void NearStrBuilt()
     {
-        setModel.sprite = modelNum[dirNum + (level * 4)];
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
         CheckPos();
+        if (nearObj[2] == null)
+            CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
+        setModel.sprite = modelNum[dirNum + (level * 4)];
     }
+
     protected override IEnumerator SetInObjCoroutine(GameObject obj)
     {
         checkObj = false;

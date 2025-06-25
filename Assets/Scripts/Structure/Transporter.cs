@@ -11,6 +11,7 @@ public class Transporter : Production
 
     [SerializeField]
     GameObject trUnit;
+    NetworkVariable<bool> isUnitInStr = new NetworkVariable<bool>();
     bool isTransportable;
     List<GameObject> sendItemUnit = new List<GameObject>();
 
@@ -37,6 +38,8 @@ public class Transporter : Production
         transportInterval = 1.0f;
         isStorageBuilding = true;
         clickEvent = GetComponent<MapClickEvent>();
+        if (IsServer)
+            isUnitInStr.Value = true;
 
         inventory.onItemChangedCallback += TransportableCheck;
         inventory.invenAllSlotUpdate += TransportableCheck;
@@ -61,7 +64,7 @@ public class Transporter : Production
                 prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
-                    if (sendItemUnit.Count < 3 && takeBuild.standbyUnitCount < 2)
+                    if (isUnitInStr.Value && takeBuild.standbyUnitCount < 2)
                     {
                         if (!isToggleOn)
                         {
@@ -113,21 +116,16 @@ public class Transporter : Production
 
     public void TransportableCheck(int slotindex)
     {
-        // 서버 보내야 할 듯
+        isTransportable = false;
 
-        if (IsServer)
+        for (int i = 0; i < inventory.space; i++)
         {
-            isTransportable = false;
+            var invenItem = inventory.SlotCheck(i);
 
-            for (int i = 0; i < inventory.space; i++)
+            if (invenItem.item != null)
             {
-                var invenItem = inventory.SlotCheck(i);
-
-                if (invenItem.item != null)
-                {
-                    isTransportable = true;
-                    break;
-                }
+                isTransportable = true;
+                break;
             }
         }
     }
@@ -267,6 +265,14 @@ public class Transporter : Production
     public void RemoveUnit(GameObject returnUnit)
     {
         sendItemUnit.Remove(returnUnit);
+        if (IsServer)
+        {
+            if (sendItemUnit.Count < 3)
+                isUnitInStr.Value = true;
+            else
+                isUnitInStr.Value = false;
+        }
+        
         //Destroy(returnUnit);
         returnUnit.GetComponent<TransportUnit>().DestroyFunc();
         OpenAnimServerRpc("ItemGetOpen");
@@ -282,6 +288,14 @@ public class Transporter : Production
             if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
             
             sendItemUnit.Add(unit);
+            if (IsServer)
+            {
+                if (sendItemUnit.Count < 3)
+                    isUnitInStr.Value = true;
+                else
+                    isUnitInStr.Value = false;
+            }
+
             TransportUnit transportUnit = unit.GetComponent<TransportUnit>();
             transportUnit.SetUnitColorIndex(2);
 
@@ -539,6 +553,13 @@ public class Transporter : Production
         }
 
         sendItemUnit.Add(unit);
+        if (IsServer)
+        {
+            if (sendItemUnit.Count < 3)
+                isUnitInStr.Value = true;
+            else
+                isUnitInStr.Value = false;
+        }
         TransportUnit transportUnit = unit.GetComponent<TransportUnit>();
         transportUnit.SetUnitColorIndex(2);
         transportUnit.MovePosSet(this, othTransporter, item);
@@ -557,6 +578,14 @@ public class Transporter : Production
         }
 
         sendItemUnit.Add(unit);
+        if (IsServer)
+        {
+            if (sendItemUnit.Count < 3)
+                isUnitInStr.Value = true;
+            else
+                isUnitInStr.Value = false;
+        }
+
         TransportUnit unitScript = unit.GetComponent<TransportUnit>();
         unitScript.MovePosSet(this, this, item);
         unitScript.TakeItemEnd(false);

@@ -27,18 +27,14 @@ public class UnitFactory : Production
         base.Update();
         if (!isPreBuilding)
         {
-            var slot = inventory.SlotCheck(0);
-            var slot1 = inventory.SlotCheck(1);
-            var slot2 = inventory.SlotCheck(2);
-
             if (recipe.name != null)
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
                     EfficiencyCheck();
 
-                    if (slot.amount >= recipe.amounts[0] && slot1.amount >= recipe.amounts[1]
-                    && slot2.amount >= recipe.amounts[2])
+                    if (slot.Item2 >= recipe.amounts[0] && slot1.Item2 >= recipe.amounts[1]
+                    && slot2.Item2 >= recipe.amounts[2])
                     {
                         OperateStateSet(true);
                         prodTimer += Time.deltaTime;
@@ -50,13 +46,13 @@ public class UnitFactory : Production
                             {
                                 if (IsServer)
                                 {
+                                    Overall.instance.OverallConsumption(slot.Item1, recipe.amounts[0]);
+                                    Overall.instance.OverallConsumption(slot1.Item1, recipe.amounts[1]);
+                                    Overall.instance.OverallConsumption(slot2.Item1, recipe.amounts[2]);
+
                                     inventory.SlotSubServerRpc(0, recipe.amounts[0]);
                                     inventory.SlotSubServerRpc(1, recipe.amounts[1]);
                                     inventory.SlotSubServerRpc(2, recipe.amounts[2]);
-
-                                    Overall.instance.OverallConsumption(slot.item, recipe.amounts[0]);
-                                    Overall.instance.OverallConsumption(slot1.item, recipe.amounts[1]);
-                                    Overall.instance.OverallConsumption(slot2.item, recipe.amounts[2]);
 
                                     SetUnit();
                                     SpawnUnit();
@@ -80,6 +76,14 @@ public class UnitFactory : Production
                 }
             }
         }
+    }
+
+    public override void CheckSlotState(int slotindex)
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
+        slot1 = inventory.SlotCheck(1);
+        slot2 = inventory.SlotCheck(2);
     }
 
     public override void OpenUI()
@@ -171,22 +175,34 @@ public class UnitFactory : Production
         }
     }
 
-    protected override void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(int index, Action<GameObject> callback)
     {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
+        if (map == null)
+        {
+            if (isInHostMap)
+                map = GameManager.instance.hostMap;
+            else
+                map = GameManager.instance.clientMap;
+        }
+
+        int posX = (int)transform.position.x;
+        int posY = (int)transform.position.y;
+        int nearX = posX + twoDirections[index, 0];
+        int nearY = posY + twoDirections[index, 1];
+        Cell cell = map.GetCellDataFromPos(nearX, nearY);
+        if (cell == null)
+            return;
 
         if (nearPos[index] != null)
-            nearPos[index] = this.transform.position + startVec + endVec;
+            nearPos[index] = new Vector2(nearX, nearY);
 
-        for (int i = 0; i < hits.Length; i++)
+        GameObject obj = cell.structure;
+        if (obj != null)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-                hits[i].collider.gameObject != this.gameObject)
+            if (obj.CompareTag("Factory"))
             {
-                nearObj[index] = hits[i].collider.gameObject;
-                callback(hitCollider.gameObject);
-                break;
+                nearObj[index] = obj;
+                callback(obj);
             }
         }
     }

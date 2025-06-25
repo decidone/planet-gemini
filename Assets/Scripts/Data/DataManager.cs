@@ -241,7 +241,7 @@ public class DataManager : MonoBehaviour
         if (netObj.TryGetComponent(out Structure structure))
         {
             structure.GameStartSpawnSet(saveData.level, saveData.direction, building.height, building.width, saveData.planet, saveData.index);
-            structure.StructureStateSet(saveData.isPreBuilding, saveData.isSetBuildingOk, saveData.destroyStart, saveData.hp, saveData.repairGauge, saveData.destroyTimer);
+            structure.StructureStateSet(saveData.isPreBuilding, saveData.destroyStart, saveData.hp, saveData.repairGauge, saveData.destroyTimer);
             structure.GameStartRecipeSet(saveData.recipeId);
             structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(saveData.pos));
 
@@ -409,7 +409,7 @@ public class DataManager : MonoBehaviour
             if (netBeltObj.TryGetComponent(out Structure structure))
             {
                 structure.GameStartSpawnSet(beltData.Item2.level, beltData.Item2.direction, building.height, building.width, beltData.Item2.planet, beltData.Item2.index);
-                structure.StructureStateSet(beltData.Item2.isPreBuilding, beltData.Item2.isSetBuildingOk, beltData.Item2.destroyStart, beltData.Item2.hp, beltData.Item2.repairGauge, beltData.Item2.destroyTimer);
+                structure.StructureStateSet(beltData.Item2.isPreBuilding, beltData.Item2.destroyStart, beltData.Item2.hp, beltData.Item2.repairGauge, beltData.Item2.destroyTimer);
                 structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(beltData.Item2.pos));
             }
 
@@ -430,7 +430,6 @@ public class DataManager : MonoBehaviour
 
         beltGroupMgr.SetBeltData();
         beltGroupMgr.ItemIndexSet();
-        beltGroupMgr.isSetBuildingOk = true;
     }
 
     void SetConnectedFunc()

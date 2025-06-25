@@ -30,7 +30,6 @@ public class EnergyGenerator : Production
     [SerializeField]
     SpriteRenderer view;
     bool isBuildDone;
-    bool isPlaced;
     GameManager gameManager;
     PreBuilding preBuilding;
     Structure preBuildingStr;
@@ -42,24 +41,16 @@ public class EnergyGenerator : Production
         base.Start();
         maxFuel = 100;
         isBuildDone = false;
-        isPlaced = false;
         preBuildingCheck = false;
         gameManager = GameManager.instance;
         preBuilding = PreBuilding.instance;
+        view.enabled = false;
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (!isPlaced)
-        {
-            if (isSetBuildingOk)
-            {
-                view.enabled = false;
-                isPlaced = true;
-            }
-        }
         if (gameManager.focusedStructure == null)
         {
             if (preBuilding.isBuildingOn && !removeState)
@@ -90,13 +81,12 @@ public class EnergyGenerator : Production
                 isBuildDone = true;
             }
 
-            var slot = inventory.SlotCheck(0);
-            if (fuel <= 50 && slot.item == FuelItem && slot.amount > 0)
+            if (fuel <= 50 && slot.Item1 == FuelItem && slot.Item2 > 0)
             {
                 if (IsServer)
                 {
+                    Overall.instance.OverallConsumption(slot.Item1, 1);
                     inventory.SlotSubServerRpc(0, 1);
-                    Overall.instance.OverallConsumption(slot.item, 1);
                 }
                 fuel += 50;
                 soundManager.PlaySFX(gameObject, "structureSFX", "Flames");
@@ -117,6 +107,12 @@ public class EnergyGenerator : Production
                 }
             }
         }
+    }
+
+    public override void CheckSlotState(int slotindex)
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
     }
 
     public override void WarningStateCheck()
@@ -190,8 +186,7 @@ public class EnergyGenerator : Production
 
     public override bool CanTakeItem(Item item)
     {
-        var slot = inventory.SlotCheck(0);
-        if (FuelItem == item && slot.amount < 99)
+        if (FuelItem == item && slot.Item2 < 99)
             return true;
 
         return false;

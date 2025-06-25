@@ -81,12 +81,11 @@ public class FluidFactoryCtrl : Production
             {
                 RepairFunc(false);
             }
-            else if (isPreBuilding && isSetBuildingOk)
+            else if (isPreBuilding)
             {
                 RepairFunc(true);
             }
         }
-
 
         if (destroyStart)
         {
@@ -126,7 +125,6 @@ public class FluidFactoryCtrl : Production
         fluidName = fluidNameSync;
     }
 
-
     protected virtual void FluidSetOutObj(GameObject obj)
     {
         if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
@@ -144,7 +142,7 @@ public class FluidFactoryCtrl : Production
         }
     }
 
-    IEnumerator MainSourceCheck(FluidFactoryCtrl factoryCtrl)
+    protected IEnumerator MainSourceCheck(FluidFactoryCtrl factoryCtrl)
     {
         yield return new WaitForSeconds(0.5f);
 
@@ -263,7 +261,7 @@ public class FluidFactoryCtrl : Production
                     canSend = true;
                 }
             }
-        }        
+        }
 
         return canSend;
     }

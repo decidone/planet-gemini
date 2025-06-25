@@ -18,6 +18,7 @@ public class BuildingList : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        DontDestroyOnLoad(gameObject);
 
         instance = this;
 

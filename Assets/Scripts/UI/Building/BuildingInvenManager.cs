@@ -53,15 +53,18 @@ public class BuildingInvenManager : MonoBehaviour
         soundManager = SoundManager.instance;
         onToggleMapChangeCallback += OnExit;
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
         inputManager.controls.Inventory.BuildingInven.performed += BuildingInfo;
     }
+
     void OnDisable()
     {
         inputManager.controls.Inventory.BuildingInven.performed -= BuildingInfo;
     }
+
     public void SetInven(BuildingInven inven, GameObject invenUI)
     {
         buildingInventory = inven;

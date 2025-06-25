@@ -15,8 +15,8 @@ public class CameraController : MonoBehaviour
 
     InputManager inputManager;
 
-    int width = 1920;
-    int height = 1080;
+    public int width = 1920;
+    public int height = 1080;
 
     [SerializeField] float borderX;
     [SerializeField] float borderY;

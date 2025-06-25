@@ -347,6 +347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obj: {fileID: 6292730873169856880}
   btn: {fileID: 6292730875029442185}
+  text: {fileID: 6292730874350870387}
 --- !u!1 &6292730874350870389
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,7 +427,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Host Disconnected
+  m_Text: Disconnected
 --- !u!1 &6292730874785427279
 GameObject:
   m_ObjectHideFlags: 0

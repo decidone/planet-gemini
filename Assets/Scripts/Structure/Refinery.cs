@@ -13,6 +13,7 @@ public class Refinery : FluidFactoryCtrl
     {
         #region ProductionAwake
         inventory = this.GetComponent<Inventory>();
+        inventory.onItemChangedCallback += CheckSlotState;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
@@ -66,7 +67,6 @@ public class Refinery : FluidFactoryCtrl
         itemDic = ItemList.instance.itemDic;
         if (recipe == null)
             recipe = new Recipe();
-        output = null;
         fluidName = "CrudeOil";
 
         GameManager gameManager = GameManager.instance;
@@ -74,7 +74,7 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        CheckPos();
+        StrBuilt();
         #endregion
 
         displaySlot.SetInputItem(ItemList.instance.itemDic["CrudeOil"]);
@@ -95,23 +95,23 @@ public class Refinery : FluidFactoryCtrl
             {
                 RepairFunc(false);
             }
-            else if (isPreBuilding && isSetBuildingOk)
+            else if (isPreBuilding)
             {
                 RepairFunc(true);
             }
 
             WarningStateCheck();
         }
-        if (isSetBuildingOk)
-        {
-            for (int i = 0; i < nearObj.Length; i++)
-            {
-                if (nearObj[i] == null)
-                {
-                    CheckNearObj(checkPos[i], i, obj => CheckOutObjScript(obj));
-                }
-            }
-        }
+        //if (isSetBuildingOk)
+        //{
+        //    for (int i = 0; i < nearObj.Length; i++)
+        //    {
+        //        if (nearObj[i] == null)
+        //        {
+        //            CheckNearObj(checkPos[i], i, obj => CheckOutObjScript(obj));
+        //        }
+        //    }
+        //}
             
 
         if (IsServer && !isPreBuilding)
@@ -131,19 +131,17 @@ public class Refinery : FluidFactoryCtrl
         {
             FluidChangeCheck();
 
-            var slot = inventory.SlotCheck(0);
-
             if (recipe.name != null)
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
                     EfficiencyCheck();
 
-                    if (saveFluidNum >= recipe.amounts[0] && (slot.amount + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
+                    if (saveFluidNum >= recipe.amounts[0] && (slot.Item2 + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        output = itemDic[recipe.items[recipe.items.Count - 1]];
+                        //output = itemDic[recipe.items[recipe.items.Count - 1]];
 
-                        if (slot.item == output || slot.item == null)
+                        if (slot.Item1 == output || slot.Item1 == null)
                         {
                             OperateStateSet(true);
                             prodTimer += Time.deltaTime;
@@ -178,7 +176,7 @@ public class Refinery : FluidFactoryCtrl
                 }
             }
 
-            if (IsServer && slot.amount > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -187,6 +185,25 @@ public class Refinery : FluidFactoryCtrl
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
                 SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
+            }
+        }
+    }
+
+    public override void CheckSlotState(int slotindex)
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                CheckNearObj(checkPos[i], i, obj => CheckOutObjScript(obj));
             }
         }
     }
@@ -252,6 +269,11 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager.slots[0].outputSlot = true;
     }
 
+    public override void SetOutput(Recipe recipe)
+    {
+        output = itemDic[recipe.items[recipe.items.Count - 1]];
+    }
+
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
@@ -271,11 +293,10 @@ public class Refinery : FluidFactoryCtrl
             playerInven = GameManager.instance.hostMapInven;
         else
             playerInven = GameManager.instance.clientMapInven;
-        var slot = inventory.SlotCheck(0);
-
-        if (slot.item != null)
+        
+        if (slot.Item1 != null)
         {
-            playerInven.Add(slot.item, slot.amount);
+            playerInven.Add(slot.Item1, slot.Item2);
         }
     }
 
@@ -286,9 +307,8 @@ public class Refinery : FluidFactoryCtrl
             Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
             returnDic.Add(ItemList.instance.itemDic[fluidName], (int)saveFluidNum);
 
-            var slot = inventory.SlotCheck(0);
-            if (slot.item != null && slot.amount > 0)
-                returnDic.Add(slot.item, slot.amount);
+            if (slot.Item1 != null && slot.Item2 > 0)
+                returnDic.Add(slot.Item1, slot.Item2);
 
             return returnDic;
         }

@@ -324,6 +324,7 @@ public class GameManager : NetworkBehaviour
         {
             return;
         }
+
         if (Input.GetKeyDown(KeyCode.F10))
         {
             Application.targetFrameRate = 10;
@@ -1762,8 +1763,8 @@ public class GameManager : NetworkBehaviour
         }
         foreach (var data in upgradeItemDic)
         {
-            inventory.Sub(data.Key, data.Value);
             Overall.instance.OverallConsumption(data.Key, data.Value);
+            inventory.Sub(data.Key, data.Value);
         }
 
         for (int i = 0; i < str.Length; i++)

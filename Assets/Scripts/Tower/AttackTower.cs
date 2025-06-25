@@ -38,6 +38,7 @@ public class AttackTower : TowerAi
         energyBulletMaxAmount = towerData.MaxEnergyBulletAmount;
         cooldown = towerData.ReloadCooldown;
         effiCooldown = cooldown;
+        StrBuilt();
     }
 
     protected override void Update()
@@ -53,7 +54,7 @@ public class AttackTower : TowerAi
             {
                 RepairFunc(false);
             }
-            else if (isPreBuilding && isSetBuildingOk)
+            else if (isPreBuilding)
             {
                 RepairFunc(true);
             }
@@ -75,21 +76,21 @@ public class AttackTower : TowerAi
 
         if (!structureData.EnergyUse[level])
         {
-            if (isSetBuildingOk)
-            {
-                for (int i = 0; i < nearObj.Length; i++)
-                {
-                    if (nearObj[i] == null && sizeOneByOne)
-                    {
-                        CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    }
-                    else if (nearObj[i] == null && !sizeOneByOne)
-                    {
-                        int dirIndex = i / 2;
-                        CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                    }
-                }
-            }
+            //if (isSetBuildingOk)
+            //{
+            //    for (int i = 0; i < nearObj.Length; i++)
+            //    {
+            //        if (nearObj[i] == null && sizeOneByOne)
+            //        {
+            //            CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            //        }
+            //        else if (nearObj[i] == null && !sizeOneByOne)
+            //        {
+            //            int dirIndex = i / 2;
+            //            CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            //        }
+            //    }
+            //}
 
             if (IsServer && !isPreBuilding && checkObj)
             {
@@ -161,8 +162,7 @@ public class AttackTower : TowerAi
                     }
                     else
                     {
-                        var slot = inventory.SlotCheck(0);
-                        if (slot.item != null && slot.amount > 0)
+                        if (slot.Item1 != null && slot.Item2 > 0)
                         {
                             if (loadedBullet == null)
                             {
@@ -170,13 +170,57 @@ public class AttackTower : TowerAi
                             }
                             AttackTowerAiCtrl();
                         }
-                        else if (slot.item == null && loadedBullet != null)
+                        else if (slot.Item1 == null && loadedBullet != null)
                         {
                             loadedBullet = null;
                         }
                     }
                 }
             }
+        }
+    }
+
+    public override void CheckSlotState(int slotindex)
+    {
+        // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
+        slot = inventory.SlotCheck(0);
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null && sizeOneByOne)
+            {
+                CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
+            else if (nearObj[i] == null && !sizeOneByOne)
+            {
+                CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
+        }
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        base.OnClientConnectedCallback(clientId);
+        ClientTowerSyncServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ClientTowerSyncServerRpc()
+    {
+        ClientTowerSyncClientRpc(energyBulletAmount);
+    }
+
+    [ClientRpc]
+    public void ClientTowerSyncClientRpc(int amount)
+    {
+        if (!IsServer)
+        {
+            energyBulletAmount = amount;
         }
     }
 
@@ -302,11 +346,9 @@ public class AttackTower : TowerAi
 
     void BulletCheck()
     {
-        var slot = inventory.SlotCheck(0);
-
-        if (bulletDic.ContainsKey(slot.item.name))
+        if (bulletDic.ContainsKey(slot.Item1.name))
         {
-            loadedBullet = bulletDic[slot.item.name];
+            loadedBullet = bulletDic[slot.Item1.name];
         }
     }
 
@@ -342,8 +384,7 @@ public class AttackTower : TowerAi
                 {
                     if (!structureData.EnergyUse[level])
                     {
-                        var slot = inventory.SlotCheck(0);
-                        Overall.instance.OverallConsumption(slot.item, 1);
+                        Overall.instance.OverallConsumption(slot.Item1, 1);
                         inventory.SlotSubServerRpc(0, 1);
                     }
                     else
@@ -365,8 +406,7 @@ public class AttackTower : TowerAi
                 {
                     if (!structureData.EnergyUse[level])
                     {
-                        var slot = inventory.SlotCheck(0);
-                        Overall.instance.OverallConsumption(slot.item, 1);
+                        Overall.instance.OverallConsumption(slot.Item1, 1);
                         inventory.SlotSubServerRpc(0, 1);
                     }
                     else

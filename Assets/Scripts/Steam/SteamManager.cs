@@ -435,7 +435,7 @@ public class SteamManager : MonoBehaviour
             Debug.Log("Host left");
             if (DisconnectedPopup.instance != null)
             {
-                DisconnectedPopup.instance.OpenUI();
+                DisconnectedPopup.instance.OpenUI("Host Disconnected.");
             }
             else
             {

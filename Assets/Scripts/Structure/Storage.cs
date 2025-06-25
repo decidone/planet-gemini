@@ -17,15 +17,12 @@ public class Storage : Production
     protected override void Update()
     {
         base.Update();
-        SetDirNum();
-        inventory.space = invenSize[level];
-        // 업글시 수정되는걸로
-    }
+        //SetDirNum();
 
-    protected override void SetDirNum()
-    {
-        setModel.sprite = modelNum[dirNum + level];
+        // 여기 업글시 수정되는걸로 바꿔야 함
         CheckPos();
+        setModel.sprite = modelNum[dirNum + level];
+        inventory.space = invenSize[level];
     }
 
     public override void OpenUI()

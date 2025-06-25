@@ -51,7 +51,6 @@ public class StructureSaveData
     public string portalName;
 
     public bool isPreBuilding;
-    public bool isSetBuildingOk;
     public bool destroyStart;
     public float repairGauge;
     public float destroyTimer;

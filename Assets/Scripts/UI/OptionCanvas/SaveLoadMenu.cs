@@ -194,7 +194,12 @@ public class SaveLoadMenu : MonoBehaviour
     public void Delete(int slotNum)
     {
         string filePath = path + slotNum.ToString() + ".json";
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+        }
 
+        filePath = path + slotNum.ToString() + ".maps";
         if (File.Exists(filePath))
         {
             File.Delete(filePath);

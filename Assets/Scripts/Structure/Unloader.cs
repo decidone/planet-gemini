@@ -14,7 +14,7 @@ public class Unloader : LogisticsCtrl
         //setModel = GetComponent<SpriteRenderer>();
         clickEvent = GetComponent<LogisticsClickEvent>();
         isMainSource = true;
-        CheckPos();
+        StrBuilt();
     }
 
     protected override void Update()
@@ -23,13 +23,13 @@ public class Unloader : LogisticsCtrl
 
         if (!removeState)
         {
-            for (int i = 0; i < nearObj.Length; i++)
-            {
-                if (nearObj[i] == null)
-                {
-                    CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-                }
-            }
+            //for (int i = 0; i < nearObj.Length; i++)
+            //{
+            //    if (nearObj[i] == null)
+            //    {
+            //        CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            //    }
+            //}
 
             if (IsServer && !isPreBuilding && checkObj)
             {
@@ -48,6 +48,19 @@ public class Unloader : LogisticsCtrl
             if (DelayGetList.Count > 0 && inObj.Count > 0)
             {
                 GetDelayFunc(DelayGetList[0], 0);
+            }
+        }
+    }
+
+    public override void NearStrBuilt()
+    {
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null)
+            {
+                CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }
         }
     }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class UnitList : MonoBehaviour
 {
     public List<GameObject> unitList;
+
     #region Singleton
     public static UnitList instance;
 
@@ -15,6 +16,7 @@ public class UnitList : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        DontDestroyOnLoad(gameObject);
 
         instance = this;
     }

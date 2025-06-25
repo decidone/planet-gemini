@@ -28,9 +28,9 @@ MonoBehaviour:
   - 0.2
   - 0.2
   upgradeSendDelay:
-  - 0.1
-  - 0.1
-  - 0.1
+  - 0.2
+  - 0.2
+  - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10

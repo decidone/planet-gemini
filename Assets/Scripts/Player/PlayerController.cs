@@ -195,7 +195,6 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner) { return; }
 
-
         if (tankOn && onTankData.fuel > 0)
         {
             if (!attackMotion)

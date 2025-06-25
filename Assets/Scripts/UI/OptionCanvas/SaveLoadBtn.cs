@@ -20,6 +20,7 @@ public class SaveLoadBtn : MonoBehaviour
     bool loadEnable;
     string saveFileName;
     SoundManager soundManager;
+
     private void Start()
     {
         soundManager = SoundManager.instance;

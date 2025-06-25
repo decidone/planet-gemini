@@ -94,6 +94,7 @@ public class BeltCtrl : LogisticsCtrl
         anim = GetComponent<Animator>();
         isOperate = true;
         BeltModelSet();
+        StrBuilt();
     }
 
     protected override void Update()
@@ -135,7 +136,6 @@ public class BeltCtrl : LogisticsCtrl
         ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
     }
 
-
     [ServerRpc(RequireOwnership = false)]
     public override void ItemSyncServerRpc()
     {
@@ -157,7 +157,6 @@ public class BeltCtrl : LogisticsCtrl
         isRightTurn = syncRightTurn;
         beltState = (BeltState)syncBeltState;
     }
-
 
     public void GameStartBeltSet(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)
     {
@@ -379,7 +378,6 @@ public class BeltCtrl : LogisticsCtrl
         if(IsServer)
             ItemSend();
     }
-
 
     public bool OnBeltItem(ItemProps itemObj)
     {
