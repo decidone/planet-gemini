@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 using System;
 using Unity.Netcode;
+using System.Linq;
 
 // UTF-8 설정
 public class SplitterCtrl : LogisticsCtrl
 {
     bool canSend = false;
-    int filterindex = 0;
-    int cantSentItemCount = 0;
-    int smartFilterItemIndex = 0;
+    int filterIndex = 0;
     LogisticsClickEvent clickEvent;
 
     [Serializable]
@@ -23,6 +21,8 @@ public class SplitterCtrl : LogisticsCtrl
         public Item selItem;
     }
     public Filter[] arrFilter = new Filter[3]; // 0 좌 1 상 2 우
+    List<int> recentItemSend = new List<int>();
+    int smartFilterItemIndex = 0;
 
     void Start()
     {
@@ -165,20 +165,14 @@ public class SplitterCtrl : LogisticsCtrl
     void FilterArr(GameObject obj, int num)
     {
         arrFilter[num].outObj = obj;
+        recentItemSend.Clear();
     }
 
 
     [ServerRpc(RequireOwnership = false)]
-    public void FilterSetServerRpc(int num, bool reverseFilterOn, int itemIndex)
+    public void FilterSetServerRpc(int num, bool filterOn , bool reverseFilterOn = false, int itemIndex = -1)
     {
-        FilterSetClientRpc(num, true, reverseFilterOn, itemIndex);
-    }
-
-
-    [ServerRpc(RequireOwnership = false)]
-    public void FilterSetServerRpc(int num, bool filterOn)
-    {
-        FilterSetClientRpc(num, filterOn, false, -1);
+        FilterSetClientRpc(num, filterOn, reverseFilterOn, itemIndex);
     }
 
     [ClientRpc]
@@ -190,6 +184,7 @@ public class SplitterCtrl : LogisticsCtrl
         {
             arrFilter[num].selItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         }
+        recentItemSend.Clear();
         UIReset();
         CanSendCheck();
     }
@@ -197,29 +192,15 @@ public class SplitterCtrl : LogisticsCtrl
     void CanSendCheck()
     {
         bool canSendCheck = false;
-        if (level == 1)
-        {
-            for (int i = 0; i < arrFilter.Length; i++)
-            {
-                if (arrFilter[i].selItem != null)
-                {
-                    canSendCheck = true;
-                    break;
-                }
-            }
-        }
-        else if (level == 0)
-        {
-            for (int i = 0; i < arrFilter.Length; i++)
-            {
-                if (arrFilter[i].isFilterOn)
-                {
-                    canSendCheck = true;
-                    break;
-                }
-            }
-        }
 
+        for (int i = 0; i < arrFilter.Length; i++)
+        {
+            if (arrFilter[i].isFilterOn)
+            {
+                canSendCheck = true;
+                break;
+            }
+        }
         canSend = canSendCheck;
     }
 
@@ -247,8 +228,7 @@ public class SplitterCtrl : LogisticsCtrl
     void FilterSendItem(bool isSmart)
     {
         itemSetDelay = true;
-
-        Filter filter = arrFilter[filterindex];
+        Filter filter = arrFilter[filterIndex];
         if (smartFilterItemIndex >= itemList.Count)
         {
             smartFilterItemIndex = 0;
@@ -256,85 +236,184 @@ public class SplitterCtrl : LogisticsCtrl
         Item sendItem = itemList[smartFilterItemIndex];
         Item selectedFilterItem = filter.selItem;
 
-        if (filter.outObj == null)
+        if (!isSmart)
         {
-            FilterindexSet();
-            itemSetDelay = false;
-            return;
-        }
-
-        if (!isSmart && !filter.isFilterOn)
-        {
-            FilterindexSet();
-            itemSetDelay = false;
-            return;
-        }
-
-        if (isSmart)
-        {
-            if (filter.isReverseFilterOn && selectedFilterItem == sendItem)
+            if (filter.outObj == null || !filter.isFilterOn)
             {
                 FilterindexSet();
                 itemSetDelay = false;
-                CantSendItemIndexSet();
                 return;
             }
 
-            if (!filter.isReverseFilterOn && selectedFilterItem != sendItem)
+            GameObject outObject = filter.outObj;
+            Structure outFactory = outObject.GetComponent<Structure>();
+
+            if (outFactory.isFull)
             {
                 FilterindexSet();
                 itemSetDelay = false;
-                CantSendItemIndexSet();
                 return;
-            }        
+            }
+            else if (outObject.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
+            {
+                FilterindexSet();
+                itemSetDelay = false;
+                return;
+            }
         }
-
-        GameObject outObject = filter.outObj;
-        Structure outFactory = outObject.GetComponent<Structure>();
-
-        if (outFactory.isFull)
+        else
         {
-            FilterindexSet();
-            itemSetDelay = false;
-            return;
-        }
-        else if (outObject.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
-        {
-            FilterindexSet();
-            itemSetDelay = false;
-            return;
-        }
+            Dictionary<int, List<int>> canSendIndex = new Dictionary<int, List<int>>() // 가중치, 방향인덱스
+            {
+                { 0, new List<int>() }, // selItem == sendItem
+                { 1, new List<int>() }, // reverse 필터가 켜져 있고 sendItem != selItem
+                { 2, new List<int>() }  // 조건 없음
+            };
 
-        FilterSetItemClientRpc(filterindex);
+            for (int i = 0; i < arrFilter.Length; i++)
+            {
+                filter = arrFilter[i];
+                if (!IsValidOutput(filter, sendItem)) continue;
+
+                int weight = GetFilterWeight(filter, sendItem);
+                if (weight >= 0)
+                {
+                    canSendIndex[weight].Add(i);
+                }
+            }
+
+            // 유효한 인덱스가 아무 것도 없을 경우
+            if (canSendIndex.All(pair => pair.Value.Count == 0))
+            {
+                smartFilterItemIndex++;
+                itemSetDelay = false;
+                return;
+            }
+
+            // 우선순위 높은 가중치부터 처리
+            foreach (var kv in canSendIndex.OrderBy(pair => pair.Key))
+            {
+                var indexList = kv.Value;
+                if (indexList.Count == 0) continue;
+                filterIndex = (indexList.Count == 1)
+                    ? indexList[0]
+                    : GetLeastRecentlyUsedIndex(indexList);
+
+                if (recentItemSend.Count > 5)
+                {
+                    recentItemSend.Clear();
+                }
+
+                recentItemSend.Add(filterIndex);
+                break;
+            }
+        }
+        FilterSetItemClientRpc(filterIndex, smartFilterItemIndex);
         FilterindexSet();
+    }
+
+    // 연결된 오브젝트가 유효하고, 꽉 차지 않았고, 해당 아이템을 받을 수 있는지
+    bool IsValidOutput(Filter filter, Item sendItem)
+    {
+        if (!filter.isFilterOn || !filter.outObj) return false;
+
+        var structure = filter.outObj.GetComponent<Structure>();
+        if (structure && structure.isFull) return false;
+
+        if (filter.outObj.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
+            return false;
+
+        return true;
+    }
+
+    // 필터 조건에 따른 가중치 반환
+    int GetFilterWeight(Filter filter, Item sendItem)
+    {
+        if (filter.selItem)
+        {
+            if (filter.isReverseFilterOn)
+                return (filter.selItem == sendItem) ? -1 : 1;
+            else
+                return (filter.selItem == sendItem) ? 0 : -1;
+        }
+        else
+        {
+            return filter.isReverseFilterOn ? -1 : 2;
+        }
+    }
+
+    // 최근 전송 기록을 기준으로 가장 적게 사용된 인덱스 선택
+    int GetLeastRecentlyUsedIndex(List<int> candidates)
+    {
+        var costMap = new Dictionary<int, int>();
+        foreach (var index in candidates)
+            costMap[index] = 0;
+
+        foreach (var recent in recentItemSend)
+        {
+            if (costMap.ContainsKey(recent))
+                costMap[recent]++;
+        }
+
+        // 최소 사용 횟수 계산
+        int minUsage = costMap.Values.Min();
+
+        // 최소 사용 후보 목록 추출
+        var minCandidates = costMap
+            .Where(kv => kv.Value == minUsage)
+            .Select(kv => kv.Key)
+            .ToList();
+
+        // recentItemSend 중 가장 먼저 등장한 인덱스를 우선으로 선택
+        foreach (var recent in recentItemSend)
+        {
+            if (minCandidates.Contains(recent))
+                return recent;
+        }
+
+        // recentItemSend에 없는 경우, 후보 리스트 순서대로 반환
+        return minCandidates.First();
     }
 
     void FilterindexSet()
     {
-        filterindex++;
-        if (filterindex >= arrFilter.Length)
-            filterindex = 0;
+        filterIndex++;
+        if (filterIndex >= arrFilter.Length)
+            filterIndex = 0;
     }
 
-    void CantSendItemIndexSet()
+    (bool, int) CheckFilterItem(Item item)
     {
-        cantSentItemCount++;
-        if (cantSentItemCount > 3)
+        for (int i = 0; i < itemList.Count; i++)
         {
-            smartFilterItemIndex++;
-            if (smartFilterItemIndex >= itemList.Count)
-                smartFilterItemIndex = 0;
-
-            cantSentItemCount = 0;
+            if (itemList[i] == item)
+            {
+                return (true, i);
+            }
         }
+        return (false, -1);
+    }
+
+    bool OthFilterCheck(Item item, int filterIndex)
+    {
+        for (int i = 0; i < arrFilter.Length; i++)
+        {
+            if (i == filterIndex)
+                continue;
+            if (arrFilter[i].selItem == item && arrFilter[i].isFilterOn && !arrFilter[i].isReverseFilterOn) 
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     [ClientRpc]
-    void FilterSetItemClientRpc(int index)
+    void FilterSetItemClientRpc(int outObjIndex, int itemIndex)
     {
-        Item sendItem = itemList[smartFilterItemIndex];
+        Item sendItem = itemList[itemIndex];
 
-        Filter filter = arrFilter[index];
+        Filter filter = arrFilter[outObjIndex];
 
         GameObject outObject = filter.outObj;
 
@@ -354,7 +433,7 @@ public class SplitterCtrl : LogisticsCtrl
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl;
             }
-            itemList.RemoveAt(smartFilterItemIndex);
+            itemList.RemoveAt(itemIndex);
         }
         else if (outObject.GetComponent<LogisticsCtrl>())
         {
