@@ -177,11 +177,12 @@ public class SplitterFilterManager : MonoBehaviour
     {
         soundManager.PlayUISFX("ButtonClick");
 
-        if (isSmartSp && slots[i].item != null)
+        if (isSmartSp)
         {
             int itemIndex = -1; // -1은 아이템이 없음을 의미
-            itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slots[i].item);
-            splitter.FilterSetServerRpc(i, reverseToggle[i].isOn, itemIndex);
+            if(slots[i].item)
+                itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slots[i].item);
+            splitter.FilterSetServerRpc(i, fillterOnOffBtns[i].isOn, reverseToggle[i].isOn, itemIndex);
         }
         else if (!isSmartSp)
         {

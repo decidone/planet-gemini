@@ -25,12 +25,10 @@ public class ToggleButton : MonoBehaviour
 
     public void OpenSetting(bool isOnOff)
     {
-        isOn = isOnOff;
-
         if (toggleButtonSprite == null) 
             toggleButtonSprite = toggleButtonObj.GetComponent<Image>();
 
-        ButtonSetModle(isOn);
+        ButtonSetModle(isOnOff);
     }
 
     void ToggleButtonClick()
@@ -42,7 +40,7 @@ public class ToggleButton : MonoBehaviour
         onToggleOn?.Invoke();
     }
 
-    public void ButtonSetModle(bool On)
+    void ButtonSetModle(bool On)
     {
         if (On)
         {
