@@ -967,7 +967,7 @@ MonoBehaviour:
   cliffBottomLeftCornerWall: []
   cliffBottomRightCornerWall: []
   objects:
-  - {fileID: 2557397671702435269, guid: 0317abe437244da46846ca7f94deecd1, type: 3}
+  - {fileID: 2557397671702435269, guid: 246542d1d57977846926bed73d113210, type: 3}
   - {fileID: 7020412104492794120, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
   - {fileID: 8159159478609809111, guid: fc76007f987c05749a8db6c1f51e00eb, type: 3}
   - {fileID: 4009096746150404129, guid: 1f9a7be67f8ed1b4e9138b769a45c43b, type: 3}
@@ -1546,7 +1546,7 @@ MonoBehaviour:
   cliffBottomLeftCornerWall: []
   cliffBottomRightCornerWall: []
   objects:
-  - {fileID: 2557397671702435269, guid: 0317abe437244da46846ca7f94deecd1, type: 3}
+  - {fileID: 2557397671702435269, guid: 246542d1d57977846926bed73d113210, type: 3}
   - {fileID: 7020412104492794120, guid: c7bd06c02c28fef408cdb0fb1a7349cf, type: 3}
   - {fileID: 8159159478609809111, guid: fc76007f987c05749a8db6c1f51e00eb, type: 3}
   - {fileID: 4009096746150404129, guid: 1f9a7be67f8ed1b4e9138b769a45c43b, type: 3}
