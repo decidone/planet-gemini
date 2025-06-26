@@ -69,12 +69,9 @@ public class BuildInfoCheck : MonoBehaviour
                 if (cell.structure)
                 {
                     cell.structure.TryGetComponent(out Structure str);
-                    if (!str.isPreBuilding)
-                    {
-                        PopUpPosSetStructure(str);
-                        isUIOpen = true;
-                    }
-
+                    PopUpPosSetStructure(str);
+                    PopUpPosSet(mousePos);
+                    isUIOpen = true;
                     selectedStr = str;
                 }
                 else if (cell.resource)
@@ -82,6 +79,7 @@ public class BuildInfoCheck : MonoBehaviour
                     if (MapGenerator.instance.CheckFogState(pos) == 0)
                     {
                         PopUpPosSetResource(cell.resource.item);
+                        PopUpPosSet(mousePos);
                         isUIOpen = true;
                     }
                     selectedStr = null;
@@ -108,7 +106,6 @@ public class BuildInfoCheck : MonoBehaviour
 
         if (isUIOpen)
         {
-            //Debug.Log("mousePos : " + mousePos + " , pos : " + pos);
             PopUpPosSet(mousePos);
         }
     }

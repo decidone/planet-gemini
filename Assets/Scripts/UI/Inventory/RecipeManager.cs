@@ -89,7 +89,10 @@ public class RecipeManager : InventoryManager
                 for (int i = 0; i < recipes.Count; i++)
                 {
                     slotNums[i] = i;
-                    itemAmounts[i] = 1;
+                    if (recipes[i].name != "UICancel")
+                        itemAmounts[i] = recipes[i].amounts[recipes[i].amounts.Count - 1];
+                    else
+                        itemAmounts[i] = 0;
                     itemIndexs[i] = itemDic[recipes[i].name];
                 }
             }
@@ -101,7 +104,10 @@ public class RecipeManager : InventoryManager
                     if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))
                     {
                         slotNums[i] = i;
-                        itemAmounts[i] = 1;
+                        if (recipes[i].name != "UICancel")
+                            itemAmounts[i] = recipes[i].amounts[recipes[i].amounts.Count - 1];
+                        else
+                            itemAmounts[i] = 0;
                         itemIndexs[i] = itemDic[recipes[i].name];
                     }
                 }
@@ -112,7 +118,10 @@ public class RecipeManager : InventoryManager
             for (int i = 0; i < recipes.Count; i++)
             {
                 slotNums[i] = i;
-                itemAmounts[i] = 1;
+                if (recipes[i].name != "UICancel")
+                    itemAmounts[i] = recipes[i].amounts[recipes[i].amounts.Count - 1];
+                else
+                    itemAmounts[i] = 0;
                 itemIndexs[i] = itemDic[recipes[i].name];
             }
         }
