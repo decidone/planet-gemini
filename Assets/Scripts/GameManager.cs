@@ -395,10 +395,12 @@ public class GameManager : NetworkBehaviour
                     violentDay = false;
                     violentDayCheck = false;
                     forcedOperation = false;
-                    MonsterSpawnerManager.instance.WavePointOff();
                     if (IsServer)
+                    {
+                        MonsterSpawnerManager.instance.WavePointOff();
                         MonsterSpawnerManager.instance.WaveEndSet();
-                    MonsterSpawnerManager.instance.ViolentDayOff();
+                        MonsterSpawnerManager.instance.ViolentDayOff();
+                    }
                     timeImg.color = new Color32(255, 255, 255, 255);
                 }
 
@@ -1367,6 +1369,26 @@ public class GameManager : NetworkBehaviour
     {
         Time.timeScale = 1;
         LoadingPopup.instance.CloseUI();
+    }
+
+    public Cell GetCellDataFromPosWithoutMap(int x, int y)
+    {
+        Map posMap;
+
+        if (y > hostMap.height)
+        {
+            posMap = clientMap;
+        }
+        else
+        {
+            posMap = hostMap;
+        }
+
+        // x, y값이 좌표값이여야 함. 데이터 배열의 행렬 인덱스 번호로 실수하지 않게 조심
+        if (posMap.IsOnMap(x, y))
+            return posMap.mapData[x][y - posMap.offsetY];
+        else
+            return null;
     }
 
     public InGameData SaveData()

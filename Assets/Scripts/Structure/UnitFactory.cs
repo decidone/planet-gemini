@@ -177,19 +177,9 @@ public class UnitFactory : Production
 
     protected override void CheckNearObj(int index, Action<GameObject> callback)
     {
-        if (map == null)
-        {
-            if (isInHostMap)
-                map = GameManager.instance.hostMap;
-            else
-                map = GameManager.instance.clientMap;
-        }
-
-        int posX = (int)transform.position.x;
-        int posY = (int)transform.position.y;
-        int nearX = posX + twoDirections[index, 0];
-        int nearY = posY + twoDirections[index, 1];
-        Cell cell = map.GetCellDataFromPos(nearX, nearY);
+        int nearX = (int)transform.position.x + twoDirections[index, 0];
+        int nearY = (int)transform.position.y + twoDirections[index, 1];
+        Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
         if (cell == null)
             return;
 

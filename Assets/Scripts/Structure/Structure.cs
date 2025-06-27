@@ -63,7 +63,7 @@ public class Structure : NetworkBehaviour
     protected Image repairBar;
     protected float repairGauge = 0.0f;
 
-    [HideInInspector]
+    //[HideInInspector]
     public List<Item> itemList = new List<Item>();
     //[HideInInspector]
     public List<ItemProps> itemObjList = new List<ItemProps>();
@@ -162,8 +162,6 @@ public class Structure : NetworkBehaviour
     public SoundManager soundManager;
 
     public bool isInHostMap;
-    public Map map;
-
     public bool isManualDestroy;    //사용자가 철거 명령을 하는 경우 true. 철거로 인해 파괴되는지 몬스터에 의해 파괴되는지 구분하기 위해 사용
     public bool destroyStart;       //철거 시작하고 나서 계속 돌아감
     public bool isDestroying;       //철거 시작하는 순간 한 번만 돌아감
@@ -252,6 +250,7 @@ public class Structure : NetworkBehaviour
             animator = anim;
         }
         NonOperateStateSet(isOperate);
+        WarningStateCheck();
     }
 
     protected virtual void Update()
@@ -271,8 +270,6 @@ public class Structure : NetworkBehaviour
             {
                 RepairFunc(true);
             }
-
-            WarningStateCheck();
         }
 
         if (destroyStart)
@@ -303,47 +300,58 @@ public class Structure : NetworkBehaviour
         // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
     }
 
-    public virtual void WarningStateCheck()
+    public void WarningStateCheck()
     {
-        if (!isPreBuilding && warningIcon != null && energyUse)
+        if (warningIcon != null)
+            StartCoroutine(CheckWarning());
+    }
+
+    protected virtual IEnumerator CheckWarning()
+    {
+        while (true)
         {
-            if (conn != null && conn.group != null)
+            yield return new WaitForSecondsRealtime(1f);
+
+            if (!isPreBuilding && !removeState && energyUse)
             {
-                if (conn.group.efficiency < 1f)
+                if (conn != null && conn.group != null)
                 {
-                    if (!warningIconCheck)
+                    if (conn.group.efficiency < 1f)
                     {
-                        //low energy
-                        if (warning != null)
-                            StopCoroutine(warning);
-                        warningIcon.sprite = Resources.Load<Sprite>("warning_yellow");
-                        warning = FlickeringIcon();
-                        StartCoroutine(warning);
-                        warningIconCheck = true;
+                        if (!warningIconCheck)
+                        {
+                            //low energy
+                            if (warning != null)
+                                StopCoroutine(warning);
+                            warningIcon.sprite = Resources.Load<Sprite>("warning_yellow");
+                            warning = FlickeringIcon();
+                            StartCoroutine(warning);
+                            warningIconCheck = true;
+                        }
+                    }
+                    else
+                    {
+                        if (warningIconCheck)
+                        {
+                            if (warning != null)
+                                StopCoroutine(warning);
+                            warningIconCheck = false;
+                            warningIcon.enabled = false;
+                        }
                     }
                 }
                 else
                 {
-                    if (warningIconCheck)
+                    if (!warningIconCheck)
                     {
+                        //disconnected
                         if (warning != null)
                             StopCoroutine(warning);
-                        warningIconCheck = false;
-                        warningIcon.enabled = false;
+                        warningIcon.sprite = Resources.Load<Sprite>("warning_red");
+                        warning = FlickeringIcon();
+                        StartCoroutine(warning);
+                        warningIconCheck = true;
                     }
-                }
-            }
-            else
-            {
-                if (!warningIconCheck)
-                {
-                    //disconnected
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warningIcon.sprite = Resources.Load<Sprite>("warning_red");
-                    warning = FlickeringIcon();
-                    StartCoroutine(warning);
-                    warningIconCheck = true;
                 }
             }
         }
@@ -554,8 +562,9 @@ public class Structure : NetworkBehaviour
         if (IsServer)
             return;
 
-        NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(ObjID);
+        CheckPos();
 
+        NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(ObjID);
         nearObj[index] = obj.gameObject;
     }
 
@@ -622,10 +631,6 @@ public class Structure : NetworkBehaviour
     public virtual void StrBuilt()
     {
         // 건설 시 근처 건물들이 NearStrBuilt()를 실행하도록 알림을 보냄
-        if (isInHostMap)
-            map = GameManager.instance.hostMap;
-        else
-            map = GameManager.instance.clientMap;
 
         NearStrBuilt();
 
@@ -638,7 +643,7 @@ public class Structure : NetworkBehaviour
             {
                 int nearX = posX + oneDirections[i, 0];
                 int nearY = posY + oneDirections[i, 1];
-                cell = map.GetCellDataFromPos(nearX, nearY);
+                cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
                 if (cell.structure != null)
                 {
                     cell.structure.GetComponent<Structure>().NearStrBuilt();
@@ -651,7 +656,7 @@ public class Structure : NetworkBehaviour
             {
                 int nearX = posX + twoDirections[i, 0];
                 int nearY = posY + twoDirections[i, 1];
-                cell = map.GetCellDataFromPos(nearX, nearY);
+                cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
 
                 if (cell.structure != null)
                 {
@@ -666,7 +671,28 @@ public class Structure : NetworkBehaviour
     public virtual void NearStrBuilt()
     {
         // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
-        // 필요한 경우 SetDirNum()이나 CheckPos()도 호출해서 방향, 스프라이트를 잡아줌
+        // 변경사항이 생기면 DelayNearStrBuiltCoroutine()에도 반영해야 함
+        if (IsServer)
+        {
+            CheckPos();
+        }
+        else
+        {
+            DelayNearStrBuilt();
+        }
+    }
+
+    public virtual void DelayNearStrBuilt()
+    {
+        // 동시 건설, 클라이언트 동기화 등의 이유로 딜레이를 주고 NearStrBuilt()를 실행할 때 사용
+        StartCoroutine(DelayNearStrBuiltCoroutine());
+    }
+
+    protected virtual IEnumerator DelayNearStrBuiltCoroutine()
+    {
+        // 동시 건설이나 그룹핑을 따로 예외처리 하는 경우가 아니면 NearStrBuilt()를 그대로 사용
+        yield return new WaitForEndOfFrame();
+
         CheckPos();
     }
 
@@ -702,17 +728,9 @@ public class Structure : NetworkBehaviour
     // 1x1 사이즈 근처 오브젝트 찾는 위치(상하좌우) 설정
     protected virtual void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
     {
-        if (map == null)
-        {
-            if (isInHostMap)
-                map = GameManager.instance.hostMap;
-            else
-                map = GameManager.instance.clientMap;
-        }
-
         int nearX = (int)(transform.position.x + direction.x);
         int nearY = (int)(transform.position.y + direction.y);
-        Cell cell = map.GetCellDataFromPos(nearX, nearY);
+        Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
         if (cell == null)
             return;
 
@@ -745,19 +763,9 @@ public class Structure : NetworkBehaviour
     // 2x2 사이즈 근처 오브젝트 찾는 위치(상하좌우) 설정
     protected virtual void CheckNearObj(int index, Action<GameObject> callback)
     {
-        if (map == null)
-        {
-            if (isInHostMap)
-                map = GameManager.instance.hostMap;
-            else
-                map = GameManager.instance.clientMap;
-        }
-
-        int posX = (int)transform.position.x;
-        int posY = (int)transform.position.y;
-        int nearX = posX + twoDirections[index, 0];
-        int nearY = posY + twoDirections[index, 1];
-        Cell cell = map.GetCellDataFromPos(nearX, nearY);
+        int nearX = (int)transform.position.x + twoDirections[index, 0];
+        int nearY = (int)transform.position.y + twoDirections[index, 1];
+        Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
         if (cell == null)
             return;
 
@@ -911,7 +919,7 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    protected void itemListRemove()
+    protected void ItemListRemove()
     {
         itemList.RemoveAt(0);
     }
@@ -1098,7 +1106,6 @@ public class Structure : NetworkBehaviour
         }
 
         SendItemServerRpc(itemIndex, sendItemIndex);
-
         SendItemIndexSet();
     }
 
@@ -1183,7 +1190,7 @@ public class Structure : NetworkBehaviour
                 }
                 else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
                 {
-                    itemListRemove();
+                    ItemListRemove();
                     ItemNumCheck();
                 }
             }
@@ -1226,7 +1233,7 @@ public class Structure : NetworkBehaviour
                 }
                 else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>() && !GetComponent<Unloader>())
                 {
-                    itemListRemove();
+                    ItemListRemove();
                     ItemNumCheck();
                 }
             }
@@ -1268,7 +1275,7 @@ public class Structure : NetworkBehaviour
 
             if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
             {
-                itemListRemove();
+                ItemListRemove();
                 ItemNumCheck();
             }
             else if (GetComponent<Production>())
@@ -1761,7 +1768,7 @@ public class Structure : NetworkBehaviour
     }
 
     [ClientRpc]
-    void DestroyFuncClientRpc()
+    public virtual void DestroyFuncClientRpc()
     {
         ColliderTriggerOnOff(true);
         GameManager gameManager = GameManager.instance;

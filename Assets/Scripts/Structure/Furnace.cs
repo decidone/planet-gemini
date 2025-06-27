@@ -99,29 +99,34 @@ public class Furnace : Production
         }
     }
 
-    public override void WarningStateCheck()
+    protected override IEnumerator CheckWarning()
     {
-        if (!isPreBuilding && warningIcon != null)
+        while (true)
         {
-            if (fuel > 0)
+            yield return new WaitForSecondsRealtime(1f);
+
+            if (!isPreBuilding && !removeState)
             {
-                if (warningIconCheck)
+                if (fuel > 0)
                 {
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warningIconCheck = false;
-                    warningIcon.enabled = false;
+                    if (warningIconCheck)
+                    {
+                        if (warning != null)
+                            StopCoroutine(warning);
+                        warningIconCheck = false;
+                        warningIcon.enabled = false;
+                    }
                 }
-            }
-            else
-            {
-                if (!warningIconCheck)
+                else
                 {
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warning = FlickeringIcon();
-                    StartCoroutine(warning);
-                    warningIconCheck = true;
+                    if (!warningIconCheck)
+                    {
+                        if (warning != null)
+                            StopCoroutine(warning);
+                        warning = FlickeringIcon();
+                        StartCoroutine(warning);
+                        warningIconCheck = true;
+                    }
                 }
             }
         }

@@ -23,12 +23,8 @@ public class BeltGroupMgr : NetworkBehaviour
 
     bool beltSyncCheck;
 
-    [HideInInspector]
-    public NetworkObjManager networkObjManager;
-
     void Start()
     {
-        networkObjManager = NetworkObjManager.instance;
         if (!beltSyncCheck && !IsServer) 
         {
             beltSyncCheck = true;
@@ -36,13 +32,8 @@ public class BeltGroupMgr : NetworkBehaviour
         }
     }
 
-    void Update()
+    public void BeltGroupRefresh()
     {
-        if (Time.timeScale == 0)
-        {
-            return;
-        }
-
         if (!IsServer)
             return;
 
@@ -53,8 +44,13 @@ public class BeltGroupMgr : NetworkBehaviour
                 nextObj = NextObjCheck();
                 if (!nextCheck)
                 {
-                    var objID = networkObjManager.FindNetObjID(nextObj);
-                    NearObjSetClientRpc(objID, true);
+                    if (nextObj == null)
+                        StartCoroutine(DelayRefresh());
+                    else
+                    {
+                        var objID = NetworkObjManager.instance.FindNetObjID(nextObj);
+                        NearObjSetClientRpc(objID, true);
+                    }
                 }
             }
             if (preCheck)
@@ -62,11 +58,25 @@ public class BeltGroupMgr : NetworkBehaviour
                 preObj = PreObjCheck();
                 if (!preCheck)
                 {
-                    var objID = networkObjManager.FindNetObjID(preObj);
-                    NearObjSetClientRpc(objID, false);                    
+                    if (preObj == null)
+                        StartCoroutine(DelayRefresh());
+                    else
+                    {
+                        var objID = NetworkObjManager.instance.FindNetObjID(preObj);
+                        NearObjSetClientRpc(objID, false);
+                    }
                 }
             }
         }
+    }
+
+    IEnumerator DelayRefresh()
+    {
+        // 동시 건설 시 근처 오브젝트가 잡히지 않는 문제가 가끔 발생함
+        // 그런 경우 다음 프레임에 다시 실행하는 코루틴
+        yield return new WaitForEndOfFrame();
+
+        BeltGroupRefresh();
     }
 
     private void OnClientConnectedCallback(ulong clientId)
@@ -105,7 +115,7 @@ public class BeltGroupMgr : NetworkBehaviour
             {
                 ulong preId = beltList[i - 1].GetComponent<NetworkObject>().NetworkObjectId;
                 PreBeltSetClientRpc(mainId, preId);
-            }           
+            }
             if (i < beltList.Count - 1)
             {
                 ulong nextId = beltList[i + 1].GetComponent<NetworkObject>().NetworkObjectId;
@@ -115,12 +125,12 @@ public class BeltGroupMgr : NetworkBehaviour
 
         if(nextObj)
         {
-            var objID = networkObjManager.FindNetObjID(nextObj);
+            var objID = NetworkObjManager.instance.FindNetObjID(nextObj);
             NearObjSetClientRpc(objID, true);
         }
         else if (preObj)
         {
-            var objID = networkObjManager.FindNetObjID(preObj);
+            var objID = NetworkObjManager.instance.FindNetObjID(preObj);
             NearObjSetClientRpc(objID, false);
         }
     }
@@ -158,7 +168,6 @@ public class BeltGroupMgr : NetworkBehaviour
             }
         }
     }
-
 
     //[ClientRpc]
     //public void NetObjAddClientRpc()
@@ -423,22 +432,22 @@ public class BeltGroupMgr : NetworkBehaviour
             {
                 if (otherBelt.beltState == BeltState.StartBelt || otherBelt.beltState == BeltState.SoloBelt)
                 {
-                    if (belt.dirNum == otherBelt.dirNum)                
+                    if (belt.dirNum == otherBelt.dirNum)
                         CombineFunc(belt, otherBelt, isNextFind);
                 
                     else if (belt.dirNum != otherBelt.dirNum)
                     {
                         if (belt.dirNum % 2 == 0)
                         {
-                            if (otherBelt.dirNum % 2 == 1)                        
-                                CombineFunc(belt, otherBelt, isNextFind);                        
+                            if (otherBelt.dirNum % 2 == 1)
+                                CombineFunc(belt, otherBelt, isNextFind);
                             else
                                 return;
                         }
                         else if (belt.dirNum % 2 == 1)
                         {
-                            if (otherBelt.dirNum % 2 == 0)                        
-                                CombineFunc(belt, otherBelt, isNextFind);                        
+                            if (otherBelt.dirNum % 2 == 0)
+                                CombineFunc(belt, otherBelt, isNextFind);
                             else
                                 return;
                         }
@@ -496,7 +505,6 @@ public class BeltGroupMgr : NetworkBehaviour
 
     void CombineFunc(BeltCtrl belt, BeltCtrl otherBelt, bool isNextFind)
     {
-        Debug.Log("isNextFind : " + isNextFind);
         BeltManager beltManager = this.GetComponentInParent<BeltManager>();
         if (isNextFind)
         {
@@ -513,6 +521,9 @@ public class BeltGroupMgr : NetworkBehaviour
         {
             otherBelt.beltGroupMgr.CombineFuncOthGroupMgr(this, belt, otherBelt);
         }
+
+        belt.DelayNearStrBuilt();
+        otherBelt.DelayNearStrBuilt();
     }
 
     public void CombineFuncOthGroupMgr(BeltGroupMgr beltGroupMgr, BeltCtrl belt, BeltCtrl otherBelt)

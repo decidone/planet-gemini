@@ -5,26 +5,6 @@ using Unity.Netcode;
 
 public class EnergyGenerator : Production
 {
-    #region Memo
-    /*
-     * 에너지 발생기
-     * 에너지 공급은 따로 스크립트 주고 컴포넌트 추가
-     * 해당 스크립트에서는 에너지 생산 후 소속 에너지 그룹에 전달하는 역할만 담당
-     * 
-     * 아래는 상속받아서 만들어지는 스크립트/오브젝트
-     * 아니면 상속 없이 수치만 조금 조정해서 같은 스크립트로 사용할 수도 있음
-     * 
-     * 0. 디버그나 샌드박스모드용 무한발전기
-     * 1. 석탄을 사용하는 화력발전기
-     * 2. 화력발전기에 충분한 물을 공급해 줄 수 있을 때(기본 화력발전기와는 분리)
-     * 3. 석유 정제 연료나 마석을 사용한 발전기(물 사용여부는 밸런싱 작업에서 생각)
-     * 
-     * 기능
-     * 1. 에너지 생산
-     * 2. 생산된 에너지 소속그룹에 전달
-    */
-    #endregion
-
     public EnergyGroupConnector connector;
     public Item FuelItem;
     [SerializeField]
@@ -115,29 +95,34 @@ public class EnergyGenerator : Production
         slot = inventory.SlotCheck(0);
     }
 
-    public override void WarningStateCheck()
+    protected override IEnumerator CheckWarning()
     {
-        if (!isPreBuilding && warningIcon != null)
+        while (true)
         {
-            if (fuel > 0)
+            yield return new WaitForSecondsRealtime(1f);
+
+            if (!isPreBuilding && !removeState)
             {
-                if (warningIconCheck)
+                if (fuel > 0)
                 {
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warningIconCheck = false;
-                    warningIcon.enabled = false;
+                    if (warningIconCheck)
+                    {
+                        if (warning != null)
+                            StopCoroutine(warning);
+                        warningIconCheck = false;
+                        warningIcon.enabled = false;
+                    }
                 }
-            }
-            else
-            {
-                if (!warningIconCheck)
+                else
                 {
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warning = FlickeringIcon();
-                    StartCoroutine(warning);
-                    warningIconCheck = true;
+                    if (!warningIconCheck)
+                    {
+                        if (warning != null)
+                            StopCoroutine(warning);
+                        warning = FlickeringIcon();
+                        StartCoroutine(warning);
+                        warningIconCheck = true;
+                    }
                 }
             }
         }

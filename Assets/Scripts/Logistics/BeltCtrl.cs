@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.Netcode;
 using Pathfinding;
+using System.Collections;
 
 // UTF-8 설정
 public enum BeltState
@@ -125,16 +126,57 @@ public class BeltCtrl : LogisticsCtrl
 
     public override void NearStrBuilt()
     {
-        if (anim == null)
+        // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        // 변경사항이 생기면 DelayNearStrBuiltCoroutine()에도 반영해야 함
+        if (IsServer)
         {
-            beltManager = GameObject.Find("BeltManager");
-            beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-            animsync = beltManager.GetComponent<Animator>();
-            anim = GetComponent<Animator>();
+            if (anim == null)
+            {
+                beltManager = GameObject.Find("BeltManager");
+                beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+                animsync = beltManager.GetComponent<Animator>();
+                anim = GetComponent<Animator>();
+            }
+
+            if (!removeState)
+            {
+                CheckPos();
+                ModelSet();
+                beltGroupMgr.BeltGroupRefresh();    // 이 라인은 딜레이를 주고 실행할 때는 뺌
+
+                anim.SetFloat("DirNum", dirNum);
+                anim.SetFloat("ModelNum", modelMotion);
+                anim.SetFloat("Level", level);
+                anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+            }
         }
+        else
+        {
+            DelayNearStrBuilt();
+        }
+    }
+
+    public override void DelayNearStrBuilt()
+    {
+        // 동시 건설, 클라이언트 동기화 등의 이유로 딜레이를 주고 NearStrBuilt()를 실행할 때 사용
+        StartCoroutine(DelayNearStrBuiltCoroutine());
+    }
+
+    protected override IEnumerator DelayNearStrBuiltCoroutine()
+    {
+        // 동시 건설이나 그룹핑을 따로 예외처리 하는 경우가 아니면 NearStrBuilt()를 그대로 사용
+        yield return new WaitForEndOfFrame();
 
         if (!removeState)
         {
+            if (anim == null)
+            {
+                beltManager = GameObject.Find("BeltManager");
+                beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+                animsync = beltManager.GetComponent<Animator>();
+                anim = GetComponent<Animator>();
+            }
+
             CheckPos();
             ModelSet();
 
@@ -564,7 +606,6 @@ public class BeltCtrl : LogisticsCtrl
         ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
     }
 
-
     public void FactoryPosCheck(Structure factory)
     {
         float xDiff = factory.transform.position.x - this.transform.position.x;
@@ -968,5 +1009,20 @@ public class BeltCtrl : LogisticsCtrl
     protected override void NonOperateStateSet(bool isOn)
     {
         animator.enabled = isOn;
+    }
+
+    [ClientRpc]
+    public override void DestroyFuncClientRpc()
+    {
+        if (preBelt != null)
+        {
+            preBelt.DelayNearStrBuilt();
+        }
+        if (nextBelt != null)
+        {
+            nextBelt.DelayNearStrBuilt();
+        }
+
+        base.DestroyFuncClientRpc();
     }
 }

@@ -6,7 +6,6 @@ using Pathfinding;
 
 public class NetworkObjManager : NetworkBehaviour
 {
-
     public List<Portal> netPortals = new List<Portal>();
     public List<Structure> netStructures = new List<Structure>();
     public List<BeltGroupMgr> netBeltGroupMgrs = new List<BeltGroupMgr>();

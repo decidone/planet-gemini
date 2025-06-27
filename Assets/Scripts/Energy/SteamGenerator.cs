@@ -47,6 +47,7 @@ public class SteamGenerator : FluidFactoryCtrl
             animator = anim;
         }
         NonOperateStateSet(isOperate);
+        WarningStateCheck();
 
         #endregion
         #region FluidFactoryAwake
@@ -107,8 +108,6 @@ public class SteamGenerator : FluidFactoryCtrl
             {
                 RepairFunc(true);
             }
-
-            WarningStateCheck();
         }
 
         //if (isSetBuildingOk)
@@ -220,6 +219,36 @@ public class SteamGenerator : FluidFactoryCtrl
     public override void NearStrBuilt()
     {
         // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
+        // 변경사항이 생기면 DelayNearStrBuiltCoroutine()에도 반영해야 함
+        if (IsServer)
+        {
+            CheckPos();
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null)
+                {
+                    CheckNearObj(i, obj => FluidSetOutObj(obj));
+                    CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                }
+            }
+        }
+        else
+        {
+            DelayNearStrBuilt();
+        }
+    }
+
+    public override void DelayNearStrBuilt()
+    {
+        // 동시 건설, 클라이언트 동기화 등의 이유로 딜레이를 주고 NearStrBuilt()를 실행할 때 사용
+        StartCoroutine(DelayNearStrBuiltCoroutine());
+    }
+
+    protected override IEnumerator DelayNearStrBuiltCoroutine()
+    {
+        // 동시 건설이나 그룹핑을 따로 예외처리 하는 경우가 아니면 NearStrBuilt()를 그대로 사용
+        yield return new WaitForEndOfFrame();
+
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
@@ -231,29 +260,34 @@ public class SteamGenerator : FluidFactoryCtrl
         }
     }
 
-    public override void WarningStateCheck()
+    protected override IEnumerator CheckWarning()
     {
-        if (!isPreBuilding && warningIcon != null)
+        while (true)
         {
-            if (fuel > 0)
+            yield return new WaitForSecondsRealtime(1f);
+
+            if (!isPreBuilding && !removeState)
             {
-                if (warningIconCheck)
+                if (fuel > 0)
                 {
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warningIconCheck = false;
-                    warningIcon.enabled = false;
+                    if (warningIconCheck)
+                    {
+                        if (warning != null)
+                            StopCoroutine(warning);
+                        warningIconCheck = false;
+                        warningIcon.enabled = false;
+                    }
                 }
-            }
-            else
-            {
-                if (!warningIconCheck)
+                else
                 {
-                    if (warning != null)
-                        StopCoroutine(warning);
-                    warning = FlickeringIcon();
-                    StartCoroutine(warning);
-                    warningIconCheck = true;
+                    if (!warningIconCheck)
+                    {
+                        if (warning != null)
+                            StopCoroutine(warning);
+                        warning = FlickeringIcon();
+                        StartCoroutine(warning);
+                        warningIconCheck = true;
+                    }
                 }
             }
         }

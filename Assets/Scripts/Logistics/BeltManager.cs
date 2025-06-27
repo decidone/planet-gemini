@@ -27,8 +27,7 @@ public class BeltManager : NetworkBehaviour
         if (secGroupMgr.nextObj != null)
         {
             fstGroupMgr.nextObj = secGroupMgr.nextObj;
-
-            ulong objID = secGroupMgr.networkObjManager.FindNetObjID(secGroupMgr.nextObj);
+            ulong objID = NetworkObjManager.instance.FindNetObjID(secGroupMgr.nextObj);
             fstGroupMgr.NearObjSetClientRpc(objID, true);
         }
 
