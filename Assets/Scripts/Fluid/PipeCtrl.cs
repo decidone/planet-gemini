@@ -10,13 +10,6 @@ public class PipeCtrl : FluidFactoryCtrl
     public bool isDown = false;
     public bool isLeft = false;
 
-    protected override void Start()
-    {
-        base.Start();
-
-        StrBuilt();
-    }
-
     protected override void Update()
     {
         base.Update();
@@ -34,20 +27,20 @@ public class PipeCtrl : FluidFactoryCtrl
             //    }
             //}
 
-            if (!isPreBuilding && checkObj)
-            {
-                if (outObj.Count > 0)
-                {
-                    sendDelayTimer += Time.deltaTime;
+            //if (!isPreBuilding && checkObj)
+            //{
+            //    if (outObj.Count > 0)
+            //    {
+            //        sendDelayTimer += Time.deltaTime;
 
-                    if (sendDelayTimer > sendDelay)
-                    {
-                        if (saveFluidNum >= structureData.SendFluidAmount)
-                            SendFluid();
-                        sendDelayTimer = 0;
-                    }
-                }
-            }
+            //        if (sendDelayTimer > sendDelay)
+            //        {
+            //            if (saveFluidNum >= structureData.SendFluidAmount)
+            //                SendFluid();
+            //            sendDelayTimer = 0;
+            //        }
+            //    }
+            //}
         }
     }
 
@@ -94,7 +87,6 @@ public class PipeCtrl : FluidFactoryCtrl
             }
         }
         ChangeModel();
-        setModel.sprite = modelNum[dirNum];
     }
 
     protected override void CheckPos()
@@ -105,22 +97,20 @@ public class PipeCtrl : FluidFactoryCtrl
         {
             checkPos[i] = dirs[i];
         }
-        //ChangeModel();
     }
 
     protected void FluidSetOutObj(GameObject obj, Vector3 vec)
     {
         if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
-        {
-            if (!factoryCtrl.GetComponent<UnderPipeCtrl>())
-            {
-                outObj.Add(obj);
-            }
+        {                
+            outObj.Add(obj);
+
             if (obj.GetComponent<UnderPipeCtrl>() != null)
             {
-                StartCoroutine(nameof(UnderPipeConnectCheck), obj);
+                UnderPipeConnectCheck(obj);
             }
-            StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
+
+            //StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
         }
         ObjCheck(obj, vec);
     }
@@ -140,7 +130,7 @@ public class PipeCtrl : FluidFactoryCtrl
         }
     }
 
-    void ChangeModel()
+    public void ChangeModel()
     {
         if ((isUp && !isRight && !isDown && !isLeft)
             || (!isUp && !isRight && isDown && !isLeft)
@@ -190,6 +180,8 @@ public class PipeCtrl : FluidFactoryCtrl
         {
             dirNum = 10;
         }
+
+        setModel.sprite = modelNum[dirNum];
     }
 
     public void FactoryVecCheck(GameObject factory)

@@ -59,6 +59,7 @@ public class Refinery : FluidFactoryCtrl
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();
+        fluidManager = FluidManager.instance;
         #endregion
     }
 
@@ -69,7 +70,8 @@ public class Refinery : FluidFactoryCtrl
         if (recipe == null)
             recipe = new Recipe();
         fluidName = "CrudeOil";
-
+        isConsumeSource = true;
+        consumeSource = this;
         GameManager gameManager = GameManager.instance;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
@@ -234,13 +236,14 @@ public class Refinery : FluidFactoryCtrl
                 CheckNearObj(checkPos[i], i, obj => CheckOutObjScript(obj));
             }
         }
+        fluidManager.ConsumeSourceGroupAdd(this);
     }
 
     void CheckOutObjScript(GameObject game)
     {
         StartCoroutine(SetOutObjCoroutine(game));
-        if (game.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
-            StartCoroutine("MainSourceCheck", factoryCtrl);
+        //if (game.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
+        //    StartCoroutine("MainSourceCheck", factoryCtrl);
     }
 
     void FluidChangeCheck()

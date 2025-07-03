@@ -61,6 +61,7 @@ public class SteamGenerator : FluidFactoryCtrl
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("SteamGenerator").transform.Find("DisplaySlot").GetComponent<Slot>();
+        fluidManager = FluidManager.instance;
         #endregion
     }
 
@@ -71,7 +72,8 @@ public class SteamGenerator : FluidFactoryCtrl
         if (recipe == null)
             recipe = new Recipe();
         fluidName = "Water";
-
+        consumeSource = this;
+        isConsumeSource = true;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
@@ -258,6 +260,7 @@ public class SteamGenerator : FluidFactoryCtrl
                 CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }
         }
+        fluidManager.ConsumeSourceGroupAdd(this);
     }
 
     protected override IEnumerator CheckWarning()
@@ -444,5 +447,32 @@ public class SteamGenerator : FluidFactoryCtrl
     protected override void NonOperateStateSet(bool isOn)
     {
         setModel.sprite = strImg[isOn ? 1 : 0];
+    }
+
+
+    public override void GetFluid()
+    {
+        foreach (GameObject obj in outObj)
+        {
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && !fluidFactory.isMainSource && !fluidFactory.consumeSource)
+            {
+                fluidFactory.ShouldUpdate(this, howFarSource + 1, false);
+
+                if (fluidFactory.fluidName == fluidName && CanTake())
+                {
+                    float amount = CanTakeAmount();
+
+                    float takeAmount = fluidFactory.saveFluidNum / 4;
+
+                    if (amount > takeAmount)
+                    {
+                        amount = takeAmount;
+                    }
+
+                    SendFluidFunc(amount);
+                    fluidFactory.saveFluidNum -= amount;
+                }
+            }
+        }
     }
 }

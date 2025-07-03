@@ -39,21 +39,60 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             //    }
             //}
 
-            if (!isPreBuilding && checkObj)
-            {
-                if (outObj.Count > 0)
-                {
-                    sendDelayTimer += Time.deltaTime;
+            //if (!isPreBuilding && checkObj)
+            //{
+            //    if (outObj.Count > 0)
+            //    {
+            //        sendDelayTimer += Time.deltaTime;
 
-                    if (sendDelayTimer > sendDelay)
-                    {
-                        if(saveFluidNum >= structureData.SendFluidAmount)
-                            SendFluid();
-                        sendDelayTimer = 0;
-                    }
+            //        if (sendDelayTimer > sendDelay)
+            //        {
+            //            if(saveFluidNum >= structureData.SendFluidAmount)
+            //                SendFluid();
+            //            sendDelayTimer = 0;
+            //        }
+            //    }
+            //}
+        }
+    }
+
+    public override void StrBuilt()
+    {
+        // 건설 시 근처 건물들이 NearStrBuilt()를 실행하도록 알림을 보냄
+        NearStrBuilt();
+
+        int posX = (int)transform.position.x;
+        int posY = (int)transform.position.y;
+        Cell cell;
+        if (width == 1 && height == 1)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                int nearX = posX + oneDirections[i, 0];
+                int nearY = posY + oneDirections[i, 1];
+                cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
+                if (cell.structure != null)
+                {
+                    cell.structure.GetComponent<Structure>().NearStrBuilt();
                 }
             }
         }
+        else if (width == 2 && height == 2)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                int nearX = posX + twoDirections[i, 0];
+                int nearY = posY + twoDirections[i, 1];
+                cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
+
+                if (cell.structure != null)
+                {
+                    cell.structure.GetComponent<Structure>().NearStrBuilt();
+                }
+            }
+        }
+
+        CheckSlotState(0);
     }
 
     public override void NearStrBuilt()
@@ -154,10 +193,11 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                         {
                             nearObj[index] = hits[i].collider.gameObject;
                             callback(hitCollider.gameObject);
+                            Debug.Log(hitCollider.gameObject.name);
                             break;
                         }
                         else
-                            break;
+                            continue;
                     }
                 }
                 else
@@ -205,8 +245,10 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                     if(othUnderPipe.connectUnderPipe != null)
                         othUnderPipe.connectUnderPipe.GetComponent<UnderPipeCtrl>().DisCntObj();
                     othUnderPipe.DisCntObj();
+                    othUnderPipe.StrBuilt();
                 }
-                StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
+
+                //StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
             }
         }
     }
@@ -234,7 +276,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             {
                 otherPipe.GetComponent<PipeCtrl>().FactoryVecCheck(this.gameObject);
             }
-            StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
+            //StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
         }
     }
 

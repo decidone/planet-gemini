@@ -214,25 +214,10 @@ public abstract class Production : Structure
         }
         else
         {
-            recipe = new Recipe();
-            recipeIndex = -1;
-            cooldown = structureData.Cooldown;
-            effiCooldown = cooldown;
-            prodTimer = 0;
-            OperateStateSet(false);
-            sInvenManager.SetCooldownText(0);
-            if (IsServer)
-            {
-                AddInvenItem();
-            }
-            inventory.ResetInven();
-            if (isUIOpened)
-            {
-                sInvenManager.ClearInvenOption();
-            }
+            ReSetUI();
         }
 
-        if (selectRecipe != null)
+        if (selectRecipe.name != "UICancel" &&  selectRecipe != null)
         {
             if (isUIOpened)
             {
@@ -248,6 +233,30 @@ public abstract class Production : Structure
                 SetOutput(recipe);
                 sInvenManager.progressBar.SetProgress(0);
             }
+        }
+        else if (selectRecipe.name == "UICancel")
+        {
+            ReSetUI();
+        }
+    }
+
+    void ReSetUI()
+    {
+        recipe = new Recipe();
+        recipeIndex = -1;
+        cooldown = structureData.Cooldown;
+        effiCooldown = cooldown;
+        prodTimer = 0;
+        OperateStateSet(false);
+        sInvenManager.SetCooldownText(0);
+        if (IsServer)
+        {
+            AddInvenItem();
+        }
+        inventory.ResetInven();
+        if (isUIOpened)
+        {
+            sInvenManager.ClearInvenOption();
         }
     }
 

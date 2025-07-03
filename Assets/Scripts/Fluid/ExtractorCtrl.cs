@@ -12,6 +12,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
     protected override void Start()
     {
         mainSource = myFluidScript;
+        isMainSource = true;
         fluidName = "CrudeOil";
         StrBuilt();
     }
@@ -22,25 +23,17 @@ public class ExtractorCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            //if (isSetBuildingOk)
-            //{
-            //    for (int i = 0; i < nearObj.Length; i++)
-            //    {
-            //        if (nearObj[i] == null)
-            //        {
-            //            CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
-            //        }
-            //    }
-            //}
-
             if (!isPreBuilding && checkObj)
             {
-                sendDelayTimer += Time.deltaTime;
-                if (sendDelayTimer > sendDelay)
-                {
-                    SendFluid();
-                    sendDelayTimer = 0;
-                }
+                //if (outObj.Count > 0)
+                //{
+                //    sendDelayTimer += Time.deltaTime;
+                //    if (sendDelayTimer > sendDelay)
+                //    {
+                //        SendFluid();
+                //        sendDelayTimer = 0;
+                //    }
+                //}
 
                 pumpTimer += Time.deltaTime;
                 if (pumpTimer > pumpInterval)
@@ -66,6 +59,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
                     CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
                 }
             }
+            fluidManager.MainSourceGroupAdd(this);
         }
         else
         {
@@ -92,6 +86,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
                 CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
             }
         }
+        fluidManager.MainSourceGroupAdd(this);
     }
 
     void PumpUp()
@@ -102,24 +97,61 @@ public class ExtractorCtrl : FluidFactoryCtrl
             saveFluidNum += pumpFluid;
     }
 
-    protected override void SendFluid()
+    public override void SendFluid()
     {
-        if (outObj.Count > 0)
+        if (saveFluidNum > 0)
         {
             foreach (GameObject obj in outObj)
             {
-                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && obj.GetComponent<PumpCtrl>() == null && !fluidFactory.isPreBuilding)
+                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && !fluidFactory.isMainSource)
                 {
-                    if (fluidFactory.structureData.MaxFulidStorageLimit > fluidFactory.saveFluidNum && fluidFactory.CanTake() && fluidFactory.fluidName == fluidName)
-                    {
-                        fluidFactory.SendFluidFunc(structureData.SendFluidAmount);
-                        saveFluidNum -= structureData.SendFluidAmount;
-                    }
+                    fluidFactory.ShouldUpdate(this, howFarSource + 1, true);
 
-                    if (fluidFactory.mainSource == null && !fluidFactory.reFindMain)
-                        RemoveMainSource(false);
+                    if (fluidFactory.CanTake() && fluidFactory.fluidName == fluidName)
+                    {
+                        float amount = fluidFactory.CanTakeAmount();
+                        if (amount > saveFluidNum / outObj.Count)
+                        {
+                            amount = saveFluidNum / outObj.Count;
+                        }
+                        fluidFactory.SendFluidFunc(amount);
+                        saveFluidNum -= amount;
+                    }
                 }
             }
         }
+
+        //StartCoroutine(SendFluidCoroutine());
     }
+
+    //protected IEnumerator SendFluidCoroutine()
+    //{
+    //    yield return null;
+
+    //    List<FluidFactoryCtrl> reversedList = new List<FluidFactoryCtrl>();
+    //    for (int i = fluidList.Count - 1; i >= 0; i--)
+    //    {
+    //        reversedList.Add(fluidList[i]);
+    //    }
+
+    //    foreach (FluidFactoryCtrl obj in reversedList)
+    //    {
+    //        if (obj)
+    //        {
+    //            obj.SendFluid();
+    //            yield return null;
+    //        }
+    //    }
+
+    //    if (IsServer)
+    //    {
+    //        foreach (FluidFactoryCtrl obj in reversedList)
+    //        {
+    //            if (obj)
+    //            {
+    //                obj.FluidSyncServerRpc();
+    //            }
+    //        }
+    //    }
+    //}
 }

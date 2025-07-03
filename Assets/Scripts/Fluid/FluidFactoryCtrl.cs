@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using System.Linq;
 
 // UTF-8 설정
 public class FluidFactoryCtrl : Production
@@ -13,19 +12,18 @@ public class FluidFactoryCtrl : Production
     public float saveFluidNum;
     [HideInInspector]
     public float sendDelayTimer = 0.0f;
-
+    public bool isConsumeSource;
     public int howFarSource;
     public FluidFactoryCtrl mainSource;
+    public FluidFactoryCtrl consumeSource;
     protected FluidFactoryCtrl myFluidScript;
 
-    public bool isPreventingDuplicate = false;
+    //public List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>(); // FluidManager로 옮겨야
 
-    public bool reFindMain = false;
+    public FluidManager fluidManager;
 
-    public List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>();
-
-    bool findNewObj = false;
-    public bool alredyCheck = false;
+    private FluidFactoryCtrl lastSource;
+    private int lastDistance = -1;
 
     protected override void Awake()
     {
@@ -60,6 +58,7 @@ public class FluidFactoryCtrl : Production
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
         setModel = GetComponent<SpriteRenderer>();
+        fluidManager = FluidManager.instance;
         if (TryGetComponent(out Animator anim))
         {
             getAnim = true;
@@ -106,14 +105,8 @@ public class FluidFactoryCtrl : Production
         FluidSyncServerRpc();
     }
 
-    IEnumerator lateSync()
-    {
-        yield return new WaitForSeconds(0.2f);
-        FluidSyncServerRpc();
-    }
-
     [ServerRpc(RequireOwnership = false)]
-    void FluidSyncServerRpc()
+    public void FluidSyncServerRpc()
     {
         FluidSyncClientRpc(saveFluidNum, fluidName);
     }
@@ -132,160 +125,153 @@ public class FluidFactoryCtrl : Production
             outObj.Add(obj);
             if (obj.GetComponent<UnderPipeCtrl>() != null)
             {
-                StartCoroutine(nameof(UnderPipeConnectCheck), obj);
-            }
-            if (!findNewObj)
-            {
-                findNewObj = true;
-                StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
+                UnderPipeConnectCheck(obj);
             }
         }
     }
 
-    protected IEnumerator MainSourceCheck(FluidFactoryCtrl factoryCtrl)
+    protected virtual void UnderPipeConnectCheck(GameObject obj)
     {
-        yield return new WaitForSeconds(0.5f);
+        obj.TryGetComponent(out UnderPipeCtrl underPipeCtrl);
+        if (underPipeCtrl.otherPipe == null || underPipeCtrl.otherPipe != this.gameObject)
+        {
+            outObj.Remove(obj);
+        }
 
-        if(GetComponent<PumpCtrl>() || GetComponent<ExtractorCtrl>())
-        {
-            if(!isPreventingDuplicate)
-                StartCoroutine(MainSourceFunc());
-        }
-        else
-        {
-            if(factoryCtrl.mainSource != null && !factoryCtrl.mainSource.isPreventingDuplicate)
-            {
-                factoryCtrl.mainSource.StartCoroutine(factoryCtrl.mainSource.MainSourceFunc());
-            }
-        }
-        findNewObj = false;
+        if(TryGetComponent(out PipeCtrl pipe))
+            pipe.ChangeModel();
     }
 
-    protected virtual IEnumerator UnderPipeConnectCheck(GameObject obj)
+    public virtual void SendFluid()
     {
-        yield return null;
+        if (saveFluidNum <= 0 || outObj.Count <= 0)
+            return;
 
-        if (obj.GetComponent<UnderPipeCtrl>())
-        {
-            if (obj.GetComponent<UnderPipeCtrl>().otherPipe == null || obj.GetComponent<UnderPipeCtrl>().otherPipe != this.gameObject)
-            {
-                outObj.Remove(obj);
-            }
-        }
-    }
-
-    protected virtual void SendFluid()
-    {
-        FluidFactoryCtrl lowestObj = null;
-        float lowestSaveFluidNum = float.MaxValue; // 초기값 설정
-
+        Dictionary<FluidFactoryCtrl, (float, float, bool)> canSendDic = new Dictionary<FluidFactoryCtrl, (float, float, bool)>(); // (저장량, 최대 저장량, 역류가능성)
         foreach (GameObject obj in outObj)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.GetComponent<PumpCtrl>() && !fluidCtrl.GetComponent<ExtractorCtrl>())
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.isMainSource && !fluidCtrl.isConsumeSource)
             {
-                float saveFluidNum = fluidCtrl.saveFluidNum;
-                if (saveFluidNum < lowestSaveFluidNum && fluidCtrl.CanTake())
-                {
-                    lowestSaveFluidNum = saveFluidNum;
-                    lowestObj = fluidCtrl;
-                }
+                fluidCtrl.ShouldUpdate(mainSource, howFarSource + 1, true);
 
-                if (fluidCtrl.mainSource == null && !fluidCtrl.reFindMain && !fluidCtrl.isPreBuilding)
-                {
-                    if (fluidName != "" && (fluidCtrl.fluidName == fluidName || fluidCtrl.fluidName == ""))
-                    {
-                        if (mainSource != null)
-                            RemoveMainSource(false);
-                        if (fluidCtrl.CanTake() && CheckFluidAmount(fluidCtrl))
-                        {
-                            SendFluidFunc(fluidCtrl);
-                            fluidCtrl.SetFluidName(fluidName);
-                        }
-                    }
-                }
+                var (canSend, refluxCheck) = CheckCanSend(fluidCtrl);
+
+                if (!canSend)
+                    continue;
+
+                if (!canSendDic.ContainsKey(fluidCtrl))
+                    canSendDic.Add(fluidCtrl, (fluidCtrl.saveFluidNum, fluidCtrl.structureData.MaxFulidStorageLimit, refluxCheck));
             }
         }
 
-        if (lowestObj)
-        {
-            bool canSendFluid = false;
+        if (canSendDic.Count == 0)
+            return;
 
-            if (mainSource == lowestObj.mainSource)
+        float totalFluidAmount = 0f;
+        float canSendAmount = saveFluidNum / (canSendDic.Count + 1);
+
+        foreach (var outFluid in canSendDic)
+        {
+            float outFluidAmount = outFluid.Value.Item2 - outFluid.Value.Item1;
+            float sendAmoun = canSendAmount;
+            if (outFluid.Value.Item3)
             {
-                if (howFarSource <= lowestObj.howFarSource ||
-                    (howFarSource > lowestObj.howFarSource &&
-                    structureData.MaxFulidStorageLimit == lowestObj.structureData.MaxFulidStorageLimit &&
-                    saveFluidNum - 2 > lowestObj.saveFluidNum))
-                {
-                    canSendFluid = true;
-                }
-            }
-            else if (lowestObj.fluidName == fluidName)
-            {
-                canSendFluid = true;
+                sendAmoun = canSendAmount / 1.5f;
             }
 
-            if (canSendFluid && CheckFluidAmount(lowestObj))
+            if (outFluidAmount < sendAmoun)
             {
-                SendFluidFunc(lowestObj);
-            }
-        }        
-    }
-
-    protected bool CheckFluidAmount(FluidFactoryCtrl othFluid)
-    {
-        bool canSend = false;
-
-        if (saveFluidNum >= othFluid.saveFluidNum && othFluid.structureData.MaxFulidStorageLimit == structureData.MaxFulidStorageLimit)
-        {
-            canSend = true;
-        }
-        else if (othFluid.structureData.MaxFulidStorageLimit != structureData.MaxFulidStorageLimit)
-        {
-            if (othFluid.structureData.MaxFulidStorageLimit > structureData.MaxFulidStorageLimit)
-            {
-                if (saveFluidNum >= othFluid.saveFluidNum)
-                {
-                    canSend = true;
-
-                }
-                else if (mainSource != null && structureData.MaxFulidStorageLimit == saveFluidNum && othFluid.structureData.MaxFulidStorageLimit > othFluid.saveFluidNum)
-                {
-                    canSend = true;
-                }
+                outFluid.Key.saveFluidNum += outFluidAmount;
+                totalFluidAmount += outFluidAmount;
             }
             else
             {
-                if (saveFluidNum >= othFluid.saveFluidNum)
-                {
-                    canSend = true;
-                }
+                outFluid.Key.saveFluidNum += sendAmoun;
+                totalFluidAmount += sendAmoun;
             }
         }
 
-        return canSend;
+        saveFluidNum -= totalFluidAmount;
     }
 
-    protected void SendFluidFunc(FluidFactoryCtrl othFluid)
+    public virtual void GetFluid()
     {
-        saveFluidNum -= structureData.SendFluidAmount;
+        if (outObj.Count <= 0)
+            return;
 
-        if (othFluid.GetComponent<Refinery>())
+        Dictionary<FluidFactoryCtrl, (float, float, bool)> canSendDic = new Dictionary<FluidFactoryCtrl, (float, float, bool)>(); // (저장량, 최대 저장량, 역류가능성)
+        foreach (GameObject obj in outObj)
         {
-            if (IsServer)
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.mainSource && !fluidCtrl.isMainSource && !fluidCtrl.isConsumeSource)
             {
-                othFluid.SendFluidFuncServerRpc(structureData.SendFluidAmount);
+                fluidCtrl.ShouldUpdate(consumeSource, howFarSource + 1, false);
+
+
+            }
+        }
+    } 
+
+    protected (bool, bool) CheckCanSend(FluidFactoryCtrl othFluid)
+    {
+        bool canSend = false;
+        bool refluxCheck = false;
+        if (fluidName != othFluid.fluidName || !othFluid.CanTake())
+            return (false, false);
+
+        bool farSourceCheck = howFarSource <= othFluid.howFarSource; // 자신보다 거리 수치가 높은 경우
+        bool refluxSendCheck = saveFluidNum / 2 > othFluid.saveFluidNum; // 역류 기능 활성화 조건: 자신의 저장량이 상대의 저장량의 2배 이상인 경우
+        bool saveFluidCheck = saveFluidNum > othFluid.saveFluidNum; // 자신보다 저장량이 낮은 경우
+        bool maxStorageLargeSizeCheck = structureData.MaxFulidStorageLimit < othFluid.structureData.MaxFulidStorageLimit; // 상대 구조물의 최대 저장량이 자신의 최대 저장량보다 큰지 확인
+        bool othMainSoure = mainSource != othFluid.mainSource;
+
+        if (farSourceCheck)
+        {
+            if (saveFluidCheck)
+            {
+                canSend = true;
+            }
+            else if (maxStorageLargeSizeCheck && structureData.MaxFulidStorageLimit == saveFluidNum)
+            {
+                canSend = true;
             }
         }
         else
         {
-            othFluid.SendFluidFunc(structureData.SendFluidAmount);
+            if (othMainSoure)
+            {
+                if (saveFluidCheck)
+                {
+                    canSend = true;
+                }
+                else if (maxStorageLargeSizeCheck && structureData.MaxFulidStorageLimit == saveFluidNum)
+                {
+                    canSend = true;
+                }
+            }
+            else if (saveFluidCheck && refluxSendCheck)
+            {
+                canSend = true;
+                refluxCheck = true; // 역류 기능 활성화
+            }
+        }
+        return (canSend, refluxCheck);
+    }
+
+    public float CanTakeAmount()
+    {
+        if (saveFluidNum < structureData.MaxFulidStorageLimit)
+        {
+            return structureData.MaxFulidStorageLimit - saveFluidNum;
+        }
+        else
+        {
+            return 0f;
         }
     }
 
     public bool CanTake()
     {
-        if (saveFluidNum + structureData.SendFluidAmount <= structureData.MaxFulidStorageLimit)
+        if (saveFluidNum < structureData.MaxFulidStorageLimit)
             return true;
 
         return false;
@@ -301,127 +287,72 @@ public class FluidFactoryCtrl : Production
         }
     }
 
-    [ServerRpc]
-    public void SendFluidFuncServerRpc(float getNum)
+    public void ShouldUpdate(FluidFactoryCtrl newSource, int dis, bool isSend)
     {
-        SendFluidFuncClientRpc(getNum);
-    }
+        if (lastSource == newSource && lastDistance == dis)
+            return;
 
-    [ClientRpc]
-    void SendFluidFuncClientRpc(float getNum)
-    {
-        saveFluidNum += getNum;
+        lastSource = newSource;
+        lastDistance = dis;
 
-        if (structureData.MaxFulidStorageLimit <= saveFluidNum)
+        bool isMainSourceNull = mainSource == null;
+        bool isFarther = (howFarSource == -1 || howFarSource > dis);
+        bool isSameFluidName = fluidName == newSource.fluidName || fluidName == "";
+        bool isFluidEmpty = saveFluidNum == 0;
+        bool shouldUpdate;
+
+        if (isSend)
         {
-            saveFluidNum = structureData.MaxFulidStorageLimit;
+            shouldUpdate =
+                (isMainSourceNull && (isSameFluidName || isFluidEmpty)) || // 메인 소스가 없고 같은 유체를 사용하거나 유체가 비어있는 경우
+                (!isMainSourceNull && isSameFluidName && isFarther); // 메인 소스가 있고 같은 유체를 사용하고 거리가 먼경우
         }
-    }
-
-    public IEnumerator MainSourceFunc()
-    {
-        isPreventingDuplicate = true;
-        yield return new WaitForSeconds(0.5f);
-
-        foreach (FluidFactoryCtrl fluid in fluidList)
+        else
         {
-            fluid.alredyCheck = false;
-        }
-
-        fluidList.Clear();
-
-        CheckFarSource(0, myFluidScript);
-
-        isPreventingDuplicate = false;
-    }
-
-
-    public void CheckFarSource(int dis, FluidFactoryCtrl _mainSource)
-    {
-        if (ShouldUpdate(_mainSource, dis))
-        {
-            UpdateFluidProperties(_mainSource, dis);
+            shouldUpdate = (isMainSourceNull && (isSameFluidName || isFluidEmpty) && isFarther);
+            // 메인 소스가 없고 같은 유체를 사용하거나 유체가 비어있는 경우
         }
 
-        alredyCheck = true;
-
-        if (!GetComponent<Refinery>() && !GetComponent<SteamGenerator>())
+        if (shouldUpdate)
         {
-            List<GameObject> uniqueObjects = outObj.Distinct().ToList();
+            howFarSource = dis;
 
-            foreach (GameObject obj in uniqueObjects)
+            if (GetComponent<FluidTankCtrl>())
+                howFarSource++;
+
+            if (isSend)
             {
-                if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl)
-                    && (factoryCtrl.mainSource == null || (factoryCtrl.mainSource == _mainSource && !factoryCtrl.alredyCheck)
-                    || (factoryCtrl.mainSource != _mainSource && factoryCtrl.howFarSource > dis))
-                    && (factoryCtrl.fluidName == fluidName || (factoryCtrl.fluidName == "" && factoryCtrl.saveFluidNum == 0)))
-                {
-                    factoryCtrl.CheckFarSource(dis + 1, _mainSource);
-                }
+                if (mainSource != null && mainSource != newSource)
+                    fluidManager.MainSourceGroupListRemove(mainSource, myFluidScript);
+                mainSource = newSource;
+
+                fluidName = newSource.fluidName;
+                fluidManager.MainSourceGroupAdd(newSource, this);
+            }
+            else
+            {
+                if (consumeSource != null && consumeSource != newSource)
+                    fluidManager.ConsumeSourceGroupListRemove(consumeSource, myFluidScript);
+                consumeSource = newSource;
+
+                fluidName = newSource.fluidName;
+                fluidManager.ConsumeSourceGroupAdd(newSource, this);
             }
         }
     }
 
-    private bool ShouldUpdate(FluidFactoryCtrl newSource, int dis)
+    public void ResetSource()
     {
-        bool isNewSource = mainSource != newSource;
-
-        return (howFarSource > dis || mainSource == null) || (mainSource == null || fluidName == ""
-            || (mainSource != null && (fluidName == newSource.fluidName || (fluidName != newSource.fluidName && saveFluidNum == 0))))
-            || isNewSource;
+        mainSource = null;
+        consumeSource = null;
+        howFarSource = -1;
+        lastDistance = -1;
+        lastSource = null;
     }
 
-    private void UpdateFluidProperties(FluidFactoryCtrl newSource, int dis)
+    public void RemoveMainSource()
     {
-        howFarSource = dis;
-
-        if (mainSource != null && mainSource != newSource)
-            mainSource.fluidList.Remove(myFluidScript);
-
-        mainSource = newSource;
-        fluidName = newSource.fluidName;
-        reFindMain = false;
-
-        SetFluidName(newSource.fluidName);
-
-        if (!newSource.fluidList.Contains(myFluidScript))
-            newSource.fluidList.Add(myFluidScript);
-    }
-
-    public void SetFluidName(string _fluidName)
-    {
-        fluidName = _fluidName;
-
-        //if (GetComponent<PipeCtrl>() || GetComponent<UnderPipeCtrl>() || GetComponent<FluidTankCtrl>())
-        //{
-        //    SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-        //    sprite.color = _fluidName == "CrudeOil" ? Color.black : Color.blue;
-        //}
-    }
-
-    public void RemoveMainSource(bool isRemoveMain)
-    {
-        if(mainSource != null)
-            mainSource.FluidListReset(isRemoveMain);
-        else if(GetComponent<PumpCtrl>() || GetComponent<ExtractorCtrl>())
-        {
-            FluidListReset(isRemoveMain);
-        }
-    }
-
-    public void FluidListReset(bool isRemoveMain)
-    {
-        foreach (FluidFactoryCtrl fluid in fluidList)
-        {
-            fluid.mainSource = null;
-            fluid.howFarSource = -1;
-            if(!isRemoveMain)
-                fluid.reFindMain = true;
-        }
-
-        fluidList.Clear();
-        if (!isPreventingDuplicate)
-            StartCoroutine(MainSourceFunc());
+        fluidManager.MainSourceGroupRemove(mainSource, this);
     }
 
     public override Dictionary<Item, int> PopUpItemCheck()
