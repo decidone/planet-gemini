@@ -692,7 +692,8 @@ public class Structure : NetworkBehaviour
         else if (width == 2 && height == 2)
         {
             sizeOneByOne = false;
-            nearObj = new GameObject[8];
+            if(nearObj.Length != 8)
+                nearObj = new GameObject[8];
             //indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
             //startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
             //directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };
@@ -762,6 +763,7 @@ public class Structure : NetworkBehaviour
             return;
 
         GameObject obj = cell.structure;
+
         if (obj != null)
         {
             if (obj.CompareTag("Factory"))
@@ -1726,7 +1728,7 @@ public class Structure : NetworkBehaviour
         }
         else if (TryGetComponent(out FluidFactoryCtrl fluid))
         {
-            fluid.RemoveMainSource(true);
+            fluid.RemoveMainSource();
         }
         else if (TryGetComponent(out PortalObj portalObj))
         {

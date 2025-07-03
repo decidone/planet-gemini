@@ -24,20 +24,20 @@ public class FluidTankCtrl : FluidFactoryCtrl
             //    }
             //}
 
-            if (!isPreBuilding && checkObj)
-            {
-                if (outObj.Count > 0)
-                {
-                    sendDelayTimer += Time.deltaTime;
+            //if (!isPreBuilding && checkObj)
+            //{
+            //    if (outObj.Count > 0)
+            //    {
+            //        sendDelayTimer += Time.deltaTime;
 
-                    if (sendDelayTimer > sendDelay)
-                    {
-                        if(saveFluidNum >= structureData.SendFluidAmount)
-                            SendFluid();
-                        sendDelayTimer = 0;
-                    }
-                }
-            }
+            //        if (sendDelayTimer > sendDelay)
+            //        {
+            //            if(saveFluidNum >= structureData.SendFluidAmount)
+            //                SendFluid();
+            //            sendDelayTimer = 0;
+            //        }
+            //    }
+            //}
         }
     }
 

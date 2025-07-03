@@ -145,7 +145,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             else
             {
                 Collider2D hitCollider = hits[i].collider;
-                if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<GetUnderBeltCtrl>() != GetComponent<GetUnderBeltCtrl>())
+                if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<GetUnderBeltCtrl>() != this)
                 {
                     if (hitCollider.TryGetComponent(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)                    
                     {
