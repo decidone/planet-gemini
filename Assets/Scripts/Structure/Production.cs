@@ -366,7 +366,7 @@ public abstract class Production : Structure
         checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<WallCtrl>())
+        if (obj.GetComponent<WallCtrl>() || obj.GetComponent<FluidFactoryCtrl>())
             yield break;
 
         if (obj.TryGetComponent(out Structure structure) && !structure.isMainSource)
@@ -385,7 +385,8 @@ public abstract class Production : Structure
                 outSameList.Add(obj);
                 StartCoroutine(OutCheck(obj));
             }
-            outObj.Add(obj);
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
             StartCoroutine(UnderBeltConnectCheck(obj));
         }
         else
@@ -420,6 +421,7 @@ public abstract class Production : Structure
                 if (itemDic[recipe.items[i]] == itemProps.item)
                 {
                     inventory.SlotAdd(i, itemProps.item, itemProps.amount);
+                    break;
                 }
             }
         }
@@ -436,6 +438,7 @@ public abstract class Production : Structure
                 if (itemDic[recipe.items[i]] == item)
                 {
                     inventory.SlotAdd(i, item, 1);
+                    break;
                 }
             }
         }

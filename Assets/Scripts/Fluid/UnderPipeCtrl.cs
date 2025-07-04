@@ -239,7 +239,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             if (obj.TryGetComponent(out UnderPipeCtrl othUnderPipe))
             {
                 connectUnderPipe = obj;
-                outObj.Add(obj);
+                if (!outObj.Contains(obj))
+                    outObj.Add(obj);
                 if (othUnderPipe.connectUnderPipe != this.gameObject)
                 {
                     if(othUnderPipe.connectUnderPipe != null)
@@ -271,7 +272,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             }
 
             otherPipe = obj;
-            outObj.Add(obj);
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
             if (obj.GetComponent<PipeCtrl>() != null)
             {
                 otherPipe.GetComponent<PipeCtrl>().FactoryVecCheck(this.gameObject);

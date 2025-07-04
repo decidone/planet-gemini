@@ -37,6 +37,14 @@ public class BeltGroupMgr : NetworkBehaviour
         if (!IsServer)
             return;
 
+        StartCoroutine(DelayBeltGroupRefresh());
+    }
+
+    IEnumerator DelayBeltGroupRefresh()
+    {
+        // 동시 건설 시 근처 오브젝트를 체크하기 위한 딜레이
+        yield return new WaitForEndOfFrame();
+
         if (beltList.Count > 0)
         {
             if (nextCheck)
@@ -44,13 +52,8 @@ public class BeltGroupMgr : NetworkBehaviour
                 nextObj = NextObjCheck();
                 if (!nextCheck)
                 {
-                    if (nextObj == null)
-                        StartCoroutine(DelayRefresh());
-                    else
-                    {
-                        var objID = NetworkObjManager.instance.FindNetObjID(nextObj);
-                        NearObjSetClientRpc(objID, true);
-                    }
+                    var objID = NetworkObjManager.instance.FindNetObjID(nextObj);
+                    NearObjSetClientRpc(objID, true);
                 }
             }
             if (preCheck)
@@ -58,25 +61,11 @@ public class BeltGroupMgr : NetworkBehaviour
                 preObj = PreObjCheck();
                 if (!preCheck)
                 {
-                    if (preObj == null)
-                        StartCoroutine(DelayRefresh());
-                    else
-                    {
-                        var objID = NetworkObjManager.instance.FindNetObjID(preObj);
-                        NearObjSetClientRpc(objID, false);
-                    }
+                    var objID = NetworkObjManager.instance.FindNetObjID(preObj);
+                    NearObjSetClientRpc(objID, false);
                 }
             }
         }
-    }
-
-    IEnumerator DelayRefresh()
-    {
-        // 동시 건설 시 근처 오브젝트가 잡히지 않는 문제가 가끔 발생함
-        // 그런 경우 다음 프레임에 다시 실행하는 코루틴
-        yield return new WaitForEndOfFrame();
-
-        BeltGroupRefresh();
     }
 
     private void OnClientConnectedCallback(ulong clientId)

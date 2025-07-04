@@ -145,6 +145,14 @@ public class TowerAi : Production
         }
     }
 
+    public override void OnFactoryItem(Item item)
+    {
+        if (IsServer)
+        {
+            inventory.SlotAdd(0, item, 1);
+        }
+    }
+
     public override bool CanTakeItem(Item item)
     {
         var slot = inventory.SlotCheck(0);
@@ -154,7 +162,7 @@ public class TowerAi : Production
             foreach (Item _recipe in bulletRecipe)
             {
                 if (item == _recipe)
-                    return true;                
+                    return true;
             }
         }
         else if (slot.item == item && slot.amount < 99)
@@ -170,7 +178,10 @@ public class TowerAi : Production
             foreach (Item _recipe in bulletRecipe)
             {
                 if(itemProps.item == _recipe)
+                {
                     inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+                    break;
+                }
             }
         }
 

@@ -214,12 +214,18 @@ public class BeltCtrl : LogisticsCtrl
     public void ClientConnectBeltSyncClientRpc(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)
     {
         if (IsServer)
-            return;
+        {
+            DelayNearStrBuilt();
+        }
+        else
+        {
+            modelMotion = syncMotion;
+            isTurn = syncTurn;
+            isRightTurn = syncRightTurn;
+            beltState = (BeltState)syncBeltState;
 
-        modelMotion = syncMotion;
-        isTurn = syncTurn;
-        isRightTurn = syncRightTurn;
-        beltState = (BeltState)syncBeltState;
+            DelayNearStrBuilt();
+        }
     }
 
     public void GameStartBeltSet(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)

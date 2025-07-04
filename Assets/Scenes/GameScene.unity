@@ -4181,10 +4181,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 0}
-      propertyPath: GlobalObjectIdHash
-      value: 1386068770
-      objectReference: {fileID: 0}
     - target: {fileID: 8108900871598561889, guid: 14ab76d16484f464ebaaa908963ebbc6, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -4235,6 +4231,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 14ab76d16484f464ebaaa908963ebbc6, type: 3}
+--- !u!1 &7662998911958542036 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8108900871598561891, guid: 14ab76d16484f464ebaaa908963ebbc6, type: 3}
+  m_PrefabInstance: {fileID: 7662998911958542035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7662998911958542037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7662998911958542036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1241710952
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &8033250253362184574
 PrefabInstance:
   m_ObjectHideFlags: 0

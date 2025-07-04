@@ -3,6 +3,7 @@ using Pathfinding.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -382,6 +383,7 @@ public class Structure : NetworkBehaviour
             destroyStart = true;
             isDestroying = true;
             isPreBuilding = true;
+            removeState = true;
             unitCanvas.SetActive(true);
             repairBar.enabled = true;
 
@@ -579,7 +581,10 @@ public class Structure : NetworkBehaviour
         if (isIn)
             inObj.Add(obj.gameObject);
         else
-            outObj.Add(obj.gameObject);
+        {
+            if (!outObj.Contains(obj.gameObject))
+                outObj.Add(obj.gameObject);
+        }
     }
 
     [ClientRpc]
@@ -753,7 +758,7 @@ public class Structure : NetworkBehaviour
                 }
             }
 
-            if (obj.CompareTag("Factory"))
+            if (obj.CompareTag("Factory") || obj.CompareTag("Tower"))
             {
                 nearObj[index] = obj;
                 callback(obj);
@@ -1623,7 +1628,8 @@ public class Structure : NetworkBehaviour
                 outSameList.Add(obj);
                 StartCoroutine(OutCheck(obj));
             }
-            outObj.Add(obj);
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
             StartCoroutine(UnderBeltConnectCheck(obj));
         }
     }
@@ -1682,7 +1688,7 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     void RemoveObjClientRpc()
     {
-        removeState = true;
+        //removeState = true;
         //ColliderTriggerOnOff(true);
         StopAllCoroutines();
 

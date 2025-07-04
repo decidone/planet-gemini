@@ -102,9 +102,9 @@ public class PipeCtrl : FluidFactoryCtrl
     protected void FluidSetOutObj(GameObject obj, Vector3 vec)
     {
         if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
-        {                
-            outObj.Add(obj);
-
+        {
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
             if (obj.GetComponent<UnderPipeCtrl>() != null)
             {
                 UnderPipeConnectCheck(obj);

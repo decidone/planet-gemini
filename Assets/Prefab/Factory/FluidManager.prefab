@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8108900871598561889}
   - component: {fileID: 8108900871598561902}
   - component: {fileID: 2124863826982912815}
-  - component: {fileID: -4812449448290816556}
   m_Layer: 0
   m_Name: FluidManager
   m_TagString: Untagged
@@ -68,19 +67,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sendDelayTimer: 0
   sendDelayInterval: 0.5
---- !u!114 &-4812449448290816556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8108900871598561891}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1

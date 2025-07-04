@@ -138,15 +138,16 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         Invoke(nameof(DelaySetItem), sendDelay);
     }
 
-    public void SetOutObj(GameObject Obj)
+    public void SetOutObj(GameObject obj)
     {
         if (outObj.Count > 0)
         {
             outObj[0].GetComponent<GetUnderBeltCtrl>().ResetInObj();
             outObj.Remove(outObj[0]);
         }
-        nearObj[0] = Obj;
-        outObj.Add(Obj);
+        nearObj[0] = obj;
+        if (!outObj.Contains(obj))
+            outObj.Add(obj);
     }
 
     protected override void SendItem(int itemIndex)

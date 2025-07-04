@@ -140,7 +140,10 @@ public class FurnaceUpgrade : Production
             foreach (Recipe _recipe in recipes)
             {
                 if (itemProps.item == itemDic[_recipe.items[0]])
+                {
                     inventory.SlotAdd(0, itemProps.item, itemProps.amount);
+                    break;
+                }
             }
         }
 
@@ -154,7 +157,10 @@ public class FurnaceUpgrade : Production
             foreach (Recipe _recipe in recipes)
             {
                 if (item == itemDic[_recipe.items[0]])
+                {
                     inventory.SlotAdd(0, item, 1);
+                    break;
+                }
             }
         }
     }

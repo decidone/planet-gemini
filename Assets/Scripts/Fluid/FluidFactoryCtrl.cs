@@ -122,7 +122,8 @@ public class FluidFactoryCtrl : Production
     {
         if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
         {
-            outObj.Add(obj);
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
             if (obj.GetComponent<UnderPipeCtrl>() != null)
             {
                 UnderPipeConnectCheck(obj);

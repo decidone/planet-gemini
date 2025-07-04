@@ -507,7 +507,8 @@ public class SplitterCtrl : LogisticsCtrl
                 outSameList.Add(obj);
                 StartCoroutine(OutCheck(obj));
             }
-            outObj.Add(obj);
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
             StartCoroutine(UnderBeltConnectCheck(obj));
             FilterArr(obj, num);
         }
