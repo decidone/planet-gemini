@@ -60,10 +60,10 @@ public class GetUnderBeltCtrl : LogisticsCtrl
 
             if (gameManager.focusedStructure == null)
             {
-                if (preBuilding.isBuildingOn && preBuilding.isUnderBelt)
+                if (preBuilding.isBuildingOn && preBuilding.isUnderObj && preBuilding.isUnderBelt)
                 {
                     if (!preBuildingCheck)
-                    {                       
+                    {
                         StartRenderer();
                     }
                 }
@@ -98,6 +98,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         if (lineRenderer != null)
         {
             Destroy(lineRenderer.gameObject);
+            lineRenderer = null;
         }
         preBuildingCheck = false;
     }

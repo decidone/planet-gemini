@@ -25,8 +25,6 @@ public class PortalUIBtn : MonoBehaviour
     [SerializeField]
     bool isPortalObj;
 
-    bool isLock;
-
     public PreBuilding preBuilding;
 
     GameManager gameManager;
@@ -76,7 +74,6 @@ public class PortalUIBtn : MonoBehaviour
     void ButtonFunc()
     {
         if (!portal.PortalObjFind(objName))
-        //if (!isLock && !portal.PortalObjFind(objName))
         {
             if (isPortalObj)
             {
@@ -94,10 +91,6 @@ public class PortalUIBtn : MonoBehaviour
     public void OkBtnFunc()
     {
         confirmPanel.SetActive(false);
-        //if (!gameManager.scienceBuildingSet)
-        //{
-        //    portal.SetScienceBuildingServerRpc();
-        //}
     }
 
     public void CanselBtnFunc()
@@ -113,7 +106,6 @@ public class PortalUIBtn : MonoBehaviour
     public void SciUpgradeCheck()
     {
         LockUi.SetActive(false);
-        isLock = false;        
     }
 
     public void SetData()
@@ -121,6 +113,5 @@ public class PortalUIBtn : MonoBehaviour
         objName = objItem.name;
         inGameName = InGameNameDataGet.instance.ReturnName(1, objName);
         icon.sprite = objItem.icon;
-        isLock = true;
     }
 }

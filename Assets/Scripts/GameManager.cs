@@ -128,7 +128,6 @@ public class GameManager : NetworkBehaviour
     int[] randomStackValue = new int[2] { 20, 80 }; // 스택 랜덤 범위
     [SerializeField]
     float violentValue;                 // 광폭화의날 스택
-    float violentMaxValue = 100;        // 광폭화의날 최대 값
 
     [SerializeField]
     bool violentDayCheck;                    // true면 광폭화의 날

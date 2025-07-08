@@ -94,7 +94,6 @@ public class MonsterSpawner : NetworkBehaviour
     public Dictionary<Structure, float> energyUseStrs = new Dictionary<Structure, float>();
 
     public bool isInHostMap;
-    bool gameLodeSet = false;
 
     [HideInInspector]
     public bool violentDay;
@@ -741,7 +740,6 @@ public class MonsterSpawner : NetworkBehaviour
         maxGuardianSpawn = levelData.maxGuardianSpawn;
         totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
         wavePos = _basePos;
-        gameLodeSet = true;
     }
 
     public GameObject WaveMonsterSpawn(int monserType, int monsterIndex, bool isInHostMap, bool isWaveColonyCallCheck)

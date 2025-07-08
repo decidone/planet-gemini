@@ -233,6 +233,7 @@ public class SteamGenerator : FluidFactoryCtrl
                     CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
             }
+            fluidManager.ConsumeSourceGroupAdd(this);
         }
         else
         {
@@ -450,28 +451,13 @@ public class SteamGenerator : FluidFactoryCtrl
     }
 
 
-    public override void GetFluid()
+    public override void ConsumeGroupSendFluid()
     {
         foreach (GameObject obj in outObj)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && !fluidFactory.isMainSource && !fluidFactory.consumeSource)
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && !fluidFactory.isMainSource && !fluidFactory.isConsumeSource)
             {
                 fluidFactory.ShouldUpdate(this, howFarSource + 1, false);
-
-                if (fluidFactory.fluidName == fluidName && CanTake())
-                {
-                    float amount = CanTakeAmount();
-
-                    float takeAmount = fluidFactory.saveFluidNum / 4;
-
-                    if (amount > takeAmount)
-                    {
-                        amount = takeAmount;
-                    }
-
-                    SendFluidFunc(amount);
-                    fluidFactory.saveFluidNum -= amount;
-                }
             }
         }
     }

@@ -9,10 +9,15 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     public GameObject otherPipe = null;
 
     public GameObject connectUnderPipe = null;
+    GameManager gameManager;
+    PreBuilding preBuilding;
+    bool preBuildingCheck;
 
     protected override void Start()
     {
         //setModel = GetComponent<SpriteRenderer>();
+        gameManager = GameManager.instance;
+        preBuilding = PreBuilding.instance;
         nearObj = new GameObject[2];
         checkPos = new Vector2[2];
 
@@ -53,6 +58,26 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             //        }
             //    }
             //}
+
+            if (gameManager.focusedStructure == null && (dirNum == 0 || dirNum == 1))
+            {
+                if (preBuilding.isBuildingOn && preBuilding.isUnderObj && !preBuilding.isUnderBelt)
+                {
+                    if (!preBuildingCheck && connectUnderPipe)
+                    {
+                        LineRendererSet(connectUnderPipe.transform.position);
+                        preBuildingCheck = true;
+                    }
+                }
+                else
+                {
+                    if (preBuildingCheck)
+                    {
+                        DestroyLineRenderer();
+                        preBuildingCheck = false;
+                    }
+                }
+            }
         }
     }
 
@@ -193,7 +218,6 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                         {
                             nearObj[index] = hits[i].collider.gameObject;
                             callback(hitCollider.gameObject);
-                            Debug.Log(hitCollider.gameObject.name);
                             break;
                         }
                         else
@@ -306,5 +330,17 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         }
 
         checkObj = true;
+    }
+
+    public void EndRenderer(bool isSend)
+    {
+        if (outObj.Count > 0)
+        {
+            outObj[0].TryGetComponent(out UnderPipeCtrl underPipe);
+            underPipe.DestroyLineRenderer();
+            underPipe.preBuildingCheck = false;
+            if (connectUnderPipe && isSend)
+                connectUnderPipe.GetComponent<UnderPipeCtrl>().EndRenderer(!isSend);
+        }
     }
 }

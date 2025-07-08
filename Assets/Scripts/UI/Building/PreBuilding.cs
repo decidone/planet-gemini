@@ -35,7 +35,7 @@ public class PreBuilding : NetworkBehaviour
     protected Vector3 startBuildPos;
     protected Vector3 endBuildPos;
 
-    protected bool isUnderObj = false;
+    public bool isUnderObj = false;
     [HideInInspector]
     public bool isEnough = true;
     protected int canBuildCount;
@@ -95,6 +95,8 @@ public class PreBuilding : NetworkBehaviour
 
     [SerializeField]
     protected GameObject lineObj;
+    [SerializeField]
+    protected GameObject fluidLineObj;
 
     #region Singleton
     public static PreBuilding instance;
@@ -249,7 +251,7 @@ public class PreBuilding : NetworkBehaviour
                     else
                     {
                         int[] dir = new int[buildingList.Count];
-                        bool underBelt = isUnderBelt;
+                        //bool underBelt = isUnderBelt;
                         bool[] sideObj = new bool[buildingList.Count];
 
                         for (int i = 0; i < buildingList.Count; i++)
@@ -258,7 +260,7 @@ public class PreBuilding : NetworkBehaviour
                             dir[i] = unObj.dirNum;
                             sideObj[i] = unObj.isSendObj;
                         }
-                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, underBelt, sideObj);
+                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isUnderBelt, sideObj);
                     }
                 }
 
@@ -284,12 +286,19 @@ public class PreBuilding : NetworkBehaviour
                     {
                         preBuildingImg.AnimSetFloat("DirNum", dirNum);
                         if(isBeltObj)
-                            preBuildingImg.AnimSetFloat("Level", level);
+                            preBuildingImg.AnimSetFloat("Level", level);        
                     }
                 }
                 else
                 {
-                    preBuildingImg.PreSpriteSet(spriteList[dirNum]);
+                    if(isUnderObj && !isUnderBelt)
+                    {
+                        int otherDir = (dirNum + 2) % 4;
+                        preBuildingImg.PreSpriteSet(spriteList[otherDir]);
+                        dirNum = otherDir;
+                    }
+                    else
+                        preBuildingImg.PreSpriteSet(spriteList[dirNum]);
                 }
 
                 if (nonNetObj.TryGetComponent(out UnderObjBuilding under))
@@ -1474,6 +1483,7 @@ public class PreBuilding : NetworkBehaviour
         {
             nonNetObj.transform.localScale = new Vector3(1, 1, 1);
         }
+
         isUnderBelt = false;
 
         if (isUnderObj)
@@ -1485,7 +1495,10 @@ public class PreBuilding : NetworkBehaviour
 
             UnderObjBuilding underObj = nonNetObj.GetComponent<UnderObjBuilding>();
             underObj.Setting(dirNum, isUnderBelt, buildData.sprites);
-            underObj.lineObj = lineObj;
+            if(isUnderBelt)
+                underObj.lineObj = lineObj;
+            else
+                underObj.lineObj = fluidLineObj;
         }
 
         GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);

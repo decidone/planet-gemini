@@ -114,14 +114,15 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     [ServerRpc]
     protected override void SendItemServerRpc(int itemIndex, int outObjIndex)
     {
-        if (IsServer)
-        {
-            SendItemFunc(itemIndex, outObjIndex);
-        }
-        else if (settingEndCheck)
-        {
-            SendDelaySet(itemIndex, outObjIndex);
-        }
+        SendItemClientRpc(itemIndex, outObjIndex);
+        //if (IsServer)
+        //{
+        //    SendItemFunc(itemIndex, outObjIndex);
+        //}
+        //else if (settingEndCheck)
+        //{
+        //    SendDelaySet(itemIndex, outObjIndex);
+        //}
     }
 
     protected override void SendItemFunc(int itemIndex, int outObjIndex)
@@ -135,6 +136,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             SendFacDelay(outObj[0], item);
         }
 
+        outFactory.takeItemDelay = false;
         Invoke(nameof(DelaySetItem), sendDelay);
     }
 
@@ -151,6 +153,8 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
     protected override void SendItem(int itemIndex)
     {
+        if (itemIndex < 0) return;
+
         itemSetDelay = true;
 
         if (outObj.Count <= sendItemIndex)
@@ -163,7 +167,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         {
             Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
 
-            if (outFactory.isFull || outFactory.destroyStart || outFactory.isPreBuilding)
+            if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
             {
                 SendItemIndexSet();
                 itemSetDelay = false;

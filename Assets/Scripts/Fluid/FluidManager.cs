@@ -10,7 +10,8 @@ public class FluidManager : NetworkBehaviour
 
     Dictionary<FluidFactoryCtrl, List<FluidFactoryCtrl>> mainSourceGroupObj = new Dictionary<FluidFactoryCtrl, List<FluidFactoryCtrl>>();   // 메인소스가 존재하는 경우
     Dictionary<FluidFactoryCtrl, List<FluidFactoryCtrl>> consumeSourceGroupObj = new Dictionary<FluidFactoryCtrl, List<FluidFactoryCtrl>>();// 소모소스만 존재하는 경우
-
+    Coroutine sendfluidCoroutine;
+    Coroutine getfluidCoroutine;
     #region Singleton
     public static FluidManager instance;
 
@@ -35,6 +36,7 @@ public class FluidManager : NetworkBehaviour
             {
                 SendFluid();
                 GetFluid();
+                FluidSync();
                 sendDelayTimer = 0;
             }
         }
@@ -63,17 +65,22 @@ public class FluidManager : NetworkBehaviour
 
     public void MainSourceGroupRemove(FluidFactoryCtrl mainFluid, FluidFactoryCtrl fluid)
     {
-        if (mainSourceGroupObj.ContainsKey(mainFluid) && mainSourceGroupObj.ContainsKey(mainFluid))
+        StopCoroutine(sendfluidCoroutine);
+        if (mainSourceGroupObj.ContainsKey(mainFluid))
         {
-            List<FluidFactoryCtrl> clearList = new List<FluidFactoryCtrl> (mainSourceGroupObj[mainFluid]);
-            foreach (FluidFactoryCtrl fluidList in clearList)
+            if(mainSourceGroupObj[mainFluid].Contains(fluid) || mainFluid == fluid)
             {
-                fluidList.ResetSource();
+                List<FluidFactoryCtrl> clearList = new List<FluidFactoryCtrl> (mainSourceGroupObj[mainFluid]);
+                foreach (FluidFactoryCtrl fluidList in clearList)
+                {
+                    fluidList.ResetSource();
+                }
             }
-            mainSourceGroupObj[mainFluid].Clear();
 
             if(mainFluid == fluid)
                 mainSourceGroupObj.Remove(mainFluid);
+            else
+                mainSourceGroupObj[mainFluid].Clear();
         }
     }
 
@@ -84,7 +91,7 @@ public class FluidManager : NetworkBehaviour
             if(group.Key.outObj.Count > 0)
             {
                 group.Key.SendFluid();
-                StartCoroutine(SendFluidCoroutine(group.Key));
+                sendfluidCoroutine = StartCoroutine(SendFluidCoroutine(group.Key));
             }
         }
     }
@@ -105,17 +112,6 @@ public class FluidManager : NetworkBehaviour
             {
                 obj.SendFluid();
                 yield return null;
-            }
-        }
-
-        if (IsServer)
-        {
-            foreach (FluidFactoryCtrl obj in reversedList)
-            {
-                if (obj)
-                {
-                    obj.FluidSyncServerRpc();
-                }
             }
         }
     }
@@ -144,17 +140,22 @@ public class FluidManager : NetworkBehaviour
 
     public void ConsumeSourceGroupRemove(FluidFactoryCtrl consumeFluid, FluidFactoryCtrl fluid)
     {
-        if (consumeSourceGroupObj.ContainsKey(consumeFluid) && consumeSourceGroupObj.ContainsKey(consumeFluid))
+        StopCoroutine(getfluidCoroutine);
+        if (consumeSourceGroupObj.ContainsKey(consumeFluid))
         {
-            List<FluidFactoryCtrl> clearList = new List<FluidFactoryCtrl>(consumeSourceGroupObj[consumeFluid]);
-            foreach (FluidFactoryCtrl fluidList in clearList)
+            if (consumeSourceGroupObj[consumeFluid].Contains(fluid) || consumeFluid == fluid)
             {
-                fluidList.ResetSource();
+                List<FluidFactoryCtrl> clearList = new List<FluidFactoryCtrl>(consumeSourceGroupObj[consumeFluid]);
+                foreach (FluidFactoryCtrl fluidList in clearList)
+                {
+                    fluidList.ResetSource();
+                }
             }
-            consumeSourceGroupObj[consumeFluid].Clear();
 
             if (consumeFluid == fluid)
                 consumeSourceGroupObj.Remove(consumeFluid);
+            else
+                consumeSourceGroupObj[consumeFluid].Clear();
         }
     }
 
@@ -164,8 +165,8 @@ public class FluidManager : NetworkBehaviour
         {
             if (group.Key.outObj.Count > 0)
             {
-                group.Key.GetFluid();
-                StartCoroutine(GetFluidCoroutine(group.Key));
+                group.Key.ConsumeGroupSendFluid();
+                getfluidCoroutine = StartCoroutine(GetFluidCoroutine(group.Key));
             }
         }
     }
@@ -180,21 +181,43 @@ public class FluidManager : NetworkBehaviour
         {
             if (obj)
             {
-                obj.GetFluid();
+                obj.ConsumeGroupSendFluid();
                 yield return null;
             }
         }
-
-        //if (IsServer)
-        //{
-        //    foreach (FluidFactoryCtrl obj in fluidList)
-        //    {
-        //        if (obj)
-        //        {
-        //            obj.FluidSyncServerRpc();
-        //        }
-        //    }
-        //}
     }
     #endregion
+
+    void FluidSync()
+    {
+        if (IsServer)
+        {
+            foreach (var mainGroup in mainSourceGroupObj)
+            {
+                List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>(mainGroup.Value);
+
+                foreach (FluidFactoryCtrl obj in fluidList)
+                {
+                    if (obj)
+                    {
+                        obj.FluidSyncServerRpc();
+                    }
+                }
+            }
+
+            foreach (var consumeGroup in consumeSourceGroupObj)
+            {
+                List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>(consumeGroup.Value);
+
+                foreach (FluidFactoryCtrl obj in fluidList)
+                {
+                    if (obj)
+                    {
+                        obj.FluidSyncServerRpc();
+                    }
+                }
+            }
+
+        }
+    }
 }
