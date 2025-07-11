@@ -33,7 +33,7 @@ public class ItemSpawner : LogisticsCtrl
             //    }
             //}
 
-            if (IsServer && !isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding)
             {
                 if (outObj.Count > 0 && !itemSetDelay)
                 {

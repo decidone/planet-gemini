@@ -5,6 +5,12 @@ using UnityEngine;
 // UTF-8 설정
 public class ChemicalPlant : Production
 {
+    protected override void Start()
+    {
+        base.Start();
+        StartCoroutine(EfficiencyCheck());
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -14,12 +20,8 @@ public class ChemicalPlant : Production
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    EfficiencyCheck();
-
                     if (slot.Item2 >= recipe.amounts[0] && (slot1.Item2 + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        //output = itemDic[recipe.items[recipe.items.Count - 1]];
-                        
                         if (slot1.Item1 == output || slot1.Item1 == null)
                         {
                             OperateStateSet(true);
@@ -59,7 +61,7 @@ public class ChemicalPlant : Production
                 }
             }
 
-            if (IsServer && slot1.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot1.Item2 > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -76,6 +78,18 @@ public class ChemicalPlant : Production
         // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
         slot = inventory.SlotCheck(0);
         slot1 = inventory.SlotCheck(1);
+    }
+
+    public override void CheckInvenIsFull(int slotIndex)
+    {
+        // output slot을 제외하고 나머지 슬롯이 가득 차 있는지 체크
+        if (inventory.SlotAmountCheck(0) < inventory.maxAmount)
+        {
+            isInvenFull = false;
+            return;
+        }
+
+        isInvenFull = true;
     }
 
     public override void OpenUI()

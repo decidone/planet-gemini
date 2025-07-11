@@ -9,6 +9,12 @@ public class SunTower : TowerAi
     [SerializeField] float debuffInterval;
     [SerializeField] float debuffPer;
 
+    protected override void Start()
+    {
+        base.Start();
+        StartCoroutine(EfficiencyCheck());
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -18,8 +24,6 @@ public class SunTower : TowerAi
 
             if (debuffTimer >= debuffInterval)
             {
-                EfficiencyCheck();
-
                 Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
                 bool isMonsterNearby = false;
 

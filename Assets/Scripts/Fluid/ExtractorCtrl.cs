@@ -23,7 +23,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
 
         if (!removeState)
         {
-            if (!isPreBuilding && checkObj)
+            if (!isPreBuilding)
             {
                 //if (outObj.Count > 0)
                 //{

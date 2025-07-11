@@ -63,7 +63,7 @@ public class SplitterCtrl : LogisticsCtrl
             //    }
             //}
 
-            if (IsServer && !isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding)
             { 
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                     GetItem();
@@ -487,7 +487,6 @@ public class SplitterCtrl : LogisticsCtrl
 
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
         //yield return null;
 
@@ -534,7 +533,7 @@ public class SplitterCtrl : LogisticsCtrl
                 }
                 outObj.Remove(otherObj); 
                 Invoke(nameof(RemoveSameOutList), 0.1f);
-                StopCoroutine("SendFacDelay");
+                StopCoroutine(nameof(SendFacDelay));
             }
         }
     }
@@ -571,8 +570,6 @@ public class SplitterCtrl : LogisticsCtrl
                 }
             }
         }
-
-        checkObj = true;
     }
     public override StructureSaveData SaveData()
     {

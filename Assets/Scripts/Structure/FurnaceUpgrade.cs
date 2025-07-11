@@ -58,7 +58,7 @@ public class FurnaceUpgrade : Production
                 prodTimer = 0;
             }
 
-            if (IsServer && slot1.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot1.Item2 > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -75,6 +75,18 @@ public class FurnaceUpgrade : Production
         // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장
         slot = inventory.SlotCheck(0);
         slot1 = inventory.SlotCheck(1);
+    }
+
+    public override void CheckInvenIsFull(int slotIndex)
+    {
+        // output slot을 제외하고 나머지 슬롯이 가득 차 있는지 체크
+        if (inventory.SlotAmountCheck(0) < inventory.maxAmount)
+        {
+            isInvenFull = false;
+            return;
+        }
+
+        isInvenFull = true;
     }
 
     public void SetFurnaceRecipe(int slotindex)
@@ -116,6 +128,8 @@ public class FurnaceUpgrade : Production
 
     public override bool CanTakeItem(Item item)
     {
+        if (isInvenFull) return false;
+
         if (slot.Item1 == null)
         {
             if (recipes != null)

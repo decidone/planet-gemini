@@ -94,7 +94,7 @@ public class AutoBuyer : Production
                     transportTimer = 0;
             }
 
-            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);

@@ -44,7 +44,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             //    }
             //}
 
-            if (IsServer && !isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding)
             {
                 if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
@@ -199,7 +199,6 @@ public class GetUnderBeltCtrl : LogisticsCtrl
     }
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
         
         if (obj.GetComponent<WallCtrl>())
@@ -210,7 +209,6 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             if ((obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
                 || obj.GetComponent<Unloader>())
             {
-                checkObj = true;
                 yield break;
             }
 
@@ -218,7 +216,6 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                 {
-                    checkObj = true;
                     yield break;
                 }
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
@@ -237,7 +234,6 @@ public class GetUnderBeltCtrl : LogisticsCtrl
 
     protected override IEnumerator SetInObjCoroutine(GameObject obj)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         SendUnderBeltCtrl sendUnderbelt = obj.GetComponent<SendUnderBeltCtrl>();
@@ -247,7 +243,6 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             inObj.Add(obj);
             sendUnderbelt.SetOutObj(this.gameObject);
         }
-        checkObj = true;
     }
 
     public void ResetInObj()

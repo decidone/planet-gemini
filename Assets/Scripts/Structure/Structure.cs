@@ -75,7 +75,6 @@ public class Structure : NetworkBehaviour
 
     public GameObject[] nearObj = new GameObject[4];
     public Vector2[] checkPos = new Vector2[4];
-    public bool checkObj = true;
 
     protected Vector2[] startTransform;
     protected Vector3[] directions;
@@ -151,6 +150,7 @@ public class Structure : NetworkBehaviour
     [HideInInspector]
     public float energyConsumption;
     float upgradeConsumptionPer = 10;
+    public bool isEnergyConnected = false;
     public bool isOperate;
     [HideInInspector]
     public float efficiency;
@@ -217,7 +217,7 @@ public class Structure : NetworkBehaviour
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = structureData.MaxHp[level];
-        getDelay = 0.01f;
+        getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level];
         hpBar.enabled = false;
         hpBar.fillAmount = hp / maxHp;
@@ -961,7 +961,6 @@ public class Structure : NetworkBehaviour
                 inObj.Remove(game);
             }
         }
-        checkObj = true;
     }
 
     [ClientRpc]
@@ -1080,7 +1079,8 @@ public class Structure : NetworkBehaviour
         if (outObj.Count <= sendItemIndex)
         {
             SendItemIndexSet();
-            itemSetDelay = false;
+            //itemSetDelay = false;
+            Invoke(nameof(ItemSetDelayReset), 0.05f);
             return;
         }
         else
@@ -1090,7 +1090,8 @@ public class Structure : NetworkBehaviour
             if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
             {
                 SendItemIndexSet();
-                itemSetDelay = false;
+                //itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
             else if (outFactory.TryGetComponent(out Production production))
@@ -1099,14 +1100,16 @@ public class Structure : NetworkBehaviour
                 if (!production.CanTakeItem(item))
                 {
                     SendItemIndexSet();
-                    itemSetDelay = false;
+                    //itemSetDelay = false;
+                    Invoke(nameof(ItemSetDelayReset), 0.05f);
                     return;
                 }
             }
             else if (outFactory.isMainSource)
             {
                 SendItemIndexSet();
-                itemSetDelay = false;
+                //itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
             outFactory.takeItemDelay = true;
@@ -1121,6 +1124,11 @@ public class Structure : NetworkBehaviour
         sendItemIndex++;
         if (sendItemIndex >= outObj.Count)
             sendItemIndex = 0;
+    }
+
+    protected void ItemSetDelayReset()
+    {
+        itemSetDelay = false;
     }
 
     [ServerRpc]
@@ -1272,7 +1280,7 @@ public class Structure : NetworkBehaviour
     {
         if (CanSendItemCheck())
         {
-            if (checkObj && outObj.Count > 0 && outFac != null)
+            if (outObj.Count > 0 && outFac != null)
             {
                 if (outFac.TryGetComponent(out Structure outFactory))
                 {
@@ -1576,7 +1584,6 @@ public class Structure : NetworkBehaviour
 
     protected virtual IEnumerator SetInObjCoroutine(GameObject obj)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<Structure>() != null)
@@ -1585,7 +1592,6 @@ public class Structure : NetworkBehaviour
             {
                 if (belt.GetComponentInParent<BeltGroupMgr>().nextObj != this.gameObject)
                 {
-                    checkObj = true;
                     yield break;
                 }
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
@@ -1597,7 +1603,6 @@ public class Structure : NetworkBehaviour
 
     protected virtual IEnumerator SetOutObjCoroutine(GameObject obj)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<WallCtrl>())
@@ -1610,7 +1615,6 @@ public class Structure : NetworkBehaviour
             if ((obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
                 || obj.GetComponent<Unloader>())
             {
-                checkObj = true;
                 yield break;
             }
 
@@ -1618,7 +1622,6 @@ public class Structure : NetworkBehaviour
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                 {
-                    checkObj = true;
                     yield break;
                 }
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
@@ -1645,7 +1648,7 @@ public class Structure : NetworkBehaviour
 
             if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
             {
-                StopCoroutine("SendFacDelay");
+                StopCoroutine(nameof(SendFacDelay));
                 outObj.Remove(otherObj);
                 Invoke(nameof(RemoveSameOutList), 0.1f);
                 InOutObjIndexResetClientRpc(false);
@@ -1653,10 +1656,8 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public virtual void ResetCheckObj(GameObject game)
+    public virtual void ResetNearObj(GameObject game)
     {
-        checkObj = false;
-
         if (inObj.Contains(game))
         {
             inObj.Remove(game);
@@ -1675,8 +1676,6 @@ public class Structure : NetworkBehaviour
                 nearObj[i] = null;
             }
         }
-
-        checkObj = true;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1699,7 +1698,7 @@ public class Structure : NetworkBehaviour
         {
             if (nearObj[i] != null && nearObj[i].TryGetComponent(out Structure structure))
             {
-                structure.ResetCheckObj(gameObject);
+                structure.ResetNearObj(gameObject);
                 if (structure.GetComponentInParent<BeltGroupMgr>())
                 {
                     BeltGroupMgr beltGroup = structure.GetComponentInParent<BeltGroupMgr>();
@@ -2003,7 +2002,7 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public virtual void EfficiencyCheck() { }
+    public virtual IEnumerator EfficiencyCheck() { yield return null; }
 
     [ClientRpc]
     public void MapDataSaveClientRpc(Vector3 pos)

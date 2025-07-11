@@ -14,6 +14,7 @@ public class Miner : Production
         Debug.Log("Miner Start");
         Init();
         isMainSource = true;
+        StartCoroutine(EfficiencyCheck());
     }
 
     protected override void Update()
@@ -25,8 +26,6 @@ public class Miner : Production
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    EfficiencyCheck();
-
                     if (output != null && slot.Item2 < maxAmount)
                     {
                         OperateStateSet(true);
@@ -105,7 +104,7 @@ public class Miner : Production
                 }
             }
 
-            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);

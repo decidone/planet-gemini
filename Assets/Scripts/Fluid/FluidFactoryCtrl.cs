@@ -35,7 +35,7 @@ public class FluidFactoryCtrl : Production
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = maxHp;
-        getDelay = 0.01f;
+        getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level]; 
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;

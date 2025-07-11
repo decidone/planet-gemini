@@ -171,6 +171,8 @@ public class EnergyGenerator : Production
 
     public override bool CanTakeItem(Item item)
     {
+        if (isInvenFull) return false;
+
         if (FuelItem == item && slot.Item2 < 99)
             return true;
 

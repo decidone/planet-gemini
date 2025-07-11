@@ -22,7 +22,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             //if (isSetBuildingOk && nearObj[2] == null)
             //    CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
 
-            if (IsServer && !isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding)
             {
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                 {
@@ -92,7 +92,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
     protected override IEnumerator SetInObjCoroutine(GameObject obj)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<Structure>() != null)
@@ -101,14 +100,12 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             {
                 if (belt.GetComponentInParent<BeltGroupMgr>().nextObj != this.gameObject)
                 {
-                    checkObj = true;
                     yield break;
                 }
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             inObj.Add(obj);
         }
-        checkObj = true;
     }
 
     [ServerRpc]

@@ -213,10 +213,8 @@ public class PipeCtrl : FluidFactoryCtrl
         ChangeModel();
     }
 
-    public override void ResetCheckObj(GameObject game)
+    public override void ResetNearObj(GameObject game)
     {
-        checkObj = false;
-
         if (outObj.Contains(game))
         {
             outObj.Remove(game);
@@ -248,6 +246,5 @@ public class PipeCtrl : FluidFactoryCtrl
         }
 
         ChangeModel();
-        checkObj = true;
     }
 }

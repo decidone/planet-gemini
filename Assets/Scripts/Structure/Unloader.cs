@@ -31,7 +31,7 @@ public class Unloader : LogisticsCtrl
             //    }
             //}
 
-            if (IsServer && !isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding)
             {
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                     GetItem();
@@ -117,7 +117,6 @@ public class Unloader : LogisticsCtrl
 
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<WallCtrl>())
@@ -125,22 +124,16 @@ public class Unloader : LogisticsCtrl
 
         if (obj.TryGetComponent(out Structure structure))
         {
-            if (structure.isMainSource)
-            {
-                checkObj = true;
-            }
-            else if (structure.isStorageBuilding)
+            if (structure.isStorageBuilding)
             {
                 inObj.Add(obj);
-                checkObj = true;
             }
-            else
+            else if (!structure.isMainSource)
             {
                 if (obj.TryGetComponent(out BeltCtrl belt))
                 {
                     if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     {
-                        checkObj = true;
                         yield break;
                     }
                     belt.FactoryPosCheck(GetComponentInParent<Structure>());

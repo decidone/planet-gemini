@@ -229,7 +229,9 @@ public class AutoSeller : Production
 
     public override bool CanTakeItem(Item item)
     {
-        bool canTake = false;
+        if (isInvenFull) return false;
+
+        bool canTake;
         int containableAmount = inventory.SpaceCheck(item);
 
         if (1 <= containableAmount)

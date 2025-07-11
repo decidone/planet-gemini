@@ -13,13 +13,17 @@ public class Refinery : FluidFactoryCtrl
     {
         #region ProductionAwake
         inventory = this.GetComponent<Inventory>();
-        inventory.onItemChangedCallback += CheckSlotState;
+        if (inventory != null)
+        {
+            inventory.onItemChangedCallback += CheckSlotState;
+            inventory.onItemChangedCallback += CheckInvenIsFull;
+        }
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = maxHp;
-        getDelay = 0.01f;
+        getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level]; 
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
@@ -82,6 +86,7 @@ public class Refinery : FluidFactoryCtrl
 
         displaySlot.SetInputItem(ItemList.instance.itemDic["CrudeOil"]);
         displaySlot.AddItem(ItemList.instance.itemDic["CrudeOil"], 0);
+        StartCoroutine(EfficiencyCheck());
     }
 
     protected override void Update()
@@ -117,7 +122,7 @@ public class Refinery : FluidFactoryCtrl
 
         if (IsServer && !isPreBuilding)
         {
-            if (inObj.Count > 0 && !itemGetDelay && checkObj)
+            if (inObj.Count > 0 && !itemGetDelay)
                 GetItem();
         }
         if (DelayGetList.Count > 0 && inObj.Count > 0)
@@ -136,12 +141,8 @@ public class Refinery : FluidFactoryCtrl
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    EfficiencyCheck();
-
                     if (saveFluidNum >= recipe.amounts[0] && (slot.Item2 + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        //output = itemDic[recipe.items[recipe.items.Count - 1]];
-
                         if (slot.Item1 == output || slot.Item1 == null)
                         {
                             OperateStateSet(true);
@@ -177,7 +178,7 @@ public class Refinery : FluidFactoryCtrl
                 }
             }
 
-            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);

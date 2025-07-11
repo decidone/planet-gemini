@@ -5,6 +5,12 @@ using UnityEngine;
 // UTF-8 설정
 public class Assembler : Production
 {
+    protected override void Start()
+    {
+        base.Start();
+        StartCoroutine(EfficiencyCheck());
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -14,13 +20,9 @@ public class Assembler : Production
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    EfficiencyCheck();
-
                     if (slot.Item2 >= recipe.amounts[0] && slot1.Item2 >= recipe.amounts[1]
                     && (slot2.Item2 + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        //output = itemDic[recipe.items[recipe.items.Count - 1]];
-
                         if (slot2.Item1 == output || slot2.Item1 == null)
                         {
                             OperateStateSet(true);
@@ -61,11 +63,10 @@ public class Assembler : Production
                 }
             }
 
-            if (IsServer && slot2.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot2.Item2 > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
-                //SendItem(output);
             }
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
             {
@@ -80,6 +81,21 @@ public class Assembler : Production
         slot = inventory.SlotCheck(0);
         slot1 = inventory.SlotCheck(1);
         slot2 = inventory.SlotCheck(2);
+    }
+
+    public override void CheckInvenIsFull(int slotIndex)
+    {
+        // output slot을 제외하고 나머지 슬롯이 가득 차 있는지 체크
+        for (int i = 0; i < 2; i++)
+        {
+            if (inventory.SlotAmountCheck(i) < inventory.maxAmount)
+            {
+                isInvenFull = false;
+                return;
+            }
+        }
+
+        isInvenFull = true;
     }
 
     public override void OpenUI()

@@ -38,7 +38,7 @@ public class MergerCtrl : LogisticsCtrl
             //    }
             //}
 
-            if (IsServer && !isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding)
             {
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
                 {

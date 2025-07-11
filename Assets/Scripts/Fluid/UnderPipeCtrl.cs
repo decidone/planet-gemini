@@ -282,10 +282,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         }
     }
 
-    public override void ResetCheckObj(GameObject game)
+    public override void ResetNearObj(GameObject game)
     {
-        checkObj = false;
-
         if(otherPipe == game)
         {
             otherPipe = null;
@@ -306,7 +304,5 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                 nearObj[i] = null;
             }
         }
-
-        checkObj = true;
     }
 }

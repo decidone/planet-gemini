@@ -24,13 +24,17 @@ public class SteamGenerator : FluidFactoryCtrl
     {
         #region ProductionAwake
         inventory = this.GetComponent<Inventory>();
-        inventory.onItemChangedCallback += CheckSlotState;
+        if (inventory != null)
+        {
+            inventory.onItemChangedCallback += CheckSlotState;
+            inventory.onItemChangedCallback += CheckInvenIsFull;
+        }
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = maxHp;
-        getDelay = 0.01f;
+        getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level];
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
@@ -127,7 +131,7 @@ public class SteamGenerator : FluidFactoryCtrl
 
         if (IsServer && !isPreBuilding)
         {
-            if (inObj.Count > 0 && !itemGetDelay && checkObj)
+            if (inObj.Count > 0 && !itemGetDelay)
                 GetItem();
         }
 
@@ -314,12 +318,12 @@ public class SteamGenerator : FluidFactoryCtrl
         }
     }
 
-    void CheckOutObjScript(GameObject game)
-    {
-        StartCoroutine(SetOutObjCoroutine(game));
-        if (game.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
-            StartCoroutine("MainSourceCheck", factoryCtrl);
-    }
+    //void CheckOutObjScript(GameObject game)
+    //{
+    //    StartCoroutine(SetOutObjCoroutine(game));
+    //    if (game.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
+    //        StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
+    //}
 
     void FluidChangeCheck()
     {
@@ -341,6 +345,8 @@ public class SteamGenerator : FluidFactoryCtrl
 
     public override bool CanTakeItem(Item item)
     {
+        if (isInvenFull) return false;
+
         if (FuelItem == item && slot.Item2 < 99)
             return true;
 

@@ -35,6 +35,7 @@ public abstract class Production : Structure
     protected Vector3 endLine;
     public bool isGetLine;
 
+    public bool isInvenFull = false;
     protected (Item, int) slot = (null, 0);
     protected (Item, int) slot1 = (null, 0);
     protected (Item, int) slot2 = (null, 0);
@@ -44,8 +45,11 @@ public abstract class Production : Structure
     {
         base.Awake();
         inventory = this.GetComponent<Inventory>();
-        if (inventory != null )
+        if (inventory != null)
+        {
             inventory.onItemChangedCallback += CheckSlotState;
+            inventory.onItemChangedCallback += CheckInvenIsFull;
+        }
         isGetLine = false;
         isStorageBuilding = false;
         itemDic = ItemList.instance.itemDic;
@@ -87,7 +91,7 @@ public abstract class Production : Structure
         //    }
         //}
 
-        if (IsServer && !isPreBuilding && checkObj)
+        if (IsServer && !isPreBuilding)
         {
             if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
                 GetItem();
@@ -148,6 +152,21 @@ public abstract class Production : Structure
         }
     }
 
+    public virtual void CheckInvenIsFull(int slotIndex)
+    {
+        // 생산 건물인 경우 output slot은 체크하지 않게 설정해줘야 함
+        for (int i = 0; i < inventory.space; i++)
+        {
+            if (inventory.SlotAmountCheck(i) < inventory.maxAmount)
+            {
+                isInvenFull = false;
+                return;
+            }
+        }
+
+        isInvenFull = true;
+    }
+
     protected override void OnClientConnectedCallback(ulong clientId)
     {
         ClientConnectSyncServerRpc();
@@ -192,6 +211,7 @@ public abstract class Production : Structure
                     AddInvenItem();
                 }
                 inventory.ResetInven();
+                CheckSlotState(0);
 
                 if (isUIOpened)
                 {
@@ -214,7 +234,8 @@ public abstract class Production : Structure
         }
         else
         {
-            ReSetUI();
+            ResetUI();
+            CheckSlotState(0);
         }
 
         if (selectRecipe.name != "UICancel" &&  selectRecipe != null)
@@ -231,16 +252,17 @@ public abstract class Production : Structure
                 cooldown = recipe.cooldown;
                 effiCooldown = cooldown;
                 SetOutput(recipe);
-                sInvenManager.progressBar.SetProgress(0);
+                if (sInvenManager != null)
+                    sInvenManager.progressBar.SetProgress(0);
             }
         }
         else if (selectRecipe.name == "UICancel")
         {
-            ReSetUI();
+            ResetUI();
         }
     }
 
-    void ReSetUI()
+    void ResetUI()
     {
         recipe = new Recipe();
         recipeIndex = -1;
@@ -248,7 +270,8 @@ public abstract class Production : Structure
         effiCooldown = cooldown;
         prodTimer = 0;
         OperateStateSet(false);
-        sInvenManager.SetCooldownText(0);
+        if (sInvenManager != null)
+            sInvenManager.SetCooldownText(0);
         if (IsServer)
         {
             AddInvenItem();
@@ -363,7 +386,6 @@ public abstract class Production : Structure
 
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.GetComponent<WallCtrl>() || obj.GetComponent<FluidFactoryCtrl>())
@@ -389,8 +411,6 @@ public abstract class Production : Structure
                 outObj.Add(obj);
             StartCoroutine(UnderBeltConnectCheck(obj));
         }
-        else
-            checkObj = true;
     }
 
     protected override IEnumerator OutCheck(GameObject otherObj)
@@ -452,6 +472,8 @@ public abstract class Production : Structure
 
     public virtual bool CanTakeItem(Item item)
     {
+        if (isInvenFull) return false;
+
         if (recipe == null || recipe.items == null)
             return false;
 
@@ -632,27 +654,33 @@ public abstract class Production : Structure
         LineRendererSet(endPos);
     }
 
-    public override void EfficiencyCheck()
+    public override IEnumerator EfficiencyCheck()
     {
-        // conn != null && conn.group != null && conn.group.efficiency > 0
-        // 인 경우에만 사용할 것. 조건 검사를 여러번 반복하는걸 방지하기 위해서 여기에서는 뺌
-        if (efficiency != conn.group.efficiency)
+        while (true)
         {
-            efficiency = conn.group.efficiency;
-            if (efficiency != 0)
+            if (conn != null && conn.group != null && conn.group.efficiency > 0)
             {
-                effiCooldown = cooldown / efficiency;
-            }
-            else
-            {
-                effiCooldown = cooldown;
+                if (efficiency != conn.group.efficiency)
+                {
+                    efficiency = conn.group.efficiency;
+                    if (efficiency != 0)
+                    {
+                        effiCooldown = cooldown / efficiency;
+                    }
+                    else
+                    {
+                        effiCooldown = cooldown;
+                    }
+
+                    if (isUIOpened)
+                    {
+                        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+                        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+                    }
+                }
             }
 
-            if (isUIOpened)
-            {
-                sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-                sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-            }
+            yield return new WaitForSecondsRealtime(0.5f);
         }
     }
 

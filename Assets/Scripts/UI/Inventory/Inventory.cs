@@ -422,6 +422,15 @@ public class Inventory : NetworkBehaviour
         return (item, amount);
     }
 
+    public int SlotAmountCheck(int slotNum)
+    {
+        int amount = 0;
+        if (amounts.ContainsKey(slotNum))
+            amount = amounts[slotNum];
+
+        return amount;
+    }
+
     public void SlotAdd(int slotNum, Item item, int amount)
     {
         // 서버 검증작업 문제없이 다 처리됨

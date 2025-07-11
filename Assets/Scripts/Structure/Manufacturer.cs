@@ -5,6 +5,12 @@ using UnityEngine;
 // UTF-8 설정
 public class Manufacturer : Production
 {
+    protected override void Start()
+    {
+        base.Start();
+        StartCoroutine(EfficiencyCheck());
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -14,14 +20,10 @@ public class Manufacturer : Production
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    EfficiencyCheck();
-
                     if (slot.Item2 >= recipe.amounts[0] && slot1.Item2 >= recipe.amounts[1]
                     && slot2.Item2 >= recipe.amounts[2]
                     && (slot3.Item2 + recipe.amounts[recipe.amounts.Count - 1]) <= maxAmount)
                     {
-                        //output = itemDic[recipe.items[recipe.items.Count - 1]];
-
                         if (slot3.Item1 == output || slot3.Item1 == null)
                         {
                             OperateStateSet(true);
@@ -65,7 +67,7 @@ public class Manufacturer : Production
                 }
             }
 
-            if (IsServer && slot3.Item2 > 0 && outObj.Count > 0 && !itemSetDelay && checkObj)
+            if (IsServer && slot3.Item2 > 0 && outObj.Count > 0 && !itemSetDelay)
             {
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
@@ -85,6 +87,21 @@ public class Manufacturer : Production
         slot1 = inventory.SlotCheck(1);
         slot2 = inventory.SlotCheck(2);
         slot3 = inventory.SlotCheck(3);
+    }
+
+    public override void CheckInvenIsFull(int slotIndex)
+    {
+        // output slot을 제외하고 나머지 슬롯이 가득 차 있는지 체크
+        for (int i = 0; i < 3; i++)
+        {
+            if (inventory.SlotAmountCheck(i) < inventory.maxAmount)
+            {
+                isInvenFull = false;
+                return;
+            }
+        }
+
+        isInvenFull = true;
     }
 
     public override void OpenUI()

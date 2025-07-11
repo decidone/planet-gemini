@@ -39,6 +39,7 @@ public class AttackTower : TowerAi
         cooldown = towerData.ReloadCooldown;
         effiCooldown = cooldown;
         StrBuilt();
+        StartCoroutine(EfficiencyCheck());
     }
 
     protected override void Update()
@@ -90,7 +91,7 @@ public class AttackTower : TowerAi
             //    }
             //}
 
-            if (IsServer && !isPreBuilding && checkObj)
+            if (IsServer && !isPreBuilding)
             {
                 if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
                     GetItem();
@@ -104,8 +105,6 @@ public class AttackTower : TowerAi
         {
             if (!isPreBuilding && conn != null && conn.group != null && conn.group.efficiency > 0 && energyBulletAmount < energyBulletMaxAmount)
             {
-                EfficiencyCheck();
-
                 OperateStateSet(true);
                 prodTimer += Time.deltaTime;
                 if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))

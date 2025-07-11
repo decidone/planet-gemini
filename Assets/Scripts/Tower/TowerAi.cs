@@ -108,7 +108,6 @@ public class TowerAi : Production
 
     protected override IEnumerator SetOutObjCoroutine(GameObject obj)
     {
-        checkObj = false;
         yield return new WaitForSeconds(0.1f);
 
         if (obj.TryGetComponent(out Structure structure) && !structure.isMainSource)
@@ -122,8 +121,6 @@ public class TowerAi : Production
                 }
             }
         }
-        else
-            checkObj = true;
     }
 
     protected override void RepairEnd()
@@ -155,8 +152,9 @@ public class TowerAi : Production
 
     public override bool CanTakeItem(Item item)
     {
-        var slot = inventory.SlotCheck(0);
+        if (isInvenFull) return false;
 
+        var slot = inventory.SlotCheck(0);
         if (slot.item == null)
         {
             foreach (Item _recipe in bulletRecipe)
@@ -194,45 +192,39 @@ public class TowerAi : Production
         {
             return null;
         }
-
-        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
-
-        if(bulletRecipe.Count > 0)
-        {
-            foreach (Item item in bulletRecipe)
-            {
-                returnDic.Add(item, 0);
-            }
-        }
-
-        int itemsCount = 0;
-        //다른 슬롯의 같은 아이템도 개수 추가하도록
-        for (int i = 0; i < inventory.space; i++)
-        {
-            var invenItem = inventory.SlotCheck(i);
-
-            if (invenItem.item != null && invenItem.amount > 0)
-            {
-                if (!returnDic.ContainsKey(invenItem.item))
-                {
-                    returnDic.Add(invenItem.item, invenItem.amount);
-                }
-                else
-                {
-                    returnDic[invenItem.item] += invenItem.amount;
-                }
-                itemsCount++;
-                if (itemsCount > 5)
-                    break;
-            }
-        }
-
-        if (returnDic.Count > 0)
-        {
-            return returnDic;
-        }
         else
-            return null;
+        {
+            Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
+
+            int itemsCount = 0;
+            //다른 슬롯의 같은 아이템도 개수 추가하도록
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var invenItem = inventory.SlotCheck(i);
+
+                if (invenItem.item != null && invenItem.amount > 0)
+                {
+                    if (!returnDic.ContainsKey(invenItem.item))
+                    {
+                        returnDic.Add(invenItem.item, invenItem.amount);
+                    }
+                    else
+                    {
+                        returnDic[invenItem.item] += invenItem.amount;
+                    }
+                    itemsCount++;
+                    if (itemsCount > 5)
+                        break;
+                }
+            }
+
+            if (returnDic.Count > 0)
+            {
+                return returnDic;
+            }
+            else
+                return null;
+        }
     }
 
     public override void IncreasedStructureCheck()

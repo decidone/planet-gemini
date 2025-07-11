@@ -198,7 +198,7 @@ public class EnergyGroup
     {
         Charge();
         Consume();
-        EfficiencyCheck();
+        BatteryCheck();
     }
 
     public void Charge()
@@ -232,28 +232,6 @@ public class EnergyGroup
             }
         }
         consumption = temp;
-    }
-
-    public void EfficiencyCheck()
-    {
-        BatteryCheck();
-
-        //if (consumption == 0f)
-        //{
-        //    if (energy == 0f)
-        //    {
-        //        efficiency = 0f;
-        //    }
-        //    else
-        //    {
-        //        StoreEnergy(energy);
-        //        efficiency = 1f;
-        //    }
-        //}
-        //else
-        //{
-        //    BatteryCheck();
-        //}
     }
 
     void BatteryCheck()

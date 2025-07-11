@@ -20,6 +20,7 @@ public class UnitFactory : Production
         base.Start();
         isGetLine = true;
         unitObjList = UnitList.instance.unitList;
+        StartCoroutine(EfficiencyCheck());
     }
 
     protected override void Update()
@@ -31,8 +32,6 @@ public class UnitFactory : Production
             {
                 if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    EfficiencyCheck();
-
                     if (slot.Item2 >= recipe.amounts[0] && slot1.Item2 >= recipe.amounts[1]
                     && slot2.Item2 >= recipe.amounts[2])
                     {
@@ -84,6 +83,21 @@ public class UnitFactory : Production
         slot = inventory.SlotCheck(0);
         slot1 = inventory.SlotCheck(1);
         slot2 = inventory.SlotCheck(2);
+    }
+
+    public override void CheckInvenIsFull(int slotIndex)
+    {
+        // output slot을 제외하고 나머지 슬롯이 가득 차 있는지 체크
+        for (int i = 0; i < 3; i++)
+        {
+            if (inventory.SlotAmountCheck(i) < inventory.maxAmount)
+            {
+                isInvenFull = false;
+                return;
+            }
+        }
+
+        isInvenFull = true;
     }
 
     public override void OpenUI()

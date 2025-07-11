@@ -53,7 +53,7 @@ public class BeltCtrl : LogisticsCtrl
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = structureData.MaxHp[level];
-        getDelay = 0.01f;
+        getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level];
         hpBar.enabled = false;
         hpBar.fillAmount = hp / maxHp;
@@ -750,7 +750,7 @@ public class BeltCtrl : LogisticsCtrl
         BeltDataServerRpc();
     }
 
-    public override void ResetCheckObj(GameObject game)
+    public override void ResetNearObj(GameObject game)
     {
         for (int i = 0; i < nearObj.Length; i++)
         {
