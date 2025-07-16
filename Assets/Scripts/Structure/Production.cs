@@ -231,7 +231,8 @@ public abstract class Production : Structure
                 cooldown = recipe.cooldown;
                 effiCooldown = cooldown;
                 SetOutput(recipe);
-                sInvenManager.progressBar.SetProgress(0);
+                if(sInvenManager)
+                    sInvenManager.progressBar.SetProgress(0);
             }
         }
         else if (selectRecipe.name == "UICancel")

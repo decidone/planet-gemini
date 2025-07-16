@@ -17,7 +17,7 @@ MonoBehaviour:
   upgradeMaxHp: 250
   damage: 25
   upgradeDamage: 35
-  moveSpeed: 8
+  moveSpeed: 7
   attackDist: 2
   attDelayTime: 2
   upgradeAttDelayTime: 1.3

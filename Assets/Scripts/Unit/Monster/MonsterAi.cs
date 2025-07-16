@@ -725,8 +725,6 @@ public class MonsterAi : UnitCommonAi
                     Obj.GetComponent<PlayerStatus>().TakeDamage(damage);
                 else if (Obj.GetComponent<UnitAi>())
                     Obj.GetComponent<UnitAi>().TakeDamage(damage, 0);
-                else if (Obj.GetComponent<TowerAi>())
-                    Obj.GetComponent<TowerAi>().TakeDamage(damage);
                 else if (Obj.GetComponent<Structure>())
                     Obj.GetComponent<Structure>().TakeDamage(damage);
             }

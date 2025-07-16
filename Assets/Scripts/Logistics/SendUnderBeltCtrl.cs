@@ -115,14 +115,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     protected override void SendItemServerRpc(int itemIndex, int outObjIndex)
     {
         SendItemClientRpc(itemIndex, outObjIndex);
-        //if (IsServer)
-        //{
-        //    SendItemFunc(itemIndex, outObjIndex);
-        //}
-        //else if (settingEndCheck)
-        //{
-        //    SendDelaySet(itemIndex, outObjIndex);
-        //}
     }
 
     protected override void SendItemFunc(int itemIndex, int outObjIndex)

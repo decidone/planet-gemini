@@ -1336,52 +1336,53 @@ public class PreBuilding : NetworkBehaviour
         }
         else
         {
-            if (!isUnderObj)
-            {
-                AddBuildingToList(pos);
-            }
-            else if (isUnderObj)
-            {
-                UnderObjBuilding underObj = nonNetObj.GetComponent<UnderObjBuilding>();
-                if (buildingList.Count == 0)
-                {
-                    AddBuildingToList(pos);
-                    if (underObj != null)
-                    {
-                        isPreObjSend = underObj.isSendObj;
-                    }
-                }
-                else if (buildingList.Count > 0)
-                {
-                    if (!isPreObjSend)
-                    {
-                        if (buildingList.Count == 1)
-                        {
-                            AddBuildingToList(pos);
-                            isPreObjSend = !isPreObjSend;
-                        }
-                        else if (Vector3.Distance(pos, buildingList[buildingList.Count - 2].transform.position) >= 11)
-                        {
-                            AddBuildingToList(pos);
-                            isPreObjSend = !isPreObjSend;
-                        }
-                        else if (Vector3.Distance(pos, buildingList[buildingList.Count - 2].transform.position) < 11)
-                        {
-                            Destroy(buildingList[buildingList.Count - 1]);
-                            buildingList.RemoveAt(buildingList.Count - 1);
-                            AddBuildingToList(pos);
-                        }
-                    }
-                    else
-                    {
-                        if (buildingList.Count < canBuildCount)
-                        {
-                            AddBuildingToList(pos);
-                            isPreObjSend = !isPreObjSend;
-                        }
-                    }
-                }
-            }
+            AddBuildingToList(pos);
+            //if (!isUnderObj)
+            //{
+            //    AddBuildingToList(pos);
+            //}
+            //else if (isUnderObj)
+            //{
+            //UnderObjBuilding underObj = nonNetObj.GetComponent<UnderObjBuilding>();
+            //if (buildingList.Count == 0)
+            //{
+            //    AddBuildingToList(pos);
+            //    if (underObj != null)
+            //    {
+            //        isPreObjSend = underObj.isSendObj;
+            //    }
+            //}
+            //else if (buildingList.Count > 0)
+            //{
+            //    if (!isPreObjSend)
+            //    {
+            //        if (buildingList.Count == 1)
+            //        {
+            //            AddBuildingToList(pos);
+            //            isPreObjSend = !isPreObjSend;
+            //        }
+            //        else if (Vector3.Distance(pos, buildingList[buildingList.Count - 2].transform.position) >= 11)
+            //        {
+            //            AddBuildingToList(pos);
+            //            isPreObjSend = !isPreObjSend;
+            //        }
+            //        else if (Vector3.Distance(pos, buildingList[buildingList.Count - 2].transform.position) < 11)
+            //        {
+            //            Destroy(buildingList[buildingList.Count - 1]);
+            //            buildingList.RemoveAt(buildingList.Count - 1);
+            //            AddBuildingToList(pos);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (buildingList.Count < canBuildCount)
+            //        {
+            //            AddBuildingToList(pos);
+            //            isPreObjSend = !isPreObjSend;
+            //        }
+            //    }
+            //}
+            //}
         }
     }
 
