@@ -35,7 +35,10 @@ public class UnderObjBuilding : MonoBehaviour
         }
 
         CheckPos();
-        CheckNearObj(checkPos[0]);
+        if(isUnderBelt)
+            CheckNearObj(checkPos[0]);
+        else
+            CheckNearObj(checkPos[2]);
     }
 
     void CheckPos()
@@ -92,35 +95,24 @@ public class UnderObjBuilding : MonoBehaviour
                         }
                     }
                 }
-            }
-            else if (factoryCollider.CompareTag("PreBuildingImg") && factoryCollider.gameObject != gameObject
-                && factoryCollider.gameObject.transform.position != gameObject.transform.position)
-            {
-                if (isUnderBelt)
+                else
                 {
-                    if(factoryCollider.TryGetComponent(out UnderObjBuilding othUnderBelt)) 
+                    if (factoryCollider.TryGetComponent(out UnderPipeCtrl underPipe))
                     {
-                        if (othUnderBelt.isSendObj)
+                        if (underPipe.dirNum == dirNum)
                         {
-                            IsGetObjSet();
-                            if (!setLine)
-                                StartRenderer(othUnderBelt.transform.position);
-                            return;
-                        }
-                        else
-                        {
-                            IsSendObjSet();
                             EndRenderer();
                             return;
                         }
-                    }
-                }
-                else
-                {
-                    if (factoryCollider.TryGetComponent(out UnderObjBuilding othUnderBelt))
-                    {
-                        TurnDir(othUnderBelt.dirNum);
-                        return;
+                        else if ((underPipe.dirNum + 2) % 4 == dirNum) 
+                        {
+                            underPipe.EndRenderer(true);
+                            if (!setLine)
+                                StartRenderer(underPipe.transform.position);
+                            else
+                                RendererReset(underPipe.transform.position);
+                            return;
+                        }
                     }
                 }
             }
@@ -129,8 +121,8 @@ public class UnderObjBuilding : MonoBehaviour
         if (isUnderBelt)
         {
             IsSendObjSet();
-            EndRenderer();
         }
+        EndRenderer();
     }
 
     void IsSendObjSet()
@@ -176,38 +168,5 @@ public class UnderObjBuilding : MonoBehaviour
             endLine = new Vector3(transform.position.x, transform.position.y, -1);
             lineRenderer.SetPosition(1, endLine);
         }
-    }
-
-    void TurnDir(int preDir)
-    {
-        if (dirNum == 0 || dirNum == 2)
-        {
-            if (preDir == 0)
-            {
-                dirNum = 2;
-            }
-            else if (preDir == 2)
-            {
-                dirNum = 0;
-            }
-        }
-        else if (dirNum == 1 || dirNum == 3)
-        {
-            if (preDir == 1)
-            {
-                dirNum = 3;
-            }
-            else if (preDir == 3)
-            {
-                dirNum = 1;
-            }
-        }
-
-        if(tempDir == dirNum)        
-            isSendObj = true;
-        else
-            isSendObj = false;
-
-        nonNetObj.PreSpriteSet(spriteList[dirNum]);
     }
 }

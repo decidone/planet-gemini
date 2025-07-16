@@ -317,7 +317,10 @@ public class BeltCtrl : LogisticsCtrl
             BeltModelMotionSetClientRpc(modelMotion);
             preMotion = modelMotion;
         }
-
+        anim.SetFloat("DirNum", dirNum);
+        anim.SetFloat("ModelNum", modelMotion);
+        anim.SetFloat("Level", level);
+        anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
         SetItemDir();
     }
 
@@ -603,6 +606,8 @@ public class BeltCtrl : LogisticsCtrl
         {
             isTurn = false;
         }
+        if (beltState == BeltState.StartBelt || beltState == BeltState.SoloBelt)
+            Invoke(nameof(FactoryModelSet), 0.1f);
         BeltDataServerRpc();
     }
 
@@ -685,7 +690,6 @@ public class BeltCtrl : LogisticsCtrl
                 }
             }
         }
-
         if (beltState == BeltState.StartBelt || beltState == BeltState.SoloBelt)
             Invoke(nameof(FactoryModelSet), 0.1f);
     }
@@ -746,7 +750,7 @@ public class BeltCtrl : LogisticsCtrl
         }
         else
             isTurn = false;
-
+        ModelSet();
         BeltDataServerRpc();
     }
 
@@ -815,7 +819,6 @@ public class BeltCtrl : LogisticsCtrl
     public void PlayerRootFuncClientRpc(int index)
     {
         if (IsServer) return;
-        Debug.Log(itemObjList.Count + " : "+ index);
         ItemProps item = itemObjList[index];
         beltGroupMgr.ItemRoot(item);
         itemObjList.RemoveAt(index);
@@ -896,7 +899,6 @@ public class BeltCtrl : LogisticsCtrl
 
     public void ItemRootSync()
     {
-        Debug.Log("ItemRootSync : " + itemObjList.Count);
         ItemProps item = itemObjList[itemObjList.Count - 1];
         itemObjList.RemoveAt(itemObjList.Count - 1);
         item.itemPool.Release(item.gameObject);

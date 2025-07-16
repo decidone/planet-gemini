@@ -27,7 +27,7 @@ public class GolemFXCtrl : NetworkBehaviour
     {
         if (isAnimEnd)
         {
-            Destroy(this.gameObject);
+            NetworkObject.Despawn();
         }        
     }
 
@@ -42,25 +42,25 @@ public class GolemFXCtrl : NetworkBehaviour
     {
         if (!IsServer)
             return;
-        if (collision.GetComponent<PlayerStatus>())
-        {            
-            if (!collision.isTrigger)
-            {
-                collision.GetComponent<PlayerStatus>().TakeDamage(damage);
-            }
-        }
-        else if (collision.GetComponent<UnitAi>())
+        if (collision.TryGetComponent(out PlayerStatus player))
         {
             if (!collision.isTrigger)
             {
-                collision.GetComponent<UnitAi>().TakeDamage(damage, 0);
+                player.TakeDamage(damage);
             }
         }
-        else if (collision.GetComponent<TowerAi>())
+        else if (collision.TryGetComponent(out UnitAi unitAi))
         {
             if (!collision.isTrigger)
             {
-                collision.GetComponent<TowerAi>().TakeDamage(damage);
+                unitAi.TakeDamage(damage, 0);
+            }
+        }
+        else if (collision.TryGetComponent(out Structure structure))
+        {
+            if (!collision.isTrigger)
+            {
+                structure.TakeDamage(damage);
             }
         }
     }

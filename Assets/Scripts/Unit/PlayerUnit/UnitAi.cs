@@ -152,6 +152,11 @@ public class UnitAi : UnitCommonAi
                     AttackCheck();
                 }
                 break;
+            case AIState.AI_Idle:
+                {
+                    AttackCheck();
+                }
+                break;
         }
     }
 

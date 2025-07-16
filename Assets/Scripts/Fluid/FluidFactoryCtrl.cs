@@ -145,13 +145,13 @@ public class FluidFactoryCtrl : Production
 
     public virtual void SendFluid()
     {
-        if (saveFluidNum <= 0 || outObj.Count <= 0)
+        if ((saveFluidNum <= 0.1f || outObj.Count <= 0) && !mainSource)
             return;
 
         Dictionary<FluidFactoryCtrl, (float, float, bool)> canSendDic = new Dictionary<FluidFactoryCtrl, (float, float, bool)>(); // (저장량, 최대 저장량, 역류가능성)
         foreach (GameObject obj in outObj)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.isMainSource && !fluidCtrl.isConsumeSource)
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.isMainSource)
             {
                 fluidCtrl.ShouldUpdate(mainSource, howFarSource + 1, true);
 
@@ -195,21 +195,53 @@ public class FluidFactoryCtrl : Production
         saveFluidNum -= totalFluidAmount;
     }
 
-    public virtual void GetFluid()
+    public virtual void ConsumeGroupSendFluid()
     {
-        if (outObj.Count <= 0)
+        if ((saveFluidNum <= 0.1f || outObj.Count <= 0) && !consumeSource)
             return;
 
-        Dictionary<FluidFactoryCtrl, (float, float, bool)> canSendDic = new Dictionary<FluidFactoryCtrl, (float, float, bool)>(); // (저장량, 최대 저장량, 역류가능성)
+        Dictionary<FluidFactoryCtrl, (float, float)> canSendDic = new Dictionary<FluidFactoryCtrl, (float, float)>(); // (저장량, 최대 저장량)
         foreach (GameObject obj in outObj)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.mainSource && !fluidCtrl.isMainSource && !fluidCtrl.isConsumeSource)
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.mainSource && !fluidCtrl.isMainSource)
             {
-                fluidCtrl.ShouldUpdate(consumeSource, howFarSource + 1, false);
+                if(!fluidCtrl.isConsumeSource)
+                    fluidCtrl.ShouldUpdate(consumeSource, howFarSource + 1, false);
 
+                var canSend = ConsumeGroupCheckCanSend(fluidCtrl);
 
+                if (!canSend)
+                    continue;
+
+                if (!canSendDic.ContainsKey(fluidCtrl))
+                    canSendDic.Add(fluidCtrl, (fluidCtrl.saveFluidNum, fluidCtrl.structureData.MaxFulidStorageLimit));
             }
         }
+
+        if (canSendDic.Count == 0)
+            return;
+
+        float totalFluidAmount = 0f;
+        float canSendAmount = saveFluidNum / (canSendDic.Count + 1);
+
+        foreach (var outFluid in canSendDic)
+        {
+            float outFluidAmount = outFluid.Value.Item2 - outFluid.Value.Item1;
+            float sendAmoun = canSendAmount;
+
+            if (outFluidAmount < sendAmoun)
+            {
+                outFluid.Key.saveFluidNum += outFluidAmount;
+                totalFluidAmount += outFluidAmount;
+            }
+            else
+            {
+                outFluid.Key.saveFluidNum += sendAmoun;
+                totalFluidAmount += sendAmoun;
+            }
+        }
+
+        saveFluidNum -= totalFluidAmount;
     } 
 
     protected (bool, bool) CheckCanSend(FluidFactoryCtrl othFluid)
@@ -256,6 +288,22 @@ public class FluidFactoryCtrl : Production
             }
         }
         return (canSend, refluxCheck);
+    }
+
+    protected bool ConsumeGroupCheckCanSend(FluidFactoryCtrl othFluid)
+    {
+        bool canSend = false;
+        if (fluidName != othFluid.fluidName || !othFluid.CanTake())
+            return false;
+
+        bool farSourceCheck = howFarSource >= othFluid.howFarSource; // 자신보다 거리 수치가 낮은 경우
+
+        if (farSourceCheck)
+        {
+            canSend = true;
+        }
+
+        return (canSend);
     }
 
     public float CanTakeAmount()
@@ -353,7 +401,10 @@ public class FluidFactoryCtrl : Production
 
     public void RemoveMainSource()
     {
-        fluidManager.MainSourceGroupRemove(mainSource, this);
+        if(mainSource)
+            fluidManager.MainSourceGroupRemove(mainSource, this);
+        else if(consumeSource)
+            fluidManager.ConsumeSourceGroupRemove(consumeSource, this);
     }
 
     public override Dictionary<Item, int> PopUpItemCheck()

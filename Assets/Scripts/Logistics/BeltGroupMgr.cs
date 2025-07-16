@@ -525,6 +525,7 @@ public class BeltGroupMgr : NetworkBehaviour
         PreBeltSetClientRpc(thisId, othId);
         NextBeltSetClientRpc(othId, thisId);
         otherBelt.dirNum = belt.dirNum;
+        belt.BeltModelSet();
         otherBelt.BeltModelSet();
         otherBelt.BeltDirSetServerRpc();
         ClientBeltSyncServerRpc();

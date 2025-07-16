@@ -87,6 +87,7 @@ public class PipeCtrl : FluidFactoryCtrl
             }
         }
         ChangeModel();
+        setModel.sprite = modelNum[dirNum];
     }
 
     protected override void CheckPos()

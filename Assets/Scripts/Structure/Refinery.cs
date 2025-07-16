@@ -211,6 +211,7 @@ public class Refinery : FluidFactoryCtrl
                     CheckNearObj(checkPos[i], i, obj => CheckOutObjScript(obj));
                 }
             }
+            fluidManager.ConsumeSourceGroupAdd(this);
         }
         else
         {
@@ -364,5 +365,16 @@ public class Refinery : FluidFactoryCtrl
     protected override void NonOperateStateSet(bool isOn)
     {
         setModel.sprite = strImg[isOn ? 1 : 0];
+    }
+
+    public override void ConsumeGroupSendFluid()
+    {
+        foreach (GameObject obj in outObj)
+        {
+            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && !fluidFactory.isMainSource && !fluidFactory.isConsumeSource)
+            {
+                fluidFactory.ShouldUpdate(this, howFarSource + 1, false);
+            }
+        }
     }
 }

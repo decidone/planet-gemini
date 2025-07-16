@@ -252,7 +252,7 @@ public abstract class Production : Structure
                 cooldown = recipe.cooldown;
                 effiCooldown = cooldown;
                 SetOutput(recipe);
-                if (sInvenManager != null)
+                if (sInvenManager)
                     sInvenManager.progressBar.SetProgress(0);
             }
         }

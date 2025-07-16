@@ -499,6 +499,7 @@ public class SplitterCtrl : LogisticsCtrl
             {
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     yield break;
+
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
