@@ -44,7 +44,13 @@ public class BuildingInfo : MonoBehaviour
         
         if (selectBuildingData != null)
         {
-            int sendAmount = CanBuildAmount();
+            int sendAmount;
+
+            if (!GameManager.instance.debug)
+                sendAmount = CanBuildAmount();
+            else
+                sendAmount = int.MaxValue;
+
             if (selectBuilding.item.name != "Belt")
             {
                 beltPreBuilding.SwapBuilding();
@@ -148,7 +154,11 @@ public class BuildingInfo : MonoBehaviour
 
     public bool AmountsEnoughCheck()
     {
-        SetItemSlot();
+        if (!GameManager.instance.debug)
+            SetItemSlot();
+        else
+            totalAmountsEnough = true;
+
         return totalAmountsEnough;
     }
 

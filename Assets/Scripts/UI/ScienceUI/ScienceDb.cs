@@ -197,21 +197,26 @@ public class ScienceDb : NetworkBehaviour
         return false;
     }
 
-    public void ScienceWindowItemAdd(Item item, int scienceInfoDataIndex, int inputAmount, int btnIndex)
+    public void ScienceWindowItemAdd(Item item, int scienceInfoDataIndex, int inputAmount, int btnIndex, bool isPlayerHostMap)
     {
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
-        ScienceWindowItemAddServerRpc(itemIndex, scienceInfoDataIndex, inputAmount, btnIndex);
+        ScienceWindowItemAddServerRpc(itemIndex, scienceInfoDataIndex, inputAmount, btnIndex, isPlayerHostMap);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void ScienceWindowItemAddServerRpc(int itemIndex, int scienceInfoDataIndex, int inputAmount, int btnIndex)
+    void ScienceWindowItemAddServerRpc(int itemIndex, int scienceInfoDataIndex, int inputAmount, int btnIndex, bool isPlayerHostMap)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         ScienceBtn btn = ScienceManager.instance.scienceBtns[btnIndex];
 
         int maxInputItemAmount = btn.itemAmountList[scienceInfoDataIndex].Item2 - btn.itemAmountList[scienceInfoDataIndex].Item1;
-        GameManager gameManager = GameManager.instance;
-        int invenItemAmount = gameManager.inventory.totalItems[item];
+        Inventory inven; 
+            if (isPlayerHostMap)
+            inven = GameManager.instance.hostMapInven;
+        else
+            inven = GameManager.instance.clientMapInven;
+
+        int invenItemAmount = inven.totalItems[item];
 
         if (inputAmount > invenItemAmount)   // 인벤 아이템보다 요청이 많은 경우
         {
@@ -222,7 +227,7 @@ public class ScienceDb : NetworkBehaviour
             return;
 
         Overall.instance.OverallConsumption(item, maxInputItemAmount);
-        gameManager.inventory.Sub(item, inputAmount);
+        inven.Sub(item, inputAmount);
         btn.ItemAddAmount(scienceInfoDataIndex, maxInputItemAmount);
     }
 

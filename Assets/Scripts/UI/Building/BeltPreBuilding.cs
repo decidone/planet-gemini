@@ -127,7 +127,7 @@ public class BeltPreBuilding : PreBuilding
                         pos[i] = buildingList[i].transform.position;
                         dir[i] = (int)buildingList[i].GetComponent<PreBuildingImg>().animator.GetFloat("DirNum");
                     }
-                    BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isBeltObj, reversSet);
+                    BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isBeltObj, reversSet, gameManager.debug);
                 }
 
                 foreach (GameObject build in buildingList)
@@ -139,8 +139,10 @@ public class BeltPreBuilding : PreBuilding
                 nonNetObj.SetActive(true);
 
                 isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-                canBuildCount = BuildingInfo.instance.CanBuildAmount();
-
+                if (!gameManager.debug)
+                    canBuildCount = BuildingInfo.instance.CanBuildAmount();
+                else
+                    canBuildCount = int.MaxValue;
                 PreBuildingImg preBuildingImg = nonNetObj.GetComponent<PreBuildingImg>();
 
                 preBuildingImg.AnimSetFloat("DirNum", dirNum);

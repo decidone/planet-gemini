@@ -202,7 +202,7 @@ public class SciItemSetWindow : MonoBehaviour
                     continue;
                 }
 
-                ScienceDb.instance.ScienceWindowItemAdd(item, i, textInt, scienceBtn.btnIndex);
+                ScienceDb.instance.ScienceWindowItemAdd(item, i, textInt, scienceBtn.btnIndex, gameManager.isPlayerInHostMap);
             }
         }
         CloseUI();

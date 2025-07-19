@@ -89,11 +89,6 @@ public class ScienceBtn : MonoBehaviour
         }
     }
 
-    //public void CoreSet(ScienceBtn btn)
-    //{
-    //    othCoreBtn = btn;
-    //}
-
     public void UpgradeFunc(bool isLoad)
     {
         if(scienceManager == null)
@@ -103,23 +98,12 @@ public class ScienceBtn : MonoBehaviour
         LockUiActiveFalse();
         upgrade = true;
         btnImage.color = new Color(255, 255, 255);
-        //if (isCore)
-        //{
-        //    othCoreBtn.upgrade = true;
-        //    othCoreBtn.btnImage.color = new Color(255, 255, 255);
-        //}
     }
 
     public void LockUiActiveFalse()
     {
         lockUI.SetActive(false);
         isLock = false;
-
-        //if (isCore)
-        //{
-        //    othCoreBtn.lockUI.SetActive(false);
-        //    othCoreBtn.isLock = false;
-        //}
     }
 
     public void SetInfo(string name, int lv, int coreLv, float time, bool core, string _gameName, bool _basicScience)
@@ -146,8 +130,11 @@ public class ScienceBtn : MonoBehaviour
         if (amount == 0)
             return;
 
-        if (scienceManager == null)
+
+        if (!scienceManager)
+        {
             scienceManager = GameManager.instance.inventoryUiCanvas.GetComponent<ScienceManager>();
+        }
 
         scienceManager.SyncSciBtnItem(btnIndex, index, amount);
     }
@@ -159,10 +146,6 @@ public class ScienceBtn : MonoBehaviour
         if (ItemFullCheck())
         {
             btnImage.color = new Color(0, 255, 100);
-            //if(isCore)
-            //{
-            //    othCoreBtn.btnImage.color = new Color(0, 255, 100);
-            //}
         }
     }
 
@@ -186,18 +169,8 @@ public class ScienceBtn : MonoBehaviour
 
         upgradeStart = true;
 
-        //if(upgradeFunc == null)
-        //{
-        //    upgradeFunc = SciUpgradeFunc.instance;
-        //}
         upgradeImg.enabled = true;
         upgradeFunc.CoroutineSet(this, upgradeTime);
-
-        //if (isCore)
-        //{
-        //    othCoreBtn.upgradeStart = true;
-        //    othCoreBtn.upgradeImg.enabled = true;
-        //}
     }
 
     public void LoadItemAddAmount(int index, int amount)
@@ -218,10 +191,6 @@ public class ScienceBtn : MonoBehaviour
             if (ItemFullCheck())
             {
                 btnImage.color = new Color(0, 255, 100);
-                //if (isCore)
-                //{
-                //    othCoreBtn.btnImage.color = new Color(0, 255, 100);
-                //}
             }
         }
         else if (upgradeState == 1)
@@ -230,28 +199,13 @@ public class ScienceBtn : MonoBehaviour
             upgradeStart = true;
             upgradeFunc.LoadCoroutineSet(this, upgradeTime, upgradeTimeSet);
             btnImage.color = new Color(0, 255, 100);
-
-            //if (isCore)
-            //{
-            //    othCoreBtn.upgradeImg.enabled = true;
-            //    othCoreBtn.upgradeStart = true;
-            //    othCoreBtn.btnImage.color = new Color(0, 255, 100);
-            //}
         }
         else if (upgradeState == 2)
         {
             upgradeStart = true;
-            //if (isCore)
-            //{
-            //    othCoreBtn.upgradeStart = true;
-            //}
             UpgradeFunc(true);
         }
         isLock = isLockCheck;
-        //if (isCore)
-        //{
-        //    othCoreBtn.isLock = isLockCheck;
-        //}
     }
 
     public ScienceData SaveData()

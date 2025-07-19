@@ -254,5 +254,6 @@ public class Furnace : Production
     protected override void NonOperateStateSet(bool isOn)
     {
         setModel.sprite = strImg[isOn ? 1 : 0];
+        smokeCtrl.SetSmokeActive(isOn);
     }
 }

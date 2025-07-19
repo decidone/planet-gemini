@@ -246,7 +246,7 @@ public class PreBuilding : NetworkBehaviour
 
                     if (!nonNetObj.GetComponent<UnderObjBuilding>())
                     {
-                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dirNum, isBeltObj, reversSet);
+                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dirNum, isBeltObj, reversSet, gameManager.debug);
                     }
                     else
                     {
@@ -260,7 +260,7 @@ public class PreBuilding : NetworkBehaviour
                             dir[i] = unObj.dirNum;
                             sideObj[i] = unObj.isSendObj;
                         }
-                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isUnderBelt, sideObj);
+                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isUnderBelt, sideObj, gameManager.debug);
                     }
                 }
 
@@ -272,8 +272,11 @@ public class PreBuilding : NetworkBehaviour
                 buildingList.Clear();
                 nonNetObj.SetActive(true);
 
-                isEnough = BuildingInfo.instance.AmountsEnoughCheck(); 
-                canBuildCount = BuildingInfo.instance.CanBuildAmount();
+                isEnough = BuildingInfo.instance.AmountsEnoughCheck();
+                if (!gameManager.debug)
+                    canBuildCount = BuildingInfo.instance.CanBuildAmount();
+                else
+                    canBuildCount = int.MaxValue;
 
                 if (isPortalObj)
                     Invoke(nameof(CancelBuild), 0.1f);
@@ -315,7 +318,7 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int dir, bool isBelt, bool reversSet)
+    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int dir, bool isBelt, bool reversSet, bool debugModeOn)
     {
         int spawnCount = setPos.Length;
         Building building = buildingListSO.FindBuildingData(bIndex);
@@ -330,21 +333,24 @@ public class PreBuilding : NetworkBehaviour
         // 아이템이 충분한지 체크
         if (building.type != "Portal")
         {
-            bool costEnough = false;
-            for (int i = 0; i < buildingData.GetItemCount(); i++)
+            if (!debugModeOn)
             {
-                int value;
-                Inventory inven;
-                if (isHostMap)
-                    inven = gameManager.hostMapInven;
-                else
-                    inven = gameManager.clientMapInven;
+                bool costEnough = false;
+                for (int i = 0; i < buildingData.GetItemCount(); i++)
+                {
+                    int value;
+                    Inventory inven;
+                    if (isHostMap)
+                        inven = gameManager.hostMapInven;
+                    else
+                        inven = gameManager.clientMapInven;
 
-                bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
-                costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
+                    bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
+                    costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
 
-                if (!costEnough)
-                    return;
+                    if (!costEnough)
+                        return;
+                }
             }
         }
         else
@@ -423,7 +429,7 @@ public class PreBuilding : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int[] dir, bool isBelt, bool reversSet)
+    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int[] dir, bool isBelt, bool reversSet, bool debugModeOn)
     {
         int spawnCount = setPos.Length;
         Building building = buildingListSO.FindBuildingData(bIndex);
@@ -438,21 +444,24 @@ public class PreBuilding : NetworkBehaviour
         // 아이템이 충분한지 체크
         if (building.type != "Portal")
         {
-            bool costEnough = false;
-            for (int i = 0; i < buildingData.GetItemCount(); i++)
+            if (!debugModeOn)
             {
-                int value;
-                Inventory inven;
-                if (isHostMap)
-                    inven = gameManager.hostMapInven;
-                else
-                    inven = gameManager.clientMapInven;
+                bool costEnough = false;
+                for (int i = 0; i < buildingData.GetItemCount(); i++)
+                {
+                    int value;
+                    Inventory inven;
+                    if (isHostMap)
+                        inven = gameManager.hostMapInven;
+                    else
+                        inven = gameManager.clientMapInven;
 
-                bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
-                costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
+                    bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
+                    costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
 
-                if (!costEnough)
-                    return;
+                    if (!costEnough)
+                        return;
+                }
             }
         }
         else
@@ -527,11 +536,12 @@ public class PreBuilding : NetworkBehaviour
                 SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, building.type == "Portal", false, false, false);
             }
         }
-        PayCost(buildingData, spawnCount);
+        if (debugModeOn)
+            PayCost(buildingData, spawnCount);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int[] dir, bool underBelt, bool[] sideObj) // 지하 오브젝트 같이 한 방향이 아닐때
+    protected void BuildingServerRpc(bool isHostMap, int bIndex, Vector3[] setPos, int[] dir, bool underBelt, bool[] sideObj, bool debugModeOn) // 지하 오브젝트 같이 한 방향이 아닐때
     {
         int spawnCount = setPos.Length;
         Building building = buildingListSO.FindBuildingData(bIndex);
@@ -604,7 +614,8 @@ public class PreBuilding : NetworkBehaviour
         {
             SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, false, true, underBelt, sideObj[i]);
         }
-        PayCost(buildingData, spawnCount);
+        if(debugModeOn)
+            PayCost(buildingData, spawnCount);
     }
 
     protected void PayCost(BuildingData buildingData, int amount)

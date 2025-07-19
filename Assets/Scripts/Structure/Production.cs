@@ -41,6 +41,9 @@ public abstract class Production : Structure
     protected (Item, int) slot2 = (null, 0);
     protected (Item, int) slot3 = (null, 0);
 
+    [SerializeField]
+    protected SmokeControl smokeCtrl; // 연기 기능있는 건물만 사용
+
     protected override void Awake()
     {
         base.Awake();

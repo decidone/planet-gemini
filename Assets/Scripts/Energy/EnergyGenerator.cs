@@ -218,6 +218,7 @@ public class EnergyGenerator : Production
 
     protected override void NonOperateStateSet(bool isOn)
     {
-        setModel.sprite = strImg[isOn ? 1 : 0];        
+        setModel.sprite = strImg[isOn ? 1 : 0];
+        smokeCtrl.SetSmokeActive(isOn);
     }
 }
