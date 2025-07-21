@@ -334,11 +334,13 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     {
         if (outObj.Count > 0)
         {
-            outObj[0].TryGetComponent(out UnderPipeCtrl underPipe);
-            underPipe.DestroyLineRenderer();
-            underPipe.preBuildingCheck = false;
-            if (connectUnderPipe && isSend)
-                connectUnderPipe.GetComponent<UnderPipeCtrl>().EndRenderer(!isSend);
+            if (outObj[0].TryGetComponent(out UnderPipeCtrl underPipe))
+            {
+                underPipe.DestroyLineRenderer();
+                underPipe.preBuildingCheck = false;
+                if (connectUnderPipe && isSend)
+                    connectUnderPipe.GetComponent<UnderPipeCtrl>().EndRenderer(!isSend);
+            }
         }
     }
 }

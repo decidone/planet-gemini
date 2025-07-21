@@ -1086,9 +1086,11 @@ public class MapGenerator : MonoBehaviour
 
                         Cell cell = map.mapData[x][y];
                         if (cell.obj != null)
-                        {
                             Destroy(cell.obj);
-                            GameObject obj = biome.SetObject(random);
+
+                        if (3 < dist)   //스포너랑 겹치게 생성되는것을 방지
+                        {
+                            GameObject obj = biome.SetRandomObject(random);
                             if (obj != null)
                             {
                                 GameObject objInst = Instantiate(obj, objects.transform);
@@ -1417,9 +1419,6 @@ public class MapGenerator : MonoBehaviour
                 //오브젝트 생성
                 if (cell.objNum != -1)
                 {
-                    Debug.Log(cell);
-                    Debug.Log(cell.objNum);
-                    Debug.Log(objects.transform);
                     GameObject objInst = Instantiate(MapDataManager.instance.GetMapObjByNum(cell.objNum), objects.transform);
                     if (objInst.TryGetComponent<MapObject>(out MapObject mapObj))
                     {

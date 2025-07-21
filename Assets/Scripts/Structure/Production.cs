@@ -55,19 +55,17 @@ public abstract class Production : Structure
         }
         isGetLine = false;
         isStorageBuilding = false;
-        itemDic = ItemList.instance.itemDic;
     }
 
     protected virtual void Start()
     {
-        itemDic = ItemList.instance.itemDic;
-        if (recipe == null)
-            recipe = new Recipe();
-
         GameManager gameManager = GameManager.instance;
+        itemDic = ItemList.instance.itemDic;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
+        if (recipe == null)
+            recipe = new Recipe();
         GetUIFunc();
         //CheckPos();
 
@@ -204,6 +202,9 @@ public abstract class Production : Structure
     public void SetRecipeClientRpc(int index)
     {
         Recipe selectRecipe = RecipeList.instance.GetRecipeIndex(structureData.factoryName, index);
+
+        if (itemDic == null)
+            itemDic = ItemList.instance.itemDic;
 
         if (selectRecipe.name != "UICancel")
         {
