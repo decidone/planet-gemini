@@ -32,6 +32,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     int unitSfxPlayerMaxCount;
 
+    public
     AudioSource uiSfxPlayer;
 
     private float bgmVolume = 1f;
@@ -80,6 +81,7 @@ public class SoundManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         instance = this;
+        Debug.Log("SoundManager awake ");
     }
 
     private void Start()

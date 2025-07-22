@@ -1076,7 +1076,7 @@ public class Structure : NetworkBehaviour
 
         itemSetDelay = true;
 
-        if (outObj.Count <= sendItemIndex)
+        if (outObj.Count <= sendItemIndex || !outObj[sendItemIndex])
         {
             SendItemIndexSet();
             //itemSetDelay = false;
@@ -1847,7 +1847,15 @@ public class Structure : NetworkBehaviour
                         structureClickEvent.sInvenManager.CloseUI();
                     }
                 }
+                else
+                {
+                    if (structureClickEvent.sInvenManager != null)
+                    {
+                        structureClickEvent.sInvenManager.CloseRecipeUI();
+                    }
+                }
             }
+
             if (TryGetComponent(out Transporter trBuild))
             {
                 if (trBuild.lineRenderer != null)
@@ -1886,7 +1894,7 @@ public class Structure : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void UpgradeFuncClientRpc()
+    public virtual void UpgradeFuncClientRpc()
     {
         level++;
 

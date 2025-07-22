@@ -1,20 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class WallCtrl : Structure
 {
-    //void Start()
-    //{
-    //    setModel = GetComponent<SpriteRenderer>();
-    //}
-
-    protected override void Update()
+    [ClientRpc]
+    public override void UpgradeFuncClientRpc()
     {
-        base.Update();
-
-        // 여기 업글 시 수정되게
-        CheckPos();
+        base.UpgradeFuncClientRpc();
         setModel.sprite = modelNum[dirNum + level];
     }
 }

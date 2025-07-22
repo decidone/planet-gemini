@@ -10,7 +10,7 @@ public class StructureClickEvent : MonoBehaviour
     public StructureInvenManager sInvenManager;
     GameManager gameManager;
     Button closeBtn;
-    Production prod;
+    public Production prod;
     DragGraphic drag;
 
     SoundManager soundManager;

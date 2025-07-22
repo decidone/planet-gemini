@@ -12,7 +12,7 @@ public abstract class Production : Structure
     [SerializeField]
     protected StructureInvenManager sInvenManager;
     [SerializeField]
-    protected RecipeManager rManager;
+    public RecipeManager rManager;
 
     protected GameObject canvas;
     protected Inventory inventory;
@@ -204,7 +204,6 @@ public abstract class Production : Structure
     public void SetRecipeClientRpc(int index)
     {
         Recipe selectRecipe = RecipeList.instance.GetRecipeIndex(structureData.factoryName, index);
-
         if (selectRecipe.name != "UICancel")
         {
             if (recipe != null && recipe != selectRecipe)

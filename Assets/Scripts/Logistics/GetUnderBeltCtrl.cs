@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System;
+using Unity.Netcode;
 
 // UTF-8 설정
 public class GetUnderBeltCtrl : LogisticsCtrl
@@ -101,6 +102,13 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             lineRenderer = null;
         }
         preBuildingCheck = false;
+    }
+
+    [ClientRpc]
+    public override void UpgradeFuncClientRpc()
+    {
+        base.UpgradeFuncClientRpc();
+        setModel.sprite = modelNum[dirNum + (level * 4)];
     }
 
     public override void NearStrBuilt()

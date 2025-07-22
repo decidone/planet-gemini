@@ -10,6 +10,7 @@ public class FurnaceUpgrade : Production
         maxFuel = 100;
         recipes = rManager.GetRecipeList("Furnace", this);
         inventory.onItemChangedCallback += SetFurnaceRecipe;
+        SetFurnaceRecipe(0);
     }
 
     protected override void Update()

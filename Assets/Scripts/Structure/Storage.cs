@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Storage : Production
@@ -14,16 +15,25 @@ public class Storage : Production
         invenSize = new int[5] { 6, 12, 18, 24, 30 };
     }
 
-    protected override void Update()
-    {
-        base.Update();
-        //SetDirNum();
+    //protected override void Update()
+    //{
+    //    base.Update();
+    //    //SetDirNum();
 
-        // 여기 업글시 수정되는걸로 바꿔야 함
-        CheckPos();
+    //    // 여기 업글시 수정되는걸로 바꿔야 함
+    //    //CheckPos();
+    //    //setModel.sprite = modelNum[dirNum + level];
+    //    //inventory.space = invenSize[level];
+    //}
+
+    [ClientRpc]
+    public override void UpgradeFuncClientRpc()
+    {
+        base.UpgradeFuncClientRpc();
         setModel.sprite = modelNum[dirNum + level];
         inventory.space = invenSize[level];
     }
+
 
     public override void OpenUI()
     {

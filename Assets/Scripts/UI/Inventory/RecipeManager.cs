@@ -13,7 +13,7 @@ public class RecipeManager : InventoryManager
     GameObject structureInfoUI;
     Dictionary<string, Item> itemDic;
     List<Recipe> recipes;
-    Production prod;
+    public Production prod;
     public bool isOpened;
     string buildingName;
 

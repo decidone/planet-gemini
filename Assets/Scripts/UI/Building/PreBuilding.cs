@@ -425,7 +425,8 @@ public class PreBuilding : NetworkBehaviour
                 SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir, building.height, building.width, building.type == "Portal", false, false, false);
             }
         }
-        PayCost(buildingData, spawnCount);
+        if (!debugModeOn)
+            PayCost(buildingData, spawnCount);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -536,7 +537,7 @@ public class PreBuilding : NetworkBehaviour
                 SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, building.type == "Portal", false, false, false);
             }
         }
-        if (debugModeOn)
+        if (!debugModeOn)
             PayCost(buildingData, spawnCount);
     }
 
@@ -554,21 +555,25 @@ public class PreBuilding : NetworkBehaviour
         }
 
         // 아이템이 충분한지 체크
-        bool costEnough = false;
-        for (int i = 0; i < buildingData.GetItemCount(); i++)
+        if (!debugModeOn)
         {
-            int value;
-            Inventory inven;
-            if (isHostMap)
-                inven = gameManager.hostMapInven;
-            else
-                inven = gameManager.clientMapInven;
+            bool costEnough = false;
 
-            bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
-            costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
+            for (int i = 0; i < buildingData.GetItemCount(); i++)
+            {
+                int value;
+                Inventory inven;
+                if (isHostMap)
+                    inven = gameManager.hostMapInven;
+                else
+                    inven = gameManager.clientMapInven;
 
-            if (!costEnough)
-                return;
+                bool hasItem = inven.totalItems.TryGetValue(ItemList.instance.itemDic[buildingData.items[i]], out value);
+                costEnough = hasItem && value >= buildingData.amounts[i] * spawnCount;
+
+                if (!costEnough)
+                    return;
+            }
         }
         // 여기서는 셀에 다른 건물이 있는지만 체크
         for (int i = 0; i < spawnCount; i++)
@@ -614,7 +619,7 @@ public class PreBuilding : NetworkBehaviour
         {
             SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, false, true, underBelt, sideObj[i]);
         }
-        if(debugModeOn)
+        if (!debugModeOn)
             PayCost(buildingData, spawnCount);
     }
 

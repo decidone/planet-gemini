@@ -144,6 +144,8 @@ public class LogisticsClickEvent : MonoBehaviour
             gameManager.SelectPointRemove();
             itemSpManager.CloseUI();
         }
+        GameManager.instance.CheckAndCancelFocus(logisticsCtrl);
+
         soundManager.PlayUISFX("CloseUI");
     }
 
