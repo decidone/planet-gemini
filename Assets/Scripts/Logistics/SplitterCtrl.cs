@@ -27,10 +27,6 @@ public class SplitterCtrl : LogisticsCtrl
     void Start()
     {
         //setModel = GetComponent<SpriteRenderer>();
-        for (int i = 0; i < arrFilter.Length; i++)
-        {
-            arrFilter[i].isFilterOn = true;
-        }
         CanSendCheck();
         clickEvent = GetComponent<LogisticsClickEvent>();
 

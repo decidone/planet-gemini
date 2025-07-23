@@ -360,8 +360,7 @@ public class DataManager : MonoBehaviour
                     for (int a = 0; a < saveData.filters.Count; a++)
                     {
                         FilterSaveData filterSaveData = saveData.filters[a];
-                        if(filterSaveData.filterItemIndex != -1)
-                            splitterCtrl.GameStartFillterSet(a, filterSaveData.filterOn, filterSaveData.filterInvert, filterSaveData.filterItemIndex);
+                        splitterCtrl.GameStartFillterSet(a, filterSaveData.filterOn, filterSaveData.filterInvert, filterSaveData.filterItemIndex);
                     }
                 }
                 else if (structure.TryGetComponent(out Unloader unloader))

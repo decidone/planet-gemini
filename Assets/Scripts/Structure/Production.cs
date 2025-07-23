@@ -12,7 +12,7 @@ public abstract class Production : Structure
     [SerializeField]
     protected StructureInvenManager sInvenManager;
     [SerializeField]
-    protected RecipeManager rManager;
+    public RecipeManager rManager;
 
     protected GameObject canvas;
     protected Inventory inventory;

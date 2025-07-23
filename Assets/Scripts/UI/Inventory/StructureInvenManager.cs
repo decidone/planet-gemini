@@ -273,6 +273,13 @@ public class StructureInvenManager : InventoryManager
         isOpened = false;
     }
 
+    public void CloseRecipeUI()
+    {
+        prod.rManager.CloseUI();
+        ClearInvenOption();
+        CloseUI();
+    }
+
     public void OpenTankUI()
     {
         // 켄버스 탱크 버튼에서 사용

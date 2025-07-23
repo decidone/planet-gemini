@@ -26,6 +26,7 @@ public class LobbiesListManager : MonoBehaviour
 
         instance = this;
         soundManager = SoundManager.instance;
+        Debug.Log("lobbie awake");
     }
     #endregion
 
@@ -37,6 +38,7 @@ public class LobbiesListManager : MonoBehaviour
 
     public void CloseUI()
     {
+        Debug.Log("CloseUI");
         lobbiesList.SetActive(false);
         MainManager.instance.ClosedUISet();
         soundManager.PlayUISFX("ButtonClick");

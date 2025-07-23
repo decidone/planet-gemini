@@ -147,7 +147,9 @@ public class BeltCtrl : LogisticsCtrl
                 anim.SetFloat("DirNum", dirNum);
                 anim.SetFloat("ModelNum", modelMotion);
                 anim.SetFloat("Level", level);
-                anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+                var info = animsync.GetCurrentAnimatorStateInfo(0);
+                anim.Play(info.fullPathHash, -1, info.normalizedTime);
+                //anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
             }
         }
         else
@@ -187,11 +189,15 @@ public class BeltCtrl : LogisticsCtrl
         }
     }
 
-    //protected override void OnClientConnectedCallback(ulong clientId)
-    //{
-    //    ClientConnectSyncServerRpc();
-    //    ItemSyncServerRpc();
-    //}
+    [ClientRpc]
+    public override void UpgradeFuncClientRpc()
+    {
+        base.UpgradeFuncClientRpc();
+        anim.SetFloat("DirNum", dirNum);
+        anim.SetFloat("ModelNum", modelMotion);
+        anim.SetFloat("Level", level);
+        anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+    }
 
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
