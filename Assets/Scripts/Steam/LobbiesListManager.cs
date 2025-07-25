@@ -26,7 +26,7 @@ public class LobbiesListManager : MonoBehaviour
 
         instance = this;
         soundManager = SoundManager.instance;
-        Debug.Log("lobbie awake");
+        Debug.Log("lobbies awake");
     }
     #endregion
 

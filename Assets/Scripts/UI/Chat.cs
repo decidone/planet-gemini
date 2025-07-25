@@ -147,7 +147,7 @@ public class Chat : NetworkBehaviour
                     case "/gameover":
                         GameManager.instance.SetGameOverUI();
                         break;
-                    case "/test":
+                    case "/energy regroup":
                         NetworkObjManager.instance.InitConnectors();
                         break;
                     case "/wave":

@@ -287,9 +287,10 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(1f);
 
         PlayerTPSetServerRpc(false);
+        NetworkObjManager.instance.InitConnectors();
+
         if (!IsHost)
         {
-            NetworkObjManager.instance.InitConnectors();
             MonsterSpawnerManager.instance.SetCorruption();
         }
     }

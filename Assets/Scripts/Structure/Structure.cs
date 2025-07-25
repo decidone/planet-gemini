@@ -1778,14 +1778,24 @@ public class Structure : NetworkBehaviour
     public virtual void DestroyFuncClientRpc()
     {
         ColliderTriggerOnOff(true);
-        GameManager gameManager = GameManager.instance;
-        int x = Mathf.FloorToInt(transform.position.x);
-        int y = Mathf.FloorToInt(transform.position.y);
-        Cell cell = gameManager.map.GetCellDataFromPos(x, y);
-        bool isOnMap = gameManager.map.IsOnMap(x, y);
+
+        Map map;
+        if (isInHostMap)
+        {
+            map = GameManager.instance.hostMap;
+        }
+        else
+        {
+            map = GameManager.instance.clientMap;
+        }
 
         if (sizeOneByOne)
         {
+            int x = Mathf.FloorToInt(transform.position.x);
+            int y = Mathf.FloorToInt(transform.position.y);
+            Cell cell = map.GetCellDataFromPos(x, y);
+            bool isOnMap = map.IsOnMap(x, y);
+
             if (isOnMap && cell.structure == gameObject)
             {
                 cell.structure = null;
@@ -1793,13 +1803,18 @@ public class Structure : NetworkBehaviour
         }
         else
         {
+            int x = Mathf.FloorToInt(transform.position.x - 0.5f);
+            int y = Mathf.FloorToInt(transform.position.y - 0.5f);
+            Cell cell = map.GetCellDataFromPos(x, y);
+            bool isOnMap = map.IsOnMap(x, y);
+
             if (isOnMap && cell.structure == gameObject)
             {
                 for (int i = 0; i < height; i++)
                 {
                     for (int j = 0; j < width; j++)
                     {
-                        gameManager.map.GetCellDataFromPos(x + j, y + i).structure = null;
+                        map.GetCellDataFromPos(x + j, y + i).structure = null;
                     }
                 }
             }
