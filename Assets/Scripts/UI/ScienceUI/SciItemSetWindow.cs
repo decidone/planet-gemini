@@ -179,7 +179,7 @@ public class SciItemSetWindow : MonoBehaviour
         }
     }
 
-    void OkBtnFunc()
+    public void OkBtnFunc()
     {
         for (int i = 0; i < scienceInfoData.items.Count; i++)
         {
@@ -232,5 +232,7 @@ public class SciItemSetWindow : MonoBehaviour
     {
         InputFieldReset();
         this.gameObject.SetActive(false);
+        gameManager.onUIChangedCallback?.Invoke(this.gameObject);
+        gameManager.PopUpUISetting(false);
     }
 }

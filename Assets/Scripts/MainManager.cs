@@ -100,11 +100,13 @@ public class MainManager : MonoBehaviour
 
         inputManager = InputManager.instance;
         inputManager.controls.HotKey.Escape.performed += Escape;
+        inputManager.controls.HotKey.Enter.performed += Enter;
     }
 
     void OnDisable()
     {
         inputManager.controls.HotKey.Escape.performed -= Escape;
+        inputManager.controls.HotKey.Enter.performed -= Enter;
     }
 
     void JoinBtnFunc()
@@ -223,6 +225,20 @@ public class MainManager : MonoBehaviour
                     break;
                 case "ConfirmPanel":
                     ConfirmPanel.instance.CancelBtnFunc();
+                    break;
+
+            }
+        }
+    }
+
+    void Enter(InputAction.CallbackContext ctx)
+    {
+        if (openedUI.Count > 0)
+        {
+            switch (openedUI[openedUI.Count - 1].gameObject.name)
+            {
+                case "ConfirmPanel":
+                    ConfirmPanel.instance.OkBtnFunc();
                     break;
 
             }

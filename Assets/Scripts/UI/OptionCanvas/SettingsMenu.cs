@@ -208,6 +208,8 @@ public class SettingsMenu : MonoBehaviour
 
     void ResetBtnFunc()
     {
+        EventSystem.current.SetSelectedGameObject(null);
+
         ConfirmPanel.instance.KeyBindingResetConfirm();
         soundManager.PlayUISFX("ButtonClick");
     }

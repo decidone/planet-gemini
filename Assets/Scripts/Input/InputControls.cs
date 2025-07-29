@@ -982,6 +982,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Enter"",
+                    ""type"": ""Button"",
+                    ""id"": ""788c92ad-45c5-4361-9c3d-348e4d3cd6f7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1114,6 +1123,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""TimeUIDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f13fdb20-0155-4225-b0d8-7090e641758e"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Enter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1880,6 +1900,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_InfoDictionary = m_HotKey.FindAction("InfoDictionary", throwIfNotFound: true);
         m_HotKey_TimeUIUp = m_HotKey.FindAction("TimeUIUp", throwIfNotFound: true);
         m_HotKey_TimeUIDown = m_HotKey.FindAction("TimeUIDown", throwIfNotFound: true);
+        m_HotKey_Enter = m_HotKey.FindAction("Enter", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -2415,6 +2436,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_InfoDictionary;
     private readonly InputAction m_HotKey_TimeUIUp;
     private readonly InputAction m_HotKey_TimeUIDown;
+    private readonly InputAction m_HotKey_Enter;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2431,6 +2453,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @InfoDictionary => m_Wrapper.m_HotKey_InfoDictionary;
         public InputAction @TimeUIUp => m_Wrapper.m_HotKey_TimeUIUp;
         public InputAction @TimeUIDown => m_Wrapper.m_HotKey_TimeUIDown;
+        public InputAction @Enter => m_Wrapper.m_HotKey_Enter;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2476,6 +2499,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @TimeUIDown.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIDown;
                 @TimeUIDown.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIDown;
                 @TimeUIDown.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnTimeUIDown;
+                @Enter.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnter;
+                @Enter.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnter;
+                @Enter.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnter;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2516,6 +2542,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @TimeUIDown.started += instance.OnTimeUIDown;
                 @TimeUIDown.performed += instance.OnTimeUIDown;
                 @TimeUIDown.canceled += instance.OnTimeUIDown;
+                @Enter.started += instance.OnEnter;
+                @Enter.performed += instance.OnEnter;
+                @Enter.canceled += instance.OnEnter;
             }
         }
     }
@@ -2833,6 +2862,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnInfoDictionary(InputAction.CallbackContext context);
         void OnTimeUIUp(InputAction.CallbackContext context);
         void OnTimeUIDown(InputAction.CallbackContext context);
+        void OnEnter(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

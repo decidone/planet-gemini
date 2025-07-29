@@ -170,7 +170,7 @@ public class ConfirmPanel : MonoBehaviour
             MainManager.instance.OpenedUISet(confirmPanel);
     }
 
-    void OkBtnFunc()
+    public void OkBtnFunc()
     {
         if(saveLoadBtn)
         {

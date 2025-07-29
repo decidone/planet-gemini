@@ -78,6 +78,9 @@ public class Chat : NetworkBehaviour
 
     void Update()
     {
+        if (GameManager.instance.popUpUIOpen)
+            return;
+
         if (isDrag) return;
 
         if (input.isFocused && input.gameObject == EventSystem.current.currentSelectedGameObject)
@@ -114,6 +117,10 @@ public class Chat : NetworkBehaviour
 
     public void Enter(InputAction.CallbackContext ctx)
     {
+        Debug.Log("Chat Enter");
+        if (GameManager.instance.popUpUIOpen)
+            return;
+
         if (input.gameObject != EventSystem.current.currentSelectedGameObject)
         {
             input.Select();
