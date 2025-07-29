@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -173,6 +174,9 @@ public class GameManager : NetworkBehaviour
     public float autoSaveinterval;
     bool wavePlanet;
 
+    [HideInInspector]
+    public bool popUpUIOpen;
+
     Dictionary<int, int[]> waveLevelsByMapSize = new Dictionary<int, int[]>
     {
         { 0, new int[] { 1, 1, 2, 2 } }, // mapSize 0에 따른 coreLevel별 waveLevel
@@ -245,6 +249,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.Debug.performed += DebugMode;
         inputManager.controls.HotKey.Supply.performed += Supply;
         inputManager.controls.HotKey.Escape.performed += Escape;
+        inputManager.controls.HotKey.Enter.performed += Enter;
         inputManager.controls.Inventory.PlayerInven.performed += Inven;
         inputManager.controls.HotKey.ScienceTree.performed += ScienceTree;
         inputManager.controls.HotKey.InfoDictionary.performed += InfoDictionaryUI;
@@ -260,6 +265,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.Debug.performed -= DebugMode;
         inputManager.controls.HotKey.Supply.performed -= Supply;
         inputManager.controls.HotKey.Escape.performed -= Escape;
+        inputManager.controls.HotKey.Enter.performed -= Enter;
         inputManager.controls.Inventory.PlayerInven.performed -= Inven;
         inputManager.controls.HotKey.ScienceTree.performed -= ScienceTree;
         inputManager.controls.HotKey.InfoDictionary.performed -= InfoDictionaryUI;
@@ -857,6 +863,14 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    void Enter(InputAction.CallbackContext ctx)
+    {
+        if (openedUI.Count > 0)
+        {
+            ConformPanelOkUI(openedUI.Count - 1);
+        }
+    }
+
     void CloseOpenedUI(int order)
     {
         switch (openedUI[order].gameObject.name)
@@ -923,14 +937,45 @@ public class GameManager : NetworkBehaviour
                 InfoDictionary.instance.CloseUI();
                 break;
             default:
-                if (openedUI[order].gameObject.TryGetComponent<Shop>(out Shop shop))
+                if (openedUI[order].gameObject.TryGetComponent(out Shop shop))
                     shop.CloseUI();
-                else if (openedUI[order].gameObject.TryGetComponent<Bounty>(out Bounty bounty))
+                else if (openedUI[order].gameObject.TryGetComponent(out Bounty bounty))
                     bounty.CloseUI();
-                else if (openedUI[order].gameObject.TryGetComponent<PopUpCtrl>(out PopUpCtrl popup))
+                else if (openedUI[order].gameObject.TryGetComponent(out PopUpCtrl popup))
                     popup.CloseUI();
+                else if (openedUI[order].gameObject.TryGetComponent(out UpgradeWindow upgrade))
+                    upgrade.CloseUI();
+                else if (openedUI[order].gameObject.TryGetComponent(out SciItemSetWindow sciItem))
+                    sciItem.CloseUI();
                 break;
         }
+    }
+
+    void ConformPanelOkUI(int order)
+    {
+        switch (openedUI[order].gameObject.name)
+        {
+            default:
+                if (openedUI[order].gameObject.TryGetComponent(out PopUpCtrl popup))
+                    popup.OkBtnFunc();
+                else if (openedUI[order].gameObject.TryGetComponent(out UpgradeWindow upgrade))                
+                    upgrade.OkBtnFunc();
+                else if (openedUI[order].gameObject.TryGetComponent(out SciItemSetWindow sciItem))
+                    sciItem.OkBtnFunc();
+                break;
+        }
+    }
+
+    public void PopUpUISetting(bool isOpen)
+    {
+        StartCoroutine(PopUpUISettingInvoke(isOpen));
+    }
+
+    IEnumerator PopUpUISettingInvoke(bool isOpen)
+    {
+        yield return new WaitForSecondsRealtime(0.5f);
+        Debug.Log("PopUpUISettingInvoke");
+        popUpUIOpen = isOpen;
     }
 
     public void CloseAllOpenedUI()

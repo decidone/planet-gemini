@@ -14,7 +14,7 @@ public class RemoveConfirm : PopUpCtrl
         pupUpText.text = pupUpContent;
     }
 
-    protected override void OkBtnFunc()
+    public override void OkBtnFunc()
     {
         removeBuild.ConfirmEnd(true);
         CloseUI();

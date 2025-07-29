@@ -17,7 +17,7 @@ public class UpgradeWindow : MonoBehaviour
     private void Awake()
     {
         okBtn.onClick.AddListener(() => OkBtnFunc());
-        cancelBtn.onClick.AddListener(() => CancelBtnFunc());
+        cancelBtn.onClick.AddListener(() => CloseUI());
         CloseUI();
     }
 
@@ -42,7 +42,7 @@ public class UpgradeWindow : MonoBehaviour
     }
 
 
-    void OkBtnFunc()
+    public void OkBtnFunc()
     {
         if (!isCoreWaring)
         {
@@ -52,14 +52,11 @@ public class UpgradeWindow : MonoBehaviour
         CloseUI();
     }
 
-    void CancelBtnFunc()
-    {
-        CloseUI();
-    }
-
     public void CloseUI()
     {
         scienceBtn = null;
         this.gameObject.SetActive(false);
+        GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
+        GameManager.instance.PopUpUISetting(false);
     }
 }

@@ -31,18 +31,19 @@ public class PopUpCtrl : MonoBehaviour
         }
     }
 
-    protected virtual void OkBtnFunc() { }
+    public virtual void OkBtnFunc() { }
     protected virtual void CancelBtnFunc() { }
 
     public virtual void OpenUI() 
     { 
         gameObject.SetActive(true);
-        GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
+        gameManager.onUIChangedCallback?.Invoke(this.gameObject);
     }
 
     public virtual void CloseUI()
     {
         gameObject.SetActive(false);
-        GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
+        gameManager.onUIChangedCallback?.Invoke(this.gameObject);
+        gameManager.PopUpUISetting(false);
     }
 }

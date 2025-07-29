@@ -105,4 +105,24 @@ public class ItemSpawner : LogisticsCtrl
     {
         itemData = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
     }
+
+    public override void GameStartRecipeSet(int recipeId)
+    {
+        if (recipeId != -1)
+            ItemSetServerRpc(recipeId);
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        if (TryGetComponent(out Inventory inventory))
+        {
+            data.inven = inventory.SaveData();
+        }
+
+        data.recipeId = GeminiNetworkManager.instance.GetItemSOIndex(itemData);
+
+        return data;
+    }
 }

@@ -67,7 +67,7 @@ public class UpgradeConfirm : PopUpCtrl
         }
     }
 
-    protected override void OkBtnFunc()
+    public override void OkBtnFunc()
     {
         upgradeBuild.ConfirmEnd(true);
         CloseUI();

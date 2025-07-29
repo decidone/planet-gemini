@@ -202,9 +202,12 @@ public class ScienceManager : MonoBehaviour
         if (scienceInfoData.coreLv > scienceDb.coreLevel)
             return;
 
+
         itemInputWindow.SetActive(true);
         sciItemSetWindow.SetUI(focusedSciBtn);
         soundManager.PlayUISFX("ButtonClick");
+        gameManager.onUIChangedCallback?.Invoke(itemInputWindow);
+        gameManager.PopUpUISetting(true);
     }
 
     public void OpenUpgradeWindow()
@@ -212,6 +215,8 @@ public class ScienceManager : MonoBehaviour
         upgradeWindow.gameObject.SetActive(true);
         upgradeWindow.SetBtn(focusedSciBtn);
         soundManager.PlayUISFX("ButtonClick");
+        gameManager.onUIChangedCallback?.Invoke(upgradeWindow.gameObject);
+        gameManager.PopUpUISetting(true);
     }
 
     public void CoreUpgradeWarningWindow(int coreLevel)
@@ -219,17 +224,13 @@ public class ScienceManager : MonoBehaviour
         upgradeWindow.gameObject.SetActive(true);
         upgradeWindow.CoreWaring(canCoreUpgradeCount[coreLevel - 1]);
         soundManager.PlayUISFX("ButtonClick");
+        gameManager.onUIChangedCallback?.Invoke(upgradeWindow.gameObject);
+        gameManager.PopUpUISetting(true);
     }
 
     public void UpgradeStart(ScienceBtn btn)
     {
-        //btn.ItemSaveEnd();
         scienceDb.SciBtnUpgradeServerRpc(btn.btnIndex);
-        //if (btn.isCore)
-        //{
-        //    gameManager.WaveStartSet(btn.coreLevel);
-        //    //웨이브 발생 코드
-        //}
     }
 
     public void SciUpgradeEnd(string sciName, int sciLevel, int coreLv, bool isLoad)
