@@ -20,7 +20,6 @@ MonoBehaviour:
   maxFulidStorageLimit: 0
   sendSpeed:
   - 1
-  sendFluidAmount: 0
   sendDelay:
   - 0.2
   upgradeSendDelay:

@@ -24,6 +24,7 @@ public class PortalItemOut : PortalObj
 
     public override void CloseUI()
     {
+        base.CloseUI();
         sInvenManager.progressBar.gameObject.SetActive(true);
         sInvenManager.energyBar.gameObject.SetActive(true);
         sInvenManager.sortBtn.gameObject.SetActive(false);

@@ -20,6 +20,7 @@ public class PlayerInvenManager : InventoryManager
         inventory = GameManager.instance.inventory;
         SetInven(inventory, inventoryUI);
     }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -27,12 +28,14 @@ public class PlayerInvenManager : InventoryManager
         inputManager.controls.Inventory.SlotRightClickHold.performed += SlotRightClickHold;
         inputManager.controls.Inventory.SlotLeftClick.performed += SlotShiftClick;
     }
+
     void OnDisable()
     {
         inputManager.controls.Inventory.SlotLeftClick.performed -= SlotLeftClick;
         inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
         inputManager.controls.Inventory.SlotLeftClick.performed -= SlotShiftClick;
     }
+
     void SlotShiftClick(InputAction.CallbackContext ctx)
     {
         if (!sManager.isOpened) return;

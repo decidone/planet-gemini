@@ -80,6 +80,7 @@ public class PortalUnitIn : PortalObj
 
     public override void CloseUI()
     {
+        base.CloseUI();
         sInvenManager.ReleaseInven();
     }
 

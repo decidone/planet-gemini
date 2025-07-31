@@ -48,6 +48,7 @@ public class PortalItemIn : PortalObj
 
     public override void CloseUI()
     {
+        base.CloseUI();
         sInvenManager.ReleaseInven();
     }
 
