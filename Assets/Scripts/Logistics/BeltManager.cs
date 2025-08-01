@@ -2,12 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEditor.U2D.Path.GUIFramework;
 
 // UTF-8 설정
 public class BeltManager : NetworkBehaviour
 {
     [SerializeField]
     GameObject beltGroupMgrObj;
+
+    [SerializeField]
+    Animator[] beltAnimators;
+    public static BeltManager instance;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+
+        for (int i = 0; i < beltAnimators.Length; i++)
+        {
+            beltAnimators[i].SetFloat("Level", i);
+        }
+    }
+
+    public Animator AnimSync(int level)
+    {
+        return beltAnimators[level];
+    }
 
     public void BeltCombine(BeltGroupMgr fstGroupMgr, BeltGroupMgr secGroupMgr)
     {

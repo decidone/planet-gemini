@@ -296,7 +296,6 @@ MonoBehaviour:
   width: 0
   sizeOneByOne: 0
   isPreBuilding: 0
-  isSetBuildingOk: 0
   unitCanvas: {fileID: 2596895666414250251}
   maxLevel: 0
   hpBar: {fileID: 1412458371692817437}
@@ -318,7 +317,6 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  checkObj: 1
   takeItemDelay: 0
   inObj: []
   outObj: []
@@ -347,6 +345,7 @@ MonoBehaviour:
   isEnergyStr: 0
   energyProduction: 0
   energyConsumption: 0
+  isEnergyConnected: 0
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
@@ -367,7 +366,7 @@ MonoBehaviour:
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
-  itemData: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
+  itemData: {fileID: 0}
 --- !u!61 &4372891051652484693
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -461,6 +460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseAggroAmount: 5
+  aggroAmount: 0
 --- !u!1 &6351396696244375524
 GameObject:
   m_ObjectHideFlags: 0

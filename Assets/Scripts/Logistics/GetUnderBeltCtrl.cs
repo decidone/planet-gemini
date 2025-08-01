@@ -111,6 +111,28 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         setModel.sprite = modelNum[dirNum + (level * 4)];
     }
 
+    public override void StrBuilt()
+    {
+        base.StrBuilt();
+
+        float dist = 10;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, checkPos[0], dist);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.CompareTag("Factory") && hitCollider.gameObject != this.gameObject)
+            {
+                if (hitCollider.TryGetComponent(out GetUnderBeltCtrl getUnderBelt) && getUnderBelt.dirNum == dirNum)
+                {
+                    getUnderBelt.NearStrBuilt();
+                    return;
+                }
+            }
+        }
+    }
+
     public override void NearStrBuilt()
     {
         // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
@@ -120,7 +142,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {
-                if (nearObj[i] == null)
+                if (!nearObj[i])
                 {
                     if (i == 0)
                         CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
@@ -150,7 +172,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null)
+            if (!nearObj[i])
             {
                 if (i == 0)
                     CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj)));
@@ -174,9 +196,14 @@ public class GetUnderBeltCtrl : LogisticsCtrl
 
         for (int i = 0; i < hits.Length; i++)
         {
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.TryGetComponent(out Structure str) && str.destroyStart)
+            {
+                continue; // 구조물이 파괴 중이면 무시
+            }
+
             if (index != 2)
             {
-                Collider2D hitCollider = hits[i].collider;
                 if (hitCollider.CompareTag("Factory") && hits[i].collider.gameObject != this.gameObject)
                 {
                     nearObj[index] = hits[i].collider.gameObject;
@@ -186,7 +213,6 @@ public class GetUnderBeltCtrl : LogisticsCtrl
             }
             else
             {
-                Collider2D hitCollider = hits[i].collider;
                 if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<GetUnderBeltCtrl>() != this)
                 {
                     if (hitCollider.TryGetComponent(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)                    

@@ -9,7 +9,7 @@ using Unity.Netcode.Components;
 // UTF-8 설정
 public class ItemSpawner : LogisticsCtrl
 {
-    public Item itemData;
+    Item itemData;
 
     void Start()
     {
@@ -35,14 +35,11 @@ public class ItemSpawner : LogisticsCtrl
 
             if (IsServer && !isPreBuilding)
             {
-                if (outObj.Count > 0 && !itemSetDelay)
+                if (itemData != null  && outObj.Count > 0 && !itemSetDelay)
                 {
-                    if (itemData.name != "EmptyFilter")
-                    {
-                        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemData);
-                        SendItem(itemIndex);
-                        //SendItem(itemData);
-                    }
+                    int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemData);
+                    SendItem(itemIndex);
+                    //SendItem(itemData);
                 }
             }
             if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
@@ -104,6 +101,10 @@ public class ItemSpawner : LogisticsCtrl
     public void ItemSetClientRpc(int itemIndex)
     {
         itemData = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        if(itemData.name == "UICancel") 
+        {
+            itemData = null; // 아이템이 취소되면 null로 설정
+        }
     }
 
     public override void GameStartRecipeSet(int recipeId)

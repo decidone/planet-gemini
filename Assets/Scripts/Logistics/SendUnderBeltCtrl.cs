@@ -63,6 +63,28 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         setModel.sprite = modelNum[dirNum + (level * 4)];
     }
 
+    public override void StrBuilt()
+    {
+        base.StrBuilt();
+
+        float dist = 10;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, checkPos[0], dist);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.CompareTag("Factory") && hitCollider.gameObject != this.gameObject)
+            {
+                if (hitCollider.TryGetComponent(out GetUnderBeltCtrl getUnderBelt) && getUnderBelt.dirNum == dirNum)
+                {
+                    getUnderBelt.NearStrBuilt();
+                    return;
+                }
+            }
+        }
+    }
+
     public override void NearStrBuilt()
     {
         // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
@@ -70,7 +92,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         if (IsServer)
         {
             CheckPos();
-            if (nearObj[2] == null)
+            if (!nearObj[2])
                 CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
             setModel.sprite = modelNum[dirNum + (level * 4)];
         }
@@ -92,7 +114,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         yield return new WaitForEndOfFrame();
 
         CheckPos();
-        if (nearObj[2] == null)
+        if (!nearObj[2])
             CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
         setModel.sprite = modelNum[dirNum + (level * 4)];
     }
@@ -112,6 +134,33 @@ public class SendUnderBeltCtrl : LogisticsCtrl
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             inObj.Add(obj);
+        }
+    }
+
+    void GetUnderBeltNearStrBuild(Vector2 direction)
+    {
+        float dist = 10;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, dist);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<SendUnderBeltCtrl>() != this)
+            {
+                if (hitCollider.TryGetComponent(out SendUnderBeltCtrl othGet) && othGet.dirNum == dirNum)
+                {
+                    return;
+                }
+                else if (hitCollider.TryGetComponent(out GetUnderBeltCtrl getUnderBeltCtrl))
+                {
+                    if (getUnderBeltCtrl.dirNum == dirNum)
+                    {
+                        getUnderBeltCtrl.NearStrBuilt();
+                        return;
+                    }
+                }
+            }
         }
     }
 

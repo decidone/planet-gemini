@@ -101,13 +101,16 @@ public class RecipeManager : InventoryManager
                 ScienceDb scienceDb = ScienceDb.instance;
                 for (int i = 0; i < recipes.Count; i++)
                 {
-                    if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))
+                    if (recipes[i].name == "UICancel")
                     {
                         slotNums[i] = i;
-                        if (recipes[i].name != "UICancel")
-                            itemAmounts[i] = recipes[i].amounts[recipes[i].amounts.Count - 1];
-                        else
-                            itemAmounts[i] = 0;
+                        itemAmounts[i] = 0;
+                        itemIndexs[i] = itemDic[recipes[i].name];
+                    }
+                    else if (scienceDb.scienceNameDb.ContainsKey(recipes[i].name))
+                    {
+                        slotNums[i] = i;
+                        itemAmounts[i] = recipes[i].amounts[recipes[i].amounts.Count - 1];
                         itemIndexs[i] = itemDic[recipes[i].name];
                     }
                 }

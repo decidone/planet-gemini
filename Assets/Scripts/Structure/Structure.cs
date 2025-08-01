@@ -281,7 +281,7 @@ public class Structure : NetworkBehaviour
             if (destroyTimer <= 0)
             {
                 ObjRemoveFunc();
-                destroyStart = false;
+                //destroyStart = false;
             }
         }
     }
@@ -1819,6 +1819,8 @@ public class Structure : NetworkBehaviour
                 }
             }
         }
+
+        StrBuilt();
 
         NetworkObjManager.instance.NetObjRemove(gameObject);
         onEffectUpgradeCheck -= IncreasedStructureCheck;

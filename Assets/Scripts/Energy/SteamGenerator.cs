@@ -233,7 +233,7 @@ public class SteamGenerator : FluidFactoryCtrl
             {
                 if (nearObj[i] == null)
                 {
-                    CheckNearObj(i, obj => FluidSetOutObj(obj));
+                    //CheckNearObj(i, obj => FluidSetOutObj(obj));
                     CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
             }
@@ -261,7 +261,7 @@ public class SteamGenerator : FluidFactoryCtrl
         {
             if (nearObj[i] == null)
             {
-                CheckNearObj(i, obj => FluidSetOutObj(obj));
+                //CheckNearObj(i, obj => FluidSetOutObj(obj));
                 CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }
         }
