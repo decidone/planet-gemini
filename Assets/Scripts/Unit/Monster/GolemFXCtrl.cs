@@ -8,7 +8,6 @@ public class GolemFXCtrl : NetworkBehaviour
 {
     public Animator animator;
     public Transform aggroTarget = null;   // 타겟
-    bool isAnimEnd = false;
     float damage = 0;
 
     void Update()
@@ -17,18 +16,11 @@ public class GolemFXCtrl : NetworkBehaviour
         {
             return;
         }
-
-        AttackFunc();
     }
 
-    public void FXEnd(){ isAnimEnd = true; }
-
-    void AttackFunc()
+    public void FXEnd()
     {
-        if (isAnimEnd)
-        {
-            NetworkObject.Despawn();
-        }        
+        NetworkObject.Despawn();
     }
 
     public void FXMove() { }
@@ -42,6 +34,7 @@ public class GolemFXCtrl : NetworkBehaviour
     {
         if (!IsServer)
             return;
+
         if (collision.TryGetComponent(out PlayerStatus player))
         {
             if (!collision.isTrigger)

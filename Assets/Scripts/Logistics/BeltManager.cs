@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using UnityEditor.U2D.Path.GUIFramework;
 
 // UTF-8 설정
 public class BeltManager : NetworkBehaviour

@@ -16,7 +16,6 @@ public class AggroAmount : MonoBehaviour
     {
         float speedPer = (attackSpeed * 2) / 10;
         aggroAmount += (damage * aggroAmountPercent) + speedPer;
-        Debug.Log("1 : " + speedPer + ", 2 : " + (damage * aggroAmountPercent));
 
         if (!isAggroActive)
             StartCoroutine(AggroDecayTimer());

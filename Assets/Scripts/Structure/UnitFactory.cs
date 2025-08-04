@@ -216,7 +216,7 @@ public class UnitFactory : Production
         bool spawnPosExist = false;
         for (int i = 0; i < nearPos.Length; i++)
         {
-            if (nearObj[i] != null)
+            if (nearObj[i] != null && !nearObj[i].GetComponent<BeltCtrl>())
                 continue;
             else
             {

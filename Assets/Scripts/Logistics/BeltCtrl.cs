@@ -149,7 +149,6 @@ public class BeltCtrl : LogisticsCtrl
                 anim.SetFloat("Level", level);
                 var info = animsync.GetCurrentAnimatorStateInfo(0);
                 anim.Play(info.fullPathHash, -1, info.normalizedTime);
-                Debug.Log("111");
                 //anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
             }
         }
@@ -187,7 +186,6 @@ public class BeltCtrl : LogisticsCtrl
             anim.SetFloat("Level", level);
             var info = animsync.GetCurrentAnimatorStateInfo(0);
             anim.Play(info.fullPathHash, -1, info.normalizedTime);
-            Debug.Log("222");
         }
     }
 
@@ -199,7 +197,6 @@ public class BeltCtrl : LogisticsCtrl
         anim.SetFloat("ModelNum", modelMotion);
         anim.SetFloat("Level", level);
         anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-        Debug.Log("444");
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -454,7 +454,6 @@ public class AttackTower : TowerAi
                 fx.GetTarget(damage + loadedBullet.damage, gameObject);
             }
 
-            Debug.Log("Attack");
             isAttacked = true;
             soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
             aggroAmount.SetAggroAmount(damage, attDelayTime + loadedBullet.fireRate);

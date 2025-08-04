@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6895669123781143277}
   - component: {fileID: -7768821774456193570}
   - component: {fileID: 1068183578771561047}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Golem_Armor_AttackA_FX_0
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbd566a9a1daccf4fa5c3d9ec99f0cd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
+  animator: {fileID: 3455073265877218511}
   aggroTarget: {fileID: 0}
 --- !u!114 &6895669123781143277
 MonoBehaviour:
