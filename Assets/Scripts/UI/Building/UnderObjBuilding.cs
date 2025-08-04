@@ -35,7 +35,7 @@ public class UnderObjBuilding : MonoBehaviour
         }
 
         CheckPos();
-        if(isUnderBelt)
+        if (isUnderBelt)
             CheckNearObj(checkPos[0]);
         else
             CheckNearObj(checkPos[2]);
@@ -72,26 +72,27 @@ public class UnderObjBuilding : MonoBehaviour
             {
                 if (isUnderBelt)
                 {
-                    if (factoryCollider.TryGetComponent(out GetUnderBeltCtrl othGetUnderBelt))
+                    if (direction == checkPos[0])
                     {
-                        if(othGetUnderBelt.dirNum == dirNum)
+                        if (factoryCollider.TryGetComponent(out GetUnderBeltCtrl othGetUnderBelt))
                         {
-                            IsSendObjSet();
-                            EndRenderer();
-                            return;
+                            if (othGetUnderBelt.dirNum == dirNum)
+                            {
+                                return;
+                            }
                         }
-                    }
-                    else if (factoryCollider.TryGetComponent(out SendUnderBeltCtrl othSendUnderBelt))
-                    {
-                        if (othSendUnderBelt.dirNum == dirNum)
+                        else if (factoryCollider.TryGetComponent(out SendUnderBeltCtrl othSendUnderBelt))
                         {
-                            IsGetObjSet();
-                            othSendUnderBelt.EndRenderer();
-                            if (!setLine)
-                                StartRenderer(othSendUnderBelt.transform.position);
-                            else
-                                RendererReset(othSendUnderBelt.transform.position);
-                            return;
+                            if (othSendUnderBelt.dirNum == dirNum)
+                            {
+                                IsGetObjSet();
+                                othSendUnderBelt.EndRenderer();
+                                if (!setLine)
+                                    StartRenderer(transform.position, othSendUnderBelt.transform.position);
+                                else
+                                    RendererReset(transform.position, othSendUnderBelt.transform.position);
+                                return;
+                            }
                         }
                     }
                 }
@@ -108,10 +109,39 @@ public class UnderObjBuilding : MonoBehaviour
                         {
                             underPipe.EndRenderer(true);
                             if (!setLine)
-                                StartRenderer(underPipe.transform.position);
+                                StartRenderer(transform.position, underPipe.transform.position);
                             else
-                                RendererReset(underPipe.transform.position);
+                                RendererReset(transform.position, underPipe.transform.position);
                             return;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(isUnderBelt)
+        {
+            hits = Physics2D.RaycastAll(transform.position, checkPos[2], 10);
+
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Collider2D factoryCollider = hits[i].collider;
+
+                if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != gameObject
+                    && factoryCollider.gameObject.transform.position != gameObject.transform.position)
+                {
+                    if (direction == checkPos[0])
+                    {
+                        if (factoryCollider.TryGetComponent(out GetUnderBeltCtrl othGetUnderBelt))
+                        {
+                            if (othGetUnderBelt.dirNum == dirNum && othGetUnderBelt.inObj.Count == 0)
+                            {
+                                if (!setLine)
+                                    StartRenderer(othGetUnderBelt.transform.position, transform.position);
+                                else
+                                    RendererReset(othGetUnderBelt.transform.position, transform.position);
+                                return;
+                            }
                         }
                     }
                 }
@@ -146,26 +176,26 @@ public class UnderObjBuilding : MonoBehaviour
         setLine = false;
     }
 
-    void StartRenderer(Vector3 target)
+    void StartRenderer(Vector3 startPos, Vector3 endPos)
     {
         setLine = true;
-        startLine = new Vector3(target.x, target.y, -1);
+        startLine = new Vector3(endPos.x, endPos.y, -1);
         GameObject currentLine = Instantiate(lineObj, startLine, Quaternion.identity);
         currentLine.transform.parent = transform;
         lineRenderer = currentLine.GetComponent<LineRenderer>();
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, startLine);
-        endLine = new Vector3(transform.position.x, transform.position.y, -1);
+        endLine = new Vector3(startPos.x, startPos.y, -1);
         lineRenderer.SetPosition(1, endLine);
     }
 
-    void RendererReset(Vector3 target)
+    void RendererReset(Vector3 startPos, Vector3 endPos)
     {
         if (lineRenderer != null)
         {
-            startLine = new Vector3(target.x, target.y, -1);
+            startLine = new Vector3(endPos.x, endPos.y, -1);
             lineRenderer.SetPosition(0, startLine);
-            endLine = new Vector3(transform.position.x, transform.position.y, -1);
+            endLine = new Vector3(startPos.x, startPos.y, -1);
             lineRenderer.SetPosition(1, endLine);
         }
     }

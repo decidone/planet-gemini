@@ -83,41 +83,24 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     public override void StrBuilt()
     {
-        // 건설 시 근처 건물들이 NearStrBuilt()를 실행하도록 알림을 보냄
-        NearStrBuilt();
+        base.StrBuilt();
 
-        int posX = (int)transform.position.x;
-        int posY = (int)transform.position.y;
-        Cell cell;
-        if (width == 1 && height == 1)
+        float dist = 10;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, checkPos[0], dist);
+
+        for (int i = 0; i < hits.Length; i++)
         {
-            for (int i = 0; i < 4; i++)
+            Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.CompareTag("Factory") && hitCollider.gameObject != this.gameObject)
             {
-                int nearX = posX + oneDirections[i, 0];
-                int nearY = posY + oneDirections[i, 1];
-                cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
-                if (cell.structure != null)
+                if (hitCollider.TryGetComponent(out UnderPipeCtrl othPipe) && CanConnectUnderPipe(othPipe))
                 {
-                    cell.structure.GetComponent<Structure>().NearStrBuilt();
+                    othPipe.NearStrBuilt();
+                    return;
                 }
             }
         }
-        else if (width == 2 && height == 2)
-        {
-            for (int i = 0; i < 8; i++)
-            {
-                int nearX = posX + twoDirections[i, 0];
-                int nearY = posY + twoDirections[i, 1];
-                cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
-
-                if (cell.structure != null)
-                {
-                    cell.structure.GetComponent<Structure>().NearStrBuilt();
-                }
-            }
-        }
-
-        CheckSlotState(0);
     }
 
     public override void NearStrBuilt()
@@ -208,6 +191,11 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
+            if (hitCollider.TryGetComponent(out Structure str) && str.destroyStart)
+            {
+                continue; // 구조물이 파괴 중이면 무시
+            }
+
             if (hitCollider.CompareTag("Factory") && hits[i].collider.gameObject != this.gameObject)
             {
                 if (index == 0)

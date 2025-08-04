@@ -477,10 +477,13 @@ public class Inventory : NetworkBehaviour
     {
         for (int i = 0; i < index; i++)
         {
-            if (!items.ContainsKey(slotNum[i]))
+            if (!item[i])
+                continue;
+            else if (!items.ContainsKey(slotNum[i]))
             {
                 items.Add(slotNum[i], item[i]);
                 amounts.Add(slotNum[i], amount[i]);
+                Debug.Log(item[i].name);
                 totalItems[item[i]] += amount[i];
             }
             else if (items[slotNum[i]] == item[i])

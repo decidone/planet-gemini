@@ -18,6 +18,15 @@ public class GolemCtrl : MonsterAi
         getTargetTr = targetTr;
     }
 
+    protected override void AttackEnd()
+    {
+        animator.SetBool("isAttack", false);
+        animator.SetBool("isMove", false);
+        if (IsServer)
+            AnimSetFloat(targetVec, false);
+        attackState = AttackState.Waiting;
+    }
+
     public void FXSpawn()
     {
         if (getTargetTr == null)

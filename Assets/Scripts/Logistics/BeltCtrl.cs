@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using Unity.Netcode;
 using Pathfinding;
 using System.Collections;
+using Unity.VisualScripting;
 
 // UTF-8 설정
 public enum BeltState
@@ -19,7 +20,7 @@ public class BeltCtrl : LogisticsCtrl
     int modelMotion = 0;  // 모션
     int preMotion = -1;
     public BeltGroupMgr beltGroupMgr;
-    GameObject beltManager = null;
+    BeltManager beltManager = null;
 
     protected Animator anim;
     protected Animator animsync;
@@ -44,6 +45,7 @@ public class BeltCtrl : LogisticsCtrl
     protected override void Awake()
     {
         GameManager gameManager = GameManager.instance;
+        beltManager = BeltManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
@@ -89,9 +91,8 @@ public class BeltCtrl : LogisticsCtrl
 
     void Start()
     {
-        beltManager = GameObject.Find("BeltManager");
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-        animsync = beltManager.GetComponent<Animator>();
+        animsync = beltManager.AnimSync(level);
         anim = GetComponent<Animator>();
         isOperate = true;
         StrBuilt();
@@ -132,9 +133,8 @@ public class BeltCtrl : LogisticsCtrl
         {
             if (anim == null)
             {
-                beltManager = GameObject.Find("BeltManager");
                 beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-                animsync = beltManager.GetComponent<Animator>();
+                animsync = beltManager.AnimSync(level);
                 anim = GetComponent<Animator>();
             }
 
@@ -173,9 +173,8 @@ public class BeltCtrl : LogisticsCtrl
         {
             if (anim == null)
             {
-                beltManager = GameObject.Find("BeltManager");
                 beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-                animsync = beltManager.GetComponent<Animator>();
+                animsync = beltManager.AnimSync(level);
                 anim = GetComponent<Animator>();
             }
 
@@ -185,7 +184,8 @@ public class BeltCtrl : LogisticsCtrl
             anim.SetFloat("DirNum", dirNum);
             anim.SetFloat("ModelNum", modelMotion);
             anim.SetFloat("Level", level);
-            anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+            var info = animsync.GetCurrentAnimatorStateInfo(0);
+            anim.Play(info.fullPathHash, -1, info.normalizedTime);
         }
     }
 
@@ -323,10 +323,11 @@ public class BeltCtrl : LogisticsCtrl
             BeltModelMotionSetClientRpc(modelMotion);
             preMotion = modelMotion;
         }
-        anim.SetFloat("DirNum", dirNum);
-        anim.SetFloat("ModelNum", modelMotion);
-        anim.SetFloat("Level", level);
-        anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        //anim.SetFloat("DirNum", dirNum);
+        //anim.SetFloat("ModelNum", modelMotion);
+        //anim.SetFloat("Level", level);
+        //anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        //Debug.Log("333");
         SetItemDir();
     }
 

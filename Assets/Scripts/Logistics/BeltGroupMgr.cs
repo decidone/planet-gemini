@@ -30,6 +30,8 @@ public class BeltGroupMgr : NetworkBehaviour
             beltSyncCheck = true;
             Invoke(nameof(ClientBeltInvoke), 0.2f);
         }
+
+        beltManager = BeltManager.instance;
     }
 
     public void BeltGroupRefresh()
@@ -494,7 +496,7 @@ public class BeltGroupMgr : NetworkBehaviour
 
     void CombineFunc(BeltCtrl belt, BeltCtrl otherBelt, bool isNextFind)
     {
-        BeltManager beltManager = this.GetComponentInParent<BeltManager>();
+        //BeltManager beltManager = this.GetComponentInParent<BeltManager>();
         if (isNextFind)
         {
             beltManager.BeltCombine(this, otherBelt.beltGroupMgr);
@@ -517,7 +519,7 @@ public class BeltGroupMgr : NetworkBehaviour
 
     public void CombineFuncOthGroupMgr(BeltGroupMgr beltGroupMgr, BeltCtrl belt, BeltCtrl otherBelt)
     {
-        BeltManager beltManager = this.GetComponentInParent<BeltManager>();
+        //BeltManager beltManager = this.GetComponentInParent<BeltManager>();
 
         beltManager.BeltCombine(this, beltGroupMgr);
         ulong thisId = belt.GetComponent<NetworkObject>().NetworkObjectId;
@@ -572,8 +574,6 @@ public class BeltGroupMgr : NetworkBehaviour
         }
 
         thisBelt.preBelt = othBelt;
-        othBelt.NearStrBuilt();
-        thisBelt.NearStrBuilt();
     }
 
     [ClientRpc]
