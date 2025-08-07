@@ -35,6 +35,11 @@ public class BuildInfoCheck : MonoBehaviour
             return;
         }
 
+        if (inputManager.isMapOpened && MapFilter.instance.isFilterOn)
+        {
+            return;
+        }
+
         mousePos = Input.mousePosition;
 
         if (RaycastUtility.IsPointerOverUI(mousePos))
@@ -44,7 +49,7 @@ public class BuildInfoCheck : MonoBehaviour
             return;
         }
 
-        Vector2 pos = new Vector2();
+        Vector2 pos;
         int x;
         int y;
 

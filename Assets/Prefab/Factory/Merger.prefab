@@ -188,7 +188,6 @@ MonoBehaviour:
   width: 0
   sizeOneByOne: 0
   isPreBuilding: 0
-  isSetBuildingOk: 0
   unitCanvas: {fileID: 6286358328183777270}
   maxLevel: 0
   hpBar: {fileID: 4524655087609989696}
@@ -210,7 +209,6 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  checkObj: 1
   takeItemDelay: 0
   inObj: []
   outObj: []
@@ -243,6 +241,7 @@ MonoBehaviour:
   isEnergyStr: 0
   energyProduction: 0
   energyConsumption: 0
+  isEnergyConnected: 0
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
@@ -339,6 +338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseAggroAmount: 5
+  aggroAmount: 0
 --- !u!1 &2022314172133507151
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,6 +677,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 262180438270614844}
     m_Modifications:
+    - target: {fileID: 696061268899102188, guid: cc9c7c98d8981764891bec759cf0fc85, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9105dcb91267c79458cef8e550636a7b, type: 3}
     - target: {fileID: 4579693361766934189, guid: cc9c7c98d8981764891bec759cf0fc85, type: 3}
       propertyPath: m_RootOrder
       value: 4

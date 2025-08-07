@@ -88,7 +88,10 @@ public class FluidFactoryCtrl : Production
 
         if (destroyStart)
         {
-            destroyTimer -= Time.deltaTime;
+            if (GameManager.instance.debug)
+                destroyTimer -= (Time.deltaTime * 10);
+            else
+                destroyTimer -= Time.deltaTime;
             repairBar.fillAmount = destroyTimer / destroyInterval;
 
             if (destroyTimer <= 0)

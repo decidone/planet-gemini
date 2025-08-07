@@ -13,20 +13,27 @@ public class RepairTower : TowerAi
     [SerializeField]
     int repairFullAmount;
 
+    protected override void Start()
+    {
+        base.Start();
+        StartCoroutine(EfficiencyCheck());
+    }
+
     protected override void Update()
     {
         base.Update();
         if (!isPreBuilding && IsServer)
         {
-            searchTimer += Time.deltaTime;
-
-            if (searchTimer >= searchInterval)
+            if (conn != null && conn.group != null && conn.group.efficiency > 0)
             {
-                SearchObjectsInRange();
-                searchTimer = 0f; // 탐색 후 타이머 초기화
+                searchTimer += Time.deltaTime;
+                if (searchTimer >= searchInterval)
+                {
+                    SearchObjectsInRange();
+                    searchTimer = 0f; // 탐색 후 타이머 초기화
+                }
+                RepairTowerAiCtrl();
             }
-
-            RepairTowerAiCtrl();
         }
     }
 
@@ -90,18 +97,26 @@ public class RepairTower : TowerAi
             .Take(repairAmount)
             .ToList();
 
+        bool isRepairing = false;
         foreach (Structure str in sortedUnitTargets)
         {
             if (str.hp != str.maxHp)
             {
                 repairAmount--;
                 str.RepairFunc(damage);
+                isRepairing = true;
+                OperateStateSet(true);
 
                 if (repairAmount == 0)
                 {
                     return;
                 }
             }
+        }
+
+        if (!isRepairing)
+        {
+            OperateStateSet(false);
         }
     }
 

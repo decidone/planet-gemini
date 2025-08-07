@@ -489,7 +489,6 @@ MonoBehaviour:
   width: 0
   sizeOneByOne: 0
   isPreBuilding: 0
-  isSetBuildingOk: 0
   unitCanvas: {fileID: 0}
   maxLevel: 0
   hpBar: {fileID: 0}
@@ -511,7 +510,6 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  checkObj: 1
   takeItemDelay: 0
   inObj: []
   outObj: []
@@ -540,6 +538,7 @@ MonoBehaviour:
   isEnergyStr: 0
   energyProduction: 0
   energyConsumption: 0
+  isEnergyConnected: 0
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
@@ -566,6 +565,8 @@ MonoBehaviour:
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
+  isInvenFull: 0
+  smokeCtrl: {fileID: 0}
   portalTile:
   - {fileID: 721077935472781495}
   - {fileID: 721077936004993818}
@@ -587,6 +588,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
   sInvenManager: {fileID: 0}
+  prod: {fileID: 0}
   openUI: 0
 --- !u!114 &721077935684597035
 MonoBehaviour:
@@ -632,6 +634,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseAggroAmount: 0
+  aggroAmount: 0
 --- !u!1 &721077936004993818
 GameObject:
   m_ObjectHideFlags: 0
@@ -938,6 +941,10 @@ PrefabInstance:
     - target: {fileID: 8038330571718408136, guid: cc9c7c98d8981764891bec759cf0fc85, type: 3}
       propertyPath: m_Name
       value: StrIcon
+      objectReference: {fileID: 0}
+    - target: {fileID: 8038330571718408136, guid: cc9c7c98d8981764891bec759cf0fc85, type: 3}
+      propertyPath: m_Layer
+      value: 24
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc9c7c98d8981764891bec759cf0fc85, type: 3}

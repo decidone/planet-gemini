@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4544803761376060347}
   - component: {fileID: 2897303468960156039}
   - component: {fileID: 3196542409662635843}
-  m_Layer: 9
+  m_Layer: 24
   m_Name: MapLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}

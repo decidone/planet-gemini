@@ -283,7 +283,7 @@ public class MapCameraController : MonoBehaviour
     {
         focusedEvent = tempEvent;
         GameObject point = gameManager.SelectPointSpawn(focusedEvent.gameObject);
-        point.layer = LayerMask.NameToLayer("MapUI");
+        point.layer = LayerMask.NameToLayer("MapInteract");
     }
 
     void CancelFocus()
@@ -315,6 +315,7 @@ public class MapCameraController : MonoBehaviour
 
         CameraObj.SetActive(true);
         PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
+        MapFilter.instance.OpenUI();
         if (player.IsTeleportable())
             LocalPortalListManager.instance.OpenUI();
     }
@@ -325,6 +326,7 @@ public class MapCameraController : MonoBehaviour
             CancelRender();
         CancelFocus();
         CameraObj.SetActive(false);
+        MapFilter.instance.CloseUI();
         LocalPortalListManager.instance.CloseUI();
     }
 

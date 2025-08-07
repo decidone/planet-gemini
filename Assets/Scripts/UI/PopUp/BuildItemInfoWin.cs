@@ -147,19 +147,19 @@ public class BuildItemInfoWin : MonoBehaviour
 
                     string energy = "";
                     if (energyVariation > 0)
-                        energy = "(" + energyVariation + ")";
+                        energy = "(" + Mathf.Round(energyVariation) + ")";
 
                     if (energyUse)
                     {
                         if (energyGroup != null)
-                            energyText.text = energyGroup.consumption + energy + " / " + energyGroup.energy;
+                            energyText.text = Mathf.Round(energyGroup.consumption) + energy + " / " + Mathf.Round(energyGroup.energy);
                         else
                             energyText.text = "disconnected";
                     }
                     else if (isEnergyStr)
                     {
                         if (energyGroup != null)
-                            energyText.text = energyGroup.consumption + " / " + energyGroup.energy + energy;
+                            energyText.text = Mathf.Round(energyGroup.consumption) + " / " + Mathf.Round(energyGroup.energy) + energy;
                         else
                             energyText.text = "disconnected";
                     }
@@ -188,19 +188,19 @@ public class BuildItemInfoWin : MonoBehaviour
 
                     string energy = "";
                     if (energyVariation > 0)
-                        energy = "(" + energyVariation + ")";
+                        energy = "(" + Mathf.Round(energyVariation) + ")";
 
                     if (energyUse)
                     {
                         if (energyGroup != null)
-                            energyText.text = energyGroup.consumption + energy + " / " + energyGroup.energy;
+                            energyText.text = Mathf.Round(energyGroup.consumption) + energy + " / " + Mathf.Round(energyGroup.energy);
                         else
                             energyText.text = "disconnected";
                     }
                     else if (isEnergyStr)
                     {
                         if (energyGroup != null)
-                            energyText.text = energyGroup.consumption + " / " + energyGroup.energy + energy;
+                            energyText.text = Mathf.Round(energyGroup.consumption) + " / " + Mathf.Round(energyGroup.energy) + energy;
                         else
                             energyText.text = "disconnected";
                     }
@@ -266,19 +266,19 @@ public class BuildItemInfoWin : MonoBehaviour
 
                 string energy = "";
                 if (energyVariation > 0)
-                    energy = "(" + energyVariation + ")";
+                    energy = "(" + Mathf.Round(energyVariation) + ")";
 
                 if (energyUse)
                 {
                     if (energyGroup != null)
-                        energyText.text = energyGroup.consumption + energy + " / " + energyGroup.energy;
+                        energyText.text = Mathf.Round(energyGroup.consumption) + energy + " / " + Mathf.Round(energyGroup.energy);
                     else
                         energyText.text = "disconnected";
                 }
                 else if (isEnergyStr)
                 {
                     if (energyGroup != null)
-                        energyText.text = energyGroup.consumption + " / " + energyGroup.energy + energy;
+                        energyText.text = Mathf.Round(energyGroup.consumption) + " / " + Mathf.Round(energyGroup.energy) + energy;
                     else
                         energyText.text = "disconnected";
                 }
@@ -295,7 +295,7 @@ public class BuildItemInfoWin : MonoBehaviour
                 if (energyGroup != null)
                 {
                     energyBar.fillAmount = energyGroup.efficiency;
-                    energyText.text = energyGroup.consumption + "(" + energyVariation + ")" + " / " + energyGroup.energy;
+                    energyText.text = Mathf.Round(energyGroup.consumption) + "(" + energyVariation + ")" + " / " + Mathf.Round(energyGroup.energy);
                 }
                 else
                 {

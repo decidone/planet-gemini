@@ -275,7 +275,10 @@ public class Structure : NetworkBehaviour
 
         if (destroyStart)
         {
-            destroyTimer -= Time.deltaTime;
+            if (GameManager.instance.debug)
+                destroyTimer -= (Time.deltaTime * 10);
+            else
+                destroyTimer -= Time.deltaTime;
             repairBar.fillAmount = destroyTimer / destroyInterval;
             OperateStateSet(false);
             if (destroyTimer <= 0)
@@ -1523,10 +1526,13 @@ public class Structure : NetworkBehaviour
 
     protected virtual void RepairFunc(bool isBuilding)
     {
-        repairGauge += 10.0f * Time.deltaTime;
-
         if (isBuilding)
         {
+            if (GameManager.instance.debug)
+                repairGauge += (Time.deltaTime * 10);
+            else
+                repairGauge += Time.deltaTime;
+
             repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
             if (repairGauge >= structureData.MaxBuildingGauge)
             {
@@ -1548,6 +1554,8 @@ public class Structure : NetworkBehaviour
         }
         else
         {
+            repairGauge += Time.deltaTime;
+
             repairBar.fillAmount = repairGauge / structureData.MaxRepairGauge;
             if (repairGauge >= structureData.MaxRepairGauge)
             {

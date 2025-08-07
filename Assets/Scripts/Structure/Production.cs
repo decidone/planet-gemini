@@ -662,25 +662,32 @@ public abstract class Production : Structure
     {
         while (true)
         {
-            if (conn != null && conn.group != null && conn.group.efficiency > 0)
+            if (conn != null && conn.group != null)
             {
-                if (efficiency != conn.group.efficiency)
+                if (conn.group.efficiency > 0)
                 {
-                    efficiency = conn.group.efficiency;
-                    if (efficiency != 0)
+                    if (efficiency != conn.group.efficiency)
                     {
-                        effiCooldown = cooldown / efficiency;
-                    }
-                    else
-                    {
-                        effiCooldown = cooldown;
-                    }
+                        efficiency = conn.group.efficiency;
+                        if (efficiency != 0)
+                        {
+                            effiCooldown = cooldown / efficiency;
+                        }
+                        else
+                        {
+                            effiCooldown = cooldown;
+                        }
 
-                    if (isUIOpened)
-                    {
-                        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-                        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+                        if (isUIOpened)
+                        {
+                            sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+                            sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+                        }
                     }
+                }
+                else
+                {
+                    efficiency = 0;
                 }
             }
 
