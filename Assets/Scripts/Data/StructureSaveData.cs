@@ -36,7 +36,7 @@ public class StructureSaveData
     public int prodItemIndex = -1;  // 채굴기 - 생산 가능한 아이템 인덱스
 
     public int maxBuyAmount;        // 자동 구매기 최대 구매 수량
-    public int minBuyAmount;        // 자동 구매기 구매 트리거 수량
+    public int minBuyAmount;        // 자동 구매기 구매 트리거 수량, 트랜스포터 전송량
 
     public List<SerializedVector3> connectedStrPos = new List<SerializedVector3>(); // 트랜스포터, 장거리 커넥터 등 라인 연결해야 하는 건물 좌표값
 
@@ -46,7 +46,7 @@ public class StructureSaveData
     // 필터 - 스플리터 같은 경우 3개의 필터 조건이 들어갈 수 있음
     public List<FilterSaveData> filters = new List<FilterSaveData>();
 
-    public bool isAuto = false;     // 분쇄기 자동화 체크
+    public bool isAuto = false;     // 분쇄기 자동화 체크, 트랜스포터 최소 전송량 체크
 
     public string portalName;
 

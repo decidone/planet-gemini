@@ -17,6 +17,8 @@ public class Refinery : FluidFactoryCtrl
         {
             inventory.onItemChangedCallback += CheckSlotState;
             inventory.onItemChangedCallback += CheckInvenIsFull;
+            CheckSlotState(0);
+            CheckInvenIsFull(0);
         }
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();

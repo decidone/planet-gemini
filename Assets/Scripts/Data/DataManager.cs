@@ -343,6 +343,8 @@ public class DataManager : MonoBehaviour
 
                 if (structure.TryGetComponent(out Transporter transporter))
                 {
+                    transporter.SendFuncSetServerRpc(saveData.isAuto, saveData.minBuyAmount);
+
                     transporters.Add(transporter, saveData);
                     if (saveData.connectedStrPos.Count > 0)
                         structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
@@ -443,7 +445,13 @@ public class DataManager : MonoBehaviour
                 findObj = CellObjFind(transporter.connectedPosList[0], transporter.isInHostMap);
 
             if (findObj != null && findObj.TryGetComponent(out takeTransporter))
+            {
                 transporter.TakeBuildSet(takeTransporter);
+                if (transporter.TryGetComponent(out MapClickEvent mapClick) && takeTransporter.TryGetComponent(out MapClickEvent othMapClick))
+                {
+                    mapClick.GameStartSetRenderer(othMapClick);
+                }
+            }
 
             if (strData.trUnitPosData.Count > 0)
             {

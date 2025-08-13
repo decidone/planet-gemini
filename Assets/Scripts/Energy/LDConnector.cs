@@ -116,17 +116,21 @@ public class LDConnector : Structure
             map = gameManager.clientMap;
 
         Cell cell = map.GetCellDataFromPos(x, y);
-        while (cell.structure == null) 
+
+        if (cell.structure == null)
         {
             yield return null;
+            StartCoroutine(SetInvoke(pos));
         }
-
-        GameObject findObj = cell.structure;
-        if (findObj != null && findObj.TryGetComponent(out LDConnector othLDConnector))
+        else
         {
-            if (TryGetComponent(out MapClickEvent mapClick) && othLDConnector.TryGetComponent(out MapClickEvent othMapClick))
+            GameObject findObj = cell.structure;
+            if (findObj != null && findObj.TryGetComponent(out LDConnector othLDConnector))
             {
-                mapClick.GameStartSetRenderer(othMapClick);
+                if (TryGetComponent(out MapClickEvent mapClick) && othLDConnector.TryGetComponent(out MapClickEvent othMapClick))
+                {
+                    mapClick.GameStartSetRenderer(othMapClick);
+                }
             }
         }
     }

@@ -225,7 +225,7 @@ public class TransportUnit : UnitCommonAi
                 if (othTrBuild != null)
                 {
                     othTrBuild.TakeTransportItem(this, itemDic);
-                    itemDic.Clear();
+                    //itemDic.Clear();
                 }
                 else
                 {
@@ -279,7 +279,7 @@ public class TransportUnit : UnitCommonAi
                 if (itemDic.Count > 0)
                 {
                     autoBuyer.TakeTransportItem(this, itemDic);
-                    itemDic.Clear();
+                    //itemDic.Clear();
                 }
                 else
                     autoBuyer.RemoveUnit(this.gameObject);
@@ -289,7 +289,7 @@ public class TransportUnit : UnitCommonAi
                 if (itemDic.Count > 0)
                 {
                     mainTrBuild.TakeTransportItem(this, itemDic);
-                    itemDic.Clear();
+                    //itemDic.Clear();
                 }
                 else
                     mainTrBuild.RemoveUnit(this.gameObject);

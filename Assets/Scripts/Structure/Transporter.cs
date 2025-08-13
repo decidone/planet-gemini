@@ -18,7 +18,6 @@ public class Transporter : Production
     int maxSendAmount;
     public bool isToggleOn = false;
     public int sendAmount;
-    List<Dictionary<Item, int>> unitItemList = new List<Dictionary<Item, int>>();
     public int standbyUnitCount;
     List<TransportUnit> getItemUnit = new List<TransportUnit>();
 
@@ -43,7 +42,7 @@ public class Transporter : Production
 
         inventory.onItemChangedCallback += TransportableCheck;
         inventory.invenAllSlotUpdate += TransportableCheck;
-
+        TransportableCheck();
     }
 
     protected override void Update()
@@ -93,7 +92,7 @@ public class Transporter : Production
 
             if (IsServer)
             {
-                if (unitItemList.Count > 0)
+                if (getItemUnit.Count > 0)
                 {
                     transportTimer += Time.deltaTime;
                     if (transportTimer > transportInterval)
@@ -195,17 +194,20 @@ public class Transporter : Production
 
         Cell cell = map.GetCellDataFromPos(x, y);
 
-        while (cell.structure == null)
+        if (cell.structure == null)
         {
             yield return null;
+            StartCoroutine(SetInvoke(pos));
         }
-
-        GameObject findObj = cell.structure;
-        if (findObj != null && findObj.TryGetComponent(out Transporter takeTransporter))
+        else
         {
-            if (TryGetComponent(out MapClickEvent mapClick) && takeTransporter.TryGetComponent(out MapClickEvent othMapClick))
+            GameObject findObj = cell.structure;
+            if (findObj != null && findObj.TryGetComponent(out Transporter takeTransporter))
             {
-                mapClick.GameStartSetRenderer(othMapClick);
+                if (TryGetComponent(out MapClickEvent mapClick) && takeTransporter.TryGetComponent(out MapClickEvent othMapClick))
+                {
+                    mapClick.GameStartSetRenderer(othMapClick);
+                }
             }
         }
     }
@@ -281,7 +283,7 @@ public class Transporter : Production
     public void UnitSendOpen()
     {
         // 애니메이션 트리거로 사용
-        if (IsServer &&invItemCheckDic != null && invItemCheckDic.Count > 0)
+        if (IsServer && invItemCheckDic != null && invItemCheckDic.Count > 0)
         {
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
             unit.TryGetComponent(out NetworkObject netObj);
@@ -405,13 +407,13 @@ public class Transporter : Production
     }
 
     [ServerRpc]
-    void UnitItemListSyncServerRpc()
+    void GetItemUnitSyncServerRpc()
     {
-        UnitItemListSyncClientRpc(unitItemList.Count);
+        GetItemUnitSyncClientRpc(getItemUnit.Count);
     }
 
     [ClientRpc]
-    void UnitItemListSyncClientRpc(int listCount)
+    void GetItemUnitSyncClientRpc(int listCount)
     {
         standbyUnitCount = listCount;
     }
@@ -420,9 +422,8 @@ public class Transporter : Production
     {
         if (_itemDic != null && _itemDic.Count > 0)
         {
-            unitItemList.Add(new Dictionary<Item, int>(_itemDic));
-            UnitItemListSyncServerRpc();
             getItemUnit.Add(takeUnit);
+            GetItemUnitSyncServerRpc();
             ExStorageCheck();
             OpenAnimServerRpc("ItemGetOpen");
         }
@@ -434,18 +435,18 @@ public class Transporter : Production
 
     void ExStorageCheck()
     {
-        foreach (var exStorage in unitItemList[0].ToList()) // ToList()를 사용하여 복제
+        foreach (var exStorage in getItemUnit[0].itemDic.ToList()) // ToList()를 사용하여 복제
         {
             int containableAmount = inventory.SpaceCheck(exStorage.Key);
             if (exStorage.Value <= containableAmount)
             {
                 inventory.Add(exStorage.Key, exStorage.Value);
-                unitItemList[0].Remove(exStorage.Key);
+                getItemUnit[0].itemDic.Remove(exStorage.Key);
             }
             else if (containableAmount != 0)
             {
                 inventory.Add(exStorage.Key, containableAmount);
-                unitItemList[0][exStorage.Key] -= containableAmount; // 원래 변수 수정
+                getItemUnit[0].itemDic[exStorage.Key] -= containableAmount; // 원래 변수 수정
             }
             else
             {
@@ -453,12 +454,11 @@ public class Transporter : Production
             }
         }
 
-        if (unitItemList[0].Count == 0)
+        if (getItemUnit[0].itemDic.Count == 0)
         {
-            unitItemList.RemoveAt(0);
-            UnitItemListSyncServerRpc();
             getItemUnit[0].TakeItemEnd(true);
             getItemUnit.RemoveAt(0);
+            GetItemUnitSyncServerRpc();
         }
     }
 
@@ -479,7 +479,8 @@ public class Transporter : Production
     {
         isToggleOn = toggleOn;
         sendAmount = amount;
-        sInvenManager.TransporterResetUI();
+        if (sInvenManager != null)
+            sInvenManager.TransporterResetUI();
     }
 
     //public override void DestroyLineRenderer()
@@ -597,7 +598,10 @@ public class Transporter : Production
     {
         StructureSaveData data = base.SaveData();
 
-        if(takeBuild != null)
+        data.minBuyAmount = sendAmount;
+        data.isAuto = isToggleOn;
+
+        if (takeBuild != null)
         {
             data.connectedStrPos.Add(Vector3Extensions.FromVector3(takeBuild.transform.position));
         }

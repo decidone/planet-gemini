@@ -61,6 +61,9 @@ public class MapClickEvent : NetworkBehaviour
 
     public void GameStartSetRenderer(MapClickEvent othMapClickEvent)
     {
+        if (this == othMapClickEvent)
+            return;
+
         if (strType == "ldConnector")
         {
             for (int i = 0; i < lines.Count; i++)
@@ -75,13 +78,13 @@ public class MapClickEvent : NetworkBehaviour
                 }
             }
         }
-        else if (strType == "transporter")
-        {
-            if (transporter.takeBuild == othMapClickEvent.transporter)
-            {
-                return;
-            }
-        }
+        //else if (strType == "transporter")
+        //{
+        //    if (transporter.takeBuild == othMapClickEvent.transporter)
+        //    {
+        //        return;
+        //    }
+        //}
 
         startLine = new Vector3(transform.position.x, transform.position.y, -1);
         GameObject currentLine = Instantiate(lineObj, startLine, Quaternion.identity);
@@ -125,6 +128,9 @@ public class MapClickEvent : NetworkBehaviour
 
     public bool EndRenderer(MapClickEvent clickEvent)
     {
+        if (this == clickEvent)
+            return false;
+
         if (strType == "ldConnector")
         {
             for (int i = 0; i < lines.Count; i++)
@@ -269,7 +275,6 @@ public class MapClickEvent : NetworkBehaviour
             Disconnect();
         }
     }
-
 
     public void DestroyLineRenderer()
     {

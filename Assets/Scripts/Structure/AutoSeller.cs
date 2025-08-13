@@ -46,6 +46,7 @@ public class AutoSeller : Production
 
         inventory.onItemChangedCallback += TransportableCheck;
         inventory.invenAllSlotUpdate += TransportableCheck;
+        TransportableCheck();
     }
 
     protected override void Update()

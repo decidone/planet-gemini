@@ -1083,8 +1083,11 @@ public class MapGenerator : MonoBehaviour
                     if (dist < radius)
                     {
                         map.mapData[x][y].isCorrupted = true;
-
                         Cell cell = map.mapData[x][y];
+
+                        if (cell.biome == lake || cell.biome == cliff)
+                            continue;
+
                         if (cell.obj != null)
                             Destroy(cell.obj);
 

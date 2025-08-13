@@ -21,7 +21,6 @@ public class AutoBuyer : Production
 
     public int maxBuyAmount;    // 구매할 수 있는 최대 수량
     public int minBuyAmount;    // 아이템 보유 수량이 해당 변수 아래로 내려갈 때 (최대 수량 - 현재 수량)만큼 구매
-    List<Dictionary<Item, int>> unitItemList = new List<Dictionary<Item, int>>();
     List<TransportUnit> getItemUnit = new List<TransportUnit>();
 
     float transportTimer;
@@ -42,6 +41,7 @@ public class AutoBuyer : Production
         merchList = oreShopMerchListSO.MerchandiseSOList.Concat(manaStoneShopMerchListSO.MerchandiseSOList).ToList();
         inventory.onItemChangedCallback += TransportableCheck;
         inventory.invenAllSlotUpdate += TransportableCheck;
+        TransportableCheck();
         GameManager.instance.onFinanceChangedCallback += BuyableCheck;
     }
 
@@ -80,7 +80,7 @@ public class AutoBuyer : Production
 
             if (IsServer)
             {
-                if (unitItemList.Count > 0)
+                if (getItemUnit.Count > 0)
                 {
                     transportTimer += Time.deltaTime;
                     if (transportTimer > transportInterval)
@@ -441,27 +441,30 @@ public class AutoBuyer : Production
     {
         if (_itemDic != null && _itemDic.Count > 0)
         {
-            unitItemList.Add(new Dictionary<Item, int>(_itemDic));
             getItemUnit.Add(takeUnit);
             ExStorageCheck();
             OpenAnimServerRpc("ItemGetOpen");
+        }
+        else
+        {
+            takeUnit.TakeItemEnd(false);
         }
     }
 
     void ExStorageCheck()
     {
-        foreach (var exStorage in unitItemList[0].ToList()) // ToList()를 사용하여 복제
+        foreach (var exStorage in getItemUnit[0].itemDic.ToList()) // ToList()를 사용하여 복제
         {
             int containableAmount = inventory.SpaceCheck(exStorage.Key);
             if (exStorage.Value <= containableAmount)
             {
                 inventory.Add(exStorage.Key, exStorage.Value);
-                unitItemList[0].Remove(exStorage.Key);
+                getItemUnit[0].itemDic.Remove(exStorage.Key);
             }
             else if (containableAmount != 0)
             {
                 inventory.Add(exStorage.Key, containableAmount);
-                unitItemList[0][exStorage.Key] -= containableAmount; // 원래 변수 수정
+                getItemUnit[0].itemDic[exStorage.Key] -= containableAmount; // 원래 변수 수정
             }
             else
             {
@@ -469,9 +472,8 @@ public class AutoBuyer : Production
             }
         }
 
-        if (unitItemList[0].Count == 0)
+        if (getItemUnit[0].itemDic.Count == 0)
         {
-            unitItemList.RemoveAt(0);
             getItemUnit[0].TakeItemEnd(true);
             getItemUnit.RemoveAt(0);
         }

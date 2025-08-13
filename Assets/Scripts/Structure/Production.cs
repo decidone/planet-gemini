@@ -52,6 +52,8 @@ public abstract class Production : Structure
         {
             inventory.onItemChangedCallback += CheckSlotState;
             inventory.onItemChangedCallback += CheckInvenIsFull;
+            CheckSlotState(0);
+            CheckInvenIsFull(0);
         }
         isGetLine = false;
         isStorageBuilding = false;

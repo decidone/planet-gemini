@@ -20,6 +20,7 @@ public class Disintegrator : Production
         cooldown = 10f;
         effiCooldown = cooldown;
         inventory.onItemChangedCallback += IsInvenEmptyCheck;
+        IsInvenEmptyCheck(0);
     }
 
     public void IsInvenEmptyCheck(int slotindex)
