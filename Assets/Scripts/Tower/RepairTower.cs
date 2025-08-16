@@ -80,6 +80,7 @@ public class RepairTower : TowerAi
 
     void RepairStart()
     {
+        Debug.Log("RepairStart");
         int repairAmount = repairFullAmount;
 
         var sortedUnitTargets = BuildingList
@@ -96,7 +97,7 @@ public class RepairTower : TowerAi
             {
                 repairAmount--;
                 str.RepairFunc(damage);
-
+                Debug.Log("str name : " + str.name);
                 if (repairAmount == 0)
                 {
                     return;

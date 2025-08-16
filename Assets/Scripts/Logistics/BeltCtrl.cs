@@ -44,7 +44,7 @@ public class BeltCtrl : LogisticsCtrl
 
     protected override void Awake()
     {
-        GameManager gameManager = GameManager.instance;
+        gameManager = GameManager.instance;
         beltManager = BeltManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
@@ -94,6 +94,8 @@ public class BeltCtrl : LogisticsCtrl
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
         animsync = beltManager.AnimSync(level);
         anim = GetComponent<Animator>();
+        var info = animsync.GetCurrentAnimatorStateInfo(0);
+        anim.Play(info.fullPathHash, -1, info.normalizedTime);
         isOperate = true;
         StrBuilt();
         BeltModelSet();
@@ -105,12 +107,7 @@ public class BeltCtrl : LogisticsCtrl
 
         //if (!removeState)
         //{
-        //    anim.SetFloat("DirNum", dirNum);
-        //    anim.SetFloat("ModelNum", modelMotion);
-        //    anim.SetFloat("Level", level);
-
         //    anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-        //    ModelSet();
         //}
     }
 
@@ -147,9 +144,8 @@ public class BeltCtrl : LogisticsCtrl
                 anim.SetFloat("DirNum", dirNum);
                 anim.SetFloat("ModelNum", modelMotion);
                 anim.SetFloat("Level", level);
-                var info = animsync.GetCurrentAnimatorStateInfo(0);
-                anim.Play(info.fullPathHash, -1, info.normalizedTime);
-                //anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+                //var info = animsync.GetCurrentAnimatorStateInfo(0);
+                //anim.Play(info.fullPathHash, -1, info.normalizedTime);
             }
         }
         else
@@ -184,8 +180,8 @@ public class BeltCtrl : LogisticsCtrl
             anim.SetFloat("DirNum", dirNum);
             anim.SetFloat("ModelNum", modelMotion);
             anim.SetFloat("Level", level);
-            var info = animsync.GetCurrentAnimatorStateInfo(0);
-            anim.Play(info.fullPathHash, -1, info.normalizedTime);
+            //var info = animsync.GetCurrentAnimatorStateInfo(0);
+            //anim.Play(info.fullPathHash, -1, info.normalizedTime);
         }
     }
 
@@ -196,7 +192,9 @@ public class BeltCtrl : LogisticsCtrl
         anim.SetFloat("DirNum", dirNum);
         anim.SetFloat("ModelNum", modelMotion);
         anim.SetFloat("Level", level);
-        anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
+        animsync = beltManager.AnimSync(level);
+        var info = animsync.GetCurrentAnimatorStateInfo(0);
+        anim.Play(info.fullPathHash, -1, info.normalizedTime);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1018,8 +1016,6 @@ public class BeltCtrl : LogisticsCtrl
 
         return data;
     }
-
-    public override void ColliderTriggerOnOff(bool isOn) { }
 
     protected override void NonOperateStateSet(bool isOn)
     {

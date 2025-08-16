@@ -205,9 +205,15 @@ public class Structure : NetworkBehaviour
     protected int[,] oneDirections = new int[,] { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } }; // 1x1, 2x2 건물의 주변 좌표
     protected int[,] twoDirections = new int[,] { { -1, 1 }, { 0, 1 }, { 1, 0 }, { 1, -1 }, { 0, -2 }, { -1, -2 }, { -2, -1 }, { -2, 0 } };
 
+    [SerializeField]
+    protected FactoryOverlay overlay;
+    [SerializeField]
+    bool overlayUse;
+    protected GameManager gameManager;
+
     protected virtual void Awake()
     {
-        GameManager gameManager = GameManager.instance;
+        gameManager = GameManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
@@ -230,6 +236,7 @@ public class Structure : NetworkBehaviour
         cooldown = structureData.Cooldown;
         connectors = new List<EnergyGroupConnector>();
         conn = null;
+
         efficiency = 0;
         effiCooldown = 0;
         energyUse = structureData.EnergyUse[level];
@@ -286,6 +293,14 @@ public class Structure : NetworkBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        if (overlayUse)
+        {
+            GameManager.OnFactoryOverlayToggle += FactoryOverlay;
+        }
+    }
+
     void OnDisable()
     {
         if (!IsServer && GameManager.instance && soundManager)
@@ -294,6 +309,9 @@ public class Structure : NetworkBehaviour
             soundManager.PlayUISFX("BuildingRemove");
             GameManager.instance.BuildAndSciUiReset();
         }
+
+        if (overlayUse)
+            GameManager.OnFactoryOverlayToggle -= FactoryOverlay;
     }
 
     public virtual void CheckSlotState(int slotindex)
@@ -825,7 +843,7 @@ public class Structure : NetworkBehaviour
         soundManager.PlaySFX(gameObject, "structureSFX", "BuildingSound");
     }
 
-    IEnumerator Move(GameObject obj)
+    protected IEnumerator Move(GameObject obj)
     {
         yield return new WaitForSeconds(0.1f);
         obj.transform.position = transform.position;
@@ -2143,4 +2161,6 @@ public class Structure : NetworkBehaviour
     }
 
     protected virtual void NonOperateStateSet(bool isOn) { }
+
+    protected virtual void FactoryOverlay() { }
 }

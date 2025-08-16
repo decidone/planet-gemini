@@ -10,7 +10,6 @@ public class EnergyRepeater : Structure
     SpriteRenderer view;
     public bool isImprovedRepeater;
     bool isBuildDone;
-    GameManager gameManager;
     PreBuilding preBuilding;
     Structure preBuildingStr;
     bool preBuildingCheck;

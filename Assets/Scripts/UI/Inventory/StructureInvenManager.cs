@@ -68,7 +68,7 @@ public class StructureInvenManager : InventoryManager
         {
             if (focusedSlot.item != null)
             {
-                inventory.StrToPlayer(focusedSlot.slotNum);
+                inventory.StrToPlayer(focusedSlot.slotNum, gameManager.isPlayerInHostMap);
                 soundManager.PlayUISFX("ItemSelect");
             }
         }

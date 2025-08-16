@@ -98,6 +98,7 @@ public class FurnaceUpgrade : Production
             {
                 recipe = _recipe;
                 output = itemDic[recipe.items[recipe.items.Count - 1]];
+                FactoryOverlay();
             }
         }
     }

@@ -60,9 +60,9 @@ public class TwBulletDataManager : MonoBehaviour
         new BulletData("IronBullet", 45, 2, 4, false),
         new BulletData("SteelBullet", 50, 2, 3, false),
         new BulletData("ExplosiveBullet", 40, 1, 2, true),
-        new BulletData("ManablastBullet", 50, 1, 1, false)
+        new BulletData("ManablastBullet", 50, 1, 1, true)
         };
-        // 이름, 데미지, 공격속도, 범위 순으로 넣어주면됨
+        // 이름, 데미지, 공격속도, 범위, 폭발기능 순으로 넣어주면됨
         foreach (BulletData data in bulletArray)
         {
             SaveBulletData(data);

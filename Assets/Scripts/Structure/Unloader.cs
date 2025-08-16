@@ -217,4 +217,17 @@ public class Unloader : LogisticsCtrl
     {
         selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
     }
+
+    protected override void FactoryOverlay()
+    {
+        if (!gameManager.overlayOn)
+        {
+            overlay.UIReset();
+        }
+        else
+        {
+            if (selectItem)
+                overlay.UISet(selectItem);
+        }
+    }
 }

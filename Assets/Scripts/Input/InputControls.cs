@@ -71,6 +71,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=1)"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouseButtonDoubleClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""83241700-9a35-4ddf-8f00-d43e0e20ee36"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""MultiTap(tapDelay=0.25)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -126,6 +135,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""RightMouseButtonUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1c97458-fc54-4c68-8b45-0a8d64ed1542"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""LeftMouseButtonDoubleClick"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -991,6 +1011,15 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FactoryOverlay"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa401fbc-b4d3-4bec-b8e3-fa4a1248d085"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1134,6 +1163,17 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Enter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b7cb8b8a-cc92-4560-bcd8-4a77cb956119"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FactoryOverlay"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1846,6 +1886,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_MainCamera_LeftMouseButtonUp = m_MainCamera.FindAction("LeftMouseButtonUp", throwIfNotFound: true);
         m_MainCamera_RightMouseButtonDown = m_MainCamera.FindAction("RightMouseButtonDown", throwIfNotFound: true);
         m_MainCamera_RightMouseButtonUp = m_MainCamera.FindAction("RightMouseButtonUp", throwIfNotFound: true);
+        m_MainCamera_LeftMouseButtonDoubleClick = m_MainCamera.FindAction("LeftMouseButtonDoubleClick", throwIfNotFound: true);
         // MapCamera
         m_MapCamera = asset.FindActionMap("MapCamera", throwIfNotFound: true);
         m_MapCamera_Zoom = m_MapCamera.FindAction("Zoom", throwIfNotFound: true);
@@ -1901,6 +1942,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         m_HotKey_TimeUIUp = m_HotKey.FindAction("TimeUIUp", throwIfNotFound: true);
         m_HotKey_TimeUIDown = m_HotKey.FindAction("TimeUIDown", throwIfNotFound: true);
         m_HotKey_Enter = m_HotKey.FindAction("Enter", throwIfNotFound: true);
+        m_HotKey_FactoryOverlay = m_HotKey.FindAction("FactoryOverlay", throwIfNotFound: true);
         // Hold
         m_Hold = asset.FindActionMap("Hold", throwIfNotFound: true);
         m_Hold_Ctrl = m_Hold.FindAction("Ctrl", throwIfNotFound: true);
@@ -1990,6 +2032,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_MainCamera_LeftMouseButtonUp;
     private readonly InputAction m_MainCamera_RightMouseButtonDown;
     private readonly InputAction m_MainCamera_RightMouseButtonUp;
+    private readonly InputAction m_MainCamera_LeftMouseButtonDoubleClick;
     public struct MainCameraActions
     {
         private @InputControls m_Wrapper;
@@ -1999,6 +2042,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @LeftMouseButtonUp => m_Wrapper.m_MainCamera_LeftMouseButtonUp;
         public InputAction @RightMouseButtonDown => m_Wrapper.m_MainCamera_RightMouseButtonDown;
         public InputAction @RightMouseButtonUp => m_Wrapper.m_MainCamera_RightMouseButtonUp;
+        public InputAction @LeftMouseButtonDoubleClick => m_Wrapper.m_MainCamera_LeftMouseButtonDoubleClick;
         public InputActionMap Get() { return m_Wrapper.m_MainCamera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2023,6 +2067,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @RightMouseButtonUp.started -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonUp;
                 @RightMouseButtonUp.performed -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonUp;
                 @RightMouseButtonUp.canceled -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnRightMouseButtonUp;
+                @LeftMouseButtonDoubleClick.started -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonDoubleClick;
+                @LeftMouseButtonDoubleClick.performed -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonDoubleClick;
+                @LeftMouseButtonDoubleClick.canceled -= m_Wrapper.m_MainCameraActionsCallbackInterface.OnLeftMouseButtonDoubleClick;
             }
             m_Wrapper.m_MainCameraActionsCallbackInterface = instance;
             if (instance != null)
@@ -2042,6 +2089,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @RightMouseButtonUp.started += instance.OnRightMouseButtonUp;
                 @RightMouseButtonUp.performed += instance.OnRightMouseButtonUp;
                 @RightMouseButtonUp.canceled += instance.OnRightMouseButtonUp;
+                @LeftMouseButtonDoubleClick.started += instance.OnLeftMouseButtonDoubleClick;
+                @LeftMouseButtonDoubleClick.performed += instance.OnLeftMouseButtonDoubleClick;
+                @LeftMouseButtonDoubleClick.canceled += instance.OnLeftMouseButtonDoubleClick;
             }
         }
     }
@@ -2437,6 +2487,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_HotKey_TimeUIUp;
     private readonly InputAction m_HotKey_TimeUIDown;
     private readonly InputAction m_HotKey_Enter;
+    private readonly InputAction m_HotKey_FactoryOverlay;
     public struct HotKeyActions
     {
         private @InputControls m_Wrapper;
@@ -2454,6 +2505,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         public InputAction @TimeUIUp => m_Wrapper.m_HotKey_TimeUIUp;
         public InputAction @TimeUIDown => m_Wrapper.m_HotKey_TimeUIDown;
         public InputAction @Enter => m_Wrapper.m_HotKey_Enter;
+        public InputAction @FactoryOverlay => m_Wrapper.m_HotKey_FactoryOverlay;
         public InputActionMap Get() { return m_Wrapper.m_HotKey; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -2502,6 +2554,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Enter.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnter;
                 @Enter.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnter;
                 @Enter.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnEnter;
+                @FactoryOverlay.started -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnFactoryOverlay;
+                @FactoryOverlay.performed -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnFactoryOverlay;
+                @FactoryOverlay.canceled -= m_Wrapper.m_HotKeyActionsCallbackInterface.OnFactoryOverlay;
             }
             m_Wrapper.m_HotKeyActionsCallbackInterface = instance;
             if (instance != null)
@@ -2545,6 +2600,9 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
                 @Enter.started += instance.OnEnter;
                 @Enter.performed += instance.OnEnter;
                 @Enter.canceled += instance.OnEnter;
+                @FactoryOverlay.started += instance.OnFactoryOverlay;
+                @FactoryOverlay.performed += instance.OnFactoryOverlay;
+                @FactoryOverlay.canceled += instance.OnFactoryOverlay;
             }
         }
     }
@@ -2801,6 +2859,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnLeftMouseButtonUp(InputAction.CallbackContext context);
         void OnRightMouseButtonDown(InputAction.CallbackContext context);
         void OnRightMouseButtonUp(InputAction.CallbackContext context);
+        void OnLeftMouseButtonDoubleClick(InputAction.CallbackContext context);
     }
     public interface IMapCameraActions
     {
@@ -2863,6 +2922,7 @@ public partial class @InputControls : IInputActionCollection2, IDisposable
         void OnTimeUIUp(InputAction.CallbackContext context);
         void OnTimeUIDown(InputAction.CallbackContext context);
         void OnEnter(InputAction.CallbackContext context);
+        void OnFactoryOverlay(InputAction.CallbackContext context);
     }
     public interface IHoldActions
     {

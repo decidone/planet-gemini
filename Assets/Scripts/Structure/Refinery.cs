@@ -44,7 +44,7 @@ public class Refinery : FluidFactoryCtrl
         #endregion
 
         #region FluidFactoryAwake
-        GameManager gameManager = GameManager.instance;
+        gameManager = GameManager.instance;
         myFluidScript = GetComponent<FluidFactoryCtrl>();
         playerInven = gameManager.inventory;
         mainSource = null;
@@ -305,6 +305,7 @@ public class Refinery : FluidFactoryCtrl
     public override void SetOutput(Recipe recipe)
     {
         output = itemDic[recipe.items[recipe.items.Count - 1]];
+        FactoryOverlay();
     }
 
     public override void GetUIFunc()

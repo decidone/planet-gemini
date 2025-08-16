@@ -9,7 +9,6 @@ public class Overclock : Production
     protected float searchInterval = 1f; // 딜레이 간격 설정
     [SerializeField]
     SpriteRenderer view;
-    GameManager gameManager;
     PreBuilding preBuilding;
     bool preBuildingCheck;
     bool isOperated;

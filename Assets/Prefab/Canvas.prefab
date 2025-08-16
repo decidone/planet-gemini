@@ -38496,6 +38496,7 @@ MonoBehaviour:
   itemInfoWindow: {fileID: 0}
   recipeBtn: {fileID: 142728371381880708}
   structureInfoUI: {fileID: 142728372679589277}
+  prod: {fileID: 0}
   isOpened: 0
 --- !u!114 &8669813805128897138
 MonoBehaviour:

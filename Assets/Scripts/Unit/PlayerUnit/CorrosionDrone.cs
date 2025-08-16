@@ -19,9 +19,9 @@ public class CorrosionDrone : UnitAi
             {
                 foreach (GameObject obj in targetList)
                 {
-                    if (!obj && obj.CompareTag("Monster"))
+                    if (obj)
                     {
-                        if (obj.TryGetComponent(out MonsterAi mon))
+                        if (obj.CompareTag("Monster") && obj.TryGetComponent(out MonsterAi mon))
                         {
                             mon.RefreshDebuffServerRpc(1, debuffPer);    // 서버, 클라이언트 상관없이 디버프 띄워주는데 데미지 계산은 서버 디버프 유무로만 계산
                         }
