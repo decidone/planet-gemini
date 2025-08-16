@@ -264,6 +264,7 @@ public class Miner : Production
             cooldown = _efficiency;
             effiCooldown = cooldown;
             minerCellCount = _minerCellCount;
+            FactoryOverlay();
         }
     }
 

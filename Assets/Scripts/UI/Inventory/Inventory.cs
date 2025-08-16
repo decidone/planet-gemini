@@ -928,21 +928,20 @@ public class Inventory : NetworkBehaviour
         playerInven.SlotSubServerRpc(pInvenSlotNum, containable);
     }
 
-    public void StrToPlayer(int slotNum)
+    public void StrToPlayer(int slotNum, bool isHostMap)
     {
-        StrToPlayerServerRpc(slotNum);
+        StrToPlayerServerRpc(slotNum, isHostMap);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void StrToPlayerServerRpc(int slotNum)
+    public void StrToPlayerServerRpc(int slotNum, bool isHostMap)
     {
         if (!items.ContainsKey(slotNum))
             return;
 
-        Structure str = GetComponent<Structure>();
         Inventory playerInven;
 
-        if (str.isInHostMap)
+        if (isHostMap)
             playerInven = GameManager.instance.hostMapInven;
         else
             playerInven = GameManager.instance.clientMapInven;

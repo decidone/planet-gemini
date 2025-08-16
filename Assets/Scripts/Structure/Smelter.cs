@@ -148,6 +148,7 @@ public class Smelter : Production
     public override void SetOutput(Recipe recipe)
     {
         output = itemDic[recipe.items[recipe.items.Count - 1]];
+        FactoryOverlay();
     }
 
     public override void GetUIFunc()

@@ -126,4 +126,17 @@ public class ItemSpawner : LogisticsCtrl
 
         return data;
     }
+
+    protected override void FactoryOverlay()
+    {
+        if (!gameManager.overlayOn)
+        {
+            overlay.UIReset();
+        }
+        else
+        {
+            if (itemData)
+                overlay.UISet(itemData);
+        }
+    }
 }

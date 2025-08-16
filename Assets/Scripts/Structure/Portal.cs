@@ -6,7 +6,6 @@ using UnityEngine.Tilemaps;
 public class Portal : Production
 {
     private Tilemap tilemap;
-    GameManager gameManager;
     [SerializeField]
     GameObject[] portalTile;
 

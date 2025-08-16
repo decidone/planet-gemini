@@ -5,7 +5,6 @@ using Unity.Netcode;
 
 public class SteamGenerator : FluidFactoryCtrl
 {
-    GameManager gameManager;
     public Slot displaySlot;
     int preSaveFluidNum;
 

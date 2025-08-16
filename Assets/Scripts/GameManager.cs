@@ -190,6 +190,9 @@ public class GameManager : NetworkBehaviour
 
     SoundManager soundManager;
 
+    public static event Action OnFactoryOverlayToggle;
+    public bool overlayOn = false;
+
     #region Singleton
     public static GameManager instance;
 
@@ -256,6 +259,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.EnergyCheck.performed += EnergyCheck;
         inputManager.controls.HotKey.GameStop.performed += GameStopSet;
         inputManager.controls.HotKey.UIClose.performed += BasicUIsClose;
+        inputManager.controls.HotKey.FactoryOverlay.performed += FactoryOverlay;
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
 
@@ -272,6 +276,7 @@ public class GameManager : NetworkBehaviour
         inputManager.controls.HotKey.EnergyCheck.performed -= EnergyCheck;
         inputManager.controls.HotKey.GameStop.performed -= GameStopSet;
         inputManager.controls.HotKey.UIClose.performed -= BasicUIsClose;
+        inputManager.controls.HotKey.FactoryOverlay.performed -= FactoryOverlay;
         if (NetworkManager.Singleton != null)
         {
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
@@ -1942,5 +1947,11 @@ public class GameManager : NetworkBehaviour
                 yield break; // 코루틴 종료
             }
         }
+    }
+
+    void FactoryOverlay(InputAction.CallbackContext ctx)
+    {
+        overlayOn = !overlayOn;
+        OnFactoryOverlayToggle?.Invoke();
     }
 }

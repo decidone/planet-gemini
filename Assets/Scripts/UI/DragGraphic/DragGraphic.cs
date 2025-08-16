@@ -66,6 +66,7 @@ public class DragGraphic : MonoBehaviour
     {
         inputManager = InputManager.instance;
         inputManager.controls.MainCamera.LeftMouseButtonDown.performed += LeftMouseButtonDown;
+        inputManager.controls.MainCamera.LeftMouseButtonDoubleClick.performed += LeftMouseButtonDoubleClick;
         inputManager.controls.MainCamera.LeftMouseButtonUp.performed += LeftMouseButtonUp;
         inputManager.controls.MainCamera.RightMouseButtonDown.performed += RightMouseButtonDown;
         inputManager.controls.MainCamera.RightMouseButtonUp.performed += RightMouseButtonUp;
@@ -74,6 +75,7 @@ public class DragGraphic : MonoBehaviour
     void OnDisable()
     {
         inputManager.controls.MainCamera.LeftMouseButtonDown.performed -= LeftMouseButtonDown;
+        inputManager.controls.MainCamera.LeftMouseButtonDoubleClick.performed -= LeftMouseButtonDoubleClick;
         inputManager.controls.MainCamera.LeftMouseButtonUp.performed -= LeftMouseButtonUp;
         inputManager.controls.MainCamera.RightMouseButtonDown.performed -= RightMouseButtonDown;
         inputManager.controls.MainCamera.RightMouseButtonUp.performed -= RightMouseButtonUp;
@@ -146,6 +148,12 @@ public class DragGraphic : MonoBehaviour
                 }
             }
         }
+    }
+    
+    void LeftMouseButtonDoubleClick(InputAction.CallbackContext ctx)
+    {
+        endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        unitDrag.LeftMouseDoubleClick(startPosition, endPosition);
     }
 
     void LeftMouseButtonUp(InputAction.CallbackContext ctx)

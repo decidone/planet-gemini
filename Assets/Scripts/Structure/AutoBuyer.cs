@@ -271,6 +271,7 @@ public class AutoBuyer : Production
     public override void SetOutput(Recipe recipe)
     {
         output = itemDic[recipe.items[0]];
+        FactoryOverlay();
     }
 
     protected override void OnClientConnectedCallback(ulong clientId)

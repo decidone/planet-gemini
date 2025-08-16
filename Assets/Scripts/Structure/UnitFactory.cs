@@ -296,4 +296,17 @@ public class UnitFactory : Production
     {
         setModel.sprite = strImg[isOn ? 1 : 0];
     }
+
+    protected override void FactoryOverlay()
+    {
+        if (!gameManager.overlayOn)
+        {
+            overlay.UIReset();
+        }
+        else
+        {
+            if (itemDic[recipe.items[3]])
+                overlay.UISet(itemDic[recipe.items[3]]);
+        }
+    }
 }

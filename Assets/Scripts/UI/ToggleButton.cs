@@ -12,12 +12,12 @@ public class ToggleButton : MonoBehaviour
     public Sprite[] toggleImg = null;
     public GameObject toggleButtonObj = null;
     public RectTransform toggleSwObj = null;
-    Button toggleButton = null;
+    public Button toggleButton = null;
     Image toggleButtonSprite = null;
     
     void Awake()
     {
-        toggleButton = toggleButtonObj.GetComponent<Button>();
+        //toggleButton = toggleButtonObj.GetComponent<Button>();
         toggleButtonSprite = toggleButtonObj.GetComponent<Image>();
         if (toggleButton != null)
             toggleButton.onClick.AddListener(ToggleButtonClick);

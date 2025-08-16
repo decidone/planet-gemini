@@ -10,7 +10,6 @@ public class EnergyGenerator : Production
     [SerializeField]
     SpriteRenderer view;
     bool isBuildDone;
-    GameManager gameManager;
     PreBuilding preBuilding;
     Structure preBuildingStr;
     bool preBuildingCheck;

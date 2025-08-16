@@ -118,7 +118,9 @@ public class UnitDrag : DragFunc
             {
                 RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
                 if (hit)
+                {
                     SelectedObjects(hit);
+                }
                 else
                 {
                     selectedObjects = new GameObject[0];
@@ -152,6 +154,24 @@ public class UnitDrag : DragFunc
             UnitMovePos.instance.AnimStart(endPos);
         }
         MouseSkin.instance.ResetCursor();
+        ReSetBool();
+    }
+
+    public void LeftMouseDoubleClick(Vector2 startPos, Vector2 endPos)
+    {
+        if (!unitCtrlKeyPressed)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
+            if (hit)
+                SelectedSameUnit(hit);
+            else
+            {
+                selectedObjects = new GameObject[0];
+                isSelectingUnits = false;
+                removeUnit?.Invoke();
+            }
+        }
+
         ReSetBool();
     }
 
@@ -204,6 +224,68 @@ public class UnitDrag : DragFunc
         addUnit?.Invoke(gameObject);
         BasicUIBtns.instance.SwapFunc(false);
         isSelectingUnits = true;
+    }
+
+    private void SelectedSameUnit(RaycastHit2D ray)
+    {
+        if (!ray.collider.GetComponentInParent<UnitAi>() || ray.collider.GetComponentInParent<TankCtrl>())
+            return;
+
+        GameObject gameObject = ray.collider.GetComponentInParent<UnitAi>().gameObject;
+        removeUnit?.Invoke();
+
+        int unitIndex = gameObject.GetComponent<UnitAi>().unitIndex;
+
+        UnitAi[] unitAis = new UnitAi[0];
+        List<GameObject> selectedObjectsList = new List<GameObject>();
+        if (unitIndex == 0)
+        {
+            unitAis = FindObjectsOfType<BounceRobot>();
+        }
+        else if(unitIndex == 1)
+        {
+            unitAis = FindObjectsOfType<SentryCopterCtrl>();
+        }
+        else if (unitIndex == 2)
+        {
+            unitAis = FindObjectsOfType<SpinRobot>();
+        }
+        else if (unitIndex == 3)
+        {
+            unitAis = FindObjectsOfType<CorrosionDrone>();
+        }
+        else if (unitIndex == 4)
+        {
+            unitAis = FindObjectsOfType<RepairerDrone>();
+        }
+        else if (unitIndex == 5)
+        {
+            unitAis = FindObjectsOfType<TankCtrl>();
+        }
+
+        foreach (var obj in unitAis)
+        {
+            Vector3 viewportPos = Camera.main.WorldToViewportPoint(obj.transform.position);
+            if (viewportPos.z > 0 && viewportPos.x >= 0 && viewportPos.x <= 1 &&
+                viewportPos.y >= 0 && viewportPos.y <= 1)
+            {
+                selectedObjectsList.Add(obj.gameObject);
+            }
+        }
+
+        selectedObjects = selectedObjectsList.ToArray();
+
+        removeUnit?.Invoke();
+
+        if (selectedObjects.Length > 0)
+        {
+            foreach (GameObject obj in selectedObjects)
+            {
+                addUnit?.Invoke(obj);
+            }
+            BasicUIBtns.instance.SwapFunc(false);
+            isSelectingUnits = true;
+        }
     }
 
     void SetTargetPosition(bool isAttack, Vector2 targetPos)

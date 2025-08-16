@@ -744,4 +744,17 @@ public abstract class Production : Structure
 
         return data;
     }
+
+    protected override void FactoryOverlay()
+    {
+        if (!gameManager.overlayOn)
+        {
+            overlay.UIReset();
+        }
+        else
+        {
+            if (output)
+                overlay.UISet(output);
+        }
+    }
 }

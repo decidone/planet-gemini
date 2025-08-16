@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "Press(behavior=1)",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "LeftMouseButtonDoubleClick",
+                    "type": "Button",
+                    "id": "83241700-9a35-4ddf-8f00-d43e0e20ee36",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "MultiTap(tapDelay=0.25)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -104,6 +113,17 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "RightMouseButtonUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a1c97458-fc54-4c68-8b45-0a8d64ed1542",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "LeftMouseButtonDoubleClick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -969,6 +989,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "FactoryOverlay",
+                    "type": "Button",
+                    "id": "fa401fbc-b4d3-4bec-b8e3-fa4a1248d085",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1112,6 +1141,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7cb8b8a-cc92-4560-bcd8-4a77cb956119",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FactoryOverlay",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

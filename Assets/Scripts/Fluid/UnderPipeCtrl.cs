@@ -9,7 +9,6 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     public GameObject otherPipe = null;
 
     public GameObject connectUnderPipe = null;
-    GameManager gameManager;
     PreBuilding preBuilding;
     bool preBuildingCheck;
 

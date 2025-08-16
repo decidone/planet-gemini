@@ -139,6 +139,7 @@ public class Constructor : Production
     public override void SetOutput(Recipe recipe)
     {
         output = itemDic[recipe.items[recipe.items.Count - 1]];
+        FactoryOverlay();
     }
 
     public override void GetUIFunc()
@@ -157,5 +158,18 @@ public class Constructor : Production
     protected override void NonOperateStateSet(bool isOn)
     {
         setModel.sprite = strImg[isOn ? 1 : 0];
+    }
+
+    protected override void FactoryOverlay()
+    {
+        if (!gameManager.overlayOn)
+        {
+            overlay.UIReset();
+        }
+        else
+        {
+            if (output)
+                overlay.UISet(output);
+        }
     }
 }

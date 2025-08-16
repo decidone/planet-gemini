@@ -27,7 +27,7 @@ public class FluidFactoryCtrl : Production
 
     protected override void Awake()
     {
-        GameManager gameManager = GameManager.instance;
+        gameManager = GameManager.instance;
         myFluidScript = GetComponent<FluidFactoryCtrl>();
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;

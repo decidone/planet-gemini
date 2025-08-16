@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Unity.Netcode;
+using Pathfinding;
 
 // UTF-8 설정
 public class SendUnderBeltCtrl : LogisticsCtrl
@@ -195,6 +196,33 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         nearObj[0] = obj;
         if (!outObj.Contains(obj))
             outObj.Add(obj);
+    }
+
+    [ClientRpc]
+    public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
+    {
+        level = _level;
+        dirNum = _beltDir;
+        height = objHeight;
+        width = objWidth;
+        buildingIndex = index;
+        isInHostMap = isHostMap;
+        settingEndCheck = true;
+        SetBuild();
+        ColliderTriggerOnOff(true);
+        gameObject.AddComponent<DynamicGridObstacle>();
+        myVision.SetActive(true);
+        DataSet();
+
+        if (energyUse)
+        {
+            GameObject TriggerObj = new GameObject("Trigger");
+            CircleCollider2D coll = TriggerObj.AddComponent<CircleCollider2D>();
+            coll.isTrigger = true;
+            TriggerObj.transform.position = Vector3.zero;
+            StartCoroutine(Move(TriggerObj));
+        }
+        soundManager.PlaySFX(gameObject, "structureSFX", "BuildingSound");
     }
 
     protected override void SendItem(int itemIndex)

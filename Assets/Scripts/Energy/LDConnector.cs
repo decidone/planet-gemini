@@ -10,7 +10,6 @@ public class LDConnector : Structure
     SpriteRenderer view;
     [HideInInspector]
     public bool isBuildDone;
-    GameManager gameManager;
     PreBuilding preBuilding;
     Structure preBuildingStr;
     bool preBuildingCheck;
