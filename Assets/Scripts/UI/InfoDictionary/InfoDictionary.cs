@@ -251,7 +251,7 @@ public class InfoDictionary : MonoBehaviour
             {
                 InfoDictionaryItem item = obj.GetComponent<InfoDictionaryItem>();
                 if (!item.itemName.Contains(keyword, StringComparison.OrdinalIgnoreCase)
-                    || (item.infoDictionarySO.type != -1 && item.infoDictionarySO.type != sortType))
+                    || (sortType != -1 && item.infoDictionarySO.type != sortType))
                 {
                     obj.SetActive(false);
                 }
