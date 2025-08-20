@@ -18,7 +18,7 @@ public class UnitDrag : DragFunc
     public delegate void RemoveUnitDelegate();
     public static event RemoveUnitDelegate removeUnit;
 
-    public delegate void TargetDelegate(Vector3 targetPos, bool isAttack);
+    public delegate void TargetDelegate(Vector3 targetPos, bool isAttack, bool playerUnitPortalIn);
     public static event TargetDelegate targetSet;    
     
     public delegate void PatrolDelegate(Vector3 patrolPos);
@@ -35,20 +35,21 @@ public class UnitDrag : DragFunc
 
     private Vector2 targetPosition;
 
-    public bool isSelectingUnits = false;
     bool unitCtrlKeyPressed = false;
     bool isPKeyPressed = false;
     bool isAKeyPressed = false;
+    bool isUnitRemove = false;
 
     InputManager inputManager;
+    UnitRemovePopup unitRemovePopup;
+    List<UnitAi> removeUnitList = new List<UnitAi>();
 
-    //protected override void Start()
-    //{
-    //    interactLayer = LayerMask.NameToLayer("Interact");
-    //    unitLayer = LayerMask.NameToLayer("Unit");
-    //    monsterLayer = LayerMask.NameToLayer("Monster");
-    //    spawnerLayer = LayerMask.NameToLayer("Spawner");
-    //}
+    protected override void Start()
+    {
+        base.Start();
+        unitRemovePopup = UnitRemovePopup.instance;
+    }
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -110,7 +111,71 @@ public class UnitDrag : DragFunc
 
     public override void LeftMouseUp(Vector2 startPos, Vector2 endPos)
     {
-        if (!unitCtrlKeyPressed)
+        if (isUnitRemove)
+        {
+            removeUnitList.Clear();
+
+            if (startPos != endPos)
+            {
+                Collider2D[] colliders = Physics2D.OverlapAreaAll(startPos, endPos, 1 << interactLayer);
+                List<UnitAi> selectedObjectsList = new List<UnitAi>();
+
+                foreach (Collider2D collider in colliders)
+                {
+                    if (collider.GetComponentInParent<UnitAi>() == null || collider.GetComponentInParent<TankCtrl>())
+                        continue;
+                    if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
+                        continue;
+
+                    selectedObjectsList.Add(collider.GetComponentInParent<UnitAi>());
+                }
+
+                removeUnit?.Invoke();
+
+                if (selectedObjectsList.Count > 0)
+                {
+                    foreach (UnitAi obj in selectedObjectsList)
+                    {
+                        removeUnitList.Add(obj);
+                    }
+                }
+            }
+            else
+            {
+                RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
+                if (hit)
+                {
+                    if (!hit.collider.GetComponentInParent<UnitAi>() || hit.collider.GetComponentInParent<TankCtrl>())
+                        return;
+                    UnitAi unitAi = hit.collider.GetComponentInParent<UnitAi>();
+                    removeUnit?.Invoke();
+                    removeUnitList.Add(unitAi);
+                }
+                else
+                {
+                    selectedObjects = new GameObject[0];
+                    removeUnit?.Invoke();
+                }
+            }
+
+            if (removeUnitList.Count > 0)
+            {
+                Dictionary<string, int> removeUnitIndexCount = new Dictionary<string, int>();
+                int sellPrice = 0;
+                for (int i = 0; i < removeUnitList.Count; i++)
+                {
+                    string unitIndex = removeUnitList[i].unitCommonData.name;
+                    if (!removeUnitIndexCount.ContainsKey(unitIndex))
+                    {
+                        removeUnitIndexCount.Add(unitIndex, 0);
+                    }
+                    removeUnitIndexCount[unitIndex]++;
+                    sellPrice += removeUnitList[i].unitCommonData.sellPrice;
+                }
+                unitRemovePopup.OpenPopup(removeUnitIndexCount, sellPrice);
+            }
+        }        
+        else if (!unitCtrlKeyPressed)
         {
             if (startPos != endPos)
                 GroupSelectedObjects(startPos, endPos);
@@ -124,7 +189,6 @@ public class UnitDrag : DragFunc
                 else
                 {
                     selectedObjects = new GameObject[0];
-                    isSelectingUnits = false;
                     removeUnit?.Invoke();
                 }
             }
@@ -153,12 +217,14 @@ public class UnitDrag : DragFunc
 
             UnitMovePos.instance.AnimStart(endPos);
         }
-        MouseSkin.instance.ResetCursor();
         ReSetBool();
     }
 
     public void LeftMouseDoubleClick(Vector2 startPos, Vector2 endPos)
     {
+        if (isUnitRemove)
+            return;
+
         if (!unitCtrlKeyPressed)
         {
             RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
@@ -167,11 +233,10 @@ public class UnitDrag : DragFunc
             else
             {
                 selectedObjects = new GameObject[0];
-                isSelectingUnits = false;
                 removeUnit?.Invoke();
+                ReSetBool();
             }
         }
-
         ReSetBool();
     }
 
@@ -179,7 +244,6 @@ public class UnitDrag : DragFunc
     {
         SetTargetPosition(false, endPos);
         UnitMovePos.instance.AnimStart(endPos);
-        MouseSkin.instance.ResetCursor();
         ReSetBool();
     }
 
@@ -208,7 +272,6 @@ public class UnitDrag : DragFunc
                 addUnit?.Invoke(obj);
             }
             BasicUIBtns.instance.SwapFunc(false);
-            isSelectingUnits = true;
         }
     }
 
@@ -223,7 +286,6 @@ public class UnitDrag : DragFunc
 
         addUnit?.Invoke(gameObject);
         BasicUIBtns.instance.SwapFunc(false);
-        isSelectingUnits = true;
     }
 
     private void SelectedSameUnit(RaycastHit2D ray)
@@ -284,14 +346,32 @@ public class UnitDrag : DragFunc
                 addUnit?.Invoke(obj);
             }
             BasicUIBtns.instance.SwapFunc(false);
-            isSelectingUnits = true;
         }
     }
 
     void SetTargetPosition(bool isAttack, Vector2 targetPos)
     {
         groupCenterSet?.Invoke();
-        targetSet?.Invoke(targetPos, isAttack);
+        bool isPlayerUnitPortalIn = false;
+        if (!isAttack)
+        {
+            int x = Mathf.FloorToInt(targetPos.x);
+            int y = Mathf.FloorToInt(targetPos.y);
+
+            Map map;
+            if (GameManager.instance.isPlayerInHostMap)
+                map = GameManager.instance.hostMap;
+            else
+                map = GameManager.instance.clientMap;
+
+            Cell cell = map.GetCellDataFromPos(x, y);
+            if (cell.structure && cell.structure.GetComponent<PortalUnitIn>())
+            {
+                isPlayerUnitPortalIn = true;
+            }
+        }
+
+        targetSet?.Invoke(targetPos, isAttack, isPlayerUnitPortalIn);
     }
 
     void ReSetBool()
@@ -299,5 +379,36 @@ public class UnitDrag : DragFunc
         unitCtrlKeyPressed = false;
         isPKeyPressed = false;
         isAKeyPressed = false;
+        if(!isUnitRemove)
+            MouseSkin.instance.ResetCursor();
+    }
+
+    public void UnitRemove()
+    {
+        isUnitRemove = true;
+        MouseSkin.instance.DragCursorSet(true);
+    }
+
+    public void UnitRemoveCancel()
+    {
+        isUnitRemove = false;
+        MouseSkin.instance.ResetCursor();
+        removeUnitList.Clear();
+    }
+
+    public void UnitRemoveFunc()
+    {
+        List<UnitAi> rmUnit = new List<UnitAi>(removeUnitList);
+        int sellPrice = 0;
+        for (int i = 0; i < rmUnit.Count; i++)
+        {
+            if (removeUnitList[i])
+            {
+                removeUnitList[i].UnitRemove();
+                sellPrice += rmUnit[i].unitCommonData.sellPrice;
+            }
+        }
+
+        GameManager.instance.AddScrapServerRpc(sellPrice);
     }
 }

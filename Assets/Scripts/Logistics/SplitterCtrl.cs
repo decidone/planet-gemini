@@ -462,7 +462,8 @@ public class SplitterCtrl : LogisticsCtrl
                 sprite.sortingOrder = 2;
                 spawnItem.item = sendItem;
                 spawnItem.amount = 1;
-                spawnItem.transform.position = transform.position;
+                Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
+                spawnItem.transform.position = spawnPos;
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl;
             }

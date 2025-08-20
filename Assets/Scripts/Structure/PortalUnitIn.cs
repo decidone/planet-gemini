@@ -292,7 +292,7 @@ public class PortalUnitIn : PortalObj
         if (!IsServer)
             return;
 
-        if (collision.collider.TryGetComponent(out UnitAi unitAi) && !sendUnitList.Contains(collision.gameObject) && sendUnitList.Count < 18)
+        if (collision.collider.TryGetComponent(out UnitAi unitAi) && unitAi.playerUnitPortalIn && !sendUnitList.Contains(collision.gameObject) && sendUnitList.Count < 18)
         {
             var objID = NetworkObjManager.instance.FindNetObjID(collision.gameObject);
             UnitListAddServerRpc(objID);

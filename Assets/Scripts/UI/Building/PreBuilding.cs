@@ -674,7 +674,8 @@ public class PreBuilding : NetworkBehaviour
 
     public void CancelBuild(InputAction.CallbackContext ctx)
     {
-        CancelBuild();
+        if(isBuildingOn)
+            CancelBuild();
     }
 
     public void CancelBuild()

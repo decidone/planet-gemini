@@ -486,6 +486,11 @@ public class UnitCommonAi : NetworkBehaviour
     {
         unitIndex = unitSaveData.unitIndex;
         hp = unitSaveData.hp;
+        
+        if (unitSaveData.pos.y > MapGenerator.instance.height)
+            isInHostMap = false;
+        else
+            isInHostMap = true;
 
         if (hp < maxHp) 
         {
@@ -500,7 +505,7 @@ public class UnitCommonAi : NetworkBehaviour
 
         data.hp = hp;
         data.pos = Vector3Extensions.FromVector3(transform.position);
-
+        data.unitIndex = unitIndex;
         return data;
     }
 }

@@ -49,6 +49,9 @@ public class UnitAi : UnitCommonAi
 
     protected AggroAmount aggroAmount;
 
+    [HideInInspector]
+    public bool playerUnitPortalIn;
+
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
@@ -59,6 +62,7 @@ public class UnitAi : UnitCommonAi
         selfHealingAmount = 5f;
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
+        unitIndex = GeminiNetworkManager.instance.GetUnitSOIndex(gameObject, 0, true);
     }
 
     protected override void Update()
@@ -187,6 +191,12 @@ public class UnitAi : UnitCommonAi
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void PortalUnitInServerRpc(bool portalIn)
+    {
+        playerUnitPortalIn = portalIn;
+    }
+
     void NomalTraceCheck(AIState ai)
     {
         if (aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack)
@@ -287,19 +297,37 @@ public class UnitAi : UnitCommonAi
         {
             tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
 
-            if (Vector3.Distance(tr.position, targetWaypoint) <= moveRadi / 2)
+            if(playerUnitPortalIn)
             {
-                currentWaypointIndex++;
-
-                if (currentWaypointIndex >= movePath.Count)
+                if (Vector3.Distance(tr.position, targetWaypoint) <= 0.5f)
                 {
-                    AnimSetFloat(lastMoveDirection, false);
-                    isAttackMove = true;
-                    IdleFunc();
-                    return;
+                    currentWaypointIndex++;
+
+                    if (currentWaypointIndex >= movePath.Count)
+                    {
+                        AnimSetFloat(lastMoveDirection, false);
+                        isAttackMove = true;
+                        IdleFunc();
+                        return;
+                    }
                 }
             }
+            else
+            {
+                if (Vector3.Distance(tr.position, targetWaypoint) <= moveRadi / 2)
+                {
+                    currentWaypointIndex++;
 
+                    if (currentWaypointIndex >= movePath.Count)
+                    {
+                        AnimSetFloat(lastMoveDirection, false);
+                        isAttackMove = true;
+                        IdleFunc();
+                        return;
+                    }
+                }
+            }
+  
             animator.SetBool("isMove", true);
 
             if (direction.magnitude > 0.5f)
@@ -319,7 +347,7 @@ public class UnitAi : UnitCommonAi
         isHold = false;
         isAttackMove = true;
         isTargetSet = false;
-
+        playerUnitPortalIn = false;
         targetPosition = dir;
         patrolPos = tr.position;
 
@@ -403,6 +431,7 @@ public class UnitAi : UnitCommonAi
         isAttackMove = true;
         isTargetSet = false;
         isPatrolMove = true;
+        playerUnitPortalIn = false;
         AnimSetFloat(direction, false);
     }
 
@@ -577,6 +606,11 @@ public class UnitAi : UnitCommonAi
     protected override void DieFuncClientRpc()
     {
         base.DieFuncClientRpc();
+        UnitRemove();
+    }
+
+    public void UnitRemove()
+    {
         onEffectUpgradeCheck -= IncreasedStructureCheck;
 
         if (InfoUI.instance.unit == this)
@@ -670,6 +704,7 @@ public class UnitAi : UnitCommonAi
 
     void stateLoad(UnitSaveData unitSaveData)
     {
+        AStarSet(isInHostMap);
         Vector3 targetPos = Vector3Extensions.ToVector3(unitSaveData.moveTragetPos);
         Vector3 moveStartPos = Vector3Extensions.ToVector3(unitSaveData.moveStartPos);
 
@@ -735,7 +770,6 @@ public class UnitAi : UnitCommonAi
     {
         UnitSaveData data = base.SaveData();
 
-        data.unitIndex = GeminiNetworkManager.instance.GetMonsterSOIndex(this.gameObject, 0, true);
         data.aiState = (int)aIState;
         data.lastState = (int)unitLastState;
         data.holdState = isHold;

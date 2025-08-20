@@ -941,6 +941,9 @@ public class GameManager : NetworkBehaviour
             case "InfoDictionary":
                 InfoDictionary.instance.CloseUI();
                 break;
+            case "UnitRemovePopup":
+                UnitRemovePopup.instance.ClosePopup();
+                break;
             default:
                 if (openedUI[order].gameObject.TryGetComponent(out Shop shop))
                     shop.CloseUI();
@@ -960,6 +963,9 @@ public class GameManager : NetworkBehaviour
     {
         switch (openedUI[order].gameObject.name)
         {
+            case "UnitRemovePopup":
+                UnitRemovePopup.instance.OkBtnFunc();
+                break;
             default:
                 if (openedUI[order].gameObject.TryGetComponent(out PopUpCtrl popup))
                     popup.OkBtnFunc();

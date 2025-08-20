@@ -38,7 +38,7 @@ public class UnitGroupCtrl : MonoBehaviour
 
     private void ClearUnitList()
     {
-        foreach(GameObject obj in unitList)
+        foreach (GameObject obj in unitList)
         {
             obj.GetComponent<UnitAi>().UnitSelImg(false);
         }
@@ -47,7 +47,7 @@ public class UnitGroupCtrl : MonoBehaviour
 
     private void AddUnitList(GameObject obj)
     {
-        if(obj.GetComponentInParent<UnitAi>())
+        if (obj.GetComponentInParent<UnitAi>())
         {
             unitList.Add(obj);
             obj.gameObject.GetComponent<UnitAi>().UnitSelImg(true);
@@ -55,7 +55,7 @@ public class UnitGroupCtrl : MonoBehaviour
         CalculateGroupCenter();
     }
 
-    private void TargetSetPos(Vector3 targetPos, bool isAttack)
+    private void TargetSetPos(Vector3 targetPos, bool isAttack, bool playerUnitPortalIn)
     {
         float totalDiameter = 0.7f * unitList.Count;
 
@@ -66,7 +66,9 @@ public class UnitGroupCtrl : MonoBehaviour
 
         foreach (GameObject obj in unitList)
         {
-            obj.GetComponent<UnitAi>().MovePosSetServerRpc(targetPos, minDiameter, isAttack);
+            UnitAi unti = obj.GetComponent<UnitAi>();
+            unti.PortalUnitInServerRpc(playerUnitPortalIn);
+            unti.MovePosSetServerRpc(targetPos, minDiameter, isAttack);
         }
     }
 
