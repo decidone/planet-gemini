@@ -230,7 +230,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -220168426, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -393,6 +393,8 @@ MonoBehaviour:
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
+  overlay: {fileID: 0}
+  overlayUse: 0
 --- !u!114 &977231970767049882
 MonoBehaviour:
   m_ObjectHideFlags: 0

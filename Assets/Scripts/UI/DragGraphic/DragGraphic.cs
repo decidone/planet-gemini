@@ -29,6 +29,9 @@ public class DragGraphic : MonoBehaviour
     bool upgradeBtnOn;
     bool removeBtnOn;
 
+    bool unitRemoveOn;
+    Disintegrator disintegrator;
+
     #region Singleton
     public static DragGraphic instance;
 
@@ -132,7 +135,11 @@ public class DragGraphic : MonoBehaviour
             }
             else
             {
-                if ((inputManager.ctrl && !inputManager.shift) || upgradeBtnOn)
+                if (unitRemoveOn)
+                {
+                    ColorSet(Color.yellow);
+                }
+                else if ((inputManager.ctrl && !inputManager.shift) || upgradeBtnOn)
                 {
                     isCtrlDrag = true;
                     ColorSet(Color.blue);
@@ -188,7 +195,12 @@ public class DragGraphic : MonoBehaviour
 
         endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (unitDrag.isSelectingUnits)
+        if (unitRemoveOn)
+        {
+            if(!UnitRemovePopup.instance.isOpen)
+                disintegrator.UnitRemoveCancel();
+        }
+        else if (unitDrag.selectedObjects.Length > 0)
             unitDrag.RightMouseUp(endPosition, endPosition);
         else
         {
@@ -236,6 +248,7 @@ public class DragGraphic : MonoBehaviour
                 }
             }
         }
+
         DisableFunc();
     }
 
@@ -294,5 +307,19 @@ public class DragGraphic : MonoBehaviour
             removeBtnOn = true;
             upgradeBtnOn = false;
         }
+    }
+
+    public void UnitRemoveSet(Disintegrator dis)
+    {
+        disintegrator = dis;
+        unitRemoveOn = true;
+        unitDrag.UnitRemove();
+    }
+
+    public void UnitRemoveCancel()
+    {
+        disintegrator = null;
+        unitRemoveOn = false;
+        unitDrag.UnitRemoveCancel();
     }
 }

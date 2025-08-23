@@ -180,20 +180,20 @@ public class PortalItemIn : PortalObj
         base.PortalObjConnectServerRpc();
         if (portalItemOut != null)
         {
-            ulong objID = NetworkObjManager.instance.FindNetObjID(portalItemOut.gameObject);
-            ConnectObjClientRpc(objID);
+            ConnectObjClientRpc(portalItemOut.NetworkObject);
         }
     }
 
     [ServerRpc]
-    public override void ConnectObjServerRpc(ulong objId)
+    public override void ConnectObjServerRpc(NetworkObjectReference networkObjectReference)
     {
-        ConnectObjClientRpc(objId);
+        ConnectObjClientRpc(networkObjectReference);
     }
 
     [ClientRpc]
-    public override void ConnectObjClientRpc(ulong objId)
+    public override void ConnectObjClientRpc(NetworkObjectReference networkObjectReference)
     {
-        portalItemOut = NetworkObjManager.instance.FindNetworkObj(objId).GetComponent<PortalItemOut>();
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        portalItemOut = networkObject.GetComponent<PortalItemOut>();
     }
 }

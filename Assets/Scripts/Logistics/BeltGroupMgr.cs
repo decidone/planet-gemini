@@ -54,8 +54,7 @@ public class BeltGroupMgr : NetworkBehaviour
                 nextObj = NextObjCheck();
                 if (!nextCheck)
                 {
-                    var objID = NetworkObjManager.instance.FindNetObjID(nextObj);
-                    NearObjSetClientRpc(objID, true);
+                    NearObjSetClientRpc(nextObj.GetComponent<NetworkObject>(), true);
                 }
             }
             if (preCheck)
@@ -63,8 +62,7 @@ public class BeltGroupMgr : NetworkBehaviour
                 preObj = PreObjCheck();
                 if (!preCheck)
                 {
-                    var objID = NetworkObjManager.instance.FindNetObjID(preObj);
-                    NearObjSetClientRpc(objID, false);
+                    NearObjSetClientRpc(preObj.GetComponent<NetworkObject>(), false);
                 }
             }
         }
@@ -91,6 +89,8 @@ public class BeltGroupMgr : NetworkBehaviour
         // For this example, we always want to invoke the base
         base.OnNetworkDespawn();
 
+        NetworkObjManager.instance.NetObjRemove(gameObject);
+
         // Whether server or not, unregister this.
         NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
     }
@@ -100,29 +100,27 @@ public class BeltGroupMgr : NetworkBehaviour
     {
         for(int i = 0; i < beltList.Count; i ++)
         {            
-            ulong mainId = beltList[i].GetComponent<NetworkObject>().NetworkObjectId;
+            NetworkObjectReference mainId = beltList[i].GetComponent<NetworkObject>();
 
             if (i >= 1)
             {
-                ulong preId = beltList[i - 1].GetComponent<NetworkObject>().NetworkObjectId;
+                NetworkObjectReference preId = beltList[i - 1].GetComponent<NetworkObject>();
                 PreBeltSetClientRpc(mainId, preId);
             }
             if (i < beltList.Count - 1)
             {
-                ulong nextId = beltList[i + 1].GetComponent<NetworkObject>().NetworkObjectId;
+                NetworkObjectReference nextId = beltList[i + 1].GetComponent<NetworkObject>();
                 NextBeltSetClientRpc(mainId, nextId);
             }
         }
 
         if(nextObj)
         {
-            var objID = NetworkObjManager.instance.FindNetObjID(nextObj);
-            NearObjSetClientRpc(objID, true);
+            NearObjSetClientRpc(nextObj.GetComponent<NetworkObject>(), true);
         }
         else if (preObj)
         {
-            var objID = NetworkObjManager.instance.FindNetObjID(preObj);
-            NearObjSetClientRpc(objID, false);
+            NearObjSetClientRpc(preObj.GetComponent<NetworkObject>(), false);
         }
     }
 
@@ -145,16 +143,16 @@ public class BeltGroupMgr : NetworkBehaviour
         Reconfirm();
         for (int i = 0; i < beltList.Count; i++)
         {
-            ulong mainId = beltList[i].GetComponent<NetworkObject>().NetworkObjectId;
+            NetworkObjectReference mainId = beltList[i].GetComponent<NetworkObject>();
 
             if (i >= 1)
             {
-                ulong preId = beltList[i - 1].GetComponent<NetworkObject>().NetworkObjectId;
+                NetworkObjectReference preId = beltList[i - 1].GetComponent<NetworkObject>();
                 PreBeltSetClientRpc(mainId, preId);
             }
             if (i < beltList.Count - 1)
             {
-                ulong nextId = beltList[i + 1].GetComponent<NetworkObject>().NetworkObjectId;
+                NetworkObjectReference nextId = beltList[i + 1].GetComponent<NetworkObject>();
                 NextBeltSetClientRpc(mainId, nextId);
             }
         }
@@ -501,8 +499,8 @@ public class BeltGroupMgr : NetworkBehaviour
         {
             beltManager.BeltCombine(this, otherBelt.beltGroupMgr);
             otherBelt.beltGroupMgr.ClientBeltSyncServerRpc();
-            ulong thisId = belt.GetComponent<NetworkObject>().NetworkObjectId;
-            ulong othId = otherBelt.GetComponent<NetworkObject>().NetworkObjectId;
+            NetworkObjectReference thisId = belt.GetComponent<NetworkObject>();
+            NetworkObjectReference othId = otherBelt.GetComponent<NetworkObject>();
             NextBeltSetClientRpc(thisId, othId);
             PreBeltSetClientRpc(othId, thisId);
 
@@ -522,8 +520,8 @@ public class BeltGroupMgr : NetworkBehaviour
         //BeltManager beltManager = this.GetComponentInParent<BeltManager>();
 
         beltManager.BeltCombine(this, beltGroupMgr);
-        ulong thisId = belt.GetComponent<NetworkObject>().NetworkObjectId;
-        ulong othId = otherBelt.GetComponent<NetworkObject>().NetworkObjectId;
+        NetworkObjectReference thisId = belt.GetComponent<NetworkObject>();
+        NetworkObjectReference othId = otherBelt.GetComponent<NetworkObject>();
         PreBeltSetClientRpc(thisId, othId);
         NextBeltSetClientRpc(othId, thisId);
         otherBelt.dirNum = belt.dirNum;
@@ -534,55 +532,29 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void NextBeltSetClientRpc(ulong thisBeltID, ulong othBeltID, ClientRpcParams rpcParams = default)
+    public void NextBeltSetClientRpc(NetworkObjectReference thisBeltID, NetworkObjectReference othBeltID, ClientRpcParams rpcParams = default)
     {
         var BeltCtrlArr = GetComponentsInChildren<BeltCtrl>();
-        BeltCtrl thisBelt = null;
-        BeltCtrl othBelt = null;
-        foreach (var beltCtrl in BeltCtrlArr)
-        {
-            if (beltCtrl.GetComponent<NetworkObject>().NetworkObjectId == thisBeltID)
-            {
-                thisBelt = beltCtrl;
-            }
-            if (beltCtrl.GetComponent<NetworkObject>().NetworkObjectId == othBeltID)
-            {
-                othBelt = beltCtrl;
-            }
-        }
-
+        BeltCtrl thisBelt = thisBeltID.TryGet(out NetworkObject thisBeltObj) ? thisBeltObj.GetComponent<BeltCtrl>() : null;
+        BeltCtrl othBelt = othBeltID.TryGet(out NetworkObject othBeltObj) ? othBeltObj.GetComponent<BeltCtrl>() : null;
         thisBelt.nextBelt = othBelt;
     }
 
     [ClientRpc]
-    public void PreBeltSetClientRpc(ulong thisBeltID, ulong othBeltID, ClientRpcParams rpcParams = default)
+    public void PreBeltSetClientRpc(NetworkObjectReference thisBeltID, NetworkObjectReference othBeltID, ClientRpcParams rpcParams = default)
     {
         var BeltCtrlArr = GetComponentsInChildren<BeltCtrl>();
-        BeltCtrl thisBelt = null;
-        BeltCtrl othBelt = null;
-
-        foreach (var beltCtrl in BeltCtrlArr)
-        {
-            if (beltCtrl.GetComponent<NetworkObject>().NetworkObjectId == thisBeltID)
-            {
-                thisBelt = beltCtrl;
-            }
-            if (beltCtrl.GetComponent<NetworkObject>().NetworkObjectId == othBeltID)
-            {
-                othBelt = beltCtrl;
-            }
-        }
-
+        BeltCtrl thisBelt = thisBeltID.TryGet(out NetworkObject thisBeltObj) ? thisBeltObj.GetComponent<BeltCtrl>() : null;
+        BeltCtrl othBelt = othBeltID.TryGet(out NetworkObject othBeltObj) ? othBeltObj.GetComponent<BeltCtrl>() : null;
         thisBelt.preBelt = othBelt;
     }
 
     [ClientRpc]
-    public void NearObjSetClientRpc(ulong ObjID, bool isNextObj, ClientRpcParams rpcParams = default)
+    public void NearObjSetClientRpc(NetworkObjectReference networkObjectReference, bool isNextObj, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
-
-        NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(ObjID);
+        networkObjectReference.TryGet(out NetworkObject obj);
 
         if (!obj)
             return;
@@ -595,21 +567,6 @@ public class BeltGroupMgr : NetworkBehaviour
         {
             preObj = obj.gameObject;
         }
-    }
-
-    public ulong BeltFindId(BeltCtrl belt)
-    {
-        BeltCtrl FindBelt = null;
-
-        foreach (BeltCtrl beltCtrl in beltList)
-        {
-            if(beltCtrl == belt)
-            {
-                FindBelt = belt;
-            }
-        }
-
-        return FindBelt.GetComponent<NetworkObject>().NetworkObjectId;
     }
 
     public BeltGroupSaveData SaveData()

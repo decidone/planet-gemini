@@ -644,13 +644,14 @@ public class PreBuilding : NetworkBehaviour
         beltGroupSet.TryGetComponent(out NetworkObject netObj);
         if (!netObj.IsSpawned) beltGroupSet.GetComponent<NetworkObject>().Spawn(true);
         beltGroupSet.transform.parent = beltMgr.transform;
-        BeltGroupSpawnClientRpc(NetworkObjManager.instance.FindNetObjID(beltGroupSet));
+        BeltGroupSpawnClientRpc(beltGroupSet.GetComponent<NetworkObject>());
     }
 
     [ClientRpc]
-    protected void BeltGroupSpawnClientRpc(ulong Id)
+    protected void BeltGroupSpawnClientRpc(NetworkObjectReference networkObjectReference)
     {
-        beltGroupSet = NetworkObjManager.instance.FindNetworkObj(Id).gameObject;
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        beltGroupSet = networkObject.gameObject;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -674,7 +675,8 @@ public class PreBuilding : NetworkBehaviour
 
     public void CancelBuild(InputAction.CallbackContext ctx)
     {
-        CancelBuild();
+        if(isBuildingOn)
+            CancelBuild();
     }
 
     public void CancelBuild()

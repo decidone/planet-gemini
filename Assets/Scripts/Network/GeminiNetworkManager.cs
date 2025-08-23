@@ -85,7 +85,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         return buildingListSO.buildingSOList[itemSOIndex];
     }
 
-    public int GetMonsterSOIndex(GameObject obj, int monsterType, bool isUserUnit)
+    public int GetUnitSOIndex(GameObject obj, int monsterType, bool isUserUnit)
     {
         int index = -1;
 
@@ -133,7 +133,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         return index;
     }
 
-    public GameObject GetMonsterSOFromIndex(int itemSOIndex, int monsterType, bool isUserUnit)
+    public GameObject GetUnitSOFromIndex(int itemSOIndex, int monsterType, bool isUserUnit)
     {
         GameObject obj = null;
 

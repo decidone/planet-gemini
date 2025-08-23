@@ -77,6 +77,7 @@ public class MonsterAi : UnitCommonAi
         normalTraceInterval = Random.Range(10, 20);
         _t = transform;
         _effects = Effects.instance;
+        unitIndex = GeminiNetworkManager.instance.GetUnitSOIndex(gameObject, monsterType, false);
     }
 
     protected override void FixedUpdate()
@@ -1417,7 +1418,6 @@ public class MonsterAi : UnitCommonAi
     {
         UnitSaveData data = base.SaveData();
 
-        data.unitIndex = GeminiNetworkManager.instance.GetMonsterSOIndex(this.gameObject, monsterType, false);
         data.monsterType = monsterType;
         data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.waveState = waveState;

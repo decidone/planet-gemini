@@ -8,10 +8,11 @@ public class Disintegrator : Production
 {
     [SerializeField] MerchandiseListSO merchandiseList;
     Button confirmBtn;
+    Button unitRemoveBtn;
     Toggle autoToggle;
     bool isInvenEmpty;
     public Scrap scrap;
-
+    bool removeBtnToggle = false;
     protected override void Start()
     {
         base.Start();
@@ -164,6 +165,9 @@ public class Disintegrator : Production
         if (confirmBtn == null)
             confirmBtn = ui.transform.Find("ConfirmBtn").GetComponent<Button>();
         confirmBtn.onClick.AddListener(ConfirmBtnClicked);
+        if (unitRemoveBtn == null)
+            unitRemoveBtn = ui.transform.Find("UnitRemoveBtn").GetComponent<Button>();
+        unitRemoveBtn.onClick.AddListener(UnitRemoveBtnFunc);
         if (autoToggle == null)
             autoToggle = ui.transform.Find("AutoToggle").GetComponent<Toggle>();
         autoToggle.isOn = isAuto;
@@ -181,9 +185,33 @@ public class Disintegrator : Production
         inventory.onItemChangedCallback -= CheckTotalAmount;
         inventory.invenAllSlotUpdate -= CheckTotalAmount;
         confirmBtn.onClick.RemoveAllListeners();
+        unitRemoveBtn.onClick.RemoveAllListeners();
         autoToggle.onValueChanged.RemoveAllListeners();
         autoToggle.isOn = false;
         scrap = null;
+        UnitRemoveCancel();
+    }
+
+    void UnitRemoveBtnFunc()
+    {
+        if (!removeBtnToggle)
+        {
+            DragGraphic.instance.UnitRemoveSet(this);
+            unitRemoveBtn.image.color = new Color(1f, 0.5f, 0.5f, 1f); // Change color to indicate active state
+        }
+        else
+        {
+            DragGraphic.instance.UnitRemoveCancel();
+            unitRemoveBtn.image.color = Color.white; // Reset color to default
+        }
+        removeBtnToggle = !removeBtnToggle;
+    }
+
+    public void UnitRemoveCancel()
+    {
+        removeBtnToggle = false;
+        unitRemoveBtn.image.color = Color.white;
+        DragGraphic.instance.UnitRemoveCancel();
     }
 
     public override bool CanTakeItem(Item item)

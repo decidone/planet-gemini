@@ -7,13 +7,13 @@ public class PortalObj : Production
     public Portal myPortal;
 
     [ServerRpc]
-    public virtual void ConnectObjServerRpc(ulong objId) { }
+    public virtual void ConnectObjServerRpc(NetworkObjectReference networkObjectReference) { }
     [ClientRpc]
-    public virtual void ConnectObjClientRpc(ulong objId) { }
+    public virtual void ConnectObjClientRpc(NetworkObjectReference networkObjectReference) { }
     [ServerRpc]
-    public virtual void ConnectMyObjServerRpc(ulong objId) { }
+    public virtual void ConnectMyObjServerRpc(NetworkObjectReference networkObjectReference) { }
     [ClientRpc]
-    public virtual void ConnectMyObjClientRpc(ulong objId) { }
+    public virtual void ConnectMyObjClientRpc(NetworkObjectReference networkObjectReference) { }
 
     protected override void OnClientConnectedCallback(ulong clientId)
     {

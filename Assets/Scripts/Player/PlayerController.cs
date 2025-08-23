@@ -64,6 +64,7 @@ public class PlayerController : NetworkBehaviour
     bool attackMotion;
     [SerializeField]
     float stopTime;
+    [SerializeField]
     TankCtrl nearTank;
     public TankCtrl onTankData;
     public float visionRadius;
@@ -262,9 +263,10 @@ public class PlayerController : NetworkBehaviour
         if (interactable)
         {
             interactable.DespawnIcon();
-            if (nearTank != null)
+            if (nearTank == collision.GetComponent<TankCtrl>())
             {
-                TankResetServerRpc();
+                if(NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient)
+                    TankResetServerRpc();
             }
         }
 
@@ -532,7 +534,7 @@ public class PlayerController : NetworkBehaviour
         if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal"))
             || circleColl.IsTouchingLayers(LayerMask.GetMask("LocalPortal")))
         {
-            TeleportServerRpc(pos);
+            TeleportServerRpc(pos, gameManager.isPlayerInHostMap);
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
             return true;
@@ -551,7 +553,7 @@ public class PlayerController : NetworkBehaviour
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.Teleport();
-            TeleportServerRpc(pos);
+            TeleportServerRpc(pos, gameManager.isPlayerInHostMap);
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
             SoundManager.instance.PlaySFX(gameObject, "structureSFX", "PortalSound");
@@ -573,7 +575,7 @@ public class PlayerController : NetworkBehaviour
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();
             Vector3 pos = GameManager.instance.TeleportMarket();
-            TeleportServerRpc(pos);
+            TeleportServerRpc(pos, gameManager.isPlayerInHostMap);
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
             onTeleportedCallback?.Invoke(1);
@@ -585,24 +587,27 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc (RequireOwnership = false)]
-    public void TeleportServerRpc(Vector3 pos)
+    public void TeleportServerRpc(Vector3 pos, bool isInHostMap)
     {
-        StartCoroutine(Teleport(pos));
+        StartCoroutine(Teleport(pos, isInHostMap));
     }
 
     [ClientRpc]
-    public void TeleportClientRpc(Vector3 pos)
+    public void TeleportClientRpc(Vector3 pos, bool isInHostMap)
     {
         if (IsOwner)
             this.transform.position = pos;
+
+        if(tankOn)
+            onTankData.isInHostMap = isInHostMap;
     }
 
-    IEnumerator Teleport(Vector3 pos)
+    IEnumerator Teleport(Vector3 pos, bool isInHostMap)
     {
         isTeleporting.Value = true;
 
         yield return new WaitForSeconds(0.3f);
-        TeleportClientRpc(pos);
+        TeleportClientRpc(pos, isInHostMap);
 
         yield return new WaitForSeconds(0.5f);
         isTeleporting.Value = false;

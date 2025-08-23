@@ -38,10 +38,10 @@ public class LobbiesListManager : MonoBehaviour
 
     public void CloseUI()
     {
-        Debug.Log("CloseUI");
         lobbiesList.SetActive(false);
         MainManager.instance.ClosedUISet();
-        soundManager.PlayUISFX("ButtonClick");
+        if(soundManager)
+            soundManager.PlayUISFX("ButtonClick");
     }
 
     public void DisplayLobby(Lobby lobby)

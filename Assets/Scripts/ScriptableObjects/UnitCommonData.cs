@@ -49,6 +49,10 @@ public class UnitCommonData : ScriptableObject
     private float upgradeDefense;
     public float UpgradeDefense { get { return upgradeDefense; } }
 
+    [SerializeField]
+    public int sellPrice;
+    public int SellPrice { get { return sellPrice; } }
+
     //몬스터 전용
     [SerializeField]
     private float patrolRad;//패트롤 범위

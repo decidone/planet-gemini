@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Newtonsoft.Json.Bson;
 
 // UTF-8 설정
 public class BeltManager : NetworkBehaviour
@@ -51,11 +52,10 @@ public class BeltManager : NetworkBehaviour
         if (secGroupMgr.nextObj != null)
         {
             fstGroupMgr.nextObj = secGroupMgr.nextObj;
-            ulong objID = NetworkObjManager.instance.FindNetObjID(secGroupMgr.nextObj);
-            fstGroupMgr.NearObjSetClientRpc(objID, true);
+            fstGroupMgr.NearObjSetClientRpc(secGroupMgr.nextObj.GetComponent<NetworkObject>(), true);
         }
 
-        NetworkObjManager.instance.NetObjRemove(secGroupMgr.gameObject);
+        //BeltGroupRemoveServerRpc(secGroupMgr.NetworkObject);
         NetworkObject destroyObj = secGroupMgr.GetComponent<NetworkObject>();
         if (destroyObj != null && destroyObj.IsSpawned)
         {
@@ -69,7 +69,7 @@ public class BeltManager : NetworkBehaviour
         if (beltGroup.beltList.Count <= 1)
         {
             beltGroup.beltList[0].transform.parent = null;
-            NetworkObjManager.instance.NetObjRemove(beltGroup.gameObject);
+            //BeltGroupRemoveServerRpc(beltGroup.NetworkObject);
             NetworkObject destroyObj = beltGroup.GetComponent<NetworkObject>();
             if (destroyObj != null && destroyObj.IsSpawned)
             {
@@ -115,6 +115,19 @@ public class BeltManager : NetworkBehaviour
         }
         return true;
     }
+
+    //[ServerRpc(RequireOwnership = false)]
+    //void BeltGroupRemoveServerRpc(NetworkObjectReference networkObjectReference)
+    //{
+    //    BeltGroupRemoveClientRpc(networkObjectReference);
+    //}
+
+    //[ClientRpc]
+    //void BeltGroupRemoveClientRpc(NetworkObjectReference networkObjectReference)
+    //{
+    //    networkObjectReference.TryGet(out NetworkObject networkObject);
+    //    NetworkObjManager.instance.NetObjRemove(networkObjectReference);
+    //}
 
     private void UpdateBeltGroup(BeltGroupMgr beltGroup, List<BeltCtrl> beltList)
     {

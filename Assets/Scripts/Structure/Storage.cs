@@ -33,6 +33,17 @@ public class Storage : Production
         if (IsServer)
         {
             CheckPos();
+            for (int i = 0; i < nearObj.Length; i++)
+            {
+                if (nearObj[i] == null && sizeOneByOne)
+                {
+                    CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                }
+                else if (nearObj[i] == null && !sizeOneByOne)
+                {
+                    CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+                }
+            }
             setModel.sprite = modelNum[level];
         }
         else
@@ -47,6 +58,17 @@ public class Storage : Production
         yield return new WaitForEndOfFrame();
 
         CheckPos();
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] == null && sizeOneByOne)
+            {
+                CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
+            else if (nearObj[i] == null && !sizeOneByOne)
+            {
+                CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
+            }
+        }
         setModel.sprite = modelNum[level];
     }
 

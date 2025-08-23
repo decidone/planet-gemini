@@ -488,6 +488,7 @@ public class Structure : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
+        NetworkObjManager.instance.NetObjRemove(gameObject);
 
         if (IsServer && !GetComponent<Portal>())
         {
@@ -495,9 +496,9 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public ulong ObjFindId()
+    public NetworkObjectReference ObjFindId()
     {
-        return GetComponent<NetworkObject>().NetworkObjectId;
+        return GetComponent<NetworkObject>();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -510,20 +511,20 @@ public class Structure : NetworkBehaviour
             if (nearObj[i] == null)
                 continue;
 
-            ulong objID = nearObj[i].GetComponent<Structure>().ObjFindId();
-            NearObjSyncClientRpc(objID, i);
+            NetworkObjectReference networkObjectReference = nearObj[i].GetComponent<Structure>().ObjFindId();
+            NearObjSyncClientRpc(networkObjectReference, i);
         }
 
         for (int i = 0; i < outObj.Count; i++)
         {
-            ulong objID = outObj[i].GetComponent<Structure>().ObjFindId();
-            InOutObjSyncClientRpc(objID, false);
+            NetworkObjectReference networkObjectReference = outObj[i].GetComponent<Structure>().ObjFindId();
+            InOutObjSyncClientRpc(networkObjectReference, false);
         }
 
         for (int i = 0; i < inObj.Count; i++)
         {
-            ulong objID = inObj[i].GetComponent<Structure>().ObjFindId();
-            InOutObjSyncClientRpc(objID, true);
+            NetworkObjectReference networkObjectReference = inObj[i].GetComponent<Structure>().ObjFindId();
+            InOutObjSyncClientRpc(networkObjectReference, true);
         }
         MapDataSaveClientRpc(transform.position);
         ConnectCheckClientRpc(true);
@@ -580,24 +581,23 @@ public class Structure : NetworkBehaviour
     }
 
     [ClientRpc]
-    void NearObjSyncClientRpc(ulong ObjID, int index, ClientRpcParams rpcParams = default)
+    void NearObjSyncClientRpc(NetworkObjectReference networkObjectReference, int index, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
 
         CheckPos();
-
-        NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(ObjID);
+        networkObjectReference.TryGet(out NetworkObject obj);
         nearObj[index] = obj.gameObject;
     }
 
     [ClientRpc]
-    void InOutObjSyncClientRpc(ulong ObjID, bool isIn, ClientRpcParams rpcParams = default)
+    void InOutObjSyncClientRpc(NetworkObjectReference networkObjectReference, bool isIn, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
 
-        NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(ObjID);
+        networkObjectReference.TryGet(out NetworkObject obj);
 
         if (isIn)
             inObj.Add(obj.gameObject);
@@ -1216,7 +1216,8 @@ public class Structure : NetworkBehaviour
                 sprite.sortingOrder = 2;
                 spawnItem.item = item;
                 spawnItem.amount = 1;
-                spawnItem.transform.position = transform.position;
+                Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
+                spawnItem.transform.position = spawnPos;
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
 
@@ -1259,8 +1260,9 @@ public class Structure : NetworkBehaviour
                 sprite.sortingOrder = 2;
                 spawnItem.item = item;
                 spawnItem.amount = 1;
-                spawnItem.transform.position = transform.position;
-                spawnItem.isOnBelt = true;
+                Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
+                spawnItem.transform.position = spawnPos;
+                spawnItem.isOnBelt = true;  
                 spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
 
                 if (GetComponent<Production>())
@@ -1848,7 +1850,7 @@ public class Structure : NetworkBehaviour
 
         StrBuilt();
 
-        NetworkObjManager.instance.NetObjRemove(gameObject);
+        //NetworkObjManager.instance.NetObjRemove(NetworkObject);
         onEffectUpgradeCheck -= IncreasedStructureCheck;
 
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)

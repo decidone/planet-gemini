@@ -70,6 +70,7 @@ public class TankCtrl : UnitAi
                 }
             }
         }
+        unitIndex = GeminiNetworkManager.instance.GetUnitSOIndex(gameObject, 0, true);
     }
 
     protected override void Update()
@@ -251,7 +252,6 @@ public class TankCtrl : UnitAi
 
     public void PlayerOnTankLoad(float tankHp, float tankMaxHp)
     {
-        unitIndex = 3;
         hp = tankHp;
         maxHp = tankMaxHp;
         playerOnTank = true;
@@ -264,6 +264,11 @@ public class TankCtrl : UnitAi
             inventory.LoadData(unitSave.inven);
         hp = unitSave.hp;
         fuel = unitSave.fuel;
+        
+        if (unitSave.pos.y > MapGenerator.instance.height)
+            isInHostMap = false;
+        else
+            isInHostMap = true;
 
         if (hp < maxHp)
         {
@@ -276,9 +281,9 @@ public class TankCtrl : UnitAi
     {
         UnitSaveData data = new UnitSaveData();
 
-        data.unitIndex = GeminiNetworkManager.instance.GetMonsterSOIndex(this.gameObject, 0, true);
         data.hp = hp;
         data.pos = Vector3Extensions.FromVector3(transform.position);
+        data.unitIndex = unitIndex;
         data.playerOnTank = playerOnTank;
         data.fuel = fuel;
 

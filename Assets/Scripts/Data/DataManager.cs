@@ -103,8 +103,6 @@ public class DataManager : MonoBehaviour
 
         foreach (UnitCommonAi unitAi in netObjMgr.netUnitCommonAis)
         {
-            //if (unitAi.GetComponent<TankCtrl>().playerOnTank)
-            //    continue;
             UnitSaveData unitSaveData = unitAi.SaveData();
             saveData.unitData.Add(unitSaveData);
         }
@@ -117,9 +115,6 @@ public class DataManager : MonoBehaviour
         saveData.overallData = overallSaveData;
 
         MapsSaveData mapsSaveData = MapGenerator.instance.SaveData();
-        //saveData.mapData = mapsSaveData;
-        //MapSaveData mapSaveData = GameManager.instance.SaveMapData();
-        //saveData.mapData = mapSaveData;
 
         List<NetItemPropsData> netItemPropsDatas = NetworkItemPoolSync.instance.NetItemSaveData();
         saveData.netItemData = netItemPropsDatas;
@@ -141,36 +136,15 @@ public class DataManager : MonoBehaviour
         return (json, compData);
     }
 
-    //public string GetJsonFromFile(int saveSlotNum)
-    //{
-    //    string json = File.ReadAllText(path + saveSlotNum.ToString() + ".json");
-    //    return json;
-    //}
-
-    //public MapsSaveData GetMapDataFromFile(int saveSlotNum)
-    //{
-    //    byte[] json = File.ReadAllBytes(path + saveSlotNum.ToString() + ".maps");
-    //    string decompData = Compression.Decompress(json);
-    //    MapsSaveData mapData = new MapsSaveData();
-    //    mapData = JsonConvert.DeserializeObject<MapsSaveData>(decompData);
-
-    //    return mapData;
-    //}
-
     public void Load()
     {
         // 호스트가 파일로부터 json을 불러와서 동기화
         saveData = LoadManager.instance.GetSaveData();
 
-        //string json = GetJsonFromFile(saveSlotNum);
-        //selectedSlot = saveSlotNum;
-        //saveData = JsonConvert.DeserializeObject<SaveData>(json);
         LoadData(saveData);
 
         transporters.Clear();
         lDConnectors.Clear();
-
-        //TempScienceDb.instance.LoadData(saveData.ScienceData);
 
         foreach (StructureSaveData structureSave in saveData.structureData)
         {
@@ -215,15 +189,12 @@ public class DataManager : MonoBehaviour
 
         ScienceDb.instance.LoadSet(saveData.scienceData);
         Overall.instance.LoadData(saveData.overallData);
-        //MapGenerator.instance.LoadData(saveData.mapData);
-        //GameManager.instance.LoadMapData(saveData.mapData);
     }
 
     void SpawnStructure(StructureSaveData saveData)
     {
         Building building = GeminiNetworkManager.instance.GetBuildingSOFromIndex(saveData.index);
         Vector3 spawnPos = Vector3Extensions.ToVector3(saveData.pos);
-        //Vector3 spawnPos = new Vector3(saveData.pos[0], saveData.pos[1], saveData.pos[2]);
         GameObject spawnobj;
 
         if (!saveData.sideObj)
@@ -247,27 +218,6 @@ public class DataManager : MonoBehaviour
 
             if (saveData.portalName != "")
                 structure.portalName = saveData.portalName;
-
-            //if (saveData.connectedStrPos.Count > 0) //아래로 뺐음
-            //{
-            //    if (structure.TryGetComponent(out Transporter transporter))
-            //    {
-            //        transporters.Add(transporter, saveData);
-            //        structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
-            //    }
-            //    else if (structure.TryGetComponent(out UnitFactory unitFactory))
-            //    {
-            //        unitFactory.UnitSpawnPosSetServerRpc(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
-            //    }
-            //    else if (structure.TryGetComponent(out LDConnector lDConnector))
-            //    {
-            //        lDConnectors.Add(lDConnector);
-            //        for (int i = 0; i < saveData.connectedStrPos.Count; i++)
-            //        {
-            //            structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[i]));
-            //        }
-            //    }
-            //}
 
             if (structure.TryGetComponent(out Production prod))
             {
