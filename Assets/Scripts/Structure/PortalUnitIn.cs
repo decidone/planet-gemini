@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Unity.Netcode;
+using System.Security.Cryptography;
 
 public class PortalUnitIn : PortalObj
 {
@@ -113,37 +114,40 @@ public class PortalUnitIn : PortalObj
         base.PortalObjConnectServerRpc();
         if (portalUnitOut != null)
         {
-            ulong objID = NetworkObjManager.instance.FindNetObjID(portalUnitOut.gameObject);
-            ConnectObjClientRpc(objID);
+            ConnectObjClientRpc(portalUnitOut.NetworkObject);
         }
         if (myPortalUnitOut != null)
         {
-            ulong myObjID = NetworkObjManager.instance.FindNetObjID(myPortalUnitOut.gameObject);
-            ConnectMyObjClientRpc(myObjID);
+            ConnectMyObjClientRpc(myPortalUnitOut.NetworkObject);
         }
     }
 
     [ServerRpc]
-    public override void ConnectObjServerRpc(ulong objId)
+    public override void ConnectObjServerRpc(NetworkObjectReference networkObjectReference)
     {
-        ConnectObjClientRpc(objId);
-    }
-    [ClientRpc]
-    public override void ConnectObjClientRpc(ulong objId)
-    {
-        portalUnitOut = NetworkObjManager.instance.FindNetworkObj(objId).GetComponent<PortalUnitOut>();
-    }
-    [ServerRpc]
-    public override void ConnectMyObjServerRpc(ulong objId)
-    {
-        ConnectMyObjClientRpc(objId);
+        ConnectObjClientRpc(networkObjectReference);
     }
 
     [ClientRpc]
-    public override void ConnectMyObjClientRpc(ulong objId)
+    public override void ConnectObjClientRpc(NetworkObjectReference networkObjectReference)
     {
-        myPortalUnitOut = NetworkObjManager.instance.FindNetworkObj(objId).GetComponent<PortalUnitOut>();
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        portalUnitOut = networkObject.GetComponent<PortalUnitOut>();
     }
+
+    [ServerRpc]
+    public override void ConnectMyObjServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        ConnectMyObjClientRpc(networkObjectReference);
+    }
+
+    [ClientRpc]
+    public override void ConnectMyObjClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        myPortalUnitOut = networkObject.GetComponent<PortalUnitOut>();
+    }
+
     public override void DestroyLineRenderer()
     {
         base.DestroyLineRenderer();
@@ -158,8 +162,7 @@ public class PortalUnitIn : PortalObj
             {
                 int itemIndex = -1;
                 itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(displaySlots[i].item);
-                var objID = NetworkObjManager.instance.FindNetObjID(sendUnitList[i]);
-                ItemSyncClientRpc(i, itemIndex, 1, objID);
+                ItemSyncClientRpc(i, itemIndex, 1, sendUnitList[i].GetComponent<NetworkObject>());
             }
             else
                 break;
@@ -167,12 +170,12 @@ public class PortalUnitIn : PortalObj
     }
 
     [ClientRpc]
-    protected void ItemSyncClientRpc(int slotNum, int itemIndex, int itemAmount, ulong unitId, ClientRpcParams rpcParams = default)
+    protected void ItemSyncClientRpc(int slotNum, int itemIndex, int itemAmount, NetworkObjectReference networkObjectReference, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
-
-        GameObject unit = NetworkObjManager.instance.FindNetworkObj(unitId).gameObject;
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        GameObject unit = networkObject.gameObject;
         sendUnitList.Add(unit);
 
         DisplaySlotChange();
@@ -240,18 +243,33 @@ public class PortalUnitIn : PortalObj
     }
 
     [ServerRpc]
-    public void UnitListAddServerRpc(ulong unitId)
+    public void UnitListAddServerRpc(NetworkObjectReference networkObjectReference)
     {
-        UnitListAddClientRpc(unitId);
+        UnitListAddClientRpc(networkObjectReference);
     }
 
     [ClientRpc]
-    public void UnitListAddClientRpc(ulong unitId)
+    public void UnitListAddClientRpc(NetworkObjectReference networkObjectReference)
     {
-        GameObject unit = NetworkObjManager.instance.FindNetworkObj(unitId).gameObject;
-        sendUnitList.Add(unit);
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        sendUnitList.Add(networkObject.gameObject);
         DisplaySlotChange();
     }
+
+
+    //[ServerRpc]
+    //public void UnitListAddServerRpc(ulong unitId)
+    //{
+    //    UnitListAddClientRpc(unitId);
+    //}
+
+    //[ClientRpc]
+    //public void UnitListAddClientRpc(ulong unitId)
+    //{
+    //    GameObject unit = NetworkObjManager.instance.FindNetworkObj(unitId).gameObject;
+    //    sendUnitList.Add(unit);
+    //    DisplaySlotChange();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     public void UnitListRemoveServerRpc(int slotNum)
@@ -294,8 +312,7 @@ public class PortalUnitIn : PortalObj
 
         if (collision.collider.TryGetComponent(out UnitAi unitAi) && unitAi.playerUnitPortalIn && !sendUnitList.Contains(collision.gameObject) && sendUnitList.Count < 18)
         {
-            var objID = NetworkObjManager.instance.FindNetObjID(collision.gameObject);
-            UnitListAddServerRpc(objID);
+            UnitListAddServerRpc(collision.gameObject.GetComponent<NetworkObject>());
             unitAi.transform.position = new Vector3(-100, -100, 0);
 
             unitAi.PortalUnitInFuncServerRpc(isInHostMap);

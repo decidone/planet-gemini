@@ -265,7 +265,8 @@ public class PlayerController : NetworkBehaviour
             interactable.DespawnIcon();
             if (nearTank == collision.GetComponent<TankCtrl>())
             {
-                TankResetServerRpc();
+                if(NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient)
+                    TankResetServerRpc();
             }
         }
 

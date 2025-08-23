@@ -155,8 +155,8 @@ public class SplitterCtrl : LogisticsCtrl
             if(arrFilter[a].outObj != null)
             {
                 arrFilter[a].outObj.TryGetComponent(out Structure str);
-                ulong objID = str.ObjFindId();
-                ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex, objID);
+                NetworkObjectReference networkObjectReference = str.ObjFindId();
+                ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex, networkObjectReference);
             }
             else
             {
@@ -166,12 +166,12 @@ public class SplitterCtrl : LogisticsCtrl
     }
 
     [ClientRpc]
-    void ClientFillterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex, ulong objID)
+    void ClientFillterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex, NetworkObjectReference networkObjectReference)
     {
         if (IsServer)
             return;
 
-        NetworkObject obj = NetworkObjManager.instance.FindNetworkObj(objID);
+        networkObjectReference.TryGet(out NetworkObject obj);
         arrFilter[num].outObj = obj.gameObject;
         GameStartFillterSet(num, filterOn, reverseFilterOn, itemIndex);
     }

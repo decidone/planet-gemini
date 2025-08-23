@@ -17,6 +17,7 @@ public enum BeltState
 
 public class BeltCtrl : LogisticsCtrl
 {
+    [SerializeField]
     int modelMotion = 0;  // 모션
     int preMotion = -1;
     public BeltGroupMgr beltGroupMgr;
@@ -139,8 +140,7 @@ public class BeltCtrl : LogisticsCtrl
             {
                 CheckPos();
                 ModelSet();
-                beltGroupMgr.BeltGroupRefresh();    // 이 라인은 딜레이를 주고 실행할 때는 뺌
-
+                beltGroupMgr.BeltGroupRefresh();    
                 anim.SetFloat("DirNum", dirNum);
                 anim.SetFloat("ModelNum", modelMotion);
                 anim.SetFloat("Level", level);
@@ -148,7 +148,7 @@ public class BeltCtrl : LogisticsCtrl
                 //anim.Play(info.fullPathHash, -1, info.normalizedTime);
             }
         }
-        else
+        else// 이 라인은 딜레이를 주고 실행할 때는 뺌
         {
             DelayNearStrBuilt();
         }
@@ -224,10 +224,13 @@ public class BeltCtrl : LogisticsCtrl
         else
         {
             modelMotion = syncMotion;
+
+            if (anim && anim.GetFloat("ModelNum") != modelMotion)
+                Debug.Log("BeltModelMotionSetClientRpc : " + modelMotion);
+
             isTurn = syncTurn;
             isRightTurn = syncRightTurn;
             beltState = (BeltState)syncBeltState;
-
             DelayNearStrBuilt();
         }
     }
@@ -235,6 +238,8 @@ public class BeltCtrl : LogisticsCtrl
     public void GameStartBeltSet(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)
     {
         modelMotion = syncMotion;
+        if (anim && anim.GetFloat("ModelNum") != modelMotion)
+            Debug.Log("BeltModelMotionSetClientRpc : " + modelMotion);
         isTurn = syncTurn;
         isRightTurn = syncRightTurn;
         beltState = (BeltState)syncBeltState;
@@ -316,11 +321,11 @@ public class BeltCtrl : LogisticsCtrl
             }
         }
 
-        if (preMotion != modelMotion)
-        {
+        Debug.Log("ModelSet : " + modelMotion);
+
+        if(IsServer)
             BeltModelMotionSetClientRpc(modelMotion);
-            preMotion = modelMotion;
-        }
+
         //anim.SetFloat("DirNum", dirNum);
         //anim.SetFloat("ModelNum", modelMotion);
         //anim.SetFloat("Level", level);
@@ -970,7 +975,6 @@ public class BeltCtrl : LogisticsCtrl
         gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         soundManager.PlaySFX(gameObject, "structureSFX", "BuildingSound");
-
     }
 
     [ClientRpc]
@@ -996,6 +1000,8 @@ public class BeltCtrl : LogisticsCtrl
     public void BeltModelMotionSetClientRpc(int modelNum)
     {
         modelMotion = modelNum;
+        if (anim && anim.GetFloat("ModelNum") != modelMotion)
+            Debug.Log("BeltModelMotionSetClientRpc : " + modelMotion);
     }
 
     public BeltSaveData BeltSaveData()

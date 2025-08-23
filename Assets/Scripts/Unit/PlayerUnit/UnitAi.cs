@@ -130,6 +130,12 @@ public class UnitAi : UnitCommonAi
         NetworkObjManager.instance.NetObjAdd(gameObject);
     }
 
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        NetworkObjManager.instance.NetObjRemove(gameObject);
+    }
+
     protected override void UnitAiCtrl()
     {
         switch (aIState)
@@ -629,7 +635,7 @@ public class UnitAi : UnitCommonAi
             }
         }
 
-        NetworkObjManager.instance.NetObjRemove(gameObject);
+        //NetworkObjManager.instance.NetObjRemove(NetworkObject);
 
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
