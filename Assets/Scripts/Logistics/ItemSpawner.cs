@@ -42,10 +42,6 @@ public class ItemSpawner : LogisticsCtrl
                     //SendItem(itemData);
                 }
             }
-            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
-            {
-                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
-            }
         } 
     }
 

@@ -127,10 +127,7 @@ public class Refinery : FluidFactoryCtrl
             if (inObj.Count > 0 && !itemGetDelay)
                 GetItem();
         }
-        if (DelayGetList.Count > 0 && inObj.Count > 0)
-        {
-            GetDelayFunc(DelayGetList[0], 0);
-        }
+
         #endregion
 
         base.Update();
@@ -185,10 +182,6 @@ public class Refinery : FluidFactoryCtrl
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
                 //SendItem(output);
-            }
-            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
-            {
-                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
             }
         }
     }

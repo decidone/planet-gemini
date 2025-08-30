@@ -39,6 +39,7 @@ public class ItemProps : MonoBehaviour
 
     public void ClientResetItemProps()
     {
-        itemPool.Release(gameObject);
+        if(itemPool != null && gameObject)
+            itemPool.Release(gameObject);
     }
 }

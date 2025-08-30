@@ -171,8 +171,6 @@ public class Structure : NetworkBehaviour
     protected float destroyTimer;
 
     public bool settingEndCheck = false;
-    public List<(int, int)> DelaySendList = new List<(int, int)>();
-    public List<int> DelayGetList = new List<int>();
     protected int buildingIndex;
     public List<Vector3> connectedPosList = new List<Vector3>();
 
@@ -1056,14 +1054,6 @@ public class Structure : NetworkBehaviour
     protected virtual void GetItemClientRpc(int inObjIndex)
     {
         GetItemFunc(inObjIndex);
-        //if (IsServer)
-        //{
-        //    GetItemFunc(inObjIndex);
-        //}
-        //else if (settingEndCheck)
-        //{
-        //    GetDelaySet(inObjIndex);
-        //}
     }
 
     protected virtual void GetItemFunc(int inObjIndex)
@@ -1078,17 +1068,6 @@ public class Structure : NetworkBehaviour
             belt.ItemNumCheck();
         }
         DelayGetItem();
-    }
-
-    protected void GetDelaySet(int inObjIndex)
-    {
-        DelayGetList.Add(inObjIndex);
-    }
-
-    protected void GetDelayFunc(int inObjIndex, int listIndex)
-    {
-        GetItemFunc(inObjIndex);
-        DelayGetList.RemoveAt(listIndex);
     }
 
     protected virtual void SendItem(int itemIndex)
@@ -1183,14 +1162,6 @@ public class Structure : NetworkBehaviour
     protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex)
     {
         SendItemFunc(itemIndex, outObjIndex);
-        //if (IsServer)
-        //{
-        //    SendItemFunc(itemIndex, outObjIndex);
-        //}
-        //else if (settingEndCheck)
-        //{
-        //    SendDelaySet(itemIndex, outObjIndex);
-        //}
     }
 
     [ClientRpc]
@@ -1288,17 +1259,6 @@ public class Structure : NetworkBehaviour
         Invoke(nameof(DelaySetItem), sendDelay);
     }
     
-    protected void SendDelaySet(int itemIndex, int outObjIndex)
-    {
-        DelaySendList.Add((itemIndex, outObjIndex));
-    }
-
-    protected void SendDelayFunc(int itemIndex, int outObjIndex, int listIndex)
-    {
-        SendItemFunc(itemIndex, outObjIndex);
-        DelaySendList.RemoveAt(listIndex);
-    }
-
     protected void SendFacDelay(GameObject outFac, Item item)
     {
         if (CanSendItemCheck())

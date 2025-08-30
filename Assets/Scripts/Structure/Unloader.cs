@@ -41,14 +41,6 @@ public class Unloader : LogisticsCtrl
                     SendItem(itemIndex);
                 }
             }
-            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
-            {
-                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
-            }
-            if (DelayGetList.Count > 0 && inObj.Count > 0)
-            {
-                GetDelayFunc(DelayGetList[0], 0);
-            }
         }
     }
 

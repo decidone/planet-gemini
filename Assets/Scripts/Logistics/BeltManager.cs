@@ -23,6 +23,10 @@ public class BeltManager : NetworkBehaviour
         }
         instance = this;
 
+    }
+
+    private void Start()
+    {
         for (int i = 0; i < beltAnimators.Length; i++)
         {
             beltAnimators[i].SetFloat("Level", i);

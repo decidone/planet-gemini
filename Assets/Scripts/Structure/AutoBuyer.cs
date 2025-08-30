@@ -99,10 +99,6 @@ public class AutoBuyer : Production
                 int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(output);
                 SendItem(itemIndex);
             }
-            if (DelaySendList.Count > 0 && outObj.Count > 0 && !outObj[DelaySendList[0].Item2].GetComponent<Structure>().isFull)
-            {
-                SendDelayFunc(DelaySendList[0].Item1, DelaySendList[0].Item2, 0);
-            }
         }
     }
 

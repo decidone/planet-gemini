@@ -136,11 +136,6 @@ public class SteamGenerator : FluidFactoryCtrl
                 GetItem();
         }
 
-        if (DelayGetList.Count > 0 && inObj.Count > 0)
-        {
-            GetDelayFunc(DelayGetList[0], 0);
-        }
-
         if (destroyStart)
         {
             if (GameManager.instance.debug)

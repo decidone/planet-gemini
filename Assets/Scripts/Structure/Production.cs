@@ -99,10 +99,6 @@ public abstract class Production : Structure
             if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
                 GetItem();
         }
-        if (DelayGetList.Count > 0 && inObj.Count > 0)
-        {
-            GetDelayFunc(DelayGetList[0], 0);
-        }
     }
 
     public override void NearStrBuilt()

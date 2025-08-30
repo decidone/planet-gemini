@@ -124,8 +124,11 @@ public class BeltCtrl : LogisticsCtrl
         else if(!animsync)
             animsync = beltManager.AnimSync(level);
 
+        animsync = beltManager.AnimSync(level);
+
         var info = animsync.GetCurrentAnimatorStateInfo(0);
-        anim.Play(info.fullPathHash, -1, info.normalizedTime);
+        anim.Play(info.fullPathHash, 0, info.normalizedTime);
+        Debug.Log(info.fullPathHash);
     }
 
     public override void NearStrBuilt()
