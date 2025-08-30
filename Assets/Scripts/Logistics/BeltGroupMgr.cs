@@ -661,4 +661,20 @@ public class BeltGroupMgr : NetworkBehaviour
             LootListManager.instance.DisplayLootInfo(findItemProps.item, findItemProps.amount);
         }
     }
+
+    [ServerRpc]
+    public void BeltGroupAnimSycnServerRpc()
+    {
+        BeltGroupAnimSycnClientRpc();
+    }
+
+    [ClientRpc]
+    public void BeltGroupAnimSycnClientRpc()
+    {
+        Debug.Log("BeltGroupAnimSycnClientRpc call");
+        foreach (BeltCtrl belt in beltList)
+        {
+            belt.AnimSyncFunc();
+        }
+    }
 }

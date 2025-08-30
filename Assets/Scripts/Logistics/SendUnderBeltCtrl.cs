@@ -269,4 +269,9 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         SendItemServerRpc(itemIndex, sendItemIndex);
         SendItemIndexSet();
     }
+
+    public override void ColliderTriggerOnOff(bool isOn)
+    {
+        col.isTrigger = true;
+    }
 }

@@ -40,9 +40,23 @@ public class UnitDrag : DragFunc
     bool isAKeyPressed = false;
     bool isUnitRemove = false;
 
+    public bool playerAttackClick;
+
     InputManager inputManager;
     UnitRemovePopup unitRemovePopup;
     List<UnitAi> removeUnitList = new List<UnitAi>();
+
+    public static UnitDrag instance;
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+    }
 
     protected override void Start()
     {
@@ -122,7 +136,7 @@ public class UnitDrag : DragFunc
 
                 foreach (Collider2D collider in colliders)
                 {
-                    if (collider.GetComponentInParent<UnitAi>() == null || collider.GetComponentInParent<TankCtrl>())
+                    if (collider.GetComponentInParent<UnitAi>() == null)
                         continue;
                     if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
                         continue;
@@ -145,7 +159,7 @@ public class UnitDrag : DragFunc
                 RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
                 if (hit)
                 {
-                    if (!hit.collider.GetComponentInParent<UnitAi>() || hit.collider.GetComponentInParent<TankCtrl>())
+                    if (!hit.collider.GetComponentInParent<UnitAi>())
                         return;
                     UnitAi unitAi = hit.collider.GetComponentInParent<UnitAi>();
                     removeUnit?.Invoke();
@@ -174,48 +188,51 @@ public class UnitDrag : DragFunc
                 }
                 unitRemovePopup.OpenPopup(removeUnitIndexCount, sellPrice);
             }
-        }        
-        else if (!unitCtrlKeyPressed)
+        }
+        else if (!playerAttackClick)
         {
-            if (startPos != endPos)
-                GroupSelectedObjects(startPos, endPos);
-            else
+            if (!unitCtrlKeyPressed)
             {
-                RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
-                if (hit)
-                {
-                    SelectedObjects(hit);
-                }
+                if (startPos != endPos)
+                    GroupSelectedObjects(startPos, endPos);
                 else
                 {
-                    selectedObjects = new GameObject[0];
-                    removeUnit?.Invoke();
+                    RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
+                    if (hit)
+                    {
+                        SelectedObjects(hit);
+                    }
+                    else
+                    {
+                        selectedObjects = new GameObject[0];
+                        removeUnit?.Invoke();
+                    }
                 }
             }
-        }
-        else if (isPKeyPressed)
-        {
-            groupCenterSet?.Invoke();
-            patrolSet?.Invoke(endPos);
-            UnitMovePos.instance.AnimStart(endPos);
-        }
-        else if (isAKeyPressed)
-        {
-            RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
-            if (!hit)
+            else if (isPKeyPressed)
             {
-                SetTargetPosition(true, endPos);
+                groupCenterSet?.Invoke();
+                patrolSet?.Invoke(endPos);
+                UnitMovePos.instance.AnimStart(endPos);
             }
-            else if (hit.collider.GetComponentInParent<MonsterAi>())
+            else if (isAKeyPressed)
             {
-                monsterTargetSet?.Invoke(hit.collider.GetComponentInParent<MonsterAi>().gameObject);
-            }
-            else if (hit.collider.GetComponentInParent<MonsterSpawner>())
-            {
-                monsterTargetSet?.Invoke(hit.collider.GetComponentInParent<MonsterSpawner>().gameObject);
-            }
+                RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
+                if (!hit)
+                {
+                    SetTargetPosition(true, endPos);
+                }
+                else if (hit.collider.GetComponentInParent<MonsterAi>())
+                {
+                    monsterTargetSet?.Invoke(hit.collider.GetComponentInParent<MonsterAi>().gameObject);
+                }
+                else if (hit.collider.GetComponentInParent<MonsterSpawner>())
+                {
+                    monsterTargetSet?.Invoke(hit.collider.GetComponentInParent<MonsterSpawner>().gameObject);
+                }
 
-            UnitMovePos.instance.AnimStart(endPos);
+                UnitMovePos.instance.AnimStart(endPos);
+            }
         }
         ReSetBool();
     }
@@ -242,9 +259,12 @@ public class UnitDrag : DragFunc
 
     public override void RightMouseUp(Vector2 startPos, Vector2 endPos)
     {
-        SetTargetPosition(false, endPos);
-        UnitMovePos.instance.AnimStart(endPos);
-        ReSetBool();
+        if (!playerAttackClick)
+        {
+            SetTargetPosition(false, endPos);
+            UnitMovePos.instance.AnimStart(endPos);
+            ReSetBool();
+        }
     }
 
     protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition)

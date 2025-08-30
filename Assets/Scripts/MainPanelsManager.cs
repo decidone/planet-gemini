@@ -25,6 +25,8 @@ public class MainPanelsManager : MonoBehaviour
     GameObject seedPanel;
     [SerializeField]
     InputField seedInputField;
+    [SerializeField]
+    Toggle bloodMoonToggle; 
     SaveLoadMenu saveLoadPanel;
     SoundManager soundManager;
     void Start()
@@ -37,9 +39,12 @@ public class MainPanelsManager : MonoBehaviour
         mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
         difficultyLevelDropdown.onValueChanged.AddListener(delegate { DifficultyLevelDropdownFunc(difficultyLevelDropdown); });
         randomSeedToggle.onValueChanged.AddListener(delegate { RandomSeedToggleValue(); });
+        bloodMoonToggle.onValueChanged.AddListener(delegate { BloodMoonToggleValue(); });
         seedInputField.onValueChanged.AddListener(delegate { SeedInputValueChanged(); });
 
         randomSeedToggle.isOn = true;
+        bloodMoonToggle.isOn = true;
+        gameSetting.BloodMoonState(bloodMoonToggle.isOn);
     }
 
     public void NewGamePanelSet(bool state)
@@ -98,6 +103,11 @@ public class MainPanelsManager : MonoBehaviour
             //seedPanel.SetActive(true);
             seedInputField.interactable = true;
         }
+    }
+
+    void BloodMoonToggleValue()
+    {
+        gameSetting.BloodMoonState(bloodMoonToggle.isOn);
     }
 
     void SeedInputValueChanged()

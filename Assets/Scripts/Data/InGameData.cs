@@ -11,6 +11,7 @@ public class InGameData
     public int mapSizeIndex;        // 맵 크기
     public int difficultyLevel;     // 레벨
     public int seed;                // 맵 시드
+    public bool bloodMoon;          // 블러드문
 
     public int day;                 // 인게임 날짜
     public bool isDay;              // 낮 / 밤

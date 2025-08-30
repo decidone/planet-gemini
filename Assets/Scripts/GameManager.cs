@@ -125,6 +125,8 @@ public class GameManager : NetworkBehaviour
     bool clickToNextTime;
 
     [SerializeField]
+    bool bloodMoon;
+    [SerializeField]
     int safeDay;                        // 게임 초기 안전한 날
     int[] randomStackValue = new int[2] { 20, 80 }; // 스택 랜덤 범위
     [SerializeField]
@@ -192,7 +194,6 @@ public class GameManager : NetworkBehaviour
 
     public static event Action OnFactoryOverlayToggle;
     public bool overlayOn = false;
-
     #region Singleton
     public static GameManager instance;
 
@@ -335,17 +336,6 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.F10))
-        {
-            Application.targetFrameRate = 10;
-            Debug.Log("Frame drop");
-        }
-        else if (Input.GetKeyDown(KeyCode.F11))
-        {
-            Application.targetFrameRate = 144;
-            Debug.Log("normal Frame");
-        }
-
         if (clickToNextTime)
         {
             dayTimer = dayTime;
@@ -380,7 +370,7 @@ public class GameManager : NetworkBehaviour
             {
                 isDay = true;
                 SoundManager.instance.PlayBgmMapCheck();
-                if (violentDayCheck)
+                if (bloodMoon && violentDayCheck)
                 {
                     violentDay = true;
                     timeImg.color = new Color32(255, 50, 50, 255);
@@ -400,7 +390,7 @@ public class GameManager : NetworkBehaviour
                 day++;
                 dayText.text = "Day : " + day;
 
-                if (violentDay)
+                if (bloodMoon && violentDay)
                 {
                     violentDay = false;
                     violentDayCheck = false;
@@ -1379,7 +1369,7 @@ public class GameManager : NetworkBehaviour
             optionCanvas.SaveBtnOnOff(true);
             SteamManager.instance.HostLobby();
             HostConnected();
-
+            bloodMoon = MainGameSetting.instance.isBloodMoon;
             if (MainGameSetting.instance.isNewGame)
             {
                 SetStartingItem();
@@ -1457,6 +1447,7 @@ public class GameManager : NetworkBehaviour
         // 파일 이름
         inGameData.mapSizeIndex = MainGameSetting.instance.mapSizeIndex;
         inGameData.seed = MainGameSetting.instance.randomSeed;
+        inGameData.bloodMoon = bloodMoon;
         inGameData.day = day;
         inGameData.isDay = isDay;
         inGameData.dayTimer = dayTimer;

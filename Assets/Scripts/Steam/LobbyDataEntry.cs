@@ -11,7 +11,8 @@ public class LobbyDataEntry : MonoBehaviour
     [SerializeField] Button joinBtn;
 
     public Lobby lobby;
-    
+    public float cooldownTime = 1f;
+
     public bool SetLobbyData(Lobby _lobby)
     {
         bool state;
@@ -27,9 +28,16 @@ public class LobbyDataEntry : MonoBehaviour
             state = false;
         }
         lobbyUserCount.text = lobby.MemberCount + " / " + lobby.MaxMembers;
-
+        
         joinBtn.onClick.AddListener(() => SteamManager.instance.JoinLobby(lobby));
-
+        joinBtn.onClick.AddListener(() => StartCoroutine(ButtonCooldownRoutine()));
         return state;
+    }
+
+    private IEnumerator ButtonCooldownRoutine()
+    {
+        joinBtn.interactable = false; // 비활성화
+        yield return new WaitForSeconds(cooldownTime);
+        joinBtn.interactable = true;  // 다시 활성화
     }
 }

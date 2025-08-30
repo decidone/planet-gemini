@@ -95,8 +95,7 @@ public class BeltCtrl : LogisticsCtrl
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
         animsync = beltManager.AnimSync(level);
         anim = GetComponent<Animator>();
-        var info = animsync.GetCurrentAnimatorStateInfo(0);
-        anim.Play(info.fullPathHash, -1, info.normalizedTime);
+        AnimSyncFunc();
         isOperate = true;
         StrBuilt();
         BeltModelSet();
@@ -105,11 +104,6 @@ public class BeltCtrl : LogisticsCtrl
     protected override void Update()
     {
         base.Update();
-
-        //if (!removeState)
-        //{
-        //    anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-        //}
     }
 
     private void FixedUpdate()
@@ -121,6 +115,17 @@ public class BeltCtrl : LogisticsCtrl
             ItemMove();
         else if (itemObjList.Count == 0 && isItemStop)
             isItemStop = false;
+    }
+
+    public void AnimSyncFunc()
+    {
+        if(!anim)
+            return;
+        else if(!animsync)
+            animsync = beltManager.AnimSync(level);
+
+        var info = animsync.GetCurrentAnimatorStateInfo(0);
+        anim.Play(info.fullPathHash, -1, info.normalizedTime);
     }
 
     public override void NearStrBuilt()
@@ -144,8 +149,6 @@ public class BeltCtrl : LogisticsCtrl
                 anim.SetFloat("DirNum", dirNum);
                 anim.SetFloat("ModelNum", modelMotion);
                 anim.SetFloat("Level", level);
-                //var info = animsync.GetCurrentAnimatorStateInfo(0);
-                //anim.Play(info.fullPathHash, -1, info.normalizedTime);
             }
         }
         else// 이 라인은 딜레이를 주고 실행할 때는 뺌
@@ -180,8 +183,6 @@ public class BeltCtrl : LogisticsCtrl
             anim.SetFloat("DirNum", dirNum);
             anim.SetFloat("ModelNum", modelMotion);
             anim.SetFloat("Level", level);
-            //var info = animsync.GetCurrentAnimatorStateInfo(0);
-            //anim.Play(info.fullPathHash, -1, info.normalizedTime);
         }
     }
 
@@ -193,15 +194,27 @@ public class BeltCtrl : LogisticsCtrl
         anim.SetFloat("ModelNum", modelMotion);
         anim.SetFloat("Level", level);
         animsync = beltManager.AnimSync(level);
-        var info = animsync.GetCurrentAnimatorStateInfo(0);
-        anim.Play(info.fullPathHash, -1, info.normalizedTime);
+        AnimSyncFunc();
     }
 
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {
-        base.ClientConnectSyncServerRpc();
+        base.ClientConnectSyncServerRpc(); 
+        DirSyncClientRpc(isUp, isRight, isDown, isLeft);
         ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
+    }
+
+    [ClientRpc]
+    void DirSyncClientRpc(bool up, bool right, bool down, bool left)
+    {
+        if (!IsServer)
+        {
+            isUp = up;
+            isRight = right;
+            isDown = down;
+            isLeft = left;
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -224,10 +237,6 @@ public class BeltCtrl : LogisticsCtrl
         else
         {
             modelMotion = syncMotion;
-
-            if (anim && anim.GetFloat("ModelNum") != modelMotion)
-                Debug.Log("BeltModelMotionSetClientRpc : " + modelMotion);
-
             isTurn = syncTurn;
             isRightTurn = syncRightTurn;
             beltState = (BeltState)syncBeltState;
@@ -238,8 +247,6 @@ public class BeltCtrl : LogisticsCtrl
     public void GameStartBeltSet(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)
     {
         modelMotion = syncMotion;
-        if (anim && anim.GetFloat("ModelNum") != modelMotion)
-            Debug.Log("BeltModelMotionSetClientRpc : " + modelMotion);
         isTurn = syncTurn;
         isRightTurn = syncRightTurn;
         beltState = (BeltState)syncBeltState;
@@ -321,16 +328,9 @@ public class BeltCtrl : LogisticsCtrl
             }
         }
 
-        Debug.Log("ModelSet : " + modelMotion);
-
         if(IsServer)
             BeltModelMotionSetClientRpc(modelMotion);
 
-        //anim.SetFloat("DirNum", dirNum);
-        //anim.SetFloat("ModelNum", modelMotion);
-        //anim.SetFloat("Level", level);
-        //anim.Play(0, -1, animsync.GetCurrentAnimatorStateInfo(0).normalizedTime);
-        //Debug.Log("333");
         SetItemDir();
     }
 
@@ -1000,8 +1000,8 @@ public class BeltCtrl : LogisticsCtrl
     public void BeltModelMotionSetClientRpc(int modelNum)
     {
         modelMotion = modelNum;
-        if (anim && anim.GetFloat("ModelNum") != modelMotion)
-            Debug.Log("BeltModelMotionSetClientRpc : " + modelMotion);
+        if(anim)
+            anim.SetFloat("ModelNum", modelMotion);
     }
 
     public BeltSaveData BeltSaveData()
@@ -1041,5 +1041,10 @@ public class BeltCtrl : LogisticsCtrl
         }
 
         base.DestroyFuncClientRpc();
+    }
+
+    public override void ColliderTriggerOnOff(bool isOn)
+    {
+        col.isTrigger = true;
     }
 }

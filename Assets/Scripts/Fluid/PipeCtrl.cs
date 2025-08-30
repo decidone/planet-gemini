@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 // UTF-8 설정
@@ -44,6 +44,26 @@ public class PipeCtrl : FluidFactoryCtrl
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public override void ClientConnectSyncServerRpc()
+    {
+        base.ClientConnectSyncServerRpc();
+        DirSyncClientRpc(isUp, isRight, isDown, isLeft);
+    }
+
+    [ClientRpc]
+    void DirSyncClientRpc(bool up, bool right, bool down, bool left)
+    {
+        if(!IsServer)
+        {
+            isUp = up;
+            isRight = right;
+            isDown = down;
+            isLeft = left;
+            ChangeModel();
+        }
+    }
+
     public override void NearStrBuilt()
     {
         // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
@@ -59,7 +79,6 @@ public class PipeCtrl : FluidFactoryCtrl
                 }
             }
             ChangeModel();
-            setModel.sprite = modelNum[dirNum];
         }
         else
         {
@@ -87,7 +106,6 @@ public class PipeCtrl : FluidFactoryCtrl
             }
         }
         ChangeModel();
-        setModel.sprite = modelNum[dirNum];
     }
 
     protected override void CheckPos()
@@ -106,7 +124,7 @@ public class PipeCtrl : FluidFactoryCtrl
         {
             if (!outObj.Contains(obj))
                 outObj.Add(obj);
-            if (obj.GetComponent<UnderPipeCtrl>() != null)
+            if (obj.TryGetComponent(out UnderPipeCtrl underPipe))
             {
                 UnderPipeConnectCheck(obj);
             }

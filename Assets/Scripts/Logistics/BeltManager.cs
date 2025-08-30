@@ -53,6 +53,7 @@ public class BeltManager : NetworkBehaviour
         {
             fstGroupMgr.nextObj = secGroupMgr.nextObj;
             fstGroupMgr.NearObjSetClientRpc(secGroupMgr.nextObj.GetComponent<NetworkObject>(), true);
+            fstGroupMgr.BeltGroupAnimSycnServerRpc();
         }
 
         //BeltGroupRemoveServerRpc(secGroupMgr.NetworkObject);
@@ -143,12 +144,13 @@ public class BeltManager : NetworkBehaviour
 
         beltGroup.beltList[0].preBelt = null;
 
-
         if (beltGroup.beltList.Count == 1)
         {
             beltGroup.beltList[0].BeltStateSetClientRpc((int)BeltState.SoloBelt);
             beltGroup.beltList[0].FactoryModelSet();
         }
+
+        beltGroup.BeltGroupAnimSycnServerRpc();
     }
 
     private void CreateNewBeltGroup(List<BeltCtrl> beltList)
@@ -179,5 +181,7 @@ public class BeltManager : NetworkBehaviour
             newBeltGroup.beltList[0].BeltStateSetClientRpc((int)BeltState.SoloBelt);
             newBeltGroup.beltList[0].FactoryModelSet();
         }
+
+        newBeltGroup.BeltGroupAnimSycnServerRpc();
     }
 }

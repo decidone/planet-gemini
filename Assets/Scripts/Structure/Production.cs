@@ -61,7 +61,7 @@ public abstract class Production : Structure
 
     protected virtual void Start()
     {
-        GameManager gameManager = GameManager.instance;
+        gameManager = GameManager.instance;
         itemDic = ItemList.instance.itemDic;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         sInvenManager = canvas.GetComponent<StructureInvenManager>();

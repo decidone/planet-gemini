@@ -320,4 +320,9 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         data.sideObj = true;
         return data;
     }
+
+    public override void ColliderTriggerOnOff(bool isOn)
+    {
+        col.isTrigger = true;
+    }
 }

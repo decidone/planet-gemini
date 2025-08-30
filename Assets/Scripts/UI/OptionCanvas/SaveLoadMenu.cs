@@ -173,6 +173,8 @@ public class SaveLoadMenu : MonoBehaviour
         InGameData inGameData = saveData.InGameData;
         MainGameSetting.instance.MapSizeSet(inGameData.mapSizeIndex);
         MainGameSetting.instance.RandomSeedValue(inGameData.seed);
+        MainGameSetting.instance.BloodMoonState(inGameData.bloodMoon);
+
         //MainGameSetting.instance.LoadMapData(saveData.mapData);
 
         MapsSaveData mapsSaveData = GetMapDataFromFile(slotNum);

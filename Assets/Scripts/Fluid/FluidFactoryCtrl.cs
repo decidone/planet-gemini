@@ -127,7 +127,7 @@ public class FluidFactoryCtrl : Production
         {
             if (!outObj.Contains(obj))
                 outObj.Add(obj);
-            if (obj.GetComponent<UnderPipeCtrl>() != null)
+            if (obj.TryGetComponent(out UnderPipeCtrl underPipe))
             {
                 UnderPipeConnectCheck(obj);
             }
@@ -136,10 +136,12 @@ public class FluidFactoryCtrl : Production
 
     protected virtual void UnderPipeConnectCheck(GameObject obj)
     {
-        obj.TryGetComponent(out UnderPipeCtrl underPipeCtrl);
-        if (underPipeCtrl.otherPipe == null || underPipeCtrl.otherPipe != this.gameObject)
+        if(obj.TryGetComponent(out UnderPipeCtrl underPipeCtrl))
         {
-            outObj.Remove(obj);
+            if (underPipeCtrl.otherPipe == null || underPipeCtrl.otherPipe != this.gameObject)
+            {
+                outObj.Remove(obj);
+            }
         }
 
         if(TryGetComponent(out PipeCtrl pipe))

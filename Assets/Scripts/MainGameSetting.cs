@@ -10,6 +10,7 @@ public class MainGameSetting : MonoBehaviour
     public int loadDataIndex;
     public int randomSeed;
     public bool isPublic;
+    public bool isBloodMoon;
     System.Diagnostics.Stopwatch timer = new();
 
     #region Singleton
@@ -50,6 +51,11 @@ public class MainGameSetting : MonoBehaviour
     public void RandomSeedValue(int index)
     {
         randomSeed = index;
+    }
+
+    public void BloodMoonState(bool bloodMoon)
+    {
+        isBloodMoon = bloodMoon;
     }
 
     public void StartStopwatch()

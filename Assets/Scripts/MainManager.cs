@@ -140,8 +140,9 @@ public class MainManager : MonoBehaviour
 
     void BackBtnFunc()
     {
-        OpenUI(btnIndex - 1);
         ClosedUISet();
+        if(btnIndex > 0)
+            OpenUI(btnIndex - 1);
     }
 
     void OpenUI(int index)

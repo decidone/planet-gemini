@@ -232,7 +232,8 @@ public class PlayerController : NetworkBehaviour
             interactable.SpawnIcon();
             if (collision.GetComponent<TankCtrl>() && nearTank == null)
             {
-                TankSetServerRpc(collision.GetComponent<NetworkObject>());
+                nearTank = collision.GetComponent<TankCtrl>();
+                //TankSetServerRpc(collision.GetComponent<NetworkObject>());
             }
         }
 
@@ -265,8 +266,9 @@ public class PlayerController : NetworkBehaviour
             interactable.DespawnIcon();
             if (nearTank == collision.GetComponent<TankCtrl>())
             {
-                if(NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient)
-                    TankResetServerRpc();
+                nearTank = null;
+                //if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient)
+                //    TankResetServerRpc();
             }
         }
 
@@ -304,19 +306,6 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void TankSetServerRpc(NetworkObjectReference networkObjectReference)
-    {
-        TankSetClientRpc(networkObjectReference);
-    }
-
-    [ClientRpc]
-    public void TankSetClientRpc(NetworkObjectReference networkObjectReference)
-    {
-        networkObjectReference.TryGet(out NetworkObject networkObject);
-        nearTank = networkObject.GetComponent<TankCtrl>();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
     public void TankResetServerRpc()
     {
         TankResetClientRpc();
@@ -338,7 +327,14 @@ public class PlayerController : NetworkBehaviour
             {
                 teleportUI.SetBtnDefault();
                 teleportUI.firstBtn.onClick.AddListener(TeleportWorld);
-                teleportUI.secondBtn.onClick.AddListener(TeleportMarket);
+                if (!tankOn)
+                {
+                    teleportUI.secondBtn.onClick.AddListener(TeleportMarket);
+                    teleportUI.secondBtn.image.color = Color.white;
+                }
+                else
+                    teleportUI.secondBtn.image.color = Color.gray;
+
                 teleportUI.thirdBtn.onClick.AddListener(OpenMap);
 
                 teleportUI.OpenUI();
@@ -349,6 +345,7 @@ public class PlayerController : NetworkBehaviour
             }
             else if (!tankOn && nearTank != null)
             {
+                TankSetServerRpc(nearTank.NetworkObject);
                 nearTank.OpenUI();
                 BasicUIBtns.instance.SwapFunc(false);
                 TankOnFuncServerRpc();
@@ -367,6 +364,19 @@ public class PlayerController : NetworkBehaviour
                 TeleportMarket();
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void TankSetServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        TankSetClientRpc(networkObjectReference);
+    }
+
+    [ClientRpc]
+    public void TankSetClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        networkObjectReference.TryGet(out NetworkObject networkObject);
+        nearTank = networkObject.GetComponent<TankCtrl>();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -677,6 +687,7 @@ public class PlayerController : NetworkBehaviour
         if (tankAttackKeyPressed && IsOwner)
         {
             TankAttackEnd();
+            Invoke(nameof(PlayerAttackClickFalse), 0.1f);
         }
     }
 
@@ -697,7 +708,13 @@ public class PlayerController : NetworkBehaviour
 
                 BulletSpawnServerRpc(mousePos, bulletData.item.name);
             }
+            Invoke(nameof(PlayerAttackClickFalse), 0.1f);
         }
+    }
+
+    void PlayerAttackClickFalse()
+    {
+        UnitDrag.instance.playerAttackClick = false;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -755,6 +772,7 @@ public class PlayerController : NetworkBehaviour
             tankAttackKeyPressed = true;
             if (!UpgradeRemoveBtn.instance.clickBtn)
                 MouseSkin.instance.UnitCursorCursorSet(true);
+            UnitDrag.instance.playerAttackClick = true;
         }
     }
 

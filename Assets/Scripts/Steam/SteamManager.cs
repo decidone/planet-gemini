@@ -362,19 +362,12 @@ public class SteamManager : MonoBehaviour
     private void HandleOpponentDataPacket(byte[] dataPacket)
     {
         string opponentDataSent = Compression.Decompress(dataPacket);
-        //string opponentDataSent = ConvertByteArrayToString(dataPacket);
-        //DataManager.instance.Load(opponentDataSent);
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(opponentDataSent);
         LoadManager.instance.SetSaveData(saveData);
         Debug.Log("Get Data");
         getData = true;
         clientConnTry = false;
     }
-
-    //private string ConvertByteArrayToString(byte[] byteArrayToConvert)
-    //{
-    //    return Encoding.UTF8.GetString(byteArrayToConvert);
-    //}
 
     private async void GameLobbyJoinRequested(Lobby lobby, SteamId SteamId)
     {
@@ -385,24 +378,6 @@ public class SteamManager : MonoBehaviour
     {
         await SteamMatchmaking.CreateLobbyAsync(2);
     }
-
-    //public async void JoinLobbyWithID()
-    //{
-    //    ulong Id;
-    //    if (!ulong.TryParse(LobbyIdInputField.text, out Id))
-    //        return;
-
-    //    Lobby[] lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
-
-    //    foreach (Lobby lobby in lobbies)
-    //    {
-    //        if (lobby.Id == Id)
-    //        {
-    //            await lobby.Join();
-    //            return;
-    //        }
-    //    }
-    //}
 
     public async void JoinLobby(Lobby _lobby)
     {
@@ -417,6 +392,7 @@ public class SteamManager : MonoBehaviour
             }
         }
         soundManager.PlayUISFX("ButtonClick");
+
     }
 
     public void LeaveLobby()
