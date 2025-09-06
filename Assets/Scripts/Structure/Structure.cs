@@ -306,6 +306,7 @@ public class Structure : NetworkBehaviour
     {
         if (!IsServer && GameManager.instance && soundManager)
         {
+
             ClientItemDrop();
             soundManager.PlayUISFX("BuildingRemove");
             GameManager.instance.BuildAndSciUiReset();
@@ -1704,9 +1705,7 @@ public class Structure : NetworkBehaviour
         {
             BeltManager beltManager = GetComponentInParent<BeltManager>();
             BeltGroupMgr beltGroup = GetComponentInParent<BeltGroupMgr>();
-            bool canDivide = beltManager.BeltDivide(beltGroup, gameObject);
-            if(canDivide)
-                beltGroup.ClientBeltSyncServerRpc();
+            beltManager.BeltDivide(beltGroup, gameObject);
         }
         else if (TryGetComponent(out Transporter transporter))
         {

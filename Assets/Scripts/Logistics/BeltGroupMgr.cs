@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using Pathfinding;
+using Unity.VisualScripting;
+using Unity.Burst.Intrinsics;
 
 // UTF-8 설정
 public class BeltGroupMgr : NetworkBehaviour
@@ -28,7 +30,7 @@ public class BeltGroupMgr : NetworkBehaviour
         if (!beltSyncCheck && !IsServer) 
         {
             beltSyncCheck = true;
-            Invoke(nameof(ClientBeltInvoke), 0.2f);
+            Invoke(nameof(ClientBeltSyncFunc), 0.2f);
         }
 
         beltManager = BeltManager.instance;
@@ -125,17 +127,12 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     public void SetBelt(GameObject belt, int level, int beltDir, int objHeight, int objWidth, bool isHostMap, int index)
-    {
-        //GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
-        //belt.TryGetComponent(out NetworkObject netObj);
-        //if (!netObj.IsSpawned) belt.GetComponent<NetworkObject>().Spawn();
-        belt.transform.parent = this.transform;
+    {        
+        //belt.transform.parent = this.transform;
+        belt.GetComponent<NetworkObject>().TrySetParent(this.NetworkObject);
         BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
         beltList.Add(beltCtrl);
-        //BeltListAddClientRpc(netObj.NetworkObjectId);
         beltCtrl.SettingClientRpc(level, beltDir, objHeight, objWidth, isHostMap, index);
-        //NetworkObjManager.instance.NetObjAdd(gameObject);
-        //NetObjAddClientRpc();
     }
 
     public void SetBeltData()
@@ -156,25 +153,12 @@ public class BeltGroupMgr : NetworkBehaviour
                 NextBeltSetClientRpc(mainId, nextId);
             }
         }
+
+        foreach (BeltCtrl belt in beltList)
+        {
+            belt.AnimSyncFunc();
+        }
     }
-
-    //[ClientRpc]
-    //public void NetObjAddClientRpc()
-    //{
-    //    NetworkObjManager.instance.NetObjAdd(gameObject);
-    //}
-
-    //public void SetBelt(int beltDir, int level, int height, int width, int dirCount)
-    //{
-    //    GameObject belt = Instantiate(beltObj, this.transform.position, Quaternion.identity);
-    //    belt.transform.parent = this.transform;
-    //    BeltCtrl beltCtrl = belt.GetComponent<BeltCtrl>();
-    //    beltCtrl.beltGroupMgr = this.GetComponent<BeltGroupMgr>();
-    //    beltList.Add(beltCtrl);
-    //    beltCtrl.dirNum = beltDir;
-    //    beltCtrl.beltState = BeltState.SoloBelt;
-    //    beltCtrl.BuildingSetting(level, height, width, dirCount);
-    //}
 
     private GameObject PreObjCheck()
     {
@@ -226,18 +210,17 @@ public class BeltGroupMgr : NetworkBehaviour
     {
         if(preBelt == beltList[0])
         {
-            //preBelt.beltState = BeltState.StartBelt;
             preBelt.BeltStateSetClientRpc((int)BeltState.StartBelt);
         }
         else if (preBelt != beltList[0])
         {
-            //preBelt.beltState = BeltState.RepeaterBelt;
             preBelt.BeltStateSetClientRpc((int)BeltState.RepeaterBelt);
         }
 
         nextBelt.BeltStateSetClientRpc((int)BeltState.EndBelt);
-        //nextBelt.beltState = BeltState.EndBelt;
     }
+
+
 
     [ServerRpc(RequireOwnership = false)]
     public void ClientBeltSyncServerRpc()
@@ -250,10 +233,17 @@ public class BeltGroupMgr : NetworkBehaviour
     {
         if (IsServer) return;
         beltSyncCheck = true;
-        Invoke(nameof(ClientBeltInvoke), 0.2f);
+        StartCoroutine(ClientBeltSyncCoroutine());
     }
 
-    void ClientBeltInvoke()
+    IEnumerator ClientBeltSyncCoroutine()
+    {
+        yield return null;
+        yield return null;
+        ClientBeltSyncFunc();
+    }
+
+    void ClientBeltSyncFunc()
     {
         int index = 0;
         BeltCtrl[] beltArr = GetComponentsInChildren<BeltCtrl>();
@@ -316,6 +306,7 @@ public class BeltGroupMgr : NetworkBehaviour
                 index++;
             }
             belt.beltGroupMgr = this;
+            belt.AnimSyncFunc();
         }
 
         groupItem.Clear();
@@ -494,11 +485,14 @@ public class BeltGroupMgr : NetworkBehaviour
 
     void CombineFunc(BeltCtrl belt, BeltCtrl otherBelt, bool isNextFind)
     {
+        if (!IsSpawned || !otherBelt.beltGroupMgr.IsSpawned)
+            return;
+
         //BeltManager beltManager = this.GetComponentInParent<BeltManager>();
         if (isNextFind)
         {
             beltManager.BeltCombine(this, otherBelt.beltGroupMgr);
-            otherBelt.beltGroupMgr.ClientBeltSyncServerRpc();
+            //otherBelt.beltGroupMgr.ClientBeltSyncServerRpc();
             NetworkObjectReference thisId = belt.GetComponent<NetworkObject>();
             NetworkObjectReference othId = otherBelt.GetComponent<NetworkObject>();
             NextBeltSetClientRpc(thisId, othId);
@@ -528,7 +522,7 @@ public class BeltGroupMgr : NetworkBehaviour
         belt.BeltModelSet();
         otherBelt.BeltModelSet();
         otherBelt.BeltDirSetServerRpc();
-        ClientBeltSyncServerRpc();
+        //ClientBeltSyncServerRpc();
     }
 
     [ClientRpc]
@@ -659,22 +653,6 @@ public class BeltGroupMgr : NetworkBehaviour
         if (findItemProps && isServer == IsServer)
         {
             LootListManager.instance.DisplayLootInfo(findItemProps.item, findItemProps.amount);
-        }
-    }
-
-    [ServerRpc]
-    public void BeltGroupAnimSycnServerRpc()
-    {
-        BeltGroupAnimSycnClientRpc();
-    }
-
-    [ClientRpc]
-    public void BeltGroupAnimSycnClientRpc()
-    {
-        Debug.Log("BeltGroupAnimSycnClientRpc call");
-        foreach (BeltCtrl belt in beltList)
-        {
-            belt.AnimSyncFunc();
         }
     }
 }

@@ -648,7 +648,6 @@ MonoBehaviour:
   isDestroying: 0
   isRunning: 0
   settingEndCheck: 0
-  DelayGetList: 
   connectedPosList: []
   canUpgrade: 1
   warningIcon: {fileID: 0}
@@ -657,6 +656,9 @@ MonoBehaviour:
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
+  overlay: {fileID: 0}
+  overlayUse: 0
+  modelMotion: 0
   beltGroupMgr: {fileID: 0}
   beltState: 0
   nextBelt: {fileID: 0}

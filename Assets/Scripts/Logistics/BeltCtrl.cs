@@ -23,7 +23,6 @@ public class BeltCtrl : LogisticsCtrl
     public BeltGroupMgr beltGroupMgr;
     BeltManager beltManager = null;
 
-    protected Animator anim;
     protected Animator animsync;
 
     public BeltState beltState;
@@ -93,17 +92,10 @@ public class BeltCtrl : LogisticsCtrl
     void Start()
     {
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-        animsync = beltManager.AnimSync(level);
-        anim = GetComponent<Animator>();
         AnimSyncFunc();
         isOperate = true;
         StrBuilt();
         BeltModelSet();
-    }
-
-    protected override void Update()
-    {
-        base.Update();
     }
 
     private void FixedUpdate()
@@ -119,16 +111,9 @@ public class BeltCtrl : LogisticsCtrl
 
     public void AnimSyncFunc()
     {
-        if(!anim)
-            return;
-        else if(!animsync)
-            animsync = beltManager.AnimSync(level);
-
         animsync = beltManager.AnimSync(level);
-
         var info = animsync.GetCurrentAnimatorStateInfo(0);
-        anim.Play(info.fullPathHash, 0, info.normalizedTime);
-        Debug.Log(info.fullPathHash);
+        animator.Play(info.fullPathHash, 0, info.normalizedTime);
     }
 
     public override void NearStrBuilt()
@@ -136,22 +121,16 @@ public class BeltCtrl : LogisticsCtrl
         // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
         // 변경사항이 생기면 DelayNearStrBuiltCoroutine()에도 반영해야 함
         if (IsServer)
-        {
-            if (anim == null)
-            {
-                beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-                animsync = beltManager.AnimSync(level);
-                anim = GetComponent<Animator>();
-            }
-
+        {            
             if (!removeState)
             {
+                beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
                 CheckPos();
                 ModelSet();
                 beltGroupMgr.BeltGroupRefresh();    
-                anim.SetFloat("DirNum", dirNum);
-                anim.SetFloat("ModelNum", modelMotion);
-                anim.SetFloat("Level", level);
+                animator.SetFloat("DirNum", dirNum);
+                animator.SetFloat("ModelNum", modelMotion);
+                animator.SetFloat("Level", level);
             }
         }
         else// 이 라인은 딜레이를 주고 실행할 때는 뺌
@@ -173,19 +152,14 @@ public class BeltCtrl : LogisticsCtrl
 
         if (!removeState)
         {
-            if (anim == null)
-            {
-                beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-                animsync = beltManager.AnimSync(level);
-                anim = GetComponent<Animator>();
-            }
+            beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
 
             CheckPos();
             ModelSet();
 
-            anim.SetFloat("DirNum", dirNum);
-            anim.SetFloat("ModelNum", modelMotion);
-            anim.SetFloat("Level", level);
+            animator.SetFloat("DirNum", dirNum);
+            animator.SetFloat("ModelNum", modelMotion);
+            animator.SetFloat("Level", level);
         }
     }
 
@@ -193,10 +167,9 @@ public class BeltCtrl : LogisticsCtrl
     public override void UpgradeFuncClientRpc()
     {
         base.UpgradeFuncClientRpc();
-        anim.SetFloat("DirNum", dirNum);
-        anim.SetFloat("ModelNum", modelMotion);
-        anim.SetFloat("Level", level);
-        animsync = beltManager.AnimSync(level);
+        animator.SetFloat("DirNum", dirNum);
+        animator.SetFloat("ModelNum", modelMotion);
+        animator.SetFloat("Level", level);
         AnimSyncFunc();
     }
 
@@ -1003,8 +976,8 @@ public class BeltCtrl : LogisticsCtrl
     public void BeltModelMotionSetClientRpc(int modelNum)
     {
         modelMotion = modelNum;
-        if(anim)
-            anim.SetFloat("ModelNum", modelMotion);
+        if(animator)
+            animator.SetFloat("ModelNum", modelMotion);
     }
 
     public BeltSaveData BeltSaveData()

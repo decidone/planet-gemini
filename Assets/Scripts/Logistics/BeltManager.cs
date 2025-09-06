@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using Newtonsoft.Json.Bson;
+using Unity.VisualScripting;
 
 // UTF-8 설정
 public class BeltManager : NetworkBehaviour
@@ -41,10 +42,11 @@ public class BeltManager : NetworkBehaviour
     public void BeltCombine(BeltGroupMgr fstGroupMgr, BeltGroupMgr secGroupMgr)
     {
         fstGroupMgr.beltList.AddRange(secGroupMgr.beltList);
-
+        NetworkObject groupMgr = fstGroupMgr.NetworkObject;
         foreach (BeltCtrl belt in secGroupMgr.beltList)
         {
-            belt.transform.parent = fstGroupMgr.transform;
+            belt.GetComponent<NetworkObject>().TrySetParent(groupMgr);
+            //belt.transform.parent = fstGroupMgr.transform;
             belt.beltGroupMgr = fstGroupMgr;
         }
         foreach (ItemProps item in secGroupMgr.groupItem)
@@ -57,7 +59,6 @@ public class BeltManager : NetworkBehaviour
         {
             fstGroupMgr.nextObj = secGroupMgr.nextObj;
             fstGroupMgr.NearObjSetClientRpc(secGroupMgr.nextObj.GetComponent<NetworkObject>(), true);
-            fstGroupMgr.BeltGroupAnimSycnServerRpc();
         }
 
         //BeltGroupRemoveServerRpc(secGroupMgr.NetworkObject);
@@ -66,14 +67,17 @@ public class BeltManager : NetworkBehaviour
         {
             destroyObj.Despawn();
         }
+
+        fstGroupMgr.ClientBeltSyncServerRpc();
         Destroy(secGroupMgr.gameObject);
     }
 
-    public bool BeltDivide(BeltGroupMgr beltGroup, GameObject removeBelt)
+    public void BeltDivide(BeltGroupMgr beltGroup, GameObject removeBelt)
     {
         if (beltGroup.beltList.Count <= 1)
         {
-            beltGroup.beltList[0].transform.parent = null;
+            //beltGroup.beltList[0].transform.parent = null;
+            beltGroup.beltList[0].NetworkObject.TryRemoveParent();
             //BeltGroupRemoveServerRpc(beltGroup.NetworkObject);
             NetworkObject destroyObj = beltGroup.GetComponent<NetworkObject>();
             if (destroyObj != null && destroyObj.IsSpawned)
@@ -81,7 +85,7 @@ public class BeltManager : NetworkBehaviour
                 destroyObj.Despawn();
             }
             Destroy(beltGroup.gameObject);
-            return false;
+            return;
         }
 
         List<BeltCtrl> groupAList = new List<BeltCtrl>();
@@ -118,7 +122,7 @@ public class BeltManager : NetworkBehaviour
                 CreateNewBeltGroup(groupBList);
             }
         }
-        return true;
+        return;
     }
 
     //[ServerRpc(RequireOwnership = false)]
@@ -154,7 +158,7 @@ public class BeltManager : NetworkBehaviour
             beltGroup.beltList[0].FactoryModelSet();
         }
 
-        beltGroup.BeltGroupAnimSycnServerRpc();
+        beltGroup.ClientBeltSyncServerRpc();
     }
 
     private void CreateNewBeltGroup(List<BeltCtrl> beltList)
@@ -163,13 +167,15 @@ public class BeltManager : NetworkBehaviour
         newObj.TryGetComponent(out NetworkObject netObj);
         if (!netObj.IsSpawned) newObj.GetComponent<NetworkObject>().Spawn(true);
 
-        newObj.transform.parent = this.gameObject.transform;
+        netObj.TrySetParent(this.NetworkObject);
+        //newObj.transform.parent = gameObject.transform;
 
         BeltGroupMgr newBeltGroup = newObj.GetComponent<BeltGroupMgr>();
 
         foreach (BeltCtrl belt in beltList)
         {
-            belt.transform.parent = newBeltGroup.transform;
+            belt.NetworkObject.TrySetParent(newBeltGroup.NetworkObject);
+            //belt.transform.parent = newBeltGroup.transform;
             belt.beltGroupMgr = newBeltGroup;
             newBeltGroup.beltList.Add(belt);
             belt.BeltModelSet();
@@ -186,6 +192,6 @@ public class BeltManager : NetworkBehaviour
             newBeltGroup.beltList[0].FactoryModelSet();
         }
 
-        newBeltGroup.BeltGroupAnimSycnServerRpc();
+        newBeltGroup.ClientBeltSyncServerRpc();
     }
 }
