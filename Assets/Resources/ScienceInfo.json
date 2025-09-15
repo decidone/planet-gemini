@@ -9,47 +9,47 @@
   },
   "PortalItemIn":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Sends items to another planet.","basicScience" : true,"sortIndex":1}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Sends items to another planet.","basicScience" : false,"sortIndex":7}
     }
   },
   "PortalItemOut":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get items to another planet.","basicScience" : true,"sortIndex":2}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get items to another planet.","basicScience" : false,"sortIndex":8}
     }
   },
   "PortalUnitIn":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Sends unit to another planet.","basicScience" : true,"sortIndex":3}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Sends unit to another planet.","basicScience" : false,"sortIndex":9}
     }
   },
   "PortalUnitOut":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get unit to another planet.","basicScience" : true,"sortIndex":4}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Get unit to another planet.","basicScience" : false,"sortIndex":10}
     }
   },
   "Miner":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Mines Coal, Stone, Iron, and Copper.","basicScience" : true,"sortIndex":5},
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Mines Coal, Stone, Iron, and Copper.","basicScience" : true,"sortIndex":1},
       "2":{"items":["SteelPlate","Cogwheel"],"amounts":[5,1],"coreLv":2,"time":1,"Info":"Mines in a 2x2 size. requires energy.","basicScience" : false,"sortIndex":2},
       "3":{"items":["ControlUnit","Motor"],"amounts":[5,1],"coreLv":4,"time":1,"Info":"Can mine Adamantium, Mines in a 2x2 size. requires energy.","basicScience" : false,"sortIndex":1}
     }
   },
   "Furnace":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Smelts ores into ingots. requires coal.","basicScience" : true,"sortIndex":6},
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Smelts ores into ingots. requires coal.","basicScience" : true,"sortIndex":2},
       "2":{"items":["SteelBeam","ManaStone"],"amounts":[1,1],"coreLv":3,"time":1,"Info":"Smelts ores into ingots. requires energy.","basicScience" : false,"sortIndex":1}
     }
   },
   "Belt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items between buildings.","basicScience" : true,"sortIndex":7},
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items between buildings.","basicScience" : true,"sortIndex":3},
       "2":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Faster than lv1 Belts.","basicScience" : false,"sortIndex":4},
       "3":{"items":["SteelPlate","Rubber"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"Faster than lv2 Belts.","basicScience" : false,"sortIndex":2}
     }
   },
   "UnderBelt":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items underground.","basicScience" : true,"sortIndex":8},
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items underground.","basicScience" : true,"sortIndex":4},
       "2":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"coreLv":2,"time":1,"Info":"Faster than lv1 UnderBelt.","basicScience" : false,"sortIndex":5},
       "3":{"items":["SteelPlate","Rubber"],"amounts":[1,1],"coreLv":4,"time":1,"Info":"Faster than lv2 UnderBelt.","basicScience" : false,"sortIndex":3}
     }
@@ -61,7 +61,7 @@
   },
   "Constructor":{
     "Build":{
-      "1":{"items":["IronBar","CopperBar"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"Produces components from a single material. requires energy.","basicScience" : true,"sortIndex":10}
+      "1":{"items":["IronBar","CopperBar"],"amounts":[1,1],"coreLv":1,"time":1,"Info":"Produces components from a single material. requires energy.","basicScience" : true,"sortIndex":6}
     }
   },
   "Assembler":{
@@ -169,7 +169,7 @@
   },
   "CoalGenerator":{
     "Build":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Generates energy from coal","basicScience" : true, "sortIndex":9}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Generates energy from coal","basicScience" : true, "sortIndex":5}
     }
   },
   "SteamGenerator":{

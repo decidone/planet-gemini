@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   title: Teleport
-  description: Use the portal to teleport to market.
-  isCompleted: 0
+  description: Use the portal to teleport to another planet.
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 0}
   amount: -1
-  destination: 1
+  destination: 0
   scienceTech: -1
+  hasDicLink: 1
+  dicKeyword: Portal

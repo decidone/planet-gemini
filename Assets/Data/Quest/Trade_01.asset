@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3653b061648824b41b385336c0fac079, type: 3}
   m_Name: Trade_01
   m_EditorClassIdentifier: 
-  type: 10
+  type: 11
   title: Trade
-  description: Buy iron ore from merchant
-  isCompleted: 0
-  item: {fileID: 11400000, guid: 8f35d578a91839e459b68ede2603b22a, type: 2}
+  description: Sell Fuel to merchant
+  isCompleted: 1
+  item: {fileID: 11400000, guid: 5912f021a7959c649a39f14ccbc2dd85, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}
   amount: 5
   destination: -1
   scienceTech: -1
+  hasDicLink: 1
+  dicKeyword: Trade

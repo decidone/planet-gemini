@@ -22,7 +22,6 @@ public class Quest : ScriptableObject
     public int type = -1;
     [TextArea(3, 10)] public string title;
     [TextArea(3, 10)] public string description;
-    public bool isCompleted = false;
 
     [Space]
     [Header("Requirement")]
@@ -38,4 +37,7 @@ public class Quest : ScriptableObject
     [Space]
     [Header("Science")]
     public int scienceTech = -1;
+
+    public bool hasDicLink = false;
+    public string dicKeyword = string.Empty;
 }

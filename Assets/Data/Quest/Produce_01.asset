@@ -14,11 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 21
   title: Produce
-  description: Make iron plate at a constructor
-  isCompleted: 1
-  item: {fileID: 11400000, guid: 4959f8c3d8a00ee4896ea3a05c9eb5d5, type: 2}
+  description: 'Make Bricks at a Furnace using Stone and Coal.
+
+    ( If you built
+    Miner at the wrong place, you can demolish them and build again )'
+  item: {fileID: 11400000, guid: d5e0faf5544a08246b8b6c6de513da76, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}
-  amount: 3
+  amount: 5
   destination: -1
   scienceTech: -1
+  hasDicLink: 1
+  dicKeyword: Coal Furnace

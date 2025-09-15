@@ -3,7 +3,7 @@
     "1":{"items":["IronPlate"],"amounts":[1],"cooldown":3}
   },
   "Miner":{
-    "1":{"items":["IronBar","Brick"],"amounts":[2,5],"cooldown":3},
+    "1":{"items":["Brick"],"amounts":[5],"cooldown":3},
     "2":{"items":["SteelPlate","IronPlate"],"amounts":[5,10],"cooldown":3},
     "3":{"items":["ControlUnit","SteelBeam"],"amounts":[5,15],"cooldown":3}
   },
@@ -15,7 +15,7 @@
     "1":{"items":["IronPlate","Brick"],"amounts":[5,10],"cooldown":3}
   },
   "Constructor":{
-    "1":{"items":["IronBar","Brick"],"amounts":[5,10],"cooldown":3}
+    "1":{"items":["Brick"],"amounts":[10],"cooldown":3}
   },
   "Assembler":{
     "1":{"items":["SteelPlate","Screw","Wire"],"amounts":[4,10,12],"cooldown":3}
@@ -122,7 +122,7 @@
     "1":{"items":["Battery","IronPlate"],"amounts":[2,8],"cooldown":3}
   },
   "CoalGenerator":{
-    "1":{"items":["IronPlate"],"amounts":[6],"cooldown":3}
+    "1":{"items":["Brick"],"amounts":[10],"cooldown":3}
   },
   "SteamGenerator":{
     "1":{"items":["Motor","SteelBeam"],"amounts":[3,10],"cooldown":3}

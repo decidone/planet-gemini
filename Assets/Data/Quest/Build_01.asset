@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 20
   title: Build
-  description: Build a constructor
-  isCompleted: 1
+  description: Build a Miner at the ore vein.
   item: {fileID: 0}
-  strData: {fileID: 11400000, guid: 55cf1cdbd2a573845b94e05186ff05da, type: 2}
+  strData: {fileID: 11400000, guid: 49e145897899dc040a8a7f471b9615a9, type: 2}
   unitData: {fileID: 0}
   amount: -1
   destination: -1
   scienceTech: -1
+  hasDicLink: 1
+  dicKeyword: Miner

@@ -259,6 +259,26 @@ public class InfoDictionary : MonoBehaviour
         }
     }
 
+    public void Search(string keyword, bool isTargetSearch)
+    {
+        if (isTargetSearch)     //키워드로 바로 인포를 띄워줄 때
+        {
+            InfoDictionarySO info = new InfoDictionarySO();
+            foreach (InfoDictionarySO infoSO in infoDictionaryListSO.infoDictionarySOList)
+            {
+                if (infoSO.name.Equals(keyword))
+                {
+                    info = infoSO;
+                }
+            }
+            if (info != null)
+            {
+                OpenUI();
+                SelectItem(info);
+            }
+        }
+    }
+
     public void Search(Structure str)
     {
         //Debug.Log("str.name " + str.name);

@@ -1223,6 +1223,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1853765409794435595, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853765409794435595, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853765409794435595, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853765409794435595, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1853765409981779460, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1310,6 +1326,22 @@ PrefabInstance:
     - target: {fileID: 1853765409981779480, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
       propertyPath: m_Name
       value: Quest
+      objectReference: {fileID: 0}
+    - target: {fileID: 5717888619799799231, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5717888619799799231, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5717888619799799231, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5717888619799799231, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}

@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3653b061648824b41b385336c0fac079, type: 3}
   m_Name: Trade_02
   m_EditorClassIdentifier: 
-  type: 11
+  type: 10
   title: Trade
-  description: Sell copper goblet to merchant
-  isCompleted: 0
-  item: {fileID: 11400000, guid: d4d03371787b07a4bbe7c78a6c93233b, type: 2}
+  description: Buy Brick from merchant
+  item: {fileID: 11400000, guid: d5e0faf5544a08246b8b6c6de513da76, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}
-  amount: 5
+  amount: 30
   destination: -1
   scienceTech: -1
+  hasDicLink: 1
+  dicKeyword: Trade

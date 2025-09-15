@@ -10,7 +10,8 @@ public class QuestManager : MonoBehaviour
 
     [SerializeField] Text titleText;
     [SerializeField] Text descriptionText;
-
+    [SerializeField] Button dicBtn;
+    
     public int currentQuest = 0;
     Overall overall;
     NetworkObjManager networkObjManager;
@@ -48,6 +49,8 @@ public class QuestManager : MonoBehaviour
     {
         titleText.text = "";
         descriptionText.text = "";
+        dicBtn.onClick.RemoveAllListeners();
+        dicBtn.gameObject.SetActive(false);
     }
 
     public void SetQuest(int order)
@@ -60,6 +63,11 @@ public class QuestManager : MonoBehaviour
 
         titleText.text = quests[order].title;
         descriptionText.text = quests[order].description;
+        if (quests[order].hasDicLink)
+        {
+            dicBtn.gameObject.SetActive(true);
+            dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(quests[order].dicKeyword, true));
+        }
 
         switch (quests[order].type)
         {
@@ -242,7 +250,6 @@ public class QuestManager : MonoBehaviour
     {
         ResetUI();
 
-        quests[currentQuest].isCompleted = true;
         currentQuest++;
         SetQuest(currentQuest);
     }
