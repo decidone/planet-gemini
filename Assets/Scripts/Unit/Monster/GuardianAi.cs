@@ -33,7 +33,8 @@ public class GuardianAi : MonsterAi
             case AIState.AI_Attack:
                 if (attackState == AttackState.Waiting)
                 {
-                    AttackCheck();
+                    if (aggroTarget)
+                        AttackCheck();
                 }
                 else if (attackState == AttackState.AttackStart)
                 {
@@ -42,8 +43,9 @@ public class GuardianAi : MonsterAi
                 break;
             case AIState.AI_NormalTrace:
                 {
+                    if (aggroTarget)
+                        AttackCheck();
                     NormalTrace();
-                    AttackCheck();
                 }
                 break;
             case AIState.AI_ReturnPos:

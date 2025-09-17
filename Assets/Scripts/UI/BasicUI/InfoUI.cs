@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class InfoUI : MonoBehaviour
@@ -175,6 +177,7 @@ public class InfoUI : MonoBehaviour
         }
     }
 
+    // 단일 클릭 유닛
     public void SetUnitInfo(UnitAi _unit)
     {
         SetDefault();
@@ -184,8 +187,74 @@ public class InfoUI : MonoBehaviour
         nameText.text = unit.name;
         SetUnitHp();
         unit.onHpChangedCallback += SetUnitHp;
+
+        upgradeBtn.gameObject.SetActive(true);
+        upgradeBtn.onClick.AddListener(() => UnitUpgradeBtnFunc());
+        
         //firstBattleText.text = "ATK " + unit.damage + " DEF " + unit.defense;
         //secondBattleText.text = "ATK Delay " + unit.attackSpeed + " ATK Range " + unit.unitCommonData.AttackDist;
+    }
+
+    // 드래그 유닛
+    public void SetUnitInfo(List<UnitAi> _units)
+    {
+        SetDefault();
+        nameText.text = _units.Count.ToString();
+        upgradeBtn.gameObject.SetActive(true);
+        upgradeBtn.onClick.AddListener(() => 
+        {
+            Dictionary<string, List<UnitAi>> canUpgrade = new Dictionary<string, List<UnitAi>>();
+
+            foreach (UnitAi u in _units)
+            {
+                if(u.canUpgrade())
+                {
+                    if (!canUpgrade.TryGetValue(u.unitCommonData.UnitName, out var list))
+                    {
+                        list = new List<UnitAi>();
+                        canUpgrade[u.unitCommonData.UnitName] = list;
+                    }
+                    list.Add(u);
+                }
+            }
+
+            List<Recipe> selectRecipe = RecipeList.instance.GetRecipeInven("UnitUpgrade");
+
+            Dictionary<string, int> cost = new Dictionary<string, int>();
+
+            foreach (var recipe in selectRecipe)
+            {
+                if (canUpgrade.ContainsKey(recipe.name))
+                {
+                    for (int i = 0; i < recipe.items.Count - 1; i++)
+                    {
+                        if (!cost.ContainsKey(recipe.items[i]))
+                        {
+                            cost.Add(recipe.items[i], 0);
+                        }
+                        cost[recipe.items[i]] += (recipe.amounts[i] * canUpgrade[recipe.name].Count);
+                    }
+                }                
+            }
+
+
+            foreach (var costData in cost)
+            {
+                Debug.Log("item : " + costData.Key + ", amount :" + costData.Value);
+            }
+
+            //foreach (UnitAi u in _units)
+            //{
+            //    u.UnitLevelUpFuncServerRpc();
+            //}
+        });
+    }
+
+    void UnitUpgradeBtnFunc()
+    {
+        unit.UnitLevelUpFuncServerRpc();
+        upgradeBtn.gameObject.SetActive(false);
+        SetUnitHp();
     }
 
     public void SetUnitHp()

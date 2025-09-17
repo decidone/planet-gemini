@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDRepairTower
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 7
   attackDist: 10
-  attDelayTime: 1
+  attDelayTime: 3
   maxEnergyBulletAmount: -1
   reloadCooldown: -1
   upgradeDamage: 20

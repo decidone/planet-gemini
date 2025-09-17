@@ -6,22 +6,11 @@ using UnityEngine;
 // UTF-8 설정
 public class TowerAi : Production
 {
-    public enum TowerState
-    {
-        Waiting,
-        Attack,
-        AttackDelay
-    }
-
     public TowerData towerData;
     //protected TowerData TowerData { set { towerData = value; } }
 
-    // 유닛 상태 관련
-    [HideInInspector]
-    public TowerState towerState = TowerState.Waiting;
-
     protected float searchTimer = 0f;
-    protected float searchInterval = 0.25f; // 딜레이 간격 설정
+    protected float searchInterval; // 딜레이 간격 설정
 
     List<Item> bulletRecipe;
 
@@ -46,6 +35,7 @@ public class TowerAi : Production
     protected override void Start()
     {
         base.Start();
+        searchInterval = 0.25f;
         networkObjectPool = NetworkObjectPool.Singleton;
         if (!structureData.EnergyUse[level])
         {
@@ -152,7 +142,7 @@ public class TowerAi : Production
 
     public override bool CanTakeItem(Item item)
     {
-        if (isInvenFull) return false;
+        if (isInvenFull || energyUse) return false;
 
         var slot = inventory.SlotCheck(0);
         if (slot.item == null)

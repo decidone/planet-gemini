@@ -8,11 +8,9 @@ public class AttackTower : TowerAi
 {
     // 공격 관련 변수
     protected GameObject aggroTarget = null;   // 타겟
-    float mstDisCheckTime = 0f;
-    float mstDisCheckInterval = 0.5f; // 0.5초 간격으로 몬스터 거리 체크
+    [SerializeField] float attDelayTimer = 0f;
     float targetDist = 0.0f;         // 타겟과의 거리
     bool isTargetSet = false; 
-    bool isDelayAfterAttackCoroutine = false;
 
     public TwBulletDataManager bulletDataManager;
     public Dictionary<string, BulletData> bulletDic;
@@ -34,10 +32,11 @@ public class AttackTower : TowerAi
         towerAttackOption = GetComponent<TowerAttackOption>();
         bulletDataManager = TwBulletDataManager.instance;
         bulletDic = bulletDataManager.bulletDic;
-
         energyBulletMaxAmount = towerData.MaxEnergyBulletAmount;
         cooldown = towerData.ReloadCooldown;
         effiCooldown = cooldown;
+        if (energyUse)
+            loadedBullet = bulletDic["EnergyBullet"];
         StrBuilt();
         StartCoroutine(EfficiencyCheck());
     }
@@ -131,45 +130,38 @@ public class AttackTower : TowerAi
                 if (searchTimer >= searchInterval)
                 {
                     SearchObjectsInRange();
-                    searchTimer = 0f; // 탐색 후 타이머 초기화
+                    RemoveObjectsOutOfRange();
+                    AttackTargetCheck();
+                    searchTimer = 0;
                 }
 
-                if (monsterList.Count > 0)
-                {
-                    mstDisCheckTime += Time.deltaTime;
-                    if (mstDisCheckTime > mstDisCheckInterval)
-                    {
-                        mstDisCheckTime = 0f;
-                        RemoveObjectsOutOfRange();
-                        AttackTargetCheck(); // 몬스터 거리 체크 함수 호출
-                    }
-                    AttackTargetDisCheck();
+                attDelayTimer += Time.deltaTime;
 
-                    if (structureData.EnergyUse[level])
+                if (loadedBullet == null && slot.Item1 != null && slot.Item2 > 0)
+                {
+                    BulletCheck();
+                }
+
+                if (aggroTarget && loadedBullet != null)
+                {
+                    if (attDelayTimer > attDelayTime + loadedBullet.fireRate)
                     {
-                        if (energyBulletAmount > 0)
+                        if (structureData.EnergyUse[level])
                         {
-                            if (loadedBullet == null)
+                            if (energyBulletAmount > 0)
                             {
-                                loadedBullet = bulletDic["EnergyBullet"];
+                                AttackTowerAiCtrl();
+                                attDelayTimer = 0f;
                             }
-                            AttackTowerAiCtrl();
                         }
-                    }
-                    else
-                    {
-                        if (slot.Item1 != null && slot.Item2 > 0)
+                        else
                         {
-                            if (loadedBullet == null)
+                            if (slot.Item1 != null && slot.Item2 > 0)
                             {
-                                BulletCheck();
+                                AttackTowerAiCtrl();
+                                attDelayTimer = 0f;
                             }
-                            AttackTowerAiCtrl();
-                        }
-                        else if (slot.Item1 == null && loadedBullet != null)
-                        {
-                            loadedBullet = null;
-                        }
+                        }                        
                     }
                 }
             }
@@ -264,34 +256,19 @@ public class AttackTower : TowerAi
         }
     }
 
-    void AttackCheck()
+    void AttackTowerAiCtrl()
     {
         if (targetDist == 0)
         {
-            towerState = TowerState.Waiting;
             return;
         }
-
         else if (targetDist > towerData.AttackDist + loadedBullet.range)  // 공격 범위 밖으로 나갈 때
         {
-            towerState = TowerState.Waiting;
+            return;
         }
         else if (targetDist <= towerData.AttackDist + loadedBullet.range)  // 공격 범위 내로 들어왔을 때        
         {
-            towerState = TowerState.Attack;
-        }
-    }
-    
-    void AttackTowerAiCtrl()
-    {
-        switch (towerState)
-        {
-            case TowerState.Waiting:
-                AttackCheck();
-                break;
-            case TowerState.Attack:
-                Attack();
-                break;
+            AttackStart();
         }
     }
 
@@ -311,6 +288,7 @@ public class AttackTower : TowerAi
                     {
                         closestDistance = distance;
                         aggroTarget = monster;
+                        targetDist = Vector3.Distance(transform.position, aggroTarget.transform.position);
                     }
                 }
             }
@@ -336,42 +314,10 @@ public class AttackTower : TowerAi
 
     private void RemoveObjectsOutOfRange()
     {
-        for (int i = monsterList.Count - 1; i >= 0; i--)
-        {
-            if (monsterList[i] == null)
-                monsterList.RemoveAt(i);
-            else
-            {
-                GameObject monster = monsterList[i];
-                if (Vector2.Distance(this.transform.position, monster.transform.position) > structureData.ColliderRadius)
-                {
-                    monsterList.RemoveAt(i);
-                }
-            }
-        }
-    }
-
-    void AttackTargetDisCheck()
-    {
-        if (aggroTarget != null)
-        {
-            targetDist = Vector3.Distance(transform.position, aggroTarget.transform.position);
-        }
-    }
-
-    void Attack()
-    {
-        if (!isDelayAfterAttackCoroutine)
-        {
-            if (AttackStart())
-            {
-                StartCoroutine(DelayAfterAttack(attDelayTime + loadedBullet.fireRate)); // 1.5초 후 딜레이 적용
-            }
-            else
-            {
-                towerState = TowerState.Waiting;
-            }
-        }
+        monsterList.RemoveAll(monster =>
+            monster == null ||
+            Vector2.Distance(transform.position, monster.transform.position) > structureData.ColliderRadius
+        );
     }
 
     void BulletCheck()
@@ -382,21 +328,8 @@ public class AttackTower : TowerAi
         }
     }
 
-    IEnumerator DelayAfterAttack(float delayTime)
+    protected void AttackStart()
     {
-        isDelayAfterAttackCoroutine = true;
-        towerState = TowerState.AttackDelay;
-
-        yield return new WaitForSeconds(delayTime);
-
-        towerState = TowerState.Waiting;
-        isDelayAfterAttackCoroutine = false;
-    }
-
-    protected bool AttackStart()
-    {
-        bool isAttacked = false;
-
         if (aggroTarget != null)
         {
             if (isSingleAttack)
@@ -416,6 +349,8 @@ public class AttackTower : TowerAi
                     {
                         Overall.instance.OverallConsumption(slot.Item1, 1);
                         inventory.SlotSubServerRpc(0, 1);
+                        if(slot.Item2 == 0)
+                            loadedBullet = null;
                     }
                     else
                     {
@@ -438,6 +373,8 @@ public class AttackTower : TowerAi
                     {
                         Overall.instance.OverallConsumption(slot.Item1, 1);
                         inventory.SlotSubServerRpc(0, 1);
+                        if (slot.Item2 == 0)
+                            loadedBullet = null;
                     }
                     else
                     {
@@ -452,13 +389,9 @@ public class AttackTower : TowerAi
                 towerAttackOption.TowerAttackFxSet(fx);
                 fx.GetTarget(damage + loadedBullet.damage, gameObject);
             }
-
-            isAttacked = true;
             soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
             aggroAmount.SetAggroAmount(damage, attDelayTime + loadedBullet.fireRate);
         }
-
-        return isAttacked;
     }
 
     public void RemoveMonster(GameObject monster)
@@ -491,5 +424,12 @@ public class AttackTower : TowerAi
         data.energyBulletAmount = energyBulletAmount;
 
         return data;
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red; // 색상 지정
+        Gizmos.DrawWireSphere(transform.position, towerData.AttackDist); // 원형 범위
     }
 }

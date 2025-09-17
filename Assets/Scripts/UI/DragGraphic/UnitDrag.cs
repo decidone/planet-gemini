@@ -293,6 +293,9 @@ public class UnitDrag : DragFunc
             }
             BasicUIBtns.instance.SwapFunc(false);
         }
+
+        List<UnitAi> unitAis = selectedObjectsList.Select(obj => obj.GetComponent<UnitAi>()).ToList();
+        InfoUI.instance.SetUnitInfo(unitAis);
     }
 
     private void SelectedObjects(RaycastHit2D ray)
@@ -306,6 +309,8 @@ public class UnitDrag : DragFunc
 
         addUnit?.Invoke(gameObject);
         BasicUIBtns.instance.SwapFunc(false);
+
+        InfoUI.instance.SetUnitInfo(gameObject.GetComponentInParent<UnitAi>());
     }
 
     private void SelectedSameUnit(RaycastHit2D ray)
@@ -315,8 +320,8 @@ public class UnitDrag : DragFunc
 
         GameObject gameObject = ray.collider.GetComponentInParent<UnitAi>().gameObject;
         removeUnit?.Invoke();
-
-        int unitIndex = gameObject.GetComponent<UnitAi>().unitIndex;
+        gameObject.TryGetComponent(out UnitAi unit);
+        int unitIndex = unit.unitIndex;
 
         UnitAi[] unitAis = new UnitAi[0];
         List<GameObject> selectedObjectsList = new List<GameObject>();
@@ -347,11 +352,14 @@ public class UnitDrag : DragFunc
 
         foreach (var obj in unitAis)
         {
-            Vector3 viewportPos = Camera.main.WorldToViewportPoint(obj.transform.position);
-            if (viewportPos.z > 0 && viewportPos.x >= 0 && viewportPos.x <= 1 &&
-                viewportPos.y >= 0 && viewportPos.y <= 1)
+            if(obj.TryGetComponent(out UnitAi _unit) && unit.unitLevel == _unit.unitLevel)
             {
-                selectedObjectsList.Add(obj.gameObject);
+                Vector3 viewportPos = Camera.main.WorldToViewportPoint(obj.transform.position);
+                if (viewportPos.z > 0 && viewportPos.x >= 0 && viewportPos.x <= 1 &&
+                    viewportPos.y >= 0 && viewportPos.y <= 1)
+                {
+                    selectedObjectsList.Add(obj.gameObject);
+                }
             }
         }
 
@@ -367,6 +375,9 @@ public class UnitDrag : DragFunc
             }
             BasicUIBtns.instance.SwapFunc(false);
         }
+
+        List<UnitAi> unitAiList = selectedObjectsList.Select(obj => obj.GetComponent<UnitAi>()).ToList();
+        InfoUI.instance.SetUnitInfo(unitAiList);
     }
 
     void SetTargetPosition(bool isAttack, Vector2 targetPos)

@@ -271,6 +271,11 @@ MonoBehaviour:
   selfHealingAmount: 0
   selfHealInterval: 0
   visionRadius: 8
+  playerUnitPortalIn: 0
+  unitLevel: 0
+  unitLevelData:
+  - {fileID: 11400000, guid: ae89714de762d644395009c776fa8804, type: 2}
+  - {fileID: 11400000, guid: 6d4bde9dfa8f28943b162abc1c373a11, type: 2}
   attackFX: {fileID: 6943466972215031995, guid: f80c5c7588c594f4e895046e13467900, type: 3}
 --- !u!114 &-8952409389878889617
 MonoBehaviour:

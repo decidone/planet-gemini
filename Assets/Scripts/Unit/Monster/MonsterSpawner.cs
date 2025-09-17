@@ -70,7 +70,7 @@ public class MonsterSpawner : NetworkBehaviour
     GameObject awakeColl;
     public SpawnerSearchColl spawnerSearchColl;
     SpawnerAwake spawnerAwakeColl;
-    float[] energyAggroMaxValue = new float[8] {3000, 6000, 8000, 10000, 12000, 12000, 12000, 12000 }; // 어그로 최대 임계치
+    float[] energyAggroMaxValue = new float[8] { 3000, 6000, 8000, 10000, 12000, 12000, 12000, 12000 }; // 어그로 최대 임계치
     //float[] violentEnergyAggroMaxValue = new float[8] {5000, 8000, 10000, 12000, 14000, 14000, 14000, 14000 }; // 광폭화시 최대 임계치
     public float energyAggroValue; // 어그로 현 임계치
     float[] energyAggroInterval = new float[8] { 120, 150, 180, 200, 220, 220, 220, 220 }; // 어그로 수치 체크타임
@@ -108,6 +108,9 @@ public class MonsterSpawner : NetworkBehaviour
 
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
+
+    [SerializeField]
+    bool waveTest = false;
 
     void Awake()
     {
@@ -195,6 +198,14 @@ public class MonsterSpawner : NetworkBehaviour
                 }
             }
         }
+
+        if(waveTest)
+        {
+            StartCoroutine(MonsterBaseMapCheck.instance.CheckPath(wavePos, isInHostMap));
+
+            Invoke(nameof(WaveStart), 0.5f);
+            waveTest = false;
+        }
     }
 
     protected virtual void OnClientConnectedCallback(ulong clientId)
@@ -280,9 +291,9 @@ public class MonsterSpawner : NetworkBehaviour
         float sWeight = canStrong ? 1f - weakSpawnWeight - normalSpawnWeight : 0f;
         totalWeight = wWeight + nWeight + sWeight;
 
-         float spawnRandom = Random.Range(0f, totalWeight);
+        float spawnRandom = Random.Range(0f, totalWeight);
         float cumulative = 0f;
-  
+
         if (canWeak)
         {
             cumulative += wWeight;
@@ -305,7 +316,7 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public IEnumerator ExtraMonsterSpawnCoroutine(int phase)
+    public IEnumerator ExtraMonsterSpawnCoroutine(int phase, GameObject attackObj = null)
     {
         int spawnCount = ragePhaseSpawnCount[phase - 1] + spawnerLevel;
 
@@ -316,18 +327,10 @@ public class MonsterSpawner : NetworkBehaviour
 
             yield return null; // 매 프레임 한 마리씩 생성
         }
+        
+        if(attackObj)
+            TriggerRage(ragePhase, attackObj);
     }
-
-    //void ExtraMonsterSpawn(int phase)
-    //{
-    //    int spawCount = ragePhaseSpawnCount[phase - 1] + spawnerLevel;
-
-    //    for (int i = 0; i < spawCount; i++)
-    //    {
-    //        int monsterType = GetWeightedMonsterType(spawnerLevel);
-    //        RandomMonsterSpawn(monsterType);
-    //    }
-    //}
 
     GameObject RandomMonsterSpawn(int monsterType)
     {
@@ -355,20 +358,15 @@ public class MonsterSpawner : NetworkBehaviour
 
     int GetWeightedMonsterType(int spawnerLevel)
     {
-        // 정규화된 스포너 레벨 (0~1)
-        float t = Mathf.InverseLerp(1f, 8f, spawnerLevel);
+        int total = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
+        if (total <= 0)
+            return -1; // 스폰 불가 상황 (예외 처리)
 
-        // 가중치 계산 (0~1 사이 가중치에서 선형 보간)
-        float weight0 = Mathf.Lerp(0.6f, 0.1f, t);  // 약한 몬스터
-        float weight1 = Mathf.Lerp(0.3f, 0.3f, t);  // 보통 몬스터 (변화 없음)
-        float weight2 = Mathf.Lerp(0.1f, 0.6f, t);  // 강한 몬스터
+        int rand = Random.Range(0, total);
 
-        float total = weight0 + weight1 + weight2;
-        float rand = Random.value * total;
-
-        if (rand < weight0) return 0;
-        else if (rand < weight0 + weight1) return 1;
-        else return 2;
+        if (rand < maxWeakSpawn) return 0; // 약한 몬스터
+        else if (rand < maxWeakSpawn + maxNormalSpawn) return 1; // 보통 몬스터
+        else return 2; // 강한 몬스터
     }
 
     public GameObject SpawnMonster(int monserType, int monsterIndex, bool isInHostMap)
@@ -499,13 +497,43 @@ public class MonsterSpawner : NetworkBehaviour
     {
         float expectedPhase = (maxHp - hp) / (maxHp / maxRagePhase);
 
-        if(expectedPhase >= 1 && ragePhase < expectedPhase)
+        if (expectedPhase >= 1 && ragePhase < expectedPhase)
         {
             ragePhase++;
-            StartCoroutine(ExtraMonsterSpawnCoroutine(ragePhase));
-            TriggerRage(ragePhase, attackObj);
-            Debug.Log("ragePhase : " + ragePhase);
+            bool levelPhase = LevelPhaseCheck(ragePhase);
+            if(levelPhase)
+                StartCoroutine(ExtraMonsterSpawnCoroutine(ragePhase, attackObj));
+            else
+                TriggerRage(ragePhase, attackObj);
         }
+    }
+
+    bool LevelPhaseCheck(int ragePhase)
+    {
+        bool pashe = false;
+
+        if(ragePhase == 1)
+        {
+            pashe = spawnerLevel > 2;
+        }   
+        else if (ragePhase == 2)
+        {
+            pashe = spawnerLevel > 6;
+        }
+        else if (ragePhase == 3)
+        {
+            pashe = true;
+        }
+        else if (ragePhase == 4)
+        {
+            pashe = spawnerLevel > 4;
+        }
+        else if (ragePhase == 5)
+        {
+            pashe = true;
+        }
+
+        return pashe;
     }
 
     void TriggerRage(int phase, GameObject attackObj)

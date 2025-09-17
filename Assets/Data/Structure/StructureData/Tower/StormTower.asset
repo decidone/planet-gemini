@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: StormTower
   maxLevel: 1
-  maxHp: 2c010000
-  upgradeMaxHp: 5e010000
+  maxHp: 04010000
+  upgradeMaxHp: 36010000
   maxItemStorageLimit: 50
   maxFulidStorageLimit: 0
   sendSpeed:
@@ -35,6 +35,6 @@ MonoBehaviour:
   - 10
   removeGauge: 10
   defense:
-  - 5
+  - 16
   upgradedefense:
-  - 7
+  - 21

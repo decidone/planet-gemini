@@ -66,7 +66,7 @@ public class InfoInteract : MonoBehaviour
                 ui.SetStructureInfo(str);
                 break;
             case 3:
-                ui.SetUnitInfo(unit);
+                //ui.SetUnitInfo(unit);
                 break;
             case 4:
                 ui.SetSpawnerInfo(spawner);

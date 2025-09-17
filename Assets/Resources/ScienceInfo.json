@@ -248,17 +248,20 @@
   },
   "BounceRobot":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that attacks nearby enemies.","basicScience" : false,"sortIndex":7}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that attacks nearby enemies.","basicScience" : false,"sortIndex":7},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"A unit that attacks nearby enemies.","basicScience" : false,"sortIndex":10}
     }
   },
   "SpinRobot":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"A unit that performs area-of-effect attacks in the surrounding area.","basicScience" : false,"sortIndex":12}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":3,"time":1,"Info":"A unit that performs area-of-effect attacks in the surrounding area.","basicScience" : false,"sortIndex":12},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"A unit that performs area-of-effect attacks in the surrounding area.","basicScience" : false,"sortIndex":12}
     }
   },
   "SentryCopter":{
     "Battle":{
-      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that performs ranged attacks.","basicScience" : false,"sortIndex":8}
+      "1":{"items":["Coal"],"amounts":[1],"coreLv":2,"time":1,"Info":"A unit that performs ranged attacks.","basicScience" : false,"sortIndex":8},
+      "2":{"items":["Coal"],"amounts":[1],"coreLv":4,"time":1,"Info":"A unit that performs ranged attacks.","basicScience" : false,"sortIndex":11}
     }
   },
   "CorrosionDrone":{
