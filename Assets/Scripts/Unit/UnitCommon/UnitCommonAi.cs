@@ -31,7 +31,7 @@ public class UnitCommonAi : NetworkBehaviour
 {
     [SerializeField]
     public UnitCommonData unitCommonData;
-    protected UnitCommonData UnitCommonData { set { unitCommonData = value; } }
+    //protected UnitCommonData UnitCommonData { set { unitCommonData = value; } }
 
     protected Transform tr;
     protected Rigidbody2D rg;

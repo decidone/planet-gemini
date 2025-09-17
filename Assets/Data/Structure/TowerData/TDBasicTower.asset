@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDBasicTower
   m_EditorClassIdentifier: 
-  damage: 40
-  attackDist: 7
+  damage: 25
+  attackDist: 10
   attDelayTime: 1
   maxEnergyBulletAmount: -1
   reloadCooldown: -1

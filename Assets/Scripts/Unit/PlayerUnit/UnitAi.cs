@@ -52,6 +52,10 @@ public class UnitAi : UnitCommonAi
     [HideInInspector]
     public bool playerUnitPortalIn;
 
+    public int unitLevel = 0;
+    [SerializeField]
+    UnitCommonData[] unitLevelData;
+
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
@@ -149,7 +153,8 @@ public class UnitAi : UnitCommonAi
             case AIState.AI_Attack:
                 if (attackState == AttackState.Waiting)
                 {
-                    AttackCheck();
+                    if (aggroTarget)
+                        AttackCheck();
                 }
                 else if (attackState == AttackState.AttackStart)
                 {
@@ -158,13 +163,15 @@ public class UnitAi : UnitCommonAi
                 break;
             case AIState.AI_NormalTrace:
                 {
+                    if (aggroTarget)
+                        AttackCheck();
                     NormalTrace();
-                    AttackCheck();
                 }
                 break;
             case AIState.AI_Idle:
                 {
-                    AttackCheck();
+                    if (aggroTarget)
+                        AttackCheck();
                 }
                 break;
         }
@@ -705,6 +712,8 @@ public class UnitAi : UnitCommonAi
     {
         base.GameStartSet(unitSave);
         unitSaveData = unitSave;
+        unitLevel = unitSave.level;
+        SetUnitCommonData();
         StartCoroutine(AstarScanCheck());
     }
 
@@ -784,6 +793,7 @@ public class UnitAi : UnitCommonAi
         data.moveStartPos = Vector3Extensions.FromVector3(patrolPos);
         data.portalUnitIn = portalUnitIn;
         data.hostClientUnitIn = hostClientUnitIn;
+        data.level = unitLevel;
 
         return data;
     }
@@ -815,5 +825,42 @@ public class UnitAi : UnitCommonAi
         {
             defense = unitCommonData.UpgradeDefense;
         }
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void UnitLevelUpFuncServerRpc()
+    {
+        UnitLevelUpFuncClientRpc();
+    }
+
+    [ClientRpc]
+    void UnitLevelUpFuncClientRpc()
+    {
+        if (unitLevel < unitLevelData.Length - 1)
+        {
+            unitLevel++;
+            SetUnitCommonData();
+        }
+    }
+
+    void SetUnitCommonData()
+    {
+        if(unitLevelData.Length > 0)
+        {
+            unitCommonData = unitLevelData[unitLevel];
+            animator.SetFloat("Level", unitLevel);
+        }
+        maxHp = unitCommonData.MaxHp;
+        damage = unitCommonData.Damage;
+        attackSpeed = unitCommonData.AttDelayTime;
+        defense = unitCommonData.Defense;
+    }
+
+    public bool canUpgrade()
+    {
+        if (unitLevel < unitLevelData.Length - 1)
+            return true;
+        else
+            return false;
     }
 }

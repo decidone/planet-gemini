@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: RepairerDrone
   maxHp: 200
   upgradeMaxHp: 250
-  damage: 5
+  damage: 4
   upgradeDamage: 0
   moveSpeed: 7
   attackDist: 6

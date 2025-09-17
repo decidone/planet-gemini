@@ -37,4 +37,4 @@ MonoBehaviour:
   defense:
   - 5
   upgradedefense:
-  - 7
+  - 10

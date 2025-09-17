@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDSunTower
   m_EditorClassIdentifier: 
-  damage: 110
+  damage: 75
   attackDist: 10
   attDelayTime: 1.1
   maxEnergyBulletAmount: 5

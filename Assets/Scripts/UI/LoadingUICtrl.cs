@@ -40,6 +40,13 @@ public class LoadingUICtrl : MonoBehaviour
     float timeoutLimit;
     [SerializeField] float sceneLoadTimeoutLimit;
     [SerializeField] float gameSetTimeoutLimit;
+    public RectTransform target;
+    public float forwardAngle = 18f;    // 앞으로 돌리는 각도
+    public float reboundAngle = -3f;    // 반동 각도
+    public float speed = 720f;          // 회전 속도 (도/초)
+    public float pauseTime = 0.1f;      // 멈추는 시간
+
+    private Coroutine rotateRoutine;
 
     public static LoadingUICtrl Create()
     {
@@ -82,6 +89,17 @@ public class LoadingUICtrl : MonoBehaviour
                 DisconnectedPopup.instance.OpenUI("Connection Timeout.");
             }
         }
+    }
+
+    private void OnEnable()
+    {
+        rotateRoutine = StartCoroutine(RotateLoop());
+    }
+
+    private void OnDisable()
+    {
+        if (rotateRoutine != null)
+            StopCoroutine(rotateRoutine);
     }
 
     public void LoadScene(string sceneName, bool isHost)
@@ -165,5 +183,37 @@ public class LoadingUICtrl : MonoBehaviour
         SceneManager.sceneLoaded -= LoadSceneEnd;
         GameManager.GenerationComplete -= HandleGenerationComplete;
         Debug.Log("HandleGenerationComplete");
+    }
+
+    private IEnumerator RotateLoop()
+    {
+        while (true)
+        {
+            // 1. 앞으로 18도
+            yield return RotateBy(forwardAngle, speed);
+
+            // 2. 반동 -3도
+            yield return RotateBy(reboundAngle, speed * 1.5f);
+
+            // 3. 잠깐 멈춤
+            yield return new WaitForSeconds(pauseTime);
+        }
+    }
+
+    private IEnumerator RotateBy(float delta, float spd)
+    {
+        Quaternion startRot = target.localRotation;
+        Quaternion endRot = startRot * Quaternion.Euler(0, 0, delta);
+
+        while (Quaternion.Angle(target.localRotation, endRot) > 0.1f)
+        {
+            target.localRotation = Quaternion.RotateTowards(
+                target.localRotation,
+                endRot,
+                spd * Time.deltaTime
+            );
+            yield return null;
+        }
+        target.localRotation = endRot;
     }
 }

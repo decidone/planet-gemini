@@ -759,13 +759,15 @@ public class GameManager : NetworkBehaviour
             else
             {
                 info = null;
-                InfoUI.instance.SetDefault();
+                if(UnitDrag.instance.selectedObjects.Length == 0)
+                    InfoUI.instance.SetDefault();
             }
         }
         else
         {
             info = null;
-            InfoUI.instance.SetDefault();
+            if (UnitDrag.instance.selectedObjects.Length == 0)
+                InfoUI.instance.SetDefault();
         }
 
         if (focusedStructure == null)

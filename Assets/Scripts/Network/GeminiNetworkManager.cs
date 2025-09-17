@@ -124,7 +124,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         for (int i = 0; i < objList.Count; i++)
         {
             UnitCommonData findData = objList[i].GetComponent<UnitCommonAi>().unitCommonData;
-            if(objData == findData)
+            if(objData.UnitName == findData.UnitName)
             {
                 index = i;
             }

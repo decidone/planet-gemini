@@ -23,6 +23,7 @@ public class UnitSaveData
     public SerializedVector3 moveStartPos = new SerializedVector3();    // 이동 시작 좌표
     public bool portalUnitIn;
     public bool hostClientUnitIn;
+    public int level;       // 유닛 레벨
     // 유저 유닛
 
     // 몬스터

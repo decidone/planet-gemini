@@ -68,6 +68,11 @@
         {"name":"RepairerDrone","items":["IronPlate","IronBar","SteelBar","RepairerDrone"],"amounts":[1,1,1,1],"cooldown":3},
         {"name":"Tank","items":["IronPlate","IronBar","SteelBar","Tank"],"amounts":[1,1,1,1],"cooldown":3}
     ],
+    "UnitUpgrade":[
+        {"name":"BounceRobot","items":["IronPlate","IronBar","SteelBar","BounceRobot"],"amounts":[1,1,1,1],"cooldown":3},
+        {"name":"SentryCopter","items":["IronPlate","IronBar","SteelBar","SentryCopter"],"amounts":[1,1,1,1],"cooldown":3},
+        {"name":"SpinRobot","items":["IronPlate","IronBar","SteelBar","SpinRobot"],"amounts":[1,1,1,1],"cooldown":3}
+    ],
     "TankInven":[
         {"name":"Tank","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":3},
         {"name":"TankFuel","items":["Fuel"],"amounts":[0],"cooldown":3}

@@ -113,8 +113,6 @@ public class Structure : NetworkBehaviour
     [HideInInspector]
     public Collider2D col;
     [HideInInspector]
-    public RepairTower repairTower;
-    [HideInInspector]
     public Overclock overclockTower;
 
     [SerializeField]
@@ -1696,8 +1694,7 @@ public class Structure : NetworkBehaviour
                 }
             }
         }
-        if (repairTower != null)
-            repairTower.RemoveObjectsOutOfRange(gameObject);
+
         if(overclockTower != null && TryGetComponent(out Production prod))
             overclockTower.RemoveObjectsOutOfRange(prod);
 

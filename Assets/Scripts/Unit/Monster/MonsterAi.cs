@@ -246,9 +246,9 @@ public class MonsterAi : UnitCommonAi
                 break;
             case AIState.AI_NormalTrace:
                 {
-                    NormalTrace();
                     if (aggroTarget)
                         AttackCheck();
+                    NormalTrace();
                 }
                 break;
             case AIState.AI_ReturnPos:
@@ -900,13 +900,17 @@ public class MonsterAi : UnitCommonAi
             attackableCandidates.Add((target, dist, aggro));
         }
 
-        // 가까운 공격 가능 타겟 최대 2개만 추출 (거리 기준 오름차순)
+        // 가까운 공격 가능 타겟 최대 3개만 추출 (거리 기준 오름차순)
+        //var nearestAttackables = attackableCandidates
+        //    .OrderByDescending(x => x.aggro * 1.5f - x.dist * 0.5f) // 가중치 조절 가능
+        //    .Take(4)
+        //    .Select(x => x.obj)
+        //    .ToList();
         var nearestAttackables = attackableCandidates
             .OrderByDescending(x => x.aggro * 1.5f - x.dist * 0.5f) // 가중치 조절 가능
-            .Take(4)
+            .Take(1)
             .Select(x => x.obj)
-            .ToList();
-
+            .FirstOrDefault();
         ABPath pathReq = null;
         GameObject targetFind = null;
 
@@ -920,30 +924,27 @@ public class MonsterAi : UnitCommonAi
         bool isFirst = true;
         bool targetFound = false;
 
-        // 공격 가능 후보 2개에 대해 탐색 경로 시도
-        foreach (var target in nearestAttackables)
+        // 공격 가능 후보 3개에 대해 탐색 경로 시도
+        if (nearestAttackables)
         {
-            if (targetFound) break;
-            if (!target) continue;
-
             bool finished = false;
             bool canAttack = false;
 
             // A* 경로 요청 생성
-            pathReq = ABPath.Construct(tr.position, target.transform.position, p =>
+            pathReq = ABPath.Construct(tr.position, nearestAttackables.transform.position, p =>
             {
                 finished = true;
 
                 // 경로 계산 실패하거나 유효하지 않으면 무시
-                if (!target || p.error || p.vectorPath.Count == 0) return;
+                if (!nearestAttackables || p.error || p.vectorPath.Count == 0) return;
 
                 Vector3 last = p.vectorPath[^1]; // 마지막 지점
-                float lastMoveDist = Vector3.Distance(last, target.transform.position);
+                float lastMoveDist = Vector3.Distance(last, nearestAttackables.transform.position);
 
                 // 공격 사거리 안에 도달 가능한 경우
                 if (lastMoveDist <= unitCommonData.AttackDist)
                 {
-                    targetFind = target;         // 실제로 도달 가능한 공격 타겟
+                    targetFind = nearestAttackables;         // 실제로 도달 가능한 공격 타겟
                     cantFindAttack = true;
                     canAttack = true;
                     targetFound = true;
@@ -951,12 +952,12 @@ public class MonsterAi : UnitCommonAi
                 }
 
                 // fallback 후보 저장 (가장 가까운 타겟을 보조적으로 선택)
-                float dist = Vector3.Distance(transform.position, target.transform.position);
+                float dist = Vector3.Distance(transform.position, nearestAttackables.transform.position);
 
                 if (isFirst)
                 {
                     bestFallbackDist = dist;
-                    fallbackTarget = target;
+                    fallbackTarget = nearestAttackables;
                     fallbackTargetCanAttack = canAttack;
                     isFirst = false;
                 }
@@ -964,7 +965,7 @@ public class MonsterAi : UnitCommonAi
                 {
                     secondFallbackDist = bestFallbackDist;
                     bestFallbackDist = dist;
-                    fallbackTarget = target;
+                    fallbackTarget = nearestAttackables;
                     fallbackTargetCanAttack = canAttack;
                 }
                 else if (dist < secondFallbackDist)
@@ -977,6 +978,63 @@ public class MonsterAi : UnitCommonAi
             seeker.StartPath(pathReq);
             yield return new WaitUntil(() => finished); // 경로 계산이 끝날 때까지 대기
         }
+
+        //foreach (var target in nearestAttackables)
+        //{
+        //    if (targetFound) break;
+        //    if (!target) continue;
+
+        //    bool finished = false;
+        //    bool canAttack = false;
+
+        //    // A* 경로 요청 생성
+        //    pathReq = ABPath.Construct(tr.position, target.transform.position, p =>
+        //    {
+        //        finished = true;
+
+        //        // 경로 계산 실패하거나 유효하지 않으면 무시
+        //        if (!target || p.error || p.vectorPath.Count == 0) return;
+
+        //        Vector3 last = p.vectorPath[^1]; // 마지막 지점
+        //        float lastMoveDist = Vector3.Distance(last, target.transform.position);
+
+        //        // 공격 사거리 안에 도달 가능한 경우
+        //        if (lastMoveDist <= unitCommonData.AttackDist)
+        //        {
+        //            targetFind = target;         // 실제로 도달 가능한 공격 타겟
+        //            cantFindAttack = true;
+        //            canAttack = true;
+        //            targetFound = true;
+        //            return;
+        //        }
+
+        //        // fallback 후보 저장 (가장 가까운 타겟을 보조적으로 선택)
+        //        float dist = Vector3.Distance(transform.position, target.transform.position);
+
+        //        if (isFirst)
+        //        {
+        //            bestFallbackDist = dist;
+        //            fallbackTarget = target;
+        //            fallbackTargetCanAttack = canAttack;
+        //            isFirst = false;
+        //        }
+        //        else if (dist < bestFallbackDist)
+        //        {
+        //            secondFallbackDist = bestFallbackDist;
+        //            bestFallbackDist = dist;
+        //            fallbackTarget = target;
+        //            fallbackTargetCanAttack = canAttack;
+        //        }
+        //        else if (dist < secondFallbackDist)
+        //        {
+        //            secondFallbackDist = dist;
+        //        }
+        //    });
+
+        //    // A* 경로 요청 시작
+        //    seeker.StartPath(pathReq);
+        //    yield return new WaitUntil(() => finished); // 경로 계산이 끝날 때까지 대기
+        //}
 
         bool hasResult = false;
 
@@ -1132,6 +1190,7 @@ public class MonsterAi : UnitCommonAi
             hp = 0f;
             dieCheck = true;
             DieFuncServerRpc();
+            StopAllCoroutines();
         }
     }
 

@@ -195,6 +195,9 @@ MonoBehaviour:
   selfHealingAmount: 0
   selfHealInterval: 0
   visionRadius: 8
+  playerUnitPortalIn: 0
+  unitLevel: 0
+  unitLevelData: []
   unitTargetList: []
   strTargetList: []
   repairFullAmount: 3
@@ -317,6 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseAggroAmount: 8
+  aggroAmount: 0
 --- !u!1 &956196659816380753
 GameObject:
   m_ObjectHideFlags: 0

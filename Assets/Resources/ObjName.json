@@ -125,13 +125,16 @@
     "1": "Robot Manufacturer"
   },
   "BounceRobot": {
-    "1": "Bounce Robot"
+    "1": "Bounce Robot",
+    "2": "Bounce Robot Lv2"
   },
   "SpinRobot": {
-    "1": "Spin Robot"
-  },
+    "1": "Spin Robot",
+    "2": "Spin Robot Lv2"
+   },
   "SentryCopter": {
-    "1": "Sentry Copter"
+    "1": "Sentry Copter",
+    "2": "Sentry Copter Lv2"
   },
   "CorrosionDrone": {
     "1": "CorrosionDrone"

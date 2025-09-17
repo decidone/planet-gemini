@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDStormTower
   m_EditorClassIdentifier: 
-  damage: 60
-  attackDist: 7
+  damage: 50
+  attackDist: 10
   attDelayTime: 0.5
   maxEnergyBulletAmount: 5
   reloadCooldown: 2

@@ -155,8 +155,9 @@ public class RepairerDrone : UnitAi
                 break;
             case AIState.AI_NormalTrace:
                 {
+                    if (aggroTarget)
+                        AttackCheck();
                     NormalTrace();
-                    AttackCheck();
                 }
                 break;
         }

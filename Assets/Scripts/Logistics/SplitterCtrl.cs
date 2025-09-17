@@ -24,6 +24,9 @@ public class SplitterCtrl : LogisticsCtrl
     List<int> recentItemSend = new List<int>();
     int smartFilterItemIndex = 0;
 
+    [SerializeField]
+    bool upgradeTest;
+
     void Start()
     {
         //setModel = GetComponent<SpriteRenderer>();
@@ -407,31 +410,31 @@ public class SplitterCtrl : LogisticsCtrl
             filterIndex = 0;
     }
 
-    (bool, int) CheckFilterItem(Item item)
-    {
-        for (int i = 0; i < itemList.Count; i++)
-        {
-            if (itemList[i] == item)
-            {
-                return (true, i);
-            }
-        }
-        return (false, -1);
-    }
+    //(bool, int) CheckFilterItem(Item item)
+    //{
+    //    for (int i = 0; i < itemList.Count; i++)
+    //    {
+    //        if (itemList[i] == item)
+    //        {
+    //            return (true, i);
+    //        }
+    //    }
+    //    return (false, -1);
+    //}
 
-    bool OthFilterCheck(Item item, int filterIndex)
-    {
-        for (int i = 0; i < arrFilter.Length; i++)
-        {
-            if (i == filterIndex)
-                continue;
-            if (arrFilter[i].selItem == item && arrFilter[i].isFilterOn && !arrFilter[i].isReverseFilterOn) 
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    //bool OthFilterCheck(Item item, int filterIndex)
+    //{
+    //    for (int i = 0; i < arrFilter.Length; i++)
+    //    {
+    //        if (i == filterIndex)
+    //            continue;
+    //        if (arrFilter[i].selItem == item && arrFilter[i].isFilterOn && !arrFilter[i].isReverseFilterOn) 
+    //        {
+    //            return false;
+    //        }
+    //    }
+    //    return true;
+    //}
 
     [ClientRpc]
     void FilterSetItemClientRpc(int outObjIndex, int itemIndex)
@@ -471,7 +474,11 @@ public class SplitterCtrl : LogisticsCtrl
         }
         ItemNumCheck();
         
-        Invoke(nameof(DelaySetItem), sendDelay);
+        if(!upgradeTest)
+            Invoke(nameof(DelaySetItem), sendDelay);
+        else
+            Invoke(nameof(DelaySetItem), structureData.UpgradeSendDelay[level]);
+
     }
 
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)

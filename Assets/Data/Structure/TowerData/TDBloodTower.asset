@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDBloodTower
   m_EditorClassIdentifier: 
-  damage: 30
-  attackDist: 7
+  damage: 45
+  attackDist: 10
   attDelayTime: 1
   maxEnergyBulletAmount: 5
   reloadCooldown: 2
