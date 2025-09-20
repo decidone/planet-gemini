@@ -8,6 +8,7 @@ public class InfoDictionaryItem : MonoBehaviour
     [SerializeField] Sprite systemBackground;
     [SerializeField] Sprite strBackground;
     [SerializeField] Sprite unitBackground;
+    [SerializeField] Sprite itemBackground;
     [SerializeField] Image backgroundImg;
     [SerializeField] Text text;
     [SerializeField] Button btn;
@@ -25,6 +26,8 @@ public class InfoDictionaryItem : MonoBehaviour
             case 1: backgroundImg.sprite = strBackground;
                 break;
             case 2: backgroundImg.sprite = unitBackground;
+                break;
+            case 3: backgroundImg.sprite = itemBackground;
                 break;
         }
         itemName = info.name;

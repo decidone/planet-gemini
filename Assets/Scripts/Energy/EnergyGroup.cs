@@ -304,7 +304,8 @@ public class EnergyGroup
         {
             for (int j = 0; j < connectors[i].batteries.Count; j++)
             {
-                surplus = connectors[i].batteries[j].StoreEnergy(surplus);
+                if (!connectors[i].batteries[j].isPreBuilding)
+                    surplus = connectors[i].batteries[j].StoreEnergy(surplus);
 
                 if (surplus == 0)
                     return;

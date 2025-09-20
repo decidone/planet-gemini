@@ -15,5 +15,8 @@ MonoBehaviour:
   name: Info
   type: 3
   explanation: Explanation
-  layout: 1
+  strDataList: []
+  layout: 2
   videoClip: {fileID: 0}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

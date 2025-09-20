@@ -662,7 +662,8 @@ MonoBehaviour:
   plusButton: {fileID: 3871208928747216210}
   minusButton: {fileID: 3231763240191128124}
   amountText: {fileID: 541083000142009740}
-  MaxAmount: 99
+  hover: {fileID: 2398472679925273013}
+  merchNum: 0
   item: {fileID: 0}
   price: 0
   amount: 0
@@ -1351,6 +1352,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15e139caf7f128f48911ab69c80f0652, type: 3}
+--- !u!1 &1180713780636585256 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6971746724997393831, guid: 15e139caf7f128f48911ab69c80f0652, type: 3}
+  m_PrefabInstance: {fileID: 8116087243505328271}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2398472679925273013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1180713780636585256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d5f372222564974299a5087c0355e20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1180713781456431345 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6971746725243947134, guid: 15e139caf7f128f48911ab69c80f0652, type: 3}

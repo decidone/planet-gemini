@@ -17,6 +17,8 @@ public class Merch : MonoBehaviour
     [SerializeField] Button minusButton;
     [SerializeField] Text amountText;
 
+    [SerializeField] MerchHover hover;
+
     MerchandiseListSO merchandiseListSO;
     List<Merchandise> merchandiseList;
     Shop shop;
@@ -39,6 +41,8 @@ public class Merch : MonoBehaviour
         shop = _shop;
         item = merchandise.item;
         icon.sprite = item.icon;
+        hover.SetItemName(item.name);
+
         for (int i = 0; i < merchandiseList.Count; i++)
         {
             if (merchandiseList[i].item == item)

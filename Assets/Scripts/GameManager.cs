@@ -823,10 +823,8 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log(LobbySaver.instance.currentLobby?.Id);
         Debug.Log(EventSystem.current.currentSelectedGameObject);
-        debug = !debug;
         Debug.Log("debug : " + debug);
-
-        //QuestManager.instance.SetQuest(questData);
+        debug = !debug;
     }
 
     public void DebugMode(InputAction.CallbackContext ctx)
@@ -840,7 +838,7 @@ public class GameManager : NetworkBehaviour
         {
             foreach (Item item in ItemList.instance.itemList)
             {
-                if (item.tier >= 0)
+                if (item.tier >= 0 && item.name != "UICancel")
                     inventory.Add(item, 99);
             }
             AddFinanceServerRpc(100000);

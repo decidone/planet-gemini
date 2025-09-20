@@ -66,6 +66,7 @@ public class Shop : MonoBehaviour
         }
 
         this.gameObject.SetActive(false);
+        GameManager.instance.inventoryUiCanvas.GetComponent<ItemInfoWindow>().CloseWindow();
         GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
     }
 

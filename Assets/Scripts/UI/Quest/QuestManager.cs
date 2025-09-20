@@ -11,7 +11,8 @@ public class QuestManager : MonoBehaviour
     [SerializeField] Text titleText;
     [SerializeField] Text descriptionText;
     [SerializeField] Button dicBtn;
-    
+
+    bool isUIOpened;
     public int currentQuest = 0;
     Overall overall;
     NetworkObjManager networkObjManager;
@@ -65,7 +66,8 @@ public class QuestManager : MonoBehaviour
         descriptionText.text = quests[order].description;
         if (quests[order].hasDicLink)
         {
-            dicBtn.gameObject.SetActive(true);
+            if (isUIOpened)
+                dicBtn.gameObject.SetActive(true);
             dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(quests[order].dicKeyword, true));
         }
 
@@ -256,13 +258,17 @@ public class QuestManager : MonoBehaviour
 
     public void UIOpen()
     {
+        isUIOpened = true;
         titleText.gameObject.SetActive(true);
         descriptionText.gameObject.SetActive(true);
+        dicBtn.gameObject.SetActive(true);
     }
 
     public void UIClose()
     {
+        isUIOpened = false;
         titleText.gameObject.SetActive(false);
         descriptionText.gameObject.SetActive(false);
+        dicBtn.gameObject.SetActive(false);
     }
 }
