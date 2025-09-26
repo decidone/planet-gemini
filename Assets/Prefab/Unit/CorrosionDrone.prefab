@@ -198,6 +198,8 @@ MonoBehaviour:
   playerUnitPortalIn: 0
   unitLevel: 0
   unitLevelData: []
+  unitIcon:
+  - {fileID: -2092808875, guid: c705c284f5f53d149bb7949c39102241, type: 3}
   debuffTimer: 0
   debuffInterval: 1
   debuffPer: 25

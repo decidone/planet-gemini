@@ -198,6 +198,8 @@ MonoBehaviour:
   playerUnitPortalIn: 0
   unitLevel: 0
   unitLevelData: []
+  unitIcon:
+  - {fileID: 618639713, guid: 66735bc51ef362b46bf78fa4f72539cd, type: 3}
   unitTargetList: []
   strTargetList: []
   repairFullAmount: 3

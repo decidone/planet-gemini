@@ -524,6 +524,9 @@ MonoBehaviour:
   unitLevelData:
   - {fileID: 11400000, guid: d4523c5fa7df1244998568cd8862e84a, type: 2}
   - {fileID: 11400000, guid: bca166446345fe8438ffad74f56e0f95, type: 2}
+  unitIcon:
+  - {fileID: -844809101, guid: 25c745159b16ea84f9d6a4ab97367837, type: 3}
+  - {fileID: -1589432357, guid: bdb37aa9e6b9a174e8eae9f17ba80437, type: 3}
 --- !u!114 &3784004604832727098
 MonoBehaviour:
   m_ObjectHideFlags: 0

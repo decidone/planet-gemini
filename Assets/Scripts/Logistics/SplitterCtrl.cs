@@ -24,9 +24,6 @@ public class SplitterCtrl : LogisticsCtrl
     List<int> recentItemSend = new List<int>();
     int smartFilterItemIndex = 0;
 
-    [SerializeField]
-    bool upgradeTest;
-
     void Start()
     {
         //setModel = GetComponent<SpriteRenderer>();
@@ -473,12 +470,6 @@ public class SplitterCtrl : LogisticsCtrl
             SendFacDelay(outObject, sendItem);
         }
         ItemNumCheck();
-        
-        if(!upgradeTest)
-            Invoke(nameof(DelaySetItem), sendDelay);
-        else
-            Invoke(nameof(DelaySetItem), structureData.UpgradeSendDelay[level]);
-
     }
 
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)

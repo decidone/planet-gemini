@@ -14,7 +14,7 @@ public class UnitFactory : Production
 
     GameObject spawnUnit;
     string setUnitName;
-
+    
     protected override void Start()
     {
         base.Start();
@@ -30,7 +30,7 @@ public class UnitFactory : Production
         {
             if (recipe.name != null)
             {
-                if (conn != null && conn.group != null && conn.group.efficiency > 0)
+                if (conn != null && conn.group != null && conn.group.efficiency > 0 && gameManager.playerUnitLimit > gameManager.playerUnitAmount)
                 {
                     if (slot.Item2 >= recipe.amounts[0] && slot1.Item2 >= recipe.amounts[1]
                     && slot2.Item2 >= recipe.amounts[2])
@@ -106,8 +106,6 @@ public class UnitFactory : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        //sInvenManager.progressBar.SetMaxProgress(cooldown);
 
         rManager.recipeBtn.gameObject.SetActive(true);
         rManager.recipeBtn.onClick.RemoveAllListeners();
@@ -164,7 +162,13 @@ public class UnitFactory : Production
 
     public override void SetRecipe(Recipe _recipe, int index)
     {
-        base.SetRecipe(_recipe, index);
+        recipe = _recipe;
+        recipeIndex = index;
+        sInvenManager.ResetInvenOption();
+        cooldown = recipe.cooldown;
+        effiCooldown = cooldown;
+        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[0].SetNeedAmount(recipe.amounts[0]);
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);
@@ -174,6 +178,16 @@ public class UnitFactory : Production
         sInvenManager.slots[3].SetInputItem(itemDic[recipe.items[3]]);
         sInvenManager.slots[3].SetNeedAmount(recipe.amounts[3]);
         sInvenManager.slots[3].outputSlot = true;
+
+        if (recipe.name == "Tank" || recipe.name == "UICancel")
+            sInvenManager.UnitIconSet(false);
+        else
+            sInvenManager.UnitIconSet(true);
+    }
+
+    public void CooldownTextSet()
+    {
+        sInvenManager.UnitLimitText();
     }
 
     public override void GetUIFunc()

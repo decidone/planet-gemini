@@ -329,20 +329,24 @@
     "1": "Cancel"
   },
   "StructureUpgrade": {
-    "1": "Production Speed Upgrade",
-    "2": "HP Upgrade for Structures",
-    "3": "Input/Output Speed Upgrade",
-    "4": "Reduced Energy Consumption",
-    "5": "Defense Upgrade for Structures"
+    "1": "Rapid Assembly Protocols",
+    "2": "Structure Durability Enhancement",
+    "3": "Energy Efficiency Protocols",
+    "4": "Structure Fortified Frameworks"
   },
   "TowerUpgrade": {
-    "1": "Damage Upgrade for Towers",
-    "2": "Attack Speed Upgrade for Towers"
+    "1": "Tower Offensive Systems Upgrade",
+    "2": "Tower Offensive Systems Acceleration"
   },
   "UnitUpgrade": {
-    "1": "HP Upgrade for Units",
-    "2": "Damage Upgrade for Units",
-    "3": "Attack Speed Upgrade for Units",
-    "4": "Defense Upgrade for Units"
-  }
+    "1": "Unit Durability Enhancement",
+    "2": "Unit Offensive Systems Upgrade",
+    "3": "Unit Offensive Systems Acceleration",
+    "4": "Unit Fortified Frameworks"
+  },
+   "AICommandExpansion": {
+    "1": "AI Command Protocol v1.0",
+    "2": "AI Command Protocol v2.0",
+    "3": "AI Command Protocol v3.0"
+   }
 }

@@ -9,19 +9,21 @@ public class UpgradeConfirm : PopUpCtrl
     [SerializeField]
     GameObject itemInfoPanel;
 
+    string openUIName;
     UpgradeBuild upgradeBuild;
-
+    InfoUI infoUI;
     List<GameObject> icon = new List<GameObject>();
 
     protected override void Awake()
     {
         base.Awake();
         upgradeBuild = gameManager.GetComponent<UpgradeBuild>();
-        pupUpContent = "If you run out of materials, only some buildings will be upgraded.";
+        infoUI = InfoUI.instance;
+        pupUpContent = "If you run out of materials, you cannot upgrade.";
         pupUpText.text = pupUpContent;
     }
 
-    public void GetData(Dictionary<Item, int> enoughItemDic, Dictionary<Item, int> notEnoughItemDic)
+    public void GetData(Dictionary<Item, int> enoughItemDic, Dictionary<Item, int> notEnoughItemDic, string _openUIName)
     {
         ResetUi();
 
@@ -51,7 +53,7 @@ public class UpgradeConfirm : PopUpCtrl
                 itemSlot.GetComponent<BuildingImgCtrl>().AddItem(key, value, true);
             }
         }
-
+        openUIName = _openUIName;
         OpenUI();
     }
 
@@ -69,13 +71,29 @@ public class UpgradeConfirm : PopUpCtrl
 
     public override void OkBtnFunc()
     {
-        upgradeBuild.ConfirmEnd(true);
+        if (openUIName == "UpgradeBuild")
+        {
+            upgradeBuild.ConfirmEnd(true);
+        }
+        else if (openUIName == "InfoUI")
+        {
+            infoUI.ConfirmEnd(true);
+        }
+
         CloseUI();
     }
 
     protected override void CancelBtnFunc()
     {
-        upgradeBuild.ConfirmEnd(false);
+        if (openUIName == "UpgradeBuild")
+        {
+            upgradeBuild.ConfirmEnd(false);
+        }
+        else if (openUIName == "InfoUI")
+        {
+            infoUI.ConfirmEnd(false);
+        }
+
         CloseUI();
     }
 

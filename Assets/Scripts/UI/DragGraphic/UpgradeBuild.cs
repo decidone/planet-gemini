@@ -130,7 +130,7 @@ public class UpgradeBuild : DragFunc
             if (enoughItemDic.Count == 0 && notEnoughItemDic.Count == 0)
                 ConfirmEnd(false);
             else
-                gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().upgradeConfirm.GetData(enoughItemDic, notEnoughItemDic);
+                gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().upgradeConfirm.GetData(enoughItemDic, notEnoughItemDic, "UpgradeBuild");
         }
     }
 

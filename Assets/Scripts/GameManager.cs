@@ -194,6 +194,10 @@ public class GameManager : NetworkBehaviour
 
     public static event Action OnFactoryOverlayToggle;
     public bool overlayOn = false;
+
+    public int playerUnitLimit = 25;
+    public int playerUnitAmount;
+
     #region Singleton
     public static GameManager instance;
 
@@ -243,6 +247,7 @@ public class GameManager : NetworkBehaviour
         SoundManager.instance.GameSceneLoad();
         autoSaveinterval = SettingsMenu.instance.autoSaveInterval;
         SyncTimeServerRpc();
+        PlayerUnitCount(0);
         //GameStartSet();
     }
 
@@ -759,7 +764,7 @@ public class GameManager : NetworkBehaviour
             else
             {
                 info = null;
-                if(UnitDrag.instance.selectedObjects.Length == 0)
+                if (UnitDrag.instance.selectedObjects.Length == 0)
                     InfoUI.instance.SetDefault();
             }
         }
@@ -961,7 +966,7 @@ public class GameManager : NetworkBehaviour
             default:
                 if (openedUI[order].gameObject.TryGetComponent(out PopUpCtrl popup))
                     popup.OkBtnFunc();
-                else if (openedUI[order].gameObject.TryGetComponent(out UpgradeWindow upgrade))                
+                else if (openedUI[order].gameObject.TryGetComponent(out UpgradeWindow upgrade))
                     upgrade.OkBtnFunc();
                 else if (openedUI[order].gameObject.TryGetComponent(out SciItemSetWindow sciItem))
                     sciItem.OkBtnFunc();
@@ -1375,7 +1380,7 @@ public class GameManager : NetworkBehaviour
             if (MainGameSetting.instance.isNewGame)
             {
                 SetStartingItem();
-                if(MainGameSetting.instance.difficultylevel != 0)
+                if (MainGameSetting.instance.difficultylevel != 0)
                     MapGenerator.instance.SpawnerAreaMapSet();
             }
             else
@@ -1930,6 +1935,80 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    public void UnitUpgrade(List<UnitAi> upgradeObjs)
+    {
+        List<NetworkObjectReference> temp = new List<NetworkObjectReference>();
+
+        foreach (var unit in upgradeObjs)
+        {
+            if (unit && unit.CanUpgrade())
+            {
+                if (unit.TryGetComponent(out NetworkObject netObj))
+                {
+                    temp.Add(netObj);
+                }
+            }
+        }
+
+        // ServerRpc에 보낼 수 있도록 배열 변환
+        NetworkObjectReference[] networkObjectReferences = temp.ToArray();
+
+
+        if (networkObjectReferences.Length > 0)
+            SendUpgradeRequestServerRpc(networkObjectReferences);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void SendUpgradeRequestServerRpc(NetworkObjectReference[] networkObjectReference)
+    {
+        upgradeItemDic.Clear();
+
+        UnitAi[] units = new UnitAi[networkObjectReference.Length];
+        for (int i = 0; i < networkObjectReference.Length; i++)
+        {
+            networkObjectReference[i].TryGet(out NetworkObject itemNetworkObject);
+            units[i] = itemNetworkObject.GetComponent<UnitAi>();
+        }
+
+        Recipe recipe = RecipeList.instance.GetRecipeInven("UnitUpgrade").Find(r => r.name == units[0].unitCommonData.UnitName);
+        Dictionary<string, Item> itemDic = ItemList.instance.itemDic;
+
+        for (int i = 0; i < recipe.items.Count - 1; i++)
+        {
+            if (upgradeItemDic.ContainsKey(itemDic[recipe.items[i]]))
+            {
+                upgradeItemDic[itemDic[recipe.items[i]]] += recipe.amounts[i] * units.Length;
+            }
+            else
+            {
+                upgradeItemDic.Add(itemDic[recipe.items[i]], recipe.amounts[i] * units.Length);
+            }
+        }
+
+        bool isEnough;
+
+        foreach (var data in upgradeItemDic)
+        {
+            int value;
+            bool hasItem = inventory.totalItems.TryGetValue(data.Key, out value);
+            isEnough = hasItem && value >= data.Value;
+
+            if (!isEnough)
+                return;
+        }
+
+        foreach (var data in upgradeItemDic)
+        {
+            Overall.instance.OverallConsumption(data.Key, data.Value);
+            inventory.Sub(data.Key, data.Value);
+        }
+
+        for (int i = 0; i < units.Length; i++)
+        {
+            units[i].UnitLevelUpFuncServerRpc();
+        }
+    }
+
     public IEnumerator GaugeCountDown()
     {
         while (true)
@@ -1952,5 +2031,16 @@ public class GameManager : NetworkBehaviour
     {
         overlayOn = !overlayOn;
         OnFactoryOverlayToggle?.Invoke();
+    }
+
+    public void PlayerUnitCount(int changeAmount)
+    {
+        playerUnitAmount += changeAmount;
+        BasicUIBtns.instance.unitAmountText.text = playerUnitAmount.ToString() + " / " + playerUnitLimit.ToString();
+
+        if (clickEvent && clickEvent.TryGetComponent(out UnitFactory unitFactory))
+        {
+            unitFactory.CooldownTextSet();
+        }
     }
 }

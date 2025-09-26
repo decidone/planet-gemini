@@ -47,6 +47,9 @@ public class BasicUIBtns : MonoBehaviour
     }
     #endregion
 
+    // 유닛 UI 관련
+    public Text unitAmountText;
+
     // Start is called before the first frame update
     void Start()
     {

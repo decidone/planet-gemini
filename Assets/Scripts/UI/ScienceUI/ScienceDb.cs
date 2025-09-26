@@ -14,8 +14,8 @@ public class ScienceDb : NetworkBehaviour
     public int coreLevel = 1;
 
     // 건물
-    bool[] increasedStructure = new bool[5];
-    // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 소비량 감소, 4 방어력
+    bool[] increasedStructure = new bool[4];
+    // 0 생산속도, 1 Hp, 2 소비량 감소, 3 방어력
 
     // 타워
     bool[] increasedTower = new bool[2];
@@ -24,6 +24,10 @@ public class ScienceDb : NetworkBehaviour
     // 유닛
     bool[] increasedUnit = new bool[4];
     // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
+
+    // 유닛최대치
+    int[] increasedUnitExpansion = new int[] { 10, 10, 10 };
+    // 0 10증가, 1 10증가, 2 10증가
 
     private void Awake()
     {
@@ -108,6 +112,11 @@ public class ScienceDb : NetworkBehaviour
         {
             increasedUnit[sciLv - 1] = true;
             EffectUpgrade(2);
+        }
+        else if (sciName == "AICommandExpansion")
+        {
+            GameManager.instance.playerUnitLimit += increasedUnitExpansion[sciLv - 1];
+            GameManager.instance.PlayerUnitCount(0);
         }
 
         if (!isLoad)
@@ -228,7 +237,7 @@ public class ScienceDb : NetworkBehaviour
 
         Overall.instance.OverallConsumption(item, maxInputItemAmount);
         inven.Sub(item, inputAmount);
-        btn.ItemAddAmount(scienceInfoDataIndex, maxInputItemAmount);
+        btn.ItemAddAmount(scienceInfoDataIndex, inputAmount);
     }
 
     public void LoadData(List<ScienceData> data)

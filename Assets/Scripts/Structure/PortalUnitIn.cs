@@ -41,8 +41,11 @@ public class PortalUnitIn : PortalObj
         foreach (Slot slot in displaySlots)
         {
             slot.SetInputItem(itemLists.FindData("SpinRobot"));
+            slot.SetInputItem(itemLists.FindData("SpinRobot2"));
             slot.SetInputItem(itemLists.FindData("SentryCopter"));
+            slot.SetInputItem(itemLists.FindData("SentryCopter2"));
             slot.SetInputItem(itemLists.FindData("BounceRobot"));
+            slot.SetInputItem(itemLists.FindData("BounceRobot2"));
             slot.SetInputItem(itemLists.FindData("CorrosionDrone"));
             slot.SetInputItem(itemLists.FindData("RepairerDrone"));
         }
@@ -190,8 +193,9 @@ public class PortalUnitIn : PortalObj
                 displaySlots[i].ClearSlot();
                 if (sendUnitList.Count > i)
                 {
-                    string objName = sendUnitList[i].GetComponent<UnitAi>().unitName;
-                    displaySlots[i].AddItem(itemLists.FindData(objName), 1);
+                    sendUnitList[i].TryGetComponent(out UnitAi unit);
+                    string objName = unit.unitName;
+                    displaySlots[i].AddItem(itemLists.FindDataGetLevel(objName, unit.unitLevel + 1), 1);
                 }
             }
         }

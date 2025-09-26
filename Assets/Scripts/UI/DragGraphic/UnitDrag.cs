@@ -174,16 +174,16 @@ public class UnitDrag : DragFunc
 
             if (removeUnitList.Count > 0)
             {
-                Dictionary<string, int> removeUnitIndexCount = new Dictionary<string, int>();
+                Dictionary<(string,int), int> removeUnitIndexCount = new Dictionary<(string, int), int>();
                 int sellPrice = 0;
                 for (int i = 0; i < removeUnitList.Count; i++)
                 {
-                    string unitIndex = removeUnitList[i].unitCommonData.name;
-                    if (!removeUnitIndexCount.ContainsKey(unitIndex))
+                    string unitIndex = removeUnitList[i].unitName;
+                    if (!removeUnitIndexCount.ContainsKey((unitIndex, removeUnitList[i].unitLevel)))
                     {
-                        removeUnitIndexCount.Add(unitIndex, 0);
+                        removeUnitIndexCount.Add((unitIndex, removeUnitList[i].unitLevel), 0);
                     }
-                    removeUnitIndexCount[unitIndex]++;
+                    removeUnitIndexCount[(unitIndex, removeUnitList[i].unitLevel)]++;
                     sellPrice += removeUnitList[i].unitCommonData.sellPrice;
                 }
                 unitRemovePopup.OpenPopup(removeUnitIndexCount, sellPrice);
@@ -282,7 +282,7 @@ public class UnitDrag : DragFunc
             selectedObjectsList.Add(collider.GetComponentInParent<UnitAi>().gameObject);
         }
         selectedObjects = selectedObjectsList.ToArray();
-        
+
         removeUnit?.Invoke();
 
         if (selectedObjects.Length > 0)
@@ -294,8 +294,14 @@ public class UnitDrag : DragFunc
             BasicUIBtns.instance.SwapFunc(false);
         }
 
-        List<UnitAi> unitAis = selectedObjectsList.Select(obj => obj.GetComponent<UnitAi>()).ToList();
-        InfoUI.instance.SetUnitInfo(unitAis);
+        if (selectedObjects.Length == 1)
+            InfoUI.instance.SetUnitInfo(selectedObjects[0].GetComponentInParent<UnitAi>());
+        else
+        {
+            List<UnitAi> unitAiList = selectedObjectsList.Select(obj => obj.GetComponent<UnitAi>()).ToList();
+            InfoUI.instance.SetDefault();
+            InfoUI.instance.UnitGroupUISet(unitAiList);
+        }
     }
 
     private void SelectedObjects(RaycastHit2D ray)

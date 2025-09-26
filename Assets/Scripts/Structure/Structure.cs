@@ -2068,7 +2068,7 @@ public class Structure : NetworkBehaviour
     public virtual void IncreasedStructureCheck()
     {
         increasedStructure = ScienceDb.instance.IncreasedStructureCheck(0);
-        // 0 생산속도, 1 Hp, 2 인풋아웃풋 속도, 3 소비량 감소, 4 방어력
+        // 0 생산속도, 1 Hp, 2 소비량 감소, 3 방어력
 
         if (increasedStructure[0])
         {
@@ -2088,13 +2088,9 @@ public class Structure : NetworkBehaviour
         }
         if (increasedStructure[2])
         {
-            sendDelay = structureData.UpgradeSendDelay[level];
-        }
-        if (increasedStructure[3])
-        {
             energyConsumption = structureData.Consumption[level] - (structureData.Consumption[level] * upgradeConsumptionPer / 100);
         }
-        if (increasedStructure[4])
+        if (increasedStructure[3])
         {
             defense = structureData.UpgradeDefense[level];
         }

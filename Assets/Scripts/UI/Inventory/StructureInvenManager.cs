@@ -26,6 +26,11 @@ public class StructureInvenManager : InventoryManager
     public Button subBtn;
     public Button sortBtn;
 
+    [SerializeField]
+    Image unitIcon;
+    [SerializeField]
+    Text unitLimitText;
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -84,6 +89,24 @@ public class StructureInvenManager : InventoryManager
         {
             cooldownText.text = cooldown + "s";
         }
+    }
+
+    public void UnitIconSet(bool isOn)
+    {
+        if (isOn)
+        {
+            unitIcon.gameObject.SetActive(true);
+            UnitLimitText();
+        }
+        else
+        {
+            unitIcon.gameObject.SetActive(false);
+        }
+    }
+
+    public void UnitLimitText()
+    {
+        unitLimitText.text = gameManager.playerUnitAmount.ToString() + " / " + gameManager.playerUnitLimit.ToString();
     }
 
     public void ReleaseInven()
