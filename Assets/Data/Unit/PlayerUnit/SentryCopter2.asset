@@ -25,5 +25,5 @@ MonoBehaviour:
   minCollRad: 0
   defense: 5
   upgradeDefense: 10
-  sellPrice: 100
+  sellPrice: 300
   patrolRad: 0

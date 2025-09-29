@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Multiplayer.Tools.NetStats;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -26,11 +28,24 @@ public class InfoUI : MonoBehaviour
     public MapObject obj = null;
     public Structure str = null;
     public UnitAi unit = null;
+    public List<UnitAi> units = null;
     public MonsterSpawner spawner = null;
     public MonsterAi monster = null;
 
     RemoveBuild removeBuild;
     UpgradeBuild upgradeBuild;
+
+    List<Recipe> selectRecipe;
+    Recipe recipe;
+    Dictionary<Item, int> upgradeItemDic;
+
+    [SerializeField]
+    GameObject unitGroupUI;
+    [SerializeField]
+    GameObject[] unitSingleUIs;
+    [SerializeField]
+    Text[] unitCount; 
+    Dictionary<(string, int), int> unitDataDic;
 
     #region Singleton
     public static InfoUI instance;
@@ -51,6 +66,7 @@ public class InfoUI : MonoBehaviour
     {
         removeBuild = GameManager.instance.GetComponent<RemoveBuild>();
         upgradeBuild = GameManager.instance.GetComponent<UpgradeBuild>();
+        selectRecipe = RecipeList.instance.GetRecipeInven("UnitUpgrade");
     }
 
     public void SetDefault()
@@ -68,6 +84,7 @@ public class InfoUI : MonoBehaviour
         dicBtn.gameObject.SetActive(false);
         removeBtn.onClick.RemoveAllListeners();
         removeBtn.gameObject.SetActive(false);
+        unitGroupUI.SetActive(false);
     }
 
     public void SetPlayerInfo(PlayerStatus _player)
@@ -182,15 +199,21 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         unit = _unit;
+        units = new List<UnitAi> { unit }; //업글 시 리스트로 넘기기 위해
         SpriteRenderer spriteRenderer = unit.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
         nameText.text = unit.name;
         SetUnitHp();
         unit.onHpChangedCallback += SetUnitHp;
 
-        upgradeBtn.gameObject.SetActive(true);
-        upgradeBtn.onClick.AddListener(() => UnitUpgradeBtnFunc());
-        
+        if (_unit.CanUpgrade() && ScienceDb.instance.IsLevelExists(_unit.unitCommonData.name, _unit.unitLevel + 2))
+        {
+            upgradeBtn.gameObject.SetActive(true);
+            upgradeBtn.onClick.AddListener(() => 
+            {
+                UpgradeCostCheckAndPopupSet(units);
+            });
+        }
         //firstBattleText.text = "ATK " + unit.damage + " DEF " + unit.defense;
         //secondBattleText.text = "ATK Delay " + unit.attackSpeed + " ATK Range " + unit.unitCommonData.AttackDist;
     }
@@ -199,60 +222,190 @@ public class InfoUI : MonoBehaviour
     public void SetUnitInfo(List<UnitAi> _units)
     {
         SetDefault();
-        nameText.text = _units.Count.ToString();
-        upgradeBtn.gameObject.SetActive(true);
-        upgradeBtn.onClick.AddListener(() => 
+        units.Clear();
+        units = _units;
+
+        if (_units[0].CanUpgrade() && ScienceDb.instance.IsLevelExists(_units[0].unitCommonData.name, _units[0].unitLevel + 2))
         {
-            Dictionary<string, List<UnitAi>> canUpgrade = new Dictionary<string, List<UnitAi>>();
-
-            foreach (UnitAi u in _units)
+            upgradeBtn.gameObject.SetActive(true);
+            upgradeBtn.onClick.AddListener(() =>
             {
-                if(u.canUpgrade())
-                {
-                    if (!canUpgrade.TryGetValue(u.unitCommonData.UnitName, out var list))
-                    {
-                        list = new List<UnitAi>();
-                        canUpgrade[u.unitCommonData.UnitName] = list;
-                    }
-                    list.Add(u);
-                }
-            }
+                UpgradeCostCheckAndPopupSet(_units);
+            });
+        }
 
-            List<Recipe> selectRecipe = RecipeList.instance.GetRecipeInven("UnitUpgrade");
-
-            Dictionary<string, int> cost = new Dictionary<string, int>();
-
-            foreach (var recipe in selectRecipe)
-            {
-                if (canUpgrade.ContainsKey(recipe.name))
-                {
-                    for (int i = 0; i < recipe.items.Count - 1; i++)
-                    {
-                        if (!cost.ContainsKey(recipe.items[i]))
-                        {
-                            cost.Add(recipe.items[i], 0);
-                        }
-                        cost[recipe.items[i]] += (recipe.amounts[i] * canUpgrade[recipe.name].Count);
-                    }
-                }                
-            }
-
-
-            foreach (var costData in cost)
-            {
-                Debug.Log("item : " + costData.Key + ", amount :" + costData.Value);
-            }
-
-            //foreach (UnitAi u in _units)
-            //{
-            //    u.UnitLevelUpFuncServerRpc();
-            //}
-        });
+        UnitGroupUISet(_units);
     }
 
-    void UnitUpgradeBtnFunc()
+    public void UnitGroupUISet(List<UnitAi> _units)
     {
-        unit.UnitLevelUpFuncServerRpc();
+        unitGroupUI.SetActive(true);
+
+        unitDataDic = new Dictionary<(string, int), int>();
+        // (유닛 이름, 레벨), 개수
+
+        for (int i = 0; i < _units.Count; i++)
+        {
+            var key = (_units[i].unitCommonData.UnitName, _units[i].unitLevel + 1);
+            if (unitDataDic.ContainsKey(key))
+            {
+                unitDataDic[key]++;
+            }
+            else
+            {
+                unitDataDic[key] = 1;
+            }
+        }
+
+        for(int i = 0; i < unitSingleUIs.Length; i++)
+        {
+            unitSingleUIs[i].gameObject.SetActive(false);
+        }
+
+        // 딕셔너리 순회하면서 UI 채우기
+        foreach (var kvp in unitDataDic)
+        {
+            int index = UnitUISellect(kvp.Key);
+            unitSingleUIs[index].gameObject.SetActive(true);
+            unitCount[index].text = kvp.Value.ToString();
+        }
+    }
+
+    public void UnitAmountSub((string, int) data)
+    {
+        int index = UnitUISellect(data);
+        unitCount[index].text = (int.Parse(unitCount[index].text) - 1).ToString();
+        if(int.Parse(unitCount[index].text) <= 0)
+        {
+            unitSingleUIs[index].gameObject.SetActive(false);
+        }
+    }
+
+    int UnitUISellect((string, int) data)
+    {
+        int index = 0;
+        if (data.Item1 == "BounceRobot")
+        {
+            if (data.Item2 == 1)
+            {
+                index = 0;
+            }
+            else
+            {
+                index = 1;
+            }
+        }
+        else if (data.Item1 == "SentryCopter")
+        {
+            if (data.Item2 == 1)
+            {
+                index = 2;
+            }
+            else
+            {
+                index = 3;
+            }
+        }
+        else if (data.Item1 == "SpinRobot")
+        {
+            if (data.Item2 == 1)
+            {
+                index = 4;
+            }
+            else
+            {
+                index = 5;
+            }
+        }
+        else if (data.Item1 == "CorrosionDrone")
+        {
+            index = 6;
+        }
+        else if (data.Item1 == "RepairerDrone")
+        {   
+            index = 7;
+        }
+
+        return index;
+    }
+
+
+    void UpgradeCostCheckAndPopupSet(List<UnitAi> _units)
+    {
+        bool canUpgrade = false;
+
+        for (int i = 0; i < _units.Count;i++)
+        {
+            if(_units[i].CanUpgrade())
+            {
+                canUpgrade = true;
+                break;
+            }
+        }
+
+        if (!canUpgrade)
+        {
+            upgradeBtn.gameObject.SetActive(false);
+            return;
+        }
+
+        recipe = selectRecipe.Find(r => r.name == _units[0].unitCommonData.UnitName);
+
+        upgradeItemDic = new Dictionary<Item, int>();
+        Dictionary<string, Item> itemDic = ItemList.instance.itemDic;
+
+        for (int i = 0; i < recipe.items.Count - 1; i++)
+        {
+            if (upgradeItemDic.ContainsKey(itemDic[recipe.items[i]]))
+            {
+                upgradeItemDic[itemDic[recipe.items[i]]] += recipe.amounts[i] * _units.Count;
+            }
+            else
+            {
+                upgradeItemDic.Add(itemDic[recipe.items[i]], recipe.amounts[i] * _units.Count);
+            }
+        }
+
+        Dictionary<Item, int> enoughItemDic = new Dictionary<Item, int>();
+        Dictionary<Item, int> notEnoughItemDic = new Dictionary<Item, int>();
+        bool isEnough;
+
+        foreach (var kvp in upgradeItemDic)
+        {
+            Item key = kvp.Key;
+            int value = kvp.Value;
+
+            int amount;
+            bool hasItem = GameManager.instance.inventory.totalItems.TryGetValue(key, out amount);
+            isEnough = hasItem && amount >= value;
+
+            if (!isEnough)
+                notEnoughItemDic.Add(key, value - amount);
+            else
+                enoughItemDic.Add(key, value);
+        }
+
+        GameManager.instance.inventoryUiCanvas.GetComponent<PopUpManager>().upgradeConfirm.GetData(enoughItemDic, notEnoughItemDic, "InfoUI");
+    }
+
+    public void ConfirmEnd(bool isOk)
+    {
+        if (isOk)
+        {
+            foreach (UnitAi unit in units)
+            {
+                if (!unit || !unit.CanUpgrade())
+                {
+                    units.Clear();
+                    upgradeBtn.gameObject.SetActive(false);
+                    SetUnitHp();
+                    return;
+                }
+            }
+            GameManager.instance.UnitUpgrade(units);
+        }
+
+        units.Clear();
         upgradeBtn.gameObject.SetActive(false);
         SetUnitHp();
     }

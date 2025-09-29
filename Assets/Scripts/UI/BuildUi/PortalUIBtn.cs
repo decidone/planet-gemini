@@ -73,7 +73,7 @@ public class PortalUIBtn : MonoBehaviour
 
     void ButtonFunc()
     {
-        if (!portal.PortalObjFind(objName))
+        if (!portal.PortalObjFind(objName) && !LockUi.activeSelf)
         {
             if (isPortalObj)
             {

@@ -42,7 +42,6 @@ public class UnitAi : UnitCommonAi
 
     public delegate void OnEffectUpgradeCheck();
     public OnEffectUpgradeCheck onEffectUpgradeCheck;
-    bool portalUnitIn = false;
     bool hostClientUnitIn = false;
     protected bool[] increasedUnit = new bool[4];
     // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
@@ -55,6 +54,9 @@ public class UnitAi : UnitCommonAi
     public int unitLevel = 0;
     [SerializeField]
     UnitCommonData[] unitLevelData;
+
+    [SerializeField]
+    Sprite[] unitIcon;
 
     protected override void Start()
     {
@@ -99,7 +101,7 @@ public class UnitAi : UnitCommonAi
     public override void ClientConnectSyncServerRpc()
     {
         base.ClientConnectSyncServerRpc();
-        if (portalUnitIn)
+        if (playerUnitPortalIn)
         {
             PortalUnitInFuncClientRpc(hostClientUnitIn);
         }
@@ -132,12 +134,16 @@ public class UnitAi : UnitCommonAi
         base.OnNetworkSpawn();
 
         NetworkObjManager.instance.NetObjAdd(gameObject);
+        if(!GetComponent<TankCtrl>())
+            GameManager.instance.PlayerUnitCount(1);
     }
 
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
         NetworkObjManager.instance.NetObjRemove(gameObject);
+        if (!GetComponent<TankCtrl>())
+            GameManager.instance.PlayerUnitCount(-1);
     }
 
     protected override void UnitAiCtrl()
@@ -607,7 +613,10 @@ public class UnitAi : UnitCommonAi
             hp = 0f;
             dieCheck = true;
             if (unitSelect)
+            {
                 unitGroupCtrl.DieUnitCheck(this.gameObject);
+                InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
+            }
             if (IsServer)
             {
                 DieFuncServerRpc();
@@ -685,8 +694,9 @@ public class UnitAi : UnitCommonAi
         {
             UnitSelImg(false);
             unitGroupCtrl.DieUnitCheck(gameObject);
+            InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
         }
-        portalUnitIn = true;
+        playerUnitPortalIn = true;
         hostClientUnitIn = mapIndex;
         gameObject.SetActive(false);
     }
@@ -703,6 +713,8 @@ public class UnitAi : UnitCommonAi
     {
         transform.position = spawnPos;
         gameObject.SetActive(true);
+        if (unitLevelData.Length > 0)
+            animator.SetFloat("Level", unitLevel);
         AStarSet(isInHostMap);
     }
 
@@ -712,7 +724,8 @@ public class UnitAi : UnitCommonAi
     {
         base.GameStartSet(unitSave);
         unitSaveData = unitSave;
-        unitLevel = unitSave.level;
+        if (unitLevelData.Length > 0)
+            unitLevel = unitSave.level;
         SetUnitCommonData();
         StartCoroutine(AstarScanCheck());
     }
@@ -791,7 +804,7 @@ public class UnitAi : UnitCommonAi
         data.patrolDir = isPatrolMove;
         data.moveTragetPos = Vector3Extensions.FromVector3(targetPosition);
         data.moveStartPos = Vector3Extensions.FromVector3(patrolPos);
-        data.portalUnitIn = portalUnitIn;
+        data.portalUnitIn = playerUnitPortalIn;
         data.hostClientUnitIn = hostClientUnitIn;
         data.level = unitLevel;
 
@@ -856,7 +869,7 @@ public class UnitAi : UnitCommonAi
         defense = unitCommonData.Defense;
     }
 
-    public bool canUpgrade()
+    public bool CanUpgrade()
     {
         if (unitLevel < unitLevelData.Length - 1)
             return true;

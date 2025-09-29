@@ -497,7 +497,6 @@ MonoBehaviour:
   width: 0
   sizeOneByOne: 0
   isPreBuilding: 0
-  isSetBuildingOk: 0
   unitCanvas: {fileID: 5327784652236720469}
   maxLevel: 0
   hpBar: {fileID: 4704275574380011210}
@@ -519,7 +518,6 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  checkObj: 1
   takeItemDelay: 0
   inObj: []
   outObj: []
@@ -528,7 +526,6 @@ MonoBehaviour:
   spawnItem: {fileID: 0}
   monsterList: []
   col: {fileID: 0}
-  repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
   overclockPer: 0
@@ -548,6 +545,7 @@ MonoBehaviour:
   isEnergyStr: 0
   energyProduction: 0
   energyConsumption: 0
+  isEnergyConnected: 0
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
@@ -559,7 +557,6 @@ MonoBehaviour:
   isDestroying: 0
   isRunning: 0
   settingEndCheck: 0
-  DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
@@ -568,12 +565,16 @@ MonoBehaviour:
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
+  overlay: {fileID: 0}
+  overlayUse: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
+  isInvenFull: 0
+  smokeCtrl: {fileID: 0}
   merchandiseList: {fileID: 11400000, guid: 933e7c75626eade44a946e3f27580633, type: 2}
   scrap: {fileID: 0}
 --- !u!114 &5999188213166003495
@@ -590,6 +591,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
   sInvenManager: {fileID: 0}
+  prod: {fileID: 0}
   openUI: 0
 --- !u!114 &5197040497763038552
 MonoBehaviour:
@@ -603,7 +605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8612a3248f1ad04197ab52610640ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  space: 18
+  space: 15
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   itemListSO: {fileID: 0}
@@ -656,6 +658,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseAggroAmount: 5
+  aggroAmount: 0
 --- !u!1 &7535713133128926244
 GameObject:
   m_ObjectHideFlags: 0

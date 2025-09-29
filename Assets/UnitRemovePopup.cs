@@ -61,7 +61,7 @@ public class UnitRemovePopup : MonoBehaviour
         ClosePopup();
     }
 
-    public void OpenPopup(Dictionary<string, int> datas, int amount)
+    public void OpenPopup(Dictionary<(string, int), int> datas, int amount)
     {
         popupPanel.SetActive(true);
 
@@ -81,7 +81,7 @@ public class UnitRemovePopup : MonoBehaviour
 
         foreach (var data in datas)
         {
-            slots[slotIndex].icon.sprite = itemDic[data.Key].icon;
+            slots[slotIndex].icon.sprite = ItemList.instance.FindDataGetLevel(data.Key.Item1, data.Key.Item2 + 1).icon;
             slots[slotIndex].icon.enabled = true;
             slots[slotIndex].amountText.text = data.Value.ToString();
             slots[slotIndex].amountText.enabled = true;

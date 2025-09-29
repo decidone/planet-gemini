@@ -16,6 +16,7 @@ public class ScienceBtn : MonoBehaviour
     Image btnImage;
     public Image upgradeImg; 
     Button scBtn;
+    [SerializeField]
     bool isLock = true;
     [HideInInspector]
     public bool upgradeStart = false;
@@ -72,18 +73,25 @@ public class ScienceBtn : MonoBehaviour
         }
         else
         {
-            if (ItemFullCheck())
+            if (scienceInfoData.coreLv > ScienceDb.instance.coreLevel)
             {
-                if (!upgradeStart && !upgrade && isLock)
-                {
-                    scienceManager.OpenUpgradeWindow();
-                }
+                scienceManager.coreCtrl[coreLevel - 1].StartBlink();
             }
             else
             {
-                if (!upgradeStart && !upgrade && isLock)
+                if (ItemFullCheck())
                 {
-                    scienceManager.OpenItemSetWindow();
+                    if (!upgradeStart && !upgrade && isLock)
+                    {
+                        scienceManager.OpenUpgradeWindow();
+                    }
+                }
+                else
+                {
+                    if (!upgradeStart && !upgrade && isLock)
+                    {
+                        scienceManager.OpenItemSetWindow();
+                    }
                 }
             }
         }

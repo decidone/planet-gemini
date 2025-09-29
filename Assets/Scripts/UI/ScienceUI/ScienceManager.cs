@@ -30,8 +30,8 @@ public class ScienceManager : MonoBehaviour
     [HideInInspector]
     public ScienceBtn[] scienceBtns;
 
-    ScienceCoreLvCtrl[] buildContent = new ScienceCoreLvCtrl[5];
-    //ScienceCoreLvCtrl[] battleContent = new ScienceCoreLvCtrl[5];
+    [HideInInspector]
+    public ScienceCoreLvCtrl[] coreCtrl = new ScienceCoreLvCtrl[5];
     int[] canCoreUpgradeCount = new int[5] {0, 1, 2, 3, 4 };  
     public GameObject scienceTreeUI;
 
@@ -150,8 +150,8 @@ public class ScienceManager : MonoBehaviour
         {
             GameObject buildUI = Instantiate(coreLvUI);
             buildUI.transform.SetParent(contents[0].transform, false);
-            buildContent[i] = buildUI.GetComponent<ScienceCoreLvCtrl>();
-            buildContent[i].UISetting(i, "Build");
+            coreCtrl[i] = buildUI.GetComponent<ScienceCoreLvCtrl>();
+            coreCtrl[i].UISetting(i, "Build");
         }
     }
 
@@ -199,10 +199,6 @@ public class ScienceManager : MonoBehaviour
 
     public void OpenItemSetWindow()
     {
-        if (scienceInfoData.coreLv > scienceDb.coreLevel)
-            return;
-
-
         itemInputWindow.SetActive(true);
         sciItemSetWindow.SetUI(focusedSciBtn);
         soundManager.PlayUISFX("ButtonClick");
