@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Cable
   icon: {fileID: 21300000, guid: 8d47033fe3834a345a0966abea561cd3, type: 3}
-  tier: 3
+  tier: 2

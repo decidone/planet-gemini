@@ -65,7 +65,7 @@ public class SplitterFilterRecipe : InventoryManager
 
     void SortItemTier()
     {
-        for (int i = 0; i < 6; i++) //6은 -1을 제외한 아이템 Tier분류 수
+        for (int i = 0; i < 5; i++) //5는 -1을 제외한 아이템 Tier분류 수
         {
             List<Item> list = new List<Item>();
 

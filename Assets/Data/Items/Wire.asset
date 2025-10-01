@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Wire
   icon: {fileID: 21300000, guid: 1c2d7b04ae8475d4894897917d150293, type: 3}
-  tier: 1
+  tier: 2
