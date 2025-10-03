@@ -62,7 +62,7 @@ public class MouseSkin : MonoBehaviour
 
         if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
         {
-            if (texture == cursorSkin.buildingCursor[0])
+            if (texture == cursorSkin.buildingCursor[0] || texture == cursorSkin.buildingCursor[1])
             {
                 Cursor.SetCursor(texture, Vector2.zero, CursorMode.Auto);
             }
@@ -108,13 +108,14 @@ public class MouseSkin : MonoBehaviour
 
     public void ResetCursor()
     {
-        if (UpgradeRemoveBtn.instance.clickBtn)
+        if (UpgradeRemoveBtn.instance.currentBtn != UpgradeRemoveBtn.SelectedButton.None)
         {
-            if (UpgradeRemoveBtn.instance.btnSwitch)
+            if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.BuildingUpgrade)
             {
                 DragCursorSet(false);
             }
-            else
+            if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.BuildingRemove ||
+                UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.UnitRemove)
             {
                 DragCursorSet(true);
             }

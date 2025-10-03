@@ -178,6 +178,7 @@ public abstract class Production : Structure
 
     public virtual void SetRecipe(Recipe _recipe, int index)
     {
+        Debug.Log("SetRecipe call : " + _recipe.name);
         recipe = _recipe;
         recipeIndex = index;
         sInvenManager.ResetInvenOption();
@@ -266,6 +267,7 @@ public abstract class Production : Structure
 
     void ResetUI()
     {
+        Debug.Log("ResetUI call");
         recipe = new Recipe();
         recipeIndex = -1;
         cooldown = structureData.Cooldown;

@@ -29,6 +29,8 @@ public class MainPanelsManager : MonoBehaviour
     Toggle bloodMoonToggle; 
     SaveLoadMenu saveLoadPanel;
     SoundManager soundManager;
+
+    int seed;
     void Start()
     {
         gameSetting = MainGameSetting.instance;
@@ -36,15 +38,14 @@ public class MainPanelsManager : MonoBehaviour
         soundManager = SoundManager.instance;
         gameStartBtn.onClick.AddListener(() => GameStartBtnFunc());
         backBtn.onClick.AddListener(() => NewGamePanelSet(false));
-        mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
-        difficultyLevelDropdown.onValueChanged.AddListener(delegate { DifficultyLevelDropdownFunc(difficultyLevelDropdown); });
+        //mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
+        //difficultyLevelDropdown.onValueChanged.AddListener(delegate { DifficultyLevelDropdownFunc(difficultyLevelDropdown); });
         randomSeedToggle.onValueChanged.AddListener(delegate { RandomSeedToggleValue(); });
-        bloodMoonToggle.onValueChanged.AddListener(delegate { BloodMoonToggleValue(); });
+        //bloodMoonToggle.onValueChanged.AddListener(delegate { BloodMoonToggleValue(); });
         seedInputField.onValueChanged.AddListener(delegate { SeedInputValueChanged(); });
 
         randomSeedToggle.isOn = true;
         bloodMoonToggle.isOn = true;
-        gameSetting.BloodMoonState(bloodMoonToggle.isOn);
     }
 
     public void NewGamePanelSet(bool state)
@@ -69,21 +70,27 @@ public class MainPanelsManager : MonoBehaviour
             int.TryParse(seedInputField.text, out inputValue);
             gameSetting.RandomSeedValue(inputValue);
         }
+
+        gameSetting.MapSizeSet(mapSizeDropdown.value);
+        gameSetting.DifficultylevelSet(difficultyLevelDropdown.value);
+        gameSetting.BloodMoonState(bloodMoonToggle.isOn);
+        gameSetting.RandomSeedValue(seed);
+
         gameSetting.NewGameState(true);
         NetworkManager.Singleton.StartHost();
         LoadingUICtrl.Instance.LoadScene("GameScene", true);
         soundManager.PlayUISFX("ButtonClick");
     }
 
-    void MapSizeDropdownFunc(Dropdown dropdown)
-    {
-        gameSetting.MapSizeSet(dropdown.value);
-    }
+    //void MapSizeDropdownFunc(Dropdown dropdown)
+    //{
+    //    gameSetting.MapSizeSet(dropdown.value);
+    //}
 
-    void DifficultyLevelDropdownFunc(Dropdown dropdown)
-    {
-        gameSetting.DifficultylevelSet(dropdown.value);
-    }
+    //void DifficultyLevelDropdownFunc(Dropdown dropdown)
+    //{
+    //    gameSetting.DifficultylevelSet(dropdown.value);
+    //}
 
     public void SaveLoadPanelSet()
     {
@@ -105,10 +112,10 @@ public class MainPanelsManager : MonoBehaviour
         }
     }
 
-    void BloodMoonToggleValue()
-    {
-        gameSetting.BloodMoonState(bloodMoonToggle.isOn);
-    }
+    //void BloodMoonToggleValue()
+    //{
+    //    gameSetting.BloodMoonState(bloodMoonToggle.isOn);
+    //}
 
     void SeedInputValueChanged()
     {
@@ -118,8 +125,7 @@ public class MainPanelsManager : MonoBehaviour
 
     int SetRandomSeed()
     {
-        int seed = UnityEngine.Random.Range(0, 999999999);
-        gameSetting.RandomSeedValue(seed);
+        seed = UnityEngine.Random.Range(0, 999999999);
         return seed;
     }
 }

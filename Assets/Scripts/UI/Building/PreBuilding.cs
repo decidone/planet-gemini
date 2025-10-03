@@ -1454,7 +1454,6 @@ public class PreBuilding : NetworkBehaviour
         {
             Destroy(nonNetObj);
         }
-        MouseSkin.instance.BuildingCursorSet(0);
 
         nonNetObj = Instantiate(preBuildingNonNet);
 
@@ -1467,9 +1466,16 @@ public class PreBuilding : NetworkBehaviour
 
 
         if (buildData.isGetDirection)
+        {
             isGetDir = true;
+            MouseSkin.instance.BuildingCursorSet(1);
+            BasicUIBtns.instance.SetRotateUI(true);
+        }
         else
+        {
             isGetDir = false;
+            MouseSkin.instance.BuildingCursorSet(0);
+        }
 
         if (buildData.isUnderObj)
             isUnderObj = true;
@@ -1590,7 +1596,6 @@ public class PreBuilding : NetworkBehaviour
         canBuildCount = 1;
         portalScript = portal;
         isInHostMap = _isInHostMap;
-        MouseSkin.instance.BuildingCursorSet(0);
 
         if (gameManager.portal[0] == portal)        
             portalIndex = 0;
@@ -1616,7 +1621,8 @@ public class PreBuilding : NetworkBehaviour
         preBuildingImg.PreAnimatorSet(buildData.animatorController[0]);        
 
         isGetDir = false;
-        isUnderObj = false;
+
+        MouseSkin.instance.BuildingCursorSet(0);
 
         isEnergyStr = false;
         isEnergyUse = false;
@@ -1824,6 +1830,7 @@ public class PreBuilding : NetworkBehaviour
             spriteRenderer.sprite = null;
         dirNum = 0;
         nonNetObj = null;
+        BasicUIBtns.instance.SetRotateUI(false);
     }
 
 

@@ -56,7 +56,7 @@ public class AutoBuyer : Production
             RemoveFunc();
         }
 
-        if (!isPreBuilding && isRunning)
+        if (!isPreBuilding && recipe.name != null && isRunning)
         {
             if (isTransportable)
             {
@@ -266,7 +266,11 @@ public class AutoBuyer : Production
     }
     public override void SetOutput(Recipe recipe)
     {
-        output = itemDic[recipe.items[0]];
+        if (recipe != null)
+            output = itemDic[recipe.items[0]];
+        else
+            output = null;
+
         FactoryOverlay();
     }
 

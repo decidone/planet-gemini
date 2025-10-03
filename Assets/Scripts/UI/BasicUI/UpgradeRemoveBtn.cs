@@ -5,13 +5,22 @@ using UnityEngine.UI;
 
 public class UpgradeRemoveBtn : MonoBehaviour
 {
-    [SerializeField]
-    Button upgradeBtn;
-    [SerializeField]
-    Button removeBtn;
+    public enum SelectedButton
+    {
+        None,
+        BuildingUpgrade,
+        BuildingRemove,
+        UnitRemove
+    }
 
-    public bool clickBtn;  // 둘중 하나라도 누르면 true
-    public bool btnSwitch; // true : 업그레이드, false : 제거
+    [SerializeField]
+    Button buildingUpgradeBtn;
+    [SerializeField]
+    Button buildingRemoveBtn;
+    [SerializeField]
+    Button unitRemoveBtn;
+
+    public SelectedButton currentBtn = SelectedButton.None;
 
     DragGraphic dragGraphic;
 
@@ -37,26 +46,28 @@ public class UpgradeRemoveBtn : MonoBehaviour
     {
         soundManager = SoundManager.instance;
         dragGraphic = DragGraphic.instance;
-        upgradeBtn.onClick.AddListener(() => UpgradeBtnFunc());
-        removeBtn.onClick.AddListener(() => RemoveBtnFunc());
+        buildingUpgradeBtn.onClick.AddListener(() => UpgradeBtnFunc());
+        buildingRemoveBtn.onClick.AddListener(() => RemoveBtnFunc());
+        unitRemoveBtn.onClick.AddListener(() => UnitRemoveBtnFunc());
     }
 
     void UpgradeBtnFunc()
     {
-        if (clickBtn && btnSwitch)
+        if (currentBtn == SelectedButton.BuildingUpgrade)
         {
-            clickBtn = false;
+            // 같은 버튼 다시 눌렀을 때 -> 해제
+            currentBtn = SelectedButton.None;
             dragGraphic.BtnFuncReset();
-            ReSetColor(upgradeBtn);
+            ReSetColor(buildingUpgradeBtn);
             MouseSkin.instance.ResetCursor();
         }
         else
         {
-            clickBtn = true;
-            btnSwitch = true;
-            dragGraphic.BtnFunc(true);
-            SetColor(upgradeBtn);
-            ReSetColor(removeBtn);
+            currentBtn = SelectedButton.BuildingUpgrade;
+            dragGraphic.BtnFunc(currentBtn);
+            SetColor(buildingUpgradeBtn);
+            ReSetColor(buildingRemoveBtn);
+            ReSetColor(unitRemoveBtn);
             MouseSkin.instance.DragCursorSet(false);
         }
         soundManager.PlayUISFX("ButtonClick");
@@ -64,20 +75,41 @@ public class UpgradeRemoveBtn : MonoBehaviour
 
     void RemoveBtnFunc()
     {
-        if (clickBtn && !btnSwitch)
+        if (currentBtn == SelectedButton.BuildingRemove)
         {
-            clickBtn = false;
+            currentBtn = SelectedButton.None;
             dragGraphic.BtnFuncReset();
-            ReSetColor(removeBtn);
+            ReSetColor(buildingRemoveBtn);
             MouseSkin.instance.ResetCursor();
         }
         else
         {
-            clickBtn = true;
-            btnSwitch = false;
-            dragGraphic.BtnFunc(false);
-            SetColor(removeBtn);
-            ReSetColor(upgradeBtn);
+            currentBtn = SelectedButton.BuildingRemove;
+            dragGraphic.BtnFunc(currentBtn);
+            SetColor(buildingRemoveBtn);
+            ReSetColor(buildingUpgradeBtn);
+            ReSetColor(unitRemoveBtn);
+            MouseSkin.instance.DragCursorSet(true);
+        }
+        soundManager.PlayUISFX("ButtonClick");
+    }
+
+    void UnitRemoveBtnFunc()
+    {
+        if (currentBtn == SelectedButton.UnitRemove)
+        {
+            currentBtn = SelectedButton.None;
+            dragGraphic.BtnFuncReset();
+            ReSetColor(unitRemoveBtn);
+            MouseSkin.instance.ResetCursor();
+        }
+        else
+        {
+            currentBtn = SelectedButton.UnitRemove;
+            dragGraphic.BtnFunc(currentBtn);
+            SetColor(unitRemoveBtn);
+            ReSetColor(buildingUpgradeBtn);
+            ReSetColor(buildingRemoveBtn);
             MouseSkin.instance.DragCursorSet(true);
         }
         soundManager.PlayUISFX("ButtonClick");

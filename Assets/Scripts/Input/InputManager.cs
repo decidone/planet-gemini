@@ -90,7 +90,7 @@ public class InputManager : MonoBehaviour
                 return;
             }
 
-            if (!UpgradeRemoveBtn.instance.clickBtn)
+            if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.None)
             {
                 if (ctrl)
                     MouseSkin.instance.DragCursorSet(false);
@@ -110,7 +110,7 @@ public class InputManager : MonoBehaviour
                 return;
             }
 
-            if (!UpgradeRemoveBtn.instance.clickBtn)
+            if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.None)
             {
                 if (shift)
                     MouseSkin.instance.DragCursorSet(true);

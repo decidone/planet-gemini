@@ -82,7 +82,7 @@ public class UnitDrag : DragFunc
     {
         if (selectedObjects.Length > 0)
         {
-            if (!UpgradeRemoveBtn.instance.clickBtn)
+            if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.None)
                 MouseSkin.instance.UnitCursorCursorSet(true);
             isAKeyPressed = true;
             unitCtrlKeyPressed = true;
@@ -98,7 +98,7 @@ public class UnitDrag : DragFunc
     {
         if (selectedObjects.Length > 0)
         {
-            if (!UpgradeRemoveBtn.instance.clickBtn)
+            if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.None)
                 MouseSkin.instance.UnitCursorCursorSet(false);
             isPKeyPressed = true;
             unitCtrlKeyPressed = true;

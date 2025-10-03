@@ -68,7 +68,8 @@ public class TowerSingleAttackFx : TowerAttackFx
         {
             if (!alreadyHit)
             {
-                StopCoroutine(timerCoroutine);
+                if (timerCoroutine != null)
+                    StopCoroutine(timerCoroutine);
 
                 if (explosion)
                 {

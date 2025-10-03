@@ -65,7 +65,8 @@ public class FluidManager : NetworkBehaviour
 
     public void MainSourceGroupRemove(FluidFactoryCtrl mainFluid, FluidFactoryCtrl fluid)
     {
-        StopCoroutine(sendfluidCoroutine);
+        if(sendfluidCoroutine != null)
+            StopCoroutine(sendfluidCoroutine);
         if (mainSourceGroupObj.ContainsKey(mainFluid))
         {
             if(mainSourceGroupObj[mainFluid].Contains(fluid) || mainFluid == fluid)
@@ -140,7 +141,8 @@ public class FluidManager : NetworkBehaviour
 
     public void ConsumeSourceGroupRemove(FluidFactoryCtrl consumeFluid, FluidFactoryCtrl fluid)
     {
-        StopCoroutine(getfluidCoroutine);
+        if(getfluidCoroutine != null)
+            StopCoroutine(getfluidCoroutine);
         if (consumeSourceGroupObj.ContainsKey(consumeFluid))
         {
             if (consumeSourceGroupObj[consumeFluid].Contains(fluid) || consumeFluid == fluid)

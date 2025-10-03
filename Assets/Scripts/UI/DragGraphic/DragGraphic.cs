@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using static UpgradeRemoveBtn;
 
 public class DragGraphic : MonoBehaviour
 {
@@ -30,7 +31,6 @@ public class DragGraphic : MonoBehaviour
     bool removeBtnOn;
 
     bool unitRemoveOn;
-    Disintegrator disintegrator;
 
     #region Singleton
     public static DragGraphic instance;
@@ -120,17 +120,22 @@ public class DragGraphic : MonoBehaviour
             sprite.enabled = true;
             isDrag = true;
 
-            if (UpgradeRemoveBtn.instance.clickBtn)
+            if (UpgradeRemoveBtn.instance.currentBtn != SelectedButton.None)
             {
-                if (UpgradeRemoveBtn.instance.btnSwitch)
+                if (UpgradeRemoveBtn.instance.currentBtn == SelectedButton.BuildingUpgrade)
                 {
                     isCtrlDrag = true;
                     ColorSet(Color.blue);
                 }
-                else
+                else if (UpgradeRemoveBtn.instance.currentBtn == SelectedButton.BuildingRemove)
                 {
                     isShiftDrag = true;
                     ColorSet(Color.red);
+                }
+                else if (UpgradeRemoveBtn.instance.currentBtn == SelectedButton.UnitRemove)
+                {
+                    unitRemoveOn = true;
+                    ColorSet(Color.yellow);
                 }
             }
             else
@@ -159,6 +164,7 @@ public class DragGraphic : MonoBehaviour
     
     void LeftMouseButtonDoubleClick(InputAction.CallbackContext ctx)
     {
+        if (preBuilding.isBuildingOn || beltPreBuilding.isBuildingOn) return;
         endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         unitDrag.LeftMouseDoubleClick(startPosition, endPosition);
     }
@@ -195,12 +201,8 @@ public class DragGraphic : MonoBehaviour
 
         endPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (unitRemoveOn)
-        {
-            if(!UnitRemovePopup.instance.isOpen)
-                disintegrator.UnitRemoveCancel();
-        }
-        else if (unitDrag.selectedObjects.Length > 0)
+
+        if (unitDrag.selectedObjects.Length > 0)
             unitDrag.RightMouseUp(endPosition, endPosition);
         else
         {
@@ -277,6 +279,7 @@ public class DragGraphic : MonoBehaviour
         isDrag = false;
         isCtrlDrag = false;
         isShiftDrag = false;
+        unitRemoveOn = false;
     }
 
     public void SelectBuild(GameObject obj)
@@ -293,33 +296,33 @@ public class DragGraphic : MonoBehaviour
     {
         upgradeBtnOn = false;
         removeBtnOn = false;
+        unitRemoveOn = false;
+        unitDrag.UnitRemoveCancel();
     }
 
-    public void BtnFunc(bool isUpgrade)
+    public void BtnFunc(SelectedButton btnState)
     {
-        if (isUpgrade)
+        if(btnState == SelectedButton.BuildingUpgrade)
         {
             upgradeBtnOn = true;
             removeBtnOn = false;
+            unitRemoveOn = false;
+            unitDrag.UnitRemoveCancel();
         }
-        else
+        else if(btnState == SelectedButton.BuildingRemove)
         {
-            removeBtnOn = true;
             upgradeBtnOn = false;
+            removeBtnOn = true;
+            unitRemoveOn = false;
+            unitDrag.UnitRemoveCancel();
         }
-    }
-
-    public void UnitRemoveSet(Disintegrator dis)
-    {
-        disintegrator = dis;
-        unitRemoveOn = true;
-        unitDrag.UnitRemove();
-    }
-
-    public void UnitRemoveCancel()
-    {
-        disintegrator = null;
-        unitRemoveOn = false;
-        unitDrag.UnitRemoveCancel();
+        else if(btnState == SelectedButton.UnitRemove)
+        {
+            upgradeBtnOn = false;
+            removeBtnOn = false;
+            unitRemoveOn = true;
+            Debug.Log("unitRemoveOn On");
+            unitDrag.UnitRemove();
+        }
     }
 }

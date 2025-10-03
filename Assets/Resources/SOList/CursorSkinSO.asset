@@ -18,6 +18,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 8ab2cd47ec3aaaf46b64a9c5df5b1f99, type: 3}
   buildingCursor:
   - {fileID: 2800000, guid: 1f6a5e3340a01374d91d9a2438a164ce, type: 3}
+  - {fileID: 2800000, guid: 45724b3f156a68a428dcdc77ade3dbac, type: 3}
   - {fileID: 2800000, guid: 98548aa9710898f49b49d3f4783509da, type: 3}
   - {fileID: 2800000, guid: cb4be36bf4190fe4da18dfbca6ce0442, type: 3}
   unitCursor:

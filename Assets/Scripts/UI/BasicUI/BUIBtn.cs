@@ -31,7 +31,10 @@ public class BUIBtn : MonoBehaviour
 
     public void OnEnter()
     {
-        itemInfoWindow.OpenWindow(OptionName + "('" + keyValue + "')");
+        if(keyValue != "")
+            itemInfoWindow.OpenWindow(OptionName + "('" + keyValue + "')");
+        else
+            itemInfoWindow.OpenWindow(OptionName);
         BasicUIBtns.instance.mouseOnBtn = true;
         BasicUIBtns.instance.isSwapBtn = isSwapBtn;
     }

@@ -68,7 +68,8 @@ public class BulletCtrl : NetworkBehaviour
         {
             if (!alreadyHit)
             {
-                StopCoroutine(timerCoroutine);
+                if (timerCoroutine != null)
+                    StopCoroutine(timerCoroutine);
                 DestroyBullet();
                 alreadyHit = true;
             }

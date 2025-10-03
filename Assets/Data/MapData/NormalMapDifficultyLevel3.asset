@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97d53f0bd4d071e409ca122e15f539c6, type: 3}
-  m_Name: SmallMapDifficultyLevel1
+  m_Name: NormalMapDifficultyLevel3
   m_EditorClassIdentifier: 
   mapSize: 450
-  countOfSpawnersByLevel: 0100000000000000
-  upgradeSpawnerSet: 0000000000000000
-  mapSplitCount: 5
+  countOfSpawnersByLevel: 10000000180000002000000028000000
+  upgradeSpawnerSet: 00000000000000000000000000000000
+  mapSplitCount: 11

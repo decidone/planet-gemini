@@ -50,6 +50,13 @@ public class BasicUIBtns : MonoBehaviour
     // 유닛 UI 관련
     public Text unitAmountText;
 
+    // 회전 가능한 건물 UI 관련
+    [SerializeField]
+    GameObject rotatePanel;
+    string rotateKey;
+    [SerializeField]
+    Text rotateText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -106,6 +113,17 @@ public class BasicUIBtns : MonoBehaviour
             }
             else
                 continue;
+        }
+
+        foreach (var data in actions)
+        {
+            if (data.Key == "Rotate")
+            {
+                rotateKey = InputControlPath.ToHumanReadableString(data.Value.bindings[0].effectivePath, InputControlPath.HumanReadableStringOptions.OmitDevice);
+                if (rotatePanel.activeSelf)
+                    SetRotateUI(true);
+                break;
+            }
         }
     }
 
@@ -208,5 +226,12 @@ public class BasicUIBtns : MonoBehaviour
     {
         timeBtns[0].interactable = currentStage > 0;
         timeBtns[1].interactable = currentStage < positions.Length - 1;
+    }
+
+    public void SetRotateUI(bool isActive)
+    {
+        rotatePanel.SetActive(isActive);
+        if (isActive)
+            rotateText.text = "Press ('" + rotateKey + "') to rotate.";
     }
 }

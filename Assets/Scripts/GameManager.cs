@@ -101,6 +101,7 @@ public class GameManager : NetworkBehaviour
     public bool isBasicUIClose;
     [SerializeField] GameObject basicUI;
     [SerializeField] GameObject chat;
+    [SerializeField] GameObject questUI;
 
     public delegate void OnUIChanged(GameObject ui);
     public OnUIChanged onUIChangedCallback;
@@ -1016,12 +1017,14 @@ public class GameManager : NetworkBehaviour
     {
         basicUI.SetActive(true);
         chat.SetActive(true);
+        questUI.SetActive(true);
     }
 
     public void CloseBasicUIs()
     {
         basicUI.SetActive(false);
         chat.SetActive(false);
+        questUI.SetActive(false);
     }
 
     void Inven(InputAction.CallbackContext ctx)

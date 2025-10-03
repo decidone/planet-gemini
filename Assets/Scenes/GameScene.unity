@@ -1345,6 +1345,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+--- !u!1 &669814015 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8862260812074067536, guid: 3562fb30ad18a234b8877d5a64a26436, type: 3}
+  m_PrefabInstance: {fileID: 669814014}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &717121938
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4177,6 +4182,10 @@ PrefabInstance:
       propertyPath: finance
       value: 
       objectReference: {fileID: 1095768246952270826}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: questUI
+      value: 
+      objectReference: {fileID: 669814015}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: timeImg
       value: 

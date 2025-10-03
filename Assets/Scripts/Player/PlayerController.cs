@@ -770,7 +770,7 @@ public class PlayerController : NetworkBehaviour
         if (IsOwner && tankOn && !reloading)
         {
             tankAttackKeyPressed = true;
-            if (!UpgradeRemoveBtn.instance.clickBtn)
+            if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.None)
                 MouseSkin.instance.UnitCursorCursorSet(true);
             UnitDrag.instance.playerAttackClick = true;
         }

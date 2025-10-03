@@ -64,11 +64,11 @@ public class BeltPreBuilding : PreBuilding
         {
             if (dirNum ==  0 || dirNum == 2)
             {
-                MouseSkin.instance.BuildingCursorSet(2);
+                MouseSkin.instance.BuildingCursorSet(3);
             }
             else if (dirNum == 1 || dirNum == 3)
             {
-                MouseSkin.instance.BuildingCursorSet(1);
+                MouseSkin.instance.BuildingCursorSet(2);
             }
         }
 
@@ -84,8 +84,11 @@ public class BeltPreBuilding : PreBuilding
 
             CheckPos(endBuildPos, (int)tempDeltaX, (int)tempDeltaY);
         }
-        if(isBuildingOn)
-            MouseSkin.instance.BuildingCursorSet(0);
+        if (isBuildingOn)
+        {
+            MouseSkin.instance.BuildingCursorSet(1);
+            BasicUIBtns.instance.SetRotateUI(true);
+        }
     }
 
     [Command]
