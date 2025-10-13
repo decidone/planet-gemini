@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Screw
   icon: {fileID: 21300000, guid: eb0929cbcad0c4740ab36bac0a5b2222, type: 3}
-  tier: 1
+  tier: 2

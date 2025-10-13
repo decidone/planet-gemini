@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Cogwheel
   icon: {fileID: 21300000, guid: 974a17f2053068243b30adcee73d1e40, type: 3}
-  tier: 1
+  tier: 2

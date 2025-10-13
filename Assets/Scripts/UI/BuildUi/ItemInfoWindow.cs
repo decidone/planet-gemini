@@ -71,7 +71,7 @@ public class ItemInfoWindow : MonoBehaviour
             else
             {
                 winText.text = slot.inGameName;
-                if (slot.item.tier == 5)
+                if (slot.item.tier == 3)
                 {
                     winText.color = new Color(0, 115, 255);
                 }

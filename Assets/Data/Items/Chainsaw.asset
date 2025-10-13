@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Chainsaw
   icon: {fileID: 21300000, guid: 936908a107187c74f9df145f5531df65, type: 3}
-  tier: 5
+  tier: 3

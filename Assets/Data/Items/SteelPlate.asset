@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: SteelPlate
   icon: {fileID: 21300000, guid: 17f59acdd880e144886264032e895e24, type: 3}
-  tier: 2
+  tier: 1

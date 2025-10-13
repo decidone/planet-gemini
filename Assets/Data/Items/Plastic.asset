@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Plastic
   icon: {fileID: 21300000, guid: 887a1a9598e0bd143a60c908a8c48fbf, type: 3}
-  tier: 3
+  tier: 1

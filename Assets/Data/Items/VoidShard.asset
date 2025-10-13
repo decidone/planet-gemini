@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: VoidShard
   icon: {fileID: 489081943, guid: 7df6bf93ee5b9bb45b6d2dda87d00b3c, type: 3}
-  tier: 4
+  tier: 3
