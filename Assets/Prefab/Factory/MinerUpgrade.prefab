@@ -387,7 +387,6 @@ MonoBehaviour:
   spawnItem: {fileID: 0}
   monsterList: []
   col: {fileID: 0}
-  repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
   overclockPer: 10
@@ -419,7 +418,6 @@ MonoBehaviour:
   isDestroying: 0
   isRunning: 0
   settingEndCheck: 0
-  DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 8332165577516669115}
@@ -470,7 +468,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: cb971a9bba38a984dbc6f21022af7996, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0

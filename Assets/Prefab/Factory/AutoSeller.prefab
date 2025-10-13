@@ -569,7 +569,6 @@ MonoBehaviour:
   width: 0
   sizeOneByOne: 0
   isPreBuilding: 1
-  isSetBuildingOk: 0
   unitCanvas: {fileID: 5327784652236720469}
   maxLevel: 0
   hpBar: {fileID: 4704275574380011210}
@@ -591,7 +590,6 @@ MonoBehaviour:
   - {x: 0, y: 0}
   - {x: 0, y: 0}
   - {x: 0, y: 0}
-  checkObj: 1
   takeItemDelay: 0
   inObj: []
   outObj: []
@@ -600,7 +598,6 @@ MonoBehaviour:
   spawnItem: {fileID: 0}
   monsterList: []
   col: {fileID: 0}
-  repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
   overclockPer: 10
@@ -620,6 +617,7 @@ MonoBehaviour:
   isEnergyStr: 0
   energyProduction: 0
   energyConsumption: 0
+  isEnergyConnected: 0
   isOperate: 0
   efficiency: 0
   effiCooldown: 0
@@ -631,7 +629,6 @@ MonoBehaviour:
   isDestroying: 0
   isRunning: 0
   settingEndCheck: 0
-  DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
@@ -640,12 +637,16 @@ MonoBehaviour:
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
+  overlay: {fileID: 0}
+  overlayUse: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0
+  isInvenFull: 0
+  smokeCtrl: {fileID: 0}
   trUnit: {fileID: 4728483135223444395, guid: 3497393f39f650e4c89243555f2f5d67, type: 3}
   toolShopMerchListSO: {fileID: 11400000, guid: efa2e799c3416cb45a1f53f994610a14, type: 2}
 --- !u!114 &5999188213166003495
@@ -662,6 +663,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   structureInfoUI: {fileID: 0}
   sInvenManager: {fileID: 0}
+  prod: {fileID: 0}
   openUI: 0
 --- !u!114 &5197040497763038552
 MonoBehaviour:
@@ -720,7 +722,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: ed3765f78f2628e4db9c34617d219b1a, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0

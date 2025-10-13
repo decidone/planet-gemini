@@ -201,7 +201,14 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         settingEndCheck = true;
         SetBuild();
         ColliderTriggerOnOff(true);
-        gameObject.AddComponent<DynamicGridObstacle>();
+
+        if (col != null)
+        {
+            // 3. A* 그래프 업데이트 (해당 영역을 길막으로 인식시킴)
+            Bounds b = col.bounds;
+            AstarPath.active.UpdateGraphs(b);
+        }
+        //gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         DataSet();
 

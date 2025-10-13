@@ -632,7 +632,6 @@ MonoBehaviour:
   spawnItem: {fileID: 0}
   monsterList: []
   col: {fileID: 0}
-  repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
   overclockPer: 0
@@ -664,7 +663,6 @@ MonoBehaviour:
   isDestroying: 0
   isRunning: 0
   settingEndCheck: 0
-  DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
@@ -674,6 +672,8 @@ MonoBehaviour:
   - {fileID: 58785869, guid: b24b57563ad857e4c804e173ce530158, type: 3}
   isAuto: 0
   selectPointSetPos: 0
+  overlay: {fileID: 0}
+  overlayUse: 0
   connector: {fileID: 3796074299410655006}
   view: {fileID: 8889250720948334388}
   isImprovedRepeater: 0
@@ -735,7 +735,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: a5b4d18cbc3b8b048affd1a281ad3c72, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0

@@ -422,7 +422,7 @@ Animator:
   m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: e11fd40013635af45866396af4a09835, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -465,6 +465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCommonData: {fileID: 11400000, guid: b5198616e1983e844a6dcf5bf0b6c56c, type: 2}
+  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -493,6 +494,7 @@ MonoBehaviour:
   waveArrivePos: 0
   normalTraceTimer: 0
   isDebuffed: 0
+  targetOn: 0
   justTraceTimer: 0
   justTraceInterval: 3
 --- !u!70 &4212981719435381732

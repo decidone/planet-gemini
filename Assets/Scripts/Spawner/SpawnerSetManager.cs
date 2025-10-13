@@ -25,7 +25,7 @@ public class SpawnerSetManager : NetworkBehaviour
     GameObject spawnerGroup;
 
     public AreaLevelData[] arealevelData;
-    int[] basicSpawnerCount = new int[5] { 16, 24, 32, 40, 48 }; //  구역별 기본 스포너 개수
+    int[] basicSpawnerCount = new int[5] { 24, 32, 40, 48, 56 }; //  구역별 기본 스포너 개수
     int[] spawnCount;
     int[] subSpawnerCount;
     int[] upgradeSpawnerSetCount;
@@ -88,9 +88,9 @@ public class SpawnerSetManager : NetworkBehaviour
                 {
                     basePos = areaCenter;
                 }
-                if (Math.Max(x, y) > 1)
+                if (Math.Max(x, y) > 2)
                 {
-                    areaPosLevel.Add(areaCenter, Math.Max(x, y) - 1);    // 구역의 중앙 좌표 + 구역 레벨
+                    areaPosLevel.Add(areaCenter, Math.Max(x, y) - 2);    // 구역의 중앙 좌표 + 구역 레벨
                 }
 
             }

@@ -571,7 +571,14 @@ public class Structure : NetworkBehaviour
         isInHostMap = syncMap;
         hp = syncHp;
         ColliderTriggerOnOff(false);
-        gameObject.AddComponent<DynamicGridObstacle>();
+
+        if (col != null)
+        {
+            // 3. A* 그래프 업데이트 (해당 영역을 길막으로 인식시킴)
+            Bounds b = col.bounds;
+            AstarPath.active.UpdateGraphs(b);
+        }
+        //gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         onEffectUpgradeCheck.Invoke();
         StrBuilt();
@@ -828,7 +835,15 @@ public class Structure : NetworkBehaviour
         settingEndCheck = true;
         SetBuild();
         ColliderTriggerOnOff(false);
-        gameObject.AddComponent<DynamicGridObstacle>();
+
+        if (col != null)
+        {
+            // 3. A* 그래프 업데이트 (해당 영역을 길막으로 인식시킴)
+            Bounds b = col.bounds;
+            AstarPath.active.UpdateGraphs(b);
+        }
+
+        //gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         DataSet();
 
@@ -862,7 +877,14 @@ public class Structure : NetworkBehaviour
         isInHostMap = isHostMap;
         settingEndCheck = true;
         ColliderTriggerOnOff(false);
-        gameObject.AddComponent<DynamicGridObstacle>();
+
+        if (col != null)
+        {
+            // 3. A* 그래프 업데이트 (해당 영역을 길막으로 인식시킴)
+            Bounds b = col.bounds;
+            AstarPath.active.UpdateGraphs(b);
+        }
+        //gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         DataSet();
     }
@@ -1805,7 +1827,17 @@ public class Structure : NetworkBehaviour
         }
 
         StrBuilt();
+  
+        if (col != null)
+        {
+            // 1. GraphUpdateObject 생성
+            GraphUpdateObject guo = new GraphUpdateObject(col.bounds);
+            guo.modifyWalkability = true;
+            guo.setWalkability = true;  // 통행 가능하게 설정
 
+            // 2. 그래프 업데이트
+            AstarPath.active.UpdateGraphs(guo);
+        }
         //NetworkObjManager.instance.NetObjRemove(NetworkObject);
         onEffectUpgradeCheck -= IncreasedStructureCheck;
 

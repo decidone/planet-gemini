@@ -398,7 +398,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 3341db9ebf002584d8d1163f4c9feb4c, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -495,7 +495,6 @@ MonoBehaviour:
   spawnItem: {fileID: 0}
   monsterList: []
   col: {fileID: 0}
-  repairTower: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
   overclockPer: 0
@@ -527,7 +526,6 @@ MonoBehaviour:
   isDestroying: 0
   isRunning: 0
   settingEndCheck: 0
-  DelayGetList: 
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 7902461036641920254}
@@ -536,6 +534,8 @@ MonoBehaviour:
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
+  overlay: {fileID: 0}
+  overlayUse: 0
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
@@ -545,9 +545,9 @@ MonoBehaviour:
   isInvenFull: 0
   smokeCtrl: {fileID: 0}
   towerData: {fileID: 11400000, guid: 845a33d7e3cf6dd4aadad1dc4b01f618, type: 2}
-  towerState: 0
   attDelayTime: 0
   damage: 0
+  attDelayTimer: 0
   bulletDataManager: {fileID: 0}
   energyBulletAmount: 0
   energyBulletMaxAmount: 0

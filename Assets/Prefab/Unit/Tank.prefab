@@ -628,7 +628,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 9a0eb2689a459304ba8a472a3db54458, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -784,6 +784,7 @@ MonoBehaviour:
   playerUnitPortalIn: 0
   unitLevel: 0
   unitLevelData: []
+  unitIcon: []
   playerOnTank: 0
   reloadingBar: {fileID: 7526169894702306838}
   reloadingBackBar: {fileID: 1681697704853878572}

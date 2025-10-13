@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5169599775362002210}
   - component: {fileID: 8375910991808067626}
   - component: {fileID: 8212761883254759723}
-  - component: {fileID: 2537296174426121693}
   - component: {fileID: 7392616662951334733}
   m_Layer: 11
   m_Name: Iron_01
@@ -116,24 +115,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9050d2f4de3bd240ad15e2e0bb6f5bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: Ore
-  item: {fileID: 11400000, guid: 8f35d578a91839e459b68ede2603b22a, type: 2}
---- !u!114 &2537296174426121693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2943585721529328332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 898035302420508601
-  updateError: 1
-  checkTime: 0.2
+  name: 
+  isInHostmap: 0
+  objNum: 0
 --- !u!210 &7392616662951334733
 SortingGroup:
   m_ObjectHideFlags: 0

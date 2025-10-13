@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3037461537123416344}
   - component: {fileID: -2941292111203208783}
   - component: {fileID: 339431878275595622}
-  - component: {fileID: 5917450652055428785}
   - component: {fileID: -4361037318255718909}
   m_Layer: 11
   m_Name: Gold_00
@@ -116,24 +115,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9050d2f4de3bd240ad15e2e0bb6f5bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: Ore
-  item: {fileID: 11400000, guid: 122c8e814a0257d49b21e2bdfda7a450, type: 2}
---- !u!114 &5917450652055428785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6531262685787266718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 183748dd497aa473a98ff0cd8cb67fc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  uniqueID: 3223482784389181768
-  updateError: 1
-  checkTime: 0.2
+  name: 
+  isInHostmap: 0
+  objNum: 0
 --- !u!210 &-4361037318255718909
 SortingGroup:
   m_ObjectHideFlags: 0

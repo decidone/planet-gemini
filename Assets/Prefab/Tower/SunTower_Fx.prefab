@@ -100,7 +100,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: b1a5e7f92a319a442920415614073156, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -138,12 +138,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 3832536798139642928}
-  slowDebuff: 0
-  slowTime: 0
-  poisonTrueAttack: 0
-  poisonDamage: 0
-  ignoreDdefense: 1
-  ignorePercent: 60
   bulletExploFx: {fileID: 3832536798139642931, guid: fc07e714adde36e41a18d7d008d4cc9f, type: 3}
 --- !u!114 &-2497834602711412524
 MonoBehaviour:
