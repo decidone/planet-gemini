@@ -83,7 +83,7 @@ public class PlayerController : NetworkBehaviour
         status = GetComponent<PlayerStatus>();
         nearShop = null;
         isLoot = false;
-        PlayerTPSetServerRpc(true);
+        //PlayerTPSetServerRpc(true);
         ReloadingUISet(false);
     }
 
