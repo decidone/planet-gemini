@@ -1269,14 +1269,17 @@ public class MonsterAi : UnitCommonAi
     [ServerRpc]
     protected override void DieFuncServerRpc()
     {
-        base.DieFuncServerRpc();
+        //base.DieFuncServerRpc();
+        DieFuncClientRpc();
+
         MonsterSpawnerManager.instance.BattleRemoveMonster(gameObject);
     }
 
     [ClientRpc]
     protected override void DieFuncClientRpc()
     {
-        base.DieFuncClientRpc();
+        //base.DieFuncClientRpc();
+        DieFunc();
 
         if (InfoUI.instance.monster == this)
             InfoUI.instance.SetDefault();

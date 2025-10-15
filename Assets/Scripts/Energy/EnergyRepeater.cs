@@ -91,7 +91,9 @@ public class EnergyRepeater : Structure
     {
         DisableFocused();
         connector.RemoveFromGroup();
-        base.RemoveObjServerRpc();
+
+        //base.RemoveObjServerRpc();
+        RemoveObjClientRpc();
     }
 
     public override (bool, bool, bool, EnergyGroup, float) PopUpEnergyCheck()

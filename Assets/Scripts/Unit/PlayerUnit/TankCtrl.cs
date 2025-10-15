@@ -189,7 +189,13 @@ public class TankCtrl : UnitAi
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {
-        base.ClientConnectSyncServerRpc();
+        //base.ClientConnectSyncServerRpc();
+        ClientConnectSyncClientRpc(hp);
+        if (playerUnitPortalIn)
+        {
+            PortalUnitInFuncClientRpc(hostClientUnitIn);
+        }
+
         ClientConnectSyncClientRpc(hp, fuel);
         if (playerOnTank)
         {

@@ -501,7 +501,11 @@ public class Structure : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public virtual void ClientConnectSyncServerRpc()
     {
-        //ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, isSetBuildingOk, isPreBuilding);
+        ClientConnectSync();
+    }
+
+    public void ClientConnectSync()
+    {
         ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, hp);
         for (int i = 0; i < nearObj.Length; i++)
         {
@@ -511,18 +515,17 @@ public class Structure : NetworkBehaviour
             NetworkObjectReference networkObjectReference = nearObj[i].GetComponent<Structure>().ObjFindId();
             NearObjSyncClientRpc(networkObjectReference, i);
         }
-
         for (int i = 0; i < outObj.Count; i++)
         {
             NetworkObjectReference networkObjectReference = outObj[i].GetComponent<Structure>().ObjFindId();
             InOutObjSyncClientRpc(networkObjectReference, false);
         }
-
         for (int i = 0; i < inObj.Count; i++)
         {
             NetworkObjectReference networkObjectReference = inObj[i].GetComponent<Structure>().ObjFindId();
             InOutObjSyncClientRpc(networkObjectReference, true);
         }
+
         MapDataSaveClientRpc(transform.position);
         ConnectCheckClientRpc(true);
     }
@@ -1694,7 +1697,7 @@ public class Structure : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RemoveObjClientRpc()
+    public void RemoveObjClientRpc()
     {
         //removeState = true;
         //ColliderTriggerOnOff(true);
@@ -1783,6 +1786,11 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     public virtual void DestroyFuncClientRpc()
     {
+        DestroyFunc();
+    }
+
+    public void DestroyFunc()
+    {
         ColliderTriggerOnOff(true);
 
         Map map;
@@ -1827,7 +1835,7 @@ public class Structure : NetworkBehaviour
         }
 
         StrBuilt();
-  
+
         if (col != null)
         {
             // 1. GraphUpdateObject 생성
@@ -1928,6 +1936,11 @@ public class Structure : NetworkBehaviour
 
     [ClientRpc]
     public virtual void UpgradeFuncClientRpc()
+    {
+        UpgradeFunc();
+    }
+
+    public void UpgradeFunc()
     {
         level++;
 

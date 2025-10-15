@@ -148,7 +148,9 @@ public class Disintegrator : Production
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {
-        base.ClientConnectSyncServerRpc();
+        //base.ClientConnectSyncServerRpc();
+        ClientConnectSync();
+
         SetAutoClientRpc(isAuto);
     }
 

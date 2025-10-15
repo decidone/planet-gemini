@@ -37,7 +37,9 @@ public class WallCtrl : Structure
     [ClientRpc]
     public override void UpgradeFuncClientRpc()
     {
-        base.UpgradeFuncClientRpc();
+        //base.UpgradeFuncClientRpc();
+        UpgradeFunc();
+
         setModel.sprite = modelNum[level];
     }
 }

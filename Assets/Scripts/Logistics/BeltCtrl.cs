@@ -166,7 +166,9 @@ public class BeltCtrl : LogisticsCtrl
     [ClientRpc]
     public override void UpgradeFuncClientRpc()
     {
-        base.UpgradeFuncClientRpc();
+        //base.UpgradeFuncClientRpc();
+        UpgradeFunc();
+
         animator.SetFloat("DirNum", dirNum);
         animator.SetFloat("ModelNum", modelMotion);
         animator.SetFloat("Level", level);
@@ -176,7 +178,9 @@ public class BeltCtrl : LogisticsCtrl
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {
-        base.ClientConnectSyncServerRpc(); 
+        //base.ClientConnectSyncServerRpc(); 
+        ClientConnectSync();
+
         DirSyncClientRpc(isUp, isRight, isDown, isLeft);
         ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
     }
@@ -1031,7 +1035,8 @@ public class BeltCtrl : LogisticsCtrl
             nextBelt.DelayNearStrBuilt();
         }
 
-        base.DestroyFuncClientRpc();
+        //base.DestroyFuncClientRpc();
+        DestroyFunc();
     }
 
     public override void ColliderTriggerOnOff(bool isOn)

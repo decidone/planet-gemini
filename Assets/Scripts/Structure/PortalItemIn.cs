@@ -177,7 +177,9 @@ public class PortalItemIn : PortalObj
     [ServerRpc(RequireOwnership = false)]
     protected override void PortalObjConnectServerRpc()
     {
-        base.PortalObjConnectServerRpc();
+        //base.PortalObjConnectServerRpc();
+        PortalObjConnectClientRpc(transform.position);
+
         if (portalItemOut != null)
         {
             ConnectObjClientRpc(portalItemOut.NetworkObject);

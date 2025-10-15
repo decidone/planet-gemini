@@ -103,7 +103,9 @@ public class GetUnderBeltCtrl : LogisticsCtrl
     [ClientRpc]
     public override void UpgradeFuncClientRpc()
     {
-        base.UpgradeFuncClientRpc();
+        //base.UpgradeFuncClientRpc();
+        UpgradeFunc();
+
         setModel.sprite = modelNum[dirNum + (level * 4)];
     }
 

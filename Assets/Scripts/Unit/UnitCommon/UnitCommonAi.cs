@@ -452,6 +452,11 @@ public class UnitCommonAi : NetworkBehaviour
     [ClientRpc]
     protected virtual void DieFuncClientRpc()
     {
+        DieFunc();
+    }
+
+    protected virtual void DieFunc()
+    {
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
 

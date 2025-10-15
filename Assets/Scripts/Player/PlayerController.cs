@@ -9,7 +9,7 @@ using UnityEngine.UI;
 // UTF-8 설정
 public class PlayerController : NetworkBehaviour
 {
-    public NetworkVariable<bool> isTeleporting = new NetworkVariable<bool>();
+    public NetworkVariable<bool> isTeleporting = new NetworkVariable<bool>(true);
 
     GameManager gameManager;
     public PlayerStatus status;

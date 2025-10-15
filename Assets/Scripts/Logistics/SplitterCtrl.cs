@@ -135,7 +135,9 @@ public class SplitterCtrl : LogisticsCtrl
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {
-        base.ClientConnectSyncServerRpc();
+        //base.ClientConnectSyncServerRpc();
+        ClientConnectSync();
+
         for (int a = 0; a < arrFilter.Length; a++)
         {
             int itemIndex = -1;

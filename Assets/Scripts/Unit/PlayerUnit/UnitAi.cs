@@ -42,7 +42,7 @@ public class UnitAi : UnitCommonAi
 
     public delegate void OnEffectUpgradeCheck();
     public OnEffectUpgradeCheck onEffectUpgradeCheck;
-    bool hostClientUnitIn = false;
+    protected bool hostClientUnitIn = false;
     protected bool[] increasedUnit = new bool[4];
     // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
 
@@ -100,7 +100,9 @@ public class UnitAi : UnitCommonAi
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {
-        base.ClientConnectSyncServerRpc();
+        //base.ClientConnectSyncServerRpc();
+        ClientConnectSyncClientRpc(hp);
+
         if (playerUnitPortalIn)
         {
             PortalUnitInFuncClientRpc(hostClientUnitIn);
@@ -627,7 +629,9 @@ public class UnitAi : UnitCommonAi
     [ClientRpc]
     protected override void DieFuncClientRpc()
     {
-        base.DieFuncClientRpc();
+        //base.DieFuncClientRpc();
+        DieFunc();
+
         UnitRemove();
     }
 

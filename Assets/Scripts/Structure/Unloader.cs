@@ -89,7 +89,8 @@ public class Unloader : LogisticsCtrl
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {
-        base.ClientConnectSyncServerRpc();
+        //base.ClientConnectSyncServerRpc();
+        ClientConnectSync();
 
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
         ClientFillterSetClientRpc(itemIndex);

@@ -157,7 +157,9 @@ public class LDConnector : Structure
         DisableFocused();
         connector.RemoveFromGroup();
         clickEvent.RemoveAllLines();
-        base.RemoveObjServerRpc();
+
+        //base.RemoveObjServerRpc();
+        RemoveObjClientRpc();
     }
 
     public override StructureSaveData SaveData()

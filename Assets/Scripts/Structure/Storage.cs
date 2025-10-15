@@ -75,7 +75,9 @@ public class Storage : Production
     [ClientRpc]
     public override void UpgradeFuncClientRpc()
     {
-        base.UpgradeFuncClientRpc();
+        //base.UpgradeFuncClientRpc();
+        UpgradeFunc();
+
         setModel.sprite = modelNum[level];
         inventory.space = invenSize[level];
     }

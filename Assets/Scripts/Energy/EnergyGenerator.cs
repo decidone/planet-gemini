@@ -150,7 +150,9 @@ public class EnergyGenerator : Production
     {
         DisableFocused();
         connector.RemoveFromGroup();
-        base.RemoveObjServerRpc();
+
+        //base.RemoveObjServerRpc();
+        RemoveObjClientRpc();
     }
 
     public override void OpenUI()

@@ -340,7 +340,9 @@ public class SteamGenerator : FluidFactoryCtrl
     {
         DisableFocused();
         connector.RemoveFromGroup();
-        base.RemoveObjServerRpc();
+
+        //base.RemoveObjServerRpc();
+        RemoveObjClientRpc();
     }
 
     public override bool CanTakeItem(Item item)
