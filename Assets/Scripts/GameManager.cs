@@ -93,9 +93,6 @@ public class GameManager : NetworkBehaviour
     [HideInInspector]
     public Vector3 clientPlayerSpawnPos;
 
-    [SerializeField]
-    GameObject consoleUI;
-    bool isConsoleOpened;
     InfoInteract info;
 
     public bool isBasicUIClose;
@@ -219,7 +216,6 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Gamestart");
         debug = false;
         isHost = false;
-        isConsoleOpened = false;
         openedUI = new List<GameObject>();
         onUIChangedCallback += UIChanged;
         optionCanvas = OptionCanvas.instance;
@@ -414,23 +410,6 @@ public class GameManager : NetworkBehaviour
                 {
                     SyncTimeServerRpc();
                 }
-            }
-        }
-
-        if (!isConsoleOpened)
-        {
-            if (consoleUI.activeSelf)
-            {
-                inputManager.CommonDisableControls();
-                isConsoleOpened = true;
-            }
-        }
-        else
-        {
-            if (!consoleUI.activeSelf)
-            {
-                inputManager.CommonEnableControls();
-                isConsoleOpened = false;
             }
         }
 

@@ -5,6 +5,7 @@ using QFSW.QC.Actions;
 using QFSW.QC.UI;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -33,6 +34,10 @@ public class Chat : NetworkBehaviour
     bool isDrag;
     bool isTimestampOn;
 
+    bool isChatDisplay;
+    float chatDisplayTime = 15f;
+    float chatDisplayTimer;
+
     #region Singleton
     public static Chat instance;
 
@@ -50,6 +55,7 @@ public class Chat : NetworkBehaviour
 
     void Start()
     {
+        chat.enabled = false;
         isChatOpened = false;
         configBtn.onClick.AddListener(Config);
         timestampBtn.onClick.AddListener(TimestampBtnClicked);
@@ -78,6 +84,16 @@ public class Chat : NetworkBehaviour
 
     void Update()
     {
+        if (isChatDisplay)
+        {
+            if (!isChatOpened && !isConfigMode)
+                chatDisplayTimer += Time.deltaTime;
+            if (chatDisplayTimer > chatDisplayTime)
+            {
+                HideChat();
+            }
+        }
+
         if (GameManager.instance.popUpUIOpen)
             return;
 
@@ -88,6 +104,7 @@ public class Chat : NetworkBehaviour
             if (!isChatOpened)
             {
                 isChatOpened = true;
+                DisplayChat();
                 if (!isConfigMode)
                 {
                     background.enabled = true;
@@ -113,6 +130,19 @@ public class Chat : NetworkBehaviour
                     inputManager.CloseChat();
             }
         }
+    }
+
+    void DisplayChat()
+    {
+        isChatDisplay = true;
+        chat.enabled = true;
+        chatDisplayTimer = 0;
+    }
+
+    void HideChat()
+    {
+        isChatDisplay = false;
+        chat.enabled = false;
     }
 
     public void Enter(InputAction.CallbackContext ctx)
@@ -186,6 +216,7 @@ public class Chat : NetworkBehaviour
     [ClientRpc]
     public void SendMessageClientRpc(string message)
     {
+        DisplayChat();
         chatLog.Add((DateTime.Now, message));
         if (isTimestampOn)
             chat.text += "\n" + DateTime.Now.ToString("[HH:mm:ss] ") + message;
@@ -202,6 +233,7 @@ public class Chat : NetworkBehaviour
         else
         {
             SetConfigMode();
+            DisplayChat();
         }
     }
 

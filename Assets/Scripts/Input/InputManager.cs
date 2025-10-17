@@ -15,6 +15,9 @@ public class InputManager : MonoBehaviour
     //Input State Control <- 따로 인풋 제어가 필요한 경우 해당 주석으로 표시
     public bool isMapOpened;
 
+    [SerializeField] GameObject consoleUI;
+    bool isConsoleOpened = false;
+
     #region Singleton
     public static InputManager instance;
 
@@ -46,6 +49,27 @@ public class InputManager : MonoBehaviour
         controls.MapCamera.Disable();
     }
 
+    private void Update()
+    {
+
+        if (!isConsoleOpened)
+        {
+            if (consoleUI.activeSelf)
+            {
+                CommonDisableControls();
+                isConsoleOpened = true;
+            }
+        }
+        else
+        {
+            if (!consoleUI.activeSelf)
+            {
+                CommonEnableControls();
+                isConsoleOpened = false;
+            }
+        }
+    }
+
     void OnEnable()
     {
         controls.Enable();
@@ -55,6 +79,7 @@ public class InputManager : MonoBehaviour
         controls.Hold.MouseLeft.performed += MouseLeftHold;
         controls.Hold.MouseRight.performed += MouseRightHold;
     }
+
     void OnDisable()
     {
         if(controls != null)
