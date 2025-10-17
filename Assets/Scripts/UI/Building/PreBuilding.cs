@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 using Pathfinding;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using static UnityEditor.PlayerSettings;
 
 // UTF-8 설정
 public class PreBuilding : NetworkBehaviour
@@ -22,8 +23,6 @@ public class PreBuilding : NetworkBehaviour
 
     protected Tilemap tilemap;
 
-    [HideInInspector]
-    public bool isBuildingOk = true;
     protected int layNumTemp = 0;
 
     protected int objHeight = 1;
@@ -50,7 +49,7 @@ public class PreBuilding : NetworkBehaviour
     public bool isPreObjSend;
     protected Vector3 mousePos;
     protected bool isDrag = false;
-    public bool dragCancel;
+    public bool canNotDrag;
     protected Coroutine setBuild;
 
     //bool isTempBuild;
@@ -153,7 +152,7 @@ public class PreBuilding : NetworkBehaviour
             Vector3 cellCenter = tilemap.GetCellCenterWorld(cellPosition);
             cellCenter.z = transform.position.z;
             transform.position = cellCenter;
-            if (nonNetObj && !(mouseHoldCheck && dragCancel))
+            if (nonNetObj && !(mouseHoldCheck && canNotDrag))
                 nonNetObj.transform.position = this.transform.position - setPos;
 
             if (spriteRenderer != null)
@@ -221,18 +220,27 @@ public class PreBuilding : NetworkBehaviour
                 if (!isDrag && !RaycastUtility.IsPointerOverUI(Input.mousePosition))
                     CheckPos();
 
+
+
                 bool canBuild = false;
-                int index = 0;
-                foreach (GameObject obj in buildingList)
-                {
-                    if (GroupBuildCheck(obj, posList[index]))
-                        canBuild = true;
-                    else
+                if (!canNotDrag)
+                {               
+                    int index = 0;
+                    foreach (GameObject obj in buildingList)
                     {
-                        canBuild = false;
-                        break;
+                        if (GroupBuildCheck(obj, posList[index]))
+                            canBuild = true;
+                        else
+                        {
+                            canBuild = false;
+                            break;
+                        }
+                        index++;
                     }
-                    index++;
+                }
+                else
+                {
+                    canBuild = buildingList[0].GetComponent<PreBuildingImg>().CanPlaceBuilding(new Vector2(objWidth, objHeight));
                 }
 
                 if (canBuild)
@@ -701,7 +709,7 @@ public class PreBuilding : NetworkBehaviour
         isEnergyUse = false;
         isBeltObj = false;
         reversSet = false;
-        dragCancel = false;
+        canNotDrag = false;
         MouseSkin.instance.ResetCursor();
     }
 
@@ -726,7 +734,7 @@ public class PreBuilding : NetworkBehaviour
         isEnergyUse = false;
         isBeltObj = false;
         reversSet = false;
-        dragCancel = false;
+        canNotDrag = false;
     }
 
     protected void Rotate(InputAction.CallbackContext ctx)
@@ -739,7 +747,7 @@ public class PreBuilding : NetworkBehaviour
 
     protected virtual void CheckPos()
     {
-        if (dragCancel)
+        if (canNotDrag)
         {
             nonNetObj.SetActive(false);
             Vector3 position = new Vector3(startBuildPos.x, startBuildPos.y, 0);
@@ -1154,8 +1162,7 @@ public class PreBuilding : NetworkBehaviour
     protected bool GroupBuildCheck(GameObject obj, Vector2 pos)
     {
         PreBuildingImg preBuildingImg = obj.GetComponent<PreBuildingImg>();
-
-        if (preBuildingImg.canBuilding && CellCheck(obj, pos))
+        if (preBuildingImg.buildingPosUnit.Count == 0 && CellCheck(obj, pos))
             return true;
         else
             return false;
@@ -1482,7 +1489,7 @@ public class PreBuilding : NetworkBehaviour
         else
             isUnderObj = false;
 
-        dragCancel = buildData.dragCancel;
+        canNotDrag = buildData.dragCancel;
 
         if (isGetAnim)
         {
@@ -1627,7 +1634,7 @@ public class PreBuilding : NetworkBehaviour
         isEnergyStr = false;
         isEnergyUse = false;
 
-        dragCancel = buildData.dragCancel;
+        canNotDrag = buildData.dragCancel;
 
         setPos = new Vector3(-0.5f, -0.5f);
         isNeedSetPos = true;
@@ -1663,8 +1670,7 @@ public class PreBuilding : NetworkBehaviour
                 float alpha = 0.35f;
 
                 PreBuildingImg preBuildingImg = obj.GetComponent<PreBuildingImg>();
-                canBuilding = preBuildingImg.canBuilding;
-
+                canBuilding = preBuildingImg.buildingPosUnit.Count == 0 ? true : false;
                 if (canBuilding && CellCheck(obj, posList[posIndex]))
                 {
                     SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorGreen, alpha);
@@ -1680,11 +1686,14 @@ public class PreBuilding : NetworkBehaviour
         {
             if(nonNetObj != null)
             {
-                if (isBuildingOk && isEnough && GroupBuildCheck(nonNetObj, mousePos))
+                bool canBuilding = false;
+                PreBuildingImg preBuildingImg = nonNetObj.GetComponent<PreBuildingImg>();
+                canBuilding = preBuildingImg.buildingPosUnit.Count == 0 ? true : false;
+                if (canBuilding && isEnough && GroupBuildCheck(nonNetObj, mousePos))
                 {
                     SetColor(spriteRenderer, Color.green, 0.35f);
                 }
-                else if (!isBuildingOk || !isEnough || !GroupBuildCheck(nonNetObj, mousePos))
+                else if (!canBuilding || !isEnough || !GroupBuildCheck(nonNetObj, mousePos))
                 {
                     SetColor(spriteRenderer, Color.red, 0.35f);
                 }

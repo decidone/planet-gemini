@@ -922,7 +922,6 @@ public class MonsterAi : UnitCommonAi
         bool cantFindAttack = false;
         bool fallbackTargetCanAttack = false;
         bool isFirst = true;
-        bool targetFound = false;
 
         // 공격 가능 후보 3개에 대해 탐색 경로 시도
         if (nearestAttackables)
@@ -947,7 +946,6 @@ public class MonsterAi : UnitCommonAi
                     targetFind = nearestAttackables;         // 실제로 도달 가능한 공격 타겟
                     cantFindAttack = true;
                     canAttack = true;
-                    targetFound = true;
                     return;
                 }
 

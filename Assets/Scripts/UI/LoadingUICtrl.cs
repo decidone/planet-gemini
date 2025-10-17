@@ -15,7 +15,7 @@ public class LoadingUICtrl : MonoBehaviour
         {
             if (instance == null)
             {
-                var obj = FindObjectOfType<LoadingUICtrl>();
+                var obj = FindFirstObjectByType<LoadingUICtrl>();
                 if (obj != null)
                 {
                     instance = obj;

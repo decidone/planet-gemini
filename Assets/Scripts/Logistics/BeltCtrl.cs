@@ -19,7 +19,6 @@ public class BeltCtrl : LogisticsCtrl
 {
     [SerializeField]
     int modelMotion = 0;  // 모션
-    int preMotion = -1;
     public BeltGroupMgr beltGroupMgr;
     BeltManager beltManager = null;
 

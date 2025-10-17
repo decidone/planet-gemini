@@ -6,9 +6,7 @@ public class PreBuildingImg : MonoBehaviour
 {
     public SpriteRenderer spriteRenderer;
     public Animator animator;
-    [HideInInspector]
-    public bool canBuilding;
-    protected List<GameObject> buildingPosUnit = new List<GameObject>();
+    public List<GameObject> buildingPosUnit = new List<GameObject>();
     [SerializeField]
     GameObject territoryView;
     [SerializeField]
@@ -18,11 +16,6 @@ public class PreBuildingImg : MonoBehaviour
 
     public bool isEnergyUse;
     public Structure structure;
-
-    private void Start()
-    {
-        canBuilding = true;
-    }
 
     public void PreStrSet(Structure str)
     {
@@ -42,6 +35,19 @@ public class PreBuildingImg : MonoBehaviour
     public void AnimSetFloat(string _string, int _int)
     {
         animator.SetFloat(_string, _int);
+    }
+
+    public bool CanPlaceBuilding(Vector2 size)
+    {
+        Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, size, 0f);
+
+        for(int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].GetComponent<UnitCommonAi>() || hits[i].GetComponent<PlayerController>())
+                return false;
+        }
+
+        return true;
     }
 
     public void TerritoryViewSet(int index)
@@ -93,13 +99,8 @@ public class PreBuildingImg : MonoBehaviour
     {
         if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
         {
-            buildingPosUnit.Add(collision.gameObject);
-
-            if (buildingPosUnit.Count > 0)
-            {
-                canBuilding = false;
-                PreBuilding.instance.isBuildingOk = false;                
-            }            
+            if (!buildingPosUnit.Contains(collision.gameObject))
+                buildingPosUnit.Add(collision.gameObject);
         }
     }
 
@@ -108,13 +109,6 @@ public class PreBuildingImg : MonoBehaviour
         if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
         {
             buildingPosUnit.Remove(collision.gameObject);
-            if (buildingPosUnit.Count > 0)
-                canBuilding = false;
-            else
-            {
-                canBuilding = true;
-                PreBuilding.instance.isBuildingOk = true;
-            }            
         }
     }
 }

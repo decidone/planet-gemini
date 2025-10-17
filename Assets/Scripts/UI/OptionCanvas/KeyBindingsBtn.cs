@@ -16,8 +16,8 @@ public class KeyBindingsBtn : MonoBehaviour
     Text nameText;
     [HideInInspector]
     public InputAction inputAction;
-    [SerializeField]
-    private Text bindingDisplayNameText = null;
+    //[SerializeField]
+    //private Text bindingDisplayNameText = null;
     bool keybindingFalse;
     SoundManager soundManager;
     private InputActionRebindingExtensions.RebindingOperation rebindingOperation;

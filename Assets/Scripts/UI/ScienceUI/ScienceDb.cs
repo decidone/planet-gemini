@@ -131,7 +131,7 @@ public class ScienceDb : NetworkBehaviour
         {
             case 0:
                 {
-                    Structure[] scripts = FindObjectsOfType<Structure>();
+                    Structure[] scripts = Object.FindObjectsByType<Structure>(FindObjectsSortMode.None);
                     foreach (Structure script in scripts)
                     {
                         script.onEffectUpgradeCheck.Invoke();
@@ -140,7 +140,7 @@ public class ScienceDb : NetworkBehaviour
                 }
             case 1:
                 {
-                    TowerAi[] scripts = FindObjectsOfType<TowerAi>();
+                    TowerAi[] scripts = Object.FindObjectsByType<TowerAi>(FindObjectsSortMode.None);
                     foreach (TowerAi script in scripts)
                     {
                         script.onEffectUpgradeCheck.Invoke();
@@ -149,7 +149,7 @@ public class ScienceDb : NetworkBehaviour
                 }
             case 2:
                 {
-                    UnitAi[] scripts = FindObjectsOfType<UnitAi>();
+                    UnitAi[] scripts = Object.FindObjectsByType<UnitAi>(FindObjectsSortMode.None);
                     foreach (UnitAi script in scripts)
                     {
                         script.onEffectUpgradeCheck.Invoke();
