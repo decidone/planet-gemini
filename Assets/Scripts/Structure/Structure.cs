@@ -1979,51 +1979,51 @@ public class Structure : NetworkBehaviour
 
     public virtual (float, float) PopUpStoredEnergyCheck() { return (0f, 0f); }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
-        {
-            if (isPreBuilding)
-            {
-                buildingPosUnit.Add(collision.gameObject);
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
+    //    {
+    //        if (isPreBuilding)
+    //        {
+    //            buildingPosUnit.Add(collision.gameObject);
 
-                if (buildingPosUnit.Count > 0)
-                {
-                    if (!collision.GetComponentInParent<PreBuilding>())
-                    {
-                        canBuilding = false;
-                    }
+    //            if (buildingPosUnit.Count > 0)
+    //            {
+    //                if (!collision.GetComponentInParent<PreBuilding>())
+    //                {
+    //                    canBuilding = false;
+    //                }
 
-                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                    if (preBuilding != null)
-                    {
-                        preBuilding.isBuildingOk = false;
-                    }
-                }
-            }
-        }
-    }
+    //                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+    //                if (preBuilding != null)
+    //                {
+    //                    preBuilding.isBuildingOk = false;
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
-        {
-            if (isPreBuilding)
-            {
-                buildingPosUnit.Remove(collision.gameObject);
-                if (buildingPosUnit.Count > 0)
-                    canBuilding = false;
-                else
-                {
-                    canBuilding = true;
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
+    //    {
+    //        if (isPreBuilding)
+    //        {
+    //            buildingPosUnit.Remove(collision.gameObject);
+    //            if (buildingPosUnit.Count > 0)
+    //                canBuilding = false;
+    //            else
+    //            {
+    //                canBuilding = true;
 
-                    PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-                    if (preBuilding != null)
-                        preBuilding.isBuildingOk = true;
-                }
-            }
-        }
-    }
+    //                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
+    //                if (preBuilding != null)
+    //                    preBuilding.isBuildingOk = true;
+    //            }
+    //        }
+    //    }
+    //}
 
     public virtual void AddConnector(EnergyGroupConnector connector)
     {

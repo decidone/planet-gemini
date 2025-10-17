@@ -321,44 +321,49 @@ public class UnitDrag : DragFunc
 
     private void SelectedSameUnit(RaycastHit2D ray)
     {
+        // 클릭 대상이 UnitAi가 아니거나 TankCtrl이면 리턴
         if (!ray.collider.GetComponentInParent<UnitAi>() || ray.collider.GetComponentInParent<TankCtrl>())
             return;
 
+        // 기본 선택 유닛 정보 가져오기
         GameObject gameObject = ray.collider.GetComponentInParent<UnitAi>().gameObject;
         removeUnit?.Invoke();
         gameObject.TryGetComponent(out UnitAi unit);
         int unitIndex = unit.unitIndex;
 
-        UnitAi[] unitAis = new UnitAi[0];
+        // 대상 유닛 리스트
+        UnitAi[] unitAis = System.Array.Empty<UnitAi>();
         List<GameObject> selectedObjectsList = new List<GameObject>();
+
         if (unitIndex == 0)
         {
-            unitAis = FindObjectsOfType<BounceRobot>();
+            unitAis = Object.FindObjectsByType<BounceRobot>(FindObjectsSortMode.None);
         }
-        else if(unitIndex == 1)
+        else if (unitIndex == 1)
         {
-            unitAis = FindObjectsOfType<SentryCopterCtrl>();
+            unitAis = Object.FindObjectsByType<SentryCopterCtrl>(FindObjectsSortMode.None);
         }
         else if (unitIndex == 2)
         {
-            unitAis = FindObjectsOfType<SpinRobot>();
+            unitAis = Object.FindObjectsByType<SpinRobot>(FindObjectsSortMode.None);
         }
         else if (unitIndex == 3)
         {
-            unitAis = FindObjectsOfType<CorrosionDrone>();
+            unitAis = Object.FindObjectsByType<CorrosionDrone>(FindObjectsSortMode.None);
         }
         else if (unitIndex == 4)
         {
-            unitAis = FindObjectsOfType<RepairerDrone>();
+            unitAis = Object.FindObjectsByType<RepairerDrone>(FindObjectsSortMode.None);
         }
         else if (unitIndex == 5)
         {
-            unitAis = FindObjectsOfType<TankCtrl>();
+            unitAis = Object.FindObjectsByType<TankCtrl>(FindObjectsSortMode.None);
         }
 
+        // 화면 안에 있고, 같은 레벨의 유닛만 선택
         foreach (var obj in unitAis)
         {
-            if(obj.TryGetComponent(out UnitAi _unit) && unit.unitLevel == _unit.unitLevel)
+            if (obj.TryGetComponent(out UnitAi _unit) && unit.unitLevel == _unit.unitLevel)
             {
                 Vector3 viewportPos = Camera.main.WorldToViewportPoint(obj.transform.position);
                 if (viewportPos.z > 0 && viewportPos.x >= 0 && viewportPos.x <= 1 &&
@@ -370,9 +375,9 @@ public class UnitDrag : DragFunc
         }
 
         selectedObjects = selectedObjectsList.ToArray();
-
         removeUnit?.Invoke();
 
+        // 선택된 오브젝트가 있다면 모두 선택 상태로 추가
         if (selectedObjects.Length > 0)
         {
             foreach (GameObject obj in selectedObjects)
@@ -382,7 +387,11 @@ public class UnitDrag : DragFunc
             BasicUIBtns.instance.SwapFunc(false);
         }
 
-        List<UnitAi> unitAiList = selectedObjectsList.Select(obj => obj.GetComponent<UnitAi>()).ToList();
+        // UI 갱신
+        List<UnitAi> unitAiList = selectedObjectsList
+            .Select(obj => obj.GetComponent<UnitAi>())
+            .ToList();
+
         InfoUI.instance.SetUnitInfo(unitAiList);
     }
 

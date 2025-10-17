@@ -1541,7 +1541,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void SetPlayerLocationClientRpc(bool isHostMap, bool isInMarket, bool hostCheck)
     {
-        PlayerStatus[] players = GameObject.FindObjectsOfType<PlayerStatus>();
+        PlayerStatus[] players = UnityEngine.Object.FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None);
         foreach (PlayerStatus p in players)
         {
             if (hostCheck && p.name == "Desire")
@@ -1564,7 +1564,7 @@ public class GameManager : NetworkBehaviour
     {
         PlayerSaveData data = new PlayerSaveData();
         data.hp = -1;
-        PlayerStatus[] players = GameObject.FindObjectsOfType<PlayerStatus>();
+        PlayerStatus[] players = UnityEngine.Object.FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None);
         foreach (PlayerStatus p in players)
         {
             if (isHost && p.name == "Desire")
