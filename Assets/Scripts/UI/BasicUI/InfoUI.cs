@@ -246,7 +246,7 @@ public class InfoUI : MonoBehaviour
 
         for (int i = 0; i < _units.Count; i++)
         {
-            var key = (_units[i].unitCommonData.UnitName, _units[i].unitLevel + 1);
+            var key = (_units[i].unitCommonData.UnitName, _units[i].unitLevel);
             if (unitDataDic.ContainsKey(key))
             {
                 unitDataDic[key]++;
@@ -275,7 +275,7 @@ public class InfoUI : MonoBehaviour
     {
         int index = UnitUISellect(data);
         unitCount[index].text = (int.Parse(unitCount[index].text) - 1).ToString();
-        if(int.Parse(unitCount[index].text) <= 0)
+        if (int.Parse(unitCount[index].text) <= 0)
         {
             unitSingleUIs[index].gameObject.SetActive(false);
         }
@@ -286,7 +286,7 @@ public class InfoUI : MonoBehaviour
         int index = 0;
         if (data.Item1 == "BounceRobot")
         {
-            if (data.Item2 == 1)
+            if (data.Item2 == 0)
             {
                 index = 0;
             }
@@ -297,7 +297,7 @@ public class InfoUI : MonoBehaviour
         }
         else if (data.Item1 == "SentryCopter")
         {
-            if (data.Item2 == 1)
+            if (data.Item2 == 0)
             {
                 index = 2;
             }
@@ -308,7 +308,7 @@ public class InfoUI : MonoBehaviour
         }
         else if (data.Item1 == "SpinRobot")
         {
-            if (data.Item2 == 1)
+            if (data.Item2 == 0)
             {
                 index = 4;
             }

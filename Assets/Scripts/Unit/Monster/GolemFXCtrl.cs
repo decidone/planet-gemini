@@ -20,7 +20,8 @@ public class GolemFXCtrl : NetworkBehaviour
 
     public void FXEnd()
     {
-        NetworkObject.Despawn();
+        if(IsServer)
+            NetworkObject.Despawn();
     }
 
     public void FXMove() { }

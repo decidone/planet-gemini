@@ -268,7 +268,7 @@ public class SplitterCtrl : LogisticsCtrl
             if (filter.outObj == null || !filter.isFilterOn)
             {
                 FilterindexSet();
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
 
@@ -278,13 +278,13 @@ public class SplitterCtrl : LogisticsCtrl
             if (outFactory.isFull)
             {
                 FilterindexSet();
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
             else if (outObject.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
             {
                 FilterindexSet();
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
         }
@@ -313,7 +313,7 @@ public class SplitterCtrl : LogisticsCtrl
             if (canSendIndex.All(pair => pair.Value.Count == 0))
             {
                 smartFilterItemIndex++;
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
 
@@ -472,6 +472,7 @@ public class SplitterCtrl : LogisticsCtrl
             SendFacDelay(outObject, sendItem);
         }
         ItemNumCheck();
+        Invoke(nameof(DelaySetItem), sendDelay);
     }
 
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)
