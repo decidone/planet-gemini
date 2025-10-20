@@ -65,10 +65,15 @@ public class SplitterCtrl : LogisticsCtrl
                     GetItem();
                 if (canSend && itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
                 {
+                    Debug.Log("updateCheck");
                     if(level == 1)
                         FilterSendItem(true);
                     else if(level == 0)
                         FilterSendItem(false);
+                }
+                else
+                {
+                    Debug.Log(canSend + " : " + (itemList.Count > 0) + " : " + (outObj.Count > 0) + " : " + !itemSetDelay);
                 }
             }
         }
@@ -254,6 +259,7 @@ public class SplitterCtrl : LogisticsCtrl
 
     void FilterSendItem(bool isSmart)
     {
+        Debug.Log("FilterSendItem : " + isSmart);
         itemSetDelay = true;
         Filter filter = arrFilter[filterIndex];
         if (smartFilterItemIndex >= itemList.Count)
@@ -268,7 +274,7 @@ public class SplitterCtrl : LogisticsCtrl
             if (filter.outObj == null || !filter.isFilterOn)
             {
                 FilterindexSet();
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
 
@@ -278,13 +284,13 @@ public class SplitterCtrl : LogisticsCtrl
             if (outFactory.isFull)
             {
                 FilterindexSet();
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
             else if (outObject.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
             {
                 FilterindexSet();
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
         }
@@ -313,7 +319,7 @@ public class SplitterCtrl : LogisticsCtrl
             if (canSendIndex.All(pair => pair.Value.Count == 0))
             {
                 smartFilterItemIndex++;
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
 
@@ -472,6 +478,7 @@ public class SplitterCtrl : LogisticsCtrl
             SendFacDelay(outObject, sendItem);
         }
         ItemNumCheck();
+        Invoke(nameof(DelaySetItem), sendDelay);
     }
 
     IEnumerator SetOutObjCoroutine(GameObject obj, int num)

@@ -248,7 +248,7 @@ public class SettingsMenu : MonoBehaviour
 
         windowSizeIndex = PlayerPrefs.GetInt("WindowIndex", 0);
         tutorialQuestToggle.isOn = PlayerPrefs.GetInt("TutorialQuest", 0) == 0;
-        autoSaveSlider.value = PlayerPrefs.GetInt("AutoSaveTime", 30);
+        autoSaveSlider.value = PlayerPrefs.GetInt("AutoSaveTime", 10);
         autoSaveValue = (int)autoSaveSlider.value;
         autoSaveInput.text = autoSaveValue.ToString();
         autoSaveInterval = autoSaveValue * 60;

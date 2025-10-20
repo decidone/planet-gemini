@@ -579,17 +579,17 @@ public class SoundManager : MonoBehaviour
         audioMixer.GetFloat("Master", out float masterVolume);
         PlayerPrefs.SetFloat("MasterVolume", masterVolume);
         PlayerPrefs.SetFloat("TempMasterValume", musicMasterSlider.value);
-        PlayerPrefs.SetInt("MasterMute", musicMasterToggle.isOn ? 0 : 1);
+        PlayerPrefs.SetInt("MasterMute", musicMasterToggle.isOn ? 1 : 0);
 
         audioMixer.GetFloat("BGM", out float bgmVolume);
         PlayerPrefs.SetFloat("BGMVolume", bgmVolume);
         PlayerPrefs.SetFloat("TempBGMValume", musicBGMSlider.value);
-        PlayerPrefs.SetInt("BGMMute", musicBGMToggle.isOn ? 0 : 1);
+        PlayerPrefs.SetInt("BGMMute", musicBGMToggle.isOn ? 1 : 0);
 
         audioMixer.GetFloat("SFX", out float sfxVolume);
         PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
         PlayerPrefs.SetFloat("tempSFXValume", musicSFXSlider.value);
-        PlayerPrefs.SetInt("SFXMute", musicSFXToggle.isOn ? 0 : 1);
+        PlayerPrefs.SetInt("SFXMute", musicSFXToggle.isOn ? 1 : 0);
 
         PlayerPrefs.Save();
     }
@@ -598,41 +598,38 @@ public class SoundManager : MonoBehaviour
     {
         float masterVolume = PlayerPrefs.GetFloat("MasterVolume");
         audioMixer.SetFloat("Master", masterVolume);
-        if(PlayerPrefs.GetInt("MasterMute", 0) == 0)
+        musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterValume", -10);
+        if (PlayerPrefs.GetInt("MasterMute", 0) == 0)
         {
-            musicMasterToggle.isOn = true;
-            musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterValume", -10);
+            musicMasterToggle.isOn = false;
         }
         else
         {
-            musicMasterToggle.isOn = false;
-            musicMasterSlider.value = masterVolume;
+            musicMasterToggle.isOn = true;
         }
 
         float bgmVolume = PlayerPrefs.GetFloat("BGMVolume");
         audioMixer.SetFloat("BGM", bgmVolume);
+        musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMValume", -10);
         if (PlayerPrefs.GetInt("BGMMute", 0) == 0)
         {
-            musicBGMToggle.isOn = true;
-            musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMValume", -10);
+            musicBGMToggle.isOn = false;
         }
         else
         {
-            musicBGMToggle.isOn = false;
-            musicBGMSlider.value = bgmVolume;
+            musicBGMToggle.isOn = true;
         }
 
         float sfxVolume = PlayerPrefs.GetFloat("SFXVolume");
         audioMixer.SetFloat("SFX", sfxVolume);
+        musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXValume", -10);
         if (PlayerPrefs.GetInt("SFXMute", 0) == 0)
         {
-            musicSFXToggle.isOn = true;
-            musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXValume", -10);
+            musicSFXToggle.isOn = false;
         }
         else
         {
-            musicSFXToggle.isOn = false;
-            musicSFXSlider.value = sfxVolume;
+            musicSFXToggle.isOn = true;
         }
     }
 }

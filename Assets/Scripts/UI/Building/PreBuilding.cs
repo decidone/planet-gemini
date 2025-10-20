@@ -6,7 +6,6 @@ using UnityEngine.Tilemaps;
 using Pathfinding;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
-using static UnityEditor.PlayerSettings;
 
 // UTF-8 설정
 public class PreBuilding : NetworkBehaviour

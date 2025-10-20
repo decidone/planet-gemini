@@ -246,7 +246,7 @@ public class InfoUI : MonoBehaviour
 
         for (int i = 0; i < _units.Count; i++)
         {
-            var key = (_units[i].unitCommonData.UnitName, _units[i].unitLevel + 1);
+            var key = (_units[i].unitCommonData.UnitName, _units[i].unitLevel);
             if (unitDataDic.ContainsKey(key))
             {
                 unitDataDic[key]++;
@@ -266,6 +266,7 @@ public class InfoUI : MonoBehaviour
         foreach (var kvp in unitDataDic)
         {
             int index = UnitUISellect(kvp.Key);
+            Debug.Log("unitDataDic add : " + kvp.Key + " : " + index);
             unitSingleUIs[index].gameObject.SetActive(true);
             unitCount[index].text = kvp.Value.ToString();
         }
@@ -274,8 +275,12 @@ public class InfoUI : MonoBehaviour
     public void UnitAmountSub((string, int) data)
     {
         int index = UnitUISellect(data);
+
+        Debug.Log("UnitAmountSub data : " + data.Item1 + " : " + data.Item2);
+        Debug.Log("UnitAmountSub : " + index);
         unitCount[index].text = (int.Parse(unitCount[index].text) - 1).ToString();
-        if(int.Parse(unitCount[index].text) <= 0)
+        Debug.Log("UnitAmountSub text  : " + unitCount[index].text);
+        if (int.Parse(unitCount[index].text) <= 0)
         {
             unitSingleUIs[index].gameObject.SetActive(false);
         }
@@ -286,7 +291,7 @@ public class InfoUI : MonoBehaviour
         int index = 0;
         if (data.Item1 == "BounceRobot")
         {
-            if (data.Item2 == 1)
+            if (data.Item2 == 0)
             {
                 index = 0;
             }
@@ -297,7 +302,7 @@ public class InfoUI : MonoBehaviour
         }
         else if (data.Item1 == "SentryCopter")
         {
-            if (data.Item2 == 1)
+            if (data.Item2 == 0)
             {
                 index = 2;
             }
@@ -308,7 +313,7 @@ public class InfoUI : MonoBehaviour
         }
         else if (data.Item1 == "SpinRobot")
         {
-            if (data.Item2 == 1)
+            if (data.Item2 == 0)
             {
                 index = 4;
             }

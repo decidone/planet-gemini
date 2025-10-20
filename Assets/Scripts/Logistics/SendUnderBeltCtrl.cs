@@ -244,7 +244,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
             {
                 SendItemIndexSet();
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
             else if (outFactory.TryGetComponent(out Production production))
@@ -253,14 +253,14 @@ public class SendUnderBeltCtrl : LogisticsCtrl
                 if (!production.CanTakeItem(item))
                 {
                     SendItemIndexSet();
-                    itemSetDelay = false;
+                    Invoke(nameof(ItemSetDelayReset), 0.05f);
                     return;
                 }
             }
             else if (outFactory.isMainSource)
             {
                 SendItemIndexSet();
-                itemSetDelay = false;
+                Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
             outFactory.takeItemDelay = true;
