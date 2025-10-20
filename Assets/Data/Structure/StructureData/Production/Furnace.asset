@@ -21,17 +21,13 @@ MonoBehaviour:
   sendSpeed:
   - 1
   - 1
-  sendFluidAmount: 0
   sendDelay:
-  - 0.2
-  - 0.2
-  upgradeSendDelay:
   - 0.2
   - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  cooldown: 3
+  cooldown: 0
   isEnergyStr: 0
   production: 0
   energyUse: 0001

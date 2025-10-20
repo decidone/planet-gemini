@@ -45,7 +45,7 @@ public class SpawnerAwake : NetworkBehaviour
     {
         if (!inObjList.Contains(collision.gameObject) && IsServer &&
             (collision.GetComponent<Structure>() || collision.GetComponent<UnitAi>()
-            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting.Value)))
+            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting)))
         {
             inObjList.Add(collision.gameObject);
 
@@ -61,7 +61,7 @@ public class SpawnerAwake : NetworkBehaviour
     {
         if (inObjList.Contains(collision.gameObject) && IsServer &&
             (collision.GetComponent<Structure>() || collision.GetComponent<UnitAi>()
-            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting.Value)))
+            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting)))
         {
             inObjList.Remove(collision.gameObject);
 

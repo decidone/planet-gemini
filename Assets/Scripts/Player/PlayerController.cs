@@ -9,8 +9,6 @@ using UnityEngine.UI;
 // UTF-8 설정
 public class PlayerController : NetworkBehaviour
 {
-    public NetworkVariable<bool> isTeleporting = new NetworkVariable<bool>(true);
-
     GameManager gameManager;
     public PlayerStatus status;
     public List<GameObject> items = new List<GameObject>();
@@ -29,6 +27,7 @@ public class PlayerController : NetworkBehaviour
     NPCInteract nearShop;
     TeleportUI teleportUI;
     bool isLoot;
+    public bool isTeleporting = true;
 
     [Space]
     [Header("Movement")]
@@ -73,7 +72,6 @@ public class PlayerController : NetworkBehaviour
     PlayerTankTurret playerTankTurret;
     [SerializeField]
     GameObject tankTurret;
-
 
     void Awake()
     {
@@ -137,7 +135,7 @@ public class PlayerController : NetworkBehaviour
         fogTimer += Time.deltaTime;
         if (fogTimer > MapGenerator.instance.fogCheckCooldown)
         {
-            if (isTeleporting.Value == false)
+            if (isTeleporting == false)
             {
                 MapGenerator.instance.RemoveFogTile(new Vector3(transform.position.x, transform.position.y + 1, 0), visionRadius);
                 fogTimer = 0;
@@ -302,7 +300,13 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc (RequireOwnership = false)]
     public void PlayerTPSetServerRpc(bool isTP)
     {
-        isTeleporting.Value = isTP;
+        PlayerTPSetClientRpc(isTP);
+    }
+
+    [ClientRpc]
+    public void PlayerTPSetClientRpc(bool isTP)
+    {
+        isTeleporting = isTP;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -538,7 +542,7 @@ public class PlayerController : NetworkBehaviour
 
     public bool TeleportLocal(Vector3 pos)
     {
-        if (isTeleporting.Value == true)
+        if (isTeleporting == true)
             return false;
 
         if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal"))
@@ -555,7 +559,7 @@ public class PlayerController : NetworkBehaviour
 
     void TeleportWorld()
     {
-        if (isTeleporting.Value == true)
+        if (isTeleporting == true)
             return;
 
         if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
@@ -577,7 +581,7 @@ public class PlayerController : NetworkBehaviour
 
     void TeleportMarket()
     {
-        if (isTeleporting.Value == true)
+        if (isTeleporting == true)
             return;
 
         if (circleColl.IsTouchingLayers(LayerMask.GetMask("Portal")))
@@ -614,13 +618,13 @@ public class PlayerController : NetworkBehaviour
 
     IEnumerator Teleport(Vector3 pos, bool isInHostMap)
     {
-        isTeleporting.Value = true;
+        PlayerTPSetServerRpc(true);
 
         yield return new WaitForSeconds(0.3f);
         TeleportClientRpc(pos, isInHostMap);
 
         yield return new WaitForSeconds(0.5f);
-        isTeleporting.Value = false;
+        PlayerTPSetServerRpc(false);
     }
 
     void LootCheck(InputAction.CallbackContext ctx) { isLoot = !isLoot; }

@@ -11,30 +11,43 @@ public class Refinery : FluidFactoryCtrl
 
     protected override void Awake()
     {
-        #region ProductionAwake
-        inventory = this.GetComponent<Inventory>();
-        if (inventory != null)
-        {
-            inventory.onItemChangedCallback += CheckSlotState;
-            inventory.onItemChangedCallback += CheckInvenIsFull;
-            CheckSlotState(0);
-            CheckInvenIsFull(0);
-        }
+        #region StructureAwake
+        gameManager = GameManager.instance;
+        playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
+        unitSprite = GetComponent<SpriteRenderer>();
+        maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
-        hp = maxHp;
+        hp = structureData.MaxHp[level];
         getDelay = 0.05f;
-        sendDelay = structureData.SendDelay[level]; 
+        sendDelay = structureData.SendDelay[level];
+        hpBar.enabled = false;
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
-        repairEffect = GetComponentInChildren<RepairEffectFunc>();
+        isStorageBuilding = false;
+        isMainSource = false;
+        isUIOpened = false;
+        myVision.SetActive(false);
+        maxAmount = structureData.MaxItemStorageLimit;
+        cooldown = structureData.Cooldown;
+        connectors = new List<EnergyGroupConnector>();
+        conn = null;
+        efficiency = 0;
+        effiCooldown = 0;
+        energyUse = structureData.EnergyUse[level];
+        isEnergyStr = structureData.IsEnergyStr;
+        energyProduction = structureData.Production;
+        energyConsumption = structureData.Consumption[level];
         destroyInterval = structureData.RemoveGauge;
         soundManager = SoundManager.instance;
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
         destroyTimer = destroyInterval;
+        warningIconCheck = false;
+        visionPos = transform.position;
+        increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
-        onEffectUpgradeCheck.Invoke();
         setModel = GetComponent<SpriteRenderer>();
         if (TryGetComponent(out Animator anim))
         {
@@ -45,23 +58,24 @@ public class Refinery : FluidFactoryCtrl
         WarningStateCheck();
         #endregion
 
+        #region ProductionAwake
+        inventory = this.GetComponent<Inventory>();
+        if (inventory != null)
+        {
+            inventory.onItemChangedCallback += CheckSlotState;
+            inventory.onItemChangedCallback += CheckInvenIsFull;
+            CheckSlotState(0);
+            CheckInvenIsFull(0);
+        }
+        isGetLine = false;
+        isStorageBuilding = false;
+        #endregion
+
         #region FluidFactoryAwake
-        gameManager = GameManager.instance;
         myFluidScript = GetComponent<FluidFactoryCtrl>();
-        playerInven = gameManager.inventory;
         mainSource = null;
         howFarSource = -1;
         preSaveFluidNum = 0;
-        myVision.SetActive(false);
-
-        connectors = new List<EnergyGroupConnector>();
-        conn = null;
-        efficiency = 0;
-        effiCooldown = 0;
-        energyUse = structureData.EnergyUse[level];
-        isEnergyStr = structureData.IsEnergyStr;
-        energyProduction = structureData.Production;
-        energyConsumption = structureData.Consumption[level];
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();

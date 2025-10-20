@@ -20,15 +20,12 @@ MonoBehaviour:
   maxFulidStorageLimit: 0
   sendSpeed:
   - 1
-  sendFluidAmount: 0
   sendDelay:
-  - 0.2
-  upgradeSendDelay:
   - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 10
-  cooldown: 5
+  cooldown: 0
   isEnergyStr: 0
   production: 0
   energyUse: 01
