@@ -641,6 +641,11 @@ public class UnitAi : UnitCommonAi
 
         if (InfoUI.instance.unit == this)
             InfoUI.instance.SetDefault();
+        else if (unitSelect)
+        {
+            unitGroupCtrl.DieUnitCheck(this.gameObject);
+            InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
+        }
 
         unitSelImg.color = new Color(1f, 1f, 1f, 0f);
 
@@ -655,10 +660,9 @@ public class UnitAi : UnitCommonAi
             }
         }
 
-        //NetworkObjManager.instance.NetObjRemove(NetworkObject);
-
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
+
             NetworkObject.Despawn();
         }
     }

@@ -960,7 +960,6 @@ public class GameManager : NetworkBehaviour
     IEnumerator PopUpUISettingInvoke(bool isOpen)
     {
         yield return new WaitForSecondsRealtime(0.5f);
-        Debug.Log("PopUpUISettingInvoke");
         popUpUIOpen = isOpen;
     }
 

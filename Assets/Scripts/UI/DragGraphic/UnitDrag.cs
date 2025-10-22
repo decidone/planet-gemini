@@ -144,8 +144,6 @@ public class UnitDrag : DragFunc
                     selectedObjectsList.Add(collider.GetComponentInParent<UnitAi>());
                 }
 
-                removeUnit?.Invoke();
-
                 if (selectedObjectsList.Count > 0)
                 {
                     foreach (UnitAi obj in selectedObjectsList)
@@ -162,13 +160,11 @@ public class UnitDrag : DragFunc
                     if (!hit.collider.GetComponentInParent<UnitAi>())
                         return;
                     UnitAi unitAi = hit.collider.GetComponentInParent<UnitAi>();
-                    removeUnit?.Invoke();
                     removeUnitList.Add(unitAi);
                 }
                 else
                 {
                     selectedObjects = new GameObject[0];
-                    removeUnit?.Invoke();
                 }
             }
 
@@ -450,7 +446,7 @@ public class UnitDrag : DragFunc
         {
             if (removeUnitList[i])
             {
-                removeUnitList[i].UnitRemove();
+                removeUnitList[i].DieFuncServerRpc();
                 sellPrice += rmUnit[i].unitCommonData.sellPrice;
             }
         }

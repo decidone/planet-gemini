@@ -443,8 +443,8 @@ public class UnitCommonAi : NetworkBehaviour
         damageEffectOn = false;
     }
 
-    [ServerRpc]
-    protected virtual void DieFuncServerRpc()
+    [ServerRpc(RequireOwnership = false)]
+    public virtual void DieFuncServerRpc()
     {
         DieFuncClientRpc();
     }

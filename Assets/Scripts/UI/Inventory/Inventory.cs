@@ -483,7 +483,6 @@ public class Inventory : NetworkBehaviour
             {
                 items.Add(slotNum[i], item[i]);
                 amounts.Add(slotNum[i], amount[i]);
-                Debug.Log(item[i].name);
                 totalItems[item[i]] += amount[i];
             }
             else if (items[slotNum[i]] == item[i])

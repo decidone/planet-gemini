@@ -321,7 +321,6 @@ public class DragGraphic : MonoBehaviour
             upgradeBtnOn = false;
             removeBtnOn = false;
             unitRemoveOn = true;
-            Debug.Log("unitRemoveOn On");
             unitDrag.UnitRemove();
         }
     }

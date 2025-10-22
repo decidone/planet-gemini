@@ -30,7 +30,7 @@ public class BasicUIBtns : MonoBehaviour
     [SerializeField]
     Button[] timeBtns;  // 0 : Up, 1 : Down
     private int currentStage = 0; // 현재 단계 (0~2)
-    private float[] positions = { 625f, 525f, 425f }; // Y 좌표 목록
+    private float[] positions; // Y 좌표 목록
     private bool isSliding = false; // 슬라이드 중인지 확인
     SoundManager soundManager;
     #region Singleton
@@ -64,15 +64,19 @@ public class BasicUIBtns : MonoBehaviour
         itemInfoWindow = GameManager.instance.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
         SwapFunc(true);
         KeyValueSet();
-        UpdateButtonState();
         swapBtn.onClick.AddListener(() => SwapBtn());
-
+        float timePosY = uiPanel.anchoredPosition.y;
         if (!MainGameSetting.instance.isBloodMoon)
         {
-            positions = new float[] { 625f, 525f };
+            positions = new float[] { timePosY, timePosY - 100f };
             timeGroup.GetComponent<RectTransform>().localPosition = dDayGroup.GetComponent<RectTransform>().localPosition;
             dDayGroup.SetActive(false);
         }
+        else
+        {
+            positions = new float[] { timePosY, timePosY - 100f , timePosY - 200f };
+        }
+        UpdateButtonState();
 
         timeBtns[0].onClick.AddListener(() => ChangeStage(-1));
         timeBtns[1].onClick.AddListener(() => ChangeStage(1));

@@ -1265,7 +1265,7 @@ public class MonsterAi : UnitCommonAi
     }
 
     [ServerRpc]
-    protected override void DieFuncServerRpc()
+    public override void DieFuncServerRpc()
     {
         //base.DieFuncServerRpc();
         DieFuncClientRpc();
