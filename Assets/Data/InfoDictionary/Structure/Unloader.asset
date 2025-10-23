@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Unloader
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: a803519c3785e674b9874560b24e0fa9, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 97471cc91d251e64cb3e6979e2d84b09, type: 3}
+  videoClip: {fileID: 32900000, guid: 8a6478734833bd8438e1632092775fcb, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

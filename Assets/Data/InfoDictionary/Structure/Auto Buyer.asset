@@ -18,6 +18,9 @@ MonoBehaviour:
     the market using Scrap. Players can choose which items to buy by selecting the
     desired building. Once purchased, drones will automatically transport the items
     to the appropriate location.
-  strDataList: []
+  strDataList:
+  - {fileID: 11400000, guid: 442afd89eb8c21d4d8afb2b76dc12e8f, type: 2}
   layout: 1
-  videoClip: {fileID: 0}
+  videoClip: {fileID: 32900000, guid: c66c79432733c054aa65ec21b9c0b9f3, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

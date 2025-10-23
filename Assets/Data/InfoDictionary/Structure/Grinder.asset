@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Grinder
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: 212bb02d095b4ad4e811ad9ae9872e63, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: a14f69f5a4489574d87cf10457aa86d6, type: 3}
+  videoClip: {fileID: 32900000, guid: b3260ddcb8068eb4ba416159e3d5e0fc, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

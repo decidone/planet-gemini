@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Extractor
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: 0a975bd11486491429d9634e06f7a224, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: f1179fda4aa264f47a3085cb60a1845a, type: 3}
+  videoClip: {fileID: 32900000, guid: 62bfbcab04718414889f4cb61c73b697, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

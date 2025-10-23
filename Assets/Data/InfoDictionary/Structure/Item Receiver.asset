@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Item Receiver
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: 5eb5f93ff4d18bc47bb9a1a0e29402ab, type: 2}
+  strDataList:
+  - {fileID: 11400000, guid: 5eb5f93ff4d18bc47bb9a1a0e29402ab, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 0766372666261d243a0317d74bcb94f2, type: 3}
+  videoClip: {fileID: 32900000, guid: 546d65e231e0f5844a028e650888ff48, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

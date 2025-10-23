@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Energy Battery
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: d3fa46955dadbe84f8c44ef34ed5d268, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 17d2495663c690d458a9bea6a8e215fe, type: 3}
+  videoClip: {fileID: 32900000, guid: 4da1c27fc4ca06243b4bb139317bf2de, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

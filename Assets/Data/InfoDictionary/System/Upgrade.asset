@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Upgrade
   type: 0
-  explanation: unit, structure upgrade
+  explanation: structure upgrade
   strDataList: []
   layout: 1
-  videoClip: {fileID: 0}
+  videoClip: {fileID: 32900000, guid: 3cbb3817f40835642b069fea707309d8, type: 3}
   canBuy: 0
   productionBuilding: {fileID: 0}

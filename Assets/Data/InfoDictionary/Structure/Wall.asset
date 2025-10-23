@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Wall
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: 54d6f51385ebf6948a1421e7d1c5a823, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 64fef11c22653d148a0bfc06f841ff5c, type: 3}
+  videoClip: {fileID: 32900000, guid: 6c073a3f22118de42b93f16b4957e75f, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

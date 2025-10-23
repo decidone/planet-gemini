@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Science
   type: 0
   explanation: Science Explanation
-  strDataList: []
+  strDataList:
+  - {fileID: 11400000, guid: aa7db979fc5087b4282146afad128081, type: 2}
   layout: 1
-  videoClip: {fileID: 0}
+  videoClip: {fileID: 32900000, guid: 8c34f88a64aff6a4badd5f5cb7e4832c, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

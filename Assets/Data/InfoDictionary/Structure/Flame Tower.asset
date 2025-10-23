@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Flame Tower
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: 23b83286c4fe9ca4cb821db19d2d96c2, type: 2}
+  strDataList:
+  - {fileID: 11400000, guid: 23b83286c4fe9ca4cb821db19d2d96c2, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 274d8350ebf5bb442b8905550abe0e30, type: 3}
+  videoClip: {fileID: 32900000, guid: f074650025287ee42b3449f31a97c787, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: QuestListSO
   m_EditorClassIdentifier: 
   QuestSOList:
-  - {fileID: 11400000, guid: eeecabcb81b2fca488cb78564952ecb2, type: 2}
-  - {fileID: 11400000, guid: 26952e26ede29f241988835b428a8d35, type: 2}
+  - {fileID: 11400000, guid: 8338341e82b906b46a729a81f15054aa, type: 2}
   - {fileID: 11400000, guid: d8716449236231c42a9e4ce880b90dfa, type: 2}
+  - {fileID: 11400000, guid: 26952e26ede29f241988835b428a8d35, type: 2}
   - {fileID: 11400000, guid: 73bb5240b756d2247ad65834c63e8b6c, type: 2}
   - {fileID: 11400000, guid: 2e7b7a97b9034d640ab73abc5afcf66d, type: 2}
   - {fileID: 11400000, guid: 9c4edbdaf727a1344ae034167052a077, type: 2}
@@ -25,6 +25,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d9911c529e85f9f40863a2147e342204, type: 2}
   - {fileID: 11400000, guid: 9d028f404fa6c534e9b4fc7b7ee715a1, type: 2}
   - {fileID: 11400000, guid: 70051f8cbd625754a9733dd37e6db926, type: 2}
-  - {fileID: 11400000, guid: 8338341e82b906b46a729a81f15054aa, type: 2}
+  - {fileID: 11400000, guid: eeecabcb81b2fca488cb78564952ecb2, type: 2}
   - {fileID: 11400000, guid: 47a25bd3da0c48a4ebbb4dc86893fdfd, type: 2}
   - {fileID: 11400000, guid: b2bf216e6939e7b4f9d6b46d7684a8f6, type: 2}

@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Under Belt
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: a2eb7386890acc945b7f49cbce4e7e8f, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 2911099df0be9ad49bbe10221389c52a, type: 3}
+  videoClip: {fileID: 32900000, guid: 4a55073d421982c4baee89a06da4ad86, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

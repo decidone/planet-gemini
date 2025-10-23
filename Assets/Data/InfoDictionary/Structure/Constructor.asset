@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Constructor
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: 55cf1cdbd2a573845b94e05186ff05da, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: e942312eb6923d64599aa5b9fab2f062, type: 3}
+  videoClip: {fileID: 32900000, guid: 33b4863844aa4f444a320b4abe7a2065, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

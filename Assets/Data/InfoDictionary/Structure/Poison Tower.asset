@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Poison Tower
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: 4cac73d60444fb44b9442e355bfd9445, type: 2}
+  strDataList:
+  - {fileID: 11400000, guid: 4cac73d60444fb44b9442e355bfd9445, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 9531800f53a1465468360816674c56dd, type: 3}
+  videoClip: {fileID: 32900000, guid: e056b2bcccf09854388b5f0c23fe03ca, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

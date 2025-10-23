@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Artillery Tower
   type: 1
   explanation: Explanation
-  strDataList: []
+  strDataList:
+  - {fileID: 11400000, guid: 16db108cba220f74b9736f936d6a6f41, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 3f9b167d9a1df9a49a66d239e2c3d8de, type: 3}
+  videoClip: {fileID: 32900000, guid: ef0c8915cd8160843a1f807630885e4f, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Refinery
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: 385ac4c4013bedc45bb1aba3c4c8a5d2, type: 2}
+  strDataList:
+  - {fileID: 11400000, guid: 385ac4c4013bedc45bb1aba3c4c8a5d2, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: ea680fd0f785d4c4097c88f47acfe265, type: 3}
+  videoClip: {fileID: 32900000, guid: 13ea498c309bd20468c0db1c09dc72e2, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Coal Generator
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: ba99df9a78efb39498f03728c568e039, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 227ed31bfe46ad146965c973c5585083, type: 3}
+  videoClip: {fileID: 32900000, guid: b83795b2ee37f4a479b34c2a726dfeb2, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

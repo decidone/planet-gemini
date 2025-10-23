@@ -18,4 +18,6 @@ MonoBehaviour:
   strDataList:
   - {fileID: 11400000, guid: 37177b88eac5e474c9dbd952d65ab384, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: e8c4e16f8e73fc748a8b365b8d4ae4cd, type: 3}
+  videoClip: {fileID: 32900000, guid: 574950738a666ef4d8396565d5a5c1d0, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

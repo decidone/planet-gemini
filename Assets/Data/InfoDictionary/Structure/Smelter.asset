@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Smelter
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: ea5d99f77c263ab4281697afa62d7cfe, type: 2}
+  strDataList:
+  - {fileID: 11400000, guid: ea5d99f77c263ab4281697afa62d7cfe, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 051a08d3074cbf945aeab703a5d41fbb, type: 3}
+  videoClip: {fileID: 32900000, guid: 04b457df7c8c6184d9d65cb642bdf07f, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

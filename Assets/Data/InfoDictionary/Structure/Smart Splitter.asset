@@ -15,5 +15,8 @@ MonoBehaviour:
   name: Smart Splitter
   type: 1
   explanation: Explanation
+  strDataList: []
   layout: 1
-  videoClip: {fileID: 32900000, guid: 37c8d0883e8de1c4dbd136d4ad543124, type: 3}
+  videoClip: {fileID: 32900000, guid: 0012ed89a83034a438cb632ff53d1220, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

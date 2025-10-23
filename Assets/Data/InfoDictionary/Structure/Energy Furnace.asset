@@ -15,6 +15,8 @@ MonoBehaviour:
   name: Energy Furnace
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: a8c8d2c5653fbda498c749e453b14ebf, type: 2}
+  strDataList: []
   layout: 1
-  videoClip: {fileID: 32900000, guid: fef3872f9b6c1d344a45eb2b1699f030, type: 3}
+  videoClip: {fileID: 32900000, guid: 65cb77eae00794c408b9cc1bc73174b8, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

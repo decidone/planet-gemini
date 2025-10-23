@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Splitter
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: 2aea6f27a43f1d64785f2fb0b2663c67, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: bd6347a64e0d0ea469298c9685a33d20, type: 3}
+  videoClip: {fileID: 32900000, guid: 01a332f3a163a9847abf59223f5fc59c, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

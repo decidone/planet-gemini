@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Energy Repeater
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: 19be704c6b161ea4eb8af7037da64d0a, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: ff3e346771bc389489f14203c35dec9c, type: 3}
+  videoClip: {fileID: 32900000, guid: 6c011574d1c2946499c82bb04c7911fd, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

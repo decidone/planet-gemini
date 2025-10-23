@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Improved Repeater
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: b2aa01d3ace72574c9744340149d0df6, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: f8e0b093d15660e4b9a6848ae8d06b91, type: 3}
+  videoClip: {fileID: 32900000, guid: 093b3d354e7e667418d6e6d51f05a422, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

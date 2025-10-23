@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Repair Tower
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: 342aebacf856f6f4daccab1c8a35d674, type: 2}
+  strDataList:
+  - {fileID: 11400000, guid: 342aebacf856f6f4daccab1c8a35d674, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 1b82e8edae626d941891fd005ccb73ed, type: 3}
+  videoClip: {fileID: 32900000, guid: bcc28061daef0524ea6c0dfc4de53712, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

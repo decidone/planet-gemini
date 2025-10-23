@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Manufacturer
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: da03f6b75f47e3e498de3ee78cea808f, type: 2}
+  strDataList:
+  - {fileID: 11400000, guid: da03f6b75f47e3e498de3ee78cea808f, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 0ad0c6097b775be4589cf664bba9fa27, type: 3}
+  videoClip: {fileID: 32900000, guid: 7fd6222281727a344ae744b01ba29caf, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

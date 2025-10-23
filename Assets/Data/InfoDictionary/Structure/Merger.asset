@@ -15,5 +15,9 @@ MonoBehaviour:
   name: Merger
   type: 1
   explanation: Explanation
+  strDataList:
+  - {fileID: 11400000, guid: 1aa5f2e6a4fa9a746b3b07d73ca028e0, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 827e3f0c17b4175409cfce9e1943795b, type: 3}
+  videoClip: {fileID: 32900000, guid: 4387c3b2c71833d438f4231f23fdbfc4, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

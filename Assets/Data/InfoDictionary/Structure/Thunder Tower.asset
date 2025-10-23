@@ -15,6 +15,9 @@ MonoBehaviour:
   name: Thunder Tower
   type: 1
   explanation: Explanation
-  strData: {fileID: 11400000, guid: 559aa166aa90fa541a7654865694e4ac, type: 2}
+  strDataList:
+  - {fileID: 11400000, guid: 559aa166aa90fa541a7654865694e4ac, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 1f3ec95a6d1642244b958dee84964faf, type: 3}
+  videoClip: {fileID: 32900000, guid: 77324b5335648e849a013fa1c734ae63, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}

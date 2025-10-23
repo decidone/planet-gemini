@@ -17,6 +17,6 @@ MonoBehaviour:
   explanation: Explanation
   strDataList: []
   layout: 1
-  videoClip: {fileID: 0}
+  videoClip: {fileID: 32900000, guid: d85971154c140b6439c672af709ba110, type: 3}
   canBuy: 0
   productionBuilding: {fileID: 0}

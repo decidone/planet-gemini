@@ -20,6 +20,9 @@ MonoBehaviour:
     Pressing the key opens a map showing available portals, and clicking on a portal
     allows instant travel to that location. Only the red main portal allows travel
     to another planet.
-  strDataList: []
+  strDataList:
+  - {fileID: 11400000, guid: 94688b3199361bd4cbca34caf1cf2a27, type: 2}
   layout: 1
-  videoClip: {fileID: 32900000, guid: 16a11eebe848b1f42a53920f65ceadb9, type: 3}
+  videoClip: {fileID: 32900000, guid: febaf88c24580ea4ba2e785e1d5bdac4, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}
