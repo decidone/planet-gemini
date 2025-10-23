@@ -94,6 +94,9 @@ public class FurnaceUpgrade : Production
             {
                 recipe = _recipe;
                 output = itemDic[recipe.items[recipe.items.Count - 1]];
+                cooldown = recipe.cooldown;
+                sInvenManager.progressBar.SetMaxProgress(cooldown);
+                sInvenManager.SetCooldownText(cooldown);
                 FactoryOverlay();
             }
         }

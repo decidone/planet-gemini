@@ -50,8 +50,11 @@ public class Bounty : MonoBehaviour
         GameManager.instance.AddFinanceServerRpc(bounty);
         overall.ReceivedCount(0, newSpawnerCount);
         overall.ReceivedCount(1, newMonsterCount);
+        finance.SetFinance(0);
+        bounty = 0;
+        newSpawnerCount = 0;
+        newMonsterCount = 0;
         spawnerText.text = overall.spawnerBountyReceived.ToString();
         monsterText.text = overall.monsterBountyReceived.ToString();
-        finance.SetFinance(0);
     }
 }

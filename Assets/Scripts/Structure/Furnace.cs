@@ -107,6 +107,9 @@ public class Furnace : Production
             {
                 recipe = _recipe;
                 output = itemDic[recipe.items[recipe.items.Count - 1]];
+                cooldown = recipe.cooldown;
+                sInvenManager.progressBar.SetMaxProgress(cooldown);
+                sInvenManager.SetCooldownText(cooldown);
                 FactoryOverlay();
             }
         }
@@ -150,11 +153,10 @@ public class Furnace : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        //sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
         sInvenManager.SetCooldownText(cooldown);
-
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
+
         List<Item> items = new List<Item>();
         foreach (Recipe recipe in recipes)
         {

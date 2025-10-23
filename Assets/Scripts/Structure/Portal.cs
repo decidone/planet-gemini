@@ -10,7 +10,6 @@ public class Portal : Production
     [SerializeField]
     GameObject[] portalTile;
 
-    PortalSciManager portalSci;
     public Dictionary<string, GameObject> portalObjList = new Dictionary<string, GameObject>();
     public Portal otherPortal;
     public GameObject scienceBuilding;
@@ -18,7 +17,7 @@ public class Portal : Production
     protected override void Awake()
     {
         //myVision.SetActive(false);
-        portalSci = PortalSciManager.instance;
+        buildName = "Portal";   // 포탈 건물은 따로 데이터를 두지 않아서 직접 이름을 잡아줌
         inventory = this.GetComponent<Inventory>();
         visionPos = new Vector3(transform.position.x, transform.position.y + 1, 0);
         onEffectUpgradeCheck += IncreasedStructureCheck;

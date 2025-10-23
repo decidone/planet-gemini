@@ -87,13 +87,23 @@ public class InfoUI : MonoBehaviour
         unitGroupUI.SetActive(false);
     }
 
+    void SetNameText(string txt)
+    {
+        nameText.text = txt;
+        if (txt.Length > 16)
+            nameText.fontSize = 12;
+        else
+            nameText.fontSize = 14;
+    }
+
     public void SetPlayerInfo(PlayerStatus _player)
     {
         SetDefault();
         player = _player;
         SpriteRenderer spriteRenderer = player.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
-        nameText.text = player.name;
+        //nameText.text = player.name;
+        SetNameText(player.name);
         SetPlayerHp();
         player.onHpChangedCallback += SetPlayerHp;
     }
@@ -129,7 +139,8 @@ public class InfoUI : MonoBehaviour
         str = _str;
         SpriteRenderer spriteRenderer = str.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
-        nameText.text = InGameNameDataGet.instance.ReturnName(str.level + 1, str.buildName);
+        //nameText.text = InGameNameDataGet.instance.ReturnName(str.level + 1, str.buildName);
+        SetNameText(InGameNameDataGet.instance.ReturnName(str.level + 1, str.buildName));
         SetStructureHp();
         str.onHpChangedCallback += SetStructureHp;
 
@@ -155,7 +166,14 @@ public class InfoUI : MonoBehaviour
         }
 
         dicBtn.gameObject.SetActive(true);
-        dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(str));
+        if (str.GetComponent<Portal>())
+        {
+            dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Portal", true));
+        }
+        else
+        {
+            dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(str));
+        }
 
         if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
         {
@@ -180,7 +198,7 @@ public class InfoUI : MonoBehaviour
 
     public void SetStructureHp()
     {
-        if (str != null)
+        if (str != null && str.maxHp > 0)
         {
             hpText.text = str.hp + "/" + str.maxHp;
         }
@@ -202,7 +220,8 @@ public class InfoUI : MonoBehaviour
         units = new List<UnitAi> { unit }; //업글 시 리스트로 넘기기 위해
         SpriteRenderer spriteRenderer = unit.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
-        nameText.text = unit.name;
+        //nameText.text = unit.name;
+        SetNameText(unit.name);
         SetUnitHp();
         unit.onHpChangedCallback += SetUnitHp;
 
@@ -424,7 +443,8 @@ public class InfoUI : MonoBehaviour
         spawner = _spawner;
         SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
-        nameText.text = "Spawner Level " + spawner.spawnerLevel;
+        //nameText.text = "Spawner Level " + spawner.spawnerLevel;
+        SetNameText("Spawner Level " + spawner.spawnerLevel);
         SetSpawnerHp();
         spawner.onHpChangedCallback += SetSpawnerHp;
     }
@@ -443,7 +463,8 @@ public class InfoUI : MonoBehaviour
         monster = _monster;
         SpriteRenderer spriteRenderer = monster.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
-        nameText.text = monster.name;
+        //nameText.text = monster.name;
+        SetNameText(monster.name);
         SetMonsterHp();
         monster.onHpChangedCallback += SetMonsterHp;
         //firstBattleText.text = "ATK " + monster.damage + " DEF " + monster.defense;

@@ -265,7 +265,7 @@ public abstract class Production : Structure
         }
     }
 
-    void ResetUI()
+    protected virtual void ResetUI()
     {
         Debug.Log("ResetUI call");
         recipe = new Recipe();

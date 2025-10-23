@@ -19,7 +19,7 @@ public class AutoBuyer : Production
     MerchandiseListSO manaStoneShopMerchListSO;
     List<Merchandise> merchList = new List<Merchandise>();
 
-    public int maxBuyAmount;    // 구매할 수 있는 최대 수량
+    public int maxBuyAmount;    // 목표 구매 수량
     public int minBuyAmount;    // 아이템 보유 수량이 해당 변수 아래로 내려갈 때 (최대 수량 - 현재 수량)만큼 구매
     List<TransportUnit> getItemUnit = new List<TransportUnit>();
 
@@ -272,6 +272,13 @@ public class AutoBuyer : Production
             output = null;
 
         FactoryOverlay();
+    }
+
+    protected override void ResetUI()
+    {
+        base.ResetUI();
+        MaxSliderValueSyncServerRpc(0);
+        MinSliderValueSyncServerRpc(0);
     }
 
     protected override void OnClientConnectedCallback(ulong clientId)

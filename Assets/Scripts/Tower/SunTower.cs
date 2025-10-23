@@ -12,6 +12,7 @@ public class SunTower : TowerAi
     protected override void Start()
     {
         base.Start();
+        view.enabled = false;
         StartCoroutine(EfficiencyCheck());
     }
 
