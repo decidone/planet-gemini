@@ -453,4 +453,9 @@ public class UnitDrag : DragFunc
 
         GameManager.instance.AddScrapServerRpc(sellPrice);
     }
+
+    public void UnitRemoveGroup(GameObject obj)
+    {
+        selectedObjects = selectedObjects.Where(x => x != obj).ToArray();
+    }
 }

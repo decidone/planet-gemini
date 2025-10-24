@@ -498,6 +498,9 @@ public class UnitAi : UnitCommonAi
 
         if (aggroTarget != null)
         {
+            targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
+            targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
+
             if ((aIState == AIState.AI_Move && !isAttackMove) || isHold)
                 return;
 
@@ -643,7 +646,8 @@ public class UnitAi : UnitCommonAi
             InfoUI.instance.SetDefault();
         else if (unitSelect)
         {
-            unitGroupCtrl.DieUnitCheck(this.gameObject);
+            unitGroupCtrl.DieUnitCheck(gameObject);
+            UnitDrag.instance.UnitRemoveGroup(gameObject);
             InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
         }
 
@@ -656,13 +660,12 @@ public class UnitAi : UnitCommonAi
         {
             if (monster != null && monster.TryGetComponent(out MonsterAi monsterAi))
             {
-                monsterAi.RemoveTarget(this.gameObject);
+                monsterAi.RemoveTarget(gameObject);
             }
         }
 
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
-
             NetworkObject.Despawn();
         }
     }

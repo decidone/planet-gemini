@@ -115,6 +115,16 @@ public class UpgradeRemoveBtn : MonoBehaviour
         soundManager.PlayUISFX("ButtonClick");
     }
 
+    public void CurrentBtnReset()
+    {
+        currentBtn = SelectedButton.None;
+        dragGraphic.BtnFuncReset();
+        ReSetColor(buildingUpgradeBtn);
+        ReSetColor(buildingRemoveBtn);
+        ReSetColor(unitRemoveBtn);
+        MouseSkin.instance.ResetCursor();
+    }
+
     void SetColor(Button button)
     {
         Image img = button.GetComponent<Image>();
