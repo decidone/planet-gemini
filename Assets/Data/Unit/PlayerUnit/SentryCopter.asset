@@ -18,7 +18,7 @@ MonoBehaviour:
   damage: 30
   upgradeDamage: 40
   moveSpeed: 7
-  attackDist: 4
+  attackDist: 8
   attDelayTime: 2
   upgradeAttDelayTime: 1.5
   colliderRadius: 10

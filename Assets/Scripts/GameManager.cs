@@ -833,6 +833,12 @@ public class GameManager : NetworkBehaviour
 
     void Escape(InputAction.CallbackContext ctx)
     {
+        if(UpgradeRemoveBtn.instance.currentBtn != UpgradeRemoveBtn.SelectedButton.None)
+        {
+            UpgradeRemoveBtn.instance.CurrentBtnReset();
+            return;
+        }
+
         if (openedUI.Count > 0)
         {
             CloseOpenedUI(openedUI.Count - 1);
