@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Assembler
   type: 1
-  explanation: Explanation
+  explanation: The Assembler is a production building that combines two materials
+    into a component. It requires energy to operate.
   strDataList:
   - {fileID: 11400000, guid: 37177b88eac5e474c9dbd952d65ab384, type: 2}
   layout: 1

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Sun Tower
   type: 1
-  explanation: Explanation
+  explanation: The Sun Tower is a tower that weakens enemies' defense within its
+    range. It requires energy to operate.
   strDataList:
   - {fileID: 11400000, guid: a533b809bf0b6604398bbdcbe050286f, type: 2}
   layout: 1

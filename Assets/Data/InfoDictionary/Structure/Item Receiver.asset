@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Item Receiver
   type: 1
-  explanation: Explanation
+  explanation: The Item Receiver receives items sent from its paired Item Teleporter
+    on another planet.
   strDataList:
   - {fileID: 11400000, guid: 5eb5f93ff4d18bc47bb9a1a0e29402ab, type: 2}
   layout: 1

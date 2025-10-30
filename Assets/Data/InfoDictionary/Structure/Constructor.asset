@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Constructor
   type: 1
-  explanation: Explanation
+  explanation: The Constructor is a production building that uses a single material
+    to create components. It requires energy to operate.
   strDataList:
   - {fileID: 11400000, guid: 55cf1cdbd2a573845b94e05186ff05da, type: 2}
   layout: 1

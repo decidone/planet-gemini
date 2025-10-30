@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Energy Repeater
   type: 1
-  explanation: Explanation
+  explanation: The Energy Repeater extends the coverage of the energy network, allowing
+    more factories to be connected within its range.
   strDataList:
   - {fileID: 11400000, guid: 19be704c6b161ea4eb8af7037da64d0a, type: 2}
   layout: 1

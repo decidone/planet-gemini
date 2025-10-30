@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Smelter
   type: 1
-  explanation: Explanation
+  explanation: The Smelter is a factory that smelts two types of ores into steel
+    and alloy ingot. It requires energy to operate.
   strDataList:
   - {fileID: 11400000, guid: ea5d99f77c263ab4281697afa62d7cfe, type: 2}
   layout: 1

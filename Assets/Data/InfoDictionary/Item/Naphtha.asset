@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Naphtha
   type: 3
-  explanation: Explanation
+  explanation: Raw materials that can be obtained through refining crude oil.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}
   canBuy: 0
-  productionBuilding: {fileID: 0}
+  productionBuilding: {fileID: 11400000, guid: 7303a81e0c4ef2744863b0a533d9ce2e, type: 2}

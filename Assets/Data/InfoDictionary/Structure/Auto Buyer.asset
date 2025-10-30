@@ -14,10 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Auto Buyer
   type: 1
-  explanation: The Auto Buyer allows players to automatically purchase items from
-    the market using Scrap. Players can choose which items to buy by selecting the
-    desired building. Once purchased, drones will automatically transport the items
-    to the appropriate location.
+  explanation: The Auto Buyer can automatically purchase items from the market by
+    using gems. After purchase, the drone transports the product.
   strDataList:
   - {fileID: 11400000, guid: 442afd89eb8c21d4d8afb2b76dc12e8f, type: 2}
   layout: 1

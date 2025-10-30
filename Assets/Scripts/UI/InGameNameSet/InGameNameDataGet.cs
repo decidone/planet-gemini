@@ -19,16 +19,11 @@ public class InGameNameDataGet : MonoBehaviour
         }
 
         instance = this;
-        objNameDic = new Dictionary<string, Dictionary<int, string>>();
-    }
-    #endregion
-
-    // Start is called before the first frame update
-    void Start()
-    {
         string json = Resources.Load<TextAsset>("ObjName").ToString();
+        objNameDic = new Dictionary<string, Dictionary<int, string>>();
         objNameDic = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, string>>>(json);
     }
+    #endregion
 
     public string ReturnName(string dataName)
     {

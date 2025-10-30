@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Storage
   type: 1
-  explanation: Explanation
+  explanation: The Storage is a facility that can store items.
   strDataList:
   - {fileID: 11400000, guid: 7056c52821e16fe43b3f70c9bd23d9e3, type: 2}
   layout: 1

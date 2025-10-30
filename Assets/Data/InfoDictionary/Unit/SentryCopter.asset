@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: SentryCopter
   type: 2
-  explanation: Explanation
+  explanation: The Sentry Copter is a controllable unit that performs ranged attacks.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 2a5b5c03932be2c44801dd3b787068d0, type: 3}

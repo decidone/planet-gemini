@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Miner
   type: 1
-  explanation: Miner Explanation
+  explanation: The Miner is a facility that can be placed on ore tiles and can mine
+    ores according to the level. Large miners require energy to operate.
   strDataList:
   - {fileID: 11400000, guid: 49e145897899dc040a8a7f471b9615a9, type: 2}
   layout: 1

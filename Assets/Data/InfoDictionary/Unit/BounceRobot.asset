@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: BounceRobot
   type: 2
-  explanation: Explanation
+  explanation: The Bounce Robot is a controllable unit that attacks nearby enemies.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: f0c9670ec8ae271409a12c4246d1b9e4, type: 3}

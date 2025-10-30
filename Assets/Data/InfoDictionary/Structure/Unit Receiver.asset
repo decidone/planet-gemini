@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Unit Receiver
   type: 1
-  explanation: Explanation
+  explanation: The Unit Receiver receives units sent from its paired Unit Teleporter
+    on another planet.
   strDataList: []
   layout: 1
   videoClip: {fileID: 0}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Stone
   type: 3
-  explanation: Explanation
+  explanation: Raw materials that can be obtained through mining.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

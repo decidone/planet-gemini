@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CorrosionDrone
   type: 2
-  explanation: Explanation
+  explanation: The Corrosion Drone is a controllable unit that reduces the defense
+    of nearby monsters.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 99e5cf2cb16f37f4e8393cf6c63c45a4, type: 3}

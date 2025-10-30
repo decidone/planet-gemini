@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Unit Upgrade
   type: 0
-  explanation: unit upgrade
+  explanation: Unit upgrades allow reinforcement of units. Research unlock is required.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: a375a56c69cb7e64b862b86c5887eb17, type: 3}

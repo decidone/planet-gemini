@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Energy Furnace
   type: 1
-  explanation: Explanation
+  explanation: The Energy Furnace produces ingots by smelting ore. It requires energy
+    to operate.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 65cb77eae00794c408b9cc1bc73174b8, type: 3}

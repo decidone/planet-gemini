@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Factory Overlay
   type: 0
-  explanation: Factory Overlay Explanation
+  explanation: It is an overlay that allows you to see the products of the factories.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 1963bff1b7009184da957718df975d51, type: 3}

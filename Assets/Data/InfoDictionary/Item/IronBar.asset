@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: IronBar
   type: 3
-  explanation: Explanation
+  explanation: Materials made by smelting ore.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

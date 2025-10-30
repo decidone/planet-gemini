@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CrudeOil
   type: 3
-  explanation: Explanation
+  explanation: Crude oil is refined and used to make chemicals.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

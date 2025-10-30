@@ -26,7 +26,7 @@ public class OverallSlot : MonoBehaviour
         sentAmountText.text = "0";
         receivedAmountText.text = "0";
 
-        if (item.tier < 0)
+        if (item.tier < 0 || item.name == "UICancel")
             this.gameObject.SetActive(false);
     }
 

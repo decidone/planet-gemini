@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Battery
   type: 3
-  explanation: Battery Explanation
+  explanation: A component for construction or other parts.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

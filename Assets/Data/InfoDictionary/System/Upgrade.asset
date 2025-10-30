@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Upgrade
   type: 0
-  explanation: structure upgrade
+  explanation: Can upgrade structures (such as belts, under belts, storages, walls)
+    without destroying them.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 3cbb3817f40835642b069fea707309d8, type: 3}

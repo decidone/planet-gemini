@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Merger
   type: 1
-  explanation: Explanation
+  explanation: The Merger is a transportation facility that collects items from three
+    input belts and sends them to a single output belt.
   strDataList:
   - {fileID: 11400000, guid: 1aa5f2e6a4fa9a746b3b07d73ca028e0, type: 2}
   layout: 1

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Coal Generator
   type: 1
-  explanation: Explanation
+  explanation: The Coal Generator generates energy by burning coal.
   strDataList:
   - {fileID: 11400000, guid: ba99df9a78efb39498f03728c568e039, type: 2}
   layout: 1

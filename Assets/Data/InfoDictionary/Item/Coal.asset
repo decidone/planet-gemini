@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Coal
   type: 3
-  explanation: Coal Explanation
+  explanation: Raw materials that can be obtained through mining.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

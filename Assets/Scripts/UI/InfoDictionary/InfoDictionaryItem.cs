@@ -30,8 +30,21 @@ public class InfoDictionaryItem : MonoBehaviour
             case 3: backgroundImg.sprite = itemBackground;
                 break;
         }
-        itemName = info.name;
-        text.text = itemName;
+
+        if (info.type <= 1)
+        {
+            // 시스템, 건물
+            itemName = info.name;
+            text.text = itemName;
+        }
+        else
+        {
+            // 유닛, 아이템
+            string inGameName = InGameNameDataGet.instance.ReturnName(info.name);
+            itemName = (inGameName != "") ? inGameName : info.name;
+            text.text = itemName;
+        }
+
         btn.onClick.AddListener(() => BtnClicked());
     }
 

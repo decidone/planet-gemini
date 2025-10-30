@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Auto Seller
   type: 1
-  explanation: Explanation
+  explanation: The Auto Seller can automatically sell trading items at the market.
+    Each item can only be sold if it is a trading item. After the items are placed,
+    drones transport them.
   strDataList:
   - {fileID: 11400000, guid: 8bb27c2f114268e40af9e6c73e65dafd, type: 2}
   layout: 1

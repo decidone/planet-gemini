@@ -14,12 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Portal
   type: 1
-  explanation: The Portal is a building that enables fast travel between portals
-    on the same planet. Portals placed by the player are blue, while the main interplanetary
-    portal is red. When a player approaches a portal, an interaction key (F) appears.
-    Pressing the key opens a map showing available portals, and clicking on a portal
-    allows instant travel to that location. Only the red main portal allows travel
-    to another planet.
+  explanation: The Portal allows fast travel between portals on the same planet.
+    Approach a portal and interact to open the map and travel.
   strDataList:
   - {fileID: 11400000, guid: 94688b3199361bd4cbca34caf1cf2a27, type: 2}
   layout: 1

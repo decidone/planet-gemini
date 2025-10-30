@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Unloader
   type: 1
-  explanation: Explanation
+  explanation: The Unloader is a facility that can pick out specific items from Storage
+    or Transporter.
   strDataList:
   - {fileID: 11400000, guid: a803519c3785e674b9874560b24e0fa9, type: 2}
   layout: 1

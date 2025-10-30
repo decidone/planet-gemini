@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Transmission Tower
   type: 1
-  explanation: Explanation
+  explanation: The Transmission Tower is a facility that transmits energy over long
+    distances. It can connect different energy networks.
   strDataList:
   - {fileID: 11400000, guid: 9c5269f2e60caa9419766d7d8d391641, type: 2}
   layout: 1

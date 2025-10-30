@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Under Pipe
   type: 1
-  explanation: Explanation
+  explanation: The Under Pipe is a transportation facility that transports fluids
+    underground, allowing connections up to 10 tiles in length.
   strDataList:
   - {fileID: 11400000, guid: c81334e3b29770543971b9749b25c88b, type: 2}
   layout: 1

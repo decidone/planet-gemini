@@ -261,7 +261,17 @@ public class InfoDictionary : MonoBehaviour
         if (info.layout == 1)
         {
             layout1.SetActive(true);
-            layout1Name.text = info.name;
+            if (info.type <= 1)
+            {
+                // 시스템, 건물
+                layout1Name.text = info.name;
+            }
+            else
+            {
+                // 유닛, 아이템
+                string inGameName = InGameNameDataGet.instance.ReturnName(info.name);
+                layout1Name.text = (inGameName != "") ? inGameName : info.name;
+            }
             layout1Explanation.text = info.explanation;
             if (info.videoClip != null)
             {
@@ -284,7 +294,17 @@ public class InfoDictionary : MonoBehaviour
             recipe2.SetActive(false);
             recipe3.SetActive(false);
 
-            layout2Name.text = info.name;
+            if (info.type <= 1)
+            {
+                // 시스템, 건물
+                layout2Name.text = info.name;
+            }
+            else
+            {
+                // 유닛, 아이템
+                string inGameName = InGameNameDataGet.instance.ReturnName(info.name);
+                layout2Name.text = (inGameName != "") ? inGameName : info.name;
+            }
             layout2Explanation.text = info.explanation;
             Item item = ItemList.instance.itemDic[info.name];
 
@@ -319,8 +339,9 @@ public class InfoDictionary : MonoBehaviour
             {
                 structure.SetActive(true);
                 structureImage.sprite = info.productionBuilding.item.icon;
-                structureText.text = info.productionBuilding.scienceName;
-
+                string inGameName = InGameNameDataGet.instance.ReturnName(info.productionBuilding.scienceName);
+                structureText.text = (inGameName != "") ? inGameName : info.productionBuilding.scienceName;
+                
                 Recipe recipe = info.recipes[0];
                 if (recipe.items.Count == 2)
                 {
@@ -349,7 +370,8 @@ public class InfoDictionary : MonoBehaviour
                 // 플라스틱, 고무만 해당
                 structure.SetActive(true);
                 structureImage.sprite = info.productionBuilding.item.icon;
-                structureText.text = info.productionBuilding.scienceName;
+                string inGameName = InGameNameDataGet.instance.ReturnName(info.productionBuilding.scienceName);
+                structureText.text = (inGameName != "") ? inGameName : info.productionBuilding.scienceName;
 
                 recipe1.SetActive(true);
                 recipe1Mat.SetIcon(ItemList.instance.itemDic[info.recipes[0].items[0]].icon, info.recipes[0].items[0], info.recipes[0].amounts[0].ToString());

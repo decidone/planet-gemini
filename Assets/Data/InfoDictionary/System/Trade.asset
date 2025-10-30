@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Trade
   type: 0
-  explanation: Trade Explanation
+  explanation: The Trade allows getting basic materials and rare materials such as
+    mana stones.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 70d12895568e36047ac74bc90116204a, type: 3}

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Splitter
   type: 1
-  explanation: Explanation
+  explanation: The Splitter is a transportation facility that takes items from a
+    single input belt and sends them to three output belts.
   strDataList:
   - {fileID: 11400000, guid: 2aea6f27a43f1d64785f2fb0b2663c67, type: 2}
   layout: 1

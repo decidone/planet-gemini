@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Repair Tower
   type: 1
-  explanation: Explanation
+  explanation: The Repair Tower is a facility that repairs nearby structures.
   strDataList:
   - {fileID: 11400000, guid: 342aebacf856f6f4daccab1c8a35d674, type: 2}
   layout: 1

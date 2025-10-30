@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Unit Control
   type: 0
-  explanation: Unit Control
+  explanation: By controlling the units produced. You can attack the enemies.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 0036688b70ffdb34a9f1f7c2a5a89928, type: 3}

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Science
   type: 0
-  explanation: Science Explanation
+  explanation: Through the research, you can build new factories and make higher-efficiency
+    infrastructure.
   strDataList:
   - {fileID: 11400000, guid: aa7db979fc5087b4282146afad128081, type: 2}
   layout: 1

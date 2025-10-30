@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Energy Battery
   type: 1
-  explanation: Explanation
+  explanation: The Energy Battery stores energy and supplies it to the connected
+    energy network when there is a shortage. It helps maintain a stable power supply
+    for factories in the network.
   strDataList:
   - {fileID: 11400000, guid: d3fa46955dadbe84f8c44ef34ed5d268, type: 2}
   layout: 1

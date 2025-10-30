@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Thunder Tower
   type: 1
-  explanation: Explanation
+  explanation: The Thunder Tower is a tower that has a high attack speed. It requires
+    energy to operate.
   strDataList:
   - {fileID: 11400000, guid: 559aa166aa90fa541a7654865694e4ac, type: 2}
   layout: 1

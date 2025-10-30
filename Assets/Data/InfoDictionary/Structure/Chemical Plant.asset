@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Chemical Plant
   type: 1
-  explanation: Explanation
+  explanation: The Chemical Plant processes refined oil and primitive plants to produce
+    chemical products. It requires energy to operate.
   strDataList:
   - {fileID: 11400000, guid: 1e635523522854b468d53e4f3e317780, type: 2}
   layout: 1

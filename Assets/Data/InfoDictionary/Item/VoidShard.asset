@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: VoidShard
   type: 3
-  explanation: VoidShard Explanation
+  explanation: A shard that possesses the mysterious power of Spawner. It can be
+    used to open a portal.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

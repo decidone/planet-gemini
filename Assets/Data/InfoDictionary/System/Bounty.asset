@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Bounty
   type: 0
-  explanation: Bounty Explanation
+  explanation: The natives, who left their planet because of the monsters, put a
+    bounty on the monsters and spawners.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 0dcc7b86768ba7e43a98a3a7d6b16b4e, type: 3}

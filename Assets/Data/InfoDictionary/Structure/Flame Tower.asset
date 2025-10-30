@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Flame Tower
   type: 1
-  explanation: Explanation
+  explanation: The Flame Tower is a tower that has area-of-effect attacks. It requires
+    energy to operate.
   strDataList:
   - {fileID: 11400000, guid: 23b83286c4fe9ca4cb821db19d2d96c2, type: 2}
   layout: 1

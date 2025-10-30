@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Item Drop/Loot
   type: 0
-  explanation: Explanation
+  explanation: How to pick up the items on the ground.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 3c6bbe669b7733645ae9ad8c7c807342, type: 3}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Brick
   type: 3
-  explanation: Explanation
+  explanation: Building materials made of stone.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

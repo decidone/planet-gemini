@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: AdamantiteAlloy
   type: 3
-  explanation: AdamantiteAlloy Explanation
+  explanation: Materials made by smelting ore.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}
   canBuy: 0
-  productionBuilding: {fileID: 0}
+  productionBuilding: {fileID: 11400000, guid: 4ed2fc918cd74774da44e28552fdca74, type: 2}

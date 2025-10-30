@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Unit Teleporter
   type: 1
-  explanation: Explanation
+  explanation: The Unit Teleporter transports units to its paired Unit Receiver on
+    another planet.
   strDataList: []
   layout: 1
   videoClip: {fileID: 0}

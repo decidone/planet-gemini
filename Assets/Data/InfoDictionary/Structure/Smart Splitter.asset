@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Smart Splitter
   type: 1
-  explanation: Explanation
+  explanation: The Smart Splitter is an advanced version of the Splitter that allows
+    setting particular items' output direction.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 0012ed89a83034a438cb632ff53d1220, type: 3}

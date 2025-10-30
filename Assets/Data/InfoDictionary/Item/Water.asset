@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Water
   type: 3
-  explanation: Explanation
+  explanation: Water is used to make energy at the steam generator.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Sulfur
   type: 3
-  explanation: Explanation
+  explanation: Raw materials that can be obtained through refining crude oil.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}
   canBuy: 0
-  productionBuilding: {fileID: 0}
+  productionBuilding: {fileID: 11400000, guid: 0bca4782f02e62d4c90aee46b2d278b5, type: 2}

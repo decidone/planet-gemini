@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Transporter
   type: 1
-  explanation: Explanation
+  explanation: The Transporter is a facility that transports items to other Transporters
+    by using drones.
   strDataList:
   - {fileID: 11400000, guid: e1a3dda4e3283ea4ea603e5259b02ebf, type: 2}
   layout: 1

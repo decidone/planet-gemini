@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Overclock
   type: 1
-  explanation: Explanation
+  explanation: The Overclock is a support facility that can increase nearby factories'
+    operation speed. It requires energy to operate.
   strDataList:
   - {fileID: 11400000, guid: a3c068c9d68cb2943a29186d2948d6f3, type: 2}
   layout: 1

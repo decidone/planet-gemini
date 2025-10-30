@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Artillery Tower
   type: 1
-  explanation: Explanation
+  explanation: The Artillery Tower is a basic tower that requires bullets or shells
+    to attack. It will automatically fire when enemies are in range.
   strDataList:
   - {fileID: 11400000, guid: 16db108cba220f74b9736f936d6a6f41, type: 2}
   layout: 1

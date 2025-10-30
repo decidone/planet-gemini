@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: RepairerDrone
   type: 2
-  explanation: Explanation
+  explanation: The Repairer Drone is a controllable unit that restores nearby units
+    and structures.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 5e35b796fcfef1b409e18002dd1d2a7a, type: 3}

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Coal Furnace
   type: 1
-  explanation: Furnace Explanation
+  explanation: The Coal Furnace produces ingots by smelting ore. It requires coal
+    to operate.
   strDataList:
   - {fileID: 11400000, guid: a8c8d2c5653fbda498c749e453b14ebf, type: 2}
   layout: 1

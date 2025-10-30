@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Pipe
   type: 1
-  explanation: Explanation
+  explanation: The Pipe is a transportation facility that transports fluids between
+    factories.
   strDataList:
   - {fileID: 11400000, guid: 823924ca0a90833419ca315ebc071a18, type: 2}
   layout: 1

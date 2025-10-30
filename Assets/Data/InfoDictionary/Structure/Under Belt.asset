@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Under Belt
   type: 1
-  explanation: Explanation
+  explanation: The Under Belt is a transportation facility that carries items underground,
+    allowing connections up to 10 tiles in length.
   strDataList:
   - {fileID: 11400000, guid: a2eb7386890acc945b7f49cbce4e7e8f, type: 2}
   layout: 1

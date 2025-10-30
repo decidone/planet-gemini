@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Robot Manufacturer
   type: 1
-  explanation: Explanation
+  explanation: 'The Robot Manufacturer is a factory that produces controllable units.
+    Most units, except tanks, require available AI command capacity to be produced.
+    It requires energy to operate. '
   strDataList:
   - {fileID: 11400000, guid: ee7fe0a8811eed443ba23fd81389a861, type: 2}
   layout: 1

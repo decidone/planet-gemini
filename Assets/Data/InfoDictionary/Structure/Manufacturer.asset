@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Manufacturer
   type: 1
-  explanation: Explanation
+  explanation: The Manufacturer is a production building that combines three materials
+    to create components. It requires energy to operate.
   strDataList:
   - {fileID: 11400000, guid: da03f6b75f47e3e498de3ee78cea808f, type: 2}
   layout: 1

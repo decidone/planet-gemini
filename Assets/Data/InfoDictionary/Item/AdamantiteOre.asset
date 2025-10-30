@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: AdamantiteOre
   type: 3
-  explanation: AdamantiteOre Explanation
+  explanation: Raw materials that can be obtained through mining. It needs a high-level
+    miner.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

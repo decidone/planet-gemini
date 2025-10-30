@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: SlimyPlant
   type: 3
-  explanation: Explanation
+  explanation: Primitive plants that can be a replacement for crude oil.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

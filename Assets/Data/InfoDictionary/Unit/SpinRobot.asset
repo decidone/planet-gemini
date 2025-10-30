@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: SpinRobot
   type: 2
-  explanation: Explanation
+  explanation: The Spin Robot is a controllable unit that performs area-of-effect
+    attacks in the surrounding area.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: c0ba2f065ae68a84f895834e88e7f658, type: 3}

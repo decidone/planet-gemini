@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Fluid Tank
   type: 1
-  explanation: Explanation
+  explanation: The Fluid Tank stores a large volume of fluids, ensuring a steady
+    supply for processing and production.
   strDataList:
   - {fileID: 11400000, guid: ba23723542862ca44a7f029ed996dcd9, type: 2}
   layout: 1

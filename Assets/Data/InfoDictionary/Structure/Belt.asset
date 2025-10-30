@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Belt
   type: 1
-  explanation: Explanation
+  explanation: The Belt transports items that are produced by factories to other
+    factories.
   strDataList:
   - {fileID: 11400000, guid: 42ec42722be5d9c4591ffa838178e1d9, type: 2}
   layout: 1

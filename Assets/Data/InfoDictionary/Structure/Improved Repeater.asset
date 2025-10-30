@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Improved Repeater
   type: 1
-  explanation: Explanation
+  explanation: The Improved Repeater extends the coverage of the energy network larger
+    than the standard Energy Repeater, allowing more factories to be connected within
+    its range.
   strDataList:
   - {fileID: 11400000, guid: b2aa01d3ace72574c9744340149d0df6, type: 2}
   layout: 1
