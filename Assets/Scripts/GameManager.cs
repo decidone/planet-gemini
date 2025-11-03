@@ -345,7 +345,8 @@ public class GameManager : NetworkBehaviour
         }
 
         dayTimer += Time.deltaTime;
-        hours = (dayTimer / 25f) + (dayIndex * 4) + 8;
+        //hours = (dayTimer / 25f) + (dayIndex * 4) + 8;
+        hours = (dayTimer / (dayTime / 4)) + (dayIndex * 4) + 8;
         hours = Mathf.Repeat(hours, 24f);
 
         displayHour = Mathf.FloorToInt(hours); // 시 부분

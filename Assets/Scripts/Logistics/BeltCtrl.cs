@@ -120,13 +120,14 @@ public class BeltCtrl : LogisticsCtrl
         // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
         // 변경사항이 생기면 DelayNearStrBuiltCoroutine()에도 반영해야 함
         if (IsServer)
-        {            
+        {
             if (!removeState)
             {
-                beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
                 CheckPos();
                 ModelSet();
-                beltGroupMgr.BeltGroupRefresh();    
+                beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+                if (beltGroupMgr != null)
+                    beltGroupMgr.BeltGroupRefresh();
                 animator.SetFloat("DirNum", dirNum);
                 animator.SetFloat("ModelNum", modelMotion);
                 animator.SetFloat("Level", level);

@@ -19,6 +19,6 @@ MonoBehaviour:
     spawner to a portal.
   strDataList: []
   layout: 1
-  videoClip: {fileID: 0}
+  videoClip: {fileID: 32900000, guid: b422c838890d2b7478e732d8c56ff071, type: 3}
   canBuy: 0
   productionBuilding: {fileID: 0}

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeaf01b7ac137074b977835f586ccb9c, type: 3}
+  m_Name: Unit Control
+  m_EditorClassIdentifier: 
+  name: Unit Control
+  type: 0
+  explanation: By controlling the units produced. You can attack the enemies.
+  strDataList: []
+  layout: 1
+  videoClip: {fileID: 32900000, guid: 0036688b70ffdb34a9f1f7c2a5a89928, type: 3}
+  canBuy: 0
+  productionBuilding: {fileID: 0}
