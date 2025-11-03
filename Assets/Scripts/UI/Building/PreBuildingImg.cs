@@ -13,7 +13,8 @@ public class PreBuildingImg : MonoBehaviour
     Sprite[] sprites;
     [SerializeField]
     Material[] materials;
-
+    [SerializeField]
+    BoxCollider2D boxCollider;
     public bool isEnergyUse;
     public Structure structure;
 
@@ -37,17 +38,26 @@ public class PreBuildingImg : MonoBehaviour
         animator.SetFloat(_string, _int);
     }
 
+    public void BoxColliderSet(Vector2 size)
+    {
+        boxCollider.size = size;
+    }
+
     public bool CanPlaceBuilding(Vector2 size)
     {
-        Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, size, 0f);
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, size - (size / 10), 0f);
 
-        for(int i = 0; i < hits.Length; i++)
+
+        foreach (var col in colliders)
         {
-            if (hits[i].GetComponent<UnitCommonAi>() || hits[i].GetComponent<PlayerController>())
-                return false;
+            if (col.GetComponent<UnitCommonAi>() || (col.GetComponent<PlayerController>() && col.isTrigger == false))
+            {
+                Debug.Log(transform.position + " : " + (size - (size / 10)));
+                return false; // 겹치는 유닛이 있음 → 배치 불가
+            }
         }
 
-        return true;
+        return true; // 아무것도 겹치지 않음 → 배치 가능
     }
 
     public void TerritoryViewSet(int index)
@@ -97,7 +107,7 @@ public class PreBuildingImg : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
+        if (collision.GetComponent<UnitCommonAi>() || (collision.GetComponent<PlayerController>() && collision.isTrigger == false))
         {
             if (!buildingPosUnit.Contains(collision.gameObject))
                 buildingPosUnit.Add(collision.gameObject);
@@ -106,7 +116,7 @@ public class PreBuildingImg : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
+        if (collision.GetComponent<UnitCommonAi>() || (collision.GetComponent<PlayerController>() && collision.isTrigger == false))
         {
             buildingPosUnit.Remove(collision.gameObject);
         }

@@ -128,6 +128,7 @@ public class MonsterAi : UnitCommonAi
                     {
                         SearchObjectsInRange();
                         searchTimer = 0f; // 탐색 후 타이머 초기화
+                        tarDisCheckTime = tarDisCheckInterval; // 대상 거리 체크 즉시 수행
                     }
 
                     if (targetList.Count > 0)
@@ -238,6 +239,8 @@ public class MonsterAi : UnitCommonAi
                 {
                     if (aggroTarget)
                         AttackCheck();
+                    else
+                        aIState = AIState.AI_Idle;
                 }
                 else if (attackState == AttackState.AttackStart)
                 {
@@ -827,20 +830,26 @@ public class MonsterAi : UnitCommonAi
     {
         if (waveState)
         {
-            float closestDistance = float.MaxValue;
-
-            foreach (GameObject target in targetList)
+            if (targetList.Count > 0)
             {
-                if (target != null)
+                float closestDistance = float.MaxValue;
+
+                foreach (GameObject target in targetList)
                 {
-                    float distance = Vector3.Distance(tr.position, target.transform.position);
-                    if (distance < closestDistance)
+                    if (target != null)
                     {
-                        closestDistance = distance;
-                        aggroTarget = target;
-                        //goingBase = false;
+                        float distance = Vector3.Distance(tr.position, target.transform.position);
+                        if (distance < closestDistance)
+                        {
+                            closestDistance = distance;
+                            aggroTarget = target;
+                        }
                     }
                 }
+            }
+            else
+            {
+                aggroTarget = null;
             }
 
             if (aggroTarget != null)

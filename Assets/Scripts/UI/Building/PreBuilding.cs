@@ -237,7 +237,7 @@ public class PreBuilding : NetworkBehaviour
                         index++;
                     }
                 }
-                else
+                else if(CellCheck(buildingList[0], startBuildPos))
                 {
                     canBuild = buildingList[0].GetComponent<PreBuildingImg>().CanPlaceBuilding(new Vector2(objWidth, objHeight));
                 }
@@ -285,8 +285,8 @@ public class PreBuilding : NetworkBehaviour
                 else
                     canBuildCount = int.MaxValue;
 
-                if (isPortalObj)
-                    Invoke(nameof(CancelBuild), 0.1f);
+                //if (isPortalObj)
+                //    Invoke(nameof(CancelBuild), 0.1f);
 
                 PreBuildingImg preBuildingImg = nonNetObj.GetComponent<PreBuildingImg>();
 
@@ -1467,6 +1467,7 @@ public class PreBuilding : NetworkBehaviour
         objWidth = width;
 
         nonNetObj.TryGetComponent(out PreBuildingImg preBuildingImg);
+        preBuildingImg.BoxColliderSet(new Vector2(height, width));
 
         isGetAnim = buildData.isGetAnim;
 
@@ -1619,6 +1620,7 @@ public class PreBuilding : NetworkBehaviour
         objWidth = width;
 
         nonNetObj.TryGetComponent(out PreBuildingImg preBuildingImg);
+        preBuildingImg.BoxColliderSet(new Vector2(height, width));
 
         isGetAnim = buildData.isGetAnim;
 

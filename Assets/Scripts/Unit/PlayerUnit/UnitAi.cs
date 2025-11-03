@@ -203,13 +203,15 @@ public class UnitAi : UnitCommonAi
         lastMoveDirection = (targetPosition - tr.position).normalized;
         //aIState = AIState.AI_Move;
         NomalTraceCheck(AIState.AI_Move);
+        if(isAttack)
+            tarDisCheckTime = tarDisCheckInterval;
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
         else
         {
             StopCoroutine(checkPathCoroutine);
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
-        }
+        }        
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -480,19 +482,26 @@ public class UnitAi : UnitCommonAi
     {
         if (!isTargetSet)
         {
-            float closestDistance = float.MaxValue;
-
-            foreach (GameObject monster in targetList)
+            if (targetList.Count > 0)
             {
-                if (monster != null)
+                float closestDistance = float.MaxValue;
+
+                foreach (GameObject monster in targetList)
                 {
-                    float distance = Vector3.Distance(tr.position, monster.transform.position);
-                    if (distance < closestDistance)
+                    if (monster != null)
                     {
-                        closestDistance = distance;
-                        aggroTarget = monster;
+                        float distance = Vector3.Distance(tr.position, monster.transform.position);
+                        if (distance < closestDistance)
+                        {
+                            closestDistance = distance;
+                            aggroTarget = monster;
+                        }
                     }
                 }
+            }
+            else
+            {
+                aggroTarget = null;
             }
         }
 
