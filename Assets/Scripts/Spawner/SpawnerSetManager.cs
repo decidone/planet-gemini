@@ -181,27 +181,32 @@ public class SpawnerSetManager : NetworkBehaviour
                     continue;
                 }
 
+                bool invalidBiome = false;
+
+                // 중앙 검사
                 string biome = map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y).biome.biome;
+                if (biome == "lake" || biome == "cliff")
+                    invalidBiome = true;
 
-                //if (biome == "lake" || biome == "cliff")
-                //{
-                //    whileCheck = true;
-                //    cantPos.Add(newPoint);
-                //    continue;
-                //}
-
-                for (int i = -2; i <= 2; i += 5)
+                // 귀퉁이 검사
+                if (!invalidBiome)
                 {
-                    for (int j = -2; j <= 2; j += 5)
+                    for (int i = -2; i <= 2 && !invalidBiome; i += 4)
                     {
-                        biome = map.GetCellDataFromPos((int)newPoint.x + i, (int)newPoint.y + j).biome.biome;
-                        if (biome == "lake" || biome == "cliff")
+                        for (int j = -2; j <= 2 && !invalidBiome; j += 4)
                         {
-                            whileCheck = true;
-                            cantPos.Add(newPoint);
-                            continue;
+                            biome = map.GetCellDataFromPos((int)newPoint.x + i, (int)newPoint.y + j).biome.biome;
+                            if (biome == "lake" || biome == "cliff")
+                                invalidBiome = true;
                         }
                     }
+                }
+
+                if (invalidBiome)
+                {
+                    whileCheck = true;
+                    cantPos.Add(newPoint);
+                    continue;
                 }
 
                 whileCheck = false;

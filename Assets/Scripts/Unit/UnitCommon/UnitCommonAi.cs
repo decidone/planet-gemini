@@ -155,6 +155,7 @@ public class UnitCommonAi : NetworkBehaviour
             {
                 SearchObjectsInRange();
                 searchTimer = 0f; // 탐색 후 타이머 초기화
+                tarDisCheckTime = tarDisCheckInterval; // 대상 거리 체크 즉시 수행
             }
 
             if (targetList.Count > 0)

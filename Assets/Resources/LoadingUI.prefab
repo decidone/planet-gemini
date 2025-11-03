@@ -271,8 +271,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e00f22c6d4cd1f449a4e3a43e1e10b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneLoadTimeoutLimit: 60
-  gameSetTimeoutLimit: 120
+  sceneLoadTimeoutLimit: 120
+  gameSetTimeoutLimit: 240
   target: {fileID: 7473010959646565846}
   forwardAngle: -50
   reboundAngle: 20

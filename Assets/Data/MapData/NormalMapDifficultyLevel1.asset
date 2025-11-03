@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: NormalMapDifficultyLevel1
   m_EditorClassIdentifier: 
   mapSize: 450
-  countOfSpawnersByLevel: 050000000d00000015000000
-  upgradeSpawnerSet: 000000000000000000000000
+  countOfSpawnersByLevel: 05000000090000000d000000
+  upgradeSpawnerSet: 020000000400000006000000
   mapSplitCount: 11
