@@ -241,8 +241,6 @@ public class SpawnerSetManager : NetworkBehaviour
                 }
             }
 
-            MapGenerator.instance.SetCorruption(map, newPoint, levelSet);
-
             Cell cellData = map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y);
             if (cellData.obj != null)
             {
@@ -253,6 +251,8 @@ public class SpawnerSetManager : NetworkBehaviour
             monsterSpawner.groupManager = spawnerGroupManager;
             monsterSpawner.SpawnerSetting(levelDataSet, cellData.biome.biome, basePos, isHostMap, areaLevel);
             monsterSpawnerManager.AreaGroupSet(monsterSpawner, areaLevel, isHostMap);
+
+            MapGenerator.instance.SetCorruption(map, monsterSpawner, levelSet);
 
             if (isHostMap)
                 spawnerMap1Matrix[xIndex, yIndex] = spawnGroup;

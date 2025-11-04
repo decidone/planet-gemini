@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 // UTF-8 설정
@@ -94,6 +95,7 @@ public class MonsterSpawner : NetworkBehaviour
     public Dictionary<Structure, float> energyUseStrs = new Dictionary<Structure, float>();
 
     public bool isInHostMap;
+    public Tilemap corruptionTilemap;
 
     [HideInInspector]
     public bool violentDay;
@@ -588,7 +590,7 @@ public class MonsterSpawner : NetworkBehaviour
         GameObject InfoObj = GetComponentInChildren<InfoInteract>().gameObject;
         InfoObj.SetActive(false);
 
-        MapGenerator.instance.ClearCorruption(transform.position, spawnerLevel);
+        MapGenerator.instance.ClearCorruption(this, spawnerLevel);
         icon.enabled = false;
 
         if (!IsServer)
@@ -609,7 +611,7 @@ public class MonsterSpawner : NetworkBehaviour
         unitSprite.color = new Color(1f, 1f, 1f, 0f);
         unitCanvas.SetActive(false);
         capsuleCollider2D.enabled = false;
-        MapGenerator.instance.ClearCorruption(transform.position, spawnerLevel);
+        //MapGenerator.instance.ClearCorruption(this, spawnerLevel);
         icon.enabled = false;
         spawnerSearchColl.DieFunc();
         spawnerAwakeColl.DieFunc();
@@ -1052,7 +1054,7 @@ public class MonsterSpawner : NetworkBehaviour
     public void SetCorruption()
     {
         if (!dieCheck)
-            MapGenerator.instance.SetCorruption(transform.position, spawnerLevel);
+            MapGenerator.instance.SetCorruption(this, spawnerLevel);
     }
 
     public void SearchCollExtend()
@@ -1130,7 +1132,6 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-
     void SpriteSet()
     {
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
@@ -1150,5 +1151,10 @@ public class MonsterSpawner : NetworkBehaviour
             sprite.sprite = monsterSpawnerManager.spawnerSprite[1];
             capsuleCollider2D.size = new Vector2(3.5f, 1f);
         }
+    }
+
+    public void SetTilemap(Tilemap tilemap)
+    {
+        corruptionTilemap = tilemap;
     }
 }

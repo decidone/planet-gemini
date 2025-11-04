@@ -440,6 +440,8 @@ public class InfoUI : MonoBehaviour
     public void SetSpawnerInfo(MonsterSpawner _spawner)
     {
         SetDefault();
+        if (_spawner.dieCheck) return;
+
         spawner = _spawner;
         SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;

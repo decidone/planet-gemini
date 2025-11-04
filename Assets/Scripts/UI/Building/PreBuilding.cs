@@ -1777,7 +1777,7 @@ public class PreBuilding : NetworkBehaviour
                         }
 
                         Cell cell = gameManager.map.GetCellDataFromPos(newX, newY);
-                        if (cell.structure != null || cell.obj != null || cell.isCorrupted)
+                        if (cell.structure != null || cell.obj != null || (cell.corruptionId > 0))
                         {
                             return false;
                         }

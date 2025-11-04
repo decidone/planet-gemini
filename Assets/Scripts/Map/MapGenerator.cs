@@ -26,10 +26,11 @@ public class MapGenerator : MonoBehaviour
     public Tilemap tilemap;
     public Tilemap lakeTilemap;
     public Tilemap cliffTilemap;
-    public Tilemap corruptionTilemap;
     public Tilemap resourcesTilemap;
     public Tilemap resourcesIconTilemap;
     public Tilemap fogTilemap;
+    public GameObject corruptionTilemap;
+    public GameObject corruptionTilemapPref;
     public GameObject objects;
     public Transform mapFog;
 
@@ -60,6 +61,7 @@ public class MapGenerator : MonoBehaviour
     int minimumChunkSize = 7;
     public Tile fogTile;
     public float fogCheckCooldown;
+    int corruptionId = 0;
 
     public AstarPath astar;
     public CompositeCollider2D comp;
@@ -1020,33 +1022,47 @@ public class MapGenerator : MonoBehaviour
         gg.collision.mask |= 1 << LayerMask.NameToLayer("MapObj");
     }
 
-    public void SetCorruption(Vector3 spawnerPos, int level)
+    public void SetCorruption(MonsterSpawner monsterSpawner, int level)
     {
         Map map;
-        Vector2 vector2Pos = new Vector2(spawnerPos.x, spawnerPos.y);
+        Vector3 spawnerPos = monsterSpawner.transform.position;
 
         if (spawnerPos.y > height)
             map = clientMap;
         else
             map = hostMap;
 
-        SetCorruption(map, vector2Pos, corruptionRadius, level);
+        SetCorruption(map, monsterSpawner, corruptionRadius, level);
     }
 
-    public void SetCorruption(Map map, Vector2 spawnerPos, int level)
+    public void SetCorruption(Map map, MonsterSpawner monsterSpawner, int level)
     {
-        SetCorruption(map, spawnerPos, corruptionRadius, level);
+        SetCorruption(map, monsterSpawner, corruptionRadius, level);
     }
 
-    public void SetCorruption(Map map, Vector2 spawnerPos, float radius, int level)
+    public void SetCorruption(Map map, MonsterSpawner monsterSpawner, float radius, int level)
     {
+        Tilemap tempTilemap;
+        Biome biome;
         int offsetY = 0;
+        corruptionId++;
+        Vector2 spawnerPos = monsterSpawner.transform.position;
+
         if (map == clientMap)
             offsetY = height + clientMapOffsetY;
         if (spawnerPos.y > height)
             spawnerPos.y -= offsetY;
+        if (monsterSpawner.corruptionTilemap == null)
+        {
+            GameObject tilemapGameObject = Instantiate(corruptionTilemapPref, corruptionTilemap.transform);
+            tempTilemap = tilemapGameObject.GetComponent<Tilemap>();
+            monsterSpawner.SetTilemap(tempTilemap);
+        }
+        else
+        {
+            tempTilemap = monsterSpawner.corruptionTilemap;
+        }
 
-        Biome biome;
         if (level >= 7)
         {
             biome = HardCorruption;
@@ -1059,30 +1075,17 @@ public class MapGenerator : MonoBehaviour
         {
             biome = NormalCorruption;
         }
-        //switch (level)
-        //{
-        //    case 1: biome = EasyCorruption;
-        //        break;
-        //    case 2: biome = NormalCorruption;
-        //        break;
-        //    case 3: biome = HardCorruption;
-        //        break;
-        //    default: biome = NormalCorruption;
-        //        break;
-        //}
 
-        Vector2 tempPos;
         for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)
         {
             for (int y = Mathf.FloorToInt(spawnerPos.y - radius); y <= (spawnerPos.y + radius); y++)
             {
                 if (map.IsOnMapData(x, y))
                 {
-                    tempPos = new Vector2(x, y);
-                    float dist = Vector2.Distance(tempPos, spawnerPos);
+                    float dist = Vector2.Distance(new Vector2(x, y), spawnerPos);
                     if (dist < radius)
                     {
-                        map.mapData[x][y].isCorrupted = true;
+                        map.mapData[x][y].corruptionId = corruptionId;
                         Cell cell = map.mapData[x][y];
 
                         if (cell.biome == lake || cell.biome == cliff)
@@ -1114,60 +1117,62 @@ public class MapGenerator : MonoBehaviour
             {
                 if (map.IsOnMapData(x, y))
                 {
-                    Cell cell = map.mapData[x][y];
-                    if (cell.isCorrupted)
+                    float dist = Vector2.Distance(new Vector2(x, y), spawnerPos);
+                    if (dist < radius)
                     {
-                        Tile tile = biome.SetCorruptionTile(random, map, x, y);
-                        corruptionTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile);
+                        Tile tile = biome.SetCorruptionTile(random, map, x, y, corruptionId);
+                        tempTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile);
                     }
                 }
             }
         }
     }
 
-    public void ClearCorruption(Vector3 spawnerPos, int level)
+    public void ClearCorruption(MonsterSpawner monsterSpawner, int level)
     {
         Map map;
-        Vector2 vector2Pos = new Vector2(spawnerPos.x, spawnerPos.y);
+        Vector3 spawnerPos = monsterSpawner.transform.position;
 
         if (spawnerPos.y > height)
             map = clientMap;
         else
             map = hostMap;
 
-        StartCoroutine(ClearCorruptionCoroutine(map, vector2Pos, corruptionRadius, level));
+        StartCoroutine(ClearCorruptionCoroutine(map, monsterSpawner, corruptionRadius, level));
     }
 
-    public void ClearCorruption(Map map, Vector2 spawnerPos, int level)
+    public void ClearCorruption(Map map, MonsterSpawner monsterSpawner, int level)
     {
-        StartCoroutine(ClearCorruptionCoroutine(map, spawnerPos, corruptionRadius, level));
+        StartCoroutine(ClearCorruptionCoroutine(map, monsterSpawner, corruptionRadius, level));
     }
 
-    IEnumerator ClearCorruptionCoroutine(Map map, Vector2 spawnerPos, float _radius, int level)
+    IEnumerator ClearCorruptionCoroutine(Map map, MonsterSpawner monsterSpawner, float _radius, int level)
     {
+        Vector2 spawnerPos = monsterSpawner.transform.position;
         float radius = _radius;
         int offsetY = 0;
         if (map == clientMap)
             offsetY = height + clientMapOffsetY;
         if (spawnerPos.y > height)
             spawnerPos.y -= offsetY;
+        Tilemap tempTilemap = monsterSpawner.corruptionTilemap;
 
         while (true)
         {
             //yield return new WaitForSeconds(random.Next(2, 10));
             yield return new WaitForSeconds(2f);
 
-            ClearCorruptionTiles(map, spawnerPos, radius);
+            ClearCorruptionTiles(map, spawnerPos, radius, tempTilemap);
             RemoveMushrooms(map, spawnerPos, radius, radius - corruptionClearRadius);
             radius -= corruptionClearRadius;
             if (radius <= corruptionClearRadius)
                 yield break;
 
-            SetCorruption(map, spawnerPos, radius, level);
+            SetCorruption(map, monsterSpawner, radius, level);
         }
     }
 
-    void ClearCorruptionTiles(Map map, Vector2 spawnerPos, float radius)
+    void ClearCorruptionTiles(Map map, Vector2 spawnerPos, float radius, Tilemap tempTilemap)
     {
         int offsetY = 0;
         if (map == clientMap)
@@ -1179,8 +1184,8 @@ public class MapGenerator : MonoBehaviour
             {
                 if (map.IsOnMapData(x, y))
                 {
-                    map.mapData[x][y].isCorrupted = false;
-                    corruptionTilemap.SetTile(new Vector3Int(x, (y + offsetY) , 0), null);
+                    map.mapData[x][y].corruptionId = 0;
+                    tempTilemap.SetTile(new Vector3Int(x, (y + offsetY) , 0), null);
                 }
             }
         }

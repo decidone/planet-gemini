@@ -513,15 +513,15 @@ public class DataManager : MonoBehaviour
             spawnerGroup.SpawnerSet(spawner);
             spawner.TryGetComponent(out MonsterSpawner monsterSpawner);
             monsterSpawner.dieCheck = spawnerSaveData.dieCheck;
-            if (monsterSpawner.dieCheck)
-            {
-                monsterSpawner.DieFuncLoad();
-            }
             MonsterSpawnerManager.instance.AreaGroupSet(monsterSpawner, spawnerSaveData.spawnerGroupIndex, planet);
             monsterSpawner.groupManager = spawnerGroup;
             monsterSpawner.GameStartSet(spawnerSaveData, levelData[spawnerSaveData.level - 1], Vector3Extensions.ToVector3(spawnerSaveData.wavePos), planet, spawnerSaveData.spawnerGroupIndex);
             SetSpawner(monsterSpawner, spawnerSaveData, planet);
             monsterSpawner.violentCollSize = spawnerSaveData.violentCollSize;
+            if (monsterSpawner.dieCheck)
+            {
+                monsterSpawner.DieFuncLoad();
+            }
         }
 
         return spawnerGroupObj;
@@ -553,7 +553,9 @@ public class DataManager : MonoBehaviour
         NetworkObject networkObject = spawnerObj.GetComponent<NetworkObject>();
         if (!networkObject.IsSpawned) networkObject.Spawn(true);
         spawnerObj.transform.position = Vector3Extensions.ToVector3(spawnerSaveData.spawnerPos);
-        MapGenerator.instance.SetCorruption(spawnerObj.transform.position, spawnerSaveData.level);
+        MonsterSpawner monsterSpawner = spawnerObj.GetComponent<MonsterSpawner>();
+        if (!spawnerSaveData.dieCheck)
+            MapGenerator.instance.SetCorruption(monsterSpawner, spawnerSaveData.level);
 
         return spawnerObj;
     }

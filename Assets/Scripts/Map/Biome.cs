@@ -489,7 +489,7 @@ public class Biome : MonoBehaviour
         return tile;
     }
 
-    public Tile SetCorruptionTile(System.Random random, Map map, int x, int y)
+    public Tile SetCorruptionTile(System.Random random, Map map, int x, int y, int corruptionId)
     {
         Tile tile = null;
         bool isBorder = false;
@@ -514,7 +514,7 @@ public class Biome : MonoBehaviour
                     if (map.IsOnMapData(nx, ny))
                     {
                         neighbors[j] = map.mapData[nx][ny];
-                        if (!neighbors[j].isCorrupted)
+                        if (neighbors[j].corruptionId != corruptionId)
                         {
                             if (i % 2 == 0)
                             {
