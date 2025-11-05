@@ -7,15 +7,19 @@ public class AggroAmount : MonoBehaviour
     public float baseAggroAmount = 0f;
     [SerializeField]
     float aggroAmount = 0f;
-    float aggroAmountPercent = 0.05f;
+    float maxAggroAmount = 20;
+    float aggroAmountPercent = 0.03f;
     bool isAggroActive = false;
     float aggroDecayStep = 1f;
-    float aggroDecayInterval = 5f;
+    float aggroDecayInterval = 4f;
 
     public void SetAggroAmount(float damage, float attackSpeed)
     {
         float speedPer = (attackSpeed * 2) / 10;
         aggroAmount += (damage * aggroAmountPercent) + speedPer;
+        
+        if(aggroAmount > maxAggroAmount)
+            aggroAmount = maxAggroAmount;
 
         if (!isAggroActive)
             StartCoroutine(AggroDecayTimer());
@@ -38,5 +42,10 @@ public class AggroAmount : MonoBehaviour
     public float GetAggroAmount()
     {
         return baseAggroAmount + aggroAmount;
+    }
+
+    public void TakeDamageAggroAmountSub(float damage)
+    {
+        aggroAmount -= (damage * aggroAmountPercent);
     }
 }

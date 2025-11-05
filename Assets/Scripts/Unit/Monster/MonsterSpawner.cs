@@ -135,6 +135,18 @@ public class MonsterSpawner : NetworkBehaviour
         }
         spawnerSearchColl.violentCollSize = violentCollSize;
         SpriteSet();
+
+        if (IsServer && MainGameSetting.instance.isNewGame)
+        {
+            if (guardianList.Count < maxGuardianSpawn)
+            {
+                int guardianSpawnAmount = maxGuardianSpawn - guardianList.Count;
+                for (int i = 0; i < guardianSpawnAmount; i++)
+                {
+                    SpawnMonster(3, 0, isInHostMap);
+                }
+            }
+        }
     }
 
     void Update()
@@ -686,30 +698,6 @@ public class MonsterSpawner : NetworkBehaviour
     public void WaveStart()
     {
         StartCoroutine(WaveStartCoroutine());
-
-        //if (spawnNum > 0)
-        //{
-        //    MonsterSpawnStart();
-        //}
-
-        //ExtraMonsterSpawn(Mathf.CeilToInt(spawnerLevel / 2) + 1);
-        //MonsterScriptSet(true, false);
-
-        //List<GameObject> monsters = new List<GameObject>();
-        //foreach (MonsterAi monster in totalMonsterList)
-        //{
-        //    monster.WaveStart(wavePos);
-        //    monsters.Add(monster.gameObject);
-        //}
-
-        //monsterSpawnerManager.WaveAddMonster(monsters);
-
-        //waveMonsterList.AddRange(totalMonsterList);
-
-        //totalMonsterList.Clear();
-        //currentWeakSpawn = 0;
-        //currentNormalSpawn = 0;
-        //currentStrongSpawn = 0;
     }
 
     private IEnumerator WaveStartCoroutine()
@@ -1113,7 +1101,6 @@ public class MonsterSpawner : NetworkBehaviour
         if (guardianList.Count < maxGuardianSpawn)
         {
             int guardianSpawnAmount = maxGuardianSpawn - guardianList.Count;
-
             for (int i = 0; i < guardianSpawnAmount; i++)
             {
                 SpawnMonster(3, 0, isInHostMap);

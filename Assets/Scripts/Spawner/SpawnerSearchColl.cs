@@ -95,4 +95,14 @@ public class SpawnerSearchColl : NetworkBehaviour
     {
         coll.radius = collSize[level];
     }
+
+    private void OnDrawGizmos()
+    {
+        if (coll == null) return;
+
+        Gizmos.color = Color.red;
+
+        Vector2 position = coll.transform.TransformPoint(coll.offset);
+        Gizmos.DrawWireSphere(position, violentCollSize);
+    }
 }

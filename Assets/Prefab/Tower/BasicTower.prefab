@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseAggroAmount: 6
+  baseAggroAmount: 9
   aggroAmount: 0
 --- !u!1 &2584885461931468724
 GameObject:

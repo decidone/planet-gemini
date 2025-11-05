@@ -426,7 +426,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc]
-    void ViolentDayOnServerRpc()
+    void ViolentDaySyncTimeServerRpc()
     {
         bool violentDaySync = false;
         bool violentDayOnCheck = false;
@@ -1492,7 +1492,7 @@ public class GameManager : NetworkBehaviour
     public void SyncTimeServerRpc()
     {
         SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentValue, violentDayCheck, violentDay);
-        ViolentDayOnServerRpc();
+        ViolentDaySyncTimeServerRpc();
     }
 
     [ClientRpc]

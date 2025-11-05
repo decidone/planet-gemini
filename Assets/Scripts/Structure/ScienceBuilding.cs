@@ -49,4 +49,11 @@ public class ScienceBuilding : PortalObj
     }
 
     public override void IncreasedStructureCheck() { }
+
+    [ServerRpc]
+    protected override void DieFuncServerRpc()
+    {
+        Debug.Log(gameManager);
+        gameManager.SetGameOverUI();
+    }
 }
