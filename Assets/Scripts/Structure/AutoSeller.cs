@@ -92,6 +92,7 @@ public class AutoSeller : Production
     public void TransportableCheck(int slotindex)
     {
         isTransportable = false;
+        int totalPrice = 0;
 
         for (int i = 0; i < inventory.space; i++)
         {
@@ -99,10 +100,19 @@ public class AutoSeller : Production
 
             if (invenItem.item != null && merchItems.Contains(invenItem.item))
             {
-                isTransportable = true;
-                break;
+                foreach (var merch in merchList)
+                {
+                    if (merch.item == invenItem.item)
+                    {
+                        totalPrice += (merch.sellPrice * invenItem.amount);
+                        isTransportable = true;
+                        break;
+                    }
+                }
             }
         }
+
+        sInvenManager.finance.SetFinance(totalPrice);
     }
 
     public override void OpenUI()
@@ -113,6 +123,7 @@ public class AutoSeller : Production
         //sInvenManager.progressBar.SetMaxProgress(effiCooldown - effiOverclock);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
         sInvenManager.SetCooldownText(cooldown);
+        sInvenManager.finance.gameObject.SetActive(true);
         //sInvenManager.TransporterSetting(isToggleOn, sendAmount);
 
         //if (takeBuild != null)
@@ -122,6 +133,8 @@ public class AutoSeller : Production
     public override void CloseUI()
     {
         base.CloseUI();
+        sInvenManager.finance.gameObject.SetActive(false);
+        sInvenManager.finance.SetFinance(0);
         sInvenManager.ReleaseInven();
     }
 

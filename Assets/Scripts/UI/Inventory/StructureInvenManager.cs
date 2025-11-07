@@ -15,6 +15,7 @@ public class StructureInvenManager : InventoryManager
     public ProgressBar energyBar;
     public Text cooldownText;
     public bool isOpened;
+    public Finance finance;
     [HideInInspector]
     public Production prod;
     [HideInInspector]

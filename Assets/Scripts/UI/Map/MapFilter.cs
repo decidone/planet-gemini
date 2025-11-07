@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class MapFilter : MonoBehaviour
 {
     [SerializeField] Button button;
+    [SerializeField] Text moveText;
     public bool isFilterOn;
 
     #region Singleton
@@ -45,11 +46,13 @@ public class MapFilter : MonoBehaviour
     public void OpenUI()
     {
         button.gameObject.SetActive(true);
+        moveText.gameObject.SetActive(true);
     }
 
     public void CloseUI()
     {
         button.gameObject.SetActive(false);
+        moveText.gameObject.SetActive(false);
         if (isFilterOn)
         {
             MapCameraController.instance.cam.cullingMask |= 1 << LayerMask.NameToLayer("MapUI");

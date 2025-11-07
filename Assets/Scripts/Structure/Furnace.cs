@@ -21,8 +21,11 @@ public class Furnace : Production
         {
             if (fuel == 0 && slot1.Item1 == itemDic["Coal"] && slot1.Item2 > 0)
             {
-                if(IsServer)
+                if (IsServer)
+                {
+                    Overall.instance.OverallConsumption(itemDic["Coal"], 1);
                     inventory.SlotSubServerRpc(1, 1);
+                }
                 fuel = maxFuel;
             }
 

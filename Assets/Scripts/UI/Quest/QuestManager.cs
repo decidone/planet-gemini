@@ -147,6 +147,10 @@ public class QuestManager : MonoBehaviour
                 else
                     scienceManager.onUpgradeCompletedCallback += QuestCompCheck;
                 break;
+            case 50:    // 웨이브 클리어. 웨이브 끝날 때 QuestCompCheck(50) 호출하면 완료
+                if (!GameManager.instance.bloodMoon)
+                    QuestClear();
+                break;
             default:
                 break;
         }
@@ -243,6 +247,9 @@ public class QuestManager : MonoBehaviour
                 scienceManager.onUpgradeCompletedCallback -= QuestCompCheck;
                 QuestClear();
                 break;
+            case 50:
+                QuestClear();
+                break;
             default:
                 break;
         }
@@ -250,10 +257,35 @@ public class QuestManager : MonoBehaviour
 
     public void QuestClear()
     {
-        ResetUI();
+        StartCoroutine(ClearEffect());
+    }
 
-        currentQuest++;
+    void SetNextQuest()
+    {
         SetQuest(currentQuest);
+    }
+
+    IEnumerator ClearEffect()
+    {
+        currentQuest++;
+        titleText.color = Color.green;
+        descriptionText.color = Color.green;
+
+        for (int i = 0; i <= 3; i++)
+        {
+            yield return new WaitForSeconds(1f);
+            titleText.enabled = false;
+            descriptionText.enabled = false;
+
+            yield return new WaitForSeconds(0.5f);
+            titleText.enabled = true;
+            descriptionText.enabled = true;
+        }
+        titleText.color = Color.white;
+        descriptionText.color = Color.white;
+
+        ResetUI();
+        SetNextQuest();
     }
 
     public void UIOpen()

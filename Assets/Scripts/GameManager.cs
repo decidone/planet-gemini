@@ -122,8 +122,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField]
     bool clickToNextTime;
 
-    [SerializeField]
-    bool bloodMoon;
+    public bool bloodMoon;
     [SerializeField]
     int safeDay;                        // 게임 초기 안전한 날
     int[] randomStackValue = new int[2] { 20, 80 }; // 스택 랜덤 범위

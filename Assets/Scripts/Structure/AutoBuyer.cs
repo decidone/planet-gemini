@@ -188,6 +188,10 @@ public class AutoBuyer : Production
         {
             BuyableCheck();
         }
+        else
+        {
+            sInvenManager.finance.SetFinance(0);
+        }
     }
 
     public void BuyableCheck()
@@ -213,6 +217,7 @@ public class AutoBuyer : Production
         }
 
         isBuyable = (GameManager.instance.finance.finance >= totalPrice);
+        sInvenManager.finance.SetFinance(totalPrice, isBuyable);
     }
 
     public override void OpenUI()
@@ -222,6 +227,7 @@ public class AutoBuyer : Production
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(cooldown);
         sInvenManager.SetCooldownText(cooldown);
+        sInvenManager.finance.gameObject.SetActive(true);
 
         sInvenManager.InvenInit();
         if (recipe.name != null)
@@ -233,6 +239,8 @@ public class AutoBuyer : Production
     public override void CloseUI()
     {
         base.CloseUI();
+        sInvenManager.finance.gameObject.SetActive(false);
+        sInvenManager.finance.SetFinance(0);
         sInvenManager.ReleaseInven();
         AutoBuyerManager.instance.ResetValue();
     }
@@ -259,11 +267,18 @@ public class AutoBuyer : Production
 
     public override void SetRecipe(Recipe _recipe, int index)
     {
+        if (recipe != _recipe)
+        {
+            MaxSliderUIValueChanged(0);
+            MinSliderUIValueChanged(0);
+        }
+
         base.SetRecipe(_recipe, index);
         //output = itemDic[recipe.items[0]];
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[0].outputSlot = true;
     }
+
     public override void SetOutput(Recipe recipe)
     {
         if (recipe != null)
@@ -277,8 +292,8 @@ public class AutoBuyer : Production
     protected override void ResetUI()
     {
         base.ResetUI();
-        MaxSliderValueSyncServerRpc(0);
-        MinSliderValueSyncServerRpc(0);
+        MaxSliderUIValueChanged(0);
+        MinSliderUIValueChanged(0);
     }
 
     protected override void OnClientConnectedCallback(ulong clientId)

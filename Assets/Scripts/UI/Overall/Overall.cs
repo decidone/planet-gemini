@@ -185,6 +185,8 @@ public class Overall : NetworkBehaviour
                 if (itemsConsumption.ContainsKey(i))
                 {
                     itemsConsumption[i] -= amount;
+                    if (itemsConsumption[i] < 0)
+                        itemsConsumption[i] = 0;
                     display.SetConsumptionAmount(i, itemsConsumption[i]);
                 }
                 break;
