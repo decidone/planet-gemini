@@ -924,7 +924,7 @@ public class MonsterAi : UnitCommonAi
         GameObject targetFind = null;
 
         float margin = 4.0f; // fallback 선택 기준 거리 마진
-        float targetToDis = 2; // 실제 위치와 경로상의 차이
+        float targetToDis = 2.5f; // 실제 위치와 경로상의 차이
         float bestFallbackDist = float.MaxValue;
         float secondFallbackDist = float.MaxValue;
         GameObject fallbackTarget = null;

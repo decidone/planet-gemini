@@ -22,11 +22,17 @@ public class SpawnerSaveData
     public int spawnNum;   // 임시 저장 소환 수
     public bool dieCheck;       // 스포너 죽은 상태 체크
     public int spawnerGroupIndex;
+
+    // safeCount 구조 변경해야함
     public int safeCount;
+    
     public bool violentDay;
     public SerializedVector3 wavePos = new SerializedVector3();
     public SerializedVector3 spawnerPos = new SerializedVector3();      // 스포너 위치
     public List<UnitSaveData> monsterList = new List<UnitSaveData>();   // 몬스터 데이터
+
+    //violentCollSize 구조 변경해야함
     public float violentCollSize;   // 광폭화 시 검색범위
+    
     public int ragePhase;
 }

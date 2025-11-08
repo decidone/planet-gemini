@@ -83,7 +83,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 40
+  m_Radius: 50
 --- !u!1 &1672328839514815431
 GameObject:
   m_ObjectHideFlags: 0
@@ -399,7 +399,6 @@ MonoBehaviour:
   searchColl: {fileID: 7283164378971898256}
   awakeColl: {fileID: 596819544238933767}
   spawnerSearchColl: {fileID: 0}
-  energyAggroValue: 0
   isInHostMap: 0
   violentDay: 0
   violentCollSize: 0
