@@ -916,7 +916,7 @@ public class MonsterAi : UnitCommonAi
         //    .Select(x => x.obj)
         //    .ToList();
         var nearestAttackables = attackableCandidates
-            .OrderByDescending(x => x.aggro * 1.5f - x.dist * 0.5f) // 가중치 조절 가능
+            .OrderByDescending(x => x.aggro * 1.5f - x.dist * 1.5f) // 가중치 조절 가능
             .Take(1)
             .Select(x => x.obj)
             .FirstOrDefault();
@@ -924,7 +924,7 @@ public class MonsterAi : UnitCommonAi
         GameObject targetFind = null;
 
         float margin = 4.0f; // fallback 선택 기준 거리 마진
-        float targetToDis = 5; // 실제 위치와 경로상의 차이
+        float targetToDis = 2.5f; // 실제 위치와 경로상의 차이
         float bestFallbackDist = float.MaxValue;
         float secondFallbackDist = float.MaxValue;
         GameObject fallbackTarget = null;
@@ -985,63 +985,6 @@ public class MonsterAi : UnitCommonAi
             seeker.StartPath(pathReq);
             yield return new WaitUntil(() => finished); // 경로 계산이 끝날 때까지 대기
         }
-
-        //foreach (var target in nearestAttackables)
-        //{
-        //    if (targetFound) break;
-        //    if (!target) continue;
-
-        //    bool finished = false;
-        //    bool canAttack = false;
-
-        //    // A* 경로 요청 생성
-        //    pathReq = ABPath.Construct(tr.position, target.transform.position, p =>
-        //    {
-        //        finished = true;
-
-        //        // 경로 계산 실패하거나 유효하지 않으면 무시
-        //        if (!target || p.error || p.vectorPath.Count == 0) return;
-
-        //        Vector3 last = p.vectorPath[^1]; // 마지막 지점
-        //        float lastMoveDist = Vector3.Distance(last, target.transform.position);
-
-        //        // 공격 사거리 안에 도달 가능한 경우
-        //        if (lastMoveDist <= unitCommonData.AttackDist)
-        //        {
-        //            targetFind = target;         // 실제로 도달 가능한 공격 타겟
-        //            cantFindAttack = true;
-        //            canAttack = true;
-        //            targetFound = true;
-        //            return;
-        //        }
-
-        //        // fallback 후보 저장 (가장 가까운 타겟을 보조적으로 선택)
-        //        float dist = Vector3.Distance(transform.position, target.transform.position);
-
-        //        if (isFirst)
-        //        {
-        //            bestFallbackDist = dist;
-        //            fallbackTarget = target;
-        //            fallbackTargetCanAttack = canAttack;
-        //            isFirst = false;
-        //        }
-        //        else if (dist < bestFallbackDist)
-        //        {
-        //            secondFallbackDist = bestFallbackDist;
-        //            bestFallbackDist = dist;
-        //            fallbackTarget = target;
-        //            fallbackTargetCanAttack = canAttack;
-        //        }
-        //        else if (dist < secondFallbackDist)
-        //        {
-        //            secondFallbackDist = dist;
-        //        }
-        //    });
-
-        //    // A* 경로 요청 시작
-        //    seeker.StartPath(pathReq);
-        //    yield return new WaitUntil(() => finished); // 경로 계산이 끝날 때까지 대기
-        //}
 
         bool hasResult = false;
 

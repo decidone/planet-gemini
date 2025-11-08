@@ -615,6 +615,8 @@ public class UnitAi : UnitCommonAi
             StartCoroutine(TakeDamageEffect());
         }
 
+        aggroAmount.TakeDamageAggroAmountSub(damage);
+
         hp -= reducedDamage;
         if (hp < 0f)
             hp = 0f;

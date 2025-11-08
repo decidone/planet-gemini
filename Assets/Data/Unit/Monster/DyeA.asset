@@ -21,8 +21,9 @@ MonoBehaviour:
   attackDist: 4
   attDelayTime: 1.8
   upgradeAttDelayTime: 0
-  colliderRadius: 20
-  minCollRad: 10
+  colliderRadius: 15
+  minCollRad: 5
   defense: 6
   upgradeDefense: 0
+  sellPrice: 0
   patrolRad: 4

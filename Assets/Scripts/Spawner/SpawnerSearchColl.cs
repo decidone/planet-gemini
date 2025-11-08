@@ -31,39 +31,41 @@ public class SpawnerSearchColl : NetworkBehaviour
         coll.enabled = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (IsServer && collision.TryGetComponent(out Structure structure))
-        {
-            if (!structures.Contains(structure))
-            {
-                structures.Add(structure);
-                monsterSpawner.energyUseStrs.Add(structure, structure.energyConsumption);
-            }
+    //일정 주기마다 검색범위를 넖히며 블러드문일때 웨이브 활성화 및 감소 스크립트를 추가해야함
 
-            if (structures.Count > 0)
-            {
-                monsterSpawner.nearEnergyObjExist = true;
-            }
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (IsServer && collision.TryGetComponent(out Structure structure))
+    //    {
+    //        if (!structures.Contains(structure))
+    //        {
+    //            structures.Add(structure);
+    //            monsterSpawner.energyUseStrs.Add(structure, structure.energyConsumption);
+    //        }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (IsServer && collision.TryGetComponent(out Structure structure))
-        {
-            if (structures.Contains(structure))
-            {
-                structures.Remove(structure);
-                monsterSpawner.energyUseStrs.Remove(structure);
-            }
+    //        if (structures.Count > 0)
+    //        {
+    //            monsterSpawner.nearEnergyObjExist = true;
+    //        }
+    //    }
+    //}
 
-            if (structures.Count == 0)
-            {
-                monsterSpawner.nearEnergyObjExist = false;
-            }
-        }
-    }
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (IsServer && collision.TryGetComponent(out Structure structure))
+    //    {
+    //        if (structures.Contains(structure))
+    //        {
+    //            structures.Remove(structure);
+    //            monsterSpawner.energyUseStrs.Remove(structure);
+    //        }
+
+    //        if (structures.Count == 0)
+    //        {
+    //            monsterSpawner.nearEnergyObjExist = false;
+    //        }
+    //    }
+    //}
 
     public void SearchCollExtend()
     {
@@ -94,5 +96,15 @@ public class SpawnerSearchColl : NetworkBehaviour
     public void SearchCollReturn()
     {
         coll.radius = collSize[level];
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (coll == null) return;
+
+        Gizmos.color = Color.red;
+
+        Vector2 position = coll.transform.TransformPoint(coll.offset);
+        Gizmos.DrawWireSphere(position, violentCollSize);
     }
 }

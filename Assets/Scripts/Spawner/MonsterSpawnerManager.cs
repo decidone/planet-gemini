@@ -168,60 +168,63 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     public bool ViolentDayOn(bool hostMap, bool forcedOperation)
     {
-        float maxAggroAmount = 0;
-        MonsterSpawner aggroSpawner = null;
+        //float maxAggroAmount = 0;
+        //MonsterSpawner aggroSpawner = null;
 
-        foreach (var data in monsterSpawners)
-        {
-            foreach (MonsterSpawner spawner in data.Value)
-            {
-                if (spawner.isInHostMap == hostMap)
-                {
-                    if (spawner.safeCount == 0)
-                    {
-                        if (!forcedOperation)
-                            spawner.SearchCollExtend();
-                        else
-                            spawner.SearchCollFullExtend();
+        //foreach (var data in monsterSpawners)
+        //{
+        //    foreach (MonsterSpawner spawner in data.Value)
+        //    {
+        //        if (spawner.isInHostMap == hostMap)
+        //        {
+        //            if (spawner.safeCount == 0)
+        //            {
+        //                if (!forcedOperation)
+        //                    spawner.SearchCollExtend();
+        //                else
+        //                    spawner.SearchCollFullExtend();
 
-                        Collider2D[] colliders = Physics2D.OverlapCircleAll(spawner.transform.position, spawner.spawnerSearchColl.violentCollSize);
-                        float aggroValue = 0;
+        //                Collider2D[] colliders = Physics2D.OverlapCircleAll(spawner.transform.position, spawner.spawnerSearchColl.violentCollSize);
+        //                float aggroValue = 0;
 
-                        foreach (Collider2D collider in colliders)
-                        {
-                            if (collider.CompareTag("Factory") && collider.TryGetComponent(out Structure str))
-                            {
-                                if (str.isOperate)
-                                {
-                                    aggroValue += str.energyConsumption;
-                                }
-                            }
-                        }
+        //                foreach (Collider2D collider in colliders)
+        //                {
+        //                    if (collider.CompareTag("Factory") && collider.TryGetComponent(out Structure str))
+        //                    {
+        //                        if (str.isOperate)
+        //                        {
+        //                            aggroValue += str.energyConsumption;
+        //                        }
+        //                    }
+        //                }
 
-                        if (aggroValue > maxAggroAmount)
-                        {
-                            aggroSpawner = spawner;
-                            maxAggroAmount = aggroValue;
-                        }
-                        spawner.SearchCollReturn();
-                    } 
-                    spawner.SafeCountDown();
-                }
-            }
-        }
+        //                if (aggroValue > maxAggroAmount)
+        //                {
+        //                    aggroSpawner = spawner;
+        //                    maxAggroAmount = aggroValue;
+        //                }
+        //                spawner.SearchCollReturn();
+        //            } 
+        //            spawner.SafeCountDown();
+        //        }
+        //    }
+        //}
 
-        if (aggroSpawner)
-        {
-            waveState = true;
-            hostMapWave = hostMap;
-            aggroSpawner.ViolentDaySet();
-            wavePos = aggroSpawner.transform.position;
-            WavePointOnServerRpc(wavePos, hostMap);
-            Debug.Log("Aggro Spawner transform is :" + wavePos + ", maxAggroAmount : " + maxAggroAmount);
-            return true;
-        }
-        else
-            return false;
+        //if (aggroSpawner)
+        //{
+        //    waveState = true;
+        //    hostMapWave = hostMap;
+        //    aggroSpawner.ViolentDaySet();
+        //    wavePos = aggroSpawner.transform.position;
+        //    WavePointOnServerRpc(wavePos, hostMap);
+        //    Debug.Log("Aggro Spawner transform is :" + wavePos + ", maxAggroAmount : " + maxAggroAmount);
+        //    return true;
+        //}
+        //else
+        //    return false;
+
+        //구조 변경해야됨
+        return false;
     }
 
     [ServerRpc]
@@ -237,33 +240,35 @@ public class MonsterSpawnerManager : NetworkBehaviour
         WarningWindow.instance.WarningTextSet("Warning! Wave incoming at 8:00", hostMap);
     }
 
+    //아래 ViolentDayOff ViolentDayStart 구조 변경해야됨
+
     public void ViolentDayOff()
     {
-        foreach (var data in monsterSpawners)
-        {
-            foreach (MonsterSpawner spawner in data.Value)
-            {
-                spawner.SearchCollReturn();
-            }
-        }
+        //foreach (var data in monsterSpawners)
+        //{
+        //    foreach (MonsterSpawner spawner in data.Value)
+        //    {
+        //        spawner.SearchCollReturn();
+        //    }
+        //}
     }
 
     public void ViolentDayStart()
     {
-        foreach (var data in monsterSpawners)
-        {
-            foreach (MonsterSpawner spawner in data.Value)
-            {
-                if (spawner.violentDay)
-                {
-                    spawner.WaveStart();
-                    spawner.SpawnerLevelUp();
-                    spawner.SearchCollReturn();
-                    WaveStartWarrningServerRpc();
-                    return;
-                }
-            }
-        }
+        //foreach (var data in monsterSpawners)
+        //{
+        //    foreach (MonsterSpawner spawner in data.Value)
+        //    {
+        //        if (spawner.violentDay)
+        //        {
+        //            spawner.WaveStart();
+        //            spawner.SpawnerLevelUp();
+        //            spawner.SearchCollReturn();
+        //            WaveStartWarrningServerRpc();
+        //            return;
+        //        }
+        //    }
+        //}
     }
 
     [ServerRpc]
