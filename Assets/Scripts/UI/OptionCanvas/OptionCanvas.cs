@@ -10,13 +10,15 @@ using UnityEngine.Events;
 public class OptionCanvas : MonoBehaviour
 {
     [SerializeField]
-    Button EscapeBtn;
+    Button copyLobbyIdBtn;
     [SerializeField]
-    Button SettingsBtn;
+    Button escapeBtn;
     [SerializeField]
-    Button SaveBtn;
+    Button settingsBtn;
     [SerializeField]
-    Button LoadBtn;
+    Button saveBtn;
+    [SerializeField]
+    Button loadBtn;
     [SerializeField]
     Button quitBtn;
 
@@ -39,18 +41,19 @@ public class OptionCanvas : MonoBehaviour
     }
     #endregion
 
-    // Start is called before the first frame update
     void Start()
     {
         DontDestroyOnLoad(gameObject);
 
-        EscapeBtn.onClick.AddListener(() => EscapeBtnFunc());
-        SettingsBtn.onClick.AddListener(() => SettingsBtnFunc());
-        SaveBtn.onClick.AddListener(() => SaveBtnFunc());
-        LoadBtn.onClick.AddListener(() => LoadBtnFunc());
+        copyLobbyIdBtn.onClick.AddListener(() => CopyBtnFunc());
+        escapeBtn.onClick.AddListener(() => EscapeBtnFunc());
+        settingsBtn.onClick.AddListener(() => SettingsBtnFunc());
+        saveBtn.onClick.AddListener(() => SaveBtnFunc());
+        loadBtn.onClick.AddListener(() => LoadBtnFunc());
         quitBtn.onClick.AddListener(() => QuitBtnFunc());
+
         soundManager = SoundManager.instance;
-        Button[] btnArr = new Button[] { EscapeBtn, SettingsBtn, SaveBtn, LoadBtn, quitBtn };
+        Button[] btnArr = new Button[] { copyLobbyIdBtn, escapeBtn, settingsBtn, saveBtn, loadBtn, quitBtn };
 
         foreach (Button btn in btnArr)
         {
@@ -60,6 +63,14 @@ public class OptionCanvas : MonoBehaviour
             ButtonStateWatcher watcher = btn.gameObject.AddComponent<ButtonStateWatcher>();
             watcher.OnButtonDisabled += () => OnExit(btn);
         }
+    }
+
+    void CopyBtnFunc()
+    {
+        TextEditor textEditor = new TextEditor();
+        textEditor.text = LobbySaver.instance.currentLobby?.Id.ToString();
+        textEditor.SelectAll();
+        textEditor.Copy();
     }
 
     public void EscapeBtnFunc()
@@ -155,7 +166,7 @@ public class OptionCanvas : MonoBehaviour
 
     public void SaveBtnOnOff(bool on)
     {
-        SaveBtn.gameObject.SetActive(on);
+        saveBtn.gameObject.SetActive(on);
         RectTransform rect = quitBtn.gameObject.GetComponent<RectTransform>();
         if (on)
         {

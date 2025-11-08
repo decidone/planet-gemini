@@ -121,6 +121,20 @@ public class SteamManager : MonoBehaviour
         }
     }
 
+    public async void JoinLobbyWithID(ulong Id)
+    {
+        Lobby[] lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
+
+        foreach (Lobby lobby in lobbies)
+        {
+            if (lobby.Id == Id)
+            {
+                await lobby.Join();
+                return;
+            }
+        }
+    }
+
     [ServerRpc (RequireOwnership = false)]
     public void TimeStopServerRpc()
     {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Steamworks.Data;
+using UnityEngine.UI;
 
 public class LobbiesListManager : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class LobbiesListManager : MonoBehaviour
     public GameObject lobbyDataItemPrefab;
     public GameObject lobbyListContent;
     SoundManager soundManager;
+
+    public InputField lobbyIdInputField;
+    public Button joinBtn;
     //public GameObject lobbiesButton, hostButton;
 
     public List<GameObject> listOfLobbies = new List<GameObject>();
@@ -29,6 +33,11 @@ public class LobbiesListManager : MonoBehaviour
         Debug.Log("lobbies awake");
     }
     #endregion
+
+    private void Start()
+    {
+        joinBtn.onClick.AddListener(() => JoinWithLobbyID());
+    }
 
     public void OpenUI()
     {
@@ -70,5 +79,14 @@ public class LobbiesListManager : MonoBehaviour
             Destroy(lobbyItem);
         }
         listOfLobbies.Clear();
+    }
+
+    public void JoinWithLobbyID()
+    {
+        ulong Id;
+        if (!ulong.TryParse(lobbyIdInputField.text, out Id))
+            return;
+
+        SteamManager.instance.JoinLobbyWithID(Id);
     }
 }
