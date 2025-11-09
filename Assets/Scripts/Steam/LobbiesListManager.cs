@@ -61,12 +61,22 @@ public class LobbiesListManager : MonoBehaviour
         {
             createdItem.transform.SetParent(lobbyListContent.transform);
             createdItem.transform.localScale = Vector3.one;
-
+            
             listOfLobbies.Add(createdItem);
         }
         else
         {
             Destroy(createdItem);
+        }
+    }
+
+    public void SetFriendsLobbiesTop()
+    {
+        var list = GetComponentsInChildren<LobbyDataEntry>();
+        foreach (var item in list)
+        {
+            if (item.isFriendLobby)
+                item.transform.SetAsFirstSibling();
         }
     }
 

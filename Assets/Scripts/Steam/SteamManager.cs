@@ -80,12 +80,29 @@ public class SteamManager : MonoBehaviour
         if (result == Result.OK)
         {
             MainGameSetting setting = MainGameSetting.instance;
-            if (setting.isPublic)
+            if (setting.accessLevel == 0)
+            {
+                // public
                 lobby.SetPublic();
+                lobby.SetData("access", "0");
+                lobby.SetData("owner", string.Empty);
+            }
+            else if (setting.accessLevel == 1)
+            {
+                // friends & code. lobby.SetFriendsOnly()로 설정을 잡으면 아예 로비 리스트 자체를 불러올수 없어서 access data를 따로 체크하는 방식
+                lobby.SetPublic();
+                lobby.SetData("access", "1");
+                lobby.SetData("owner", lobby.Owner.Id.ToString());
+            }
             else
+            {
+                // invite only. 친구목록에서 같이하기 기능이나 초대를 통해서만 입장 가능
                 lobby.SetFriendsOnly();
+                lobby.SetData("access", "2");
+                lobby.SetData("owner", string.Empty);
+            }
             lobby.SetJoinable(true);
-            lobby.SetData("owner", lobby.Owner.Name);
+            lobby.SetData("ownerName", lobby.Owner.Name);
             lobby.SetData("mapSize", setting.mapSizeIndex.ToString());
             lobby.SetData("mapSeed", setting.randomSeed.ToString());
             //NetworkManager.Singleton.StartHost();
@@ -118,20 +135,6 @@ public class SteamManager : MonoBehaviour
             ClientConnectSend();
             StartCoroutine(DataSync());
             //LoadingUICtrl.Instance.LoadScene("GameScene", false);
-        }
-    }
-
-    public async void JoinLobbyWithID(ulong Id)
-    {
-        Lobby[] lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
-
-        foreach (Lobby lobby in lobbies)
-        {
-            if (lobby.Id == Id)
-            {
-                await lobby.Join();
-                return;
-            }
         }
     }
 
@@ -406,7 +409,23 @@ public class SteamManager : MonoBehaviour
             }
         }
         soundManager.PlayUISFX("ButtonClick");
+    }
 
+    public async void JoinLobbyWithID(ulong Id)
+    {
+        Lobby[] lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
+        if (lobbies == null)
+            return;
+
+        foreach (Lobby lobby in lobbies)
+        {
+            if (lobby.Id == Id)
+            {
+                await lobby.Join();
+                return;
+            }
+        }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void LeaveLobby()
@@ -469,10 +488,11 @@ public class SteamManager : MonoBehaviour
         {
             foreach (Lobby lobby in lobbies)
             {
-                Debug.Log(lobby.Id);
                 LobbiesListManager.instance.DisplayLobby(lobby);
             }
         }
+
+        LobbiesListManager.instance.SetFriendsLobbiesTop();
     }
 
     IEnumerator DataSync()

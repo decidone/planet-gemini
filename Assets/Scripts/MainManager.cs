@@ -23,11 +23,13 @@ public class MainManager : MonoBehaviour
     Button quitBtn;
 
     [SerializeField]
-    Button publicGameBtn;
+    Button publicBtn;
+    [SerializeField]
+    Button friendsBtn;
     [SerializeField]
     Button privateBtn;
     [SerializeField]
-    Text publicPrivatetext;
+    Text accessText;
     [SerializeField]
     Button newGameBtn;
     [SerializeField]
@@ -67,19 +69,25 @@ public class MainManager : MonoBehaviour
         quitBtn.onClick.AddListener(() => QuitBtnFunc());
         newGameBtn.onClick.AddListener(() => NewGameBtnFunc());
         loadBtn.onClick.AddListener(() => LoadBtnFunc());
-        privateBtn.onClick.AddListener(() =>
+        publicBtn.onClick.AddListener(() =>
         {
-            MainGameSetting.instance.isPublic = false;
-            publicPrivatetext.text = "Private Game";
-            OpenUI(2);
-        }); 
-        publicGameBtn.onClick.AddListener(() =>
-        {
-            MainGameSetting.instance.isPublic = true;
-            publicPrivatetext.text = "Public Game";
+            MainGameSetting.instance.accessLevel = 0;
+            accessText.text = "Public";
             OpenUI(2);
         });
-
+        friendsBtn.onClick.AddListener(() =>
+        {
+            MainGameSetting.instance.accessLevel = 1;
+            accessText.text = "Friends & Code";
+            OpenUI(2);
+        });
+        privateBtn.onClick.AddListener(() =>
+        {
+            MainGameSetting.instance.accessLevel = 2;
+            accessText.text = "Invite Only";
+            OpenUI(2);
+        });
+        
         foreach (Button btn in backBtns)
         {
             btn.onClick.AddListener(BackBtnFunc);

@@ -9,7 +9,7 @@ public class MainGameSetting : MonoBehaviour
     public int difficultylevel;
     public int loadDataIndex;
     public int randomSeed;
-    public bool isPublic;
+    public int accessLevel;     // 0: public, 1: friends only, 2: private
     public bool isBloodMoon;
     System.Diagnostics.Stopwatch timer = new();
 
