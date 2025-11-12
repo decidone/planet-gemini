@@ -517,7 +517,7 @@ public class DataManager : MonoBehaviour
             monsterSpawner.groupManager = spawnerGroup;
             monsterSpawner.GameStartSet(spawnerSaveData, levelData[spawnerSaveData.level - 1], Vector3Extensions.ToVector3(spawnerSaveData.wavePos), planet, spawnerSaveData.spawnerGroupIndex);
             SetSpawner(monsterSpawner, spawnerSaveData, planet);
-            monsterSpawner.violentCollSize = spawnerSaveData.violentCollSize;
+            //monsterSpawner.violentCollSize = spawnerSaveData.violentCollSize;
             if (monsterSpawner.dieCheck)
             {
                 monsterSpawner.DieFuncLoad();

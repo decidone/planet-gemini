@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -94,6 +95,13 @@ public class MonsterSpawner : NetworkBehaviour
     //float restAggroTimer;
     //public Dictionary<Structure, float> energyUseStrs = new Dictionary<Structure, float>();
 
+    [SerializeField]
+    float distanceToPortal; // 포탈까지의 거리
+    float detectionRange;   // 인식 거리
+    int detectionCount;     // 포탈 인식 카운트
+
+    float[] baseDetectRange = new float[8] { 10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f };  // 레벨별 기본 인식 거리
+
     public bool isInHostMap;
     public Tilemap corruptionTilemap;
 
@@ -137,6 +145,15 @@ public class MonsterSpawner : NetworkBehaviour
         }
         //spawnerSearchColl.violentCollSize = violentCollSize;
         SpriteSet();
+
+        if (isInHostMap)
+        {
+            distanceToPortal = Vector3.Distance(transform.position, GameManager.instance.portal[0].transform.position);
+        }
+        else
+        {
+            distanceToPortal = Vector3.Distance(transform.position, GameManager.instance.portal[1].transform.position);
+        }
 
         if (IsServer && MainGameSetting.instance.isNewGame)
         {
@@ -747,7 +764,8 @@ public class MonsterSpawner : NetworkBehaviour
         ragePhase = spawnerSaveData.ragePhase;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
-        //safeCount = spawnerSaveData.safeCount;
+        detectionRange = spawnerSaveData.detectionRange;
+        detectionCount = spawnerSaveData.detectionCount;
         violentDay = spawnerSaveData.violentDay;
         spawnerLevelData = levelData;
         spawnerLevel = levelData.sppawnerLevel;
@@ -898,36 +916,36 @@ public class MonsterSpawner : NetworkBehaviour
     //    WarningWindowSetServerRpc();
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    void WarningWindowSetServerRpc()
-    {
-        WarningWindowSetClientRpc();
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //void WarningWindowSetServerRpc()
+    //{
+    //    WarningWindowSetClientRpc();
+    //}
 
-    [ClientRpc]
-    void WarningWindowSetClientRpc()
-    {
-        WarningWindow.instance.WarningTextSet("Attack detected on", isInHostMap);
-    }
+    //[ClientRpc]
+    //void WarningWindowSetClientRpc()
+    //{
+    //    WarningWindow.instance.WarningTextSet("Attack detected on", isInHostMap);
+    //}
 
-    private float GetSpawnPercentage(int tier)
-    {
-        switch (tier)
-        {
-            case 0:
-                return 1.0f;
-            case 1:
-                return 0.80f;
-            case 2:
-                return 0.60f;
-            case 3:
-                return 0.40f;
-            case 4:
-                return 0.20f;
-            default:
-                return 0f;
-        }
-    }
+    //private float GetSpawnPercentage(int tier)
+    //{
+    //    switch (tier)
+    //    {
+    //        case 0:
+    //            return 1.0f;
+    //        case 1:
+    //            return 0.80f;
+    //        case 2:
+    //            return 0.60f;
+    //        case 3:
+    //            return 0.40f;
+    //        case 4:
+    //            return 0.20f;
+    //        default:
+    //            return 0f;
+    //    }
+    //}
 
     public SpawnerSaveData SaveData()
     {
@@ -940,9 +958,9 @@ public class MonsterSpawner : NetworkBehaviour
         data.spawnNum = spawnNum;
         data.dieCheck = dieCheck;
         data.spawnerGroupIndex = spawnerGroupIndex;
-        //data.safeCount = safeCount;
         data.violentDay = violentDay;
-        //data.violentCollSize = spawnerSearchColl.violentCollSize;
+        data.detectionRange = detectionRange;
+        data.detectionCount = detectionCount;
         data.nearUserObjExist = nearUserObjExist;
         data.nearEnergyObjExist = nearEnergyObjExist;
         data.ragePhase = ragePhase;

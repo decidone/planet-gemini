@@ -36,16 +36,19 @@ public class EnergyGroup
     public float efficiency;   //에너지 생산량, 사용량 비율로 충분하면 1, 아니면 비율만큼 생산 효율 감소
     float syncFrequency;
 
-    public EnergyGroup(EnergyGroupManager _groupManager, EnergyGroupConnector conn)
+    public bool isHostMapEnergyGroup;
+
+    public EnergyGroup(EnergyGroupManager _groupManager, EnergyGroupConnector conn, bool isHostMap)
     {
         Init();
         groupManager = _groupManager;
         connectors.Add(conn);
         conn.ChangeGroup(this);
         groupManager.AddGroup(this);
+        isHostMapEnergyGroup = isHostMap;
     }
 
-    public EnergyGroup(EnergyGroupManager _groupManager, List<EnergyGroupConnector> conns)
+    public EnergyGroup(EnergyGroupManager _groupManager, List<EnergyGroupConnector> conns, bool isHostMap)
     {
         Init();
         groupManager = _groupManager;
@@ -56,7 +59,8 @@ public class EnergyGroup
         }
 
         groupManager.AddGroup(this);
-    }
+        isHostMapEnergyGroup = isHostMap;
+  }
 
     public void Init()
     {
@@ -162,7 +166,8 @@ public class EnergyGroup
                 connectors.Remove(splitConnectors[i]);
             }
 
-            EnergyGroup splitGroup = new EnergyGroup(groupManager, splitConnectors);
+            EnergyGroup splitGroup = new EnergyGroup(groupManager, splitConnectors, isHostMapEnergyGroup);
+            splitGroup.isHostMapEnergyGroup = isHostMapEnergyGroup;
             splitGroup.ConnectionCheck(code);
             splitConnectors.Clear();
         }
