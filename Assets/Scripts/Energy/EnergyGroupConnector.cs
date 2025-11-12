@@ -162,7 +162,7 @@ public class EnergyGroupConnector : MonoBehaviour
 
         if (connectors.Count == 0)
         {
-            group = new EnergyGroup(groupManager, this);
+            group = new EnergyGroup(groupManager, this, structure.isInHostMap);
         }
         else
         {
@@ -173,7 +173,7 @@ public class EnergyGroupConnector : MonoBehaviour
             }
 
             if (group == null)
-                group = new EnergyGroup(groupManager, this);
+                group = new EnergyGroup(groupManager, this, structure.isInHostMap);
             else
                 group.AddConnector(this, connectors);
         }

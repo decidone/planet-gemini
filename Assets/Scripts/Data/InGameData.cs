@@ -19,7 +19,6 @@ public class InGameData
     public int dayIndex;            // 24시간을 6등분해서 인덱스로 사용
 
     public bool wavePlanet;         // 광폭화 행성
-    public float violentValue;      // 광폭화 스택
     public bool violentDayCheck;    // 광폭화 체크
     public bool violentDay;         // 광폭화 날
 
@@ -29,4 +28,7 @@ public class InGameData
 
     public string hostPortalName;   // 맵ui 상 포탈 이름
     public string clientPortalName;
+
+    public float hostMapEnergyUseAmount;    // 호스트맵 에너지 사용량
+    public float clientMapEnergyUseAmount;  // 클라이언트맵 에너지 사용량
 }

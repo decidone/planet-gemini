@@ -72,20 +72,43 @@ public class EnergyGroupManager : MonoBehaviour
         {
             EnergyGroup group = energyGroups[i];
             Debug.Log(i + " group energy: " + group.energy + ", consumption: " + group.consumption
-                + ", efficiency: " + group.efficiency);
+                + ", efficiency: " + group.efficiency + ", isInHostMap: " + group.isHostMapEnergyGroup);
         }
+        
+        var MapEnergyData = MapEnergyCheck();
+        Debug.Log("Host Map Energy consumption : " + MapEnergyData.Item1 + ", Client Map Energy consumption : " + MapEnergyData.Item2);
+
     }
 
     public IEnumerator CalculateGroupsEnergy()
     {
         while (true)
         {
-            for (int i =0; i < energyGroups.Count; i++)
+            for (int i = 0; i < energyGroups.Count; i++)
             {
                 energyGroups[i].EnergyCheck();
             }
 
             yield return new WaitForSeconds(syncFrequency);
         }
+    }
+
+    public (float, float) MapEnergyCheck()
+    {
+        float hostMapTotalConsumption = 0;
+        float clientMapTotalConsumption = 0;
+        for (int i = 0; i < energyGroups.Count; i++)
+        {
+            EnergyGroup group = energyGroups[i];
+            if (group.isHostMapEnergyGroup)
+            {
+                hostMapTotalConsumption += (group.consumption / 6);
+            }
+            else
+            {
+                clientMapTotalConsumption += (group.consumption / 6);
+            }
+        }
+        return (hostMapTotalConsumption, clientMapTotalConsumption);
     }
 }

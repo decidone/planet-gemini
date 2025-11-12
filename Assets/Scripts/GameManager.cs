@@ -8,7 +8,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting.Antlr3.Runtime;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -108,11 +107,11 @@ public class GameManager : NetworkBehaviour
     ScienceBuildingInfo scienceBuildingInfo;
     ScienceManager scienceManager;
 
-    public int day;                     // 일 수
-    public bool isDay;                  // 밤 낮
-    public float dayTime;     // 인게임 4시간을 현실 시간으로
-    public float dayTimer;              // 게임 내 시간(타이머)
-    public int dayIndex = 0;            // 24시간을 6등분해서 인덱스로 사용
+    public int day;         // 일 수
+    public bool isDay;      // 밤 낮
+    public float dayTime;   // 인게임 4시간을 현실 시간으로
+    public float dayTimer;  // 게임 내 시간(타이머)
+    public int dayIndex = 0;// 24시간을 6등분해서 인덱스로 사용
     // 0 : 08:00 ~ 12:00
     // 1 : 12:00 ~ 16:00
     // 2 : 16:00 ~ 20:00
@@ -123,14 +122,9 @@ public class GameManager : NetworkBehaviour
     bool clickToNextTime;
 
     public bool bloodMoon;
-    [SerializeField]
-    int safeDay;                        // 게임 초기 안전한 날
-    int[] randomStackValue = new int[2] { 20, 80 }; // 스택 랜덤 범위
-    [SerializeField]
-    float violentValue;                 // 광폭화의날 스택
 
     [SerializeField]
-    bool violentDayCheck;                    // true면 광폭화의 날
+    bool violentDayCheck;   // true면 광폭화의 날
     public bool violentDay;
     [SerializeField]
     bool forcedOperation;
@@ -194,6 +188,11 @@ public class GameManager : NetworkBehaviour
 
     public int playerUnitLimit = 25;
     public int playerUnitAmount;
+
+    [SerializeField]
+    float waveEnergyOverLimit;  // 이 에너지 한도를 초과시 웨이브 발생
+    public float hostMapEnergyUseAmount;
+    public float clientMapEnergyUseAmount;
 
     #region Singleton
     public static GameManager instance;
@@ -368,6 +367,11 @@ public class GameManager : NetworkBehaviour
             timeImg.sprite = timeImgSet[dayIndex];
             //SetBrightness(dayIndex);
 
+            // 에너지 사용량 체크
+            var energyCheck = EnergyGroupManager.instance.MapEnergyCheck();
+            hostMapEnergyUseAmount += energyCheck.Item1;
+            clientMapEnergyUseAmount += energyCheck.Item2;
+
             if (dayIndex == 0)
             {
                 isDay = true;
@@ -381,6 +385,10 @@ public class GameManager : NetworkBehaviour
                         MonsterSpawnerManager.instance.ViolentDayStart();
                     }
                 }
+
+                // 하루 에너지 사용량 초기화
+                hostMapEnergyUseAmount = 0;
+                clientMapEnergyUseAmount = 0;
             }
             else if (dayIndex == 3)
             {
@@ -430,42 +438,42 @@ public class GameManager : NetworkBehaviour
         bool violentDaySync = false;
         bool violentDayOnCheck = false;
 
-        if (!violentDayCheck && day >= safeDay)
+        if (!violentDayCheck && day % violentCycle == 0)
         {
-            if (day % violentCycle == 0)    // 호스트맵
+            float energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
+            if (energyUseFullAmount > waveEnergyOverLimit)
             {
-                wavePlanet = true;
+                float hostPercent = hostMapEnergyUseAmount / energyUseFullAmount;
+                float clientPercent = clientMapEnergyUseAmount / energyUseFullAmount;
+
+                // 랜덤 값
+                float rand = UnityEngine.Random.value; // 0~1
+
+                // 비율에 따라 선택
+                if (rand <= hostPercent)
+                    wavePlanet = true;
+                else
+                    wavePlanet = false;
+
                 violentDaySync = true;
-                violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(true, forcedOperation);
-            }
-            else if ((day - clientMapDateDifference) % violentCycle == 0)    // 클라이언트 맵
-            {
-                wavePlanet = false;
-                violentDaySync = true;
-                violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(false, forcedOperation);
+                violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
             }
         }
+        
+        int dday = CalculateDday(day, violentCycle);
 
-        int hostDday = CalculateDday(day, safeDay, violentCycle);
-        int clientDday = CalculateDday(day - clientMapDateDifference, safeDay, violentCycle);
-
-        ViolentDayOnClientRpc(violentDaySync, violentDayOnCheck, hostDday, clientDday);
+        ViolentDayOnClientRpc(violentDaySync, violentDayOnCheck, dday);
     }
 
     [ClientRpc]
-    void ViolentDayOnClientRpc(bool violentDaySync, bool violentDayOnCheck, int hostDday, int clientDday)
+    void ViolentDayOnClientRpc(bool violentDaySync, bool violentDayOnCheck, int dday)
     {
         violentDayCheck = violentDaySync;
-
-        dDayHostMap.text = "D - " + ((violentDayOnCheck && hostDday == violentCycle) ? "Day" : hostDday);
-        dDayClientMap.text = "D - " + ((violentDayOnCheck && clientDday == violentCycle) ? "Day" : clientDday);
+        dDayHostMap.text = "D - " + ((violentDayOnCheck && dday == violentCycle) ? "Day" : dday);
     }
 
-    int CalculateDday(int currentDay, int safeDay, int cycle)
+    int CalculateDday(int currentDay, int cycle)
     {
-        if (currentDay < safeDay)
-            return safeDay - currentDay; // 안전 기간 동안은 첫 번째 바이올런트 데이까지 남은 일수 계산
-
         int nextViolentDay = ((currentDay / cycle) + 1) * cycle;
         return nextViolentDay - currentDay;
     }
@@ -1446,12 +1454,14 @@ public class GameManager : NetworkBehaviour
         inGameData.dayIndex = dayIndex;
         inGameData.wavePlanet = wavePlanet;
         inGameData.violentDay = violentDay;
-        inGameData.violentValue = violentValue;
         inGameData.violentDayCheck = violentDayCheck;
 
         inGameData.finance = finance.GetFinance();
         inGameData.scrap = scrap.GetScrap();
         inGameData.questIndex = QuestManager.instance.currentQuest;
+
+        inGameData.hostMapEnergyUseAmount = hostMapEnergyUseAmount;
+        inGameData.clientMapEnergyUseAmount = clientMapEnergyUseAmount;
 
         return inGameData;
     }
@@ -1463,7 +1473,6 @@ public class GameManager : NetworkBehaviour
         dayTimer = data.dayTimer;
         dayIndex = data.dayIndex;
         SoundManager.instance.GameSceneLoad();
-        violentValue = data.violentValue;
         violentDayCheck = data.violentDayCheck;
         violentDay = data.violentDay;
         wavePlanet = data.wavePlanet;
@@ -1490,19 +1499,18 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SyncTimeServerRpc()
     {
-        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentValue, violentDayCheck, violentDay);
+        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDayCheck, violentDay);
         ViolentDaySyncTimeServerRpc();
     }
 
     [ClientRpc]
     public void SyncTimeClientRpc(int serverDay, bool serverIsDay, float serverDayTimer,
-        int serverDayIndex, float serverViolentValue, bool serverViolentDayCheck, bool serverViolentDay)
+        int serverDayIndex, bool serverViolentDayCheck, bool serverViolentDay)
     {
         day = serverDay;
         isDay = serverIsDay;
         dayTimer = serverDayTimer;
         dayIndex = serverDayIndex;
-        violentValue = serverViolentValue;
         violentDayCheck = serverViolentDayCheck;
         violentDay = serverViolentDay;
 
