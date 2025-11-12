@@ -96,7 +96,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
         if (!monsterSpawners.ContainsKey(key))
             monsterSpawners.Add(key, new List<MonsterSpawner>());
-        
+
         monsterSpawners[key].Add(spawner);
     }
 
@@ -143,7 +143,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             for (int y = 0; y < splitCount; y++)
             {
-                if(spawnerMap1Matrix[x, y] != null)
+                if (spawnerMap1Matrix[x, y] != null)
                     group1Data[x, y] = spawnerMap1Matrix[x, y].GetComponent<SpawnerGroupManager>().SaveData();
                 if (spawnerMap2Matrix[x, y] != null)
                     group2Data[x, y] = spawnerMap2Matrix[x, y].GetComponent<SpawnerGroupManager>().SaveData();
@@ -165,6 +165,29 @@ public class MonsterSpawnerManager : NetworkBehaviour
         for (int i = 0; i < spawners.Length; i++)
             spawners[i].SetCorruption();
     }
+
+    public void SpawnersDetectionRangeExpansion()
+    {
+        foreach (var data in monsterSpawners)
+        {
+            foreach (MonsterSpawner spawner in data.Value)
+            {
+                spawner.DetectionRangeExpansion();
+            }
+        }
+    }
+
+    public void SpawnersDetectionRangeReduction()
+    {
+        foreach (var data in monsterSpawners)
+        {
+            foreach (MonsterSpawner spawner in data.Value)
+            {
+                spawner.DetectionRangeReduction();
+            }
+        }
+    }
+
 
     public bool ViolentDayOn(bool hostMap, bool forcedOperation)
     {

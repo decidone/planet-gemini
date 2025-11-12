@@ -95,7 +95,6 @@ public class MonsterSpawner : NetworkBehaviour
     //float restAggroTimer;
     //public Dictionary<Structure, float> energyUseStrs = new Dictionary<Structure, float>();
 
-    [SerializeField]
     float distanceToPortal; // 포탈까지의 거리
     float detectionRange;   // 인식 거리
     int detectionCount;     // 포탈 인식 카운트
@@ -166,6 +165,8 @@ public class MonsterSpawner : NetworkBehaviour
                 }
             }
         }
+
+        Debug.Log("spawnerLevel : " + spawnerLevel + ", GetRoundsToReachTarget : " + GetRoundsToReachTarget(baseDetectRange[spawnerLevel - 1], 1.3f, distanceToPortal));
     }
 
     void Update()
@@ -1088,5 +1089,30 @@ public class MonsterSpawner : NetworkBehaviour
     public void SetTilemap(Tilemap tilemap)
     {
         corruptionTilemap = tilemap;
+    }
+
+    public void DetectionRangeExpansion()
+    {
+        detectionRange = (detectionRange + baseDetectRange[spawnerLevel - 1]) * (1.3f);
+    }
+
+    public void DetectionRangeReduction()
+    {
+        detectionRange *= (0.4f);
+    }
+
+    // 하단은 테스트용
+    int GetRoundsToReachTarget(float baseRange, float multiplier, float target) // 기본거리, 배율, 목표거리 
+    {
+        float range = 0f;
+        int rounds = 0;
+
+        while (range < target)
+        {
+            range = (range + baseRange) * multiplier;
+            rounds++;
+        }
+
+        return rounds;
     }
 }
