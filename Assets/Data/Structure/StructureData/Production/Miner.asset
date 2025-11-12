@@ -22,12 +22,7 @@ MonoBehaviour:
   - 1
   - 1
   - 1
-  sendFluidAmount: 0
   sendDelay:
-  - 0.2
-  - 0.2
-  - 0.2
-  upgradeSendDelay:
   - 0.2
   - 0.2
   - 0.2
@@ -40,8 +35,8 @@ MonoBehaviour:
   energyUse: 000101
   consumption:
   - 0
-  - 3
-  - 30
+  - 40
+  - 100
   removeGauge: 10
   defense:
   - 5

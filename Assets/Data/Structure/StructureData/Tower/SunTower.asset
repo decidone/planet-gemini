@@ -22,8 +22,6 @@ MonoBehaviour:
   - 0
   sendDelay:
   - 0
-  upgradeSendDelay:
-  - 0
   maxBuildingGauge: 10
   maxRepairGauge: 10
   colliderRadius: 20
@@ -32,7 +30,7 @@ MonoBehaviour:
   production: 0
   energyUse: 01
   consumption:
-  - 10
+  - 60
   removeGauge: 10
   defense:
   - 18

@@ -33,7 +33,7 @@ MonoBehaviour:
   energyUse: 0001
   consumption:
   - 0
-  - 5
+  - 40
   removeGauge: 10
   defense:
   - 5
