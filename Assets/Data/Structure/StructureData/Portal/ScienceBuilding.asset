@@ -14,16 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: ScienceBuilding
   maxLevel: 1
-  maxHp: 2c010000
+  maxHp: f4010000
   upgradeMaxHp: 2c010000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed:
   - 0
-  sendFluidAmount: 0
   sendDelay:
-  - 0
-  upgradeSendDelay:
   - 0
   maxBuildingGauge: 10
   maxRepairGauge: 10

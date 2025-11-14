@@ -254,10 +254,22 @@ public class Miner : Production
 
     void SetResource(Item item, int _level, float _efficiency, int _minerCellCount)
     {
-        if(level + 1 >= _level)
+        int mineLevel = level + 1;
+        if (mineLevel >= _level)
         {
             output = item;
-            cooldown = _efficiency;
+            if (mineLevel == 1)
+            {
+                cooldown = _efficiency * 1.5f;
+            }
+            else if (mineLevel == 2)
+            {
+                cooldown = _efficiency;
+            }
+            else
+            {
+                cooldown = _efficiency * 0.8f;
+            }
             effiCooldown = cooldown;
             minerCellCount = _minerCellCount;
             FactoryOverlay();

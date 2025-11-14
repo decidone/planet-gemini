@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: IronBar
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: ecd9313862db7804bb9aa1540be89326, type: 2}
-  buyPrice: 6
+  buyPrice: 4
   sellPrice: 10

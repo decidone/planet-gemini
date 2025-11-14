@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: IronPlate
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4959f8c3d8a00ee4896ea3a05c9eb5d5, type: 2}
-  buyPrice: 10
+  buyPrice: 6
   sellPrice: 10

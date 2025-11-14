@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: Miner
   maxLevel: 3
-  maxHp: 320000003c00000046000000
+  maxHp: 320000005000000064000000
   upgradeMaxHp: 640000006e00000078000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0

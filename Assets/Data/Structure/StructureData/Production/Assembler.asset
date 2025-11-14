@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: Assembler
   maxLevel: 1
-  maxHp: 32000000
+  maxHp: 50000000
   upgradeMaxHp: 64000000
   maxItemStorageLimit: 99
   maxFulidStorageLimit: 0

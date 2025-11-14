@@ -14,16 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: Pipe
   maxLevel: 1
-  maxHp: 32000000
+  maxHp: 28000000
   upgradeMaxHp: 64000000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 50
   sendSpeed:
   - 0
-  sendFluidAmount: 1
   sendDelay:
-  - 0.2
-  upgradeSendDelay:
   - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10

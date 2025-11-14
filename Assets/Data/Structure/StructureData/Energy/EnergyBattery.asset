@@ -14,16 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: EnergyBattery
   maxLevel: 1
-  maxHp: 32000000
+  maxHp: 64000000
   upgradeMaxHp: 32000000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed:
   - 0
-  sendFluidAmount: 0
   sendDelay:
-  - 0.2
-  upgradeSendDelay:
   - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10

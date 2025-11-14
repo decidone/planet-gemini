@@ -29,7 +29,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 764e661e13b0d534494b1f6e66e2581d, type: 2}
   - {fileID: 11400000, guid: 937ab6c48a0d15e4b84b63c0ed1815a1, type: 2}
   item: {fileID: 11400000, guid: a82001d4b6033f84b87d0abc90b63001, type: 2}
-  efficiency: 8
+  efficiency: 10
   level: 3
   biome:
   - snow
