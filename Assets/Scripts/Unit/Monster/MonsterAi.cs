@@ -1411,6 +1411,7 @@ public class MonsterAi : UnitCommonAi
 
     public void WaveEnd()
     {
+        waveState = false;
         waveStateEnd = true;
         checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "NormalTrace"));
     }

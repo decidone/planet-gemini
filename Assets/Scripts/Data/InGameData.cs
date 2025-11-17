@@ -31,4 +31,6 @@ public class InGameData
 
     public float hostMapEnergyUseAmount;    // 호스트맵 에너지 사용량
     public float clientMapEnergyUseAmount;  // 클라이언트맵 에너지 사용량
+
+    public int consecutiveWaveCount; // 연속 웨이브 수
 }

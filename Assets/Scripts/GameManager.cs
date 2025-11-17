@@ -191,8 +191,14 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField]
     float waveEnergyOverLimit;  // 이 에너지 한도를 초과시 웨이브 발생
+
     public float hostMapEnergyUseAmount;
     public float clientMapEnergyUseAmount;
+    
+    MonsterSpawnerManager monsterSpawnerManager;
+    
+    int consecutiveWaveCount;   // 연속으로 발생한 웨이브 수
+    int waveMaxCount = 3;       // 연속 최대 수
 
     #region Singleton
     public static GameManager instance;
@@ -217,7 +223,7 @@ public class GameManager : NetworkBehaviour
         openedUI = new List<GameObject>();
         onUIChangedCallback += UIChanged;
         optionCanvas = OptionCanvas.instance;
-
+        monsterSpawnerManager = MonsterSpawnerManager.instance;
         hostMap = mapGenerator.hostMap;
         clientMap = mapGenerator.clientMap;
         map = hostMap;
@@ -365,30 +371,28 @@ public class GameManager : NetworkBehaviour
             }
 
             timeImg.sprite = timeImgSet[dayIndex];
-            //SetBrightness(dayIndex);
 
-            // 에너지 사용량 체크
-            var energyCheck = EnergyGroupManager.instance.MapEnergyCheck();
-            hostMapEnergyUseAmount += energyCheck.Item1;
-            clientMapEnergyUseAmount += energyCheck.Item2;
+            if (IsServer)   // 에너지 사용량 체크
+            {
+                var energyCheck = EnergyGroupManager.instance.MapEnergyCheck();
+                hostMapEnergyUseAmount += energyCheck.Item1;
+                clientMapEnergyUseAmount += energyCheck.Item2;
+            }
 
             if (dayIndex == 0)
             {
                 isDay = true;
                 SoundManager.instance.PlayBgmMapCheck();
+
                 if (bloodMoon && violentDayCheck)
                 {
                     violentDay = true;
                     timeImg.color = new Color32(255, 50, 50, 255);
                     if (IsServer)
                     {
-                        MonsterSpawnerManager.instance.ViolentDayStart();
+                        monsterSpawnerManager.ViolentDayStart();
                     }
                 }
-
-                // 하루 에너지 사용량 초기화
-                hostMapEnergyUseAmount = 0;
-                clientMapEnergyUseAmount = 0;
             }
             else if (dayIndex == 3)
             {
@@ -400,6 +404,11 @@ public class GameManager : NetworkBehaviour
                 day++;
                 dayText.text = "Day : " + day;
 
+                if (violentDayCheck && IsServer)
+                {
+                    monsterSpawnerManager.SpawnersDetectionRangeReduction();
+                }
+                
                 if (bloodMoon && violentDay)
                 {
                     violentDay = false;
@@ -407,16 +416,19 @@ public class GameManager : NetworkBehaviour
                     forcedOperation = false;
                     if (IsServer)
                     {
-                        MonsterSpawnerManager.instance.WavePointOff();
-                        MonsterSpawnerManager.instance.WaveEndSet();
-                        MonsterSpawnerManager.instance.ViolentDayOff();
+                        monsterSpawnerManager.WavePointOff();
+                        monsterSpawnerManager.WaveEndSet();
                     }
                     timeImg.color = new Color32(255, 255, 255, 255);
                 }
 
                 if (IsServer)
                 {
+                    monsterSpawnerManager.SpawnersDetectionRangeExpansion();
                     SyncTimeServerRpc();
+                    // 하루 에너지 사용량 초기화
+                    hostMapEnergyUseAmount = 0;
+                    clientMapEnergyUseAmount = 0;
                 }
             }
         }
@@ -435,31 +447,41 @@ public class GameManager : NetworkBehaviour
     [ServerRpc]
     void ViolentDaySyncTimeServerRpc()
     {
-        bool violentDaySync = false;
-        bool violentDayOnCheck = false;
-
+        bool violentDaySync = false;    // 이번 블러드문을 체크 했는지
+        bool violentDayOnCheck = false; // 이번에 블러드문이 활성화 되는 날인지 체크
         if (!violentDayCheck && day % violentCycle == 0)
         {
-            float energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
-            if (energyUseFullAmount > waveEnergyOverLimit)
+            if (consecutiveWaveCount < waveMaxCount)
             {
-                float hostPercent = hostMapEnergyUseAmount / energyUseFullAmount;
-                float clientPercent = clientMapEnergyUseAmount / energyUseFullAmount;
+                float energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
+                if (energyUseFullAmount > waveEnergyOverLimit)
+                {
+                    float hostPercent = hostMapEnergyUseAmount / energyUseFullAmount;
+                    float clientPercent = clientMapEnergyUseAmount / energyUseFullAmount;
 
-                // 랜덤 값
-                float rand = UnityEngine.Random.value; // 0~1
+                    // 랜덤 값
+                    float rand = UnityEngine.Random.value; // 0~1
 
-                // 비율에 따라 선택
-                if (rand <= hostPercent)
-                    wavePlanet = true;
-                else
-                    wavePlanet = false;
+                    // 비율에 따라 선택
+                    if (rand <= hostPercent)
+                        wavePlanet = true;
+                    else
+                        wavePlanet = false;
 
-                violentDaySync = true;
-                violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
+                    violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
+                }
             }
+            violentDaySync = true;
+
+            if (violentDayOnCheck)
+            {
+                consecutiveWaveCount++;
+            }
+            else
+                consecutiveWaveCount = 0;
+
         }
-        
+
         int dday = CalculateDday(day, violentCycle);
 
         ViolentDayOnClientRpc(violentDaySync, violentDayOnCheck, dday);
@@ -1462,6 +1484,7 @@ public class GameManager : NetworkBehaviour
 
         inGameData.hostMapEnergyUseAmount = hostMapEnergyUseAmount;
         inGameData.clientMapEnergyUseAmount = clientMapEnergyUseAmount;
+        inGameData.consecutiveWaveCount = consecutiveWaveCount;
 
         return inGameData;
     }
@@ -1494,6 +1517,10 @@ public class GameManager : NetworkBehaviour
 
         portal[0].portalName = data.hostPortalName;
         portal[1].portalName = data.clientPortalName;
+
+        hostMapEnergyUseAmount = data.hostMapEnergyUseAmount;
+        clientMapEnergyUseAmount = data.clientMapEnergyUseAmount;
+        consecutiveWaveCount = data.consecutiveWaveCount;
     }
 
     [ServerRpc(RequireOwnership = false)]

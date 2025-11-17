@@ -102,11 +102,11 @@ public class EnergyGroupManager : MonoBehaviour
             EnergyGroup group = energyGroups[i];
             if (group.isHostMapEnergyGroup)
             {
-                hostMapTotalConsumption += (group.consumption / 6);
+                hostMapTotalConsumption += group.consumption;
             }
             else
             {
-                clientMapTotalConsumption += (group.consumption / 6);
+                clientMapTotalConsumption += group.consumption;
             }
         }
         return (hostMapTotalConsumption, clientMapTotalConsumption);

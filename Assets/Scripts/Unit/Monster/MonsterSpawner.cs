@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -28,8 +27,8 @@ public class MonsterSpawner : NetworkBehaviour
     int maxStrongSpawn;
     int maxGuardianSpawn;
 
-    int totalSpawnNum;  // 가딘언을 제외한 최대 소환 수    
-    public int spawnNum;       // 일반 소환해야 하는 몬스터 수
+    int totalSpawnNum;   // 가딘언을 제외한 최대 소환 수    
+    public int spawnNum; // 일반 소환해야 하는 몬스터 수
 
     // 현재 소환 개수 정보
     public int currentWeakSpawn;
@@ -40,7 +39,7 @@ public class MonsterSpawner : NetworkBehaviour
     public List<GuardianAi> guardianList = new List<GuardianAi>();
     public List<MonsterAi> waveMonsterList = new List<MonsterAi>();
     // 가디언은 초기에 배치하고 그 이후로는 관리 안함
-
+     
     public int spawnerLevel;
     AreaLevelData spawnerLevelData;
     string biome;
@@ -63,54 +62,33 @@ public class MonsterSpawner : NetworkBehaviour
 
     Vector3 wavePos;
 
-    //BattleBGMCtrl battleBGM;
     MonsterSpawnerManager monsterSpawnerManager;
 
-    //[SerializeField]
-    //GameObject searchColl;
     [SerializeField]
     GameObject awakeColl;
-    //public SpawnerSearchColl spawnerSearchColl;
     SpawnerAwake spawnerAwakeColl;
-    //float[] energyAggroMaxValue = new float[8] { 3000, 6000, 8000, 10000, 12000, 12000, 12000, 12000 }; // 어그로 최대 임계치
-    //float[] violentEnergyAggroMaxValue = new float[8] {5000, 8000, 10000, 12000, 14000, 14000, 14000, 14000 }; // 광폭화시 최대 임계치
-    //public float energyAggroValue; // 어그로 현 임계치
-    //float[] energyAggroInterval = new float[8] { 120, 150, 180, 200, 220, 220, 220, 220 }; // 어그로 수치 체크타임
-    //float energyAggroTimer;
-    //float checkAggroInterval = 5;
-    //float checkAggroTimer;
-    //bool restTime;
-    //int attackLevelTier;    // 낮을수록 강한
-    //float[][] restAggroIntervals = new float[][] // 어그로 끌리고 쉬는 타임
-    //{
-    //new float[5] { 210, 240, 270, 300, 330 },   // Level 1
-    //new float[5] { 240, 270, 300, 330, 360 },   // Level 2
-    //new float[5] { 270, 300, 330, 360, 390 },   // Level 3
-    //new float[5] { 300, 330, 360, 390, 420 },   // Level 4
-    //new float[5] { 330, 360, 390, 420, 450 },   // Level 5
-    //new float[5] { 330, 360, 390, 420, 450 },   // Level 6
-    //new float[5] { 330, 360, 390, 420, 450 },   // Level 7
-    //new float[5] { 330, 360, 390, 420, 450 }    // Level 8
-    //};
-    //float restAggroTimer;
-    //public Dictionary<Structure, float> energyUseStrs = new Dictionary<Structure, float>();
-
     float distanceToPortal; // 포탈까지의 거리
-    float detectionRange;   // 인식 거리
-    int detectionCount;     // 포탈 인식 카운트
+
+    float detectionRange;   // 포탈 인식 거리
+    [HideInInspector]
+    public int detectionCount;  // 포탈 인식 카운트
+
+    float distRangeExpansion = 0.2f;    // 인식 거리 확대 0.2이면 20% 확대
+    float distRangeReduction = 0.8f;    // 인식 거리 축소 0.6이면 60% 축소
+    [HideInInspector]
+    public bool isReachedPortal;    //포탈까지 도달했는지
 
     float[] baseDetectRange = new float[8] { 10f, 11f, 12f, 13f, 14f, 15f, 16f, 17f };  // 레벨별 기본 인식 거리
 
     public bool isInHostMap;
     public Tilemap corruptionTilemap;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool violentDay;
     public float violentCollSize;
-    [SerializeField]
-    int safeAmount;
-    //[HideInInspector]
-    //public int safeCount;
+    int levelUpCount = 2;   // 몇 번의 웨이브마다 레벨업 할지
+    int waveCount = 0;      // 지금 까지 발생한 웨이브
+
     int ragePhase = 0;
     int maxRagePhase = 5;
     int[] ragePhaseSpawnCount = new int[5] { 2, 4, 6, 8, 10 };
@@ -165,8 +143,6 @@ public class MonsterSpawner : NetworkBehaviour
                 }
             }
         }
-
-        Debug.Log("spawnerLevel : " + spawnerLevel + ", GetRoundsToReachTarget : " + GetRoundsToReachTarget(baseDetectRange[spawnerLevel - 1], 1.3f, distanceToPortal));
     }
 
     void Update()
@@ -199,45 +175,6 @@ public class MonsterSpawner : NetworkBehaviour
                 spawnTimer = 0;
             }
         }
-
-        //if (!violentDay && nearEnergyObjExist && energyUseStrs.Count > 0)
-        //{
-        //    if (restTime)
-        //    {
-        //        restAggroTimer += Time.deltaTime;
-
-        //        if (restAggroTimer >= restAggroIntervals[spawnerLevel - 1][attackLevelTier])
-        //        {
-        //            restTime = false;
-        //            restAggroTimer = 0;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        energyAggroTimer += Time.deltaTime;
-        //        checkAggroTimer += Time.deltaTime;
-
-        //        if (checkAggroTimer >= checkAggroInterval)
-        //        {
-        //            StructuresEnergyCheck();
-        //            checkAggroTimer = 0;
-        //        }
-
-        //        if (energyAggroTimer >= energyAggroInterval[spawnerLevel - 1])
-        //        {
-        //            energyAggroValue = 0;
-        //            energyAggroTimer = 0;
-        //        }
-        //    }
-        //}
-
-        //if(waveTest)
-        //{
-        //    StartCoroutine(MonsterBaseMapCheck.instance.CheckPath(wavePos, isInHostMap));
-
-        //    Invoke(nameof(WaveStart), 0.5f);
-        //    waveTest = false;
-        //}
     }
 
     protected virtual void OnClientConnectedCallback(ulong clientId)
@@ -359,8 +296,8 @@ public class MonsterSpawner : NetworkBehaviour
 
             yield return null; // 매 프레임 한 마리씩 생성
         }
-        
-        if(attackObj)
+
+        if (attackObj)
             TriggerRage(ragePhase, attackObj);
     }
 
@@ -533,7 +470,7 @@ public class MonsterSpawner : NetworkBehaviour
         {
             ragePhase++;
             bool levelPhase = LevelPhaseCheck(ragePhase);
-            if(levelPhase)
+            if (levelPhase)
                 StartCoroutine(ExtraMonsterSpawnCoroutine(ragePhase, attackObj));
             else
                 TriggerRage(ragePhase, attackObj);
@@ -544,10 +481,10 @@ public class MonsterSpawner : NetworkBehaviour
     {
         bool pashe = false;
 
-        if(ragePhase == 1)
+        if (ragePhase == 1)
         {
             pashe = spawnerLevel > 2;
-        }   
+        }
         else if (ragePhase == 2)
         {
             pashe = spawnerLevel > 6;
@@ -624,7 +561,7 @@ public class MonsterSpawner : NetworkBehaviour
 
         if (!IsServer)
             return;
-        
+
         monsterSpawnerManager.AreaGroupRemove(this, spawnerLevel, isInHostMap);
         Overall.instance.OverallCount(0);
 
@@ -656,21 +593,6 @@ public class MonsterSpawner : NetworkBehaviour
             StartCoroutine(MonsterSpawnStartCoroutine());
         }
     }
-
-    //void MonsterSpawnStart()
-    //{
-    //    int spawnCount = spawnNum;
-    //    if (spawnNum + totalMonsterList.Count > totalSpawnNum)
-    //    {
-    //        spawnCount = totalSpawnNum - totalMonsterList.Count;
-    //    }
-
-    //    for (int i = 0; i < spawnCount; i++)
-    //    {
-    //        MonsterSpawn();
-    //        spawnNum--;
-    //    }
-    //}
 
     public IEnumerator MonsterSpawnStartCoroutine()
     {
@@ -716,6 +638,7 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void WaveStart()
     {
+        waveCount++;
         StartCoroutine(WaveStartCoroutine());
     }
 
@@ -767,6 +690,7 @@ public class MonsterSpawner : NetworkBehaviour
         spawnerGroupIndex = groupIndex;
         detectionRange = spawnerSaveData.detectionRange;
         detectionCount = spawnerSaveData.detectionCount;
+        waveCount = spawnerSaveData.waveCount;
         violentDay = spawnerSaveData.violentDay;
         spawnerLevelData = levelData;
         spawnerLevel = levelData.sppawnerLevel;
@@ -775,6 +699,7 @@ public class MonsterSpawner : NetworkBehaviour
         maxStrongSpawn = levelData.maxStrongSpawn;
         maxGuardianSpawn = levelData.maxGuardianSpawn;
         totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
+
         wavePos = _basePos;
     }
 
@@ -815,139 +740,6 @@ public class MonsterSpawner : NetworkBehaviour
         return newMonster;
     }
 
-    //void StructuresEnergyCheck()
-    //{
-    //    foreach (var data in energyUseStrs)
-    //    {
-    //        if (data.Key.isOperate)
-    //        {
-    //            energyAggroValue += data.Value;
-    //        }
-    //    }
-
-    //    float maxAggroValue = energyAggroMaxValue[spawnerLevel - 1];
-
-    //    if (energyAggroValue > maxAggroValue)
-    //    {
-    //        restTime = true;
-    //        attackLevelTier = (int)(energyAggroTimer / (energyAggroInterval[spawnerLevel - 1] / restAggroIntervals[spawnerLevel - 1].Length));
-    //        energyAggroValue = 0;
-    //        checkAggroTimer = 0;
-    //        energyAggroTimer = 0;
-    //        Debug.Log("lv : " +attackLevelTier);
-    //        EnergyUseStrAttack(attackLevelTier);
-    //    }
-    //}
-
-    //public void EnergyUseStrAttack(int attackLevel)
-    //{
-    //    StartCoroutine(EnergyUseStrAttackCoroutine(attackLevel));
-    //}
-
-    //private IEnumerator EnergyUseStrAttackCoroutine(int attackLevel)
-    //{
-    //    if (spawnNum > 0)
-    //    {
-    //        yield return StartCoroutine(MonsterSpawnStartCoroutine()); // 코루틴이면 이렇게
-    //    }
-
-    //    Debug.Log("EnergyUseStrAttack");
-    //    float attackPercentage = GetSpawnPercentage(attackLevel);
-    //    int monstersToAttackCount = Mathf.CeilToInt(totalMonsterList.Count * attackPercentage);
-    //    List<GameObject> monsters = new List<GameObject>();
-    //    List<Structure> structures = new List<Structure>(energyUseStrs.Keys);
-
-    //    // 총 가중치 합을 계산합니다.
-    //    float totalWeight = 0f;
-    //    foreach (var entry in energyUseStrs)
-    //    {
-    //        totalWeight += entry.Value;
-    //    }
-
-    //    for (int i = 0; i < monstersToAttackCount; i++)
-    //    {
-    //        MonsterAi monsterAi = totalMonsterList[i];
-    //        monsterAi.MonsterScriptSetServerRpc(true);
-    //        // 가중치를 기반으로 랜덤하게 구조물을 선택합니다.
-    //        float randomWeight = Random.Range(0f, totalWeight);
-    //        float cumulativeWeight = 0f;
-    //        Structure selectedStructure = null;
-
-    //        foreach (var entry in energyUseStrs)
-    //        {
-    //            cumulativeWeight += entry.Value;
-
-    //            if (randomWeight <= cumulativeWeight)
-    //            {
-    //                selectedStructure = entry.Key;
-    //                break;
-    //            }
-    //        }
-    //        Debug.Log(selectedStructure);
-    //        // 선택된 구조물로 몬스터를 공격하게 합니다.
-    //        if (selectedStructure != null)
-    //        {
-    //            monsterAi.ColonyAttackStart(selectedStructure.transform.position);
-    //        }
-
-    //        monsters.Add(monsterAi.gameObject);
-    //        waveMonsterList.Add(monsterAi);
-
-    //        // 몬스터 타입에 따라 카운트를 감소시킵니다.
-    //        if (monsterAi.monsterType == 0)
-    //        {
-    //            currentWeakSpawn--;
-    //        }
-    //        else if (monsterAi.monsterType == 1)
-    //        {
-    //            currentNormalSpawn--;
-    //        }
-    //        else if (monsterAi.monsterType == 2)
-    //        {
-    //            currentStrongSpawn--;
-    //        }
-    //    }
-
-    //    foreach (var monster in monsters)
-    //    {
-    //        totalMonsterList.Remove(monster.GetComponent<MonsterAi>());
-    //    }
-
-    //    //battleBGM.ColonyCallAddMonster(monsters, isInHostMap);
-    //    WarningWindowSetServerRpc();
-    //}
-
-    //[ServerRpc(RequireOwnership = false)]
-    //void WarningWindowSetServerRpc()
-    //{
-    //    WarningWindowSetClientRpc();
-    //}
-
-    //[ClientRpc]
-    //void WarningWindowSetClientRpc()
-    //{
-    //    WarningWindow.instance.WarningTextSet("Attack detected on", isInHostMap);
-    //}
-
-    //private float GetSpawnPercentage(int tier)
-    //{
-    //    switch (tier)
-    //    {
-    //        case 0:
-    //            return 1.0f;
-    //        case 1:
-    //            return 0.80f;
-    //        case 2:
-    //            return 0.60f;
-    //        case 3:
-    //            return 0.40f;
-    //        case 4:
-    //            return 0.20f;
-    //        default:
-    //            return 0f;
-    //    }
-    //}
-
     public SpawnerSaveData SaveData()
     {
         SpawnerSaveData data = new SpawnerSaveData();
@@ -964,8 +756,10 @@ public class MonsterSpawner : NetworkBehaviour
         data.detectionCount = detectionCount;
         data.nearUserObjExist = nearUserObjExist;
         data.nearEnergyObjExist = nearEnergyObjExist;
+        data.detectionRange = detectionRange;
+        data.detectionCount = detectionCount;
         data.ragePhase = ragePhase;
-
+        data.waveCount = waveCount;
         foreach (MonsterAi monster in totalMonsterList)
         {
             data.monsterList.Add(monster.SaveData());
@@ -988,82 +782,44 @@ public class MonsterSpawner : NetworkBehaviour
             MapGenerator.instance.SetCorruption(this, spawnerLevel);
     }
 
-
-    // 확장구조 변경해야됨
-
-    //public void SearchCollExtend()
-    //{
-    //    spawnerSearchColl.SearchCollExtend();
-    //}
-
-    //public void SearchCollFullExtend()
-    //{
-    //    spawnerSearchColl.SearchCollFullExtend();
-    //}
-
-    //public float EnergyUseCheck()
-    //{
-    //    float aggroValue = 0;
-    //    foreach (var data in energyUseStrs)
-    //    {
-    //        if (data.Key.isOperate)
-    //        {
-    //            aggroValue += data.Value;
-    //        }
-    //    }
-    //    return aggroValue;
-    //}
-
-    //public void SearchCollReturn()
-    //{
-    //    spawnerSearchColl.SearchCollReturn();
-    //    violentDay = false;
-    //}
-
-    //public void ViolentDaySet()
-    //{
-    //    violentDay = true;
-    //    safeCount = safeAmount;
-    //    spawnerSearchColl.ViolentCollSizeReduction();
-    //}
+    public void ViolentDaySet()
+    {
+        violentDay = true;
+    }
 
     public void SpawnerLevelUp()
     {
-        if (spawnerLevel < SpawnerSetManager.instance.arealevelData.Length)
+        if(waveCount > levelUpCount)
         {
-            spawnerLevel++;
-            monsterSpawnerManager.AreaGroupLevelUp(this, spawnerLevel - 1, spawnerLevel, isInHostMap);
-            spawnerLevelData = SpawnerSetManager.instance.arealevelData[spawnerLevel - 1];
-            hp = structureData.MaxHp[spawnerLevel - 1];
-            maxHp = structureData.MaxHp[spawnerLevel - 1];
-            defense = structureData.Defense[spawnerLevel - 1];
-
-            maxWeakSpawn = spawnerLevelData.maxWeakSpawn;
-            maxNormalSpawn = spawnerLevelData.maxNormalSpawn;
-            maxStrongSpawn = spawnerLevelData.maxStrongSpawn;
-            maxGuardianSpawn = spawnerLevelData.maxGuardianSpawn;
-            totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
-            SpriteSet();
-        }
-
-        if (guardianList.Count < maxGuardianSpawn)
-        {
-            int guardianSpawnAmount = maxGuardianSpawn - guardianList.Count;
-            for (int i = 0; i < guardianSpawnAmount; i++)
+            if (spawnerLevel < SpawnerSetManager.instance.arealevelData.Length)
             {
-                SpawnMonster(3, 0, isInHostMap);
+                spawnerLevel++;
+                monsterSpawnerManager.AreaGroupLevelUp(this, spawnerLevel - 1, spawnerLevel, isInHostMap);
+                spawnerLevelData = SpawnerSetManager.instance.arealevelData[spawnerLevel - 1];
+                hp = structureData.MaxHp[spawnerLevel - 1];
+                maxHp = structureData.MaxHp[spawnerLevel - 1];
+                defense = structureData.Defense[spawnerLevel - 1];
+
+                maxWeakSpawn = spawnerLevelData.maxWeakSpawn;
+                maxNormalSpawn = spawnerLevelData.maxNormalSpawn;
+                maxStrongSpawn = spawnerLevelData.maxStrongSpawn;
+                maxGuardianSpawn = spawnerLevelData.maxGuardianSpawn;
+                totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
+                SpriteSet();
             }
+
+            if (guardianList.Count < maxGuardianSpawn)
+            {
+                int guardianSpawnAmount = maxGuardianSpawn - guardianList.Count;
+                for (int i = 0; i < guardianSpawnAmount; i++)
+                {
+                    SpawnMonster(3, 0, isInHostMap);
+                }
+            }
+
+            waveCount = 0;
         }
     }
-
-    //public void SafeCountDown()
-    //{
-    //    safeCount--;
-    //    if (safeCount < 0)
-    //    {
-    //        safeCount = 0;
-    //    }
-    //}
 
     void SpriteSet()
     {
@@ -1093,26 +849,59 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void DetectionRangeExpansion()
     {
-        detectionRange = (detectionRange + baseDetectRange[spawnerLevel - 1]) * (1.3f);
+        float ranCount = Random.Range(-0.05f, 0.05f);
+        ranCount = Mathf.Round(ranCount * 100f) / 100f; // 소수점 둘째 자리까지
+        detectionRange = (detectionRange + baseDetectRange[spawnerLevel - 1]) * (1 + distRangeExpansion + ranCount);
+        if (detectionRange >= distanceToPortal)
+        {
+            detectionRange = distanceToPortal;
+            isReachedPortal = true;
+        }
     }
 
     public void DetectionRangeReduction()
     {
-        detectionRange *= (0.4f);
+        detectionRange *= (1 - distRangeReduction);
+
+        if (detectionRange < distanceToPortal)
+        {
+            isReachedPortal = false;
+        }
     }
 
-    // 하단은 테스트용
-    int GetRoundsToReachTarget(float baseRange, float multiplier, float target) // 기본거리, 배율, 목표거리 
+    public void DetectionRangeReset()
     {
-        float range = 0f;
-        int rounds = 0;
+        detectionRange = 0;
+        isReachedPortal = false;
+    }
 
-        while (range < target)
-        {
-            range = (range + baseRange) * multiplier;
-            rounds++;
-        }
+    private void OnDrawGizmos()
+    {
+        if (transform == null || GameManager.instance == null) return;
 
-        return rounds;
+        Vector3 portal;
+
+        if(isInHostMap)
+            portal = GameManager.instance.portal[0].transform.position;
+        else
+            portal = GameManager.instance.portal[1].transform.position;
+
+        // 방향 정규화 후 길이 반영
+        Vector3 direction = (portal - transform.position).normalized * detectionRange;
+
+        // 끝점 계산
+        Vector3 endPoint = transform.position + direction;
+
+        // 색상 설정 (선택사항)
+        if (detectionRange < distanceToPortal)
+            Gizmos.color = Color.green;
+        else
+            Gizmos.color = Color.red;
+
+        // 선 그리기
+        Gizmos.DrawLine(transform.position, endPoint);
+
+        // 끝점에 구체 찍기 (시각화용)
+        Gizmos.DrawSphere(endPoint, 0.05f);
     }
 }
