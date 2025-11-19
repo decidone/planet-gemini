@@ -10,14 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eeaf01b7ac137074b977835f586ccb9c, type: 3}
-  m_Name: AdamantiteOre
+  m_Name: AdamantiteArmor
   m_EditorClassIdentifier: 
-  name: AdamantiteOre
+  name: AdamantiteArmor
   type: 3
-  explanation: Raw materials that can be obtained through mining. It needs a high-level
-    miner. Adamantite veins are found in cold biomes.
+  explanation: Materials made by smelting ore.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}
   canBuy: 0
-  productionBuilding: {fileID: 11400000, guid: 7db3ea80cc167bc419dafad68c735853, type: 2}
+  productionBuilding: {fileID: 11400000, guid: 49a36106ddf5c9c40bdcd0327a40acc9, type: 2}

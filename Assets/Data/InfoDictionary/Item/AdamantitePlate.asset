@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: AdamantitePlate
   type: 3
-  explanation: Materials made easy to use by melting the ingot.
+  explanation: A component for construction or other parts.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

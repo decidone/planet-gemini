@@ -181,6 +181,9 @@
   "AdamantiteAlloy": {
     "1": "Adamantite Alloy"
   },
+  "AdamantiteArmor": {
+    "1": "Adamantite Armor"
+  },
   "AdamantiteOre": {
     "1": "Adamantite Ore"
   },
@@ -236,7 +239,7 @@
     "1": "Energy"
   },
   "Engine": {
-    "1": "Engine"
+    "1": "Energy Core"
   },
   "ExplosiveBullet": {
     "1": "Explosive Shell"

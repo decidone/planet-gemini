@@ -4,8 +4,8 @@
   },
   "Miner":{
     "1":{"items":["Brick"],"amounts":[5],"cooldown":3},
-    "2":{"items":["SteelPlate","Screw"],"amounts":[5,10],"cooldown":3},
-    "3":{"items":["ControlUnit","SteelBeam"],"amounts":[5,15],"cooldown":3}
+    "2":{"items":["SteelPlate","Cogwheel"],"amounts":[5,10],"cooldown":3},
+    "3":{"items":["ControlUnit","Motor","SteelBeam"],"amounts":[1,5,15],"cooldown":3}
   },
   "Furnace":{
     "1":{"items":["Brick"],"amounts":[10],"cooldown":3},
@@ -21,7 +21,7 @@
     "1":{"items":["SteelPlate","Screw","Wire"],"amounts":[4,10,12],"cooldown":3}
   },
   "Manufacturer":{
-    "1":{"items":["Module","Motor","SteelBeam"],"amounts":[4,2,15],"cooldown":3}
+    "1":{"items":["Motor","SteelBeam"],"amounts":[4,12],"cooldown":3}
   },
   "Belt":{
     "1":{"items":["CopperPlate"],"amounts":[1],"cooldown":3},
@@ -35,7 +35,7 @@
   },
   "Splitter":{
     "1":{"items":["IronPlate","Cogwheel"],"amounts":[5,4],"cooldown":3},
-    "2":{"items":["ControlUnit","SteelPlate"],"amounts":[1,5],"cooldown":3}
+    "2":{"items":["Module","SteelPlate"],"amounts":[1,5],"cooldown":3}
   },
   "Merger":{
     "1":{"items":["IronPlate","Cogwheel"],"amounts":[5,4],"cooldown":3}
@@ -46,13 +46,13 @@
     "3":{"items":["SteelPlate","Screw"],"amounts":[5,4],"cooldown":3}
   },
   "Disintegrator":{
-    "1":{"items":["SteelPlate","Cogwheel"],"amounts":[5,10],"cooldown":3}
+    "1":{"items":["Motor","SteelPlate","Cogwheel"],"amounts":[2,5,10],"cooldown":3}
   },
   "Unloader":{
-    "1":{"items":["Module","IronPlate"],"amounts":[1,8],"cooldown":3}
+    "1":{"items":["Motor","IronPlate"],"amounts":[2,10],"cooldown":3}
   },
   "Transporter":{
-    "1":{"items":["SteelBeam","Cogwheel"],"amounts":[8,20],"cooldown":3}
+    "1":{"items":["Motor","SteelBeam"],"amounts":[6,14],"cooldown":3}
   },
   "Pump":{
     "1":{"items":["Motor","IronPlate"],"amounts":[4,12],"cooldown":3}
@@ -64,7 +64,7 @@
     "1":{"items":["IronPlate","Screw"],"amounts":[5,5],"cooldown":3}
   },
   "FluidTank":{
-    "1":{"items":["SteelPlate","Screw"],"amounts":[4,8],"cooldown":3}
+    "1":{"items":["IronPlate","Screw"],"amounts":[4,8],"cooldown":3}
   },
   "Extractor":{
     "1":{"items":["Motor","SteelBeam"],"amounts":[8,10],"cooldown":3}
@@ -86,28 +86,28 @@
     "5":{"items":["AdamantitePlate"],"amounts":[1],"cooldown":3}
   },
   "BasicTower":{
-    "1":{"items":["IronPlate","CopperPlate"],"amounts":[1,1,1],"cooldown":3}
+    "1":{"items":["IronPlate","Brick"],"amounts":[1,1],"cooldown":3}
   },
   "FireTower":{
-    "1":{"items":["IronPlate","Coal","ManaStone"],"amounts":[1,1,1],"cooldown":3}
+    "1":{"items":["ManaStone","SteelBeam","Sulfur"],"amounts":[1,1,1],"cooldown":3}
   },
   "IceTower":{
-    "1":{"items":["SteelBeam","ManaStone"],"amounts":[1,1],"cooldown":3}
+    "1":{"items":["ManaStone","SteelBeam"],"amounts":[1,1],"cooldown":3}
   },
   "PoisonTower":{
-    "1":{"items":["SteelBeam","ToxicPlant","ManaStone"],"amounts":[1,1,1],"cooldown":3}
+    "1":{"items":["ManaStone","SteelBeam","ToxicPlant"],"amounts":[1,1,1],"cooldown":3}
   },
   "StormTower":{
-    "1":{"items":["AdamantitePlate","Battery","ManaStone"],"amounts":[1,1,1],"cooldown":3}
+    "1":{"items":["ManaStone","AdamantiteArmor","Engine"],"amounts":[1,1,1],"cooldown":3}
   },
   "SunTower":{
-    "1":{"items":["AdamantitePlate","ManaStone"],"amounts":[1,1],"cooldown":3}
+    "1":{"items":["ManaStone","AdamantiteArmor","Engine"],"amounts":[1,1,1],"cooldown":3}
   },
   "RepairTower":{
-    "1":{"items":["Brick","ManaStone"],"amounts":[1,1],"cooldown":3}
+    "1":{"items":["ManaStone","Brick"],"amounts":[1,1],"cooldown":3}
   },
   "UnitFactory":{
-    "1":{"items":["IronPlate","Cogwheel"],"amounts":[1,1],"cooldown":3}
+    "1":{"items":["Module","SteelBeam"],"amounts":[1,1],"cooldown":3}
   },
   "EnergyRepeater":{
     "1":{"items":["IronPlate","Wire"],"amounts":[3,2],"cooldown":3}
@@ -131,10 +131,10 @@
     "1":{"items":["Motor","SteelBeam"],"amounts":[8,16],"cooldown":3}
   },
   "AutoBuyer":{
-    "1":{"items":["ControlUnit","SteelPlate"],"amounts":[1,5],"cooldown":3}
+    "1":{"items":["ControlUnit","Motor","SteelPlate"],"amounts":[1,5,10],"cooldown":3}
   },
   "AutoSeller":{
-    "1":{"items":["ControlUnit","SteelPlate"],"amounts":[1,5],"cooldown":3}
+    "1":{"items":["ControlUnit","Motor","SteelPlate"],"amounts":[1,5,10],"cooldown":3}
   },
   "LocalPortal":{
     "1":{"items":["VoidShard","ManaStone"],"amounts":[1,40],"cooldown":3}

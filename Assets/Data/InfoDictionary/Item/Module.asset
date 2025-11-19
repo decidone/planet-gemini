@@ -19,4 +19,4 @@ MonoBehaviour:
   layout: 2
   videoClip: {fileID: 0}
   canBuy: 0
-  productionBuilding: {fileID: 11400000, guid: 10b6ce2e82ea4b54a91f615cef63041e, type: 2}
+  productionBuilding: {fileID: 11400000, guid: 49a36106ddf5c9c40bdcd0327a40acc9, type: 2}
