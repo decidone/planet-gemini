@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d621a07f93572214290f96bde3c13228, type: 3}
-  m_Name: MiscellaneousShopSell
+  m_Name: Disintegrator
   m_EditorClassIdentifier: 
   MerchandiseSOList:
   - {fileID: 11400000, guid: 72d207bd64aef0049898006f5472f2ef, type: 2}
+  - {fileID: 11400000, guid: 335e1f13494277b4ab47386984a38043, type: 2}
   - {fileID: 11400000, guid: 8ddeee6452b50f74e94a5de3f51c1105, type: 2}
   - {fileID: 11400000, guid: e9cb1ffc67070024da95e7686e3d3c14, type: 2}
   - {fileID: 11400000, guid: 749f5daf88ea2604dad08a3e0921e6f9, type: 2}

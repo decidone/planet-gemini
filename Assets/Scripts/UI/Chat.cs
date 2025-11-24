@@ -189,11 +189,11 @@ public class Chat : NetworkBehaviour
                     case "/wave":
                         GameManager.instance.WaveForcedOperation();
                         break;
+                    case "/science":
+                        ScienceManager.instance.UnlockAll();
+                        break;
                     case "/test":
                         QuestManager.instance.QuestCompCheck(50);
-                        break;
-                    case "/overall":
-                        Overall.instance.OverallConsumption(ItemList.instance.itemDic["Coal"], 12000);
                         break;
                 }
 

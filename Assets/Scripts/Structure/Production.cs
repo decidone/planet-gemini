@@ -21,7 +21,7 @@ public abstract class Production : Structure
     protected int fuel;
     protected int maxFuel;
     protected Item output;
-    protected Recipe recipe;
+    protected Recipe recipe = new Recipe();
     protected int recipeIndex = -1;
     protected List<Recipe> recipes;
     protected int invenCount;
@@ -66,8 +66,8 @@ public abstract class Production : Structure
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
-        if (recipe == null)
-            recipe = new Recipe();
+        //if (recipe == null)
+        //    recipe = new Recipe();
         GetUIFunc();
         //CheckPos();
 
@@ -184,9 +184,11 @@ public abstract class Production : Structure
         sInvenManager.ResetInvenOption();
         cooldown = recipe.cooldown;
         effiCooldown = cooldown;
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        //sInvenManager.progressBar.SetMaxProgress(cooldown);
+
+        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+        float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+        sInvenManager.progressBar.SetMaxProgress(productionTime);
+        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -680,8 +682,10 @@ public abstract class Production : Structure
 
                         if (isUIOpened)
                         {
-                            sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-                            sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+                            float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+                            float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+                            sInvenManager.progressBar.SetMaxProgress(productionTime);
+                            sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
                         }
                     }
                 }
@@ -707,7 +711,10 @@ public abstract class Production : Structure
         overclockOn = isOn;
         if (isUIOpened)
         {
-            sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+            float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+            float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+            sInvenManager.progressBar.SetMaxProgress(productionTime);
+            sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
         }
     }
 

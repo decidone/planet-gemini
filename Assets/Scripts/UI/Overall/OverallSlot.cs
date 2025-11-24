@@ -7,12 +7,15 @@ public class OverallSlot : MonoBehaviour
 {
     [SerializeField] Image icon;
     [SerializeField] Text itemNameText;
+    [SerializeField] Text prodPerMinText;
     [SerializeField] Text productionAmountText;
     [SerializeField] Text consumptionAmountText;
     [SerializeField] Text purchasedAmountText;
     [SerializeField] Text soldAmountText;
     [SerializeField] Text sentAmountText;
     [SerializeField] Text receivedAmountText;
+    int prodCheck;
+    int prod;
 
     public void SlotInit(Item item)
     {
@@ -25,6 +28,7 @@ public class OverallSlot : MonoBehaviour
         soldAmountText.text = "0";
         sentAmountText.text = "0";
         receivedAmountText.text = "0";
+        prodPerMinText.text = "0/M";
 
         if (item.tier < 0 || item.name == "UICancel")
             this.gameObject.SetActive(false);
@@ -77,6 +81,7 @@ public class OverallSlot : MonoBehaviour
 
     public void SetProdAmount(int amount)
     {
+        prod = amount;
         productionAmountText.text = SplitNumber(amount);
     }
 
@@ -103,5 +108,18 @@ public class OverallSlot : MonoBehaviour
     public void SetReceivedAmount(int amount)
     {
         receivedAmountText.text = SplitNumber(amount);
+    }
+
+    public void CheckProdPerMin()
+    {
+        if (prod > prodCheck)
+        {
+            prodPerMinText.text = SplitNumber(prod - prodCheck) + "/m";
+            prodCheck = prod;
+        }
+        else
+        {
+            prodPerMinText.text = "0/m";
+        }
     }
 }

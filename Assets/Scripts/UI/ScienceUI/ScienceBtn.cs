@@ -227,7 +227,7 @@ public class ScienceBtn : MonoBehaviour
 
         int upgradeState = 0;
 
-        if(upgradeStart)
+        if (upgradeStart)
         {
             if (upgrade)
             {

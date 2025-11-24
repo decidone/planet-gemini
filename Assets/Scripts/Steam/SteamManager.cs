@@ -451,7 +451,7 @@ public class SteamManager : MonoBehaviour
                 LeaveGame();
             }
         }
-        else if(lobby.Owner.Id != friend.Id)
+        else if (lobby.Owner.Id != friend.Id)
         {
             Debug.Log("Client left");
             GameManager.instance.TimeScaleServerRpc();

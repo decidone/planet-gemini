@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -239,9 +240,11 @@ public class Miner : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        //sInvenManager.progressBar.SetMaxProgress(cooldown);
+
+        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+        float productionPerMin = minerCellCount * (60 / productionTime);
+        sInvenManager.progressBar.SetMaxProgress(productionTime);
+        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
 
         sInvenManager.slots[0].outputSlot = true;
     }

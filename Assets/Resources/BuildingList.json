@@ -9,10 +9,10 @@
   },
   "Furnace":{
     "1":{"items":["Brick"],"amounts":[10],"cooldown":3},
-    "2":{"items":["SteelBeam","Brick"],"amounts":[5,10],"cooldown":3}
+    "2":{"items":["SteelBeam","Brick"],"amounts":[10,20],"cooldown":3}
   },
   "Smelter":{
-    "1":{"items":["IronPlate","Brick"],"amounts":[5,10],"cooldown":3}
+    "1":{"items":["IronPlate","Brick"],"amounts":[10,20],"cooldown":3}
   },
   "Constructor":{
     "1":{"items":["Brick"],"amounts":[10],"cooldown":3}

@@ -129,10 +129,18 @@ public class OptionCanvas : MonoBehaviour
         if (open)
         {
             InputManager.instance.OpenOption();
+            if (GameManager.instance != null && LobbySaver.instance.currentLobby?.MemberCount < 2)
+            {
+                GameManager.instance.GameStop(true);
+            }
         }
         else
         {
             InputManager.instance.CloseOption();
+            if (GameManager.instance != null && LobbySaver.instance.currentLobby?.MemberCount < 2)
+            {
+                GameManager.instance.GameStop(false);
+            }
         }
     }
 

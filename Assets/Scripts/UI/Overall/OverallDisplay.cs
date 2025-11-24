@@ -40,6 +40,8 @@ public class OverallDisplay : MonoBehaviour
             overallSlot.SlotInit(itemList[i]);
             overallSlots.Add(overallSlot);
         }
+
+        StartCoroutine(CheckProdPerMin());
     }
 
     public void SetProdAmount(int order, int amount)
@@ -70,6 +72,19 @@ public class OverallDisplay : MonoBehaviour
     public void SetReceivedAmount(int order, int amount)
     {
         overallSlots[order].SetReceivedAmount(amount);
+    }
+
+    IEnumerator CheckProdPerMin()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(60);
+
+            foreach (var slot in overallSlots)
+            {
+                slot.CheckProdPerMin();
+            }
+        }
     }
 
     public void ToggleUI()

@@ -92,6 +92,18 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
+    public void SetCooldownText(float cooldown, string productionRate)
+    {
+        if (cooldown == 0)
+        {
+            cooldownText.text = "";
+        }
+        else
+        {
+            cooldownText.text = cooldown + "s " + productionRate + "/m";
+        }
+    }
+
     public void UnitIconSet(bool isOn)
     {
         if (isOn)

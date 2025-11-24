@@ -6518,7 +6518,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter Room Id...
+  m_Text: Enter Room Code...
 --- !u!222 &1062223423
 CanvasRenderer:
   m_ObjectHideFlags: 0

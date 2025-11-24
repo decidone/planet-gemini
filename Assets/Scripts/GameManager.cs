@@ -321,7 +321,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void GameStop(bool stop)
+    public void GameStop(bool stop)
     {
         if (stop)
         {
@@ -1349,10 +1349,11 @@ public class GameManager : NetworkBehaviour
     public void SellScrapServerRpc()
     {
         int scrapAmount = scrap.GetScrap();
-        if (scrapAmount > 0)
+        if (scrapAmount > 10)
         {
-            SubScrapServerRpc(scrapAmount);
-            AddFinanceServerRpc(scrapAmount);
+            int change = scrapAmount % 10;
+            SubScrapServerRpc(scrapAmount - change);
+            AddFinanceServerRpc((scrapAmount - change) / 10);
         }
     }
 

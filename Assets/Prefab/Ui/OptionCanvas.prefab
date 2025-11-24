@@ -199,7 +199,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Escape
+  m_Text: Get Unstuck
 --- !u!1 &1902679072
 GameObject:
   m_ObjectHideFlags: 0
@@ -11150,7 +11150,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Copy Room Id
+  m_Text: Copy Room Code
 --- !u!1 &8885797743443581758
 GameObject:
   m_ObjectHideFlags: 0

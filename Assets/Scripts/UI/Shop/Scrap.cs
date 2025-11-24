@@ -1,3 +1,5 @@
+using NUnit.Framework.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,9 +18,20 @@ public class Scrap : MonoBehaviour
     public void SetScrap(int _scrap)
     {
         scrap = _scrap;
-
-        ResetText();
-        text.text = scrap.ToString();
+        if (scrap > 999999)
+        {
+            float temp = (float)scrap / 1000000;
+            text.text = string.Format("{0:N1}", temp) + "M";
+        }
+        else if (scrap > 99999)
+        {
+            float temp = (float)scrap / 1000;
+            text.text = string.Format("{0:N1}", temp) + "K";
+        }
+        else
+        {
+            text.text = scrap.ToString();
+        }
     }
 
     public void AddScrap(int _scrap)
@@ -36,10 +49,5 @@ public class Scrap : MonoBehaviour
         {
             SetScrap(scrap - _scrap);
         }
-    }
-
-    void ResetText()
-    {
-        text.text = "";
     }
 }

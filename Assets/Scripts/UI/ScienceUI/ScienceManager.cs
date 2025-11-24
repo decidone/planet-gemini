@@ -288,4 +288,13 @@ public class ScienceManager : MonoBehaviour
 
         return canUpgrade;
     }
+
+    public void UnlockAll()
+    {
+        foreach (var btn in scienceBtns)
+        {
+            btn.upgradeStart = true;
+            btn.UpgradeFunc(false);
+        }
+    }
 }

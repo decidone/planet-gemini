@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d621a07f93572214290f96bde3c13228, type: 3}
-  m_Name: ToolShopSell
+  m_Name: ManaStoneShop
   m_EditorClassIdentifier: 
   MerchandiseSOList:
-  - {fileID: 11400000, guid: 3e6d551a8d32b21499b45b40f5c93ace, type: 2}
-  - {fileID: 11400000, guid: 17f3650383ea9e842aee995e1a2c5d6a, type: 2}
-  - {fileID: 11400000, guid: 04fa7a5b5ba6ae94e98f6b726f2ea6ed, type: 2}
-  - {fileID: 11400000, guid: 4ceb839df96d3934bbda0ac0769b33b7, type: 2}
-  - {fileID: 11400000, guid: 1cb01f9161689e64aa3064d35d636896, type: 2}
+  - {fileID: 11400000, guid: 2bc0c9ccfefbf5a40a10dd304a905387, type: 2}
+  - {fileID: 11400000, guid: 1e2eabdf9278b8e49b817cc4864533f7, type: 2}
+  - {fileID: 11400000, guid: ee5290d6d34d90749a365274f01ca451, type: 2}
+  - {fileID: 11400000, guid: 9d8957b45872f044d8d3fe713e2107c0, type: 2}

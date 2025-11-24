@@ -7,16 +7,11 @@ public class Merch : MonoBehaviour
 {
     [SerializeField] Image icon;
     [SerializeField] Text ItemOwnedAmountText;
-    [SerializeField] List<Sprite> moneyImages;
-    [SerializeField] Image firstMoneyIcon;
-    [SerializeField] Image secondMoneyIcon;
-    [SerializeField] Text firstCostText;
-    [SerializeField] Text secondCostText;
+    [SerializeField] Text priceText;
     [SerializeField] Slider amountSlider;
     [SerializeField] Button plusButton;
     [SerializeField] Button minusButton;
     [SerializeField] Text amountText;
-
     [SerializeField] MerchHover hover;
 
     MerchandiseListSO merchandiseListSO;
@@ -54,34 +49,7 @@ public class Merch : MonoBehaviour
         else
             price = merchandise.sellPrice;
 
-        if (price < 100)
-        {
-            firstMoneyIcon.sprite = moneyImages[2];
-            secondMoneyIcon.enabled = false;
-            secondCostText.enabled = false;
-
-            firstCostText.text = price.ToString();
-        }
-        else
-        {
-            firstMoneyIcon.sprite = moneyImages[1];
-            secondMoneyIcon.sprite = moneyImages[2];
-
-            int temp = price;
-            firstCostText.text = (temp/100).ToString();
-            temp %= 100;
-            secondCostText.text = temp.ToString();
-
-            if (secondCostText.text == "0")
-            {
-                secondMoneyIcon.enabled = false;
-                secondCostText.enabled = false;
-            }
-            else if(secondCostText.text.Substring(0, 1) == "0")
-            {
-                secondCostText.text = secondCostText.text.Substring(secondCostText.text.Length - 1);
-            }
-        }
+        priceText.text = price.ToString();
     }
 
     public void SetOwnedItemAmount(int _amount)

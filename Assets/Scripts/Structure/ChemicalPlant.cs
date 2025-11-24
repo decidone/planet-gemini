@@ -93,9 +93,11 @@ public class ChemicalPlant : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        //sInvenManager.progressBar.SetMaxProgress(cooldown);
+
+        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+        float productionPerMin = 60 / productionTime;
+        sInvenManager.progressBar.SetMaxProgress(productionTime);
+        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
 
         rManager.recipeBtn.gameObject.SetActive(true);
         rManager.recipeBtn.onClick.RemoveAllListeners();
