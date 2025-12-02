@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEditor.Overlays;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -194,9 +195,9 @@ public class GameManager : NetworkBehaviour
 
     public float hostMapEnergyUseAmount;
     public float clientMapEnergyUseAmount;
-    
+
     MonsterSpawnerManager monsterSpawnerManager;
-    
+
     int consecutiveWaveCount;   // 연속으로 발생한 웨이브 수
     int waveMaxCount = 3;       // 연속 최대 수
 
@@ -408,7 +409,7 @@ public class GameManager : NetworkBehaviour
                 {
                     monsterSpawnerManager.SpawnersDetectionRangeReduction();
                 }
-                
+
                 if (bloodMoon && violentDay)
                 {
                     violentDay = false;
@@ -417,7 +418,6 @@ public class GameManager : NetworkBehaviour
                     if (IsServer)
                     {
                         monsterSpawnerManager.WavePointOff();
-                        monsterSpawnerManager.WaveEndSet();
                     }
                     timeImg.color = new Color32(255, 255, 255, 255);
                 }
@@ -470,7 +470,12 @@ public class GameManager : NetworkBehaviour
 
                     violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
                 }
+                else if(day != 0)
+                    NoWaveDetectedTextClientRpc();
             }
+            else if(day != 0)
+                NoWaveDetectedTextClientRpc();
+
             violentDaySync = true;
 
             if (violentDayOnCheck)
@@ -479,12 +484,17 @@ public class GameManager : NetworkBehaviour
             }
             else
                 consecutiveWaveCount = 0;
-
         }
 
         int dday = CalculateDday(day, violentCycle);
 
         ViolentDayOnClientRpc(violentDaySync, violentDayOnCheck, dday);
+    }
+
+    [ClientRpc]
+    void NoWaveDetectedTextClientRpc()
+    {
+        WarningWindow.instance.WarningTextSet("No Wave Detected.");
     }
 
     [ClientRpc]
@@ -863,7 +873,7 @@ public class GameManager : NetworkBehaviour
 
     void Escape(InputAction.CallbackContext ctx)
     {
-        if(UpgradeRemoveBtn.instance.currentBtn != UpgradeRemoveBtn.SelectedButton.None)
+        if (UpgradeRemoveBtn.instance.currentBtn != UpgradeRemoveBtn.SelectedButton.None)
         {
             UpgradeRemoveBtn.instance.CurrentBtnReset();
             return;
@@ -1467,6 +1477,7 @@ public class GameManager : NetworkBehaviour
         string formattedDateTime = currentDateTime.ToString("yyyy-MM-dd HH:mm:ss");
         inGameData.saveDate = formattedDateTime;
         // 파일 이름
+        inGameData.difficultyLevel = MainGameSetting.instance.difficultylevel;
         inGameData.mapSizeIndex = MainGameSetting.instance.mapSizeIndex;
         inGameData.seed = MainGameSetting.instance.randomSeed;
         inGameData.bloodMoon = bloodMoon;
@@ -2062,5 +2073,11 @@ public class GameManager : NetworkBehaviour
         {
             unitFactory.CooldownTextSet();
         }
+    }
+
+    public float EnergyUseAmount()
+    {
+        float totalAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
+        return totalAmount;
     }
 }

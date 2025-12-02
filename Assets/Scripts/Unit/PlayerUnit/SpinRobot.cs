@@ -31,7 +31,6 @@ public class SpinRobot : UnitAi
             {
                 if (!targetList[i])
                 {
-                    Debug.Log("error Null");
                     continue;
                 }
 

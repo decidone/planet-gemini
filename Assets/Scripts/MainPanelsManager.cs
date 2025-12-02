@@ -39,7 +39,7 @@ public class MainPanelsManager : MonoBehaviour
         gameStartBtn.onClick.AddListener(() => GameStartBtnFunc());
         backBtn.onClick.AddListener(() => NewGamePanelSet(false));
         //mapSizeDropdown.onValueChanged.AddListener(delegate { MapSizeDropdownFunc(mapSizeDropdown); });
-        //difficultyLevelDropdown.onValueChanged.AddListener(delegate { DifficultyLevelDropdownFunc(difficultyLevelDropdown); });
+        difficultyLevelDropdown.onValueChanged.AddListener(delegate { DifficultyLevelDropdownFunc(difficultyLevelDropdown); });
         randomSeedToggle.onValueChanged.AddListener(delegate { RandomSeedToggleValue(); });
         //bloodMoonToggle.onValueChanged.AddListener(delegate { BloodMoonToggleValue(); });
         seedInputField.onValueChanged.AddListener(delegate { SeedInputValueChanged(); });
@@ -87,10 +87,18 @@ public class MainPanelsManager : MonoBehaviour
     //    gameSetting.MapSizeSet(dropdown.value);
     //}
 
-    //void DifficultyLevelDropdownFunc(Dropdown dropdown)
-    //{
-    //    gameSetting.DifficultylevelSet(dropdown.value);
-    //}
+    void DifficultyLevelDropdownFunc(Dropdown dropdown)
+    {
+        if(dropdown.value == 0)
+        {
+            bloodMoonToggle.isOn = false;
+            bloodMoonToggle.interactable = false;
+        }
+        else
+        {
+            bloodMoonToggle.interactable = true;
+        }
+    }
 
     public void SaveLoadPanelSet()
     {

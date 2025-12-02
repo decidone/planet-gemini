@@ -261,6 +261,8 @@ MonoBehaviour:
   debuffTimer: 0
   debuffInterval: 1
   debuffPer: 25
+  debuffAmount: 3
+  debuffTargetList: []
 --- !u!114 &-4049017294882040239
 MonoBehaviour:
   m_ObjectHideFlags: 0

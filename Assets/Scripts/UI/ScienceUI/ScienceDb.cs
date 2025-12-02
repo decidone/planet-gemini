@@ -26,7 +26,7 @@ public class ScienceDb : NetworkBehaviour
     // 0 Hp, 1 데미지, 2 공격속도, 3 방어력
 
     // 유닛최대치
-    int[] increasedUnitExpansion = new int[] { 10, 10, 10 };
+    int[] increasedUnitExpansion = new int[] { 12, 8, 5 };
     // 0 10증가, 1 10증가, 2 10증가
 
     private void Awake()
