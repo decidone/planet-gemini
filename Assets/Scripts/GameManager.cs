@@ -1881,8 +1881,8 @@ public class GameManager : NetworkBehaviour
         BuildingData buildingData = BuildingDataGet.instance.GetBuildingName(str.buildName, str.level + 1);
         BuildingData buildUpgradeData = BuildingDataGet.instance.GetBuildingName(str.buildName, str.level + 2);
 
-        BuildingData UpgradeCost = new BuildingData(new List<string>(), new List<int>(), 0);
-        BuildingData ReturnCost = new BuildingData(new List<string>(), new List<int>(), 0);
+        BuildingData UpgradeCost = new BuildingData(new List<string>(), new List<int>());
+        BuildingData ReturnCost = new BuildingData(new List<string>(), new List<int>());
 
         int index;
         int difference;

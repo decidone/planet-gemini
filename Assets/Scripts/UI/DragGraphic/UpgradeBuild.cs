@@ -160,7 +160,7 @@ public class UpgradeBuild : DragFunc
 
         if (buildUpgradeData != null)
         {
-            BuildingData UpgradeCost = new BuildingData(new List<string>(), new List<int>(), 0);
+            BuildingData UpgradeCost = new BuildingData(new List<string>(), new List<int>());
 
             int index;
             int difference;
@@ -251,8 +251,8 @@ public class UpgradeBuild : DragFunc
 
         if (buildUpgradeData != null)
         {
-            BuildingData UpgradeCost = new BuildingData(new List<string>(), new List<int>(), 0);
-            BuildingData ReturnUpgradeCost = new BuildingData(new List<string>(), new List<int>(), 0);
+            BuildingData UpgradeCost = new BuildingData(new List<string>(), new List<int>());
+            BuildingData ReturnUpgradeCost = new BuildingData(new List<string>(), new List<int>());
 
             int index;
             int difference;

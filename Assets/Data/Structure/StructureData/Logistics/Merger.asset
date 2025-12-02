@@ -22,9 +22,7 @@ MonoBehaviour:
   - 1
   sendDelay:
   - 0.1
-  upgradeSendDelay:
-  - 0.1
-  maxBuildingGauge: 10
+  maxBuildingGauge: 5
   maxRepairGauge: 10
   colliderRadius: 10
   cooldown: 0

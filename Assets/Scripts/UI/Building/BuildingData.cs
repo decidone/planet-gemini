@@ -7,15 +7,13 @@ public class BuildingData
 {
     public List<string> items;
     public List<int> amounts;
-    public float cooldown;
 
     public BuildingData() { }
 
-    public BuildingData(List<string> _items, List<int> _amounts, float _cooldown)
+    public BuildingData(List<string> _items, List<int> _amounts)
     {
         items = _items;
         amounts = _amounts;
-        cooldown = _cooldown;
     }
 
     public int GetItemCount()
