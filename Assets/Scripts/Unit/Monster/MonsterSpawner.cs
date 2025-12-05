@@ -1,3 +1,4 @@
+using QFSW.QC.Demo;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -73,8 +74,9 @@ public class MonsterSpawner : NetworkBehaviour
     [HideInInspector]
     public int detectionCount;  // 포탈 인식 카운트
 
-    float distRangeExpansion = 0.2f;    // 인식 거리 확대 0.2이면 20% 확대
-    float distRangeReduction = 0.8f;    // 인식 거리 축소 0.6이면 60% 축소
+    float distRangeExpansion = 0.15f;    // 인식 거리 확대 0.15이면 15% 확대
+    float distRangeReduction = 0.7f;    // 인식 거리 축소 0.6이면 60% 축소
+    float maxDistRange = 1.4f;       // 최대 인식 거리 1.4면 140%
     [HideInInspector]
     public bool isReachedPortal;    //포탈까지 도달했는지
 
@@ -849,9 +851,17 @@ public class MonsterSpawner : NetworkBehaviour
 
     public void DetectionRangeExpansion()
     {
+        float energyRate = Mathf.RoundToInt(GameManager.instance.EnergyUseAmount() / 3000) / 50;
         float ranCount = Random.Range(-0.05f, 0.05f);
-        ranCount = Mathf.Round(ranCount * 100f) / 100f; // 소수점 둘째 자리까지
-        detectionRange = (detectionRange + baseDetectRange[spawnerLevel - 1]) * (1 + distRangeExpansion + ranCount);
+        ranCount = Mathf.Round((ranCount + energyRate) * 100f) / 100f; // 소수점 둘째 자리까지
+        float detetionExpansionPersent = 1 + distRangeExpansion + ranCount; // 인식 거리 확대 퍼센트
+        if(detetionExpansionPersent > maxDistRange)
+        {
+            detetionExpansionPersent = maxDistRange;
+        }
+
+        detectionRange = (detectionRange + baseDetectRange[spawnerLevel - 1]) * (detetionExpansionPersent);
+
         if (detectionRange >= distanceToPortal)
         {
             detectionRange = distanceToPortal;

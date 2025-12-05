@@ -260,7 +260,9 @@ MonoBehaviour:
   - {fileID: -2092808875, guid: c705c284f5f53d149bb7949c39102241, type: 3}
   debuffTimer: 0
   debuffInterval: 1
-  debuffPer: 25
+  debuffPer: 18
+  debuffAmount: 3
+  debuffTargetList: []
 --- !u!114 &-4049017294882040239
 MonoBehaviour:
   m_ObjectHideFlags: 0

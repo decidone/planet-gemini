@@ -303,9 +303,9 @@
   },
   "AICommandExpansion":{
     "Battle":{
-      "1":{"items":["ManaStone","Module"],"amounts":[30,15],"coreLv":3,"time":150,"Info":"Expands AI command capacity, allowing control of 10 additional units.","basicScience":false, "sortIndex":18},
-      "2":{"items":["ManaStone","ControlUnit"],"amounts":[50,30],"coreLv":4,"time":150,"Info":"Expands AI command capacity, allowing control of 10 additional units.","basicScience":false, "sortIndex":15},
-      "3":{"items":["ManaStone","Engine"],"amounts":[70,40],"coreLv":5,"time":150,"Info":"Expands AI command capacity, allowing control of 10 additional units.","basicScience":false, "sortIndex":16}
+      "1":{"items":["ManaStone","Module"],"amounts":[30,15],"coreLv":3,"time":150,"Info":"Expands AI command capacity, allowing control of 12 additional units.","basicScience":false, "sortIndex":18},
+      "2":{"items":["ManaStone","ControlUnit"],"amounts":[50,30],"coreLv":4,"time":150,"Info":"Expands AI command capacity, allowing control of 8 additional units.","basicScience":false, "sortIndex":15},
+      "3":{"items":["ManaStone","Engine"],"amounts":[70,40],"coreLv":5,"time":150,"Info":"Expands AI command capacity, allowing control of 5 additional units.","basicScience":false, "sortIndex":16}
     }
   }
 }

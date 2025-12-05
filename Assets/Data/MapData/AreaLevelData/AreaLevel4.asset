@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AreaLevel4
   m_EditorClassIdentifier: 
   sppawnerLevel: 4
-  maxWeakSpawn: 16
-  maxNormalSpawn: 16
-  maxStrongSpawn: 8
+  maxWeakSpawn: 14
+  maxNormalSpawn: 14
+  maxStrongSpawn: 7
   maxGuardianSpawn: 1

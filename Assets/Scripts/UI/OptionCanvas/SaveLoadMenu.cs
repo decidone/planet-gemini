@@ -66,11 +66,11 @@ public class SaveLoadMenu : MonoBehaviour
         {
             saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
             inGameData = saveData.InGameData;
-            buttons[0].SetSlotData(0, inGameData.saveDate);
+            buttons[0].SetSlotData(0, inGameData.saveDate, inGameData.mapSizeIndex, inGameData.difficultyLevel);
         }
         else
         {
-            buttons[0].SetSlotData(0, null);
+            buttons[0].SetSlotData(0, null, -1, -1);
         }
 
         for (int i = 1; i < saveCount; i++)

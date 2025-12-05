@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDIceTower
   m_EditorClassIdentifier: 
-  damage: 20
+  damage: 15
   attackDist: 10
   attDelayTime: 1.3
   maxEnergyBulletAmount: 5

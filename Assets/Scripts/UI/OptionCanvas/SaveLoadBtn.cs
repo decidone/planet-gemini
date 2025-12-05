@@ -14,6 +14,11 @@ public class SaveLoadBtn : MonoBehaviour
     Button mainBtn;
     [SerializeField]
     Button deleteBtn;
+    [SerializeField]
+    Text mapSizeText;
+    [SerializeField]
+    Text mapDiffText; 
+
     SaveLoadMenu saveLoadMenu;
     bool saveLoadState; // true : save 버튼, false : load 버튼
     int slotNum;
@@ -30,12 +35,11 @@ public class SaveLoadBtn : MonoBehaviour
 
     public void SetSlotData(int slotCount, string saveDate, string fileName, int mapDataIndex, int diffLevel)
     {
-        slotText.text = "Slot " + slotCount;
+        slotText.text = slotCount.ToString();
         string mapSizeString = MapSizeString(mapDataIndex);
         string diffLevelString = DiffLevelString(diffLevel);
         if (saveDate != null && fileName != null)
         {
-            //contentsText.text = saveDate + System.Environment.NewLine + mapSizeString + " " + diffLevelString + " " + fileName;
             contentsText.text = saveDate + System.Environment.NewLine + fileName;
             saveFileName = fileName;
             loadEnable = true;
@@ -47,18 +51,22 @@ public class SaveLoadBtn : MonoBehaviour
         {
             contentsText.text = "Empty";
             saveFileName = "";
+
             loadEnable = false;
 
             deleteBtn.gameObject.SetActive(false);
             deleteBtn.onClick.RemoveAllListeners();
         }
-
+        mapSizeText.text = mapSizeString;
+        mapDiffText.text = diffLevelString;
         slotNum = slotCount;
     }
 
-    public void SetSlotData(int slotCount, string saveDate) // 자동 저장용
+    public void SetSlotData(int slotCount, string saveDate, int mapDataIndex, int diffLevel) // 자동 저장용
     {
         slotText.text = "Auto";
+        string mapSizeString = MapSizeString(mapDataIndex);
+        string diffLevelString = DiffLevelString(diffLevel);
         if (saveDate != null)
         {
             contentsText.text = saveDate;
@@ -69,7 +77,8 @@ public class SaveLoadBtn : MonoBehaviour
             contentsText.text = "Auto Save Empty";
             loadEnable = false;
         }
-
+        mapSizeText.text = mapSizeString;
+        mapDiffText.text = diffLevelString;
         slotNum = slotCount;
     }
 
@@ -89,13 +98,10 @@ public class SaveLoadBtn : MonoBehaviour
         switch(mapDataIndex) 
         {
             case 0 :
-                mapSize = "Map Small";
+                mapSize = "Normal";
                 break;
             case 1:
-                mapSize = "Map Middle";
-                break;
-            case 2:
-                mapSize = "Map Big";
+                mapSize = "Large";
                 break;
 
             default:
@@ -113,13 +119,16 @@ public class SaveLoadBtn : MonoBehaviour
         switch (mapDataIndex)
         {
             case 0:
-                DiffLevel = "Level Easy";
+                DiffLevel = "Peaceful";
                 break;
             case 1:
-                DiffLevel = "Level Normal";
+                DiffLevel = "Easy";
                 break;
             case 2:
-                DiffLevel = "Level Hard";
+                DiffLevel = "Normal";
+                break;
+            case 3:
+                DiffLevel = "Hard";
                 break;
 
             default:
@@ -177,6 +186,8 @@ public class SaveLoadBtn : MonoBehaviour
         {
             saveLoadMenu.Delete(slotNum);
             RemoveSlotData();
+            mapSizeText.text = "";
+            mapDiffText.text = "";
         }
     }
 }

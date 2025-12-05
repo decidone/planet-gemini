@@ -15,8 +15,8 @@ MonoBehaviour:
   unitName: SentryCopter
   maxHp: 110
   upgradeMaxHp: 160
-  damage: 35
-  upgradeDamage: 45
+  damage: 33
+  upgradeDamage: 43
   moveSpeed: 7
   attackDist: 4
   attDelayTime: 2
