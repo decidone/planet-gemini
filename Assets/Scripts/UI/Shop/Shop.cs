@@ -13,6 +13,7 @@ public class Shop : MonoBehaviour
     [HideInInspector] public Merch[] merchList;
     [SerializeField] Finance finance;
     [SerializeField] Button btn;
+    [SerializeField] Button scrapBtn;
     [SerializeField] bool isPurchase;
     [SerializeField] int sliderBasicValue;
 
@@ -36,13 +37,37 @@ public class Shop : MonoBehaviour
                 btn.onClick.AddListener(BuyMerch);
             else
                 btn.onClick.AddListener(SellMerch);
+
+            if (scrapBtn != null)
+            {
+                scrapBtn.onClick.AddListener(() => SellScrapBtnClicked());
+            }
         }
+    }
+
+    void SellScrapBtnClicked()
+    {
+        GameManager.instance.SellScrapServerRpc();
+        scrapBtn.interactable = false;
+        SoundManager.instance.PlayUISFX("ButtonClick");
     }
 
     public void OpenUI()
     {
         this.gameObject.SetActive(true);
         btn.interactable = false;
+        if (scrapBtn != null)
+        {
+            if (GameManager.instance.scrap.scrap >= 10)
+            {
+                scrapBtn.interactable = true;
+            }
+            else
+            {
+                scrapBtn.interactable = false;
+            }
+        }
+
         GameManager.instance.onUIChangedCallback?.Invoke(this.gameObject);
         if (!isPurchase)
         {
@@ -127,14 +152,13 @@ public class Shop : MonoBehaviour
 
     public void BuyMerch()
     {
-        //GameManager.instance.inventory.BuyMerch(merchList, totalPrice);
-
         if (GameManager.instance.inventory.MultipleSpaceCheck(merchList))
         {
             if (GameManager.instance.finance.finance >= totalPrice)
             {
                 GameManager.instance.inventory.BuyMerch(merchList, totalPrice);
                 ResetMerchList();
+                SoundManager.instance.PlayUISFX("ButtonClick");
             }
             else
             {
@@ -152,6 +176,7 @@ public class Shop : MonoBehaviour
     {
         GameManager.instance.inventory.SellMerch(merchList);
         ResetMerchList();
+        SoundManager.instance.PlayUISFX("ButtonClick");
     }
 
     void ResetMerchList()

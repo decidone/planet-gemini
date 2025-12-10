@@ -219,7 +219,11 @@ public class PreBuilding : NetworkBehaviour
                 if (!isDrag && !RaycastUtility.IsPointerOverUI(Input.mousePosition))
                     CheckPos();
 
-
+                if (buildingList.Count < 1)
+                {
+                    CancelBuild();
+                    return;
+                }
 
                 bool canBuild = false;
                 if (!canNotDrag)
@@ -237,7 +241,7 @@ public class PreBuilding : NetworkBehaviour
                         index++;
                     }
                 }
-                else if(CellCheck(buildingList[0], startBuildPos))
+                else if (CellCheck(buildingList[0], startBuildPos))
                 {
                     canBuild = buildingList[0].GetComponent<PreBuildingImg>().CanPlaceBuilding(new Vector2(objWidth, objHeight));
                 }

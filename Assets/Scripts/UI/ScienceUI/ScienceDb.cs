@@ -254,7 +254,7 @@ public class ScienceDb : NetworkBehaviour
 
             scienceBtns[i].LoadEnd(data[i].upgradeState, data[i].lockCheck, data[i].upgradeTime);
 
-            if (data[i].upgradeState == 2)
+            if (data[i].upgradeState == 2 && !scienceBtns[i].scienceInfoData.basicScience)
                 ScienceManager.instance.isAnyUpgradeCompleted = true;
         }
     }

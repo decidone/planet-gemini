@@ -1307,6 +1307,7 @@ public class GameManager : NetworkBehaviour
     public void AddFinanceClientRpc(int money)
     {
         finance.AddFinance(money);
+        OverallDisplay.instance.SetFinanceDetail(finance.finance);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1319,8 +1320,8 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void SubFinanceClientRpc(int money)
     {
-        Debug.Log("SubFinanceClientRpc");
         finance.SubFinance(money);
+        OverallDisplay.instance.SetFinanceDetail(finance.finance);
     }
 
     [ServerRpc(RequireOwnership = false)]

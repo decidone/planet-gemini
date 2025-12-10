@@ -102,7 +102,7 @@ public class ScienceBtn : MonoBehaviour
         if(scienceManager == null)
             scienceManager = GameManager.instance.inventoryUiCanvas.GetComponent<ScienceManager>();
 
-        scienceManager.SciUpgradeEnd(sciName, level, coreLevel, isLoad);
+        scienceManager.SciUpgradeEnd(sciName, level, coreLevel, isLoad, scienceInfoData.basicScience);
         LockUiActiveFalse();
         upgrade = true;
         btnImage.color = new Color(255, 255, 255);

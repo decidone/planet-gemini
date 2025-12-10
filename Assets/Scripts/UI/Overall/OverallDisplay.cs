@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OverallDisplay : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class OverallDisplay : MonoBehaviour
     [SerializeField] GameObject overallSlotsObj;
     [SerializeField] GameObject overallSlotsPref;
     [SerializeField] ItemListSO itemListSO;
+    [SerializeField] Text financeText;
     List<Item> itemList;
     List<OverallSlot> overallSlots;
     SoundManager soundManager;
@@ -42,6 +44,11 @@ public class OverallDisplay : MonoBehaviour
         }
 
         StartCoroutine(CheckProdPerMin());
+    }
+
+    public void SetFinanceDetail(int finance)
+    {
+        financeText.text = finance.ToString();
     }
 
     public void SetProdAmount(int order, int amount)
@@ -99,6 +106,7 @@ public class OverallDisplay : MonoBehaviour
     {
         displayObj.SetActive(true);
         GameManager.instance.onUIChangedCallback?.Invoke(displayObj);
+        SetFinanceDetail(GameManager.instance.finance.finance);
         soundManager.PlayUISFX("SidebarClick");
     }
 

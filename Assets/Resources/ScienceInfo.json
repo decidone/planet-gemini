@@ -9,12 +9,12 @@
   },
   "PortalItemIn":{
     "Build":{
-      "1":{"items":["ManaStone"],"amounts":[5],"coreLv":1,"time":10,"Info":"Transports items to its paired Item Receiver on another planet.","basicScience":false,"sortIndex":9}
+      "1":{"items":["ManaStone"],"amounts":[1],"coreLv":1,"time":10,"Info":"Transports items to its paired Item Receiver on another planet.","basicScience":false,"sortIndex":9}
     }
   },
   "PortalItemOut":{
     "Build":{
-      "1":{"items":["ManaStone"],"amounts":[5],"coreLv":1,"time":10,"Info":"Receives items sent from its paired Item Teleporter on another planet.","basicScience":false,"sortIndex":10}
+      "1":{"items":["ManaStone"],"amounts":[1],"coreLv":1,"time":10,"Info":"Receives items sent from its paired Item Teleporter on another planet.","basicScience":false,"sortIndex":10}
     }
   },
   "PortalUnitIn":{

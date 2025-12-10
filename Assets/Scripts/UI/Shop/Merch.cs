@@ -36,7 +36,7 @@ public class Merch : MonoBehaviour
         shop = _shop;
         item = merchandise.item;
         icon.sprite = item.icon;
-        hover.SetItemName(item.name);
+        hover.SetItemName(InGameNameDataGet.instance.ReturnName(item.name));
 
         for (int i = 0; i < merchandiseList.Count; i++)
         {

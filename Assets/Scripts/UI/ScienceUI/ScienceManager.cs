@@ -229,7 +229,7 @@ public class ScienceManager : MonoBehaviour
         scienceDb.SciBtnUpgradeServerRpc(btn.btnIndex);
     }
 
-    public void SciUpgradeEnd(string sciName, int sciLevel, int coreLv, bool isLoad)
+    public void SciUpgradeEnd(string sciName, int sciLevel, int coreLv, bool isLoad, bool isBasic)
     {
         if (sciName == "Core")
         {
@@ -239,9 +239,12 @@ public class ScienceManager : MonoBehaviour
         {
             portalSciManager.PortalSciUpgrade(sciName);
         }
+        if (!isBasic)
+        {
+            isAnyUpgradeCompleted = true;
+            onUpgradeCompletedCallback?.Invoke(40);
+        }
 
-        isAnyUpgradeCompleted = true;
-        onUpgradeCompletedCallback?.Invoke(40);
         scienceDb.SaveSciDb(sciName, sciLevel, coreLv, isLoad);
         buildingInven.Refresh();
     }

@@ -37,6 +37,7 @@ public class Bounty : MonoBehaviour
         bounty = (overall.spawnerDestroyCount - overall.spawnerBountyReceived) * 100;
         bounty += (overall.monsterKillCount - overall.monsterBountyReceived) * 5;
         finance.SetFinance(bounty);
+        btn.interactable = bounty > 0;
     }
 
     public void CloseUI()
@@ -56,5 +57,7 @@ public class Bounty : MonoBehaviour
         newMonsterCount = 0;
         spawnerText.text = overall.spawnerBountyReceived.ToString();
         monsterText.text = overall.monsterBountyReceived.ToString();
+        btn.interactable = false;
+        SoundManager.instance.PlayUISFX("ButtonClick");
     }
 }

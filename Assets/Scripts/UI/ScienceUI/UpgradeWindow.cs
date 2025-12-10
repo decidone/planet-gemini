@@ -47,6 +47,7 @@ public class UpgradeWindow : MonoBehaviour
         if (!isCoreWaring)
         {
             ScienceManager.instance.UpgradeStart(scienceBtn);
+            SoundManager.instance.PlayUISFX("ButtonClick");
         }
 
         CloseUI();
