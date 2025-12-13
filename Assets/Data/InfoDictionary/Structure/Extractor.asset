@@ -16,7 +16,7 @@ MonoBehaviour:
   type: 1
   explanation: The Extractor extracts crude oil from oil tiles found on the planet.
     Using the extracted crude oil requires additional processing at a refinery. Oil
-    tiles can be found in the Desert biome.
+    tiles can be found in the Desert biome. (10/s)
   strDataList:
   - {fileID: 11400000, guid: 0a975bd11486491429d9634e06f7a224, type: 2}
   layout: 1

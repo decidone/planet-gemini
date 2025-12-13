@@ -68,6 +68,8 @@ public class EnergyGenerator : Production
                     inventory.SlotSubServerRpc(0, 1);
                 }
                 fuel += 50;
+                if (isUIOpened)
+                    sInvenManager.SetCooldownText(fuel + "/" + maxFuel);
                 soundManager.PlaySFX(gameObject, "structureSFX", "Flames");
             }
 
@@ -77,6 +79,8 @@ public class EnergyGenerator : Production
                 if (fuel >= fuelRequirement && !destroyStart)
                 {
                     fuel -= fuelRequirement;
+                    if (isUIOpened)
+                        sInvenManager.SetCooldownText(fuel + "/" + maxFuel);
                     OperateStateSet(true);
                     prodTimer = 0;
                 }
@@ -161,12 +165,14 @@ public class EnergyGenerator : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(100);
+        sInvenManager.SetCooldownText(fuel + "/" + maxFuel);
         sInvenManager.slots[0].SetInputItem(FuelItem);
     }
 
     public override void CloseUI()
     {
         base.CloseUI();
+        sInvenManager.SetCooldownText(string.Empty);
         sInvenManager.ReleaseInven();
     }
 

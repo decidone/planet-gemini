@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   title: Transport Item
-  description: 'Transport any item to another planet
+  description: 'Transport any item to another planet.
 
-    ( Need a pair of Item Teleporter
-    and Item Receiver built in different planet )'
+    (Need a pair of Item Teleporter
+    and Item Receiver built in different planet.)'
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 0}

@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: ManaStone
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 5eff66704c33d804fb302e3bcbe885ad, type: 2}
-  buyPrice: 50
-  sellPrice: 100
+  buyPrice: 200
+  sellPrice: -1
+  scrapValue: 200

@@ -224,24 +224,25 @@ public class Structure : NetworkBehaviour
         hpBar.enabled = false;
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
+        repairEffect = GetComponentInChildren<RepairEffectFunc>();
         isStorageBuilding = false;
         isMainSource = false;
         isUIOpened = false;
         myVision.SetActive(false);
         maxAmount = structureData.MaxItemStorageLimit;
         cooldown = structureData.Cooldown;
+
         connectors = new List<EnergyGroupConnector>();
         conn = null;
-
         efficiency = 0;
         effiCooldown = 0;
         energyUse = structureData.EnergyUse[level];
         isEnergyStr = structureData.IsEnergyStr;
         energyProduction = structureData.Production;
         energyConsumption = structureData.Consumption[level];
+
         destroyInterval = structureData.RemoveGauge;
         soundManager = SoundManager.instance;
-        repairEffect = GetComponentInChildren<RepairEffectFunc>();
         destroyTimer = destroyInterval;
         warningIconCheck = false;
         visionPos = transform.position;

@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   buyPrice: 2
-  sellPrice: 10
+  sellPrice: -1
+  scrapValue: 1

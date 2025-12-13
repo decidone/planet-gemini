@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 22
   title: Unit
-  description: Make bounce robot at a unit factory
-  isCompleted: 0
+  description: Make bounce robot at a unit factory.
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 11400000, guid: d4523c5fa7df1244998568cd8862e84a, type: 2}
   amount: -1
   destination: -1
   scienceTech: -1
+  hasDicLink: 0
+  dicKeyword: 

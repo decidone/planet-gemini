@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 10
   title: Trade
-  description: Buy Brick from merchant
+  description: Buy Brick from merchant.
   item: {fileID: 11400000, guid: d5e0faf5544a08246b8b6c6de513da76, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}

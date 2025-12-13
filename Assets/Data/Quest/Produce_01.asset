@@ -16,8 +16,8 @@ MonoBehaviour:
   title: Produce
   description: 'Make Bricks at a Furnace using Stone and Coal.
 
-    ( If you built
-    Miner at the wrong place, you can demolish them and build again )'
+    (If you built
+    Miner at the wrong place, you can demolish them and build again.)'
   item: {fileID: 11400000, guid: d5e0faf5544a08246b8b6c6de513da76, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}

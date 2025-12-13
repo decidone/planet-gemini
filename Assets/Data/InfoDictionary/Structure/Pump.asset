@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Pump
   type: 1
-  explanation: The Pump is a facility that pumps water from lakes.
+  explanation: The Pump is a facility that pumps water from lakes. (10/s)
   strDataList:
   - {fileID: 11400000, guid: 51f539ef13b205c48b1fddb782a9cadc, type: 2}
   layout: 1

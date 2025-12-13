@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 40
   title: Science
-  description: Upgrade any technology at the science tree
+  description: 'Upgrade any technology at the science tree.
+
+    (Mana Stones can
+    be purchased at the shop.)'
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 0}

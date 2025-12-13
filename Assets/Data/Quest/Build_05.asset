@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 20
   title: Build
-  description: 'Build an Item Teleporter
+  description: 'Build an Item Teleporter.
 
-    ( Need to research technology at the
-    science tree )'
+    (Need to research technology at the
+    science tree.)'
   item: {fileID: 0}
   strData: {fileID: 11400000, guid: 0fd34327f681a6c4585fd363b4e0a46b, type: 2}
   unitData: {fileID: 0}

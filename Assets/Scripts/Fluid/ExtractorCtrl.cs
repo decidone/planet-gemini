@@ -5,9 +5,9 @@ using UnityEngine;
 // UTF-8 설정
 public class ExtractorCtrl : FluidFactoryCtrl
 {
-    float pumpFluid = 20.0f;
+    public float pumpFluid;     // 인스펙터에서 조절
+    public float pumpInterval;  // 인스펙터에서 조절
     float pumpTimer;
-    public float pumpInterval = 3;
 
     protected override void Start()
     {

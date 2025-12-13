@@ -25,7 +25,7 @@ MonoBehaviour:
   maxBuildingGauge: 8
   maxRepairGauge: 10
   colliderRadius: 10
-  cooldown: 2
+  cooldown: 1
   isEnergyStr: 1
   production: 180
   energyUse: 00

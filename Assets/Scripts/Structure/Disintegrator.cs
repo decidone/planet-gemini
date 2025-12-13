@@ -69,7 +69,7 @@ public class Disintegrator : Production
                 {
                     if (inventory.items[i] == merchandiseList.MerchandiseSOList[j].item)
                     {
-                        totalAmount += (merchandiseList.MerchandiseSOList[j].sellPrice * inventory.amounts[i]);
+                        totalAmount += (merchandiseList.MerchandiseSOList[j].scrapValue * inventory.amounts[i]);
                         break;
                     }
                 }
@@ -96,7 +96,7 @@ public class Disintegrator : Production
                 {
                     if (inventory.items[i] == merchandiseList.MerchandiseSOList[j].item)
                     {
-                        GameManager.instance.AddScrapServerRpc(merchandiseList.MerchandiseSOList[j].sellPrice * inventory.amounts[i]);
+                        GameManager.instance.AddScrapServerRpc(merchandiseList.MerchandiseSOList[j].scrapValue * inventory.amounts[i]);
                         inventory.RemoveServerRpc(i);
                         confirm = true;
                         break;

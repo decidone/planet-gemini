@@ -30,6 +30,8 @@ public class SteamGenerator : FluidFactoryCtrl
             CheckSlotState(0);
             CheckInvenIsFull(0);
         }
+        gameManager = GameManager.instance;
+        playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
@@ -40,9 +42,28 @@ public class SteamGenerator : FluidFactoryCtrl
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
+        isStorageBuilding = false;
+        isMainSource = false;
+        isUIOpened = false;
+        myVision.SetActive(false);
+        maxAmount = structureData.MaxItemStorageLimit;
+        cooldown = structureData.Cooldown;
+
+        connectors = new List<EnergyGroupConnector>();
+        conn = null;
+        efficiency = 0;
+        effiCooldown = 0;
+        energyUse = structureData.EnergyUse[level];
+        isEnergyStr = structureData.IsEnergyStr;
+        energyProduction = structureData.Production;
+        energyConsumption = structureData.Consumption[level];
+
         destroyInterval = structureData.RemoveGauge;
         soundManager = SoundManager.instance;
         destroyTimer = destroyInterval;
+        warningIconCheck = false;
+        visionPos = transform.position;
+        increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
         setModel = GetComponent<SpriteRenderer>();
@@ -56,13 +77,10 @@ public class SteamGenerator : FluidFactoryCtrl
 
         #endregion
         #region FluidFactoryAwake
-        gameManager = GameManager.instance;
         myFluidScript = GetComponent<FluidFactoryCtrl>();
-        playerInven = gameManager.inventory;
         mainSource = null;
         howFarSource = -1;
         preSaveFluidNum = 0;
-        myVision.SetActive(false);
 
         displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("SteamGenerator").transform.Find("DisplaySlot").GetComponent<Slot>();
@@ -90,7 +108,6 @@ public class SteamGenerator : FluidFactoryCtrl
         isBuildDone = false;
         preBuildingCheck = false;
         preBuilding = PreBuilding.instance;
-        prodTimer = cooldown;
 
         displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
         displaySlot.AddItem(ItemList.instance.itemDic["Water"], 0);
@@ -195,6 +212,8 @@ public class SteamGenerator : FluidFactoryCtrl
                     inventory.SlotSubServerRpc(0, 1);
                 }
                 fuel += 50;
+                if (isUIOpened)
+                    sInvenManager.SetCooldownText("water " + waterRequirement + "/s " + fuel + "/" + maxFuel);
             }
 
             prodTimer += Time.deltaTime;
@@ -204,6 +223,8 @@ public class SteamGenerator : FluidFactoryCtrl
                 {
                     saveFluidNum -= waterRequirement;
                     fuel -= fuelRequirement;
+                    if (isUIOpened)
+                        sInvenManager.SetCooldownText("water " + waterRequirement + "/s " + fuel + "/" + maxFuel);
                     OperateStateSet(true);
                     prodTimer = 0;
                 }
@@ -377,6 +398,7 @@ public class SteamGenerator : FluidFactoryCtrl
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(100);
+        sInvenManager.SetCooldownText("water " + waterRequirement + "/s " + fuel + "/" + maxFuel);
         sInvenManager.slots[0].SetInputItem(FuelItem);
         //sInvenManager.InvenInit();
     }
@@ -384,6 +406,7 @@ public class SteamGenerator : FluidFactoryCtrl
     public override void CloseUI()
     {
         base.CloseUI();
+        sInvenManager.SetCooldownText(string.Empty);
         sInvenManager.ReleaseInven();
     }
 

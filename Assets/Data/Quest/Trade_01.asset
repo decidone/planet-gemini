@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 11
   title: Trade
-  description: Sell Fuel to merchant
-  isCompleted: 1
+  description: Sell Fuel to merchant.
   item: {fileID: 11400000, guid: 5912f021a7959c649a39f14ccbc2dd85, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}

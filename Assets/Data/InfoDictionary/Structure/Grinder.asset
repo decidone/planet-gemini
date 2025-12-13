@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Grinder
   type: 1
-  explanation: The Grinder grinds items to scrap, which is used for exchanging gems
-    in the market.
+  explanation: The Grinder grinds items to scrap at a low efficiency, which is used
+    for exchanging gems in the market.
   strDataList:
   - {fileID: 11400000, guid: 212bb02d095b4ad4e811ad9ae9872e63, type: 2}
   layout: 1

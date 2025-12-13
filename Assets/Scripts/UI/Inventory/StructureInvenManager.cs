@@ -104,6 +104,11 @@ public class StructureInvenManager : InventoryManager
         }
     }
 
+    public void SetCooldownText(string message)
+    {
+        cooldownText.text = message;
+    }
+
     public void UnitIconSet(bool isOn)
     {
         if (isOn)

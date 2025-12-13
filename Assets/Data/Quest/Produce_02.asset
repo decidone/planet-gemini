@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 21
   title: Produce
-  description: Make Copper Goblet at a Constructor
+  description: Make Copper Goblet at a Constructor.
   item: {fileID: 11400000, guid: d4d03371787b07a4bbe7c78a6c93233b, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}

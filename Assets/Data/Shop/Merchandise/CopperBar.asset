@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: CopperBar
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: ca4e338176bd75c4ea4293bb623b138b, type: 2}
-  buyPrice: 4
-  sellPrice: 10
+  buyPrice: 3
+  sellPrice: -1
+  scrapValue: 1
