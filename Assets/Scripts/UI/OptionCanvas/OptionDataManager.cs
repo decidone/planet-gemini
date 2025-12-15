@@ -62,7 +62,7 @@ public class OptionDataManager : MonoBehaviour
         inputActions.Add("Unit Hold", InputManager.instance.controls.Unit.Hold);
         inputActions.Add("Tank Inventory", InputManager.instance.controls.Player.TankInven);
         inputActions.Add("Tank Attack", InputManager.instance.controls.Player.TankAttack);
-        inputActions.Add("Info Dictionary", InputManager.instance.controls.HotKey.InfoDictionary);
+        inputActions.Add("Dictionary", InputManager.instance.controls.HotKey.InfoDictionary);
         inputActions.Add("Toggle UI", InputManager.instance.controls.HotKey.UIClose);
         inputActions.Add("Time UI Scroll Up", InputManager.instance.controls.HotKey.TimeUIUp);
         inputActions.Add("Time UI Scroll Down", InputManager.instance.controls.HotKey.TimeUIDown);

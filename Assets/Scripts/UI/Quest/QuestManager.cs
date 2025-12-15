@@ -13,6 +13,7 @@ public class QuestManager : MonoBehaviour
     [SerializeField] Button dicBtn;
 
     bool isUIOpened;
+    bool isClearEffectOn;
     public int currentQuest = 0;
     Overall overall;
     NetworkObjManager networkObjManager;
@@ -104,6 +105,10 @@ public class QuestManager : MonoBehaviour
                         overall.onOverallChangedCallback += QuestCompCheck;
                 }
                 break;
+            case 12:    // 아이템 습득
+                break;
+            case 13:    // 벌목
+                break;
             case 20:    // 특정 건물 건설
                 if (networkObjManager.StructureCheck(quests[order].strData))
                     QuestClear();
@@ -141,7 +146,7 @@ public class QuestManager : MonoBehaviour
                 else
                     overall.onOverallChangedCallback += QuestCompCheck;
                 break;
-            case 40:    // 과학 트리 업그레이드
+            case 40:    // 과학 연구 업그레이드
                 if (scienceManager.isAnyUpgradeCompleted)
                     QuestClear();
                 else
@@ -172,9 +177,9 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-    public void QuestCompCheck(int overallType)
+    public void QuestCompCheck(int questType)
     {
-        if (overallType != quests[currentQuest].type)
+        if (questType != quests[currentQuest].type)
             return;
 
         switch (quests[currentQuest].type)
@@ -203,6 +208,12 @@ public class QuestManager : MonoBehaviour
                     overall.onOverallChangedCallback -= QuestCompCheck;
                     QuestClear();
                 }
+                break;
+            case 12:
+                QuestClear();
+                break;
+            case 13:
+                QuestClear();
                 break;
             case 20:
                 if (networkObjManager.StructureCheck(quests[currentQuest].strData))
@@ -268,24 +279,37 @@ public class QuestManager : MonoBehaviour
     IEnumerator ClearEffect()
     {
         currentQuest++;
-        titleText.color = Color.green;
-        descriptionText.color = Color.green;
-
-        for (int i = 0; i <= 3; i++)
+        if (!isClearEffectOn)
         {
-            yield return new WaitForSeconds(1f);
-            titleText.enabled = false;
-            descriptionText.enabled = false;
+            isClearEffectOn = true;
+            titleText.color = Color.green;
+            descriptionText.color = Color.green;
+            for (int i = 0; i <= 3; i++)
+            {
+                yield return new WaitForSeconds(1f);
+                titleText.enabled = false;
+                descriptionText.enabled = false;
 
-            yield return new WaitForSeconds(0.5f);
-            titleText.enabled = true;
-            descriptionText.enabled = true;
+                yield return new WaitForSeconds(0.5f);
+                titleText.enabled = true;
+                descriptionText.enabled = true;
+            }
+            isClearEffectOn = false;
+            titleText.color = Color.white;
+            descriptionText.color = Color.white;
+
+            ResetUI();
+            SetNextQuest();
         }
-        titleText.color = Color.white;
-        descriptionText.color = Color.white;
-
-        ResetUI();
-        SetNextQuest();
+        else
+        {
+            while (isClearEffectOn)
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
+            ResetUI();
+            SetNextQuest();
+        }
     }
 
     public void UIOpen()

@@ -11,7 +11,7 @@
     "3": "Miner Lv3"
   },
   "Furnace": {
-    "1": "Coal Furnace",
+    "1": "Furnace",
     "2": "Energy Furnace"
   },
   "Smelter": {
@@ -265,8 +265,8 @@
   "IronPlate": {
     "1": "Iron Plate"
   },
-  "IronRod": {
-    "1": "Iron Rod"
+  "Log": {
+    "1": "Log"
   },
   "ManablastBullet": {
     "1": "Manablast Shell"

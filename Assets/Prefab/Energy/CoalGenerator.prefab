@@ -868,7 +868,7 @@ MonoBehaviour:
   connector: {fileID: 7265358927153795667}
   FuelItem: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   view: {fileID: 6363363537288611314}
-  fuelRequirement: 10
+  fuelRequirement: 5
 --- !u!61 &5564630921721189503
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ToolShop
   m_EditorClassIdentifier: 
   MerchandiseSOList:
+  - {fileID: 11400000, guid: 127b9cf2b096c574f97388fa195d50c1, type: 2}
   - {fileID: 11400000, guid: 3e6d551a8d32b21499b45b40f5c93ace, type: 2}
   - {fileID: 11400000, guid: 17f3650383ea9e842aee995e1a2c5d6a, type: 2}
   - {fileID: 11400000, guid: 04fa7a5b5ba6ae94e98f6b726f2ea6ed, type: 2}

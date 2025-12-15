@@ -12,7 +12,6 @@ public class Miner : Production
     protected override void Start()
     {
         base.Start();
-        Debug.Log("Miner Start");
         Init();
         isMainSource = true;
         StartCoroutine(EfficiencyCheck());
@@ -23,52 +22,7 @@ public class Miner : Production
         base.Update();
         if (!isPreBuilding)
         {
-            if (energyUse)
-            {
-                if (conn != null && conn.group != null && conn.group.efficiency > 0)
-                {
-                    if (output != null && slot.Item2 < maxAmount)
-                    {
-                        OperateStateSet(true);
-                        prodTimer += Time.deltaTime;
-                        if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
-                        {
-                            soundManager.PlaySFX(gameObject, "structureSFX", "Miner");
-
-                            if (slot.Item2 + minerCellCount <= maxAmount)
-                            {
-                                if (IsServer)
-                                {
-                                    inventory.Add(output, minerCellCount);
-                                    Overall.instance.OverallProd(output, minerCellCount);
-                                }
-                                prodTimer = 0;
-                            }
-                            else
-                            {
-                                int addAmount = maxAmount - slot.Item2;
-                                if (IsServer)
-                                {
-                                    inventory.Add(output, addAmount);
-                                    Overall.instance.OverallProd(output, addAmount);
-                                }
-                                prodTimer = 0;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        OperateStateSet(false);
-                        prodTimer = 0;
-                    }
-                }
-                else
-                {
-                    OperateStateSet(false);
-                    prodTimer = 0;
-                }
-            }
-            else
+            if (conn != null && conn.group != null && conn.group.efficiency > 0)
             {
                 if (output != null && slot.Item2 < maxAmount)
                 {
@@ -102,7 +56,13 @@ public class Miner : Production
                 else
                 {
                     OperateStateSet(false);
+                    prodTimer = 0;
                 }
+            }
+            else
+            {
+                OperateStateSet(false);
+                prodTimer = 0;
             }
 
             if (IsServer && slot.Item2 > 0 && outObj.Count > 0 && !itemSetDelay)

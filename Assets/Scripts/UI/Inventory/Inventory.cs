@@ -316,6 +316,7 @@ public class Inventory : NetworkBehaviour
     [ClientRpc]
     public void DisplayLootInfoClientRpc(int itemIndex, int amount, ClientRpcParams rpcParams = default)
     {
+        QuestManager.instance.QuestCompCheck(12);
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         LootListManager.instance.DisplayLootInfo(item, amount);
     }

@@ -12,12 +12,10 @@ public class InfoUI : MonoBehaviour
     [SerializeField] Text nameText;
     [SerializeField] Text onlyNameText;
     [SerializeField] Text hpText;
-    //[SerializeField] Text energyText;
-    //[SerializeField] Text firstBattleText;
-    //[SerializeField] Text secondBattleText;
     [SerializeField] Button upgradeBtn;
     [SerializeField] Button dicBtn;
     [SerializeField] Button removeBtn;
+    [SerializeField] Button chopTreeBtn;
 
     [Space]
     public Material outlintMat;
@@ -84,6 +82,8 @@ public class InfoUI : MonoBehaviour
         dicBtn.gameObject.SetActive(false);
         removeBtn.onClick.RemoveAllListeners();
         removeBtn.gameObject.SetActive(false);
+        chopTreeBtn.onClick.RemoveAllListeners();
+        chopTreeBtn.gameObject.SetActive(false);
         unitGroupUI.SetActive(false);
     }
 
@@ -123,12 +123,13 @@ public class InfoUI : MonoBehaviour
         SpriteRenderer spriteRenderer = obj.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlintMat;
         onlyNameText.text = obj.name;
-        removeBtn.gameObject.SetActive(true);
-        removeBtn.onClick.AddListener(() => CutDownBtnFucn());
+        chopTreeBtn.gameObject.SetActive(true);
+        chopTreeBtn.onClick.AddListener(() => ChopTreeBtnFucn());
     }
 
-    void CutDownBtnFucn()
+    void ChopTreeBtnFucn()
     {
+        QuestManager.instance.QuestCompCheck(13);
         SoundManager.instance.PlayUISFX("TreeCut");
         obj.RemoveMapObjRequest();
     }

@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 20
   title: Build
-  description: Build a Furnace.
+  description: Build a Coal Generator near the Miner.
   item: {fileID: 0}
-  strData: {fileID: 11400000, guid: a8c8d2c5653fbda498c749e453b14ebf, type: 2}
+  strData: {fileID: 11400000, guid: ba99df9a78efb39498f03728c568e039, type: 2}
   unitData: {fileID: 0}
   amount: -1
   destination: -1
   scienceTech: -1
   hasDicLink: 1
-  dicKeyword: Coal Furnace
+  dicKeyword: Coal Generator

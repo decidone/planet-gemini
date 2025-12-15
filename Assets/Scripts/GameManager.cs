@@ -8,7 +8,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
-using UnityEditor.Overlays;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -1353,6 +1352,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RemoveMapObjServerRpc(Vector3 vector3, bool isHostMapRequest)
     {
+        System.Random random = new();
+        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(ItemList.instance.itemDic["Log"]);
+        GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, random.Next(1, 4), vector3);
         RemoveMapObjClientRpc(vector3, isHostMapRequest);
     }
 
@@ -1433,8 +1435,8 @@ public class GameManager : NetworkBehaviour
 
     void SetStartingItem()
     {
-        Item item = ItemList.instance.itemDic["Fuel"];
-        inventory.Add(item, 5);
+        //Item item = ItemList.instance.itemDic["Fuel"];
+        //inventory.Add(item, 5);
     }
 
     [ServerRpc(RequireOwnership = false)]

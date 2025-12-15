@@ -41,6 +41,7 @@ public class InfoDictionary : MonoBehaviour
     [SerializeField] Text layout2Explanation;
     [SerializeField] Image itemIcon;
     [SerializeField] GameObject market;
+    [SerializeField] GameObject tree;
     [SerializeField] GameObject spawner;
     [SerializeField] GameObject structure;
     [SerializeField] Image structureImage;
@@ -287,6 +288,7 @@ public class InfoDictionary : MonoBehaviour
             ClearRenderTexture();
             layout2.SetActive(true);
             market.SetActive(false);
+            tree.SetActive(false);
             spawner.SetActive(false);
             structure.SetActive(false);
             recipe1.SetActive(false);
@@ -318,6 +320,10 @@ public class InfoDictionary : MonoBehaviour
                 if (item.name == "VoidShard")
                 {
                     spawner.SetActive(true);
+                }
+                else if (item.name == "Log")
+                {
+                    tree.SetActive(true);
                 }
                 else if (item.name == "Water" || item.name == "CrudeOil")
                 {
