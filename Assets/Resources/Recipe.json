@@ -80,14 +80,14 @@
     ],
     "AutoBuyer":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
-        {"name":"Coal","items":["Coal"],"amounts":[1],"cooldown":10},
-        {"name":"Brick","items":["Brick"],"amounts":[1],"cooldown":10},
-        {"name":"CopperBar","items":["CopperBar"],"amounts":[1],"cooldown":10},
-        {"name":"CopperPlate","items":["CopperPlate"],"amounts":[1],"cooldown":10},
-        {"name":"IronBar","items":["IronBar"],"amounts":[1],"cooldown":10},
-        {"name":"IronPlate","items":["IronPlate"],"amounts":[1],"cooldown":10},
-        {"name":"ManaStone","items":["ManaStone"],"amounts":[1],"cooldown":10},
-        {"name":"SlimyPlant","items":["SlimyPlant"],"amounts":[1],"cooldown":10},
-        {"name":"ToxicPlant","items":["ToxicPlant"],"amounts":[1],"cooldown":10}
+        {"name":"Coal","items":["Coal"],"amounts":[1],"cooldown":0},
+        {"name":"Brick","items":["Brick"],"amounts":[1],"cooldown":0},
+        {"name":"CopperBar","items":["CopperBar"],"amounts":[1],"cooldown":0},
+        {"name":"CopperPlate","items":["CopperPlate"],"amounts":[1],"cooldown":0},
+        {"name":"IronBar","items":["IronBar"],"amounts":[1],"cooldown":0},
+        {"name":"IronPlate","items":["IronPlate"],"amounts":[1],"cooldown":0},
+        {"name":"ManaStone","items":["ManaStone"],"amounts":[1],"cooldown":0},
+        {"name":"SlimyPlant","items":["SlimyPlant"],"amounts":[1],"cooldown":0},
+        {"name":"ToxicPlant","items":["ToxicPlant"],"amounts":[1],"cooldown":0}
     ]
 }

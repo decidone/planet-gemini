@@ -8,7 +8,7 @@ public class Constructor : Production
     protected override void Start()
     {
         base.Start();
-        StartCoroutine(EfficiencyCheck());
+        StartCoroutine(EfficiencyCheckLoop());
     }
 
     protected override void Update()
@@ -94,11 +94,6 @@ public class Constructor : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-
-        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
-        float productionPerMin = 60 / productionTime;
-        sInvenManager.progressBar.SetMaxProgress(productionTime);
-        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
 
         rManager.recipeBtn.gameObject.SetActive(true);
         rManager.recipeBtn.onClick.RemoveAllListeners();

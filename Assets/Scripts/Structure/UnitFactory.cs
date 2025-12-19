@@ -20,7 +20,7 @@ public class UnitFactory : Production
         base.Start();
         isGetLine = true;
         unitObjList = UnitList.instance.unitList;
-        StartCoroutine(EfficiencyCheck());
+        StartCoroutine(EfficiencyCheckLoop());
     }
 
     protected override void Update()
@@ -105,7 +105,6 @@ public class UnitFactory : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
 
         rManager.recipeBtn.gameObject.SetActive(true);
         rManager.recipeBtn.onClick.RemoveAllListeners();
@@ -162,13 +161,7 @@ public class UnitFactory : Production
 
     public override void SetRecipe(Recipe _recipe, int index)
     {
-        recipe = _recipe;
-        recipeIndex = index;
-        sInvenManager.ResetInvenOption();
-        cooldown = recipe.cooldown;
-        effiCooldown = cooldown;
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-
+        base.SetRecipe(_recipe, index);
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[0].SetNeedAmount(recipe.amounts[0]);
         sInvenManager.slots[1].SetInputItem(itemDic[recipe.items[1]]);

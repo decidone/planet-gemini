@@ -36,9 +36,11 @@ public class AttackTower : TowerAi
         cooldown = towerData.ReloadCooldown;
         effiCooldown = cooldown;
         if (energyUse)
+        {
             loadedBullet = bulletDic["EnergyBullet"];
+            StartCoroutine(EfficiencyCheckLoop());
+        }
         StrBuilt();
-        StartCoroutine(EfficiencyCheck());
     }
 
     protected override void Update()

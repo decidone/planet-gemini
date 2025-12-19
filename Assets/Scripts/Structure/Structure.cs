@@ -174,6 +174,7 @@ public class Structure : NetworkBehaviour
 
     public bool canUpgrade;
     public SpriteRenderer warningIcon;
+    public SpriteRenderer mapWarningIcon;
     //public Sprite warningRed;
     //public Sprite warningYellow;
     public bool warningIconCheck;
@@ -342,11 +343,20 @@ public class Structure : NetworkBehaviour
                         {
                             //low energy
                             if (warning != null)
+                            {
                                 StopCoroutine(warning);
-                            warningIcon.sprite = Resources.Load<Sprite>("warning_yellow");
+                                StrWarningManager.instance.RemoveStrList(this);
+                            }
+                            if (conn.group.efficiency > 0.001f)
+                                warningIcon.sprite = Resources.Load<Sprite>("warning_yellow");
+                            else
+                                warningIcon.sprite = Resources.Load<Sprite>("warning_red");
                             warning = FlickeringIcon();
                             StartCoroutine(warning);
                             warningIconCheck = true;
+                            StrWarningManager.instance.AddStrList(this);
+                            mapWarningIcon.sprite = warningIcon.sprite;
+                            mapWarningIcon.enabled = true;
                         }
                     }
                     else
@@ -354,9 +364,13 @@ public class Structure : NetworkBehaviour
                         if (warningIconCheck)
                         {
                             if (warning != null)
+                            {
                                 StopCoroutine(warning);
+                                StrWarningManager.instance.RemoveStrList(this);
+                            }
                             warningIconCheck = false;
                             warningIcon.enabled = false;
+                            mapWarningIcon.enabled = false;
                         }
                     }
                 }
@@ -366,11 +380,17 @@ public class Structure : NetworkBehaviour
                     {
                         //disconnected
                         if (warning != null)
+                        {
                             StopCoroutine(warning);
+                            StrWarningManager.instance.RemoveStrList(this);
+                        }
                         warningIcon.sprite = Resources.Load<Sprite>("warning_red");
                         warning = FlickeringIcon();
                         StartCoroutine(warning);
                         warningIconCheck = true;
+                        StrWarningManager.instance.AddStrList(this);
+                        mapWarningIcon.sprite = warningIcon.sprite;
+                        mapWarningIcon.enabled = true;
                     }
                 }
             }
@@ -1813,6 +1833,7 @@ public class Structure : NetworkBehaviour
     public void DestroyFunc()
     {
         ColliderTriggerOnOff(true);
+        StrWarningManager.instance.RemoveStrList(this);
 
         Map map;
         if (isInHostMap)
@@ -2077,7 +2098,8 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public virtual IEnumerator EfficiencyCheck() { yield return null; }
+    public virtual IEnumerator EfficiencyCheckLoop() { yield return null; }
+    public virtual void EfficiencyCheck() { }
 
     [ClientRpc]
     public void MapDataSaveClientRpc(Vector3 pos)

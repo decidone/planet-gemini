@@ -18,7 +18,6 @@ public class Disintegrator : Production
         isStorageBuilding = true;
         isInvenEmpty = false;
         cooldown = 10f;
-        effiCooldown = cooldown;
         inventory.onItemChangedCallback += IsInvenEmptyCheck;
         IsInvenEmptyCheck(0);
     }
@@ -39,7 +38,7 @@ public class Disintegrator : Production
             if (isAuto && !isInvenEmpty)
             {
                 prodTimer += Time.deltaTime;
-                if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
+                if (prodTimer > cooldown)
                 {
                     if (IsServer)
                         ConfirmBtnClicked();
@@ -159,8 +158,8 @@ public class Disintegrator : Production
         base.OpenUI();
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-        sInvenManager.progressBar.SetMaxProgress(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
-        sInvenManager.SetCooldownText(effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount));
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.SetCooldownText(cooldown);
 
         scrap = ui.GetComponentInChildren<Scrap>();
         if (confirmBtn == null)

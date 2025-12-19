@@ -171,6 +171,22 @@ public class MapCameraController : MonoBehaviour
         GameManager.instance.onUIChangedCallback?.Invoke(CameraObj);
     }
 
+    public void ToggleMap(Vector3 pos)
+    {
+        ToggleMap();
+        SetCamPos(pos, 4);
+    }
+
+    public void SetCamPos(Vector3 pos, int zoom)
+    {
+        camPos.x = pos.x;
+        camPos.y = pos.y;
+        transform.position = camPos;
+        zoomLevel = zoom;
+        pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
+        pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
+    }
+
     void LeftClick(InputAction.CallbackContext ctx)
     {
         if (RaycastUtility.IsPointerOverUI(Input.mousePosition))

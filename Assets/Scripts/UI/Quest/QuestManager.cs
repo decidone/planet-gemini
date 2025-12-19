@@ -126,7 +126,18 @@ public class QuestManager : MonoBehaviour
                         overall.onOverallChangedCallback += QuestCompCheck;
                 }
                 break;
-            case 22:    // 유닛 생산
+            case 22:    // 아이템 사용
+                if (quests[order].item != null)
+                {
+                    int itemAmount = overall.OverallConsumptionItemCheck(quests[order].item);
+                    descriptionText.text = quests[order].description + "\n" + itemAmount + " / " + quests[order].amount;
+                    if (quests[order].amount <= itemAmount)
+                        QuestClear();
+                    else
+                        overall.onOverallChangedCallback += QuestCompCheck;
+                }
+                break;
+            case 23:    // 유닛 생산
                 if (networkObjManager.UnitCheck(quests[order].unitData))
                     QuestClear();
                 else
@@ -232,6 +243,15 @@ public class QuestManager : MonoBehaviour
                 }
                 break;
             case 22:
+                int consumptionAmount = overall.OverallConsumptionItemCheck(quests[currentQuest].item);
+                descriptionText.text = quests[currentQuest].description + "\n" + consumptionAmount + " / " + quests[currentQuest].amount;
+                if (quests[currentQuest].amount <= consumptionAmount)
+                {
+                    overall.onOverallChangedCallback -= QuestCompCheck;
+                    QuestClear();
+                }
+                break;
+            case 23:
                 if (networkObjManager.UnitCheck(quests[currentQuest].unitData))
                 {
                     networkObjManager.onUnitChangedCallback -= QuestCompCheck;

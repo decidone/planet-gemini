@@ -1,7 +1,7 @@
 {
   "Core":{
     "Core":{
-      "2":{"items":["IronPlate","Cogwheel"],"amounts":[25,25],"coreLv":1,"time":30,"basicScience":false, "sortIndex":0},
+      "2":{"items":["Wire","Cogwheel"],"amounts":[20,20],"coreLv":1,"time":30,"basicScience":false, "sortIndex":0},
       "3":{"items":["ManaStone","Motor","SteelPlate"],"amounts":[5,30,40],"coreLv":2,"time":60,"basicScience":false,"sortIndex":0},
       "4":{"items":["ManaStone","Module","Plastic","Rubber"],"amounts":[40,60,80,80],"coreLv":3,"time":120,"basicScience":false,"sortIndex":0},
       "5":{"items":["VoidShard","ManaStone","AdamantitePlate","ControlUnit","Module"],"amounts":[5,60,60,40,80],"coreLv":4,"time":180,"basicScience":false,"sortIndex":0}

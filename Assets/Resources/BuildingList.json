@@ -24,12 +24,12 @@
     "1":{"items":["Motor","SteelBeam"],"amounts":[4,20]}
   },
   "Belt":{
-    "1":{"items":["CopperPlate"],"amounts":[2]},
+    "1":{"items":["CopperPlate"],"amounts":[1]},
     "2":{"items":["IronPlate","Screw"],"amounts":[2,2]},
     "3":{"items":["SteelPlate","Rubber"],"amounts":[2,2]}
   },
   "UnderBelt":{
-    "1":{"items":["CopperPlate"],"amounts":[10]},
+    "1":{"items":["CopperPlate"],"amounts":[5]},
     "2":{"items":["IronPlate","Screw"],"amounts":[10,10]},
     "3":{"items":["SteelPlate","Rubber"],"amounts":[10,10]}
   },

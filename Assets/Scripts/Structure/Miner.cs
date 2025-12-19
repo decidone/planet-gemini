@@ -14,7 +14,7 @@ public class Miner : Production
         base.Start();
         Init();
         isMainSource = true;
-        StartCoroutine(EfficiencyCheck());
+        StartCoroutine(EfficiencyCheckLoop());
     }
 
     protected override void Update()
@@ -234,6 +234,7 @@ public class Miner : Production
                 cooldown = _efficiency * 0.8f;
             }
             effiCooldown = cooldown;
+            EfficiencyCheck();
             minerCellCount = _minerCellCount;
             FactoryOverlay();
         }

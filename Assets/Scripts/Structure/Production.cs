@@ -184,6 +184,7 @@ public abstract class Production : Structure
         sInvenManager.ResetInvenOption();
         cooldown = recipe.cooldown;
         effiCooldown = cooldown;
+        EfficiencyCheck();
 
         float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
         float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
@@ -234,6 +235,7 @@ public abstract class Production : Structure
                     recipeIndex = index;
                     cooldown = recipe.cooldown;
                     effiCooldown = cooldown;
+                    EfficiencyCheck();
                 }
             }
         }
@@ -256,6 +258,7 @@ public abstract class Production : Structure
                 recipeIndex = index;
                 cooldown = recipe.cooldown;
                 effiCooldown = cooldown;
+                EfficiencyCheck();
                 SetOutput(recipe);
                 if (sInvenManager)
                     sInvenManager.progressBar.SetProgress(0);
@@ -372,7 +375,7 @@ public abstract class Production : Structure
     }
 
     [ClientRpc]
-    protected void ClientUISetClientRpc(int syncFuel, float syncTimer, float syncCooldown, float syncEfficiency)
+    protected void ClientUISetClientRpc(int syncFuel, float syncTimer, float syncCooldown, float syncEffiCooldown)
     {
         if (IsServer)
             return;
@@ -380,7 +383,7 @@ public abstract class Production : Structure
         fuel = syncFuel;
         prodTimer = syncTimer;
         cooldown = syncCooldown;
-        effiCooldown = syncEfficiency;
+        effiCooldown = syncEffiCooldown;
     }
 
     public virtual void CloseUI()
@@ -660,42 +663,50 @@ public abstract class Production : Structure
         LineRendererSet(endPos);
     }
 
-    public override IEnumerator EfficiencyCheck()
+    public override IEnumerator EfficiencyCheckLoop()
     {
         while (true)
         {
             if (conn != null && conn.group != null)
             {
-                if (conn.group.efficiency > 0)
+                if (conn.group.efficiency > 0.001f)
                 {
-                    if (efficiency != conn.group.efficiency)
-                    {
-                        efficiency = conn.group.efficiency;
-                        if (efficiency != 0)
-                        {
-                            effiCooldown = cooldown / efficiency;
-                        }
-                        else
-                        {
-                            effiCooldown = cooldown;
-                        }
+                    efficiency = conn.group.efficiency;
+                    effiCooldown = cooldown / efficiency;
 
-                        if (isUIOpened)
-                        {
-                            float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
-                            float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
-                            sInvenManager.progressBar.SetMaxProgress(productionTime);
-                            sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
-                        }
+                    if (isUIOpened)
+                    {
+                        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+                        float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+                        sInvenManager.progressBar.SetMaxProgress(productionTime);
+                        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
                     }
                 }
                 else
                 {
                     efficiency = 0;
+                    effiCooldown = cooldown;
                 }
             }
 
             yield return new WaitForSecondsRealtime(0.5f);
+        }
+    }
+
+    public override void EfficiencyCheck()
+    {
+        if (conn != null && conn.group != null)
+        {
+            if (conn.group.efficiency > 0.001f)
+            {
+                efficiency = conn.group.efficiency;
+                effiCooldown = cooldown / efficiency;
+            }
+            else
+            {
+                efficiency = 0;
+                effiCooldown = cooldown;
+            }
         }
     }
 

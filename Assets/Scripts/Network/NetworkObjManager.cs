@@ -51,7 +51,7 @@ public class NetworkObjManager : NetworkBehaviour
         else if (netObj.TryGetComponent(out UnitCommonAi unitCommonAi))
         {
             netUnitCommonAis.Add(unitCommonAi);
-            onUnitChangedCallback?.Invoke(22);
+            onUnitChangedCallback?.Invoke(23);
         }
         else
         {

@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3653b061648824b41b385336c0fac079, type: 3}
-  m_Name: Unit_01
+  m_Name: Consumption_01
   m_EditorClassIdentifier: 
-  type: 23
-  title: Unit
-  description: Make bounce robot at a unit factory.
-  item: {fileID: 0}
+  type: 22
+  title: Power On
+  description: Fuel the generator with coal and supply power to the nearby Miner
+  item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   strData: {fileID: 0}
-  unitData: {fileID: 11400000, guid: d4523c5fa7df1244998568cd8862e84a, type: 2}
-  amount: -1
+  unitData: {fileID: 0}
+  amount: 1
   destination: -1
   scienceTech: -1
-  hasDicLink: 0
-  dicKeyword: 
+  hasDicLink: 1
+  dicKeyword: Coal Generator

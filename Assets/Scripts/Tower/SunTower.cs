@@ -13,7 +13,7 @@ public class SunTower : TowerAi
     {
         base.Start();
         view.enabled = false;
-        StartCoroutine(EfficiencyCheck());
+        StartCoroutine(EfficiencyCheckLoop());
     }
 
     protected override void Update()

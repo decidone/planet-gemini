@@ -156,6 +156,8 @@ public class Overall : NetworkBehaviour
                 {
                     itemsConsumption[i] += amount;
                     display.SetConsumptionAmount(i, itemsConsumption[i]);
+
+                    onOverallChangedCallback?.Invoke(22);
                 }
                 break;
             }
@@ -449,6 +451,20 @@ public class Overall : NetworkBehaviour
             if (itemList[i] == item)
             {
                 amout = itemsProduction[i];
+            }
+        }
+
+        return amout;
+    }
+
+    public int OverallConsumptionItemCheck(Item item)
+    {
+        int amout = 0;
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            if (itemList[i] == item)
+            {
+                amout = itemsConsumption[i];
             }
         }
 

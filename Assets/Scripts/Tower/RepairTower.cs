@@ -16,7 +16,7 @@ public class RepairTower : TowerAi
     protected override void Start()
     {
         base.Start();
-        StartCoroutine(EfficiencyCheck());
+        StartCoroutine(EfficiencyCheckLoop());
     }
 
     protected override void Update()

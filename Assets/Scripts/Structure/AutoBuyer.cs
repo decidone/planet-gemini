@@ -273,8 +273,9 @@ public class AutoBuyer : Production
             MinSliderUIValueChanged(0);
         }
 
-        base.SetRecipe(_recipe, index);
-        //output = itemDic[recipe.items[0]];
+        recipe = _recipe;
+        recipeIndex = index;
+        sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[0].outputSlot = true;
     }

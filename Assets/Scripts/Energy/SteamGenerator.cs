@@ -301,9 +301,13 @@ public class SteamGenerator : FluidFactoryCtrl
                     if (warningIconCheck)
                     {
                         if (warning != null)
+                        {
                             StopCoroutine(warning);
+                            StrWarningManager.instance.RemoveStrList(this);
+                        }
                         warningIconCheck = false;
                         warningIcon.enabled = false;
+                        mapWarningIcon.enabled = false;
                     }
                 }
                 else
@@ -311,10 +315,16 @@ public class SteamGenerator : FluidFactoryCtrl
                     if (!warningIconCheck)
                     {
                         if (warning != null)
+                        {
                             StopCoroutine(warning);
+                            StrWarningManager.instance.RemoveStrList(this);
+                        }
                         warning = FlickeringIcon();
                         StartCoroutine(warning);
                         warningIconCheck = true;
+                        StrWarningManager.instance.AddStrList(this);
+                        mapWarningIcon.sprite = warningIcon.sprite;
+                        mapWarningIcon.enabled = true;
                     }
                 }
             }

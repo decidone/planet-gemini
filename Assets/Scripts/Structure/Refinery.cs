@@ -102,7 +102,7 @@ public class Refinery : FluidFactoryCtrl
 
         displaySlot.SetInputItem(ItemList.instance.itemDic["CrudeOil"]);
         displaySlot.AddItem(ItemList.instance.itemDic["CrudeOil"], 0);
-        StartCoroutine(EfficiencyCheck());
+        StartCoroutine(EfficiencyCheckLoop());
     }
 
     protected override void Update()
@@ -274,11 +274,6 @@ public class Refinery : FluidFactoryCtrl
 
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
-
-        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
-        float productionPerMin = 60 / productionTime;
-        sInvenManager.progressBar.SetMaxProgress(productionTime);
-        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
 
         rManager.recipeBtn.gameObject.SetActive(true);
         rManager.recipeBtn.onClick.RemoveAllListeners();
