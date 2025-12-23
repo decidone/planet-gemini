@@ -391,6 +391,8 @@ public class UnitCommonAi : NetworkBehaviour
             dieCheck = true;
             DieFuncServerRpc();
             StopAllCoroutines();
+            seeker.enabled = false; 
+            seeker.OnDestroy();    
         }
     }
 

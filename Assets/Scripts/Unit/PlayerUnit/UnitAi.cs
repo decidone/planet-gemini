@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 using Unity.Netcode;
+using System.Linq;
 
 // UTF-8 설정
 public class UnitAi : UnitCommonAi
@@ -230,7 +231,10 @@ public class UnitAi : UnitCommonAi
 
     protected override IEnumerator CheckPath(Vector3 targetPos, string moveFunc)
     {
-        ABPath path = ABPath.Construct(tr.position, targetPos, null);
+        Vector3 dir = (tr.position - targetPos).normalized;
+        Vector3 attackPos = targetPos + dir;
+
+        ABPath path = ABPath.Construct(tr.position, attackPos, null);
         seeker.CancelCurrentPathRequest();
         seeker.StartPath(path);
 
@@ -318,7 +322,7 @@ public class UnitAi : UnitCommonAi
 
         if (!isHold)
         {
-            tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
+            tr.position = Vector2.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * unitCommonData.MoveSpeed * slowSpeedPer);
 
             if(playerUnitPortalIn)
             {
@@ -615,8 +619,6 @@ public class UnitAi : UnitCommonAi
             StartCoroutine(TakeDamageEffect());
         }
 
-        aggroAmount.TakeDamageAggroAmountSub(damage);
-
         hp -= reducedDamage;
         if (hp < 0f)
             hp = 0f;
@@ -636,6 +638,9 @@ public class UnitAi : UnitCommonAi
             if (IsServer)
             {
                 DieFuncServerRpc();
+                StopAllCoroutines();
+                seeker.enabled = false;
+                seeker.OnDestroy();
             }
         }       
     }

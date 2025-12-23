@@ -503,7 +503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseAggroAmount: 10
+  baseAggroAmount: 8
   aggroAmount: 0
 --- !u!50 &2561607961426839049
 Rigidbody2D:

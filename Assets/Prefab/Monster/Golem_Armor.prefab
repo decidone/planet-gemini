@@ -144,6 +144,7 @@ Transform:
   - {fileID: 287559255064280749}
   - {fileID: 8190977836250442787}
   - {fileID: 6167842526547620682}
+  - {fileID: 349874392921853162}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2995091061736811076
@@ -314,13 +315,17 @@ MonoBehaviour:
   isScriptActive: 0
   monsterType: 0
   waveState: 0
-  waveStateEnd: 0
   waveArrivePos: 0
   normalTraceTimer: 0
   isDebuffed: 0
   targetOn: 0
   justTraceTimer: 0
   justTraceInterval: 3
+  bestTarget: {fileID: 0}
+  targetPos: {fileID: 0}
+  moveTargetPos: {fileID: 0}
+  mapTargetPos: {fileID: 0}
+  blockObj: {fileID: 0}
   golemAttackFX: {fileID: 3455073265877218510, guid: cd93eff768044de4eba4c9eb476f1bb8, type: 3}
 --- !u!70 &7454456902833923465
 CapsuleCollider2D:
@@ -746,4 +751,66 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 8453275426282766142, guid: 029a56b1420ee984dab85524f44d4742, type: 3}
   m_PrefabInstance: {fileID: 2362284441825725556}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7861274120328780039
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2995091061736811077}
+    m_Modifications:
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9173998845499840026, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_Name
+      value: MonsterMapSeeker
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+--- !u!4 &349874392921853162 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+  m_PrefabInstance: {fileID: 7861274120328780039}
   m_PrefabAsset: {fileID: 0}

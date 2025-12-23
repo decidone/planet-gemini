@@ -53,7 +53,11 @@ public class ScienceBuilding : PortalObj
     [ServerRpc]
     protected override void DieFuncServerRpc()
     {
-        Debug.Log(gameManager);
         gameManager.SetGameOverUI();
+    }
+
+    public override void ColliderTriggerOnOff(bool isOn)
+    {
+        col.isTrigger = true;
     }
 }

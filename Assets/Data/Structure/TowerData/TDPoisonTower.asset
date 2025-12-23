@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 35
   attackDist: 10
-  attDelayTime: 1.2
+  attDelayTime: 2
   maxEnergyBulletAmount: 5
   reloadCooldown: 2
-  upgradeDamage: 80
-  upgradeAttDelayTime: 0.5
+  upgradeDamage: 45
+  upgradeAttDelayTime: 1.5

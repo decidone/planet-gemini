@@ -25,6 +25,8 @@ public class CameraController : MonoBehaviour
     float mapHeight;
     float mapOffsetY;
 
+    public bool isPlayerRespawning = false;
+
     #region Singleton
     public static CameraController instance;
 
@@ -87,7 +89,7 @@ public class CameraController : MonoBehaviour
     void LateUpdate()
     {
         float offsetY = 0;
-        if (target != null)
+        if (target != null && !isPlayerRespawning)
         {
             if (!GameManager.instance.isPlayerInMarket)
             {

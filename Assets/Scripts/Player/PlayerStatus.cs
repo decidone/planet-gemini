@@ -22,11 +22,13 @@ public class PlayerStatus : NetworkBehaviour
     float selfHealTimer;
     bool damageEffectOn;
 
+    [HideInInspector]
     public bool isPlayerInHostMap = true;
+    [HideInInspector]
     public bool isPlayerInMarket = false;
     protected SpriteRenderer unitSprite;
+    [HideInInspector]
     public bool tankOn;
-
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
 
@@ -195,17 +197,17 @@ public class PlayerStatus : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        TakeDamageServerRpc(damage);
+        TakeDamageServerRpc(gameObject, damage);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void TakeDamageServerRpc(float damage)
+    public void TakeDamageServerRpc(NetworkObjectReference networkObjectReference, float damage)
     {
-        TakeDamageClientRpc(damage);
+        TakeDamageClientRpc(networkObjectReference, damage);
     }
 
     [ClientRpc]
-    public void TakeDamageClientRpc(float damage)
+    public void TakeDamageClientRpc(NetworkObjectReference networkObjectReference, float damage)
     {
         HPUISet(true);
 
@@ -221,7 +223,12 @@ public class PlayerStatus : NetworkBehaviour
 
             hp -= damage;
             if (hp < 0f)
-                hp = 0f;
+            {
+                hp = 0f; 
+                networkObjectReference.TryGet(out NetworkObject playerNetworkObject);
+                if (NetworkManager.Singleton.LocalClientId == playerNetworkObject.OwnerClientId)
+                    GameManager.instance.SetRespawnUI();
+            }
             onHpChangedCallback?.Invoke();
             hpBar.fillAmount = hp / maxHp;
         }
@@ -243,6 +250,7 @@ public class PlayerStatus : NetworkBehaviour
             hpBar.fillAmount = tankHp / tankMaxHp;
         }
     }
+
     protected IEnumerator TakeDamageEffect()
     {
         damageEffectOn = true;

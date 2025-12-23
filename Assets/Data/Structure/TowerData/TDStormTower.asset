@@ -16,6 +16,6 @@ MonoBehaviour:
   attackDist: 10
   attDelayTime: 0.5
   maxEnergyBulletAmount: 5
-  reloadCooldown: 2
+  reloadCooldown: 0.7
   upgradeDamage: 100
-  upgradeAttDelayTime: 0.25
+  upgradeAttDelayTime: 0.3
