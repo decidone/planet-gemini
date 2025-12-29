@@ -143,6 +143,9 @@ public class QuestManager : MonoBehaviour
                 else
                     networkObjManager.onUnitChangedCallback += QuestCompCheck;
                 break;
+            case 24:    // 벨트 건설
+                    networkObjManager.onStructureChangedCallback += QuestCompCheck;
+                break;
             case 30:    // 스포너 파괴
                 descriptionText.text = quests[order].description + "\n" + overall.spawnerDestroyCount + " / " + quests[order].amount;
                 if (quests[order].amount <= overall.spawnerDestroyCount)
@@ -257,6 +260,10 @@ public class QuestManager : MonoBehaviour
                     networkObjManager.onUnitChangedCallback -= QuestCompCheck;
                     QuestClear();
                 }
+                break;
+            case 24:
+                networkObjManager.onStructureChangedCallback -= QuestCompCheck;
+                QuestClear();
                 break;
             case 30:
                 descriptionText.text = quests[currentQuest].description + "\n" + overall.spawnerDestroyCount + " / " + quests[currentQuest].amount;

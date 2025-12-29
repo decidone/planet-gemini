@@ -11,6 +11,7 @@ public class FurnaceUpgrade : Production
         recipes = rManager.GetRecipeList("Furnace", this);
         inventory.onItemChangedCallback += SetFurnaceRecipe;
         SetFurnaceRecipe(0);
+        StartCoroutine(EfficiencyCheckLoop());
     }
 
     protected override void Update()
@@ -26,7 +27,7 @@ public class FurnaceUpgrade : Production
                     {
                         OperateStateSet(true);
                         prodTimer += Time.deltaTime;
-                        if (prodTimer > cooldown)
+                        if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
                         {
                             if (IsServer)
                             {
@@ -95,10 +96,13 @@ public class FurnaceUpgrade : Production
                 recipe = _recipe;
                 output = itemDic[recipe.items[recipe.items.Count - 1]];
                 cooldown = recipe.cooldown;
+                effiCooldown = cooldown;
+                EfficiencyCheck();
 
-                float productionPerMin = 60 / cooldown;
-                sInvenManager.progressBar.SetMaxProgress(cooldown);
-                sInvenManager.SetCooldownText(cooldown, FormatFloat(productionPerMin));
+                float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+                float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+                sInvenManager.progressBar.SetMaxProgress(productionTime);
+                sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
 
                 FactoryOverlay();
             }
@@ -111,10 +115,11 @@ public class FurnaceUpgrade : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
 
-        float productionPerMin = 60 / cooldown;
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+        float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+        sInvenManager.progressBar.SetMaxProgress(productionTime);
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
-        sInvenManager.SetCooldownText(cooldown, FormatFloat(productionPerMin));
+        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
 
         List<Item> items = new List<Item>();
         foreach (Recipe recipe in recipes)

@@ -47,6 +47,7 @@ public class NetworkObjManager : NetworkBehaviour
         else if (netObj.TryGetComponent(out BeltGroupMgr beltGroupMgr))
         {
             netBeltGroupMgrs.Add(beltGroupMgr);
+            onStructureChangedCallback?.Invoke(24);
         }
         else if (netObj.TryGetComponent(out UnitCommonAi unitCommonAi))
         {

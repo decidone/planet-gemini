@@ -18,7 +18,7 @@ public class Quest : ScriptableObject
      */
 
     [Header("Common")]
-    [Tooltip("0: 텔레포트, 1: 아이템 전송 \n10: 아이템 구매, 11: 아이템 판매, 12: 아이템 습득, 13: 벌목 \n20: 건물 건설, 21: 아이템 생산, 22: 아이템 사용, 23: 유닛 생산 \n30: 적 스포너 파괴, 31: 적 유닛 처치 \n40: 특정 연구 완료 \n50: 웨이브 클리어")]
+    [Tooltip("0: 텔레포트, 1: 아이템 전송 \n10: 아이템 구매, 11: 아이템 판매, 12: 아이템 습득, 13: 벌목 \n20: 건물 건설, 21: 아이템 생산, 22: 아이템 사용, 23: 유닛 생산, 24: 벨트 건설 \n30: 적 스포너 파괴, 31: 적 유닛 처치 \n40: 특정 연구 완료 \n50: 웨이브 클리어")]
     public int type = -1;
     [TextArea(3, 10)] public string title;
     [TextArea(3, 10)] public string description;

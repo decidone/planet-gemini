@@ -14,6 +14,8 @@ public class Bounty : MonoBehaviour
     public int bounty;
     int newSpawnerCount;
     int newMonsterCount;
+    readonly int spawnerBounty = 1000;
+    readonly int monsterBounty = 20;
 
     private void Awake()
     {
@@ -34,8 +36,8 @@ public class Bounty : MonoBehaviour
         if (newMonsterCount != 0)
             monsterText.text += " +" + newMonsterCount;
 
-        bounty = (overall.spawnerDestroyCount - overall.spawnerBountyReceived) * 100;
-        bounty += (overall.monsterKillCount - overall.monsterBountyReceived) * 5;
+        bounty = (overall.spawnerDestroyCount - overall.spawnerBountyReceived) * spawnerBounty;
+        bounty += (overall.monsterKillCount - overall.monsterBountyReceived) * monsterBounty;
         finance.SetFinance(bounty);
         btn.interactable = bounty > 0;
     }

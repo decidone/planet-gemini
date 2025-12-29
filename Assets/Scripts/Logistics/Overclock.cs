@@ -9,40 +9,17 @@ public class Overclock : Production
     protected float searchInterval = 1f; // 딜레이 간격 설정
     [SerializeField]
     SpriteRenderer view;
-    PreBuilding preBuilding;
-    bool preBuildingCheck;
-    bool isOperated;
 
     protected override void Start()
     {
         base.Start();
-        gameManager = GameManager.instance;
-        preBuilding = PreBuilding.instance;
+        StartCoroutine(EfficiencyCheckLoop());
     }
 
     protected override void Update()
     {
         base.Update();
 
-        //if (gameManager.focusedStructure == null)
-        //{
-        //    if (preBuilding.isBuildingOn && !removeState)
-        //    {
-        //        if (!preBuildingCheck)
-        //        {
-        //            preBuildingCheck = true;
-        //            view.enabled = true;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (preBuildingCheck)
-        //        {
-        //            preBuildingCheck = false;
-        //            view.enabled = false;
-        //        }
-        //    }
-        //}
         if (!isPreBuilding && IsServer)
         {
             searchTimer += Time.deltaTime;
@@ -56,9 +33,9 @@ public class Overclock : Production
 
         if (conn != null && conn.group != null)
         {
-            if(conn.group.efficiency > 0 && !isOperated)
+            if(conn.group.efficiency > 0 && !isOperate)
                 OverclockOn(true);
-            else if(conn.group.efficiency == 0 && isOperated)
+            else if(conn.group.efficiency == 0 && isOperate)
                 OverclockOn(false);
         }
     }
@@ -87,7 +64,7 @@ public class Overclock : Production
         }
     }
 
-    public void RemoveObjectsOutOfRange(Production obj)//근쳐 타워 삭제시 발동되게
+    public void RemoveObjectsOutOfRange(Production obj) //근처 타워 삭제시 발동되게
     {
         if (buildingList.Contains(obj))
         {
@@ -102,7 +79,7 @@ public class Overclock : Production
         {
             building.OverclockSyncServerRpc(isOn);
         }
-        isOperated = isOn;
+        isOperate = isOn;
     }
 
     public void OverclockRemove()
@@ -113,24 +90,6 @@ public class Overclock : Production
             building.OverclockSyncServerRpc(false);
         }
     }
-
-    //public override void AddConnector(EnergyGroupConnector connector)
-    //{
-    //    base.AddConnector(connector);
-    //    foreach (Production building in buildingList)
-    //    {
-    //        building.OverclockSet(true);
-    //    }
-    //}
-
-    //public override void RemoveConnector(EnergyGroupConnector connector)
-    //{
-    //    base.RemoveConnector(connector);
-    //    foreach (Production building in buildingList)
-    //    {
-    //        building.OverclockSet(false);
-    //    }
-    //}
 
     public override Dictionary<Item, int> PopUpItemCheck() { return null; }
 

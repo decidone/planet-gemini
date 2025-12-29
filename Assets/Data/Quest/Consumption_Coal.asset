@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3653b061648824b41b385336c0fac079, type: 3}
-  m_Name: Consumption_01
+  m_Name: Consumption_Coal
   m_EditorClassIdentifier: 
   type: 22
   title: Power On
