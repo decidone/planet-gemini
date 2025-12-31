@@ -3206,6 +3206,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3573946311302364915, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+      propertyPath: m_Name
+      value: SaveImg
+      objectReference: {fileID: 0}
     - target: {fileID: 4531759190437487300, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3438,7 +3442,7 @@ Canvas:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1095768246952270825 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9065064658129366914, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_CorrespondingSourceObject: {fileID: 572397516373189141, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
   m_PrefabInstance: {fileID: 1095768246952270821}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
