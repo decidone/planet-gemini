@@ -12,6 +12,7 @@ public class TowerAreaAttackFx : TowerAttackFx
         attackUnit = obj;
     }
 
+    //에니메이션 사용
     void FxEnd(string str)
     {
         if (str == "false")

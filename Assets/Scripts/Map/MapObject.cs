@@ -23,6 +23,7 @@ public class MapObject : MonoBehaviour
         {
             // 1. GraphUpdateObject 생성
             GraphUpdateObject guo = new GraphUpdateObject(col.bounds);
+            guo.updatePhysics = true; 
             guo.modifyWalkability = true;
             guo.setWalkability = true;  // 통행 가능하게 설정
 

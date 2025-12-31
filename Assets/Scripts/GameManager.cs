@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -152,9 +153,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField]
     Text dayText;
     [SerializeField]
-    Text dDayHostMap;
-    [SerializeField]
-    Text dDayClientMap;
+    Text bloodMoonDDayText;
     [SerializeField]
     SpriteRenderer brightness;
 
@@ -199,6 +198,8 @@ public class GameManager : NetworkBehaviour
 
     int consecutiveWaveCount;   // 연속으로 발생한 웨이브 수
     int waveMaxCount = 3;       // 연속 최대 수
+
+    public Image saveImg;
 
     #region Singleton
     public static GameManager instance;
@@ -438,7 +439,7 @@ public class GameManager : NetworkBehaviour
             if (autoSaveTimer > autoSaveinterval)
             {
                 autoSaveTimer = 0;
-                DataManager.instance.Save(0);
+                DataManager.instance.Save(0, null);
             }
         }
     }
@@ -453,6 +454,7 @@ public class GameManager : NetworkBehaviour
             if (consecutiveWaveCount < waveMaxCount)
             {
                 float energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
+
                 if (energyUseFullAmount > waveEnergyOverLimit)
                 {
                     float hostPercent = hostMapEnergyUseAmount / energyUseFullAmount;
@@ -500,7 +502,7 @@ public class GameManager : NetworkBehaviour
     void ViolentDayOnClientRpc(bool violentDaySync, bool violentDayOnCheck, int dday)
     {
         violentDayCheck = violentDaySync;
-        dDayHostMap.text = "D - " + ((violentDayOnCheck && dday == violentCycle) ? "Day" : dday);
+        bloodMoonDDayText.text = "D - " + ((violentDayOnCheck && dday == violentCycle) ? "Day" : dday);
     }
 
     int CalculateDday(int currentDay, int cycle)
@@ -1515,7 +1517,7 @@ public class GameManager : NetworkBehaviour
         violentDay = data.violentDay;
         wavePlanet = data.wavePlanet;
         timeImg.sprite = timeImgSet[dayIndex];
-
+        MainGameSetting.instance.DifficultylevelSet(data.difficultyLevel);
         if (violentDay)
         {
             timeImg.color = new Color32(255, 50, 50, 255);
@@ -1575,7 +1577,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void SetPlayerLocationClientRpc(bool isHostMap, bool isInMarket, bool hostCheck)
     {
-        PlayerStatus[] players = UnityEngine.Object.FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None);
+        PlayerStatus[] players = FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None);
         foreach (PlayerStatus p in players)
         {
             if (hostCheck && p.name == "Desire")
@@ -1598,7 +1600,7 @@ public class GameManager : NetworkBehaviour
     {
         PlayerSaveData data = new PlayerSaveData();
         data.hp = -1;
-        PlayerStatus[] players = UnityEngine.Object.FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None);
+        PlayerStatus[] players = FindObjectsByType<PlayerStatus>(FindObjectsSortMode.None);
         foreach (PlayerStatus p in players)
         {
             if (isHost && p.name == "Desire")
@@ -1655,16 +1657,16 @@ public class GameManager : NetworkBehaviour
                 playerStatus.hp = playerMaxHp;
                 if (isPlayerInHostMap)
                 {
-                    player.transform.position = hostPlayerSpawnPos;
+                    player.GetComponent<ClientNetworkTransform>().Teleport(hostPlayerSpawnPos, Quaternion.identity, player.transform.localScale);
                 }
                 else
                 {
-                    player.transform.position = clientPlayerSpawnPos;
+                    player.GetComponent<ClientNetworkTransform>().Teleport(clientPlayerSpawnPos, Quaternion.identity, player.transform.localScale);
                 }
             }
             else
             {
-                player.transform.position = Vector3Extensions.ToVector3(data.pos);
+                player.GetComponent<ClientNetworkTransform>().Teleport(Vector3Extensions.ToVector3(data.pos), Quaternion.identity, player.transform.localScale);
             }
         }
         else
@@ -1752,6 +1754,8 @@ public class GameManager : NetworkBehaviour
     {
         isWaitingForRespawn = true;
         PlayerStatus status = player.GetComponent<PlayerStatus>();
+        CameraController.instance.isPlayerRespawning = true;
+        player.GetComponent<ClientNetworkTransform>().Teleport(new Vector3(-100, -100, 0), Quaternion.identity, player.transform.localScale);
         status.SetHpServerRpc(0); // 명령어로 동작시킬 경우를 생각해서 hp를 0으로 만들기 위해 넣음
         GameStatePopup.instance.SetRespawnUI();
     }
@@ -1760,14 +1764,40 @@ public class GameManager : NetworkBehaviour
     {
         isWaitingForRespawn = false;
         PlayerStatus status = player.GetComponent<PlayerStatus>();
+        CameraController.instance.isPlayerRespawning = false;
         status.SetHpServerRpc(playerMaxHp);
         if (isPlayerInHostMap)
-        {
-            player.transform.position = hostPlayerSpawnPos;
-        }
+            player.GetComponent<ClientNetworkTransform>().Teleport(hostPlayerSpawnPos, Quaternion.identity, player.transform.localScale);
+        else
+            player.GetComponent<ClientNetworkTransform>().Teleport(clientPlayerSpawnPos, Quaternion.identity, player.transform.localScale);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void RespawnPlayerTransformServerRpc(NetworkObjectReference networkObjectReference, bool isDie, bool isInHostMap)
+    {
+        RespawnPlayerTransformClientRpc(networkObjectReference, isDie, isInHostMap, Vector3.zero);
+    }
+
+    [ClientRpc]
+    void RespawnPlayerTransformClientRpc(NetworkObjectReference networkObjectReference, bool isDie, bool isInHostMap, Vector3 pos)
+    {
+        networkObjectReference.TryGet(out NetworkObject playerNetworkObject);
+
+        if (NetworkManager.Singleton.LocalClientId != playerNetworkObject.OwnerClientId)
+            return;
+
+        if (isDie)
+            playerNetworkObject.GetComponent<ClientNetworkTransform>().Teleport(new Vector3(-100, -100, 0), Quaternion.identity, playerNetworkObject.transform.localScale);
         else
         {
-            player.transform.position = clientPlayerSpawnPos;
+            if (isInHostMap)
+            {
+                playerNetworkObject.GetComponent<ClientNetworkTransform>().Teleport(hostPlayerSpawnPos, Quaternion.identity, playerNetworkObject.transform.localScale);
+            }
+            else
+            {
+                playerNetworkObject.GetComponent<ClientNetworkTransform>().Teleport(clientPlayerSpawnPos, Quaternion.identity, playerNetworkObject.transform.localScale);
+            }
         }
     }
 
@@ -1778,7 +1808,7 @@ public class GameManager : NetworkBehaviour
 
     [ServerRpc(RequireOwnership = false)]
     public void GameOverServerRpc()
-    {
+    {        
         SteamManager.instance.LeaveLobby();
         NetworkManager.Singleton.Shutdown();
         Destroy(NetworkManager.Singleton.gameObject);

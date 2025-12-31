@@ -29,7 +29,7 @@ public class TowerSingleAttackFx : TowerAttackFx
             return;
         }
 
-        transform.position += (Vector3)moveNextStep * 20 * Time.fixedDeltaTime;
+        transform.position += (Vector3)moveNextStep * 25 * Time.fixedDeltaTime;
     }
 
     public void GetTarget(Vector3 target, float GetDamage, GameObject obj, bool explo)

@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 314531824626125028}
   - component: {fileID: 6855278147112794435}
   - component: {fileID: 7245252683046581172}
+  - component: {fileID: -5683540215938872023}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -382,8 +383,7 @@ MonoBehaviour:
   timeImg: {fileID: 0}
   timeText: {fileID: 0}
   dayText: {fileID: 0}
-  dDayHostMap: {fileID: 0}
-  dDayClientMap: {fileID: 0}
+  bloodMoonDDayText: {fileID: 0}
   brightness: {fileID: 0}
   autoSaveTimer: 0
   autoSaveinterval: 0
@@ -599,6 +599,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 92c25844b79f2b54f85b0ae2ea66d3d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-5683540215938872023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3986364635626952762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e44a229ee1081748915663728da08f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4287165206276915524

@@ -10,12 +10,6 @@ public class WarningWindow : MonoBehaviour
     Image imgPanelImg;
     [SerializeField]
     Text warningText;
-    bool warningStart;
-    float setTimer;
-    float maxTimer;
-
-    [SerializeField]
-    bool testBtn = false;
 
     Color32 panelColor;
     Coroutine blinkCoroutine;
@@ -39,7 +33,6 @@ public class WarningWindow : MonoBehaviour
     {
         imgPanelImg = imgPanel.GetComponent<Image>();
         panelColor = imgPanelImg.color;
-        maxTimer = 10;
     }
 
     // Update is called once per frame
@@ -48,22 +41,6 @@ public class WarningWindow : MonoBehaviour
         if (Time.timeScale == 0)
         {
             return;
-        }
-
-        //if (warningStart)
-        //{
-        //    setTimer += Time.deltaTime;
-
-        //    if (setTimer > maxTimer)
-        //    {
-        //        WarningState(false);
-        //    }
-        //}
-
-        if (testBtn)
-        {
-            WarningState(true);
-            testBtn = false;
         }
     }
 
@@ -88,7 +65,6 @@ public class WarningWindow : MonoBehaviour
     void WarningState(bool start)
     {
         imgPanel.SetActive(start);
-        warningStart = start;
         if (start)
         {
             if (blinkCoroutine != null)
@@ -122,8 +98,6 @@ public class WarningWindow : MonoBehaviour
 
             // 150 -> 70 (Fade In)
             yield return StartCoroutine(FadeAlpha(col, 150, 70, 0.7f));
-
-            Debug.Log("blink " + (i + 1));
         }
 
         WarningState(false);

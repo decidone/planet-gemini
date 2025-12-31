@@ -18,7 +18,7 @@ MonoBehaviour:
   damage: 17
   upgradeDamage: 0
   moveSpeed: 5
-  attackDist: 4
+  attackDist: 5.5
   attDelayTime: 1.8
   upgradeAttDelayTime: 0
   colliderRadius: 15

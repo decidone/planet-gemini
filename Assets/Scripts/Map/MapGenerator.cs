@@ -116,9 +116,9 @@ public class MapGenerator : MonoBehaviour
         hostMap.mapData = new List<List<Cell>>();
         clientMap.mapData = new List<List<Cell>>();
 
-        map1CenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt(height / 2));
+        map1CenterPos = new Vector3(((float)width) / 2, ((float)height) / 2);
         AddGridGraph(map1CenterPos, true);
-        map2CenterPos = new Vector3(Mathf.FloorToInt(width / 2), Mathf.FloorToInt((height / 2) + height + clientMapOffsetY));
+        map2CenterPos = new Vector3(((float)width) / 2, ((float)height) / 2 + height + clientMapOffsetY);
         AddGridGraph(map2CenterPos, false);
         
         isCompositeDone = false;

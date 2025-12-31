@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -97,7 +98,7 @@ public class PlayerController : NetworkBehaviour
         if (GameManager.instance.playerDataHp != -1)
         {
             status.LoadGame();
-            gameObject.transform.position = GameManager.instance.playerDataPos;
+            GetComponent<ClientNetworkTransform>().Teleport(GameManager.instance.playerDataPos, Quaternion.identity, transform.localScale);
         }
 
         MainGameSetting.instance.StopStopwatch();
@@ -462,7 +463,7 @@ public class PlayerController : NetworkBehaviour
         }
         if (IsServer && !GameManager.instance.isGameOver)
         {
-            DataManager.instance.Save(0);
+            DataManager.instance.Save(0, null);
         }
     }
 
@@ -610,9 +611,10 @@ public class PlayerController : NetworkBehaviour
     public void TeleportClientRpc(Vector3 pos, bool isInHostMap)
     {
         if (IsOwner)
-            this.transform.position = pos;
+            GetComponent<ClientNetworkTransform>().Teleport(pos, Quaternion.identity, transform.localScale);
+        //this.transform.position = pos;
 
-        if(tankOn)
+        if (tankOn)
             onTankData.isInHostMap = isInHostMap;
     }
 

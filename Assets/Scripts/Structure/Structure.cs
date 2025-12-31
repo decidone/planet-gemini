@@ -109,6 +109,7 @@ public class Structure : NetworkBehaviour
     public ItemProps spawnItem;
 
     public List<GameObject> monsterList = new List<GameObject>();
+    public float monsterTargetAmount = 0; // 해당 건물을 타겟으로 삼고 있는 몬스터 수
 
     [HideInInspector]
     public Collider2D col;
@@ -1479,6 +1480,8 @@ public class Structure : NetworkBehaviour
 
         ItemDrop();
 
+        List<MonsterAi> monsterAis = new List<MonsterAi>();
+
         if (!isPreBuilding)
         {
             foreach (GameObject monster in monsterList)
@@ -1486,6 +1489,7 @@ public class Structure : NetworkBehaviour
                 if (monster.TryGetComponent(out MonsterAi monsterAi))
                 {
                     monsterAi.RemoveTarget(this.gameObject);
+                    monsterAis.Add(monsterAi);
                 }
             }
         }
@@ -1509,9 +1513,12 @@ public class Structure : NetworkBehaviour
                 if (monsterObj.TryGetComponent(out MonsterAi monsterAi))
                 {
                     monsterAi.RemoveTarget(this.gameObject);
+                    monsterAis.Add(monsterAi);
                 }
             }
         }
+
+        GraphUpdateManager.Instance.LockMonsters(monsterAis);
         monsterList.Clear();
 
         RemoveObjServerRpc();
@@ -1907,6 +1914,7 @@ public class Structure : NetworkBehaviour
         {
             // 1. GraphUpdateObject 생성
             GraphUpdateObject guo = new GraphUpdateObject(col.bounds);
+            guo.updatePhysics = true; 
             guo.modifyWalkability = true;
             guo.setWalkability = true;  // 통행 가능하게 설정
 

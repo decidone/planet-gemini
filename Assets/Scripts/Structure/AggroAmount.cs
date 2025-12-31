@@ -8,7 +8,7 @@ public class AggroAmount : MonoBehaviour
     [SerializeField]
     float aggroAmount = 0f;
     float maxAggroAmount = 20;
-    float aggroAmountPercent = 0.03f;
+    float aggroAmountPercent = 0.05f;
     bool isAggroActive = false;
     float aggroDecayStep = 1f;
     float aggroDecayInterval = 4f;
@@ -42,10 +42,5 @@ public class AggroAmount : MonoBehaviour
     public float GetAggroAmount()
     {
         return baseAggroAmount + aggroAmount;
-    }
-
-    public void TakeDamageAggroAmountSub(float damage)
-    {
-        aggroAmount -= (damage * aggroAmountPercent);
     }
 }

@@ -162,10 +162,10 @@ GameObject:
   - component: {fileID: 3940087546727930379}
   - component: {fileID: 4266575292539597394}
   - component: {fileID: 1685870109245103154}
+  - component: {fileID: -6275262382086620255}
   - component: {fileID: 293481600424882334}
   - component: {fileID: 8051527625688539190}
   - component: {fileID: -9044928422796286906}
-  - component: {fileID: -6275262382086620255}
   - component: {fileID: 2054250693664190952}
   - component: {fileID: -8961833686188533040}
   m_Layer: 7
@@ -191,6 +191,7 @@ Transform:
   - {fileID: 1288990388051147772}
   - {fileID: 8427394167272492919}
   - {fileID: 3481826104553328144}
+  - {fileID: 2987961515127625384}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3940087546727930379
@@ -297,6 +298,31 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &-6275262382086620255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2081385084214852163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2545708669
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &293481600424882334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,13 +362,17 @@ MonoBehaviour:
   isScriptActive: 0
   monsterType: 0
   waveState: 0
-  waveStateEnd: 0
   waveArrivePos: 0
   normalTraceTimer: 0
   isDebuffed: 0
   targetOn: 0
   justTraceTimer: 0
   justTraceInterval: 3
+  bestTarget: {fileID: 0}
+  targetPos: {fileID: 0}
+  moveTargetPos: {fileID: 0}
+  mapTargetPos: {fileID: 0}
+  blockObj: {fileID: 0}
 --- !u!70 &8051527625688539190
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -408,31 +438,6 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: 1
---- !u!114 &-6275262382086620255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2081385084214852163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2545708669
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &2054250693664190952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -680,6 +685,68 @@ CapsuleCollider2D:
   m_Offset: {x: -0.024930418, y: -0.17356038}
   m_Size: {x: 0.9386326, y: 1.0419214}
   m_Direction: 0
+--- !u!1001 &4662497662267786053
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5885220140018127075}
+    m_Modifications:
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9173998845499840026, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+      propertyPath: m_Name
+      value: MonsterMapSeeker
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+--- !u!4 &2987961515127625384 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7621176618466661869, guid: 2510a07e97e700e4886cb2a5f1104539, type: 3}
+  m_PrefabInstance: {fileID: 4662497662267786053}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4972536197680869678
 PrefabInstance:
   m_ObjectHideFlags: 0

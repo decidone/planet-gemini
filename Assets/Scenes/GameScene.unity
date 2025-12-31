@@ -292,7 +292,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 9113408284949583420, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
-      insertIndex: -1
+      insertIndex: 1
       addedObject: {fileID: 1218140030}
   m_SourcePrefab: {fileID: 100100000, guid: f5ef57fb3fbe58f469bac462a1e8741e, type: 3}
 --- !u!114 &229731994 stripped
@@ -1754,7 +1754,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1932302118311834672, guid: 30fb03d4f5333974dbfc1a85400c4d85, type: 3}
-      insertIndex: -1
+      insertIndex: 1
       addedObject: {fileID: 745844387}
   m_SourcePrefab: {fileID: 100100000, guid: 30fb03d4f5333974dbfc1a85400c4d85, type: 3}
 --- !u!1 &1520459426 stripped
@@ -3436,6 +3436,17 @@ Canvas:
   m_CorrespondingSourceObject: {fileID: 8669813805128897141, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
   m_PrefabInstance: {fileID: 1095768246952270821}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1095768246952270825 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9065064658129366914, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
+  m_PrefabInstance: {fileID: 1095768246952270821}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1095768246952270826 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7044913426035098820, guid: 1f93bac06413a1b4cb69ee8375e0eb72, type: 3}
@@ -3934,6 +3945,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 669814015}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: saveImg
+      value: 
+      objectReference: {fileID: 1095768246952270825}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: timeImg
       value: 
       objectReference: {fileID: 1017313486}
@@ -3989,6 +4004,10 @@ PrefabInstance:
       propertyPath: pInvenManager
       value: 
       objectReference: {fileID: 1067319956694990678}
+    - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
+      propertyPath: bloodMoonDDayText
+      value: 
+      objectReference: {fileID: 1690123864}
     - target: {fileID: 3268826974884516333, guid: 1d962c7d0fdd2084c94dab14d3cc0385, type: 3}
       propertyPath: inventoryUiCanvas
       value: 
@@ -4209,7 +4228,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8108900871598561891, guid: 14ab76d16484f464ebaaa908963ebbc6, type: 3}
-      insertIndex: -1
+      insertIndex: 2
       addedObject: {fileID: 7662998911958542037}
   m_SourcePrefab: {fileID: 100100000, guid: 14ab76d16484f464ebaaa908963ebbc6, type: 3}
 --- !u!1 &7662998911958542036 stripped

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 
 public class TankCtrl : UnitAi
 {
@@ -215,7 +216,8 @@ public class TankCtrl : UnitAi
     public void PlayerTankOnClientRpc()
     {
         playerOnTank = true;
-        transform.position = new Vector3(-100, -100, 0);
+        if (IsServer)
+            GetComponent<ClientNetworkTransform>().Teleport(new Vector3(-100, -100, 0), Quaternion.identity, transform.localScale);
         gameObject.SetActive(false);
     }
 
@@ -232,7 +234,9 @@ public class TankCtrl : UnitAi
             unitCanvas.SetActive(true);
             ReloadingUISet(true);
         }
-        transform.position = pos;
+        if (IsServer)
+            GetComponent<ClientNetworkTransform>().Teleport(pos, Quaternion.identity, transform.localScale);
+        //transform.position = pos;
         gameObject.SetActive(true);
     }
 

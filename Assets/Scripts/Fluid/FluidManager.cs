@@ -165,7 +165,7 @@ public class FluidManager : NetworkBehaviour
     {
         foreach (var group in consumeSourceGroupObj)
         {
-            if (group.Key.outObj.Count > 0)
+            if (group.Key && group.Key.outObj.Count > 0)
             {
                 group.Key.ConsumeGroupSendFluid();
                 getfluidCoroutine = StartCoroutine(GetFluidCoroutine(group.Key));

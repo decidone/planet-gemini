@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using Unity.Netcode;
 using System.Text;
+using System;
 
 public class DataManager : MonoBehaviour
 {
@@ -47,11 +48,100 @@ public class DataManager : MonoBehaviour
 
     public (string, byte[]) Save(int saveSlotNum)
     {
-        return Save(saveSlotNum, null);
+        PlayerSaveData lastClientSaveData = saveData.clientPlayerData;
+        saveData = new SaveData();
+
+        InGameData inGameData = GameManager.instance.SaveData();
+        saveData.InGameData = inGameData;
+        saveData.InGameData.hostPortalName = GameManager.instance.portal[0].portalName;
+        saveData.InGameData.clientPortalName = GameManager.instance.portal[1].portalName;
+
+        // 플레이어
+        saveData.hostPlayerData = GameManager.instance.PlayerSaveData(true);
+        PlayerSaveData tempData = GameManager.instance.PlayerSaveData(false);
+
+        if (lastClientSaveData.clientFirstConnection && tempData.hp == -1)
+        {
+            saveData.clientPlayerData = lastClientSaveData;
+        }
+        else
+        {
+            saveData.clientPlayerData = tempData;
+        }
+
+        // 행성 인벤토리
+        InventorySaveData hostMapInventoryData = GameManager.instance.hostMapInven.SaveData();
+        saveData.hostMapInvenData = hostMapInventoryData;
+        InventorySaveData clientMapInventoryData = GameManager.instance.clientMapInven.SaveData();
+        saveData.clientMapInvenData = clientMapInventoryData;
+
+        foreach (ScienceBtn scienceBtn in ScienceDb.instance.scienceBtns)
+        {
+            ScienceData scienceData = scienceBtn.SaveData();
+            saveData.scienceData.Add(scienceData);
+        }
+
+        foreach (Structure structure in netObjMgr.netStructures)
+        {
+            StructureSaveData structureSaveData = structure.SaveData();
+            saveData.structureData.Add(structureSaveData);
+        }
+
+        foreach (BeltGroupMgr beltGroup in netObjMgr.netBeltGroupMgrs)
+        {
+            if (beltGroup.beltList.Count > 0)
+            {
+                BeltGroupSaveData beltGroupSaveData = beltGroup.SaveData();
+                saveData.beltGroupData.Add(beltGroupSaveData);
+            }
+        }
+
+        foreach (UnitCommonAi unitAi in netObjMgr.netUnitCommonAis)
+        {
+            UnitSaveData unitSaveData = unitAi.SaveData();
+            saveData.unitData.Add(unitSaveData);
+        }
+
+        MonsterSpawnerManager monsterSpawner = MonsterSpawnerManager.instance;
+        SpawnerManagerSaveData spawnerManagerSaveData = monsterSpawner.SaveData();
+        saveData.spawnerManagerSaveData = spawnerManagerSaveData;
+
+        OverallSaveData overallSaveData = Overall.instance.SaveData();
+        saveData.overallData = overallSaveData;
+
+        MapsSaveData mapsSaveData = MapGenerator.instance.SaveData();
+
+        List<NetItemPropsData> netItemPropsDatas = NetworkItemPoolSync.instance.NetItemSaveData();
+        saveData.netItemData = netItemPropsDatas;
+
+        List<HomelessDroneSaveData> homelessDroneSaveData = HomelessDroneManager.instance.SaveDroneData();
+        saveData.homelessDroneData = homelessDroneSaveData;
+
+        // Json 저장
+        Debug.Log("saved: " + path);
+        string json = JsonConvert.SerializeObject(saveData);
+        File.WriteAllText(path + saveSlotNum.ToString() + ".json", json);
+
+        string mapJson = JsonConvert.SerializeObject(mapsSaveData);
+        var compData = Compression.Compress(mapJson);
+        File.WriteAllBytes(path + saveSlotNum.ToString() + ".maps", compData);
+
+        selectedSlot = saveSlotNum;
+
+        return (json, compData);
     }
 
-    public (string, byte[]) Save(int saveSlotNum, string fileName)
+    public void Save(int saveSlotNum, string fileName)
     {
+        StartCoroutine(SaveCoroutine(saveSlotNum, fileName));
+    }
+
+    private IEnumerator SaveCoroutine(int saveSlotNum, string fileName)
+    {
+        GameManager.instance.saveImg.enabled = true;
+
+        yield return null;
+
         PlayerSaveData lastClientSaveData = saveData.clientPlayerData;
         saveData = new SaveData();
 
@@ -133,7 +223,7 @@ public class DataManager : MonoBehaviour
 
         selectedSlot = saveSlotNum;
 
-        return (json, compData);
+        GameManager.instance.saveImg.enabled = false;
     }
 
     public void Load()

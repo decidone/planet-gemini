@@ -351,8 +351,6 @@ public class AttackTower : TowerAi
                     {
                         Overall.instance.OverallConsumption(slot.Item1, 1);
                         inventory.SlotSubServerRpc(0, 1);
-                        if(slot.Item2 == 0)
-                            loadedBullet = null;
                     }
                     else
                     {
@@ -375,8 +373,6 @@ public class AttackTower : TowerAi
                     {
                         Overall.instance.OverallConsumption(slot.Item1, 1);
                         inventory.SlotSubServerRpc(0, 1);
-                        if (slot.Item2 == 0)
-                            loadedBullet = null;
                     }
                     else
                     {
