@@ -7,8 +7,6 @@ using UnityEngine;
 // UTF-8 설정
 public class Miner : Production
 {
-    int minerCellCount;
-
     protected override void Start()
     {
         base.Start();
@@ -233,8 +231,11 @@ public class Miner : Production
             {
                 cooldown = _efficiency * 0.8f;
             }
-            effiCooldown = cooldown;
-            EfficiencyCheck();
+
+            if (conn != null && conn.group != null)
+                EfficiencyCheck();
+            else
+                effiCooldown = cooldown;
             minerCellCount = _minerCellCount;
             FactoryOverlay();
         }

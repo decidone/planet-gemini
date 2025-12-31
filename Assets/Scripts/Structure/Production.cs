@@ -26,6 +26,7 @@ public abstract class Production : Structure
     protected List<Recipe> recipes;
     protected int invenCount;
     protected Dictionary<Item, int> invenSlotDic;
+    protected int minerCellCount;
 
     [SerializeField]
     protected GameObject lineObj;
@@ -183,8 +184,10 @@ public abstract class Production : Structure
         recipeIndex = index;
         sInvenManager.ResetInvenOption();
         cooldown = recipe.cooldown;
-        effiCooldown = cooldown;
-        EfficiencyCheck();
+        if (conn != null && conn.group != null)
+            EfficiencyCheck();
+        else
+            effiCooldown = cooldown;
 
         float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
         float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
@@ -228,45 +231,30 @@ public abstract class Production : Structure
             if (selectRecipe != null)
             {
                 if (isUIOpened)
+                {
                     SetRecipe(selectRecipe, index);
+                    SetOutput(selectRecipe);
+                }
                 else
                 {
                     recipe = selectRecipe;
                     recipeIndex = index;
                     cooldown = recipe.cooldown;
-                    effiCooldown = cooldown;
-                    EfficiencyCheck();
+                    if (conn != null && conn.group != null)
+                        EfficiencyCheck();
+                    else
+                        effiCooldown = cooldown;
+                    SetOutput(recipe);
+                    if (sInvenManager)
+                        sInvenManager.progressBar.SetProgress(0);
                 }
+                CheckInvenIsFull(0);
             }
         }
         else
         {
             ResetUI();
             CheckSlotState(0);
-        }
-
-        if (selectRecipe.name != "UICancel" &&  selectRecipe != null)
-        {
-            if (isUIOpened)
-            {
-                SetRecipe(selectRecipe, index);
-                SetOutput(selectRecipe);
-            }
-            else
-            {
-                recipe = selectRecipe;
-                recipeIndex = index;
-                cooldown = recipe.cooldown;
-                effiCooldown = cooldown;
-                EfficiencyCheck();
-                SetOutput(recipe);
-                if (sInvenManager)
-                    sInvenManager.progressBar.SetProgress(0);
-            }
-        }
-        else if (selectRecipe.name == "UICancel")
-        {
-            ResetUI();
         }
     }
 
@@ -276,7 +264,10 @@ public abstract class Production : Structure
         recipe = new Recipe();
         recipeIndex = -1;
         cooldown = structureData.Cooldown;
-        effiCooldown = cooldown;
+        if (conn != null && conn.group != null)
+            EfficiencyCheck();
+        else
+            effiCooldown = cooldown;
         prodTimer = 0;
         OperateStateSet(false);
         if (sInvenManager != null)
@@ -676,10 +667,20 @@ public abstract class Production : Structure
 
                     if (isUIOpened)
                     {
-                        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
-                        float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
-                        sInvenManager.progressBar.SetMaxProgress(productionTime);
-                        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
+                        if (buildName != "Miner")
+                        {
+                            float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+                            float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+                            sInvenManager.progressBar.SetMaxProgress(productionTime);
+                            sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
+                        }
+                        else
+                        {
+                            float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+                            float productionPerMin = minerCellCount * (60 / productionTime);
+                            sInvenManager.progressBar.SetMaxProgress(productionTime);
+                            sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
+                        }
                     }
                 }
                 else
@@ -722,10 +723,20 @@ public abstract class Production : Structure
         overclockOn = isOn;
         if (isUIOpened)
         {
-            float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
-            float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
-            sInvenManager.progressBar.SetMaxProgress(productionTime);
-            sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
+            if (buildName != "Miner")
+            {
+                float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+                float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+                sInvenManager.progressBar.SetMaxProgress(productionTime);
+                sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
+            }
+            else
+            {
+                float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+                float productionPerMin = minerCellCount * (60 / productionTime);
+                sInvenManager.progressBar.SetMaxProgress(productionTime);
+                sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
+            }
         }
     }
 

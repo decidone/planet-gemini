@@ -96,8 +96,10 @@ public class FurnaceUpgrade : Production
                 recipe = _recipe;
                 output = itemDic[recipe.items[recipe.items.Count - 1]];
                 cooldown = recipe.cooldown;
-                effiCooldown = cooldown;
-                EfficiencyCheck();
+                if (conn != null && conn.group != null)
+                    EfficiencyCheck();
+                else
+                    effiCooldown = cooldown;
 
                 float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
                 float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;

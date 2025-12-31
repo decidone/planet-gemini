@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,31 +83,51 @@ public class StructureInvenManager : InventoryManager
 
     public void SetCooldownText(float cooldown)
     {
-        if (cooldown == 0)
+        if (cooldown < 0.001f)
         {
             cooldownText.text = "";
         }
         else
         {
-            cooldownText.text = cooldown + "s";
+            cooldownText.text = FormatFloat(cooldown) + "s";
         }
     }
 
     public void SetCooldownText(float cooldown, string productionRate)
     {
-        if (cooldown == 0)
+        if (cooldown < 0.001f)
         {
             cooldownText.text = "";
         }
         else
         {
-            cooldownText.text = cooldown + "s " + productionRate + "/m";
+            cooldownText.text = FormatFloat(cooldown) + "s " + productionRate + "/m";
         }
     }
 
     public void SetCooldownText(string message)
     {
         cooldownText.text = message;
+    }
+
+    public static string FormatFloat(float value)
+    {
+        if (value % 1 == 0)
+            return ((int)value).ToString();
+
+        float decimalPart = Math.Abs(value % 1);
+        if (Math.Abs(decimalPart * 10 % 1) < 0.0001f)
+            return value.ToString("F1");
+        if (Math.Abs(decimalPart * 100 % 1) < 0.0001f)
+            return value.ToString("F2");
+
+        float rounded = (float)Math.Round(value, 2);
+        if (rounded % 1 == 0)
+            return ((int)rounded).ToString();
+        if (Math.Abs((rounded % 1) * 10 % 1) < 0.0001f)
+            return rounded.ToString("F1");
+
+        return rounded.ToString("F2");
     }
 
     public void UnitIconSet(bool isOn)

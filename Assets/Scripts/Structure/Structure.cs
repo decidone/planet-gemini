@@ -177,7 +177,8 @@ public class Structure : NetworkBehaviour
     public SpriteRenderer mapWarningIcon;
     //public Sprite warningRed;
     //public Sprite warningYellow;
-    public bool warningIconCheck;
+    public bool warningIconCheck;   //경고 아이콘 변경을 한 번만 동작하게 하기 위한 bool값
+    public bool energyStateCheck;   //동작하고 있는 코루틴을 종료시키지 않고 에너지 관련 경고 아이콘 변경을 한 번만 동작하게 하기 위한 bool값
     public IEnumerator warning;
 
     public delegate void OnHpChanged();
@@ -339,6 +340,17 @@ public class Structure : NetworkBehaviour
                 {
                     if (conn.group.efficiency < 1f)
                     {
+                        if (energyStateCheck && conn.group.efficiency < 0.001f)
+                        {
+                            warningIcon.sprite = Resources.Load<Sprite>("warning_red");
+                            energyStateCheck = false;
+                        }
+                        else if (!energyStateCheck && conn.group.efficiency > 0.001f)
+                        {
+                            warningIcon.sprite = Resources.Load<Sprite>("warning_yellow");
+                            energyStateCheck = true;
+                        }
+
                         if (!warningIconCheck)
                         {
                             //low energy
@@ -347,10 +359,17 @@ public class Structure : NetworkBehaviour
                                 StopCoroutine(warning);
                                 StrWarningManager.instance.RemoveStrList(this);
                             }
+
                             if (conn.group.efficiency > 0.001f)
+                            {
                                 warningIcon.sprite = Resources.Load<Sprite>("warning_yellow");
+                                energyStateCheck = true;
+                            }
                             else
+                            {
                                 warningIcon.sprite = Resources.Load<Sprite>("warning_red");
+                                energyStateCheck = false;
+                            }
                             warning = FlickeringIcon();
                             StartCoroutine(warning);
                             warningIconCheck = true;
@@ -376,6 +395,12 @@ public class Structure : NetworkBehaviour
                 }
                 else
                 {
+                    if (energyStateCheck)
+                    {
+                        warningIcon.sprite = Resources.Load<Sprite>("warning_red");
+                        energyStateCheck = false;
+                    }
+
                     if (!warningIconCheck)
                     {
                         //disconnected
