@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eeaf01b7ac137074b977835f586ccb9c, type: 3}
-  m_Name: Coal Furnace
+  m_Name: Furnace
   m_EditorClassIdentifier: 
-  name: Coal Furnace
+  name: Furnace
   type: 1
-  explanation: The Coal Furnace produces ingots by smelting ore. It requires coal
-    to operate.
+  explanation: The Furnace produces ingots by smelting ore. It requires coal to operate.
   strDataList:
   - {fileID: 11400000, guid: a8c8d2c5653fbda498c749e453b14ebf, type: 2}
   layout: 1

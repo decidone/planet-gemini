@@ -114,11 +114,11 @@ Transform:
   - {fileID: 1934325794344875420}
   - {fileID: 430137339995184714}
   - {fileID: 265256347623779562}
+  - {fileID: 2179822776956825104}
   - {fileID: 7605521430037434012}
   - {fileID: 7511398938865323291}
   - {fileID: 4854026796109176251}
   - {fileID: 346372503728666153}
-  - {fileID: 2179822776956825104}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1934325794086783243
@@ -331,6 +331,7 @@ MonoBehaviour:
   modelNum: []
   spawnItem: {fileID: 0}
   monsterList: []
+  monsterTargetAmount: 0
   col: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
@@ -368,6 +369,7 @@ MonoBehaviour:
   warningIcon: {fileID: 44377882150574773}
   mapWarningIcon: {fileID: 6212971765310434550}
   warningIconCheck: 0
+  energyStateCheck: 0
   getAnim: 0
   strImg:
   - {fileID: 1701051910, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}

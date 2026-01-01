@@ -110,7 +110,7 @@
     "1":{"items":["Module","SteelBeam"],"amounts":[10,40]}
   },
   "EnergyRepeater":{
-    "1":{"items":["IronPlate","Wire"],"amounts":[8,12]}
+    "1":{"items":["Brick","Wire"],"amounts":[5,4]}
   },
   "ImprovedRepeater":{
     "1":{"items":["IronPlate","Cable"],"amounts":[10,8]}

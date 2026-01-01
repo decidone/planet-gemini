@@ -34,9 +34,9 @@ MonoBehaviour:
   production: 0
   energyUse: 010101
   consumption:
-  - 5
-  - 40
-  - 100
+  - 10
+  - 50
+  - 80
   removeGauge: 10
   defense:
   - 5
