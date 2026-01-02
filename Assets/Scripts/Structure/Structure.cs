@@ -513,7 +513,7 @@ public class Structure : NetworkBehaviour
     }
 
     protected virtual void OnClientConnectedCallback(ulong clientId)
-    {        
+    {
         ClientConnectSyncServerRpc();
         RepairGaugeServerRpc();
         ItemSyncServerRpc();

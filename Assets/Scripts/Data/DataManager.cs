@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Unity.Netcode;
-using System.Text;
-using System;
 
 public class DataManager : MonoBehaviour
 {
@@ -46,7 +44,7 @@ public class DataManager : MonoBehaviour
         netObjMgr = NetworkObjManager.instance;
     }
 
-    public (string, byte[]) Save(int saveSlotNum)
+    public (string, byte[]) ClientConnToData() // 클라이언트 접속시 저장 기능(클라이언트 접속시 딜레이를 주면 고장남 그래서 별도로 저장)
     {
         PlayerSaveData lastClientSaveData = saveData.clientPlayerData;
         saveData = new SaveData();
@@ -81,58 +79,21 @@ public class DataManager : MonoBehaviour
             saveData.scienceData.Add(scienceData);
         }
 
-        foreach (Structure structure in netObjMgr.netStructures)
-        {
-            StructureSaveData structureSaveData = structure.SaveData();
-            saveData.structureData.Add(structureSaveData);
-        }
-
-        foreach (BeltGroupMgr beltGroup in netObjMgr.netBeltGroupMgrs)
-        {
-            if (beltGroup.beltList.Count > 0)
-            {
-                BeltGroupSaveData beltGroupSaveData = beltGroup.SaveData();
-                saveData.beltGroupData.Add(beltGroupSaveData);
-            }
-        }
-
-        foreach (UnitCommonAi unitAi in netObjMgr.netUnitCommonAis)
-        {
-            UnitSaveData unitSaveData = unitAi.SaveData();
-            saveData.unitData.Add(unitSaveData);
-        }
-
-        MonsterSpawnerManager monsterSpawner = MonsterSpawnerManager.instance;
-        SpawnerManagerSaveData spawnerManagerSaveData = monsterSpawner.SaveData();
-        saveData.spawnerManagerSaveData = spawnerManagerSaveData;
-
         OverallSaveData overallSaveData = Overall.instance.SaveData();
         saveData.overallData = overallSaveData;
 
         MapsSaveData mapsSaveData = MapGenerator.instance.SaveData();
 
-        List<NetItemPropsData> netItemPropsDatas = NetworkItemPoolSync.instance.NetItemSaveData();
-        saveData.netItemData = netItemPropsDatas;
-
-        List<HomelessDroneSaveData> homelessDroneSaveData = HomelessDroneManager.instance.SaveDroneData();
-        saveData.homelessDroneData = homelessDroneSaveData;
-
-        // Json 저장
-        Debug.Log("saved: " + path);
         string json = JsonConvert.SerializeObject(saveData);
-        File.WriteAllText(path + saveSlotNum.ToString() + ".json", json);
-
         string mapJson = JsonConvert.SerializeObject(mapsSaveData);
         var compData = Compression.Compress(mapJson);
-        File.WriteAllBytes(path + saveSlotNum.ToString() + ".maps", compData);
-
-        selectedSlot = saveSlotNum;
 
         return (json, compData);
     }
 
-    public void Save(int saveSlotNum, string fileName)
+    public void Save(int saveSlotNum, string fileName) // 오토 세이브 및 일반 저장용
     {
+        GameManager.instance.GameSaveStopServerRpc(true);
         StartCoroutine(SaveCoroutine(saveSlotNum, fileName));
     }
 
@@ -224,6 +185,7 @@ public class DataManager : MonoBehaviour
         selectedSlot = saveSlotNum;
 
         GameManager.instance.saveImg.enabled = false;
+        GameManager.instance.GameSaveStopServerRpc(false);
     }
 
     public void Load()

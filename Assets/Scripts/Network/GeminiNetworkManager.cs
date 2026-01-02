@@ -167,11 +167,9 @@ public class GeminiNetworkManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ItemSpawnServerRpc(int itemIndex, int amount, Vector3 spawnPos)
     {
-        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        Item item = GetItemSOFromIndex(itemIndex);
         Debug.Log("Item : " + item.name + ", Amount : " + amount);
 
-        //GameObject dropItem = Instantiate(itemPref, spawnPos, Quaternion.identity);
-        //NetworkObject itemNetworkObject = dropItem.GetComponent<NetworkObject>();
         NetworkObject itemNetworkObject = NetworkObjectPool.Singleton.GetNetworkObject(itemPref, spawnPos, Quaternion.identity);
         ItemProps itemProps = itemNetworkObject.GetComponent<ItemProps>();
         NetworkItemPoolSync.instance.NetPoolItemSet(itemProps);
@@ -185,7 +183,7 @@ public class GeminiNetworkManager : NetworkBehaviour
     public void SetItemPropsClientRpc(NetworkObjectReference networkObjectReference, int itemIndex, int amount)
     {
         networkObjectReference.TryGet(out NetworkObject itemNetworkObject);
-        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        Item item = GetItemSOFromIndex(itemIndex);
         SpriteRenderer sprite = itemNetworkObject.GetComponent<SpriteRenderer>();
         sprite.sprite = item.icon;
         sprite.material = ResourcesManager.instance.outlintMat;
@@ -207,14 +205,13 @@ public class GeminiNetworkManager : NetworkBehaviour
         {
             NetworkItemPoolSync.instance.NetPoolItemSub(networkObject.GetComponent<ItemProps>());
             networkObject.Despawn();
-            //Destroy(networkObject.gameObject);
             onItemDestroyedCallback?.Invoke();
         }
     }
 
     public (string, byte[]) RequestJson()
     {
-        var data = DataManager.instance.Save(0);
+        var data = DataManager.instance.ClientConnToData();
         string json = data.Item1;
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(json);
         SaveData clientData = new SaveData();
@@ -226,20 +223,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         clientData.clientMapInvenData = saveData.clientMapInvenData;
         clientData.scienceData = saveData.scienceData;
         clientData.overallData = saveData.overallData;
-        //clientData.mapData = saveData.mapData;
-        Debug.Log("request 1");
 
         return (JsonConvert.SerializeObject(clientData), data.Item2);
     }
-
-    //[ClientRpc]
-    //public void RequestJsonClientRpc(string json)
-    //{
-    //    if (IsServer)
-    //        return;
-
-    //    DataManager.instance.Load(json);
-    //    MonsterSpawnerManager.instance.SetCorruption();
-    //    GameManager.instance.SyncTimeServerRpc();
-    //}
 }
