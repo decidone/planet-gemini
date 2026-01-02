@@ -336,6 +336,19 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
+    public void GameSaveStopServerRpc(bool stop)
+    {
+        GameSaveStopClientRpc(stop);
+    }
+
+    [ClientRpc]
+    public void GameSaveStopClientRpc(bool stop)
+    {
+        saveImg.enabled = stop;
+        GameStop(stop);
+    }
+
     private void Update()
     {
         if (Time.timeScale == 0)
@@ -1616,8 +1629,11 @@ public class GameManager : NetworkBehaviour
             // 이 아래는 클라이언트 접속보다 데이터 교환이 먼저 이루어지게 바뀌면 다시 활성화
             else if (!isHost && p.name == "Pitaya")
             {
-                data.hp = p.hp;
-                data.pos = Vector3Extensions.FromVector3(p.gameObject.transform.position);
+                data.hp = p.maxHp;
+                if (p.isPlayerInHostMap)
+                    data.pos = Vector3Extensions.FromVector3(hostPlayerSpawnPos);
+                else
+                    data.pos = Vector3Extensions.FromVector3(clientPlayerSpawnPos);
                 data.isPlayerInHostMap = p.isPlayerInHostMap;
                 data.isPlayerInMarket = p.isPlayerInMarket;
                 data.tankOn = p.tankOn;

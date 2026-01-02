@@ -217,7 +217,7 @@ public class MainManager : MonoBehaviour
                 case "HostBtns":
                     BackBtnFunc();
                     break;
-                case "PublicAndPrivateBtns":
+                case "AccessBtns":
                     BackBtnFunc();
                     break;
                 case "NewGame":
