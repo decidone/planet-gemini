@@ -156,9 +156,14 @@ public class SaveLoadMenu : MonoBehaviour
     public void Save(int slotNum, string fileName)
     {
         DataManager.instance.Save(slotNum, fileName);
-        var data = GetJsonFromFile(slotNum);
-        SaveData saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
-        InGameData inGameData = saveData.InGameData;
+        //var data = GetJsonFromFile(slotNum);
+        //SaveData saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
+        //InGameData inGameData = saveData.InGameData;
+        //buttons[slotNum].SetSlotData(slotNum, inGameData.saveDate, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
+    }
+
+    public void SaveUI(int slotNum, InGameData inGameData)
+    {
         buttons[slotNum].SetSlotData(slotNum, inGameData.saveDate, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
     }
 

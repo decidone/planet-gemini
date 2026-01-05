@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 12
   title: Item Loot
-  description: Press 'Z' to pick up items. (Can be changed in Settings.)
+  description: 'Press ''Z'' to pick up items.
+
+    (Can be changed in Settings.)'
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 0}

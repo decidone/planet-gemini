@@ -95,6 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 3400951347560574421}
   amount: {fileID: 3087583685771914402}
+  itemInfoWindow: {fileID: 0}
 --- !u!1 &259842782254490261
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,6 +574,7 @@ GameObject:
   - component: {fileID: 692838593826458266}
   - component: {fileID: 8305046373255844350}
   - component: {fileID: 3400951347560574421}
+  - component: {fileID: 2432437349434313709}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -621,7 +623,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -637,6 +639,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2432437349434313709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7568360548499742284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates: []
 --- !u!1 &7842130389470403663
 GameObject:
   m_ObjectHideFlags: 0

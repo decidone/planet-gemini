@@ -614,6 +614,32 @@ public class Inventory : NetworkBehaviour
         }
     }
 
+    public void SplitHalf(int slotNum)
+    {
+        SplitHalfServerRpc(slotNum);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SplitHalfServerRpc(int slotNum, ServerRpcParams serverRpcParams = default)
+    {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
+        bool isHost = clientId == 0;
+
+        int dragAmount = ItemDragManager.instance.GetAmount(isHost);
+
+        if (items.ContainsKey(slotNum))
+        {
+            if (amounts[slotNum] > 1)
+            {
+                if (dragAmount < maxAmount)
+                {
+                    ItemDragManager.instance.Add(items[slotNum], amounts[slotNum]/2, isHost);
+                    SlotSubServerRpc(slotNum, amounts[slotNum] / 2);
+                }
+            }
+        }
+    }
+
     public void LootItem(GameObject itemObj)
     {
         LootItemServerRpc(itemObj.GetComponent<NetworkObject>());

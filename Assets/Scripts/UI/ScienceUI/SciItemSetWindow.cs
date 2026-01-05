@@ -25,6 +25,7 @@ public class SciItemSetWindow : MonoBehaviour
     SoundManager soundManager;
     List<(string, ItemInputField)> financeInputField = new List<(string, ItemInputField)>();
     List<int> useAmountList = new List<int>();
+    ItemInfoWindow itemInfoWindow;
 
     private void Awake()
     {
@@ -49,6 +50,7 @@ public class SciItemSetWindow : MonoBehaviour
         soundManager = SoundManager.instance;
         gameManager = GameManager.instance;
         itemsList = ItemList.instance.itemList;
+        itemInfoWindow = GameManager.instance.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
 
         CloseUI();
     }
@@ -75,7 +77,7 @@ public class SciItemSetWindow : MonoBehaviour
                     {
                         if (itemObjList[index].TryGetComponent(out InfoNeedItemUi itemUi))
                         {
-                            itemUi.icon.sprite = item.icon;
+                            itemUi.DataSet(item.icon, item.name);
                             itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
                             int maxAmount = scienceBtn.itemAmountList[index].Item2 - scienceBtn.itemAmountList[index].Item1;
                             bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out int value);
@@ -111,7 +113,7 @@ public class SciItemSetWindow : MonoBehaviour
                                 value = gameManager.finance.finance;
                             }
 
-                            itemUi.icon.sprite = item.icon;
+                            itemUi.DataSet(item.icon, item.name);
                             itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
                             int maxAmount = scienceBtn.itemAmountList[index].Item2 - scienceBtn.itemAmountList[index].Item1;
                             
@@ -232,6 +234,8 @@ public class SciItemSetWindow : MonoBehaviour
     {
         InputFieldReset();
         this.gameObject.SetActive(false);
+        itemInfoWindow.CloseWindow();
+
         gameManager.onUIChangedCallback?.Invoke(this.gameObject);
         gameManager.PopUpUISetting(false);
     }

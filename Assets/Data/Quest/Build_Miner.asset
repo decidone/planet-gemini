@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 20
   title: Build
-  description: Build a Miner at the ore vein. (Recommended to place on Coal and Stone)
+  description: 'Build a Miner at the ore vein.
+
+    (Recommended to place on Coal
+    and Stone)'
   item: {fileID: 0}
   strData: {fileID: 11400000, guid: 49e145897899dc040a8a7f471b9615a9, type: 2}
   unitData: {fileID: 0}

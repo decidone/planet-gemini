@@ -183,6 +183,7 @@ public class DataManager : MonoBehaviour
         File.WriteAllBytes(path + saveSlotNum.ToString() + ".maps", compData);
 
         selectedSlot = saveSlotNum;
+        SaveLoadMenu.instance.SaveUI(saveSlotNum, saveData.InGameData);
 
         GameManager.instance.saveImg.enabled = false;
         GameManager.instance.GameSaveStopServerRpc(false);

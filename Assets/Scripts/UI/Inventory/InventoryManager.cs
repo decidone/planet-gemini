@@ -18,6 +18,8 @@ public abstract class InventoryManager : MonoBehaviour
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
     float splitCooldown;
     float splitTimer;
+    readonly float holdTime = 0.3f;
+    float holdTimer;
 
     protected InputManager inputManager;
     protected bool slotRightClickHold;
@@ -64,7 +66,9 @@ public abstract class InventoryManager : MonoBehaviour
         if (slotRightClickHold)
         {
             splitTimer += Time.deltaTime;
-            SlotRightClick();
+            holdTimer += Time.deltaTime;
+            if (holdTimer > holdTime)
+                SlotRightClick();
         }
     }
 
@@ -178,8 +182,19 @@ public abstract class InventoryManager : MonoBehaviour
 
     protected void SlotRightClickHold(InputAction.CallbackContext ctx)
     {
-        slotRightClickHold = !slotRightClickHold;
-        splitTimer = splitCooldown;
+        if (!slotRightClickHold)
+        {
+            slotRightClickHold = true;
+            holdTimer = 0;
+        }
+        else
+        {
+            slotRightClickHold = false;
+            if (holdTimer < holdTime)
+            {
+                SlotRightClickTap();
+            }
+        }
     }
 
     protected void SlotRightClick()
@@ -193,6 +208,22 @@ public abstract class InventoryManager : MonoBehaviour
         if (dragItem == null || dragItem == focusedSlot.item)
         {
             inventory.Split(focusedSlot.slotNum);
+            PreBuildEnable();
+        }
+
+        splitTimer = 0;
+    }
+
+    protected void SlotRightClickTap()
+    {
+        if (inventory == null) return;
+        if (focusedSlot == null) return;
+        if (focusedSlot.item == null) return;
+
+        Item dragItem = ItemDragManager.instance.GetItem(GameManager.instance.isHost);
+        if (dragItem == null || dragItem == focusedSlot.item)
+        {
+            inventory.SplitHalf(focusedSlot.slotNum);
             PreBuildEnable();
         }
 

@@ -111,12 +111,14 @@ public class Furnace : Production
                 recipe = _recipe;
                 output = itemDic[recipe.items[recipe.items.Count - 1]];
                 cooldown = recipe.cooldown;
-
-                float productionPerMin = 60 / cooldown;
-                sInvenManager.progressBar.SetMaxProgress(cooldown);
-                sInvenManager.SetCooldownText(cooldown, FormatFloat(productionPerMin));
-
                 FactoryOverlay();
+
+                if (isUIOpened)
+                {
+                    float productionPerMin = 60 / cooldown;
+                    sInvenManager.progressBar.SetMaxProgress(cooldown);
+                    sInvenManager.SetCooldownText(cooldown, FormatFloat(productionPerMin));
+                }
             }
         }
     }

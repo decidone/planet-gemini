@@ -32,7 +32,7 @@ public class ScienceManager : MonoBehaviour
 
     [HideInInspector]
     public ScienceCoreLvCtrl[] coreCtrl = new ScienceCoreLvCtrl[5];
-    int[] canCoreUpgradeCount = new int[5] {0, 1, 2, 3, 4 };  
+    readonly int[] canCoreUpgradeCount = new int[5] { 0, 8, 8, 8, 8 };
     public GameObject scienceTreeUI;
 
     ScienceInfoData scienceInfoData;

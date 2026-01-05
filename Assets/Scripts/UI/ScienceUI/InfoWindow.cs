@@ -155,7 +155,7 @@ public class InfoWindow : MonoBehaviour
 
                         if (needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
                         {
-                            itemUi.icon.sprite = item.icon;
+                            itemUi.DataSet(item.icon, item.name);
                             itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
                             if (scienceBtn.ItemFullCheck())
                             {
@@ -198,7 +198,7 @@ public class InfoWindow : MonoBehaviour
 
                         if (needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
                         {
-                            itemUi.icon.sprite = item.icon;
+                            itemUi.DataSet(item.icon, item.name);
                             itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
                             if (scienceBtn.ItemFullCheck())
                             {

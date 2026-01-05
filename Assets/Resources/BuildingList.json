@@ -4,7 +4,7 @@
   },
   "Miner":{
     "1":{"items":["Brick"],"amounts":[5]},
-    "2":{"items":["SteelPlate","Cogwheel"],"amounts":[5,12]},
+    "2":{"items":["SteelPlate","Cogwheel"],"amounts":[6,10]},
     "3":{"items":["ControlUnit","Motor","SteelBeam"],"amounts":[1,5,20]}
   },
   "Furnace":{
@@ -18,19 +18,19 @@
     "1":{"items":["Brick"],"amounts":[10]}
   },
   "Assembler":{
-    "1":{"items":["SteelPlate","Screw","Wire"],"amounts":[4,12,8]}
+    "1":{"items":["SteelPlate","Screw","Wire"],"amounts":[12,10,8]}
   },
   "Manufacturer":{
     "1":{"items":["Motor","SteelBeam"],"amounts":[4,20]}
   },
   "Belt":{
     "1":{"items":["CopperPlate"],"amounts":[1]},
-    "2":{"items":["IronPlate","Screw"],"amounts":[2,2]},
+    "2":{"items":["IronPlate","Screw"],"amounts":[2,1]},
     "3":{"items":["SteelPlate","Rubber"],"amounts":[2,2]}
   },
   "UnderBelt":{
     "1":{"items":["CopperPlate"],"amounts":[5]},
-    "2":{"items":["IronPlate","Screw"],"amounts":[10,10]},
+    "2":{"items":["IronPlate","Screw"],"amounts":[10,5]},
     "3":{"items":["SteelPlate","Rubber"],"amounts":[10,10]}
   },
   "Splitter":{
@@ -41,12 +41,12 @@
     "1":{"items":["IronPlate","Cogwheel"],"amounts":[6,4]}
   },
   "Storage":{
-    "1":{"items":["CopperPlate"],"amounts":[10]},
+    "1":{"items":["Brick"],"amounts":[10]},
     "2":{"items":["IronPlate","Screw"],"amounts":[10,4]},
     "3":{"items":["SteelPlate","Screw"],"amounts":[10,12]}
   },
   "Disintegrator":{
-    "1":{"items":["Motor","SteelPlate","Cogwheel"],"amounts":[2,12,20]}
+    "1":{"items":["Motor","SteelPlate","Cogwheel"],"amounts":[8,12,24]}
   },
   "Unloader":{
     "1":{"items":["Motor","IronPlate"],"amounts":[2,10]}

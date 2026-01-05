@@ -124,7 +124,7 @@
   },
   "FluidTank":{
     "Build":{
-      "1":{"items":["IronPlate","Screw"],"amounts":[40,40],"coreLv":2,"time":20,"Info":"Stores a large amount of fluids.","basicScience":false, "sortIndex":9}
+      "1":{"items":["IronPlate","Screw"],"amounts":[20,30],"coreLv":2,"time":20,"Info":"Stores a large amount of fluids.","basicScience":false, "sortIndex":9}
     }
   },
   "Extractor":{
