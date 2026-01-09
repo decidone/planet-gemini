@@ -247,6 +247,9 @@ public abstract class InventoryManager : MonoBehaviour
 
     void UpdateUI(int slotindex)
     {
+        if (slots.Length <= slotindex)
+            return;
+
         if (inventory.items.ContainsKey(slotindex))
             slots[slotindex].AddItem(inventory.items[slotindex], inventory.amounts[slotindex]);
         else

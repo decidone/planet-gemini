@@ -672,6 +672,7 @@ MonoBehaviour:
   - {fileID: 534235279, guid: b2133c5e746dee349a65f95a528ace90, type: 3}
   spawnItem: {fileID: 0}
   monsterList: []
+  monsterTargetAmount: 0
   col: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
@@ -709,6 +710,7 @@ MonoBehaviour:
   warningIcon: {fileID: 0}
   mapWarningIcon: {fileID: 0}
   warningIconCheck: 0
+  energyStateCheck: 0
   getAnim: 0
   strImg: []
   isAuto: 0
@@ -752,7 +754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  space: 18
+  space: 30
   maxAmount: 99
   itemPref: {fileID: 706260756050914416, guid: 998b8ef5a74549442988826dad753dfd, type: 3}
   itemListSO: {fileID: 0}

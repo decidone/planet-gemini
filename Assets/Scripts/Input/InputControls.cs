@@ -105,7 +105,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""LeftMouseButtonDown"",
                     ""type"": ""Button"",
                     ""id"": ""02873271-613f-4961-9680-b4ae49e212e8"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
@@ -114,7 +114,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""LeftMouseButtonUp"",
                     ""type"": ""Button"",
                     ""id"": ""357aa058-b1c8-428e-b74f-b5a4c4194361"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=1)"",
                     ""initialStateCheck"": false
@@ -123,7 +123,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""RightMouseButtonDown"",
                     ""type"": ""Button"",
                     ""id"": ""730142c6-cd25-4a1e-8c11-79feef3c0a09"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
@@ -132,7 +132,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""RightMouseButtonUp"",
                     ""type"": ""Button"",
                     ""id"": ""3724448e-0014-4f65-b433-1bc1d2896d9b"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=1)"",
                     ""initialStateCheck"": false
@@ -141,7 +141,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""LeftMouseButtonDoubleClick"",
                     ""type"": ""Button"",
                     ""id"": ""83241700-9a35-4ddf-8f00-d43e0e20ee36"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""MultiTap(tapTime=0.1,tapDelay=0.1)"",
                     ""initialStateCheck"": false
@@ -242,7 +242,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""LeftClick"",
                     ""type"": ""Button"",
                     ""id"": ""81edef1b-bf46-45ff-a415-0afd027851c4"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
@@ -336,7 +336,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""LeftMouseButtonDown"",
                     ""type"": ""Button"",
                     ""id"": ""93fc001f-7297-4a90-9b44-035b56fa45fd"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
@@ -372,7 +372,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""BuildingInven"",
                     ""type"": ""Button"",
                     ""id"": ""07b0f319-adf1-4a06-995d-a6004d6a4c83"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -720,7 +720,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""Attack"",
                     ""type"": ""Button"",
                     ""id"": ""edee8a39-cded-4377-bdae-fa751373f8a0"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
@@ -788,7 +788,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""StrClick"",
                     ""type"": ""Button"",
                     ""id"": ""468cfed4-804d-4468-b28e-c08f5feedcc9"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
@@ -816,7 +816,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""PlayerInven"",
                     ""type"": ""Button"",
                     ""id"": ""5b2576a3-eafd-4421-8f2a-59a21f0e81f7"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
@@ -964,7 +964,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""Debug"",
                     ""type"": ""Button"",
                     ""id"": ""a6cb2400-8aa4-4172-8228-81f0969d277f"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
@@ -1252,7 +1252,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""Ctrl"",
                     ""type"": ""Button"",
                     ""id"": ""5459cd3e-18a4-4cc2-94fa-5e331ba856c1"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)"",
                     ""initialStateCheck"": false
@@ -1360,7 +1360,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""Enter"",
                     ""type"": ""Button"",
                     ""id"": ""b44c3cf2-d423-4da4-ac89-d71f84dc73da"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
@@ -1388,7 +1388,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""ToggleMap"",
                     ""type"": ""Button"",
                     ""id"": ""8b4643aa-c69c-4608-87d1-4643d58b5d44"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false

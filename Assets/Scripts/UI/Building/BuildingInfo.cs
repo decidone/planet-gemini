@@ -103,11 +103,8 @@ public class BuildingInfo : MonoBehaviour
         }
 
         totalAmountsEnough = true;
-
         selectBuilding = select;
-
         selectBuildingData = buildingDatas;
-
         bool isEnough;
 
         for (int i = 0; i < selectBuildingData.GetItemCount(); i++)

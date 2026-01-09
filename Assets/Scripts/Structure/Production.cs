@@ -582,12 +582,13 @@ public abstract class Production : Structure
                 if (!returnDic.ContainsKey(invenItem.item))
                 {
                     returnDic.Add(invenItem.item, invenItem.amount);
+                    itemsCount++;
                 }
                 else
                 {
                     returnDic[invenItem.item] += invenItem.amount;
                 }
-                itemsCount++;
+
                 if (itemsCount > 5)
                     break;
             }

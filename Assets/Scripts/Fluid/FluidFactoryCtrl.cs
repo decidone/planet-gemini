@@ -345,6 +345,8 @@ public class FluidFactoryCtrl : Production
     {
         if (lastSource == newSource && lastDistance == dis)
             return;
+        if (newSource == null)
+            return;
 
         lastSource = newSource;
         lastDistance = dis;

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Cogwheel
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: e9320b3f6ab52904fb6a69e7335f5980, type: 2}
-  buyPrice: -1
+  buyPrice: 4
   sellPrice: -1
   scrapValue: 5

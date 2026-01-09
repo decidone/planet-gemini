@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Screw
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 761b13521b2f8024ab5b473365424e6a, type: 2}
-  buyPrice: -1
+  buyPrice: 4
   sellPrice: -1
   scrapValue: 5

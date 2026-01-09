@@ -12,7 +12,7 @@ public class Storage : Production
         base.Start();
         //setModel = GetComponent<SpriteRenderer>();
         isStorageBuilding = true;
-        invenSize = new int[5] { 6, 12, 18, 24, 30 };
+        invenSize = new int[3] { 6, 18, 30 };
         inventory.space = invenSize[level];
     }
 
@@ -78,9 +78,15 @@ public class Storage : Production
     {
         //base.UpgradeFuncClientRpc();
         UpgradeFunc();
-
         setModel.sprite = modelNum[level];
         inventory.space = invenSize[level];
+        CheckInvenIsFull(0);
+
+        if (isUIOpened)
+        {
+            CloseUI();
+            OpenUI();
+        }
     }
 
 

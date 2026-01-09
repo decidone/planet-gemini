@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SteelPlate
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 3aed6bb6c0b49c84987438881fcabd79, type: 2}
-  buyPrice: -1
+  buyPrice: 8
   sellPrice: -1
   scrapValue: 5

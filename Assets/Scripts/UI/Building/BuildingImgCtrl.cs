@@ -27,19 +27,17 @@ public class BuildingImgCtrl : MonoBehaviour
         {
             icon.sprite = inputItem[0].icon;
             icon.enabled = true;
-        }        
+        }
     }
 
     public void AddItem(Item newItem, int itemAmount, bool isEnough)
     {
         item = newItem;
         amount = itemAmount;
-
         icon.sprite = item.icon;
         icon.enabled = true;
         amountText.text = amount.ToString();
         amountText.enabled = true;
-
         Color iconColor = icon.color;
 
         if (isEnough)
