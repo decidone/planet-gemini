@@ -1565,6 +1565,10 @@ public class PreBuilding : NetworkBehaviour
             {
                 preBuildingImg.TerritoryViewSet(4);
             }
+            else if (prefabObj.GetComponentInChildren<AttackTower>())
+            {
+                preBuildingImg.TerritoryViewSet(5);
+            }
         }
         else
         {
