@@ -169,13 +169,6 @@ public class GameManager : NetworkBehaviour
     [HideInInspector]
     public bool popUpUIOpen;
 
-    Dictionary<int, int[]> waveLevelsByMapSize = new Dictionary<int, int[]>
-    {
-        { 0, new int[] { 1, 1, 2, 2 } }, // mapSize 0에 따른 coreLevel별 waveLevel
-        { 1, new int[] { 1, 1, 2, 3 } }, // mapSize 1에 따른 coreLevel별 waveLevel
-        { 2, new int[] { 1, 2, 3, 4 } }  // mapSize 2에 따른 coreLevel별 waveLevel
-    };
-
     public static event Action GenerationComplete;
 
     bool gameStop;
@@ -473,15 +466,29 @@ public class GameManager : NetworkBehaviour
                     float hostPercent = hostMapEnergyUseAmount / energyUseFullAmount;
                     float clientPercent = clientMapEnergyUseAmount / energyUseFullAmount;
 
-                    // 랜덤 값
-                    float rand = UnityEngine.Random.value; // 0~1
-
-                    // 비율에 따라 선택
-                    if (rand <= hostPercent)
-                        wavePlanet = true;
+                    if (LobbySaver.instance.currentLobby?.MemberCount < 2)
+                    {
+                        wavePlanet = (hostPercent > clientPercent);
+                    }
                     else
-                        wavePlanet = false;
+                    {
+                        if (hostPercent >= 0.70f)
+                        {
+                            wavePlanet = true;   // host 행성
+                        }
+                        else if (clientPercent >= 0.70f)
+                        {
+                            wavePlanet = false;  // client 행성
+                        }
+                        else
+                        {
+                            // 랜덤 값
+                            float rand = UnityEngine.Random.value; // 0~1
 
+                            // 비율에 따라 선택
+                            wavePlanet = rand <= hostPercent;
+                        }
+                    }
                     violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
                 }
                 else if(day != 0)

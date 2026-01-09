@@ -13,6 +13,7 @@ public class Storage : Production
         //setModel = GetComponent<SpriteRenderer>();
         isStorageBuilding = true;
         invenSize = new int[5] { 6, 12, 18, 24, 30 };
+        inventory.space = invenSize[level];
     }
 
     //protected override void Update()

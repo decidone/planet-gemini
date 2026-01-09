@@ -249,6 +249,7 @@ MonoBehaviour:
   modelNum: []
   spawnItem: {fileID: 0}
   monsterList: []
+  monsterTargetAmount: 0
   col: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
@@ -286,6 +287,7 @@ MonoBehaviour:
   warningIcon: {fileID: 5787558088187792911}
   mapWarningIcon: {fileID: 1331014407507420301}
   warningIconCheck: 0
+  energyStateCheck: 0
   getAnim: 0
   strImg: []
   isAuto: 0
@@ -573,8 +575,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3884650046706208991}
-  - {fileID: 132481782117896454}
   - {fileID: 253800399899979016}
+  - {fileID: 132481782117896454}
   m_Father: {fileID: 90368467031128401}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -778,7 +780,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7970965086718267549}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

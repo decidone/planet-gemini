@@ -25,6 +25,9 @@ public class AttackTower : TowerAi
     TowerAttackOption towerAttackOption;
     AggroAmount aggroAmount;
 
+    [SerializeField]
+    SpriteRenderer view;
+
     protected override void Start()
     {
         base.Start();
@@ -79,22 +82,6 @@ public class AttackTower : TowerAi
 
         if (!structureData.EnergyUse[level])
         {
-            //if (isSetBuildingOk)
-            //{
-            //    for (int i = 0; i < nearObj.Length; i++)
-            //    {
-            //        if (nearObj[i] == null && sizeOneByOne)
-            //        {
-            //            CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-            //        }
-            //        else if (nearObj[i] == null && !sizeOneByOne)
-            //        {
-            //            int dirIndex = i / 2;
-            //            CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-            //        }
-            //    }
-            //}
-
             if (IsServer && !isPreBuilding)
             {
                 if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
@@ -424,6 +411,21 @@ public class AttackTower : TowerAi
         return data;
     }
 
+    public override void SetBuild()
+    {
+        base.SetBuild();
+        view.enabled = false;
+    }
+
+    public override void Focused()
+    {
+        view.enabled = true;
+    }
+
+    public override void DisableFocused()
+    {
+        view.enabled = false;
+    }
 
     private void OnDrawGizmos()
     {
