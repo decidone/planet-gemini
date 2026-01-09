@@ -54,8 +54,11 @@ public class SaveLoadBtn : MonoBehaviour
 
             loadEnable = false;
 
-            deleteBtn.gameObject.SetActive(false);
-            deleteBtn.onClick.RemoveAllListeners();
+            if(slotCount != 0)
+            {
+                deleteBtn.gameObject.SetActive(false);
+                deleteBtn.onClick.RemoveAllListeners();
+            }
         }
         mapSizeText.text = mapSizeString;
         mapDiffText.text = diffLevelString;
