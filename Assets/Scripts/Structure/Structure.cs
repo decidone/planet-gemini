@@ -441,8 +441,8 @@ public class Structure : NetworkBehaviour
     [ClientRpc]
     void DestroyClientRpc()
     {
-        Debug.Log("DestroyClientRpc : " + destroyStart + " : " + !isPreBuilding);
-        if (!destroyStart && !isPreBuilding && destroyTimer > 0)
+        Debug.Log("DestroyClientRpc : " + this.buildName);
+        if (!destroyStart && destroyTimer > 0)
         {
             isManualDestroy = true;
             destroyStart = true;

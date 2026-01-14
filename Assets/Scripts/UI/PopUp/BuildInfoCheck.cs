@@ -96,6 +96,12 @@ public class BuildInfoCheck : MonoBehaviour
                     BuildItemInfoPopUpOff();
                 }
             }
+            else
+            {
+                selectedStr = null;
+                isUIOpen = false;
+                BuildItemInfoPopUpOff();
+            }
         }
 
         if (selectedStr)

@@ -37,7 +37,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  removeGauge: 10
+  removeGauge: 8
   defense:
   - 5
   - 7

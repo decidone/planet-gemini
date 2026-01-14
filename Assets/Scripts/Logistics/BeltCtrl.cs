@@ -99,7 +99,7 @@ public class BeltCtrl : LogisticsCtrl
 
     private void FixedUpdate()
     {
-        if (destroyStart)
+        if (destroyStart || isPreBuilding)
             return;
 
         if (itemObjList.Count > 0)
@@ -512,7 +512,7 @@ public class BeltCtrl : LogisticsCtrl
     {
         if (nextBelt != null && beltState != BeltState.EndBelt)
         {
-            if (!nextBelt.isFull && !nextBelt.destroyStart && itemObjList.Count > 0)
+            if (!nextBelt.isFull && !nextBelt.isPreBuilding && !nextBelt.destroyStart && itemObjList.Count > 0)
             {
                 Vector2 fstItemPos = itemObjList[0].transform.position;
                 if (fstItemPos == nextPos[0])
