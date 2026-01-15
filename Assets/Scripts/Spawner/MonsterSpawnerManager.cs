@@ -378,6 +378,23 @@ public class MonsterSpawnerManager : NetworkBehaviour
                 }
             }
         }
+
+        if (IsServer)
+        {
+            WavePointOffServerRpc(hostMapWave);
+            WaveEndServerRpc();
+        }
+    }
+
+    [ServerRpc]
+    void WaveEndServerRpc()
+    {
+        WaveEndClientRpc();
+    }
+
+    [ClientRpc]
+    void WaveEndClientRpc()
+    {
         waveState = false;
         SoundManager.instance.BattleStateSet(hostMapWave, waveState);
     }

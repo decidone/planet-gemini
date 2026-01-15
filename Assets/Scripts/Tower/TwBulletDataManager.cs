@@ -57,9 +57,9 @@ public class TwBulletDataManager : MonoBehaviour
         {
         new BulletData("EnergyBullet", 0, 0, 0, true),
         new BulletData("CopperBullet", 10, 0f, 5, false),
-        new BulletData("IronBullet", 17, 0.1f, 4, false),
-        new BulletData("SteelBullet", 30, 0.3f, 3, false),
-        new BulletData("ExplosiveBullet", 35, 1, 2, true),
+        new BulletData("IronBullet", 13, 0.3f, 4, false),
+        new BulletData("SteelBullet", 17, 0.3f, 3, false),
+        new BulletData("ExplosiveBullet", 25, 1, 2, true),
         new BulletData("ManablastBullet", 45, 1, 1, true)
         };
         // 이름, 데미지, 공격속도, 범위, 폭발기능 순으로 넣어주면됨

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using System.Linq;
 
 public class FluidManager : NetworkBehaviour
 {
@@ -87,9 +88,14 @@ public class FluidManager : NetworkBehaviour
 
     void SendFluid()
     {
+        foreach (var key in mainSourceGroupObj.Keys.Where(k => k == null).ToList())
+        {
+            mainSourceGroupObj.Remove(key);
+        }
+
         foreach (var group in mainSourceGroupObj)
         {
-            if(group.Key.outObj.Count > 0)
+            if(group.Key && group.Key.outObj.Count > 0)
             {
                 group.Key.SendFluid();
                 sendfluidCoroutine = StartCoroutine(SendFluidCoroutine(group.Key));
