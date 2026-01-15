@@ -98,7 +98,7 @@ public class PreBuildingImg : MonoBehaviour
                 spriteRenderer.color = newColor;
                 break;
             case 5: //AttackTower
-                territoryView.transform.localScale = new Vector3(2f, 2f, 2f);
+                territoryView.transform.localScale = new Vector3(1.58f, 1.58f, 1f);
                 spriteRenderer.material = materials[1];
                 spriteRenderer.sprite = sprites[1];
                 newColor = new Color32(255, 0, 0, 100);

@@ -357,6 +357,11 @@ public class DataManager : MonoBehaviour
                     if (saveData.connectedStrPos.Count > 0)
                         unitFactory.UnitSpawnPosSetServerRpc(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
                 }
+
+                if(prod.TryGetComponent(out FluidFactoryCtrl fluidFactoryCtrl))
+                {
+                    fluidFactoryCtrl.FluidGameStartSet(saveData.fluidType, saveData.storedFluid);
+                }
             }
             else
             {

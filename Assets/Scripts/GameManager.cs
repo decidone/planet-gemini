@@ -382,8 +382,8 @@ public class GameManager : NetworkBehaviour
             if (IsServer)   // 에너지 사용량 체크
             {
                 var energyCheck = EnergyGroupManager.instance.MapEnergyCheck();
-                hostMapEnergyUseAmount += energyCheck.Item1;
-                clientMapEnergyUseAmount += energyCheck.Item2;
+                hostMapEnergyUseAmount += energyCheck.Item1 / 6;
+                clientMapEnergyUseAmount += energyCheck.Item2 / 6;
             }
 
             if (dayIndex == 0)

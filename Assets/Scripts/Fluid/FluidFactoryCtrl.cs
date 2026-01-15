@@ -174,16 +174,16 @@ public class FluidFactoryCtrl : Production
             return;
 
         float totalFluidAmount = 0f;
-        float canSendAmount = saveFluidNum / (canSendDic.Count + 1);
+        float canSendAmount = saveFluidNum / canSendDic.Count;
 
         foreach (var outFluid in canSendDic)
         {
             float outFluidAmount = outFluid.Value.Item2 - outFluid.Value.Item1;
             float sendAmoun = canSendAmount;
-            if (outFluid.Value.Item3)
-            {
-                sendAmoun = canSendAmount / 1.5f;
-            }
+            //if (outFluid.Value.Item3)
+            //{
+            //    sendAmoun = canSendAmount / 1.5f;
+            //}
 
             if (outFluidAmount < sendAmoun)
             {
@@ -227,7 +227,7 @@ public class FluidFactoryCtrl : Production
             return;
 
         float totalFluidAmount = 0f;
-        float canSendAmount = saveFluidNum / (canSendDic.Count + 1);
+        float canSendAmount = saveFluidNum / canSendDic.Count;
 
         foreach (var outFluid in canSendDic)
         {
@@ -255,6 +255,9 @@ public class FluidFactoryCtrl : Production
         bool refluxCheck = false;
         if (fluidName != othFluid.fluidName || !othFluid.CanTake())
             return (false, false);
+
+        if(othFluid.consumeSource)
+            return (true, false);
 
         bool farSourceCheck = howFarSource <= othFluid.howFarSource; // 자신보다 거리 수치가 높은 경우
         bool refluxSendCheck = saveFluidNum / 2 > othFluid.saveFluidNum; // 역류 기능 활성화 조건: 자신의 저장량이 상대의 저장량의 2배 이상인 경우
@@ -343,7 +346,7 @@ public class FluidFactoryCtrl : Production
 
     public void ShouldUpdate(FluidFactoryCtrl newSource, int dis, bool isSend)
     {
-        if (lastSource == newSource && lastDistance == dis)
+        if (!newSource || (lastSource == newSource && lastDistance == dis))
             return;
 
         lastSource = newSource;
@@ -460,5 +463,16 @@ public class FluidFactoryCtrl : Production
         data.storedFluid = saveFluidNum;
 
         return data;
+    }
+
+    public void FluidGameStartSet(int fluidType, float storedFluid)
+    {
+        if (fluidType == -1)
+            fluidName = "";
+        else if (fluidType == 0)
+            fluidName = "Water";
+        else if (fluidType == 1)
+            fluidName = "CrudeOil";
+        saveFluidNum = storedFluid;
     }
 }

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: Wall
   maxLevel: 5
-  maxHp: 7201000090010000ae010000cc010000ea010000
-  upgradeMaxHp: 86010000a4010000c2010000e0010000fe010000
+  maxHp: 7201000086010000ae010000cc010000ea010000
+  upgradeMaxHp: 8601000090010000c2010000e0010000fe010000
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed:
