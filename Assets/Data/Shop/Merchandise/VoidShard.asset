@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: VoidShard
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 0b25cd6897b919a4284e4eec2657fd36, type: 2}
-  buyPrice: 8000
+  buyPrice: 16000
   sellPrice: -1
-  scrapValue: 800
+  scrapValue: 1000

@@ -404,6 +404,7 @@ public class SteamGenerator : FluidFactoryCtrl
     {
         base.OpenUI();
         displaySlot.SetItemAmount((int)saveFluidNum);
+        displaySlot.SetReqAmount((int)waterRequirement);
 
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);

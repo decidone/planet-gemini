@@ -1372,11 +1372,10 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void RemoveMapObjServerRpc(Vector3 vector3, bool isHostMapRequest)
+    public void RemoveMapObjServerRpc(Vector3 vector3, bool isHostMapRequest, int amount)
     {
-        System.Random random = new();
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(ItemList.instance.itemDic["Log"]);
-        GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, random.Next(1, 4), vector3);
+        GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, amount, vector3);
         RemoveMapObjClientRpc(vector3, isHostMapRequest);
     }
 

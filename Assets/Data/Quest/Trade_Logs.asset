@@ -18,7 +18,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: e91974f7c49178f438d553f962273218, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}
-  amount: 20
+  amount: 10
   destination: -1
   scienceTech: -1
   hasDicLink: 1

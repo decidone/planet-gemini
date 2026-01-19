@@ -12,7 +12,15 @@ public class MapObject : MonoBehaviour
 
     public void RemoveMapObjRequest()
     {
-        GameManager.instance.RemoveMapObjServerRpc(this.transform.position, isInHostmap);
+        if (objNum == 2 || objNum == 4 || objNum == 7 || objNum == 9)
+        {
+            // 큰 나무
+            GameManager.instance.RemoveMapObjServerRpc(this.transform.position, isInHostmap, 2);
+        }
+        else
+        {
+            GameManager.instance.RemoveMapObjServerRpc(this.transform.position, isInHostmap, 1);
+        }
         InfoUI.instance.SetDefault();
     }
 

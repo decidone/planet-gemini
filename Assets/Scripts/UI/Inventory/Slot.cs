@@ -10,6 +10,7 @@ public class Slot : MonoBehaviour
 
     public Image icon;
     public Text amountText;
+    public Text reqAmountText;
     public Item item;
     public List<Item> inputItem;  //inputSlot 받는 아이템
     public int amount;
@@ -91,6 +92,8 @@ public class Slot : MonoBehaviour
         icon.enabled = false;
         amountText.text = null;
         amountText.enabled = false;
+        reqAmountText.text = null;
+        reqAmountText.enabled = false;
         onSlotChangedCallback?.Invoke();
     }
 
@@ -131,6 +134,16 @@ public class Slot : MonoBehaviour
     public void SetNeedAmount(int _needAmount) //디스플레이 슬롯용
     {
         needAmount = _needAmount;
+        reqAmountText.enabled = true;
+        reqAmountText.text = needAmount.ToString();
+
+        onSlotChangedCallback?.Invoke();
+    }
+
+    public void SetReqAmount(int reqAmount) //슬롯 옆에 아이템 요구량 표시
+    {
+        reqAmountText.enabled = true;
+        reqAmountText.text = reqAmount.ToString();
 
         onSlotChangedCallback?.Invoke();
     }

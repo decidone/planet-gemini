@@ -43,13 +43,13 @@
   "Storage":{
     "1":{"items":["Brick"],"amounts":[10]},
     "2":{"items":["IronPlate","Screw"],"amounts":[10,4]},
-    "3":{"items":["SteelPlate","Screw"],"amounts":[10,12]}
+    "3":{"items":["SteelBeam","Screw"],"amounts":[10,12]}
   },
   "Disintegrator":{
-    "1":{"items":["Motor","SteelPlate","Cogwheel"],"amounts":[8,12,24]}
+    "1":{"items":["Motor","SteelBeam","Cogwheel"],"amounts":[8,12,24]}
   },
   "Unloader":{
-    "1":{"items":["Motor","IronPlate"],"amounts":[2,10]}
+    "1":{"items":["Motor","IronPlate"],"amounts":[2,12]}
   },
   "Transporter":{
     "1":{"items":["Motor","SteelBeam"],"amounts":[6,20]}
@@ -64,7 +64,7 @@
     "1":{"items":["IronPlate","Screw"],"amounts":[10,10]}
   },
   "FluidTank":{
-    "1":{"items":["IronPlate","Screw"],"amounts":[8,12]}
+    "1":{"items":["SteelPlate","Screw"],"amounts":[8,12]}
   },
   "Extractor":{
     "1":{"items":["Motor","SteelBeam"],"amounts":[8,20]}
@@ -76,7 +76,7 @@
     "1":{"items":["Motor","SteelBeam"],"amounts":[4,12]}
   },
   "Overclock":{
-    "1":{"items":["ManaStone","ControlUnit"],"amounts":[40,10]}
+    "1":{"items":["ManaStone","ControlUnit"],"amounts":[20,20]}
   },
   "Wall":{
     "1":{"items":["Brick"],"amounts":[5]},
@@ -86,16 +86,16 @@
     "5":{"items":["AdamantitePlate"],"amounts":[5]}
   },
   "BasicTower":{
-    "1":{"items":["IronPlate","Brick"],"amounts":[20,20]}
+    "1":{"items":["IronPlate","Brick"],"amounts":[12,20]}
   },
   "FireTower":{
-    "1":{"items":["ManaStone","SteelBeam","Sulfur"],"amounts":[10,20,20]}
+    "1":{"items":["ManaStone","SteelBeam"],"amounts":[10,25]}
   },
   "IceTower":{
     "1":{"items":["ManaStone","SteelBeam"],"amounts":[5,20]}
   },
   "PoisonTower":{
-    "1":{"items":["ManaStone","SteelBeam","ToxicPlant"],"amounts":[8,20,10]}
+    "1":{"items":["ManaStone","SteelBeam","ToxicPlant"],"amounts":[8,20,5]}
   },
   "StormTower":{
     "1":{"items":["ManaStone","AdamantiteArmor","Engine"],"amounts":[20,10,4]}
@@ -104,7 +104,7 @@
     "1":{"items":["ManaStone","AdamantiteArmor","Engine"],"amounts":[20,10,8]}
   },
   "RepairTower":{
-    "1":{"items":["ManaStone","Brick"],"amounts":[10,20]}
+    "1":{"items":["ManaStone","Brick"],"amounts":[8,20]}
   },
   "UnitFactory":{
     "1":{"items":["Module","SteelBeam"],"amounts":[10,40]}
@@ -128,7 +128,7 @@
     "1":{"items":["Motor","SteelBeam"],"amounts":[4,12]}
   },
   "ManaGenerator":{
-    "1":{"items":["Motor","SteelBeam"],"amounts":[8,20]}
+    "1":{"items":["ManaStone","SteelBeam"],"amounts":[8,20]}
   },
   "AutoBuyer":{
     "1":{"items":["ControlUnit","Motor","SteelBeam"],"amounts":[5,10,20]}

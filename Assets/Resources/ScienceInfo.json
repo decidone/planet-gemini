@@ -71,7 +71,7 @@
   },
   "Manufacturer":{
     "Build":{
-      "1":{"items":["Motor","SteelBeam"],"amounts":[15,30],"coreLv":3,"time":40,"Info":"Produces components from three material. Requires energy.","basicScience":false,"sortIndex":6}
+      "1":{"items":["Motor","SteelBeam"],"amounts":[30,40],"coreLv":3,"time":40,"Info":"Produces components from three material. Requires energy.","basicScience":false,"sortIndex":6}
     }
   },
   "Splitter":{
@@ -88,13 +88,13 @@
   "Storage":{
     "Build":{
       "1":{"items":["CopperPlate"],"amounts":[10],"coreLv":1,"time":5,"Info":"A storage that has 6 inventory slots.","basicScience":false, "sortIndex":12},
-      "2":{"items":["IronPlate"],"amounts":[20],"coreLv":2,"time":10,"Info":"A storage that has 12 inventory slots.","basicScience":false, "sortIndex":11},
-      "3":{"items":["SteelPlate"],"amounts":[30],"coreLv":3,"time":20,"Info":"A storage that has 18 inventory slots.","basicScience":false, "sortIndex":11}
+      "2":{"items":["IronPlate"],"amounts":[30],"coreLv":2,"time":10,"Info":"A storage that has 12 inventory slots.","basicScience":false, "sortIndex":11},
+      "3":{"items":["SteelPlate"],"amounts":[60],"coreLv":3,"time":20,"Info":"A storage that has 18 inventory slots.","basicScience":false, "sortIndex":11}
     }
   },
   "Disintegrator":{
     "Build":{
-      "1":{"items":["Motor","SteelPlate"],"amounts":[10,30],"coreLv":2,"time":40,"Info":"Grind items to obtain a trade resource called 'Scrap'.","basicScience":false, "sortIndex":13}
+      "1":{"items":["Motor","SteelPlate"],"amounts":[20,40],"coreLv":2,"time":40,"Info":"Grind items to obtain a trade resource called 'Scrap'.","basicScience":false, "sortIndex":13}
     }
   },
   "Unloader":{
@@ -104,7 +104,7 @@
   },
   "Transporter":{
     "Build":{
-      "1":{"items":["Motor","SteelBeam"],"amounts":[10,20],"coreLv":3,"time":20,"Info":"Transports items to other Transporters by using drones. Can be connected to other transports on the map.","basicScience":false, "sortIndex":2}
+      "1":{"items":["Motor","SteelBeam"],"amounts":[20,40],"coreLv":3,"time":20,"Info":"Transports items to other Transporters by using drones. Can be connected to other transports on the map.","basicScience":false, "sortIndex":2}
     }
   },
   "Pump":{
@@ -124,27 +124,27 @@
   },
   "FluidTank":{
     "Build":{
-      "1":{"items":["IronPlate","Screw"],"amounts":[20,30],"coreLv":2,"time":20,"Info":"Stores a large amount of fluids.","basicScience":false, "sortIndex":9}
+      "1":{"items":["SteelPlate","Screw"],"amounts":[20,30],"coreLv":2,"time":20,"Info":"Stores a large amount of fluids.","basicScience":false, "sortIndex":9}
     }
   },
   "Extractor":{
     "Build":{
-      "1":{"items":["Motor","SteelBeam"],"amounts":[10,20],"coreLv":3,"time":30,"Info":"Extracts crude oil out of oil tiles. Oil tiles can be found in the Desert biome.","basicScience":false, "sortIndex":3}
+      "1":{"items":["Motor","SteelBeam"],"amounts":[20,30],"coreLv":3,"time":30,"Info":"Extracts crude oil out of oil tiles. Oil tiles can be found in the Desert biome.","basicScience":false, "sortIndex":3}
     }
   },
   "Refinery":{
     "Build":{
-      "1":{"items":["Motor"],"amounts":[15],"coreLv":3,"time":30,"Info":"Refines crude oil. Requires energy.","basicScience":false, "sortIndex":4}
+      "1":{"items":["Motor"],"amounts":[20],"coreLv":3,"time":30,"Info":"Refines crude oil. Requires energy.","basicScience":false, "sortIndex":4}
     }
   },
   "ChemicalPlant":{
     "Build":{
-      "1":{"items":["Naphtha"],"amounts":[30],"coreLv":3,"time":20,"Info":"Processes refined oil and primitive plants to produce chemical products. Requires energy.","basicScience":false, "sortIndex":5}
+      "1":{"items":["Naphtha"],"amounts":[20],"coreLv":3,"time":20,"Info":"Processes refined oil and primitive plants to produce chemical products. Requires energy.","basicScience":false, "sortIndex":5}
     }
   },
   "Overclock":{
     "Build":{
-      "1":{"items":["ManaStone","ControlUnit"],"amounts":[20,10],"coreLv":4,"time":50,"Info":"Increases nearby factories' operation speed. Requires energy.","basicScience":false, "sortIndex":5}
+      "1":{"items":["ManaStone","ControlUnit"],"amounts":[40,30],"coreLv":4,"time":50,"Info":"Increases nearby factories' operation speed. Requires energy.","basicScience":false, "sortIndex":5}
     }
   },
   "EnergyRepeater":{
@@ -154,7 +154,7 @@
   },
   "ImprovedRepeater":{
     "Build":{
-      "1":{"items":["Cable"],"amounts":[25],"coreLv":3,"time":25,"Info":"Extends the large coverage of the energy network.","basicScience":false, "sortIndex":8}
+      "1":{"items":["Cable"],"amounts":[40],"coreLv":3,"time":25,"Info":"Extends the large coverage of the energy network.","basicScience":false, "sortIndex":8}
     }
   },
   "LDConnector":{
@@ -164,7 +164,7 @@
   },
   "EnergyBattery":{
     "Build":{
-      "1":{"items":["Battery"],"amounts":[25],"coreLv":3,"time":25,"Info":"Stores energy and supplies it to the connected energy network when there is a shortage.","basicScience":false,"sortIndex":10}
+      "1":{"items":["Battery"],"amounts":[20],"coreLv":3,"time":25,"Info":"Stores energy and supplies it to the connected energy network when there is a shortage.","basicScience":false,"sortIndex":10}
     }
   },
   "CoalGenerator":{
@@ -208,7 +208,7 @@
   },
   "BasicTower":{
     "Battle":{
-      "1":{"items":["IronPlate","Brick"],"amounts":[20,20],"coreLv":1,"time":20,"Info":"Basic tower that requires bullets or shells to attack.","basicScience":false,"sortIndex":15}
+      "1":{"items":["IronPlate","Brick"],"amounts":[20,40],"coreLv":1,"time":20,"Info":"Basic tower that requires bullets or shells to attack.","basicScience":false,"sortIndex":15}
     }
   },
   "FireTower":{
@@ -218,12 +218,12 @@
   },
   "IceTower":{
     "Battle":{
-      "1":{"items":["ManaStone","SteelBeam"],"amounts":[5,15],"coreLv":2,"time":30,"Info":"A tower that slows down the attacked enemies. Requires energy.","basicScience":false,"sortIndex":17}
+      "1":{"items":["ManaStone","SteelBeam"],"amounts":[10,20],"coreLv":2,"time":30,"Info":"A tower that slows down the attacked enemies. Requires energy.","basicScience":false,"sortIndex":17}
     }
   },
   "PoisonTower":{
     "Battle":{
-      "1":{"items":["ManaStone","ToxicPlant"],"amounts":[10,10],"coreLv":3,"time":30,"Info":"A tower that deals continuous damage over time to the attacked enemies. Requires energy.","basicScience":false,"sortIndex":17}
+      "1":{"items":["ManaStone","ToxicPlant"],"amounts":[15,20],"coreLv":3,"time":30,"Info":"A tower that deals continuous damage over time to the attacked enemies. Requires energy.","basicScience":false,"sortIndex":17}
     }
   },
   "StormTower":{
@@ -238,7 +238,7 @@
   },
   "RepairTower":{
     "Battle":{
-      "1":{"items":["ManaStone"],"amounts":[5],"coreLv":2,"time":20,"Info":"A tower that repairs nearby structures. Requires energy.","basicScience":false,"sortIndex":16}
+      "1":{"items":["ManaStone"],"amounts":[10],"coreLv":2,"time":20,"Info":"A tower that repairs nearby structures. Requires energy.","basicScience":false,"sortIndex":16}
     }
   },
   "UnitFactory":{
@@ -266,12 +266,12 @@
   },
   "CorrosionDrone":{
     "Battle":{
-      "1":{"items":["ControlUnit"],"amounts":[20],"coreLv":4,"time":60,"Info":"A controllable unit that reduces the defense of nearby monsters.","basicScience":false,"sortIndex":10}
+      "1":{"items":["ControlUnit"],"amounts":[30],"coreLv":4,"time":60,"Info":"A controllable unit that reduces the defense of nearby monsters.","basicScience":false,"sortIndex":10}
     }
   },
   "RepairerDrone":{
     "Battle":{
-      "1":{"items":["ControlUnit"],"amounts":[20],"coreLv":4,"time":60,"Info":"A controllable unit that restores nearby units and structures.","basicScience":false,"sortIndex":11}
+      "1":{"items":["ControlUnit"],"amounts":[30],"coreLv":4,"time":60,"Info":"A controllable unit that restores nearby units and structures.","basicScience":false,"sortIndex":11}
     }
   },
   "Tank":{
@@ -289,15 +289,15 @@
   },
   "TowerUpgrade":{
     "Battle":{
-      "1":{"items":["ManaStone","Engine"],"amounts":[60,20],"coreLv":5,"time":120,"Info":"Enhances the offensive systems of all towers, increasing their damage.","basicScience":false, "sortIndex":10},
-      "2":{"items":["ManaStone","Engine"],"amounts":[60,20],"coreLv":5,"time":120,"Info":"Enhances the offensive systems of all towers, increasing their attack speed.","basicScience":false, "sortIndex":11}
+      "1":{"items":["ManaStone","Engine"],"amounts":[60,40],"coreLv":5,"time":120,"Info":"Enhances the offensive systems of all towers, increasing their damage.","basicScience":false, "sortIndex":10},
+      "2":{"items":["ManaStone","Engine"],"amounts":[60,40],"coreLv":5,"time":120,"Info":"Enhances the offensive systems of all towers, increasing their attack speed.","basicScience":false, "sortIndex":11}
      }
   },
   "UnitUpgrade":{
     "Battle":{
       "1":{"items":["ManaStone","SteelBeam"],"amounts":[60,80],"coreLv":5,"time":120,"Info":"Increases the HP of all units, improving overall durability.","basicScience":false, "sortIndex":12},
-      "2":{"items":["ManaStone","Engine"],"amounts":[60,20],"coreLv":5,"time":120,"Info":"Enhances the offensive systems of all units, increasing their damage.","basicScience":false, "sortIndex":13},
-      "3":{"items":["ManaStone","Engine"],"amounts":[60,20],"coreLv":5,"time":120,"Info":"Enhances the offensive systems of all units, increasing their attack speed.","basicScience":false, "sortIndex":14},
+      "2":{"items":["ManaStone","Engine"],"amounts":[60,40],"coreLv":5,"time":120,"Info":"Enhances the offensive systems of all units, increasing their damage.","basicScience":false, "sortIndex":13},
+      "3":{"items":["ManaStone","Engine"],"amounts":[60,40],"coreLv":5,"time":120,"Info":"Enhances the offensive systems of all units, increasing their attack speed.","basicScience":false, "sortIndex":14},
       "4":{"items":["ManaStone","AdamantiteArmor"],"amounts":[60,40],"coreLv":5,"time":120,"Info":"Fortifies units, increasing their defense.","basicScience":false, "sortIndex":15}
     }
   },
