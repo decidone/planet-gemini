@@ -32,4 +32,5 @@ public class SpawnerSaveData
     public int detectionCount;  // 포탈 인식 카운트
     public int waveCount;       // 웨이브 발생 횟수
     public int ragePhase;       // 페이즈 카운트
+    public int waveLevel;
 }

@@ -28,36 +28,6 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         base.Update();
         if (!removeState)
         {
-            //SetDirNum();
-            //if (isSetBuildingOk)
-            //{
-            //    for (int i = 0; i < nearObj.Length; i++)
-            //    {
-            //        if (nearObj[i] == null)
-            //        {
-            //            if (i == 0)
-            //                CheckNearObj(checkPos[0], 0, obj => UnderPipeSetInObj(obj));
-            //            else if (i == 1)
-            //                CheckNearObj(checkPos[1], 1,  obj => UnderPipeSetOutObj(obj));
-            //        }
-            //    }
-            //}
-
-            //if (!isPreBuilding && checkObj)
-            //{
-            //    if (outObj.Count > 0)
-            //    {
-            //        sendDelayTimer += Time.deltaTime;
-
-            //        if (sendDelayTimer > sendDelay)
-            //        {
-            //            if(saveFluidNum >= structureData.SendFluidAmount)
-            //                SendFluid();
-            //            sendDelayTimer = 0;
-            //        }
-            //    }
-            //}
-
             if (gameManager.focusedStructure == null && (dirNum == 0 || dirNum == 1))
             {
                 if (preBuilding.isBuildingOn && preBuilding.isUnderObj && !preBuilding.isUnderBelt)
@@ -329,5 +299,16 @@ public class UnderPipeCtrl : FluidFactoryCtrl
                     connectUnderPipe.GetComponent<UnderPipeCtrl>().EndRenderer(!isSend);
             }
         }
+    }
+
+    public override void Focused()
+    {
+        if(connectUnderPipe)
+            LineRendererSet(connectUnderPipe.transform.position);
+    }
+
+    public override void DisableFocused()
+    {
+        DestroyLineRenderer();
     }
 }

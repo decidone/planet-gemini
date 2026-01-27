@@ -222,6 +222,9 @@ public class PlayerStatus : NetworkBehaviour
                 return;
 
             hp -= damage;
+            if (IsServer && GameManager.instance.violentDay)
+                GameManager.instance.GetWaveDamage(damage);
+
             if (hp < 0f)
             {
                 hp = 0f; 
@@ -238,6 +241,9 @@ public class PlayerStatus : NetworkBehaviour
                 return;
 
             tankHp -= damage;
+            if (IsServer && GameManager.instance.violentDay)
+                GameManager.instance.GetWaveDamage(damage);
+
             if (tankHp < 0f)
             {
                 tankHp = 0f;

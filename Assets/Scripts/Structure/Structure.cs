@@ -1076,7 +1076,7 @@ public class Structure : NetworkBehaviour
     {
         itemGetDelay = true;
 
-        if (inObj.Count < getItemIndex)
+        if (inObj.Count <= getItemIndex || !inObj[getItemIndex])
         {
             GetItemIndexSet();
             Invoke(nameof(DelayGetItem), getDelay);
@@ -1131,6 +1131,9 @@ public class Structure : NetworkBehaviour
     {
         if (inObj[inObjIndex].TryGetComponent(out BeltCtrl belt))
         {
+            if (belt.itemObjList.Count <= 0)
+                return;
+
             OnFactoryItem(belt.itemObjList[0]);
             belt.isItemStop = false;
             belt.itemObjList.RemoveAt(0);
@@ -1419,7 +1422,9 @@ public class Structure : NetworkBehaviour
 
         if (hp <= 0f)
             return;
-        float reducedDamage = Mathf.Max(damage - defense, 5);
+
+        float defenseRate = defense * 0.01f; // 0 ~ 1 변환
+        float reducedDamage = Mathf.Max(damage * (1f - defenseRate), 5f);
 
         if (!damageEffectOn)
         {
@@ -1427,6 +1432,9 @@ public class Structure : NetworkBehaviour
         }
 
         hp -= reducedDamage;
+        if (IsServer && gameManager.violentDay)
+            gameManager.GetWaveDamage(reducedDamage);
+
         if (hp < 0f)
             hp = 0f;
         onHpChangedCallback?.Invoke();

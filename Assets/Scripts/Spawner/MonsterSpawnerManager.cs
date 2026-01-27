@@ -11,19 +11,15 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public Dictionary<(int map, int area), List<MonsterSpawner>> monsterSpawners = new Dictionary<(int, int), List<MonsterSpawner>>();
     // map 1 = hostMap, 2 = clientMap
 
-    public GameObject[,] spawnerMap1Matrix;
-    public GameObject[,] spawnerMap2Matrix;
-    SpawnerSetManager spawnerSetManager;
+    GameObject[,] spawnerMap1Matrix;
+    GameObject[,] spawnerMap2Matrix;
     int splitCount;
-    int xIndex;
-    int yIndex;
 
     WavePoint wavePoint;
 
     bool waveState;
     public bool hostMapWave;
     Vector3 wavePos;
-    Vector3 targetPos;
 
     public Sprite[] spawnerSprite;
 
@@ -45,7 +41,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     private void Start()
     {
-        spawnerSetManager = SpawnerSetManager.instance;
         wavePoint = WavePoint.instance;
     }
 
@@ -105,13 +100,30 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         (int map, int area) key = (isInHostMap ? 1 : 2, groupNum);
 
-        if (monsterSpawners.ContainsKey(key))
-        {
-            monsterSpawners[key].Remove(spawner);
+        if (!monsterSpawners.TryGetValue(key, out var list))
+            return;
 
-            if (monsterSpawners[key].Count == 0)
-                monsterSpawners.Remove(key);
+        list.Remove(spawner);
+
+        if (list.Count > 0)
+            return;
+
+        monsterSpawners.Remove(key);
+
+        if (!HasAnyMonsterSpawner())
+        {
+            GameManager.instance.BloodMoonOff();
         }
+    }
+
+    bool HasAnyMonsterSpawner()
+    {
+        foreach (var kv in monsterSpawners)
+        {
+            if (kv.Value.Count > 0)
+                return true;
+        }
+        return false;
     }
 
     public void AreaGroupLevelUp(MonsterSpawner spawner, int preGroupNum, int groupNum, bool isHostMap)
@@ -187,7 +199,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
     }
 
-    public bool ViolentDayOn(bool hostMap, bool forcedOperation)
+    public bool ViolentDayOn(bool hostMap, bool forcedOperation, int waveLevel)
     {
         List<MonsterSpawner> reachedPortalspawners = new List<MonsterSpawner>();
         MonsterSpawner aggroSpawner = null;
@@ -212,13 +224,14 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             waveState = true;
             hostMapWave = hostMap;
-            aggroSpawner.ViolentDaySet();
+            aggroSpawner.ViolentDaySet(waveLevel);
             wavePos = aggroSpawner.transform.position;
             WavePointOnServerRpc(wavePos, hostMap);
             return true;
         }
         else
         {
+            Debug.Log("ViolentDayOn");
             WavePointOnServerRpc();
             return false;
         }
@@ -397,5 +410,17 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         waveState = false;
         SoundManager.instance.BattleStateSet(hostMapWave, waveState);
+    }
+
+    public bool HasMonsterSpawnerOnMap(bool isHostMap)
+    {
+        int mapIndex = isHostMap ? 1 : 2;
+
+        foreach (var spawner in monsterSpawners)
+        {
+            if (spawner.Key.map == mapIndex && spawner.Value.Count > 0)
+                return true;
+        }
+        return false;
     }
 }

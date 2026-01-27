@@ -346,54 +346,52 @@ public class UnitCommonAi : NetworkBehaviour
     [ClientRpc]
     public virtual void TakeDamageClientRpc(float damage, int attackType, float option)
     {
-        //if (hp <= 0f)
-        //    return;
-        if (!unitCanvas.activeSelf)
-            unitCanvas.SetActive(true);
+        //if (!unitCanvas.activeSelf)
+        //    unitCanvas.SetActive(true);
 
-        float reducedDamage = damage;
+        //float reducedDamage = damage;
 
-        if (attackType == 0 || attackType == 4)
-        {
-            reducedDamage = Mathf.Max(damage - defense, 5);
-            if (attackType == 4)
-            {
-                if(!slowDebuffOn)
-                    StartCoroutine(SlowDebuffDamage(option));
-            }
-        }
-        else if (attackType == 2)
-        {
-            reducedDamage = Mathf.Max(damage - (defense * (option / 100)), 5);
-        }
-        else if (attackType == 3)
-        {
-            reducedDamage = 0;
-            if(!takePoisonDamgae)
-                StartCoroutine(PoisonDamage(damage, option));
-        }
+        //if (attackType == 0 || attackType == 4)
+        //{
+        //    reducedDamage = Mathf.Max(damage - defense, 5);
+        //    if (attackType == 4)
+        //    {
+        //        if(!slowDebuffOn)
+        //            StartCoroutine(SlowDebuffDamage(option));
+        //    }
+        //}
+        //else if (attackType == 2)
+        //{
+        //    reducedDamage = Mathf.Max(damage - (defense * (option / 100)), 5);
+        //}
+        //else if (attackType == 3)
+        //{
+        //    reducedDamage = 0;
+        //    if(!takePoisonDamgae)
+        //        StartCoroutine(PoisonDamage(damage, option));
+        //}
 
-        if (!slowDebuffOn && !takePoisonDamgae && !damageEffectOn)
-        {
-            StartCoroutine(TakeDamageEffect());
-        }
+        //if (!slowDebuffOn && !takePoisonDamgae && !damageEffectOn)
+        //{
+        //    StartCoroutine(TakeDamageEffect());
+        //}
 
-        hp -= reducedDamage;
-        if (hp < 0f)
-            hp = 0f;
-        onHpChangedCallback?.Invoke();
-        hpBar.fillAmount = hp / maxHp;
+        //hp -= reducedDamage;
+        //if (hp < 0f)
+        //    hp = 0f;
+        //onHpChangedCallback?.Invoke();
+        //hpBar.fillAmount = hp / maxHp;
 
-        if (IsServer && hp <= 0f && !dieCheck)
-        {
-            aIState = AIState.AI_Die;
-            hp = 0f;
-            dieCheck = true;
-            DieFuncServerRpc();
-            StopAllCoroutines();
-            seeker.enabled = false; 
-            seeker.OnDestroy();    
-        }
+        //if (IsServer && hp <= 0f && !dieCheck)
+        //{
+        //    aIState = AIState.AI_Die;
+        //    hp = 0f;
+        //    dieCheck = true;
+        //    DieFuncServerRpc();
+        //    StopAllCoroutines();
+        //    seeker.enabled = false; 
+        //    seeker.OnDestroy();    
+        //}
     }
 
     protected IEnumerator SlowDebuffDamage(float time)

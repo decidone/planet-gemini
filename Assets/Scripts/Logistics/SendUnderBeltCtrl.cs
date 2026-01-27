@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 using Unity.Netcode;
-using Pathfinding;
 
 // UTF-8 설정
 public class SendUnderBeltCtrl : LogisticsCtrl
@@ -273,5 +270,21 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     public override void ColliderTriggerOnOff(bool isOn)
     {
         col.isTrigger = true;
+    }
+
+    public override void Focused()
+    {
+        if (outObj.Count > 0)
+        {
+            outObj[0].GetComponent<GetUnderBeltCtrl>().StartRenderer();
+        }
+    }
+
+    public override void DisableFocused()
+    {
+        if (outObj.Count > 0)
+        {
+            outObj[0].GetComponent<GetUnderBeltCtrl>().EndRenderer();
+        }
     }
 }

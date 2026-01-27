@@ -1046,7 +1046,8 @@ public class MonsterAi : UnitCommonAi
 
         if (attackType == 0 || attackType == 4)
         {
-            reducedDamage = Mathf.Max(damage - reducedDefense, 5);
+            float defenseRate = defense * 0.01f; // 0 ~ 1 변환
+            reducedDamage = Mathf.Max(damage * (1f - defenseRate), 5f);
             if (attackType == 4)
             {
                 if (!slowDebuffOn)
@@ -1087,6 +1088,9 @@ public class MonsterAi : UnitCommonAi
             hp = 0f;
             dieCheck = true;
             DieFuncServerRpc();
+            StopAllCoroutines();
+            seeker.enabled = false;
+            seeker.OnDestroy();
         }
     }
 

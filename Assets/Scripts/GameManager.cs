@@ -189,10 +189,38 @@ public class GameManager : NetworkBehaviour
 
     MonsterSpawnerManager monsterSpawnerManager;
 
+    [SerializeField]
     int consecutiveWaveCount;   // 연속으로 발생한 웨이브 수
     int waveMaxCount = 3;       // 연속 최대 수
 
+    List<int[]> waveLevelEnergies = new List<int[]> // 각 코어 레벨 당 웨이브 레벨 별 에너지 사용량 임계치
+    {
+        new int[] { 3000, 3500, 4000, 4500 },
+        new int[] { 4500, 5200, 5900, 6600 },
+        new int[] { 6600, 7500, 8400, 9300 },
+        new int[] { 9300, 10500, 11700, 12900 },
+        new int[] { 12900, 14400, 15900, 17400 }
+    };
+
     public Image saveImg;
+
+    int waveIndex; // 현재 웨이브 수
+    [SerializeField]
+    float waveDamage; // 현재 웨이브 데미지
+    float prevWaveDamage; // 이전 웨이브 총 데미지
+    float currWaveDamage; // 현재 웨이브 총 데미지
+    [SerializeField]
+    float difficultyPercent; // 웨이브 난이도 증가량
+
+    // 몬스터 배율
+    [SerializeField]
+    public float spawnMultiplier = 1f;
+    [SerializeField]
+    public float hpMultiplier = 1f;
+    [SerializeField]
+    public float atkMultiplier = 1f;
+    [SerializeField]
+    public float defMultiplier = 1f;
 
     #region Singleton
     public static GameManager instance;
@@ -424,6 +452,8 @@ public class GameManager : NetworkBehaviour
                     if (IsServer)
                     {
                         monsterSpawnerManager.WavePointOff();
+                        OnWaveFinished(waveDamage);
+                        waveDamage = 0;
                     }
                     timeImg.color = new Color32(255, 255, 255, 255);
                 }
@@ -489,14 +519,32 @@ public class GameManager : NetworkBehaviour
                             wavePlanet = rand <= hostPercent;
                         }
                     }
-                    violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
-                }
-                else if(day != 0)
-                    NoWaveDetectedTextClientRpc();
-            }
-            else if(day != 0)
-                NoWaveDetectedTextClientRpc();
 
+                    bool canWave = true;
+                    bool canSpawnOnWavePlanet = monsterSpawnerManager.HasMonsterSpawnerOnMap(wavePlanet); // 발생 행성에 스포너가 있는지
+                    bool canSpawnOnOtherPlanet = monsterSpawnerManager.HasMonsterSpawnerOnMap(!wavePlanet); // 다른 행성에 스포너가 있는지
+
+                    if (!canSpawnOnWavePlanet && !canSpawnOnOtherPlanet) // 둘다 없는 경우
+                        canWave = false;
+
+                    if (!canSpawnOnWavePlanet) // 발생 행성에 스포너가 없는 경우
+                        wavePlanet = !wavePlanet;
+
+                    if (canWave)
+                    {
+                        int waveLevel = WaveLevelSet(energyUseFullAmount);
+                        violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation, waveLevel);
+                    }
+                }
+                else if (day != 0)
+                {
+                    NoWaveDetectedTextClientRpc();
+                }
+            }
+            else if (day != 0)
+            {
+                NoWaveDetectedTextClientRpc();
+            }
             violentDaySync = true;
 
             if (violentDayOnCheck)
@@ -510,6 +558,22 @@ public class GameManager : NetworkBehaviour
         int dday = CalculateDday(day, violentCycle);
 
         ViolentDayOnClientRpc(violentDaySync, violentDayOnCheck, dday);
+    }
+
+    int WaveLevelSet(float energyUseFullAmount)
+    {
+        int coreLevel = ScienceDb.instance.coreLevel;
+        var thresholds = waveLevelEnergies[coreLevel - 1];
+
+        int level = 0;
+
+        for (int i = 0; i < thresholds.Length; i++)
+        {
+            if (energyUseFullAmount >= thresholds[i])
+                level = i + 1;
+        }
+
+        return level + ((coreLevel - 1) * 5);
     }
 
     [ClientRpc]
@@ -1462,7 +1526,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void TimeScaleServerRpc()
+    public void TimeScaleServerRpc()  
     {
         TimeScaleClientRpc();
     }
@@ -2136,5 +2200,124 @@ public class GameManager : NetworkBehaviour
     {
         float totalAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
         return totalAmount;
+    }
+
+    public void GetWaveDamage(float damage)
+    {
+        waveDamage += damage;
+    }
+
+    public void OnWaveFinished(float totalDamageDealt)
+    {
+        waveIndex++;
+
+        // 1, 2 웨이브는 기준 데이터만 수집
+        if (waveIndex <= 2)
+        {
+            prevWaveDamage = currWaveDamage;
+            currWaveDamage = totalDamageDealt;
+            return;
+        }
+
+        // 난이도 증가량 계산
+        float delta = CalculateDifficultyDelta(prevWaveDamage, currWaveDamage);
+
+        // 난이도 누적
+        difficultyPercent += delta * 100f;
+        difficultyPercent = Mathf.Clamp(difficultyPercent, 0f, Mathf.Clamp(ScienceDb.instance.coreLevel, 1, 5) * 100f);
+
+        // 스폰 / 스펙 반영
+        ApplyDifficulty(delta);
+
+        // 웨이브 데미지 갱신
+        prevWaveDamage = currWaveDamage;
+        currWaveDamage = totalDamageDealt;
+    }
+
+    // ===============================
+    // 난이도 증가량 계산
+    // ===============================
+    float CalculateDifficultyDelta(float prevDamage, float currDamage)
+    {
+        if (prevDamage <= 0f)
+            return 0.10f;
+
+        // 몬스터 데미지 변화율
+        float deltaRatio = (currDamage - prevDamage) / prevDamage;
+        // ↓
+        // 음수 : 몬스터가 덜 때림 (플레이어 성장)
+        // 양수 : 몬스터가 더 때림 (플레이어 밀림)
+
+        const float MIN_DELTA = 0.10f; // 최소 10% (플레이어가 힘들 때)
+        const float MAX_DELTA = 0.20f; // 최대 20% (너무 잘 막을 때)
+
+        const float FULL_SUPPRESS_RATIO = -0.5f;
+        // 몬스터 데미지가 50% 이상 감소하면 "완벽 제압"
+
+        // 몬스터가 더 많이 때린 경우 → 소폭 상승
+        if (deltaRatio >= 0f)
+        {
+            return MIN_DELTA;
+        }
+
+        // 몬스터 데미지가 줄어든 경우 → 성장량에 따라 난이도 증가
+        float suppressRatio = Mathf.Abs(deltaRatio); // 제압 정도
+        float t = Mathf.Clamp01(suppressRatio / Mathf.Abs(FULL_SUPPRESS_RATIO));
+
+        return Mathf.Lerp(MIN_DELTA, MAX_DELTA, t);
+    }
+
+    // ===============================
+    // 난이도 → 실제 수치 반영
+    // ===============================
+    void ApplyDifficulty(float delta)
+    {
+        Vector2 weight = GetDifficultyWeight(ScienceDb.instance.coreLevel);
+        float scale = GetDifficultyTierScale(difficultyPercent);
+
+        float spawnDelta = delta * weight.x * scale;
+        float statDelta = delta * weight.y * scale;
+
+        // 스폰 수 증가
+        spawnMultiplier *= (1f + spawnDelta);
+
+        // 스펙 증가
+        hpMultiplier *= (1f + statDelta * 0.5f);
+        atkMultiplier *= (1f + statDelta * 0.3f);
+        defMultiplier *= (1f + statDelta * 0.2f);
+    }
+
+    // ===============================
+    // 과학트리 단계별 분배
+    // ===============================
+    Vector2 GetDifficultyWeight(int tier)
+    {
+        return tier switch
+        {   // 스폰 : 스펙
+            1 => new Vector2(0.7f, 0.3f),
+            2 => new Vector2(0.6f, 0.4f),
+            3 => new Vector2(0.5f, 0.5f),
+            4 => new Vector2(0.4f, 0.6f),
+            5 => new Vector2(0.3f, 0.7f),
+            _ => new Vector2(0.5f, 0.5f),
+        };
+    }
+
+    // ===============================
+    // 난이도 구간별 성격 보정
+    // ===============================
+    float GetDifficultyTierScale(float difficulty)
+    {
+        if (difficulty < 100f) return 0.6f;
+        if (difficulty < 200f) return 0.8f;
+        if (difficulty < 300f) return 1.0f;
+        if (difficulty < 400f) return 1.2f;
+        return 1.5f;
+    }
+
+    public void BloodMoonOff()
+    {
+        bloodMoon = false;
+        BasicUIBtns.instance.BloodMoonUIOff();
     }
 }

@@ -596,7 +596,8 @@ public class UnitAi : UnitCommonAi
 
         if (attackType == 0 || attackType == 4)
         {
-            reducedDamage = Mathf.Max(damage - defense, 5);
+            float defenseRate = defense * 0.01f; // 0 ~ 1 변환
+            reducedDamage = Mathf.Max(damage * (1f - defenseRate), 5f);
             if (attackType == 4)
             {
                 if (!slowDebuffOn)
@@ -618,6 +619,9 @@ public class UnitAi : UnitCommonAi
         {
             StartCoroutine(TakeDamageEffect());
         }
+
+        if(IsServer && GameManager.instance.violentDay)
+            GameManager.instance.GetWaveDamage(reducedDamage);
 
         hp -= reducedDamage;
         if (hp < 0f)
