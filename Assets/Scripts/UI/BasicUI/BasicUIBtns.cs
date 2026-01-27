@@ -33,6 +33,20 @@ public class BasicUIBtns : MonoBehaviour
     private float[] positions; // Y 좌표 목록
     private bool isSliding = false; // 슬라이드 중인지 확인
     SoundManager soundManager;
+
+    // 유닛 UI 관련
+    public Text unitAmountText;
+
+    // 회전 가능한 건물 UI 관련
+    [SerializeField]
+    GameObject rotatePanel;
+    string rotateKey;
+    [SerializeField]
+    Text rotateText;
+    float timePosY;
+
+    public bool test;
+
     #region Singleton
     public static BasicUIBtns instance;
 
@@ -47,16 +61,6 @@ public class BasicUIBtns : MonoBehaviour
     }
     #endregion
 
-    // 유닛 UI 관련
-    public Text unitAmountText;
-
-    // 회전 가능한 건물 UI 관련
-    [SerializeField]
-    GameObject rotatePanel;
-    string rotateKey;
-    [SerializeField]
-    Text rotateText;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -65,7 +69,7 @@ public class BasicUIBtns : MonoBehaviour
         SwapFunc(true);
         KeyValueSet();
         swapBtn.onClick.AddListener(() => SwapBtn());
-        float timePosY = uiPanel.anchoredPosition.y;
+        timePosY = uiPanel.anchoredPosition.y;
         if (!MainGameSetting.instance.isBloodMoon)
         {
             positions = new float[] { timePosY, timePosY - 100f };
@@ -74,12 +78,21 @@ public class BasicUIBtns : MonoBehaviour
         }
         else
         {
-            positions = new float[] { timePosY, timePosY - 100f , timePosY - 200f };
+            positions = new float[] { timePosY, timePosY - 100f, timePosY - 200f };
         }
         UpdateButtonState();
 
         timeBtns[0].onClick.AddListener(() => ChangeStage(-1));
         timeBtns[1].onClick.AddListener(() => ChangeStage(1));
+    }
+
+    private void Update()
+    {
+        if (test)
+        {
+            test = false;
+            BloodMoonUIOff();
+        }
     }
 
     void OnEnable()
@@ -237,5 +250,13 @@ public class BasicUIBtns : MonoBehaviour
         rotatePanel.SetActive(isActive);
         if (isActive)
             rotateText.text = "Press ('" + rotateKey + "') to rotate.";
+    }
+
+    public void BloodMoonUIOff()
+    {
+        ChangeStage(-1);
+        positions = new float[] { timePosY, timePosY - 100f };
+        timeGroup.GetComponent<RectTransform>().localPosition = dDayGroup.GetComponent<RectTransform>().localPosition;
+        dDayGroup.SetActive(false);
     }
 }

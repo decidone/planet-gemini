@@ -391,9 +391,10 @@ MonoBehaviour:
   overlayOn: 0
   playerUnitLimit: 25
   playerUnitAmount: 0
-  waveEnergyOverLimit: 3000
+  waveEnergyOverLimit: 2500
   hostMapEnergyUseAmount: 0
   clientMapEnergyUseAmount: 0
+  saveImg: {fileID: 0}
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0

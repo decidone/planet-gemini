@@ -1,10 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 using System;
 using Unity.Netcode;
-using Pathfinding;
 
 // UTF-8 설정
 public class GetUnderBeltCtrl : LogisticsCtrl
@@ -75,7 +72,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         }
     }
 
-    void StartRenderer()
+    public void StartRenderer()
     {
         if (inObj.Count > 0)
         {
@@ -329,5 +326,15 @@ public class GetUnderBeltCtrl : LogisticsCtrl
     public override void ColliderTriggerOnOff(bool isOn)
     {
         col.isTrigger = true;
+    }
+
+    public override void Focused()
+    {
+        StartRenderer();
+    }
+
+    public override void DisableFocused()
+    {
+        EndRenderer();
     }
 }
