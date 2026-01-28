@@ -27,7 +27,7 @@ MonoBehaviour:
   colliderRadius: 10
   cooldown: 1
   isEnergyStr: 1
-  production: 80
+  production: 50
   energyUse: 00
   consumption:
   - 0
