@@ -78,6 +78,8 @@ public class UnderObjBuilding : MonoBehaviour
                         {
                             if (othGetUnderBelt.dirNum == dirNum)
                             {
+                                IsSendObjSet();
+                                EndRenderer();
                                 return;
                             }
                         }
@@ -119,34 +121,34 @@ public class UnderObjBuilding : MonoBehaviour
             }
         }
 
-        if(isUnderBelt)
-        {
-            hits = Physics2D.RaycastAll(transform.position, checkPos[2], 10);
+        //if(isUnderBelt)
+        //{
+        //    hits = Physics2D.RaycastAll(transform.position, checkPos[2], 10);
 
-            for (int i = 0; i < hits.Length; i++)
-            {
-                Collider2D factoryCollider = hits[i].collider;
+        //    for (int i = 0; i < hits.Length; i++)
+        //    {
+        //        Collider2D factoryCollider = hits[i].collider;
 
-                if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != gameObject
-                    && factoryCollider.gameObject.transform.position != gameObject.transform.position)
-                {
-                    if (direction == checkPos[0])
-                    {
-                        if (factoryCollider.TryGetComponent(out GetUnderBeltCtrl othGetUnderBelt))
-                        {
-                            if (othGetUnderBelt.dirNum == dirNum && othGetUnderBelt.inObj.Count == 0)
-                            {
-                                if (!setLine)
-                                    StartRenderer(othGetUnderBelt.transform.position, transform.position);
-                                else
-                                    RendererReset(othGetUnderBelt.transform.position, transform.position);
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //        if (factoryCollider.CompareTag("Factory") && factoryCollider.gameObject != gameObject
+        //            && factoryCollider.gameObject.transform.position != gameObject.transform.position)
+        //        {
+        //            if (direction == checkPos[0])
+        //            {
+        //                if (factoryCollider.TryGetComponent(out GetUnderBeltCtrl othGetUnderBelt))
+        //                {
+        //                    if (othGetUnderBelt.dirNum == dirNum && othGetUnderBelt.inObj.Count == 0)
+        //                    {
+        //                        if (!setLine)
+        //                            StartRenderer(othGetUnderBelt.transform.position, transform.position);
+        //                        else
+        //                            RendererReset(othGetUnderBelt.transform.position, transform.position);
+        //                        return;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         if (isUnderBelt)
         {

@@ -521,10 +521,10 @@ public class GameManager : NetworkBehaviour
                     }
 
                     bool canWave = true;
+                    bool spawnerExists = monsterSpawnerManager.HasAnyMonsterSpawner(); // 발생 행성에 스포너가 있는지
                     bool canSpawnOnWavePlanet = monsterSpawnerManager.HasMonsterSpawnerOnMap(wavePlanet); // 발생 행성에 스포너가 있는지
-                    bool canSpawnOnOtherPlanet = monsterSpawnerManager.HasMonsterSpawnerOnMap(!wavePlanet); // 다른 행성에 스포너가 있는지
 
-                    if (!canSpawnOnWavePlanet && !canSpawnOnOtherPlanet) // 둘다 없는 경우
+                    if (!spawnerExists) // 둘다 없는 경우
                         canWave = false;
 
                     if (!canSpawnOnWavePlanet) // 발생 행성에 스포너가 없는 경우
@@ -1491,6 +1491,8 @@ public class GameManager : NetworkBehaviour
             SteamManager.instance.HostLobby();
             HostConnected();
             bloodMoon = MainGameSetting.instance.isBloodMoon;
+            if(monsterSpawnerManager.HasAnyMonsterSpawner())
+                bloodMoon = true;
             if (MainGameSetting.instance.isNewGame)
             {
                 SetStartingItem();
@@ -1569,6 +1571,8 @@ public class GameManager : NetworkBehaviour
         inGameData.difficultyLevel = MainGameSetting.instance.difficultylevel;
         inGameData.mapSizeIndex = MainGameSetting.instance.mapSizeIndex;
         inGameData.seed = MainGameSetting.instance.randomSeed;
+        if(monsterSpawnerManager.HasAnyMonsterSpawner())
+            bloodMoon = true;
         inGameData.bloodMoon = bloodMoon;
         inGameData.day = day;
         inGameData.isDay = isDay;
@@ -2271,11 +2275,10 @@ public class GameManager : NetworkBehaviour
     // ===============================
     void ApplyDifficulty(float delta)
     {
-        Vector2 weight = GetDifficultyWeight(ScienceDb.instance.coreLevel);
-        float scale = GetDifficultyTierScale(difficultyPercent);
+        (float, Vector2) scale = GetDifficultyTierScale(difficultyPercent);
 
-        float spawnDelta = delta * weight.x * scale;
-        float statDelta = delta * weight.y * scale;
+        float spawnDelta = delta * scale.Item1 * scale.Item2.x;
+        float statDelta = delta * scale.Item1 * scale.Item2.y;
 
         // 스폰 수 증가
         spawnMultiplier *= (1f + spawnDelta);
@@ -2287,31 +2290,15 @@ public class GameManager : NetworkBehaviour
     }
 
     // ===============================
-    // 과학트리 단계별 분배
+    // 난이도 구간별 성격 보정 (난이도 증가량, (몬스터 스폰 수 업, 몬스터 스펙 업))
     // ===============================
-    Vector2 GetDifficultyWeight(int tier)
+    (float, Vector2) GetDifficultyTierScale(float difficulty)
     {
-        return tier switch
-        {   // 스폰 : 스펙
-            1 => new Vector2(0.7f, 0.3f),
-            2 => new Vector2(0.6f, 0.4f),
-            3 => new Vector2(0.5f, 0.5f),
-            4 => new Vector2(0.4f, 0.6f),
-            5 => new Vector2(0.3f, 0.7f),
-            _ => new Vector2(0.5f, 0.5f),
-        };
-    }
-
-    // ===============================
-    // 난이도 구간별 성격 보정
-    // ===============================
-    float GetDifficultyTierScale(float difficulty)
-    {
-        if (difficulty < 100f) return 0.6f;
-        if (difficulty < 200f) return 0.8f;
-        if (difficulty < 300f) return 1.0f;
-        if (difficulty < 400f) return 1.2f;
-        return 1.5f;
+        if (difficulty < 100f) return (0.6f,  new Vector2(0.7f, 0.3f));
+        if (difficulty < 200f) return (0.8f, new Vector2(0.6f, 0.4f));
+        if (difficulty < 300f) return (1.0f, new Vector2(0.5f, 0.5f));
+        if (difficulty < 400f) return (1.2f, new Vector2(0.4f, 0.6f));
+        return (1.4f, new Vector2(0.3f, 0.7f));
     }
 
     public void BloodMoonOff()

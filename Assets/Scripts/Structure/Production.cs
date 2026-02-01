@@ -400,6 +400,8 @@ public abstract class Production : Structure
                     StartCoroutine(SetInObjCoroutine(obj));
                     yield break;
                 }
+                if (!outObj.Contains(obj))
+                    outObj.Add(obj);
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
@@ -407,30 +409,30 @@ public abstract class Production : Structure
                 outSameList.Add(obj);
                 StartCoroutine(OutCheck(obj));
             }
-            if (!outObj.Contains(obj))
-                outObj.Add(obj);
+            //if (!outObj.Contains(obj))
+            //    outObj.Add(obj);
             StartCoroutine(UnderBeltConnectCheck(obj));
         }
     }
 
-    protected override IEnumerator OutCheck(GameObject otherObj)
-    {
-        yield return new WaitForSeconds(0.1f);
+    //protected override IEnumerator OutCheck(GameObject otherObj)
+    //{
+    //    yield return new WaitForSeconds(0.1f);
 
-        if (otherObj.TryGetComponent(out Structure otherFacCtrl))
-        {
-            if (otherObj.GetComponent<Production>())
-                yield break;
+    //    if (otherObj.TryGetComponent(out Structure otherFacCtrl))
+    //    {
+    //        if (otherObj.GetComponent<Production>())
+    //            yield break;
 
-            if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
-            {
-                StartCoroutine(SetInObjCoroutine(otherObj));
-                outObj.Remove(otherObj);
-                outSameList.Remove(otherObj);
-                Invoke(nameof(RemoveSameOutList), 0.1f);
-            }
-        }
-    }
+    //        if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
+    //        {
+    //            StartCoroutine(SetInObjCoroutine(otherObj));
+    //            outObj.Remove(otherObj);
+    //            outSameList.Remove(otherObj);
+    //            Invoke(nameof(RemoveSameOutList), 0.1f);
+    //        }
+    //    }
+    //}
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
