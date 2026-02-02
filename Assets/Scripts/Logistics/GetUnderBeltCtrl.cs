@@ -248,16 +248,18 @@ public class GetUnderBeltCtrl : LogisticsCtrl
                 {
                     yield break;
                 }
+                if (!outObj.Contains(obj))
+                    outObj.Add(obj);
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
             {
                 outSameList.Add(obj);
                 StartCoroutine(OutCheck(obj));
+                StartCoroutine(UnderBeltConnectCheck(obj));
             }
-            if (!outObj.Contains(obj))
-                outObj.Add(obj);
-            StartCoroutine(UnderBeltConnectCheck(obj));
+            //if (!outObj.Contains(obj))
+            //    outObj.Add(obj);
         }
         //checkObj = true;
     }

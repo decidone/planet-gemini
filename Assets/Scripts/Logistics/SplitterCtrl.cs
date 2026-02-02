@@ -490,43 +490,77 @@ public class SplitterCtrl : LogisticsCtrl
                 if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
                     yield break;
 
+                if (!outObj.Contains(obj))
+                    outObj.Add(obj);
+                FilterArr(obj, num);
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
             {
                 outSameList.Add(obj);
-                StartCoroutine(OutCheck(obj));
+                StartCoroutine(OutCheck(obj, num));
+                StartCoroutine(UnderBeltConnectCheck(obj));
+                //FilterArr(obj, num);
             }
-            if (!outObj.Contains(obj))
-                outObj.Add(obj);
-            StartCoroutine(UnderBeltConnectCheck(obj));
-            FilterArr(obj, num);
+            //if (!outObj.Contains(obj))
+            //    outObj.Add(obj);
+
         }
     }
 
-    protected override IEnumerator OutCheck(GameObject otherObj)
+    protected IEnumerator OutCheck(GameObject otherObj, int num)
     {
         yield return new WaitForSeconds(0.1f);
 
         if (otherObj.TryGetComponent(out Structure otherFacCtrl))
         {
+            if (otherObj.GetComponent<Production>() && !otherObj.GetComponent<LogisticsCtrl>())
+            {
+                if (!outObj.Contains(otherObj))
+                {
+                    outObj.Add(otherObj);
+                    FilterArr(otherObj, num);
+                }
+                StopCoroutine(nameof(SendFacDelay));
+                InOutObjIndexResetClientRpc(false);
+                yield break;
+            }
+
             if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
             {
-                if (otherObj.GetComponent<Production>())
-                    yield break;
-
-                for (int i = 0; i < arrFilter.Length; i++)
-                {
-                    if (arrFilter[i].outObj == otherObj)
-                    {
-                        FilterArr(null, i);
-                    }
-                }
-                outObj.Remove(otherObj); 
-                Invoke(nameof(RemoveSameOutList), 0.1f);
                 StopCoroutine(nameof(SendFacDelay));
+                InOutObjIndexResetClientRpc(false);
+            }
+            else
+            {
+                if (!outObj.Contains(otherObj))
+                {
+                    outObj.Add(otherObj);
+                    FilterArr(otherObj, num);
+                    InOutObjIndexResetClientRpc(false);
+                }
             }
         }
+
+        //if (otherObj.TryGetComponent(out Structure otherFacCtrl))
+        //{
+        //    if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
+        //    {
+        //        if (otherObj.GetComponent<Production>())
+        //            yield break;
+
+        //        for (int i = 0; i < arrFilter.Length; i++)
+        //        {
+        //            if (arrFilter[i].outObj == otherObj)
+        //            {
+        //                FilterArr(null, i);
+        //            }
+        //        }
+        //        outObj.Remove(otherObj); 
+        //        Invoke(nameof(RemoveSameOutList), 0.1f);
+        //        StopCoroutine(nameof(SendFacDelay));
+        //    }
+        //}
     }
     protected override IEnumerator UnderBeltConnectCheck(GameObject game)
     {
@@ -546,7 +580,6 @@ public class SplitterCtrl : LogisticsCtrl
             if (!sendUnder.inObj.Contains(this.gameObject) && outObj.Contains(game))
             {
                 outObj.Remove(game);
-                outSameList.Remove(game);
                 isReomveFilter = true;
             }
         }

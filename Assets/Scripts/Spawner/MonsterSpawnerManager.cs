@@ -116,7 +116,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
     }
 
-    bool HasAnyMonsterSpawner()
+    public bool HasAnyMonsterSpawner()
     {
         foreach (var kv in monsterSpawners)
         {

@@ -94,7 +94,7 @@ public class Structure : NetworkBehaviour
     public List<GameObject> inObj = new List<GameObject>();
     //[HideInInspector]
     public List<GameObject> outObj = new List<GameObject>();
-    [HideInInspector]
+    //[HideInInspector]
     public List<GameObject> outSameList = new List<GameObject>();
 
     protected int getItemIndex = 0;
@@ -1036,7 +1036,7 @@ public class Structure : NetworkBehaviour
             if (!getUnder.inObj.Contains(this.gameObject))
             {
                 outObj.Remove(game);
-                outSameList.Remove(game);
+                //outSameList.Remove(game);
             }
         }
         else if (game.TryGetComponent(out SendUnderBeltCtrl sendUnder))
@@ -1044,7 +1044,7 @@ public class Structure : NetworkBehaviour
             if (!sendUnder.inObj.Contains(this.gameObject))
             {
                 outObj.Remove(game);
-                outSameList.Remove(game);
+                //outSameList.Remove(game);
             }
             if (!sendUnder.outObj.Contains(this.gameObject))
             {
@@ -1670,11 +1670,6 @@ public class Structure : NetworkBehaviour
             col.isTrigger = false;
     }
 
-    protected void RemoveSameOutList()
-    {
-        outSameList.Clear();
-    }
-
     protected virtual IEnumerator SetInObjCoroutine(GameObject obj)
     {
         yield return new WaitForSeconds(0.1f);
@@ -1717,16 +1712,20 @@ public class Structure : NetworkBehaviour
                 {
                     yield break;
                 }
+
+                if (!outObj.Contains(obj))
+                    outObj.Add(obj);
                 belt.FactoryPosCheck(GetComponentInParent<Structure>());
             }
             else
             {
                 outSameList.Add(obj);
                 StartCoroutine(OutCheck(obj));
+                StartCoroutine(UnderBeltConnectCheck(obj));
             }
-            if (!outObj.Contains(obj))
-                outObj.Add(obj);
-            StartCoroutine(UnderBeltConnectCheck(obj));
+
+            //if (!outObj.Contains(obj))
+            //    outObj.Add(obj);
         }
     }
 
@@ -1736,15 +1735,29 @@ public class Structure : NetworkBehaviour
 
         if (otherObj.TryGetComponent(out Structure otherFacCtrl))
         {
-            if (otherObj.GetComponent<Production>())
+            if (otherObj.GetComponent<Production>() && !otherObj.GetComponent<LogisticsCtrl>())
+            {
+                if (!outObj.Contains(otherObj))
+                {
+                    outObj.Add(otherObj);
+                }
+                StopCoroutine(nameof(SendFacDelay));
+                InOutObjIndexResetClientRpc(false);
                 yield break;
+            }
 
             if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
             {
                 StopCoroutine(nameof(SendFacDelay));
-                outObj.Remove(otherObj);
-                Invoke(nameof(RemoveSameOutList), 0.1f);
                 InOutObjIndexResetClientRpc(false);
+            }
+            else
+            {
+                if (!outObj.Contains(otherObj))
+                {
+                    outObj.Add(otherObj);
+                    InOutObjIndexResetClientRpc(false);
+                }
             }
         }
     }
@@ -1760,6 +1773,10 @@ public class Structure : NetworkBehaviour
         {
             outObj.Remove(game);
             InOutObjIndexResetClientRpc(false);
+        }
+        if(outSameList.Contains(game))
+        {
+            outSameList.Remove(game);
         }
 
         for (int i = 0; i < nearObj.Length; i++)
