@@ -196,6 +196,8 @@ public class InputManager : MonoBehaviour
         controls.State.Enable();
         controls.MapCamera.Enable();
         controls.HotKey.Escape.Enable();
+
+        AlphaCameraController.instance.SetTargetCamera(MapCameraController.instance.cam);
     }
 
     public void CloseMap()
@@ -206,6 +208,8 @@ public class InputManager : MonoBehaviour
 
         EnableControls();
         controls.MapCamera.Disable();
+
+        AlphaCameraController.instance.SetTargetCamera(Camera.main);
     }
 
     public void InMarket()

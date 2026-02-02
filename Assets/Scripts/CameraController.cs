@@ -69,18 +69,14 @@ public class CameraController : MonoBehaviour
         if (scrollWheelInput < 0)
         {
             zoomLevel -= 1;
-            zoomLevel = Mathf.Clamp(zoomLevel, 1, 5);
-            pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(width / zoomLevel);
-            pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(height / zoomLevel);
+            ChangeZoomLv(zoomLevel);
 
             LootListManager.instance.InfoWindowPosChange(zoomLevel);
         }
         else if(scrollWheelInput > 0)
         {
             zoomLevel += 1;
-            zoomLevel = Mathf.Clamp(zoomLevel, 1, 5);
-            pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(width / zoomLevel);
-            pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(height / zoomLevel);
+            ChangeZoomLv(zoomLevel);
 
             LootListManager.instance.InfoWindowPosChange(zoomLevel);
         }
@@ -112,6 +108,8 @@ public class CameraController : MonoBehaviour
         zoomLevel = Mathf.Clamp(lv, 1, 5);
         pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(width / zoomLevel);
         pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(height / zoomLevel);
+
+        AlphaCameraController.instance.ChangeSize(pixelPerfectCamera);
     }
 
     public void WindowSizeSet(int lv, int widthSize, int heightSize)

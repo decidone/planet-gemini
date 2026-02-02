@@ -32,7 +32,7 @@ public class MapGenerator : MonoBehaviour
     public GameObject corruptionTilemap;
     public GameObject corruptionTilemapPref;
     public GameObject objects;
-    public Transform mapFog;
+    //public Transform mapFog;
 
     public Map hostMap;
     public Map clientMap;
@@ -411,7 +411,7 @@ public class MapGenerator : MonoBehaviour
         CreateObj(clientMap, false);
         RemoveNearPortalObj(clientMap);
 
-        SetMapFog();
+        //SetMapFog();
         SetMapBorderCol();
     }
 
@@ -422,8 +422,8 @@ public class MapGenerator : MonoBehaviour
         width = hostMap.width;
         height = hostMap.height + clientMap.height + clientMapOffsetY;
         
-        mapFog.localScale = new Vector3(width, height, 1);
-        mapFog.position = new Vector3(width / 2, height / 2, 1);
+        //mapFog.localScale = new Vector3(width, height, 1);
+        //mapFog.position = new Vector3(width / 2, height / 2, 1);
     }
 
     void SetSpawnArea(Map map)
@@ -1336,7 +1336,7 @@ public class MapGenerator : MonoBehaviour
         LoadMap(mapsSaveData, hostMap);
         LoadMap(mapsSaveData, clientMap);
 
-        SetMapFog();
+        //SetMapFog();
         SetMapBorderCol();
     }
 

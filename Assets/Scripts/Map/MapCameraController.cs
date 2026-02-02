@@ -40,9 +40,9 @@ public class MapCameraController : MonoBehaviour
     MapClickEvent tempEvent;
     bool isLineRendered;
 
-    public static MapCameraController instance;
-
     SoundManager soundManager;
+
+    public static MapCameraController instance;
 
     void Awake()
     {
@@ -111,9 +111,7 @@ public class MapCameraController : MonoBehaviour
             if (scrollWheelInput < 0)
             {
                 zoomLevel -= 1;
-                zoomLevel = Mathf.Clamp(zoomLevel, 1, 4);
-                pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
-                pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
+                ChangeZoomLv(zoomLevel);
 
                 camPos.x = Mathf.Clamp(camPos.x, borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
                 camPos.y = Mathf.Clamp(camPos.y, mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
@@ -122,11 +120,18 @@ public class MapCameraController : MonoBehaviour
             else if (scrollWheelInput > 0)
             {
                 zoomLevel += 1;
-                zoomLevel = Mathf.Clamp(zoomLevel, 1, 4);
-                pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
-                pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
+                ChangeZoomLv(zoomLevel);
             }
         }
+    }
+
+    public void ChangeZoomLv(int lv)
+    {
+        zoomLevel = Mathf.Clamp(lv, 1, 4);
+        pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
+        pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
+
+        AlphaCameraController.instance.ChangeSize(pixelPerfectCamera);
     }
 
     public void SetCamRange(Map map)
@@ -150,6 +155,7 @@ public class MapCameraController : MonoBehaviour
         {
             mainCamZoom = mainCamController.zoomLevel;  //메인 카메라의 줌 레벨에 따라 픽셀퍼펙트가 깨지는 버그가 있어서 줌 레벨을 고정시켜 줌
             mainCamController.ChangeZoomLv(1);
+            ChangeZoomLv(zoomLevel);                    //알파 카메라가 맵 카메라의 zoomLevel을 따라가도록 재설정 해줌
             gameManager.CloseAllOpenedUI();
             gameManager.CloseBasicUIs();
             WavePoint.instance.MapCameraOpen(true);
@@ -182,9 +188,7 @@ public class MapCameraController : MonoBehaviour
         camPos.x = pos.x;
         camPos.y = pos.y;
         transform.position = camPos;
-        zoomLevel = zoom;
-        pixelPerfectCamera.refResolutionX = Mathf.FloorToInt(Screen.width / zoomLevel);
-        pixelPerfectCamera.refResolutionY = Mathf.FloorToInt(Screen.height / zoomLevel);
+        ChangeZoomLv(zoom);
     }
 
     void LeftClick(InputAction.CallbackContext ctx)

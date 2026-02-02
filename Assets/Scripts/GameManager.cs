@@ -1321,9 +1321,8 @@ public class GameManager : NetworkBehaviour
         mainCam.target = player.transform;
         mapCameraController.target = player.transform;
         mapCameraController.SetCamRange(map);
-        GameObject fogOfWar = ResourcesManager.instance.fogOfWar;
-        FollowTransform followTransform = fogOfWar.GetComponent<FollowTransform>();
-        followTransform.SetTargetTransform(mainCam.transform);
+        AlphaCameraController.instance.SetTargetCamera(Camera.main);
+
         WavePoint.instance.PlayerSet(player);
     }
 
