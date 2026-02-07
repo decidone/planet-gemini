@@ -154,10 +154,10 @@ public class BeltGroupMgr : NetworkBehaviour
             }
         }
 
-        foreach (BeltCtrl belt in beltList)
-        {
-            belt.AnimSyncFunc();
-        }
+        //foreach (BeltCtrl belt in beltList)
+        //{
+        //    belt.AnimSyncFunc();
+        //}
     }
 
     private GameObject PreObjCheck()
@@ -219,8 +219,6 @@ public class BeltGroupMgr : NetworkBehaviour
 
         nextBelt.BeltStateSetClientRpc((int)BeltState.EndBelt);
     }
-
-
 
     [ServerRpc(RequireOwnership = false)]
     public void ClientBeltSyncServerRpc()
@@ -306,7 +304,7 @@ public class BeltGroupMgr : NetworkBehaviour
                 index++;
             }
             belt.beltGroupMgr = this;
-            belt.AnimSyncFunc();
+            //belt.AnimSyncFunc();
         }
 
         groupItem.Clear();
@@ -436,7 +434,7 @@ public class BeltGroupMgr : NetworkBehaviour
             }
             else
             {
-                if(otherBelt.beltState == BeltState.EndBelt || otherBelt.beltState == BeltState.SoloBelt)
+                if (otherBelt.beltState == BeltState.EndBelt || otherBelt.beltState == BeltState.SoloBelt)
                 {
                     if (otherBelt.beltGroupMgr.nextObj == null)
                     {

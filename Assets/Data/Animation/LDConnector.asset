@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f351aff55d7a08488b58d85f245e062, type: 3}
+  m_Name: LDConnector
+  m_EditorClassIdentifier: 
+  frames:
+  - {fileID: 237773114, guid: 53a19990cdf87b34a82f80ed8e33716c, type: 3}
+  - {fileID: -2050972342, guid: 53a19990cdf87b34a82f80ed8e33716c, type: 3}
+  - {fileID: 204380963, guid: 53a19990cdf87b34a82f80ed8e33716c, type: 3}
+  - {fileID: 26834263, guid: 53a19990cdf87b34a82f80ed8e33716c, type: 3}
+  - {fileID: -1720014928, guid: 53a19990cdf87b34a82f80ed8e33716c, type: 3}
+  - {fileID: -768262736, guid: 53a19990cdf87b34a82f80ed8e33716c, type: 3}
+  defaultFrameRate: 8
+  sync: 0
+  atlas: {fileID: 2800000, guid: 53a19990cdf87b34a82f80ed8e33716c, type: 3}
+  frameWidth: 16
+  frameHeight: 59
+  startFrameX: 0
+  startFrameY: 0
+  totalFrames: 6
+  columns: 7

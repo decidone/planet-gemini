@@ -814,6 +814,7 @@ MonoBehaviour:
   modelNum: []
   spawnItem: {fileID: 0}
   monsterList: []
+  monsterTargetAmount: 0
   col: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
@@ -851,7 +852,9 @@ MonoBehaviour:
   warningIcon: {fileID: 7076950869340747828}
   mapWarningIcon: {fileID: 7941207959388717642}
   warningIconCheck: 0
+  energyStateCheck: 0
   getAnim: 0
+  animController: {fileID: 0}
   strImg:
   - {fileID: -1880186251, guid: 1270e414be996b94cacfa2e284bb8fc2, type: 3}
   - {fileID: 1577221144, guid: 1270e414be996b94cacfa2e284bb8fc2, type: 3}
@@ -971,13 +974,17 @@ PrefabInstance:
       value: SmokeGroup
       objectReference: {fileID: 0}
     - target: {fileID: 3754706721854305791, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
-      propertyPath: smokeAnimators.Array.size
+      propertyPath: shaderAnims.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3754706721854305791, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
-      propertyPath: 'smokeAnimators.Array.data[0]'
+      propertyPath: 'shaderAnims.Array.data[0]'
       value: 
-      objectReference: {fileID: 1696388510476040478}
+      objectReference: {fileID: 1242651646976102393}
+    - target: {fileID: 3754706721854305791, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
+      propertyPath: smokeAnimators.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5212490206136287640, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -1310,16 +1317,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9021746771924701863, guid: 52043970a0eaec04e9e115763923e197, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: eb288aea696c4654bb9cdf20739a2032, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52043970a0eaec04e9e115763923e197, type: 3}
---- !u!95 &1696388510476040478 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4997686753546680543, guid: 52043970a0eaec04e9e115763923e197, type: 3}
+--- !u!114 &1242651646976102393 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4895228994271170104, guid: 52043970a0eaec04e9e115763923e197, type: 3}
   m_PrefabInstance: {fileID: 5967711249493475777}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c77db57171591d43888e97fb43fb4df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8758133735120583529 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3124009375221643944, guid: 52043970a0eaec04e9e115763923e197, type: 3}

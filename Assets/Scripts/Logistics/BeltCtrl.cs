@@ -17,12 +17,10 @@ public enum BeltState
 
 public class BeltCtrl : LogisticsCtrl
 {
-    [SerializeField]
     int modelMotion = 0;  // 모션
     public BeltGroupMgr beltGroupMgr;
-    BeltManager beltManager = null;
-
-    protected Animator animsync;
+    //BeltManager beltManager = null;
+    //protected Animator animsync;
 
     public BeltState beltState;
 
@@ -44,11 +42,15 @@ public class BeltCtrl : LogisticsCtrl
     protected override void Awake()
     {
         gameManager = GameManager.instance;
-        beltManager = BeltManager.instance;
+        //beltManager = BeltManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         unitSprite = GetComponent<SpriteRenderer>();
+        if (TryGetComponent(out ShaderAnimController controller))
+        {
+            animController = controller;
+        }
 
         maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
@@ -81,17 +83,17 @@ public class BeltCtrl : LogisticsCtrl
         visionPos = transform.position;
         increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
-        if (TryGetComponent(out Animator anim))
-        {
-            getAnim = true;
-            animator = anim;
-        }
+        //if (TryGetComponent(out Animator anim))
+        //{
+        //    getAnim = true;
+        //    animator = anim;
+        //}
     }
 
     void Start()
     {
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-        AnimSyncFunc();
+        //AnimSyncFunc();
         isOperate = true;
         StrBuilt();
         BeltModelSet();
@@ -108,12 +110,12 @@ public class BeltCtrl : LogisticsCtrl
             isItemStop = false;
     }
 
-    public void AnimSyncFunc()
-    {
-        animsync = beltManager.AnimSync(level);
-        var info = animsync.GetCurrentAnimatorStateInfo(0);
-        animator.Play(info.fullPathHash, 0, info.normalizedTime);
-    }
+    //public void AnimSyncFunc()
+    //{
+    //    animsync = beltManager.AnimSync(level);
+    //    var info = animsync.GetCurrentAnimatorStateInfo(0);
+    //    animator.Play(info.fullPathHash, 0, info.normalizedTime);
+    //}
 
     public override void NearStrBuilt()
     {
@@ -128,9 +130,11 @@ public class BeltCtrl : LogisticsCtrl
                 beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
                 if (beltGroupMgr != null)
                     beltGroupMgr.BeltGroupRefresh();
-                animator.SetFloat("DirNum", dirNum);
-                animator.SetFloat("ModelNum", modelMotion);
-                animator.SetFloat("Level", level);
+                //animator.SetFloat("DirNum", dirNum);
+                //animator.SetFloat("ModelNum", modelMotion);
+                //animator.SetFloat("Level", level);
+
+                animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
             }
         }
         else// 이 라인은 딜레이를 주고 실행할 때는 뺌
@@ -157,9 +161,11 @@ public class BeltCtrl : LogisticsCtrl
             CheckPos();
             ModelSet();
 
-            animator.SetFloat("DirNum", dirNum);
-            animator.SetFloat("ModelNum", modelMotion);
-            animator.SetFloat("Level", level);
+            //animator.SetFloat("DirNum", dirNum);
+            //animator.SetFloat("ModelNum", modelMotion);
+            //animator.SetFloat("Level", level);
+
+            animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
         }
     }
 
@@ -169,10 +175,12 @@ public class BeltCtrl : LogisticsCtrl
         //base.UpgradeFuncClientRpc();
         UpgradeFunc();
 
-        animator.SetFloat("DirNum", dirNum);
-        animator.SetFloat("ModelNum", modelMotion);
-        animator.SetFloat("Level", level);
-        AnimSyncFunc();
+        //animator.SetFloat("DirNum", dirNum);
+        //animator.SetFloat("ModelNum", modelMotion);
+        //animator.SetFloat("Level", level);
+
+        animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
+        //AnimSyncFunc();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -287,24 +295,24 @@ public class BeltCtrl : LogisticsCtrl
             {
                 modelMotion = 1;
             }
-            else if (beltState == BeltState.EndBelt)
-            {
-                modelMotion = 3;
-            }
             else if (beltState == BeltState.RepeaterBelt)
             {
                 modelMotion = 2;
             }
+            else if (beltState == BeltState.EndBelt)
+            {
+                modelMotion = 3;
+            }
         }
         else if (isTurn)
         {
-            if (isRightTurn)
-            {
-                modelMotion = 5;
-            }
-            else if (!isRightTurn)
+            if (!isRightTurn)
             {
                 modelMotion = 4;
+            }
+            else
+            {
+                modelMotion = 5;
             }
         }
 
@@ -321,7 +329,7 @@ public class BeltCtrl : LogisticsCtrl
             nextPos[a] = this.transform.position;
         }
 
-        if (dirNum == 0)
+        if (dirNum == 0)    //up
         {
             if (modelMotion != 4 && modelMotion != 5)
             {
@@ -343,7 +351,7 @@ public class BeltCtrl : LogisticsCtrl
                 nextPos[2] += Vector2.up * 0.1f;
             }
         }
-        else if (dirNum == 1)
+        else if (dirNum == 1)   //right
         {
             if (modelMotion != 4 && modelMotion != 5)
             {
@@ -369,7 +377,7 @@ public class BeltCtrl : LogisticsCtrl
                 nextPos[2] += Vector2.down * 0.34f;
             }
         }
-        else if (dirNum == 2)
+        else if (dirNum == 2)   //down
         {
             if (modelMotion != 4 && modelMotion != 5)
             {
@@ -391,7 +399,7 @@ public class BeltCtrl : LogisticsCtrl
                 nextPos[2] += Vector2.up * 0.1f;
             }
         }
-        else if (dirNum == 3)
+        else if (dirNum == 3)   //left
         {
             if (modelMotion != 4 && modelMotion != 5)
             {
@@ -995,8 +1003,10 @@ public class BeltCtrl : LogisticsCtrl
     public void BeltModelMotionSetClientRpc(int modelNum)
     {
         modelMotion = modelNum;
-        if(animator)
-            animator.SetFloat("ModelNum", modelMotion);
+        //if(animator)
+        //    animator.SetFloat("ModelNum", modelMotion);
+
+        animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
     }
 
     public BeltSaveData BeltSaveData()
@@ -1020,7 +1030,16 @@ public class BeltCtrl : LogisticsCtrl
 
     protected override void NonOperateStateSet(bool isOn)
     {
-        animator.enabled = isOn;
+        //animator.enabled = isOn;
+
+        if (isOn)
+        {
+            animController.Resume();
+        }
+        else
+        {
+            animController.Pause();
+        }
     }
 
     [ClientRpc]

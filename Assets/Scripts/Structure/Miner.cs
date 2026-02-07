@@ -256,6 +256,23 @@ public class Miner : Production
 
     protected override void NonOperateStateSet(bool isOn)
     {
-        animator.enabled = isOn;
+        if (animController == null) return;
+
+        if (isOn)
+        {
+            if (!animController.isInitialized)
+            {
+                this.GetComponent<SpriteRenderer>().material = shaderAnimatedMat;
+                animController.Refresh();
+            }
+            else
+            {
+                animController.Resume();
+            }
+        }
+        else
+        {
+            animController.Pause();
+        }
     }
 }

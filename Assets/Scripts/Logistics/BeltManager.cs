@@ -11,8 +11,8 @@ public class BeltManager : NetworkBehaviour
     [SerializeField]
     GameObject beltGroupMgrObj;
 
-    [SerializeField]
-    Animator[] beltAnimators;
+    //[SerializeField]
+    //Animator[] beltAnimators;
     public static BeltManager instance;
 
     private void Awake()
@@ -26,18 +26,18 @@ public class BeltManager : NetworkBehaviour
 
     }
 
-    private void Start()
-    {
-        for (int i = 0; i < beltAnimators.Length; i++)
-        {
-            beltAnimators[i].SetFloat("Level", i);
-        }
-    }
+    //private void Start()
+    //{
+    //    for (int i = 0; i < beltAnimators.Length; i++)
+    //    {
+    //        beltAnimators[i].SetFloat("Level", i);
+    //    }
+    //}
 
-    public Animator AnimSync(int level)
-    {
-        return beltAnimators[level];
-    }
+    //public Animator AnimSync(int level)
+    //{
+    //    return beltAnimators[level];
+    //}
 
     public void BeltCombine(BeltGroupMgr fstGroupMgr, BeltGroupMgr secGroupMgr)
     {
@@ -85,6 +85,7 @@ public class BeltManager : NetworkBehaviour
                 destroyObj.Despawn();
             }
             Destroy(beltGroup.gameObject);
+
             return;
         }
 
@@ -122,6 +123,7 @@ public class BeltManager : NetworkBehaviour
                 CreateNewBeltGroup(groupBList);
             }
         }
+
         return;
     }
 

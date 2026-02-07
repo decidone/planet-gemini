@@ -195,8 +195,8 @@ GameObject:
   - component: {fileID: 2359874169441961876}
   - component: {fileID: 2359874169441961875}
   - component: {fileID: 8224777291930825977}
-  - component: {fileID: 3883913979261858583}
   - component: {fileID: -2544457304222378475}
+  - component: {fileID: 3430577319720381400}
   m_Layer: 8
   m_Name: MinerUpgrade
   m_TagString: Factory
@@ -271,7 +271,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: -1932201936, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
+  m_Sprite: {fileID: -3455779772795562432, guid: c27830c62993f954497ad6654824f074, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -319,7 +319,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.45714286}
+    pivot: {x: 0.5, y: 0.4571429}
     oldSize: {x: 2, y: 2.1875}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -477,6 +477,7 @@ MonoBehaviour:
   warningIconCheck: 0
   energyStateCheck: 0
   getAnim: 0
+  animController: {fileID: 0}
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
@@ -517,28 +518,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!95 &3883913979261858583
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2359874169441961886}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: cb971a9bba38a984dbc6f21022af7996, type: 2}
-  m_CullingMode: 2
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &-2544457304222378475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -553,6 +532,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseAggroAmount: 6
   aggroAmount: 0
+--- !u!114 &3430577319720381400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2359874169441961886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c77db57171591d43888e97fb43fb4df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentAnim: {fileID: 11400000, guid: fac1b9e61d94c9245b519031acf5850e, type: 2}
+  speedMultiplier: 1
 --- !u!1 &5250668218170398480
 GameObject:
   m_ObjectHideFlags: 0

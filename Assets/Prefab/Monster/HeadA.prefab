@@ -330,7 +330,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!50 &6478049652833788890
 Rigidbody2D:
@@ -452,10 +452,6 @@ MonoBehaviour:
   justTraceTimer: 0
   justTraceInterval: 3
   bestTarget: {fileID: 0}
-  targetPos: {fileID: 0}
-  moveTargetPos: {fileID: 0}
-  mapTargetPos: {fileID: 0}
-  blockObj: {fileID: 0}
 --- !u!70 &223529813394900848
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

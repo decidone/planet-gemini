@@ -200,7 +200,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &2995091061736811079
 Animator:
@@ -322,10 +322,6 @@ MonoBehaviour:
   justTraceTimer: 0
   justTraceInterval: 3
   bestTarget: {fileID: 0}
-  targetPos: {fileID: 0}
-  moveTargetPos: {fileID: 0}
-  mapTargetPos: {fileID: 0}
-  blockObj: {fileID: 0}
   golemAttackFX: {fileID: 3455073265877218510, guid: cd93eff768044de4eba4c9eb476f1bb8, type: 3}
 --- !u!70 &7454456902833923465
 CapsuleCollider2D:

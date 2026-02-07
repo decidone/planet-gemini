@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f351aff55d7a08488b58d85f245e062, type: 3}
+  m_Name: Miner_Lv2
+  m_EditorClassIdentifier: 
+  frames:
+  - {fileID: -3455779772795562432, guid: c27830c62993f954497ad6654824f074, type: 3}
+  - {fileID: 493222888, guid: c27830c62993f954497ad6654824f074, type: 3}
+  - {fileID: 1523145211, guid: c27830c62993f954497ad6654824f074, type: 3}
+  defaultFrameRate: 8
+  sync: 0
+  atlas: {fileID: 2800000, guid: c27830c62993f954497ad6654824f074, type: 3}
+  frameWidth: 32
+  frameHeight: 35
+  startFrameX: 0
+  startFrameY: 0
+  totalFrames: 3
+  columns: 3

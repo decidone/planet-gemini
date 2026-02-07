@@ -194,6 +194,8 @@ public class Structure : NetworkBehaviour
     [SerializeField]
     protected bool getAnim;
     protected Animator animator;
+    public ShaderAnimController animController;
+    protected Material shaderAnimatedMat;
     [SerializeField]
     protected Sprite[] strImg;  // 0번은 멈춤, 1번은 작동(애니메이션이 있는 오브젝트는 멈춤만 등록)
 
@@ -256,6 +258,11 @@ public class Structure : NetworkBehaviour
         {
             getAnim = true;
             animator = anim;
+        }
+        if (TryGetComponent(out ShaderAnimController controller))
+        {
+            animController = controller;
+            shaderAnimatedMat = Resources.Load<Material>("Materials/ShaderAnimatedMat");
         }
         NonOperateStateSet(isOperate);
         WarningStateCheck();

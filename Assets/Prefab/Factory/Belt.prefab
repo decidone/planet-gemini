@@ -431,12 +431,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8826970519567855505}
   - component: {fileID: 8826970519567855506}
-  - component: {fileID: 8826970519567855504}
   - component: {fileID: 8826970519567855511}
   - component: {fileID: 8826970519567855509}
   - component: {fileID: -7211525418415439537}
   - component: {fileID: 8257279358658315011}
   - component: {fileID: -1456469255909229209}
+  - component: {fileID: 1765771291778398710}
   m_Layer: 8
   m_Name: Belt
   m_TagString: Factory
@@ -487,7 +487,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
+  - {fileID: 2100000, guid: eb288aea696c4654bb9cdf20739a2032, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -519,28 +519,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &8826970519567855504
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8826970519567855532}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a8996c8afa2599b43a07745e215c1311, type: 2}
-  m_CullingMode: 2
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!61 &8826970519567855511
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -690,6 +668,7 @@ MonoBehaviour:
   modelNum: []
   spawnItem: {fileID: 0}
   monsterList: []
+  monsterTargetAmount: 0
   col: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
@@ -727,14 +706,15 @@ MonoBehaviour:
   warningIcon: {fileID: 0}
   mapWarningIcon: {fileID: 0}
   warningIconCheck: 0
+  energyStateCheck: 0
   getAnim: 0
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
   overlay: {fileID: 0}
   overlayUse: 0
-  modelMotion: 0
   beltGroupMgr: {fileID: 0}
+  animController: {fileID: 0}
   beltState: 0
   nextBelt: {fileID: 0}
   preBelt: {fileID: 0}
@@ -757,6 +737,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseAggroAmount: 5
   aggroAmount: 0
+--- !u!114 &1765771291778398710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8826970519567855532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c77db57171591d43888e97fb43fb4df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentAnim: {fileID: 11400000, guid: e1c7214b1b0d2fb4b8203adb56dbd2c4, type: 2}
+  speedMultiplier: 1
 --- !u!1001 &2246933021524632816
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -275,7 +275,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &1348046023968233562
 Animator:
@@ -397,10 +397,6 @@ MonoBehaviour:
   justTraceTimer: 0
   justTraceInterval: 3
   bestTarget: {fileID: 0}
-  targetPos: {fileID: 0}
-  moveTargetPos: {fileID: 0}
-  mapTargetPos: {fileID: 0}
-  blockObj: {fileID: 0}
 --- !u!70 &7765666989520418348
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

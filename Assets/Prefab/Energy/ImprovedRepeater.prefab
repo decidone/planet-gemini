@@ -540,8 +540,8 @@ GameObject:
   - component: {fileID: 94608265590279586}
   - component: {fileID: 78957181825646357}
   - component: {fileID: 7974139765598038871}
-  - component: {fileID: 5859435947198522766}
   - component: {fileID: -8472816284613114515}
+  - component: {fileID: -2047518908529972511}
   m_Layer: 8
   m_Name: ImprovedRepeater
   m_TagString: Factory
@@ -615,7 +615,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 1127616705, guid: 9abbba1ba31b56b449007ede1966eb72, type: 3}
+  m_Sprite: {fileID: -652255027, guid: 9abbba1ba31b56b449007ede1966eb72, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -702,6 +702,7 @@ MonoBehaviour:
   modelNum: []
   spawnItem: {fileID: 0}
   monsterList: []
+  monsterTargetAmount: 0
   col: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
@@ -737,7 +738,9 @@ MonoBehaviour:
   connectedPosList: []
   canUpgrade: 0
   warningIcon: {fileID: 0}
+  mapWarningIcon: {fileID: 0}
   warningIconCheck: 0
+  energyStateCheck: 0
   getAnim: 0
   strImg:
   - {fileID: -652255027, guid: 9abbba1ba31b56b449007ede1966eb72, type: 3}
@@ -748,6 +751,7 @@ MonoBehaviour:
   connector: {fileID: 3796074299410655006}
   view: {fileID: 8889250720948334388}
   isImprovedRepeater: 1
+  animController: {fileID: 0}
 --- !u!61 &78957181825646357
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -821,28 +825,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
---- !u!95 &5859435947198522766
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7372674185409712110}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9de7c5d24d61f5748aaae22038f723b8, type: 2}
-  m_CullingMode: 2
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &-8472816284613114515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -857,6 +839,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseAggroAmount: 7
   aggroAmount: 0
+--- !u!114 &-2047518908529972511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7372674185409712110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c77db57171591d43888e97fb43fb4df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentAnim: {fileID: 11400000, guid: 39d8fb2783ce35b44880254676011818, type: 2}
+  speedMultiplier: 1
 --- !u!1 &9185642444541149928
 GameObject:
   m_ObjectHideFlags: 0

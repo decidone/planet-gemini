@@ -59,11 +59,6 @@ public class FluidFactoryCtrl : Production
         onEffectUpgradeCheck.Invoke();
         setModel = GetComponent<SpriteRenderer>();
         fluidManager = FluidManager.instance;
-        if (TryGetComponent(out Animator anim))
-        {
-            getAnim = true;
-            animator = anim;
-        }
         NonOperateStateSet(isOperate);
     }
 

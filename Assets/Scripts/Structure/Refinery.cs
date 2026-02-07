@@ -49,11 +49,6 @@ public class Refinery : FluidFactoryCtrl
         increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
         setModel = GetComponent<SpriteRenderer>();
-        if (TryGetComponent(out Animator anim))
-        {
-            getAnim = true;
-            animator = anim;
-        }
         NonOperateStateSet(isOperate);
         WarningStateCheck();
         #endregion

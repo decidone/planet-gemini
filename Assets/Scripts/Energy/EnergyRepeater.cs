@@ -108,10 +108,19 @@ public class EnergyRepeater : Structure
 
     protected override void NonOperateStateSet(bool isOn)
     {
-        animator.enabled = isOn;
-        if (!isOn)
+        if (animController == null) return;
+
+        if (isOn)
         {
-            setModel.sprite = strImg[0];
+            if (!animController.isInitialized)
+            {
+                this.GetComponent<SpriteRenderer>().material = shaderAnimatedMat;
+            }
+            animController.Refresh();
+        }
+        else
+        {
+            animController.SetStaticSprite(strImg[0]);
         }
     }
 }

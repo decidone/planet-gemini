@@ -854,6 +854,7 @@ MonoBehaviour:
   warningIconCheck: 0
   energyStateCheck: 0
   getAnim: 0
+  animController: {fileID: 0}
   strImg:
   - {fileID: -1012359957, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
   - {fileID: -1448668062, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
@@ -1247,11 +1248,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52043970a0eaec04e9e115763923e197, type: 3}
---- !u!95 &58359805915330699 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4997686753546680543, guid: 52043970a0eaec04e9e115763923e197, type: 3}
+--- !u!114 &467060054660779628 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4895228994271170104, guid: 52043970a0eaec04e9e115763923e197, type: 3}
   m_PrefabInstance: {fileID: 5013645963423465556}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c77db57171591d43888e97fb43fb4df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7984523188149041916 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3124009375221643944, guid: 52043970a0eaec04e9e115763923e197, type: 3}
@@ -1349,17 +1356,21 @@ PrefabInstance:
       value: SmokeGroup
       objectReference: {fileID: 0}
     - target: {fileID: 3754706721854305791, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
-      propertyPath: smokeAnimators.Array.size
+      propertyPath: shaderAnims.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3754706721854305791, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
-      propertyPath: 'smokeAnimators.Array.data[0]'
+      propertyPath: 'shaderAnims.Array.data[0]'
       value: 
-      objectReference: {fileID: 3972402523496689558}
+      objectReference: {fileID: 3572707206325885297}
     - target: {fileID: 3754706721854305791, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
-      propertyPath: 'smokeAnimators.Array.data[1]'
+      propertyPath: 'shaderAnims.Array.data[1]'
       value: 
-      objectReference: {fileID: 58359805915330699}
+      objectReference: {fileID: 467060054660779628}
+    - target: {fileID: 3754706721854305791, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
+      propertyPath: smokeAnimators.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5212490206136287640, guid: 340c4fc0fd2506b4294259044c094cd6, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -1492,11 +1503,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52043970a0eaec04e9e115763923e197, type: 3}
---- !u!95 &3972402523496689558 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4997686753546680543, guid: 52043970a0eaec04e9e115763923e197, type: 3}
+--- !u!114 &3572707206325885297 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4895228994271170104, guid: 52043970a0eaec04e9e115763923e197, type: 3}
   m_PrefabInstance: {fileID: 8249352704828217161}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c77db57171591d43888e97fb43fb4df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6422453483443776993 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3124009375221643944, guid: 52043970a0eaec04e9e115763923e197, type: 3}
