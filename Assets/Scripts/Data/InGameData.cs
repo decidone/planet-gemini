@@ -33,4 +33,9 @@ public class InGameData
     public float clientMapEnergyUseAmount;  // 클라이언트맵 에너지 사용량
 
     public int consecutiveWaveCount; // 연속 웨이브 수
+    public int waveIndex;            // 웨이브 인덱스
+    public float waveDamage; // 현재 웨이브 데미지
+    public float prevWaveDamage; // 이전 웨이브 총 데미지
+    public float currWaveDamage; // 현재 웨이브 총 데미지
+    public float difficultyPercent; // 웨이브 난이도 증가량
 }

@@ -69,6 +69,8 @@ public class MonsterAi : UnitCommonAi
 
     MonsterMapSeeker monsterMapSeeker;
 
+    private Collider2D[] targetColl = new Collider2D[128];
+
     protected override void Start()
     {
         base.Start();
@@ -78,6 +80,11 @@ public class MonsterAi : UnitCommonAi
         _t = transform;
         _effects = Effects.instance;
         unitIndex = GeminiNetworkManager.instance.GetUnitSOIndex(gameObject, monsterType, false);
+
+        if(waveState)
+        {
+            WaveStatusSet(GameManager.instance.hpMultiplier, GameManager.instance.atkMultiplier);
+        }
     }
 
     protected override void FixedUpdate()
@@ -126,8 +133,10 @@ public class MonsterAi : UnitCommonAi
 
                     if (searchTimer >= searchInterval)
                     {
+                        TargetListReset();
                         SearchObjectsInRange();
                         searchTimer = 0f; // 탐색 후 타이머 초기화
+                        searchInterval = searchInterval + ((float)Random.Range(-10, 11) / 100);
                         tarDisCheckTime = tarDisCheckInterval; // 대상 거리 체크 즉시 수행
                     }
 
@@ -140,6 +149,7 @@ public class MonsterAi : UnitCommonAi
                         if (tarDisCheckTime > tarDisCheckInterval)
                         {
                             tarDisCheckTime = 0f;
+                            tarDisCheckInterval = tarDisCheckInterval + ((float)Random.Range(-10, 11) / 100);
                             RemoveObjectsOutOfRange();
                             AttackTargetCheck();
                         }
@@ -692,12 +702,12 @@ public class MonsterAi : UnitCommonAi
         {
             if (Obj != null)
             {
-                if (Obj.GetComponent<PlayerStatus>())
-                    Obj.GetComponent<PlayerStatus>().TakeDamage(damage);
-                else if (Obj.GetComponent<UnitAi>())
-                    Obj.GetComponent<UnitAi>().TakeDamage(damage, 0);
-                else if (Obj.GetComponent<Structure>())
-                    Obj.GetComponent<Structure>().TakeDamage(damage);
+                if (Obj.TryGetComponent(out PlayerStatus playerStatus))
+                    playerStatus.TakeDamage(damage);
+                else if (Obj.TryGetComponent(out UnitAi unitAi))
+                    unitAi.TakeDamage(damage, 0);
+                else if (Obj.TryGetComponent(out Structure structure))
+                    structure.TakeDamage(damage);
             }
         }
         justTraceTimer = 0;
@@ -716,47 +726,38 @@ public class MonsterAi : UnitCommonAi
 
     protected override void SearchObjectsInRange()
     {
-        Collider2D[] colliders;
         if (stopTrace)
         {
-            colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.MinCollRad);
+            targetColl = Physics2D.OverlapCircleAll(tr.position, unitCommonData.MinCollRad);
         }
         else
         {
             if(waveState && !bestTarget)
-                colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius + 15);
+                targetColl = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius + 15);
             else
-                colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
+                targetColl = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
         }
 
-        HashSet<GameObject> targetListSet = new HashSet<GameObject>(targetList);
-
-        for (int i = 0; i < colliders.Length; i++)
+        for (int i = 0; i < targetColl.Length; i++)
         {
-            Collider2D collider = colliders[i];
+            Collider2D collider = targetColl[i];
             GameObject target = collider.gameObject;
             string targetTag = target.tag;
 
             if (targetTags.Contains(targetTag))
             {
-                Structure structure = target.GetComponent<Structure>();
-                if (structure && !targetListSet.Contains(target))
+                if (target.TryGetComponent(out Structure structure))
                 {
-                    targetListSet.Add(target);
                     targetList.Add(target);
                 }
 
-                PlayerController player = target.GetComponent<PlayerController>();
-                if (player && !targetListSet.Contains(target))
+                if (target.TryGetComponent(out PlayerController player))
                 {
-                    targetListSet.Add(target);
                     targetList.Add(target);
                 }
 
-                UnitAi unit = target.GetComponent<UnitAi>();
-                if (unit && !targetListSet.Contains(target))
+                if (target.TryGetComponent(out UnitAi unit))
                 {
-                    targetListSet.Add(target);
                     targetList.Add(target);
                 }
 
@@ -817,7 +818,7 @@ public class MonsterAi : UnitCommonAi
             dist = Vector3.Distance(tr.position, target.transform.position);
 
             // 공격 가능한 대상인지 확인
-            bool isAttackable = target.GetComponent<UnitAi>() || target.GetComponent<TowerAi>() || target.GetComponent<PlayerController>();
+            bool isAttackable = target.TryGetComponent(out UnitAi unitAi) || target.TryGetComponent(out TowerAi towerAi) || target.TryGetComponent(out PlayerController player);
             if (!isAttackable)
             {
                 //공격 불가능하지만 가까운 타겟 저장
@@ -1336,6 +1337,7 @@ public class MonsterAi : UnitCommonAi
     {
         waveState = true;
 
+        Debug.Log(MonsterBaseMapCheck.instance.wavePath.vectorPath.Count > 0);
         if (MonsterBaseMapCheck.instance.wavePath.vectorPath.Count > 0)
         {
             if (waveMovePath.Count == 0)
@@ -1346,6 +1348,25 @@ public class MonsterAi : UnitCommonAi
         }
     }
     
+    public void WaveStatusSet(float hpMultiplier, float damageMultiplier)
+    {
+        WaveStatusSetSyncServerRpc(hpMultiplier, damageMultiplier);
+    }
+
+    [ServerRpc]
+    void WaveStatusSetSyncServerRpc(float hpMultiplier, float damageMultiplier)
+    {
+        WaveStatusSetSyncClientRpc(hpMultiplier, damageMultiplier);
+    }
+
+    [ClientRpc]
+    void WaveStatusSetSyncClientRpc(float hpMultiplier, float damageMultiplier)
+    {
+        maxHp = Mathf.FloorToInt(unitCommonData.MaxHp * hpMultiplier);
+        hp = maxHp;
+        damage = Mathf.FloorToInt(unitCommonData.Damage * damageMultiplier);
+    }
+
     protected IEnumerator ReturnToWavePath()
     {
         Vector3 closestPoint = Vector3.zero;
@@ -1429,18 +1450,6 @@ public class MonsterAi : UnitCommonAi
             case ("poison"):
                 _effects.TriggerPoison(this.gameObject);
                 break;
-        }
-
-        //StartCoroutine(Test());
-    }
-
-    IEnumerator Test()
-    {
-        yield return new WaitForSeconds(.333f);
-        while (true)
-        {
-            _effects.TriggerDark(this.gameObject);
-            yield return new WaitForSeconds(Random.Range(.5f, 1f));
         }
     }
 
