@@ -112,13 +112,8 @@ public class MonsterSpawner : NetworkBehaviour
     int maxRagePhase = 5;
     int[] ragePhaseSpawnCount = new int[5] { 2, 4, 6, 8, 10 };
 
-    int waveLevel;
-
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
-
-    [SerializeField]
-    bool waveTest = false;
 
     void Awake()
     {
@@ -684,7 +679,6 @@ public class MonsterSpawner : NetworkBehaviour
         detectionRange = spawnerSaveData.detectionRange;
         detectionCount = spawnerSaveData.detectionCount;
         violentDay = spawnerSaveData.violentDay;
-        waveLevel = spawnerSaveData.waveLevel;
         spawnerLevelData = levelData;
         spawnerLevel = levelData.sppawnerLevel;
         maxWeakSpawn = levelData.maxWeakSpawn;
@@ -754,7 +748,6 @@ public class MonsterSpawner : NetworkBehaviour
         data.detectionRange = detectionRange;
         data.detectionCount = detectionCount;
         data.ragePhase = ragePhase;
-        data.waveLevel = waveLevel;
         foreach (MonsterAi monster in totalMonsterList)
         {
             data.monsterList.Add(monster.SaveData());
@@ -777,10 +770,9 @@ public class MonsterSpawner : NetworkBehaviour
             MapGenerator.instance.SetCorruption(this, spawnerLevel);
     }
 
-    public void ViolentDaySet(int waveLevelSet)
+    public void ViolentDaySet()
     {
         violentDay = true;
-        waveLevel = waveLevelSet;
         detectionCount = 0;
     }
 

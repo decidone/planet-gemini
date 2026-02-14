@@ -340,21 +340,24 @@ namespace Pathfinding.Serialization {
 					}
 				}
 
-#if UNITY_2020_1_OR_NEWER
-				foreach (var helper in UnityEngine.Object.FindObjectsOfType<UnityReferenceHelper>(true))
+#if UNITY_2023_1_OR_NEWER
+                var helpers = UnityEngine.Object.FindObjectsByType<UnityReferenceHelper>(
+                    FindObjectsInactive.Include,
+                    FindObjectsSortMode.None);
 #else
-				foreach (var helper in UnityEngine.Object.FindObjectsOfType<UnityReferenceHelper>())
+                var helpers = UnityEngine.Object.FindObjectsOfType<UnityReferenceHelper>(true);
 #endif
-				{
-					if (helper.GetGUID() == guid) {
-						if (Type.Equals(type, typeof(GameObject))) {
-							return helper.gameObject;
-						} else {
-							return helper.GetComponent(type);
-						}
-					}
-				}
-			}
+
+                foreach (var helper in helpers)
+                {
+                    if (helper.GetGUID() == guid)
+                    {
+                        return Type.Equals(type, typeof(GameObject))
+                            ? helper.gameObject
+                            : helper.GetComponent(type);
+                    }
+                }
+            }
 
 			// Note: calling LoadAll with an empty string will make it load the whole resources folder, which is probably a bad idea.
 			if (!string.IsNullOrEmpty(name)) {

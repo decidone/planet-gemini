@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using QFSW.QC;
-using Mono.CSharp;
 using System.Linq;
 
 public class MonsterSpawnerManager : NetworkBehaviour
@@ -200,7 +197,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
     }
 
-    public bool ViolentDayOn(bool hostMap, bool forcedOperation, int waveLevel)
+    public bool ViolentDayOn(bool hostMap, bool forcedOperation)
     {
         List<MonsterSpawner> reachedPortalspawners = new List<MonsterSpawner>();
         MonsterSpawner aggroSpawner = null;
@@ -225,7 +222,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             waveState = true;
             hostMapWave = hostMap;
-            aggroSpawner.ViolentDaySet(waveLevel);
+            aggroSpawner.ViolentDaySet();
             wavePos = aggroSpawner.transform.position;
             WavePointOnServerRpc(wavePos, hostMap);
             return true;
@@ -461,11 +458,11 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     SpawnRatio GetSpawnRatio(float difficulty)
     {
-        difficulty = Mathf.Clamp(difficulty, 0f, 500f);
+        difficulty = Mathf.Clamp(difficulty, 0f, 1000f);
 
-        if (difficulty < 150f)
+        if (difficulty < 400f)
         {
-            float t = difficulty / 150f; // 0~1
+            float t = difficulty / 400f; // 0~1
 
             float weak = Mathf.Lerp(0.9f, 0.5f, t);
             float normal = Mathf.Lerp(0.1f, 0.5f, t * t);
@@ -479,7 +476,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
             };
         }
 
-        float t2 = Mathf.Clamp01((difficulty - 150f) / 150f);
+        float t2 = Mathf.Clamp01((difficulty - 400f) / 600f);
 
         float weak2 = Mathf.Lerp(0.5f, 0.25f, t2);
         float normal2 = Mathf.Lerp(0.5f, 0.4f, t2);

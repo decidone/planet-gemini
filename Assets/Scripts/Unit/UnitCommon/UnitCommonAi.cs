@@ -49,8 +49,6 @@ public class UnitCommonAi : NetworkBehaviour
     protected float searchInterval;
     protected float searchTimer;
     public GameObject aggroTarget;
-    protected float tarDisCheckTime;
-    protected float tarDisCheckInterval;                // 0.3초 간격으로 몬스터 거리 체크
     protected float targetDist;
     public List<GameObject> targetList = new List<GameObject>();
 
@@ -97,6 +95,12 @@ public class UnitCommonAi : NetworkBehaviour
     public float attackSpeed;
     public float defense;
 
+    protected Collider2D[] targetColls = new Collider2D[128];
+    protected LayerMask targetMask;
+    protected ContactFilter2D contactFilter;
+
+    protected SearchObjectsInRangeManager searchManager;
+
     protected virtual void Awake()
     {
         tr = GetComponent<Transform>();
@@ -104,7 +108,7 @@ public class UnitCommonAi : NetworkBehaviour
         capsule2D = GetComponent<CapsuleCollider2D>();
         seeker = GetComponent<Seeker>();
         animator = GetComponent<Animator>();
-
+        searchManager = SearchObjectsInRangeManager.instance;
         hp = unitCommonData.MaxHp;
         maxHp = unitCommonData.MaxHp;
         hpBar.fillAmount = hp / maxHp;
@@ -114,7 +118,6 @@ public class UnitCommonAi : NetworkBehaviour
         defense = unitCommonData.Defense;
         isFlip = unitSprite.flipX;
         searchInterval = 0.3f;
-        tarDisCheckInterval = 0.5f;
         patrolPos = Vector3.zero;
         unitName = unitCommonData.UnitName;
         aIState = AIState.AI_Idle;
@@ -150,28 +153,13 @@ public class UnitCommonAi : NetworkBehaviour
         if (aIState != AIState.AI_Die)
         {
             searchTimer += Time.deltaTime;
-
             if (searchTimer >= searchInterval)
             {
-                SearchObjectsInRange();
-                searchTimer = 0f; // 탐색 후 타이머 초기화
-                tarDisCheckTime = tarDisCheckInterval; // 대상 거리 체크 즉시 수행
-            }
-
-            if (targetList.Count > 0)
-            {
-                tarDisCheckTime += Time.deltaTime;
-                if (tarDisCheckTime > tarDisCheckInterval)
+                if (targetList.Count > 0)
                 {
-                    tarDisCheckTime = 0f;
-                    RemoveObjectsOutOfRange();
-                    AttackTargetCheck();
+                    AttackTargetDisCheck();
                 }
-                AttackTargetDisCheck();
-            }
-            else if (!aggroTarget)
-            {
-                targetDist = 0;
+                searchTimer = 0f; // 탐색 후 타이머 초기화
             }
         }
     }
@@ -186,6 +174,7 @@ public class UnitCommonAi : NetworkBehaviour
         base.OnNetworkSpawn();
         if (IsServer)
         {
+            searchManager.UnitListAdd(this);
             NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         }
     }
@@ -195,6 +184,7 @@ public class UnitCommonAi : NetworkBehaviour
         base.OnNetworkDespawn();
         if (IsServer)
         {
+            searchManager.UnitListRemove(this);
             NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
         }
     }
@@ -218,27 +208,8 @@ public class UnitCommonAi : NetworkBehaviour
     }
 
     protected virtual void UnitAiCtrl() { }
-    protected virtual void SearchObjectsInRange() { }
+    public virtual void SearchObjectsInRange() { }
     protected virtual void AttackTargetCheck() { }
-
-    protected virtual void RemoveObjectsOutOfRange()
-    {
-        targetList.RemoveAll(target =>
-            !target || Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius);
-        //for (int i = targetList.Count - 1; i >= 0; i--)
-        //{
-        //    if (!targetList[i])
-        //        targetList.RemoveAt(i);
-        //    else
-        //    {
-        //        GameObject target = targetList[i];
-        //        if (Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius)
-        //        {
-        //            targetList.RemoveAt(i);
-        //        }
-        //    }
-        //}
-    }
 
     protected virtual void AttackTargetDisCheck()
     {
@@ -462,18 +433,6 @@ public class UnitCommonAi : NetworkBehaviour
         unitCanvas.SetActive(false);
 
         capsule2D.enabled = false;
-    }
-
-    public virtual void RemoveTarget(GameObject target) 
-    {
-        if (targetList.Contains(target))
-        {
-            targetList.Remove(target);
-        }
-        if (targetList.Count == 0)
-        {
-            aggroTarget = null;
-        }
     }
 
     public virtual void AStarSet(bool isHostMap)

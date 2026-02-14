@@ -297,6 +297,7 @@ Transform:
   - {fileID: 1462144190}
   - {fileID: 7750293451702881428}
   - {fileID: 3975456454962030654}
+  - {fileID: 3283632903501787088}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3268826974884516333
@@ -394,7 +395,13 @@ MonoBehaviour:
   waveEnergyOverLimit: 2500
   hostMapEnergyUseAmount: 0
   clientMapEnergyUseAmount: 0
+  consecutiveWaveCount: 0
   saveImg: {fileID: 0}
+  waveDamage: 0
+  difficultyPercent: 0
+  spawnMultiplier: 1
+  hpMultiplier: 1
+  atkMultiplier: 1
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -681,6 +688,11 @@ MonoBehaviour:
       hostMapEnergyUseAmount: 0
       clientMapEnergyUseAmount: 0
       consecutiveWaveCount: 0
+      waveIndex: 0
+      waveDamage: 0
+      prevWaveDamage: 0
+      currWaveDamage: 0
+      difficultyPercent: 0
     hostPlayerData:
       pos:
         x: 0
@@ -776,6 +788,50 @@ MonoBehaviour:
   fogOfWar: {fileID: 0}
   outlintMat: {fileID: 2100000, guid: 2eaf895611ce8f6438c10f04172f98a2, type: 2}
   noOutlineMat: {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
+--- !u!1 &6852839039671922142
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3283632903501787088}
+  - component: {fileID: 5260201478357436254}
+  m_Layer: 0
+  m_Name: SearchObjectsInRangeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3283632903501787088
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6852839039671922142}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3986364635626952760}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5260201478357436254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6852839039671922142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b28d0c97508d95f4f9f58a0144f1c6b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7414352785637535675
 GameObject:
   m_ObjectHideFlags: 0

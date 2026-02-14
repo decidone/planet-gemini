@@ -400,15 +400,12 @@ MonoBehaviour:
   waveState: 0
   waveArrivePos: 0
   normalTraceTimer: 0
+  stopTrace: 0
   isDebuffed: 0
   targetOn: 0
   justTraceTimer: 0
-  justTraceInterval: 3
+  justTraceInterval: 10
   bestTarget: {fileID: 0}
-  targetPos: {fileID: 0}
-  moveTargetPos: {fileID: 0}
-  mapTargetPos: {fileID: 0}
-  blockObj: {fileID: 0}
 --- !u!70 &2670242036717598348
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using UnityEngine;
 
 public class RepairerDrone : UnitAi
@@ -13,6 +12,20 @@ public class RepairerDrone : UnitAi
     List<GameObject> strTargetList = new List<GameObject>();
     [SerializeField]
     int repairFullAmount;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        int mask =
+            (1 << LayerMask.NameToLayer("Unit")) |
+            (1 << LayerMask.NameToLayer("Obj")) |
+            (1 << LayerMask.NameToLayer("Monster")) |
+            (1 << LayerMask.NameToLayer("Spawner"));
+
+        contactFilter.SetLayerMask(mask);
+        contactFilter.useLayerMask = true;
+    }
+
     protected override void Update()
     {
         if (Time.timeScale == 0)
@@ -33,28 +46,13 @@ public class RepairerDrone : UnitAi
         if (aIState != AIState.AI_Die)
         {
             searchTimer += Time.deltaTime;
-
             if (searchTimer >= searchInterval)
             {
-                SearchObjectsInRange();
-                searchTimer = 0f; // 탐색 후 타이머 초기화
-            }
-
-            if (unitTargetList.Count > 0 || strTargetList.Count > 0)
-            {
-                tarDisCheckTime += Time.deltaTime;
-                if (tarDisCheckTime > tarDisCheckInterval)
+                if (unitTargetList.Count > 0 || strTargetList.Count > 0)
                 {
-                    tarDisCheckTime = 0f;
-                    RemoveObjectsOutOfRange();
-                    AttackTargetCheck();
+                    AttackTargetDisCheck();
                 }
-                AttackTargetDisCheck();
-                RepairAiCtrl();
-            }
-            else if (!aggroTarget)
-            {
-                targetDist = 0;
+                searchTimer = 0f; // 탐색 후 타이머 초기화
             }
         }
 
@@ -163,60 +161,60 @@ public class RepairerDrone : UnitAi
         }
     }
 
-    protected override void SearchObjectsInRange()
+    public override void SearchObjectsInRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
+        int hitCount = Physics2D.OverlapCircle(
+             tr.position,
+             unitCommonData.ColliderRadius,
+             contactFilter,
+             targetColls
+        );
 
-        if (colliders.Length > 0)
+        if (hitCount == 0)
         {
-            foreach (Collider2D collider in colliders)
+            if (targetList.Count > 0)
             {
-                GameObject obj = collider.gameObject;
-                if (obj.TryGetComponent(out UnitAi unit) && unit != this)
+                targetList.Clear();
+            }
+            if (unitTargetList.Count > 0)
+            {
+                unitTargetList.Clear();
+            }
+            if (strTargetList.Count > 0)
+            {
+                strTargetList.Clear();
+            }
+            return;
+        }
+
+        unitTargetList.Clear();
+        strTargetList.Clear();
+        targetList.Clear();
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            GameObject obj = targetColls[i].gameObject;
+            if (!obj || obj == gameObject)
+                continue;
+
+            if (obj.TryGetComponent(out UnitAi unit))
+            {
+                unitTargetList.Add(obj);
+            }
+            else if (obj.TryGetComponent(out Structure structure))
+            {
+                if (!structure.isPreBuilding && !structure.GetComponent<Portal>())
                 {
-                    if (!unitTargetList.Contains(obj))
-                    {
-                        unitTargetList.Add(obj);
-                    }
-                }
-                else if (obj.TryGetComponent(out Structure structure))
-                {
-                    if (!structure.isPreBuilding && !strTargetList.Contains(obj) && !structure.GetComponent<Portal>())
-                    {
-                        strTargetList.Add(obj);
-                    }
-                }
-                else if (obj.CompareTag("Monster") || obj.CompareTag("Spawner"))
-                {
-                    if (!targetList.Contains(obj))
-                    {
-                        targetList.Add(obj);
-                    }
+                    strTargetList.Add(obj);
                 }
             }
+            else // 몬스터 리스트
+            {
+                targetList.Add(obj);
+            }
         }
-    }
 
-    protected override void RemoveObjectsOutOfRange()
-    {
-        targetList.RemoveAll(target =>
-            !target || Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius);
-        unitTargetList.RemoveAll(target =>
-            !target || Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius);
-        strTargetList.RemoveAll(target =>
-            !target || Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius);
-    }
-
-    public override void RemoveTarget(GameObject target)
-    {
-        base.RemoveTarget(target);
-        if (unitTargetList.Contains(target))
-        {
-            unitTargetList.Remove(target);
-        }
-        else if (strTargetList.Contains(target))
-        {
-            strTargetList.Remove(target);
-        }
+        AttackTargetCheck();
+        RepairAiCtrl();
     }
 }

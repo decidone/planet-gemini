@@ -33,12 +33,12 @@ public class MonsterAi : UnitCommonAi
     public bool waveArrivePos = false;
     //bool goingBase = false;
     Vector3 wavePos; // 나중에 웨이브 대상으로 변경해야함 (현 맵 중심으로 이동하게)
-    bool waveFindObj = false;
     bool isWaveColonyCallCheck = true;
     //bool goalPathBlocked = false;
 
     public float normalTraceTimer;
     float normalTraceInterval = 15f;
+    [SerializeField]
     bool stopTrace;
 
     public bool isDebuffed;
@@ -51,10 +51,6 @@ public class MonsterAi : UnitCommonAi
     public bool targetOn;
     Transform _t;
     Effects _effects;
-
-    public float justTraceTimer = 0f;
-    [SerializeField]
-    public float justTraceInterval;
 
     protected bool spawnerPhaseOn;
     protected bool spawnerLastPhaseOn;
@@ -69,14 +65,26 @@ public class MonsterAi : UnitCommonAi
 
     MonsterMapSeeker monsterMapSeeker;
 
-    private Collider2D[] targetColl = new Collider2D[128];
+    protected override void Awake()
+    {
+        base.Awake();
+        int mask =
+            (1 << LayerMask.NameToLayer("Obj")) |
+            (1 << LayerMask.NameToLayer("Unit")) |
+            (1 << LayerMask.NameToLayer("Portal")) |
+            (1 << LayerMask.NameToLayer("LocalPortal")) |
+            (1 << LayerMask.NameToLayer("Tank"));
+
+        contactFilter.SetLayerMask(mask);
+        contactFilter.useLayerMask = true;
+    }
 
     protected override void Start()
     {
         base.Start();
         monsterMapSeeker = GetComponentInChildren<MonsterMapSeeker>();
 
-        normalTraceInterval = Random.Range(10, 20);
+        normalTraceInterval = Random.Range(10, 15);
         _t = transform;
         _effects = Effects.instance;
         unitIndex = GeminiNetworkManager.instance.GetUnitSOIndex(gameObject, monsterType, false);
@@ -92,19 +100,6 @@ public class MonsterAi : UnitCommonAi
         if (isScriptActive)
         {
             base.FixedUpdate();
-            if(aIState == AIState.AI_NormalTrace)
-            {
-                normalTraceTimer += Time.deltaTime;
-                if (normalTraceTimer > normalTraceInterval)
-                {
-                    normalTraceInterval = Random.Range(10, 20);
-                    normalTraceTimer = 0f;
-                    stopTrace = true;
-                    TargetListReset();
-                    SearchObjectsInRange();
-                    PatrolRandomPosSet();
-                }
-            }
         }
         else
         {
@@ -133,31 +128,9 @@ public class MonsterAi : UnitCommonAi
 
                     if (searchTimer >= searchInterval)
                     {
-                        TargetListReset();
-                        SearchObjectsInRange();
-                        searchTimer = 0f; // 탐색 후 타이머 초기화
-                        searchInterval = searchInterval + ((float)Random.Range(-10, 11) / 100);
-                        tarDisCheckTime = tarDisCheckInterval; // 대상 거리 체크 즉시 수행
-                    }
-
-                    if (targetList.Count > 0)
-                    {
-                        if (!aggroTarget)
-                            aggroTarget = null;
-
-                        tarDisCheckTime += Time.deltaTime;
-                        if (tarDisCheckTime > tarDisCheckInterval)
-                        {
-                            tarDisCheckTime = 0f;
-                            tarDisCheckInterval = tarDisCheckInterval + ((float)Random.Range(-10, 11) / 100);
-                            RemoveObjectsOutOfRange();
-                            AttackTargetCheck();
-                        }
-                        AttackTargetDisCheck();
-                    }
-                    else if (!aggroTarget)
-                    {
-                        targetDist = 0;
+                        if(targetList.Count > 0)
+                            AttackTargetDisCheck();
+                        searchTimer = 0;
                     }
                 }
 
@@ -175,12 +148,12 @@ public class MonsterAi : UnitCommonAi
             }
             else if (aggroTarget)
             {
-                tarDisCheckTime += Time.deltaTime;
-                if (tarDisCheckTime > tarDisCheckInterval)
+                searchTimer += Time.deltaTime;
+                if (searchTimer >= searchInterval)
                 {
-                    tarDisCheckTime = 0f;
                     AttackTargetDisCheck();
                     SpawnerCallCheck(aggroTarget);
+                    searchTimer = 0f;
                 }
             }
             else
@@ -189,12 +162,15 @@ public class MonsterAi : UnitCommonAi
                 aIState = AIState.AI_Idle;
             }
 
-            if (!waveState && justTraceTimer < justTraceInterval)
+            if (aggroTarget && !waveState && aIState == AIState.AI_NormalTrace)
             {
-                justTraceTimer += Time.deltaTime;
-                if (justTraceTimer >= justTraceInterval)
+                normalTraceTimer += Time.deltaTime;
+                if (normalTraceTimer > normalTraceInterval)
                 {
+                    normalTraceInterval = Random.Range(10, 20);
+                    normalTraceTimer = 0f;
                     stopTrace = true;
+                    PatrolRandomPosSet();
                 }
             }
         }
@@ -567,6 +543,7 @@ public class MonsterAi : UnitCommonAi
             if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck)
             {
                 isScriptActive = false;
+                searchManager.UnitListRemove(this); 
                 enabled = false;
                 animator.enabled = false;
                 capsule2D.enabled = false;
@@ -584,6 +561,7 @@ public class MonsterAi : UnitCommonAi
                 if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck)
                 {
                     isScriptActive = false;
+                    searchManager.UnitListRemove(this);
                     enabled = false;
                     animator.enabled = false;
                     capsule2D.enabled = false;
@@ -710,7 +688,6 @@ public class MonsterAi : UnitCommonAi
                     structure.TakeDamage(damage);
             }
         }
-        justTraceTimer = 0;
         stopTrace = false;
         if (targetOn)
         {
@@ -719,90 +696,98 @@ public class MonsterAi : UnitCommonAi
         }
     }
 
-    void TargetListReset()
+    public override void SearchObjectsInRange()
     {
-        targetList.Clear();
-    }
+        int hitCount = 0;
 
-    protected override void SearchObjectsInRange()
-    {
         if (stopTrace)
         {
-            targetColl = Physics2D.OverlapCircleAll(tr.position, unitCommonData.MinCollRad);
+            hitCount = Physics2D.OverlapCircle(
+                tr.position,
+                unitCommonData.MinCollRad,
+                contactFilter,
+                targetColls
+            );
         }
         else
         {
-            if(waveState && !bestTarget)
-                targetColl = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius + 15);
-            else
-                targetColl = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
-        }
-
-        for (int i = 0; i < targetColl.Length; i++)
-        {
-            Collider2D collider = targetColl[i];
-            GameObject target = collider.gameObject;
-            string targetTag = target.tag;
-
-            if (targetTags.Contains(targetTag))
+            if (waveState && !bestTarget)
             {
-                if (target.TryGetComponent(out Structure structure))
-                {
-                    targetList.Add(target);
-                }
-
-                if (target.TryGetComponent(out PlayerController player))
-                {
-                    targetList.Add(target);
-                }
-
-                if (target.TryGetComponent(out UnitAi unit))
-                {
-                    targetList.Add(target);
-                }
-
-                waveFindObj = true;
+                hitCount = Physics2D.OverlapCircle(
+                    tr.position,
+                    unitCommonData.ColliderRadius + 15,
+                    contactFilter,
+                    targetColls
+                );
+            }
+            else
+            {
+                hitCount = Physics2D.OverlapCircle(
+                    tr.position,
+                    unitCommonData.ColliderRadius,
+                    contactFilter,
+                    targetColls
+                );
             }
         }
 
-        if (targetList.Count == 0)
+        if (hitCount == 0)
         {
             aggroTarget = null;
+            if (targetList.Count > 0)
+            {
+                targetList.Clear();
+            }
+            if (aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack)
+            {
+                if (!waveState)
+                {
+                    idle = 0;
+                    aIState = AIState.AI_Idle;
+                    attackState = AttackState.Waiting;
+                }
+                else
+                {
+                    if (!waveArrivePos)
+                    {
+                        WaveStart(wavePos);
+                    }
+                    else if (waveArrivePos)
+                    {
+                        checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
+                    }
+                }                
+            }
+            return;
         }
 
-        if ((aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack) && targetList.Count == 0)
+        targetList.Clear();
+
+        for (int i = 0; i < hitCount; i++)
         {
-            if (!waveState)
-            {
-                idle = 0;
-                aIState = AIState.AI_Idle;
-                attackState = AttackState.Waiting;
-                return;
-            }
-            else if (!waveArrivePos && waveFindObj)
-            {
-                WaveStart(wavePos);
-            }
-            else if (waveArrivePos)
-            {
-                checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
-            }
-            //else if (!goingBase)
-            //    WaveStart(wavePos);
-            waveFindObj = false;
+            GameObject target = targetColls[i].gameObject;
+            targetList.Add(target);
         }
+
+        AttackTargetCheck();
     }
 
     protected override void AttackTargetCheck()
     {
-        if (selectTargetCo != null) StopCoroutine(selectTargetCo);
-        selectTargetCo = StartCoroutine(SelectTargetAndTrace());
+        if (selectTargetCo == null)
+        {
+            selectTargetCo = StartCoroutine(SelectTargetAndTrace());
+        }
     }
 
     IEnumerator SelectTargetAndTrace()
     {
         // 현재 상태가 복귀 중이면 타겟 탐색을 중단
-        if (aIState == AIState.AI_ReturnPos) yield break;
+        if (aIState == AIState.AI_ReturnPos)
+        {
+            selectTargetCo = null;
+            yield break;
+        }
 
         // 공격 가능한 타겟 후보 리스트와, 공격 불가능한 가장 가까운 타겟을 저장
         var attackableCandidates = new List<(GameObject obj, float dist, float aggro)>();
@@ -873,7 +858,7 @@ public class MonsterAi : UnitCommonAi
                     ++str.monsterTargetAmount;
                 }
             }
-            else if(bestTarget != best)
+            else if(bestTarget != best) 
             {
                 bestTarget.TryGetComponent(out Structure preStr);
                 if (preStr)
@@ -895,6 +880,7 @@ public class MonsterAi : UnitCommonAi
             if (nearestUnattackable)
             {
                 aggroTarget = nearestUnattackable;
+
                 if (Vector2.Distance(transform.position, aggroTarget.transform.position) > unitCommonData.AttackDist)
                 {
                     if (checkPathCoroutine != null) StopCoroutine(checkPathCoroutine);
@@ -906,11 +892,13 @@ public class MonsterAi : UnitCommonAi
                     direction = aggroTarget.transform.position - tr.position;
                     checkPathCoroutine = null;
                 }
+                selectTargetCo = null; 
                 yield break;
             }
             else
             {
                 aggroTarget = null;
+                selectTargetCo = null;
                 yield break;
             }
         }
@@ -921,6 +909,7 @@ public class MonsterAi : UnitCommonAi
 
         Vector3 dir = (tr.position - best.transform.position).normalized;
         Vector3 attackPos = best.transform.position + dir;
+        bool pathValid = false;
 
         // A* 경로 요청 생성
         pathReq = ABPath.Construct(tr.position, attackPos, p =>
@@ -928,12 +917,21 @@ public class MonsterAi : UnitCommonAi
             finished = true;
 
             // 경로 계산 실패하거나 유효하지 않으면 무시
-            if (this == null || !best || p.error || p.vectorPath.Count == 0) return;
+            if (this == null || p.error || p.vectorPath.Count == 0)
+                return;
+
+            pathValid = true;
         });
 
         // A* 경로 요청 시작
         seeker.StartPath(pathReq);
         yield return new WaitUntil(() => finished); // 경로 계산이 끝날 때까지 대기
+
+        if(!pathValid)
+        {
+            selectTargetCo = null;
+            yield break;
+        }
 
         if (best)
         {
@@ -944,6 +942,11 @@ public class MonsterAi : UnitCommonAi
             {
                 canAttack = true;
             }
+        }
+        else
+        {
+            selectTargetCo = null;
+            yield break;
         }
 
         GameObject blockingObj = null;
@@ -979,6 +982,11 @@ public class MonsterAi : UnitCommonAi
             yield return new WaitUntil(() => hasResult);
         }
 
+        if(!best)
+        {
+            selectTargetCo = null;
+            yield break;
+        }
 
         float pathRatio = totalDistance / mapDistance;
 
@@ -1012,13 +1020,14 @@ public class MonsterAi : UnitCommonAi
                 checkPathCoroutine = null;
             }
         }
+
+        selectTargetCo = null;
     }
 
     public override void TakeDamage(float damage, int attackType, float ignorePercent)
     {
         base.TakeDamage(damage, attackType, ignorePercent);
         normalTraceTimer = 0;
-        justTraceTimer = 0;
         stopTrace = false;
     }
 
@@ -1026,7 +1035,6 @@ public class MonsterAi : UnitCommonAi
     {
         base.TakeDamage(damage, attackType);
         normalTraceTimer = 0;
-        justTraceTimer = 0;
         stopTrace = false;
     }
 
@@ -1170,12 +1178,6 @@ public class MonsterAi : UnitCommonAi
             AttackObjCheck(aggroTarget);
     }
 
-    public override void RemoveTarget(GameObject target)
-    {
-        base.RemoveTarget(target);
-        waitForGraphUpdate = true;
-    }
-
     public void OnGraphsUpdated()
     {
         waitForGraphUpdate = false;
@@ -1212,21 +1214,6 @@ public class MonsterAi : UnitCommonAi
         if (!IsServer)
             return;
 
-        foreach (GameObject target in targetList)
-        {
-            if (target != null)
-            {
-                if (target.TryGetComponent(out UnitAi unit))
-                {
-                    unit.RemoveTarget(gameObject);
-                }
-                else if (target.TryGetComponent(out AttackTower tower))
-                {
-                    tower.RemoveMonster(gameObject);
-                }
-            }
-        }
-
         if(spawner != null)
         {
             spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType, waveState);
@@ -1257,12 +1244,13 @@ public class MonsterAi : UnitCommonAi
     public void MonsterScriptSetClientRpc(bool scriptState)
     {
         isScriptActive = scriptState;
-        if(scriptState)
+
+        if(isScriptActive)
         {
             enabled = true;
             animator.enabled = true;
             capsule2D.enabled = true;
-            isScriptActive = scriptState;
+            searchManager.UnitListAdd(this);
         }
         else
         {
@@ -1271,6 +1259,7 @@ public class MonsterAi : UnitCommonAi
                 if(aIState == AIState.AI_NormalTrace || aIState == AIState.AI_Attack)
                 {
                     isScriptActive = true;
+                    searchManager.UnitListAdd(this); 
                     return;
                 }
                 else if(!waveState)
@@ -1291,7 +1280,7 @@ public class MonsterAi : UnitCommonAi
         if (obj == null)
             return;
 
-        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol || (justTraceTimer >= justTraceInterval && aggroTarget))
+        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol)
         {
             spawnerPhaseOn = true;
             aggroTarget = obj;
@@ -1300,8 +1289,6 @@ public class MonsterAi : UnitCommonAi
             aIState = AIState.AI_SpawnerCall;
             targetOn = true;
             checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
-
-            justTraceTimer = 0;
         }
     }
 
@@ -1337,7 +1324,6 @@ public class MonsterAi : UnitCommonAi
     {
         waveState = true;
 
-        Debug.Log(MonsterBaseMapCheck.instance.wavePath.vectorPath.Count > 0);
         if (MonsterBaseMapCheck.instance.wavePath.vectorPath.Count > 0)
         {
             if (waveMovePath.Count == 0)

@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
-using Pathfinding;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
 
@@ -322,10 +319,17 @@ public class PreBuilding : NetworkBehaviour
 
                 posList.Clear();
                 isDrag = false;
+                StrSearSearchFuncServerRpc();
             }
 
             mouseHoldCheck = false;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void StrSearSearchFuncServerRpc()
+    {
+        SearchObjectsInRangeManager.instance.StrSearchFunc();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1826,15 +1830,17 @@ public class PreBuilding : NetworkBehaviour
     {
         bool canBuild = false;
 
-        Vector3 playerPos = gameManager.playerController.gameObject.transform.position;
-        playerPos = new Vector3(playerPos.x, playerPos.y + 1, 0);
-        float dist = Vector3.Distance(pos, playerPos);
-
-        if (dist < maxBuildDist)
+        if (gameManager && gameManager.playerController)
         {
-            canBuild = true;
-        }
+            Vector3 playerPos = gameManager.playerController.gameObject.transform.position;
+            playerPos = new Vector3(playerPos.x, playerPos.y + 1, 0);
+            float dist = Vector3.Distance(pos, playerPos);
 
+            if (dist < maxBuildDist)
+            {
+                canBuild = true;
+            }
+        }
         return canBuild;
     }
 

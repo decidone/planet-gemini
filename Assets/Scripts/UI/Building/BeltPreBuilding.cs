@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -154,10 +153,17 @@ public class BeltPreBuilding : PreBuilding
      
                 posList.Clear();
                 isDrag = false;
+                StrSearSearchFuncServerRpc();
             }
 
             mouseHoldCheck = false;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void StrSearSearchFuncServerRpc()
+    {
+        SearchObjectsInRangeManager.instance.StrSearchFunc();
     }
 
     protected void CheckPos(Vector3 setPos, int moveX, int moveY)
