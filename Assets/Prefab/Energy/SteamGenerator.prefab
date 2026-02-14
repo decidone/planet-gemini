@@ -814,6 +814,7 @@ MonoBehaviour:
   modelNum: []
   spawnItem: {fileID: 0}
   monsterList: []
+  monsterTargetAmount: 0
   col: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
@@ -851,6 +852,7 @@ MonoBehaviour:
   warningIcon: {fileID: 4905783390850930706}
   mapWarningIcon: {fileID: 8537932564150456267}
   warningIconCheck: 0
+  energyStateCheck: 0
   getAnim: 0
   strImg:
   - {fileID: -1012359957, guid: 1c66ff0d0adab054b94104945a3106ba, type: 3}
@@ -880,7 +882,7 @@ MonoBehaviour:
   FuelItem: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   view: {fileID: 6363363537288611314}
   waterRequirement: 5
-  fuelRequirement: 10
+  fuelRequirement: 20
 --- !u!61 &5564630921721189503
 BoxCollider2D:
   m_ObjectHideFlags: 0
