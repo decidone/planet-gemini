@@ -317,10 +317,11 @@ MonoBehaviour:
   waveState: 0
   waveArrivePos: 0
   normalTraceTimer: 0
+  stopTrace: 0
   isDebuffed: 0
   targetOn: 0
   justTraceTimer: 0
-  justTraceInterval: 3
+  justTraceInterval: 10
   bestTarget: {fileID: 0}
   golemAttackFX: {fileID: 3455073265877218510, guid: cd93eff768044de4eba4c9eb476f1bb8, type: 3}
 --- !u!70 &7454456902833923465

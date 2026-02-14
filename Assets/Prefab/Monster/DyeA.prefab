@@ -440,10 +440,11 @@ MonoBehaviour:
   waveState: 0
   waveArrivePos: 0
   normalTraceTimer: 0
+  stopTrace: 0
   isDebuffed: 0
   targetOn: 0
   justTraceTimer: 0
-  justTraceInterval: 3
+  justTraceInterval: 10
   bestTarget: {fileID: 0}
 --- !u!50 &6876622670015851553
 Rigidbody2D:

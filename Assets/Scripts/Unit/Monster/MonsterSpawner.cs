@@ -1,4 +1,3 @@
-using QFSW.QC.Demo;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -9,6 +8,26 @@ using UnityEngine.UI;
 // UTF-8 설정
 public class MonsterSpawner : NetworkBehaviour
 {
+    public enum MonsterType
+    {
+        Weak = 0,
+        Normal = 1,
+        Strong = 2,
+        Guardian = 3
+    }
+
+    struct SpawnRequest
+    {
+        public MonsterType type;
+        public int count;
+
+        public SpawnRequest(MonsterType type, int count)
+        {
+            this.type = type;
+            this.count = count;
+        }
+    }
+
     [SerializeField]
     public StructureData structureData;
     protected StructureData StructureData { set { structureData = value; } }
@@ -40,7 +59,7 @@ public class MonsterSpawner : NetworkBehaviour
     public List<GuardianAi> guardianList = new List<GuardianAi>();
     public List<MonsterAi> waveMonsterList = new List<MonsterAi>();
     // 가디언은 초기에 배치하고 그 이후로는 관리 안함
-     
+
     public int spawnerLevel;
     AreaLevelData spawnerLevelData;
     string biome;
@@ -88,20 +107,13 @@ public class MonsterSpawner : NetworkBehaviour
     //[HideInInspector]
     public bool violentDay;
     public float violentCollSize;
-    int levelUpCount = 2;   // 몇 번의 웨이브마다 레벨업 할지
-    int waveCount = 0;      // 지금 까지 발생한 웨이브
 
     int ragePhase = 0;
     int maxRagePhase = 5;
     int[] ragePhaseSpawnCount = new int[5] { 2, 4, 6, 8, 10 };
 
-    int waveLevel;
-
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
-
-    [SerializeField]
-    bool waveTest = false;
 
     void Awake()
     {
@@ -646,40 +658,6 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public void WaveStart()
-    {
-        waveCount++;
-        StartCoroutine(WaveStartCoroutine());
-    }
-
-    private IEnumerator WaveStartCoroutine()
-    {
-        if (spawnNum > 0)
-        {
-            yield return StartCoroutine(MonsterSpawnStartCoroutine()); // 코루틴이면 이렇게
-        }
-
-        yield return StartCoroutine(ExtraMonsterSpawnCoroutine(Mathf.CeilToInt(spawnerLevel / 2) + 1));
-
-        // 아래는 몬스터가 전부 생성된 후 실행됨
-        MonsterScriptSet(true, false);
-
-        List<GameObject> monsters = new List<GameObject>();
-        foreach (MonsterAi monster in totalMonsterList)
-        {
-            monster.WaveStart(wavePos);
-            monsters.Add(monster.gameObject);
-        }
-
-        monsterSpawnerManager.WaveAddMonster(monsters);
-        waveMonsterList.AddRange(totalMonsterList);
-
-        totalMonsterList.Clear();
-        currentWeakSpawn = 0;
-        currentNormalSpawn = 0;
-        currentStrongSpawn = 0;
-    }
-
     public void GameStartSet(SpawnerSaveData spawnerSaveData, AreaLevelData levelData, Vector3 _basePos, bool isHostMap, int groupIndex)
     {
         hp = spawnerSaveData.hp;
@@ -700,9 +678,7 @@ public class MonsterSpawner : NetworkBehaviour
         spawnerGroupIndex = groupIndex;
         detectionRange = spawnerSaveData.detectionRange;
         detectionCount = spawnerSaveData.detectionCount;
-        waveCount = spawnerSaveData.waveCount;
         violentDay = spawnerSaveData.violentDay;
-        waveLevel = spawnerSaveData.waveLevel;
         spawnerLevelData = levelData;
         spawnerLevel = levelData.sppawnerLevel;
         maxWeakSpawn = levelData.maxWeakSpawn;
@@ -751,6 +727,8 @@ public class MonsterSpawner : NetworkBehaviour
         return newMonster;
     }
 
+
+
     public SpawnerSaveData SaveData()
     {
         SpawnerSaveData data = new SpawnerSaveData();
@@ -770,8 +748,6 @@ public class MonsterSpawner : NetworkBehaviour
         data.detectionRange = detectionRange;
         data.detectionCount = detectionCount;
         data.ragePhase = ragePhase;
-        data.waveCount = waveCount;
-        data.waveLevel = waveLevel;
         foreach (MonsterAi monster in totalMonsterList)
         {
             data.monsterList.Add(monster.SaveData());
@@ -794,44 +770,10 @@ public class MonsterSpawner : NetworkBehaviour
             MapGenerator.instance.SetCorruption(this, spawnerLevel);
     }
 
-    public void ViolentDaySet(int waveLevelSet)
+    public void ViolentDaySet()
     {
         violentDay = true;
-        waveLevel = waveLevelSet;
-    }
-
-    public void SpawnerLevelUp()
-    {
-        if(waveCount > levelUpCount)
-        {
-            if (spawnerLevel < SpawnerSetManager.instance.arealevelData.Length)
-            {
-                spawnerLevel++;
-                monsterSpawnerManager.AreaGroupLevelUp(this, spawnerLevel - 1, spawnerLevel, isInHostMap);
-                spawnerLevelData = SpawnerSetManager.instance.arealevelData[spawnerLevel - 1];
-                hp = structureData.MaxHp[spawnerLevel - 1];
-                maxHp = structureData.MaxHp[spawnerLevel - 1];
-                defense = structureData.Defense[spawnerLevel - 1];
-
-                maxWeakSpawn = spawnerLevelData.maxWeakSpawn;
-                maxNormalSpawn = spawnerLevelData.maxNormalSpawn;
-                maxStrongSpawn = spawnerLevelData.maxStrongSpawn;
-                maxGuardianSpawn = spawnerLevelData.maxGuardianSpawn;
-                totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
-                SpriteSet();
-            }
-
-            if (guardianList.Count < maxGuardianSpawn)
-            {
-                int guardianSpawnAmount = maxGuardianSpawn - guardianList.Count;
-                for (int i = 0; i < guardianSpawnAmount; i++)
-                {
-                    SpawnMonster(3, 0, isInHostMap);
-                }
-            }
-
-            waveCount = 0;
-        }
+        detectionCount = 0;
     }
 
     void SpriteSet()
@@ -866,7 +808,7 @@ public class MonsterSpawner : NetworkBehaviour
         float ranCount = Random.Range(-0.05f, 0.05f);
         ranCount = Mathf.Round((ranCount + energyRate) * 100f) / 100f; // 소수점 둘째 자리까지
         float detetionExpansionPersent = 1 + distRangeExpansion + ranCount; // 인식 거리 확대 퍼센트
-        if(detetionExpansionPersent > maxDistRange)
+        if (detetionExpansionPersent > maxDistRange)
         {
             detetionExpansionPersent = maxDistRange;
         }
@@ -877,6 +819,7 @@ public class MonsterSpawner : NetworkBehaviour
         {
             detectionRange = distanceToPortal;
             isReachedPortal = true;
+            detectionCount++;
         }
     }
 
@@ -896,13 +839,112 @@ public class MonsterSpawner : NetworkBehaviour
         isReachedPortal = false;
     }
 
+    public void ExecuteSpawn(int weak, int normal, int strong)
+    {
+        var requests = new List<SpawnRequest>
+        {
+            new SpawnRequest(MonsterType.Weak, weak),
+            new SpawnRequest(MonsterType.Normal, normal),
+            new SpawnRequest(MonsterType.Strong, strong)
+        };
+
+        Debug.Log("Wave Spawn Amount : weak " + weak + " : normal " + normal + " : strong " + strong);
+
+        StartCoroutine(WaveMonsterSpawn(requests));
+    }
+
+    IEnumerator WaveMonsterSpawn(List<SpawnRequest> requests)
+    {
+        (float, float) monsterMultiplier = (GameManager.instance.hpMultiplier, GameManager.instance.atkMultiplier);
+        List<GameObject> monsters = new();
+        List<MonsterAi> monstersAi = new();
+
+        foreach (var req in requests)
+        {
+            for (int i = 0; i < req.count; i++)
+            {
+                GameObject monster = RandomWaveMonsterSpawn((int)req.type);
+                monsters.Add(monster);
+
+                if (monster.TryGetComponent(out MonsterAi ai))
+                {
+                    monstersAi.Add(ai);
+                    ai.WaveStart(wavePos);
+                    ai.WaveStatusSet(monsterMultiplier.Item1, monsterMultiplier.Item2);
+                }
+
+                yield return null;
+            }
+        }
+
+        monsterSpawnerManager.WaveAddMonster(monsters);
+        waveMonsterList.AddRange(monstersAi);
+    }
+
+    GameObject RandomWaveMonsterSpawn(int monsterType)
+    {
+        int randomIndex = 0;
+        switch (monsterType)
+        {
+            case 0:
+                randomIndex = weakMonster.Count;
+                break;
+            case 1:
+                randomIndex = normalMonster.Count;
+                break;
+            case 2:
+                randomIndex = strongMonster.Count;
+                break;
+            default:
+                break;
+        }
+
+        int randomMob = Random.Range(0, randomIndex);
+        GameObject monster = SpawnWaveMonster(monsterType, randomMob, isInHostMap);
+
+        return monster;
+    }
+
+    public GameObject SpawnWaveMonster(int monserType, int monsterIndex, bool isInHostMap)
+    {
+        GameObject newMonster = null;
+        if (monserType == 0)
+        {
+            newMonster = Instantiate(weakMonster[monsterIndex], transform.position, Quaternion.identity, this.transform);
+        }
+        else if (monserType == 1)
+        {
+            newMonster = Instantiate(normalMonster[monsterIndex], transform.position, Quaternion.identity, this.transform);
+        }
+        else if (monserType == 2)
+        {
+            newMonster = Instantiate(strongMonster[monsterIndex], transform.position, Quaternion.identity, this.transform);
+        }
+        else if (monserType == 3)
+        {
+            newMonster = Instantiate(guardian, transform.position, Quaternion.identity, this.transform);
+        }
+
+        NetworkObject networkObject = newMonster.GetComponent<NetworkObject>();
+        if (!networkObject.IsSpawned) networkObject.Spawn(true);
+
+        newMonster.transform.parent = this.transform;
+
+        MonsterAi monsterAi = newMonster.GetComponent<MonsterAi>();
+        monsterAi.MonsterSpawnerSet(this, monserType);
+        monsterAi.AStarSet(isInHostMap);
+        monsterAi.MonsterScriptSetServerRpc(true);        
+
+        return newMonster;
+    }
+
     private void OnDrawGizmos()
     {
         if (transform == null || GameManager.instance == null) return;
 
         Vector3 portal;
 
-        if(isInHostMap)
+        if (isInHostMap)
             portal = GameManager.instance.portal[0].transform.position;
         else
             portal = GameManager.instance.portal[1].transform.position;
@@ -925,4 +967,5 @@ public class MonsterSpawner : NetworkBehaviour
         // 끝점에 구체 찍기 (시각화용)
         Gizmos.DrawSphere(endPoint, 0.05f);
     }
+
 }

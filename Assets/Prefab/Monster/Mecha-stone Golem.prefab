@@ -392,10 +392,11 @@ MonoBehaviour:
   waveState: 0
   waveArrivePos: 0
   normalTraceTimer: 0
+  stopTrace: 0
   isDebuffed: 0
   targetOn: 0
   justTraceTimer: 0
-  justTraceInterval: 3
+  justTraceInterval: 10
   bestTarget: {fileID: 0}
 --- !u!70 &7765666989520418348
 CapsuleCollider2D:

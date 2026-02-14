@@ -125,7 +125,7 @@ public class GameManager : NetworkBehaviour
     public bool bloodMoon;
 
     [SerializeField]
-    bool violentDayCheck;   // true면 광폭화의 날
+    bool violentDayCheck;
     public bool violentDay;
     [SerializeField]
     bool forcedOperation;
@@ -193,15 +193,6 @@ public class GameManager : NetworkBehaviour
     int consecutiveWaveCount;   // 연속으로 발생한 웨이브 수
     int waveMaxCount = 3;       // 연속 최대 수
 
-    List<int[]> waveLevelEnergies = new List<int[]> // 각 코어 레벨 당 웨이브 레벨 별 에너지 사용량 임계치
-    {
-        new int[] { 3000, 3500, 4000, 4500 },
-        new int[] { 4500, 5200, 5900, 6600 },
-        new int[] { 6600, 7500, 8400, 9300 },
-        new int[] { 9300, 10500, 11700, 12900 },
-        new int[] { 12900, 14400, 15900, 17400 }
-    };
-
     public Image saveImg;
 
     int waveIndex; // 현재 웨이브 수
@@ -209,18 +200,12 @@ public class GameManager : NetworkBehaviour
     float waveDamage; // 현재 웨이브 데미지
     float prevWaveDamage; // 이전 웨이브 총 데미지
     float currWaveDamage; // 현재 웨이브 총 데미지
-    [SerializeField]
-    float difficultyPercent; // 웨이브 난이도 증가량
+    public float difficultyPercent; // 웨이브 난이도 증가량
 
     // 몬스터 배율
-    [SerializeField]
     public float spawnMultiplier = 1f;
-    [SerializeField]
     public float hpMultiplier = 1f;
-    [SerializeField]
     public float atkMultiplier = 1f;
-    [SerializeField]
-    public float defMultiplier = 1f;
 
     #region Singleton
     public static GameManager instance;
@@ -419,9 +404,8 @@ public class GameManager : NetworkBehaviour
                 isDay = true;
                 SoundManager.instance.PlayBgmMapCheck();
 
-                if (bloodMoon && violentDayCheck)
+                if (bloodMoon && violentDayCheck && violentDay)
                 {
-                    violentDay = true;
                     timeImg.color = new Color32(255, 50, 50, 255);
                     if (IsServer)
                     {
@@ -446,15 +430,18 @@ public class GameManager : NetworkBehaviour
 
                 if (bloodMoon && violentDay)
                 {
-                    violentDay = false;
-                    violentDayCheck = false;
                     forcedOperation = false;
                     if (IsServer)
                     {
                         monsterSpawnerManager.WavePointOff();
-                        OnWaveFinished(waveDamage);
-                        waveDamage = 0;
+                        if (violentDay)
+                        {
+                            OnWaveFinished(waveDamage);
+                            waveDamage = 0;
+                        }
                     }
+                    violentDay = false;
+                    violentDayCheck = false;
                     timeImg.color = new Color32(255, 255, 255, 255);
                 }
 
@@ -484,7 +471,7 @@ public class GameManager : NetworkBehaviour
     void ViolentDaySyncTimeServerRpc()
     {
         bool violentDaySync = false;    // 이번 블러드문을 체크 했는지
-        bool violentDayOnCheck = false; // 이번에 블러드문이 활성화 되는 날인지 체크
+        //bool violentDayOnCheck = false; // 이번에 블러드문이 활성화 되는 날인지 체크
         if (!violentDayCheck && day % violentCycle == 0)
         {
             if (consecutiveWaveCount < waveMaxCount)
@@ -532,8 +519,7 @@ public class GameManager : NetworkBehaviour
 
                     if (canWave)
                     {
-                        int waveLevel = WaveLevelSet(energyUseFullAmount);
-                        violentDayOnCheck = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation, waveLevel);
+                        violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
                     }
                 }
                 else if (day != 0)
@@ -547,7 +533,7 @@ public class GameManager : NetworkBehaviour
             }
             violentDaySync = true;
 
-            if (violentDayOnCheck)
+            if (violentDay)
             {
                 consecutiveWaveCount++;
             }
@@ -557,23 +543,7 @@ public class GameManager : NetworkBehaviour
 
         int dday = CalculateDday(day, violentCycle);
 
-        ViolentDayOnClientRpc(violentDaySync, violentDayOnCheck, dday);
-    }
-
-    int WaveLevelSet(float energyUseFullAmount)
-    {
-        int coreLevel = ScienceDb.instance.coreLevel;
-        var thresholds = waveLevelEnergies[coreLevel - 1];
-
-        int level = 0;
-
-        for (int i = 0; i < thresholds.Length; i++)
-        {
-            if (energyUseFullAmount >= thresholds[i])
-                level = i + 1;
-        }
-
-        return level + ((coreLevel - 1) * 5);
+        ViolentDayOnClientRpc(violentDaySync, violentDay, dday);
     }
 
     [ClientRpc]
@@ -1589,6 +1559,12 @@ public class GameManager : NetworkBehaviour
         inGameData.clientMapEnergyUseAmount = clientMapEnergyUseAmount;
         inGameData.consecutiveWaveCount = consecutiveWaveCount;
 
+        inGameData.waveIndex = waveIndex;
+        inGameData.waveDamage = waveDamage;
+        inGameData.prevWaveDamage = prevWaveDamage;
+        inGameData.currWaveDamage = currWaveDamage;
+        inGameData.difficultyPercent = difficultyPercent;
+
         return inGameData;
     }
 
@@ -1624,6 +1600,13 @@ public class GameManager : NetworkBehaviour
         hostMapEnergyUseAmount = data.hostMapEnergyUseAmount;
         clientMapEnergyUseAmount = data.clientMapEnergyUseAmount;
         consecutiveWaveCount = data.consecutiveWaveCount;
+
+        waveIndex = data.waveIndex;
+        waveDamage = data.waveDamage;
+        prevWaveDamage = data.prevWaveDamage;
+        currWaveDamage = data.currWaveDamage;
+        difficultyPercent = data.difficultyPercent;
+        ApplyDifficulty();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -2218,22 +2201,51 @@ public class GameManager : NetworkBehaviour
         {
             prevWaveDamage = currWaveDamage;
             currWaveDamage = totalDamageDealt;
+            difficultyPercent += 20;
+            ApplyDifficulty(); 
             return;
         }
 
         // 난이도 증가량 계산
         float delta = CalculateDifficultyDelta(prevWaveDamage, currWaveDamage);
 
-        // 난이도 누적
+        // 캐치업 보정
+        float catchUpMultiplier = GetCatchUpMultiplier(difficultyPercent);
+        delta *= catchUpMultiplier;
+
+        // 누적
         difficultyPercent += delta * 100f;
-        difficultyPercent = Mathf.Clamp(difficultyPercent, 0f, Mathf.Clamp(ScienceDb.instance.coreLevel, 1, 5) * 100f);
+        difficultyPercent = Mathf.Clamp(difficultyPercent, 0f, GetDifficultyCap());
 
         // 스폰 / 스펙 반영
-        ApplyDifficulty(delta);
+        ApplyDifficulty();
 
         // 웨이브 데미지 갱신
         prevWaveDamage = currWaveDamage;
         currWaveDamage = totalDamageDealt;
+    }
+
+    float GetDifficultyCap()
+    {
+        int coreLevel = Mathf.Clamp(ScienceDb.instance.coreLevel, 1, 5);
+        return coreLevel * 200f;
+    }
+
+    float GetCatchUpMultiplier(float difficulty)
+    {
+        float previousCap = (Mathf.Clamp(ScienceDb.instance.coreLevel - 1, 0, 5)) * 200f;
+
+        // 이전 캡 이상이면 보정 없음
+        if (difficulty >= previousCap)
+            return 1f;
+
+        // 이전 캡 대비 얼마나 뒤처졌는지 (0 ~ 1)
+        float deficitRatio = (previousCap - difficulty) / previousCap;
+
+        // 보정 강도 (튜닝 포인트)
+        const float MAX_CATCHUP = 1.5f; // 최대 1.5배
+
+        return Mathf.Lerp(1f, MAX_CATCHUP, deficitRatio);
     }
 
     // ===============================
@@ -2272,32 +2284,39 @@ public class GameManager : NetworkBehaviour
     // ===============================
     // 난이도 → 실제 수치 반영
     // ===============================
-    void ApplyDifficulty(float delta)
+    void ApplyDifficulty()
     {
-        (float, Vector2) scale = GetDifficultyTierScale(difficultyPercent);
+        float cap = GetDifficultyCap();
 
-        float spawnDelta = delta * scale.Item1 * scale.Item2.x;
-        float statDelta = delta * scale.Item1 * scale.Item2.y;
+        // 0 ~ 1 정규화
+        float difficulty01 = Mathf.Clamp01(difficultyPercent / cap);
 
-        // 스폰 수 증가
-        spawnMultiplier *= (1f + spawnDelta);
+        // 난이도 구간 성격
+        float tierScale = GetDifficultyTierScale(difficultyPercent);
 
-        // 스펙 증가
-        hpMultiplier *= (1f + statDelta * 0.5f);
-        atkMultiplier *= (1f + statDelta * 0.3f);
-        defMultiplier *= (1f + statDelta * 0.2f);
+        /*
+         * 난이도 증가 곡선
+         * - tierScale : 구간별 난이도 체감
+         * - difficulty01 : 절대 난이도
+         */
+        float factor = tierScale * difficulty01;
+
+        // ===== 절대값 재계산 =====
+        spawnMultiplier = 1f + factor * 1.5f;
+        hpMultiplier = 1f + factor * 0.1f;
+        atkMultiplier = 1f + factor * 0.05f;
     }
 
     // ===============================
-    // 난이도 구간별 성격 보정 (난이도 증가량, (몬스터 스폰 수 업, 몬스터 스펙 업))
+    // 난이도 구간별 성격 보정 (난이도 증가량)
     // ===============================
-    (float, Vector2) GetDifficultyTierScale(float difficulty)
+    float GetDifficultyTierScale(float difficulty)
     {
-        if (difficulty < 100f) return (0.6f,  new Vector2(0.7f, 0.3f));
-        if (difficulty < 200f) return (0.8f, new Vector2(0.6f, 0.4f));
-        if (difficulty < 300f) return (1.0f, new Vector2(0.5f, 0.5f));
-        if (difficulty < 400f) return (1.2f, new Vector2(0.4f, 0.6f));
-        return (1.4f, new Vector2(0.3f, 0.7f));
+        if (difficulty < 200f) return 0.65f;
+        if (difficulty < 400f) return 0.85f;
+        if (difficulty < 600f) return 1.05f;
+        if (difficulty < 800f) return 1.25f;
+        return 1.45f;
     }
 
     public void BloodMoonOff()

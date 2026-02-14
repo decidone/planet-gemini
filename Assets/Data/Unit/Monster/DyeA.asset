@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: DyeA
   m_EditorClassIdentifier: 
   unitName: DyeA
-  maxHp: 130
+  maxHp: 140
   upgradeMaxHp: 0
-  damage: 17
+  damage: 23
   upgradeDamage: 0
   moveSpeed: 5
-  attackDist: 5.5
-  attDelayTime: 1.8
+  attackDist: 5
+  attDelayTime: 1.4
   upgradeAttDelayTime: 0
   colliderRadius: 15
   minCollRad: 5
-  defense: 6
+  defense: 20
   upgradeDefense: 0
   sellPrice: 0
   patrolRad: 4

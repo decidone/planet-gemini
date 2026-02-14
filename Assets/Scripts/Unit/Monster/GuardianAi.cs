@@ -102,7 +102,7 @@ public class GuardianAi : MonsterAi
         if (obj == null)
             return;
 
-        if (justTraceTimer >= justTraceInterval)
+        if (aIState == AIState.AI_Idle || aIState == AIState.AI_Patrol)
         {
             spawnerPhaseOn = true;
             aggroTarget = obj;
@@ -110,7 +110,6 @@ public class GuardianAi : MonsterAi
 
             checkPathCoroutine = StartCoroutine(CheckPath(obj.transform.position, "SpawnerCall"));
             aIState = AIState.AI_SpawnerCall;
-            justTraceTimer = 0;
         }
     }
 }

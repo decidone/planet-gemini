@@ -24,20 +24,6 @@ public class SpawnerAwake : NetworkBehaviour
 
     public void DieFunc()
     {
-        foreach (GameObject target in inObjList)
-        {
-            if (target != null)
-            {
-                if (target.TryGetComponent(out UnitAi unit))
-                {
-                    unit.RemoveTarget(monsterSpawner.gameObject);
-                }
-                else if (target.TryGetComponent(out AttackTower tower))
-                {
-                    tower.RemoveMonster(monsterSpawner.gameObject);
-                }
-            }
-        }
         coll.enabled = false;
     }
 

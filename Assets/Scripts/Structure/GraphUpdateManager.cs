@@ -22,15 +22,6 @@ public class GraphUpdateManager : MonoBehaviour
         AstarPath.OnGraphsUpdated -= HandleGraphsUpdated;
     }
 
-    public void LockMonsters(IEnumerable<MonsterAi> list)
-    {
-        foreach (var m in list)
-        {
-            if (m == null) continue;
-            waitForGraphUpdateMonsters.Add(m);  // 중복 방지
-        }
-    }
-
     void HandleGraphsUpdated(AstarPath astar)
     {
         foreach (var monster in waitForGraphUpdateMonsters)

@@ -204,6 +204,8 @@ public class DataManager : MonoBehaviour
             SpawnStructure(structureSave);
         }
 
+        SearchObjectsInRangeManager.instance.StrSearchFunc();
+
         foreach (BeltGroupSaveData beltGroupSave in saveData.beltGroupData)
         {
             SpawnBeltGroup(beltGroupSave);

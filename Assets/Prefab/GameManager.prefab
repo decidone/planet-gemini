@@ -164,9 +164,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ceab67ec1f00ffa4ab3872ecaee24d27, type: 2}
   - {fileID: 11400000, guid: 4cb067673107c6448867c470b7db0546, type: 2}
   - {fileID: 11400000, guid: 4858faa66e0135d42a7dfcaee5a8adb3, type: 2}
-  repeaters:
-  - {fileID: 11400000, guid: edf1cbf55a4fee64eb3fccf545d7c379, type: 2}
-  - {fileID: 11400000, guid: a5c4e312abe44804caf7106c8d124bbe, type: 2}
 --- !u!1 &2072025436954947002
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,6 +417,7 @@ Transform:
   - {fileID: 7750293451702881428}
   - {fileID: 3975456454962030654}
   - {fileID: 1086378820945560510}
+  - {fileID: 8330899845572852780}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3268826974884516333
@@ -524,7 +522,6 @@ MonoBehaviour:
   spawnMultiplier: 1
   hpMultiplier: 1
   atkMultiplier: 1
-  defMultiplier: 1
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -811,6 +808,11 @@ MonoBehaviour:
       hostMapEnergyUseAmount: 0
       clientMapEnergyUseAmount: 0
       consecutiveWaveCount: 0
+      waveIndex: 0
+      waveDamage: 0
+      prevWaveDamage: 0
+      currWaveDamage: 0
+      difficultyPercent: 0
     hostPlayerData:
       pos:
         x: 0
@@ -859,6 +861,50 @@ MonoBehaviour:
   beltGroup: {fileID: 2597900821044708963, guid: 3c3db7b632fbeb24eb3536da989ff8ee, type: 3}
   beltMgr: {fileID: 0}
   spawner: {fileID: 2587231014279578894, guid: 1187c18a57db9f446aa4d74f7b910b9f, type: 3}
+--- !u!1 &5062246035251519688
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8330899845572852780}
+  - component: {fileID: 2857221671705841757}
+  m_Layer: 0
+  m_Name: SearchObjectsInRangeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8330899845572852780
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062246035251519688}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3986364635626952760}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2857221671705841757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062246035251519688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b28d0c97508d95f4f9f58a0144f1c6b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6718229863374190987
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,6 +28,17 @@ public class AttackTower : TowerAi
     [SerializeField]
     SpriteRenderer view;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        int mask =
+            (1 << LayerMask.NameToLayer("Monster")) | 
+            (1 << LayerMask.NameToLayer("Spawner"));
+
+        contactFilter.SetLayerMask(mask);
+        contactFilter.useLayerMask = true;
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -114,15 +125,13 @@ public class AttackTower : TowerAi
         {
             if (IsServer)
             {
-                searchTimer += Time.deltaTime;
+                //searchTimer += Time.deltaTime;
 
-                if (searchTimer >= searchInterval)
-                {
-                    SearchObjectsInRange();
-                    RemoveObjectsOutOfRange();
-                    AttackTargetCheck();
-                    searchTimer = 0;
-                }
+                //if (searchTimer >= searchInterval)
+                //{
+                //    SearchObjectsInRange();
+                //    searchTimer = 0;
+                //}
 
                 attDelayTimer += Time.deltaTime;
 
@@ -154,6 +163,24 @@ public class AttackTower : TowerAi
                     }
                 }
             }
+        }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if(IsServer)
+        {
+            searchManager.TowerListAdd(this);
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (IsServer)
+        {
+            searchManager.TowerListRemove(this);
         }
     }
 
@@ -284,29 +311,31 @@ public class AttackTower : TowerAi
         }
     }
 
-    private void SearchObjectsInRange()
+    public override void SearchObjectsInRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
-
-        foreach (Collider2D collider in colliders)
-        {
-            GameObject monster = collider.gameObject;
-            if (monster.CompareTag("Monster") || monster.CompareTag("Spawner"))
-            {
-                if (!monsterList.Contains(monster))
-                {
-                    monsterList.Add(monster);
-                }
-            }
-        }
-    }
-
-    private void RemoveObjectsOutOfRange()
-    {
-        monsterList.RemoveAll(monster =>
-            monster == null ||
-            Vector2.Distance(transform.position, monster.transform.position) > structureData.ColliderRadius
+        int hitCount = Physics2D.OverlapCircle(
+            transform.position,
+            structureData.ColliderRadius,
+            contactFilter,
+            targetColls
         );
+
+        if (hitCount == 0)
+        {
+            if(monsterList.Count > 0)
+                monsterList.Clear();
+            return;
+        }
+
+        monsterList.Clear();
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            GameObject monster = targetColls[i].gameObject;
+            monsterList.Add(monster);
+        }
+
+        AttackTargetCheck();
     }
 
     void BulletCheck()
@@ -376,18 +405,6 @@ public class AttackTower : TowerAi
             }
             soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
             aggroAmount.SetAggroAmount(damage, attDelayTime + loadedBullet.fireRate);
-        }
-    }
-
-    public void RemoveMonster(GameObject monster)
-    {
-        if (monsterList.Contains(monster))
-        {
-            monsterList.Remove(monster);
-        }
-        if (monsterList.Count == 0)
-        {
-            aggroTarget = null;
         }
     }
 

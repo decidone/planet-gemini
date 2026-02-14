@@ -53,8 +53,6 @@ public class TransportUnit : UnitCommonAi
         attackSpeed = unitCommonData.AttDelayTime;
         defense = unitCommonData.Defense;
         isFlip = unitSprite.flipX;
-        searchInterval = 0.3f;
-        tarDisCheckInterval = 0.3f;
         patrolPos = Vector3.zero;
         unitName = unitCommonData.UnitName;
         aIState = AIState.AI_Idle;

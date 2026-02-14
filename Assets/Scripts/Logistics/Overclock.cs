@@ -10,6 +10,15 @@ public class Overclock : Production
     [SerializeField]
     SpriteRenderer view;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        int mask = (1 << LayerMask.NameToLayer("Obj"));
+
+        contactFilter.SetLayerMask(mask);
+        contactFilter.useLayerMask = true;
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -20,18 +29,18 @@ public class Overclock : Production
     {
         base.Update();
 
-        if (!isPreBuilding && IsServer)
-        {
-            searchTimer += Time.deltaTime;
+        //if (!isPreBuilding && IsServer)
+        //{
+        //    searchTimer += Time.deltaTime;
 
-            if (searchTimer >= searchInterval)
-            {
-                SearchObjectsInRange();
-                searchTimer = 0f; // 탐색 후 타이머 초기화
-            }
-        }
+        //    if (searchTimer >= searchInterval)
+        //    {
+        //        SearchObjectsInRange();
+        //        searchTimer = 0f; // 탐색 후 타이머 초기화
+        //    }
+        //}
 
-        if (conn != null && conn.group != null)
+        if (IsServer && conn != null && conn.group != null)
         {
             if(conn.group.efficiency > 0 && !isOperate)
                 OverclockOn(true);
@@ -40,20 +49,51 @@ public class Overclock : Production
         }
     }
 
-    private void SearchObjectsInRange()
+    public override void OnNetworkSpawn()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
-
-        foreach (Collider2D collider in colliders)
+        base.OnNetworkSpawn();
+        if (IsServer)
         {
-            GameObject building = collider.gameObject;
+            searchManager.StructureListAdd(this);
+        }
+    }
 
-            if (building.TryGetComponent(out Production production))
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        if (IsServer)
+        {
+            searchManager.StructureListRemove(this);
+        }
+    }
+
+    public override void SearchObjectsInRange()
+    {
+        int hitCount = Physics2D.OverlapCircle(
+                    transform.position,
+                    structureData.ColliderRadius,
+                    contactFilter,
+                    targetColls
+        );
+
+        if (hitCount == 0)
+            return;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            GameObject obj = targetColls[i].gameObject;
+            if (!obj || obj == gameObject)
             {
-                if (production.overclockTower == null && !production.isPreBuilding
-                    && !buildingList.Contains(production) && !production.GetComponent<Portal>())
+                continue;
+            }
+
+            if (obj.TryGetComponent(out Production production))
+            {
+                if (production.overclockTower == null && 
+                    !buildingList.Contains(production) && !production.GetComponent<Portal>())
                 {
                     buildingList.Add(production);
+                    production.overclocks.Add(this);
                     production.overclockTower = this;
                     if (conn != null && conn.group != null && conn.group.efficiency > 0)
                     {
@@ -86,7 +126,11 @@ public class Overclock : Production
     {
         foreach (Production building in buildingList)
         {
+            if(!building)
+                continue;
+
             building.overclockTower = null;
+            building.overclocks.Remove(this);
             building.OverclockSyncServerRpc(false);
         }
     }

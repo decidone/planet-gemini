@@ -11,20 +11,16 @@ public class CorrosionDrone : UnitAi
 
     [SerializeField] int debuffAmount;
     [SerializeField] List<MonsterAi> debuffTargetList = new List<MonsterAi>();
+     
+    bool isDebuffState = false;
 
-    protected override void Update()
+    protected override void Awake()
     {
-        base.Update();
+        base.Awake();
+        int mask = (1 << LayerMask.NameToLayer("Monster"));
 
-        if (targetList.Count > 0)
-        {
-            debuffTimer += Time.deltaTime;
-            if (debuffTimer >= debuffInterval)
-            {
-                DebuffFunc();
-                debuffTimer = 0f;
-            }
-        }
+        contactFilter.SetLayerMask(mask);
+        contactFilter.useLayerMask = true;
     }
 
     protected override void UnitAiCtrl()
@@ -49,132 +45,95 @@ public class CorrosionDrone : UnitAi
         }
     }
 
-    protected override void SearchObjectsInRange()
+    public override void SearchObjectsInRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
+        int hitCount = Physics2D.OverlapCircle(
+            tr.position,
+            unitCommonData.ColliderRadius,
+            contactFilter,
+            targetColls
+        );
 
-        if (colliders.Length > 0)
-        {
-            foreach (Collider2D collider in colliders)
-            {
-                GameObject monster = collider.gameObject;
-                if (monster.CompareTag("Monster") || monster.CompareTag("Spawner"))
-                {
-                    if (!targetList.Contains(monster))
-                    {
-                        targetList.Add(monster);
-                    }
-
-                    if (targetList.Count > 0 && !animator.GetBool("isAttack"))
-                    {
-                        animator.Play("Attack", -1, 0);
-                        animator.SetBool("isAttack", true);
-                    }
-                }
-            }
-        }
-
-        if (targetList.Count == 0)
-        {
-            animator.SetBool("isAttack", false);
-        }
-        else
-        {
-            if(debuffTargetList.Count < debuffAmount)
-                DebuffFunc();
-        }
-    }
-
-    public override void RemoveTarget(GameObject target)
-    {
-        if(debuffTargetList.Contains(target.GetComponent<MonsterAi>()))
-        {
-            debuffTargetList.Remove(target.GetComponent<MonsterAi>());
-        }
-
-        if (targetList.Contains(target))
-        {
-            targetList.Remove(target);
-        }
-        if (targetList.Count == 0)
+        if (hitCount == 0)
         {
             aggroTarget = null;
-        }
-
-        if (targetList.Count == 0 && isLastStateOn)
-        {
-            aIState = unitLastState;
-
-            if (aIState == AIState.AI_Move)
+            if(targetList.Count > 0)
             {
-                checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
+                targetList.Clear();
             }
-
-            isLastStateOn = false;
-            unitLastState = AIState.AI_Idle;
-            animator.SetBool("isAttack", false);
+            return;
         }
-        if (isTargetSet && aggroTarget == target)
+
+        targetList.Clear();
+
+        for (int i = 0; i < hitCount; i++)
         {
-            aggroTarget = null;
-            isTargetSet = false;
-            animator.Play("Idle", -1, 0);
-            animator.SetBool("isAttack", false);
+            GameObject target = targetColls[i].gameObject;
+            targetList.Add(target);
         }
-    }
-    
-    protected override void RemoveObjectsOutOfRange()
-    {
-        base.RemoveObjectsOutOfRange();
 
-        var removedTargets = debuffTargetList
-            .Where(target =>
-            !target || Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius)
-            .ToList();
-
-        foreach (MonsterAi mon in removedTargets)
+        if(targetList.Count > 0)
+            DebuffFunc();
+        else if (isDebuffState)
         {
-            if (mon)
-                mon.isDebuffed = false;
+            animator.SetBool("isAttack", false);
+            isDebuffState = false;
         }
 
-        debuffTargetList.RemoveAll(target =>
-            !target || Vector2.Distance(tr.position, target.transform.position) > unitCommonData.ColliderRadius);
+        AttackTargetCheck();
     }
 
     void DebuffFunc()
     {
+        for (int i = debuffTargetList.Count - 1; i >= 0; i--)
+        {
+            MonsterAi m = debuffTargetList[i];
+
+            if (!m || !m.isDebuffed || !targetList.Contains(m.gameObject))
+            {
+                if (m) m.isDebuffed = false;
+                debuffTargetList.RemoveAt(i);
+            }
+        }
+
+        int needCount = debuffAmount - debuffTargetList.Count;
+        if (needCount <= 0)
+            return;
+
         List<MonsterAi> monstersList = new List<MonsterAi>(); // 정렬용 리스트
 
         foreach (GameObject obj in targetList)
         {
-            if (obj && obj.TryGetComponent(out MonsterAi monsterAi))
-            {
-                if(monsterAi && !monsterAi.isDebuffed)
-                    monstersList.Add(monsterAi);
-            }
+            if (!obj) continue;
+
+            if (obj.TryGetComponent(out MonsterAi ai) && !ai.isDebuffed)
+                monstersList.Add(ai);
         }
 
-        var addTargets = monstersList
-            .OrderBy(monster => Vector2.Distance(tr.position, monster.transform.position))
-            .Take(debuffAmount - debuffTargetList.Count);
+        monstersList.Sort((a, b) =>
+            ((Vector2)(a.transform.position - tr.position)).sqrMagnitude
+            .CompareTo(
+            ((Vector2)(b.transform.position - tr.position)).sqrMagnitude
+        ));
 
-        foreach (var m in addTargets)
+        for (int i = 0; i < Mathf.Min(needCount, monstersList.Count); i++)
         {
-            debuffTargetList.Add(m);
+            debuffTargetList.Add(monstersList[i]);
         }
-
-        //debuffTargetList = monstersList
-        //    .OrderBy(monster => Vector2.Distance(tr.position, monster.transform.position))
-        //    .Take(debuffAmount)
-        //    .ToList();
 
         foreach (MonsterAi monster in debuffTargetList)
         {
-            if (monster && monster.CompareTag("Monster"))
+            if (monster)
             {
                 monster.RefreshDebuffServerRpc(1, debuffPer);    // 서버, 클라이언트 상관없이 디버프 띄워주는데 데미지 계산은 서버 디버프 유무로만 계산
             }
+        }
+
+        if (debuffTargetList.Count > 0 && !isDebuffState)
+        { 
+            animator.Play("Attack", -1, 0);
+            animator.SetBool("isAttack", true);
+            isDebuffState = true;
         }
     }
 }

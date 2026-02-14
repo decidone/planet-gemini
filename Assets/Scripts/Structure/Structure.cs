@@ -212,6 +212,15 @@ public class Structure : NetworkBehaviour
     bool overlayUse;
     protected GameManager gameManager;
 
+    protected Collider2D[] targetColls = new Collider2D[128];
+    protected LayerMask targetMask;
+    protected ContactFilter2D contactFilter;
+
+    protected SearchObjectsInRangeManager searchManager;
+
+    public HashSet<Overclock> overclocks = new HashSet<Overclock>();
+    public HashSet<RepairTower> repairTowers = new HashSet<RepairTower>();
+
     protected virtual void Awake()
     {
         gameManager = GameManager.instance;
@@ -219,7 +228,7 @@ public class Structure : NetworkBehaviour
         buildName = structureData.FactoryName;
         col = GetComponent<BoxCollider2D>();
         unitSprite = GetComponent<SpriteRenderer>();
-
+        searchManager = SearchObjectsInRangeManager.instance;
         maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
@@ -253,7 +262,7 @@ public class Structure : NetworkBehaviour
         visionPos = transform.position;
         increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
-        setModel = GetComponent<SpriteRenderer>(); 
+        setModel = GetComponent<SpriteRenderer>();
         if (TryGetComponent(out Animator anim))
         {
             getAnim = true;
@@ -805,7 +814,7 @@ public class Structure : NetworkBehaviour
         else if (width == 2 && height == 2)
         {
             sizeOneByOne = false;
-            if(nearObj.Length != 8)
+            if (nearObj.Length != 8)
                 nearObj = new GameObject[8];
             //indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
             //startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
@@ -1144,7 +1153,7 @@ public class Structure : NetworkBehaviour
             OnFactoryItem(belt.itemObjList[0]);
             belt.isItemStop = false;
             belt.itemObjList.RemoveAt(0);
-            if(belt.beltGroupMgr.groupItem.Count != 0)
+            if (belt.beltGroupMgr.groupItem.Count != 0)
                 belt.beltGroupMgr.groupItem.RemoveAt(0);
             belt.ItemNumCheck();
         }
@@ -1314,7 +1323,7 @@ public class Structure : NetworkBehaviour
                 spawnItem.amount = 1;
                 Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
                 spawnItem.transform.position = spawnPos;
-                spawnItem.isOnBelt = true;  
+                spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
 
                 if (GetComponent<Production>())
@@ -1339,7 +1348,7 @@ public class Structure : NetworkBehaviour
         outFactory.takeItemDelay = false;
         Invoke(nameof(DelaySetItem), sendDelay);
     }
-    
+
     protected void SendFacDelay(GameObject outFac, Item item)
     {
         if (CanSendItemCheck())
@@ -1405,7 +1414,7 @@ public class Structure : NetworkBehaviour
 
     public void TakeDamage(float damage)
     {
-        if(!dieCheck)
+        if (!dieCheck)
             TakeDamageServerRpc(damage);
     }
 
@@ -1494,48 +1503,6 @@ public class Structure : NetworkBehaviour
         }
 
         ItemDrop();
-
-        List<MonsterAi> monsterAis = new List<MonsterAi>();
-
-        if (!isPreBuilding)
-        {
-            foreach (GameObject monster in monsterList)
-            {
-                if (monster.TryGetComponent(out MonsterAi monsterAi))
-                {
-                    monsterAi.RemoveTarget(this.gameObject);
-                    monsterAis.Add(monsterAi);
-                }
-            }
-        }
-        else
-        {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, structureData.ColliderRadius);
-
-            foreach (Collider2D collider in colliders)
-            {
-                GameObject monster = collider.gameObject;
-                if (monster.CompareTag("Monster") || monster.CompareTag("Spawner"))
-                {
-                    if (!monsterList.Contains(monster))
-                    {
-                        monsterList.Add(monster);
-                    }
-                }
-            }
-            foreach (GameObject monsterObj in monsterList)
-            {
-                if (monsterObj.TryGetComponent(out MonsterAi monsterAi))
-                {
-                    monsterAi.RemoveTarget(this.gameObject);
-                    monsterAis.Add(monsterAi);
-                }
-            }
-        }
-
-        GraphUpdateManager.Instance.LockMonsters(monsterAis);
-        monsterList.Clear();
-
         RemoveObjServerRpc();
     }
 
@@ -1781,7 +1748,7 @@ public class Structure : NetworkBehaviour
             outObj.Remove(game);
             InOutObjIndexResetClientRpc(false);
         }
-        if(outSameList.Contains(game))
+        if (outSameList.Contains(game))
         {
             outSameList.Remove(game);
         }
@@ -1808,6 +1775,9 @@ public class Structure : NetworkBehaviour
         //ColliderTriggerOnOff(true);
         StopAllCoroutines();
 
+        if (isUIOpened)
+            CloseUI();
+
         if (InfoUI.instance.str == this)
             InfoUI.instance.SetDefault();
 
@@ -1825,7 +1795,7 @@ public class Structure : NetworkBehaviour
             }
         }
 
-        if(overclockTower != null && TryGetComponent(out Production prod))
+        if (overclockTower != null && TryGetComponent(out Production prod))
             overclockTower.RemoveObjectsOutOfRange(prod);
 
         if (IsServer && GetComponent<BeltCtrl>() && GetComponentInParent<BeltManager>() && GetComponentInParent<BeltGroupMgr>())
@@ -1863,6 +1833,10 @@ public class Structure : NetworkBehaviour
         else if (TryGetComponent(out Overclock overclock))
         {
             overclock.OverclockRemove();
+        }
+        else if (TryGetComponent(out RepairTower repairTower))
+        {
+            repairTower.RepairTowerRemove();
         }
 
         if (TryGetComponent(out GetUnderBeltCtrl getUnder))
@@ -1942,11 +1916,23 @@ public class Structure : NetworkBehaviour
 
         StrBuilt();
 
+        foreach(RepairTower repairTower in repairTowers)
+        {
+            repairTower.RemoveObjectsOutOfRange(this);
+        }
+        if(TryGetComponent(out Production production))
+        {
+            foreach (Overclock overclock in overclocks)
+            {
+                overclock.RemoveObjectsOutOfRange(production);
+            }
+        }
+
         if (col != null)
         {
             // 1. GraphUpdateObject 생성
             GraphUpdateObject guo = new GraphUpdateObject(col.bounds);
-            guo.updatePhysics = true; 
+            guo.updatePhysics = true;
             guo.modifyWalkability = true;
             guo.setWalkability = true;  // 통행 가능하게 설정
 
@@ -2017,7 +2003,7 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public virtual void AddInvenItem() 
+    public virtual void AddInvenItem()
     {
         if (isInHostMap)
             playerInven = GameManager.instance.hostMapInven;
@@ -2064,7 +2050,7 @@ public class Structure : NetworkBehaviour
 
     public virtual Dictionary<Item, int> PopUpItemCheck() { return null; }
 
-    public virtual (bool, bool , bool, EnergyGroup, float) PopUpEnergyCheck()
+    public virtual (bool, bool, bool, EnergyGroup, float) PopUpEnergyCheck()
     {
         if (energyUse || isEnergyStr)
         {
@@ -2171,7 +2157,7 @@ public class Structure : NetworkBehaviour
     {
         Vector2 tileSetPos = pos;
 
-        if (width == 2  && height == 2)
+        if (width == 2 && height == 2)
         {
             tileSetPos = new Vector3(pos.x - 0.5f, pos.y - 0.5f);
         }
@@ -2254,7 +2240,7 @@ public class Structure : NetworkBehaviour
         SetPortalNameServerRpc(str);
     }
 
-    [ServerRpc (RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)]
     public void SetPortalNameServerRpc(string str)
     {
         SetPortalNameClientRpc(str);
@@ -2268,7 +2254,7 @@ public class Structure : NetworkBehaviour
 
     protected void OperateStateSet(bool isOn)
     {
-        if(isOperate != isOn)
+        if (isOperate != isOn)
         {
             isOperate = isOn;
             NonOperateStateSet(isOn);
@@ -2278,4 +2264,6 @@ public class Structure : NetworkBehaviour
     protected virtual void NonOperateStateSet(bool isOn) { }
 
     protected virtual void FactoryOverlay() { }
+
+    public virtual void SearchObjectsInRange() { }
 }

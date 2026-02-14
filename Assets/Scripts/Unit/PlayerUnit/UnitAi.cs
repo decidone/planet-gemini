@@ -4,6 +4,7 @@ using UnityEngine;
 using Pathfinding;
 using Unity.Netcode;
 using System.Linq;
+using System.Threading;
 
 // UTF-8 설정
 public class UnitAi : UnitCommonAi
@@ -59,6 +60,18 @@ public class UnitAi : UnitCommonAi
     [SerializeField]
     Sprite[] unitIcon;
 
+
+    protected override void Awake()
+    {
+        base.Awake();
+        int mask =
+            (1 << LayerMask.NameToLayer("Monster")) |
+            (1 << LayerMask.NameToLayer("Spawner"));
+
+        contactFilter.SetLayerMask(mask);
+        contactFilter.useLayerMask = true;
+    }
+
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
@@ -80,9 +93,6 @@ public class UnitAi : UnitCommonAi
             MapGenerator.instance.RemoveFogTile(transform.position, visionRadius);
             fogTimer = 0;
         }
-
-        if (!IsServer)
-            return;
 
         base.Update();
 
@@ -205,7 +215,7 @@ public class UnitAi : UnitCommonAi
         //aIState = AIState.AI_Move;
         NomalTraceCheck(AIState.AI_Move);
         if(isAttack)
-            tarDisCheckTime = tarDisCheckInterval;
+            searchTimer = searchInterval;
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
         else
@@ -462,24 +472,34 @@ public class UnitAi : UnitCommonAi
         AnimSetFloat(direction, false);
     }
 
-    protected override void SearchObjectsInRange()
+    public override void SearchObjectsInRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(tr.position, unitCommonData.ColliderRadius);
+        int hitCount = Physics2D.OverlapCircle(
+            tr.position,
+            unitCommonData.ColliderRadius,
+            contactFilter,
+            targetColls
+        );
 
-        if (colliders.Length > 0)
+        if (hitCount == 0)
         {
-            foreach (Collider2D collider in colliders)
+            aggroTarget = null;
+            if (targetList.Count > 0)
             {
-                GameObject monster = collider.gameObject;
-                if (monster.CompareTag("Monster") || monster.CompareTag("Spawner"))
-                {
-                    if (!targetList.Contains(monster))
-                    {
-                        targetList.Add(monster);
-                    }
-                }
+                targetList.Clear();
             }
+            return;
         }
+
+        targetList.Clear();
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            GameObject target = targetColls[i].gameObject;
+            targetList.Add(target);
+        }
+
+        AttackTargetCheck();
     }
 
     protected override void AttackTargetCheck()
@@ -652,9 +672,7 @@ public class UnitAi : UnitCommonAi
     [ClientRpc]
     protected override void DieFuncClientRpc()
     {
-        //base.DieFuncClientRpc();
         DieFunc();
-
         UnitRemove();
     }
 
@@ -676,39 +694,9 @@ public class UnitAi : UnitCommonAi
         if (!IsServer)
             return;
 
-        foreach (GameObject monster in targetList)
-        {
-            if (monster != null && monster.TryGetComponent(out MonsterAi monsterAi))
-            {
-                monsterAi.RemoveTarget(gameObject);
-            }
-        }
-
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
             NetworkObject.Despawn();
-        }
-    }
-
-    public override void RemoveTarget(GameObject target)
-    {
-        base.RemoveTarget(target);
-        if (targetList.Count == 0 && isLastStateOn)
-        {
-            aIState = unitLastState;
-
-            if (aIState == AIState.AI_Move)
-            {
-                checkPathCoroutine = StartCoroutine(CheckPath(targetPosition, "Move"));
-            }
-
-            isLastStateOn = false;
-            unitLastState = AIState.AI_Idle;
-        }
-        if (isTargetSet && aggroTarget == target)
-        {
-            aggroTarget = null;
-            isTargetSet = false;
         }
     }
 

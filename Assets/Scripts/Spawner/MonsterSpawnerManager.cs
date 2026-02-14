@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using QFSW.QC;
-using Mono.CSharp;
 using System.Linq;
 
 public class MonsterSpawnerManager : NetworkBehaviour
@@ -24,6 +21,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public Sprite[] spawnerSprite;
 
     public List<GameObject> waveMonsters = new List<GameObject>();
+    private int baseSpawnCount = 17;
 
     #region Singleton
     public static MonsterSpawnerManager instance;
@@ -199,7 +197,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         }
     }
 
-    public bool ViolentDayOn(bool hostMap, bool forcedOperation, int waveLevel)
+    public bool ViolentDayOn(bool hostMap, bool forcedOperation)
     {
         List<MonsterSpawner> reachedPortalspawners = new List<MonsterSpawner>();
         MonsterSpawner aggroSpawner = null;
@@ -224,7 +222,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             waveState = true;
             hostMapWave = hostMap;
-            aggroSpawner.ViolentDaySet(waveLevel);
+            aggroSpawner.ViolentDaySet();
             wavePos = aggroSpawner.transform.position;
             WavePointOnServerRpc(wavePos, hostMap);
             return true;
@@ -271,8 +269,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
             {
                 if (spawner.violentDay)
                 {
-                    spawner.WaveStart();
-                    spawner.SpawnerLevelUp();
+                    //spawner.WaveStart(); // 스폰 코드 변경해야함
+                    SpawnWave(spawner);
                     spawner.DetectionRangeReset();
                     WaveStartWarrningServerRpc();
                     spawner.violentDay = false;
@@ -422,5 +420,105 @@ public class MonsterSpawnerManager : NetworkBehaviour
                 return true;
         }
         return false;
+    }
+
+    // ===============================
+    // 외부 진입점
+    // ===============================
+    public void SpawnWave(MonsterSpawner spawner)
+    {
+        float spawnMultiplier = GameManager.instance.spawnMultiplier;
+        float difficulty = GameManager.instance.difficultyPercent;
+
+        int totalSpawnCount = CalculateTotalSpawnCount(spawnMultiplier);
+        SpawnRatio ratio = GetSpawnRatio(difficulty);
+
+        SpawnCount counts = CalculateSpawnCounts(totalSpawnCount, ratio);
+
+        spawner.ExecuteSpawn(counts.weak, counts.normal, counts.strong);
+    }
+
+    // ===============================
+    // 총 스폰 수 계산
+    // ===============================
+    int CalculateTotalSpawnCount(float spawnMultiplier)
+    {
+        return Mathf.Max(1, Mathf.RoundToInt(baseSpawnCount * spawnMultiplier));
+    }
+
+    // ===============================
+    // 몬스터 비율 정의
+    // ===============================
+    struct SpawnRatio
+    {
+        public float weak;
+        public float normal;
+        public float strong;
+    }
+
+    SpawnRatio GetSpawnRatio(float difficulty)
+    {
+        difficulty = Mathf.Clamp(difficulty, 0f, 1000f);
+
+        if (difficulty < 400f)
+        {
+            float t = difficulty / 400f; // 0~1
+
+            float weak = Mathf.Lerp(0.9f, 0.5f, t);
+            float normal = Mathf.Lerp(0.1f, 0.5f, t * t);
+            float strong = Mathf.Max(0f, 1f - (weak + normal));
+
+            return new SpawnRatio
+            {
+                weak = weak,
+                normal = normal,
+                strong = strong
+            };
+        }
+
+        float t2 = Mathf.Clamp01((difficulty - 400f) / 600f);
+
+        float weak2 = Mathf.Lerp(0.5f, 0.25f, t2);
+        float normal2 = Mathf.Lerp(0.5f, 0.4f, t2);
+        float strong2 = Mathf.Lerp(0.0f, 0.35f, t2);
+
+        NormalizeRatios(ref weak2, ref normal2, ref strong2);
+        return new SpawnRatio { weak = weak2, normal = normal2, strong = strong2 };
+    }
+
+    void NormalizeRatios(ref float a, ref float b, ref float c)
+    {
+        float sum = a + b + c;
+        a /= sum;
+        b /= sum;
+        c /= sum;
+    }
+
+    // ===============================
+    // 스폰 수 계산
+    // ===============================
+    struct SpawnCount
+    {
+        public int weak;
+        public int normal;
+        public int strong;
+    }
+
+    SpawnCount CalculateSpawnCounts(int total, SpawnRatio ratio)
+    {
+        int weak = Mathf.RoundToInt(total * ratio.weak);
+        int normal = Mathf.RoundToInt(total * ratio.normal);
+        int strong = Mathf.RoundToInt(total * ratio.strong);
+
+        // 오차 보정
+        int diff = total - (weak + normal + strong);
+        weak += diff;
+
+        return new SpawnCount
+        {
+            weak = weak,
+            normal = normal,
+            strong = strong
+        };
     }
 }

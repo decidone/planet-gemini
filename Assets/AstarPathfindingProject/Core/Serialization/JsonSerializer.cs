@@ -127,9 +127,12 @@ namespace Pathfinding.Serialization {
 			}
 
 			if (!string.IsNullOrEmpty(guid)) {
-				UnityReferenceHelper[] helpers = UnityEngine.Object.FindObjectsOfType(typeof(UnityReferenceHelper)) as UnityReferenceHelper[];
+                UnityReferenceHelper[] helpers =
+                    UnityEngine.Object.FindObjectsByType<UnityReferenceHelper>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None);
 
-				for (int i = 0; i < helpers.Length; i++) {
+                for (int i = 0; i < helpers.Length; i++) {
 					if (helpers[i].GetGUID() == guid) {
 						if (type == typeof(GameObject)) {
 							return helpers[i].gameObject;
