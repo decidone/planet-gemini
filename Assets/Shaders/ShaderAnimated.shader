@@ -30,7 +30,7 @@ Shader "Sprites/ShaderAnimated"
         Lighting Off
         ZWrite Off
         Blend One OneMinusSrcAlpha
-		ColorMask RGB
+        ColorMask RGB
         
         Pass
         {
@@ -89,6 +89,7 @@ Shader "Sprites/ShaderAnimated"
                 UNITY_SETUP_INSTANCE_ID(IN);
                 
                 float frameRate = UNITY_ACCESS_INSTANCED_PROP(Props, _FrameRate);
+                
                 float2 uv = IN.texcoord;
                 
                 if (frameRate > 0)
@@ -100,7 +101,8 @@ Shader "Sprites/ShaderAnimated"
                     float timeOffset = UNITY_ACCESS_INSTANCED_PROP(Props, _TimeOffset);
                     
                     float time = _Time.y + timeOffset;
-                    float frame = floor(fmod(time * frameRate, totalFrames));
+                    float frame = floor(time * frameRate);
+                    frame = fmod(frame, totalFrames);
                     
                     float col = fmod(frame, frameColumns);
                     float row = floor(frame / frameColumns);

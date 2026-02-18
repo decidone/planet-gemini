@@ -4,23 +4,26 @@ using UnityEngine;
 
 public class RepairEffectFunc : MonoBehaviour
 {
-    SpriteRenderer sprite;
-    Animator animator;
+    ShaderAnimController animController;
 
     void Start()
     {
-        sprite = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        if (TryGetComponent(out ShaderAnimController anim))
+        {
+            animController = anim;
+        }
     }
 
     public void EffectStart()
     {
-        sprite.enabled = true;
-        animator.Play("EffectStart", -1, 0);
+        if (animController != null)
+        {
+            animController.PlayOnce();
+        }
     }
 
-    public void EffectEnd()
-    {
-        sprite.enabled = false;
-    }
+    //public void EffectEnd()
+    //{
+    //    sprite.enabled = false;
+    //}
 }

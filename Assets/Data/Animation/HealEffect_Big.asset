@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f351aff55d7a08488b58d85f245e062, type: 3}
+  m_Name: HealEffect_Big
+  m_EditorClassIdentifier: 
+  frames:
+  - {fileID: 1744635011, guid: d4d48563c36e3da46b958200724bd2b9, type: 3}
+  - {fileID: -1613286858, guid: d4d48563c36e3da46b958200724bd2b9, type: 3}
+  - {fileID: -609052158, guid: d4d48563c36e3da46b958200724bd2b9, type: 3}
+  - {fileID: 510458750, guid: d4d48563c36e3da46b958200724bd2b9, type: 3}
+  - {fileID: 176842187, guid: d4d48563c36e3da46b958200724bd2b9, type: 3}
+  defaultFrameRate: 8
+  sync: 0
+  atlas: {fileID: 2800000, guid: d4d48563c36e3da46b958200724bd2b9, type: 3}
+  frameWidth: 44
+  frameHeight: 48
+  startFrameX: 0
+  startFrameY: 0
+  totalFrames: 5
+  columns: 5
