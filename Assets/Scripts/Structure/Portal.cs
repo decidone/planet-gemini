@@ -44,8 +44,6 @@ public class Portal : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.PortalProductionSet();
-        sInvenManager.progressBar.gameObject.SetActive(false);
-        sInvenManager.energyBar.gameObject.SetActive(false);
     }
 
     public override void CloseUI()

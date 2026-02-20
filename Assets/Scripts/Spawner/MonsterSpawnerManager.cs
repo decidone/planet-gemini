@@ -206,12 +206,14 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             foreach (MonsterSpawner spawner in data.Value)
             {
-                if (spawner.isInHostMap == hostMap && spawner.isReachedPortal)
+                if (spawner.isInHostMap == hostMap)
                 {
                     reachedPortalspawners.Add(spawner);
                 }
             }
         }
+
+        Debug.Log("reachedPortalspawners : " + reachedPortalspawners.Count);
 
         aggroSpawner = reachedPortalspawners
             .OrderBy(s => s.spawnerLevel)

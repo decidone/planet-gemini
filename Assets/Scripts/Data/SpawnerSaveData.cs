@@ -30,7 +30,5 @@ public class SpawnerSaveData
 
     public float detectionRange;// 포탈 감지 범위
     public int detectionCount;  // 포탈 인식 카운트
-    public int waveCount;       // 웨이브 발생 횟수 // 이제 안써서 제거 해야함
     public int ragePhase;       // 페이즈 카운트
-    public int waveLevel;       // 이제 안써서 제거 해야함
 }
