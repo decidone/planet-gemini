@@ -25,8 +25,10 @@ public class BasicUIBtns : MonoBehaviour
     public RectTransform uiPanel;
     [SerializeField]
     GameObject timeGroup;
+    Vector3 timeGroupDefaultPos;
     [SerializeField]
     GameObject dDayGroup;
+    Vector3 dDayGroupDefaultPos;
     [SerializeField]
     Button[] timeBtns;  // 0 : Up, 1 : Down
     private int currentStage = 0; // 현재 단계 (0~2)
@@ -45,13 +47,17 @@ public class BasicUIBtns : MonoBehaviour
     Text rotateText;
     float timePosY;
 
-    public bool test;
+    public bool testOff;
+    public bool testOn;
 
     #region Singleton
     public static BasicUIBtns instance;
 
     private void Awake()
     {
+        timeGroupDefaultPos = timeGroup.GetComponent<RectTransform>().localPosition;
+        dDayGroupDefaultPos = dDayGroup.GetComponent<RectTransform>().localPosition;
+
         if (instance != null)
         {
             Destroy(gameObject);
@@ -73,7 +79,7 @@ public class BasicUIBtns : MonoBehaviour
         if (!MainGameSetting.instance.isBloodMoon)
         {
             positions = new float[] { timePosY, timePosY - 100f };
-            timeGroup.GetComponent<RectTransform>().localPosition = dDayGroup.GetComponent<RectTransform>().localPosition;
+            timeGroup.GetComponent<RectTransform>().localPosition = dDayGroupDefaultPos;
             dDayGroup.SetActive(false);
         }
         else
@@ -88,10 +94,16 @@ public class BasicUIBtns : MonoBehaviour
 
     private void Update()
     {
-        if (test)
+        if (testOff)
         {
-            test = false;
+            testOff = false;
             BloodMoonUIOff();
+        }
+
+        if (testOn)
+        {
+            testOn = false;
+            BloodMoonUIOn();
         }
     }
 
@@ -252,11 +264,19 @@ public class BasicUIBtns : MonoBehaviour
             rotateText.text = "Press ('" + rotateKey + "') to rotate.";
     }
 
+    public void BloodMoonUIOn()
+    {
+        positions = new float[] { timePosY, timePosY - 100f, timePosY - 200f };
+        timeGroup.GetComponent<RectTransform>().localPosition = timeGroupDefaultPos;
+        dDayGroup.SetActive(true);
+        ChangeStage(1);
+    }
+
     public void BloodMoonUIOff()
     {
-        ChangeStage(-1);
         positions = new float[] { timePosY, timePosY - 100f };
-        timeGroup.GetComponent<RectTransform>().localPosition = dDayGroup.GetComponent<RectTransform>().localPosition;
+        timeGroup.GetComponent<RectTransform>().localPosition = dDayGroupDefaultPos;
         dDayGroup.SetActive(false);
+        ChangeStage(-1);
     }
 }

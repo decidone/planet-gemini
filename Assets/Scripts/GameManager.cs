@@ -123,9 +123,9 @@ public class GameManager : NetworkBehaviour
     bool clickToNextTime;
 
     public bool bloodMoon;
+    public bool bloodMoonEventState;
+    int energyOverLimitDay;
 
-    [SerializeField]
-    bool violentDayCheck;
     public bool violentDay;
     [SerializeField]
     bool forcedOperation;
@@ -188,10 +188,6 @@ public class GameManager : NetworkBehaviour
     public float clientMapEnergyUseAmount;
 
     MonsterSpawnerManager monsterSpawnerManager;
-
-    [SerializeField]
-    int consecutiveWaveCount;   // 연속으로 발생한 웨이브 수
-    int waveMaxCount = 3;       // 연속 최대 수
 
     public Image saveImg;
 
@@ -404,7 +400,7 @@ public class GameManager : NetworkBehaviour
                 isDay = true;
                 SoundManager.instance.PlayBgmMapCheck();
 
-                if (bloodMoon && violentDayCheck && violentDay)
+                if (bloodMoon && violentDay)
                 {
                     timeImg.color = new Color32(255, 50, 50, 255);
                     if (IsServer)
@@ -423,7 +419,7 @@ public class GameManager : NetworkBehaviour
                 day++;
                 dayText.text = "Day : " + day;
 
-                if (violentDayCheck && IsServer)
+                if (violentDay && IsServer)
                 {
                     monsterSpawnerManager.SpawnersDetectionRangeReduction();
                 }
@@ -434,14 +430,11 @@ public class GameManager : NetworkBehaviour
                     if (IsServer)
                     {
                         monsterSpawnerManager.WavePointOff();
-                        if (violentDay)
-                        {
-                            OnWaveFinished(waveDamage);
-                            waveDamage = 0;
-                        }
+                        OnWaveFinished(waveDamage);
+                        waveDamage = 0;
                     }
+
                     violentDay = false;
-                    violentDayCheck = false;
                     timeImg.color = new Color32(255, 255, 255, 255);
                 }
 
@@ -470,80 +463,81 @@ public class GameManager : NetworkBehaviour
     [ServerRpc]
     void ViolentDaySyncTimeServerRpc()
     {
-        bool violentDaySync = false;    // 이번 블러드문을 체크 했는지
-        //bool violentDayOnCheck = false; // 이번에 블러드문이 활성화 되는 날인지 체크
-        if (!violentDayCheck && day % violentCycle == 0)
+        float energyUseFullAmount;
+        if (!bloodMoonEventState)
         {
-            if (consecutiveWaveCount < waveMaxCount)
+            energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
+            if (energyUseFullAmount > waveEnergyOverLimit)
             {
-                float energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
+                BloodMoonEventStartClientRpc();
+                bloodMoonEventState = true;
+            }
+        }
+        else if (!violentDay && bloodMoonEventState && (day >= energyOverLimitDay && (day - energyOverLimitDay) % violentCycle == 0))
+        {
+            if (UnityEngine.Random.Range(0, 100) >= 10)
+            {
+                energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
 
-                if (energyUseFullAmount > waveEnergyOverLimit)
+                float hostPercent = hostMapEnergyUseAmount / energyUseFullAmount;
+                float clientPercent = clientMapEnergyUseAmount / energyUseFullAmount;
+
+                if (LobbySaver.instance.currentLobby?.MemberCount < 2)
                 {
-                    float hostPercent = hostMapEnergyUseAmount / energyUseFullAmount;
-                    float clientPercent = clientMapEnergyUseAmount / energyUseFullAmount;
-
-                    if (LobbySaver.instance.currentLobby?.MemberCount < 2)
+                    wavePlanet = (hostPercent > clientPercent);
+                }
+                else
+                {
+                    if (hostPercent >= 0.70f)
                     {
-                        wavePlanet = (hostPercent > clientPercent);
+                        wavePlanet = true;   // host 행성
+                    }
+                    else if (clientPercent >= 0.70f)
+                    {
+                        wavePlanet = false;  // client 행성
                     }
                     else
                     {
-                        if (hostPercent >= 0.70f)
-                        {
-                            wavePlanet = true;   // host 행성
-                        }
-                        else if (clientPercent >= 0.70f)
-                        {
-                            wavePlanet = false;  // client 행성
-                        }
-                        else
-                        {
-                            // 랜덤 값
-                            float rand = UnityEngine.Random.value; // 0~1
+                        // 랜덤 값
+                        float rand = UnityEngine.Random.value; // 0~1
 
-                            // 비율에 따라 선택
-                            wavePlanet = rand <= hostPercent;
-                        }
-                    }
-
-                    bool canWave = true;
-                    bool spawnerExists = monsterSpawnerManager.HasAnyMonsterSpawner(); // 발생 행성에 스포너가 있는지
-                    bool canSpawnOnWavePlanet = monsterSpawnerManager.HasMonsterSpawnerOnMap(wavePlanet); // 발생 행성에 스포너가 있는지
-
-                    if (!spawnerExists) // 둘다 없는 경우
-                        canWave = false;
-
-                    if (!canSpawnOnWavePlanet) // 발생 행성에 스포너가 없는 경우
-                        wavePlanet = !wavePlanet;
-
-                    if (canWave)
-                    {
-                        violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
+                        // 비율에 따라 선택
+                        wavePlanet = rand <= hostPercent;
                     }
                 }
-                else if (day != 0)
+
+                bool canWave = true;
+                bool spawnerExists = monsterSpawnerManager.HasAnyMonsterSpawner(); // 발생 행성에 스포너가 있는지
+                bool canSpawnOnWavePlanet = monsterSpawnerManager.HasMonsterSpawnerOnMap(wavePlanet); // 발생 행성에 스포너가 있는지
+
+                if (!spawnerExists) // 둘다 없는 경우
+                    canWave = false;
+
+                if (!canSpawnOnWavePlanet) // 발생 행성에 스포너가 없는 경우
+                    wavePlanet = !wavePlanet;
+
+                if (canWave)
                 {
-                    NoWaveDetectedTextClientRpc();
+                    violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
                 }
-            }
-            else if (day != 0)
-            {
-                NoWaveDetectedTextClientRpc();
-            }
-            violentDaySync = true;
-
-            if (violentDay)
-            {
-                consecutiveWaveCount++;
             }
             else
-                consecutiveWaveCount = 0;
+                NoWaveDetectedTextClientRpc();
         }
 
-        int dday = CalculateDday(day, violentCycle);
+        if (bloodMoonEventState)
+        {
+            int dday = CalculateDday(day - energyOverLimitDay, violentCycle);
+            ViolentDayOnClientRpc(violentDay, dday);
+        }
+    }
 
-        ViolentDayOnClientRpc(violentDaySync, violentDay, dday);
+    [ClientRpc]
+    void BloodMoonEventStartClientRpc()
+    {
+        energyOverLimitDay = day;
+        BasicUIBtns.instance.BloodMoonUIOn();
+        WarningWindow.instance.WarningTextSet("They have noticed you. The Blood Moon is coming.");
     }
 
     [ClientRpc]
@@ -553,9 +547,9 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void ViolentDayOnClientRpc(bool violentDaySync, bool violentDayOnCheck, int dday)
+    void ViolentDayOnClientRpc(bool violentDayOnCheck, int dday)
     {
-        violentDayCheck = violentDaySync;
+        violentDay = violentDayOnCheck;
         bloodMoonDDayText.text = "D - " + ((violentDayOnCheck && dday == violentCycle) ? "Day" : dday);
     }
 
@@ -1279,11 +1273,6 @@ public class GameManager : NetworkBehaviour
                 SetMapInven(false);
                 map = clientMap;
             }
-
-            //if (loadTankOn && isHost)
-            //{
-            //    player.GetComponent<PlayerController>().LoadDataSetTankServerRpc(loadTankData.Item1, loadTankData.Item2);
-            //}
         }
 
         SetPlayerLocationServerRpc(isPlayerInHostMap, isPlayerInMarket, IsServer);
@@ -1303,9 +1292,6 @@ public class GameManager : NetworkBehaviour
             hostPlayerSpawnPos = spawnPos;
         else
             clientPlayerSpawnPos = spawnPos;
-
-        //WavePoint.instance.SpawnPos(isHostPos, spawnPos);
-        //player.transform.position = playerSpawnPos;
     }
 
     public Vector3 GetPlayerPos(bool isHostPlayer)
@@ -1549,7 +1535,6 @@ public class GameManager : NetworkBehaviour
         inGameData.dayIndex = dayIndex;
         inGameData.wavePlanet = wavePlanet;
         inGameData.violentDay = violentDay;
-        inGameData.violentDayCheck = violentDayCheck;
 
         inGameData.finance = finance.GetFinance();
         inGameData.scrap = scrap.GetScrap();
@@ -1557,8 +1542,9 @@ public class GameManager : NetworkBehaviour
 
         inGameData.hostMapEnergyUseAmount = hostMapEnergyUseAmount;
         inGameData.clientMapEnergyUseAmount = clientMapEnergyUseAmount;
-        inGameData.consecutiveWaveCount = consecutiveWaveCount;
 
+        inGameData.bloodMoonEventState = bloodMoonEventState;
+        inGameData.energyOverLimitDay = energyOverLimitDay;
         inGameData.waveIndex = waveIndex;
         inGameData.waveDamage = waveDamage;
         inGameData.prevWaveDamage = prevWaveDamage;
@@ -1575,7 +1561,6 @@ public class GameManager : NetworkBehaviour
         dayTimer = data.dayTimer;
         dayIndex = data.dayIndex;
         SoundManager.instance.GameSceneLoad();
-        violentDayCheck = data.violentDayCheck;
         violentDay = data.violentDay;
         wavePlanet = data.wavePlanet;
         timeImg.sprite = timeImgSet[dayIndex];
@@ -1599,8 +1584,9 @@ public class GameManager : NetworkBehaviour
 
         hostMapEnergyUseAmount = data.hostMapEnergyUseAmount;
         clientMapEnergyUseAmount = data.clientMapEnergyUseAmount;
-        consecutiveWaveCount = data.consecutiveWaveCount;
 
+        bloodMoonEventState = data.bloodMoonEventState;
+        energyOverLimitDay = data.energyOverLimitDay;
         waveIndex = data.waveIndex;
         waveDamage = data.waveDamage;
         prevWaveDamage = data.prevWaveDamage;
@@ -1612,19 +1598,18 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SyncTimeServerRpc()
     {
-        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDayCheck, violentDay);
+        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDay);
         ViolentDaySyncTimeServerRpc();
     }
 
     [ClientRpc]
     public void SyncTimeClientRpc(int serverDay, bool serverIsDay, float serverDayTimer,
-        int serverDayIndex, bool serverViolentDayCheck, bool serverViolentDay)
+        int serverDayIndex, bool serverViolentDay)
     {
         day = serverDay;
         isDay = serverIsDay;
         dayTimer = serverDayTimer;
         dayIndex = serverDayIndex;
-        violentDayCheck = serverViolentDayCheck;
         violentDay = serverViolentDay;
 
         timeImg.sprite = timeImgSet[dayIndex];
