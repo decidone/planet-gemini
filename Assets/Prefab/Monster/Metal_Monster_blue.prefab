@@ -320,7 +320,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
+  - {fileID: 2100000, guid: 92589ae443e8ff2488fd57d2f7a41977, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -470,8 +470,6 @@ MonoBehaviour:
   stopTrace: 0
   isDebuffed: 0
   targetOn: 0
-  justTraceTimer: 0
-  justTraceInterval: 10
   bestTarget: {fileID: 0}
 --- !u!70 &5456661407106365054
 CapsuleCollider2D:

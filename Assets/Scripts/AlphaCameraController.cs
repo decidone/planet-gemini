@@ -9,7 +9,6 @@ public class AlphaCameraController : MonoBehaviour
     public Camera alphaRenderCamera;
     public Transform mask;
     [SerializeField] Vector3 offset;
-
     #region Singleton
     public static AlphaCameraController instance;
 
@@ -24,6 +23,26 @@ public class AlphaCameraController : MonoBehaviour
         instance = this;
     }
     #endregion
+
+    private void Start()
+    {
+        // 몬스터가 시야 밖에서 안 보이도록 하는데 사용하는 변수
+        Shader.SetGlobalTexture("_FogTex", alphaRenderCamera.targetTexture);
+    }
+
+    private void Update()
+    {
+        float height = alphaRenderCamera.orthographicSize * 2;
+        float width = height * alphaRenderCamera.aspect;
+
+        // 몬스터가 시야 밖에서 안 보이도록 하는데 사용하는 변수
+        Shader.SetGlobalVector("_FogCameraParams", new Vector4(
+            alphaRenderCamera.transform.position.x,
+            alphaRenderCamera.transform.position.y,
+            width,
+            height
+        ));
+    }
 
     public void SetTargetCamera(Camera cam)
     {
