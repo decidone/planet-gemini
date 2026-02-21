@@ -117,6 +117,17 @@ public class BeltCtrl : LogisticsCtrl
     //    animator.Play(info.fullPathHash, 0, info.normalizedTime);
     //}
 
+    void SetBeltAnim()
+    {
+        animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
+        switch (level)
+        {
+            case 0: animController.SetSpeedMultiplier(1f); break;
+            case 1: animController.SetSpeedMultiplier(1.5f); break;
+            case 2: animController.SetSpeedMultiplier(2f); break;
+        }
+    }
+
     public override void NearStrBuilt()
     {
         // 건물을 지었을 때나 근처에 새로운 건물이 지어졌을 때 동작
@@ -134,7 +145,7 @@ public class BeltCtrl : LogisticsCtrl
                 //animator.SetFloat("ModelNum", modelMotion);
                 //animator.SetFloat("Level", level);
 
-                animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
+                SetBeltAnim();
             }
         }
         else// 이 라인은 딜레이를 주고 실행할 때는 뺌
@@ -165,7 +176,7 @@ public class BeltCtrl : LogisticsCtrl
             //animator.SetFloat("ModelNum", modelMotion);
             //animator.SetFloat("Level", level);
 
-            animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
+            SetBeltAnim();
         }
     }
 
@@ -179,7 +190,7 @@ public class BeltCtrl : LogisticsCtrl
         //animator.SetFloat("ModelNum", modelMotion);
         //animator.SetFloat("Level", level);
 
-        animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
+        SetBeltAnim();
         //AnimSyncFunc();
     }
 
@@ -1006,7 +1017,7 @@ public class BeltCtrl : LogisticsCtrl
         //if(animator)
         //    animator.SetFloat("ModelNum", modelMotion);
 
-        animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
+        SetBeltAnim();
     }
 
     public BeltSaveData BeltSaveData()

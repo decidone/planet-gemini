@@ -18,8 +18,11 @@ public class InfoUI : MonoBehaviour
     [SerializeField] Button chopTreeBtn;
 
     [Space]
-    public Material outlintMat;
-    public Material noOutlineMat;
+    public Material mat;
+    public Material outlineMat;
+    public Material animOutlineMat;
+    public Material monsterOutlineMat;
+    public Material focusedMat;
 
     [Space]
     public PlayerStatus player = null;
@@ -101,7 +104,7 @@ public class InfoUI : MonoBehaviour
         SetDefault();
         player = _player;
         SpriteRenderer spriteRenderer = player.gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.material = outlintMat;
+        spriteRenderer.material = outlineMat;
         //nameText.text = player.name;
         SetNameText(player.name);
         SetPlayerHp();
@@ -121,7 +124,7 @@ public class InfoUI : MonoBehaviour
         SetDefault();
         obj = _obj;
         SpriteRenderer spriteRenderer = obj.gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.material = outlintMat;
+        spriteRenderer.material = outlineMat;
         onlyNameText.text = obj.name;
         chopTreeBtn.gameObject.SetActive(true);
         chopTreeBtn.onClick.AddListener(() => ChopTreeBtnFucn());
@@ -139,7 +142,15 @@ public class InfoUI : MonoBehaviour
         SetDefault();
         str = _str;
         SpriteRenderer spriteRenderer = str.gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.material = outlintMat;
+        focusedMat = spriteRenderer.material;
+        if (spriteRenderer.sharedMaterial.shader.name == "Sprites/ShaderAnimated")
+        {
+            spriteRenderer.material = animOutlineMat;
+        }
+        else
+        {
+            spriteRenderer.material = outlineMat;
+        }
         //nameText.text = InGameNameDataGet.instance.ReturnName(str.level + 1, str.buildName);
         SetNameText(InGameNameDataGet.instance.ReturnName(str.level + 1, str.buildName));
         SetStructureHp();
@@ -220,7 +231,7 @@ public class InfoUI : MonoBehaviour
         unit = _unit;
         units = new List<UnitAi> { unit }; //업글 시 리스트로 넘기기 위해
         SpriteRenderer spriteRenderer = unit.gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.material = outlintMat;
+        spriteRenderer.material = outlineMat;
         //nameText.text = unit.name;
         SetNameText(unit.name);
         SetUnitHp();
@@ -445,7 +456,7 @@ public class InfoUI : MonoBehaviour
 
         spawner = _spawner;
         SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.material = outlintMat;
+        spriteRenderer.material = outlineMat;
         //nameText.text = "Spawner Level " + spawner.spawnerLevel;
         SetNameText("Spawner Level " + spawner.spawnerLevel);
         SetSpawnerHp();
@@ -465,7 +476,15 @@ public class InfoUI : MonoBehaviour
         SetDefault();
         monster = _monster;
         SpriteRenderer spriteRenderer = monster.gameObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.material = outlintMat;
+        focusedMat = spriteRenderer.material;
+        if (spriteRenderer.sharedMaterial.shader.name == "Sprites/MonsterFogVisible")
+        {
+            spriteRenderer.material = monsterOutlineMat;
+        }
+        else
+        {
+            spriteRenderer.material = outlineMat;
+        }
         //nameText.text = monster.name;
         SetNameText(monster.name);
         SetMonsterHp();
@@ -487,7 +506,7 @@ public class InfoUI : MonoBehaviour
         if (player != null)
         {
             SpriteRenderer spriteRenderer = player.gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.material = noOutlineMat;
+            spriteRenderer.material = mat;
 
             player.onHpChangedCallback -= SetPlayerHp;
             player = null;
@@ -495,14 +514,15 @@ public class InfoUI : MonoBehaviour
         else if (obj != null)
         {
             SpriteRenderer spriteRenderer = obj.gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.material = noOutlineMat;
+            spriteRenderer.material = mat;
 
             obj = null;
         }
         else if (str != null)
         {
             SpriteRenderer spriteRenderer = str.gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.material = noOutlineMat;
+            spriteRenderer.material = focusedMat;
+            focusedMat = null;
 
             str.onHpChangedCallback -= SetStructureHp;
             str = null;
@@ -510,7 +530,7 @@ public class InfoUI : MonoBehaviour
         else if (unit != null)
         {
             SpriteRenderer spriteRenderer = unit.gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.material = noOutlineMat;
+            spriteRenderer.material = mat;
 
             unit.onHpChangedCallback -= SetUnitHp;
             unit = null;
@@ -518,7 +538,7 @@ public class InfoUI : MonoBehaviour
         else if (spawner != null)
         {
             SpriteRenderer spriteRenderer = spawner.gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.material = noOutlineMat;
+            spriteRenderer.material = mat;
 
             spawner.onHpChangedCallback -= SetSpawnerHp;
             spawner = null;
@@ -526,7 +546,8 @@ public class InfoUI : MonoBehaviour
         else if (monster != null)
         {
             SpriteRenderer spriteRenderer = monster.gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.material = noOutlineMat;
+            spriteRenderer.material = focusedMat;
+            focusedMat = null;
 
             monster.onHpChangedCallback -= SetMonsterHp;
             monster = null;

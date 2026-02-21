@@ -2552,8 +2552,13 @@ MonoBehaviour:
   dicBtn: {fileID: 8578522857337425002}
   removeBtn: {fileID: 779619251178526129}
   chopTreeBtn: {fileID: 1641866190894590944}
-  outlintMat: {fileID: 2100000, guid: 2eaf895611ce8f6438c10f04172f98a2, type: 2}
-  noOutlineMat: {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
+  mat: {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
+  outlineMat: {fileID: 2100000, guid: 2eaf895611ce8f6438c10f04172f98a2, type: 2}
+  animMat: {fileID: 2100000, guid: eb288aea696c4654bb9cdf20739a2032, type: 2}
+  animOutlineMat: {fileID: 2100000, guid: 536696b53af115a4ba3491209351c175, type: 2}
+  monsterMat: {fileID: 2100000, guid: 92589ae443e8ff2488fd57d2f7a41977, type: 2}
+  monsterOutlineMat: {fileID: 2100000, guid: 94dcfc2017149874ba79390ffa2c5ec8, type: 2}
+  focusedMat: {fileID: 0}
   player: {fileID: 0}
   obj: {fileID: 0}
   str: {fileID: 0}
@@ -9313,7 +9318,8 @@ MonoBehaviour:
   unitAmountText: {fileID: 6258639520136984974}
   rotatePanel: {fileID: 7674379991078404935}
   rotateText: {fileID: 363608429312690661}
-  test: 0
+  testOff: 0
+  testOn: 0
 --- !u!1 &142728371200448363
 GameObject:
   m_ObjectHideFlags: 0

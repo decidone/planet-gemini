@@ -10,8 +10,11 @@ public class ProgressBar : MonoBehaviour
 
     public void SetMaxProgress(float progress)
     {
-        slider.maxValue = progress;
-        slider.value = 0;
+        if (slider.maxValue != progress)
+        {
+            slider.maxValue = progress;
+            slider.value = 0;
+        }
     }
 
     public void SetProgress(float progress)

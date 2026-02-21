@@ -123,6 +123,7 @@ public class EnergyGroup
             group.connectors[i].group = this;
         }
 
+        EnergyCheck();
         group.RemoveGroup();
     }
 
@@ -169,6 +170,7 @@ public class EnergyGroup
             EnergyGroup splitGroup = new EnergyGroup(groupManager, splitConnectors, isHostMapEnergyGroup);
             splitGroup.isHostMapEnergyGroup = isHostMapEnergyGroup;
             splitGroup.ConnectionCheck(code);
+            splitGroup.EnergyCheck();
             splitConnectors.Clear();
         }
 

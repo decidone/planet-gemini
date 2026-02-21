@@ -189,10 +189,13 @@ public abstract class Production : Structure
         else
             effiCooldown = cooldown;
 
-        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
-        float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
-        sInvenManager.progressBar.SetMaxProgress(productionTime);
-        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
+        if (isUIOpened)
+        {
+            float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+            float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+            sInvenManager.progressBar.SetMaxProgress(productionTime);
+            sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

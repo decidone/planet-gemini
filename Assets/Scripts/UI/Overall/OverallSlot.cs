@@ -114,7 +114,14 @@ public class OverallSlot : MonoBehaviour
     {
         if (prod > prodCheck)
         {
-            prodPerMinText.text = SplitNumber(prod - prodCheck) + "/m";
+            if (prodCheck == 0)
+            {
+                prodPerMinText.text = "0/m";
+            }
+            else
+            {
+                prodPerMinText.text = SplitNumber(prod - prodCheck) + "/m";
+            }
             prodCheck = prod;
         }
         else

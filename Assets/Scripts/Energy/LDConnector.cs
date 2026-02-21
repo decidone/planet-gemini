@@ -67,13 +67,20 @@ public class LDConnector : Structure
 
         if (connector != null && connector.group != null)
         {
-            if (connector.group.efficiency > 0)
+            if (removeState)
             {
-                OperateStateSet(true);
+                connector.RemoveFromGroup();
             }
             else
             {
-                OperateStateSet(false);
+                if (connector.group.efficiency > 0)
+                {
+                    OperateStateSet(true);
+                }
+                else
+                {
+                    OperateStateSet(false);
+                }
             }
         }
     }

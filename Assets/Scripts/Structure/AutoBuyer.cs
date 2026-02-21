@@ -427,40 +427,6 @@ public class AutoBuyer : Production
         }
     }
 
-    public override Dictionary<Item, int> PopUpItemCheck()
-    {
-        Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
-
-        int itemsCount = 0;
-        //다른 슬롯의 같은 아이템도 개수 추가하도록
-        for (int i = 0; i < inventory.space; i++)
-        {
-            var invenItem = inventory.SlotCheck(i);
-
-            if (invenItem.item != null && invenItem.amount > 0)
-            {
-                if (!returnDic.ContainsKey(invenItem.item))
-                {
-                    returnDic.Add(invenItem.item, invenItem.amount);
-                }
-                else
-                {
-                    returnDic[invenItem.item] += invenItem.amount;
-                }
-                itemsCount++;
-                if (itemsCount > 5)
-                    break;
-            }
-        }
-
-        if (returnDic.Count > 0)
-        {
-            return returnDic;
-        }
-        else
-            return null;
-    }
-
     public void TakeTransportItem(TransportUnit takeUnit, Dictionary<Item, int> _itemDic)
     {
         if (_itemDic != null && _itemDic.Count > 0)

@@ -229,6 +229,12 @@ public class SteamGenerator : FluidFactoryCtrl
                 }
             }
         }
+
+        if (connector != null && connector.group != null)
+        {
+            if (removeState)
+                connector.RemoveFromGroup();
+        }
     }
 
     public override void CheckSlotState(int slotindex)
