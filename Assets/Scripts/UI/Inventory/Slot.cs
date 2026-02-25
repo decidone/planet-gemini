@@ -92,16 +92,16 @@ public class Slot : MonoBehaviour
         icon.enabled = false;
         amountText.text = null;
         amountText.enabled = false;
-        reqAmountText.text = null;
-        reqAmountText.enabled = false;
         onSlotChangedCallback?.Invoke();
     }
 
     public void ResetOption()
     {
         inputSlot = false;
-        outputSlot = false;
         inputItem.Clear();
+        outputSlot = false;
+        reqAmountText.text = null;
+        reqAmountText.enabled = false;
     }
 
     public void SetInputItem(Item _item)

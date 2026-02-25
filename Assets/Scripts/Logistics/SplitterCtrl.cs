@@ -8,6 +8,9 @@ using System.Linq;
 // UTF-8 설정
 public class SplitterCtrl : LogisticsCtrl
 {
+    public delegate void OnFilterChanged(Sprite sprite);
+    public OnFilterChanged onFilterChangedCallback;
+
     bool canSend = false;
     int filterIndex = 0;
     LogisticsClickEvent clickEvent;
@@ -95,7 +98,8 @@ public class SplitterCtrl : LogisticsCtrl
                         CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
                 }
             }
-            setModel.sprite = modelNum[dirNum + (level * 4)];
+            SetSpriteModel();
+            //setModel.sprite = modelNum[dirNum + (level * 4)];
         }
         else
         {
@@ -129,7 +133,25 @@ public class SplitterCtrl : LogisticsCtrl
                     CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
             }
         }
-        setModel.sprite = modelNum[dirNum + (level * 4)];
+        SetSpriteModel();
+        //setModel.sprite = modelNum[dirNum + (level * 4)];
+    }
+
+    void SetSpriteModel()
+    {
+        int outDir = 0;
+        if (arrFilter[0].isFilterOn) outDir |= 1;
+        if (arrFilter[1].isFilterOn) outDir |= 2;
+        if (arrFilter[2].isFilterOn) outDir |= 4;
+
+        int index = dirNum + (outDir * 4) + (level * 32);
+        setModel.sprite = modelNum[index];
+        onFilterChangedCallback?.Invoke(modelNum[index]);
+    }
+
+    public Sprite GetSpriteModel()
+    {
+        return setModel.sprite;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -182,6 +204,7 @@ public class SplitterCtrl : LogisticsCtrl
     public void GameStartFillterSet(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
     {
         arrFilter[num].isFilterOn = filterOn;
+        SetSpriteModel();
         arrFilter[num].isReverseFilterOn = reverseFilterOn;
         if (itemIndex != -1)
         {
@@ -206,6 +229,7 @@ public class SplitterCtrl : LogisticsCtrl
     public void FilterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
     {
         arrFilter[num].isFilterOn = filterOn;
+        SetSpriteModel();
         arrFilter[num].isReverseFilterOn = reverseFilterOn;
         if (itemIndex != -1)
         {
@@ -241,6 +265,7 @@ public class SplitterCtrl : LogisticsCtrl
     public void SlotResetClientRpc(int num)
     {
         arrFilter[num].isFilterOn = false;
+        SetSpriteModel();
         arrFilter[num].isReverseFilterOn = false;
         arrFilter[num].selItem = null;
         UIReset();

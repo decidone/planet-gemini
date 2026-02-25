@@ -62,7 +62,7 @@ public class MainPanelsManager : MonoBehaviour
     {
         if (seedInputField.text == "")
         {
-            SetRandomSeed();
+            gameSetting.RandomSeedValue(SetRandomSeed());
         }
         else
         {
@@ -74,7 +74,7 @@ public class MainPanelsManager : MonoBehaviour
         gameSetting.MapSizeSet(mapSizeDropdown.value);
         gameSetting.DifficultylevelSet(difficultyLevelDropdown.value);
         gameSetting.BloodMoonState(bloodMoonToggle.isOn);
-        gameSetting.RandomSeedValue(seed);
+        //gameSetting.RandomSeedValue(seed);
 
         gameSetting.NewGameState(true);
         NetworkManager.Singleton.StartHost();

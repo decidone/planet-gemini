@@ -81,13 +81,13 @@ public class LogisticsClickEvent : MonoBehaviour
 
             if (splitter.level == 1) // 스마트 스플리터
             {
-                var uiList = inventoryList.LogisticsArr[0].GetComponent<SplitterMenu>().SetMenu(splitter.dirNum);
+                var uiList = inventoryList.LogisticsArr[0].GetComponent<SplitterMenu>().SetMenu(splitter.dirNum, splitter);
                 sFilterManager.GetObjArr(uiList.Item1, uiList.Item2, uiList.Item3, uiList.Item4, true);
                 inventoryList.LogisticsArr[0].gameObject.SetActive(true);
             }
             else if (splitter.level == 0) // 스플리터
             {
-                var uiList = inventoryList.LogisticsArr[1].GetComponent<SplitterMenu>().SetMenu(splitter.dirNum);
+                var uiList = inventoryList.LogisticsArr[1].GetComponent<SplitterMenu>().SetMenu(splitter.dirNum, splitter);
                 sFilterManager.GetObjArr(uiList.Item1, uiList.Item2, uiList.Item3, uiList.Item4, false);
                 inventoryList.LogisticsArr[1].gameObject.SetActive(true);
             }
@@ -121,10 +121,12 @@ public class LogisticsClickEvent : MonoBehaviour
             if (splitter.level == 1) // 스마트 스플리터
             {
                 inventoryList.LogisticsArr[0].gameObject.SetActive(false);
+                splitter.onFilterChangedCallback = null;
             }
             else if (splitter.level == 0) // 스플리터
             {
                 inventoryList.LogisticsArr[1].gameObject.SetActive(false);
+                splitter.onFilterChangedCallback = null;
             }
 
             //inventoryList.LogisticsArr[0].gameObject.SetActive(false);

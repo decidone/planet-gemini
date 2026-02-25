@@ -5,8 +5,6 @@ using UnityEngine.UI;
 public class SplitterMenu : MonoBehaviour
 {
     [SerializeField]
-    Sprite[] splitterSprites;
-    [SerializeField]
     Image Image;
     [SerializeField]
     GameObject[] tags;
@@ -15,9 +13,10 @@ public class SplitterMenu : MonoBehaviour
     public ToggleButton[] fillterOnOffBtns;
     public ToggleButton[] reverseToggle;
 
-    public (Slot[], Button[], ToggleButton[], ToggleButton[]) SetMenu(int dirIndex)
+    public (Slot[], Button[], ToggleButton[], ToggleButton[]) SetMenu(int dirIndex, SplitterCtrl splitter)
     {
-        Image.sprite = splitterSprites[dirIndex];
+        splitter.onFilterChangedCallback += SetUISprite;
+        Image.sprite = splitter.GetSpriteModel();
 
         int disableUIIndex = dirIndex - 1;
         if (disableUIIndex < 0) disableUIIndex = 3;
@@ -52,5 +51,10 @@ public class SplitterMenu : MonoBehaviour
             fillterOnOffBtnArr.ToArray(),
             reverseToggleArr.ToArray()
         );
+    }
+
+    public void SetUISprite(Sprite sprite)
+    {
+        Image.sprite = sprite;
     }
 }
