@@ -711,6 +711,7 @@ MonoBehaviour:
   warningIconCheck: 0
   energyStateCheck: 0
   getAnim: 0
+  animController: {fileID: 0}
   strImg: []
   isAuto: 0
   selectPointSetPos: 0
@@ -728,7 +729,7 @@ MonoBehaviour:
   oreShopMerchListSO: {fileID: 11400000, guid: 007b04b61c782a049978f6bab93c3cb2, type: 2}
   manaStoneShopMerchListSO: {fileID: 11400000, guid: fc42c80d3492f9e4596902c305108183, type: 2}
   maxBuyAmount: 0
-  minBuyAmount: 0
+  buyInterval: 10
 --- !u!114 &5999188213166003495
 MonoBehaviour:
   m_ObjectHideFlags: 0

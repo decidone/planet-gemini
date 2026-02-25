@@ -145,9 +145,9 @@ public class Miner : Production
                             Item item = resource.item;
                             if (item != null)
                             {
-                                if(level + 1 >= resource.level)
+                                if (level + 1 >= resource.level)
                                 {
-                                    if(!mapItems.ContainsKey(item))
+                                    if (!mapItems.ContainsKey(item))
                                         mapItems.Add(item, (1, resource.efficiency, resource.level));
                                     else
                                     {
@@ -162,7 +162,7 @@ public class Miner : Production
                 }
             }
 
-            if(mapItems.Count > 0)
+            if (mapItems.Count > 0)
             {
                 Item highestItem = null;
                 int highestQuantity = 0;
@@ -185,7 +185,7 @@ public class Miner : Production
                     }
                 }
 
-                if(highestItem != null)
+                if (highestItem != null)
                 {
                     SetResource(highestItem, highestLevel, highestEfficiency, highestQuantity);
                 }

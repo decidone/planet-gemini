@@ -20,7 +20,7 @@ public class AutoBuyer : Production
     List<Merchandise> merchList = new List<Merchandise>();
 
     public int maxBuyAmount;    // 목표 구매 수량
-    public int minBuyAmount;    // 아이템 보유 수량이 해당 변수 아래로 내려갈 때 (최대 수량 - 현재 수량)만큼 구매
+    public int buyInterval;    // 아이템 보유 수량이 해당 변수 아래로 내려갈 때 (최대 수량 - 현재 수량)만큼 구매
     List<TransportUnit> getItemUnit = new List<TransportUnit>();
 
     float transportTimer;
@@ -72,10 +72,6 @@ public class AutoBuyer : Production
                         prodTimer = 0;
                     }
                 }
-            }
-            else
-            {
-                prodTimer = 0;
             }
 
             if (IsServer)
@@ -150,7 +146,13 @@ public class AutoBuyer : Production
         {
             buyerManager.SetMinSliderValue(amount);
         }
-        minBuyAmount = amount;
+        buyInterval = amount;
+        cooldown = buyInterval;
+        if (isUIOpened)
+        {
+            sInvenManager.progressBar.SetMaxProgress(cooldown);
+            sInvenManager.SetCooldownText(cooldown);
+        }
         TransportableCheck();
     }
 
@@ -180,7 +182,7 @@ public class AutoBuyer : Production
             }
             else
             {
-                isTransportable = (slot.Item2 < minBuyAmount);
+                isTransportable = (slot.Item2 < maxBuyAmount);
             }
         }
 
@@ -270,7 +272,7 @@ public class AutoBuyer : Production
         if (recipe != _recipe)
         {
             MaxSliderUIValueChanged(0);
-            MinSliderUIValueChanged(0);
+            MinSliderUIValueChanged(10);
         }
 
         recipe = _recipe;
@@ -278,6 +280,8 @@ public class AutoBuyer : Production
         sInvenManager.ResetInvenOption();
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
         sInvenManager.slots[0].outputSlot = true;
+        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        sInvenManager.SetCooldownText(cooldown);
     }
 
     public override void SetOutput(Recipe recipe)
@@ -306,16 +310,22 @@ public class AutoBuyer : Production
     [ServerRpc(RequireOwnership = false)]
     public void ClientBuyerSyncServerRpc()
     {
-        ClientBuyerSyncClientRpc(maxBuyAmount, minBuyAmount);
+        ClientBuyerSyncClientRpc(maxBuyAmount, buyInterval);
     }
 
     [ClientRpc]
-    public void ClientBuyerSyncClientRpc(int max, int min)
+    public void ClientBuyerSyncClientRpc(int max, int interval)
     {
         if (!IsServer)
         {
             maxBuyAmount = max;
-            minBuyAmount = min;
+            buyInterval = interval;
+            cooldown = buyInterval;
+            if (isUIOpened)
+            {
+                sInvenManager.progressBar.SetMaxProgress(cooldown);
+                sInvenManager.SetCooldownText(cooldown);
+            }
         }
     }
 
@@ -327,7 +337,7 @@ public class AutoBuyer : Production
 
         if (invenItem.item != null)
         {
-            if (invenItem.amount < minBuyAmount)
+            if (invenItem.amount < maxBuyAmount)
             {
                 int availableAmount = maxBuyAmount - invenItem.amount;
                 tempInvItemCheckDic.Add(invenItem.item, availableAmount);
@@ -536,7 +546,7 @@ public class AutoBuyer : Production
     {
         StructureSaveData data = base.SaveData();
         data.maxBuyAmount = this.maxBuyAmount;
-        data.minBuyAmount = this.minBuyAmount;
+        data.sendingOption = this.buyInterval;
 
         if (transportUnit != null)
         {

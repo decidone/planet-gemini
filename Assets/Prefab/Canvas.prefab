@@ -2554,9 +2554,7 @@ MonoBehaviour:
   chopTreeBtn: {fileID: 1641866190894590944}
   mat: {fileID: 2100000, guid: 0e079224ba7734d6683a2406f7c4a620, type: 2}
   outlineMat: {fileID: 2100000, guid: 2eaf895611ce8f6438c10f04172f98a2, type: 2}
-  animMat: {fileID: 2100000, guid: eb288aea696c4654bb9cdf20739a2032, type: 2}
   animOutlineMat: {fileID: 2100000, guid: 536696b53af115a4ba3491209351c175, type: 2}
-  monsterMat: {fileID: 2100000, guid: 92589ae443e8ff2488fd57d2f7a41977, type: 2}
   monsterOutlineMat: {fileID: 2100000, guid: 94dcfc2017149874ba79390ffa2c5ec8, type: 2}
   focusedMat: {fileID: 0}
   player: {fileID: 0}
@@ -7073,10 +7071,10 @@ MonoBehaviour:
   m_FillRect: {fileID: 1973549268}
   m_HandleRect: {fileID: 512929731}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 99
+  m_MinValue: 10
+  m_MaxValue: 60
   m_WholeNumbers: 1
-  m_Value: 0
+  m_Value: 10
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -21727,11 +21725,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e49074ed0899c4d91fc5d9cab328c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  splitterSprites:
-  - {fileID: -1122253560, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: 1484085052, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: -1234653658, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   Image: {fileID: 8162841416757909394}
   tags:
   - {fileID: 1095768246763102624}
@@ -27462,11 +27455,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e49074ed0899c4d91fc5d9cab328c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  splitterSprites:
-  - {fileID: 1685821966, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: -190096144, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: 1942038125, guid: 055194f499833f945ae4a47b89baa362, type: 3}
-  - {fileID: 2091919283, guid: 055194f499833f945ae4a47b89baa362, type: 3}
   Image: {fileID: 7940331087567683450}
   tags:
   - {fileID: 5872631075693028545}
@@ -45933,7 +45921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4051539989702737942, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -0.000045776
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 4051539989702737942, guid: 4d66ad9a89dd6174381aa9ac4acd50be, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -564,7 +564,7 @@ public class Transporter : Production
     {
         StructureSaveData data = base.SaveData();
 
-        data.minBuyAmount = sendAmount;
+        data.sendingOption = sendAmount;
         data.isAuto = isToggleOn;
 
         if (takeBuild != null)

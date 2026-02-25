@@ -49,7 +49,7 @@ public class AutoBuyerManager : MonoBehaviour
     {
         buyer = autoBuyer;
         SetMaxSliderValue(buyer.maxBuyAmount);
-        SetMinSliderValue(buyer.minBuyAmount);
+        SetMinSliderValue(buyer.buyInterval);
         selectBtn.onClick.RemoveAllListeners();
         selectBtn.onClick.AddListener(buyer.OpenRecipe);
     }
@@ -63,7 +63,7 @@ public class AutoBuyerManager : MonoBehaviour
         else
             maxText.text = "";
 
-        minSlider.maxValue = value;
+        //minSlider.maxValue = value;
     }
 
     public void SetMinSliderValue(int value)
@@ -121,8 +121,9 @@ public class AutoBuyerManager : MonoBehaviour
         buyer = null;
         maxSlider.value = 0;
         maxText.text = "";
-        minSlider.value = 0;
-        minSlider.maxValue = 0;
+        minSlider.value = 10;
+        minSlider.minValue = 10;
+        minSlider.maxValue = 60;
         minText.text = "";
         selectBtn.onClick.RemoveAllListeners();
     }

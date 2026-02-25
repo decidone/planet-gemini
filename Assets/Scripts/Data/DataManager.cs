@@ -326,7 +326,8 @@ public class DataManager : MonoBehaviour
                 if (structure.TryGetComponent(out AutoBuyer autoBuyer))
                 {
                     autoBuyer.maxBuyAmount = saveData.maxBuyAmount;
-                    autoBuyer.minBuyAmount = saveData.minBuyAmount;
+                    autoBuyer.buyInterval = saveData.sendingOption;
+                    autoBuyer.cooldown = autoBuyer.buyInterval;
 
                     if (saveData.trUnitPosData.Count > 0)
                     {
@@ -348,7 +349,7 @@ public class DataManager : MonoBehaviour
 
                 if (structure.TryGetComponent(out Transporter transporter))
                 {
-                    transporter.SendFuncSetServerRpc(saveData.isAuto, saveData.minBuyAmount);
+                    transporter.SendFuncSetServerRpc(saveData.isAuto, saveData.sendingOption);
 
                     transporters.Add(transporter, saveData);
                     if (saveData.connectedStrPos.Count > 0)

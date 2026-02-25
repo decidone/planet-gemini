@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
+    public int saveVersion = 1;
     public InGameData InGameData = new InGameData();
 
     // 플레이어
