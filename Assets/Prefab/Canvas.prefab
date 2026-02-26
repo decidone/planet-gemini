@@ -42617,6 +42617,7 @@ MonoBehaviour:
   sortBtn: {fileID: 5669630683448931182}
   unitIcon: {fileID: 7818947490515266913}
   unitLimitText: {fileID: 563149834277565812}
+  waveDiffLevel: {fileID: 2568039243502818521}
 --- !u!114 &1464196267212457460
 MonoBehaviour:
   m_ObjectHideFlags: 0

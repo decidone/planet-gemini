@@ -76,16 +76,16 @@ public class BasicUIBtns : MonoBehaviour
         KeyValueSet();
         swapBtn.onClick.AddListener(() => SwapBtn());
         timePosY = uiPanel.anchoredPosition.y;
-        if (!MainGameSetting.instance.isBloodMoon)
-        {
+        //if (!MainGameSetting.instance.isBloodMoon)
+        //{
             positions = new float[] { timePosY, timePosY - 100f };
             timeGroup.GetComponent<RectTransform>().localPosition = dDayGroupDefaultPos;
             dDayGroup.SetActive(false);
-        }
-        else
-        {
-            positions = new float[] { timePosY, timePosY - 100f, timePosY - 200f };
-        }
+        //}
+        //else
+        //{
+        //    positions = new float[] { timePosY, timePosY - 100f, timePosY - 200f };
+        //}
         UpdateButtonState();
 
         timeBtns[0].onClick.AddListener(() => ChangeStage(-1));

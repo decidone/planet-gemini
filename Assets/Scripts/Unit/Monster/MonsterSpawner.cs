@@ -48,7 +48,8 @@ public class MonsterSpawner : NetworkBehaviour
     int maxGuardianSpawn;
 
     int totalSpawnNum;   // 가딘언을 제외한 최대 소환 수    
-    public int spawnNum; // 일반 소환해야 하는 몬스터 수
+    int spawnNum; // 일반 소환해야 하는 몬스터 수
+    int guardianSpawnNum;
 
     // 현재 소환 개수 정보
     public int currentWeakSpawn;
@@ -87,11 +88,6 @@ public class MonsterSpawner : NetworkBehaviour
     [SerializeField]
     GameObject awakeColl;
     SpawnerAwake spawnerAwakeColl;
-    float distanceToPortal; // 포탈까지의 거리
-
-    float detectionRange;   // 포탈 인식 거리
-    [HideInInspector]
-    public int detectionCount;  // 포탈 인식 카운트
 
     float distRangeExpansion = 0.15f;    // 인식 거리 확대 0.15이면 15% 확대
     float distRangeReduction = 0.7f;    // 인식 거리 축소 0.6이면 60% 축소
@@ -138,27 +134,6 @@ public class MonsterSpawner : NetworkBehaviour
         }
         //spawnerSearchColl.violentCollSize = violentCollSize;
         SpriteSet();
-
-        if (isInHostMap)
-        {
-            distanceToPortal = Vector3.Distance(transform.position, GameManager.instance.portal[0].transform.position);
-        }
-        else
-        {
-            distanceToPortal = Vector3.Distance(transform.position, GameManager.instance.portal[1].transform.position);
-        }
-
-        if (IsServer && MainGameSetting.instance.isNewGame)
-        {
-            if (guardianList.Count < maxGuardianSpawn)
-            {
-                int guardianSpawnAmount = maxGuardianSpawn - guardianList.Count;
-                for (int i = 0; i < guardianSpawnAmount; i++)
-                {
-                    SpawnMonster(3, 0, isInHostMap);
-                }
-            }
-        }
     }
 
     void Update()
@@ -248,6 +223,7 @@ public class MonsterSpawner : NetworkBehaviour
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
         maxGuardianSpawn = levelData.maxGuardianSpawn;
+        guardianSpawnNum = maxGuardianSpawn;
         totalSpawnNum = maxWeakSpawn + maxNormalSpawn + maxStrongSpawn;
         spawnNum = totalSpawnNum;
         wavePos = _basePos;
@@ -408,18 +384,26 @@ public class MonsterSpawner : NetworkBehaviour
     {
         if (monsterAi.monsterType == 0)
         {
-            totalMonsterList.Add(monsterAi);
-            currentWeakSpawn++;
+            totalMonsterList.Remove(monsterAi);
+            spawnNum++;
+            currentWeakSpawn--;
         }
         else if (monsterAi.monsterType == 1)
         {
-            totalMonsterList.Add(monsterAi);
-            currentNormalSpawn++;
+            totalMonsterList.Remove(monsterAi);
+            spawnNum++;
+            currentNormalSpawn--;
         }
         else if (monsterAi.monsterType == 2)
         {
-            totalMonsterList.Add(monsterAi);
-            currentStrongSpawn++;
+            totalMonsterList.Remove(monsterAi);
+            spawnNum++;
+            currentStrongSpawn--;
+        }
+        else if(monsterAi.monsterType == 3)
+        {
+            guardianList.Remove(monsterAi.GetComponent<GuardianAi>());
+            guardianSpawnNum++;
         }
     }
 
@@ -616,9 +600,17 @@ public class MonsterSpawner : NetworkBehaviour
         }
     }
 
-    public IEnumerator MonsterSpawnStartCoroutine()
+    IEnumerator MonsterSpawnStartCoroutine()
     {
-        int spawnCount = spawnNum;
+        int spawnCount = guardianSpawnNum;
+
+        for (int i = 0; i < spawnCount; i++)
+        {
+            SpawnMonster(3, 0, isInHostMap);
+            guardianSpawnNum--;
+        }
+
+        spawnCount = spawnNum;
 
         if (spawnNum + totalMonsterList.Count > totalSpawnNum)
         {
@@ -671,13 +663,12 @@ public class MonsterSpawner : NetworkBehaviour
         }
         spawnerLevel = spawnerSaveData.level;
         spawnNum = spawnerSaveData.spawnNum;
+        guardianSpawnNum = spawnerSaveData.guardianSpawnNum;
         nearUserObjExist = spawnerSaveData.nearUserObjExist;
         nearEnergyObjExist = spawnerSaveData.nearEnergyObjExist;
         ragePhase = spawnerSaveData.ragePhase;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
-        detectionRange = spawnerSaveData.detectionRange;
-        detectionCount = spawnerSaveData.detectionCount;
         violentDay = spawnerSaveData.violentDay;
         spawnerLevelData = levelData;
         spawnerLevel = levelData.sppawnerLevel;
@@ -727,8 +718,6 @@ public class MonsterSpawner : NetworkBehaviour
         return newMonster;
     }
 
-
-
     public SpawnerSaveData SaveData()
     {
         SpawnerSaveData data = new SpawnerSaveData();
@@ -738,15 +727,12 @@ public class MonsterSpawner : NetworkBehaviour
         data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.spawnerPos = Vector3Extensions.FromVector3(transform.position);
         data.spawnNum = spawnNum;
+        data.guardianSpawnNum = guardianSpawnNum;
         data.dieCheck = dieCheck;
         data.spawnerGroupIndex = spawnerGroupIndex;
         data.violentDay = violentDay;
-        data.detectionRange = detectionRange;
-        data.detectionCount = detectionCount;
         data.nearUserObjExist = nearUserObjExist;
         data.nearEnergyObjExist = nearEnergyObjExist;
-        data.detectionRange = detectionRange;
-        data.detectionCount = detectionCount;
         data.ragePhase = ragePhase;
         foreach (MonsterAi monster in totalMonsterList)
         {
@@ -768,12 +754,6 @@ public class MonsterSpawner : NetworkBehaviour
     {
         if (!dieCheck)
             MapGenerator.instance.SetCorruption(this, spawnerLevel);
-    }
-
-    public void ViolentDaySet()
-    {
-        violentDay = true;
-        detectionCount = 0;
     }
 
     void SpriteSet()
@@ -802,42 +782,42 @@ public class MonsterSpawner : NetworkBehaviour
         corruptionTilemap = tilemap;
     }
 
-    public void DetectionRangeExpansion()
-    {
-        float energyRate = Mathf.RoundToInt(GameManager.instance.EnergyUseAmount() / 3000) / 50;
-        float ranCount = Random.Range(-0.05f, 0.05f);
-        ranCount = Mathf.Round((ranCount + energyRate) * 100f) / 100f; // 소수점 둘째 자리까지
-        float detetionExpansionPersent = 1 + distRangeExpansion + ranCount; // 인식 거리 확대 퍼센트
-        if (detetionExpansionPersent > maxDistRange)
-        {
-            detetionExpansionPersent = maxDistRange;
-        }
+    //public void DetectionRangeExpansion()
+    //{
+    //    float energyRate = Mathf.RoundToInt(GameManager.instance.EnergyUseAmount() / 3000) / 50;
+    //    float ranCount = Random.Range(-0.05f, 0.05f);
+    //    ranCount = Mathf.Round((ranCount + energyRate) * 100f) / 100f; // 소수점 둘째 자리까지
+    //    float detetionExpansionPersent = 1 + distRangeExpansion + ranCount; // 인식 거리 확대 퍼센트
+    //    if (detetionExpansionPersent > maxDistRange)
+    //    {
+    //        detetionExpansionPersent = maxDistRange;
+    //    }
 
-        detectionRange = (detectionRange + baseDetectRange[spawnerLevel - 1]) * (detetionExpansionPersent);
+    //    detectionRange = (detectionRange + baseDetectRange[spawnerLevel - 1]) * (detetionExpansionPersent);
 
-        if (detectionRange >= distanceToPortal)
-        {
-            detectionRange = distanceToPortal;
-            isReachedPortal = true;
-            detectionCount++;
-        }
-    }
+    //    if (detectionRange >= distanceToPortal)
+    //    {
+    //        detectionRange = distanceToPortal;
+    //        isReachedPortal = true;
+    //        detectionCount++;
+    //    }
+    //}
 
-    public void DetectionRangeReduction()
-    {
-        detectionRange *= (1 - distRangeReduction);
+    //public void DetectionRangeReduction()
+    //{
+    //    detectionRange *= (1 - distRangeReduction);
 
-        if (detectionRange < distanceToPortal)
-        {
-            isReachedPortal = false;
-        }
-    }
+    //    if (detectionRange < distanceToPortal)
+    //    {
+    //        isReachedPortal = false;
+    //    }
+    //}
 
-    public void DetectionRangeReset()
-    {
-        detectionRange = 0;
-        isReachedPortal = false;
-    }
+    //public void DetectionRangeReset()
+    //{
+    //    detectionRange = 0;
+    //    isReachedPortal = false;
+    //}
 
     public void ExecuteSpawn(int weak, int normal, int strong)
     {
@@ -937,35 +917,4 @@ public class MonsterSpawner : NetworkBehaviour
 
         return newMonster;
     }
-
-    private void OnDrawGizmos()
-    {
-        if (transform == null || GameManager.instance == null) return;
-
-        Vector3 portal;
-
-        if (isInHostMap)
-            portal = GameManager.instance.portal[0].transform.position;
-        else
-            portal = GameManager.instance.portal[1].transform.position;
-
-        // 방향 정규화 후 길이 반영
-        Vector3 direction = (portal - transform.position).normalized * detectionRange;
-
-        // 끝점 계산
-        Vector3 endPoint = transform.position + direction;
-
-        // 색상 설정 (선택사항)
-        if (detectionRange < distanceToPortal)
-            Gizmos.color = Color.green;
-        else
-            Gizmos.color = Color.red;
-
-        // 선 그리기
-        Gizmos.DrawLine(transform.position, endPoint);
-
-        // 끝점에 구체 찍기 (시각화용)
-        Gizmos.DrawSphere(endPoint, 0.05f);
-    }
-
 }

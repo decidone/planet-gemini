@@ -33,6 +33,8 @@ public class Inventory : NetworkBehaviour
 
     ulong[] singleTarget = new ulong[1];
 
+    bool portalInven = false;
+
     void Awake()
     {
         itemListSO = Resources.Load<ItemListSO>("SOList/ItemListSO");
@@ -442,7 +444,12 @@ public class Inventory : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SlotAddServerRpc(int slotNum, int itemIndex, int amount)
     {
-        SlotAddClientRpc(slotNum, itemIndex, amount);
+        if (!portalInven) 
+            SlotAddClientRpc(slotNum, itemIndex, amount);
+        else
+        {
+            GameManager.instance.WaveSkipItemAddServerRpc(slotNum, itemIndex, amount);
+        }
     }
 
     [ClientRpc]
@@ -524,7 +531,10 @@ public class Inventory : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SlotSubServerRpc(int slotNum, int amount)
     {
-        SlotSubClientRpc(slotNum, amount);
+         if(!portalInven)
+            SlotSubClientRpc(slotNum, amount);
+        else
+            GameManager.instance.WaveSkipItemSubServerRpc(slotNum, amount);
     }
 
     [ClientRpc]
@@ -692,7 +702,10 @@ public class Inventory : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RemoveServerRpc(int slotNum)
     {
-        RemoveClientRpc(slotNum);
+        if(!portalInven)
+            RemoveClientRpc(slotNum);
+        else
+            GameManager.instance.WaveSkipItemRemoveServerRpc(slotNum);
     }
 
     [ClientRpc]
@@ -1065,5 +1078,10 @@ public class Inventory : NetworkBehaviour
                 Sub(merchandiseList[merchNum[i]].item, amount[i]);
             }
         }
+    }
+
+    public void PortalInvenSet()
+    {
+        portalInven = true;
     }
 }

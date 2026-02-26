@@ -20,6 +20,7 @@ public class SpawnerSaveData
     public bool nearUserObjExist;
     public bool nearEnergyObjExist;
     public int spawnNum;   // 임시 저장 소환 수
+    public int guardianSpawnNum; // 임시 저장 가디언 소환 수
     public bool dieCheck;       // 스포너 죽은 상태 체크
     public int spawnerGroupIndex;
 
@@ -28,7 +29,7 @@ public class SpawnerSaveData
     public SerializedVector3 spawnerPos = new SerializedVector3();      // 스포너 위치
     public List<UnitSaveData> monsterList = new List<UnitSaveData>();   // 몬스터 데이터
 
-    public float detectionRange;// 포탈 감지 범위
-    public int detectionCount;  // 포탈 인식 카운트
+    public float detectionRange;// 포탈 감지 범위      // 제거
+    public int detectionCount;  // 포탈 인식 카운트    // 제거
     public int ragePhase;       // 페이즈 카운트
 }

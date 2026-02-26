@@ -323,7 +323,7 @@ GameObject:
   - component: {fileID: 2369682121264992858}
   - component: {fileID: 4540160688976020215}
   - component: {fileID: -4888756407540510190}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Desire
   m_TagString: Player
   m_Icon: {fileID: 0}

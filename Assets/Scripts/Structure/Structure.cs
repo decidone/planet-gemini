@@ -539,7 +539,7 @@ public class Structure : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         NetworkObjManager.instance.NetObjAdd(gameObject);
-        if (IsServer && !GetComponent<Portal>())
+        if (IsServer)
         {
             NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         }
@@ -550,7 +550,7 @@ public class Structure : NetworkBehaviour
         base.OnNetworkDespawn();
         NetworkObjManager.instance.NetObjRemove(gameObject);
 
-        if (IsServer && !GetComponent<Portal>())
+        if (IsServer)
         {
             NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
         }

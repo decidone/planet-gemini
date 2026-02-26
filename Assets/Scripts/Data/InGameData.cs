@@ -38,4 +38,6 @@ public class InGameData
     public float prevWaveDamage;        // 이전 웨이브 총 데미지
     public float currWaveDamage;        // 현재 웨이브 총 데미지
     public float difficultyPercent;     // 웨이브 난이도 증가량
+
+    public int waveSkipItemAmount;     // 웨이브 스킵 아이템 개수
 }
