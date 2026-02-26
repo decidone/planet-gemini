@@ -157,7 +157,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField]
     SpriteRenderer brightness;
 
-    float hours;        // 시간 계산
+    public float hours;        // 시간 계산
     int displayHour;    // 시 부분
     int displayMinute;  // 분 부분
     string timeDisplay; // 시간표시용
@@ -202,6 +202,10 @@ public class GameManager : NetworkBehaviour
     public float spawnMultiplier = 1f;
     public float hpMultiplier = 1f;
     public float atkMultiplier = 1f;
+
+    Recipe waveSkipRecipe;
+    int waveSkipItemIndex;
+    public int waveSkipItemAmount;
 
     #region Singleton
     public static GameManager instance;
@@ -252,7 +256,10 @@ public class GameManager : NetworkBehaviour
         autoSaveinterval = SettingsMenu.instance.autoSaveInterval;
         SyncTimeServerRpc();
         PlayerUnitCount(0);
-        //GameStartSet();
+
+        waveSkipRecipe = RecipeList.instance.GetRecipeIndex("Portal", 0);
+        Item item = ItemList.instance.itemDic[waveSkipRecipe.items[0]];
+        waveSkipItemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
     }
 
     void OnEnable()
@@ -365,7 +372,6 @@ public class GameManager : NetworkBehaviour
         }
 
         dayTimer += Time.deltaTime;
-        //hours = (dayTimer / 25f) + (dayIndex * 4) + 8;
         hours = (dayTimer / (dayTime / 4)) + (dayIndex * 4) + 8;
         hours = Mathf.Repeat(hours, 24f);
 
@@ -378,7 +384,7 @@ public class GameManager : NetworkBehaviour
 
         if (dayTimer > dayTime)
         {
-            dayTimer = 0;
+            dayTimer -= dayTime;
 
             dayIndex++;
             if (dayIndex > 5)
@@ -419,11 +425,6 @@ public class GameManager : NetworkBehaviour
                 day++;
                 dayText.text = "Day : " + day;
 
-                if (violentDay && IsServer)
-                {
-                    monsterSpawnerManager.SpawnersDetectionRangeReduction();
-                }
-
                 if (bloodMoon && violentDay)
                 {
                     forcedOperation = false;
@@ -440,12 +441,20 @@ public class GameManager : NetworkBehaviour
 
                 if (IsServer)
                 {
-                    monsterSpawnerManager.SpawnersDetectionRangeExpansion();
                     SyncTimeServerRpc();
                     // 하루 에너지 사용량 초기화
                     hostMapEnergyUseAmount = 0;
                     clientMapEnergyUseAmount = 0;
                 }
+            }
+
+            if (portal[0].isUIOpened)
+            {
+                portal[0].BloodMoonProgressSet();
+            }
+            if(portal[1].isUIOpened)
+             {
+                portal[1].BloodMoonProgressSet();
             }
         }
 
@@ -473,9 +482,14 @@ public class GameManager : NetworkBehaviour
                 bloodMoonEventState = true;
             }
         }
-        else if (!violentDay && bloodMoonEventState && (day >= energyOverLimitDay && (day - energyOverLimitDay) % violentCycle == 0))
+        else if (!violentDay && (day >= energyOverLimitDay && (day - energyOverLimitDay) % violentCycle == 0))
         {
-            if (UnityEngine.Random.Range(0, 100) >= 10)
+            if (waveSkipItemAmount > waveSkipRecipe.amounts[0])
+            {
+                WaveSkipItemSubServerRpc(0, waveSkipRecipe.amounts[0]);
+                NoWaveDetectedTextClientRpc();
+            }
+            else if (UnityEngine.Random.Range(0, 100) >= 10)
             {
                 energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
 
@@ -538,6 +552,8 @@ public class GameManager : NetworkBehaviour
         energyOverLimitDay = day;
         BasicUIBtns.instance.BloodMoonUIOn();
         WarningWindow.instance.WarningTextSet("They have noticed you. The Blood Moon is coming.");
+        portal[0].BloodMoonEventStart();
+        portal[1].BloodMoonEventStart();
     }
 
     [ClientRpc]
@@ -1446,7 +1462,7 @@ public class GameManager : NetworkBehaviour
             SteamManager.instance.HostLobby();
             HostConnected();
             bloodMoon = MainGameSetting.instance.isBloodMoon;
-            if(monsterSpawnerManager.HasAnyMonsterSpawner())
+            if (monsterSpawnerManager.HasAnyMonsterSpawner())
                 bloodMoon = true;
             if (MainGameSetting.instance.isNewGame)
             {
@@ -1482,7 +1498,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void TimeScaleServerRpc()  
+    public void TimeScaleServerRpc()
     {
         TimeScaleClientRpc();
     }
@@ -1526,7 +1542,7 @@ public class GameManager : NetworkBehaviour
         inGameData.difficultyLevel = MainGameSetting.instance.difficultylevel;
         inGameData.mapSizeIndex = MainGameSetting.instance.mapSizeIndex;
         inGameData.seed = MainGameSetting.instance.randomSeed;
-        if(monsterSpawnerManager.HasAnyMonsterSpawner())
+        if (monsterSpawnerManager.HasAnyMonsterSpawner())
             bloodMoon = true;
         inGameData.bloodMoon = bloodMoon;
         inGameData.day = day;
@@ -1550,6 +1566,8 @@ public class GameManager : NetworkBehaviour
         inGameData.prevWaveDamage = prevWaveDamage;
         inGameData.currWaveDamage = currWaveDamage;
         inGameData.difficultyPercent = difficultyPercent;
+
+        inGameData.waveSkipItemAmount = waveSkipItemAmount;
 
         return inGameData;
     }
@@ -1587,39 +1605,55 @@ public class GameManager : NetworkBehaviour
 
         bloodMoonEventState = data.bloodMoonEventState;
         energyOverLimitDay = data.energyOverLimitDay;
+        if (bloodMoonEventState)
+        {
+            BasicUIBtns.instance.BloodMoonUIOn();
+            int dday = CalculateDday(day - energyOverLimitDay, violentCycle);
+            ViolentDayOnClientRpc(violentDay, dday);
+        }
+
         waveIndex = data.waveIndex;
         waveDamage = data.waveDamage;
         prevWaveDamage = data.prevWaveDamage;
         currWaveDamage = data.currWaveDamage;
         difficultyPercent = data.difficultyPercent;
+
+        waveSkipItemAmount = data.waveSkipItemAmount;
+        
+        if(IsServer)
+            WaveSkipItemAddServerRpc(0, waveSkipItemIndex, waveSkipItemAmount);
+
         ApplyDifficulty();
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void SyncTimeServerRpc()
     {
-        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDay);
+        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDay, energyOverLimitDay);
         ViolentDaySyncTimeServerRpc();
     }
 
     [ClientRpc]
     public void SyncTimeClientRpc(int serverDay, bool serverIsDay, float serverDayTimer,
-        int serverDayIndex, bool serverViolentDay)
+        int serverDayIndex, bool serverViolentDay, int serverEnergyOverLimitDay)
     {
-        day = serverDay;
-        isDay = serverIsDay;
-        dayTimer = serverDayTimer;
-        dayIndex = serverDayIndex;
-        violentDay = serverViolentDay;
-
-        timeImg.sprite = timeImgSet[dayIndex];
-        dayText.text = "Day : " + day;
-
-        if (violentDay)
+        if(!IsServer)
         {
-            timeImg.color = new Color32(255, 50, 50, 255);
-            SoundManager.instance.PlayBgmMapCheck();
-        }
+            day = serverDay;
+            isDay = serverIsDay;
+            dayTimer = serverDayTimer;
+            dayIndex = serverDayIndex;
+            violentDay = serverViolentDay;
+            energyOverLimitDay = serverEnergyOverLimitDay;
+            timeImg.sprite = timeImgSet[dayIndex];
+            dayText.text = "Day : " + day;
+
+            if (violentDay)
+            {
+                timeImg.color = new Color32(255, 50, 50, 255);
+                SoundManager.instance.PlayBgmMapCheck();
+            }
+        }  
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1865,7 +1899,7 @@ public class GameManager : NetworkBehaviour
 
     [ServerRpc(RequireOwnership = false)]
     public void GameOverServerRpc()
-    {        
+    {
         SteamManager.instance.LeaveLobby();
         NetworkManager.Singleton.Shutdown();
         Destroy(NetworkManager.Singleton.gameObject);
@@ -2187,7 +2221,7 @@ public class GameManager : NetworkBehaviour
             prevWaveDamage = currWaveDamage;
             currWaveDamage = totalDamageDealt;
             difficultyPercent += 20;
-            ApplyDifficulty(); 
+            ApplyDifficulty();
             return;
         }
 
@@ -2201,7 +2235,7 @@ public class GameManager : NetworkBehaviour
         // 누적
         difficultyPercent += delta * 100f;
         difficultyPercent = Mathf.Clamp(difficultyPercent, 0f, GetDifficultyCap());
-
+        WaveDiffLevelSyncServerRpc();
         // 스폰 / 스펙 반영
         ApplyDifficulty();
 
@@ -2304,9 +2338,58 @@ public class GameManager : NetworkBehaviour
         return 1.45f;
     }
 
+    [ServerRpc]
+    void WaveDiffLevelSyncServerRpc()
+    {
+        WaveDiffLevelSyncClientRpc(difficultyPercent);
+    }
+
+    [ClientRpc]
+    void WaveDiffLevelSyncClientRpc(float diff)
+    {
+        if (!IsServer)
+            difficultyPercent = diff;
+    }
+
     public void BloodMoonOff()
     {
         bloodMoon = false;
         BasicUIBtns.instance.BloodMoonUIOff();
+    }
+
+    public (float, float) BloodMoonProgressSet()
+    {
+        float dayFullTime = dayTime * 6;
+        float violentCycleFullTime = dayFullTime * violentCycle;
+
+        int dday = CalculateDday(day - energyOverLimitDay, violentCycle); // 남은 일수
+        float ddayTotalTime = violentCycleFullTime - dday * dayFullTime; // 남은 일수에 해당하는 전체 시간
+        float currentTime = hours * 30 + ddayTotalTime; // 이날 흘러간 시간
+
+        return (violentCycleFullTime, currentTime);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void WaveSkipItemAddServerRpc(int slotNum, int itemIndex, int addAmount)
+    {
+        waveSkipItemAmount += addAmount;
+        portal[0].inventory.SlotAddClientRpc(slotNum, itemIndex, addAmount);
+        portal[1].inventory.SlotAddClientRpc(slotNum, itemIndex, addAmount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void WaveSkipItemSubServerRpc(int slotNum, int subAmount)
+    {
+        waveSkipItemAmount -= subAmount;
+        portal[0].inventory.SlotSubClientRpc(slotNum, subAmount);
+        portal[1].inventory.SlotSubClientRpc(slotNum, subAmount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void WaveSkipItemRemoveServerRpc(int slotNum)
+    {
+        waveSkipItemAmount = 0;
+        portal[0].inventory.RemoveClientRpc(slotNum);
+        portal[1].inventory.RemoveClientRpc(slotNum);
     }
 }

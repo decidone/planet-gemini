@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.Tilemaps;
 
 public class Portal : Production
@@ -14,11 +13,15 @@ public class Portal : Production
     public Portal otherPortal;
     public GameObject scienceBuilding;
 
+    bool bloodMoonEvent;
+    Recipe selectRecipe;
+
     protected override void Awake()
     {
         //myVision.SetActive(false);
         buildName = "Portal";   // 포탈 건물은 따로 데이터를 두지 않아서 직접 이름을 잡아줌
-        inventory = this.GetComponent<Inventory>();
+        inventory = GetComponent<Inventory>();
+        inventory.PortalInvenSet();
         visionPos = new Vector3(transform.position.x, transform.position.y + 1, 0);
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
@@ -27,15 +30,37 @@ public class Portal : Production
     protected override void Start()
     {
         gameManager = GameManager.instance;
+        itemDic = ItemList.instance.itemDic;
         canvas = gameManager.GetComponent<GameManager>().inventoryUiCanvas;
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         GetUIFunc();
         tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>();
         if(IsServer && MainGameSetting.instance.isNewGame)
             SetScienceBuildingServerRpc();
+        selectRecipe = RecipeList.instance.GetRecipeIndex("Portal", 0);
+        settingEndCheck = true;
     }
 
-    protected override void Update() { }
+    protected override void Update() 
+    {
+        if(isUIOpened && bloodMoonEvent)
+        {
+            prodTimer += Time.deltaTime;
+            if (prodTimer > cooldown)
+            {
+                var timeData = gameManager.BloodMoonProgressSet();
+                sInvenManager.progressBar.SetMaxProgress(timeData.Item1);
+                prodTimer = timeData.Item2;
+            }
+        }
+    }
+
+    protected override void OnClientConnectedCallback(ulong clientId)
+    {
+        if (inventory != null)
+            ItemSyncServerRpc();
+    }
+
 
     public override void OpenUI()
     {
@@ -44,13 +69,47 @@ public class Portal : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.PortalProductionSet();
+        sInvenManager.InvenInit();
+        SetRecipe(selectRecipe, 0);
+    }
+
+    public override void SetRecipe(Recipe _recipe, int index)
+    {
+        recipe = _recipe;
+        recipeIndex = index;
+        sInvenManager.ResetInvenOption();
+        BloodMoonProgressSet();        
+        sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
+        sInvenManager.slots[0].SetNeedAmount(recipe.amounts[0]);
+    }
+
+    public void BloodMoonProgressSet()
+    {
+        if (gameManager.bloodMoonEventState)
+        {
+            var timeData = gameManager.BloodMoonProgressSet();
+            sInvenManager.progressBar.SetMaxProgress(timeData.Item1);
+            cooldown = timeData.Item1;
+            prodTimer = timeData.Item2;
+        }
+        sInvenManager.WaveDiffLevelTextSet();
+    }
+
+    public void BloodMoonEventStart()
+    {
+        if (isUIOpened)
+        {
+            var timeData = gameManager.BloodMoonProgressSet();
+            sInvenManager.progressBar.SetMaxProgress(timeData.Item1);
+            cooldown = timeData.Item1;
+            prodTimer = timeData.Item2;
+        }
+        bloodMoonEvent = true;
     }
 
     public override void CloseUI()
     {
         base.CloseUI();
-        sInvenManager.progressBar.gameObject.SetActive(true);
-        sInvenManager.energyBar.gameObject.SetActive(true);
         sInvenManager.ReleaseInven();
     }
 

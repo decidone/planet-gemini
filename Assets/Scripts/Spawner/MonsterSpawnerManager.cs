@@ -175,56 +175,26 @@ public class MonsterSpawnerManager : NetworkBehaviour
             spawners[i].SetCorruption();
     }
 
-    public void SpawnersDetectionRangeExpansion()
-    {
-        foreach (var data in monsterSpawners)
-        {
-            foreach (MonsterSpawner spawner in data.Value)
-            {
-                spawner.DetectionRangeExpansion();
-            }
-        }
-    }
-
-    public void SpawnersDetectionRangeReduction()
-    {
-        foreach (var data in monsterSpawners)
-        {
-            foreach (MonsterSpawner spawner in data.Value)
-            {
-                spawner.DetectionRangeReduction();
-            }
-        }
-    }
-
     public bool ViolentDayOn(bool hostMap, bool forcedOperation)
     {
-        List<MonsterSpawner> reachedPortalspawners = new List<MonsterSpawner>();
-        MonsterSpawner aggroSpawner = null;
+        var allSpawners = monsterSpawners
+            .SelectMany(kv => kv.Value)
+            .Where(s => s.isInHostMap == hostMap)
+            .ToList();
 
-        foreach (var data in monsterSpawners)
-        {
-            foreach (MonsterSpawner spawner in data.Value)
-            {
-                if (spawner.isInHostMap == hostMap)
-                {
-                    reachedPortalspawners.Add(spawner);
-                }
-            }
-        }
+        int minLevel = allSpawners.Min(s => s.spawnerLevel);
 
-        Debug.Log("reachedPortalspawners : " + reachedPortalspawners.Count);
+        var lowestSpawners = allSpawners
+            .Where(s => s.spawnerLevel == minLevel)
+            .ToList();
 
-        aggroSpawner = reachedPortalspawners
-            .OrderBy(s => s.spawnerLevel)
-            .ThenBy(s => s.detectionCount)
-            .FirstOrDefault();
+        MonsterSpawner aggroSpawner = lowestSpawners[Random.Range(0, lowestSpawners.Count)];
 
         if (aggroSpawner)
         {
             waveState = true;
             hostMapWave = hostMap;
-            aggroSpawner.ViolentDaySet();
+            aggroSpawner.violentDay = true;
             wavePos = aggroSpawner.transform.position;
             WavePointOnServerRpc(wavePos, hostMap);
             return true;
@@ -273,7 +243,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
                 {
                     //spawner.WaveStart(); // 스폰 코드 변경해야함
                     SpawnWave(spawner);
-                    spawner.DetectionRangeReset();
                     WaveStartWarrningServerRpc();
                     spawner.violentDay = false;
                     return;

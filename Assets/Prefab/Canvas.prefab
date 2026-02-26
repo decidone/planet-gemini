@@ -9313,7 +9313,8 @@ MonoBehaviour:
   unitAmountText: {fileID: 6258639520136984974}
   rotatePanel: {fileID: 7674379991078404935}
   rotateText: {fileID: 363608429312690661}
-  test: 0
+  testOff: 0
+  testOn: 0
 --- !u!1 &142728371200448363
 GameObject:
   m_ObjectHideFlags: 0
@@ -42623,6 +42624,7 @@ MonoBehaviour:
   sortBtn: {fileID: 5669630683448931182}
   unitIcon: {fileID: 7818947490515266913}
   unitLimitText: {fileID: 563149834277565812}
+  waveDiffLevel: {fileID: 2568039243502818521}
 --- !u!114 &1464196267212457460
 MonoBehaviour:
   m_ObjectHideFlags: 0

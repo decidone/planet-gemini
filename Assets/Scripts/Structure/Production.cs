@@ -15,7 +15,8 @@ public abstract class Production : Structure
     public RecipeManager rManager;
 
     protected GameObject canvas;
-    protected Inventory inventory;
+    [HideInInspector]
+    public Inventory inventory;
     protected Dictionary<string, Item> itemDic;
     protected float prodTimer;
     protected int fuel;

@@ -33,6 +33,9 @@ public class StructureInvenManager : InventoryManager
     [SerializeField]
     Text unitLimitText;
 
+    [SerializeField]
+    Text waveDiffLevel;
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -314,6 +317,11 @@ public class StructureInvenManager : InventoryManager
         {
             data.Value.SetProduction(prod);
         }
+    }
+
+    public void WaveDiffLevelTextSet()
+    {
+        waveDiffLevel.text = "Difficulty Level : " + gameManager.difficultyPercent.ToString("F0") + " %";
     }
     //Portal UI 전용
 

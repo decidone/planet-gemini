@@ -10,7 +10,6 @@ public class MonsterAi : UnitCommonAi
 {
     public new string name;
     MonsterSpawner spawnerScript;
-    public GameObject spawner;
     Transform spawnPos;
     float spawnDist;
     [SerializeField]
@@ -542,11 +541,7 @@ public class MonsterAi : UnitCommonAi
             aIState = AIState.AI_Idle;
             if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck)
             {
-                isScriptActive = false;
-                searchManager.UnitListRemove(this); 
-                enabled = false;
-                animator.enabled = false;
-                capsule2D.enabled = false;
+                ReturnFunc();
             }
             stopTrace = false;
             return;
@@ -560,11 +555,7 @@ public class MonsterAi : UnitCommonAi
                 aIState = AIState.AI_Idle;
                 if (!spawnerScript.nearUserObjExist && !spawnerScript.dieCheck)
                 {
-                    isScriptActive = false;
-                    searchManager.UnitListRemove(this);
-                    enabled = false;
-                    animator.enabled = false;
-                    capsule2D.enabled = false;
+                    ReturnFunc();
                 }
                 stopTrace = false;
                 return;
@@ -576,6 +567,27 @@ public class MonsterAi : UnitCommonAi
         if (direction.magnitude > 0.5f)
         {
             AnimSetFloat(direction, true);
+        }
+    }
+
+    void ReturnFunc()
+    {
+        DieFunc();
+        StopAllCoroutines();
+        seeker.StopAllCoroutines();
+        seeker.OnDestroy();
+
+        if (InfoUI.instance.monster == this)
+            InfoUI.instance.SetDefault();
+
+        if (!IsServer)
+            return;
+
+        spawnerScript.ReturnMonster(this);
+
+        if (NetworkObject != null && NetworkObject.IsSpawned)
+        {
+            NetworkObject.Despawn();
         }
     }
 
@@ -667,7 +679,7 @@ public class MonsterAi : UnitCommonAi
         {
             targetVec = (new Vector3(aggroTarget.transform.position.x, aggroTarget.transform.position.y, 0) - tr.position).normalized;
             targetDist = Vector2.Distance(tr.position, aggroTarget.transform.position);
-            if(spawner != null)
+            if(spawnerScript != null)
                 spawnDist = Vector2.Distance(tr.position, spawnPos.position);
         }
     }
@@ -757,6 +769,15 @@ public class MonsterAi : UnitCommonAi
                         checkPathCoroutine = StartCoroutine(CheckPath(patrolPos, "Patrol"));
                     }
                 }                
+            }
+            if(bestTarget)
+            {
+                bestTarget.TryGetComponent(out Structure str);
+                if (str)
+                {
+                    --str.monsterTargetAmount;
+                }
+                bestTarget = null;
             }
             return;
         }
@@ -1214,9 +1235,9 @@ public class MonsterAi : UnitCommonAi
         if (!IsServer)
             return;
 
-        if(spawner != null)
+        if(spawnerScript != null)
         {
-            spawner.GetComponent<MonsterSpawner>().MonsterDieChcek(gameObject, monsterType, waveState);
+            spawnerScript.MonsterDieChcek(gameObject, monsterType, waveState);
         }
 
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
@@ -1229,8 +1250,7 @@ public class MonsterAi : UnitCommonAi
     public void MonsterSpawnerSet(MonsterSpawner monsterSpawner, int type)
     {
         spawnerScript = monsterSpawner;
-        spawner = monsterSpawner.gameObject;
-        spawnPos = spawner.transform;
+        spawnPos = spawnerScript.transform;
         monsterType = type;
     }
 
@@ -1320,6 +1340,22 @@ public class MonsterAi : UnitCommonAi
         }       
     }
 
+    public void LoadGameWaveSet(Vector3 wavePos)
+    {
+        StartCoroutine(LoadGameWaveSetCo(wavePos));
+    }
+
+    IEnumerator LoadGameWaveSetCo(Vector3 wavePos)
+    {
+        while (MonsterBaseMapCheck.instance == null || MonsterBaseMapCheck.instance.wavePath.vectorPath.Count == 0)
+        {
+            yield return null;
+        }
+
+        WaveStart(wavePos);
+    }
+    
+
     public void WaveStart(Vector3 _wavePos)
     {
         waveState = true;
@@ -1379,15 +1415,6 @@ public class MonsterAi : UnitCommonAi
         movePath.AddRange(waveMovePath.GetRange(closestIndex, waveMovePath.Count - closestIndex));
         currentWaypointIndex = 1;
         aIState = AIState.AI_NormalTrace;
-    }
-
-    public void ColonyAttackStart(Vector3 _wavePos)
-    {
-        waveState = true;
-        isWaveColonyCallCheck = false;
-
-        wavePos = _wavePos;
-        checkPathCoroutine = StartCoroutine(CheckPath(wavePos, "NormalTrace"));
     }
 
     public override void GameStartSet(UnitSaveData unitSaveData)

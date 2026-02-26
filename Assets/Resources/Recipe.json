@@ -91,5 +91,8 @@
         {"name":"SlimyPlant","items":["SlimyPlant"],"amounts":[1],"cooldown":0},
         {"name":"ToxicPlant","items":["ToxicPlant"],"amounts":[1],"cooldown":0},
         {"name":"ManaStone","items":["ManaStone"],"amounts":[1],"cooldown":0}
+    ],
+    "Portal":[
+        {"name":"WaveSkipItem","items":["VoidShard"],"amounts":[10],"cooldown":0}
     ]
 }
