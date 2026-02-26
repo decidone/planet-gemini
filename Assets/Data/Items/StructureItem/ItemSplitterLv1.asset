@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: ItemSplitterLv1
   m_EditorClassIdentifier: 
   name: Splitter
-  icon: {fileID: -1341400749, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  icon: {fileID: 1863524823, guid: 055194f499833f945ae4a47b89baa362, type: 3}
+  tier: -1

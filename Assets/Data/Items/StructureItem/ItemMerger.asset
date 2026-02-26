@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: ItemMerger
   m_EditorClassIdentifier: 
   name: Merger
-  icon: {fileID: -81441062, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
+  icon: {fileID: -588123693, guid: f4c430ff5e2294140b0e13ff6eec184e, type: 3}
+  tier: -1

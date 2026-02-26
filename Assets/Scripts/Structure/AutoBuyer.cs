@@ -58,9 +58,9 @@ public class AutoBuyer : Production
 
         if (!isPreBuilding && recipe.name != null && isRunning)
         {
+            prodTimer += Time.deltaTime;
             if (isTransportable)
             {
-                prodTimer += Time.deltaTime;
                 if (prodTimer > cooldown)
                 {
                     if (isUnitInStr.Value && isBuyable)
