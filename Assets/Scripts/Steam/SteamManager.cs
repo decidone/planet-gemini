@@ -96,8 +96,8 @@ public class SteamManager : MonoBehaviour
             }
             else
             {
-                // invite only. 친구목록에서 같이하기 기능이나 초대를 통해서만 입장 가능
-                lobby.SetFriendsOnly();
+                // private. 싱글 플레이
+                lobby.SetPrivate();
                 lobby.SetData("access", "2");
                 lobby.SetData("owner", string.Empty);
             }

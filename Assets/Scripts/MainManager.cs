@@ -72,7 +72,7 @@ public class MainManager : MonoBehaviour
         publicBtn.onClick.AddListener(() =>
         {
             MainGameSetting.instance.accessLevel = 0;
-            accessText.text = "Public";
+            accessText.text = "Public Room";
             OpenUI(2);
         });
         friendsBtn.onClick.AddListener(() =>
@@ -84,7 +84,7 @@ public class MainManager : MonoBehaviour
         privateBtn.onClick.AddListener(() =>
         {
             MainGameSetting.instance.accessLevel = 2;
-            accessText.text = "Invite Only";
+            accessText.text = "Single Play";
             OpenUI(2);
         });
         
