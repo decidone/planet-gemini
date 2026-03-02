@@ -87,6 +87,8 @@ public class Structure : NetworkBehaviour
     protected bool itemGetDelay = false;
     protected bool itemSetDelay = false;
 
+    public float prodTimer;
+    public float loadedProdTimer;
     protected float getDelay;
     protected float sendDelay;
     [HideInInspector]
@@ -2143,6 +2145,12 @@ public class Structure : NetworkBehaviour
     {
         if (isOperate != isOn)
         {
+            if (loadedProdTimer > 0)
+            {
+                prodTimer = loadedProdTimer;
+                loadedProdTimer = 0;
+            }
+
             isOperate = isOn;
             NonOperateStateSet(isOn);
         }

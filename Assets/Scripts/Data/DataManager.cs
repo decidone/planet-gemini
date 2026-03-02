@@ -277,6 +277,8 @@ public class DataManager : MonoBehaviour
             if (structure.TryGet(out Production prod))
             {
                 prod.GameStartItemSet(saveData.inven);
+                prod.loadedProdTimer = saveData.prodTimer;
+
                 if (prod.Get<PortalObj>())
                 {
                     if (saveData.planet)

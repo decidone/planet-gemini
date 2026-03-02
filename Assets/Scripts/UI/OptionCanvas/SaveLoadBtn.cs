@@ -33,14 +33,16 @@ public class SaveLoadBtn : MonoBehaviour
         mainBtn.onClick.AddListener(() => BtnFunc());
     }
 
-    public void SetSlotData(int slotCount, string saveDate, string fileName, int mapDataIndex, int diffLevel)
+    public void SetSlotData(int slotCount, string saveDate, float playTime, string fileName, int mapDataIndex, int diffLevel)
     {
         slotText.text = slotCount.ToString();
         string mapSizeString = MapSizeString(mapDataIndex);
         string diffLevelString = DiffLevelString(diffLevel);
         if (saveDate != null && fileName != null)
         {
-            contentsText.text = saveDate + System.Environment.NewLine + fileName;
+            System.TimeSpan t = System.TimeSpan.FromSeconds(playTime);
+            string playTimeStr = string.Format("{0}h {1:D2}m", (int)t.TotalHours, t.Minutes);
+            contentsText.text = saveDate + " | " + playTimeStr + System.Environment.NewLine + fileName;
             saveFileName = fileName;
             loadEnable = true;
 
@@ -65,14 +67,16 @@ public class SaveLoadBtn : MonoBehaviour
         slotNum = slotCount;
     }
 
-    public void SetSlotData(int slotCount, string saveDate, int mapDataIndex, int diffLevel) // 자동 저장용
+    public void SetSlotData(int slotCount, string saveDate, float playTime, int mapDataIndex, int diffLevel) // 자동 저장용
     {
         slotText.text = "Auto";
         string mapSizeString = MapSizeString(mapDataIndex);
         string diffLevelString = DiffLevelString(diffLevel);
         if (saveDate != null)
         {
-            contentsText.text = saveDate;
+            System.TimeSpan t = System.TimeSpan.FromSeconds(playTime);
+            string playTimeStr = string.Format("{0}h {1:D2}m", (int)t.TotalHours, t.Minutes);
+            contentsText.text = saveDate + " | " + playTimeStr;
             loadEnable = true;
         }
         else

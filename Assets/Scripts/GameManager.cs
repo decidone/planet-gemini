@@ -108,6 +108,7 @@ public class GameManager : NetworkBehaviour
     ScienceBuildingInfo scienceBuildingInfo;
     ScienceManager scienceManager;
 
+    public float playTime;
     public int day;         // 일 수
     public bool isDay;      // 밤 낮
     public float dayTime;   // 인게임 4시간을 현실 시간으로
@@ -360,6 +361,8 @@ public class GameManager : NetworkBehaviour
 
     private void Update()
     {
+        playTime += Time.unscaledDeltaTime;
+
         if (Time.timeScale == 0)
         {
             return;
@@ -1536,7 +1539,7 @@ public class GameManager : NetworkBehaviour
 
         // 저장 시간
         DateTime currentDateTime = DateTime.Now;
-        string formattedDateTime = currentDateTime.ToString("yyyy-MM-dd HH:mm:ss");
+        string formattedDateTime = currentDateTime.ToString("MM.dd HH:mm");
         inGameData.saveDate = formattedDateTime;
         // 파일 이름
         inGameData.difficultyLevel = MainGameSetting.instance.difficultylevel;
@@ -1545,6 +1548,8 @@ public class GameManager : NetworkBehaviour
         if (monsterSpawnerManager.HasAnyMonsterSpawner())
             bloodMoon = true;
         inGameData.bloodMoon = bloodMoon;
+
+        inGameData.playTime = playTime;
         inGameData.day = day;
         inGameData.isDay = isDay;
         inGameData.dayTimer = dayTimer;
@@ -1574,6 +1579,7 @@ public class GameManager : NetworkBehaviour
 
     public void LoadData(InGameData data)
     {
+        playTime = data.playTime;
         day = data.day;
         isDay = data.isDay;
         dayTimer = data.dayTimer;

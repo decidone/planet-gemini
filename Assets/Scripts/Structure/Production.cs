@@ -18,7 +18,6 @@ public abstract class Production : Structure
     [HideInInspector]
     public Inventory inventory;
     protected Dictionary<string, Item> itemDic;
-    protected float prodTimer;
     protected int fuel;
     protected int maxFuel;
     protected Item output;
@@ -718,6 +717,7 @@ public abstract class Production : Structure
         }
 
         data.recipeId = recipeIndex;
+        data.prodTimer = prodTimer;
 
         return data;
     }

@@ -4217,7 +4217,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8033250253418668032, guid: 9ce865a7124c87c4ea39c425e37421d8, type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 16607743
+      value: 50162175
       objectReference: {fileID: 0}
     - target: {fileID: 8033250253418668032, guid: 9ce865a7124c87c4ea39c425e37421d8, type: 3}
       propertyPath: m_NormalizedViewPortRect.x

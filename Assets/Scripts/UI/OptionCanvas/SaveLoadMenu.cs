@@ -66,11 +66,11 @@ public class SaveLoadMenu : MonoBehaviour
         {
             saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
             inGameData = saveData.InGameData;
-            buttons[0].SetSlotData(0, inGameData.saveDate, inGameData.mapSizeIndex, inGameData.difficultyLevel);
+            buttons[0].SetSlotData(0, inGameData.saveDate, inGameData.playTime, inGameData.mapSizeIndex, inGameData.difficultyLevel);
         }
         else
         {
-            buttons[0].SetSlotData(0, null, -1, -1);
+            buttons[0].SetSlotData(0, null, -1, -1, -1);
         }
 
         for (int i = 1; i < saveCount; i++)
@@ -83,11 +83,11 @@ public class SaveLoadMenu : MonoBehaviour
             {
                 saveData = JsonConvert.DeserializeObject<SaveData>(data.Item2);
                 inGameData = saveData.InGameData;
-                buttons[i].SetSlotData(i, inGameData.saveDate, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
+                buttons[i].SetSlotData(i, inGameData.saveDate, inGameData.playTime, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
             }
             else
             {
-                buttons[i].SetSlotData(i, null, null, -1, -1);
+                buttons[i].SetSlotData(i, null, -1, null, -1, -1);
             }
         }
     }
@@ -164,7 +164,7 @@ public class SaveLoadMenu : MonoBehaviour
 
     public void SaveUI(int slotNum, InGameData inGameData)
     {
-        buttons[slotNum].SetSlotData(slotNum, inGameData.saveDate, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
+        buttons[slotNum].SetSlotData(slotNum, inGameData.saveDate, inGameData.playTime, inGameData.fileName, inGameData.mapSizeIndex, inGameData.difficultyLevel);
     }
 
     public void LoadConfirm(int slotNum)

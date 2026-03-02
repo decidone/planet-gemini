@@ -13,6 +13,7 @@ public class InGameData
     public int seed;                // 맵 시드
     public bool bloodMoon;          // 블러드문
 
+    public float playTime;          // 정지 시간을 포함한 플레이 시간
     public int day;                 // 인게임 날짜
     public bool isDay;              // 낮 / 밤
     public float dayTimer;          // 인게임 시간

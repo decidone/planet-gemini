@@ -32,6 +32,7 @@ public class StructureSaveData
     public float storedFluid = 0;   // 액체 저장량
 
     public int recipeId = -1;       // 기본 -1, 레시피 식별자
+    public float prodTimer = 0f;    // 생산 게이지
 
     public int prodItemIndex = -1;  // 채굴기 - 생산 가능한 아이템 인덱스
 
