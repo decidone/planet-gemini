@@ -120,13 +120,13 @@ public class PipeCtrl : FluidFactoryCtrl
         }
     }
 
-    protected void FluidSetOutObj(GameObject obj, Vector3 vec)
+    protected void FluidSetOutObj(Structure obj, Vector3 vec)
     {
-        if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
+        if (obj.TryGet(out FluidFactoryCtrl factoryCtrl))
         {
             if (!outObj.Contains(obj))
                 outObj.Add(obj);
-            if (obj.TryGetComponent(out UnderPipeCtrl underPipe))
+            if (obj.TryGet(out UnderPipeCtrl underPipe))
             {
                 UnderPipeConnectCheck(obj);
             }
@@ -136,9 +136,9 @@ public class PipeCtrl : FluidFactoryCtrl
         ObjCheck(obj, vec);
     }
 
-    void ObjCheck(GameObject game, Vector3 vec)
+    void ObjCheck(Structure str, Vector3 vec)
     {
-        if(!game.GetComponent<UnderPipeCtrl>() && game.GetComponent<FluidFactoryCtrl>())
+        if (!str.Get<UnderPipeCtrl>() && str.Get<FluidFactoryCtrl>())
         {
             if (vec == transform.up)
                 isUp = true;
@@ -205,7 +205,7 @@ public class PipeCtrl : FluidFactoryCtrl
         setModel.sprite = modelNum[dirNum];
     }
 
-    public void FactoryVecCheck(GameObject factory)
+    public void FactoryVecCheck(Structure factory)
     {
         if (factory.transform.position.x < this.transform.position.x)
         {
@@ -234,7 +234,7 @@ public class PipeCtrl : FluidFactoryCtrl
         ChangeModel();
     }
 
-    public override void ResetNearObj(GameObject game)
+    public override void ResetNearObj(Structure game)
     {
         if (outObj.Contains(game))
         {

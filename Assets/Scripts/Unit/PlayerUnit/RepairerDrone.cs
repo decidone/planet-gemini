@@ -197,13 +197,13 @@ public class RepairerDrone : UnitAi
             if (!obj || obj == gameObject)
                 continue;
 
-            if (obj.TryGetComponent(out UnitAi unit))
+            if (obj.TryGetComponent(out UnitAi unit) || obj.TryGetComponent(out PlayerController player))
             {
                 unitTargetList.Add(obj);
             }
             else if (obj.TryGetComponent(out Structure structure))
             {
-                if (!structure.isPreBuilding && !structure.GetComponent<Portal>())
+                if (!structure.isPreBuilding && !structure.Has<Portal>())
                 {
                     strTargetList.Add(obj);
                 }

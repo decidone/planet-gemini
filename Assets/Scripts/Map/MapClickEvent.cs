@@ -209,7 +209,7 @@ public class MapClickEvent : NetworkBehaviour
 
     MapClickEvent FindTargetClickEvent(Vector3 targetPos)
     {
-        GameObject othObj = null;
+        Structure othObj = null;
         if (strType == "ldConnector")
         {
             othObj = DataManager.instance.CellObjFind(targetPos, ldConnector.isInHostMap);

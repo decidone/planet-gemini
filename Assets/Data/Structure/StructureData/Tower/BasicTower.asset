@@ -36,3 +36,4 @@ MonoBehaviour:
   - 15
   upgradedefense:
   - 17
+  canTakeItem: 1

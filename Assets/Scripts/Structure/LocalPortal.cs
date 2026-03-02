@@ -7,7 +7,7 @@ public class LocalPortal : Structure
     protected override void Awake()
     {
         base.Awake();
-        col = GetComponent<CapsuleCollider2D>();
+        col = Get<CapsuleCollider2D>();
         visionPos = new Vector3(transform.position.x, transform.position.y + 1, 0);
     }
 

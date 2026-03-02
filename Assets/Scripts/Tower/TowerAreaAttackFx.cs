@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
 
 // UTF-8 설정
 public class TowerAreaAttackFx : TowerAttackFx
@@ -26,16 +23,15 @@ public class TowerAreaAttackFx : TowerAttackFx
     {
         if (!IsServer)
             return;
-        if (collision.CompareTag("Monster") || collision.CompareTag("Spawner"))
+
+
+        if (collision.TryGetComponent(out MonsterAi monster))
         {
-            if (collision.TryGetComponent(out MonsterAi monster))
-            {
-                TakeDamage(monster);
-            }
-            else if (collision.TryGetComponent(out MonsterSpawner spawner))
-            {
-                TakeDamage(spawner);
-            }
+            TakeDamage(monster);
         }
+        else if (collision.TryGetComponent(out MonsterSpawner spawner))
+        {
+            TakeDamage(spawner);
+        }        
     }
 }

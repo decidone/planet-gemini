@@ -37,7 +37,6 @@ public class UnitCommonAi : NetworkBehaviour
     protected Rigidbody2D rg;
     protected Seeker seeker;
     protected Coroutine checkPathCoroutine;             // 실행 중인 코루틴을 저장하는 변수
-    [SerializeField]
     protected int currentWaypointIndex;                 // 현재 이동 중인 경로 점 인덱스
     protected Vector3 targetPosition;
     protected Vector2 lastMoveDirection = Vector2.zero; // 마지막으로 이동한 방향
@@ -100,6 +99,9 @@ public class UnitCommonAi : NetworkBehaviour
     protected ContactFilter2D contactFilter;
 
     protected SearchObjectsInRangeManager searchManager;
+
+    [SerializeField]
+    protected bool nonBattleUnit;
 
     protected virtual void Awake()
     {
@@ -174,7 +176,8 @@ public class UnitCommonAi : NetworkBehaviour
         base.OnNetworkSpawn();
         if (IsServer)
         {
-            searchManager.UnitListAdd(this);
+            if(!nonBattleUnit)
+                searchManager.UnitListAdd(this);
             NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         }
     }
@@ -184,7 +187,8 @@ public class UnitCommonAi : NetworkBehaviour
         base.OnNetworkDespawn();
         if (IsServer)
         {
-            searchManager.UnitListRemove(this);
+            if (!nonBattleUnit)
+                searchManager.UnitListRemove(this);
             NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
         }
     }

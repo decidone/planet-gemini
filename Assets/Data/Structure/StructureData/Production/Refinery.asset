@@ -36,3 +36,7 @@ MonoBehaviour:
   - 5
   upgradedefense:
   - 7
+  canTakeItem: 0
+  canSendItem: 1
+  canTakeFluid: 1
+  canSendFluid: 0

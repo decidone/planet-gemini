@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -397,7 +396,7 @@ public class PlayerController : NetworkBehaviour
         {
             transform.position = nearTank.transform.position;
 
-            status.TankOnServerRpc(nearTank.GetComponent<NetworkObject>());
+            status.TankOnServerRpc(nearTank.NetworkObject);
             onTankData = nearTank;
 
             onTankData.PlayerTankOnClientRpc();
@@ -825,7 +824,7 @@ public class PlayerController : NetworkBehaviour
         networkObject.TryGetComponent(out TankCtrl tank);
         tank.PlayerOnTankLoad(tankHp, tankMaxHp);
 
-        status.TankOnServerRpc(tank.GetComponent<NetworkObject>());
+        status.TankOnServerRpc(tank.NetworkObject);
         onTankData = tank;
         TankOnFunc();
     }

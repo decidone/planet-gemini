@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -18,7 +17,7 @@ public class Cell
     public int resourceChunkNum = -1;
     public GameObject obj;
     public int objNum = -1;
-    public GameObject structure;
+    public Structure structure;
     public List<string> buildable = new List<string>();
 
     public int corruptionId = 0;

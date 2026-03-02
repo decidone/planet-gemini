@@ -49,7 +49,7 @@ public abstract class Production : Structure
     protected override void Awake()
     {
         base.Awake();
-        inventory = this.GetComponent<Inventory>();
+        inventory = Get<Inventory>();
         if (inventory != null)
         {
             inventory.onItemChangedCallback += CheckSlotState;
@@ -98,7 +98,7 @@ public abstract class Production : Structure
 
         if (IsServer && !isPreBuilding)
         {
-            if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
+            if (canTakeItem && inObj.Count > 0 && !itemGetDelay)
                 GetItem();
         }
     }
@@ -388,55 +388,31 @@ public abstract class Production : Structure
         GameManager.instance.CheckAndCancelFocus(this);
     }
 
-    protected override IEnumerator SetOutObjCoroutine(GameObject obj)
+    protected override IEnumerator SetOutObjCoroutine(Structure obj)
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<WallCtrl>() || obj.GetComponent<FluidFactoryCtrl>())
+        if (!obj || !obj.canTakeItem)
             yield break;
 
-        if (obj.TryGetComponent(out Structure structure) && !structure.isMainSource)
+        if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (obj.TryGetComponent(out BeltCtrl belt))
+            if (belt.beltGroupMgr.nextObj == this)
             {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                {
-                    StartCoroutine(SetInObjCoroutine(obj));
-                    yield break;
-                }
-                if (!outObj.Contains(obj))
-                    outObj.Add(obj);
-                belt.FactoryPosCheck(GetComponentInParent<Structure>());
+                StartCoroutine(SetInObjCoroutine(obj));
+                yield break;
             }
-            else
-            {
-                outSameList.Add(obj);
-                StartCoroutine(OutCheck(obj));
-            }
-            //if (!outObj.Contains(obj))
-            //    outObj.Add(obj);
-            StartCoroutine(UnderBeltConnectCheck(obj));
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
+            belt.FactoryPosCheck(this);
         }
+        else
+        {
+            outSameList.Add(obj);
+            StartCoroutine(OutCheck(obj));
+        }
+        StartCoroutine(UnderBeltConnectCheck(obj));        
     }
-
-    //protected override IEnumerator OutCheck(GameObject otherObj)
-    //{
-    //    yield return new WaitForSeconds(0.1f);
-
-    //    if (otherObj.TryGetComponent(out Structure otherFacCtrl))
-    //    {
-    //        if (otherObj.GetComponent<Production>())
-    //            yield break;
-
-    //        if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
-    //        {
-    //            StartCoroutine(SetInObjCoroutine(otherObj));
-    //            outObj.Remove(otherObj);
-    //            outSameList.Remove(otherObj);
-    //            Invoke(nameof(RemoveSameOutList), 0.1f);
-    //        }
-    //    }
-    //}
 
     public override void OnFactoryItem(ItemProps itemProps)
     {
@@ -501,42 +477,9 @@ public abstract class Production : Structure
             return false;
     }
 
-    //public virtual (Item, int) QuickPullOut()
-    //{
-    //    var slot = inventory.SlotCheck(inventory.space - 1);
-    //    if (slot.amount > 0)
-    //        inventory.SubServerRpc(inventory.space - 1, slot.amount);
-    //    return slot;
-    //}
-
-    //[ClientRpc]
-    //protected override void GetItemClientRpc(int inObjIndex)
-    //{
-    //    itemGetDelay = true;
-
-    //    if (inObj[inObjIndex].TryGetComponent(out BeltCtrl belt))
-    //    {
-    //        if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
-    //        {
-    //            OnFactoryItem(belt.itemObjList[0]);
-    //            belt.itemObjList[0].transform.position = this.transform.position;
-    //            belt.isItemStop = false;
-    //            belt.itemObjList.RemoveAt(0);
-    //            if (IsServer)
-    //                belt.beltGroupMgr.groupItem.RemoveAt(0);
-    //            belt.ItemNumCheck();
-
-    //            DelayGetItem();
-    //            //Invoke(nameof(DelayGetItem), structureData.SendDelay);
-    //        }
-    //        else
-    //            DelayGetItem();
-    //    }
-    //}
-
     protected override void GetItemFunc(int inObjIndex)
     {
-        if (inObj[inObjIndex].TryGetComponent(out BeltCtrl belt))
+        if (inObj[inObjIndex].TryGet(out BeltCtrl belt))
         {
             if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
             {
@@ -769,7 +712,7 @@ public abstract class Production : Structure
     {
         StructureSaveData data = base.SaveData();
 
-        if(TryGetComponent(out Inventory inventory))
+        if(TryGet(out Inventory inventory))
         {
             data.inven = inventory.SaveData();
         }

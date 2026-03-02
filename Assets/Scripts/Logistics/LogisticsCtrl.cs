@@ -10,7 +10,7 @@ public class LogisticsCtrl : Structure
     public void BeltGroupSendItem(ItemProps itemObj)
     {
         itemObjList.Add(itemObj);
-        itemObj.setOnBelt = GetComponent<BeltCtrl>();
+        itemObj.setOnBelt = Get<BeltCtrl>();
         if (itemObjList.Count >= structureData.MaxItemStorageLimit)
             isFull = true;
         else
@@ -39,7 +39,7 @@ public class LogisticsCtrl : Structure
 
     public override void ItemNumCheck()
     {
-        if (GetComponent<BeltCtrl>())
+        if (Get<BeltCtrl>())
         {
             if (itemObjList.Count >= structureData.MaxItemStorageLimit)
             {
@@ -62,7 +62,7 @@ public class LogisticsCtrl : Structure
     public override void AddInvenItem()
     {
         base.AddInvenItem();
-        if (GetComponent<BeltCtrl>())
+        if (Get<BeltCtrl>())
         {
             if (itemObjList.Count > 0)
             {

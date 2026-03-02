@@ -95,7 +95,7 @@ public class AttackTower : TowerAi
         {
             if (IsServer && !isPreBuilding)
             {
-                if (!isMainSource && inObj.Count > 0 && !itemGetDelay)
+                if (canTakeItem && inObj.Count > 0 && !itemGetDelay)
                     GetItem();
             }
         }

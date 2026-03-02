@@ -121,7 +121,7 @@ public class EnergyRepeater : Structure
         {
             if (!animController.isInitialized)
             {
-                this.GetComponent<SpriteRenderer>().material = shaderAnimatedMat;
+                setModel.material = shaderAnimatedMat;
             }
             animController.Refresh();
         }

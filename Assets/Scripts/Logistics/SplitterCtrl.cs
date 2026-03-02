@@ -18,7 +18,7 @@ public class SplitterCtrl : LogisticsCtrl
     [Serializable]
     public struct Filter
     {
-        public GameObject outObj;
+        public Structure outObj;
         public bool isFilterOn;
         public bool isReverseFilterOn;
         public Item selItem;
@@ -29,9 +29,8 @@ public class SplitterCtrl : LogisticsCtrl
 
     void Start()
     {
-        //setModel = GetComponent<SpriteRenderer>();
         CanSendCheck();
-        clickEvent = GetComponent<LogisticsClickEvent>();
+        clickEvent = Get<LogisticsClickEvent>();
 
         StrBuilt();
     }
@@ -42,26 +41,6 @@ public class SplitterCtrl : LogisticsCtrl
 
         if (!removeState)
         {
-            //SetDirNum();
-
-            //if (isSetBuildingOk)
-            //{
-            //    for (int i = 0; i < nearObj.Length; i++)
-            //    {
-            //        if (nearObj[i] == null)
-            //        {
-            //            if (i == 0)
-            //                CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
-            //            else if (i == 1)
-            //                CheckNearObj(checkPos[1], 1, obj => StartCoroutine(SetOutObjCoroutine(obj, 2)));
-            //            else if (i == 2)
-            //                CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
-            //            else if (i == 3)
-            //                CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
-            //        }
-            //    }
-            //}
-
             if (IsServer && !isPreBuilding)
             { 
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
@@ -170,8 +149,7 @@ public class SplitterCtrl : LogisticsCtrl
 
             if(arrFilter[a].outObj != null)
             {
-                arrFilter[a].outObj.TryGetComponent(out Structure str);
-                NetworkObjectReference networkObjectReference = str.ObjFindId();
+                NetworkObjectReference networkObjectReference = arrFilter[a].outObj.NetworkObject;
                 ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex, networkObjectReference);
             }
             else
@@ -188,7 +166,8 @@ public class SplitterCtrl : LogisticsCtrl
             return;
 
         networkObjectReference.TryGet(out NetworkObject obj);
-        arrFilter[num].outObj = obj.gameObject;
+        obj.TryGetComponent(out Structure str);
+        arrFilter[num].outObj = str;
         GameStartFillterSet(num, filterOn, reverseFilterOn, itemIndex);
     }
 
@@ -212,7 +191,7 @@ public class SplitterCtrl : LogisticsCtrl
         }
     }
 
-    void FilterArr(GameObject obj, int num)
+    void FilterArr(Structure obj, int num)
     {
         arrFilter[num].outObj = obj;
         recentItemSend.Clear();
@@ -297,16 +276,13 @@ public class SplitterCtrl : LogisticsCtrl
                 return;
             }
 
-            GameObject outObject = filter.outObj;
-            Structure outFactory = outObject.GetComponent<Structure>();
-
-            if (outFactory.isFull)
+            if (filter.outObj.isFull)
             {
                 FilterindexSet();
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
-            else if (outObject.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
+            else if (filter.outObj.TryGet(out Production production) && !production.CanTakeItem(sendItem))
             {
                 FilterindexSet();
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
@@ -369,10 +345,9 @@ public class SplitterCtrl : LogisticsCtrl
     {
         if (!filter.isFilterOn || !filter.outObj) return false;
 
-        var structure = filter.outObj.GetComponent<Structure>();
-        if (structure && structure.isFull) return false;
+        if (filter.outObj && filter.outObj.isFull) return false;
 
-        if (filter.outObj.TryGetComponent(out Production production) && !production.CanTakeItem(sendItem))
+        if (filter.outObj.TryGet(out Production production) && !production.CanTakeItem(sendItem))
             return false;
 
         return true;
@@ -467,16 +442,14 @@ public class SplitterCtrl : LogisticsCtrl
 
         Filter filter = arrFilter[outObjIndex];
 
-        GameObject outObject = filter.outObj;
-
-        if (outObject.TryGetComponent(out BeltCtrl beltCtrl))
+        if (filter.outObj.TryGet(out BeltCtrl beltCtrl))
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
             spawnItem = itemPool.GetComponent<ItemProps>();
 
             if (beltCtrl.OnBeltItem(spawnItem))
             {
-                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                SpriteRenderer sprite = spawnItem.spriteRenderer;
                 sprite.sprite = sendItem.icon;
                 sprite.sortingOrder = 2;
                 spawnItem.item = sendItem;
@@ -488,121 +461,93 @@ public class SplitterCtrl : LogisticsCtrl
             }
             itemList.RemoveAt(itemIndex);
         }
-        else if (outObject.GetComponent<LogisticsCtrl>())
+        else if (filter.outObj.Get<LogisticsCtrl>())
         {
-            SendFacDelay(outObject, sendItem);
+            SendFacDelay(filter.outObj, sendItem);
         }
-        else if (outObject.TryGetComponent(out Production production) && production.CanTakeItem(sendItem))
+        else if (filter.outObj.TryGet(out Production production) && production.CanTakeItem(sendItem))
         {
-            SendFacDelay(outObject, sendItem);
+            SendFacDelay(filter.outObj, sendItem);
         }
         ItemNumCheck();
         Invoke(nameof(DelaySetItem), sendDelay);
     }
 
-    IEnumerator SetOutObjCoroutine(GameObject obj, int num)
+    IEnumerator SetOutObjCoroutine(Structure obj, int num)
     {
         yield return new WaitForSeconds(0.1f);
         //yield return null;
 
-        if (obj.GetComponent<WallCtrl>())
+        if (!obj || !obj.canTakeItem)
             yield break;
 
-        if (obj.GetComponent<Structure>() != null)
+        if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (obj.TryGetComponent(out BeltCtrl belt))
-            {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                    yield break;
+            if (belt.beltGroupMgr.nextObj == this)
+                yield break;
 
-                if (!outObj.Contains(obj))
-                    outObj.Add(obj);
-                FilterArr(obj, num);
-                belt.FactoryPosCheck(GetComponentInParent<Structure>());
-            }
-            else
-            {
-                outSameList.Add(obj);
-                StartCoroutine(OutCheck(obj, num));
-                StartCoroutine(UnderBeltConnectCheck(obj));
-                //FilterArr(obj, num);
-            }
-            //if (!outObj.Contains(obj))
-            //    outObj.Add(obj);
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
 
+            FilterArr(obj, num);
+            belt.FactoryPosCheck(this);
+        }
+        else
+        {
+            outSameList.Add(obj);
+            StartCoroutine(OutCheck(obj, num));
+            StartCoroutine(UnderBeltConnectCheck(obj));
         }
     }
 
-    protected IEnumerator OutCheck(GameObject otherObj, int num)
+    protected IEnumerator OutCheck(Structure otherObj, int num)
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (otherObj.TryGetComponent(out Structure otherFacCtrl))
+        if (otherObj.Get<Production>() && !otherObj.Get<LogisticsCtrl>())
         {
-            if (otherObj.GetComponent<Production>() && !otherObj.GetComponent<LogisticsCtrl>())
+            if (!outObj.Contains(otherObj))
             {
-                if (!outObj.Contains(otherObj))
-                {
-                    outObj.Add(otherObj);
-                    FilterArr(otherObj, num);
-                }
-                StopCoroutine(nameof(SendFacDelay));
-                InOutObjIndexResetClientRpc(false);
-                yield break;
+                outObj.Add(otherObj);
+                FilterArr(otherObj, num);
             }
-
-            if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
-            {
-                StopCoroutine(nameof(SendFacDelay));
-                InOutObjIndexResetClientRpc(false);
-            }
-            else
-            {
-                if (!outObj.Contains(otherObj))
-                {
-                    outObj.Add(otherObj);
-                    FilterArr(otherObj, num);
-                    InOutObjIndexResetClientRpc(false);
-                }
-            }
+            StopCoroutine(nameof(SendFacDelay));
+            InOutObjIndexResetClientRpc(false);
+            yield break;
         }
 
-        //if (otherObj.TryGetComponent(out Structure otherFacCtrl))
-        //{
-        //    if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
-        //    {
-        //        if (otherObj.GetComponent<Production>())
-        //            yield break;
-
-        //        for (int i = 0; i < arrFilter.Length; i++)
-        //        {
-        //            if (arrFilter[i].outObj == otherObj)
-        //            {
-        //                FilterArr(null, i);
-        //            }
-        //        }
-        //        outObj.Remove(otherObj); 
-        //        Invoke(nameof(RemoveSameOutList), 0.1f);
-        //        StopCoroutine(nameof(SendFacDelay));
-        //    }
-        //}
+        if (otherObj.outSameList.Contains(this) && outSameList.Contains(otherObj))
+        {
+            StopCoroutine(nameof(SendFacDelay));
+            InOutObjIndexResetClientRpc(false);
+        }
+        else
+        {
+            if (!outObj.Contains(otherObj))
+            {
+                outObj.Add(otherObj);
+                FilterArr(otherObj, num);
+                InOutObjIndexResetClientRpc(false);
+            }
+        }
     }
-    protected override IEnumerator UnderBeltConnectCheck(GameObject game)
+
+    protected override IEnumerator UnderBeltConnectCheck(Structure game)
     {
         yield return new WaitForSeconds(0.1f);
         bool isReomveFilter = false;
 
-        if (game.TryGetComponent(out GetUnderBeltCtrl getUnder))
+        if (game.TryGet(out GetUnderBeltCtrl getUnder))
         {
-            if (!getUnder.outObj.Contains(this.gameObject) && inObj.Contains(game))
+            if (!getUnder.outObj.Contains(this) && inObj.Contains(game))
             {
                 inObj.Remove(game);
                 isReomveFilter = true;
             }
         }
-        else if (game.TryGetComponent(out SendUnderBeltCtrl sendUnder))
+        else if (game.TryGet(out SendUnderBeltCtrl sendUnder))
         {
-            if (!sendUnder.inObj.Contains(this.gameObject) && outObj.Contains(game))
+            if (!sendUnder.inObj.Contains(this) && outObj.Contains(game))
             {
                 outObj.Remove(game);
                 isReomveFilter = true;

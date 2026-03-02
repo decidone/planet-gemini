@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using static SplitterCtrl;
 
 public class Unloader : LogisticsCtrl
 {
@@ -13,7 +11,6 @@ public class Unloader : LogisticsCtrl
     {
         //setModel = GetComponent<SpriteRenderer>();
         clickEvent = GetComponent<LogisticsClickEvent>();
-        isMainSource = true;
         StrBuilt();
     }
 
@@ -108,44 +105,42 @@ public class Unloader : LogisticsCtrl
         }
     }
 
-    protected override IEnumerator SetOutObjCoroutine(GameObject obj)
+    protected override IEnumerator SetOutObjCoroutine(Structure obj)
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<WallCtrl>())
+        if (!obj || !obj.canTakeItem)
             yield break;
 
-        if (obj.TryGetComponent(out Structure structure))
+
+        if (obj.isStorageBuilding)
         {
-            if (structure.isStorageBuilding)
-            {
-                inObj.Add(obj);
-            }
-            else if (!structure.isMainSource)
-            {
-                if (obj.TryGetComponent(out BeltCtrl belt))
-                {
-                    if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                    {
-                        yield break;
-                    }
-                    belt.FactoryPosCheck(GetComponentInParent<Structure>());
-                }
-                else
-                {
-                    outSameList.Add(obj);
-                    StartCoroutine(OutCheck(obj));
-                }
-                if (!outObj.Contains(obj))
-                    outObj.Add(obj);
-                StartCoroutine(UnderBeltConnectCheck(obj));
-            }
+            inObj.Add(obj);
         }
+        else
+        {
+            if (obj.TryGet<BeltCtrl>(out var belt))
+            {
+                if (belt.beltGroupMgr.nextObj == this)
+                {
+                    yield break;
+                }
+                belt.FactoryPosCheck(this);
+            }
+            else
+            {
+                outSameList.Add(obj);
+                StartCoroutine(OutCheck(obj));
+            }
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
+            StartCoroutine(UnderBeltConnectCheck(obj));
+        }        
     }
 
     protected override void GetItemFunc(int inObjIndex)
     {
-        if (inObj[inObjIndex].TryGetComponent(out Production production))
+        if (inObj[inObjIndex].TryGet(out Production production))
         {
             if (production.UnloadItemCheck(selectItem))
             {

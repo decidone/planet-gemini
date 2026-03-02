@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Overclock : Production
@@ -90,7 +91,7 @@ public class Overclock : Production
             if (obj.TryGetComponent(out Production production))
             {
                 if (production.overclockTower == null && 
-                    !buildingList.Contains(production) && !production.GetComponent<Portal>())
+                    !buildingList.Contains(production) && !production.Get<Portal>())
                 {
                     buildingList.Add(production);
                     production.overclocks.Add(this);
@@ -114,7 +115,6 @@ public class Overclock : Production
 
     public void OverclockOn(bool isOn)
     {
-        Debug.Log(isOn);
         foreach (Production building in buildingList)
         {
             building.OverclockSyncServerRpc(isOn);
@@ -154,4 +154,43 @@ public class Overclock : Production
     {
         view.enabled = false;
     }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (isUIOpened)
+            CloseUI();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        if (overclockTower != null && TryGet(out Production prod))
+            overclockTower.RemoveObjectsOutOfRange(prod);
+
+        OverclockRemove();
+        
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
+    }
+
 }

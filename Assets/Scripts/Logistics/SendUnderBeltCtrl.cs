@@ -7,7 +7,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 {
     void Start()
     {
-        //setModel = GetComponent<SpriteRenderer>();
         StrBuilt();
     }
 
@@ -16,10 +15,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         base.Update();
         if (!removeState)
         {
-            //SetDirNum();
-            //if (isSetBuildingOk && nearObj[2] == null)
-            //    CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
-
             if (IsServer && !isPreBuilding)
             {
                 if (inObj.Count > 0 && !isFull && !itemGetDelay)
@@ -30,7 +25,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
                 {
                     int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
                     SendItem(itemIndex);
-                    //SendItem(itemList[0]);
                 }
             }
         } 
@@ -40,7 +34,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     {
         if (outObj.Count > 0)
         {
-            outObj[0].TryGetComponent(out GetUnderBeltCtrl get);
+            outObj[0].TryGet(out GetUnderBeltCtrl get);
             get.EndRenderer();
         }
     }
@@ -65,9 +59,9 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && hitCollider.gameObject != this.gameObject)
+            if (hitCollider.TryGetComponent(out GetUnderBeltCtrl getUnderBelt) && hitCollider.gameObject != this.gameObject)
             {
-                if (hitCollider.TryGetComponent(out GetUnderBeltCtrl getUnderBelt) && getUnderBelt.dirNum == dirNum)
+                if (getUnderBelt.dirNum == dirNum)
                 {
                     getUnderBelt.NearStrBuilt();
                     return;
@@ -110,48 +104,21 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         setModel.sprite = modelNum[dirNum + (level * 4)];
     }
 
-    protected override IEnumerator SetInObjCoroutine(GameObject obj)
+    protected override IEnumerator SetInObjCoroutine(Structure obj)
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<Structure>() != null)
+        if (obj)
         {
-            if (obj.TryGetComponent(out BeltCtrl belt))
+            if (obj.TryGet<BeltCtrl>(out var belt))
             {
-                if (belt.GetComponentInParent<BeltGroupMgr>().nextObj != this.gameObject)
+                if (belt.beltGroupMgr.nextObj != this)
                 {
                     yield break;
                 }
-                belt.FactoryPosCheck(GetComponentInParent<Structure>());
+                belt.FactoryPosCheck(this);
             }
             inObj.Add(obj);
-        }
-    }
-
-    void GetUnderBeltNearStrBuild(Vector2 direction)
-    {
-        float dist = 10;
-
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, dist);
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<SendUnderBeltCtrl>() != this)
-            {
-                if (hitCollider.TryGetComponent(out SendUnderBeltCtrl othGet) && othGet.dirNum == dirNum)
-                {
-                    return;
-                }
-                else if (hitCollider.TryGetComponent(out GetUnderBeltCtrl getUnderBeltCtrl))
-                {
-                    if (getUnderBeltCtrl.dirNum == dirNum)
-                    {
-                        getUnderBeltCtrl.NearStrBuilt();
-                        return;
-                    }
-                }
-            }
         }
     }
 
@@ -165,22 +132,20 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
-        Structure outFactory = outObj[0].GetComponent<Structure>();
-
-        if (!outFactory.isFull)
+        if (!outObj[0].isFull)
         {
             SendFacDelay(outObj[0], item);
         }
 
-        outFactory.takeItemDelay = false;
+        outObj[0].takeItemDelay = false;
         Invoke(nameof(DelaySetItem), sendDelay);
     }
 
-    public void SetOutObj(GameObject obj)
+    public void SetOutObj(Structure obj)
     {
         if (outObj.Count > 0)
         {
-            outObj[0].GetComponent<GetUnderBeltCtrl>().ResetInObj();
+            outObj[0].Get<GetUnderBeltCtrl>().ResetInObj();
             outObj.Remove(outObj[0]);
         }
         nearObj[0] = obj;
@@ -236,15 +201,13 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
         else
         {
-            Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
-
-            if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
+            if (outObj[0].isFull || outObj[0].takeItemDelay || outObj[0].destroyStart || outObj[0].isPreBuilding)
             {
                 SendItemIndexSet();
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
-            else if (outFactory.TryGetComponent(out Production production))
+            else if (outObj[0].TryGet(out Production production))
             {
                 Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
                 if (!production.CanTakeItem(item))
@@ -254,13 +217,13 @@ public class SendUnderBeltCtrl : LogisticsCtrl
                     return;
                 }
             }
-            else if (outFactory.isMainSource)
+            else if (!outObj[0].canTakeItem)
             {
                 SendItemIndexSet();
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
-            outFactory.takeItemDelay = true;
+            outObj[0].takeItemDelay = true;
         }
 
         SendItemServerRpc(itemIndex, sendItemIndex);
@@ -276,7 +239,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     {
         if (outObj.Count > 0)
         {
-            outObj[0].GetComponent<GetUnderBeltCtrl>().StartRenderer();
+            outObj[0].Get<GetUnderBeltCtrl>().StartRenderer();
         }
     }
 
@@ -284,7 +247,39 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     {
         if (outObj.Count > 0)
         {
-            outObj[0].GetComponent<GetUnderBeltCtrl>().EndRenderer();
+            outObj[0].Get<GetUnderBeltCtrl>().EndRenderer();
         }
+    }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        EndRenderer();
+        
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
     }
 }

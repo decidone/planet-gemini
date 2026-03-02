@@ -262,7 +262,7 @@ public class DataManager : MonoBehaviour
         }
 
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
         if (netObj.TryGetComponent(out Structure structure))
         {
@@ -274,10 +274,10 @@ public class DataManager : MonoBehaviour
             if (saveData.portalName != "")
                 structure.portalName = saveData.portalName;
 
-            if (structure.TryGetComponent(out Production prod))
+            if (structure.TryGet(out Production prod))
             {
                 prod.GameStartItemSet(saveData.inven);
-                if (prod.GetComponent<PortalObj>())
+                if (prod.Get<PortalObj>())
                 {
                     if (saveData.planet)
                     {
@@ -293,17 +293,17 @@ public class DataManager : MonoBehaviour
                     }
                 }
 
-                if (structure.TryGetComponent(out AttackTower tower))
+                if (structure.TryGet(out AttackTower tower))
                 {
                     tower.energyBulletAmount = saveData.energyBulletAmount;
                 }
 
-                if (structure.TryGetComponent(out Disintegrator disintegrator))
+                if (structure.TryGet(out Disintegrator disintegrator))
                 {
                     disintegrator.SetAuto(saveData.isAuto);
                 }
 
-                if (structure.TryGetComponent(out AutoSeller autoSeller))
+                if (structure.TryGet(out AutoSeller autoSeller))
                 {
                     if (saveData.trUnitPosData.Count > 0)
                     {
@@ -323,7 +323,7 @@ public class DataManager : MonoBehaviour
                     }
                 }
 
-                if (structure.TryGetComponent(out AutoBuyer autoBuyer))
+                if (structure.TryGet(out AutoBuyer autoBuyer))
                 {
                     autoBuyer.maxBuyAmount = saveData.maxBuyAmount;
                     autoBuyer.buyInterval = saveData.sendingOption;
@@ -347,7 +347,7 @@ public class DataManager : MonoBehaviour
                     }
                 }
 
-                if (structure.TryGetComponent(out Transporter transporter))
+                if (structure.TryGet(out Transporter transporter))
                 {
                     transporter.SendFuncSetServerRpc(saveData.isAuto, saveData.sendingOption);
 
@@ -355,20 +355,20 @@ public class DataManager : MonoBehaviour
                     if (saveData.connectedStrPos.Count > 0)
                         structure.ConnectedPosListPosSet(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
                 }
-                else if (structure.TryGetComponent(out UnitFactory unitFactory))
+                else if (structure.TryGet(out UnitFactory unitFactory))
                 {
                     if (saveData.connectedStrPos.Count > 0)
                         unitFactory.UnitSpawnPosSetServerRpc(Vector3Extensions.ToVector3(saveData.connectedStrPos[0]));
                 }
 
-                if(prod.TryGetComponent(out FluidFactoryCtrl fluidFactoryCtrl))
+                if(prod.TryGet(out FluidFactoryCtrl fluidFactoryCtrl))
                 {
                     fluidFactoryCtrl.FluidGameStartSet(saveData.fluidType, saveData.storedFluid);
                 }
             }
             else
             {
-                if (structure.TryGetComponent(out SplitterCtrl splitterCtrl))
+                if (structure.TryGet(out SplitterCtrl splitterCtrl))
                 {
                     for (int a = 0; a < saveData.filters.Count; a++)
                     {
@@ -376,13 +376,13 @@ public class DataManager : MonoBehaviour
                         splitterCtrl.GameStartFillterSet(a, filterSaveData.filterOn, filterSaveData.filterInvert, filterSaveData.filterItemIndex);
                     }
                 }
-                else if (structure.TryGetComponent(out Unloader unloader))
+                else if (structure.TryGet(out Unloader unloader))
                 {
                     FilterSaveData filterSaveData = saveData.filters[0];
                     if (filterSaveData.filterItemIndex != -1)
                         unloader.GameStartFillterSet(filterSaveData.filterItemIndex);
                 }
-                else if (structure.TryGetComponent(out LDConnector lDConnector))
+                else if (structure.TryGet(out LDConnector lDConnector))
                 {
                     lDConnectors.Add(lDConnector);
                     if (saveData.connectedStrPos.Count > 0)
@@ -406,7 +406,7 @@ public class DataManager : MonoBehaviour
     {
         GameObject beltGroupObj = Instantiate(beltGroup);
         beltGroupObj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) beltGroupObj.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
         beltGroupObj.transform.parent = beltMgr.transform;
         beltGroupObj.TryGetComponent(out BeltGroupMgr beltGroupMgr);
 
@@ -416,16 +416,15 @@ public class DataManager : MonoBehaviour
             Vector3 spawnPos = Vector3Extensions.ToVector3(beltData.Item2.pos);
             GameObject beltObj = Instantiate(building.gameObj, spawnPos, Quaternion.identity);
             beltObj.TryGetComponent(out NetworkObject netBeltObj);
-            if (!netBeltObj.IsSpawned) beltObj.GetComponent<NetworkObject>().Spawn(true);
+            if (!netBeltObj.IsSpawned) netBeltObj.Spawn(true);
 
-            if (netBeltObj.TryGetComponent(out Structure structure))
-            {
-                structure.GameStartSpawnSet(beltData.Item2.level, beltData.Item2.direction, building.height, building.width, beltData.Item2.planet, beltData.Item2.index);
-                structure.StructureStateSet(beltData.Item2.isPreBuilding, beltData.Item2.destroyStart, beltData.Item2.hp, beltData.Item2.repairGauge, beltData.Item2.destroyTimer);
-                structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(beltData.Item2.pos));
-            }
+            netBeltObj.TryGetComponent(out Structure structure);
 
-            if (netBeltObj.TryGetComponent(out BeltCtrl belt))
+            structure.GameStartSpawnSet(beltData.Item2.level, beltData.Item2.direction, building.height, building.width, beltData.Item2.planet, beltData.Item2.index);
+            structure.StructureStateSet(beltData.Item2.isPreBuilding, beltData.Item2.destroyStart, beltData.Item2.hp, beltData.Item2.repairGauge, beltData.Item2.destroyTimer);
+            structure.MapDataSaveClientRpc(Vector3Extensions.ToVector3(beltData.Item2.pos));
+            
+            if (structure.TryGet(out BeltCtrl belt))
             {
                 belt.GameStartBeltSet(beltData.Item1.modelMotion, beltData.Item1.isTrun, beltData.Item1.isRightTurn, beltData.Item1.beltState);
 
@@ -451,14 +450,14 @@ public class DataManager : MonoBehaviour
             Transporter transporter = transporterData.Key;
             StructureSaveData strData = transporterData.Value;
             Transporter takeTransporter = null;
-            GameObject findObj = null;
+            Structure findObj = null;
             if (transporter.connectedPosList.Count > 0)
                 findObj = CellObjFind(transporter.connectedPosList[0], transporter.isInHostMap);
 
-            if (findObj != null && findObj.TryGetComponent(out takeTransporter))
+            if (findObj != null && findObj.TryGet(out takeTransporter))
             {
                 transporter.TakeBuildSet(takeTransporter);
-                if (transporter.TryGetComponent(out MapClickEvent mapClick) && takeTransporter.TryGetComponent(out MapClickEvent othMapClick))
+                if (transporter.TryGet(out MapClickEvent mapClick) && takeTransporter.TryGet(out MapClickEvent othMapClick))
                 {
                     mapClick.GameStartSetRenderer(othMapClick);
                 }
@@ -496,10 +495,10 @@ public class DataManager : MonoBehaviour
 
             for (int i = 0; i < lDConnector.connectedPosList.Count; i++)
             {
-                GameObject findObj = CellObjFind(lDConnector.connectedPosList[i], lDConnector.isInHostMap);
-                if (findObj != null && findObj.TryGetComponent(out LDConnector othLDConnector))
+                Structure findObj = CellObjFind(lDConnector.connectedPosList[i], lDConnector.isInHostMap);
+                if (findObj != null && findObj.TryGet(out LDConnector othLDConnector))
                 {
-                    if (lDConnector.TryGetComponent(out MapClickEvent mapClick) && othLDConnector.TryGetComponent(out MapClickEvent othMapClick))                    
+                    if (lDConnector.TryGet(out MapClickEvent mapClick) && othLDConnector.TryGet(out MapClickEvent othMapClick))                    
                     {
                         mapClick.GameStartSetRenderer(othMapClick);
                     }
@@ -512,7 +511,7 @@ public class DataManager : MonoBehaviour
     {
         GameObject spawnobj = Instantiate(GeminiNetworkManager.instance.unitListSO.userUnitList[unitSaveData.unitIndex]);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
         spawnobj.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
         spawnobj.GetComponent<UnitAi>().GameStartSet(unitSaveData);
@@ -622,7 +621,7 @@ public class DataManager : MonoBehaviour
         return spawnerObj;
     }
 
-    public GameObject CellObjFind(Vector3 findPos, bool isInHostMap)
+    public Structure CellObjFind(Vector3 findPos, bool isInHostMap)
     {
         int x = Mathf.FloorToInt(findPos.x);
         int y = Mathf.FloorToInt(findPos.y);

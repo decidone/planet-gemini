@@ -147,9 +147,10 @@ public class UnitGroupCtrl : MonoBehaviour
 
     void MonsterTargerSet(GameObject obj)
     {
+        NetworkObject networkObject = obj.GetComponent<NetworkObject>();
         for (int i = 0; i < unitList.Count; i++)
         {
-            unitList[i].GetComponent<UnitAi>().TargetSetServerRpc(obj.GetComponent<NetworkObject>());
+            unitList[i].GetComponent<UnitAi>().TargetSetServerRpc(networkObject);
         }
     }
 }

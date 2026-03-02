@@ -6,18 +6,17 @@ using System;
 // UTF-8 설정
 public class UnderPipeCtrl : FluidFactoryCtrl
 {
-    public GameObject otherPipe = null;
+    public Structure otherPipe = null;
 
-    public GameObject connectUnderPipe = null;
+    public Structure connectUnderPipe = null;
     PreBuilding preBuilding;
     bool preBuildingCheck;
 
     protected override void Start()
     {
-        //setModel = GetComponent<SpriteRenderer>();
         gameManager = GameManager.instance;
         preBuilding = PreBuilding.instance;
-        nearObj = new GameObject[2];
+        nearObj = new Structure[2];
         checkPos = new Vector2[2];
 
         StrBuilt();
@@ -52,7 +51,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     public override void StrBuilt()
     {
-        base.StrBuilt();
+        NearStrBuilt();
 
         float dist = 10;
 
@@ -61,15 +60,17 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && hitCollider.gameObject != this.gameObject)
+            if (hitCollider.TryGetComponent(out Structure str) && str != this)
             {
-                if (hitCollider.TryGetComponent(out UnderPipeCtrl othPipe) && CanConnectUnderPipe(othPipe))
+                if (str.TryGet(out UnderPipeCtrl othPipe) && CanConnectUnderPipe(othPipe))
                 {
                     othPipe.NearStrBuilt();
                     return;
                 }
             }
         }
+
+        CheckSlotState(0);
     }
 
     public override void NearStrBuilt()
@@ -146,7 +147,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         }
     }
 
-    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<Structure> callback)
     {
         float dist = 0;
 
@@ -160,34 +161,34 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.TryGetComponent(out Structure str) && str.destroyStart)
+            if (hitCollider.TryGetComponent(out Structure str))
             {
-                continue; // 구조물이 파괴 중이면 무시
-            }
-
-            if (hitCollider.CompareTag("Factory") && hits[i].collider.gameObject != this.gameObject)
-            {
-                if (index == 0)
+                if(str.destroyStart)
+                    continue; // 구조물이 파괴 중이면 무시
+                else if (str != this)
                 {
-                    if (hitCollider.TryGetComponent(out UnderPipeCtrl otherUnderPipe))
+                    if (index == 0)
                     {
-                        if (CanConnectUnderPipe(otherUnderPipe))
+                        if (str.TryGet(out UnderPipeCtrl otherUnderPipe))
                         {
-                            nearObj[index] = hits[i].collider.gameObject;
-                            callback(hitCollider.gameObject);
-                            break;
+                            if (CanConnectUnderPipe(otherUnderPipe))
+                            {
+                                nearObj[index] = str;
+                                callback(str);
+                                break;
+                            }
+                            else
+                                continue;
                         }
-                        else
-                            continue;
+                    }
+                    else
+                    {
+                        nearObj[index] = str;
+                        callback(str);
+                        break;
                     }
                 }
-                else
-                {                
-                    nearObj[index] = hits[i].collider.gameObject;
-                    callback(hitCollider.gameObject);
-                    break;
-                }
-            }
+            }            
         }
     }
 
@@ -213,57 +214,53 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             return false;
     }
 
-    void UnderPipeSetInObj(GameObject obj)
+    void UnderPipeSetInObj(Structure obj)
     {
-        if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
+        if (obj && obj.TryGet(out UnderPipeCtrl othUnderPipe))
         {
-            if (obj.TryGetComponent(out UnderPipeCtrl othUnderPipe))
+            connectUnderPipe = obj;
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
+            if (othUnderPipe.connectUnderPipe != this)
             {
-                connectUnderPipe = obj;
-                if (!outObj.Contains(obj))
-                    outObj.Add(obj);
-                if (othUnderPipe.connectUnderPipe != this.gameObject)
-                {
-                    if(othUnderPipe.connectUnderPipe != null)
-                        othUnderPipe.connectUnderPipe.GetComponent<UnderPipeCtrl>().DisCntObj();
-                    othUnderPipe.DisCntObj();
-                    othUnderPipe.StrBuilt();
-                }
+                if(othUnderPipe.connectUnderPipe != null && 
+                othUnderPipe.connectUnderPipe.TryGet(out UnderPipeCtrl underPipe))
+                    underPipe.DisCntObj();
 
-                //StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
+                othUnderPipe.DisCntObj();
+                othUnderPipe.StrBuilt();
             }
         }
     }
 
-    public void DisCntObj()
+    void DisCntObj()
     {
         outObj.Remove(connectUnderPipe);
         connectUnderPipe = null;
         nearObj[0] = null;
     }
 
-    void UnderPipeSetOutObj(GameObject obj)
+    void UnderPipeSetOutObj(Structure obj)
     {
-        if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
+        if(obj)
         {
-            if (obj.TryGetComponent(out UnderPipeCtrl othUnderPipe))
+            if (obj.Has<UnderPipeCtrl>())
             {
-                if (!CanConnectUnderPipe(othUnderPipe))
-                    return;
+                return;
             }
 
             otherPipe = obj;
             if (!outObj.Contains(obj))
                 outObj.Add(obj);
-            if (obj.GetComponent<PipeCtrl>() != null)
+
+            if (obj.TryGet(out PipeCtrl otherPipeCtrl))
             {
-                otherPipe.GetComponent<PipeCtrl>().FactoryVecCheck(this.gameObject);
+                otherPipeCtrl.FactoryVecCheck(this);
             }
-            //StartCoroutine(nameof(MainSourceCheck), factoryCtrl);
         }
     }
 
-    public override void ResetNearObj(GameObject game)
+    public override void ResetNearObj(Structure game)
     {
         if(otherPipe == game)
         {
@@ -291,12 +288,12 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     {
         if (outObj.Count > 0)
         {
-            if (outObj[0].TryGetComponent(out UnderPipeCtrl underPipe))
+            if (outObj[0].TryGet(out UnderPipeCtrl underPipe))
             {
                 underPipe.DestroyLineRenderer();
                 underPipe.preBuildingCheck = false;
                 if (connectUnderPipe && isSend)
-                    connectUnderPipe.GetComponent<UnderPipeCtrl>().EndRenderer(!isSend);
+                    connectUnderPipe.Get<UnderPipeCtrl>().EndRenderer(!isSend);
             }
         }
     }

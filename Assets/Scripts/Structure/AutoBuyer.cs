@@ -383,7 +383,7 @@ public class AutoBuyer : Production
             {
                 GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
                 unit.TryGetComponent(out NetworkObject netObj);
-                if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+                if (!netObj.IsSpawned) netObj.Spawn(true);
 
                 if (IsServer)
                     isUnitInStr.Value = false;
@@ -397,7 +397,7 @@ public class AutoBuyer : Production
 
                 GameManager.instance.SubFinanceServerRpc(totalPrice);
                 invItemCheckDic.Add(ItemList.instance.itemDic["CopperGoblet"], 0);
-                unit.GetComponent<TransportUnit>().MovePosSet(this, portalPos, invItemCheckDic);
+                transportUnit.MovePosSet(this, portalPos, invItemCheckDic);
             }
             else
             {
@@ -518,7 +518,7 @@ public class AutoBuyer : Production
     {
         GameObject unit = Instantiate(trUnit, spawnPos, Quaternion.identity);
         unit.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
         Dictionary<Item, int> item = new Dictionary<Item, int>();
         foreach (var data in itemDic)
@@ -564,5 +564,45 @@ public class AutoBuyer : Production
         }
 
         return data;
+    }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (isUIOpened)
+            CloseUI();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        if (overclockTower != null && TryGet(out Production prod))
+            overclockTower.RemoveObjectsOutOfRange(prod);
+
+        if (!isManualDestroy)
+            RemoveFunc();
+        TrUnitToHomelessDrone();
+        
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
     }
 }
