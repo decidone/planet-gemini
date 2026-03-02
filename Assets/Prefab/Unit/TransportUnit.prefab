@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 1370861021348599480}
   - component: {fileID: 435375303516100113}
   - component: {fileID: -203065845486038932}
-  m_Layer: 6
+  m_Layer: 25
   m_Name: TransportUnit
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -339,6 +339,7 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 1
   mainTrBuild: {fileID: 0}
   startPos: {x: 0, y: 0, z: 0}
   othTrBuild: {fileID: 0}

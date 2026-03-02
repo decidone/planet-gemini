@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
@@ -196,7 +195,7 @@ public class UnitFactory : Production
         }
     }
 
-    protected override void CheckNearObj(int index, Action<GameObject> callback)
+    protected override void CheckNearObj(int index, Action<Structure> callback)
     {
         int nearX = (int)transform.position.x + twoDirections[index, 0];
         int nearY = (int)transform.position.y + twoDirections[index, 1];
@@ -207,14 +206,11 @@ public class UnitFactory : Production
         if (nearPos[index] != null)
             nearPos[index] = new Vector2(nearX, nearY);
 
-        GameObject obj = cell.structure;
+        Structure obj = cell.structure;
         if (obj != null)
         {
-            if (obj.CompareTag("Factory"))
-            {
-                nearObj[index] = obj;
-                callback(obj);
-            }
+            nearObj[index] = obj;
+            callback(obj);
         }
     }
 
@@ -223,7 +219,7 @@ public class UnitFactory : Production
         bool spawnPosExist = false;
         for (int i = 0; i < nearPos.Length; i++)
         {
-            if (nearObj[i] != null && !nearObj[i].GetComponent<BeltCtrl>())
+            if (nearObj[i] != null && !nearObj[i].Get<BeltCtrl>())
                 continue;
             else
             {
@@ -274,11 +270,9 @@ public class UnitFactory : Production
         NetworkObject networkObject = unit.GetComponent<NetworkObject>();
         if (!networkObject.IsSpawned) networkObject.Spawn(true);
 
-        //NetworkObjManager.instance.NetObjAdd(unit);
-        UnitAi unitAi = unit.GetComponent<UnitAi>();
+        unit.TryGetComponent(out UnitAi unitAi);
         unitAi.AStarSet(isInHostMap);
-        //unit.transform.position = this.transform.position;
-        unitAi.MovePosSetServerRpc(spawnPos, 0, true);
+        unitAi.MovePosSetServerRpc(spawnPos, 0.1f, true);
     }
 
     public override void DestroyLineRenderer()

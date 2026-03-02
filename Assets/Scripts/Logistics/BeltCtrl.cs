@@ -41,13 +41,28 @@ public class BeltCtrl : LogisticsCtrl
 
     protected override void Awake()
     {
+        foreach (var comp in GetComponents<Component>())
+        {
+            var type = comp.GetType();
+
+            // 자기 자신부터 Component까지 올라가면서 전부 등록
+            while (type != null && type != typeof(MonoBehaviour)
+                                && type != typeof(Behaviour)
+                                && type != typeof(Component))
+            {
+                if (!_cache.ContainsKey(type))
+                    _cache[type] = comp;
+
+                type = type.BaseType;
+            }
+        }
         gameManager = GameManager.instance;
         //beltManager = BeltManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
-        col = GetComponent<BoxCollider2D>();
-        unitSprite = GetComponent<SpriteRenderer>();
-        if (TryGetComponent(out ShaderAnimController controller))
+        col = Get<BoxCollider2D>();
+        setModel = Get<SpriteRenderer>();
+        if (TryGet(out ShaderAnimController controller))
         {
             animController = controller;
         }
@@ -56,13 +71,16 @@ public class BeltCtrl : LogisticsCtrl
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = structureData.MaxHp[level];
+        canTakeItem = structureData.CanTakeItem;
+        canSendItem = structureData.CanSendItem;
+        canTakeFluid = structureData.CanTakeFluid;
+        canSendFluid = structureData.CanSendFluid;
         getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level];
         hpBar.enabled = false;
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         isStorageBuilding = false;
-        isMainSource = false;
         isUIOpened = false;
         myVision.SetActive(false);
         maxAmount = structureData.MaxItemStorageLimit;
@@ -83,11 +101,6 @@ public class BeltCtrl : LogisticsCtrl
         visionPos = transform.position;
         increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
-        //if (TryGetComponent(out Animator anim))
-        //{
-        //    getAnim = true;
-        //    animator = anim;
-        //}
     }
 
     void Start()
@@ -256,7 +269,7 @@ public class BeltCtrl : LogisticsCtrl
         Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         var itemPool = ItemPoolManager.instance.Pool.Get();
         ItemProps spawn = itemPool.GetComponent<ItemProps>();
-        SpriteRenderer sprite = spawn.GetComponent<SpriteRenderer>();
+        SpriteRenderer sprite = spawn.spriteRenderer;
         sprite.sprite = sendItem.icon;
         sprite.sortingOrder = 2;
         spawn.item = sendItem;
@@ -279,7 +292,7 @@ public class BeltCtrl : LogisticsCtrl
         Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         var itemPool = ItemPoolManager.instance.Pool.Get();
         ItemProps spawn = itemPool.GetComponent<ItemProps>();
-        SpriteRenderer sprite = spawn.GetComponent<SpriteRenderer>();
+        SpriteRenderer sprite = spawn.spriteRenderer;
         sprite.sprite = sendItem.icon;
         sprite.sortingOrder = 2;
         spawn.item = sendItem;
@@ -480,8 +493,7 @@ public class BeltCtrl : LogisticsCtrl
         //{
         itemObjList.Add(itemObj);
 
-        if (GetComponent<BeltCtrl>())
-            GetComponent<BeltCtrl>().beltGroupMgr.groupItem.Add(itemObj);
+        beltGroupMgr.groupItem.Add(itemObj);
 
         if (itemObjList.Count >= structureData.MaxItemStorageLimit)
             isFull = true;
@@ -636,22 +648,22 @@ public class BeltCtrl : LogisticsCtrl
             if (xDiff > 0)
             {
                 isLeft = true;
-                nearObj[3] = factory.gameObject;
+                nearObj[3] = factory;
             }
             else if (xDiff < 0)
             {
                 isRight = true;
-                nearObj[1] = factory.gameObject;
+                nearObj[1] = factory;
             }
             else if (yDiff > 0)
             {
                 isDown = true;
-                nearObj[2] = factory.gameObject;
+                nearObj[2] = factory;
             }
             else if (yDiff < 0)
             {
                 isUp = true;
-                nearObj[0] = factory.gameObject;
+                nearObj[0] = factory;
             }
         }
         else
@@ -661,19 +673,19 @@ public class BeltCtrl : LogisticsCtrl
                 if (Mathf.Abs(xDiff) > Mathf.Abs(yDiff))
                 {
                     isLeft = true;
-                    nearObj[3] = factory.gameObject;
+                    nearObj[3] = factory;
                 }
                 else
                 {
                     if (yDiff > 0)
                     {
                         isDown = true;
-                        nearObj[2] = factory.gameObject;
+                        nearObj[2] = factory;
                     }
                     else
                     {
                         isUp = true;
-                        nearObj[0] = factory.gameObject;
+                        nearObj[0] = factory;
                     }
                 }
             }
@@ -682,19 +694,19 @@ public class BeltCtrl : LogisticsCtrl
                 if (Mathf.Abs(xDiff) > Mathf.Abs(yDiff))
                 {
                     isRight = true;
-                    nearObj[1] = factory.gameObject;
+                    nearObj[1] = factory;
                 }
                 else
                 {
                     if (yDiff > 0)
                     {
                         isDown = true;
-                        nearObj[2] = factory.gameObject;
+                        nearObj[2] = factory;
                     }
                     else
                     {
                         isUp = true;
-                        nearObj[0] = factory.gameObject;
+                        nearObj[0] = factory;
                     }
                 }
             }
@@ -763,7 +775,7 @@ public class BeltCtrl : LogisticsCtrl
         BeltDataServerRpc();
     }
 
-    public override void ResetNearObj(GameObject game)
+    public override void ResetNearObj(Structure game)
     {
         for (int i = 0; i < nearObj.Length; i++)
         {
@@ -850,61 +862,6 @@ public class BeltCtrl : LogisticsCtrl
         else
             isFull = false;
     }
-
-    //public void PlayerRootFunc(ItemProps item)
-    //{
-    //    if (itemObjList.Contains(item))
-    //    {
-    //        int index = itemObjList.IndexOf(item);
-    //        if (index != -1)
-    //            PlayerRootFuncServerRpc(index, IsServer);
-
-    //        itemObjList.Remove(item);
-    //        beltGroupMgr.ItemRoot(item);
-    //        item.itemPool.Release(item.gameObject);
-
-    //        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
-    //            isFull = true;
-    //        else
-    //            isFull = false;
-    //    }
-    //}
-
-    //[ServerRpc(RequireOwnership = false)]
-    //public void PlayerRootFuncServerRpc(int index, bool isServer)
-    //{
-    //    PlayerRootFuncClientRpc(index, isServer);
-    //}
-
-    //[ClientRpc]
-    //public void PlayerRootFuncClientRpc(int index, bool isServer)
-    //{
-    //    if (isServer && IsServer)
-    //    {
-    //        return;
-    //    }
-    //    else if (!isServer && !IsServer)
-    //    {
-    //        return;
-    //    }
-
-    //    if (itemObjList.Count < index + 1)
-    //    {
-    //        nextBelt.ItemRootSync();
-    //    }
-    //    else
-    //    {
-    //        ItemProps item = itemObjList[index];
-    //        beltGroupMgr.ItemRoot(item);
-    //        itemObjList.RemoveAt(index);
-    //        item.itemPool.Release(item.gameObject);
-    //    }
-
-    //    if (itemObjList.Count >= structureData.MaxItemStorageLimit)
-    //        isFull = true;
-    //    else
-    //        isFull = false;
-    //}
 
     public void ItemRootSync()
     {
@@ -1072,5 +1029,40 @@ public class BeltCtrl : LogisticsCtrl
     public override void ColliderTriggerOnOff(bool isOn)
     {
         col.isTrigger = true;
+    }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        if (IsServer)
+        {
+            beltGroupMgr.beltManager.BeltDivide(beltGroupMgr, gameObject);
+        }
+
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
     }
 }

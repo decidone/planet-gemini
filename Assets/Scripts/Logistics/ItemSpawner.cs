@@ -1,10 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
-using System;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 
 // UTF-8 설정
 public class ItemSpawner : LogisticsCtrl
@@ -13,7 +9,6 @@ public class ItemSpawner : LogisticsCtrl
 
     void Start()
     {
-        isMainSource = true;
         StrBuilt();
     }
 
@@ -22,24 +17,12 @@ public class ItemSpawner : LogisticsCtrl
         base.Update();
         if (!removeState)
         {
-            //if (isSetBuildingOk)
-            //{
-            //    for (int i = 0; i < nearObj.Length; i++)
-            //    {
-            //        if (nearObj[i] == null)
-            //        {
-            //            CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
-            //        }
-            //    }
-            //}
-
             if (IsServer && !isPreBuilding)
             {
                 if (itemData != null  && outObj.Count > 0 && !itemSetDelay)
                 {
                     int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemData);
                     SendItem(itemIndex);
-                    //SendItem(itemData);
                 }
             }
         } 
@@ -113,7 +96,7 @@ public class ItemSpawner : LogisticsCtrl
     {
         StructureSaveData data = base.SaveData();
 
-        if (TryGetComponent(out Inventory inventory))
+        if (TryGet(out Inventory inventory))
         {
             data.inven = inventory.SaveData();
         }

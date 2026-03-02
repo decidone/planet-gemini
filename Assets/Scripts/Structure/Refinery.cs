@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
 
 // UTF-8 설정
 public class Refinery : FluidFactoryCtrl
@@ -12,22 +11,39 @@ public class Refinery : FluidFactoryCtrl
     protected override void Awake()
     {
         #region StructureAwake
+        foreach (var comp in GetComponents<Component>())
+        {
+            var type = comp.GetType();
+
+            // 자기 자신부터 Component까지 올라가면서 전부 등록
+            while (type != null && type != typeof(MonoBehaviour)
+                                && type != typeof(Behaviour)
+                                && type != typeof(Component))
+            {
+                if (!_cache.ContainsKey(type))
+                    _cache[type] = comp;
+
+                type = type.BaseType;
+            }
+        }
         gameManager = GameManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
-        col = GetComponent<BoxCollider2D>();
-        unitSprite = GetComponent<SpriteRenderer>();
+        col = Get<BoxCollider2D>();
         maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = structureData.MaxHp[level];
+        canTakeItem = structureData.CanTakeItem;
+        canSendItem = structureData.CanSendItem;
+        canTakeFluid = structureData.CanTakeFluid;
+        canSendFluid = structureData.CanSendFluid;
         getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level];
         hpBar.enabled = false;
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         isStorageBuilding = false;
-        isMainSource = false;
         isUIOpened = false;
         myVision.SetActive(false);
         maxAmount = structureData.MaxItemStorageLimit;
@@ -48,13 +64,13 @@ public class Refinery : FluidFactoryCtrl
         visionPos = transform.position;
         increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
-        setModel = GetComponent<SpriteRenderer>();
+        setModel = Get<SpriteRenderer>();
         NonOperateStateSet(isOperate);
         WarningStateCheck();
         #endregion
 
         #region ProductionAwake
-        inventory = this.GetComponent<Inventory>();
+        inventory = Get<Inventory>();
         if (inventory != null)
         {
             inventory.onItemChangedCallback += CheckSlotState;
@@ -67,7 +83,7 @@ public class Refinery : FluidFactoryCtrl
         #endregion
 
         #region FluidFactoryAwake
-        myFluidScript = GetComponent<FluidFactoryCtrl>();
+        myFluidScript = Get<FluidFactoryCtrl>();
         mainSource = null;
         howFarSource = -1;
         preSaveFluidNum = 0;
@@ -245,7 +261,7 @@ public class Refinery : FluidFactoryCtrl
         fluidManager.ConsumeSourceGroupAdd(this);
     }
 
-    void CheckOutObjScript(GameObject game)
+    void CheckOutObjScript(Structure game)
     {
         StartCoroutine(SetOutObjCoroutine(game));
         //if (game.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
@@ -372,9 +388,9 @@ public class Refinery : FluidFactoryCtrl
 
     public override void ConsumeGroupSendFluid()
     {
-        foreach (GameObject obj in outObj)
+        foreach (Structure obj in outObj)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && !fluidFactory.isMainSource && !fluidFactory.isConsumeSource)
+            if (obj.TryGet(out FluidFactoryCtrl fluidFactory) && fluidFactory.canTakeFluid && !fluidFactory.isConsumeSource)
             {
                 fluidFactory.ShouldUpdate(this, howFarSource + 1, false);
             }

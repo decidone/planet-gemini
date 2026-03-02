@@ -20,10 +20,7 @@ MonoBehaviour:
   maxFulidStorageLimit: 0
   sendSpeed:
   - 1
-  sendFluidAmount: 0
   sendDelay:
-  - 0.2
-  upgradeSendDelay:
   - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10
@@ -39,3 +36,7 @@ MonoBehaviour:
   - 5
   upgradedefense:
   - 7
+  canTakeItem: 1
+  canSendItem: 0
+  canTakeFluid: 0
+  canSendFluid: 0

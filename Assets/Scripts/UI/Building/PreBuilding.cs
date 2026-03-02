@@ -657,9 +657,9 @@ public class PreBuilding : NetworkBehaviour
     {
         beltGroupSet = Instantiate(beltGroup);
         beltGroupSet.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) beltGroupSet.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
         beltGroupSet.transform.parent = beltMgr.transform;
-        BeltGroupSpawnClientRpc(beltGroupSet.GetComponent<NetworkObject>());
+        BeltGroupSpawnClientRpc(netObj);
     }
 
     [ClientRpc]
@@ -1231,14 +1231,14 @@ public class PreBuilding : NetworkBehaviour
         GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
         GameObject spawnobj = Instantiate(prefabObj, spawnPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
         if (netObj.TryGetComponent(out Structure structure))
         {
-            if(netObj.GetComponent<BeltCtrl>())
+            if(structure.TryGet(out BeltCtrl belt))
             {
                 BeltGroupMgr beltGroupMgr = beltGroupSet.GetComponent<BeltGroupMgr>();
-                beltGroupMgr.SetBelt(spawnobj, level, dirNum, objHeight, objWidth, isInHostMap, this.buildingIndex);
+                beltGroupMgr.SetBelt(belt, level, dirNum, objHeight, objWidth, isInHostMap, this.buildingIndex);
                 MapDataCheck(spawnobj, spawnPos);
             }
             else
@@ -1266,7 +1266,7 @@ public class PreBuilding : NetworkBehaviour
 
         spawnobj = Instantiate(prefabObj, spawnPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
         if (netObj.TryGetComponent(out Structure structure))
         {
             structure.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
@@ -1286,7 +1286,7 @@ public class PreBuilding : NetworkBehaviour
         //GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
         GameObject spawnobj = Instantiate(prefabObj, spawnPos , Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
         if (netObj.TryGetComponent(out PortalObj portal))
         {

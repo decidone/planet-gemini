@@ -12,7 +12,6 @@ public class PumpCtrl : FluidFactoryCtrl
     protected override void Start()
     {
         mainSource = myFluidScript;
-        isMainSource = true;
         fluidName = "Water";
         StrBuilt();
     }
@@ -101,9 +100,9 @@ public class PumpCtrl : FluidFactoryCtrl
     {
         if (saveFluidNum > 0)
         {
-            foreach (GameObject obj in outObj)
+            foreach (Structure obj in outObj)
             {
-                if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && !fluidFactory.isMainSource)
+                if (obj && obj.TryGet(out FluidFactoryCtrl fluidFactory) && fluidFactory.canTakeFluid)
                 {
                     fluidFactory.ShouldUpdate(this, howFarSource + 1, true);
 

@@ -208,7 +208,7 @@ public class AutoSeller : Production
         {
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
             unit.TryGetComponent(out NetworkObject netObj);
-            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+            if (!netObj.IsSpawned) netObj.Spawn(true);
             if (IsServer)
                 isUnitInStr.Value = false;
             transportUnit = unit.GetComponent<TransportUnit>();
@@ -233,7 +233,7 @@ public class AutoSeller : Production
                 }
             }
 
-            unit.GetComponent<TransportUnit>().MovePosSet(this, portalPos, invItemCheckDic, totalPrice);
+            transportUnit.MovePosSet(this, portalPos, invItemCheckDic, totalPrice);
             foreach (var dicData in invItemCheckDic)
             {
                 inventory.Sub(dicData.Key, dicData.Value);
@@ -290,25 +290,6 @@ public class AutoSeller : Production
         }
     }
 
-    //public void SendFuncSet(bool toggleOn, int amount)
-    //{
-    //    isToggleOn = toggleOn;
-    //    sendAmount = amount;
-    //}
-
-    //[ServerRpc(RequireOwnership = false)]
-    //public void SendFuncSetServerRpc(int amount)
-    //{
-    //    SendFuncSetClientRpc(amount);
-    //}
-
-    //[ClientRpc]
-    //void SendFuncSetClientRpc(int amount)
-    //{
-    //    sendAmount = amount;
-    //    //sInvenManager.TransporterResetUI();
-    //}
-
     public void RemoveFunc()
     {
         if (transportUnit != null)
@@ -328,7 +309,7 @@ public class AutoSeller : Production
     {
         GameObject unit = Instantiate(trUnit, spawnPos, Quaternion.identity);
         unit.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
         Dictionary<Item, int> item = new Dictionary<Item, int>();
         foreach (var data in itemDic)
@@ -385,5 +366,45 @@ public class AutoSeller : Production
         }
 
         return data;
+    }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (isUIOpened)
+            CloseUI();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        if (overclockTower != null && TryGet(out Production prod))
+            overclockTower.RemoveObjectsOutOfRange(prod);
+
+        if (!isManualDestroy)
+            RemoveFunc();
+        TrUnitToHomelessDrone();        
+      
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
     }
 }

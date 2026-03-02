@@ -1934,10 +1934,10 @@ public class GameManager : NetworkBehaviour
         {   //만약 다른 사람이 지우는 경우 예외 처리 해야함
             if (upgradeObjs[i] && upgradeObjs[i].TryGetComponent(out Structure str) && !str.destroyStart)
             {
-                if (upgradeObjs[i].TryGetComponent(out NetworkObject netObj))
+                if (str.NetworkObject)
                 {
-                    networkObjectReference[i] = netObj;
-                    level[i] = upgradeObjs[i].GetComponent<Structure>().level;
+                    networkObjectReference[i] = str.NetworkObject;
+                    level[i] = str.level;
                 }
             }
             else

@@ -1,9 +1,7 @@
 using Pathfinding;
-using Pathfinding.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,7 +51,6 @@ public class Structure : NetworkBehaviour
     protected bool dieCheck = false;
     public GameObject RuinExplo;
     bool damageEffectOn;
-    protected SpriteRenderer unitSprite;
 
     //[HideInInspector]
     //public bool isRuin = false;
@@ -64,6 +61,11 @@ public class Structure : NetworkBehaviour
     protected Image repairBar;
     protected float repairGauge = 0.0f;
 
+    public bool canTakeItem;    // 아이템을 받을 수 있는지
+    public bool canSendItem;    // 아이템을 보낼 수 있는지
+    public bool canTakeFluid;   // 액체를 받을 수 있는지
+    public bool canSendFluid;   // 액체를 받을 수 있는지
+
     //[HideInInspector]
     public List<Item> itemList = new List<Item>();
     //[HideInInspector]
@@ -73,7 +75,7 @@ public class Structure : NetworkBehaviour
     public bool canBuilding = true;
     protected List<GameObject> buildingPosUnit = new List<GameObject>();
 
-    public GameObject[] nearObj = new GameObject[4];
+    public Structure[] nearObj = new Structure[4];
     public Vector2[] checkPos = new Vector2[4];
 
     protected Vector2[] startTransform;
@@ -91,11 +93,11 @@ public class Structure : NetworkBehaviour
     public bool takeItemDelay = false;
 
     //[HideInInspector]
-    public List<GameObject> inObj = new List<GameObject>();
+    public List<Structure> inObj = new List<Structure>();
     //[HideInInspector]
-    public List<GameObject> outObj = new List<GameObject>();
+    public List<Structure> outObj = new List<Structure>();
     //[HideInInspector]
-    public List<GameObject> outSameList = new List<GameObject>();
+    public List<Structure> outSameList = new List<Structure>();
 
     protected int getItemIndex = 0;
     protected int sendItemIndex = 0;
@@ -125,7 +127,6 @@ public class Structure : NetworkBehaviour
     protected float effiCooldownUpgradePer;
 
     public bool isStorageBuilding;
-    public bool isMainSource;
     public bool isUIOpened;
     public bool isPortalBuild = false;
 
@@ -221,18 +222,39 @@ public class Structure : NetworkBehaviour
     public HashSet<Overclock> overclocks = new HashSet<Overclock>();
     public HashSet<RepairTower> repairTowers = new HashSet<RepairTower>();
 
+    protected Dictionary<Type, Component> _cache = new();
+
     protected virtual void Awake()
     {
+        foreach (var comp in GetComponents<Component>())
+        {
+            var type = comp.GetType();
+
+            // 자기 자신부터 Component까지 올라가면서 전부 등록
+            while (type != null && type != typeof(MonoBehaviour)
+                                && type != typeof(Behaviour)
+                                && type != typeof(Component))
+            {
+                if (!_cache.ContainsKey(type))
+                    _cache[type] = comp;
+
+                type = type.BaseType;
+            }
+        }
+
         gameManager = GameManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
-        col = GetComponent<BoxCollider2D>();
-        unitSprite = GetComponent<SpriteRenderer>();
+        col = Get<BoxCollider2D>();
         searchManager = SearchObjectsInRangeManager.instance;
         maxLevel = structureData.MaxLevel;
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = structureData.MaxHp[level];
+        canTakeItem = structureData.CanTakeItem;
+        canSendItem = structureData.CanSendItem;
+        canTakeFluid = structureData.CanTakeFluid;
+        canSendFluid = structureData.CanSendFluid;
         getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level];
         hpBar.enabled = false;
@@ -240,7 +262,6 @@ public class Structure : NetworkBehaviour
         repairBar.fillAmount = 0;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         isStorageBuilding = false;
-        isMainSource = false;
         isUIOpened = false;
         myVision.SetActive(false);
         maxAmount = structureData.MaxItemStorageLimit;
@@ -262,19 +283,35 @@ public class Structure : NetworkBehaviour
         visionPos = transform.position;
         increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
-        setModel = GetComponent<SpriteRenderer>();
-        if (TryGetComponent(out Animator anim))
+        setModel = Get<SpriteRenderer>();
+        if (TryGet(out Animator anim))
         {
             getAnim = true;
             animator = anim;
         }
-        if (TryGetComponent(out ShaderAnimController controller))
+        if (TryGet(out ShaderAnimController controller))
         {
             animController = controller;
             shaderAnimatedMat = Resources.Load<Material>("Materials/ShaderAnimatedMat");
         }
         NonOperateStateSet(isOperate);
         WarningStateCheck();
+
+    }
+
+    public bool Has<T>() where T : Component => _cache.ContainsKey(typeof(T));
+
+    public T Get<T>() where T : Component => _cache.TryGetValue(typeof(T), out var c) ? c as T : null;
+
+    public bool TryGet<T>(out T result) where T : Component
+    {
+        if (_cache.TryGetValue(typeof(T), out var c))
+        {
+            result = c as T;
+            return true;
+        }
+        result = null;
+        return false;
     }
 
     protected virtual void Update()
@@ -556,11 +593,6 @@ public class Structure : NetworkBehaviour
         }
     }
 
-    public NetworkObjectReference ObjFindId()
-    {
-        return GetComponent<NetworkObject>();
-    }
-
     [ServerRpc(RequireOwnership = false)]
     public virtual void ClientConnectSyncServerRpc()
     {
@@ -575,17 +607,17 @@ public class Structure : NetworkBehaviour
             if (nearObj[i] == null)
                 continue;
 
-            NetworkObjectReference networkObjectReference = nearObj[i].GetComponent<Structure>().ObjFindId();
+            NetworkObjectReference networkObjectReference = nearObj[i].NetworkObject;
             NearObjSyncClientRpc(networkObjectReference, i);
         }
         for (int i = 0; i < outObj.Count; i++)
         {
-            NetworkObjectReference networkObjectReference = outObj[i].GetComponent<Structure>().ObjFindId();
+            NetworkObjectReference networkObjectReference = outObj[i].NetworkObject;
             InOutObjSyncClientRpc(networkObjectReference, false);
         }
         for (int i = 0; i < inObj.Count; i++)
         {
-            NetworkObjectReference networkObjectReference = inObj[i].GetComponent<Structure>().ObjFindId();
+            NetworkObjectReference networkObjectReference = inObj[i].NetworkObject;
             InOutObjSyncClientRpc(networkObjectReference, true);
         }
 
@@ -658,7 +690,7 @@ public class Structure : NetworkBehaviour
 
         CheckPos();
         networkObjectReference.TryGet(out NetworkObject obj);
-        nearObj[index] = obj.gameObject;
+        nearObj[index] = obj.GetComponent<Structure>();
     }
 
     [ClientRpc]
@@ -668,13 +700,13 @@ public class Structure : NetworkBehaviour
             return;
 
         networkObjectReference.TryGet(out NetworkObject obj);
-
+        Structure str = obj.GetComponent<Structure>();
         if (isIn)
-            inObj.Add(obj.gameObject);
+            inObj.Add(str);
         else
         {
-            if (!outObj.Contains(obj.gameObject))
-                outObj.Add(obj.gameObject);
+            if (!outObj.Contains(str))
+                outObj.Add(str);
         }
     }
 
@@ -742,7 +774,7 @@ public class Structure : NetworkBehaviour
                 cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
                 if (cell.structure != null)
                 {
-                    cell.structure.GetComponent<Structure>().NearStrBuilt();
+                    cell.structure.NearStrBuilt();
                 }
             }
         }
@@ -756,7 +788,7 @@ public class Structure : NetworkBehaviour
 
                 if (cell.structure != null)
                 {
-                    cell.structure.GetComponent<Structure>().NearStrBuilt();
+                    cell.structure.NearStrBuilt();
                 }
             }
         }
@@ -815,7 +847,7 @@ public class Structure : NetworkBehaviour
         {
             sizeOneByOne = false;
             if (nearObj.Length != 8)
-                nearObj = new GameObject[8];
+                nearObj = new Structure[8];
             //indices = new int[] { 3, 0, 0, 1, 1, 2, 2, 3 };
             //startTransform = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
             //directions = new Vector3[] { transform.up, transform.right, -transform.up, -transform.right };
@@ -823,7 +855,7 @@ public class Structure : NetworkBehaviour
     }
 
     // 1x1 사이즈 근처 오브젝트 찾는 위치(상하좌우) 설정
-    protected virtual void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected virtual void CheckNearObj(Vector2 direction, int index, Action<Structure> callback)
     {
         int nearX = (int)(transform.position.x + direction.x);
         int nearY = (int)(transform.position.y + direction.y);
@@ -831,34 +863,29 @@ public class Structure : NetworkBehaviour
         if (cell == null)
             return;
 
-        GameObject obj = cell.structure;
+        Structure obj = cell.structure;
         if (obj != null)
         {
-            if (GetComponent<LogisticsCtrl>() || (GetComponent<Production>() && !GetComponent<FluidFactoryCtrl>()))
-            {
-                if (obj.GetComponent<FluidFactoryCtrl>() && !obj.GetComponent<Refinery>() && !obj.GetComponent<SteamGenerator>())
-                {
-                    return;
-                }
-            }
-            else if (GetComponent<FluidFactoryCtrl>() && !GetComponent<Refinery>() && !GetComponent<SteamGenerator>())
-            {
-                if (obj.GetComponent<LogisticsCtrl>())
-                {
-                    return;
-                }
-            }
+            bool myItem = canSendItem || canTakeItem;
+            bool myFluid = canSendFluid || canTakeFluid;
+            bool strItem = obj.canSendItem || obj.canTakeItem;
+            bool strFluid = obj.canSendFluid || obj.canTakeFluid;
 
-            if (obj.CompareTag("Factory") || obj.CompareTag("Tower"))
-            {
-                nearObj[index] = obj;
-                callback(obj);
-            }
+            // 아이템과 유체랑 관련 없는 건물들
+            if (!myItem && !myFluid)
+                return;
+
+            // 서로 공통으로 처리할 수 있는 타입이 하나도 없으면 연결 안됨
+            if (!(myItem && strItem) && !(myFluid && strFluid))
+                return;
+
+            nearObj[index] = obj;
+            callback(obj);
         }
     }
 
     // 2x2 사이즈 근처 오브젝트 찾는 위치(상하좌우) 설정
-    protected virtual void CheckNearObj(int index, Action<GameObject> callback)
+    protected virtual void CheckNearObj(int index, Action<Structure> callback)
     {
         int nearX = (int)transform.position.x + twoDirections[index, 0];
         int nearY = (int)transform.position.y + twoDirections[index, 1];
@@ -866,15 +893,12 @@ public class Structure : NetworkBehaviour
         if (cell == null)
             return;
 
-        GameObject obj = cell.structure;
+        Structure obj = cell.structure;
 
         if (obj != null)
         {
-            if (obj.CompareTag("Factory"))
-            {
-                nearObj[index] = obj;
-                callback(obj);
-            }
+            nearObj[index] = obj;
+            callback(obj);
         }
     }
 
@@ -1039,30 +1063,30 @@ public class Structure : NetworkBehaviour
 
     public virtual void ItemNumCheck() { }
 
-    protected virtual IEnumerator UnderBeltConnectCheck(GameObject game)
+    protected virtual IEnumerator UnderBeltConnectCheck(Structure game)
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (game.TryGetComponent(out GetUnderBeltCtrl getUnder))
+        if (game.TryGet(out GetUnderBeltCtrl getUnder))
         {
-            if (!getUnder.outObj.Contains(this.gameObject))
+            if (!getUnder.outObj.Contains(this))
             {
                 inObj.Remove(game);
             }
-            if (!getUnder.inObj.Contains(this.gameObject))
+            if (!getUnder.inObj.Contains(this))
             {
                 outObj.Remove(game);
                 //outSameList.Remove(game);
             }
         }
-        else if (game.TryGetComponent(out SendUnderBeltCtrl sendUnder))
+        else if (game.TryGet(out SendUnderBeltCtrl sendUnder))
         {
-            if (!sendUnder.inObj.Contains(this.gameObject))
+            if (!sendUnder.inObj.Contains(this))
             {
                 outObj.Remove(game);
                 //outSameList.Remove(game);
             }
-            if (!sendUnder.outObj.Contains(this.gameObject))
+            if (!sendUnder.outObj.Contains(this))
             {
                 inObj.Remove(game);
             }
@@ -1098,32 +1122,35 @@ public class Structure : NetworkBehaviour
             Invoke(nameof(DelayGetItem), getDelay);
             return;
         }
-        else if (inObj[getItemIndex].TryGetComponent(out BeltCtrl belt))
+        else if(inObj[getItemIndex])
         {
-            if (!belt.isItemStop)
+            if (inObj[getItemIndex].TryGet(out BeltCtrl belt))
+            {
+                if (!belt.isItemStop)
+                {
+                    GetItemIndexSet();
+                    Invoke(nameof(DelayGetItem), getDelay);
+                    return;
+                }
+                else if (TryGet(out Production production) && belt.itemObjList.Count > 0 && !production.CanTakeItem(belt.itemObjList[0].item))
+                {
+                    GetItemIndexSet();
+                    Invoke(nameof(DelayGetItem), getDelay);
+                    return;
+                }
+            }
+            else if (TryGet(out Unloader unloader) && inObj[getItemIndex].TryGet(out Production inObjScript) && !inObjScript.UnloadItemCheck(unloader.selectItem))
             {
                 GetItemIndexSet();
                 Invoke(nameof(DelayGetItem), getDelay);
                 return;
             }
-            else if (TryGetComponent(out Production production) && belt.itemObjList.Count > 0 && !production.CanTakeItem(belt.itemObjList[0].item))
+            else if (!Has<Unloader>())
             {
                 GetItemIndexSet();
                 Invoke(nameof(DelayGetItem), getDelay);
                 return;
             }
-        }
-        else if (TryGetComponent(out Unloader unloader) && inObj[getItemIndex].TryGetComponent(out Production inObjScript) && !inObjScript.UnloadItemCheck(unloader.selectItem))
-        {
-            GetItemIndexSet();
-            Invoke(nameof(DelayGetItem), getDelay);
-            return;
-        }
-        else if (!GetComponent<Unloader>() && inObj[getItemIndex].GetComponent<Structure>())
-        {
-            GetItemIndexSet();
-            Invoke(nameof(DelayGetItem), getDelay);
-            return;
         }
 
         GetItemServerRpc(getItemIndex);
@@ -1145,7 +1172,7 @@ public class Structure : NetworkBehaviour
 
     protected virtual void GetItemFunc(int inObjIndex)
     {
-        if (inObj[inObjIndex].TryGetComponent(out BeltCtrl belt))
+        if (inObj[inObjIndex].TryGet(out BeltCtrl belt))
         {
             if (belt.itemObjList.Count <= 0)
                 return;
@@ -1169,36 +1196,32 @@ public class Structure : NetworkBehaviour
         if (outObj.Count <= sendItemIndex || !outObj[sendItemIndex])
         {
             SendItemIndexSet();
-            //itemSetDelay = false;
             Invoke(nameof(ItemSetDelayReset), 0.05f);
             return;
         }
         else
         {
-            Structure outFactory = outObj[sendItemIndex].GetComponent<Structure>();
+            outObj[sendItemIndex].TryGet(out Structure outFactory);
 
             if (outFactory.isFull || outFactory.takeItemDelay || outFactory.destroyStart || outFactory.isPreBuilding)
             {
                 SendItemIndexSet();
-                //itemSetDelay = false;
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
-            else if (outFactory.TryGetComponent(out Production production))
+            else if (outFactory.TryGet(out Production production))
             {
                 Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
                 if (!production.CanTakeItem(item))
                 {
                     SendItemIndexSet();
-                    //itemSetDelay = false;
                     Invoke(nameof(ItemSetDelayReset), 0.05f);
                     return;
                 }
             }
-            else if (outFactory.isMainSource)
+            else if (!outFactory.canTakeItem)
             {
                 SendItemIndexSet();
-                //itemSetDelay = false;
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
@@ -1224,7 +1247,7 @@ public class Structure : NetworkBehaviour
     [ServerRpc]
     protected virtual void SendItemServerRpc(int itemIndex, int outObjIndex)
     {
-        if (outObj[outObjIndex].TryGetComponent(out BeltCtrl beltCtrl))
+        if (outObj[outObjIndex].TryGet(out BeltCtrl beltCtrl))
         {
             int beltGroupIndex = 0;
             int groupItemCount = beltCtrl.beltGroupMgr.groupItem.Count;
@@ -1264,15 +1287,15 @@ public class Structure : NetworkBehaviour
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
-        Structure outFactory = outObj[outObjIndex].GetComponent<Structure>();
-        if (outObj[outObjIndex].TryGetComponent(out BeltCtrl beltCtrl))
+        outObj[outObjIndex].TryGet(out Structure outFactory);
+        if (outFactory.TryGet(out BeltCtrl beltCtrl))
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
             ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
             spawnItem.beltGroupIndex = beltGroupIndex;
             if (beltCtrl.OnBeltItem(spawnItem))
             {
-                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                SpriteRenderer sprite = spawnItem.spriteRenderer;
                 sprite.sprite = item.icon;
                 sprite.sortingOrder = 2;
                 spawnItem.item = item;
@@ -1280,24 +1303,24 @@ public class Structure : NetworkBehaviour
                 Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
                 spawnItem.transform.position = spawnPos;
                 spawnItem.isOnBelt = true;
-                spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
+                spawnItem.setOnBelt = beltCtrl;
 
-                if (GetComponent<Production>())
+                if (Has<Production>())
                 {
                     SubFromInventory();
                 }
-                else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
+                else if (Has<LogisticsCtrl>() && !Has<ItemSpawner>())
                 {
                     ItemListRemove();
                     ItemNumCheck();
                 }
             }
         }
-        else if (!outFactory.isMainSource)
+        else
         {
-            if (outObj[outObjIndex].GetComponent<LogisticsCtrl>())
+            if (outFactory.Has<LogisticsCtrl>())
                 SendFacDelay(outObj[outObjIndex], item);
-            else if (outObj[outObjIndex].TryGetComponent(out Production production) && production.CanTakeItem(item))
+            else if (outFactory.TryGet(out Production production) && production.CanTakeItem(item))
                 SendFacDelay(outObj[outObjIndex], item);
         }
 
@@ -1309,14 +1332,15 @@ public class Structure : NetworkBehaviour
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
-        Structure outFactory = outObj[outObjIndex].GetComponent<Structure>();
-        if (outObj[outObjIndex].TryGetComponent(out BeltCtrl beltCtrl))
+        outObj[outObjIndex].TryGet(out Structure outFactory);
+
+        if (outFactory.TryGet(out BeltCtrl beltCtrl))
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
             ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
             if (beltCtrl.OnBeltItem(spawnItem))
             {
-                SpriteRenderer sprite = spawnItem.GetComponent<SpriteRenderer>();
+                SpriteRenderer sprite = spawnItem.spriteRenderer;
                 sprite.sprite = item.icon;
                 sprite.sortingOrder = 2;
                 spawnItem.item = item;
@@ -1324,24 +1348,24 @@ public class Structure : NetworkBehaviour
                 Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
                 spawnItem.transform.position = spawnPos;
                 spawnItem.isOnBelt = true;
-                spawnItem.setOnBelt = beltCtrl.GetComponent<BeltCtrl>();
+                spawnItem.setOnBelt = beltCtrl;
 
-                if (GetComponent<Production>())
+                if (Has<Production>())
                 {
                     SubFromInventory();
                 }
-                else if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>() && !GetComponent<Unloader>())
+                else if (Has<LogisticsCtrl>() && !Has<ItemSpawner>())
                 {
                     ItemListRemove();
                     ItemNumCheck();
                 }
             }
         }
-        else if (!outFactory.isMainSource)
+        else
         {
-            if (outObj[outObjIndex].GetComponent<LogisticsCtrl>())
+            if (outFactory.Has<LogisticsCtrl>())
                 SendFacDelay(outObj[outObjIndex], item);
-            else if (outObj[outObjIndex].TryGetComponent(out Production production) && production.CanTakeItem(item))
+            else if (outFactory.TryGet(out Production production) && production.CanTakeItem(item))
                 SendFacDelay(outObj[outObjIndex], item);
         }
 
@@ -1349,24 +1373,21 @@ public class Structure : NetworkBehaviour
         Invoke(nameof(DelaySetItem), sendDelay);
     }
 
-    protected void SendFacDelay(GameObject outFac, Item item)
+    protected void SendFacDelay(Structure outFac, Item item)
     {
         if (CanSendItemCheck())
         {
-            if (outObj.Count > 0 && outFac != null)
+            if (outObj.Count > 0 && outFac)
             {
-                if (outFac.TryGetComponent(out Structure outFactory))
-                {
-                    outFactory.OnFactoryItem(item);
-                }
+                outFac.OnFactoryItem(item);
             }
 
-            if (GetComponent<LogisticsCtrl>() && !GetComponent<ItemSpawner>())
+            if (Has<LogisticsCtrl>() && !Has<ItemSpawner>())
             {
                 ItemListRemove();
                 ItemNumCheck();
             }
-            else if (GetComponent<Production>())
+            else if (Has<Production>())
             {
                 SubFromInventory();
             }
@@ -1375,14 +1396,14 @@ public class Structure : NetworkBehaviour
 
     bool CanSendItemCheck()
     {
-        if (GetComponent<LogisticsCtrl>())
+        if (Has<LogisticsCtrl>())
         {
-            if (GetComponent<ItemSpawner>())
+            if (Has<ItemSpawner>())
                 return true;
             else if (itemList.Count > 0)
                 return true;
         }
-        else if (GetComponent<Production>() && CheckOutItemNum())
+        else if (Has<Production>() && CheckOutItemNum())
         {
             return true;
         }
@@ -1467,11 +1488,11 @@ public class Structure : NetworkBehaviour
     {
         damageEffectOn = true;
 
-        unitSprite.color = new Color32(255, 100, 100, 255);
+        setModel.color = new Color32(255, 100, 100, 255);
 
         yield return new WaitForSeconds(0.3f);
 
-        unitSprite.color = new Color32(255, 255, 255, 255);
+        setModel.color = new Color32(255, 255, 255, 255);
 
         damageEffectOn = false;
     }
@@ -1510,21 +1531,6 @@ public class Structure : NetworkBehaviour
     {
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
         GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, itemAmount, transform.position);
-
-        //var itemPool = ItemPoolManager.instance.Pool.Get();
-        //ItemProps itemProps = itemPool.GetComponent<ItemProps>();
-
-        //SpriteRenderer sprite = itemProps.GetComponent<SpriteRenderer>();
-        //sprite.sprite = item.icon;
-        //sprite.sortingOrder = 2;
-        //sprite.material = ResourcesManager.instance.outlintMat;
-        //itemProps.item = item;
-        //itemProps.amount = itemAmount;
-        //itemProps.transform.position = transform.position;
-        //itemProps.ResetItemProps();
-
-        //NetworkObject itemNetworkObject = itemProps.GetComponent<NetworkObject>();
-        //itemNetworkObject.Spawn(true);
     }
 
     protected virtual void ItemDrop() { }
@@ -1644,99 +1650,78 @@ public class Structure : NetworkBehaviour
             col.isTrigger = false;
     }
 
-    protected virtual IEnumerator SetInObjCoroutine(GameObject obj)
+    protected virtual IEnumerator SetInObjCoroutine(Structure obj)
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<Structure>() != null)
+        if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (obj.TryGetComponent(out BeltCtrl belt))
+            if (belt.beltGroupMgr.nextObj != this)
             {
-                if (belt.GetComponentInParent<BeltGroupMgr>().nextObj != this.gameObject)
-                {
-                    yield break;
-                }
-                belt.FactoryPosCheck(GetComponentInParent<Structure>());
+                yield break;
             }
-            inObj.Add(obj);
-            StartCoroutine(UnderBeltConnectCheck(obj));
+            belt.FactoryPosCheck(this);
         }
+        inObj.Add(obj);
+        StartCoroutine(UnderBeltConnectCheck(obj));
     }
 
-    protected virtual IEnumerator SetOutObjCoroutine(GameObject obj)
+    protected virtual IEnumerator SetOutObjCoroutine(Structure obj)
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.GetComponent<WallCtrl>())
+        if (!obj || !obj.canTakeItem)
+            yield break;
+
+        if (obj.TryGet<BeltCtrl>(out var belt))
         {
+            if (belt.beltGroupMgr.nextObj == this)
+                yield break;
+            
+            if (!outObj.Contains(obj))
+                outObj.Add(obj);
+
+            belt.FactoryPosCheck(this);
+        }
+        else
+        {
+            outSameList.Add(obj);
+            StartCoroutine(OutCheck(obj));
+            StartCoroutine(UnderBeltConnectCheck(obj));
+        }        
+    }
+
+    protected virtual IEnumerator OutCheck(Structure otherObj)
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        if (otherObj.Has<Production>() && !otherObj.Has<LogisticsCtrl>())
+        {
+            if (!outObj.Contains(otherObj))
+            {
+                outObj.Add(otherObj);
+            }
+            StopCoroutine(nameof(SendFacDelay));
+            InOutObjIndexResetClientRpc(false);
             yield break;
         }
 
-        if (obj.GetComponent<Structure>() != null)
+        if (otherObj.outSameList.Contains(this) && outSameList.Contains(otherObj))
         {
-            if ((obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
-                || obj.GetComponent<Unloader>())
-            {
-                yield break;
-            }
-
-            if (obj.TryGetComponent(out BeltCtrl belt))
-            {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                {
-                    yield break;
-                }
-
-                if (!outObj.Contains(obj))
-                    outObj.Add(obj);
-                belt.FactoryPosCheck(GetComponentInParent<Structure>());
-            }
-            else
-            {
-                outSameList.Add(obj);
-                StartCoroutine(OutCheck(obj));
-                StartCoroutine(UnderBeltConnectCheck(obj));
-            }
-
-            //if (!outObj.Contains(obj))
-            //    outObj.Add(obj);
+            StopCoroutine(nameof(SendFacDelay));
+            InOutObjIndexResetClientRpc(false);
         }
-    }
-
-    protected virtual IEnumerator OutCheck(GameObject otherObj)
-    {
-        yield return new WaitForSeconds(0.1f);
-
-        if (otherObj.TryGetComponent(out Structure otherFacCtrl))
+        else
         {
-            if (otherObj.GetComponent<Production>() && !otherObj.GetComponent<LogisticsCtrl>())
+            if (!outObj.Contains(otherObj))
             {
-                if (!outObj.Contains(otherObj))
-                {
-                    outObj.Add(otherObj);
-                }
-                StopCoroutine(nameof(SendFacDelay));
+                outObj.Add(otherObj);
                 InOutObjIndexResetClientRpc(false);
-                yield break;
-            }
-
-            if (otherFacCtrl.outSameList.Contains(this.gameObject) && outSameList.Contains(otherObj))
-            {
-                StopCoroutine(nameof(SendFacDelay));
-                InOutObjIndexResetClientRpc(false);
-            }
-            else
-            {
-                if (!outObj.Contains(otherObj))
-                {
-                    outObj.Add(otherObj);
-                    InOutObjIndexResetClientRpc(false);
-                }
             }
         }
     }
 
-    public virtual void ResetNearObj(GameObject game)
+    public virtual void ResetNearObj(Structure game)
     {
         if (inObj.Contains(game))
         {
@@ -1769,10 +1754,8 @@ public class Structure : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RemoveObjClientRpc()
+    public virtual void RemoveObjClientRpc()
     {
-        //removeState = true;
-        //ColliderTriggerOnOff(true);
         StopAllCoroutines();
 
         if (isUIOpened)
@@ -1783,70 +1766,20 @@ public class Structure : NetworkBehaviour
 
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] != null && nearObj[i].TryGetComponent(out Structure structure))
+            if (nearObj[i])
             {
-                structure.ResetNearObj(gameObject);
-                if (structure.GetComponentInParent<BeltGroupMgr>())
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
                 {
-                    BeltGroupMgr beltGroup = structure.GetComponentInParent<BeltGroupMgr>();
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
                     beltGroup.nextCheck = true;
                     beltGroup.preCheck = true;
                 }
             }
         }
 
-        if (overclockTower != null && TryGetComponent(out Production prod))
+        if (overclockTower != null && TryGet(out Production prod))
             overclockTower.RemoveObjectsOutOfRange(prod);
-
-        if (IsServer && GetComponent<BeltCtrl>() && GetComponentInParent<BeltManager>() && GetComponentInParent<BeltGroupMgr>())
-        {
-            BeltManager beltManager = GetComponentInParent<BeltManager>();
-            BeltGroupMgr beltGroup = GetComponentInParent<BeltGroupMgr>();
-            beltManager.BeltDivide(beltGroup, gameObject);
-        }
-        else if (TryGetComponent(out Transporter transporter))
-        {
-            if (!transporter.isManualDestroy)
-                transporter.RemoveFunc();
-            transporter.TrUnitToHomelessDrone();
-        }
-        else if (TryGetComponent(out AutoSeller autoSeller))
-        {
-            if (!autoSeller.isManualDestroy)
-                autoSeller.RemoveFunc();
-            autoSeller.TrUnitToHomelessDrone();
-        }
-        else if (TryGetComponent(out AutoBuyer autoBuyer))
-        {
-            if (!autoBuyer.isManualDestroy)
-                autoBuyer.RemoveFunc();
-            autoBuyer.TrUnitToHomelessDrone();
-        }
-        else if (TryGetComponent(out FluidFactoryCtrl fluid))
-        {
-            fluid.RemoveMainSource();
-        }
-        else if (TryGetComponent(out PortalObj portalObj))
-        {
-            portalObj.RemovePortalData();
-        }
-        else if (TryGetComponent(out Overclock overclock))
-        {
-            overclock.OverclockRemove();
-        }
-        else if (TryGetComponent(out RepairTower repairTower))
-        {
-            repairTower.RepairTowerRemove();
-        }
-
-        if (TryGetComponent(out GetUnderBeltCtrl getUnder))
-        {
-            getUnder.EndRenderer();
-        }
-        else if (TryGetComponent(out SendUnderBeltCtrl sendUnder))
-        {
-            sendUnder.EndRenderer();
-        }
 
         if (GameManager.instance.focusedStructure == this)
         {
@@ -1890,7 +1823,7 @@ public class Structure : NetworkBehaviour
             Cell cell = map.GetCellDataFromPos(x, y);
             bool isOnMap = map.IsOnMap(x, y);
 
-            if (isOnMap && cell.structure == gameObject)
+            if (isOnMap && cell.structure == this)
             {
                 cell.structure = null;
             }
@@ -1902,7 +1835,7 @@ public class Structure : NetworkBehaviour
             Cell cell = map.GetCellDataFromPos(x, y);
             bool isOnMap = map.IsOnMap(x, y);
 
-            if (isOnMap && cell.structure == gameObject)
+            if (isOnMap && cell.structure == this)
             {
                 for (int i = 0; i < height; i++)
                 {
@@ -1920,7 +1853,7 @@ public class Structure : NetworkBehaviour
         {
             repairTower.RemoveObjectsOutOfRange(this);
         }
-        if(TryGetComponent(out Production production))
+        if(TryGet(out Production production))
         {
             foreach (Overclock overclock in overclocks)
             {
@@ -1954,7 +1887,7 @@ public class Structure : NetworkBehaviour
 
         if (!isUIOpened) return;
 
-        if (TryGetComponent(out LogisticsClickEvent solidFacClickEvent))
+        if (TryGet(out LogisticsClickEvent solidFacClickEvent))
         {
             if (solidFacClickEvent.LogisticsUI != null)
             {
@@ -1969,7 +1902,7 @@ public class Structure : NetworkBehaviour
                 }
             }
         }
-        else if (TryGetComponent(out StructureClickEvent structureClickEvent))
+        else if (TryGet(out StructureClickEvent structureClickEvent))
         {
             if (structureClickEvent.structureInfoUI != null)
             {
@@ -1990,12 +1923,12 @@ public class Structure : NetworkBehaviour
                 }
             }
 
-            if (TryGetComponent(out Transporter trBuild))
+            if (TryGet(out Transporter trBuild))
             {
                 if (trBuild.lineRenderer != null)
                     Destroy(trBuild.lineRenderer);
             }
-            else if (TryGetComponent(out UnitFactory unitFactory))
+            else if (TryGet(out UnitFactory unitFactory))
             {
                 if (unitFactory.lineRenderer != null)
                     Destroy(unitFactory.lineRenderer);
@@ -2072,52 +2005,6 @@ public class Structure : NetworkBehaviour
 
     public virtual (float, float) PopUpStoredEnergyCheck() { return (0f, 0f); }
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
-    //    {
-    //        if (isPreBuilding)
-    //        {
-    //            buildingPosUnit.Add(collision.gameObject);
-
-    //            if (buildingPosUnit.Count > 0)
-    //            {
-    //                if (!collision.GetComponentInParent<PreBuilding>())
-    //                {
-    //                    canBuilding = false;
-    //                }
-
-    //                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-    //                if (preBuilding != null)
-    //                {
-    //                    preBuilding.isBuildingOk = false;
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
-
-    //private void OnTriggerExit2D(Collider2D collision)
-    //{
-    //    if (collision.GetComponent<UnitCommonAi>() || collision.GetComponent<PlayerController>())
-    //    {
-    //        if (isPreBuilding)
-    //        {
-    //            buildingPosUnit.Remove(collision.gameObject);
-    //            if (buildingPosUnit.Count > 0)
-    //                canBuilding = false;
-    //            else
-    //            {
-    //                canBuilding = true;
-
-    //                PreBuilding preBuilding = GetComponentInParent<PreBuilding>();
-    //                if (preBuilding != null)
-    //                    preBuilding.isBuildingOk = true;
-    //            }
-    //        }
-    //    }
-    //}
-
     public virtual void AddConnector(EnergyGroupConnector connector)
     {
         if (!connectors.Contains(connector))
@@ -2171,9 +2058,9 @@ public class Structure : NetworkBehaviour
             for (int j = 0; j < width; j++)
             {
                 if (isInHostMap)
-                    GameManager.instance.hostMap.GetCellDataFromPos(x + j, y + i).structure = this.gameObject;
+                    GameManager.instance.hostMap.GetCellDataFromPos(x + j, y + i).structure = this;
                 else
-                    GameManager.instance.clientMap.GetCellDataFromPos(x + j, y + i).structure = this.gameObject;
+                    GameManager.instance.clientMap.GetCellDataFromPos(x + j, y + i).structure = this;
             }
         }
     }

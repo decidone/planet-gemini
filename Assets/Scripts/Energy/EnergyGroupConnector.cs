@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -94,7 +93,7 @@ public class EnergyGroupConnector : MonoBehaviour
                 nearbyStr.Add(structure);
                 structure.AddConnector(this);
             }
-            if (structure.TryGetComponent(out EnergyBattery bat))
+            if (structure.TryGet(out EnergyBattery bat))
             {
                 if (!nearbyBat.Contains(bat))
                 {
@@ -122,7 +121,7 @@ public class EnergyGroupConnector : MonoBehaviour
                 nearbyStr.Remove(structure);
                 structure.RemoveConnector(this);
             }
-            if (structure.TryGetComponent(out EnergyBattery bat)){
+            if (structure.TryGet(out EnergyBattery bat)){
                 if (nearbyBat.Contains(bat))
                 {
                     nearbyBat.Remove(bat);
@@ -137,15 +136,12 @@ public class EnergyGroupConnector : MonoBehaviour
         isBuildDone = true;
         for (int i = 0; i < nearbyStr.Count; i++)
         {
-            if (nearbyStr[i].TryGetComponent(out Structure structure))
-            {
-                if (structure.energyUse)
-                    structure.AddConnector(this);
-            }
+            if (nearbyStr[i].energyUse)
+                nearbyStr[i].AddConnector(this);
         }
         for (int i = 0; i < nearbyBat.Count; i++)
         {
-            if (nearbyBat[i].TryGetComponent(out EnergyBattery bat))
+            if (nearbyBat[i].TryGet(out EnergyBattery bat))
             {
                 bat.AddConnector(this);
             }

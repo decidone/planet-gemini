@@ -89,7 +89,7 @@ public class HomelessDroneManager : MonoBehaviour
     {
         GameObject unit = Instantiate(trUnit, Vector3Extensions.ToVector3(saveData.pos), Quaternion.identity);
         unit.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
         unit.GetComponent<TransportUnit>().SetHomelessDrone(saveData);
 
         // 스폰시킨 드론들이 사라지기 전에 다시 세이브/로드할 것을 대비해서 리스트에 저장

@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class BuildInfoCheck : MonoBehaviour
 {
@@ -73,11 +71,10 @@ public class BuildInfoCheck : MonoBehaviour
 
                 if (cell.structure)
                 {
-                    cell.structure.TryGetComponent(out Structure str);
-                    PopUpPosSetStructure(str);
+                    PopUpPosSetStructure(cell.structure);
                     PopUpPosSet(mousePos);
                     isUIOpen = true;
-                    selectedStr = str;
+                    selectedStr = cell.structure;
                 }
                 else if (cell.resource)
                 {

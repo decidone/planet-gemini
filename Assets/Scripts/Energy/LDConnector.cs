@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
@@ -24,7 +23,7 @@ public class LDConnector : Structure
 
     protected void Start()
     {
-        clickEvent = GetComponent<MapClickEvent>();
+        clickEvent = Get<MapClickEvent>();
         gameManager = GameManager.instance;
         preBuilding = PreBuilding.instance;
         view.enabled = false;
@@ -130,10 +129,10 @@ public class LDConnector : Structure
         }
         else
         {
-            GameObject findObj = cell.structure;
-            if (findObj != null && findObj.TryGetComponent(out LDConnector othLDConnector))
+            Structure findObj = cell.structure;
+            if (findObj != null && findObj.TryGet(out LDConnector othLDConnector))
             {
-                if (TryGetComponent(out MapClickEvent mapClick) && othLDConnector.TryGetComponent(out MapClickEvent othMapClick))
+                if (TryGet(out MapClickEvent mapClick) && othLDConnector.TryGet(out MapClickEvent othMapClick))
                 {
                     mapClick.GameStartSetRenderer(othMapClick);
                 }
@@ -200,7 +199,7 @@ public class LDConnector : Structure
         {
             if (!animController.isInitialized)
             {
-                this.GetComponent<SpriteRenderer>().material = shaderAnimatedMat;
+                setModel.material = shaderAnimatedMat;
             }
             animController.Refresh();
         }

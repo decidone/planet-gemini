@@ -18,7 +18,6 @@ public class MonsterAi : UnitCommonAi
     Vector3 patRandomPos = Vector3.zero;
     protected int idle = -1;
     protected int attackMotion;
-    List<string> targetTags = new List<string> { "Player", "Unit", "Tower", "Factory" };
     protected bool idleTimeStart = true;
 
     public bool isScriptActive = false;

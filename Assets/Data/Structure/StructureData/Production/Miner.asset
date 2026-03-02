@@ -46,3 +46,7 @@ MonoBehaviour:
   - 7
   - 9
   - 11
+  canTakeItem: 0
+  canSendItem: 1
+  canTakeFluid: 0
+  canSendFluid: 0

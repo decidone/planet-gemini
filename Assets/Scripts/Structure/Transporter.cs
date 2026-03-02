@@ -36,7 +36,7 @@ public class Transporter : Production
         maxFuel = 100;
         transportInterval = 1.0f;
         isStorageBuilding = true;
-        clickEvent = GetComponent<MapClickEvent>();
+        clickEvent = Get<MapClickEvent>();
         if (IsServer)
             isUnitInStr.Value = true;
 
@@ -201,10 +201,10 @@ public class Transporter : Production
         }
         else
         {
-            GameObject findObj = cell.structure;
-            if (findObj != null && findObj.TryGetComponent(out Transporter takeTransporter))
+            Structure findObj = cell.structure;
+            if (findObj != null && findObj.TryGet(out Transporter takeTransporter))
             {
-                if (TryGetComponent(out MapClickEvent mapClick) && takeTransporter.TryGetComponent(out MapClickEvent othMapClick))
+                if (TryGet(out MapClickEvent mapClick) && takeTransporter.TryGet(out MapClickEvent othMapClick))
                 {
                     mapClick.GameStartSetRenderer(othMapClick);
                 }
@@ -287,7 +287,7 @@ public class Transporter : Production
         {
             GameObject unit = Instantiate(trUnit, transform.position, Quaternion.identity);
             unit.TryGetComponent(out NetworkObject netObj);
-            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+            if (!netObj.IsSpawned) netObj.Spawn(true);
             
             sendItemUnit.Add(unit);
             if (IsServer)
@@ -513,7 +513,7 @@ public class Transporter : Production
     {
         GameObject unit = Instantiate(trUnit, spawnPos, Quaternion.identity);
         unit.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
         Dictionary<Item, int> item = new Dictionary<Item, int>();
         foreach (var data in itemDic)
@@ -538,7 +538,7 @@ public class Transporter : Production
     {
         GameObject unit = Instantiate(trUnit, spawnPos, Quaternion.identity);
         unit.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
         Dictionary<Item, int> item = new Dictionary<Item, int>();
         foreach (var data in itemDic)
@@ -594,5 +594,45 @@ public class Transporter : Production
         }
 
         return data;
+    }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (isUIOpened)
+            CloseUI();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        if (overclockTower != null && TryGet(out Production prod))
+            overclockTower.RemoveObjectsOutOfRange(prod);
+
+        if (!isManualDestroy)
+            RemoveFunc();
+        TrUnitToHomelessDrone();
+      
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
     }
 }

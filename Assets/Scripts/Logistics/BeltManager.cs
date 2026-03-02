@@ -45,7 +45,7 @@ public class BeltManager : NetworkBehaviour
         NetworkObject groupMgr = fstGroupMgr.NetworkObject;
         foreach (BeltCtrl belt in secGroupMgr.beltList)
         {
-            belt.GetComponent<NetworkObject>().TrySetParent(groupMgr);
+            belt.NetworkObject.TrySetParent(groupMgr);
             //belt.transform.parent = fstGroupMgr.transform;
             belt.beltGroupMgr = fstGroupMgr;
         }
@@ -58,11 +58,11 @@ public class BeltManager : NetworkBehaviour
         if (secGroupMgr.nextObj != null)
         {
             fstGroupMgr.nextObj = secGroupMgr.nextObj;
-            fstGroupMgr.NearObjSetClientRpc(secGroupMgr.nextObj.GetComponent<NetworkObject>(), true);
+            fstGroupMgr.NearObjSetClientRpc(secGroupMgr.nextObj.NetworkObject, true);
         }
 
         //BeltGroupRemoveServerRpc(secGroupMgr.NetworkObject);
-        NetworkObject destroyObj = secGroupMgr.GetComponent<NetworkObject>();
+        NetworkObject destroyObj = secGroupMgr.NetworkObject;
         if (destroyObj != null && destroyObj.IsSpawned)
         {
             destroyObj.Despawn();
@@ -79,7 +79,7 @@ public class BeltManager : NetworkBehaviour
             //beltGroup.beltList[0].transform.parent = null;
             beltGroup.beltList[0].NetworkObject.TryRemoveParent();
             //BeltGroupRemoveServerRpc(beltGroup.NetworkObject);
-            NetworkObject destroyObj = beltGroup.GetComponent<NetworkObject>();
+            NetworkObject destroyObj = beltGroup.NetworkObject;
             if (destroyObj != null && destroyObj.IsSpawned)
             {
                 destroyObj.Despawn();
@@ -167,9 +167,9 @@ public class BeltManager : NetworkBehaviour
     {
         GameObject newObj = Instantiate(beltGroupMgrObj);
         newObj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) newObj.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
 
-        netObj.TrySetParent(this.NetworkObject);
+        netObj.TrySetParent(NetworkObject);
         //newObj.transform.parent = gameObject.transform;
 
         BeltGroupMgr newBeltGroup = newObj.GetComponent<BeltGroupMgr>();

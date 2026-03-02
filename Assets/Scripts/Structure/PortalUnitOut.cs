@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -18,7 +16,7 @@ public class PortalUnitOut : PortalObj
         isGetLine = true;
     }
 
-    protected override void CheckNearObj(int index, Action<GameObject> callback)
+    protected override void CheckNearObj(int index, Action<Structure> callback)
     {
         int nearX = (int)transform.position.x + twoDirections[index, 0];
         int nearY = (int)transform.position.y + twoDirections[index, 1];
@@ -29,31 +27,12 @@ public class PortalUnitOut : PortalObj
         if (nearPos[index] != null)
             nearPos[index] = new Vector2(nearX, nearY);
 
-        GameObject obj = cell.structure;
+        Structure obj = cell.structure;
         if (obj != null)
         {
-            if (obj.CompareTag("Factory"))
-            {
-                nearObj[index] = obj;
-                callback(obj);
-            }
+            nearObj[index] = obj;
+            callback(obj);
         }
-
-        //RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
-
-        //if (nearPos[index] != null)
-        //    nearPos[index] = this.transform.position + startVec + endVec;
-
-        //for (int i = 0; i < hits.Length; i++)
-        //{
-        //    Collider2D hitCollider = hits[i].collider;
-        //    if (hitCollider.CompareTag("Factory") && hits[i].collider.gameObject != this.gameObject)
-        //    {
-        //        nearObj[index] = hits[i].collider.gameObject;
-        //        callback(hitCollider.gameObject);
-        //        break;
-        //    }
-        //}
     }
 
     public void SpawnUnitCheck(GameObject unit)
@@ -61,7 +40,7 @@ public class PortalUnitOut : PortalObj
         if (IsServer)
         {
             unit.TryGetComponent(out NetworkObject netObj);
-            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+            if (!netObj.IsSpawned) netObj.Spawn(true);
         }
 
         UnitAi unitAi = unit.GetComponent<UnitAi>();

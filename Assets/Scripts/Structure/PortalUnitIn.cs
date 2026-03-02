@@ -240,7 +240,7 @@ public class PortalUnitIn : PortalObj
         if (IsServer)
         {
             unit.TryGetComponent(out NetworkObject netObj);
-            if (!netObj.IsSpawned) unit.GetComponent<NetworkObject>().Spawn(true);
+            if (!netObj.IsSpawned) netObj.Spawn(true);
         }
 
         UnitAi unitAi = unit.GetComponent<UnitAi>();
@@ -318,7 +318,7 @@ public class PortalUnitIn : PortalObj
 
         if (collision.collider.TryGetComponent(out UnitAi unitAi) && unitAi.playerUnitPortalIn && !sendUnitList.Contains(collision.gameObject) && sendUnitList.Count < 18)
         {
-            UnitListAddServerRpc(collision.gameObject.GetComponent<NetworkObject>());
+            UnitListAddServerRpc(unitAi.NetworkObject);
             unitAi.transform.position = new Vector3(-100, -100, 0);
 
             unitAi.PortalUnitInFuncServerRpc(isInHostMap);

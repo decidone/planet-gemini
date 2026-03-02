@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
 // UTF-8 설정
@@ -79,8 +78,7 @@ public class RepairTower : TowerAi
         for (int i = 0; i < hitCount; i++)
         {
             GameObject building = targetColls[i].gameObject;
-            if (!building.TryGetComponent(out Portal portal) 
-                && building.TryGetComponent(out Structure structure) && !buildingList.Contains(structure))
+            if (building.TryGetComponent(out Structure structure) && !structure.Has<Portal>() && !buildingList.Contains(structure))
             {
                 buildingList.Add(structure);
                 structure.repairTowers.Add(this);
@@ -153,5 +151,43 @@ public class RepairTower : TowerAi
     public override void DisableFocused()
     {
         view.enabled = false;
+    }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (isUIOpened)
+            CloseUI();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        if (overclockTower != null && TryGet(out Production prod))
+            overclockTower.RemoveObjectsOutOfRange(prod);
+
+        RepairTowerRemove();
+        
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
     }
 }

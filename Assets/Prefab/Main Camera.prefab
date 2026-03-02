@@ -75,7 +75,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 8219135
+    m_Bits: 50162175
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -134,6 +134,7 @@ MonoBehaviour:
   height: 1080
   borderX: 30
   borderY: 16.875
+  isPlayerRespawning: 0
 --- !u!114 &5745257049298284171
 MonoBehaviour:
   m_ObjectHideFlags: 0

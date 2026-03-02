@@ -22,7 +22,22 @@ public class SteamGenerator : FluidFactoryCtrl
     protected override void Awake()
     {
         #region ProductionAwake
-        inventory = this.GetComponent<Inventory>();
+        foreach (var comp in GetComponents<Component>())
+        {
+            var type = comp.GetType();
+
+            // 자기 자신부터 Component까지 올라가면서 전부 등록
+            while (type != null && type != typeof(MonoBehaviour)
+                                && type != typeof(Behaviour)
+                                && type != typeof(Component))
+            {
+                if (!_cache.ContainsKey(type))
+                    _cache[type] = comp;
+
+                type = type.BaseType;
+            }
+        }
+        inventory = Get<Inventory>();
         if (inventory != null)
         {
             inventory.onItemChangedCallback += CheckSlotState;
@@ -33,17 +48,20 @@ public class SteamGenerator : FluidFactoryCtrl
         gameManager = GameManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
-        col = GetComponent<BoxCollider2D>();
+        col = Get<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = maxHp;
+        canTakeItem = structureData.CanTakeItem;
+        canSendItem = structureData.CanSendItem;
+        canTakeFluid = structureData.CanTakeFluid;
+        canSendFluid = structureData.CanSendFluid;
         getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level];
         hpBar.fillAmount = hp / maxHp;
         repairBar.fillAmount = 0;
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         isStorageBuilding = false;
-        isMainSource = false;
         isUIOpened = false;
         myVision.SetActive(false);
         maxAmount = structureData.MaxItemStorageLimit;
@@ -66,13 +84,12 @@ public class SteamGenerator : FluidFactoryCtrl
         increasedStructure = new bool[5];
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
-        setModel = GetComponent<SpriteRenderer>();
+        setModel = Get<SpriteRenderer>();
         NonOperateStateSet(isOperate);
         WarningStateCheck();
-
         #endregion
         #region FluidFactoryAwake
-        myFluidScript = GetComponent<FluidFactoryCtrl>();
+        myFluidScript = Get<FluidFactoryCtrl>();
         mainSource = null;
         howFarSource = -1;
         preSaveFluidNum = 0;
@@ -496,9 +513,9 @@ public class SteamGenerator : FluidFactoryCtrl
 
     public override void ConsumeGroupSendFluid()
     {
-        foreach (GameObject obj in outObj)
+        foreach (Structure obj in outObj)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidFactory) && !fluidFactory.isMainSource && !fluidFactory.isConsumeSource)
+            if (obj && obj.TryGet(out FluidFactoryCtrl fluidFactory) && fluidFactory.canTakeFluid && !fluidFactory.isConsumeSource)
             {
                 fluidFactory.ShouldUpdate(this, howFarSource + 1, false);
             }

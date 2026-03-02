@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
@@ -64,47 +63,45 @@ public class TowerSingleAttackFx : TowerAttackFx
     {
         if (!IsServer)
             return;
-        if (collision.CompareTag("Monster") || collision.CompareTag("Spawner"))
+
+        if (!alreadyHit)
         {
-            if (!alreadyHit)
+            if (timerCoroutine != null)
+                StopCoroutine(timerCoroutine);
+
+            if (explosion)
             {
-                if (timerCoroutine != null)
-                    StopCoroutine(timerCoroutine);
-
-                if (explosion)
+                NetworkObject bulletPool = networkObjectPool.GetNetworkObject(bulletExploFx, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
+                if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
+                bulletPool.TryGetComponent(out TowerAreaAttackFx fx);
+                if (slowDebuff)
                 {
-                    NetworkObject bulletPool = networkObjectPool.GetNetworkObject(bulletExploFx, new Vector2(this.transform.position.x, this.transform.position.y), Quaternion.identity);
-                    if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
-                    bulletPool.TryGetComponent(out TowerAreaAttackFx fx);
-                    if (slowDebuff)
-                    {
-                        fx.SlowDebuffSet(slowTime);
-                    }
-                    else if (poisonTrueAttack)
-                    {
-                        fx.PoisonTrueAttackSet(poisonTime);
-                    }
-                    else if (ignoreDdefense)
-                    {
-                        fx.IgnoreDdefenseSet(ignorePercent);
-                    }
-                    fx.GetTarget(damage, attackUnit);
+                    fx.SlowDebuffSet(slowTime);
                 }
-                else
+                else if (poisonTrueAttack)
                 {
-                    if (collision.TryGetComponent(out MonsterAi monster))
-                    {
-                        TakeDamage(monster);
-                    }
-                    else if (collision.TryGetComponent(out MonsterSpawner spawner))
-                    {
-                        TakeDamage(spawner);
-                    }
+                    fx.PoisonTrueAttackSet(poisonTime);
                 }
-
-                DestroyBullet();
-                alreadyHit = true;
+                else if (ignoreDdefense)
+                {
+                    fx.IgnoreDdefenseSet(ignorePercent);
+                }
+                fx.GetTarget(damage, attackUnit);
             }
+            else
+            {
+                if (collision.TryGetComponent(out MonsterAi monster))
+                {
+                    TakeDamage(monster);
+                }
+                else if (collision.TryGetComponent(out MonsterSpawner spawner))
+                {
+                    TakeDamage(spawner);
+                }
+            }
+
+            DestroyBullet();
+            alreadyHit = true;
         }
     }
 }

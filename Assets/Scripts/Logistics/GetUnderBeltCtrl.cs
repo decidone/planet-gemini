@@ -117,9 +117,9 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.CompareTag("Factory") && hitCollider.gameObject != this.gameObject)
+            if(hitCollider.TryGetComponent(out Structure str) && str != this)
             {
-                if (hitCollider.TryGetComponent(out GetUnderBeltCtrl getUnderBelt) && getUnderBelt.dirNum == dirNum)
+                if (str.TryGet(out GetUnderBeltCtrl getUnderBelt) && getUnderBelt.dirNum == dirNum)
                 {
                     getUnderBelt.NearStrBuilt();
                     return;
@@ -178,7 +178,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         setModel.sprite = modelNum[dirNum + (level * 4)];
     }
 
-    protected override void CheckNearObj(Vector2 direction, int index, Action<GameObject> callback)
+    protected override void CheckNearObj(Vector2 direction, int index, Action<Structure> callback)
     {
         float dist = 0;
 
@@ -192,76 +192,37 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.TryGetComponent(out Structure str) && str.destroyStart)
+            if (hitCollider.TryGetComponent(out Structure str))
             {
-                continue; // 구조물이 파괴 중이면 무시
-            }
-
-            if (index != 2)
-            {
-                if (hitCollider.CompareTag("Factory") && hits[i].collider.gameObject != this.gameObject)
+                if(str.destroyStart)
+                    continue;
+                else if(str != this)
                 {
-                    nearObj[index] = hits[i].collider.gameObject;
-                    callback(hitCollider.gameObject);
-                    break;
-                }
-            }
-            else
-            {
-                if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<GetUnderBeltCtrl>() != this)
-                {
-                    if (hitCollider.TryGetComponent(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)                    
+                    if (index != 2)
                     {
+                        nearObj[index] = str;
+                        callback(str);
                         break;
                     }
-                    else if(hitCollider.TryGetComponent(out SendUnderBeltCtrl sendUnderBelt))
+                    else
                     {
-                        if (sendUnderBelt.dirNum == dirNum)
+                        if (str.TryGet(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)
                         {
-                            nearObj[index] = hits[i].collider.gameObject;
-                            callback(hitCollider.gameObject);
                             break;
+                        }
+                        else if (str.TryGet(out SendUnderBeltCtrl sendUnderBelt))
+                        {
+                            if (sendUnderBelt.dirNum == dirNum)
+                            {
+                                nearObj[index] = str;
+                                callback(str);
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
-    }
-    protected override IEnumerator SetOutObjCoroutine(GameObject obj)
-    {
-        yield return new WaitForSeconds(0.1f);
-        
-        if (obj.GetComponent<WallCtrl>())
-            yield break;
-
-        if (obj.GetComponent<Structure>() != null)
-        {
-            if ((obj.GetComponent<ItemSpawner>() && GetComponent<ItemSpawner>())
-                || obj.GetComponent<Unloader>())
-            {
-                yield break;
-            }
-
-            if (obj.TryGetComponent(out BeltCtrl belt))
-            {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                {
-                    yield break;
-                }
-                if (!outObj.Contains(obj))
-                    outObj.Add(obj);
-                belt.FactoryPosCheck(GetComponentInParent<Structure>());
-            }
-            else
-            {
-                outSameList.Add(obj);
-                StartCoroutine(OutCheck(obj));
-                StartCoroutine(UnderBeltConnectCheck(obj));
-            }
-            //if (!outObj.Contains(obj))
-            //    outObj.Add(obj);
-        }
-        //checkObj = true;
     }
 
     [ClientRpc]
@@ -298,16 +259,14 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         soundManager.PlaySFX(gameObject, "structureSFX", "BuildingSound");
     }
 
-    protected override IEnumerator SetInObjCoroutine(GameObject obj)
+    protected override IEnumerator SetInObjCoroutine(Structure obj)
     {
         yield return new WaitForSeconds(0.1f);
-
-        SendUnderBeltCtrl sendUnderbelt = obj.GetComponent<SendUnderBeltCtrl>();
-
-        if (sendUnderbelt.dirNum == dirNum)
+             
+        if (obj.TryGet(out SendUnderBeltCtrl sendUnderbelt) && sendUnderbelt.dirNum == dirNum)
         {
             inObj.Add(obj);
-            sendUnderbelt.SetOutObj(this.gameObject);
+            sendUnderbelt.SetOutObj(this);
         }
     }
 
@@ -338,5 +297,37 @@ public class GetUnderBeltCtrl : LogisticsCtrl
     public override void DisableFocused()
     {
         EndRenderer();
+    }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        EndRenderer();
+
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
     }
 }

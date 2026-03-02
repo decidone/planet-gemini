@@ -81,4 +81,20 @@ public class StructureData : ScriptableObject
     [SerializeField]
     private float[] upgradedefense;
     public float[] UpgradeDefense { get { return upgradedefense; } }
+
+    [SerializeField]
+    private bool canTakeItem;
+    public bool CanTakeItem { get { return canTakeItem; } }
+
+    [SerializeField]
+    private bool canSendItem;
+    public bool CanSendItem { get { return canSendItem; } }
+
+    [SerializeField]
+    private bool canTakeFluid;
+    public bool CanTakeFluid { get { return canTakeFluid; } }
+
+    [SerializeField]
+    private bool canSendFluid;
+    public bool CanSendFluid { get { return canSendFluid; } }
 }

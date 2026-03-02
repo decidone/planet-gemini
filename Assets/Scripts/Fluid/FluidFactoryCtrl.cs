@@ -27,14 +27,33 @@ public class FluidFactoryCtrl : Production
 
     protected override void Awake()
     {
+        foreach (var comp in GetComponents<Component>())
+        {
+            var type = comp.GetType();
+
+            // 자기 자신부터 Component까지 올라가면서 전부 등록
+            while (type != null && type != typeof(MonoBehaviour)
+                                && type != typeof(Behaviour)
+                                && type != typeof(Component))
+            {
+                if (!_cache.ContainsKey(type))
+                    _cache[type] = comp;
+
+                type = type.BaseType;
+            }
+        }
         gameManager = GameManager.instance;
-        myFluidScript = GetComponent<FluidFactoryCtrl>();
+        myFluidScript = Get<FluidFactoryCtrl>();
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
-        col = GetComponent<BoxCollider2D>();
+        col = Get<BoxCollider2D>();
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         hp = maxHp;
+        canTakeItem = structureData.CanTakeItem;
+        canSendItem = structureData.CanSendItem;
+        canTakeFluid = structureData.CanTakeFluid;
+        canSendFluid = structureData.CanSendFluid;
         getDelay = 0.05f;
         sendDelay = structureData.SendDelay[level]; 
         hpBar.fillAmount = hp / maxHp;
@@ -57,7 +76,7 @@ public class FluidFactoryCtrl : Production
         destroyTimer = destroyInterval;
         onEffectUpgradeCheck += IncreasedStructureCheck;
         onEffectUpgradeCheck.Invoke();
-        setModel = GetComponent<SpriteRenderer>();
+        setModel = Get<SpriteRenderer>();
         fluidManager = FluidManager.instance;
         NonOperateStateSet(isOperate);
     }
@@ -116,22 +135,22 @@ public class FluidFactoryCtrl : Production
         fluidName = fluidNameSync;
     }
 
-    protected virtual void FluidSetOutObj(GameObject obj)
+    protected virtual void FluidSetOutObj(Structure obj)
     {
-        if (obj.TryGetComponent(out FluidFactoryCtrl factoryCtrl))
+        if (obj.TryGet(out FluidFactoryCtrl factoryCtrl))
         {
             if (!outObj.Contains(obj))
                 outObj.Add(obj);
-            if (obj.TryGetComponent(out UnderPipeCtrl underPipe))
+            if (obj.TryGet(out UnderPipeCtrl underPipe))
             {
                 UnderPipeConnectCheck(obj);
             }
         }
     }
 
-    protected virtual void UnderPipeConnectCheck(GameObject obj)
+    protected virtual void UnderPipeConnectCheck(Structure obj)
     {
-        if(obj.TryGetComponent(out UnderPipeCtrl underPipeCtrl))
+        if(obj.TryGet(out UnderPipeCtrl underPipeCtrl))
         {
             if (underPipeCtrl.otherPipe == null || underPipeCtrl.otherPipe != this.gameObject)
             {
@@ -139,7 +158,7 @@ public class FluidFactoryCtrl : Production
             }
         }
 
-        if(TryGetComponent(out PipeCtrl pipe))
+        if(TryGet(out PipeCtrl pipe))
             pipe.ChangeModel();
     }
 
@@ -149,9 +168,9 @@ public class FluidFactoryCtrl : Production
             return;
 
         Dictionary<FluidFactoryCtrl, (float, float, bool)> canSendDic = new Dictionary<FluidFactoryCtrl, (float, float, bool)>(); // (저장량, 최대 저장량, 역류가능성)
-        foreach (GameObject obj in outObj)
+        foreach (Structure obj in outObj)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.isMainSource)
+            if (obj.TryGet(out FluidFactoryCtrl fluidCtrl) && fluidCtrl.canTakeFluid)
             {
                 fluidCtrl.ShouldUpdate(mainSource, howFarSource + 1, true);
 
@@ -201,9 +220,9 @@ public class FluidFactoryCtrl : Production
             return;
 
         Dictionary<FluidFactoryCtrl, (float, float)> canSendDic = new Dictionary<FluidFactoryCtrl, (float, float)>(); // (저장량, 최대 저장량)
-        foreach (GameObject obj in outObj)
+        foreach (Structure obj in outObj)
         {
-            if (obj.TryGetComponent(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.mainSource && !fluidCtrl.isMainSource)
+            if (obj.TryGet(out FluidFactoryCtrl fluidCtrl) && !fluidCtrl.mainSource && fluidCtrl.canTakeFluid)
             {
                 if(!fluidCtrl.isConsumeSource)
                     fluidCtrl.ShouldUpdate(consumeSource, howFarSource + 1, false);
@@ -371,7 +390,7 @@ public class FluidFactoryCtrl : Production
         {
             howFarSource = dis;
 
-            if (GetComponent<FluidTankCtrl>())
+            if (Get<FluidTankCtrl>())
                 howFarSource++;
 
             if (isSend)
@@ -471,5 +490,43 @@ public class FluidFactoryCtrl : Production
         else if (fluidType == 1)
             fluidName = "CrudeOil";
         saveFluidNum = storedFluid;
+    }
+
+    [ClientRpc]
+    public override void RemoveObjClientRpc()
+    {
+        StopAllCoroutines();
+
+        if (isUIOpened)
+            CloseUI();
+
+        if (InfoUI.instance.str == this)
+            InfoUI.instance.SetDefault();
+
+        for (int i = 0; i < nearObj.Length; i++)
+        {
+            if (nearObj[i] != null && nearObj[i])
+            {
+                nearObj[i].ResetNearObj(this);
+                if (nearObj[i].TryGet(out BeltCtrl belt))
+                {
+                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
+                    beltGroup.nextCheck = true;
+                    beltGroup.preCheck = true;
+                }
+            }
+        }
+
+        if (overclockTower != null && TryGet(out Production prod))
+            overclockTower.RemoveObjectsOutOfRange(prod);
+
+        RemoveMainSource();
+         
+        if (GameManager.instance.focusedStructure == this)
+        {
+            GameManager.instance.focusedStructure = null;
+        }
+
+        DestroyFuncServerRpc();
     }
 }

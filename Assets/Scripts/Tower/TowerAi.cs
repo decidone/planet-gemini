@@ -29,7 +29,7 @@ public class TowerAi : Production
         attDelayTime = towerData.AttDelayTime;
         damage = towerData.Damage;
         increasedStructure = new bool[2];
-        col = GetComponent<CapsuleCollider2D>();
+        col = Get<CapsuleCollider2D>();
     }
 
     protected override void Start()
@@ -77,40 +77,21 @@ public class TowerAi : Production
         sInvenManager.ReleaseInven();
     }
 
-
-    //protected override void CheckNearObj(Vector3 startVec, Vector3 endVec, int index, Action<GameObject> callback)
-    //{
-    //    RaycastHit2D[] hits = Physics2D.RaycastAll(this.transform.position + startVec, endVec, 1f);
-
-    //    for (int i = 0; i < hits.Length; i++)
-    //    {
-    //        Collider2D hitCollider = hits[i].collider;
-
-    //        if (hitCollider.CompareTag("Factory") && hitCollider.GetComponent<Structure>().isSetBuildingOk &&
-    //            hits[i].collider.gameObject != this.gameObject)
-    //        {
-    //            nearObj[index] = hits[i].collider.gameObject;
-    //            callback(hitCollider.gameObject);
-    //            break;
-    //        }
-    //    }
-    //}
-
-    protected override IEnumerator SetOutObjCoroutine(GameObject obj)
+    protected override IEnumerator SetOutObjCoroutine(Structure obj)
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (obj.TryGetComponent(out Structure structure) && !structure.isMainSource)
+        if (!obj || !obj.canTakeItem)
+            yield break;
+
+        if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (obj.TryGetComponent(out BeltCtrl belt))
+            if (belt.beltGroupMgr.nextObj == this)
             {
-                if (obj.GetComponentInParent<BeltGroupMgr>().nextObj == this.gameObject)
-                {
-                    StartCoroutine(SetInObjCoroutine(obj));
-                    yield break;
-                }
+                StartCoroutine(SetInObjCoroutine(obj));
+                yield break;
             }
-        }
+        }        
     }
 
     protected override void RepairEnd()

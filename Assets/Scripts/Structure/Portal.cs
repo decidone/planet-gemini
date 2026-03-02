@@ -18,9 +18,24 @@ public class Portal : Production
 
     protected override void Awake()
     {
+        foreach (var comp in GetComponents<Component>())
+        {
+            var type = comp.GetType();
+
+            // 자기 자신부터 Component까지 올라가면서 전부 등록
+            while (type != null && type != typeof(MonoBehaviour)
+                                && type != typeof(Behaviour)
+                                && type != typeof(Component))
+            {
+                if (!_cache.ContainsKey(type))
+                    _cache[type] = comp;
+
+                type = type.BaseType;
+            }
+        }
         //myVision.SetActive(false);
         buildName = "Portal";   // 포탈 건물은 따로 데이터를 두지 않아서 직접 이름을 잡아줌
-        inventory = GetComponent<Inventory>();
+        inventory = Get<Inventory>();
         inventory.PortalInvenSet();
         visionPos = new Vector3(transform.position.x, transform.position.y + 1, 0);
         onEffectUpgradeCheck += IncreasedStructureCheck;
@@ -136,7 +151,7 @@ public class Portal : Production
         {
             for (int b = -1; b < 1; b++)
             {
-                map.GetCellDataFromPos(x + b, y + a).structure = this.gameObject;
+                map.GetCellDataFromPos(x + b, y + a).structure = this;
                 map.GetCellDataFromPos(x + b, y + a).buildable.Clear();
                 map.GetCellDataFromPos(x + b, y + a).buildable.Add("ScienceBuilding");
             }
@@ -196,9 +211,11 @@ public class Portal : Production
         {
             portalObjList.Add(objName, obj);
 
+            obj.TryGetComponent(out Structure portalObj);
+
             if (objName == "PortalItemIn")
             {
-                PortalItemIn portalItemIn = obj.GetComponent<PortalItemIn>();
+                PortalItemIn portalItemIn = portalObj.Get<PortalItemIn>();
                 portalItemIn.myPortal = this;
 
                 GameObject othObj = otherPortal.ReturnObj("PortalItemOut");
@@ -209,18 +226,18 @@ public class Portal : Production
             }
             else if (objName == "PortalItemOut")
             {
-                PortalItemOut portalItemOut = obj.GetComponent<PortalItemOut>();
+                PortalItemOut portalItemOut = portalObj.Get<PortalItemOut>();
                 portalItemOut.myPortal = this;
 
                 GameObject othObj = otherPortal.ReturnObj("PortalItemIn");
                 if (othObj)
                 {
-                    othObj.GetComponent<PortalItemIn>().ConnectObjServerRpc(obj.GetComponent<NetworkObject>());
+                    othObj.GetComponent<PortalItemIn>().ConnectObjServerRpc(portalObj.NetworkObject);
                 }
             }
             else if (objName == "PortalUnitIn")
             {
-                PortalUnitIn portalUnitIn = obj.GetComponent<PortalUnitIn>();
+                PortalUnitIn portalUnitIn = portalObj.Get<PortalUnitIn>();
                 portalUnitIn.myPortal = this;
 
                 GameObject othObj = otherPortal.ReturnObj("PortalUnitOut");
@@ -237,19 +254,19 @@ public class Portal : Production
             }
             else if (objName == "PortalUnitOut")
             {
-                PortalUnitOut portalUnitOut = obj.GetComponent<PortalUnitOut>();
+                PortalUnitOut portalUnitOut = portalObj.Get<PortalUnitOut>();
                 portalUnitOut.myPortal = this;
 
                 GameObject othObj = otherPortal.ReturnObj("PortalUnitIn");
                 if (othObj)
                 {
-                    othObj.GetComponent<PortalUnitIn>().ConnectObjServerRpc(obj.GetComponent<NetworkObject>());
+                    othObj.GetComponent<PortalUnitIn>().ConnectObjServerRpc(portalObj.NetworkObject);
                 }
 
                 GameObject myObj = ReturnObj("PortalUnitIn");
                 if (myObj)
                 {
-                    myObj.GetComponent<PortalUnitIn>().ConnectMyObjServerRpc(obj.GetComponent<NetworkObject>());
+                    myObj.GetComponent<PortalUnitIn>().ConnectMyObjServerRpc(portalObj.NetworkObject);
                 }
             }
         }
@@ -268,7 +285,7 @@ public class Portal : Production
     {
         GameObject spawnobj = Instantiate(scienceBuilding, transform.position, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
-        if (!netObj.IsSpawned) spawnobj.GetComponent<NetworkObject>().Spawn(true);
+        if (!netObj.IsSpawned) netObj.Spawn(true);
         spawnobj.transform.parent = transform;
         spawnobj.GetComponent<ScienceBuilding>().SetPortal(isInHostMap);
     }

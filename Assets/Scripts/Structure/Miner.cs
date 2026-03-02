@@ -11,7 +11,6 @@ public class Miner : Production
     {
         base.Start();
         Init();
-        isMainSource = true;
         StartCoroutine(EfficiencyCheckLoop());
     }
 
@@ -262,7 +261,7 @@ public class Miner : Production
         {
             if (!animController.isInitialized)
             {
-                this.GetComponent<SpriteRenderer>().material = shaderAnimatedMat;
+                setModel.material = shaderAnimatedMat;
                 animController.Refresh();
             }
             else

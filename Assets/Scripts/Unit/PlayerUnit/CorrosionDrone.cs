@@ -12,7 +12,7 @@ public class CorrosionDrone : UnitAi
     [SerializeField] int debuffAmount;
     [SerializeField] List<MonsterAi> debuffTargetList = new List<MonsterAi>();
      
-    bool isDebuffState = false;
+    public bool isDebuffState = false;
 
     protected override void Awake()
     {
@@ -61,6 +61,12 @@ public class CorrosionDrone : UnitAi
             {
                 targetList.Clear();
             }
+
+            if (isDebuffState)
+            {
+                animator.SetBool("isAttack", false);
+                isDebuffState = false;
+            }
             return;
         }
 
@@ -73,14 +79,10 @@ public class CorrosionDrone : UnitAi
         }
 
         if(targetList.Count > 0)
-            DebuffFunc();
-        else if (isDebuffState)
         {
-            animator.SetBool("isAttack", false);
-            isDebuffState = false;
+            DebuffFunc();
+            AttackTargetCheck();
         }
-
-        AttackTargetCheck();
     }
 
     void DebuffFunc()
