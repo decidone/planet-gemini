@@ -11,8 +11,8 @@ public class PlayerController : NetworkBehaviour
 {
     GameManager gameManager;
     public PlayerStatus status;
-    public List<GameObject> items = new List<GameObject>();
-    List<GameObject> beltList = new List<GameObject>();
+    public List<ItemProps> items = new List<ItemProps>();
+    List<BeltCtrl> beltList = new List<BeltCtrl>();
 
     public Collider2D circleColl;
     CapsuleCollider2D capsuleColl;
@@ -217,8 +217,8 @@ public class PlayerController : NetworkBehaviour
     void OnTriggerEnter2D(Collider2D collision)
     {
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
-        if (belt && !beltList.Contains(collision.gameObject))
-            beltList.Add(collision.gameObject);
+        if (belt && !beltList.Contains(belt))
+            beltList.Add(belt);
 
         if (!IsOwner) { return; }
         ItemProps itemProps = collision.GetComponent<ItemProps>();
@@ -235,8 +235,8 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        if (itemProps && !items.Contains(collision.gameObject))
-            items.Add(collision.gameObject);
+        if (itemProps && !items.Contains(itemProps))
+            items.Add(itemProps);
 
         if (shop && !GameManager.instance.isShopOpened)
         {
@@ -249,8 +249,8 @@ public class PlayerController : NetworkBehaviour
     void OnTriggerExit2D(Collider2D collision)
     {
         BeltCtrl belt = collision.GetComponent<BeltCtrl>();
-        if (belt && beltList.Contains(collision.gameObject))
-            beltList.Remove(collision.gameObject);
+        if (belt && beltList.Contains(belt))
+            beltList.Remove(belt);
 
         if (!IsOwner) { return; }
         ItemProps itemProps = collision.GetComponent<ItemProps>();
@@ -270,8 +270,8 @@ public class PlayerController : NetworkBehaviour
             }
         }
 
-        if (itemProps && items.Contains(collision.gameObject))
-            items.Remove(collision.gameObject);
+        if (itemProps && items.Contains(itemProps))
+            items.Remove(itemProps);
 
         if (portal || marketPortal)
             teleportUI.CloseUI();
@@ -636,11 +636,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (items[i] != null)
             {
-                ItemProps itemProps = items[i].GetComponent<ItemProps>();
-                if (itemProps)
-                {
-                    gameManager.inventory.LootItem(items[i]);
-                }
+                gameManager.inventory.LootItem(items[i].gameObject);
             }
         }
 
@@ -653,14 +649,9 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     void BeltLootServerRpc(bool isServer)
     {        
-        foreach (GameObject belt in beltList)
+        foreach (BeltCtrl belt in beltList)
         {
             List<ItemProps> beltItems = new List<ItemProps>();
-
-            if (belt.TryGetComponent(out BeltCtrl beltCtrl))
-            {
-                beltItems = beltCtrl.PlayerRootItemCheck();
-            }
 
             foreach (ItemProps itemProps in beltItems)
             {
@@ -668,9 +659,7 @@ public class PlayerController : NetworkBehaviour
                 if (itemProps.amount <= containableAmount)
                 {
                     gameManager.inventory.Add(itemProps.item, itemProps.amount);
-                    //LootListManager.instance.DisplayLootInfo(itemProps.item, itemProps.amount);
-                    beltCtrl.beltGroupMgr.GroupItemLoot(beltCtrl, itemProps.beltGroupIndex, isServer);
-                    //beltCtrl.PlayerRootFunc(itemProps);
+                    belt.beltGroupMgr.GroupItemLoot(belt, itemProps.beltGroupIndex, isServer);
                 }
                 else
                 {
