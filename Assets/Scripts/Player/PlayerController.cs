@@ -652,7 +652,7 @@ public class PlayerController : NetworkBehaviour
         foreach (BeltCtrl belt in beltList)
         {
             List<ItemProps> beltItems = new List<ItemProps>();
-
+            beltItems = belt.PlayerRootItemCheck();
             foreach (ItemProps itemProps in beltItems)
             {
                 int containableAmount = gameManager.inventory.SpaceCheck(itemProps.item);
