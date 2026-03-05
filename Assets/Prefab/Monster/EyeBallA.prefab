@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 512913033364989004}
   - component: {fileID: 5367302856698235982}
   - component: {fileID: -2781054665039582249}
-  - component: {fileID: 1450568532970988622}
+  - component: {fileID: -8508586551306197949}
   - component: {fileID: 5880749345680461039}
   - component: {fileID: -5391303991977901780}
   - component: {fileID: -3452648497289147911}
@@ -173,7 +173,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &1450568532970988622
+--- !u!114 &-8508586551306197949
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,12 +182,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 566702070184392467}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
+  m_Script: {fileID: 11500000, guid: 84faae0b6d61c9847aa00926761c1eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   unitCommonData: {fileID: 11400000, guid: ddcf475f576ddc1439f3e2bc0f75da4c, type: 2}
-  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -206,9 +205,8 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 0
   name: Eye
-  spawner: {fileID: 0}
-  maxSpawnDist: 20
   isScriptActive: 0
   monsterType: 0
   waveState: 0

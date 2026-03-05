@@ -41,4 +41,5 @@ public class InGameData
     public float difficultyPercent;     // 웨이브 난이도 증가량
 
     public int waveSkipItemAmount;     // 웨이브 스킵 아이템 개수
+    public float waveSkipChance;       // 웨이브 스킵 확률
 }

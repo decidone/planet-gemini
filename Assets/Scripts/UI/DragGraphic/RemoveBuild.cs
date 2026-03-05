@@ -6,8 +6,6 @@ using UnityEngine;
 public class RemoveBuild : DragFunc
 {
     protected GameObject canvas;
-    BuildingData buildingData;
-    Inventory inventory;
     public bool isRemovePopUpOn = false;
 
     protected override void Start()
@@ -29,26 +27,29 @@ public class RemoveBuild : DragFunc
     protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition)
     {
         Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << interactLayer);
-        //Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, (1 << LayerMask.NameToLayer("Obj")) | (1 << LayerMask.NameToLayer("LocalPortal")));
 
-        List<GameObject> selectedObjectsList = new List<GameObject>();
+        List<WorldObj> selectedObjectsList = new List<WorldObj>();
 
         foreach (Collider2D collider in colliders)
         {
-            var structure = collider.GetComponentInParent<Structure>();
-            var portal = collider.GetComponentInParent<Portal>();
-            var portalObj = collider.GetComponentInParent<PortalObj>();
-            var scienceBuilding = collider.GetComponentInParent<ScienceBuilding>();
+            WorldObj worldObj = collider.GetComponentInParent<WorldObj>();
+            if (!worldObj)
+                continue;
+
+            var structure = worldObj.Get<Structure>();
+            var portal = worldObj.Get<Portal>();
+            var portalObj = worldObj.Get<PortalObj>();
+            var scienceBuilding = worldObj.Get<ScienceBuilding>();
 
             // Structure가 없으면 제외
-            if (structure == null)
+            if (!structure)
+                continue;
+            else if (portal)
+                continue;
+            else if (scienceBuilding)
                 continue;
 
-            // Portal이 있는 경우, PortalObj가 없거나 ScienceBuilding이 있으면 제외
-            if (portal != null && (portalObj == null || scienceBuilding != null))
-                continue;
-
-            selectedObjectsList.Add(structure.gameObject);
+            selectedObjectsList.Add(structure);
         }
 
         selectedObjects = selectedObjectsList.ToArray();
@@ -60,16 +61,16 @@ public class RemoveBuild : DragFunc
     void RemoveClick(Vector2 mousePos)
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
-        selectedObjects = new GameObject[1];
+        selectedObjects = new WorldObj[1];
         if (hits.Length > 0)
         {
             foreach (RaycastHit2D hit in hits)
             {
                 if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
                 {
-                    if (!(structure.GetComponent<Portal>() || structure.GetComponent<ScienceBuilding>()))
+                    if (!(structure.Get<Portal>() || structure.Get<ScienceBuilding>()))
                     {
-                        selectedObjects[0] = hit.collider.gameObject;
+                        selectedObjects[0] = structure;
                         gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
                     }
                 }
@@ -79,10 +80,10 @@ public class RemoveBuild : DragFunc
 
     public void RemoveBtnClicked(Structure str)
     {
-        if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
+        if (!(str.Get<Portal>() || str.Get<ScienceBuilding>()))
         {
-            selectedObjects = new GameObject[1];
-            selectedObjects[0] = str.gameObject;
+            selectedObjects = new WorldObj[1];
+            selectedObjects[0] = str;
             gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
         }
     }
@@ -95,11 +96,11 @@ public class RemoveBuild : DragFunc
             {
                 if (selectedObjects[i] != null)
                 {
-                    selectedObjects[i].TryGetComponent(out Structure structure);
+                    selectedObjects[i].TryGet(out Structure structure);
                     structure.DestroyServerRpc();
                 }
             }
         }
-        selectedObjects = new GameObject[0];
+        selectedObjects = new WorldObj[0];
     }
 }

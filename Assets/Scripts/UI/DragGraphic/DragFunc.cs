@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DragFunc : MonoBehaviour
 {
     protected int interactLayer;
 
-    public GameObject[] selectedObjects;
+    public WorldObj[] selectedObjects;
     protected GameManager gameManager;
     protected SoundManager soundManager;
 

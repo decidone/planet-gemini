@@ -349,7 +349,7 @@ GameObject:
   - component: {fileID: 7747646451308163776}
   - component: {fileID: 1718579683844451081}
   - component: {fileID: 8898977687212494759}
-  - component: {fileID: -5951166985654509526}
+  - component: {fileID: -1092496483264806282}
   - component: {fileID: 4212981719435381732}
   - component: {fileID: -829912202593715563}
   - component: {fileID: 911179177841166913}
@@ -509,7 +509,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &-5951166985654509526
+--- !u!114 &-1092496483264806282
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -518,12 +518,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8540606857463043856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
+  m_Script: {fileID: 11500000, guid: 84faae0b6d61c9847aa00926761c1eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   unitCommonData: {fileID: 11400000, guid: b5198616e1983e844a6dcf5bf0b6c56c, type: 2}
-  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -542,9 +541,8 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 0
   name: Puddle
-  spawner: {fileID: 0}
-  maxSpawnDist: 20
   isScriptActive: 0
   monsterType: 0
   waveState: 0

@@ -3,7 +3,7 @@ using UnityEngine;
 // UTF-8 설정
 public class TowerAreaAttackFx : TowerAttackFx
 {
-    public void GetTarget(float GetDamage, GameObject obj)
+    public void GetTarget(float GetDamage, WorldObj obj)
     {
         damage = GetDamage;
         attackUnit = obj;
@@ -24,12 +24,13 @@ public class TowerAreaAttackFx : TowerAttackFx
         if (!IsServer)
             return;
 
+        collision.TryGetComponent(out WorldObj obj);
 
-        if (collision.TryGetComponent(out MonsterAi monster))
+        if (obj.TryGet(out MonsterAi monster))
         {
             TakeDamage(monster);
         }
-        else if (collision.TryGetComponent(out MonsterSpawner spawner))
+        else if (obj.TryGet(out MonsterSpawner spawner))
         {
             TakeDamage(spawner);
         }        

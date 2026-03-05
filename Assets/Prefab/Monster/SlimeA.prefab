@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 5569583402175240809}
   - component: {fileID: 4784484947454584028}
   - component: {fileID: -5771430598721866554}
-  - component: {fileID: -2800277750444707200}
+  - component: {fileID: 3281452746419731858}
   - component: {fileID: 2670242036717598348}
   - component: {fileID: 8069855517818854939}
   - component: {fileID: 6604622026431748900}
@@ -359,7 +359,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &-2800277750444707200
+--- !u!114 &3281452746419731858
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -368,12 +368,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3833707180777084228}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
+  m_Script: {fileID: 11500000, guid: 84faae0b6d61c9847aa00926761c1eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   unitCommonData: {fileID: 11400000, guid: 665461547895cee4fa3748609b0e7917, type: 2}
-  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -392,9 +391,8 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 0
   name: Yellow Slime
-  spawner: {fileID: 0}
-  maxSpawnDist: 20
   isScriptActive: 0
   monsterType: 0
   waveState: 0

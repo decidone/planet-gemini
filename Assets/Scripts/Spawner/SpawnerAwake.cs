@@ -29,9 +29,11 @@ public class SpawnerAwake : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!inObjList.Contains(collision.gameObject) && IsServer &&
-            (collision.GetComponent<Structure>() || collision.GetComponent<UnitAi>()
-            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting)))
+        WorldObj obj = collision.GetComponent<WorldObj>();
+
+        if (obj && !inObjList.Contains(collision.gameObject) && IsServer &&
+            (obj.Get<Structure>() || obj.Get<UnitAi>()
+            || (obj.Get<PlayerStatus>() && !obj.Get<PlayerStatus>().playerController.isTeleporting)))
         {
             inObjList.Add(collision.gameObject);
 
@@ -45,9 +47,11 @@ public class SpawnerAwake : NetworkBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (inObjList.Contains(collision.gameObject) && IsServer &&
-            (collision.GetComponent<Structure>() || collision.GetComponent<UnitAi>()
-            || (collision.GetComponent<PlayerController>() && !collision.GetComponent<PlayerController>().isTeleporting)))
+        WorldObj obj = collision.GetComponent<WorldObj>();
+
+        if (obj && inObjList.Contains(collision.gameObject) && IsServer &&
+            (obj.Get<Structure>() || obj.Get<UnitAi>()
+            || (obj.Get<PlayerStatus>() && !obj.Get<PlayerStatus>().playerController.isTeleporting)))
         {
             inObjList.Remove(collision.gameObject);
 

@@ -74,7 +74,7 @@ public class CorrosionDrone : UnitAi
 
         for (int i = 0; i < hitCount; i++)
         {
-            GameObject target = targetColls[i].gameObject;
+            WorldObj target = targetColls[i].GetComponent<WorldObj>();
             targetList.Add(target);
         }
 
@@ -91,7 +91,7 @@ public class CorrosionDrone : UnitAi
         {
             MonsterAi m = debuffTargetList[i];
 
-            if (!m || !m.isDebuffed || !targetList.Contains(m.gameObject))
+            if (!m || !m.isDebuffed || !targetList.Contains(m))
             {
                 if (m) m.isDebuffed = false;
                 debuffTargetList.RemoveAt(i);
@@ -104,11 +104,11 @@ public class CorrosionDrone : UnitAi
 
         List<MonsterAi> monstersList = new List<MonsterAi>(); // 정렬용 리스트
 
-        foreach (GameObject obj in targetList)
+        foreach (WorldObj obj in targetList)
         {
             if (!obj) continue;
 
-            if (obj.TryGetComponent(out MonsterAi ai) && !ai.isDebuffed)
+            if (obj.TryGet(out MonsterAi ai) && !ai.isDebuffed)
                 monstersList.Add(ai);
         }
 

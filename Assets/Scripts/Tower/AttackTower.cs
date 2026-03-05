@@ -42,8 +42,8 @@ public class AttackTower : TowerAi
     protected override void Start()
     {
         base.Start();
-        aggroAmount = GetComponent<AggroAmount>();
-        towerAttackOption = GetComponent<TowerAttackOption>();
+        aggroAmount = Get<AggroAmount>();
+        towerAttackOption = Get<TowerAttackOption>();
         bulletDataManager = TwBulletDataManager.instance;
         bulletDic = bulletDataManager.bulletDic;
         energyBulletMaxAmount = towerData.MaxEnergyBulletAmount;
@@ -379,7 +379,7 @@ public class AttackTower : TowerAi
 
                 bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
                 towerAttackOption.TowerAttackFxSet(fx);
-                fx.GetTarget(aggroTarget.transform.position, damage + loadedBullet.damage, gameObject, loadedBullet.explosion);
+                fx.GetTarget(aggroTarget.transform.position, damage + loadedBullet.damage, this, loadedBullet.explosion);
             }
             else
             {
@@ -401,7 +401,7 @@ public class AttackTower : TowerAi
 
                 bulletPool.TryGetComponent(out TowerAreaAttackFx fx);
                 towerAttackOption.TowerAttackFxSet(fx);
-                fx.GetTarget(damage + loadedBullet.damage, gameObject);
+                fx.GetTarget(damage + loadedBullet.damage, this);
             }
             soundManager.PlaySFX(gameObject, "unitSFX", "TowerAttack");
             aggroAmount.SetAggroAmount(damage, attDelayTime + loadedBullet.fireRate);

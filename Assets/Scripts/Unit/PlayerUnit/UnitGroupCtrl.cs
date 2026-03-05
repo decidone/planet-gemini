@@ -7,7 +7,7 @@ using Unity.Netcode;
 // UTF-8 설정
 public class UnitGroupCtrl : MonoBehaviour
 {
-    public List<GameObject> unitList = new List<GameObject>();
+    public List<UnitAi> unitList = new List<UnitAi>();
     public List<Vector3> unitVecList = new List<Vector3>();
     Vector3 groupCenter = Vector3.zero;
     float radius = 0;
@@ -38,19 +38,19 @@ public class UnitGroupCtrl : MonoBehaviour
 
     private void ClearUnitList()
     {
-        foreach (GameObject obj in unitList)
+        foreach (UnitAi obj in unitList)
         {
-            obj.GetComponent<UnitAi>().UnitSelImg(false);
+            obj.UnitSelImg(false);
         }
         unitList.Clear();
     }
 
-    private void AddUnitList(GameObject obj)
+    private void AddUnitList(WorldObj obj)
     {
-        if (obj.GetComponentInParent<UnitAi>())
+        if (obj)
         {
-            unitList.Add(obj);
-            obj.gameObject.GetComponent<UnitAi>().UnitSelImg(true);
+            unitList.Add(obj.Get<UnitAi>());
+            obj.Get<UnitAi>().UnitSelImg(true);
         }
         CalculateGroupCenter();
     }
@@ -64,11 +64,10 @@ public class UnitGroupCtrl : MonoBehaviour
 
         float minDiameter = (delta) / 2;
 
-        foreach (GameObject obj in unitList)
+        foreach (UnitAi obj in unitList)
         {
-            UnitAi unti = obj.GetComponent<UnitAi>();
-            unti.PortalUnitInServerRpc(playerUnitPortalIn);
-            unti.MovePosSetServerRpc(targetPos, minDiameter, isAttack);
+            obj.PortalUnitInServerRpc(playerUnitPortalIn);
+            obj.MovePosSetServerRpc(targetPos, minDiameter, isAttack);
         }
     }
 
@@ -79,12 +78,12 @@ public class UnitGroupCtrl : MonoBehaviour
             for (int i = 0; i < unitList.Count; i++)
             {
                 Vector3 movePosition = patrolPos + unitVecList[i];
-                unitList[i].GetComponent<UnitAi>().PatrolPosSetServerRpc(movePosition);
+                unitList[i].PatrolPosSetServerRpc(movePosition);
             }
         }
         else if (unitList.Count == 1)
         {
-            unitList[0].GetComponent<UnitAi>().PatrolPosSetServerRpc(patrolPos);
+            unitList[0].PatrolPosSetServerRpc(patrolPos);
         }
     }
 
@@ -96,7 +95,7 @@ public class UnitGroupCtrl : MonoBehaviour
         {
             groupCenter = Vector3.zero;
 
-            foreach (GameObject unit in unitList)
+            foreach (UnitAi unit in unitList)
             {
                 groupCenter += unit.transform.position;
             }
@@ -108,7 +107,7 @@ public class UnitGroupCtrl : MonoBehaviour
 
             radius = 0;
 
-            foreach (GameObject unit in unitList)
+            foreach (UnitAi unit in unitList)
             {
                 float radChack = Vector3.Distance(unit.transform.position, groupCenter);
                 if (radius < radChack)
@@ -117,7 +116,7 @@ public class UnitGroupCtrl : MonoBehaviour
 
             unitVecList.Clear();
 
-            foreach (GameObject unit in unitList)
+            foreach (UnitAi unit in unitList)
             {
                 Vector3 direction = unit.transform.position - groupCenter;
                 unitVecList.Add(direction);
@@ -129,7 +128,7 @@ public class UnitGroupCtrl : MonoBehaviour
         }
     }
 
-    public void DieUnitCheck(GameObject obj)
+    public void DieUnitCheck(UnitAi obj)
     {
         if (unitList.Contains(obj))
         {
@@ -141,16 +140,15 @@ public class UnitGroupCtrl : MonoBehaviour
     {
         for (int i = 0; i < unitList.Count; i++)
         {
-            unitList[i].GetComponent<UnitAi>().HoldFuncServerRpc();
+            unitList[i].HoldFuncServerRpc();
         }
     }
 
-    void MonsterTargerSet(GameObject obj)
+    void MonsterTargerSet(WorldObj obj)
     {
-        NetworkObject networkObject = obj.GetComponent<NetworkObject>();
         for (int i = 0; i < unitList.Count; i++)
         {
-            unitList[i].GetComponent<UnitAi>().TargetSetServerRpc(networkObject);
+            unitList[i].TargetSetServerRpc(obj.NetworkObject);
         }
     }
 }

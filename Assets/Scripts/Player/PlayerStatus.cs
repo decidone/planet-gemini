@@ -5,10 +5,11 @@ using UnityEngine.UI;
 using Unity.Netcode;
 
 // UTF-8 설정
-public class PlayerStatus : NetworkBehaviour
+public class PlayerStatus : WorldObj
 {
     public new string name;
-    PlayerController playerController;
+    [HideInInspector]
+    public PlayerController playerController;
     [SerializeField]
     Image hpBar;
     [SerializeField]
@@ -32,10 +33,12 @@ public class PlayerStatus : NetworkBehaviour
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         playerController = gameObject.GetComponent<PlayerController>();
-        unitSprite = GetComponent<SpriteRenderer>();
+        unitSprite = Get<SpriteRenderer>();
         hpBar.fillAmount = hp / maxHp;
         HPUISet(false);
     }

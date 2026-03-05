@@ -34,7 +34,6 @@ public class UnitAi : UnitCommonAi
     private int aggropointIndex; // 현재 이동 중인 경로 점 인덱스
     protected bool isTargetSet = false;
     bool isAttackMove = true;
-    GameObject selectTarget;
     public float selfHealingAmount;
     public float selfHealInterval;
     protected float selfHealTimer;
@@ -75,7 +74,7 @@ public class UnitAi : UnitCommonAi
     protected override void Start()
     {
         base.Start();   // 테스트용 위치 변경 해야함
-        aggroAmount = GetComponent<AggroAmount>();
+        aggroAmount = Get<AggroAmount>();
         repairEffect = GetComponentInChildren<RepairEffectFunc>();
         unitGroupCtrl = GameManager.instance.GetComponent<UnitGroupCtrl>();
         selfHealInterval = 5;
@@ -147,7 +146,7 @@ public class UnitAi : UnitCommonAi
         base.OnNetworkSpawn();
 
         NetworkObjManager.instance.NetObjAdd(gameObject);
-        if(!GetComponent<TankCtrl>())
+        if(!Get<TankCtrl>())
             GameManager.instance.PlayerUnitCount(1);
     }
 
@@ -155,7 +154,7 @@ public class UnitAi : UnitCommonAi
     {
         base.OnNetworkDespawn();
         NetworkObjManager.instance.NetObjRemove(gameObject);
-        if (!GetComponent<TankCtrl>())
+        if (!Get<TankCtrl>())
             GameManager.instance.PlayerUnitCount(-1);
     }
 
@@ -495,7 +494,7 @@ public class UnitAi : UnitCommonAi
 
         for (int i = 0; i < hitCount; i++)
         {
-            GameObject target = targetColls[i].gameObject;
+            WorldObj target = targetColls[i].GetComponent<WorldObj>();
             targetList.Add(target);
         }
 
@@ -510,7 +509,7 @@ public class UnitAi : UnitCommonAi
             {
                 float closestDistance = float.MaxValue;
 
-                foreach (GameObject monster in targetList)
+                foreach (WorldObj monster in targetList)
                 {
                     if (monster != null)
                     {
@@ -552,7 +551,7 @@ public class UnitAi : UnitCommonAi
     {
         isTargetSet = true;
         networkObjectReference.TryGet(out NetworkObject networkObject);
-        aggroTarget = networkObject.gameObject;
+        aggroTarget = networkObject.GetComponent<WorldObj>();
         AttackTargetDisCheck();
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
@@ -607,7 +606,7 @@ public class UnitAi : UnitCommonAi
     }
 
     [ClientRpc]
-    public override void TakeDamageClientRpc(float damage, int attackType, float option)
+    protected override void TakeDamageClientRpc(float damage, int attackType, float option)
     {
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
@@ -656,7 +655,7 @@ public class UnitAi : UnitCommonAi
             dieCheck = true;
             if (unitSelect)
             {
-                unitGroupCtrl.DieUnitCheck(this.gameObject);
+                unitGroupCtrl.DieUnitCheck(this);
                 InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
             }
             if (IsServer)
@@ -684,8 +683,8 @@ public class UnitAi : UnitCommonAi
             InfoUI.instance.SetDefault();
         else if (unitSelect)
         {
-            unitGroupCtrl.DieUnitCheck(gameObject);
-            UnitDrag.instance.UnitRemoveGroup(gameObject);
+            unitGroupCtrl.DieUnitCheck(this);
+            UnitDrag.instance.UnitRemoveGroup(this);
             InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
         }
 
@@ -712,7 +711,7 @@ public class UnitAi : UnitCommonAi
         if (unitSelect)
         {
             UnitSelImg(false);
-            unitGroupCtrl.DieUnitCheck(gameObject);
+            unitGroupCtrl.DieUnitCheck(this);
             InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
         }
         playerUnitPortalIn = true;

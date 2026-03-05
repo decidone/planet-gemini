@@ -41,9 +41,10 @@ public class TransportUnit : UnitCommonAi
 
     protected override void Awake()
     {
-        tr = GetComponent<Transform>();
-        seeker = GetComponent<Seeker>();
-        animator = GetComponent<Animator>();
+        base.Awake();
+        tr = Get<Transform>();
+        seeker = Get<Seeker>();
+        animator = Get<Animator>();
 
         hp = unitCommonData.MaxHp;
         maxHp = unitCommonData.MaxHp;

@@ -37,7 +37,7 @@ public class TankCtrl : UnitAi
     protected override void Awake()
     {
         base.Awake();
-        inventory = this.GetComponent<Inventory>();
+        inventory = Get<Inventory>();
     }
 
     protected override void Start()
@@ -217,7 +217,7 @@ public class TankCtrl : UnitAi
     {
         playerOnTank = true;
         if (IsServer)
-            GetComponent<ClientNetworkTransform>().Teleport(new Vector3(-100, -100, 0), Quaternion.identity, transform.localScale);
+            Get<ClientNetworkTransform>().Teleport(new Vector3(-100, -100, 0), Quaternion.identity, transform.localScale);
         gameObject.SetActive(false);
     }
 
@@ -235,7 +235,7 @@ public class TankCtrl : UnitAi
             ReloadingUISet(true);
         }
         if (IsServer)
-            GetComponent<ClientNetworkTransform>().Teleport(pos, Quaternion.identity, transform.localScale);
+            Get<ClientNetworkTransform>().Teleport(pos, Quaternion.identity, transform.localScale);
         //transform.position = pos;
         gameObject.SetActive(true);
     }
@@ -297,7 +297,7 @@ public class TankCtrl : UnitAi
         data.playerOnTank = playerOnTank;
         data.fuel = fuel;
 
-        if (TryGetComponent(out Inventory inventory))
+        if (TryGet(out Inventory inventory))
         {
             data.inven = inventory.SaveData();
         }

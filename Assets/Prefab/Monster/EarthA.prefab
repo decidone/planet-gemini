@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 4266575292539597394}
   - component: {fileID: 1685870109245103154}
   - component: {fileID: -6275262382086620255}
-  - component: {fileID: 293481600424882334}
+  - component: {fileID: 4143024577087976780}
   - component: {fileID: 8051527625688539190}
   - component: {fileID: -9044928422796286906}
   - component: {fileID: 2054250693664190952}
@@ -323,7 +323,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &293481600424882334
+--- !u!114 &4143024577087976780
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -332,12 +332,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2081385084214852163}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
+  m_Script: {fileID: 11500000, guid: 84faae0b6d61c9847aa00926761c1eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   unitCommonData: {fileID: 11400000, guid: 828465b374c99a94eb14697b450620ce, type: 2}
-  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -356,8 +355,8 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 0
   name: Stone Golem
-  spawner: {fileID: 0}
   maxSpawnDist: 20
   isScriptActive: 0
   monsterType: 0

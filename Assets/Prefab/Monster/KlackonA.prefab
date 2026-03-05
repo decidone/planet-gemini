@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 2581482827578224821}
   - component: {fileID: 6946265612750016064}
   - component: {fileID: 6255528857556146526}
-  - component: {fileID: 7038860482242949868}
+  - component: {fileID: -2184760743991482015}
   - component: {fileID: 5794467203413403170}
   - component: {fileID: 5910734465314056952}
   - component: {fileID: 3527989314683399697}
@@ -331,7 +331,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &7038860482242949868
+--- !u!114 &-2184760743991482015
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -340,12 +340,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4548960195778844340}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
+  m_Script: {fileID: 11500000, guid: 84faae0b6d61c9847aa00926761c1eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   unitCommonData: {fileID: 11400000, guid: 1999298f7547d784cb2a896f4aa27468, type: 2}
-  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -364,9 +363,8 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 0
   name: Klackon
-  spawner: {fileID: 0}
-  maxSpawnDist: 20
   isScriptActive: 0
   monsterType: 0
   waveState: 0

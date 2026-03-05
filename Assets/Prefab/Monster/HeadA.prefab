@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 6478049652833788890}
   - component: {fileID: 6566239105743671450}
   - component: {fileID: -5012157792901235878}
-  - component: {fileID: 5872030752021281981}
+  - component: {fileID: 6236913623993633770}
   - component: {fileID: 223529813394900848}
   - component: {fileID: 664771467265491464}
   - component: {fileID: 4194785000183048341}
@@ -406,7 +406,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &5872030752021281981
+--- !u!114 &6236913623993633770
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -415,12 +415,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7517060564855879891}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
+  m_Script: {fileID: 11500000, guid: 84faae0b6d61c9847aa00926761c1eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   unitCommonData: {fileID: 11400000, guid: f53d7762d7bd6394ea9dd964242494d0, type: 2}
-  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -439,9 +438,8 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 0
   name: Head
-  spawner: {fileID: 0}
-  maxSpawnDist: 20
   isScriptActive: 0
   monsterType: 0
   waveState: 0

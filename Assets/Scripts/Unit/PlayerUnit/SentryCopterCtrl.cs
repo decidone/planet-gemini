@@ -32,7 +32,7 @@ public class SentryCopterCtrl : UnitAi
             NetworkObject bulletPool = networkObjectPool.GetNetworkObject(attackFX, new Vector2(this.transform.position.x, this.transform.position.y), rot);
             if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
-            bulletPool.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, damage, gameObject);
+            bulletPool.GetComponent<BulletCtrl>().GetTarget(aggroTarget.transform.position, damage, this);
             soundManager.PlaySFX(gameObject, "unitSFX", "laserAttack");
 
             aggroAmount.SetAggroAmount(damage, attackSpeed);

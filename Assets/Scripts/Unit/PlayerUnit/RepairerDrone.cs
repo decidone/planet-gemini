@@ -7,9 +7,9 @@ public class RepairerDrone : UnitAi
 {
     bool isDelayRepairCoroutine = false;
     [SerializeField]
-    List<GameObject> unitTargetList = new List<GameObject>();
+    List<WorldObj> unitTargetList = new List<WorldObj>();
     [SerializeField]
-    List<GameObject> strTargetList = new List<GameObject>();
+    List<WorldObj> strTargetList = new List<WorldObj>();
     [SerializeField]
     int repairFullAmount;
 
@@ -93,7 +93,7 @@ public class RepairerDrone : UnitAi
 
         var sortedUnitTargets = unitTargetList
             .Where(target => target != null)
-            .Select(target => target.GetComponent<UnitAi>())
+            .Select(target => target.Get<UnitAi>())
             .Where(structure => structure != null)
             .OrderByDescending(structure => structure.maxHp - structure.hp) // 정렬
             .Take(repairAmount)
@@ -117,7 +117,7 @@ public class RepairerDrone : UnitAi
         {
             var sortedStrTargets = strTargetList
                 .Where(target => target != null)
-                .Select(target => target.GetComponent<Structure>())
+                .Select(target => target.Get<Structure>())
                 .Where(structure => structure != null)
                 .OrderByDescending(structure => structure.maxHp - structure.hp) // 정렬
                 .Take(repairAmount)
@@ -193,15 +193,15 @@ public class RepairerDrone : UnitAi
 
         for (int i = 0; i < hitCount; i++)
         {
-            GameObject obj = targetColls[i].gameObject;
+            WorldObj obj = targetColls[i].GetComponent<WorldObj>();
             if (!obj || obj == gameObject)
                 continue;
 
-            if (obj.TryGetComponent(out UnitAi unit) || obj.TryGetComponent(out PlayerController player))
+            if (obj.TryGet(out UnitAi unit) || obj.TryGet(out PlayerController player))
             {
                 unitTargetList.Add(obj);
             }
-            else if (obj.TryGetComponent(out Structure structure))
+            else if (obj.TryGet(out Structure structure))
             {
                 if (!structure.isPreBuilding && !structure.Has<Portal>())
                 {

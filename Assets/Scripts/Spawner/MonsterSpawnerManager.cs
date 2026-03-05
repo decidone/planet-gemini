@@ -20,7 +20,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     public Sprite[] spawnerSprite;
 
-    public List<GameObject> waveMonsters = new List<GameObject>();
+    public List<MonsterAi> waveMonsters = new List<MonsterAi>();
     private int baseSpawnCount = 17;
 
     #region Singleton
@@ -324,18 +324,18 @@ public class MonsterSpawnerManager : NetworkBehaviour
         SoundManager.instance.BattleStateSet(hostMapWave, GameManager.instance.violentDay);
     }
     
-    public void WaveAddMonster(GameObject monster)
+    public void WaveAddMonster(MonsterAi monster)
     {
         waveMonsters.Add(monster);
     }
 
-    public void WaveAddMonster(List<GameObject> monsters)
+    public void WaveAddMonster(List<MonsterAi> monsters)
     {
         waveMonsters.AddRange(monsters);
         SoundManager.instance.BattleStateSet(hostMapWave, waveState);
     }
 
-    public void BattleRemoveMonster(GameObject monster)
+    public void BattleRemoveMonster(MonsterAi monster)
     {
         if (waveMonsters.Contains(monster))
         {

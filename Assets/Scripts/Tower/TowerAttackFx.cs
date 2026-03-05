@@ -9,7 +9,7 @@ public class TowerAttackFx : NetworkBehaviour
 
     [SerializeField]
     protected Animator animator;
-    protected GameObject attackUnit;
+    protected WorldObj attackUnit;
 
     protected NetworkObjectPool networkObjectPool;
 

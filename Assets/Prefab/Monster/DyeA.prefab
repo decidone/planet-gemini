@@ -265,7 +265,7 @@ GameObject:
   - component: {fileID: 5009158862103463290}
   - component: {fileID: 4262384227631555500}
   - component: {fileID: 7060224227355213188}
-  - component: {fileID: -6961045231524434650}
+  - component: {fileID: -2900661975574042956}
   - component: {fileID: 6876622670015851553}
   - component: {fileID: 8022674097172093497}
   - component: {fileID: -4541700578339218109}
@@ -399,7 +399,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &-6961045231524434650
+--- !u!114 &-2900661975574042956
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -408,12 +408,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6170366634080306581}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
+  m_Script: {fileID: 11500000, guid: 84faae0b6d61c9847aa00926761c1eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   unitCommonData: {fileID: 11400000, guid: 8a4e11f449c76804cb5ef45f38232888, type: 2}
-  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -432,8 +431,8 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 0
   name: Evil Eye
-  spawner: {fileID: 0}
   maxSpawnDist: 20
   isScriptActive: 0
   monsterType: 0

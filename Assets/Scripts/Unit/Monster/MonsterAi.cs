@@ -12,7 +12,6 @@ public class MonsterAi : UnitCommonAi
     MonsterSpawner spawnerScript;
     Transform spawnPos;
     float spawnDist;
-    [SerializeField]
     float maxSpawnDist;
 
     Vector3 patRandomPos = Vector3.zero;
@@ -59,7 +58,7 @@ public class MonsterAi : UnitCommonAi
     bool waitForGraphUpdate = false;
 
     [SerializeField]
-    GameObject bestTarget;  // 선타겟 대상
+    WorldObj bestTarget;  // 선타겟 대상
 
     MonsterMapSeeker monsterMapSeeker;
 
@@ -69,10 +68,9 @@ public class MonsterAi : UnitCommonAi
         int mask =
             (1 << LayerMask.NameToLayer("Obj")) |
             (1 << LayerMask.NameToLayer("Unit")) |
-            (1 << LayerMask.NameToLayer("Portal")) |
             (1 << LayerMask.NameToLayer("LocalPortal")) |
             (1 << LayerMask.NameToLayer("Tank"));
-
+        contactFilter.useTriggers = true;
         contactFilter.SetLayerMask(mask);
         contactFilter.useLayerMask = true;
     }
@@ -80,6 +78,7 @@ public class MonsterAi : UnitCommonAi
     protected override void Start()
     {
         base.Start();
+        maxSpawnDist = 20;
         monsterMapSeeker = GetComponentInChildren<MonsterMapSeeker>();
 
         normalTraceInterval = Random.Range(10, 15);
@@ -683,7 +682,7 @@ public class MonsterAi : UnitCommonAi
         }
     }
 
-    protected void AttackObjCheck(GameObject Obj)
+    protected void AttackObjCheck(WorldObj Obj)
     {
         if (targetDist > unitCommonData.AttackDist + 2)
             return;
@@ -691,11 +690,11 @@ public class MonsterAi : UnitCommonAi
         {
             if (Obj != null)
             {
-                if (Obj.TryGetComponent(out PlayerStatus playerStatus))
+                if (Obj.TryGet(out PlayerStatus playerStatus))
                     playerStatus.TakeDamage(damage);
-                else if (Obj.TryGetComponent(out UnitAi unitAi))
+                else if (Obj.TryGet(out UnitAi unitAi))
                     unitAi.TakeDamage(damage, 0);
-                else if (Obj.TryGetComponent(out Structure structure))
+                else if (Obj.TryGet(out Structure structure))
                     structure.TakeDamage(damage);
             }
         }
@@ -771,7 +770,7 @@ public class MonsterAi : UnitCommonAi
             }
             if(bestTarget)
             {
-                bestTarget.TryGetComponent(out Structure str);
+                bestTarget.TryGet(out Structure str);
                 if (str)
                 {
                     --str.monsterTargetAmount;
@@ -785,7 +784,7 @@ public class MonsterAi : UnitCommonAi
 
         for (int i = 0; i < hitCount; i++)
         {
-            GameObject target = targetColls[i].gameObject;
+            WorldObj target = targetColls[i].GetComponent<WorldObj>();
             targetList.Add(target);
         }
 
@@ -810,8 +809,8 @@ public class MonsterAi : UnitCommonAi
         }
 
         // 공격 가능한 타겟 후보 리스트와, 공격 불가능한 가장 가까운 타겟을 저장
-        var attackableCandidates = new List<(GameObject obj, float dist, float aggro)>();
-        GameObject nearestUnattackable = null;
+        var attackableCandidates = new List<(WorldObj obj, float dist, float aggro)>();
+        WorldObj nearestUnattackable = null;
         float nearestUnattackDist = float.MaxValue;
         float dist = 0;
 
@@ -823,7 +822,8 @@ public class MonsterAi : UnitCommonAi
             dist = Vector3.Distance(tr.position, target.transform.position);
 
             // 공격 가능한 대상인지 확인
-            bool isAttackable = target.TryGetComponent(out UnitAi unitAi) || target.TryGetComponent(out TowerAi towerAi) || target.TryGetComponent(out PlayerController player);
+            //bool isAttackable = target.TryGet(out UnitAi unitAi) || target.TryGet(out TowerAi towerAi) || target.TryGet(out PlayerController player);
+            bool isAttackable = target.Get<UnitAi>() || target.Get<TowerAi>() || target.Get<PlayerController>();
             if (!isAttackable)
             {
                 //공격 불가능하지만 가까운 타겟 저장
@@ -837,19 +837,19 @@ public class MonsterAi : UnitCommonAi
 
             // 어그로 수치 가져오기
             float aggro = 0f;
-            if (target.TryGetComponent(out AggroAmount aggroAmount))
+            if (target.TryGet(out AggroAmount aggroAmount))
                 aggro = aggroAmount.GetAggroAmount();
 
             attackableCandidates.Add((target, dist, aggro));
         }
 
-        GameObject best = null;
+        WorldObj best = null;
         float bestScore = float.MinValue;
 
         foreach (var x in attackableCandidates)
         {
             float score = x.aggro - (x.dist * 3f);
-            x.obj.TryGetComponent(out Structure str);
+            x.obj.TryGet(out Structure str);
             if (str)
             {
                 score -= str.monsterTargetAmount * 3f; // 타겟을 많이 잡고 있는 구조물은 선호도 감소
@@ -872,7 +872,7 @@ public class MonsterAi : UnitCommonAi
             if (!bestTarget)
             {
                 bestTarget = best;
-                bestTarget.TryGetComponent(out Structure str);
+                bestTarget.TryGet(out Structure str);
                 if (str)
                 {
                     ++str.monsterTargetAmount;
@@ -880,7 +880,7 @@ public class MonsterAi : UnitCommonAi
             }
             else if(bestTarget != best) 
             {
-                bestTarget.TryGetComponent(out Structure preStr);
+                bestTarget.TryGet(out Structure preStr);
                 if (preStr)
                 {
                     --preStr.monsterTargetAmount;
@@ -888,7 +888,7 @@ public class MonsterAi : UnitCommonAi
 
                 bestTarget = best;
 
-                bestTarget.TryGetComponent(out Structure nextStr);
+                bestTarget.TryGet(out Structure nextStr);
                 if (nextStr)
                 {
                     ++nextStr.monsterTargetAmount;
@@ -969,7 +969,7 @@ public class MonsterAi : UnitCommonAi
             yield break;
         }
 
-        GameObject blockingObj = null;
+        WorldObj blockingObj = null;
         float mapDistance = 0f;
         float totalDistance = 0f;
 
@@ -996,7 +996,7 @@ public class MonsterAi : UnitCommonAi
 
                 if (blocking)
                 {
-                    blockingObj = blocking;
+                    blockingObj = blocking.GetComponent<WorldObj>();
                 }
             }));
             yield return new WaitUntil(() => hasResult);
@@ -1058,9 +1058,8 @@ public class MonsterAi : UnitCommonAi
         stopTrace = false;
     }
 
-
     [ClientRpc]
-    public override void TakeDamageClientRpc(float damage, int attackType, float option)
+    protected override void TakeDamageClientRpc(float damage, int attackType, float option)  
     {
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
@@ -1209,14 +1208,14 @@ public class MonsterAi : UnitCommonAi
         DieFuncClientRpc();
         if (bestTarget)
         {
-            bestTarget.TryGetComponent(out Structure str);
+            bestTarget.TryGet(out Structure str);
             if (str)
             {
                 --str.monsterTargetAmount;
             }
         }
 
-        MonsterSpawnerManager.instance.BattleRemoveMonster(gameObject);
+        MonsterSpawnerManager.instance.BattleRemoveMonster(this);
     }
 
     [ClientRpc]
@@ -1236,7 +1235,7 @@ public class MonsterAi : UnitCommonAi
 
         if(spawnerScript != null)
         {
-            spawnerScript.MonsterDieChcek(gameObject, monsterType, waveState);
+            spawnerScript.MonsterDieChcek(this, monsterType, waveState);
         }
 
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
@@ -1294,7 +1293,7 @@ public class MonsterAi : UnitCommonAi
         }
     }
 
-    public virtual void SpawnerCallCheck(GameObject obj)
+    public virtual void SpawnerCallCheck(WorldObj obj)
     {
         if (obj == null)
             return;

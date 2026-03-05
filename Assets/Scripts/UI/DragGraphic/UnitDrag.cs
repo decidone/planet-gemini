@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 // UTF-8 설정
@@ -12,7 +10,7 @@ public class UnitDrag : DragFunc
     //int monsterLayer;
     //int spawnerLayer;
 
-    public delegate void AddUnitDelegate(GameObject obj);
+    public delegate void AddUnitDelegate(WorldObj obj);
     public static event AddUnitDelegate addUnit;
     
     public delegate void RemoveUnitDelegate();
@@ -30,7 +28,7 @@ public class UnitDrag : DragFunc
     public delegate void UnitHoldDelegate();
     public static event UnitHoldDelegate unitHoldSet;
 
-    public delegate void MonsterTargetDelegate(GameObject obj);
+    public delegate void MonsterTargetDelegate(WorldObj obj);
     public static event MonsterTargetDelegate monsterTargetSet;
 
     private Vector2 targetPosition;
@@ -136,12 +134,14 @@ public class UnitDrag : DragFunc
 
                 foreach (Collider2D collider in colliders)
                 {
-                    if (collider.GetComponentInParent<UnitAi>() == null)
-                        continue;
-                    if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
-                        continue;
+                    WorldObj obj = collider.GetComponentInParent<WorldObj>();
 
-                    selectedObjectsList.Add(collider.GetComponentInParent<UnitAi>());
+                    if (!obj || !obj.Has<UnitAi>())
+                        continue;
+                    //if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
+                    //    continue;
+
+                    selectedObjectsList.Add(obj.Get<UnitAi>());
                 }
 
                 if (selectedObjectsList.Count > 0)
@@ -157,14 +157,15 @@ public class UnitDrag : DragFunc
                 RaycastHit2D hit = Physics2D.Raycast(endPos, Vector2.zero, 0f, 1 << interactLayer);
                 if (hit)
                 {
-                    if (!hit.collider.GetComponentInParent<UnitAi>())
+                    WorldObj obj = hit.collider.GetComponentInParent<WorldObj>();
+
+                    if (!obj || !obj.Has<UnitAi>())
                         return;
-                    UnitAi unitAi = hit.collider.GetComponentInParent<UnitAi>();
-                    removeUnitList.Add(unitAi);
+                    removeUnitList.Add(obj.Get<UnitAi>());
                 }
                 else
                 {
-                    selectedObjects = new GameObject[0];
+                    selectedObjects = new WorldObj[0];
                 }
             }
 
@@ -200,7 +201,7 @@ public class UnitDrag : DragFunc
                     }
                     else
                     {
-                        selectedObjects = new GameObject[0];
+                        selectedObjects = new WorldObj[0];
                         removeUnit?.Invoke();
                     }
                 }
@@ -218,15 +219,14 @@ public class UnitDrag : DragFunc
                 {
                     SetTargetPosition(true, endPos);
                 }
-                else if (hit.collider.GetComponentInParent<MonsterAi>())
+                else
                 {
-                    monsterTargetSet?.Invoke(hit.collider.GetComponentInParent<MonsterAi>().gameObject);
+                    WorldObj obj = hit.collider.GetComponentInParent<WorldObj>();
+                    if (obj && (obj.Get<MonsterAi>() || obj.Get<MonsterSpawner>()))
+                    {
+                        monsterTargetSet?.Invoke(obj);
+                    }
                 }
-                else if (hit.collider.GetComponentInParent<MonsterSpawner>())
-                {
-                    monsterTargetSet?.Invoke(hit.collider.GetComponentInParent<MonsterSpawner>().gameObject);
-                }
-
                 UnitMovePos.instance.AnimStart(endPos);
             }
         }
@@ -245,7 +245,7 @@ public class UnitDrag : DragFunc
                 SelectedSameUnit(hit);
             else
             {
-                selectedObjects = new GameObject[0];
+                selectedObjects = new WorldObj[0];
                 removeUnit?.Invoke();
                 ReSetBool();
             }
@@ -266,16 +266,17 @@ public class UnitDrag : DragFunc
     protected override void GroupSelectedObjects(Vector2 startPosition, Vector2 endPosition)
     {
         Collider2D[] colliders = Physics2D.OverlapAreaAll(startPosition, endPosition, 1 << interactLayer);
-        List<GameObject> selectedObjectsList = new List<GameObject>();
+        List<WorldObj> selectedObjectsList = new List<WorldObj>();
 
         foreach (Collider2D collider in colliders)
         {
-            if (collider.GetComponentInParent<UnitAi>() == null || collider.GetComponentInParent<TankCtrl>())
-                continue;
-            if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
-                continue;
+            WorldObj obj = collider.GetComponentInParent<WorldObj>();
 
-            selectedObjectsList.Add(collider.GetComponentInParent<UnitAi>().gameObject);
+            if (!obj || !obj.Has<UnitAi>() || obj.Has<TankCtrl>())
+                continue;
+            //if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
+            //    continue;
+            selectedObjectsList.Add(obj);
         }
         selectedObjects = selectedObjectsList.ToArray();
 
@@ -283,7 +284,7 @@ public class UnitDrag : DragFunc
 
         if (selectedObjects.Length > 0)
         {
-            foreach (GameObject obj in selectedObjects)
+            foreach (WorldObj obj in selectedObjects)
             {
                 addUnit?.Invoke(obj);
             }
@@ -291,10 +292,10 @@ public class UnitDrag : DragFunc
         }
 
         if (selectedObjects.Length == 1)
-            InfoUI.instance.SetUnitInfo(selectedObjects[0].GetComponentInParent<UnitAi>());
+            InfoUI.instance.SetUnitInfo(selectedObjects[0].Get<UnitAi>());
         else
         {
-            List<UnitAi> unitAiList = selectedObjectsList.Select(obj => obj.GetComponent<UnitAi>()).ToList();
+            List<UnitAi> unitAiList = selectedObjectsList.Select(obj => obj.Get<UnitAi>()).ToList();
             InfoUI.instance.SetDefault();
             InfoUI.instance.UnitGroupUISet(unitAiList);
         }
@@ -302,70 +303,69 @@ public class UnitDrag : DragFunc
 
     private void SelectedObjects(RaycastHit2D ray)
     {
-        if (!ray.collider.GetComponentInParent<UnitAi>() || ray.collider.GetComponentInParent<TankCtrl>())
-            return;
-        GameObject gameObject = ray.collider.GetComponentInParent<UnitAi>().gameObject; 
-        removeUnit?.Invoke();
-        selectedObjects = new GameObject[1];
-        selectedObjects[0] = gameObject;
+        WorldObj obj = ray.collider.GetComponentInParent<WorldObj>();
 
-        addUnit?.Invoke(gameObject);
+        if (!obj || !obj.Has<UnitAi>())
+            return;
+
+        removeUnit?.Invoke();
+        selectedObjects = new WorldObj[1];
+        selectedObjects[0] = obj;
+
+        addUnit?.Invoke(obj);
         BasicUIBtns.instance.SwapFunc(false);
 
-        InfoUI.instance.SetUnitInfo(gameObject.GetComponentInParent<UnitAi>());
+        InfoUI.instance.SetUnitInfo(obj.Get<UnitAi>());
     }
 
     private void SelectedSameUnit(RaycastHit2D ray)
     {
+        WorldObj obj = ray.collider.GetComponentInParent<WorldObj>();
+
         // 클릭 대상이 UnitAi가 아니거나 TankCtrl이면 리턴
-        if (!ray.collider.GetComponentInParent<UnitAi>() || ray.collider.GetComponentInParent<TankCtrl>())
+        if (!obj || !obj.Has<UnitAi>() || obj.Has<TankCtrl>())
             return;
 
         // 기본 선택 유닛 정보 가져오기
-        GameObject gameObject = ray.collider.GetComponentInParent<UnitAi>().gameObject;
         removeUnit?.Invoke();
-        gameObject.TryGetComponent(out UnitAi unit);
+        obj.TryGet(out UnitAi unit);
         int unitIndex = unit.unitIndex;
 
         // 대상 유닛 리스트
         UnitAi[] unitAis = System.Array.Empty<UnitAi>();
-        List<GameObject> selectedObjectsList = new List<GameObject>();
+        List<WorldObj> selectedObjectsList = new List<WorldObj>();
 
         if (unitIndex == 0)
         {
-            unitAis = Object.FindObjectsByType<BounceRobot>(FindObjectsSortMode.None);
+            unitAis = FindObjectsByType<BounceRobot>(FindObjectsSortMode.None);
         }
         else if (unitIndex == 1)
         {
-            unitAis = Object.FindObjectsByType<SentryCopterCtrl>(FindObjectsSortMode.None);
+            unitAis = FindObjectsByType<SentryCopterCtrl>(FindObjectsSortMode.None);
         }
         else if (unitIndex == 2)
         {
-            unitAis = Object.FindObjectsByType<SpinRobot>(FindObjectsSortMode.None);
+            unitAis = FindObjectsByType<SpinRobot>(FindObjectsSortMode.None);
         }
         else if (unitIndex == 3)
         {
-            unitAis = Object.FindObjectsByType<CorrosionDrone>(FindObjectsSortMode.None);
+            unitAis = FindObjectsByType<CorrosionDrone>(FindObjectsSortMode.None);
         }
         else if (unitIndex == 4)
         {
-            unitAis = Object.FindObjectsByType<RepairerDrone>(FindObjectsSortMode.None);
-        }
-        else if (unitIndex == 5)
-        {
-            unitAis = Object.FindObjectsByType<TankCtrl>(FindObjectsSortMode.None);
+            unitAis = FindObjectsByType<RepairerDrone>(FindObjectsSortMode.None);
         }
 
         // 화면 안에 있고, 같은 레벨의 유닛만 선택
-        foreach (var obj in unitAis)
+        foreach (var _unit in unitAis)
         {
-            if (obj.TryGetComponent(out UnitAi _unit) && unit.unitLevel == _unit.unitLevel)
+            if (unit.unitLevel == _unit.unitLevel)
             {
-                Vector3 viewportPos = Camera.main.WorldToViewportPoint(obj.transform.position);
+                Vector3 viewportPos = Camera.main.WorldToViewportPoint(_unit.transform.position);
                 if (viewportPos.z > 0 && viewportPos.x >= 0 && viewportPos.x <= 1 &&
                     viewportPos.y >= 0 && viewportPos.y <= 1)
                 {
-                    selectedObjectsList.Add(obj.gameObject);
+                    selectedObjectsList.Add(_unit);
                 }
             }
         }
@@ -376,16 +376,16 @@ public class UnitDrag : DragFunc
         // 선택된 오브젝트가 있다면 모두 선택 상태로 추가
         if (selectedObjects.Length > 0)
         {
-            foreach (GameObject obj in selectedObjects)
+            foreach (WorldObj _obj in selectedObjects)
             {
-                addUnit?.Invoke(obj);
+                addUnit?.Invoke(_obj);
             }
             BasicUIBtns.instance.SwapFunc(false);
         }
 
         // UI 갱신
         List<UnitAi> unitAiList = selectedObjectsList
-            .Select(obj => obj.GetComponent<UnitAi>())
+            .Select(obj => obj.Get<UnitAi>())
             .ToList();
 
         InfoUI.instance.SetUnitInfo(unitAiList);
@@ -407,7 +407,7 @@ public class UnitDrag : DragFunc
                 map = GameManager.instance.clientMap;
 
             Cell cell = map.GetCellDataFromPos(x, y);
-            if (cell.structure && cell.structure.GetComponent<PortalUnitIn>())
+            if (cell.structure && cell.structure.Get<PortalUnitIn>())
             {
                 isPlayerUnitPortalIn = true;
             }
@@ -454,7 +454,7 @@ public class UnitDrag : DragFunc
         GameManager.instance.AddScrapServerRpc(sellPrice);
     }
 
-    public void UnitRemoveGroup(GameObject obj)
+    public void UnitRemoveGroup(WorldObj obj)
     {
         selectedObjects = selectedObjects.Where(x => x != obj).ToArray();
     }

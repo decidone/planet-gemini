@@ -27,13 +27,13 @@ public class BounceRobot : UnitAi
         base.AttackEnd();
         if (IsServer && aggroTarget != null)
         {
-            if (aggroTarget.TryGetComponent(out MonsterAi monster))
+            if (aggroTarget.TryGet(out MonsterAi monster))
             {
                 monster.TakeDamage(damage, 0);
             }
-            else if (aggroTarget.TryGetComponent(out MonsterSpawner spawner))
+            else if (aggroTarget.TryGet(out MonsterSpawner spawner))
             {
-                spawner.TakeDamage(damage, gameObject);
+                spawner.TakeDamage(damage, this);
             }
         }
     }

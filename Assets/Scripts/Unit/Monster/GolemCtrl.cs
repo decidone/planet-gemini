@@ -35,6 +35,6 @@ public class GolemCtrl : MonsterAi
         //golemFX = Instantiate(golemAttackFX, new Vector2(getTargetTr.position.x, getTargetTr.position.y), getTargetTr.rotation);
         NetworkObject golemFX = networkObjectPool.GetNetworkObject(golemAttackFX, new Vector2(getTargetTr.position.x, getTargetTr.position.y), Quaternion.identity);
         if (!golemFX.IsSpawned) golemFX.Spawn(true);
-        golemFX.GetComponentInChildren<GolemFXCtrl>().TargetPosAndDamage(damage);
+        golemFX.GetComponent<GolemFXCtrl>().TargetPosAndDamage(damage);
     }
 }

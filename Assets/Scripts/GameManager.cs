@@ -198,6 +198,7 @@ public class GameManager : NetworkBehaviour
     float prevWaveDamage; // 이전 웨이브 총 데미지
     float currWaveDamage; // 현재 웨이브 총 데미지
     public float difficultyPercent; // 웨이브 난이도 증가량
+    float waveSkipChance;
 
     // 몬스터 배율
     public float spawnMultiplier = 1f;
@@ -492,7 +493,7 @@ public class GameManager : NetworkBehaviour
                 WaveSkipItemSubServerRpc(0, waveSkipRecipe.amounts[0]);
                 NoWaveDetectedTextClientRpc();
             }
-            else if (UnityEngine.Random.Range(0, 100) >= 10)
+            else if (UnityEngine.Random.Range(0, 100) >= waveSkipChance)
             {
                 energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
 
@@ -540,6 +541,16 @@ public class GameManager : NetworkBehaviour
             }
             else
                 NoWaveDetectedTextClientRpc();
+
+            if (!violentDay) // 스킵된 경우
+            {
+                waveSkipChance = 0;
+                difficultyPercent += 20;
+            }
+            else // 발생한 경우
+            {
+                waveSkipChance += 5;
+            }
         }
 
         if (bloodMoonEventState)
@@ -1573,6 +1584,7 @@ public class GameManager : NetworkBehaviour
         inGameData.difficultyPercent = difficultyPercent;
 
         inGameData.waveSkipItemAmount = waveSkipItemAmount;
+        inGameData.waveSkipChance = waveSkipChance;
 
         return inGameData;
     }
@@ -1625,8 +1637,9 @@ public class GameManager : NetworkBehaviour
         difficultyPercent = data.difficultyPercent;
 
         waveSkipItemAmount = data.waveSkipItemAmount;
-        
-        if(IsServer)
+        waveSkipChance = data.waveSkipChance;
+
+        if (IsServer)
             WaveSkipItemAddServerRpc(0, waveSkipItemIndex, waveSkipItemAmount);
 
         ApplyDifficulty();
@@ -1932,7 +1945,7 @@ public class GameManager : NetworkBehaviour
         SceneManager.LoadScene("MainMenuScene");
     }
 
-    public void StructureUpgrade(GameObject[] upgradeObjs)
+    public void StructureUpgrade(WorldObj[] upgradeObjs)
     {
         NetworkObjectReference[] networkObjectReference = new NetworkObjectReference[upgradeObjs.Length];
         int[] level = new int[upgradeObjs.Length];

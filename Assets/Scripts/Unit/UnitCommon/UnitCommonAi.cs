@@ -27,7 +27,7 @@ public enum AttackState
     AttackEnd,
 }
 
-public class UnitCommonAi : NetworkBehaviour
+public class UnitCommonAi : WorldObj
 {
     [SerializeField]
     public UnitCommonData unitCommonData;
@@ -47,9 +47,9 @@ public class UnitCommonAi : NetworkBehaviour
 
     protected float searchInterval;
     protected float searchTimer;
-    public GameObject aggroTarget;
+    public WorldObj aggroTarget;
     protected float targetDist;
-    public List<GameObject> targetList = new List<GameObject>();
+    public List<WorldObj> targetList = new List<WorldObj>();
 
     protected Vector3 patrolPos;
 
@@ -103,13 +103,15 @@ public class UnitCommonAi : NetworkBehaviour
     [SerializeField]
     protected bool nonBattleUnit;
 
-    protected virtual void Awake()
+    protected override void Awake()
     {
-        tr = GetComponent<Transform>();
-        rg = GetComponent<Rigidbody2D>();
-        capsule2D = GetComponent<CapsuleCollider2D>();
-        seeker = GetComponent<Seeker>();
-        animator = GetComponent<Animator>();
+        base.Awake();
+
+        tr = Get<Transform>();
+        rg = Get<Rigidbody2D>();
+        capsule2D = Get<CapsuleCollider2D>();
+        seeker = Get<Seeker>();
+        animator = Get<Animator>();
         searchManager = SearchObjectsInRangeManager.instance;
         hp = unitCommonData.MaxHp;
         maxHp = unitCommonData.MaxHp;
@@ -313,61 +315,13 @@ public class UnitCommonAi : NetworkBehaviour
     }
 
     [ServerRpc]
-    public virtual void TakeDamageServerRpc(float damage, int attackType, float option)
+    protected virtual void TakeDamageServerRpc(float damage, int attackType, float option)
     {
         TakeDamageClientRpc(damage, attackType, option);
     }
 
     [ClientRpc]
-    public virtual void TakeDamageClientRpc(float damage, int attackType, float option)
-    {
-        //if (!unitCanvas.activeSelf)
-        //    unitCanvas.SetActive(true);
-
-        //float reducedDamage = damage;
-
-        //if (attackType == 0 || attackType == 4)
-        //{
-        //    reducedDamage = Mathf.Max(damage - defense, 5);
-        //    if (attackType == 4)
-        //    {
-        //        if(!slowDebuffOn)
-        //            StartCoroutine(SlowDebuffDamage(option));
-        //    }
-        //}
-        //else if (attackType == 2)
-        //{
-        //    reducedDamage = Mathf.Max(damage - (defense * (option / 100)), 5);
-        //}
-        //else if (attackType == 3)
-        //{
-        //    reducedDamage = 0;
-        //    if(!takePoisonDamgae)
-        //        StartCoroutine(PoisonDamage(damage, option));
-        //}
-
-        //if (!slowDebuffOn && !takePoisonDamgae && !damageEffectOn)
-        //{
-        //    StartCoroutine(TakeDamageEffect());
-        //}
-
-        //hp -= reducedDamage;
-        //if (hp < 0f)
-        //    hp = 0f;
-        //onHpChangedCallback?.Invoke();
-        //hpBar.fillAmount = hp / maxHp;
-
-        //if (IsServer && hp <= 0f && !dieCheck)
-        //{
-        //    aIState = AIState.AI_Die;
-        //    hp = 0f;
-        //    dieCheck = true;
-        //    DieFuncServerRpc();
-        //    StopAllCoroutines();
-        //    seeker.enabled = false; 
-        //    seeker.OnDestroy();    
-        //}
-    }
+    protected virtual void TakeDamageClientRpc(float damage, int attackType, float option) { }
 
     protected IEnumerator SlowDebuffDamage(float time)
     {

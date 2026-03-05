@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1520558231759153307}
   - component: {fileID: 3616386573527075989}
   - component: {fileID: -6611683999273134478}
-  - component: {fileID: 460137294059678698}
+  - component: {fileID: 4807785452711932708}
   - component: {fileID: 5337739608376463110}
   - component: {fileID: 8848798566448613666}
   - component: {fileID: 432508468526076907}
@@ -173,7 +173,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &460137294059678698
+--- !u!114 &4807785452711932708
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,12 +182,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 579694149276134389}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d409c058c3615746bf964fcab09c98d, type: 3}
+  m_Script: {fileID: 11500000, guid: 84faae0b6d61c9847aa00926761c1eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   unitCommonData: {fileID: 11400000, guid: 82ffc8c3adb416d448dbbbca5367f63d, type: 2}
-  currentWaypointIndex: 0
   aggroTarget: {fileID: 0}
   targetList: []
   animator: {fileID: 0}
@@ -206,9 +205,8 @@ MonoBehaviour:
   damage: 0
   attackSpeed: 0
   defense: 0
+  nonBattleUnit: 0
   name: Scorpion
-  spawner: {fileID: 0}
-  maxSpawnDist: 20
   isScriptActive: 0
   monsterType: 0
   waveState: 0

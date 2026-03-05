@@ -31,7 +31,7 @@ public class TowerSingleAttackFx : TowerAttackFx
         transform.position += (Vector3)moveNextStep * 25 * Time.fixedDeltaTime;
     }
 
-    public void GetTarget(Vector3 target, float GetDamage, GameObject obj, bool explo)
+    public void GetTarget(Vector3 target, float GetDamage, WorldObj obj, bool explo)
     {
         Vector3 direction = target - transform.position;
         direction.z = 0;
@@ -42,7 +42,7 @@ public class TowerSingleAttackFx : TowerAttackFx
         explosion = explo;
         timerCoroutine = StartCoroutine(nameof(RemoveTimer));
     }
-    public void GetTarget2(Vector3 target, float GetDamage, GameObject obj, bool explo)
+    public void GetTarget2(Vector3 target, float GetDamage, WorldObj obj, bool explo)
     {
         moveNextStep = target;
         damage = GetDamage;
@@ -90,11 +90,13 @@ public class TowerSingleAttackFx : TowerAttackFx
             }
             else
             {
-                if (collision.TryGetComponent(out MonsterAi monster))
+                collision.TryGetComponent(out WorldObj obj);
+
+                if (obj.TryGet(out MonsterAi monster))
                 {
                     TakeDamage(monster);
                 }
-                else if (collision.TryGetComponent(out MonsterSpawner spawner))
+                else if (obj.TryGet(out MonsterSpawner spawner))
                 {
                     TakeDamage(spawner);
                 }

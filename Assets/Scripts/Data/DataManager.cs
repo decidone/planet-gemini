@@ -593,19 +593,19 @@ public class DataManager : MonoBehaviour
     {
         foreach (UnitSaveData unitSaveData in spawnerSaveData.monsterList)
         {
-            GameObject monster = null;
+            MonsterAi monster = null;
             if (!unitSaveData.waveState)
             {
                 monster = monsterSpawner.SpawnMonster(unitSaveData.monsterType, unitSaveData.unitIndex, planet);
                 monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
-                monster.GetComponent<MonsterAi>().GameStartSet(unitSaveData);
+                monster.GameStartSet(unitSaveData);
             }
             else
             {
                 monster = monsterSpawner.WaveMonsterSpawn(unitSaveData.monsterType, unitSaveData.unitIndex, planet, unitSaveData.isWaveColonyCallCheck);
                 monster.transform.position = Vector3Extensions.ToVector3(unitSaveData.pos);
-                monster.GetComponent<MonsterAi>().GameStartSet(unitSaveData);
-                monster.GetComponent<MonsterAi>().LoadGameWaveSet(Vector3Extensions.ToVector3(unitSaveData.wavePos));
+                monster.GameStartSet(unitSaveData);
+                monster.LoadGameWaveSet(Vector3Extensions.ToVector3(unitSaveData.wavePos));
             }
         }
     }

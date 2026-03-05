@@ -10,7 +10,7 @@ public class BulletCtrl : NetworkBehaviour
     float damage = 0;
     public Transform aggroTarget = null;    // 타겟
     Vector3 moveNextStep = Vector3.zero;    // 이동 방향 벡터
-    GameObject attackUnit;
+    WorldObj attackUnit;
 
     bool alreadyHit;
 
@@ -42,7 +42,7 @@ public class BulletCtrl : NetworkBehaviour
         }
     }
 
-    public void GetTarget(Vector3 target, float GetDamage, GameObject obj)
+    public void GetTarget(Vector3 target, float GetDamage, WorldObj obj)
     {
         Vector3 direction = target - transform.position;
         direction.z = 0;
@@ -64,26 +64,26 @@ public class BulletCtrl : NetworkBehaviour
     {
         if (!IsServer)
             return;
-        if (collision.CompareTag("Monster") || collision.CompareTag("Spawner"))
+    
+        if (!alreadyHit)
         {
-            if (!alreadyHit)
-            {
-                if (timerCoroutine != null)
-                    StopCoroutine(timerCoroutine);
-                DestroyBullet();
-                alreadyHit = true;
-            }
-            else
-                return;
+            if (timerCoroutine != null)
+                StopCoroutine(timerCoroutine);
+            DestroyBullet();
+            alreadyHit = true;
+        }
+        else
+            return;
 
-            if (collision.TryGetComponent(out MonsterAi monster))
-            {
-                monster.TakeDamage(damage, 0);
-            }
-            else if (collision.TryGetComponent(out MonsterSpawner spawner))
-            {
-                spawner.TakeDamage(damage, attackUnit);
-            }
+        collision.TryGetComponent(out WorldObj obj);
+
+        if (obj.TryGet(out MonsterAi monster))
+        {
+            monster.TakeDamage(damage, 0);
+        }
+        else if (obj.TryGet(out MonsterSpawner spawner))
+        {
+            spawner.TakeDamage(damage, attackUnit);
         }
     }
 }

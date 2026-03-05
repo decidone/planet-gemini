@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // UTF-8 설정
-public class Structure : NetworkBehaviour
+public class Structure : WorldObj
 {
     // 건물 공용 스크립트
     // Update처럼 함수 호출하는 부분은 다 하위 클래스에 넣을 것
@@ -224,25 +224,9 @@ public class Structure : NetworkBehaviour
     public HashSet<Overclock> overclocks = new HashSet<Overclock>();
     public HashSet<RepairTower> repairTowers = new HashSet<RepairTower>();
 
-    protected Dictionary<Type, Component> _cache = new();
-
-    protected virtual void Awake()
+    protected override void Awake()
     {
-        foreach (var comp in GetComponents<Component>())
-        {
-            var type = comp.GetType();
-
-            // 자기 자신부터 Component까지 올라가면서 전부 등록
-            while (type != null && type != typeof(MonoBehaviour)
-                                && type != typeof(Behaviour)
-                                && type != typeof(Component))
-            {
-                if (!_cache.ContainsKey(type))
-                    _cache[type] = comp;
-
-                type = type.BaseType;
-            }
-        }
+        base.Awake();
 
         gameManager = GameManager.instance;
         playerInven = gameManager.inventory;
@@ -299,21 +283,6 @@ public class Structure : NetworkBehaviour
         NonOperateStateSet(isOperate);
         WarningStateCheck();
 
-    }
-
-    public bool Has<T>() where T : Component => _cache.ContainsKey(typeof(T));
-
-    public T Get<T>() where T : Component => _cache.TryGetValue(typeof(T), out var c) ? c as T : null;
-
-    public bool TryGet<T>(out T result) where T : Component
-    {
-        if (_cache.TryGetValue(typeof(T), out var c))
-        {
-            result = c as T;
-            return true;
-        }
-        result = null;
-        return false;
     }
 
     protected virtual void Update()

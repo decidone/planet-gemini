@@ -6,14 +6,6 @@ using UnityEngine;
 // UTF-8 설정
 public class GuardianAi : MonsterAi
 {
-    //protected override void Update()
-    //{
-    //    if (aIState != AIState.AI_SpawnerCall)
-    //    {
-    //        base.Update();
-    //    }
-    //}
-
     protected override void UnitAiCtrl()
     {
         switch (aIState)
@@ -63,41 +55,7 @@ public class GuardianAi : MonsterAi
         }
     }
 
-    //public override void SpawnerCall()
-    //{
-    //    //AnimBoolCtrl("isMove", true);
-    //    animator.SetBool("isMove", true);
-
-    //    AnimSetFloat(targetVec, true);
-
-    //    targetDist = Vector3.Distance(tr.position, aggroTarget.transform.position);
- 
-    //    if (targetDist > unitCommonData.AttackDist)
-    //    {
-    //        if (currentWaypointIndex >= movePath.Count)
-    //            return;
-
-    //        Vector3 targetWaypoint = movePath[currentWaypointIndex];
-    //        direction = targetWaypoint - tr.position;
-    //        direction.Normalize();
-
-    //        tr.position = Vector3.MoveTowards(tr.position, targetWaypoint, Time.deltaTime * (unitCommonData.MoveSpeed + 10) * slowSpeedPer);
-
-    //        if (Vector3.Distance(tr.position, targetWaypoint) <= 0.3f)
-    //        {
-    //            currentWaypointIndex++;
-
-    //            if (currentWaypointIndex >= movePath.Count)
-    //                return;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        aIState = AIState.AI_NormalTrace;
-    //    }
-    //} 
-
-    public override void SpawnerCallCheck(GameObject obj)
+    public override void SpawnerCallCheck(WorldObj obj)
     {
         if (obj == null)
             return;

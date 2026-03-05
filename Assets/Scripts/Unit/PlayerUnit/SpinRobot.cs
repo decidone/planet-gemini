@@ -38,11 +38,11 @@ public class SpinRobot : UnitAi
                 if (distance > unitCommonData.AttackDist)
                     continue;
 
-                if (targetList[i].TryGetComponent(out MonsterAi monster))
+                if (targetList[i].TryGet(out MonsterAi monster))
                 {
                     monster.TakeDamage(damage, 0);
                 }
-                else if (targetList[i].TryGetComponent(out MonsterSpawner spawner))
+                else if (targetList[i].TryGet(out MonsterSpawner spawner))
                 {
                     spawner.TakeDamage(damage, targetList[i]);
                 }
