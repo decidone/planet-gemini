@@ -481,6 +481,7 @@ MonoBehaviour:
   basicUI: {fileID: 0}
   chat: {fileID: 0}
   questUI: {fileID: 0}
+  playTime: 0
   day: 0
   isDay: 0
   dayTime: 120
@@ -505,6 +506,7 @@ MonoBehaviour:
   dayText: {fileID: 0}
   bloodMoonDDayText: {fileID: 0}
   brightness: {fileID: 0}
+  hours: 0
   autoSaveTimer: 0
   autoSaveinterval: 0
   popUpUIOpen: 0
@@ -520,6 +522,7 @@ MonoBehaviour:
   spawnMultiplier: 1
   hpMultiplier: 1
   atkMultiplier: 1
+  waveSkipItemAmount: 0
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,6 +549,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90c0c058d8fc0634b81aa39036b1371f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingTagsSpriteList:
+  - {fileID: 21300000, guid: 0639e519220b70e46b55b275ce7f6680, type: 3}
+  - {fileID: 21300000, guid: 22fb6074f85d230489c42c188fa9e196, type: 3}
   buildingTagsPanel: {fileID: 0}
 --- !u!114 &762871311885926032
 MonoBehaviour:
@@ -784,6 +790,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   saveData:
+    saveVersion: 1
     InGameData:
       fileName: 
       saveDate: 
@@ -791,6 +798,7 @@ MonoBehaviour:
       difficultyLevel: 0
       seed: 0
       bloodMoon: 0
+      playTime: 0
       day: 0
       isDay: 0
       dayTimer: 0
@@ -811,6 +819,8 @@ MonoBehaviour:
       prevWaveDamage: 0
       currWaveDamage: 0
       difficultyPercent: 0
+      waveSkipItemAmount: 0
+      waveSkipChance: 0
     hostPlayerData:
       pos:
         x: 0

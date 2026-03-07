@@ -13,6 +13,8 @@ public class BuildingInven : MonoBehaviour
     public Dictionary<int, Building> buildingDic = new Dictionary<int, Building>();
     private ScienceDb scienceDb;
     private Button[] buildingTagsBtn;
+    private Image[] buildingTagsImage;
+    [SerializeField] List<Sprite> buildingTagsSpriteList;
     private int preBtnIndex = 0;
     public static BuildingInven instance;
     [SerializeField]
@@ -42,11 +44,13 @@ public class BuildingInven : MonoBehaviour
         scienceManager = ScienceManager.instance;
         buildingDataList = BuildingList.instance.buildingListSO.buildingSOList;
         buildingTagsBtn = buildingTagsPanel.GetComponentsInChildren<Button>();
+        buildingTagsImage = new Image[buildingTagsBtn.Length];
 
         for (int i = 0; i < buildingTagsBtn.Length; i++)
         {
             int buttonIndex = i;
             buildingTagsBtn[i].onClick.AddListener(() => ButtonClicked(buttonIndex));
+            buildingTagsImage[i] = buildingTagsBtn[i].GetComponent<Image>();
         }
         ButtonClickedStart();
     }
@@ -81,6 +85,18 @@ public class BuildingInven : MonoBehaviour
         {
             return;
         }
+        for (int i = 0; i < buildingTagsImage.Length; i++)
+        {
+            if (i == buttonIndex)
+            {
+                buildingTagsImage[i].sprite = buildingTagsSpriteList[1];
+            }
+            else
+            {
+                buildingTagsImage[i].sprite = buildingTagsSpriteList[0];
+            }
+        }
+
         string itemType = GetItemType(buttonIndex);
         AddDicType(itemType);
         preBtnIndex = buttonIndex;

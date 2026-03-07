@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.Pool;
 
 public class SoundManager : MonoBehaviour
 {
@@ -17,20 +18,18 @@ public class SoundManager : MonoBehaviour
 
     private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
 
-    public static SoundManager instance { get; private set; }
-
     [SerializeField] 
     private AudioClipRefsSO audioClipRefsSO;
 
     private AudioSource bgmPlayer;
 
-    List<AudioSource> structureSfxPlayer = new List<AudioSource>();
-    [SerializeField]
-    int structureSfxPlayerMaxCount;
+    //List<AudioSource> structureSfxPlayer = new List<AudioSource>();
+    //[SerializeField]
+    //int structureSfxPlayerMaxCount;
 
-    List<AudioSource> unitSfxPlayer = new List<AudioSource>();
-    [SerializeField]
-    int unitSfxPlayerMaxCount;
+    //List<AudioSource> unitSfxPlayer = new List<AudioSource>();
+    //[SerializeField]
+    //int unitSfxPlayerMaxCount;
 
     public
     AudioSource uiSfxPlayer;
@@ -56,13 +55,13 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private Toggle musicSFXToggle;
 
-    bool structureSfxPlay = false;
-    bool unitSfxPlay = false;
+    //bool structureSfxPlay = false;
+    //bool unitSfxPlay = false;
 
-    float structureDelayTimer = 0.0f;
-    float structureDelayInterval = 0.05f;
-    float unitDelayTimer = 0.0f;
-    float unitDelayInterval = 0.05f;
+    //float structureDelayTimer = 0.0f;
+    //float structureDelayInterval = 0.05f;
+    //float unitDelayTimer = 0.0f;
+    //float unitDelayInterval = 0.05f;
 
     //public bool isHostMapBattleOn = false;
     //public bool isClientMapBattleOn = false;
@@ -71,6 +70,16 @@ public class SoundManager : MonoBehaviour
 
     float fadeSeconds = 1.0f;
     bool isFadingOut;
+
+    int defaultPoolSize = 16;
+    int maxPoolSize = 32;
+    float defaultMinDistance = 4f;
+    float defaultMaxDistance = 20f;
+    Dictionary<string, float> lastPlayTime = new Dictionary<string, float>();
+    AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic;
+    ObjectPool<AudioSource> pool;
+
+    public static SoundManager instance { get; private set; }
 
     private void Awake()
     {
@@ -81,7 +90,15 @@ public class SoundManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         instance = this;
-        Debug.Log("SoundManager awake ");
+
+        pool = new ObjectPool<AudioSource>(
+            createFunc: CreatePooledSource,
+            actionOnGet: OnGetSource,
+            actionOnRelease: OnReleaseSource,
+            actionOnDestroy: OnDestroySource,
+            defaultCapacity: defaultPoolSize,
+            maxSize: maxPoolSize
+        );
     }
 
     private void Start()
@@ -161,23 +178,23 @@ public class SoundManager : MonoBehaviour
             }
         }
 
-        if (structureSfxPlay)
-        {
-            structureDelayTimer += Time.deltaTime;
-            if(structureDelayTimer > structureDelayInterval)
-            {
-                structureSfxPlay = false;
-            }
-        }
+        //if (structureSfxPlay)
+        //{
+        //    structureDelayTimer += Time.deltaTime;
+        //    if(structureDelayTimer > structureDelayInterval)
+        //    {
+        //        structureSfxPlay = false;
+        //    }
+        //}
 
-        if (unitSfxPlay)
-        {
-            unitDelayTimer += Time.deltaTime;
-            if (unitDelayTimer > unitDelayInterval)
-            {
-                unitSfxPlay = false;
-            }
-        }
+        //if (unitSfxPlay)
+        //{
+        //    unitDelayTimer += Time.deltaTime;
+        //    if (unitDelayTimer > unitDelayInterval)
+        //    {
+        //        unitSfxPlay = false;
+        //    }
+        //}
     }
 
     #region VolumeSet
@@ -275,8 +292,8 @@ public class SoundManager : MonoBehaviour
     void SFXPlayerSet()
     {
         BgmPlayerSet();
-        StructureSFXPlayerSet();
-        UnitSFXPlayerSet();
+        //StructureSFXPlayerSet();
+        //UnitSFXPlayerSet();
         UIPlayerSet();
     }
 
@@ -371,23 +388,23 @@ public class SoundManager : MonoBehaviour
         bgmPlayer = PlayerBaseSet("BGM");
     }
 
-    void StructureSFXPlayerSet()
-    {
-        for (int i = 0; i < structureSfxPlayerMaxCount; i++)
-        {
-            AudioSource audio = PlayerBaseSet("SFX");
-            structureSfxPlayer.Add(audio);
-        }
-    }
+    //void StructureSFXPlayerSet()
+    //{
+    //    for (int i = 0; i < structureSfxPlayerMaxCount; i++)
+    //    {
+    //        AudioSource audio = PlayerBaseSet("SFX");
+    //        structureSfxPlayer.Add(audio);
+    //    }
+    //}
 
-    void UnitSFXPlayerSet()
-    {
-        for (int i = 0; i < unitSfxPlayerMaxCount; i++)
-        {
-            AudioSource audio = PlayerBaseSet("SFX");
-            unitSfxPlayer.Add(audio);
-        }
-    }
+    //void UnitSFXPlayerSet()
+    //{
+    //    for (int i = 0; i < unitSfxPlayerMaxCount; i++)
+    //    {
+    //        AudioSource audio = PlayerBaseSet("SFX");
+    //        unitSfxPlayer.Add(audio);
+    //    }
+    //}
 
     void UIPlayerSet()
     {
@@ -486,18 +503,20 @@ public class SoundManager : MonoBehaviour
         {
             case "structureSFX":
                 {
-                    if (structureSfxPlay)
-                        return;
-                    SFXAudioSet(structureSfxPlayer, true, sfxName);
-                    structureSfxPlay = true;
+                    //if (structureSfxPlay)
+                    //    return;
+                    //SFXAudioSet(structureSfxPlayer, true, sfxName);
+                    //structureSfxPlay = true;
+                    PlaySFX(obj, true, sfxName, 0.2f);
                 }
                 break;
             case "unitSFX":
                 {
-                    if (unitSfxPlay)
-                        return;
-                    SFXAudioSet(unitSfxPlayer, false, sfxName);
-                    unitSfxPlay = true;
+                    //if (unitSfxPlay)
+                    //    return;
+                    //SFXAudioSet(unitSfxPlayer, false, sfxName);
+                    //unitSfxPlay = true;
+                    PlaySFX(obj, false, sfxName, 0.03f);
                 }
                 break;
             default :
@@ -505,51 +524,95 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    void SFXAudioSet(List<AudioSource> audioList, bool strSound, string sfxName)
+    public void PlaySFX(GameObject target, bool isStrSound, string sfxName, float cooldown)
     {
-        AudioClip playClip = null;
-        AudioClip[] audioClips;
+        if (target == null) return;
 
-        if (strSound)
+        float distance = Vector3.Distance(target.transform.position, mainCamera.transform.position);
+        if (distance > defaultMaxDistance)
+            return;
+
+        if (lastPlayTime.TryGetValue(sfxName, out float lastTime))
         {
-            audioClips = audioClipRefsSO.structureSfx;
-        }
-        else
-        {
-            audioClips = audioClipRefsSO.unitSfx;
+            if (Time.time - lastTime < cooldown)
+                return;
         }
 
+        AudioClip clip = null;
+        AudioClip[] audioClips = (isStrSound) ? audioClipRefsSO.structureSfx : audioClipRefsSO.unitSfx;
+        
         for (int i = 0; i < audioClips.Length; i++)
         {
             if (sfxName == audioClips[i].name)
             {
-                playClip = audioClips[i];
+                clip = audioClips[i];
+                break;
             }
         }
+        if (clip == null) return;
 
-        if (strSound)
-        {
-            for (int j = 0; j < audioList.Count; j++)
-            {
-                if (audioList[j].clip == playClip && audioList[j].isPlaying)
-                {
-                    return;
-                }
-            }
-        }
+        AudioSource source = pool.Get();
+        source.transform.position = target.transform.position;
+        source.clip = clip;
+        source.volume = sfxVolume;
+        source.maxDistance = defaultMaxDistance;
+        source.Play();
 
-
-        for (int j = 0; j < audioList.Count; j++)
-        {
-            if (!audioList[j].isPlaying)
-            {
-                audioList[j].clip = playClip;
-                audioList[j].volume = sfxVolume;
-                audioList[j].Play();
-                return;
-            }
-        }
+        lastPlayTime[sfxName] = Time.time;
+        StartCoroutine(ReleaseAfterPlay(source, clip.length));
     }
+
+    private IEnumerator ReleaseAfterPlay(AudioSource source, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (source != null && source.gameObject.activeSelf)
+            pool.Release(source);
+    }
+
+    //void SFXAudioSet(List<AudioSource> audioList, bool strSound, string sfxName)
+    //{
+    //    AudioClip playClip = null;
+    //    AudioClip[] audioClips;
+
+    //    if (strSound)
+    //    {
+    //        audioClips = audioClipRefsSO.structureSfx;
+    //    }
+    //    else
+    //    {
+    //        audioClips = audioClipRefsSO.unitSfx;
+    //    }
+
+    //    for (int i = 0; i < audioClips.Length; i++)
+    //    {
+    //        if (sfxName == audioClips[i].name)
+    //        {
+    //            playClip = audioClips[i];
+    //        }
+    //    }
+
+    //    if (strSound)
+    //    {
+    //        for (int j = 0; j < audioList.Count; j++)
+    //        {
+    //            if (audioList[j].clip == playClip && audioList[j].isPlaying)
+    //            {
+    //                return;
+    //            }
+    //        }
+    //    }
+
+    //    for (int j = 0; j < audioList.Count; j++)
+    //    {
+    //        if (!audioList[j].isPlaying)
+    //        {
+    //            audioList[j].clip = playClip;
+    //            audioList[j].volume = sfxVolume;
+    //            audioList[j].Play();
+    //            return;
+    //        }
+    //    }
+    //}
 
     public void PlayUISFX(string p_sfxName)
     {
@@ -572,6 +635,44 @@ public class SoundManager : MonoBehaviour
         bool onScreen = screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
 
         return onScreen;
+    }
+
+    private AudioSource CreatePooledSource()
+    {
+        GameObject go = new GameObject("PooledAudioSource");
+        go.transform.SetParent(transform);
+        AudioSource source = go.AddComponent<AudioSource>();
+
+        source.spatialBlend = 1f;
+        source.minDistance = defaultMinDistance;
+        source.maxDistance = defaultMaxDistance;
+        source.rolloffMode = rolloffMode;
+        source.playOnAwake = false;
+        source.spread = 60f; // 방향감 (0~360, 낮을수록 뚜렷)
+        source.dopplerLevel = 0f;
+        source.reverbZoneMix = 0f;
+        source.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
+
+        go.SetActive(false);
+        return source;
+    }
+
+    private void OnGetSource(AudioSource source)
+    {
+        source.gameObject.SetActive(true);
+    }
+
+    private void OnReleaseSource(AudioSource source)
+    {
+        source.Stop();
+        source.clip = null;
+        source.gameObject.SetActive(false);
+    }
+
+    private void OnDestroySource(AudioSource source)
+    {
+        if (source != null)
+            Destroy(source.gameObject);
     }
 
     public void SaveData()
