@@ -491,7 +491,7 @@ public class GameManager : NetworkBehaviour
             if (waveSkipItemAmount > waveSkipRecipe.amounts[0])
             {
                 WaveSkipItemSubServerRpc(0, waveSkipRecipe.amounts[0]);
-                NoWaveDetectedTextClientRpc();
+                NoWaveDetectedTextClientRpc("The wave has been suppressed.");
             }
             else if (UnityEngine.Random.Range(0, 100) >= waveSkipChance)
             {
@@ -540,7 +540,7 @@ public class GameManager : NetworkBehaviour
                 }
             }
             else
-                NoWaveDetectedTextClientRpc();
+                NoWaveDetectedTextClientRpc("No Wave Detected.");
 
             if (!violentDay) // 스킵된 경우
             {
@@ -571,9 +571,9 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void NoWaveDetectedTextClientRpc()
+    void NoWaveDetectedTextClientRpc(string message)
     {
-        WarningWindow.instance.WarningTextSet("No Wave Detected.");
+        WarningWindow.instance.WarningTextSet(message);
     }
 
     [ClientRpc]

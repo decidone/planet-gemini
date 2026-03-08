@@ -85,6 +85,7 @@ public class GameStatePopup : MonoBehaviour
         OpenUI();
         InputManager.instance.CommonDisableControls();
         stateText.text = "Game Over";
+        btn.interactable = true;
         btn.onClick.AddListener(GameOverBtn);
         btnText.text = "Quit";
     }

@@ -50,20 +50,24 @@ public class InfoDictionary : MonoBehaviour
     [SerializeField] GameObject recipe1;
     [SerializeField] InfoDictionaryIcon recipe1Prod;
     [SerializeField] InfoDictionaryIcon recipe1Mat;
+    [SerializeField] InfoDictionaryIcon recipe1Time;
     [SerializeField] GameObject recipe1Sub;
     [SerializeField] InfoDictionaryIcon recipe1SubProd;
     [SerializeField] InfoDictionaryIcon recipe1SubMat;
+    [SerializeField] InfoDictionaryIcon recipe1SubTime;
 
     [SerializeField] GameObject recipe2;
     [SerializeField] InfoDictionaryIcon recipe2Prod;
     [SerializeField] InfoDictionaryIcon recipe2Mat1;
     [SerializeField] InfoDictionaryIcon recipe2Mat2;
+    [SerializeField] InfoDictionaryIcon recipe2Time;
 
     [SerializeField] GameObject recipe3;
     [SerializeField] InfoDictionaryIcon recipe3Prod;
     [SerializeField] InfoDictionaryIcon recipe3Mat1;
     [SerializeField] InfoDictionaryIcon recipe3Mat2;
     [SerializeField] InfoDictionaryIcon recipe3Mat3;
+    [SerializeField] InfoDictionaryIcon recipe3Time;
 
     [Space]
     [HideInInspector] public bool isOpen;
@@ -230,7 +234,7 @@ public class InfoDictionary : MonoBehaviour
                 {
                     if (recipe.name.Equals(item.name))
                     {
-                        item.layout = 2;
+                        //item.layout = 2;
                         item.recipes.Add(recipe);
                         for (int i = 0; i < buildingListSO.buildingSOList.Count; i++)
                         {
@@ -354,6 +358,7 @@ public class InfoDictionary : MonoBehaviour
                     recipe1.SetActive(true);
                     recipe1Mat.SetIcon(ItemList.instance.itemDic[recipe.items[0]].icon, recipe.items[0], recipe.amounts[0].ToString());
                     recipe1Prod.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString());
+                    recipe1Time.SetIcon(recipe.cooldown.ToString());
                 }
                 else if (recipe.items.Count == 3)
                 {
@@ -361,6 +366,7 @@ public class InfoDictionary : MonoBehaviour
                     recipe2Mat1.SetIcon(ItemList.instance.itemDic[recipe.items[0]].icon, recipe.items[0], recipe.amounts[0].ToString());
                     recipe2Mat2.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString());
                     recipe2Prod.SetIcon(ItemList.instance.itemDic[recipe.items[2]].icon, recipe.items[2], recipe.amounts[2].ToString());
+                    recipe2Time.SetIcon(recipe.cooldown.ToString());
                 }
                 else if (recipe.items.Count == 4)
                 {
@@ -369,6 +375,7 @@ public class InfoDictionary : MonoBehaviour
                     recipe3Mat2.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString());
                     recipe3Mat3.SetIcon(ItemList.instance.itemDic[recipe.items[2]].icon, recipe.items[2], recipe.amounts[2].ToString());
                     recipe3Prod.SetIcon(ItemList.instance.itemDic[recipe.items[3]].icon, recipe.items[3], recipe.amounts[3].ToString());
+                    recipe3Time.SetIcon(recipe.cooldown.ToString());
                 }
             }
             else if (info.recipes.Count == 2)
@@ -382,9 +389,11 @@ public class InfoDictionary : MonoBehaviour
                 recipe1.SetActive(true);
                 recipe1Mat.SetIcon(ItemList.instance.itemDic[info.recipes[0].items[0]].icon, info.recipes[0].items[0], info.recipes[0].amounts[0].ToString());
                 recipe1Prod.SetIcon(ItemList.instance.itemDic[info.recipes[0].items[1]].icon, info.recipes[0].items[1], info.recipes[0].amounts[1].ToString());
+                recipe1Time.SetIcon(info.recipes[0].cooldown.ToString());
                 recipe1Sub.SetActive(true);
                 recipe1SubMat.SetIcon(ItemList.instance.itemDic[info.recipes[1].items[0]].icon, info.recipes[1].items[0], info.recipes[1].amounts[0].ToString());
                 recipe1SubProd.SetIcon(ItemList.instance.itemDic[info.recipes[1].items[1]].icon, info.recipes[1].items[1], info.recipes[1].amounts[1].ToString());
+                recipe1SubTime.SetIcon(info.recipes[1].cooldown.ToString());
             }
         }
     }

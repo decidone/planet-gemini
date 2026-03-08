@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Blood Moon
   type: 0
-  explanation: In each planet, the blood moon rises in a regular cycle. During this
-    period monsters become ferocious, which can occur as a monster waves from a particular
-    spawner to a portal.
+  explanation: On each planet, the blood moon rises periodically. During this period,
+    monsters become ferocious, spawning in waves from spawners and charging toward
+    the portal. Waves can be suppressed at the portal.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: b422c838890d2b7478e732d8c56ff071, type: 3}

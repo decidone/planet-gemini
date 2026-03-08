@@ -22,6 +22,14 @@ public class RepairEffectFunc : MonoBehaviour
         }
     }
 
+    public void EffectStop()
+    {
+        if (animController != null)
+        {
+            animController.StopAnim();
+        }
+    }
+
     //public void EffectEnd()
     //{
     //    sprite.enabled = false;

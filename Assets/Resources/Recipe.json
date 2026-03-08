@@ -57,9 +57,6 @@
         {"name":"Rubber","items":["SlimyPlant","Rubber"],"amounts":[1,4],"cooldown":8},
         {"name":"Sulfur","items":["ToxicPlant","Sulfur"],"amounts":[1,4],"cooldown":8}
     ],
-    "Tower":[
-        {"name":"BasicTower","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":0}
-    ],
     "UnitFactory":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
         {"name":"BounceRobot","items":["Module","Motor","SteelPlate","BounceRobot"],"amounts":[1,4,12,1],"cooldown":24},
@@ -68,6 +65,9 @@
         {"name":"CorrosionDrone","items":["ControlUnit","Battery","SteelPlate","CorrosionDrone"],"amounts":[1,4,16,1],"cooldown":32},
         {"name":"RepairerDrone","items":["ControlUnit","Battery","SteelPlate","RepairerDrone"],"amounts":[1,4,16,1],"cooldown":32},
         {"name":"Tank","items":["AdamantiteArmor","Engine","ControlUnit","Tank"],"amounts":[20,8,12,1],"cooldown":120}
+    ],
+    "Tower":[
+        {"name":"BasicTower","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":0}
     ],
     "UnitUpgrade":[
         {"name":"BounceRobot","items":["AdamantiteArmor","ControlUnit","BounceRobot"],"amounts":[2,1,1],"cooldown":0},

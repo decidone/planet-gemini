@@ -36,6 +36,9 @@ public class StructureInvenManager : InventoryManager
     [SerializeField]
     Text waveDiffLevel;
 
+    [SerializeField]
+    Button dicBtn;
+
     void OnEnable()
     {
         inputManager = InputManager.instance;
@@ -49,6 +52,13 @@ public class StructureInvenManager : InventoryManager
         inputManager.controls.Inventory.SlotRightClickHold.performed -= SlotRightClickHold;
         inputManager.controls.Inventory.SlotLeftClick.performed -= SlotShiftClick;
     }
+
+    protected override void Start()
+    {
+        base.Start();
+        dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Wave Suppression", true));
+    }
+
     protected override void Update()
     {
         base.Update();

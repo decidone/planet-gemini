@@ -96,6 +96,12 @@ public class ShaderAnimController : MonoBehaviour
         playOnceCoroutine = null;
     }
 
+    public void StopAnim()
+    {
+        rend.enabled = false;
+        Pause();
+    }
+
     public void SetStaticSprite(Sprite sprite)
     {
         if (sprite == null || rend == null) return;

@@ -18,4 +18,9 @@ public class InfoDictionaryIcon : MonoBehaviour
             nameTag.SetItemName(itemName);
         }
     }
+
+    public void SetIcon(string amount)
+    {
+        text.text = amount;
+    }
 }

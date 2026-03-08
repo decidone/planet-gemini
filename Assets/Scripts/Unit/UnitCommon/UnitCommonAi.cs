@@ -29,7 +29,6 @@ public enum AttackState
 
 public class UnitCommonAi : WorldObj
 {
-    [SerializeField]
     public UnitCommonData unitCommonData;
     //protected UnitCommonData UnitCommonData { set { unitCommonData = value; } }
 

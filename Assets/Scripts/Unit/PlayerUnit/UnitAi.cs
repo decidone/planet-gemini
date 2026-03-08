@@ -53,8 +53,7 @@ public class UnitAi : UnitCommonAi
     public bool playerUnitPortalIn;
 
     public int unitLevel = 0;
-    [SerializeField]
-    UnitCommonData[] unitLevelData;
+    public UnitCommonData[] unitLevelData;
 
     [SerializeField]
     Sprite[] unitIcon;

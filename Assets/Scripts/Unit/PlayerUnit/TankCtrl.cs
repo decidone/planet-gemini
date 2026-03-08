@@ -225,6 +225,13 @@ public class TankCtrl : UnitAi
     {
         playerOnTank = false;
         hp = setHp;
+        repairEffect.EffectStop();
+
+        if (hp < maxHp)
+        {
+            hpBar.fillAmount = hp / maxHp;
+            unitCanvas.SetActive(true);
+        }
 
         if (reload)
         {

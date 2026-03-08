@@ -233,7 +233,15 @@ public class InfoUI : MonoBehaviour
         SpriteRenderer spriteRenderer = unit.gameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.material = outlineMat;
         //nameText.text = unit.name;
-        SetNameText(unit.name);
+        string unitName = unit.unitCommonData.UnitName;
+        if (unit.unitLevel != 0)
+        {
+            SetNameText(InGameNameDataGet.instance.ReturnName(unitName) + " Lv" + (unit.unitLevel + 1));
+        }
+        else
+        {
+            SetNameText(InGameNameDataGet.instance.ReturnName(unitName));
+        }
         SetUnitHp();
         unit.onHpChangedCallback += SetUnitHp;
 
@@ -245,6 +253,13 @@ public class InfoUI : MonoBehaviour
                 UpgradeCostCheckAndPopupSet(units);
             });
         }
+
+        dicBtn.gameObject.SetActive(true);
+        dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(unitName, true));
+        //if (unit.unitLevelData.Length > 0)
+        //{
+        //}
+        
         //firstBattleText.text = "ATK " + unit.damage + " DEF " + unit.defense;
         //secondBattleText.text = "ATK Delay " + unit.attackSpeed + " ATK Range " + unit.unitCommonData.AttackDist;
     }
@@ -376,7 +391,7 @@ public class InfoUI : MonoBehaviour
 
         if (!canUpgrade)
         {
-            upgradeBtn.gameObject.SetActive(false);
+            //upgradeBtn.gameObject.SetActive(false);
             return;
         }
 
@@ -439,6 +454,22 @@ public class InfoUI : MonoBehaviour
         units.Clear();
         upgradeBtn.gameObject.SetActive(false);
         SetUnitHp();
+    }
+
+    public void SetUnitName()
+    {
+        if (unit != null)
+        {
+            string unitName = unit.unitCommonData.UnitName;
+            if (unit.unitLevel != 0)
+            {
+                SetNameText(InGameNameDataGet.instance.ReturnName(unitName) + " Lv" + (unit.unitLevel + 1));
+            }
+            else
+            {
+                SetNameText(InGameNameDataGet.instance.ReturnName(unitName));
+            }
+        }
     }
 
     public void SetUnitHp()
