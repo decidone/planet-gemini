@@ -75,7 +75,8 @@ public class CorrosionDrone : UnitAi
         for (int i = 0; i < hitCount; i++)
         {
             WorldObj target = targetColls[i].GetComponent<WorldObj>();
-            targetList.Add(target);
+            if (!targetList.Contains(target))
+                targetList.Add(target);
         }
 
         if(targetList.Count > 0)

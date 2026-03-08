@@ -84,4 +84,10 @@ public class PlayerInvenManager : InventoryManager
 
         gameManager.onUIChangedCallback?.Invoke(inventoryUI);
     }
+
+    protected override void UpdateUI(int slotindex)
+    {
+        base.UpdateUI(slotindex);
+        gameManager.BuildAndSciUiReset();
+    }
 }

@@ -143,12 +143,6 @@ public class UpgradeBuild : DragFunc
         if (isOk)
         {
             gameManager.StructureUpgrade(selectedObjects);
-            //foreach (GameObject obj in selectedObjects)
-            //{
-            //    ObjUpgradeFunc(obj);
-            //}
-            gameManager.BuildAndSciUiReset();
-
             InfoUI.instance.RefreshStrInfo();
         }
         selectedObjects = new WorldObj[0];

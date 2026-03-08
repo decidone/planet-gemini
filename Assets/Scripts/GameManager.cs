@@ -128,6 +128,7 @@ public class GameManager : NetworkBehaviour
     int energyOverLimitDay;
 
     public bool violentDay;
+    bool violentDayCheck;
     [SerializeField]
     bool forcedOperation;
     [SerializeField]
@@ -446,6 +447,7 @@ public class GameManager : NetworkBehaviour
                 if (IsServer)
                 {
                     SyncTimeServerRpc();
+                    ViolentDaySyncTimeServerRpc();
                     // 하루 에너지 사용량 초기화
                     hostMapEnergyUseAmount = 0;
                     clientMapEnergyUseAmount = 0;
@@ -546,6 +548,7 @@ public class GameManager : NetworkBehaviour
             {
                 waveSkipChance = 0;
                 difficultyPercent += 20;
+                difficultyPercent = Mathf.Clamp(difficultyPercent, 0f, GetDifficultyCap());
             }
             else // 발생한 경우
             {
@@ -946,7 +949,6 @@ public class GameManager : NetworkBehaviour
                     inventory.Add(item, 99);
             }
             AddFinanceServerRpc(100000);
-            BuildAndSciUiReset();
         }
     }
 
@@ -1233,9 +1235,9 @@ public class GameManager : NetworkBehaviour
             else if (beltPreBuilding.isBuildingOn)
                 beltPreBuilding.isEnough = BuildingInfo.instance.AmountsEnoughCheck();
         }
-        if (InfoWindow.instance != null && InfoWindow.instance.gameObject.activeSelf)
+        if (ScienceManager.instance && ScienceManager.instance.isOpen)
         {
-            InfoWindow.instance.SetNeedItem();
+            ScienceManager.instance.InfoWindowRefresh();
         }
     }
 
@@ -1649,7 +1651,6 @@ public class GameManager : NetworkBehaviour
     public void SyncTimeServerRpc()
     {
         SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDay, energyOverLimitDay);
-        ViolentDaySyncTimeServerRpc();
     }
 
     [ClientRpc]

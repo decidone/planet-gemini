@@ -145,7 +145,6 @@ public class BuildingInfo : MonoBehaviour
                 GameManager.instance.inventory.Sub(buildingNeedList[i].item, buildingNeedList[i].amount * amount);
             }
         }
-        GameManager.instance.BuildAndSciUiReset();
         SetItemSlot();
     }
 

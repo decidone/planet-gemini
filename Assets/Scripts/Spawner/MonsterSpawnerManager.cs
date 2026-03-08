@@ -202,15 +202,15 @@ public class MonsterSpawnerManager : NetworkBehaviour
         else
         {
             Debug.Log("ViolentDayOn");
-            WavePointOnServerRpc();
+            NoWaveDetectedServerRpc();
             return false;
         }
     }
 
     [ServerRpc]
-    void WavePointOnServerRpc()
+    void NoWaveDetectedServerRpc()
     {
-        WavePointOnClientRpc();
+        NoWaveDetectedClientRpc();
     }
 
     [ServerRpc]
@@ -220,7 +220,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void WavePointOnClientRpc()
+    void NoWaveDetectedClientRpc()
     {
         WarningWindow.instance.WarningTextSet("No Wave Detected.");
     }
@@ -316,12 +316,15 @@ public class MonsterSpawnerManager : NetworkBehaviour
     [ClientRpc]
     void WaveStateSyncClientRpc(Vector3 pos, bool hostMap)
     {
-        Debug.Log("WaveStateSyncClientRpc");
-        waveState = true;
-        hostMapWave = hostMap;
-        wavePos = pos;
-        WavePointOnClientRpc(wavePos, hostMapWave);
-        SoundManager.instance.BattleStateSet(hostMapWave, GameManager.instance.violentDay);
+        if (!IsServer)
+        {
+            Debug.Log("WaveStateSyncClientRpc");
+            waveState = true;
+            hostMapWave = hostMap;
+            wavePos = pos;
+            WavePointOnClientRpc(wavePos, hostMapWave);
+            SoundManager.instance.BattleStateSet(hostMapWave, GameManager.instance.violentDay);
+        }
     }
     
     public void WaveAddMonster(MonsterAi monster)

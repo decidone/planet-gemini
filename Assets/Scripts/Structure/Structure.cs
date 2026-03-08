@@ -335,7 +335,6 @@ public class Structure : WorldObj
 
             ClientItemDrop();
             soundManager.PlayUISFX("BuildingRemove");
-            GameManager.instance.BuildAndSciUiReset();
         }
 
         if (overlayUse)
@@ -506,7 +505,6 @@ public class Structure : WorldObj
         RemoveObjServerRpc();
         //DestroyFuncServerRpc();
         soundManager.PlayUISFX("BuildingRemove");
-        GameManager.instance.BuildAndSciUiReset();
     }
 
     void RefundCost()
