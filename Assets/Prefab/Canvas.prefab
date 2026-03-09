@@ -22414,7 +22414,7 @@ MonoBehaviour:
   nameText: {fileID: 2404130816641474247}
   infoText: {fileID: 8088800138459212458}
   infoRT: {fileID: 0}
-  menuRT: {fileID: 0}
+  menuRT: {fileID: 5641955287423148351}
   needItemObj: []
   needItemUI: {fileID: 0}
   needItemRoot: {fileID: 0}
@@ -42947,13 +42947,9 @@ MonoBehaviour:
   - {fileID: 6520211096074476179}
   scrollRect: {fileID: 5275359016208773639}
   infoWindow:
-  - {fileID: 4102775460344418180}
-  - {fileID: 8683400516340142521}
-  - {fileID: 3019331028912017112}
-  infoWindowObj:
-  - {fileID: 6353926053084660131}
-  - {fileID: 2944685124441747705}
-  - {fileID: 8702200922226707776}
+  - {fileID: 5315094254524996675}
+  - {fileID: 8388844543318902407}
+  - {fileID: 776089750881672522}
   itemInputWindow: {fileID: 1307766763441469976}
   upgradeWindow: {fileID: 9194252855946770708}
   canvasRectTransform: {fileID: 8669813805128897140}

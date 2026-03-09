@@ -36,25 +36,35 @@ public class GolemFXCtrl : NetworkBehaviour
         if (!IsServer)
             return;
 
-        if (collision.TryGetComponent(out PlayerStatus player))
+        if (collision.TryGetComponent(out WorldObj obj))
         {
-            if (!collision.isTrigger)
+            if (obj.TryGet(out PlayerStatus player))
             {
-                player.TakeDamage(damage);
+                if (!collision.isTrigger)
+                {
+                    player.TakeDamage(damage);
+                }
             }
-        }
-        else if (collision.TryGetComponent(out UnitAi unitAi))
-        {
-            if (!collision.isTrigger)
+            else if(obj.TryGet(out UnitAi unitAi))
             {
-                unitAi.TakeDamage(damage, 0);
+                if (!collision.isTrigger)
+                {
+                    unitAi.TakeDamage(damage, 0);
+                }
             }
-        }
-        else if (collision.TryGetComponent(out Structure structure))
-        {
-            if (!collision.isTrigger)
+            else if (obj.TryGet(out Structure str))
             {
-                structure.TakeDamage(damage);
+                if (str.Get<Portal>() || str.Get<LocalPortal>())
+                {
+                    str.TakeDamage(damage);
+                }
+                else
+                {
+                    if (!collision.isTrigger)
+                    {
+                        str.TakeDamage(damage);
+                    }
+                }
             }
         }
     }

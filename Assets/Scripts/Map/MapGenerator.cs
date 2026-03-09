@@ -859,7 +859,7 @@ public class MapGenerator : MonoBehaviour
                     if (obj != null)
                     {
                         GameObject objInst = Instantiate(obj, objects.transform);
-                        if (objInst.TryGetComponent<MapObject>(out MapObject mapObj))
+                        if (objInst.TryGetComponent(out MapObject mapObj))
                         {
                             mapObj.isInHostmap = isHostMap;
                             cell.objNum = mapObj.objNum;
@@ -1425,7 +1425,7 @@ public class MapGenerator : MonoBehaviour
                 if (cell.objNum != -1)
                 {
                     GameObject objInst = Instantiate(MapDataManager.instance.GetMapObjByNum(cell.objNum), objects.transform);
-                    if (objInst.TryGetComponent<MapObject>(out MapObject mapObj))
+                    if (objInst.TryGetComponent(out MapObject mapObj))
                     {
                         mapObj.isInHostmap = isHostMap;
                     }

@@ -21,7 +21,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public Sprite[] spawnerSprite;
 
     public List<MonsterAi> waveMonsters = new List<MonsterAi>();
-    private int baseSpawnCount = 17;
+    private int baseSpawnCount = 18;
 
     #region Singleton
     public static MonsterSpawnerManager instance;
@@ -202,15 +202,15 @@ public class MonsterSpawnerManager : NetworkBehaviour
         else
         {
             Debug.Log("ViolentDayOn");
-            WavePointOnServerRpc();
+            NoWaveDetectedServerRpc();
             return false;
         }
     }
 
     [ServerRpc]
-    void WavePointOnServerRpc()
+    void NoWaveDetectedServerRpc()
     {
-        WavePointOnClientRpc();
+        NoWaveDetectedClientRpc();
     }
 
     [ServerRpc]
@@ -220,7 +220,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void WavePointOnClientRpc()
+    void NoWaveDetectedClientRpc()
     {
         WarningWindow.instance.WarningTextSet("No Wave Detected.");
     }
@@ -316,12 +316,15 @@ public class MonsterSpawnerManager : NetworkBehaviour
     [ClientRpc]
     void WaveStateSyncClientRpc(Vector3 pos, bool hostMap)
     {
-        Debug.Log("WaveStateSyncClientRpc");
-        waveState = true;
-        hostMapWave = hostMap;
-        wavePos = pos;
-        WavePointOnClientRpc(wavePos, hostMapWave);
-        SoundManager.instance.BattleStateSet(hostMapWave, GameManager.instance.violentDay);
+        if (!IsServer)
+        {
+            Debug.Log("WaveStateSyncClientRpc");
+            waveState = true;
+            hostMapWave = hostMap;
+            wavePos = pos;
+            WavePointOnClientRpc(wavePos, hostMapWave);
+            SoundManager.instance.BattleStateSet(hostMapWave, GameManager.instance.violentDay);
+        }
     }
     
     public void WaveAddMonster(MonsterAi monster)
@@ -365,6 +368,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             WavePointOffServerRpc(hostMapWave);
             WaveEndServerRpc();
+            GameManager.instance.WaveEnd();
         }
     }
 

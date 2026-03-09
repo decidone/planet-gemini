@@ -245,7 +245,7 @@ public abstract class InventoryManager : MonoBehaviour
         }
     }
 
-    void UpdateUI(int slotindex)
+    protected virtual void UpdateUI(int slotindex)
     {
         if (slots.Length <= slotindex)
             return;

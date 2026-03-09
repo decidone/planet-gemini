@@ -16,9 +16,7 @@ public class ScienceManager : MonoBehaviour
     [SerializeField]
     ScrollRect scrollRect;
     [SerializeField]
-    GameObject[] infoWindow;
-    [SerializeField]
-    GameObject[] infoWindowObj;
+    InfoWindow[] infoWindow;
     [SerializeField]
     GameObject itemInputWindow;
     SciItemSetWindow sciItemSetWindow;
@@ -42,7 +40,6 @@ public class ScienceManager : MonoBehaviour
     ScienceDb scienceDb;
     BuildingInven buildingInven;
 
-    float popupWidth;
     Vector3 mousePos;
 
     PortalSciManager portalSciManager;
@@ -57,7 +54,8 @@ public class ScienceManager : MonoBehaviour
     public ToggleMapChange onToggleMapChangeCallback;
     [HideInInspector]
     public bool isOpen;
-
+    bool isInfoWindowOpen;
+    int openInfoWindowIndex;
 
     public static ScienceManager instance;
     private void Awake()
@@ -82,19 +80,7 @@ public class ScienceManager : MonoBehaviour
         UISetting();
 
         contents[0].SetActive(true);
-        //contents[1].SetActive(false);
-        popupWidth = infoWindow[0].transform.Find("Menu").gameObject.GetComponent<RectTransform>().rect.width;
-
-        //for (int i = 0; i < tagBtns.Length; i++)
-        //{
-        //    int buttonIndex = i;
-        //    tagBtns[i].onClick.AddListener(() => SwContent(buttonIndex));
-        //}
-
         scienceBtns = contents[0].GetComponentsInChildren<ScienceBtn>();
-        //ScienceBtn[] additionalBtns = contents[1].GetComponentsInChildren<ScienceBtn>();
-
-        //scienceBtns = scienceBtns.Concat(additionalBtns).ToArray();
 
         for (int i = 0; i < scienceBtns.Length; i++)
         {
@@ -115,32 +101,28 @@ public class ScienceManager : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < infoWindow.Length; i++)
+        if (isInfoWindowOpen)
         {
-            if (infoWindow[i].activeSelf)
+            mousePos = Input.mousePosition;
+            Vector2 anchoredPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
+
+            float popupWidth = infoWindow[openInfoWindowIndex].menuRT.rect.width;
+
+            float halfCanvasWidth = canvasRectTransform.rect.width / 2;
+
+            // 마우스 오른쪽 기본 위치
+            float targetX = anchoredPos.x;
+            float targetY = anchoredPos.y;
+
+            // 오른쪽을 벗어나면 왼쪽으로 배치
+            if (targetX + popupWidth > halfCanvasWidth)
             {
-                mousePos = Input.mousePosition;
-                Vector2 anchoredPos;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, mousePos, null, out anchoredPos);
-
-                float popupWidth = infoWindowObj[i].GetComponent<RectTransform>().rect.width;
-
-                float halfCanvasWidth = canvasRectTransform.rect.width / 2;
-
-                // 마우스 오른쪽 기본 위치
-                float targetX = anchoredPos.x;
-                float targetY = anchoredPos.y;
-
-                // 오른쪽을 벗어나면 왼쪽으로 배치
-                if (targetX + popupWidth > halfCanvasWidth)
-                {
-                    targetX = anchoredPos.x - popupWidth;
-                }
-
-                // 위치 설정
-                infoWindow[i].transform.localPosition = new Vector2(targetX, targetY);
-                break; // 한 개만 활성화되므로 반복문 종료
+                targetX = anchoredPos.x - popupWidth;
             }
+
+            // 위치 설정
+            infoWindow[openInfoWindowIndex].gameObject.transform.localPosition = new Vector2(targetX, targetY);
         }
     }
 
@@ -177,24 +159,36 @@ public class ScienceManager : MonoBehaviour
             {
                 if (!focusedSciBtn.upgrade)
                 {
-                    infoWindow[1].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
-                    infoWindow[1].SetActive(true);
+                    infoWindow[1].SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
+                    infoWindow[1].menuRT.gameObject.SetActive(true);
+                    isInfoWindowOpen = true;
+                    openInfoWindowIndex = 1;
                 }
             }
             else
             {
                 if (focusedSciBtn.upgrade)
                 {
-                    infoWindow[2].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.isCore);
-                    infoWindow[2].SetActive(true);
+                    infoWindow[2].SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.isCore);
+                    infoWindow[2].menuRT.gameObject.SetActive(true);
+                    isInfoWindowOpen = true;
+                    openInfoWindowIndex  = 2;
                 }
                 else
                 {
-                    infoWindow[0].GetComponent<InfoWindow>().SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
-                    infoWindow[0].SetActive(true);
+                    infoWindow[0].SetNeedItem(scienceInfoData, focusedSciBtn.gameName, focusedSciBtn.level, focusedSciBtn.isCore, focusedSciBtn);
+                    infoWindow[0].menuRT.gameObject.SetActive(true);
+                    isInfoWindowOpen = true;
+                    openInfoWindowIndex = 0;
                 }
             }
         }
+    }
+
+    public void InfoWindowRefresh()
+    {
+        if (isInfoWindowOpen)
+            infoWindow[openInfoWindowIndex].SetNeedItem();
     }
 
     public void OpenItemSetWindow()
@@ -252,9 +246,10 @@ public class ScienceManager : MonoBehaviour
     void OnExit()
     {
         focusedSciBtn = null;
-        infoWindow[0].SetActive(false);
-        infoWindow[1].SetActive(false);
-        infoWindow[2].SetActive(false);
+        infoWindow[0].menuRT.gameObject.SetActive(false);
+        infoWindow[1].menuRT.gameObject.SetActive(false);
+        infoWindow[2].menuRT.gameObject.SetActive(false);
+        isInfoWindowOpen = false;
     }
 
     public void OpenUI()

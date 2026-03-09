@@ -199,18 +199,21 @@ public class RepairerDrone : UnitAi
 
             if (obj.TryGet(out UnitAi unit) || obj.TryGet(out PlayerController player))
             {
-                unitTargetList.Add(obj);
+                if (!unitTargetList.Contains(obj))
+                    unitTargetList.Add(obj);
             }
             else if (obj.TryGet(out Structure structure))
             {
                 if (!structure.isPreBuilding && !structure.Has<Portal>())
                 {
-                    strTargetList.Add(obj);
+                    if (!strTargetList.Contains(obj))
+                        strTargetList.Add(obj);
                 }
             }
             else // 몬스터 리스트
             {
-                targetList.Add(obj);
+                if (!targetList.Contains(obj))
+                    targetList.Add(obj);
             }
         }
 

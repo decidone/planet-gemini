@@ -12,8 +12,7 @@ public class InfoWindow : MonoBehaviour
     [SerializeField]
     RectTransform infoRT;
     float[] infoPosYSize = new float[2] { -303, -240 };
-    [SerializeField]
-    RectTransform menuRT;
+    public RectTransform menuRT;
     float[] menuHeightSize = new float[2] { 400, 337 };
     float[] menuCoreHeightSize = new float[2] { 280, 200 };
 
@@ -30,9 +29,6 @@ public class InfoWindow : MonoBehaviour
 
     ScienceInfoData preSciInfoData;
     ScienceDb scienceDb;
-
-    public static InfoWindow instance;
-    BuildingInven buildingInven;
 
     bool isCoreSel = false;
     int preSciLevel = 0;
@@ -54,14 +50,11 @@ public class InfoWindow : MonoBehaviour
     private void Start()
     {
         gameManager = GameManager.instance;
-        buildingInven = gameManager.GetComponent<BuildingInven>();
-        this.gameObject.SetActive(false);
+        menuRT.gameObject.SetActive(false);
     }
 
     public void SetNeedItem(ScienceInfoData scienceInfoData, string name, bool isCore)
     {
-        instance = this;
-
         needItems.Clear();
         nameText.text = $"{name}";
 
@@ -73,8 +66,6 @@ public class InfoWindow : MonoBehaviour
 
     public void SetNeedItem(ScienceInfoData scienceInfoData, string name, int level ,bool isCore , ScienceBtn sciBtn)
     {
-        instance = this;
-
         needItems.Clear();
         isCoreSel = isCore;
         preSciLevel = level;

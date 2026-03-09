@@ -494,7 +494,8 @@ public class UnitAi : UnitCommonAi
         for (int i = 0; i < hitCount; i++)
         {
             WorldObj target = targetColls[i].GetComponent<WorldObj>();
-            targetList.Add(target);
+            if (!targetList.Contains(target))
+                targetList.Add(target);
         }
 
         AttackTargetCheck();

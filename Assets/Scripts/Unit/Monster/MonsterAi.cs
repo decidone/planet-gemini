@@ -684,6 +684,7 @@ public class MonsterAi : UnitCommonAi
 
     protected void AttackObjCheck(WorldObj Obj)
     {
+        targetDist = Vector2.Distance(tr.position, Obj.transform.position);
         if (targetDist > unitCommonData.AttackDist + 2)
             return;
         else if (IsServer)
@@ -785,7 +786,8 @@ public class MonsterAi : UnitCommonAi
         for (int i = 0; i < hitCount; i++)
         {
             WorldObj target = targetColls[i].GetComponent<WorldObj>();
-            targetList.Add(target);
+            if(!targetList.Contains(target))
+                targetList.Add(target);
         }
 
         AttackTargetCheck();
