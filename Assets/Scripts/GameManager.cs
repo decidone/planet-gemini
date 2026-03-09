@@ -128,7 +128,6 @@ public class GameManager : NetworkBehaviour
     int energyOverLimitDay;
 
     public bool violentDay;
-    bool violentDayCheck;
     [SerializeField]
     bool forcedOperation;
     [SerializeField]
@@ -185,6 +184,8 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField]
     float waveEnergyOverLimit;  // 이 에너지 한도를 초과시 웨이브 발생
+    float[] waveEnergyLimitByDifficulty = new float[] { 0, 2500, 1300, 0 }; // 0은 피스플 난이도별 에너지 한도
+    float difficultyLevel;
 
     public float hostMapEnergyUseAmount;
     public float clientMapEnergyUseAmount;
@@ -194,7 +195,6 @@ public class GameManager : NetworkBehaviour
     public Image saveImg;
 
     int waveIndex; // 현재 웨이브 수
-    [SerializeField]
     float waveDamage; // 현재 웨이브 데미지
     float prevWaveDamage; // 이전 웨이브 총 데미지
     float currWaveDamage; // 현재 웨이브 총 데미지
@@ -436,8 +436,8 @@ public class GameManager : NetworkBehaviour
                     if (IsServer)
                     {
                         monsterSpawnerManager.WavePointOff();
-                        OnWaveFinished(waveDamage);
-                        waveDamage = 0;
+                        //OnWaveFinished(waveDamage);
+                        //waveDamage = 0;
                     }
 
                     violentDay = false;
@@ -547,8 +547,7 @@ public class GameManager : NetworkBehaviour
             if (!violentDay) // 스킵된 경우
             {
                 waveSkipChance = 0;
-                difficultyPercent += 20;
-                difficultyPercent = Mathf.Clamp(difficultyPercent, 0f, GetDifficultyCap());
+                DifficultyPercentSet(30f);
             }
             else // 발생한 경우
             {
@@ -1463,7 +1462,7 @@ public class GameManager : NetworkBehaviour
 
         if (cell.obj != null)
         {
-            if (cell.obj.TryGetComponent<MapObject>(out MapObject mapObj))
+            if (cell.obj.TryGetComponent(out MapObject mapObj))
             {
                 mapObj.RemoveMapObj();
             }
@@ -1478,18 +1477,20 @@ public class GameManager : NetworkBehaviour
             SteamManager.instance.HostLobby();
             HostConnected();
             bloodMoon = MainGameSetting.instance.isBloodMoon;
+            difficultyLevel = MainGameSetting.instance.difficultylevel;
             if (monsterSpawnerManager.HasAnyMonsterSpawner())
                 bloodMoon = true;
             if (MainGameSetting.instance.isNewGame)
             {
                 SetStartingItem();
-                if (MainGameSetting.instance.difficultylevel != 0)
+                if (difficultyLevel != 0)
                     MapGenerator.instance.SpawnerAreaMapSet();
             }
             else
             {
                 DataManager.instance.Load();
             }
+            waveEnergyOverLimit = waveEnergyLimitByDifficulty[(int)difficultyLevel];
         }
         else
         {
@@ -1603,6 +1604,7 @@ public class GameManager : NetworkBehaviour
         wavePlanet = data.wavePlanet;
         timeImg.sprite = timeImgSet[dayIndex];
         MainGameSetting.instance.DifficultylevelSet(data.difficultyLevel);
+
         if (violentDay)
         {
             timeImg.color = new Color32(255, 50, 50, 255);
@@ -1651,6 +1653,11 @@ public class GameManager : NetworkBehaviour
     public void SyncTimeServerRpc()
     {
         SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDay, energyOverLimitDay);
+        if (bloodMoonEventState)
+        {
+            int dday = CalculateDday(day - energyOverLimitDay, violentCycle);
+            ViolentDayOnClientRpc(violentDay, dday);
+        }
     }
 
     [ClientRpc]
@@ -2231,6 +2238,12 @@ public class GameManager : NetworkBehaviour
         waveDamage += damage;
     }
 
+    public void WaveEnd()
+    {
+        OnWaveFinished(waveDamage);
+        waveDamage = 0;
+    }
+
     public void OnWaveFinished(float totalDamageDealt)
     {
         waveIndex++;
@@ -2240,10 +2253,13 @@ public class GameManager : NetworkBehaviour
         {
             prevWaveDamage = currWaveDamage;
             currWaveDamage = totalDamageDealt;
-            difficultyPercent += 20;
-            ApplyDifficulty();
+            DifficultyPercentSet(20f);
             return;
         }
+
+        // 웨이브 데미지 갱신
+        prevWaveDamage = currWaveDamage;
+        currWaveDamage = totalDamageDealt;
 
         // 난이도 증가량 계산
         float delta = CalculateDifficultyDelta(prevWaveDamage, currWaveDamage);
@@ -2252,16 +2268,15 @@ public class GameManager : NetworkBehaviour
         float catchUpMultiplier = GetCatchUpMultiplier(difficultyPercent);
         delta *= catchUpMultiplier;
 
-        // 누적
-        difficultyPercent += delta * 100f;
+        DifficultyPercentSet(delta * 100f);
+    }
+
+    void DifficultyPercentSet(float amount)
+    {
+        difficultyPercent += amount;
         difficultyPercent = Mathf.Clamp(difficultyPercent, 0f, GetDifficultyCap());
         WaveDiffLevelSyncServerRpc();
-        // 스폰 / 스펙 반영
         ApplyDifficulty();
-
-        // 웨이브 데미지 갱신
-        prevWaveDamage = currWaveDamage;
-        currWaveDamage = totalDamageDealt;
     }
 
     float GetDifficultyCap()
@@ -2272,18 +2287,17 @@ public class GameManager : NetworkBehaviour
 
     float GetCatchUpMultiplier(float difficulty)
     {
+        if (ScienceDb.instance.coreLevel <= 1)
+            return 1f;
+
         float previousCap = (Mathf.Clamp(ScienceDb.instance.coreLevel - 1, 0, 5)) * 200f;
 
-        // 이전 캡 이상이면 보정 없음
         if (difficulty >= previousCap)
             return 1f;
 
-        // 이전 캡 대비 얼마나 뒤처졌는지 (0 ~ 1)
         float deficitRatio = (previousCap - difficulty) / previousCap;
 
-        // 보정 강도 (튜닝 포인트)
-        const float MAX_CATCHUP = 1.5f; // 최대 1.5배
-
+        const float MAX_CATCHUP = 1.5f;
         return Mathf.Lerp(1f, MAX_CATCHUP, deficitRatio);
     }
 
@@ -2302,7 +2316,7 @@ public class GameManager : NetworkBehaviour
         // 양수 : 몬스터가 더 때림 (플레이어 밀림)
 
         const float MIN_DELTA = 0.10f; // 최소 10% (플레이어가 힘들 때)
-        const float MAX_DELTA = 0.20f; // 최대 20% (너무 잘 막을 때)
+        const float MAX_DELTA = 0.40f; // 최대 40% (너무 잘 막을 때)
 
         const float FULL_SUPPRESS_RATIO = -0.5f;
         // 몬스터 데미지가 50% 이상 감소하면 "완벽 제압"
@@ -2339,11 +2353,11 @@ public class GameManager : NetworkBehaviour
          * - difficulty01 : 절대 난이도
          */
         float factor = tierScale * difficulty01;
-
+        float difficultyModifier = difficultyLevel / 5f; // 0 , 0.2, 0.4, 0.6 순
         // ===== 절대값 재계산 =====
-        spawnMultiplier = 1f + factor * 1.5f;
-        hpMultiplier = 1f + factor * 0.1f;
-        atkMultiplier = 1f + factor * 0.05f;
+        spawnMultiplier = 1f + factor * (1.0f + difficultyModifier);
+        hpMultiplier = 1f + factor * (difficultyModifier / 4);
+        atkMultiplier = 1f + factor * (difficultyModifier / 10);
     }
 
     // ===============================

@@ -21,7 +21,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public Sprite[] spawnerSprite;
 
     public List<MonsterAi> waveMonsters = new List<MonsterAi>();
-    private int baseSpawnCount = 17;
+    private int baseSpawnCount = 18;
 
     #region Singleton
     public static MonsterSpawnerManager instance;
@@ -368,6 +368,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         {
             WavePointOffServerRpc(hostMapWave);
             WaveEndServerRpc();
+            GameManager.instance.WaveEnd();
         }
     }
 
