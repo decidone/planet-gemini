@@ -30,10 +30,13 @@ MonoBehaviour:
   production: 0
   energyUse: 01
   consumption:
-  - 180
+  - 200
   removeGauge: 10
   defense:
   - 5
   upgradedefense:
   - 7
   canTakeItem: 1
+  canSendItem: 0
+  canTakeFluid: 0
+  canSendFluid: 0

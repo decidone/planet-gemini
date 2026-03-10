@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Construction
   type: 0
-  explanation: The structure can be built using the materials.
+  explanation: Structures can be built using materials.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 78fc484b2ea88fe40a2d0971a2e8a325, type: 3}

@@ -18,9 +18,6 @@ public class CameraController : MonoBehaviour
     public int width = 1920;
     public int height = 1080;
 
-    [SerializeField] float borderX;
-    [SerializeField] float borderY;
-
     float mapWidth;
     float mapHeight;
     float mapOffsetY;
@@ -91,9 +88,12 @@ public class CameraController : MonoBehaviour
             {
                 if (!GameManager.instance.isPlayerInHostMap)
                     offsetY = mapOffsetY + mapHeight;
+
+                float halfHeight = Camera.main.orthographicSize;
+                float halfWidth = halfHeight * Camera.main.aspect;
                 camPos = target.position - offset;
-                camPos.x = Mathf.Clamp(camPos.x, (borderX / zoomLevel), mapWidth - (borderX / zoomLevel));
-                camPos.y = Mathf.Clamp(camPos.y, offsetY + (borderY / zoomLevel), mapHeight + offsetY - (borderY / zoomLevel));
+                camPos.x = Mathf.Clamp(camPos.x, halfWidth, mapWidth - halfWidth);
+                camPos.y = Mathf.Clamp(camPos.y, offsetY + halfHeight, mapHeight + offsetY - halfHeight);
                 transform.position = camPos;
             }
             else

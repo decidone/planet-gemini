@@ -191,7 +191,7 @@ public class ScienceDb : NetworkBehaviour
     [ClientRpc]
     void WarningWindowSetClientRpc(string sciName)
     {
-        WarningWindow.instance.WarningTextSet(sciName + " Upgrade Complete.");
+        WarningWindow.instance.WarningTextSet(sciName + " Research Complete.");
     }
 
 

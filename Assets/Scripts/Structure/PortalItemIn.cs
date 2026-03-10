@@ -155,11 +155,10 @@ public class PortalItemIn : PortalObj
 
     bool CheckSendableItemExists()
     {
+        if (portalItemOut == null) return false;
+        if (portalItemOut.isPreBuilding) return false;
+
         bool exists = false;
-
-        if (portalItemOut == null)
-            return false;
-
         for (int i = 0; i < 18; i++)
         {
             var invenItem = inventory.SlotCheck(i);

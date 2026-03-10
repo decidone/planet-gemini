@@ -15,7 +15,7 @@ MonoBehaviour:
   name: AdamantiteOre
   type: ore
   distribution: 10
-  scale: 0.05
+  scale: 0.1
   tiles:
   - {fileID: 11400000, guid: 6dd537d6db9a5554eacd847266023829, type: 2}
   - {fileID: 11400000, guid: 2473e827a8b0d7241ba1f5d0168b8537, type: 2}

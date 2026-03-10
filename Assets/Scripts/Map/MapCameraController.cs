@@ -16,10 +16,6 @@ public class MapCameraController : MonoBehaviour
     Canvas canvas;
     [SerializeField]
     float dragSpeed;
-    [SerializeField]
-    float borderX;
-    [SerializeField]
-    float borderY;
 
     PixelPerfectCamera pixelPerfectCamera;
     [HideInInspector]
@@ -83,8 +79,10 @@ public class MapCameraController : MonoBehaviour
     {
         if (!LocalPortalListManager.instance.isEditOpened)
         {
-            camPos.x = Mathf.Clamp(camPos.x + ((movement.x * dragSpeed) / zoomLevel), borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
-            camPos.y = Mathf.Clamp(camPos.y + ((movement.y * dragSpeed) / zoomLevel), mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
+            float halfWidth = pixelPerfectCamera.refResolutionX / (2f * pixelPerfectCamera.assetsPPU);
+            float halfHeight = pixelPerfectCamera.refResolutionY / (2f * pixelPerfectCamera.assetsPPU);
+            camPos.x = Mathf.Clamp(camPos.x + ((movement.x * dragSpeed) / zoomLevel), halfWidth, mapWidth - halfWidth);
+            camPos.y = Mathf.Clamp(camPos.y + ((movement.y * dragSpeed) / zoomLevel), mapOffsetY + halfHeight, mapHeight + mapOffsetY - halfHeight);
             transform.position = camPos;
         }
     }
@@ -99,7 +97,7 @@ public class MapCameraController : MonoBehaviour
         if (!inputManager.isMapOpened)
             return;
 
-        camPos = transform.position;
+        //camPos = transform.position;
         movement = inputManager.controls.MapCamera.Movement.ReadValue<Vector2>();
         scrollWheelInput = inputManager.controls.MapCamera.Zoom.ReadValue<float>();
 
@@ -113,8 +111,11 @@ public class MapCameraController : MonoBehaviour
                 zoomLevel -= 1;
                 ChangeZoomLv(zoomLevel);
 
-                camPos.x = Mathf.Clamp(camPos.x, borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
-                camPos.y = Mathf.Clamp(camPos.y, mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
+                float halfWidth = pixelPerfectCamera.refResolutionX / (2f * pixelPerfectCamera.assetsPPU);
+                float halfHeight = pixelPerfectCamera.refResolutionY / (2f * pixelPerfectCamera.assetsPPU);
+                camPos = transform.position;
+                camPos.x = Mathf.Clamp(camPos.x, halfWidth, mapWidth - halfWidth);
+                camPos.y = Mathf.Clamp(camPos.y, mapOffsetY + halfHeight, mapHeight + mapOffsetY - halfHeight);
                 transform.position = camPos;
             }
             else if (scrollWheelInput > 0)
@@ -323,9 +324,11 @@ public class MapCameraController : MonoBehaviour
 
     void OpenUI()
     {
+        float halfWidth = pixelPerfectCamera.refResolutionX / (2f * pixelPerfectCamera.assetsPPU);
+        float halfHeight = pixelPerfectCamera.refResolutionY / (2f * pixelPerfectCamera.assetsPPU);
         camPos = target.position - offset;
-        camPos.x = Mathf.Clamp(camPos.x, borderX / zoomLevel, mapWidth - (borderX / zoomLevel));
-        camPos.y = Mathf.Clamp(camPos.y, mapOffsetY + (borderY / zoomLevel), mapHeight + mapOffsetY - (borderY / zoomLevel));
+        camPos.x = Mathf.Clamp(camPos.x, halfWidth, mapWidth - halfWidth);
+        camPos.y = Mathf.Clamp(camPos.y, mapOffsetY + halfHeight, mapHeight + mapOffsetY - halfHeight);
         transform.position = camPos;
 
         if (PreBuilding.instance.isBuildingOn)

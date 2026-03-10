@@ -26,7 +26,7 @@ MonoBehaviour:
   - 0.2
   - 0.2
   - 0.2
-  maxBuildingGauge: 8
+  maxBuildingGauge: 5
   maxRepairGauge: 10
   colliderRadius: 10
   cooldown: 0
@@ -37,7 +37,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  removeGauge: 8
+  removeGauge: 5
   defense:
   - 5
   - 7
