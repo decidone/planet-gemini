@@ -42,7 +42,7 @@ public class UnitDrag : DragFunc
 
     InputManager inputManager;
     UnitRemovePopup unitRemovePopup;
-    List<UnitAi> removeUnitList = new List<UnitAi>();
+    List<WorldObj> removeUnitList = new List<WorldObj>();
 
     public static UnitDrag instance;
     private void Awake()
@@ -169,22 +169,7 @@ public class UnitDrag : DragFunc
                 }
             }
 
-            if (removeUnitList.Count > 0)
-            {
-                Dictionary<(string,int), int> removeUnitIndexCount = new Dictionary<(string, int), int>();
-                int sellPrice = 0;
-                for (int i = 0; i < removeUnitList.Count; i++)
-                {
-                    string unitIndex = removeUnitList[i].unitName;
-                    if (!removeUnitIndexCount.ContainsKey((unitIndex, removeUnitList[i].unitLevel)))
-                    {
-                        removeUnitIndexCount.Add((unitIndex, removeUnitList[i].unitLevel), 0);
-                    }
-                    removeUnitIndexCount[(unitIndex, removeUnitList[i].unitLevel)]++;
-                    sellPrice += removeUnitList[i].unitCommonData.sellPrice;
-                }
-                unitRemovePopup.OpenPopup(removeUnitIndexCount, sellPrice);
-            }
+            UnitRemoveCostCheck();
         }
         else if (!playerAttackClick)
         {
@@ -231,6 +216,33 @@ public class UnitDrag : DragFunc
             }
         }
         ReSetBool();
+    }
+
+    public void DragUnitRemove()
+    {
+        removeUnitList = selectedObjects.ToList();
+        UnitRemoveCostCheck();
+    }
+
+    void UnitRemoveCostCheck()
+    {
+        if (removeUnitList.Count > 0)
+        {
+            Dictionary<(string, int), int> removeUnitIndexCount = new Dictionary<(string, int), int>();
+            int sellPrice = 0;
+            for (int i = 0; i < removeUnitList.Count; i++)
+            {
+                removeUnitList[i].TryGet(out UnitAi unit);
+                string unitIndex = unit.unitName;
+                if (!removeUnitIndexCount.ContainsKey((unitIndex, unit.unitLevel)))
+                {
+                    removeUnitIndexCount.Add((unitIndex, unit.unitLevel), 0);
+                }
+                removeUnitIndexCount[(unitIndex, unit.unitLevel)]++;
+                sellPrice += unit.unitCommonData.sellPrice;
+            }
+            unitRemovePopup.OpenPopup(removeUnitIndexCount, sellPrice);
+        }
     }
 
     public void LeftMouseDoubleClick(Vector2 startPos, Vector2 endPos)
@@ -297,7 +309,7 @@ public class UnitDrag : DragFunc
         {
             List<UnitAi> unitAiList = selectedObjectsList.Select(obj => obj.Get<UnitAi>()).ToList();
             InfoUI.instance.SetDefault();
-            InfoUI.instance.UnitGroupUISet(unitAiList);
+            InfoUI.instance.SetUnitsInfo(unitAiList);
         }
     }
 
@@ -388,7 +400,7 @@ public class UnitDrag : DragFunc
             .Select(obj => obj.Get<UnitAi>())
             .ToList();
 
-        InfoUI.instance.SetUnitInfo(unitAiList);
+        InfoUI.instance.SetUnitsInfo(unitAiList);
     }
 
     void SetTargetPosition(bool isAttack, Vector2 targetPos)
@@ -440,14 +452,23 @@ public class UnitDrag : DragFunc
 
     public void UnitRemoveFunc()
     {
-        List<UnitAi> rmUnit = new List<UnitAi>(removeUnitList);
+        List<WorldObj> rmUnit = new List<WorldObj>(removeUnitList);
+
         int sellPrice = 0;
+
         for (int i = 0; i < rmUnit.Count; i++)
+        {
+            if (rmUnit[i])
+            {
+                sellPrice += rmUnit[i].Get<UnitAi>().unitCommonData.sellPrice;
+            }
+        }
+
+         for (int i = 0; i < removeUnitList.Count; i++)
         {
             if (removeUnitList[i])
             {
-                removeUnitList[i].DieFuncServerRpc();
-                sellPrice += rmUnit[i].unitCommonData.sellPrice;
+                removeUnitList[i].Get<UnitAi>().DieFuncServerRpc();
             }
         }
 

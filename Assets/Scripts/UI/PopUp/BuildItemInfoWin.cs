@@ -85,6 +85,12 @@ public class BuildItemInfoWin : MonoBehaviour
 
     public void UiSetting(Item item)
     {
+        if (elsePrefab.activeSelf)
+        {
+            elsePrefab.SetActive(false);
+            isOverIndex = false;
+        }
+
         if (icon.Count != 1)
         {
             if (icon.Count > 1)

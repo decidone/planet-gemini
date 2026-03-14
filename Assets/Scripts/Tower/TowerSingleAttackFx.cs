@@ -87,6 +87,7 @@ public class TowerSingleAttackFx : TowerAttackFx
                     fx.IgnoreDdefenseSet(ignorePercent);
                 }
                 fx.GetTarget(damage, attackUnit);
+                SoundManager.instance.PlaySFX(gameObject, "unitSFX", "EexplosionSound");
             }
             else
             {

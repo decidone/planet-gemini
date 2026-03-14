@@ -409,7 +409,6 @@ public class GameManager : NetworkBehaviour
             if (dayIndex == 0)
             {
                 isDay = true;
-                SoundManager.instance.PlayBgmMapCheck();
 
                 if (bloodMoon && violentDay)
                 {
@@ -419,6 +418,8 @@ public class GameManager : NetworkBehaviour
                         monsterSpawnerManager.ViolentDayStart();
                     }
                 }
+                else
+                    SoundManager.instance.PlayBgmMapCheck();
             }
             else if (dayIndex == 3)
             {
@@ -1608,7 +1609,7 @@ public class GameManager : NetworkBehaviour
         if (violentDay)
         {
             timeImg.color = new Color32(255, 50, 50, 255);
-            SoundManager.instance.BattleStateSet(wavePlanet, violentDay);
+            SoundManager.instance.WaveStateSet(wavePlanet, violentDay);
             SoundManager.instance.PlayBgmMapCheck();
         }
 
@@ -1958,8 +1959,8 @@ public class GameManager : NetworkBehaviour
         NetworkObjectReference[] networkObjectReference = new NetworkObjectReference[upgradeObjs.Length];
         int[] level = new int[upgradeObjs.Length];
         for (int i = 0; i < upgradeObjs.Length; i++)
-        {   //만약 다른 사람이 지우는 경우 예외 처리 해야함
-            if (upgradeObjs[i] && upgradeObjs[i].TryGetComponent(out Structure str) && !str.destroyStart)
+        {
+            if (upgradeObjs[i] && upgradeObjs[i].TryGet(out Structure str) && !str.destroyStart)
             {
                 if (str.NetworkObject)
                 {
@@ -2126,7 +2127,7 @@ public class GameManager : NetworkBehaviour
         {
             if (unit && unit.CanUpgrade())
             {
-                if (unit.TryGetComponent(out NetworkObject netObj))
+                if (unit.TryGet(out NetworkObject netObj))
                 {
                     temp.Add(netObj);
                 }
@@ -2147,24 +2148,34 @@ public class GameManager : NetworkBehaviour
         upgradeItemDic.Clear();
 
         UnitAi[] units = new UnitAi[networkObjectReference.Length];
+        Dictionary<string, int> unitCountDic = new Dictionary<string, int>();
+
         for (int i = 0; i < networkObjectReference.Length; i++)
         {
             networkObjectReference[i].TryGet(out NetworkObject itemNetworkObject);
             units[i] = itemNetworkObject.GetComponent<UnitAi>();
+
+            if (!unitCountDic.ContainsKey(units[i].unitCommonData.UnitName))
+                unitCountDic.Add(units[i].unitCommonData.UnitName, 1);
+            else
+                unitCountDic[units[i].unitCommonData.UnitName]++;
         }
 
-        Recipe recipe = RecipeList.instance.GetRecipeInven("UnitUpgrade").Find(r => r.name == units[0].unitCommonData.UnitName);
-        Dictionary<string, Item> itemDic = ItemList.instance.itemDic;
-
-        for (int i = 0; i < recipe.items.Count - 1; i++)
+        foreach (var data in unitCountDic)
         {
-            if (upgradeItemDic.ContainsKey(itemDic[recipe.items[i]]))
+            Recipe recipe = RecipeList.instance.GetRecipeInven("UnitUpgrade").Find(r => r.name == data.Key);
+            Dictionary<string, Item> itemDic = ItemList.instance.itemDic;
+
+            for (int i = 0; i < recipe.items.Count - 1; i++)
             {
-                upgradeItemDic[itemDic[recipe.items[i]]] += recipe.amounts[i] * units.Length;
-            }
-            else
-            {
-                upgradeItemDic.Add(itemDic[recipe.items[i]], recipe.amounts[i] * units.Length);
+                if (upgradeItemDic.ContainsKey(itemDic[recipe.items[i]]))
+                {
+                    upgradeItemDic[itemDic[recipe.items[i]]] += recipe.amounts[i] * data.Value;
+                }
+                else
+                {
+                    upgradeItemDic.Add(itemDic[recipe.items[i]], recipe.amounts[i] * data.Value);
+                }
             }
         }
 

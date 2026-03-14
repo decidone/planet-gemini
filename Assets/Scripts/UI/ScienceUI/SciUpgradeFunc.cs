@@ -34,10 +34,7 @@ public class SciUpgradeFunc : MonoBehaviour
         {
             upgradeTimer += Time.deltaTime;
             btn.upgradeImg.fillAmount = upgradeTimer / upgradeTime;
-            //if (btn.isCore)
-            //{
-            //    btn.othCoreBtn.upgradeImg.fillAmount = upgradeTimer / upgradeTime;
-            //}
+
             upgradeSave[btn] = upgradeTimer;
 
             if (upgradeTimer >= upgradeTime)

@@ -22,8 +22,7 @@ public class MonsterAi : UnitCommonAi
     public bool isScriptActive = false;
     public int monsterType;    // 0 : 약한, 1 : 노멀, 2 : 강함, 3 : 가디언
 
-    [SerializeField]
-    protected bool waveState = false;
+    public bool waveState = false;
     float waveSpeed = 9;
 
     //bool waveWaiting = false;
@@ -1217,7 +1216,7 @@ public class MonsterAi : UnitCommonAi
             }
         }
 
-        MonsterSpawnerManager.instance.BattleRemoveMonster(this);
+        MonsterSpawnerManager.instance.WaveRemoveMonster(this);
     }
 
     [ClientRpc]

@@ -145,16 +145,32 @@ public class PlayerStatus : WorldObj
 
         if (!IsOwner) { return; }
 
-        if (hp != maxHp && !GameManager.instance.isWaitingForRespawn)
+        if ((hp < maxHp || tankHp < tankMaxHp) && !GameManager.instance.isWaitingForRespawn)
         {
             selfHealTimer += Time.deltaTime;
 
             if (selfHealTimer >= selfHealInterval)
             {
-                SelfHealingServerRpc();
+                if (!tankOn && hp < maxHp)
+                    SelfHealingServerRpc();
+                else if (tankOn && tankHp < tankMaxHp)
+                    TankRepairServerRpc(selfHealingAmount);
                 selfHealTimer = 0f;
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void SelfHealingServerRpc()
+    {
+        hp += selfHealingAmount;
+
+        if (hp >= maxHp)
+        {
+            hp = maxHp;
+        }
+
+        SetHpClientRpc(hp);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -168,34 +184,57 @@ public class PlayerStatus : WorldObj
     {
         hp = value;
         if (hp >= maxHp)
-        {
             hp = maxHp;
-            HPUISet(false);
+
+        if (!tankOn)
+        {
+            if (hp >= maxHp)
+                HPUISet(false);
+            else
+                hpBar.fillAmount = hp / maxHp;
         }
+
         onHpChangedCallback?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void SelfHealingServerRpc()
+    public void HealServerRpc(float value)
     {
-        SelfHealingClientRpc();
-    }
-
-    [ClientRpc]
-    void SelfHealingClientRpc()
-    {
-        hp += selfHealingAmount;
+        hp += value;
 
         if (hp >= maxHp)
         {
             hp = maxHp;
-            HPUISet(false);
         }
-        onHpChangedCallback?.Invoke();
-        if (!tankOn)
+
+        SetHpClientRpc(hp);
+    }
+
+    [ServerRpc]
+    public void TankRepairServerRpc(float value)
+    {
+        tankHp += value;
+        if (tankHp >= tankMaxHp)
         {
-            hpBar.fillAmount = hp / maxHp;
+            tankHp = tankMaxHp;
         }
+        TankRepairClientRpc(tankHp);
+    }    
+
+    [ClientRpc]
+    void TankRepairClientRpc(float tankHpSet)
+    {
+        tankHp = tankHpSet;
+
+        if (tankOn)
+        {
+            if (tankHp >= tankMaxHp)
+                HPUISet(false);
+            else
+                hpBar.fillAmount = tankHp / tankMaxHp;
+        }
+
+        onHpChangedCallback?.Invoke();
     }
 
     public void TakeDamage(float damage)
@@ -301,6 +340,12 @@ public class PlayerStatus : WorldObj
         networkObject.TryGetComponent(out TankCtrl tankCtrl);
         tankHp = tankCtrl.hp;
         tankMaxHp = tankCtrl.maxHp;
+        if(tankHp < tankMaxHp)
+        {
+            hpBar.fillAmount = tankHp / tankMaxHp;
+            HPUISet(true);
+        }
+        onHpChangedCallback?.Invoke();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -313,7 +358,15 @@ public class PlayerStatus : WorldObj
     void TankOffClientRpc()
     {
         tankOn = false;
-        hpBar.fillAmount = hp / maxHp;
+        if(hp < maxHp)
+        {
+            hpBar.fillAmount = hp / maxHp;
+            HPUISet(true);
+        }
+        else
+        {
+            HPUISet(false);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

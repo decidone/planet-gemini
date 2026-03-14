@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class SearchObjectsInRangeManager : MonoBehaviour
+public class SearchObjectsInRangeManager : NetworkBehaviour
 {
     List<UnitCommonAi> unitList = new List<UnitCommonAi>();
     List<TowerAi> towerList = new List<TowerAi>();
@@ -42,6 +43,9 @@ public class SearchObjectsInRangeManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!IsServer)
+            return;
+
         if (!isUnitProcessing)
         {
             unitSearchTimer += Time.deltaTime;

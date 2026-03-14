@@ -331,7 +331,7 @@ public class StructureInvenManager : InventoryManager
 
     public void WaveDiffLevelTextSet()
     {
-        waveDiffLevel.text = "Difficulty Level : " + gameManager.difficultyPercent.ToString("F0") + " %";
+        waveDiffLevel.text = "Wave Tier : " + (1 + Mathf.Round(gameManager.difficultyPercent / 25f) / 10f);
     }
     //Portal UI 전용
 

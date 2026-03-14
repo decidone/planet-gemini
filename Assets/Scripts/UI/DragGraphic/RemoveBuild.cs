@@ -66,12 +66,16 @@ public class RemoveBuild : DragFunc
         {
             foreach (RaycastHit2D hit in hits)
             {
-                if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
+                if (hit.collider.TryGetComponent(out InfoInteract info))
                 {
-                    if (!(structure.Get<Portal>() || structure.Get<ScienceBuilding>()))
+                    WorldObj worldObj = info.GetComponentInParent<WorldObj>();
+                    if (worldObj && worldObj.TryGet(out Structure structure))
                     {
-                        selectedObjects[0] = structure;
-                        gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
+                        if (!structure.isPreBuilding && (!(structure.Get<Portal>() || structure.Get<ScienceBuilding>())))
+                        {
+                            selectedObjects[0] = structure;
+                            gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();
+                        }
                     }
                 }
             }

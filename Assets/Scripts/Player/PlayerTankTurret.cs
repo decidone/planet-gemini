@@ -40,17 +40,21 @@ public class PlayerTankTurret : NetworkBehaviour
         turretIndex = GetDirectionIndex(direction);
 
         spriteRenderer.sprite = sprites[turretIndex];
-
-        syncTimer += Time.deltaTime;
-        if (syncTimer >= syncInterval)
+        if (turretIndex != lastSyncedIndex)
         {
-            syncTimer = 0f;
-            if (turretIndex != lastSyncedIndex) // 변화가 있으면 동기화
+            syncTimer += Time.deltaTime;
+            if (syncTimer >= syncInterval)
             {
+                syncTimer = 0f;
                 lastSyncedIndex = turretIndex;
-                SyncTurretIndexServerRpc(turretIndex);
+                SyncTurretIndexServerRpc(turretIndex);                
             }
         }
+        else
+        {
+            syncTimer = 0f; // 인덱스가 변경되지 않았으면 타이머 초기화
+        }
+
     }
 
     [ServerRpc]
@@ -71,16 +75,21 @@ public class PlayerTankTurret : NetworkBehaviour
     {
         int bestIndex = 0;
         float maxDot = -Mathf.Infinity;
+
         for (int i = 0; i < directions.Length; i++)
         {
             float dot = Vector3.Dot(direction, directions[i]);
+
+            // 현재 방향이면 보너스를 줘서 쉽게 안 바뀌게
+            if (i == turretIndex)
+                dot += 0.1f; // 튜닝 포인트 (0.1 ~ 0.2 권장)
+
             if (dot > maxDot)
             {
                 maxDot = dot;
                 bestIndex = i;
             }
         }
-
         return bestIndex;
     }
 
