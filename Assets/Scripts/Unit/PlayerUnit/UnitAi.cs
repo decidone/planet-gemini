@@ -656,7 +656,7 @@ public class UnitAi : UnitCommonAi
             if (unitSelect)
             {
                 unitGroupCtrl.DieUnitCheck(this);
-                InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
+                InfoUI.instance.UnitAmountSub(this, (unitCommonData.UnitName, unitLevel));
             }
             if (IsServer)
             {
@@ -679,13 +679,14 @@ public class UnitAi : UnitCommonAi
     {
         onEffectUpgradeCheck -= IncreasedStructureCheck;
 
-        if (InfoUI.instance.unit == this)
-            InfoUI.instance.SetDefault();
-        else if (unitSelect)
+        if (unitSelect)
         {
             unitGroupCtrl.DieUnitCheck(this);
             UnitDrag.instance.UnitRemoveGroup(this);
-            InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
+            if (InfoUI.instance.unit == this)
+                InfoUI.instance.SetDefault();
+            else
+                InfoUI.instance.UnitAmountSub(this, (unitCommonData.UnitName, unitLevel));
         }
 
         unitSelImg.color = new Color(1f, 1f, 1f, 0f);
@@ -712,7 +713,7 @@ public class UnitAi : UnitCommonAi
         {
             UnitSelImg(false);
             unitGroupCtrl.DieUnitCheck(this);
-            InfoUI.instance.UnitAmountSub((unitCommonData.name, unitLevel));
+            InfoUI.instance.UnitAmountSub(this, (unitCommonData.UnitName, unitLevel));
         }
         playerUnitPortalIn = true;
         hostClientUnitIn = mapIndex;

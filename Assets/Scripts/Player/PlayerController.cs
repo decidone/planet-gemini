@@ -73,6 +73,17 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     GameObject tankTurret;
 
+    protected Collider2D[] targetColls = new Collider2D[128];
+    protected LayerMask targetMask;
+    protected ContactFilter2D contactFilter;
+
+    private float battleBgmRange;
+    private float battleBgmTimer;
+    private float battleBgmInterval = 0.5f;
+    private float battleBgmOffDelay = 3f;
+    private float currentBgmInterval = 0.5f;
+    bool enemyNearby;
+
     void Awake()
     {
         gameManager = GameManager.instance;
@@ -91,17 +102,25 @@ public class PlayerController : NetworkBehaviour
 
         if (!IsOwner) { return; }
 
-        GameManager.instance.SetPlayer(this.gameObject);
+        gameManager.SetPlayer(this.gameObject);
         GeminiNetworkManager.instance.onItemDestroyedCallback += ItemDestroyed;
 
-        if (GameManager.instance.playerDataHp != -1)
+        if (gameManager.playerDataHp != -1)
         {
             status.LoadGame();
-            GetComponent<ClientNetworkTransform>().Teleport(GameManager.instance.playerDataPos, Quaternion.identity, transform.localScale);
+            GetComponent<ClientNetworkTransform>().Teleport(gameManager.playerDataPos, Quaternion.identity, transform.localScale);
         }
 
         MainGameSetting.instance.StopStopwatch();
         StartCoroutine(PlayerSet());
+        battleBgmRange = visionRadius;
+
+        int mask =
+            (1 << LayerMask.NameToLayer("Monster")) |
+            (1 << LayerMask.NameToLayer("Spawner"));
+
+        contactFilter.SetLayerMask(mask);
+        contactFilter.useLayerMask = true;
     }
 
     void OnEnable()
@@ -188,6 +207,13 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
+
+        battleBgmTimer += Time.deltaTime;
+        if (battleBgmTimer > currentBgmInterval)
+        {
+            SearchObjectsInRange();
+            battleBgmTimer = 0;
+        }
     }
 
     void FixedUpdate()
@@ -238,11 +264,11 @@ public class PlayerController : NetworkBehaviour
         if (itemProps && !items.Contains(itemProps))
             items.Add(itemProps);
 
-        if (shop && !GameManager.instance.isShopOpened)
+        if (shop && !gameManager.isShopOpened)
         {
             nearShop = shop;
             nearShop.OpenUI();
-            GameManager.instance.isShopOpened = true;
+            gameManager.isShopOpened = true;
         }
     }
 
@@ -276,11 +302,11 @@ public class PlayerController : NetworkBehaviour
         if (portal || marketPortal)
             teleportUI.CloseUI();
 
-        if (shop && GameManager.instance.isShopOpened)
+        if (shop && gameManager.isShopOpened)
         {
             nearShop.CloseUI();
             nearShop = null;
-            GameManager.instance.isShopOpened = false;
+            gameManager.isShopOpened = false;
         }
     }
 
@@ -460,7 +486,7 @@ public class PlayerController : NetworkBehaviour
         {
             onTankData.PlayerTankOff(transform.position, status.tankHp, reloading, reloadTimer, reloadInterval);
         }
-        if (IsServer && !GameManager.instance.isGameOver)
+        if (IsServer && !gameManager.isGameOver)
         {
             DataManager.instance.Save(0, null);
         }
@@ -497,9 +523,9 @@ public class PlayerController : NetworkBehaviour
             int y = Mathf.FloorToInt(newPos.y);
             Map map;
             if (gameManager.isPlayerInHostMap)
-                map = GameManager.instance.hostMap;
+                map = gameManager.hostMap;
             else
-                map = GameManager.instance.clientMap;
+                map = gameManager.clientMap;
 
             Cell cell = map.GetCellDataFromPos(x, y);
 
@@ -566,7 +592,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();
-            Vector3 pos = GameManager.instance.Teleport();
+            Vector3 pos = gameManager.Teleport();
             TeleportServerRpc(pos, gameManager.isPlayerInHostMap);
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
@@ -588,7 +614,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (PreBuilding.instance.isBuildingOn)
                 PreBuilding.instance.CancelBuild();
-            Vector3 pos = GameManager.instance.TeleportMarket();
+            Vector3 pos = gameManager.TeleportMarket();
             TeleportServerRpc(pos, gameManager.isPlayerInHostMap);
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
@@ -744,7 +770,7 @@ public class PlayerController : NetworkBehaviour
         animator.SetFloat("lastMoveY", dir.y);
 
         TankAttackEnd();
-
+        SoundManager.instance.PlaySFX(gameObject, "unitSFX", "TowerAttack");
         StartCoroutine(StopMotion());
         reloading = true;
         ReloadingUISet(true);
@@ -844,5 +870,43 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner) { return; }
 
         TankInven();
+    }
+
+    void SearchObjectsInRange()
+    {
+        int hitCount = Physics2D.OverlapCircle(
+            transform.position,
+            battleBgmRange,
+            contactFilter,
+            targetColls
+        );
+
+        bool anyActive = false; // 실제 전투 중인 적 있는지
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            WorldObj target = targetColls[i].GetComponent<WorldObj>();
+            if (target.Get<MonsterSpawner>() ||
+                (target.TryGet(out MonsterAi mon) && !mon.waveState && mon.targetList.Count > 0))
+            {
+                anyActive = true;
+                break;
+            }
+        }
+
+        if (anyActive)
+        {
+            if (enemyNearby) return;
+            enemyNearby = true;
+            currentBgmInterval = battleBgmOffDelay;
+            SoundManager.instance.BattleStateSet(gameManager.isPlayerInHostMap, true);
+        }
+        else
+        {
+            if (!enemyNearby) return;
+            enemyNearby = false;
+            currentBgmInterval = battleBgmInterval;
+            SoundManager.instance.BattleStateSet(gameManager.isPlayerInHostMap, false);
+        }
     }
 }

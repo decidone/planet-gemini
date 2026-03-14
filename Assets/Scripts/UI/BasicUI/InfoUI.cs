@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Tools.NetStats;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -30,6 +31,7 @@ public class InfoUI : MonoBehaviour
     public Structure str = null;
     public UnitAi unit = null;
     public List<UnitAi> units = null;
+    List<UnitAi> canUpgradeUnit = new List<UnitAi>();
     public MonsterSpawner spawner = null;
     public MonsterAi monster = null;
 
@@ -47,6 +49,11 @@ public class InfoUI : MonoBehaviour
     [SerializeField]
     Text[] unitCount; 
     Dictionary<(string, int), int> unitDataDic;
+    [SerializeField]
+    GameObject unitGroupBtnsUI;
+    [SerializeField] Button unitUpgradeBtn;
+    [SerializeField] Button unitDicBtn;
+    [SerializeField] Button unitRemoveBtn;
 
     #region Singleton
     public static InfoUI instance;
@@ -88,6 +95,13 @@ public class InfoUI : MonoBehaviour
         chopTreeBtn.onClick.RemoveAllListeners();
         chopTreeBtn.gameObject.SetActive(false);
         unitGroupUI.SetActive(false);
+        unitGroupBtnsUI.SetActive(false);
+        unitUpgradeBtn.gameObject.SetActive(false);
+        unitUpgradeBtn.onClick.RemoveAllListeners();
+        unitDicBtn.gameObject.SetActive(false);
+        unitDicBtn.onClick.RemoveAllListeners();
+        unitRemoveBtn.gameObject.SetActive(false);
+        unitRemoveBtn.onClick.RemoveAllListeners();
     }
 
     void SetNameText(string txt)
@@ -115,7 +129,10 @@ public class InfoUI : MonoBehaviour
     {
         if (player != null)
         {
-            hpText.text = player.hp + "/" + player.maxHp;
+            if(!player.tankOn)
+                hpText.text = Mathf.Round(player.hp * 10f) / 10f + "/" + Mathf.Round(player.maxHp * 10f) / 10f;
+            else
+                hpText.text = Mathf.Round(player.tankHp * 10f) / 10f + "/" + Mathf.Round(player.tankMaxHp * 10f) / 10f;
         }
     }
 
@@ -212,7 +229,7 @@ public class InfoUI : MonoBehaviour
     {
         if (str != null && str.maxHp > 0)
         {
-            hpText.text = str.hp + "/" + str.maxHp;
+            hpText.text = Mathf.Round(str.hp * 10f) / 10f + "/" + Mathf.Round(str.maxHp * 10f) / 10f;
         }
     }
 
@@ -229,8 +246,9 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         unit = _unit;
+        canUpgradeUnit.Clear();
         units = new List<UnitAi> { unit }; //업글 시 리스트로 넘기기 위해
-        SpriteRenderer spriteRenderer = unit.gameObject.GetComponent<SpriteRenderer>();
+        SpriteRenderer spriteRenderer = unit.Get<SpriteRenderer>();
         spriteRenderer.material = outlineMat;
         //nameText.text = unit.name;
         string unitName = unit.unitCommonData.UnitName;
@@ -247,6 +265,7 @@ public class InfoUI : MonoBehaviour
 
         if (_unit.CanUpgrade() && ScienceDb.instance.IsLevelExists(_unit.unitCommonData.name, _unit.unitLevel + 2))
         {
+            canUpgradeUnit.Add(_unit);
             upgradeBtn.gameObject.SetActive(true);
             upgradeBtn.onClick.AddListener(() => 
             {
@@ -256,32 +275,76 @@ public class InfoUI : MonoBehaviour
 
         dicBtn.gameObject.SetActive(true);
         dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(unitName, true));
-        //if (unit.unitLevelData.Length > 0)
-        //{
-        //}
-        
-        //firstBattleText.text = "ATK " + unit.damage + " DEF " + unit.defense;
-        //secondBattleText.text = "ATK Delay " + unit.attackSpeed + " ATK Range " + unit.unitCommonData.AttackDist;
+
+        removeBtn.gameObject.SetActive(true);
+        removeBtn.onClick.AddListener(() => UnitDrag.instance.DragUnitRemove());
     }
 
-    // 드래그 유닛
-    public void SetUnitInfo(List<UnitAi> _units)
+    // 더블클릭 유닛
+    public void SameUnitInfo(List<UnitAi> _units)
     {
         SetDefault();
         units.Clear();
+        canUpgradeUnit.Clear();
         units = _units;
+
+        unitGroupBtnsUI.SetActive(true);
 
         if (_units[0].CanUpgrade() && ScienceDb.instance.IsLevelExists(_units[0].unitCommonData.name, _units[0].unitLevel + 2))
         {
-            upgradeBtn.gameObject.SetActive(true);
-            upgradeBtn.onClick.AddListener(() =>
+            canUpgradeUnit = _units;
+            unitUpgradeBtn.gameObject.SetActive(true);
+            unitUpgradeBtn.onClick.AddListener(() =>
             {
                 UpgradeCostCheckAndPopupSet(_units);
             });
         }
 
         UnitGroupUISet(_units);
+
+        unitDicBtn.gameObject.SetActive(true);
+        unitDicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Unit Control", true));
+
+        unitRemoveBtn.gameObject.SetActive(true);
+        unitRemoveBtn.onClick.AddListener(() => UnitDrag.instance.DragUnitRemove());
     }
+
+    // 드래그 유닛
+    public void SetUnitsInfo(List<UnitAi> _units)
+    {
+        SetDefault();
+        units.Clear();
+        canUpgradeUnit.Clear();
+        units = _units;
+
+        for (int i = 0; i < _units.Count; i++)
+        {
+            if(_units[i].CanUpgrade() && ScienceDb.instance.IsLevelExists(_units[i].unitCommonData.name, _units[i].unitLevel + 2))
+            {
+                canUpgradeUnit.Add(_units[i]);
+            }
+        }
+
+        unitGroupBtnsUI.SetActive(true);
+
+        if (canUpgradeUnit.Count > 0)
+        {
+            unitUpgradeBtn.gameObject.SetActive(true);
+            unitUpgradeBtn.onClick.AddListener(() =>
+            {
+                UpgradeCostCheckAndPopupSet(canUpgradeUnit);
+            });
+        }
+
+        UnitGroupUISet(_units);
+
+        unitDicBtn.gameObject.SetActive(true);
+        unitDicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Unit Control", true));
+
+        unitRemoveBtn.gameObject.SetActive(true);
+        unitRemoveBtn.onClick.AddListener(() => UnitDrag.instance.DragUnitRemove());
+    }
+
 
     public void UnitGroupUISet(List<UnitAi> _units)
     {
@@ -302,8 +365,8 @@ public class InfoUI : MonoBehaviour
                 unitDataDic[key] = 1;
             }
         }
-
-        for(int i = 0; i < unitSingleUIs.Length; i++)
+                
+        for (int i = 0; i < unitSingleUIs.Length; i++)
         {
             unitSingleUIs[i].gameObject.SetActive(false);
         }
@@ -317,7 +380,7 @@ public class InfoUI : MonoBehaviour
         }
     }
 
-    public void UnitAmountSub((string, int) data)
+    public void UnitAmountSub(UnitAi unit, (string, int) data)
     {
         int index = UnitUISellect(data);
         unitCount[index].text = (int.Parse(unitCount[index].text) - 1).ToString();
@@ -325,6 +388,10 @@ public class InfoUI : MonoBehaviour
         {
             unitSingleUIs[index].gameObject.SetActive(false);
         }
+        if (units.Contains(unit))
+            units.Remove(unit);
+        if (units.Count == 0)
+            SetDefault();
     }
 
     int UnitUISellect((string, int) data)
@@ -378,37 +445,33 @@ public class InfoUI : MonoBehaviour
 
     void UpgradeCostCheckAndPopupSet(List<UnitAi> _units)
     {
-        bool canUpgrade = false;
+        Dictionary<string, int> unitCountDic = new Dictionary<string, int>();
 
-        for (int i = 0; i < _units.Count;i++)
+        for (int i = 0; i < _units.Count; i++)
         {
-            if(_units[i].CanUpgrade())
-            {
-                canUpgrade = true;
-                break;
-            }
+            if (!unitCountDic.ContainsKey(_units[i].unitCommonData.UnitName))
+                unitCountDic.Add(_units[i].unitCommonData.UnitName, 1);
+            else
+                unitCountDic[_units[i].unitCommonData.UnitName]++;
         }
-
-        if (!canUpgrade)
-        {
-            //upgradeBtn.gameObject.SetActive(false);
-            return;
-        }
-
-        recipe = selectRecipe.Find(r => r.name == _units[0].unitCommonData.UnitName);
 
         upgradeItemDic = new Dictionary<Item, int>();
-        Dictionary<string, Item> itemDic = ItemList.instance.itemDic;
 
-        for (int i = 0; i < recipe.items.Count - 1; i++)
+        foreach (var data in unitCountDic)
         {
-            if (upgradeItemDic.ContainsKey(itemDic[recipe.items[i]]))
+            recipe = selectRecipe.Find(r => r.name == data.Key);
+            Dictionary<string, Item> itemDic = ItemList.instance.itemDic;
+
+            for (int i = 0; i < recipe.items.Count - 1; i++)
             {
-                upgradeItemDic[itemDic[recipe.items[i]]] += recipe.amounts[i] * _units.Count;
-            }
-            else
-            {
-                upgradeItemDic.Add(itemDic[recipe.items[i]], recipe.amounts[i] * _units.Count);
+                if (upgradeItemDic.ContainsKey(itemDic[recipe.items[i]]))
+                {
+                    upgradeItemDic[itemDic[recipe.items[i]]] += recipe.amounts[i] * data.Value;
+                }
+                else
+                {
+                    upgradeItemDic.Add(itemDic[recipe.items[i]], recipe.amounts[i] * data.Value);
+                }
             }
         }
 
@@ -438,22 +501,21 @@ public class InfoUI : MonoBehaviour
     {
         if (isOk)
         {
-            foreach (UnitAi unit in units)
+            foreach (UnitAi unit in canUpgradeUnit)
             {
                 if (!unit || !unit.CanUpgrade())
                 {
-                    units.Clear();
-                    upgradeBtn.gameObject.SetActive(false);
-                    SetUnitHp();
+                    SetUnitsInfo(units);
                     return;
                 }
             }
-            GameManager.instance.UnitUpgrade(units);
-        }
 
-        units.Clear();
-        upgradeBtn.gameObject.SetActive(false);
-        SetUnitHp();
+            GameManager.instance.UnitUpgrade(canUpgradeUnit);
+            if(units.Count > 1)
+                SetUnitsInfo(units.ToList());
+            else
+                SetUnitInfo(units[0]);
+        }
     }
 
     public void SetUnitName()
@@ -476,7 +538,7 @@ public class InfoUI : MonoBehaviour
     {
         if (unit != null)
         {
-            hpText.text = unit.hp + "/" + unit.maxHp;
+            hpText.text = Mathf.Round(unit.hp * 10f) / 10f + "/" + Mathf.Round(unit.maxHp * 10f) / 10f;
         }
     }
 
@@ -498,7 +560,7 @@ public class InfoUI : MonoBehaviour
     {
         if (spawner != null)
         {
-            hpText.text = spawner.hp + "/" + spawner.maxHp;
+            hpText.text = Mathf.Round(spawner.hp * 10f) / 10f + "/" + Mathf.Round(spawner.maxHp * 10f) / 10f;
         }
     }
 
@@ -528,7 +590,7 @@ public class InfoUI : MonoBehaviour
     {
         if (monster != null)
         {
-            hpText.text = monster.hp + "/" + monster.maxHp;
+            hpText.text = Mathf.Round(monster.hp * 10f) / 10f + "/" + Mathf.Round(monster.maxHp * 10f) / 10f;
         }
     }
 

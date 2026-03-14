@@ -72,24 +72,28 @@ public class UpgradeBuild : DragFunc
         if (hits.Length > 0)
         {
             foreach (RaycastHit2D hit in hits)
-            { 
-                if (hit.collider.TryGetComponent(out Structure structure) && !structure.isPreBuilding)
+            {
+                if (hit.collider.TryGetComponent(out InfoInteract info))
                 {
-                    if (!(structure.Get<Portal>() || structure.Get<ScienceBuilding>()))
+                    WorldObj worldObj = info.GetComponentInParent<WorldObj>();
+                    if (worldObj && worldObj.TryGet(out Structure structure) && !structure.isPreBuilding)
                     {
-                        if (structure.structureData.MaxLevel != structure.level + 1)
+                        if (!(structure.Get<Portal>() || structure.Get<ScienceBuilding>()))
                         {
-                            if (ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
+                            if (structure.structureData.MaxLevel != structure.level + 1)
                             {
-                                // 업그레이드 가능
-                                selectedObjects[0] = structure;
-                                GroupUpgradeCost(structure);
-                                UpgradeCheck();
-                            }
-                            else
-                            {
-                                // 상위 테크 건물은 있는데 아직 연구가 완료되지 않은 경우
-                                Debug.Log("need to research next level building");
+                                if (ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
+                                {
+                                    // 업그레이드 가능
+                                    selectedObjects[0] = structure;
+                                    GroupUpgradeCost(structure);
+                                    UpgradeCheck();
+                                }
+                                else
+                                {
+                                    // 상위 테크 건물은 있는데 아직 연구가 완료되지 않은 경우
+                                    Debug.Log("need to research next level building");
+                                }
                             }
                         }
                     }

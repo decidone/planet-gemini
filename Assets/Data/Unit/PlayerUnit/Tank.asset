@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Tank
   m_EditorClassIdentifier: 
   unitName: Tank
-  maxHp: 400
-  upgradeMaxHp: 500
+  maxHp: 700
+  upgradeMaxHp: 800
   damage: 30
   upgradeDamage: 40
   moveSpeed: 7

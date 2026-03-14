@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System.Linq;
+using System.Collections;
 
 public class MonsterSpawnerManager : NetworkBehaviour
 {
@@ -21,8 +22,12 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public Sprite[] spawnerSprite;
 
     public List<MonsterAi> waveMonsters = new List<MonsterAi>();
+    public Dictionary<bool, List<MonsterAi>> BattleMonsters = new Dictionary<bool, List<MonsterAi>>()
+    {
+        { true,  new List<MonsterAi>() },  // 호스트 맵
+        { false, new List<MonsterAi>() }   // 클라이언트 맵
+    };
     private int baseSpawnCount = 18;
-
     #region Singleton
     public static MonsterSpawnerManager instance;
 
@@ -301,15 +306,17 @@ public class MonsterSpawnerManager : NetworkBehaviour
     void OnClientConnectedCallback(ulong clientId)
     {
         SetCorruption();
-        WaveStateSyncServerRpc();
+        if(IsServer)
+            WaveStateSyncServerRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     void WaveStateSyncServerRpc()
     {
         if (waveState)
         {
             WaveStateSyncClientRpc(wavePos, hostMapWave);
+            WaveBgmSetServerRpc(hostMapWave, waveState);
         }
     }
 
@@ -323,10 +330,9 @@ public class MonsterSpawnerManager : NetworkBehaviour
             hostMapWave = hostMap;
             wavePos = pos;
             WavePointOnClientRpc(wavePos, hostMapWave);
-            SoundManager.instance.BattleStateSet(hostMapWave, GameManager.instance.violentDay);
         }
     }
-    
+
     public void WaveAddMonster(MonsterAi monster)
     {
         waveMonsters.Add(monster);
@@ -335,10 +341,11 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public void WaveAddMonster(List<MonsterAi> monsters)
     {
         waveMonsters.AddRange(monsters);
-        SoundManager.instance.BattleStateSet(hostMapWave, waveState);
+        if(IsServer)
+            WaveBgmSetServerRpc(hostMapWave, waveState);
     }
 
-    public void BattleRemoveMonster(MonsterAi monster)
+    public void WaveRemoveMonster(MonsterAi monster)
     {
         if (waveMonsters.Contains(monster))
         {
@@ -376,13 +383,13 @@ public class MonsterSpawnerManager : NetworkBehaviour
     void WaveEndServerRpc()
     {
         WaveEndClientRpc();
+        WaveBgmSetServerRpc(hostMapWave, false);
     }
 
     [ClientRpc]
     void WaveEndClientRpc()
     {
         waveState = false;
-        SoundManager.instance.BattleStateSet(hostMapWave, waveState);
     }
 
     public bool HasMonsterSpawnerOnMap(bool isHostMap)
@@ -395,6 +402,18 @@ public class MonsterSpawnerManager : NetworkBehaviour
                 return true;
         }
         return false;
+    }
+
+    [ServerRpc]
+    void WaveBgmSetServerRpc(bool hostMap, bool waveState)
+    {
+        WaveBgmSetClientRpc(hostMap, waveState);
+    }
+
+    [ClientRpc]
+    void WaveBgmSetClientRpc(bool hostMap, bool waveState)
+    {
+        SoundManager.instance.WaveStateSet(hostMap, waveState);
     }
 
     // ===============================

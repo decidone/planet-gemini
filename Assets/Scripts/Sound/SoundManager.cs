@@ -16,23 +16,12 @@ public class SoundManager : MonoBehaviour
 
     SceneIndex sceneIndex;
 
-    private const string PLAYER_PREFS_MUSIC_VOLUME = "MusicVolume";
-
-    [SerializeField] 
+    [SerializeField]
     private AudioClipRefsSO audioClipRefsSO;
 
     private AudioSource bgmPlayer;
 
-    //List<AudioSource> structureSfxPlayer = new List<AudioSource>();
-    //[SerializeField]
-    //int structureSfxPlayerMaxCount;
-
-    //List<AudioSource> unitSfxPlayer = new List<AudioSource>();
-    //[SerializeField]
-    //int unitSfxPlayerMaxCount;
-
-    public
-    AudioSource uiSfxPlayer;
+    public AudioSource uiSfxPlayer;
 
     private float bgmVolume = 1f;
     private float sfxVolume = 1f;
@@ -40,7 +29,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     Camera mainCamera;
 
-    [SerializeField] 
+    [SerializeField]
     private AudioMixer audioMixer;
     [SerializeField]
     private Slider musicMasterSlider;
@@ -55,21 +44,14 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private Toggle musicSFXToggle;
 
-    //bool structureSfxPlay = false;
-    //bool unitSfxPlay = false;
-
-    //float structureDelayTimer = 0.0f;
-    //float structureDelayInterval = 0.05f;
-    //float unitDelayTimer = 0.0f;
-    //float unitDelayInterval = 0.05f;
-
-    //public bool isHostMapBattleOn = false;
-    //public bool isClientMapBattleOn = false;
+    public bool isHostMapBattleOn = false;
+    public bool isClientMapBattleOn = false;
     public bool isHostMapWaveOn = false;
     public bool isClientMapWaveOn = false;
 
-    float fadeSeconds = 1.0f;
-    bool isFadingOut;
+    float fadeSeconds = 0.3f;
+
+    private Coroutine currentFade;
 
     int defaultPoolSize = 16;
     int maxPoolSize = 32;
@@ -99,11 +81,6 @@ public class SoundManager : MonoBehaviour
             defaultCapacity: defaultPoolSize,
             maxSize: maxPoolSize
         );
-    }
-
-    private void Start()
-    {
-        DontDestroyOnLoad(gameObject);
     }
 
     private void OnEnable()
@@ -136,24 +113,6 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    void GameBgmByTime()
-    {
-        if (GameManager.instance.dayIndex > 2)
-        {
-            bgmPlayer.clip = audioClipRefsSO.nightBgm[Random.Range(0, audioClipRefsSO.nightBgm.Length)];
-        }
-        else
-        {
-            bgmPlayer.clip = audioClipRefsSO.dayBgm[Random.Range(0, audioClipRefsSO.dayBgm.Length)];
-        }
-    }
-
-    public void GameSceneLoad()
-    {
-        GameBgmByTime();
-        bgmPlayer.Play();
-    }
-
     private void OnSceneUnloaded(Scene scene)
     {
         mainCamera = null;
@@ -162,40 +121,177 @@ public class SoundManager : MonoBehaviour
     void Update()
     {
         if (Time.timeScale == 0)
-        {
             return;
-        }
 
-        if (!bgmPlayer.isPlaying)
+        if (currentFade == null && !bgmPlayer.isPlaying)
         {
             PlayBgmMapCheck();
         }
-        else if (bgmPlayer.isPlaying && !isFadingOut)
+        else if (bgmPlayer.isPlaying && currentFade == null)
         {
-            if (bgmPlayer.clip.length - bgmPlayer.time <= 1.0f)
+            if (bgmPlayer.clip.length - bgmPlayer.time <= fadeSeconds)
             {
-                StartCoroutine(nameof(SoundFadeOut));
+                AudioClip nextClip = GetCurrentContextClip();
+                if (nextClip != null)
+                    ChangeBGM(nextClip);
+            }
+        }
+    }
+
+    #region CrossFade
+
+    public void ChangeBGM(AudioClip newClip)
+    {
+        if (newClip == null) return;
+
+        if (currentFade != null)
+            StopCoroutine(currentFade);
+
+        currentFade = StartCoroutine(CrossFade(newClip));
+    }
+
+    private IEnumerator CrossFade(AudioClip newClip)
+    {
+        yield return StartCoroutine(FadeTo(0f));
+
+        bgmPlayer.clip = newClip;
+        bgmPlayer.Play();
+
+        yield return StartCoroutine(FadeTo(bgmVolume));
+
+        currentFade = null;
+    }
+
+    private IEnumerator FadeTo(float targetVolume)
+    {
+        float startVolume = bgmPlayer.volume;
+        float time = 0f;
+
+        while (time < fadeSeconds)
+        {
+            time += Time.deltaTime;
+            bgmPlayer.volume = Mathf.Lerp(startVolume, targetVolume, time / fadeSeconds);
+            yield return null;
+        }
+
+        bgmPlayer.volume = targetVolume;
+    }
+
+    #endregion
+
+    #region BGM Context
+
+    AudioClip GetCurrentContextClip()
+    {
+        if (sceneIndex != SceneIndex.GameScene)
+            return audioClipRefsSO.mainSceneBgm[Random.Range(0, audioClipRefsSO.mainSceneBgm.Length)];
+
+        if (GameManager.instance.isPlayerInMarket)
+        {
+            int index = GameManager.instance.dayIndex > 2 ? 1 : 0;
+            return audioClipRefsSO.marketBgm[index];
+        }
+
+        bool playerMap = GameManager.instance.isPlayerInHostMap;
+        bool isWave = playerMap ? isHostMapWaveOn : isClientMapWaveOn;
+        bool isBattle = playerMap ? isHostMapBattleOn : isClientMapBattleOn;
+
+        return GetBGMClip(isWave, isBattle);
+    }
+
+    AudioClip GetBGMClip(bool isWave, bool isBattle)
+    {
+        if (isWave)
+            return audioClipRefsSO.waveBgm[Random.Range(0, audioClipRefsSO.waveBgm.Length)];
+        else if (isBattle)
+            return audioClipRefsSO.battleBgm[Random.Range(0, audioClipRefsSO.battleBgm.Length)];
+        else
+            return GetTimeBgmClip();
+    }
+
+    AudioClip GetTimeBgmClip()
+    {
+        if (GameManager.instance.dayIndex > 2)
+            return audioClipRefsSO.nightBgm[Random.Range(0, audioClipRefsSO.nightBgm.Length)];
+        else
+            return audioClipRefsSO.dayBgm[Random.Range(0, audioClipRefsSO.dayBgm.Length)];
+    }
+
+    #endregion
+
+    #region BGM Control
+
+    public void GameSceneLoad()
+    {
+        ChangeBGM(GetTimeBgmClip());
+    }
+
+    public void PlayerMarketBgm()
+    {
+        int index = GameManager.instance.dayIndex > 2 ? 1 : 0;
+        ChangeBGM(audioClipRefsSO.marketBgm[index]);
+    }
+
+    public void PlayBgmMapCheck()
+    {
+        if (sceneIndex == SceneIndex.GameScene)
+        {
+            bool playerMap = GameManager.instance.isPlayerInHostMap;
+            bool isWaveActive = (playerMap && isHostMapWaveOn) || (!playerMap && isClientMapWaveOn);
+            bool isBattleActive = (playerMap && isHostMapBattleOn) || (!playerMap && isClientMapBattleOn);
+            if (!GameManager.instance.isPlayerInMarket)
+            {
+                // 웨이브 중이면 유지
+                if (isWaveActive) return;
+
+                // 웨이브 끝났지만 전투 중이면 전투 BGM으로
+                if (isBattleActive)
+                {
+                    ChangeBGM(GetBGMClip(false, true));
+                    return;
+                }
             }
         }
 
-        //if (structureSfxPlay)
-        //{
-        //    structureDelayTimer += Time.deltaTime;
-        //    if(structureDelayTimer > structureDelayInterval)
-        //    {
-        //        structureSfxPlay = false;
-        //    }
-        //}
-
-        //if (unitSfxPlay)
-        //{
-        //    unitDelayTimer += Time.deltaTime;
-        //    if (unitDelayTimer > unitDelayInterval)
-        //    {
-        //        unitSfxPlay = false;
-        //    }
-        //}
+        ChangeBGM(GetCurrentContextClip());
     }
+
+    public void PlayerBgmMapCheck()
+    {
+        if (sceneIndex != SceneIndex.GameScene) return;
+
+        if (isHostMapWaveOn != isClientMapWaveOn)
+        {
+            bool playerMap = GameManager.instance.isPlayerInHostMap;
+            bool isWave = playerMap ? isHostMapWaveOn : isClientMapWaveOn;
+            bool isBattle = playerMap ? isHostMapBattleOn : isClientMapBattleOn;
+            ChangeBGM(GetBGMClip(isWave, isBattle));
+        }
+    }
+
+    public void WaveStateSet(bool isHostMap, bool waveState)
+    {
+        if (isHostMap)
+            isHostMapWaveOn = waveState;
+        else
+            isClientMapWaveOn = waveState;
+
+        if (!GameManager.instance.isPlayerInMarket && GameManager.instance.isPlayerInHostMap == isHostMap)
+            ChangeBGM(GetBGMClip(waveState, false));
+    }
+
+    public void BattleStateSet(bool isHostMap, bool battleState)
+    {
+        if (isHostMap)
+            isHostMapBattleOn = battleState;
+        else
+            isClientMapBattleOn = battleState;
+
+        if (!GameManager.instance.isPlayerInMarket && GameManager.instance.isPlayerInHostMap == isHostMap)
+            PlayBgmMapCheck();
+    }
+
+    #endregion
 
     #region VolumeSet
 
@@ -214,24 +310,17 @@ public class SoundManager : MonoBehaviour
         float sound = musicMasterSlider.value;
         if (!musicMasterToggle.isOn)
         {
-            if (sound == -40f)
-                audioMixer.SetFloat("Master", -80);
-            else
-                audioMixer.SetFloat("Master", sound);
+            audioMixer.SetFloat("Master", sound == -40f ? -80 : sound);
         }
     }
 
     public void SetMasterMute()
     {
         if (!musicMasterToggle.isOn)
-        {
-            float sound = musicMasterSlider.value;
-            audioMixer.SetFloat("Master", sound);
-        }
+            audioMixer.SetFloat("Master", musicMasterSlider.value);
         else
-        {
             audioMixer.SetFloat("Master", -80);
-        }
+
         PlayUISFX("ButtonClick");
     }
 
@@ -240,24 +329,17 @@ public class SoundManager : MonoBehaviour
         float sound = musicBGMSlider.value;
         if (!musicBGMToggle.isOn)
         {
-            if (sound == -40f)
-                audioMixer.SetFloat("BGM", -80);
-            else
-                audioMixer.SetFloat("BGM", sound);
+            audioMixer.SetFloat("BGM", sound == -40f ? -80 : sound);
         }
     }
 
     public void SetBGMMute()
     {
         if (!musicBGMToggle.isOn)
-        {
-            float sound = musicBGMSlider.value;
-            audioMixer.SetFloat("BGM", sound);
-        }
+            audioMixer.SetFloat("BGM", musicBGMSlider.value);
         else
-        {
             audioMixer.SetFloat("BGM", -80);
-        }
+
         PlayUISFX("ButtonClick");
     }
 
@@ -266,145 +348,34 @@ public class SoundManager : MonoBehaviour
         float sound = musicSFXSlider.value;
         if (!musicSFXToggle.isOn)
         {
-            if (sound == -40f)
-                audioMixer.SetFloat("SFX", -80);
-            else
-                audioMixer.SetFloat("SFX", sound);
+            audioMixer.SetFloat("SFX", sound == -40f ? -80 : sound);
         }
     }
 
     public void SetSFXMute()
     {
         if (!musicSFXToggle.isOn)
-        {
-            float sound = musicSFXSlider.value;
-            audioMixer.SetFloat("SFX", sound);
-        }
+            audioMixer.SetFloat("SFX", musicSFXSlider.value);
         else
-        {
             audioMixer.SetFloat("SFX", -80);
-        }
+
         PlayUISFX("ButtonClick");
     }
 
     #endregion
 
+    #region PlayerSetup
+
     void SFXPlayerSet()
     {
         BgmPlayerSet();
-        //StructureSFXPlayerSet();
-        //UnitSFXPlayerSet();
         UIPlayerSet();
-    }
-
-    public void PlayerBgmMapCheck()
-    {
-        if (sceneIndex == SceneIndex.GameScene)
-        {
-            if (isHostMapWaveOn != isClientMapWaveOn)
-            {
-                if (GameManager.instance.isPlayerInHostMap)
-                {
-                    PlayBGM(isHostMapWaveOn);
-                }
-                else
-                {
-                    PlayBGM(isClientMapWaveOn);
-                }
-            }
-        }
-    }
-
-    public void PlayerMarketBgm()
-    {
-        StartCoroutine(nameof(SoundFadeOut));
-        StartCoroutine(MarketBgmChange());
-    }
-
-    public IEnumerator MarketBgmChange()
-    {
-        yield return new WaitForSecondsRealtime(fadeSeconds);
-
-        StartCoroutine(nameof(SoundFadeIn));
-
-        if (GameManager.instance.dayIndex > 2)
-        {
-            bgmPlayer.clip = audioClipRefsSO.marketBgm[1];
-        }
-        else
-        {
-            bgmPlayer.clip = audioClipRefsSO.marketBgm[0];
-        }
-        bgmPlayer.Play();
-    }
-
-    public void PlayBgmMapCheck()
-    {
-        //웨이브 상태에서 BGM이 바뀌지 않게 예외처리
-        if (sceneIndex == SceneIndex.GameScene)
-        {
-            bool playerMap = GameManager.instance.isPlayerInHostMap;
-            bool isWaveActive = (playerMap && isHostMapWaveOn) || (!playerMap && isClientMapWaveOn);
-
-            if (!GameManager.instance.isPlayerInMarket && isWaveActive)
-            {
-                return;
-            }
-        }
- 
-        StartCoroutine(nameof(SoundFadeOut));
-        StartCoroutine(BgmChange());
-    }
-
-    public IEnumerator BgmChange()
-    {
-        yield return new WaitForSecondsRealtime(fadeSeconds);
-
-        if (sceneIndex == SceneIndex.GameScene)
-        {
-            if (GameManager.instance.isPlayerInMarket)
-            {
-                PlayerMarketBgm();
-            }
-            else if (GameManager.instance.isPlayerInHostMap)
-            {
-                PlayBGM(isHostMapWaveOn);
-            }
-            else
-            {
-                PlayBGM(isClientMapWaveOn);
-            }
-        }
-        else
-        {
-            bgmPlayer.clip = audioClipRefsSO.mainSceneBgm[Random.Range(0, audioClipRefsSO.mainSceneBgm.Length)];
-            bgmPlayer.Play();
-            StartCoroutine(nameof(SoundFadeIn));
-        }
     }
 
     void BgmPlayerSet()
     {
         bgmPlayer = PlayerBaseSet("BGM");
     }
-
-    //void StructureSFXPlayerSet()
-    //{
-    //    for (int i = 0; i < structureSfxPlayerMaxCount; i++)
-    //    {
-    //        AudioSource audio = PlayerBaseSet("SFX");
-    //        structureSfxPlayer.Add(audio);
-    //    }
-    //}
-
-    //void UnitSFXPlayerSet()
-    //{
-    //    for (int i = 0; i < unitSfxPlayerMaxCount; i++)
-    //    {
-    //        AudioSource audio = PlayerBaseSet("SFX");
-    //        unitSfxPlayer.Add(audio);
-    //    }
-    //}
 
     void UIPlayerSet()
     {
@@ -413,86 +384,17 @@ public class SoundManager : MonoBehaviour
 
     AudioSource PlayerBaseSet(string group)
     {
-        AudioSource newAuido = gameObject.AddComponent<AudioSource>();
-        newAuido.dopplerLevel = 0;
-        newAuido.reverbZoneMix = 0;
-        newAuido.outputAudioMixerGroup = audioMixer.FindMatchingGroups(group)[0];
-
-        switch(group)
-        {
-            case "BGM" :
-                newAuido.volume = bgmVolume;
-                break;
-            case "SFX":
-                newAuido.volume = sfxVolume;
-                break;
-        }
-
-        return newAuido;
+        AudioSource newAudio = gameObject.AddComponent<AudioSource>();
+        newAudio.dopplerLevel = 0;
+        newAudio.reverbZoneMix = 0;
+        newAudio.outputAudioMixerGroup = audioMixer.FindMatchingGroups(group)[0];
+        newAudio.volume = group == "BGM" ? bgmVolume : sfxVolume;
+        return newAudio;
     }
 
-    void PlayBGM(bool isWave)
-    {
-        if (isWave)
-        {
-            bgmPlayer.clip = audioClipRefsSO.waveBgm[Random.Range(0, audioClipRefsSO.waveBgm.Length)];
-        }
-        else
-        {
-            GameBgmByTime();
-        }
+    #endregion
 
-        bgmPlayer.Play();
-        StartCoroutine(nameof(SoundFadeIn));
-    }
-
-    public void BattleStateSet(bool isHostMap, bool waveState)
-    {
-        if (isHostMap)
-            isHostMapWaveOn = waveState;
-        else
-            isClientMapWaveOn = waveState;
-
-        if (!GameManager.instance.isPlayerInMarket && GameManager.instance.isPlayerInHostMap == isHostMap)
-        {
-            PlayBgmMapCheck();
-        }
-    }
-
-    IEnumerator SoundFadeIn() // 점점 커지는
-    {
-        float time = 0.0f;
-
-        while (time < fadeSeconds)
-        {
-            time += Time.deltaTime;
-
-            bgmPlayer.volume = bgmVolume * (time / fadeSeconds) ;
-
-            yield return null;
-        }
-
-        bgmPlayer.volume = bgmVolume;
-    }
-
-    IEnumerator SoundFadeOut() // 점점 작아지는
-    {
-        isFadingOut = true;
-        float time = 0.0f;
-
-        while (time < fadeSeconds)
-        {
-            time += Time.deltaTime;
-
-            bgmPlayer.volume = bgmVolume * ((fadeSeconds - time) / fadeSeconds);
-
-            yield return null;
-        }
-
-        bgmPlayer.volume = 0;
-        //PlayBgmMapCheck();
-        isFadingOut = false;
-    }
+    #region SFX
 
     public void PlaySFX(GameObject obj, string sfxGroupName, string sfxName)
     {
@@ -502,24 +404,12 @@ public class SoundManager : MonoBehaviour
         switch (sfxGroupName)
         {
             case "structureSFX":
-                {
-                    //if (structureSfxPlay)
-                    //    return;
-                    //SFXAudioSet(structureSfxPlayer, true, sfxName);
-                    //structureSfxPlay = true;
-                    PlaySFX(obj, true, sfxName, 0.2f);
-                }
+                PlaySFX(obj, true, sfxName, 0.2f);
                 break;
             case "unitSFX":
-                {
-                    //if (unitSfxPlay)
-                    //    return;
-                    //SFXAudioSet(unitSfxPlayer, false, sfxName);
-                    //unitSfxPlay = true;
-                    PlaySFX(obj, false, sfxName, 0.03f);
-                }
+                PlaySFX(obj, false, sfxName, 0.03f);
                 break;
-            default :
+            default:
                 return;
         }
     }
@@ -538,9 +428,9 @@ public class SoundManager : MonoBehaviour
                 return;
         }
 
+        AudioClip[] audioClips = isStrSound ? audioClipRefsSO.structureSfx : audioClipRefsSO.unitSfx;
         AudioClip clip = null;
-        AudioClip[] audioClips = (isStrSound) ? audioClipRefsSO.structureSfx : audioClipRefsSO.unitSfx;
-        
+
         for (int i = 0; i < audioClips.Length; i++)
         {
             if (sfxName == audioClips[i].name)
@@ -569,56 +459,11 @@ public class SoundManager : MonoBehaviour
             pool.Release(source);
     }
 
-    //void SFXAudioSet(List<AudioSource> audioList, bool strSound, string sfxName)
-    //{
-    //    AudioClip playClip = null;
-    //    AudioClip[] audioClips;
-
-    //    if (strSound)
-    //    {
-    //        audioClips = audioClipRefsSO.structureSfx;
-    //    }
-    //    else
-    //    {
-    //        audioClips = audioClipRefsSO.unitSfx;
-    //    }
-
-    //    for (int i = 0; i < audioClips.Length; i++)
-    //    {
-    //        if (sfxName == audioClips[i].name)
-    //        {
-    //            playClip = audioClips[i];
-    //        }
-    //    }
-
-    //    if (strSound)
-    //    {
-    //        for (int j = 0; j < audioList.Count; j++)
-    //        {
-    //            if (audioList[j].clip == playClip && audioList[j].isPlaying)
-    //            {
-    //                return;
-    //            }
-    //        }
-    //    }
-
-    //    for (int j = 0; j < audioList.Count; j++)
-    //    {
-    //        if (!audioList[j].isPlaying)
-    //        {
-    //            audioList[j].clip = playClip;
-    //            audioList[j].volume = sfxVolume;
-    //            audioList[j].Play();
-    //            return;
-    //        }
-    //    }
-    //}
-
-    public void PlayUISFX(string p_sfxName)
+    public void PlayUISFX(string sfxName)
     {
         for (int i = 0; i < audioClipRefsSO.uiSfx.Length; i++)
         {
-            if (p_sfxName == audioClipRefsSO.uiSfx[i].name)
+            if (sfxName == audioClipRefsSO.uiSfx[i].name)
             {
                 uiSfxPlayer.clip = audioClipRefsSO.uiSfx[i];
                 uiSfxPlayer.volume = sfxVolume;
@@ -626,16 +471,23 @@ public class SoundManager : MonoBehaviour
                 return;
             }
         }
-        return;
     }
+
+    #endregion
+
+    #region Camera Check
 
     public bool CheckObjectIsInCamera(GameObject obj)
     {
         Vector3 screenPoint = mainCamera.WorldToViewportPoint(obj.transform.position);
-        bool onScreen = screenPoint.z > 0 && screenPoint.x > 0 && screenPoint.x < 1 && screenPoint.y > 0 && screenPoint.y < 1;
-
-        return onScreen;
+        return screenPoint.z > 0 &&
+               screenPoint.x > 0 && screenPoint.x < 1 &&
+               screenPoint.y > 0 && screenPoint.y < 1;
     }
+
+    #endregion
+
+    #region Pool
 
     private AudioSource CreatePooledSource()
     {
@@ -648,7 +500,7 @@ public class SoundManager : MonoBehaviour
         source.maxDistance = defaultMaxDistance;
         source.rolloffMode = rolloffMode;
         source.playOnAwake = false;
-        source.spread = 60f; // 방향감 (0~360, 낮을수록 뚜렷)
+        source.spread = 60f;
         source.dopplerLevel = 0f;
         source.reverbZoneMix = 0f;
         source.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
@@ -657,10 +509,7 @@ public class SoundManager : MonoBehaviour
         return source;
     }
 
-    private void OnGetSource(AudioSource source)
-    {
-        source.gameObject.SetActive(true);
-    }
+    private void OnGetSource(AudioSource source) => source.gameObject.SetActive(true);
 
     private void OnReleaseSource(AudioSource source)
     {
@@ -675,21 +524,25 @@ public class SoundManager : MonoBehaviour
             Destroy(source.gameObject);
     }
 
+    #endregion
+
+    #region Save / Load
+
     public void SaveData()
     {
-        audioMixer.GetFloat("Master", out float masterVolume);
-        PlayerPrefs.SetFloat("MasterVolume", masterVolume);
-        PlayerPrefs.SetFloat("TempMasterValume", musicMasterSlider.value);
+        audioMixer.GetFloat("Master", out float masterVol);
+        PlayerPrefs.SetFloat("MasterVolume", masterVol);
+        PlayerPrefs.SetFloat("TempMasterVolume", musicMasterSlider.value);
         PlayerPrefs.SetInt("MasterMute", musicMasterToggle.isOn ? 1 : 0);
 
-        audioMixer.GetFloat("BGM", out float bgmVolume);
-        PlayerPrefs.SetFloat("BGMVolume", bgmVolume);
-        PlayerPrefs.SetFloat("TempBGMValume", musicBGMSlider.value);
+        audioMixer.GetFloat("BGM", out float bgmVol);
+        PlayerPrefs.SetFloat("BGMVolume", bgmVol);
+        PlayerPrefs.SetFloat("TempBGMVolume", musicBGMSlider.value);
         PlayerPrefs.SetInt("BGMMute", musicBGMToggle.isOn ? 1 : 0);
 
-        audioMixer.GetFloat("SFX", out float sfxVolume);
-        PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
-        PlayerPrefs.SetFloat("tempSFXValume", musicSFXSlider.value);
+        audioMixer.GetFloat("SFX", out float sfxVol);
+        PlayerPrefs.SetFloat("SFXVolume", sfxVol);
+        PlayerPrefs.SetFloat("TempSFXVolume", musicSFXSlider.value);
         PlayerPrefs.SetInt("SFXMute", musicSFXToggle.isOn ? 1 : 0);
 
         PlayerPrefs.Save();
@@ -697,40 +550,21 @@ public class SoundManager : MonoBehaviour
 
     public void LoadData()
     {
-        float masterVolume = PlayerPrefs.GetFloat("MasterVolume");
-        audioMixer.SetFloat("Master", masterVolume);
-        musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterValume", -10);
-        if (PlayerPrefs.GetInt("MasterMute", 0) == 0)
-        {
-            musicMasterToggle.isOn = false;
-        }
-        else
-        {
-            musicMasterToggle.isOn = true;
-        }
+        float loadedMasterVol = PlayerPrefs.GetFloat("MasterVolume");
+        audioMixer.SetFloat("Master", loadedMasterVol);
+        musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterVolume", -10);
+        musicMasterToggle.isOn = PlayerPrefs.GetInt("MasterMute", 0) != 0;
 
-        float bgmVolume = PlayerPrefs.GetFloat("BGMVolume");
-        audioMixer.SetFloat("BGM", bgmVolume);
-        musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMValume", -10);
-        if (PlayerPrefs.GetInt("BGMMute", 0) == 0)
-        {
-            musicBGMToggle.isOn = false;
-        }
-        else
-        {
-            musicBGMToggle.isOn = true;
-        }
+        float loadedBgmVol = PlayerPrefs.GetFloat("BGMVolume");
+        audioMixer.SetFloat("BGM", loadedBgmVol);
+        musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMVolume", -10);
+        musicBGMToggle.isOn = PlayerPrefs.GetInt("BGMMute", 0) != 0;
 
-        float sfxVolume = PlayerPrefs.GetFloat("SFXVolume");
-        audioMixer.SetFloat("SFX", sfxVolume);
-        musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXValume", -10);
-        if (PlayerPrefs.GetInt("SFXMute", 0) == 0)
-        {
-            musicSFXToggle.isOn = false;
-        }
-        else
-        {
-            musicSFXToggle.isOn = true;
-        }
+        float loadedSfxVol = PlayerPrefs.GetFloat("SFXVolume");
+        audioMixer.SetFloat("SFX", loadedSfxVol);
+        musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXVolume", -10);
+        musicSFXToggle.isOn = PlayerPrefs.GetInt("SFXMute", 0) != 0;
     }
+
+    #endregion
 }

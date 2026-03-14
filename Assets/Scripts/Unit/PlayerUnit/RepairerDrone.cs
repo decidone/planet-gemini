@@ -9,6 +9,8 @@ public class RepairerDrone : UnitAi
     [SerializeField]
     List<WorldObj> unitTargetList = new List<WorldObj>();
     [SerializeField]
+    List<WorldObj> playerTargetList = new List<WorldObj>();
+    [SerializeField]
     List<WorldObj> strTargetList = new List<WorldObj>();
     [SerializeField]
     int repairFullAmount;
@@ -18,6 +20,7 @@ public class RepairerDrone : UnitAi
         base.Awake();
         int mask =
             (1 << LayerMask.NameToLayer("Unit")) |
+            (1 << LayerMask.NameToLayer("Tank")) |
             (1 << LayerMask.NameToLayer("Obj")) |
             (1 << LayerMask.NameToLayer("Monster")) |
             (1 << LayerMask.NameToLayer("Spawner"));
@@ -91,11 +94,46 @@ public class RepairerDrone : UnitAi
     {
         int repairAmount = repairFullAmount;
 
+        var sortedPlayerTargets = playerTargetList
+            .Where(target => target != null)
+            .Select(target => target.Get<PlayerStatus>())
+            .Where(player => player != null)
+            .Take(repairAmount)
+            .ToList();
+
+        foreach (PlayerStatus player in sortedPlayerTargets)
+        {
+            if (!player.tankOn)
+            {
+                if (player.hp != player.maxHp)
+                {
+                    repairAmount--;
+                    player.HealServerRpc(damage);
+                    if (repairAmount == 0)
+                    {
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                if (player.tankHp != player.tankMaxHp)
+                {
+                    repairAmount--;
+                    player.TankRepairServerRpc(damage);
+                    if (repairAmount == 0)
+                    {
+                        return;
+                    }
+                }
+            }  
+        }
+
         var sortedUnitTargets = unitTargetList
             .Where(target => target != null)
-            .Select(target => target.Get<UnitAi>())
-            .Where(structure => structure != null)
-            .OrderByDescending(structure => structure.maxHp - structure.hp) // 정렬
+            .Select(target => target.Get<UnitAi>()) 
+            .Where(unit => unit != null)
+            .OrderByDescending(unit => unit.maxHp - unit.hp) // 정렬
             .Take(repairAmount)
             .ToList();
 
@@ -105,36 +143,32 @@ public class RepairerDrone : UnitAi
             {
                 repairAmount--;
                 unit.RepairServerRpc(damage);
-
                 if (repairAmount == 0)
                 {
                     return;
                 }
             }
         }
+          
+        var sortedStrTargets = strTargetList
+            .Where(target => target != null)
+            .Select(target => target.Get<Structure>())
+            .Where(structure => structure != null)
+            .OrderByDescending(structure => structure.maxHp - structure.hp) // 정렬
+            .Take(repairAmount)
+            .ToList();
 
-        if (repairAmount > 0)
+        foreach (Structure str in sortedStrTargets)
         {
-            var sortedStrTargets = strTargetList
-                .Where(target => target != null)
-                .Select(target => target.Get<Structure>())
-                .Where(structure => structure != null)
-                .OrderByDescending(structure => structure.maxHp - structure.hp) // 정렬
-                .Take(repairAmount)
-                .ToList();
-
-            foreach (Structure str in sortedStrTargets)
+            if (repairAmount > 0 && str.hp != str.maxHp)
             {
-                if (repairAmount > 0 && str.hp != str.maxHp)
-                {
-                    repairAmount--;
-                    str.RepairFunc(damage);
-                }
+                repairAmount--;
+                str.RepairFunc(damage);
+            }
                 
-                if (repairAmount == 0)
-                {
-                    return;
-                }
+            if (repairAmount == 0)
+            {
+                return;
             }
         } 
     }
@@ -172,22 +206,15 @@ public class RepairerDrone : UnitAi
 
         if (hitCount == 0)
         {
-            if (targetList.Count > 0)
-            {
-                targetList.Clear();
-            }
-            if (unitTargetList.Count > 0)
-            {
-                unitTargetList.Clear();
-            }
-            if (strTargetList.Count > 0)
-            {
-                strTargetList.Clear();
-            }
+            unitTargetList.Clear();
+            playerTargetList.Clear();
+            strTargetList.Clear();
+            targetList.Clear();
             return;
         }
 
         unitTargetList.Clear();
+        playerTargetList.Clear();
         strTargetList.Clear();
         targetList.Clear();
 
@@ -197,10 +224,15 @@ public class RepairerDrone : UnitAi
             if (!obj || obj == gameObject)
                 continue;
 
-            if (obj.TryGet(out UnitAi unit) || obj.TryGet(out PlayerController player))
+            if (obj.TryGet(out UnitAi unit))
             {
                 if (!unitTargetList.Contains(obj))
                     unitTargetList.Add(obj);
+            }
+            else if (obj.TryGet(out PlayerController player))
+            {
+                if(!playerTargetList.Contains(obj))
+                    playerTargetList.Add(obj);
             }
             else if (obj.TryGet(out Structure structure))
             {

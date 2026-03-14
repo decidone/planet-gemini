@@ -232,6 +232,10 @@ public class TankCtrl : UnitAi
             hpBar.fillAmount = hp / maxHp;
             unitCanvas.SetActive(true);
         }
+        else
+        {
+            unitCanvas.SetActive(false);
+        }
 
         if (reload)
         {
@@ -292,6 +296,8 @@ public class TankCtrl : UnitAi
             hpBar.fillAmount = hp / maxHp;
             unitCanvas.SetActive(true);
         }
+
+        ReloadingUISet(false);
     }
 
     public override UnitSaveData SaveData()

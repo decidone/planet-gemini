@@ -85,5 +85,7 @@ public class BulletCtrl : NetworkBehaviour
         {
             spawner.TakeDamage(damage, attackUnit);
         }
+
+        SoundManager.instance.PlaySFX(gameObject, "unitSFX", "MonsterHitSound");
     }
 }
