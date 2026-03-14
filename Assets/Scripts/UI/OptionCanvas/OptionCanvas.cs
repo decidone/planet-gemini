@@ -71,6 +71,7 @@ public class OptionCanvas : MonoBehaviour
         textEditor.text = LobbySaver.instance.currentLobby?.Id.ToString();
         textEditor.SelectAll();
         textEditor.Copy();
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void EscapeBtnFunc()
@@ -97,6 +98,7 @@ public class OptionCanvas : MonoBehaviour
     void LoadBtnFunc()
     {
         SaveLoadMenu.instance.MenuOpen(false);
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void QuitBtnFunc()

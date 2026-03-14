@@ -46,6 +46,7 @@ public class Structure : WorldObj
     protected Image hpBar;
     public float maxHp;
     public float hp;
+    public float buildHp;   // 건설 도중 hp 증가량
     protected float defense;
     protected RepairEffectFunc repairEffect;
     protected bool dieCheck = false;
@@ -467,6 +468,11 @@ public class Structure : WorldObj
         Debug.Log("DestroyClientRpc : " + this.buildName);
         if (!destroyStart && destroyTimer > 0)
         {
+            if (isPreBuilding)
+            {
+                destroyTimer = (repairGauge > structureData.MaxBuildingGauge) ? structureData.MaxBuildingGauge : repairGauge;
+            }
+
             isManualDestroy = true;
             destroyStart = true;
             isDestroying = true;
@@ -1562,10 +1568,23 @@ public class Structure : WorldObj
     {
         if (isBuilding)
         {
+            if (buildHp < 0.01f)
+            {
+                buildHp = maxHp / structureData.MaxBuildingGauge;
+                hp = 0;
+            }
+
             if (GameManager.instance.debug)
+            {
                 repairGauge += (Time.deltaTime * 10);
+                hp += (Time.deltaTime * 10 * buildHp);
+            }
             else
+            {
                 repairGauge += Time.deltaTime;
+                hp += (Time.deltaTime * buildHp);
+            }
+            onHpChangedCallback?.Invoke();
 
             repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
             if (repairGauge >= structureData.MaxBuildingGauge)
@@ -1573,6 +1592,13 @@ public class Structure : WorldObj
                 isPreBuilding = false;
                 repairGauge = 0.0f;
                 repairBar.enabled = false;
+
+                if (hp > maxHp)
+                {
+                    hp = maxHp;
+                    onHpChangedCallback?.Invoke();
+                }
+
                 if (hp < maxHp)
                 {
                     unitCanvas.SetActive(true);
