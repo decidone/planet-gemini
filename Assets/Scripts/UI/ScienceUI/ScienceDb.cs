@@ -192,6 +192,7 @@ public class ScienceDb : NetworkBehaviour
     void WarningWindowSetClientRpc(string sciName)
     {
         WarningWindow.instance.WarningTextSet(sciName + " Research Complete.");
+        SoundManager.instance.PlayUISFX("ScienceUpgrade");
     }
 
 

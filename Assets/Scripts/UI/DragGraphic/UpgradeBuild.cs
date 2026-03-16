@@ -104,6 +104,10 @@ public class UpgradeBuild : DragFunc
 
     public void UpgradeBtnClicked(Structure str)
     {
+        upgradeItemDic.Clear();
+        enoughItemDic.Clear();
+        notEnoughItemDic.Clear();
+
         if (!str.isPreBuilding)
         {
             if (!(str.Get<Portal>() || str.Get<ScienceBuilding>()))

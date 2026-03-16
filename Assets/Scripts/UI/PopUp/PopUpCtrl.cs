@@ -44,6 +44,7 @@ public class PopUpCtrl : MonoBehaviour
     {
         gameObject.SetActive(false);
         gameManager.onUIChangedCallback?.Invoke(this.gameObject);
+        SoundManager.instance.PlayUISFX("ButtonClick");
         gameManager.PopUpUISetting(false);
     }
 }

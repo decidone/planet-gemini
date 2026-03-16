@@ -24,16 +24,6 @@ public class PumpCtrl : FluidFactoryCtrl
         {
             if (!isPreBuilding)
             {
-                //if (outObj.Count > 0)
-                //{
-                //    sendDelayTimer += Time.deltaTime;
-                //    if (sendDelayTimer > sendDelay)
-                //    {
-                //        SendFluid();
-                //        sendDelayTimer = 0;
-                //    }
-                //}
-
                 pumpTimer += Time.deltaTime;
                 if (pumpTimer > pumpInterval)
                 {
@@ -54,7 +44,7 @@ public class PumpCtrl : FluidFactoryCtrl
             for (int i = 0; i < nearObj.Length; i++)
             {
                 if (nearObj[i] == null)
-                {
+                {                    
                     CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
                 }
             }

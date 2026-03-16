@@ -51,7 +51,8 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
     public override void StrBuilt()
     {
-        NearStrBuilt();
+        //NearStrBuilt();
+        base.StrBuilt();
 
         float dist = 10;
 

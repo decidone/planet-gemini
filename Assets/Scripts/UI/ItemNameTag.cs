@@ -36,6 +36,10 @@ public class ItemNameTag : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void SetItemName(string itemName)
     {
-        this.itemName = itemName;
+        string name = InGameNameDataGet.instance.ReturnName(itemName);
+        if(name == "")
+            name = itemName;
+
+        this.itemName = name;
     }
 }

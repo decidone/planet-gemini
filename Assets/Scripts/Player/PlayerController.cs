@@ -113,7 +113,7 @@ public class PlayerController : NetworkBehaviour
 
         MainGameSetting.instance.StopStopwatch();
         StartCoroutine(PlayerSet());
-        battleBgmRange = visionRadius;
+        battleBgmRange = visionRadius  * 1.4f;
 
         int mask =
             (1 << LayerMask.NameToLayer("Monster")) |
@@ -597,7 +597,7 @@ public class PlayerController : NetworkBehaviour
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
             SoundManager.instance.PlaySFX(gameObject, "structureSFX", "PortalSound");
-            SoundManager.instance.PlayerBgmMapCheck();
+            SoundManager.instance.PortalToOthMap();
             onTeleportedCallback?.Invoke(0);
 
             teleportUI.CloseUI();

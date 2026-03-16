@@ -55,6 +55,8 @@ public class InfoUI : MonoBehaviour
     [SerializeField] Button unitDicBtn;
     [SerializeField] Button unitRemoveBtn;
 
+    SoundManager soundManager;
+
     #region Singleton
     public static InfoUI instance;
 
@@ -75,6 +77,7 @@ public class InfoUI : MonoBehaviour
         removeBuild = GameManager.instance.GetComponent<RemoveBuild>();
         upgradeBuild = GameManager.instance.GetComponent<UpgradeBuild>();
         selectRecipe = RecipeList.instance.GetRecipeInven("UnitUpgrade");
+        soundManager = SoundManager.instance;
     }
 
     public void SetDefault()
@@ -150,7 +153,7 @@ public class InfoUI : MonoBehaviour
     void ChopTreeBtnFucn()
     {
         QuestManager.instance.QuestCompCheck(13);
-        SoundManager.instance.PlayUISFX("TreeCut");
+        soundManager.PlayUISFX("TreeCut");
         obj.RemoveMapObjRequest();
     }
 
@@ -183,7 +186,11 @@ public class InfoUI : MonoBehaviour
                     {
                         // 업그레이드 가능
                         upgradeBtn.gameObject.SetActive(true);
-                        upgradeBtn.onClick.AddListener(() => upgradeBuild.UpgradeBtnClicked(str));
+                        upgradeBtn.onClick.AddListener(() => 
+                        {
+                            upgradeBuild.UpgradeBtnClicked(str);
+                            soundManager.PlayUISFX("ButtonClick");
+                        });
                     }
                     else
                     {
@@ -197,17 +204,27 @@ public class InfoUI : MonoBehaviour
         dicBtn.gameObject.SetActive(true);
         if (str.GetComponent<Portal>())
         {
-            dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Portal", true));
+            dicBtn.onClick.AddListener(() => 
+            { 
+                InfoDictionary.instance.Search("Portal", true);
+            });
         }
         else
         {
-            dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(str));
+            dicBtn.onClick.AddListener(() => 
+            { 
+                InfoDictionary.instance.Search(str);
+            });
         }
 
         if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
         {
             removeBtn.gameObject.SetActive(true);
-            removeBtn.onClick.AddListener(() => removeBuild.RemoveBtnClicked(str));
+            removeBtn.onClick.AddListener(() =>
+            { 
+                removeBuild.RemoveBtnClicked(str); 
+                soundManager.PlayUISFX("ButtonClick");
+            });
         }
         //if (str.energyUse)
         //{
@@ -270,14 +287,22 @@ public class InfoUI : MonoBehaviour
             upgradeBtn.onClick.AddListener(() => 
             {
                 UpgradeCostCheckAndPopupSet(units);
+                soundManager.PlayUISFX("ButtonClick");
             });
         }
 
         dicBtn.gameObject.SetActive(true);
-        dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(unitName, true));
+        dicBtn.onClick.AddListener(() => 
+        { 
+            InfoDictionary.instance.Search(unitName, true);
+        });
 
         removeBtn.gameObject.SetActive(true);
-        removeBtn.onClick.AddListener(() => UnitDrag.instance.DragUnitRemove());
+        removeBtn.onClick.AddListener(() =>
+        { 
+            UnitDrag.instance.DragUnitRemove();
+            soundManager.PlayUISFX("ButtonClick");
+        });
     }
 
     // 더블클릭 유닛
@@ -297,16 +322,24 @@ public class InfoUI : MonoBehaviour
             unitUpgradeBtn.onClick.AddListener(() =>
             {
                 UpgradeCostCheckAndPopupSet(_units);
+                soundManager.PlayUISFX("ButtonClick");
             });
         }
 
         UnitGroupUISet(_units);
 
         unitDicBtn.gameObject.SetActive(true);
-        unitDicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Unit Control", true));
+        unitDicBtn.onClick.AddListener(() =>
+        { 
+            InfoDictionary.instance.Search("Unit Control", true); 
+        });
 
         unitRemoveBtn.gameObject.SetActive(true);
-        unitRemoveBtn.onClick.AddListener(() => UnitDrag.instance.DragUnitRemove());
+        unitRemoveBtn.onClick.AddListener(() => 
+        { 
+            UnitDrag.instance.DragUnitRemove(); 
+            soundManager.PlayUISFX("ButtonClick"); 
+        });
     }
 
     // 드래그 유닛
@@ -333,16 +366,24 @@ public class InfoUI : MonoBehaviour
             unitUpgradeBtn.onClick.AddListener(() =>
             {
                 UpgradeCostCheckAndPopupSet(canUpgradeUnit);
+                soundManager.PlayUISFX("ButtonClick");
             });
         }
 
         UnitGroupUISet(_units);
 
         unitDicBtn.gameObject.SetActive(true);
-        unitDicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Unit Control", true));
+        unitDicBtn.onClick.AddListener(() => 
+        { 
+            InfoDictionary.instance.Search("Unit Control", true);
+        });
 
         unitRemoveBtn.gameObject.SetActive(true);
-        unitRemoveBtn.onClick.AddListener(() => UnitDrag.instance.DragUnitRemove());
+        unitRemoveBtn.onClick.AddListener(() =>
+        {
+            UnitDrag.instance.DragUnitRemove();
+            soundManager.PlayUISFX("ButtonClick");
+        });
     }
 
 
