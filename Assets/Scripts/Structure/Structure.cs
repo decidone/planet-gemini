@@ -834,6 +834,7 @@ public class Structure : WorldObj
         int nearX = (int)(transform.position.x + direction.x);
         int nearY = (int)(transform.position.y + direction.y);
         Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
+
         if (cell == null)
             return;
 
@@ -848,11 +849,9 @@ public class Structure : WorldObj
             // 아이템과 유체랑 관련 없는 건물들
             if (!myItem && !myFluid)
                 return;
-
             // 서로 공통으로 처리할 수 있는 타입이 하나도 없으면 연결 안됨
             if (!(myItem && strItem) && !(myFluid && strFluid))
                 return;
-
             nearObj[index] = obj;
             callback(obj);
         }

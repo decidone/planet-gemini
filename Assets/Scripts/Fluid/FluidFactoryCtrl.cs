@@ -137,29 +137,26 @@ public class FluidFactoryCtrl : Production
 
     protected virtual void FluidSetOutObj(Structure obj)
     {
-        if (obj.TryGet(out FluidFactoryCtrl factoryCtrl))
+        if (obj.Get<FluidFactoryCtrl>())
         {
             if (!outObj.Contains(obj))
                 outObj.Add(obj);
             if (obj.TryGet(out UnderPipeCtrl underPipe))
             {
-                UnderPipeConnectCheck(obj);
+                UnderPipeConnectCheck(underPipe);
             }
         }
     }
 
-    protected virtual void UnderPipeConnectCheck(Structure obj)
+    protected virtual void UnderPipeConnectCheck(UnderPipeCtrl underPipeCtrl)
     {
-        if(obj.TryGet(out UnderPipeCtrl underPipeCtrl))
+        if(underPipeCtrl)
         {
-            if (underPipeCtrl.otherPipe == null || underPipeCtrl.otherPipe != this.gameObject)
+            if (underPipeCtrl.otherPipe == null || underPipeCtrl.otherPipe != this)
             {
-                outObj.Remove(obj);
+                outObj.Remove(underPipeCtrl);
             }
         }
-
-        if(TryGet(out PipeCtrl pipe))
-            pipe.ChangeModel();
     }
 
     public virtual void SendFluid()

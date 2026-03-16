@@ -33,6 +33,7 @@ public class GameStatePopup : MonoBehaviour
 
     public void CloseUI()
     {
+        SoundManager.instance.PlayUISFX("ButtonClick");
         obj.SetActive(false);
     }
 

@@ -15,7 +15,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     WavePoint wavePoint;
 
-    bool waveState;
+    bool waveDayState;
+    bool waveStartState;
     public bool hostMapWave;
     Vector3 wavePos;
 
@@ -137,13 +138,16 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
     public void WaveStateLoad(SpawnerManagerSaveData data)
     {
-        waveState = data.waveState;
+        waveDayState = data.waveDayState;
+        waveStartState = data.waveStartState;
         hostMapWave = data.hostMapWave;
         wavePos = Vector3Extensions.ToVector3(data.wavePos);
 
-        if (waveState)
+        if (waveDayState)
         {
             wavePoint.LoadWaveStart(wavePos, hostMapWave);
+            SoundManager.instance.WaveStateSet(hostMapWave, waveStartState);
+            SoundManager.instance.PlayBgmMapCheck();
         }
     }
 
@@ -165,7 +169,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
                     group2Data[x, y] = spawnerMap2Matrix[x, y].GetComponent<SpawnerGroupManager>().SaveData();
             }
         }
-        data.waveState = waveState;
+        data.waveDayState = waveDayState;
+        data.waveStartState = waveStartState;
         data.hostMapWave = hostMapWave;
         data.wavePos = Vector3Extensions.FromVector3(wavePos);
         data.spawnerMap1Matrix = group1Data;
@@ -197,7 +202,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
         if (aggroSpawner)
         {
-            waveState = true;
+            waveDayState = true;
             hostMapWave = hostMap;
             aggroSpawner.violentDay = true;
             wavePos = aggroSpawner.transform.position;
@@ -306,17 +311,21 @@ public class MonsterSpawnerManager : NetworkBehaviour
     void OnClientConnectedCallback(ulong clientId)
     {
         SetCorruption();
-        if(IsServer)
+        if (IsServer)
+        {
+
             WaveStateSyncServerRpc();
+
+        }
     }
 
     [ServerRpc]
     void WaveStateSyncServerRpc()
     {
-        if (waveState)
+        if (waveDayState)
         {
             WaveStateSyncClientRpc(wavePos, hostMapWave);
-            WaveBgmSetServerRpc(hostMapWave, waveState);
+            WaveBgmSetServerRpc(hostMapWave, waveDayState);
         }
     }
 
@@ -326,7 +335,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
         if (!IsServer)
         {
             Debug.Log("WaveStateSyncClientRpc");
-            waveState = true;
+            waveDayState = true;
+            waveStartState = true;
             hostMapWave = hostMap;
             wavePos = pos;
             WavePointOnClientRpc(wavePos, hostMapWave);
@@ -341,8 +351,11 @@ public class MonsterSpawnerManager : NetworkBehaviour
     public void WaveAddMonster(List<MonsterAi> monsters)
     {
         waveMonsters.AddRange(monsters);
-        if(IsServer)
-            WaveBgmSetServerRpc(hostMapWave, waveState);
+        if (IsServer)
+        {
+            WaveStartServerRpc();
+            WaveBgmSetServerRpc(hostMapWave, waveDayState);
+        }
     }
 
     public void WaveRemoveMonster(MonsterAi monster)
@@ -380,16 +393,30 @@ public class MonsterSpawnerManager : NetworkBehaviour
     }
 
     [ServerRpc]
+    void WaveStartServerRpc()
+    {
+        WaveStartClientRpc();
+    }
+
+    [ClientRpc]
+    void WaveStartClientRpc()
+    {
+        waveDayState = true;
+        waveStartState = true;
+    }
+
+    [ServerRpc]
     void WaveEndServerRpc()
     {
         WaveEndClientRpc();
-        WaveBgmSetServerRpc(hostMapWave, false);
+        WaveBgmSetClientRpc(hostMapWave, false);
     }
 
     [ClientRpc]
     void WaveEndClientRpc()
     {
-        waveState = false;
+        waveDayState = false;
+        waveStartState = false;
     }
 
     public bool HasMonsterSpawnerOnMap(bool isHostMap)

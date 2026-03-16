@@ -51,5 +51,6 @@ public class InfoDictionaryItem : MonoBehaviour
     void BtnClicked()
     {
         InfoDictionary.instance.SelectItem(infoDictionarySO);
+        SoundManager.instance.PlayUISFX("ButtonClick");
     }
 }

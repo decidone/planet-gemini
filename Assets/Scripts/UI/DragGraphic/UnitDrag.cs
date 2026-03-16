@@ -294,15 +294,15 @@ public class UnitDrag : DragFunc
 
         removeUnit?.Invoke();
 
-        if (selectedObjects.Length > 0)
-        {
-            foreach (WorldObj obj in selectedObjects)
-            {
-                addUnit?.Invoke(obj);
-            }
-            BasicUIBtns.instance.SwapFunc(false);
-        }
+        if (selectedObjects.Length == 0)
+            return;
 
+        foreach (WorldObj obj in selectedObjects)
+        {
+            addUnit?.Invoke(obj);
+        }
+        BasicUIBtns.instance.SwapFunc(false);
+        
         if (selectedObjects.Length == 1)
             InfoUI.instance.SetUnitInfo(selectedObjects[0].Get<UnitAi>());
         else
@@ -400,7 +400,7 @@ public class UnitDrag : DragFunc
             .Select(obj => obj.Get<UnitAi>())
             .ToList();
 
-        InfoUI.instance.SetUnitsInfo(unitAiList);
+        InfoUI.instance.SameUnitInfo(unitAiList);
     }
 
     void SetTargetPosition(bool isAttack, Vector2 targetPos)

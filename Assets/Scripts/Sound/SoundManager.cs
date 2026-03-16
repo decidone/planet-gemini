@@ -48,6 +48,7 @@ public class SoundManager : MonoBehaviour
     public bool isClientMapBattleOn = false;
     public bool isHostMapWaveOn = false;
     public bool isClientMapWaveOn = false;
+    bool isPlayingWaveBgm = false;
 
     float fadeSeconds = 0.3f;
 
@@ -242,7 +243,7 @@ public class SoundManager : MonoBehaviour
             if (!GameManager.instance.isPlayerInMarket)
             {
                 // 웨이브 중이면 유지
-                if (isWaveActive) return;
+                if (isPlayingWaveBgm) return;
 
                 // 웨이브 끝났지만 전투 중이면 전투 BGM으로
                 if (isBattleActive)
@@ -256,7 +257,7 @@ public class SoundManager : MonoBehaviour
         ChangeBGM(GetCurrentContextClip());
     }
 
-    public void PlayerBgmMapCheck()
+    public void PortalToOthMap()
     {
         if (sceneIndex != SceneIndex.GameScene) return;
 
@@ -264,8 +265,8 @@ public class SoundManager : MonoBehaviour
         {
             bool playerMap = GameManager.instance.isPlayerInHostMap;
             bool isWave = playerMap ? isHostMapWaveOn : isClientMapWaveOn;
-            bool isBattle = playerMap ? isHostMapBattleOn : isClientMapBattleOn;
-            ChangeBGM(GetBGMClip(isWave, isBattle));
+            ChangeBGM(GetBGMClip(playerMap, isWave));
+            isPlayingWaveBgm = false;
         }
     }
 
@@ -275,7 +276,7 @@ public class SoundManager : MonoBehaviour
             isHostMapWaveOn = waveState;
         else
             isClientMapWaveOn = waveState;
-
+        isPlayingWaveBgm = waveState;
         if (!GameManager.instance.isPlayerInMarket && GameManager.instance.isPlayerInHostMap == isHostMap)
             ChangeBGM(GetBGMClip(waveState, false));
     }

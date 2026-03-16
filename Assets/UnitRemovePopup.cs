@@ -98,6 +98,7 @@ public class UnitRemovePopup : MonoBehaviour
     {
         popupPanel.SetActive(false);
         GameManager.instance.onUIChangedCallback?.Invoke(popupPanel);
+        SoundManager.instance.PlayUISFX("ButtonClick");
         gameManager.PopUpUISetting(false);
     }
 }

@@ -69,7 +69,10 @@ public class QuestManager : MonoBehaviour
         {
             if (isUIOpened)
                 dicBtn.gameObject.SetActive(true);
-            dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(quests[order].dicKeyword, true));
+            dicBtn.onClick.AddListener(() =>
+            {
+                InfoDictionary.instance.Search(quests[order].dicKeyword, true);
+            });
         }
 
         switch (quests[order].type)

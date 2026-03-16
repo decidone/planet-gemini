@@ -240,8 +240,6 @@ public class ScienceManager : MonoBehaviour
         }
 
         scienceDb.SaveSciDb(sciName, sciLevel, coreLv, isLoad);
-        if(!isLoad)
-            soundManager.PlayUISFX("ScienceUpgrade");
         buildingInven.Refresh();
     }
 

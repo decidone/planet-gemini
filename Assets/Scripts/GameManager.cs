@@ -1609,8 +1609,6 @@ public class GameManager : NetworkBehaviour
         if (violentDay)
         {
             timeImg.color = new Color32(255, 50, 50, 255);
-            SoundManager.instance.WaveStateSet(wavePlanet, violentDay);
-            SoundManager.instance.PlayBgmMapCheck();
         }
 
         dayText.text = "Day : " + day;

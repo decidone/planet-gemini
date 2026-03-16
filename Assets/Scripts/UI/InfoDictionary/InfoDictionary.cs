@@ -190,6 +190,7 @@ public class InfoDictionary : MonoBehaviour
                 continue;
             }
             image.color = new Color(image.color.r, image.color.g, image.color.b, 0.7f);
+            btn.onClick.AddListener(() => SoundManager.instance.PlayUISFX("ButtonClick"));
         }
     }
 
@@ -487,6 +488,7 @@ public class InfoDictionary : MonoBehaviour
 
         isOpen = true;
         InfoDicObj.SetActive(true);
+        SoundManager.instance.PlayUISFX("SidebarClick");
         GameManager.instance.onUIChangedCallback?.Invoke(InfoDicObj);
     }
 
