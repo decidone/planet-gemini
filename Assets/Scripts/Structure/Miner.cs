@@ -220,7 +220,7 @@ public class Miner : Production
             output = item;
             if (mineLevel == 1)
             {
-                cooldown = _efficiency * 1.5f;
+                cooldown = _efficiency * 1.2f;
             }
             else if (mineLevel == 2)
             {

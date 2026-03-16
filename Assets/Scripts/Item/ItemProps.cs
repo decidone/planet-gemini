@@ -32,12 +32,27 @@ public class ItemProps : MonoBehaviour
         networkObjectPool = NetworkObjectPool.Singleton;
     }
 
-    public void ResetItemProps()
+    public void ResetItemProps(bool isInHostmap)
     {
         if (GameManager.instance.isHost)
         {
-            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
-            GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, amount, transform.position);
+            Inventory planetInven;
+
+            if (isInHostmap)
+                planetInven = GameManager.instance.hostMapInven;
+            else
+                planetInven = GameManager.instance.clientMapInven;
+
+            if (planetInven.SpaceCheck(item) >= amount)
+            {
+                LootListManager.instance.DisplayLootInfo(item, amount);
+                planetInven.Add(item, amount);
+            }
+            else
+            {
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+                GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, amount, transform.position);
+            }
         }
         Debug.Log("drop : " + beltGroupIndex);
         itemPool.Release(gameObject);

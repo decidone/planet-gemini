@@ -368,7 +368,6 @@ public class BeltPreBuilding : PreBuilding
         }
     }
 
-
     protected void SetPos(Vector3 setPos)
     {
         PosListContainCheck(setPos);

@@ -27,7 +27,7 @@ MonoBehaviour:
   colliderRadius: 10
   cooldown: 1
   isEnergyStr: 1
-  production: 4000
+  production: 2400
   energyUse: 00
   consumption:
   - 0
@@ -37,3 +37,6 @@ MonoBehaviour:
   upgradedefense:
   - 7
   canTakeItem: 1
+  canSendItem: 0
+  canTakeFluid: 0
+  canSendFluid: 0

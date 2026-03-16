@@ -136,7 +136,7 @@ public class LogisticsCtrl : Structure
         {
             foreach (ItemProps itemProps in itemObjList)
             {
-                itemProps.ResetItemProps();
+                itemProps.ResetItemProps(isInHostMap);
             }
         }
     }

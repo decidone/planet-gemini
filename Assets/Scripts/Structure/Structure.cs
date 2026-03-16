@@ -333,7 +333,6 @@ public class Structure : WorldObj
     {
         if (!IsServer && GameManager.instance && soundManager)
         {
-
             ClientItemDrop();
             soundManager.PlayUISFX("BuildingRemove");
         }
@@ -1504,8 +1503,23 @@ public class Structure : WorldObj
 
     protected void ItemToItemProps(Item item, int itemAmount)
     {
-        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
-        GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, itemAmount, transform.position);
+        Inventory planetInven;
+
+        if (isInHostMap)
+            planetInven = GameManager.instance.hostMapInven;
+        else
+            planetInven = GameManager.instance.clientMapInven;
+
+        if (planetInven.SpaceCheck(item) >= itemAmount)
+        {
+            LootListManager.instance.DisplayLootInfo(item, itemAmount);
+            planetInven.Add(item, itemAmount);
+        }
+        else
+        {
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+            GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, itemAmount, transform.position);
+        }
     }
 
     protected virtual void ItemDrop() { }
