@@ -8,8 +8,14 @@ public class InfoDictionaryIcon : MonoBehaviour
     [SerializeField] ItemNameTag nameTag;
     [SerializeField] Image icon;
     [SerializeField] Text text;
+    Button btn;
 
-    public void SetIcon(Sprite sprite, string itemName, string amount)
+    private void Start()
+    {
+        btn = GetComponent<Button>();
+    }
+
+    public void SetIcon(Sprite sprite, string itemName, string amount, bool hasLink)
     {
         icon.sprite = sprite;
         text.text = amount;
@@ -17,6 +23,17 @@ public class InfoDictionaryIcon : MonoBehaviour
         {
             nameTag.SetItemName(itemName);
         }
+        if (hasLink && btn)
+        {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => MoveToLink(itemName));
+        }
+    }
+
+    void MoveToLink(string item)
+    {
+        nameTag.SetOff();
+        InfoDictionary.instance.Search(item, true);
     }
 
     public void SetIcon(string amount)

@@ -318,6 +318,10 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[1]]);
         sInvenManager.slots[0].SetNeedAmount(recipe.amounts[1]);
         sInvenManager.slots[0].outputSlot = true;
+
+        sInvenManager.dicBtn.gameObject.SetActive(true);
+        sInvenManager.dicBtn.onClick.RemoveAllListeners();
+        sInvenManager.dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(recipe.items[1], true));
     }
 
     public override void SetOutput(Recipe recipe)

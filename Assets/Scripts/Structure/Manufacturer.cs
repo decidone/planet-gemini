@@ -142,6 +142,10 @@ public class Manufacturer : Production
         sInvenManager.slots[3].SetInputItem(itemDic[recipe.items[3]]);
         sInvenManager.slots[3].SetNeedAmount(recipe.amounts[3]);
         sInvenManager.slots[3].outputSlot = true;
+
+        sInvenManager.dicBtn.gameObject.SetActive(true);
+        sInvenManager.dicBtn.onClick.RemoveAllListeners();
+        sInvenManager.dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(recipe.items[3], true));
     }
 
     public override void SetOutput(Recipe recipe)

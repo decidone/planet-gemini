@@ -171,6 +171,10 @@ public class UnitFactory : Production
         sInvenManager.slots[3].SetNeedAmount(recipe.amounts[3]);
         sInvenManager.slots[3].outputSlot = true;
 
+        sInvenManager.dicBtn.gameObject.SetActive(true);
+        sInvenManager.dicBtn.onClick.RemoveAllListeners();
+        sInvenManager.dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(recipe.items[3], true));
+
         if (recipe.name == "Tank" || recipe.name == "UICancel")
             sInvenManager.UnitIconSet(false);
         else

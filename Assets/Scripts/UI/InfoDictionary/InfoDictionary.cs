@@ -14,6 +14,7 @@ public class InfoDictionary : MonoBehaviour
     [SerializeField] GameObject listItemPref;
     [SerializeField] GameObject content;
     [SerializeField] InputField inputField;
+    Dictionary<string, List<Recipe>> recipeDic = new Dictionary<string, List<Recipe>>();
 
     [Space]
     List<Button> buttonList = new List<Button>();
@@ -39,6 +40,8 @@ public class InfoDictionary : MonoBehaviour
     [SerializeField] GameObject layout2;
     [SerializeField] Text layout2Name;
     [SerializeField] Text layout2Explanation;
+    [SerializeField] GameObject layout2ProdRatioObj;
+    [SerializeField] Text layout2ProdRatio;
     [SerializeField] Image itemIcon;
     [SerializeField] GameObject market;
     [SerializeField] GameObject tree;
@@ -51,6 +54,7 @@ public class InfoDictionary : MonoBehaviour
     [SerializeField] InfoDictionaryIcon recipe1Prod;
     [SerializeField] InfoDictionaryIcon recipe1Mat;
     [SerializeField] InfoDictionaryIcon recipe1Time;
+    [SerializeField] Button recipe1Btn;
     [SerializeField] GameObject recipe1Sub;
     [SerializeField] InfoDictionaryIcon recipe1SubProd;
     [SerializeField] InfoDictionaryIcon recipe1SubMat;
@@ -61,6 +65,7 @@ public class InfoDictionary : MonoBehaviour
     [SerializeField] InfoDictionaryIcon recipe2Mat1;
     [SerializeField] InfoDictionaryIcon recipe2Mat2;
     [SerializeField] InfoDictionaryIcon recipe2Time;
+    [SerializeField] Button recipe2Btn;
 
     [SerializeField] GameObject recipe3;
     [SerializeField] InfoDictionaryIcon recipe3Prod;
@@ -68,6 +73,7 @@ public class InfoDictionary : MonoBehaviour
     [SerializeField] InfoDictionaryIcon recipe3Mat2;
     [SerializeField] InfoDictionaryIcon recipe3Mat3;
     [SerializeField] InfoDictionaryIcon recipe3Time;
+    [SerializeField] Button recipe3Btn;
 
     [Space]
     [HideInInspector] public bool isOpen;
@@ -112,6 +118,9 @@ public class InfoDictionary : MonoBehaviour
         strBtn.onClick.AddListener(() => BtnClicked(strBtn, 1));
         unitBtn.onClick.AddListener(() => BtnClicked(unitBtn, 2));
         itemBtn.onClick.AddListener(() => BtnClicked(itemBtn, 3));
+        recipe1Btn.onClick.AddListener(() => ToggleRatio());
+        recipe2Btn.onClick.AddListener(() => ToggleRatio());
+        recipe3Btn.onClick.AddListener(() => ToggleRatio());
     }
 
     void BtnClicked(Button btn, int btnNum)
@@ -218,7 +227,6 @@ public class InfoDictionary : MonoBehaviour
     void CreateListItem()
     {
         BuildingListSO buildingListSO = (BuildingListSO)Resources.Load("SOList/BuildingListSO");
-        Dictionary<string, List<Recipe>> recipeDic = new Dictionary<string, List<Recipe>>();
         string json = Resources.Load<TextAsset>("Recipe").ToString();
         recipeDic = JsonConvert.DeserializeObject<Dictionary<string, List<Recipe>>>(json);
         dicList = infoDictionaryListSO.infoDictionarySOList;
@@ -300,6 +308,12 @@ public class InfoDictionary : MonoBehaviour
             recipe1Sub.SetActive(false);
             recipe2.SetActive(false);
             recipe3.SetActive(false);
+            layout2ProdRatioObj.SetActive(false);
+            layout2ProdRatio.text = "";
+            layout2ProdRatio.fontSize = 18;
+            recipe1Btn.gameObject.SetActive(false);
+            recipe2Btn.gameObject.SetActive(false);
+            recipe3Btn.gameObject.SetActive(false);
 
             if (info.type <= 1)
             {
@@ -352,31 +366,41 @@ public class InfoDictionary : MonoBehaviour
                 structureImage.sprite = info.productionBuilding.item.icon;
                 string inGameName = InGameNameDataGet.instance.ReturnName(info.productionBuilding.scienceName);
                 structureText.text = (inGameName != "") ? inGameName : info.productionBuilding.scienceName;
-                
                 Recipe recipe = info.recipes[0];
+                string ratio = GetRatioText(recipe);
+                layout2ProdRatio.text = ratio;
+                if (ratio.Length > 50)
+                    layout2ProdRatio.fontSize = 16;
+
                 if (recipe.items.Count == 2)
                 {
                     recipe1.SetActive(true);
-                    recipe1Mat.SetIcon(ItemList.instance.itemDic[recipe.items[0]].icon, recipe.items[0], recipe.amounts[0].ToString());
-                    recipe1Prod.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString());
+                    recipe1Mat.SetIcon(ItemList.instance.itemDic[recipe.items[0]].icon, recipe.items[0], recipe.amounts[0].ToString(), true);
+                    recipe1Prod.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString(), false);
                     recipe1Time.SetIcon(recipe.cooldown.ToString());
+                    if (ratio != "")
+                        recipe1Btn.gameObject.SetActive(true);
                 }
                 else if (recipe.items.Count == 3)
                 {
                     recipe2.SetActive(true);
-                    recipe2Mat1.SetIcon(ItemList.instance.itemDic[recipe.items[0]].icon, recipe.items[0], recipe.amounts[0].ToString());
-                    recipe2Mat2.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString());
-                    recipe2Prod.SetIcon(ItemList.instance.itemDic[recipe.items[2]].icon, recipe.items[2], recipe.amounts[2].ToString());
+                    recipe2Mat1.SetIcon(ItemList.instance.itemDic[recipe.items[0]].icon, recipe.items[0], recipe.amounts[0].ToString(), true);
+                    recipe2Mat2.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString(), true);
+                    recipe2Prod.SetIcon(ItemList.instance.itemDic[recipe.items[2]].icon, recipe.items[2], recipe.amounts[2].ToString(), false);
                     recipe2Time.SetIcon(recipe.cooldown.ToString());
+                    if (ratio != "")
+                        recipe2Btn.gameObject.SetActive(true);
                 }
                 else if (recipe.items.Count == 4)
                 {
                     recipe3.SetActive(true);
-                    recipe3Mat1.SetIcon(ItemList.instance.itemDic[recipe.items[0]].icon, recipe.items[0], recipe.amounts[0].ToString());
-                    recipe3Mat2.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString());
-                    recipe3Mat3.SetIcon(ItemList.instance.itemDic[recipe.items[2]].icon, recipe.items[2], recipe.amounts[2].ToString());
-                    recipe3Prod.SetIcon(ItemList.instance.itemDic[recipe.items[3]].icon, recipe.items[3], recipe.amounts[3].ToString());
+                    recipe3Mat1.SetIcon(ItemList.instance.itemDic[recipe.items[0]].icon, recipe.items[0], recipe.amounts[0].ToString(), true);
+                    recipe3Mat2.SetIcon(ItemList.instance.itemDic[recipe.items[1]].icon, recipe.items[1], recipe.amounts[1].ToString(), true);
+                    recipe3Mat3.SetIcon(ItemList.instance.itemDic[recipe.items[2]].icon, recipe.items[2], recipe.amounts[2].ToString(), true);
+                    recipe3Prod.SetIcon(ItemList.instance.itemDic[recipe.items[3]].icon, recipe.items[3], recipe.amounts[3].ToString(), false);
                     recipe3Time.SetIcon(recipe.cooldown.ToString());
+                    if (ratio != "")
+                        recipe3Btn.gameObject.SetActive(true);
                 }
             }
             else if (info.recipes.Count == 2)
@@ -386,16 +410,33 @@ public class InfoDictionary : MonoBehaviour
                 structureImage.sprite = info.productionBuilding.item.icon;
                 string inGameName = InGameNameDataGet.instance.ReturnName(info.productionBuilding.scienceName);
                 structureText.text = (inGameName != "") ? inGameName : info.productionBuilding.scienceName;
+                string ratio = GetRatioText(info.recipes[0]);
+                layout2ProdRatio.text = ratio;
 
                 recipe1.SetActive(true);
-                recipe1Mat.SetIcon(ItemList.instance.itemDic[info.recipes[0].items[0]].icon, info.recipes[0].items[0], info.recipes[0].amounts[0].ToString());
-                recipe1Prod.SetIcon(ItemList.instance.itemDic[info.recipes[0].items[1]].icon, info.recipes[0].items[1], info.recipes[0].amounts[1].ToString());
+                recipe1Mat.SetIcon(ItemList.instance.itemDic[info.recipes[0].items[0]].icon, info.recipes[0].items[0], info.recipes[0].amounts[0].ToString(), true);
+                recipe1Prod.SetIcon(ItemList.instance.itemDic[info.recipes[0].items[1]].icon, info.recipes[0].items[1], info.recipes[0].amounts[1].ToString(), false);
                 recipe1Time.SetIcon(info.recipes[0].cooldown.ToString());
+                if (ratio != "")
+                    recipe1Btn.gameObject.SetActive(true);
+
                 recipe1Sub.SetActive(true);
-                recipe1SubMat.SetIcon(ItemList.instance.itemDic[info.recipes[1].items[0]].icon, info.recipes[1].items[0], info.recipes[1].amounts[0].ToString());
-                recipe1SubProd.SetIcon(ItemList.instance.itemDic[info.recipes[1].items[1]].icon, info.recipes[1].items[1], info.recipes[1].amounts[1].ToString());
+                recipe1SubMat.SetIcon(ItemList.instance.itemDic[info.recipes[1].items[0]].icon, info.recipes[1].items[0], info.recipes[1].amounts[0].ToString(), true);
+                recipe1SubProd.SetIcon(ItemList.instance.itemDic[info.recipes[1].items[1]].icon, info.recipes[1].items[1], info.recipes[1].amounts[1].ToString(), false);
                 recipe1SubTime.SetIcon(info.recipes[1].cooldown.ToString());
             }
+        }
+    }
+
+    void ToggleRatio()
+    {
+        if (layout2ProdRatioObj.activeSelf)
+        {
+            layout2ProdRatioObj.SetActive(false);
+        }
+        else
+        {
+            layout2ProdRatioObj.SetActive(true);
         }
     }
 
@@ -479,6 +520,59 @@ public class InfoDictionary : MonoBehaviour
             obj.SetActive(true);
         }
     }
+
+    string GetRatioText(Recipe recipe)
+    {
+        if (recipe == null || recipe.cooldown <= 0) return "";
+
+        List<string> ratios = new List<string>();
+
+        for (int i = 0; i < recipe.items.Count - 1; i++)
+        {
+            string mat = recipe.items[i];
+            int matAmount = recipe.amounts[i];
+
+            Recipe matRecipe = null;
+            foreach (var kvp in recipeDic)
+            {
+                foreach (var r in kvp.Value)
+                {
+                    if (r.name == mat && r.cooldown > 0)
+                    {
+                        matRecipe = r;
+                        break;
+                    }
+                }
+                if (matRecipe != null) break;
+            }
+
+            if (matRecipe != null)
+            {
+                int matProduct = matRecipe.amounts[matRecipe.amounts.Count - 1];
+                float ratio = (matAmount * matRecipe.cooldown) / (float)(matProduct * recipe.cooldown);
+                ratios.Add($"{InGameNameDataGet.instance.ReturnName(mat)}({SimplifyRatio(ratio)})");
+            }
+        }
+
+        return string.Join(", ", ratios);
+    }
+
+    string SimplifyRatio(float ratio)   // 생산공장 비율을 정수비로 바꿔줌
+    {
+        for (int d = 1; d <= 10; d++)
+        {
+            float n = ratio * d;
+            if (Mathf.Abs(n - Mathf.Round(n)) < 0.01f)
+            {
+                int num = Mathf.RoundToInt(n);
+                int gcd = GCD(num, d);
+                return $"{num / gcd}:{d / gcd}";
+            }
+        }
+        return $"{ratio:F2}:1";
+    }
+
+    int GCD(int a, int b) => b == 0 ? a : GCD(b, a % b);
 
     public void OpenUI()
     {

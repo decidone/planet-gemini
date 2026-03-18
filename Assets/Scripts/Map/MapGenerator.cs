@@ -8,6 +8,9 @@ using Pathfinding;
 // UTF-8 설정
 public class MapGenerator : MonoBehaviour
 {
+    const int NORMAL_LEVEL = 3;
+    const int HARD_LEVEL = 5;
+
     System.Random random;
     public int seed;
 
@@ -1029,12 +1032,12 @@ public class MapGenerator : MonoBehaviour
         else
             map = hostMap;
 
-        SetCorruption(map, monsterSpawner, corruptionRadius, level);
+        SetCorruption(map, monsterSpawner, GetCorruptionRadiusByLevel(level), level);
     }
 
     public void SetCorruption(Map map, MonsterSpawner monsterSpawner, int level)
     {
-        SetCorruption(map, monsterSpawner, corruptionRadius, level);
+        SetCorruption(map, monsterSpawner, GetCorruptionRadiusByLevel(level), level);
     }
 
     public void SetCorruption(Map map, MonsterSpawner monsterSpawner, float radius, int level)
@@ -1060,17 +1063,17 @@ public class MapGenerator : MonoBehaviour
             tempTilemap = monsterSpawner.corruptionTilemap;
         }
 
-        if (level >= 7)
+        if (level >= HARD_LEVEL)
         {
             biome = HardCorruption;
         }
-        else if (level <= 3)
+        else if (level >= NORMAL_LEVEL)
         {
-            biome = EasyCorruption;
+            biome = NormalCorruption;
         }
         else
         {
-            biome = NormalCorruption;
+            biome = EasyCorruption;
         }
 
         for (int x = Mathf.FloorToInt(spawnerPos.x - radius); x <= (spawnerPos.x + radius); x++)
@@ -1125,6 +1128,21 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    float GetCorruptionRadiusByLevel(int level)
+    {
+        float radius = corruptionRadius;
+        if (level >= HARD_LEVEL)
+        {
+            radius += 10;
+        }
+        else if (level >= NORMAL_LEVEL)
+        {
+            radius += 5;
+        }
+
+        return radius;
+    }
+
     public void ClearCorruption(MonsterSpawner monsterSpawner, int level)
     {
         Map map;
@@ -1135,12 +1153,12 @@ public class MapGenerator : MonoBehaviour
         else
             map = hostMap;
 
-        StartCoroutine(ClearCorruptionCoroutine(map, monsterSpawner, corruptionRadius, level));
+        StartCoroutine(ClearCorruptionCoroutine(map, monsterSpawner, GetCorruptionRadiusByLevel(level), level));
     }
 
     public void ClearCorruption(Map map, MonsterSpawner monsterSpawner, int level)
     {
-        StartCoroutine(ClearCorruptionCoroutine(map, monsterSpawner, corruptionRadius, level));
+        StartCoroutine(ClearCorruptionCoroutine(map, monsterSpawner, GetCorruptionRadiusByLevel(level), level));
     }
 
     IEnumerator ClearCorruptionCoroutine(Map map, MonsterSpawner monsterSpawner, float _radius, int level)

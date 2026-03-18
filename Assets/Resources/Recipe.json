@@ -6,12 +6,12 @@
     ],
     "Smelter":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
-        {"name":"SteelBar","items":["IronBar","Coal","SteelBar"],"amounts":[1,1,1],"cooldown":6},
-        {"name":"AdamantiteAlloy","items":["AdamantiteOre","SteelBar","AdamantiteAlloy"],"amounts":[2,2,1],"cooldown":12}
+        {"name":"SteelBar","items":["IronBar","Coal","SteelBar"],"amounts":[1,1,1],"cooldown":8},
+        {"name":"AdamantiteAlloy","items":["AdamantiteOre","SteelBar","AdamantiteAlloy"],"amounts":[2,3,1],"cooldown":12}
     ],
     "Constructor":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
-        {"name":"CopperPlate","items":["CopperBar","CopperPlate"],"amounts":[1,1],"cooldown":4},
+        {"name":"CopperPlate","items":["CopperBar","CopperPlate"],"amounts":[1,1],"cooldown":6},
         {"name":"Wire","items":["CopperPlate","Wire"],"amounts":[1,2],"cooldown":6},
         {"name":"IronPlate","items":["IronBar","IronPlate"],"amounts":[1,1],"cooldown":6},
         {"name":"Cogwheel","items":["IronPlate","Cogwheel"],"amounts":[1,2],"cooldown":6},
@@ -19,15 +19,15 @@
         {"name":"SteelPlate","items":["SteelBar","SteelPlate"],"amounts":[1,1],"cooldown":8},
         {"name":"SteelBeam","items":["SteelPlate","SteelBeam"],"amounts":[1,1],"cooldown":8},
         {"name":"AdamantitePlate","items":["AdamantiteAlloy","AdamantitePlate"],"amounts":[1,1],"cooldown":12},
-        {"name":"CopperGoblet","items":["CopperPlate","CopperGoblet"],"amounts":[6,1],"cooldown":8},
+        {"name":"CopperGoblet","items":["CopperPlate","CopperGoblet"],"amounts":[6,1],"cooldown":12},
         {"name":"CopperBullet","items":["CopperPlate","CopperBullet"],"amounts":[2,3],"cooldown":6},
         {"name":"IronBullet","items":["IronPlate","IronBullet"],"amounts":[2,3],"cooldown":6}
     ],
     "Assembler":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
-        {"name":"Motor","items":["SteelPlate","Cogwheel","Motor"],"amounts":[2,6,1],"cooldown":12},
-        {"name":"Cable","items":["Rubber","Wire","Cable"],"amounts":[4,6,2],"cooldown":12},
-        {"name":"Fuse","items":["Plastic","Wire","Fuse"],"amounts":[4,6,3],"cooldown":12},
+        {"name":"Motor","items":["SteelPlate","Cogwheel","Motor"],"amounts":[3,6,1],"cooldown":12},
+        {"name":"Cable","items":["Rubber","Wire","Cable"],"amounts":[4,8,2],"cooldown":12},
+        {"name":"Fuse","items":["Plastic","Wire","Fuse"],"amounts":[6,4,3],"cooldown":12},
         {"name":"Battery","items":["Sulfur","CopperPlate","Battery"],"amounts":[2,4,1],"cooldown":12},
         {"name":"IronAxe","items":["IronPlate","Screw","IronAxe"],"amounts":[4,8,1],"cooldown":12},
         {"name":"SteelSword","items":["SteelPlate","Screw","SteelSword"],"amounts":[3,6,1],"cooldown":12},
@@ -35,12 +35,12 @@
     ],
     "Manufacturer":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
-        {"name":"Module","items":["Fuse","Cable","Screw","Module"],"amounts":[8,6,16,1],"cooldown":24},
-        {"name":"ControlUnit","items":["Module","Battery","Motor","ControlUnit"],"amounts":[2,4,4,1],"cooldown":36},
-        {"name":"AdamantiteArmor","items":["ManaStone","AdamantitePlate","SteelPlate","AdamantiteArmor"],"amounts":[2,4,6,1],"cooldown":36},
-        {"name":"Engine","items":["ManaStone","AdamantitePlate","Motor","Engine"],"amounts":[4,4,4,1],"cooldown":36},
-        {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[4,4,6,1],"cooldown":24},
-        {"name":"ExplosiveBullet","items":["SteelPlate","Sulfur","Coal","ExplosiveBullet"],"amounts":[2,2,8,3],"cooldown":12},
+        {"name":"Module","items":["Fuse","Cable","Screw","Module"],"amounts":[6,6,16,1],"cooldown":24},
+        {"name":"ControlUnit","items":["Module","Battery","Motor","ControlUnit"],"amounts":[2,4,6,1],"cooldown":36},
+        {"name":"AdamantiteArmor","items":["ManaStone","AdamantitePlate","SteelPlate","AdamantiteArmor"],"amounts":[2,6,9,1],"cooldown":36},
+        {"name":"Engine","items":["ManaStone","AdamantitePlate","Motor","Engine"],"amounts":[4,4,6,1],"cooldown":36},
+        {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[2,2,6,1],"cooldown":24},
+        {"name":"ExplosiveBullet","items":["SteelPlate","Sulfur","Coal","ExplosiveBullet"],"amounts":[3,2,8,3],"cooldown":12},
         {"name":"ManablastBullet","items":["ManaStone","Sulfur","Coal","ManablastBullet"],"amounts":[1,4,10,3],"cooldown":16}
     ],
     "Refinery":[
@@ -59,20 +59,20 @@
     ],
     "UnitFactory":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
-        {"name":"BounceRobot","items":["Module","Motor","SteelPlate","BounceRobot"],"amounts":[1,4,12,1],"cooldown":24},
-        {"name":"SentryCopter","items":["Module","Motor","SteelPlate","SentryCopter"],"amounts":[1,4,12,1],"cooldown":24},
-        {"name":"SpinRobot","items":["ControlUnit","Motor","SteelPlate","SpinRobot"],"amounts":[1,4,16,1],"cooldown":32},
-        {"name":"CorrosionDrone","items":["ControlUnit","Battery","SteelPlate","CorrosionDrone"],"amounts":[1,4,16,1],"cooldown":32},
-        {"name":"RepairerDrone","items":["ControlUnit","Battery","SteelPlate","RepairerDrone"],"amounts":[1,4,16,1],"cooldown":32},
-        {"name":"Tank","items":["AdamantiteArmor","Engine","ControlUnit","Tank"],"amounts":[20,8,12,1],"cooldown":120}
+        {"name":"BounceRobot","items":["Module","Motor","SteelPlate","BounceRobot"],"amounts":[2,3,12,1],"cooldown":24},
+        {"name":"SentryCopter","items":["Module","Motor","SteelPlate","SentryCopter"],"amounts":[2,3,12,1],"cooldown":24},
+        {"name":"SpinRobot","items":["ControlUnit","Motor","SteelPlate","SpinRobot"],"amounts":[2,4,18,1],"cooldown":36},
+        {"name":"CorrosionDrone","items":["ControlUnit","Battery","SteelPlate","CorrosionDrone"],"amounts":[4,4,18,1],"cooldown":36},
+        {"name":"RepairerDrone","items":["ControlUnit","Battery","SteelPlate","RepairerDrone"],"amounts":[4,4,18,1],"cooldown":36},
+        {"name":"Tank","items":["AdamantiteArmor","Engine","ControlUnit","Tank"],"amounts":[40,8,12,1],"cooldown":144}
     ],
     "Tower":[
         {"name":"BasicTower","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":0}
     ],
     "UnitUpgrade":[
-        {"name":"BounceRobot","items":["AdamantiteArmor","ControlUnit","BounceRobot"],"amounts":[2,1,1],"cooldown":0},
-        {"name":"SentryCopter","items":["AdamantiteArmor","ControlUnit","SentryCopter"],"amounts":[2,1,1],"cooldown":0},
-        {"name":"SpinRobot","items":["AdamantiteArmor","Engine","SpinRobot"],"amounts":[2,1,1],"cooldown":0}
+        {"name":"BounceRobot","items":["AdamantiteArmor","ControlUnit","BounceRobot"],"amounts":[4,2,1],"cooldown":0},
+        {"name":"SentryCopter","items":["AdamantiteArmor","ControlUnit","SentryCopter"],"amounts":[4,2,1],"cooldown":0},
+        {"name":"SpinRobot","items":["AdamantiteArmor","Engine","SpinRobot"],"amounts":[4,1,1],"cooldown":0}
     ],
     "TankInven":[
         {"name":"Tank","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":0},

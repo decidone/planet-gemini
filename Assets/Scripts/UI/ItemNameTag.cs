@@ -34,6 +34,13 @@ public class ItemNameTag : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         mouseHoverTextObj.SetActive(false);
     }
 
+    public void SetOff()
+    {
+        isMouseHover = false;
+        hoverText.text = string.Empty;
+        mouseHoverTextObj.SetActive(false);
+    }
+
     public void SetItemName(string itemName)
     {
         string name = InGameNameDataGet.instance.ReturnName(itemName);

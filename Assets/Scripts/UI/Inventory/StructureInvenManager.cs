@@ -36,8 +36,8 @@ public class StructureInvenManager : InventoryManager
     [SerializeField]
     Text waveDiffLevel;
 
-    [SerializeField]
-    Button dicBtn;
+    [SerializeField] Button waveDicBtn;
+    public Button dicBtn;
 
     void OnEnable()
     {
@@ -56,7 +56,7 @@ public class StructureInvenManager : InventoryManager
     protected override void Start()
     {
         base.Start();
-        dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Wave Suppression", true));
+        waveDicBtn.onClick.AddListener(() => InfoDictionary.instance.Search("Wave Suppression", true));
     }
 
     protected override void Update()

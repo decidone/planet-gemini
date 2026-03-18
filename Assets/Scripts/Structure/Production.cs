@@ -258,6 +258,7 @@ public abstract class Production : Structure
         {
             ResetUI();
             CheckSlotState(0);
+            sInvenManager.dicBtn.gameObject.SetActive(false);
         }
     }
 
@@ -384,6 +385,7 @@ public abstract class Production : Structure
     {
         Debug.Log("CloseUI call");
         isUIOpened = false;
+        sInvenManager.dicBtn.gameObject.SetActive(false);
         GameManager.instance.CheckAndCancelFocus(this);
     }
 

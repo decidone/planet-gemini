@@ -134,6 +134,10 @@ public class Assembler : Production
         sInvenManager.slots[2].SetInputItem(itemDic[recipe.items[2]]);
         sInvenManager.slots[2].SetNeedAmount(recipe.amounts[2]);
         sInvenManager.slots[2].outputSlot = true;
+
+        sInvenManager.dicBtn.gameObject.SetActive(true);
+        sInvenManager.dicBtn.onClick.RemoveAllListeners();
+        sInvenManager.dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(recipe.items[2], true));
     }
 
     public override void SetOutput(Recipe recipe)
