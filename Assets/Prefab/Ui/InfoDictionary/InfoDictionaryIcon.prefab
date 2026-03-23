@@ -108,6 +108,7 @@ MonoBehaviour:
   nameTag: {fileID: 4716590608129090922}
   icon: {fileID: 3883239680294228485}
   text: {fileID: 3309682994943555814}
+  btn: {fileID: 3313766395784143964}
 --- !u!114 &3313766395784143964
 MonoBehaviour:
   m_ObjectHideFlags: 0

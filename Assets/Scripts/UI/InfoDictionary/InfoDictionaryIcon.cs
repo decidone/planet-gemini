@@ -8,12 +8,7 @@ public class InfoDictionaryIcon : MonoBehaviour
     [SerializeField] ItemNameTag nameTag;
     [SerializeField] Image icon;
     [SerializeField] Text text;
-    Button btn;
-
-    private void Start()
-    {
-        btn = GetComponent<Button>();
-    }
+    [SerializeField] Button btn;
 
     public void SetIcon(Sprite sprite, string itemName, string amount, bool hasLink)
     {
