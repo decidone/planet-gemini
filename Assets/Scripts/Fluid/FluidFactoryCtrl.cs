@@ -163,6 +163,8 @@ public class FluidFactoryCtrl : Production
     {
         if ((saveFluidNum <= 0.1f || outObj.Count <= 0) && !mainSource)
             return;
+        else if (isConsumeSource)
+            return;
 
         Dictionary<FluidFactoryCtrl, (float, float, bool)> canSendDic = new Dictionary<FluidFactoryCtrl, (float, float, bool)>(); // (저장량, 최대 저장량, 역류가능성)
         foreach (Structure obj in outObj)

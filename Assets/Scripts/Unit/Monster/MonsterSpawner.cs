@@ -87,7 +87,7 @@ public class MonsterSpawner : WorldObj
 
     [SerializeField]
     GameObject awakeColl;
-    SpawnerAwake spawnerAwakeColl;
+    public SpawnerAwake spawnerAwakeColl;
 
     public bool isInHostMap;
     public Tilemap corruptionTilemap;

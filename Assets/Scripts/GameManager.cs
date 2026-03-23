@@ -199,8 +199,9 @@ public class GameManager : NetworkBehaviour
     float prevWaveDamage; // 이전 웨이브 총 데미지
     float currWaveDamage; // 현재 웨이브 총 데미지
     public float difficultyPercent; // 웨이브 난이도 증가량
-    float waveSkipChance;
+    float[] increaseDiffs = new float[4] { 0f, 40f, 60f, 80f };
 
+    float waveSkipChance;
     // 몬스터 배율
     public float spawnMultiplier = 1f;
     public float hpMultiplier = 1f;
@@ -548,7 +549,7 @@ public class GameManager : NetworkBehaviour
             if (!violentDay) // 스킵된 경우
             {
                 waveSkipChance = 0;
-                DifficultyPercentSet(30f);
+                DifficultyPercentSet(increaseDiffs[(int)difficultyLevel]);
             }
             else // 발생한 경우
             {
@@ -568,7 +569,7 @@ public class GameManager : NetworkBehaviour
     {
         energyOverLimitDay = day;
         BasicUIBtns.instance.BloodMoonUIOn();
-        WarningWindow.instance.WarningTextSet("They have noticed you. The Blood Moon is coming.");
+        WarningWindow.instance.WarningTextSet("Blood Moon Activated.");
         portal[0].BloodMoonEventStart();
         portal[1].BloodMoonEventStart();
     }
@@ -2262,7 +2263,7 @@ public class GameManager : NetworkBehaviour
         {
             prevWaveDamage = currWaveDamage;
             currWaveDamage = totalDamageDealt;
-            DifficultyPercentSet(20f);
+            DifficultyPercentSet(increaseDiffs[(int)difficultyLevel]);
             return;
         }
 
@@ -2283,15 +2284,24 @@ public class GameManager : NetworkBehaviour
     void DifficultyPercentSet(float amount)
     {
         difficultyPercent += amount;
-        difficultyPercent = Mathf.Clamp(difficultyPercent, 0f, GetDifficultyCap());
+        if (difficultyLevel > 1) // 노멀, 하드는 최소 캡이 발생
+            difficultyPercent = Mathf.Clamp(difficultyPercent, GetDifficultyLowCap(), GetDifficultyHighCap());
+        else 
+            difficultyPercent = Mathf.Clamp(difficultyPercent, 0, GetDifficultyHighCap());
         WaveDiffLevelSyncServerRpc();
         ApplyDifficulty();
     }
 
-    float GetDifficultyCap()
+    float GetDifficultyHighCap()
     {
         int coreLevel = Mathf.Clamp(ScienceDb.instance.coreLevel, 1, 5);
         return coreLevel * 200f;
+    }
+
+    float GetDifficultyLowCap()
+    {
+        int coreLevel = Mathf.Clamp(ScienceDb.instance.coreLevel, 1, 5);
+        return (coreLevel - 1) * 200f;
     }
 
     float GetCatchUpMultiplier(float difficulty)
@@ -2306,7 +2316,7 @@ public class GameManager : NetworkBehaviour
 
         float deficitRatio = (previousCap - difficulty) / previousCap;
 
-        const float MAX_CATCHUP = 1.5f;
+        float MAX_CATCHUP = 1 + increaseDiffs[(int)difficultyLevel] / 100;
         return Mathf.Lerp(1f, MAX_CATCHUP, deficitRatio);
     }
 
@@ -2315,8 +2325,8 @@ public class GameManager : NetworkBehaviour
     // ===============================
     float CalculateDifficultyDelta(float prevDamage, float currDamage)
     {
-        if (prevDamage <= 0f)
-            return 0.10f;
+        if (prevDamage <= 0f) // 아에 데미지를 넣지 못한경우 최대치로 증가
+            return increaseDiffs[(int)difficultyLevel] / 100 + 0.2f;
 
         // 몬스터 데미지 변화율
         float deltaRatio = (currDamage - prevDamage) / prevDamage;
@@ -2324,11 +2334,14 @@ public class GameManager : NetworkBehaviour
         // 음수 : 몬스터가 덜 때림 (플레이어 성장)
         // 양수 : 몬스터가 더 때림 (플레이어 밀림)
 
-        const float MIN_DELTA = 0.10f; // 최소 10% (플레이어가 힘들 때)
-        const float MAX_DELTA = 0.40f; // 최대 40% (너무 잘 막을 때)
+        float delta = increaseDiffs[(int)difficultyLevel] / 100; 
 
-        const float FULL_SUPPRESS_RATIO = -0.5f;
-        // 몬스터 데미지가 50% 이상 감소하면 "완벽 제압"
+
+        float MIN_DELTA = delta - 0.2f; // 최소 기본에서 -20% (플레이어가 힘들 때)
+        float MAX_DELTA = delta + 0.2f; // 최대 기본에서 +20% (너무 잘 막을 때)
+
+        const float FULL_SUPPRESS_RATIO = 0.6f;
+        // 몬스터 데미지가 60% 이상 감소하면 "완벽 제압"
 
         // 몬스터가 더 많이 때린 경우 → 소폭 상승
         if (deltaRatio >= 0f)
@@ -2338,7 +2351,7 @@ public class GameManager : NetworkBehaviour
 
         // 몬스터 데미지가 줄어든 경우 → 성장량에 따라 난이도 증가
         float suppressRatio = Mathf.Abs(deltaRatio); // 제압 정도
-        float t = Mathf.Clamp01(suppressRatio / Mathf.Abs(FULL_SUPPRESS_RATIO));
+        float t = Mathf.Clamp01(suppressRatio / FULL_SUPPRESS_RATIO);
 
         return Mathf.Lerp(MIN_DELTA, MAX_DELTA, t);
     }
@@ -2348,7 +2361,7 @@ public class GameManager : NetworkBehaviour
     // ===============================
     void ApplyDifficulty()
     {
-        float cap = GetDifficultyCap();
+        float cap = GetDifficultyHighCap();
 
         // 0 ~ 1 정규화
         float difficulty01 = Mathf.Clamp01(difficultyPercent / cap);
@@ -2365,8 +2378,8 @@ public class GameManager : NetworkBehaviour
         float difficultyModifier = difficultyLevel / 5f; // 0 , 0.2, 0.4, 0.6 순
         // ===== 절대값 재계산 =====
         spawnMultiplier = 1f + factor * (1.0f + difficultyModifier);
-        hpMultiplier = 1f + factor * (difficultyModifier / 4);
-        atkMultiplier = 1f + factor * (difficultyModifier / 10);
+        hpMultiplier = 1f + factor * difficultyModifier;
+        atkMultiplier = 1f + factor * (difficultyModifier / 4);
     }
 
     // ===============================
@@ -2374,11 +2387,11 @@ public class GameManager : NetworkBehaviour
     // ===============================
     float GetDifficultyTierScale(float difficulty)
     {
-        if (difficulty < 200f) return 0.65f;
-        if (difficulty < 400f) return 0.85f;
-        if (difficulty < 600f) return 1.05f;
-        if (difficulty < 800f) return 1.25f;
-        return 1.45f;
+        if (difficulty < 200f) return 0.6f;
+        if (difficulty < 400f) return 0.8f;
+        if (difficulty < 600f) return 1.1f;
+        if (difficulty < 800f) return 1.5f;
+        return 2f;
     }
 
     [ServerRpc]

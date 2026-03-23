@@ -1168,8 +1168,7 @@ public class PreBuilding : NetworkBehaviour
 
     protected bool GroupBuildCheck(GameObject obj, Vector2 pos)
     {
-        PreBuildingImg preBuildingImg = obj.GetComponent<PreBuildingImg>();
-        if (preBuildingImg.buildingPosUnit.Count == 0 && CellCheck(obj, pos))
+        if (CellCheck(obj, pos))
             return true;
         else
             return false;
@@ -1194,40 +1193,9 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    //void SetBuilding(GameObject obj, Vector3 spawnPos)
-    //{
-    //    if (isPortalObj)
-    //    {
-    //        ServerPortalObjBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth, portalIndex);
-    //    }
-    //    else
-    //    {
-    //        if (BuildingInfo.instance.AmountsEnoughCheck())
-    //        {
-    //            if (!isUnderObj)
-    //            {
-    //                ServerBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, dirNum, objHeight, objWidth);
-    //            }
-    //            else
-    //            {
-    //                spawnPos = obj.transform.position;
-    //                UnderObjBuilding underObj = obj.GetComponent<UnderObjBuilding>();
-    //                bool sendObjCheck = underObj.isSendObj;
-    //                int newDir = underObj.dirNum;
-    //                ServerUnderObjBuildConfirmServerRpc(spawnPos, setPos, buildingIndex, isInHostMap, level, newDir, objHeight, objWidth, sendObjCheck, isUnderBelt);
-    //            }
-    //        }
-    //    }
-    //    setBuild = null;
-    //}
-
     [ServerRpc(RequireOwnership = false)]
     public void ServerBuildConfirmServerRpc(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth)
     {
-        //bool notFound = ReCheck(spawnPos, objHeight, objWidth, buildingIndex, level, isInHostMap);
-        //if (!notFound)
-        //    return;
-
         GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
         GameObject spawnobj = Instantiate(prefabObj, spawnPos, Quaternion.identity);
         spawnobj.TryGetComponent(out NetworkObject netObj);
@@ -1252,10 +1220,6 @@ public class PreBuilding : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ServerUnderObjBuildConfirmServerRpc(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, bool isSend, bool isUnderBelt)
     {
-        //bool notFound = ReCheck(spawnPos, objHeight, objWidth, buildingIndex, level, isInHostMap);
-        //if (!notFound)
-        //    return;
-
         GameObject prefabObj;
         GameObject spawnobj;
          
@@ -1277,10 +1241,6 @@ public class PreBuilding : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ServerPortalObjBuildConfirmServerRpc(Vector3 spawnPos, int buildingIndex, bool isInHostMap, int level, int dirNum, int objHeight, int objWidth, int portalIndex)
     {
-        //bool notFound = ReCheck(spawnPos, objHeight, objWidth, buildingIndex, level, isInHostMap);
-        //if (!notFound)
-        //    return;
-
         GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
 
         //GameObject spawnobj = Instantiate(prefabObj, spawnPos - setPos, Quaternion.identity);
@@ -1297,64 +1257,6 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    //bool ReCheck(Vector3 spawnPos, int objHeight, int objWidth, int itemIndex, int level, bool isHostMap)
-    //{
-    //    int x = Mathf.FloorToInt(spawnPos.x);
-    //    int y = Mathf.FloorToInt(spawnPos.y);
-
-    //    List<int> xList = new List<int>();
-    //    List<int> yList = new List<int>();
-
-    //    if (objHeight == 1 && objWidth == 1)
-    //    {
-    //        xList.Add(x);
-    //        yList.Add(y);
-    //    }
-    //    else if (objHeight == 2 && objWidth == 2)
-    //    {
-    //        xList.Add(x);
-    //        xList.Add(x + 1);
-    //        yList.Add(y);
-    //        yList.Add(y + 1);
-    //    }
-
-    //    foreach (int newX in xList)
-    //    {
-    //        foreach (int newY in yList)
-    //        {
-    //            Cell cell;
-
-    //            if (isHostMap)
-    //            {
-    //                cell = gameManager.hostMap.GetCellDataFromPos(newX, newY);
-    //            }
-    //            else
-    //            {
-    //                cell = gameManager.clientMap.GetCellDataFromPos(newX, newY);
-    //            }
-
-    //            if (cell.structure)
-    //            {
-    //                Debug.Log("already");
-    //                GameObject prefabObj = buildingListSO.FindBuildingListObj(itemIndex);
-    //                string name = prefabObj.GetComponent<Structure>().structureData.FactoryName;
-    //                Debug.Log(name + " : " + level);
-    //                BuildingData data = BuildingDataGet.instance.GetBuildingName(name, level + 1);
-    //                Debug.Log(data.items.Count);
-
-    //                for (int i = 0; i < data.GetItemCount(); i++)
-    //                {
-    //                    GameManager.instance.inventory.Add(ItemList.instance.itemDic[data.items[i]], data.amounts[i]);
-    //                }
-
-    //                return false;
-    //            }
-    //        }
-    //    }
-
-    //    return true;
-    //}
-
     protected void MapDataCheck(GameObject obj, Vector2 pos)
     {
         obj.GetComponent<Structure>().MapDataSaveClientRpc(pos);   
@@ -1369,52 +1271,6 @@ public class PreBuilding : NetworkBehaviour
         else
         {
             AddBuildingToList(pos);
-            //if (!isUnderObj)
-            //{
-            //    AddBuildingToList(pos);
-            //}
-            //else if (isUnderObj)
-            //{
-            //UnderObjBuilding underObj = nonNetObj.GetComponent<UnderObjBuilding>();
-            //if (buildingList.Count == 0)
-            //{
-            //    AddBuildingToList(pos);
-            //    if (underObj != null)
-            //    {
-            //        isPreObjSend = underObj.isSendObj;
-            //    }
-            //}
-            //else if (buildingList.Count > 0)
-            //{
-            //    if (!isPreObjSend)
-            //    {
-            //        if (buildingList.Count == 1)
-            //        {
-            //            AddBuildingToList(pos);
-            //            isPreObjSend = !isPreObjSend;
-            //        }
-            //        else if (Vector3.Distance(pos, buildingList[buildingList.Count - 2].transform.position) >= 11)
-            //        {
-            //            AddBuildingToList(pos);
-            //            isPreObjSend = !isPreObjSend;
-            //        }
-            //        else if (Vector3.Distance(pos, buildingList[buildingList.Count - 2].transform.position) < 11)
-            //        {
-            //            Destroy(buildingList[buildingList.Count - 1]);
-            //            buildingList.RemoveAt(buildingList.Count - 1);
-            //            AddBuildingToList(pos);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (buildingList.Count < canBuildCount)
-            //        {
-            //            AddBuildingToList(pos);
-            //            isPreObjSend = !isPreObjSend;
-            //        }
-            //    }
-            //}
-            //}
         }
     }
 
@@ -1670,7 +1526,7 @@ public class PreBuilding : NetworkBehaviour
         sprite.color = slotColor;
     }
 
-    protected void BuildingListSetColor()
+    protected virtual void BuildingListSetColor()
     {
         if(buildingList.Count > 0)
         {

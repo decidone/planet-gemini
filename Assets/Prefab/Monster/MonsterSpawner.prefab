@@ -83,7 +83,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 50
+  m_Radius: 35
 --- !u!1 &1672328839514815431
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,7 +378,6 @@ MonoBehaviour:
   structureData: {fileID: 11400000, guid: 1daea59d30eb91747a451135e9c59bda, type: 2}
   groupManager: {fileID: 0}
   icon: {fileID: 5182953039587840639}
-  spawnNum: 0
   currentWeakSpawn: 0
   currentNormalSpawn: 0
   currentStrongSpawn: 0
@@ -399,9 +398,6 @@ MonoBehaviour:
   isInHostMap: 0
   corruptionTilemap: {fileID: 0}
   violentDay: 0
-  violentCollSize: 0
-  safeAmount: 3
-  waveTest: 0
 --- !u!50 &5546485786390217281
 Rigidbody2D:
   serializedVersion: 5
