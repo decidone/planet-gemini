@@ -464,7 +464,6 @@ public class Structure : WorldObj
     [ClientRpc]
     void DestroyClientRpc()
     {
-        Debug.Log("DestroyClientRpc : " + this.buildName);
         if (!destroyStart && destroyTimer > 0)
         {
             if (isPreBuilding)

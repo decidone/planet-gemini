@@ -17,5 +17,5 @@ MonoBehaviour:
   attDelayTime: 2.5
   maxEnergyBulletAmount: 5
   reloadCooldown: 2
-  upgradeDamage: 25
-  upgradeAttDelayTime: 2
+  upgradeDamage: 35
+  upgradeAttDelayTime: 2.2

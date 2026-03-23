@@ -19,7 +19,7 @@ public class BeltCtrl : LogisticsCtrl
 {
     int modelMotion = 0;  // 모션
     public BeltGroupMgr beltGroupMgr;
-    //BeltManager beltManager = null;
+    BeltManager beltManager = null;
     //protected Animator animsync;
 
     public BeltState beltState;
@@ -57,7 +57,7 @@ public class BeltCtrl : LogisticsCtrl
             }
         }
         gameManager = GameManager.instance;
-        //beltManager = BeltManager.instance;
+        beltManager = BeltManager.instance;
         playerInven = gameManager.inventory;
         buildName = structureData.FactoryName;
         col = Get<BoxCollider2D>();
@@ -1053,9 +1053,9 @@ public class BeltCtrl : LogisticsCtrl
             }
         }
 
-        if (IsServer)
+        if (IsServer && beltManager)
         {
-            beltGroupMgr.beltManager.BeltDivide(beltGroupMgr, gameObject);
+            beltManager.BeltDivide(beltGroupMgr, gameObject);
         }
 
         if (GameManager.instance.focusedStructure == this)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -90,6 +91,50 @@ public class BeltPreBuilding : PreBuilding
         }
     }
 
+    protected override void BuildingListSetColor()
+    {
+        if (buildingList.Count > 0)
+        {
+            int posIndex = 0;
+            foreach (GameObject obj in buildingList)
+            {
+                Color colorRed = Color.red;
+                Color colorGreen = Color.green;
+                float alpha = 0.35f;
+
+                PreBuildingImg preBuildingImg = obj.GetComponent<PreBuildingImg>();
+                if (CellCheck(obj, posList[posIndex]))
+                {
+                    if (!preBuildingImg.spriteRenderer.enabled)
+                        preBuildingImg.spriteRenderer.enabled = true;
+                    SetColor(preBuildingImg.spriteRenderer , colorGreen, alpha);
+                }
+                else
+                {
+                    if (preBuildingImg.spriteRenderer.enabled)
+                        preBuildingImg.spriteRenderer.enabled = false;
+                    //SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorRed, alpha);
+                }
+                posIndex++;
+            }
+        }
+        else
+        {
+            if (nonNetObj != null)
+            {
+                PreBuildingImg preBuildingImg = nonNetObj.GetComponent<PreBuildingImg>();
+                if (isEnough && GroupBuildCheck(nonNetObj, mousePos))
+                {
+                    SetColor(spriteRenderer, Color.green, 0.35f);
+                }
+                else if (!isEnough || !GroupBuildCheck(nonNetObj, mousePos))
+                {
+                    SetColor(spriteRenderer, Color.red, 0.35f);
+                }
+            }
+        }
+    }
+
     [Command]
     protected override void LeftMouseButtonUpCommand(InputAction.CallbackContext ctx)
     {
@@ -106,29 +151,39 @@ public class BeltPreBuilding : PreBuilding
                 if (!isDrag && !RaycastUtility.IsPointerOverUI(Input.mousePosition))
                     CheckPos();
 
-                bool canBuild = false;
-                int index = 0;
-                foreach (GameObject obj in buildingList)
+                List<List<GameObject>> buildGroups = new List<List<GameObject>>();
+                List<GameObject> currentGroup = null;
+
+                for (int i = 0; i < buildingList.Count; i++)
                 {
-                    if (GroupBuildCheck(obj, posList[index]))
-                        canBuild = true;
+                    if (GroupBuildCheck(buildingList[i], posList[i]))
+                    {
+                        // 새 그룹 시작
+                        if (currentGroup == null)
+                        {
+                            currentGroup = new List<GameObject>();
+                            buildGroups.Add(currentGroup);
+                        }
+                        currentGroup.Add(buildingList[i]);
+                    }
                     else
                     {
-                        canBuild = false;
-                        break;
+                        // 설치 불가 → 현재 그룹 종료, 다음 설치 가능 시 새 그룹 시작
+                        currentGroup = null;
                     }
-                    index++;
                 }
 
-                if (canBuild)
+                foreach (List<GameObject> group in buildGroups)
                 {
-                    Vector3[] pos = new Vector3[buildingList.Count];
-                    int[] dir = new int[buildingList.Count];
-                    for (int i = 0; i < buildingList.Count; i++)
+                    Vector3[] pos = new Vector3[group.Count];
+                    int[] dir = new int[group.Count];
+
+                    for (int i = 0; i < group.Count; i++)
                     {
-                        pos[i] = buildingList[i].transform.position;
-                        dir[i] = (int)buildingList[i].GetComponent<PreBuildingImg>().animator.GetFloat("DirNum");
+                        pos[i] = group[i].transform.position;
+                        dir[i] = (int)group[i].GetComponent<PreBuildingImg>().animator.GetFloat("DirNum");
                     }
+
                     BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isBeltObj, reversSet, gameManager.debug);
                 }
 

@@ -678,6 +678,17 @@ public class MonsterAi : UnitCommonAi
             targetDist = Vector2.Distance(tr.position, aggroTarget.transform.position);
             if(spawnerScript != null)
                 spawnDist = Vector2.Distance(tr.position, spawnPos.position);
+
+            if (Vector2.Distance(aggroTarget.gameObject.transform.position, spawnerScript.transform.position) > spawnerScript.spawnerAwakeColl.coll.radius * 1.5f)
+            {
+                checkPathCoroutine = StartCoroutine(CheckPath(spawnPos.position, "ReturnPos"));
+                if (targetOn)
+                {
+                    targetOn = false;
+                    aIState = AIState.AI_Idle;
+                }
+                return;
+            }
         }
     }
 

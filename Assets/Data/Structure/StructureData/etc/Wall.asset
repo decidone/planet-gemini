@@ -46,16 +46,16 @@ MonoBehaviour:
   removeGauge: 10
   defense:
   - 10
-  - 20
-  - 30
-  - 40
-  - 50
+  - 18
+  - 26
+  - 34
+  - 42
   upgradedefense:
-  - 15
-  - 25
-  - 35
-  - 45
-  - 55
+  - 18
+  - 26
+  - 34
+  - 42
+  - 50
   canTakeItem: 0
   canSendItem: 0
   canTakeFluid: 0
