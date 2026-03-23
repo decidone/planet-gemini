@@ -89,6 +89,7 @@ public class UnloaderManager : MonoBehaviour
         if (unloader)
             unloader.isUIOpened = false;
         unloaderUI.SetActive(false);
+        Debug.Log("unloaderUI SetActive false");
         unloaderRecipe.CloseUI();
         gameManager.onUIChangedCallback?.Invoke(unloaderUI);
     }

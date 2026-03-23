@@ -491,8 +491,8 @@ public abstract class Production : Structure
                     belt.beltGroupMgr.groupItem.RemoveAt(0);
                 belt.ItemNumCheck();
             }
-            DelayGetItem();
         }
+        DelayGetItem();
     }
 
     public override void AddInvenItem()

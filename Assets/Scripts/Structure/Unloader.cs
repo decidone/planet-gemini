@@ -151,8 +151,8 @@ public class Unloader : LogisticsCtrl
                     production.UnloadItem(selectItem);
                 }
             }
-            Invoke(nameof(DelayGetItem), getDelay);
         }
+        Invoke(nameof(DelayGetItem), getDelay);
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -16,7 +16,7 @@ public class Structure : WorldObj
     public StructureData structureData;
     protected StructureData StructureData { set { structureData = value; } }
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isFull = false;
 
     [HideInInspector]
@@ -1147,8 +1147,10 @@ public class Structure : WorldObj
         if (inObj[inObjIndex].TryGet(out BeltCtrl belt))
         {
             if (belt.itemObjList.Count <= 0)
+            {
+                DelayGetItem();
                 return;
-
+            }
             OnFactoryItem(belt.itemObjList[0]);
             belt.isItemStop = false;
             belt.itemObjList.RemoveAt(0);
@@ -1906,6 +1908,8 @@ public class Structure : WorldObj
                         solidFacClickEvent.unloaderManager.CloseUI();
                     else if (solidFacClickEvent.itemSpManager != null)
                         solidFacClickEvent.itemSpManager.CloseUI();
+
+                    solidFacClickEvent.CloseUI();
                 }
             }
         }
@@ -1928,6 +1932,8 @@ public class Structure : WorldObj
                         structureClickEvent.sInvenManager.CloseRecipeUI();
                     }
                 }
+
+                structureClickEvent.CloseUI();
             }
 
             if (TryGet(out Transporter trBuild))

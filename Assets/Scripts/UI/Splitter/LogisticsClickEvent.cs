@@ -38,7 +38,7 @@ public class LogisticsClickEvent : MonoBehaviour
 
         foreach (GameObject obj in inventoryList.InventoryArr)
         {
-            if (logisticsCtrl.TryGetComponent(out SplitterCtrl splitterCtrl) && obj.name == "LogisticsMenu")
+            if (logisticsCtrl.TryGet(out SplitterCtrl splitterCtrl) && obj.name == "LogisticsMenu")
             {
                 LogisticsUI = obj;
                 logisticsCloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
@@ -48,7 +48,7 @@ public class LogisticsClickEvent : MonoBehaviour
 
                 canOpen = true;
             }
-            else if (logisticsCtrl.TryGetComponent(out Unloader unloader) && obj.name == "LogisticsMenu")
+            else if (logisticsCtrl.TryGet(out Unloader unloader) && obj.name == "LogisticsMenu")
             {
                 LogisticsUI = obj;
                 logisticsCloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
@@ -58,7 +58,7 @@ public class LogisticsClickEvent : MonoBehaviour
 
                 canOpen = true;
             }
-            else if (logisticsCtrl.GetComponent<ItemSpawner>() && obj.name == "ItemSpwanerFilter")
+            else if (logisticsCtrl.Get<ItemSpawner>() && obj.name == "ItemSpwanerFilter")
             {
                 LogisticsUI = obj;
                 logisticsCloseBtn = LogisticsUI.transform.Find("CloseButton").gameObject.GetComponent<Button>();
