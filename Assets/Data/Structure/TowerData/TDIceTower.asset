@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: TDIceTower
   m_EditorClassIdentifier: 
   damage: 10
-  attackDist: 10
-  attDelayTime: 2
+  attackDist: 14
+  attDelayTime: 5
   maxEnergyBulletAmount: 5
-  reloadCooldown: 2
-  upgradeDamage: 25
-  upgradeAttDelayTime: 1.7
+  reloadCooldown: 5
+  upgradeDamage: 30
+  upgradeAttDelayTime: 3

@@ -31,7 +31,8 @@ public class TowerAttackFx : NetworkBehaviour
         if (IsServer)
         {
             ResetOption();
-            NetworkObject.Despawn();
+            if(NetworkObject.IsSpawned)
+                NetworkObject.Despawn();
         }
     }
 

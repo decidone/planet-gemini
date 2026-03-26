@@ -8,7 +8,7 @@ public class PreBuildingImg : MonoBehaviour
     public Animator animator;
     public List<GameObject> buildingPosUnit = new List<GameObject>();
     [SerializeField]
-    GameObject territoryView;
+    SpriteRenderer territoryView;
     [SerializeField]
     Sprite[] sprites;
     [SerializeField]
@@ -60,51 +60,14 @@ public class PreBuildingImg : MonoBehaviour
         return true; // 아무것도 겹치지 않음 → 배치 가능
     }
 
-    public void TerritoryViewSet(int index)
+    public void TerritoryViewSet(int index, Vector3 size, Color32 color)
     {
-        territoryView.SetActive(true);
-        Color32 newColor;
-        SpriteRenderer spriteRenderer = territoryView.GetComponent<SpriteRenderer>();
-        switch (index)
-        {
-            case 0: //ImprovedRepeater
-                territoryView.transform.localScale = new Vector3(1.5f, 1.5f, 1f);
-                spriteRenderer.material = materials[0];
-                spriteRenderer.sprite = sprites[0];
-                break;
-            case 1: //Normal Energy Str
-                spriteRenderer.material = materials[0];
-                spriteRenderer.sprite = sprites[0];
-                break;
-            case 2: //Overclock
-                territoryView.transform.localScale = new Vector3(1.95f, 1.95f, 1f);
-                spriteRenderer.material = materials[1];
-                spriteRenderer.sprite = sprites[1];
-                newColor = new Color32(0, 255, 158, 100);
-                spriteRenderer.color = newColor;
-                break;
-            case 3: //RepairTower
-                territoryView.transform.localScale = new Vector3(1.56f, 1.56f, 1f);
-                spriteRenderer.material = materials[1];
-                spriteRenderer.sprite = sprites[1];
-                newColor = new Color32(45, 70, 195, 100);
-                spriteRenderer.color = newColor;
-                break;
-            case 4: //SunTower
-                territoryView.transform.localScale = new Vector3(3.12f, 3.12f, 1f);
-                spriteRenderer.material = materials[1];
-                spriteRenderer.sprite = sprites[1];
-                newColor = new Color32(148, 0, 211, 100);
-                spriteRenderer.color = newColor;
-                break;
-            case 5: //AttackTower
-                territoryView.transform.localScale = new Vector3(1.58f, 1.58f, 1f);
-                spriteRenderer.material = materials[1];
-                spriteRenderer.sprite = sprites[1];
-                newColor = new Color32(255, 0, 0, 100);
-                spriteRenderer.color = newColor;
-                break;
-        }
+        territoryView.gameObject.SetActive(true);
+        territoryView.transform.localScale = size;
+        // index 0은 에너지, 2는 타워 범위
+        territoryView.material = materials[index];
+        territoryView.sprite = sprites[index];
+        territoryView.color = color;
     }
 
     public void EnergyUseCheck(bool use)

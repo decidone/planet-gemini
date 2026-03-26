@@ -7,8 +7,6 @@ public class EnergyGenerator : Production
 {
     public EnergyGroupConnector connector;
     public Item FuelItem;
-    [SerializeField]
-    SpriteRenderer view;
     bool isBuildDone;
     PreBuilding preBuilding;
     Structure preBuildingStr;

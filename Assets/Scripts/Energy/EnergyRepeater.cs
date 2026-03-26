@@ -6,8 +6,6 @@ using Unity.Netcode;
 public class EnergyRepeater : Structure
 {
     public EnergyGroupConnector connector;
-    [SerializeField]
-    SpriteRenderer view;
     public bool isImprovedRepeater;
     bool isBuildDone;
     PreBuilding preBuilding;

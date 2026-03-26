@@ -5,8 +5,6 @@ using Unity.Netcode;
 public class LDConnector : Structure
 {
     public EnergyGroupConnector connector;
-    [SerializeField]
-    SpriteRenderer view;
     [HideInInspector]
     public bool isBuildDone;
     PreBuilding preBuilding;

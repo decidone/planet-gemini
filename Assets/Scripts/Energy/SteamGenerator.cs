@@ -10,8 +10,6 @@ public class SteamGenerator : FluidFactoryCtrl
 
     public EnergyGroupConnector connector;
     public Item FuelItem;
-    [SerializeField]
-    SpriteRenderer view;
     bool isBuildDone;
     PreBuilding preBuilding;
     Structure preBuildingStr;

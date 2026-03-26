@@ -56,11 +56,11 @@ public class TwBulletDataManager : MonoBehaviour
         BulletData[] bulletArray = new BulletData[]
         {
         new BulletData("EnergyBullet", 0, 0, 0, true),
-        new BulletData("CopperBullet", 15, 0f, 5, false),
-        new BulletData("IronBullet", 19, 0.3f, 4, false),
-        new BulletData("SteelBullet", 22, 0.3f, 3, false),
-        new BulletData("ExplosiveBullet", 25, 1, 2, true),
-        new BulletData("ManablastBullet", 45, 1, 1, true)
+        new BulletData("CopperBullet", 15, 0f, 3, false),
+        new BulletData("IronBullet", 29, 0.3f, 5, false),
+        new BulletData("SteelBullet", 45, 0.3f, 6, false),
+        new BulletData("ExplosiveBullet", 25, 4, 3, true),
+        new BulletData("ManablastBullet", 35, 7, 3, true)
         };
         // 이름, 데미지, 공격속도, 범위, 폭발기능 순으로 넣어주면됨
         foreach (BulletData data in bulletArray)

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TDSunTower
   m_EditorClassIdentifier: 
   damage: 75
-  attackDist: 10
+  attackDist: 16
   attDelayTime: 1.1
   maxEnergyBulletAmount: 5
   reloadCooldown: 2

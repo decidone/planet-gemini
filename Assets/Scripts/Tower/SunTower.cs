@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SunTower : TowerAi
 {
-    [SerializeField] SpriteRenderer view;
     [SerializeField] float debuffTimer;
     [SerializeField] float debuffInterval;
     [SerializeField] float debuffPer;
@@ -142,5 +141,11 @@ public class SunTower : TowerAi
     public override void DisableFocused()
     {
         view.enabled = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red; // 색상 지정
+        Gizmos.DrawWireSphere(transform.position, towerData.AttackDist); // 원형 범위
     }
 }
