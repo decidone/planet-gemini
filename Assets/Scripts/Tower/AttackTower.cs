@@ -25,9 +25,6 @@ public class AttackTower : TowerAi
     TowerAttackOption towerAttackOption;
     AggroAmount aggroAmount;
 
-    [SerializeField]
-    SpriteRenderer view;
-
     protected override void Awake()
     {
         base.Awake();

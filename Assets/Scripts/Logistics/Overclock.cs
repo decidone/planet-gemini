@@ -8,8 +8,6 @@ public class Overclock : Production
     public List<Production> buildingList = new List<Production>();
     protected float searchTimer = 1f;
     protected float searchInterval = 1f; // 딜레이 간격 설정
-    [SerializeField]
-    SpriteRenderer view;
 
     protected override void Awake()
     {

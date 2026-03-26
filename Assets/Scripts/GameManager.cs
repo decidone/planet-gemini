@@ -2377,9 +2377,9 @@ public class GameManager : NetworkBehaviour
         float factor = tierScale * difficulty01;
         float difficultyModifier = difficultyLevel / 5f; // 0 , 0.2, 0.4, 0.6 순
         // ===== 절대값 재계산 =====
-        spawnMultiplier = 1f + factor * (1.0f + difficultyModifier);
-        hpMultiplier = 1f + factor * difficultyModifier;
-        atkMultiplier = 1f + factor * (difficultyModifier / 4);
+        spawnMultiplier = 1f + factor * (0.8f + difficultyModifier);
+        hpMultiplier = 1f + factor * (difficultyModifier / 4);
+        atkMultiplier = 1f + factor * (difficultyModifier / 8);
     }
 
     // ===============================
@@ -2388,10 +2388,10 @@ public class GameManager : NetworkBehaviour
     float GetDifficultyTierScale(float difficulty)
     {
         if (difficulty < 200f) return 0.6f;
-        if (difficulty < 400f) return 0.8f;
-        if (difficulty < 600f) return 1.1f;
-        if (difficulty < 800f) return 1.5f;
-        return 2f;
+        if (difficulty < 400f) return 0.75f;
+        if (difficulty < 600f) return 1.0f;
+        if (difficulty < 800f) return 1.35f;
+        return 1.8f;
     }
 
     [ServerRpc]

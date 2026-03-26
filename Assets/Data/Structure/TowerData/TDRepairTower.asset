@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: TDRepairTower
   m_EditorClassIdentifier: 
   damage: 3
-  attackDist: 10
-  attDelayTime: 4
+  attackDist: 16
+  attDelayTime: 7
   maxEnergyBulletAmount: -1
   reloadCooldown: -1
   upgradeDamage: 6
-  upgradeAttDelayTime: 3
+  upgradeAttDelayTime: 5

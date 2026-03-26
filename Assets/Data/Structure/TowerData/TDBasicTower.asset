@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TDBasicTower
   m_EditorClassIdentifier: 
   damage: 15
-  attackDist: 10
+  attackDist: 12
   attDelayTime: 1.5
   maxEnergyBulletAmount: -1
   reloadCooldown: -1

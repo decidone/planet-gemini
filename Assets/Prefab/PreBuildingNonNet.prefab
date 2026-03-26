@@ -128,7 +128,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1108220465007589577}
   animator: {fileID: 1108220465007589579}
   buildingPosUnit: []
-  territoryView: {fileID: 7327173642477095393}
+  territoryView: {fileID: 8338544494228899166}
   sprites:
   - {fileID: 21300000, guid: 8ae5dcf00ef1c154fb7cfc030cecb678, type: 3}
   - {fileID: 21300000, guid: c92e2d3d0c7a27d4bbb0c2c6c495bb6d, type: 3}

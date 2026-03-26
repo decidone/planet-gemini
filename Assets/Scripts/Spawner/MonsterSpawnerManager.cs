@@ -28,7 +28,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         { true,  new List<MonsterAi>() },  // 호스트 맵
         { false, new List<MonsterAi>() }   // 클라이언트 맵
     };
-    private int baseSpawnCount = 18;
+    private int baseSpawnCount = 17;
     #region Singleton
     public static MonsterSpawnerManager instance;
 

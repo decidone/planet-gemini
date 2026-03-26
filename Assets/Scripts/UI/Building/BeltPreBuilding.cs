@@ -649,4 +649,12 @@ public class BeltPreBuilding : PreBuilding
 
         return modelNum;
     }
+
+    protected override bool GroupBuildCheck(GameObject obj, Vector2 pos)
+    {
+        if (CellCheck(obj, pos))
+            return true;
+        else
+            return false;
+    }
 }

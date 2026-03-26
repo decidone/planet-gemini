@@ -225,6 +225,8 @@ public class Structure : WorldObj
     public HashSet<Overclock> overclocks = new HashSet<Overclock>();
     public HashSet<RepairTower> repairTowers = new HashSet<RepairTower>();
 
+    public SpriteRenderer view;
+
     protected override void Awake()
     {
         base.Awake();

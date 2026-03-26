@@ -1166,9 +1166,10 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
-    protected bool GroupBuildCheck(GameObject obj, Vector2 pos)
+    protected virtual bool GroupBuildCheck(GameObject obj, Vector2 pos)
     {
-        if (CellCheck(obj, pos))
+        PreBuildingImg preBuildingImg = obj.GetComponent<PreBuildingImg>();
+        if (preBuildingImg.buildingPosUnit.Count == 0 && CellCheck(obj, pos))
             return true;
         else
             return false;
@@ -1398,36 +1399,21 @@ public class PreBuilding : NetworkBehaviour
         }
 
         GameObject prefabObj = buildingListSO.FindBuildingListObj(buildingIndex);
-        if (prefabObj.GetComponentInChildren<Structure>())
+        Structure str = prefabObj.GetComponentInChildren<Structure>();
+        if (str)
         {
-            isEnergyStr = prefabObj.GetComponentInChildren<Structure>().structureData.IsEnergyStr;
-            isEnergyUse = prefabObj.GetComponentInChildren<Structure>().structureData.EnergyUse[level];
+            isEnergyStr = str.structureData.IsEnergyStr;
+            isEnergyUse = str.structureData.EnergyUse[level];
 
-            preBuildingImg.PreStrSet(prefabObj.GetComponentInChildren<Structure>());
+            preBuildingImg.PreStrSet(str);
             preBuildingImg.EnergyUseCheck(isEnergyUse);
 
-            if (isEnergyStr && !prefabObj.GetComponentInChildren<EnergyBattery>())
+            if (str.view)
             {
-                if (prefabObj.GetComponentInChildren<EnergyRepeater>() && prefabObj.GetComponentInChildren<EnergyRepeater>().isImprovedRepeater)
-                    preBuildingImg.TerritoryViewSet(0);
+                if(isEnergyStr && !prefabObj.GetComponentInChildren<EnergyBattery>())
+                    preBuildingImg.TerritoryViewSet(0, str.view.transform.localScale, str.view.color);
                 else
-                    preBuildingImg.TerritoryViewSet(1);
-            }
-            else if (prefabObj.GetComponentInChildren<Overclock>())
-            {
-                preBuildingImg.TerritoryViewSet(2);
-            }
-            else if (prefabObj.GetComponentInChildren<RepairTower>())
-            {
-                preBuildingImg.TerritoryViewSet(3);
-            }
-            else if (prefabObj.GetComponentInChildren<SunTower>())
-            {
-                preBuildingImg.TerritoryViewSet(4);
-            }
-            else if (prefabObj.GetComponentInChildren<AttackTower>())
-            {
-                preBuildingImg.TerritoryViewSet(5);
+                    preBuildingImg.TerritoryViewSet(1, str.view.transform.localScale, str.view.color);
             }
         }
         else

@@ -8,8 +8,6 @@ public class RepairTower : TowerAi
 {
     public List<Structure> buildingList = new List<Structure>();
     [SerializeField]
-    SpriteRenderer view;
-    [SerializeField]
     int repairFullAmount;
 
     protected override void Awake()
@@ -189,5 +187,11 @@ public class RepairTower : TowerAi
         }
 
         DestroyFuncServerRpc();
+    }
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red; // 색상 지정
+        Gizmos.DrawWireSphere(transform.position, towerData.AttackDist); // 원형 범위
     }
 }
