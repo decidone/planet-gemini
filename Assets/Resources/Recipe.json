@@ -38,7 +38,7 @@
         {"name":"Module","items":["Fuse","Cable","Screw","Module"],"amounts":[6,6,16,1],"cooldown":24},
         {"name":"ControlUnit","items":["Module","Battery","Motor","ControlUnit"],"amounts":[2,4,6,1],"cooldown":36},
         {"name":"AdamantiteArmor","items":["ManaStone","AdamantitePlate","SteelPlate","AdamantiteArmor"],"amounts":[2,6,9,1],"cooldown":36},
-        {"name":"Engine","items":["ManaStone","AdamantitePlate","Motor","Engine"],"amounts":[4,4,6,1],"cooldown":36},
+        {"name":"Engine","items":["ManaStone","AdamantitePlate","Motor","Engine"],"amounts":[4,12,6,1],"cooldown":36},
         {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[2,2,6,1],"cooldown":24},
         {"name":"ExplosiveBullet","items":["SteelPlate","Sulfur","Coal","ExplosiveBullet"],"amounts":[3,2,8,3],"cooldown":12},
         {"name":"ManablastBullet","items":["ManaStone","Sulfur","Coal","ManablastBullet"],"amounts":[1,4,10,3],"cooldown":16}
@@ -55,24 +55,24 @@
         {"name":"Rubber","items":["Naphtha","Rubber"],"amounts":[1,2],"cooldown":8},
         {"name":"Plastic","items":["SlimyPlant","Plastic"],"amounts":[1,4],"cooldown":8},
         {"name":"Rubber","items":["SlimyPlant","Rubber"],"amounts":[1,4],"cooldown":8},
-        {"name":"Sulfur","items":["ToxicPlant","Sulfur"],"amounts":[1,4],"cooldown":8}
+        {"name":"Sulfur","items":["ToxicPlant","Sulfur"],"amounts":[1,2],"cooldown":12}
     ],
     "UnitFactory":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},
-        {"name":"BounceRobot","items":["Module","Motor","SteelPlate","BounceRobot"],"amounts":[2,3,12,1],"cooldown":24},
-        {"name":"SentryCopter","items":["Module","Motor","SteelPlate","SentryCopter"],"amounts":[2,3,12,1],"cooldown":24},
-        {"name":"SpinRobot","items":["ControlUnit","Motor","SteelPlate","SpinRobot"],"amounts":[2,4,18,1],"cooldown":36},
-        {"name":"CorrosionDrone","items":["ControlUnit","Battery","SteelPlate","CorrosionDrone"],"amounts":[4,4,18,1],"cooldown":36},
-        {"name":"RepairerDrone","items":["ControlUnit","Battery","SteelPlate","RepairerDrone"],"amounts":[4,4,18,1],"cooldown":36},
-        {"name":"Tank","items":["AdamantiteArmor","Engine","ControlUnit","Tank"],"amounts":[40,8,12,1],"cooldown":144}
+        {"name":"BounceRobot","items":["Module","Motor","SteelPlate","BounceRobot"],"amounts":[4,6,6,1],"cooldown":24},
+        {"name":"SentryCopter","items":["Module","Motor","SteelPlate","SentryCopter"],"amounts":[4,6,6,1],"cooldown":24},
+        {"name":"SpinRobot","items":["ControlUnit","Motor","SteelPlate","SpinRobot"],"amounts":[6,9,9,1],"cooldown":36},
+        {"name":"CorrosionDrone","items":["ControlUnit","Battery","SteelPlate","CorrosionDrone"],"amounts":[6,4,9,1],"cooldown":36},
+        {"name":"RepairerDrone","items":["ControlUnit","Battery","SteelPlate","RepairerDrone"],"amounts":[6,4,9,1],"cooldown":36},
+        {"name":"Tank","items":["AdamantiteArmor","Engine","ControlUnit","Tank"],"amounts":[40,20,20,1],"cooldown":144}
     ],
     "Tower":[
         {"name":"BasicTower","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":0}
     ],
     "UnitUpgrade":[
-        {"name":"BounceRobot","items":["AdamantiteArmor","ControlUnit","BounceRobot"],"amounts":[4,2,1],"cooldown":0},
-        {"name":"SentryCopter","items":["AdamantiteArmor","ControlUnit","SentryCopter"],"amounts":[4,2,1],"cooldown":0},
-        {"name":"SpinRobot","items":["AdamantiteArmor","Engine","SpinRobot"],"amounts":[4,1,1],"cooldown":0}
+        {"name":"BounceRobot","items":["AdamantiteArmor","Engine","BounceRobot"],"amounts":[4,4,1],"cooldown":0},
+        {"name":"SentryCopter","items":["AdamantiteArmor","Engine","SentryCopter"],"amounts":[4,4,1],"cooldown":0},
+        {"name":"SpinRobot","items":["AdamantiteArmor","Engine","SpinRobot"],"amounts":[4,6,1],"cooldown":0}
     ],
     "TankInven":[
         {"name":"Tank","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":0},

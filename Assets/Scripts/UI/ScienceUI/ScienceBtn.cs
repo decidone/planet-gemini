@@ -185,6 +185,8 @@ public class ScienceBtn : MonoBehaviour
     {
         if (amount == 0)
             return;
+        if (index >= itemAmountList.Count)
+            return;
 
         if (scienceManager == null)
             scienceManager = GameManager.instance.inventoryUiCanvas.GetComponent<ScienceManager>();
