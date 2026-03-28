@@ -81,6 +81,8 @@ public class InfoDictionary : MonoBehaviour
     List<GameObject> objList = new List<GameObject>();
     List<InfoDictionarySO> dicList = new List<InfoDictionarySO>();
 
+    SoundManager soundManager;
+
     #region Singleton
     public static InfoDictionary instance;
 
@@ -98,6 +100,7 @@ public class InfoDictionary : MonoBehaviour
 
     private void Start()
     {
+        soundManager = SoundManager.instance;
         CreateListItem();
         inputField.onValueChanged.AddListener(Search);
 
@@ -438,6 +441,7 @@ public class InfoDictionary : MonoBehaviour
         {
             layout2ProdRatioObj.SetActive(true);
         }
+        soundManager.PlayUISFX("ButtonClick");
     }
 
     void ClearRenderTexture()

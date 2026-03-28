@@ -154,6 +154,7 @@ public class BeltCtrl : LogisticsCtrl
                 beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
                 if (beltGroupMgr != null)
                     beltGroupMgr.BeltGroupRefresh();
+
                 //animator.SetFloat("DirNum", dirNum);
                 //animator.SetFloat("ModelNum", modelMotion);
                 //animator.SetFloat("Level", level);

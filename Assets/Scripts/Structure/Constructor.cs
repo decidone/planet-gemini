@@ -167,6 +167,8 @@ public class Constructor : Production
         {
             if (output)
                 overlay.UISet(output);
+            else
+                overlay.UIReset();
         }
     }
 }

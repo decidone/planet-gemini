@@ -83,7 +83,10 @@ public class ItemSpawner : LogisticsCtrl
         if(itemData.name == "UICancel") 
         {
             itemData = null; // 아이템이 취소되면 null로 설정
+            overlay.UIReset();
         }
+        else
+            FactoryOverlay();
     }
 
     public override void GameStartRecipeSet(int recipeId)
@@ -116,6 +119,8 @@ public class ItemSpawner : LogisticsCtrl
         {
             if (itemData)
                 overlay.UISet(itemData);
+            else
+                overlay.UIReset();
         }
     }
 }

@@ -2,16 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using Pathfinding;
-using Unity.VisualScripting;
-using Unity.Burst.Intrinsics;
 
 // UTF-8 설정
 public class BeltGroupMgr : NetworkBehaviour
 {
-    //[SerializeField]
-    //Structure beltObj;
-
     public BeltManager beltManager;
 
     public List<BeltCtrl> beltList = new List<BeltCtrl>();
@@ -24,6 +18,8 @@ public class BeltGroupMgr : NetworkBehaviour
     public bool preCheck = true;
 
     bool beltSyncCheck;
+
+    public bool loadConnStr;
 
     void Start()
     {
@@ -54,6 +50,7 @@ public class BeltGroupMgr : NetworkBehaviour
             if (nextCheck)
             {
                 nextObj = NextObjCheck();
+                loadConnStr = false;
                 if (!nextCheck)
                 {
                     NearObjSetClientRpc(nextObj.NetworkObject, true);
@@ -432,7 +429,7 @@ public class BeltGroupMgr : NetworkBehaviour
             }
             else
             {
-                if (otherBelt.beltState == BeltState.EndBelt || otherBelt.beltState == BeltState.SoloBelt)
+                if ((otherBelt.beltState == BeltState.EndBelt || otherBelt.beltState == BeltState.SoloBelt) && !otherBelt.beltGroupMgr.loadConnStr)
                 {
                     if (otherBelt.beltGroupMgr.nextObj == null)
                     {
@@ -572,6 +569,11 @@ public class BeltGroupMgr : NetworkBehaviour
             structureData = beltCtrl.SaveData();
             data.beltList.Add((beltData, structureData));
         }
+
+        if(nextObj)
+            data.connStr = true;
+        else
+            data.connStr = false;
 
         return data;
     }

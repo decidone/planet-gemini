@@ -182,6 +182,7 @@ public class Unloader : LogisticsCtrl
     {
         selectItem = null;
         UIReset();
+        FactoryOverlay();
     }
 
     void UIReset()
@@ -216,6 +217,8 @@ public class Unloader : LogisticsCtrl
         {
             if (selectItem)
                 overlay.UISet(selectItem);
+            else
+                overlay.UIReset();
         }
     }
 }

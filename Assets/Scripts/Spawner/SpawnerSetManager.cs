@@ -106,7 +106,7 @@ public class SpawnerSetManager : NetworkBehaviour
                     // 정중앙 → basePos 기록, 안전지역
                     basePos = new Vector3(areaCenterX, areaCenterY, 0);
                 }
-                else if (Math.Max(x, y) > 1)
+                else if (Math.Max(x, y) > 1 && Math.Max(x, y) < 6)
                 {
                     // Max(x,y) 2 → Lv1, 3~4 → Lv2, 5~6 → Lv3 ...
                     //int level = Mathf.CeilToInt((Math.Max(x, y) - 1) / 2f);
@@ -166,7 +166,7 @@ public class SpawnerSetManager : NetworkBehaviour
                 int y = (j < centerNum - 1) ? (centerNum - 1 - j) :
                          (j > centerNum) ? (j - centerNum) : 0;
 
-                if (Math.Max(x, y) > 1)
+                if (Math.Max(x, y) > 1 && Math.Max(x, y) < 6)
                 {
                     // Max(x,y) 2 → Lv1, 3~4 → Lv2, 5~6 → Lv3 ...
                     //int level = Mathf.CeilToInt((Math.Max(x, y) - 1) / 2f);
@@ -207,6 +207,34 @@ public class SpawnerSetManager : NetworkBehaviour
         List<Vector2> placedSpawnerPos = new List<Vector2>();
         float minSpawnerDistance = Mathf.Min(areaWSize, areaHSize) * 0.4f;
 
+        Dictionary<int, List<Vector2>> selectedByLevel = new();
+        foreach (var pos in selectedAreas)
+        {
+            int lv = areaPosLevel[pos];
+            if (!selectedByLevel.ContainsKey(lv))
+                selectedByLevel[lv] = new List<Vector2>();
+            selectedByLevel[lv].Add(pos);
+        }
+
+        // 레벨별로 정확히 upgradeSpawnerSetCount[lv-1] 개만 강화 대상으로 추첨
+        HashSet<Vector2> upgradeTargets = new HashSet<Vector2>();
+        foreach (var kv in selectedByLevel)
+        {
+            int lv = kv.Key;
+            int lvIndex = Mathf.Clamp(lv - 1, 0, upgradeSpawnerSetCount.Length - 1);
+            int count = Mathf.Min(upgradeSpawnerSetCount[lvIndex], kv.Value.Count);
+
+            // 셔플 후 앞에서 count개 추출
+            List<Vector2> pool = new List<Vector2>(kv.Value);
+            for (int i = pool.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                (pool[i], pool[j]) = (pool[j], pool[i]);
+            }
+            for (int i = 0; i < count; i++)
+                upgradeTargets.Add(pool[i]);
+        }
+
         foreach (var data in areaPosLevel)
         {
             if (!selectedAreas.Contains(data.Key))
@@ -233,11 +261,17 @@ public class SpawnerSetManager : NetworkBehaviour
 
             bool placed = false;
 
-            int maxAttempts = 30;
+            float localMinDistance = minSpawnerDistance;
+            int maxAttempts = 40;
             int attempts = 0;
 
             while (attempts < maxAttempts)
             {
+                if (attempts > 0 && attempts % 5 == 0)
+                {
+                    localMinDistance *= 0.5f; 
+                }
+
                 attempts++;
 
                 int rx = (int)Random.Range(-xRadius, xRadius);
@@ -273,7 +307,7 @@ public class SpawnerSetManager : NetworkBehaviour
                 bool tooClose = false;
                 foreach (var placedPos in placedSpawnerPos)
                 {
-                    if (Vector2.Distance(newPoint, placedPos) < minSpawnerDistance)
+                    if (Vector2.Distance(newPoint, placedPos) < localMinDistance)
                     {
                         tooClose = true;
                         break;
@@ -312,17 +346,12 @@ public class SpawnerSetManager : NetworkBehaviour
             int levelSet = levelData.sppawnerLevel;
             AreaLevelData levelDataSet = levelData;
 
-            if (upgradeSpawnerSetCount[areaLevel - 1] > 0)
+            if (upgradeTargets.Contains(centerPos))
             {
-                int random = Random.Range(0, spawnCount[areaLevel - 1]);
-                if (random < upgradeSpawnerSetCount[areaLevel - 1])
-                {
-                    upgradeSpawnerSetCount[areaLevel - 1] -= 1;
-                    levelSet += 1;
-                    levelDataSet = (levelSet - 1 < arealevelData.Length)
-                        ? arealevelData[levelSet - 1]
-                        : arealevelData[arealevelData.Length - 1];
-                }
+                levelSet += 1;
+                levelDataSet = (levelSet - 1 < arealevelData.Length)
+                    ? arealevelData[levelSet - 1]
+                    : arealevelData[arealevelData.Length - 1];
             }
 
             Cell cellData = map.GetCellDataFromPos((int)newPoint.x, (int)newPoint.y);
