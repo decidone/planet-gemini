@@ -799,7 +799,7 @@ public class MonsterSpawner : WorldObj
                 MonsterAi monster = RandomWaveMonsterSpawn((int)req.type);
                 monsters.Add(monster);
                 monster.WaveStart(wavePos);
-                monster.WaveStatusSet(monsterMultiplier.Item1, monsterMultiplier.Item2);                
+                monster.MonsterStatusSet(monsterMultiplier.Item1, monsterMultiplier.Item2);                
 
                 yield return null;
             }

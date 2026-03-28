@@ -312,6 +312,8 @@ public class UnitFactory : Production
         {
             if (recipe.name != null && itemDic[recipe.items[3]])
                 overlay.UISet(itemDic[recipe.items[3]]);
+            else
+                overlay.UIReset();
         }
     }
 }

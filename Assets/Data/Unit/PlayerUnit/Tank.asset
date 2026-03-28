@@ -15,8 +15,8 @@ MonoBehaviour:
   unitName: Tank
   maxHp: 700
   upgradeMaxHp: 800
-  damage: 30
-  upgradeDamage: 40
+  damage: 40
+  upgradeDamage: 60
   moveSpeed: 7
   attackDist: 4
   attDelayTime: 1.5

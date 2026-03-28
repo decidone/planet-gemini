@@ -411,7 +411,7 @@ public class DataManager : MonoBehaviour
         if (!netObj.IsSpawned) netObj.Spawn(true);
         beltGroupObj.transform.parent = beltMgr.transform;
         beltGroupObj.TryGetComponent(out BeltGroupMgr beltGroupMgr);
-
+        beltGroupMgr.loadConnStr = saveData.connStr;
         foreach (var beltData in saveData.beltList)
         {
             Building building = GeminiNetworkManager.instance.GetBuildingSOFromIndex(beltData.Item2.index);

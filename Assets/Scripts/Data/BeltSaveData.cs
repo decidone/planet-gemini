@@ -14,6 +14,7 @@ public class BeltSaveData
     public bool isTrun;         // 회전된 상태인지
     public bool isRightTurn;    // 회전된 상태일때 오른쪽인지
     public int beltState;       // 벨트의 상태정보
+    public bool connStr;        // 벨트가 다른 건물과 연결되어 있는지
 
     public List<SerializedVector3> itemPos = new List<SerializedVector3>(); // 벨트위 아이템 위치
     public List<int> itemIndex = new List<int>();   // 벨트위 아이템 인덱스

@@ -158,6 +158,8 @@ public class Chat : NetworkBehaviour
         {
             Submit();
         }
+
+        SoundManager.instance.PlayUISFX("ButtonClick");
     }
 
     public void Submit()

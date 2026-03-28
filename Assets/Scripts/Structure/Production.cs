@@ -253,12 +253,14 @@ public abstract class Production : Structure
                 }
                 CheckInvenIsFull(0);
             }
+            FactoryOverlay();
         }
         else
         {
             ResetUI();
             CheckSlotState(0);
             sInvenManager.dicBtn.gameObject.SetActive(false);
+            overlay.UIReset();
         }
     }
 
@@ -267,6 +269,7 @@ public abstract class Production : Structure
         Debug.Log("ResetUI call");
         recipe = new Recipe();
         recipeIndex = -1;
+        output = null;
         cooldown = structureData.Cooldown;
         if (conn != null && conn.group != null)
             EfficiencyCheck();
@@ -734,6 +737,8 @@ public abstract class Production : Structure
         {
             if (output)
                 overlay.UISet(output);
+            else
+                overlay.UIReset();
         }
     }
 }

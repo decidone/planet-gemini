@@ -757,7 +757,7 @@ public class PlayerController : NetworkBehaviour
         if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
         bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
-        fx.GetTarget2(dir.normalized * 3, bulletData.damage, status.Get<WorldObj>(), bulletData.explosion);
+        fx.GetTarget2(dir.normalized * 3, bulletData.damage + onTankData.unitCommonData.Damage, status.Get<WorldObj>(), bulletData.explosion);
         BulletSpawnClientRpc(dir);
     }
 
