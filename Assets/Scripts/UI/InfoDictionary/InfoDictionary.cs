@@ -243,14 +243,15 @@ public class InfoDictionary : MonoBehaviour
                 {
                     if (recipe.name.Equals(item.name))
                     {
-                        //item.layout = 2;
                         item.recipes.Add(recipe);
                         for (int i = 0; i < buildingListSO.buildingSOList.Count; i++)
                         {
-                            // 2개 이상의 레시피를 가지는 아이템은 있지만 2개 이상의 생산건물을 가지는 아이템은 없어서 그냥 마지막 레시피의 생산건물로 지정함
                             if (buildingListSO.buildingSOList[i].scienceName.Equals(recipeList.Key))
                             {
+                                if (item.name == "Sulfur") break;
+
                                 item.productionBuilding = buildingListSO.buildingSOList[i];
+                                break;
                             }
                         }
                     }

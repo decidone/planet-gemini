@@ -20,8 +20,7 @@ public class SoundManager : MonoBehaviour
     private AudioClipRefsSO audioClipRefsSO;
 
     private AudioSource bgmPlayer;
-
-    public AudioSource uiSfxPlayer;
+    //public AudioSource uiSfxPlayer;
 
     private float bgmVolume = 1f;
     private float sfxVolume = 1f;
@@ -58,6 +57,8 @@ public class SoundManager : MonoBehaviour
     int maxPoolSize = 32;
     float defaultMinDistance = 4f;
     float defaultMaxDistance = 20f;
+    float unitDefaultMinDistance = 20f;
+    float unitDefaultMaxDistance = 30f;
     Dictionary<string, float> lastPlayTime = new Dictionary<string, float>();
     AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic;
     ObjectPool<AudioSource> pool;
@@ -370,7 +371,7 @@ public class SoundManager : MonoBehaviour
     void SFXPlayerSet()
     {
         BgmPlayerSet();
-        UIPlayerSet();
+        //UIPlayerSet();
     }
 
     void BgmPlayerSet()
@@ -378,10 +379,10 @@ public class SoundManager : MonoBehaviour
         bgmPlayer = PlayerBaseSet("BGM");
     }
 
-    void UIPlayerSet()
-    {
-        uiSfxPlayer = PlayerBaseSet("SFX");
-    }
+    //void UIPlayerSet()
+    //{
+    //    uiSfxPlayer = PlayerBaseSet("SFX");
+    //}
 
     AudioSource PlayerBaseSet(string group)
     {
@@ -405,23 +406,27 @@ public class SoundManager : MonoBehaviour
         switch (sfxGroupName)
         {
             case "structureSFX":
-                PlaySFX(obj, true, sfxName, 0.2f);
+                PlaySFX(obj, 1, sfxName, 0.2f);
                 break;
             case "unitSFX":
-                PlaySFX(obj, false, sfxName, 0.03f);
+                PlaySFX(obj, 2, sfxName, 0.03f);
                 break;
             default:
                 return;
         }
     }
 
-    public void PlaySFX(GameObject target, bool isStrSound, string sfxName, float cooldown)
+    public void PlaySFX(GameObject target, int soundSource, string sfxName, float cooldown)
     {
+        // soundSource 0: ui, 1: structrue, 2: unit
         if (target == null) return;
 
-        float distance = Vector3.Distance(target.transform.position, mainCamera.transform.position);
-        if (distance > defaultMaxDistance)
-            return;
+        if (soundSource > 0)
+        {
+            float distance = Vector3.Distance(target.transform.position, mainCamera.transform.position);
+            if (distance > defaultMaxDistance)
+                return;
+        }
 
         if (lastPlayTime.TryGetValue(sfxName, out float lastTime))
         {
@@ -429,9 +434,23 @@ public class SoundManager : MonoBehaviour
                 return;
         }
 
-        AudioClip[] audioClips = isStrSound ? audioClipRefsSO.structureSfx : audioClipRefsSO.unitSfx;
-        AudioClip clip = null;
+        AudioClip[] audioClips;
+        switch (soundSource)
+        {
+            case 0:
+                audioClips = audioClipRefsSO.uiSfx;
+                break;
+            case 1:
+                audioClips = audioClipRefsSO.structureSfx;
+                break;
+            case 2:
+                audioClips = audioClipRefsSO.unitSfx;
+                break;
+            default:
+                return;
+        }
 
+        AudioClip clip = null;
         for (int i = 0; i < audioClips.Length; i++)
         {
             if (sfxName == audioClips[i].name)
@@ -446,7 +465,26 @@ public class SoundManager : MonoBehaviour
         source.transform.position = target.transform.position;
         source.clip = clip;
         source.volume = sfxVolume;
-        source.maxDistance = defaultMaxDistance;
+
+        switch (soundSource)
+        {
+            case 0:
+                source.spatialBlend = 0f;
+                break;
+            case 1:
+                source.spatialBlend = 1f;
+                source.minDistance = defaultMinDistance;
+                source.maxDistance = defaultMaxDistance;
+                break;
+            case 2:
+                source.spatialBlend = 1f;
+                source.minDistance = unitDefaultMinDistance;
+                source.maxDistance = unitDefaultMaxDistance;
+                break;
+            default:
+                return;
+        }
+
         source.Play();
 
         lastPlayTime[sfxName] = Time.time;
@@ -462,16 +500,18 @@ public class SoundManager : MonoBehaviour
 
     public void PlayUISFX(string sfxName)
     {
-        for (int i = 0; i < audioClipRefsSO.uiSfx.Length; i++)
-        {
-            if (sfxName == audioClipRefsSO.uiSfx[i].name)
-            {
-                uiSfxPlayer.clip = audioClipRefsSO.uiSfx[i];
-                uiSfxPlayer.volume = sfxVolume;
-                uiSfxPlayer.Play();
-                return;
-            }
-        }
+        PlaySFX(mainCamera.gameObject, 0, sfxName, 0.01f);
+
+        //for (int i = 0; i < audioClipRefsSO.uiSfx.Length; i++)
+        //{
+        //    if (sfxName == audioClipRefsSO.uiSfx[i].name)
+        //    {
+        //        uiSfxPlayer.clip = audioClipRefsSO.uiSfx[i];
+        //        uiSfxPlayer.volume = sfxVolume;
+        //        uiSfxPlayer.Play();
+        //        return;
+        //    }
+        //}
     }
 
     #endregion

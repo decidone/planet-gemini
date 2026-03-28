@@ -43,20 +43,20 @@
   "Belt":{
     "Build":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items between factories.","basicScience":true,"sortIndex":3},
-      "2":{"items":["IronPlate","Cogwheel"],"amounts":[25,25],"coreLv":2,"time":20,"Info":"Faster than Belt Lv1.","basicScience":false,"sortIndex":4},
-      "3":{"items":["SteelPlate","Rubber"],"amounts":[40,40],"coreLv":4,"time":40,"Info":"Faster than Belt Lv2.","basicScience":false,"sortIndex":2}
+      "2":{"items":["IronPlate","Cogwheel"],"amounts":[25,25],"coreLv":2,"time":20,"Info":"Transports items between factories. Faster than Belt Lv1.","basicScience":false,"sortIndex":4},
+      "3":{"items":["SteelPlate","Rubber"],"amounts":[40,40],"coreLv":4,"time":40,"Info":"Transports items between factories. Faster than Belt Lv2.","basicScience":false,"sortIndex":2}
     }
   },
   "UnderBelt":{
     "Build":{
       "1":{"items":["Coal"],"amounts":[1],"coreLv":1,"time":1,"Info":"Transports items through the underground.","basicScience":true,"sortIndex":4},
-      "2":{"items":["IronPlate","Cogwheel"],"amounts":[25,25],"coreLv":2,"time":20,"Info":"Faster than UnderBelt Lv1.","basicScience":false,"sortIndex":5},
-      "3":{"items":["SteelPlate","Rubber"],"amounts":[40,40],"coreLv":4,"time":40,"Info":"Faster than UnderBelt Lv2.","basicScience":false,"sortIndex":3}
+      "2":{"items":["IronPlate","Cogwheel"],"amounts":[25,25],"coreLv":2,"time":20,"Info":"Transports items through the underground. Faster than UnderBelt Lv1.","basicScience":false,"sortIndex":5},
+      "3":{"items":["SteelPlate","Rubber"],"amounts":[40,40],"coreLv":4,"time":40,"Info":"Transports items through the underground. Faster than UnderBelt Lv2.","basicScience":false,"sortIndex":3}
     }
   },
   "Smelter":{
     "Build":{
-      "1":{"items":["IronPlate","Coal"],"amounts":[30,30],"coreLv":2,"time":20,"Info":"Smelts two types of ores into steel and alloy ingot. Requires energy.","basicScience":false,"sortIndex":1}
+      "1":{"items":["IronPlate","Coal"],"amounts":[30,30],"coreLv":2,"time":20,"Info":"Smelts two types of ores into steel and alloy ingots. Requires energy.","basicScience":false,"sortIndex":1}
     }
   },
   "Constructor":{
@@ -66,18 +66,18 @@
   },
   "Assembler":{
     "Build":{
-      "1":{"items":["SteelPlate","Screw"],"amounts":[20,40],"coreLv":2,"time":20,"Info":"Produces components from two material. Requires energy.","basicScience":false,"sortIndex":3}
+      "1":{"items":["SteelPlate","Screw"],"amounts":[20,40],"coreLv":2,"time":20,"Info":"Produces components from two materials. Requires energy.","basicScience":false,"sortIndex":3}
     }
   },
   "Manufacturer":{
     "Build":{
-      "1":{"items":["Motor","SteelBeam"],"amounts":[30,40],"coreLv":3,"time":40,"Info":"Produces components from three material. Requires energy.","basicScience":false,"sortIndex":6}
+      "1":{"items":["Motor","SteelBeam"],"amounts":[30,40],"coreLv":3,"time":40,"Info":"Produces components from three materials. Requires energy.","basicScience":false,"sortIndex":6}
     }
   },
   "Splitter":{
     "Build":{
       "1":{"items":["IronPlate"],"amounts":[10],"coreLv":1,"time":5,"Info":"Transports items from one input belt to three output belts.","basicScience":false,"sortIndex":7},
-      "2":{"items":["Module"],"amounts":[30],"coreLv":3,"time":20,"Info":"Allows setting items for distribution.","basicScience":false, "sortIndex":7}
+      "2":{"items":["Module"],"amounts":[30],"coreLv":3,"time":20,"Info":"Allows filtering specific items for each output belt.","basicScience":false, "sortIndex":7}
     }
   },
   "Merger":{
@@ -94,7 +94,7 @@
   },
   "Disintegrator":{
     "Build":{
-      "1":{"items":["Motor","SteelPlate"],"amounts":[20,30],"coreLv":2,"time":40,"Info":"Grind items to obtain a trade resource called 'Scrap'.","basicScience":false, "sortIndex":13}
+      "1":{"items":["Motor","SteelPlate"],"amounts":[20,30],"coreLv":2,"time":40,"Info":"Grinds items to obtain a trade resource called 'Scrap'.","basicScience":false, "sortIndex":13}
     }
   },
   "Unloader":{
@@ -104,7 +104,7 @@
   },
   "Transporter":{
     "Build":{
-      "1":{"items":["Motor","SteelBeam"],"amounts":[30,40],"coreLv":3,"time":20,"Info":"Transports items to other Transporters by using drones. Can be connected to other transports on the map.","basicScience":false, "sortIndex":2}
+      "1":{"items":["Motor","SteelBeam"],"amounts":[30,40],"coreLv":3,"time":20,"Info":"Transports items to other Transporters by using drones. Can be connected to other Transporters on the map.","basicScience":false, "sortIndex":2}
     }
   },
   "Pump":{
@@ -114,7 +114,7 @@
   },
   "Pipe":{
     "Build":{
-      "1":{"items":["IronPlate","Screw"],"amounts":[25,25],"coreLv":2,"time":5,"Info":"Transports fluids between factories","basicScience":false, "sortIndex":7}
+      "1":{"items":["IronPlate","Screw"],"amounts":[25,25],"coreLv":2,"time":5,"Info":"Transports fluids between factories.","basicScience":false, "sortIndex":7}
     }
   },
   "UnderPipe":{
@@ -129,7 +129,7 @@
   },
   "Extractor":{
     "Build":{
-      "1":{"items":["Motor","SteelBeam"],"amounts":[30,40],"coreLv":3,"time":30,"Info":"Extracts crude oil out of oil tiles. Oil tiles can be found in the Desert biome.","basicScience":false, "sortIndex":3}
+      "1":{"items":["Motor","SteelBeam"],"amounts":[30,40],"coreLv":3,"time":30,"Info":"Extracts crude oil from oil tiles found in the Desert biome.","basicScience":false, "sortIndex":3}
     }
   },
   "Refinery":{
@@ -154,7 +154,7 @@
   },
   "ImprovedRepeater":{
     "Build":{
-      "1":{"items":["Cable"],"amounts":[40],"coreLv":3,"time":25,"Info":"Extends the large coverage of the energy network.","basicScience":false, "sortIndex":8}
+      "1":{"items":["Cable"],"amounts":[40],"coreLv":3,"time":25,"Info":"Extends the coverage of the energy network over a larger area.","basicScience":false, "sortIndex":8}
     }
   },
   "LDConnector":{

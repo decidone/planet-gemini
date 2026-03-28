@@ -160,7 +160,7 @@ public class RepairerDrone : UnitAi
 
         foreach (Structure str in sortedStrTargets)
         {
-            if (repairAmount > 0 && str.hp != str.maxHp)
+            if (repairAmount > 0 && str.hp != str.maxHp && !str.isPreBuilding)
             {
                 repairAmount--;
                 str.RepairFunc(damage);

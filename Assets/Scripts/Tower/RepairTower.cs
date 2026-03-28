@@ -97,7 +97,7 @@ public class RepairTower : TowerAi
         bool isRepairing = false;
         foreach (Structure str in sortedUnitTargets)
         {
-            if (str.hp != str.maxHp)
+            if (str.hp != str.maxHp && !str.isPreBuilding)
             {
                 repairAmount--;
                 str.RepairFunc(damage);
