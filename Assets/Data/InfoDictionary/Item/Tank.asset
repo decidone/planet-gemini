@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Tank
   type: 3
-  explanation: 'The Tank is a vehicle for the players. It requires fuel and ammunition
-    to move and attack. '
+  explanation: The Tank is a combat vehicle that requires Fuel and ammunition to
+    move and attack.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

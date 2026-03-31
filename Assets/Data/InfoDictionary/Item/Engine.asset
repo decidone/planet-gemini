@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Engine
   type: 3
-  explanation: A component for construction or other parts.
+  explanation: A mechanical engine used to power vehicles and advanced robots.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

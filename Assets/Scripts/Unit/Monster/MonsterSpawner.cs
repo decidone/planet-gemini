@@ -563,7 +563,7 @@ public class MonsterSpawner : WorldObj
         Overall.instance.OverallCount(0);
 
         int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(ItemList.instance.itemDic["VoidShard"]);
-        GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, 1, transform.position);
+        GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, spawnerLevel, transform.position);
 
         //spawnerSearchColl.DieFunc();
         spawnerAwakeColl.DieFunc();

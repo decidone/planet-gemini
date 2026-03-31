@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: AdamantiteArmor
   type: 3
-  explanation: Materials made by smelting ore.
+  explanation: Heavy armor forged from Adamantite Alloy.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Chainsaw
   type: 3
-  explanation: A trade item.
+  explanation: A powerful cutting tool. Can be sold to merchants for profit.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

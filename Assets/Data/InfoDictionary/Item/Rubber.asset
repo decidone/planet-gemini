@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Rubber
   type: 3
-  explanation: Materials that can be obtained through refining crude oil.
+  explanation: A flexible material obtained by refining Crude Oil.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

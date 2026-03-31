@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Unit Control
   type: 0
-  explanation: By controlling the units produced, you can actively defend against
-    enemies or destroy spawners.
+  explanation: Produced units can be controlled to actively defend against enemies
+    or destroy spawners.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 0036688b70ffdb34a9f1f7c2a5a89928, type: 3}

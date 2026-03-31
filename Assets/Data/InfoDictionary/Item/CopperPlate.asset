@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CopperPlate
   type: 3
-  explanation: Materials made easy to use by melting the ingot.
+  explanation: A flat plate pressed from Copper Bar, used in construction and crafting.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

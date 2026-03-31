@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CorrosionDrone
   type: 3
-  explanation: The Bounce Robot is a controllable unit that attacks nearby enemies.
+  explanation: The Corrosion Drone is a controllable unit that reduces the defense
+    of nearby monsters.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

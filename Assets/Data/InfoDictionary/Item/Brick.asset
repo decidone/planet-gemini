@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Brick
   type: 3
-  explanation: Building materials made of stone.
+  explanation: A building material made by firing Stone in a Furnace.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: SteelBeam
   type: 3
-  explanation: A component for construction or other parts.
+  explanation: A structural beam used in construction.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

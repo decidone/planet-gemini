@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CopperBullet
   type: 3
-  explanation: An ammunition that can fire from a Tank and Artillery Tower.
+  explanation: Ammunition that can be fired from a Tank or Artillery Tower.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

@@ -15,7 +15,7 @@ MonoBehaviour:
   name: SpinRobot
   type: 3
   explanation: The Spin Robot is a controllable unit that performs area-of-effect
-    attacks in the surrounding area.
+    attacks.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

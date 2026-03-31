@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 13
   title: Chop Tree
-  description: Chop trees to get logs.
+  description: Chop trees to get Logs.
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 0}

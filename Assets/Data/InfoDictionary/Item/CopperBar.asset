@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CopperBar
   type: 3
-  explanation: Materials made by smelting ore.
+  explanation: A material made by smelting Copper Ore.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

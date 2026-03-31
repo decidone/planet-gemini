@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: IronOre
   type: 3
-  explanation: Raw materials that can be obtained through mining.
+  explanation: A raw material that can be obtained through mining.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

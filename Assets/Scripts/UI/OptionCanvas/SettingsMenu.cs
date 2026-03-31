@@ -232,7 +232,7 @@ public class SettingsMenu : MonoBehaviour
     public void SaveData()
     {
         PlayerPrefs.SetInt("WindowIndex", windowSizeIndex);
-        PlayerPrefs.SetInt("TutorialQuest", tutorialQuestToggle.isOn ? 0 : 1);
+        PlayerPrefs.SetInt("TutorialQuest", tutorialQuestToggle.isOn ? 1 : 0);
         PlayerPrefs.SetInt("AutoSaveTime", autoSaveValue);
         if (GameManager.instance != null)
         {
@@ -247,8 +247,8 @@ public class SettingsMenu : MonoBehaviour
         KeyBindingPanelSet();
 
         windowSizeIndex = PlayerPrefs.GetInt("WindowIndex", 0);
-        tutorialQuestToggle.isOn = PlayerPrefs.GetInt("TutorialQuest", 0) == 0;
-        autoSaveSlider.value = PlayerPrefs.GetInt("AutoSaveTime", 10);
+        tutorialQuestToggle.isOn = PlayerPrefs.GetInt("TutorialQuest", 1) != 0;
+        autoSaveSlider.value = PlayerPrefs.GetInt("AutoSaveTime", 15);
         autoSaveValue = (int)autoSaveSlider.value;
         autoSaveInput.text = autoSaveValue.ToString();
         autoSaveInterval = autoSaveValue * 60;

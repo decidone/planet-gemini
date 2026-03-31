@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CopperGoblet
   type: 3
-  explanation: A trade item.
+  explanation: A decorative goblet crafted from Copper. Can be sold to merchants
+    for profit.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

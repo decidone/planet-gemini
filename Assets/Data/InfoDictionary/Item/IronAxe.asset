@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: IronAxe
   type: 3
-  explanation: A trade item.
+  explanation: A sturdy axe forged from Iron. Can be sold to merchants for profit.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

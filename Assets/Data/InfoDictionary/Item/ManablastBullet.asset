@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: ManablastBullet
   type: 3
-  explanation: An ammunition that can fire from a Tank and Artillery Tower. It has
-    blast damage and armor penetration.
+  explanation: Ammunition that can be fired from a Tank or Artillery Tower. Deals
+    blast damage with armor penetration.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

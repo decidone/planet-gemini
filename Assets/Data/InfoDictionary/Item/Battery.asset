@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Battery
   type: 3
-  explanation: A component for construction or other parts.
+  explanation: A portable power source used in advanced crafting.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

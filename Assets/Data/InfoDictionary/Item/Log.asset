@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Log
   type: 3
-  explanation: Tradable items from chopping trees.
+  explanation: A resource obtained by chopping trees. Can be sold to merchants for
+    profit.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

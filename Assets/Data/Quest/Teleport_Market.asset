@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   title: Teleport
-  description: Use the portal to teleport to market.
+  description: Use the portal to teleport to the market.
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 0}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 10
   title: Trade
-  description: Buy Coals from the merchant to power the Coal Generator.
+  description: Buy Coal from the merchant to power the Coal Generator.
   item: {fileID: 11400000, guid: 4cdb2bd0e2a1d034fba4c0bce03ae51c, type: 2}
   strData: {fileID: 0}
   unitData: {fileID: 0}

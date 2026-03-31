@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: ToxicPlant
   type: 3
-  explanation: Primitive plants that can be a replacement for crude oil.
+  explanation: A primitive plant that can be used as a substitute for Crude Oil.
+    Can be purchased from merchants.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

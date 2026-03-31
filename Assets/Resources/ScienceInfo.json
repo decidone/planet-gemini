@@ -179,7 +179,7 @@
   },
   "ManaGenerator":{
     "Build":{
-      "1":{"items":["ManaStone","Motor"],"amounts":[20,40],"coreLv":3,"time":60,"Info":"Generates a large amount of energy from mana stones.","basicScience":false, "sortIndex":11}
+      "1":{"items":["ManaStone","Motor"],"amounts":[20,40],"coreLv":3,"time":60,"Info":"Generates a large amount of energy from Mana Stones.","basicScience":false, "sortIndex":11}
     }
   },
   "AutoBuyer":{
@@ -213,12 +213,12 @@
   },
   "IceTower":{
     "Battle":{
-      "1":{"items":["ManaStone"],"amounts":[5],"coreLv":2,"time":30,"Info":"A tower that slows down the attacked enemies. Requires energy.","basicScience":false,"sortIndex":17}
+      "1":{"items":["ManaStone"],"amounts":[5],"coreLv":2,"time":30,"Info":"A tower that slows down attacked enemies. Requires energy.","basicScience":false,"sortIndex":17}
     }
   },
   "PoisonTower":{
     "Battle":{
-      "1":{"items":["ManaStone","ToxicPlant"],"amounts":[10,20],"coreLv":3,"time":30,"Info":"A tower that deals continuous damage over time to the attacked enemies. Requires energy.","basicScience":false,"sortIndex":16}
+      "1":{"items":["ManaStone","ToxicPlant"],"amounts":[10,20],"coreLv":3,"time":30,"Info":"A tower that deals continuous damage over time to attacked enemies. Requires energy.","basicScience":false,"sortIndex":16}
     }
   },
   "FireTower":{
@@ -254,7 +254,7 @@
   },
   "SpinRobot":{
     "Battle":{
-      "1":{"items":["ControlUnit"],"amounts":[40],"coreLv":4,"time":60,"Info":"A controllable unit that performs area-of-effect attacks in the surrounding area.","basicScience":false,"sortIndex":10},
+      "1":{"items":["ControlUnit"],"amounts":[40],"coreLv":4,"time":60,"Info":"A controllable unit that performs area-of-effect attacks.","basicScience":false,"sortIndex":10},
       "2":{"items":["AdamantiteArmor"],"amounts":[40],"coreLv":5,"time":100,"Info":"Able to upgrade the Spin Robot.","basicScience":false,"sortIndex":4}
     }
   },
@@ -276,7 +276,7 @@
   },
   "Tank":{
     "Battle":{
-      "1":{"items":["AdamantiteArmor","Engine"],"amounts":[40,40],"coreLv":5,"time":180,"Info":"A ridable tank that requires fuel and ammunition to move and attack.","basicScience":false,"sortIndex":1}
+      "1":{"items":["AdamantiteArmor","Engine"],"amounts":[40,40],"coreLv":5,"time":180,"Info":"A ridable tank that requires Fuel and ammunition to move and attack.","basicScience":false,"sortIndex":1}
     }
   },
   "StructureUpgrade":{

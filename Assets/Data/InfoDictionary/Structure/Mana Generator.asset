@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Mana Generator
   type: 1
   explanation: The Mana Generator generates large amounts of energy by consuming
-    mana stones.
+    Mana Stones.
   strDataList:
   - {fileID: 11400000, guid: 7d5132a43a5e90348b8c7af133d4e2c3, type: 2}
   layout: 1

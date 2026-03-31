@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: ManaStone
   type: 3
-  explanation: A crystal possesses mysterious power. It can be used as an energy
+  explanation: A crystal that possesses mysterious power. Can be used as an energy
     source for elemental towers and generators.
   strDataList: []
   layout: 2

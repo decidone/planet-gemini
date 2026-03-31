@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: AdamantiteOre
   type: 3
-  explanation: Raw materials that can be obtained through mining. It needs a high-level
-    miner. Adamantite veins are found in cold biomes.
+  explanation: A rare ore that can be obtained through mining. Requires a high-level
+    Miner.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

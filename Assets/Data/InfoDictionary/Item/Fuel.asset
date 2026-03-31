@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Fuel
   type: 3
-  explanation: A trade item. Also use the tank's fuel.
+  explanation: A refined fuel that powers Tanks. Can be sold to merchants for profit.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

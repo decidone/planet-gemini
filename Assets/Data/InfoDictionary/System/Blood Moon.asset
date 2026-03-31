@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Blood Moon
   type: 0
-  explanation: On each planet, the blood moon rises periodically. During this period,
+  explanation: On each planet, the Blood Moon rises periodically. During this period,
     monsters become ferocious, spawning in waves from spawners and charging toward
     the portal. Waves can be suppressed at the portal.
   strDataList: []

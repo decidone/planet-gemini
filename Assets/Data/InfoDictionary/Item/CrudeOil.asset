@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: CrudeOil
   type: 3
-  explanation: Crude oil is refined and used to make chemicals.
+  explanation: A raw resource that can be refined into chemicals.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

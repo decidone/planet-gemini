@@ -16,8 +16,8 @@ MonoBehaviour:
   title: Transport Item
   description: 'Transport any item to another planet.
 
-    (Need a pair of Item Teleporter
-    and Item Receiver built in different planet.)'
+    (Needs a pair of Item
+    Teleporter and Item Receiver built on each planet)'
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 0}

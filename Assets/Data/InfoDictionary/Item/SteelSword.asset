@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: SteelSword
   type: 3
-  explanation: A trade item.
+  explanation: A sharp sword forged from Steel. Can be sold to merchants for profit.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

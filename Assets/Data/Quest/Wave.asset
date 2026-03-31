@@ -17,7 +17,7 @@ MonoBehaviour:
   description: 'Prepare for the Blood Moon!
 
     (Monster waves don''t always occur
-    during the Blood Moon.)'
+    during the Blood Moon)'
   item: {fileID: 0}
   strData: {fileID: 0}
   unitData: {fileID: 0}

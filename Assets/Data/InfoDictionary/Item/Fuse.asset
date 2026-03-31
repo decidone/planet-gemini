@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Fuse
   type: 3
-  explanation: A component for construction or other parts.
+  explanation: An electrical component used in advanced crafting.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

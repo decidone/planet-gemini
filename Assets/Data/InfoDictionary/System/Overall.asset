@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Overall
   type: 0
-  explanation: Shows what you produced, used, bought, sold, sent, and received.
+  explanation: Shows overall statistics for production, usage, purchases, sales,
+    and transfers.
   strDataList: []
   layout: 1
   videoClip: {fileID: 32900000, guid: 74bc60e972e00b940bf969f3861567f6, type: 3}

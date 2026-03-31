@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Screw
   type: 3
-  explanation: A component for construction or other parts.
+  explanation: A basic fastener used in construction and crafting.
   strDataList: []
   layout: 2
   videoClip: {fileID: 0}

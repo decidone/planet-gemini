@@ -195,7 +195,7 @@ public class Chat : NetworkBehaviour
                         ScienceManager.instance.UnlockAll();
                         break;
                     case "/test":
-                        QuestManager.instance.QuestCompCheck(50);
+                        PlayerPrefs.DeleteAll();
                         break;
                 }
 

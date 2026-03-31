@@ -15,7 +15,7 @@ MonoBehaviour:
   name: Auto Buyer
   type: 1
   explanation: The Auto Buyer can automatically purchase items from the market by
-    using gems. After purchase, the drone transports the product.
+    using gems. After purchase, a drone transports the product.
   strDataList:
   - {fileID: 11400000, guid: 442afd89eb8c21d4d8afb2b76dc12e8f, type: 2}
   layout: 1
