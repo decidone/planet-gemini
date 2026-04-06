@@ -204,7 +204,7 @@ public class RepairerDrone : UnitAi
              targetColls
         );
 
-        if (hitCount == 0)
+        if (hitCount == 0 && !isTargetSet)
         {
             unitTargetList.Clear();
             playerTargetList.Clear();

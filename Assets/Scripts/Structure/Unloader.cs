@@ -167,6 +167,7 @@ public class Unloader : LogisticsCtrl
         if (itemIndex != -1)
         {
             selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+            FactoryOverlay();
         }
         UIReset();
     }

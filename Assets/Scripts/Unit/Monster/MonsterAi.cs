@@ -42,7 +42,7 @@ public class MonsterAi : UnitCommonAi
     float debuffDuration = 2f;  // 등대 디버프 지속시간 2초, 등대 범위 내에 몬스터가 있을 때 디버프 갱신 시간 1초
     float debuffRate;           // 등대가 속한 에너지 그룹의 에너지 효율 상태에 따른 디버프 배율 계산
     float reducedDefensePer;    // 방어력 감소 퍼센트
-    float[] monsterState = new float[8] { 0.1f, 0.12f, 0.15f, 0.17f, 0.20f, 0.22f, 0.25f, 0.27f };
+    float[] monsterState = new float[8] { 0.05f, 0.07f, 0.10f, 0.12f, 0.15f, 0.17f, 0.20f, 0.22f };
     float speedMove = 10;
     public bool targetOn;
     Transform _t;
@@ -91,7 +91,7 @@ public class MonsterAi : UnitCommonAi
         }
         else
         {
-            MonsterStatusSet((1 + monsterState[spawnerScript.spawnerLevel]), 0);
+            MonsterStatusSet((1 + monsterState[spawnerScript.spawnerLevel]), 1);
         }
     }
 

@@ -14,8 +14,9 @@ public class PlayerStatus : WorldObj
     Image hpBar;
     [SerializeField]
     Image hpBackBar;
-    public float hp = 100.0f;
-    public float maxHp = 100.0f;
+    public float hp = 200.0f;
+    public float maxHp = 200.0f;
+    protected float defense = 50f;
     public float tankHp;
     public float tankMaxHp;
     public float selfHealingAmount;
@@ -258,14 +259,19 @@ public class PlayerStatus : WorldObj
             StartCoroutine(TakeDamageEffect());
         }
 
+        float defenseRate = defense * 0.01f; // 0 ~ 1 변환
+        float reducedDamage = reducedDamage = Mathf.Max(damage * (1f - defenseRate), 5f);
+
         if (!tankOn)
         {
             if (hp <= 0f)
                 return;
 
-            hp -= damage;
+            reducedDamage = Mathf.Max(damage * (1f - defenseRate), 5f);
+
+            hp -= reducedDamage;
             if (IsServer && GameManager.instance.violentDay)
-                GameManager.instance.GetWaveDamage(damage);
+                GameManager.instance.GetWaveDamage(reducedDamage);
 
             if (hp < 0f)
             {
@@ -282,9 +288,9 @@ public class PlayerStatus : WorldObj
             if (tankHp <= 0f)
                 return;
 
-            tankHp -= damage;
+            tankHp -= reducedDamage;
             if (IsServer && GameManager.instance.violentDay)
-                GameManager.instance.GetWaveDamage(damage);
+                GameManager.instance.GetWaveDamage(reducedDamage);
 
             if (tankHp < 0f)
             {

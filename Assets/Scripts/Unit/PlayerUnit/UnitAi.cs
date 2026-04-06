@@ -33,6 +33,7 @@ public class UnitAi : UnitCommonAi
     List<Vector3> aggroPath = new List<Vector3>();
     private int aggropointIndex; // 현재 이동 중인 경로 점 인덱스
     protected bool isTargetSet = false;
+    WorldObj settingTarget;
     bool isAttackMove = true;
     public float selfHealingAmount;
     public float selfHealInterval;
@@ -463,7 +464,7 @@ public class UnitAi : UnitCommonAi
     public void HoldFuncServerRpc()
     {
         isHold = true;
-        isAttackMove = true;
+        isAttackMove = false;
         isTargetSet = false;
         isPatrolMove = true;
         playerUnitPortalIn = false;
@@ -479,7 +480,7 @@ public class UnitAi : UnitCommonAi
             targetColls
         );
 
-        if (hitCount == 0)
+        if (hitCount == 0 && !isTargetSet)
         {
             aggroTarget = null;
             if (targetList.Count > 0)
@@ -527,6 +528,51 @@ public class UnitAi : UnitCommonAi
                 aggroTarget = null;
             }
         }
+        else
+        {
+            bool targetExists = false;
+
+            if (settingTarget)
+            {
+                if(settingTarget.TryGet(out MonsterAi monster) && !monster.dieCheck)
+                {
+                    targetExists = true;
+                }    
+                else if(settingTarget.TryGet(out MonsterSpawner spawner) && !spawner.dieCheck)
+                {
+                    targetExists = true;
+                }
+            }
+
+            if (!targetExists)
+            {
+                aggroTarget = null;
+                isTargetSet = false;
+                settingTarget = null;
+
+                if (targetList.Count > 0)
+                {
+                    float closestDistance = float.MaxValue;
+
+                    foreach (WorldObj monster in targetList)
+                    {
+                        if (monster != null)
+                        {
+                            float distance = Vector3.Distance(tr.position, monster.transform.position);
+                            if (distance < closestDistance)
+                            {
+                                closestDistance = distance;
+                                aggroTarget = monster;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    aggroTarget = null;
+                }
+            }
+        }
 
         if (aggroTarget != null)
         {
@@ -551,7 +597,8 @@ public class UnitAi : UnitCommonAi
     {
         isTargetSet = true;
         networkObjectReference.TryGet(out NetworkObject networkObject);
-        aggroTarget = networkObject.GetComponent<WorldObj>();
+        settingTarget = networkObject.GetComponent<WorldObj>();
+        aggroTarget = settingTarget;
         AttackTargetDisCheck();
         if (checkPathCoroutine == null)
             checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));

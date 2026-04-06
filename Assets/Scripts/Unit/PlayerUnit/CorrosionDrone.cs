@@ -12,13 +12,11 @@ public class CorrosionDrone : UnitAi
     [SerializeField] int debuffAmount;
     [SerializeField] List<MonsterAi> debuffTargetList = new List<MonsterAi>();
      
-    public bool isDebuffState = false;
-
     protected override void Awake()
     {
         base.Awake();
-        int mask = (1 << LayerMask.NameToLayer("Monster"));
-
+        int mask = (1 << LayerMask.NameToLayer("Monster")) |
+            (1 << LayerMask.NameToLayer("Spawner"));
         contactFilter.SetLayerMask(mask);
         contactFilter.useLayerMask = true;
     }
@@ -54,7 +52,7 @@ public class CorrosionDrone : UnitAi
             targetColls
         );
 
-        if (hitCount == 0)
+        if (hitCount == 0 && !isTargetSet)
         {
             aggroTarget = null;
             if(targetList.Count > 0)
@@ -62,11 +60,6 @@ public class CorrosionDrone : UnitAi
                 targetList.Clear();
             }
 
-            if (isDebuffState)
-            {
-                animator.SetBool("isAttack", false);
-                isDebuffState = false;
-            }
             return;
         }
 
@@ -130,13 +123,6 @@ public class CorrosionDrone : UnitAi
             {
                 monster.RefreshDebuffServerRpc(1, debuffPer);    // 서버, 클라이언트 상관없이 디버프 띄워주는데 데미지 계산은 서버 디버프 유무로만 계산
             }
-        }
-
-        if (debuffTargetList.Count > 0 && !isDebuffState)
-        { 
-            animator.Play("Attack", -1, 0);
-            animator.SetBool("isAttack", true);
-            isDebuffState = true;
         }
     }
 }

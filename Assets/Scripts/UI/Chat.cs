@@ -188,8 +188,11 @@ public class Chat : NetworkBehaviour
                     case "/energy regroup":
                         NetworkObjManager.instance.InitConnectors();
                         break;
-                    case "/wave":
+                    case "/wave set":
                         GameManager.instance.WaveForcedOperation();
+                        break;
+                    case "/wave start":
+                        GameManager.instance.WaveForcedStart();
                         break;
                     case "/science":
                         ScienceManager.instance.UnlockAll();
