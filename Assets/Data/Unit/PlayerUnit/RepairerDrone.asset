@@ -15,13 +15,13 @@ MonoBehaviour:
   unitName: RepairerDrone
   maxHp: 200
   upgradeMaxHp: 250
-  damage: 4
-  upgradeDamage: 6
+  damage: 5
+  upgradeDamage: 7
   moveSpeed: 7
   attackDist: 6
   attDelayTime: 5
   upgradeAttDelayTime: 1.5
-  colliderRadius: 10
+  colliderRadius: 20
   minCollRad: 0
   defense: 12
   upgradeDefense: 17

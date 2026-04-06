@@ -185,7 +185,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
             spawners[i].SetCorruption();
     }
 
-    public bool ViolentDayOn(bool hostMap, bool forcedOperation)
+    public bool ViolentDayOn(bool hostMap)
     {
         var allSpawners = monsterSpawners
             .SelectMany(kv => kv.Value)
@@ -251,7 +251,6 @@ public class MonsterSpawnerManager : NetworkBehaviour
             {
                 if (spawner.violentDay)
                 {
-                    //spawner.WaveStart(); // 스폰 코드 변경해야함
                     SpawnWave(spawner);
                     WaveStartWarrningServerRpc();
                     spawner.violentDay = false;

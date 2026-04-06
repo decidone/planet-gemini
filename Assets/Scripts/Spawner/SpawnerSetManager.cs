@@ -262,14 +262,14 @@ public class SpawnerSetManager : NetworkBehaviour
             bool placed = false;
 
             float localMinDistance = minSpawnerDistance;
-            int maxAttempts = 40;
+            int maxAttempts = 60;
             int attempts = 0;
 
             while (attempts < maxAttempts)
             {
                 if (attempts > 0 && attempts % 5 == 0)
                 {
-                    localMinDistance *= 0.5f; 
+                    localMinDistance *= 0.5f;
                 }
 
                 attempts++;
@@ -314,6 +314,7 @@ public class SpawnerSetManager : NetworkBehaviour
                     }
                 }
 
+
                 if (tooClose)
                 {
                     cantPos.Add(newPoint);
@@ -326,7 +327,6 @@ public class SpawnerSetManager : NetworkBehaviour
 
             if (!placed)
             {
-                Debug.LogWarning($"스포너 배치 실패 - 적합한 위치 없음 / pos:{centerPos}");
                 xIndex++;
                 if (xIndex >= splitCount) { xIndex = 0; yIndex++; }
                 continue;

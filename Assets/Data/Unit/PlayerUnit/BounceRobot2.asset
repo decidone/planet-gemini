@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: BounceRobot2
   m_EditorClassIdentifier: 
   unitName: BounceRobot
-  maxHp: 180
-  upgradeMaxHp: 230
-  damage: 33
-  upgradeDamage: 38
+  maxHp: 230
+  upgradeMaxHp: 280
+  damage: 35
+  upgradeDamage: 45
   moveSpeed: 7
   attackDist: 2
-  attDelayTime: 0.9
-  upgradeAttDelayTime: 1
-  colliderRadius: 10
+  attDelayTime: 0.7
+  upgradeAttDelayTime: 0.5
+  colliderRadius: 20
   minCollRad: 0
-  defense: 13
-  upgradeDefense: 18
+  defense: 25
+  upgradeDefense: 35
   sellPrice: 300
   patrolRad: 0

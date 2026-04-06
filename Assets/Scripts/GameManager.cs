@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
+using UnityEditor;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -128,8 +129,6 @@ public class GameManager : NetworkBehaviour
     int energyOverLimitDay;
 
     public bool violentDay;
-    [SerializeField]
-    bool forcedOperation;
     [SerializeField]
     int violentCycle;
     [SerializeField]
@@ -434,7 +433,6 @@ public class GameManager : NetworkBehaviour
 
                 if (bloodMoon && violentDay)
                 {
-                    forcedOperation = false;
                     if (IsServer)
                     {
                         monsterSpawnerManager.WavePointOff();
@@ -540,7 +538,7 @@ public class GameManager : NetworkBehaviour
 
                 if (canWave)
                 {
-                    violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet, forcedOperation);
+                    violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet);
                 }
             }
             else
@@ -601,7 +599,84 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     void WaveForcedOperationServerRpc()
     {
-        forcedOperation = true;
+        float energyUseFullAmount;
+        bloodMoonEventState = true;
+        energyOverLimitDay = day;
+        BasicUIBtns.instance.BloodMoonUIOn();
+        portal[0].BloodMoonEventStart();
+        portal[1].BloodMoonEventStart();
+
+        if (!violentDay)
+        {
+            energyUseFullAmount = hostMapEnergyUseAmount + clientMapEnergyUseAmount;
+
+            float hostPercent;
+            float clientPercent;
+
+            if (energyUseFullAmount <= 0f)
+            {
+                // 디버그 상태 (에너지 사용량 없음) → 50:50 으로 폴백
+                hostPercent = 1f;
+                clientPercent = 0f;
+            }
+            else
+            {
+                hostPercent = hostMapEnergyUseAmount / energyUseFullAmount;
+                clientPercent = clientMapEnergyUseAmount / energyUseFullAmount;
+            }
+
+            if (LobbySaver.instance.currentLobby?.MemberCount < 2)
+            {
+                wavePlanet = (hostPercent >= clientPercent);
+            }
+            else
+            {
+                if (hostPercent >= 0.70f)
+                {
+                    wavePlanet = true;   // host 행성
+                }
+                else if (clientPercent >= 0.70f)
+                {
+                    wavePlanet = false;  // client 행성
+                }
+                else
+                {
+                    // 랜덤 값
+                    float rand = UnityEngine.Random.value; // 0~1
+
+                    // 비율에 따라 선택
+                    wavePlanet = rand <= hostPercent;
+                }
+            }
+
+            bool canWave = true;
+            bool spawnerExists = monsterSpawnerManager.HasAnyMonsterSpawner(); // 발생 행성에 스포너가 있는지
+            bool canSpawnOnWavePlanet = monsterSpawnerManager.HasMonsterSpawnerOnMap(wavePlanet); // 발생 행성에 스포너가 있는지
+
+            if (!spawnerExists) // 둘다 없는 경우
+                canWave = false;
+
+            if (!canSpawnOnWavePlanet) // 발생 행성에 스포너가 없는 경우
+                wavePlanet = !wavePlanet;
+
+            if (canWave)
+            {
+                violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet);
+            }
+        }
+
+        bloodMoonDDayText.text = "D - Day";
+    }
+
+    public void WaveForcedStart()
+    {
+        WaveForcedStartServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void WaveForcedStartServerRpc()
+    {
+        monsterSpawnerManager.ViolentDayStart();
     }
 
     void SetBrightness(int level)

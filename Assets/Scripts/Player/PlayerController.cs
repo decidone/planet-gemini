@@ -58,8 +58,6 @@ public class PlayerController : NetworkBehaviour
     float reloadTimer;
     [SerializeField]
     float reloadInterval;
-    [SerializeField]
-    float slowdown;
     bool attackMotion;
     [SerializeField]
     float stopTime;
@@ -224,14 +222,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (!attackMotion)
             {
-                if (!reloading)
-                {
-                    rb.MovePosition(rb.position + moveTankSpeed * Time.fixedDeltaTime * movement.normalized);
-                }
-                else
-                {
-                    rb.MovePosition(rb.position + moveTankSpeed / slowdown * Time.fixedDeltaTime * movement.normalized);
-                }
+                rb.MovePosition(rb.position + moveTankSpeed * Time.fixedDeltaTime * movement.normalized);
             }
         }
         else if(!tankOn)

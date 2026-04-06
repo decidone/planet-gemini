@@ -478,8 +478,7 @@ MonoBehaviour:
   attackFX: {fileID: 3832536798139642931, guid: 1e24e7473d563d84dbb0d9059643c4d7, type: 3}
   reloadingBar: {fileID: 3634581597052866230}
   reloadingBackBar: {fileID: 3692711839681959545}
-  reloadInterval: 5
-  slowdown: 3
+  reloadInterval: 2.5
   stopTime: 0.3
   nearTank: {fileID: 0}
   onTankData: {fileID: 0}
@@ -500,10 +499,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   name: Desire
+  playerController: {fileID: 0}
   hpBar: {fileID: 3148945542982582302}
   hpBackBar: {fileID: 2979230931791318783}
-  hp: 100
-  maxHp: 100
+  hp: 200
+  maxHp: 200
   tankHp: 0
   tankMaxHp: 0
   selfHealingAmount: 3

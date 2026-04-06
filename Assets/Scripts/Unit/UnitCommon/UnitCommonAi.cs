@@ -74,7 +74,7 @@ public class UnitCommonAi : WorldObj
     public AIState aIState;
     public AttackState attackState;
 
-    protected bool dieCheck = false;
+    public bool dieCheck = false;
 
     public SoundManager soundManager;
     //protected BattleBGMCtrl battleBGM;
