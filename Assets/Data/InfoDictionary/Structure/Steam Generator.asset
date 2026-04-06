@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Steam Generator
   type: 1
-  explanation: The Steam Generator produces energy by consuming water and coal.
+  explanation: 'The Steam Generator produces energy by consuming Water and Coal.
+
+    (5
+    Water / 1s, 1 Coal / 5s)'
   strDataList:
   - {fileID: 11400000, guid: 54d92d45ced04b041b49e5175d0d70d0, type: 2}
   layout: 1
