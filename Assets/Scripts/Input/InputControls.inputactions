@@ -500,6 +500,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Ping",
+                    "type": "Button",
+                    "id": "66bdee64-3702-46b5-ae15-4818739236fd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -621,6 +630,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "TankInven",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e754f464-525c-4d83-baef-d951da12ec89",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "Ping",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -775,7 +795,7 @@
                     "name": "SlotLeftClick",
                     "type": "Button",
                     "id": "b34e0754-005a-4379-a287-75acff3245e1",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
@@ -784,7 +804,7 @@
                     "name": "SlotRightClickHold",
                     "type": "Button",
                     "id": "e875a3d9-d19b-48cf-a8c6-59438caa92ee",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
@@ -968,7 +988,7 @@
                     "name": "TimeUIUp",
                     "type": "Button",
                     "id": "19e711e4-a8d1-44e1-a11f-354c4e538211",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false

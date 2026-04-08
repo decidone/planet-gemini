@@ -45,6 +45,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncFrequency: 0.2
+--- !u!1 &69708192624937175
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3108694651922799543}
+  - component: {fileID: 2894679599501678925}
+  m_Layer: 0
+  m_Name: PingManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3108694651922799543
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69708192624937175}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3986364635626952760}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2894679599501678925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69708192624937175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3d38ed26676473409cd7a85e485db80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  pingMarkerPrefab: {fileID: 0}
+  wheelUI: {fileID: 0}
+  inputManager: {fileID: 0}
+  gameCamera: {fileID: 0}
+  maxPings: 5
+  holdTime: 0.3
 --- !u!1 &114764396448002146
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,6 +468,7 @@ Transform:
   - {fileID: 3975456454962030654}
   - {fileID: 1086378820945560510}
   - {fileID: 8330899845572852780}
+  - {fileID: 3108694651922799543}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3268826974884516333
@@ -491,7 +543,6 @@ MonoBehaviour:
   bloodMoon: 0
   bloodMoonEventState: 0
   violentDay: 0
-  forcedOperation: 0
   violentCycle: 6
   clientMapDateDifference: 3
   timeImgSet:
@@ -850,7 +901,8 @@ MonoBehaviour:
     unitData: []
     spawnerManagerSaveData:
       splitCount: 0
-      waveState: 0
+      waveDayState: 0
+      waveStartState: 0
       hostMapWave: 0
       wavePos:
         x: 0

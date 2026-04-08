@@ -586,6 +586,15 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ping"",
+                    ""type"": ""Button"",
+                    ""id"": ""66bdee64-3702-46b5-ae15-4818739236fd"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=2)"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -707,6 +716,17 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""TankInven"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e754f464-525c-4d83-baef-d951da12ec89"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";PC"",
+                    ""action"": ""Ping"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -861,7 +881,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""SlotLeftClick"",
                     ""type"": ""Button"",
                     ""id"": ""b34e0754-005a-4379-a287-75acff3245e1"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
@@ -870,7 +890,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""SlotRightClickHold"",
                     ""type"": ""Button"",
                     ""id"": ""e875a3d9-d19b-48cf-a8c6-59438caa92ee"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)"",
                     ""initialStateCheck"": false
@@ -1054,7 +1074,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""TimeUIUp"",
                     ""type"": ""Button"",
                     ""id"": ""19e711e4-a8d1-44e1-a11f-354c4e538211"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -1975,6 +1995,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Player_Interaction = m_Player.FindAction("Interaction", throwIfNotFound: true);
         m_Player_TankAttack = m_Player.FindAction("TankAttack", throwIfNotFound: true);
         m_Player_TankInven = m_Player.FindAction("TankInven", throwIfNotFound: true);
+        m_Player_Ping = m_Player.FindAction("Ping", throwIfNotFound: true);
         // Unit
         m_Unit = asset.FindActionMap("Unit", throwIfNotFound: true);
         m_Unit_Attack = m_Unit.FindAction("Attack", throwIfNotFound: true);
@@ -2562,6 +2583,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Interaction;
     private readonly InputAction m_Player_TankAttack;
     private readonly InputAction m_Player_TankInven;
+    private readonly InputAction m_Player_Ping;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -2601,6 +2623,10 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/TankInven".
         /// </summary>
         public InputAction @TankInven => m_Wrapper.m_Player_TankInven;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Ping".
+        /// </summary>
+        public InputAction @Ping => m_Wrapper.m_Player_Ping;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -2648,6 +2674,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @TankInven.started += instance.OnTankInven;
             @TankInven.performed += instance.OnTankInven;
             @TankInven.canceled += instance.OnTankInven;
+            @Ping.started += instance.OnPing;
+            @Ping.performed += instance.OnPing;
+            @Ping.canceled += instance.OnPing;
         }
 
         /// <summary>
@@ -2680,6 +2709,9 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @TankInven.started -= instance.OnTankInven;
             @TankInven.performed -= instance.OnTankInven;
             @TankInven.canceled -= instance.OnTankInven;
+            @Ping.started -= instance.OnPing;
+            @Ping.performed -= instance.OnPing;
+            @Ping.canceled -= instance.OnPing;
         }
 
         /// <summary>
@@ -4060,6 +4092,13 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTankInven(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Ping" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPing(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Unit" which allows adding and removing callbacks.

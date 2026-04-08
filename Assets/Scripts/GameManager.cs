@@ -1015,17 +1015,19 @@ public class GameManager : NetworkBehaviour
         DebugMode();
     }
 
-    void Supply(InputAction.CallbackContext ctx)
+    public void Supply(InputAction.CallbackContext ctx)
     {
-        if (debug)
+        Supply();
+    }
+
+    public void Supply()
+    {
+        foreach (Item item in ItemList.instance.itemList)
         {
-            foreach (Item item in ItemList.instance.itemList)
-            {
-                if (item.tier >= 0 && item.name != "UICancel")
-                    inventory.Add(item, 99);
-            }
-            AddFinanceServerRpc(100000);
+            if (item.tier >= 0 && item.name != "UICancel")
+                inventory.Add(item, 99);
         }
+        AddFinanceServerRpc(100000);
     }
 
     void Escape(InputAction.CallbackContext ctx)
