@@ -180,20 +180,25 @@ public abstract class InventoryManager : MonoBehaviour
         }
     }
 
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+            slotRightClickHold = false;
+    }
+
     protected void SlotRightClickHold(InputAction.CallbackContext ctx)
     {
-        if (!slotRightClickHold)
+        bool pressed = ctx.ReadValueAsButton();
+        slotRightClickHold = pressed;
+
+        if (slotRightClickHold)
         {
-            slotRightClickHold = true;
             holdTimer = 0;
         }
         else
         {
-            slotRightClickHold = false;
             if (holdTimer < holdTime)
-            {
                 SlotRightClickTap();
-            }
         }
     }
 

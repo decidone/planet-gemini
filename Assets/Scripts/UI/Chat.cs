@@ -197,6 +197,9 @@ public class Chat : NetworkBehaviour
                     case "/science":
                         ScienceManager.instance.UnlockAll();
                         break;
+                    case "/supply":
+                        GameManager.instance.Supply();
+                        break;
                     case "/test":
                         PlayerPrefs.DeleteAll();
                         break;
