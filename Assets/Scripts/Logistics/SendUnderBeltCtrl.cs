@@ -1,10 +1,17 @@
 using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
+using System.Collections.Generic;
+using Steamworks.Ugc;
 
 // UTF-8 설정
 public class SendUnderBeltCtrl : LogisticsCtrl
 {
+    float sendDist;
+    List<(int, float)> sendingItems = new List<(int, float)>(); // 아이템 인덱스, 아이템 전송 남은 시간
+    Coroutine sendCoroutine;
+    float[] sendTimes = new float[] { 1.2f, 0.4f, 0.2f }; // 레벨별 전송 시간
+
     void Start()
     {
         StrBuilt();
@@ -17,17 +24,17 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         {
             if (IsServer && !isPreBuilding)
             {
-                if (inObj.Count > 0 && !isFull && !itemGetDelay)
+                if (inObj.Count > 0 && !isFull && !itemGetDelay && sendingItems.Count < sendDist * 4)
                 {
                     GetItem();
                 }
-                if (itemList.Count > 0 && outObj.Count > 0 && !itemSetDelay)
+                if (itemList.Count > 0 && outObj.Count > 0)
                 {
                     int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[0]);
-                    SendItem(itemIndex);
+                    SendingItem(itemIndex, sendDist * sendTimes[level]);
                 }
             }
-        } 
+        }
     }
 
     public void EndRenderer()
@@ -137,8 +144,20 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             SendFacDelay(outObj[0], item);
         }
 
-        outObj[0].takeItemDelay = false;
         Invoke(nameof(DelaySetItem), sendDelay);
+    }
+
+    protected override void SendFacDelay(Structure outFac, Item item)
+    {
+        if (sendingItems.Count > 0)
+        {
+            if (outObj.Count > 0 && outFac)
+            {
+                outFac.OnFactoryItem(item);
+            }
+
+            sendingItems.RemoveAt(0);
+        }
     }
 
     public void SetOutObj(Structure obj)
@@ -150,7 +169,10 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
         nearObj[0] = obj;
         if (!outObj.Contains(obj))
+        {            
             outObj.Add(obj);
+            sendDist = Vector2.Distance(transform.position, obj.transform.position) - 1;
+        }
     }
 
     [ClientRpc]
@@ -201,7 +223,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
         else
         {
-            if (outObj[0].isFull || outObj[0].takeItemDelay || outObj[0].destroyStart || outObj[0].isPreBuilding)
+            if (outObj[0].isFull || outObj[0].destroyStart || outObj[0].isPreBuilding)
             {
                 SendItemIndexSet();
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
@@ -223,11 +245,44 @@ public class SendUnderBeltCtrl : LogisticsCtrl
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
-            outObj[0].takeItemDelay = true;
         }
 
         SendItemServerRpc(itemIndex, sendItemIndex);
         SendItemIndexSet();
+    }
+
+    void SendingItem(int itemIndex, float sendTime)
+    {
+        sendingItems.Add((itemIndex, sendTime));
+        itemList.RemoveAt(0);
+        ItemNumCheck();
+        if (sendCoroutine == null)
+        {
+            sendCoroutine = StartCoroutine(SendingItemCor());
+        }
+    }
+
+    IEnumerator SendingItemCor()
+    {
+        while (sendingItems.Count > 0)
+        {
+            for (int i = sendingItems.Count - 1; i >= 0; i--)
+            {
+                var (itemIndex, timeLeft) = sendingItems[i];
+                timeLeft -= Time.deltaTime;
+
+                if (timeLeft <= 0)
+                {
+                    SendItem(itemIndex);
+                }
+                else
+                {
+                    sendingItems[i] = (itemIndex, timeLeft);
+                }
+            }
+            yield return null; // Update랑 동일한 주기
+        }
+        sendCoroutine = null;
     }
 
     public override void ColliderTriggerOnOff(bool isOn)
@@ -264,12 +319,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             if (nearObj[i])
             {
                 nearObj[i].ResetNearObj(this);
-                if (nearObj[i].TryGet(out BeltCtrl belt))
-                {
-                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
-                    beltGroup.nextCheck = true;
-                    beltGroup.preCheck = true;
-                }
             }
         }
 
@@ -281,5 +330,63 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
 
         DestroyFuncServerRpc();
+    }
+
+    protected override void ItemDrop()
+    {
+        if (itemList.Count > 0)
+        {
+            foreach (Item item in itemList)
+            {
+                ItemToItemProps(item, 1);
+            }
+        }
+
+        if (sendingItems.Count > 0)
+        {
+            for (int i = 0; i < sendingItems.Count; i++)
+            {
+                Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(sendingItems[i].Item1);
+                ItemToItemProps(item, 1);
+            }
+        }
+    }
+
+    public override StructureSaveData SaveData()
+    {
+        StructureSaveData data = base.SaveData();
+
+        data.sendUnderBeltItems = new List<(int, float)>(sendingItems);
+
+        return data;
+    }
+
+    public void LoadSendingItems(List<(int, float)> data)
+    {
+        sendingItems = new List<(int, float)>(data);
+    }
+
+    public override Dictionary<Item, int> PopUpItemCheck()
+    {
+        if (sendingItems.Count > 0)
+        {
+            Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
+            foreach (var data in sendingItems)
+            {
+                Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(data.Item1);
+                if (!returnDic.ContainsKey(item))
+                    returnDic.Add(item, 1);
+                else
+                {
+                    int currentValue = returnDic[item];
+                    int newValue = currentValue + 1;
+                    returnDic[item] = newValue;
+                }
+            }
+
+            return returnDic;
+        }
+        else
+            return null;
     }
 }

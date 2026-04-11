@@ -152,8 +152,13 @@ public class BeltCtrl : LogisticsCtrl
                 CheckPos();
                 ModelSet();
                 beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+
                 if (beltGroupMgr != null)
+                {
+                    beltGroupMgr.nextCheck = true;
+                    beltGroupMgr.preCheck = true;
                     beltGroupMgr.BeltGroupRefresh();
+                }
 
                 //animator.SetFloat("DirNum", dirNum);
                 //animator.SetFloat("ModelNum", modelMotion);

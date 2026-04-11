@@ -55,4 +55,6 @@ public class StructureSaveData
     public bool destroyStart;
     public float repairGauge;
     public float destroyTimer;
+
+    public List<(int, float)> sendUnderBeltItems = new List<(int, float)>(); // 언더벨트로 보내는 아이템 인덱스와 남은 시간
 }

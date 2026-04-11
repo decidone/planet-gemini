@@ -55,7 +55,7 @@ public class BeltManager : NetworkBehaviour
         }
 
         fstGroupMgr.Reconfirm();
-        if (secGroupMgr.nextObj != null)
+        if (secGroupMgr.nextObj)
         {
             fstGroupMgr.nextObj = secGroupMgr.nextObj;
             fstGroupMgr.NearObjSetClientRpc(secGroupMgr.nextObj.NetworkObject, true);
@@ -63,7 +63,7 @@ public class BeltManager : NetworkBehaviour
 
         //BeltGroupRemoveServerRpc(secGroupMgr.NetworkObject);
         NetworkObject destroyObj = secGroupMgr.NetworkObject;
-        if (destroyObj != null && destroyObj.IsSpawned)
+        if (destroyObj && destroyObj.IsSpawned)
         {
             destroyObj.Despawn();
         }

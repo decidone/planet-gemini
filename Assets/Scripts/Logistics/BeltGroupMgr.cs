@@ -379,7 +379,7 @@ public class BeltGroupMgr : NetworkBehaviour
                 {
                     CheckGroup(belt, otherBelt, true);
 
-                    if (otherBelt.beltGroupMgr.nextObj != null)
+                    if (otherBelt.beltGroupMgr.nextObj)
                     {
                         return otherBelt.beltGroupMgr.nextObj;
                     }
@@ -431,7 +431,7 @@ public class BeltGroupMgr : NetworkBehaviour
             {
                 if ((otherBelt.beltState == BeltState.EndBelt || otherBelt.beltState == BeltState.SoloBelt) && !otherBelt.beltGroupMgr.loadConnStr)
                 {
-                    if (otherBelt.beltGroupMgr.nextObj == null)
+                    if (!otherBelt.beltGroupMgr.nextObj)
                     {
                         if (belt.dirNum != otherBelt.dirNum)
                         {
@@ -451,7 +451,7 @@ public class BeltGroupMgr : NetworkBehaviour
                             }
                         }
                     }
-                    else if (otherBelt.beltGroupMgr.nextObj != null && otherBelt.beltGroupMgr.nextObj.Get<BeltCtrl>() != null)
+                    else if (otherBelt.beltGroupMgr.nextObj && otherBelt.beltGroupMgr.nextObj.Get<BeltCtrl>())
                     {
                         if (belt.dirNum != otherBelt.dirNum)
                         {

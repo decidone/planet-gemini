@@ -395,6 +395,10 @@ public class DataManager : MonoBehaviour
                         }
                     }
                 }
+                else if (structure.TryGet(out SendUnderBeltCtrl sendUnderBelt))
+                {
+                    sendUnderBelt.LoadSendingItems(saveData.sendUnderBeltItems);
+                }
 
                 foreach (int itemIndex in saveData.itemIndex)
                 {

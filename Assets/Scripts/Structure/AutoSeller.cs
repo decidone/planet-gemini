@@ -384,12 +384,6 @@ public class AutoSeller : Production
             if (nearObj[i])
             {
                 nearObj[i].ResetNearObj(this);
-                if (nearObj[i].TryGet(out BeltCtrl belt))
-                {
-                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
-                    beltGroup.nextCheck = true;
-                    beltGroup.preCheck = true;
-                }
             }
         }
 

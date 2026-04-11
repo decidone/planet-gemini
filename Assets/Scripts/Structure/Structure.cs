@@ -1349,7 +1349,7 @@ public class Structure : WorldObj
         Invoke(nameof(DelaySetItem), sendDelay);
     }
 
-    protected void SendFacDelay(Structure outFac, Item item)
+    protected virtual void SendFacDelay(Structure outFac, Item item)
     {
         if (CanSendItemCheck())
         {
@@ -1780,12 +1780,6 @@ public class Structure : WorldObj
             if (nearObj[i])
             {
                 nearObj[i].ResetNearObj(this);
-                if (nearObj[i].TryGet(out BeltCtrl belt))
-                {
-                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
-                    beltGroup.nextCheck = true;
-                    beltGroup.preCheck = true;
-                }
             }
         }
 
