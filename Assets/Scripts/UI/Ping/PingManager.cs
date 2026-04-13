@@ -8,7 +8,7 @@ public class PingManager : NetworkBehaviour
     public GameObject pingMarkerPrefab;
     public PingUI pingUI;
 
-    public int maxPings = 5;
+    public int maxPings = 20;
     public float holdTime = 0.3f;
     public float pingClickRadius = 0.5f;
 

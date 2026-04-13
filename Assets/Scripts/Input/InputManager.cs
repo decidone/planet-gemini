@@ -107,7 +107,9 @@ public class InputManager : MonoBehaviour
 
     void CtrlHold(InputAction.CallbackContext ctx)
     {
-        ctrl = !ctrl;
+        bool pressed = ctx.ReadValueAsButton();
+        ctrl = pressed;
+
         if (GameManager.instance != null)
         {
             if (PreBuilding.instance.isBuildingOn || BeltPreBuilding.instanceBeltBuilding.isBuildingOn)
@@ -127,7 +129,9 @@ public class InputManager : MonoBehaviour
 
     void ShiftHold(InputAction.CallbackContext ctx)
     {
-        shift = !shift;
+        bool pressed = ctx.ReadValueAsButton();
+        shift = pressed;
+
         if (GameManager.instance != null)
         {
             if (PreBuilding.instance.isBuildingOn || BeltPreBuilding.instanceBeltBuilding.isBuildingOn)
@@ -145,9 +149,21 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    void AltHold(InputAction.CallbackContext ctx) { alt = !alt; }
-    void MouseLeftHold(InputAction.CallbackContext ctx) { mouseLeft = !mouseLeft; }
-    void MouseRightHold(InputAction.CallbackContext ctx) { mouseRight = !mouseRight; }
+    void AltHold(InputAction.CallbackContext ctx)
+    {
+        bool pressed = ctx.ReadValueAsButton();
+        alt = pressed;
+    }
+    void MouseLeftHold(InputAction.CallbackContext ctx)
+    {
+        bool pressed = ctx.ReadValueAsButton();
+        mouseLeft = pressed;
+    }
+    void MouseRightHold(InputAction.CallbackContext ctx)
+    {
+        bool pressed = ctx.ReadValueAsButton();
+        mouseRight = pressed;
+    }
 
     void EnableControls()
     {

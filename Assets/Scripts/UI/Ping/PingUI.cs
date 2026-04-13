@@ -20,6 +20,21 @@ public class PingUI : MonoBehaviour
     public int SelectedSub => selectedSub;
     public bool IsOpen => panel.activeSelf;
 
+    #region Singleton
+    public static PingUI instance;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+    }
+    #endregion
+
     void Start()
     {
         panel.SetActive(false);
@@ -34,11 +49,13 @@ public class PingUI : MonoBehaviour
         currentPage = -1;
         panel.SetActive(true);
         BuildGroupPage();
+        GameManager.instance.onUIChangedCallback?.Invoke(panel);
     }
 
     public void CloseUI()
     {
         panel.SetActive(false);
+        GameManager.instance.onUIChangedCallback?.Invoke(panel);
     }
 
     void Back()

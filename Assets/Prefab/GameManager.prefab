@@ -91,11 +91,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   pingMarkerPrefab: {fileID: 0}
-  wheelUI: {fileID: 0}
-  inputManager: {fileID: 0}
-  gameCamera: {fileID: 0}
-  maxPings: 5
+  pingUI: {fileID: 0}
+  maxPings: 20
   holdTime: 0.3
+  pingClickRadius: 0.5
 --- !u!1 &114764396448002146
 GameObject:
   m_ObjectHideFlags: 0

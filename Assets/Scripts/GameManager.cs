@@ -1124,6 +1124,9 @@ public class GameManager : NetworkBehaviour
             case "UnitRemovePopup":
                 UnitRemovePopup.instance.ClosePopup();
                 break;
+            case "PingPanel":
+                PingUI.instance.CloseUI();
+                break;
             default:
                 if (openedUI[order].gameObject.TryGetComponent(out Shop shop))
                     shop.CloseUI();

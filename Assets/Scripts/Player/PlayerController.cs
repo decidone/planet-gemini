@@ -645,7 +645,17 @@ public class PlayerController : NetworkBehaviour
         PlayerTPSetServerRpc(false);
     }
 
-    void LootCheck(InputAction.CallbackContext ctx) { isLoot = !isLoot; }
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+            isLoot = false;
+    }
+
+    void LootCheck(InputAction.CallbackContext ctx)
+    {
+        bool pressed = ctx.ReadValueAsButton();
+        isLoot = pressed;
+    }
 
     void Loot()
     {

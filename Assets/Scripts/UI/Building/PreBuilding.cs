@@ -189,13 +189,19 @@ public class PreBuilding : NetworkBehaviour
         }
     }
 
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+            mouseHoldCheck = false;
+    }
+
     protected void LeftMouseButtonDown(InputAction.CallbackContext ctx)
     {
         if (isBuildingOn)
         {
             startBuildPos = transform.position;
             endBuildPos = transform.position;
-            if (!RaycastUtility.IsPointerOverUI(Input.mousePosition))
+            if (!RaycastUtility.IsPointerOverUI(Input.mousePosition) && Application.isFocused)
                 mouseHoldCheck = true;
         }
     }

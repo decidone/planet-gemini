@@ -56,6 +56,12 @@ public class BeltPreBuilding : PreBuilding
         inputManager.controls.Building.ShiftBuildingUp.performed -= ShiftKeyUp;
     }
 
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+            shiftKey = false;
+    }
+
     protected void ShiftKeyDown(InputAction.CallbackContext ctx)
     {
         shiftKey = true;
