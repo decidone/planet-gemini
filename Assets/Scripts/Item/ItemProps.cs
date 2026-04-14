@@ -32,7 +32,7 @@ public class ItemProps : MonoBehaviour
         networkObjectPool = NetworkObjectPool.Singleton;
     }
 
-    public void ResetItemProps(bool isInHostmap)
+    public void ResetItemProps(bool isInHostmap, int destroyRequestedBy)
     {
         if (GameManager.instance.isHost)
         {
@@ -45,7 +45,8 @@ public class ItemProps : MonoBehaviour
 
             if (planetInven.SpaceCheck(item) >= amount)
             {
-                LootListManager.instance.DisplayLootInfo(item, amount);
+                int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+                planetInven.DisplayDestroyLootInfoClientRpc(itemIndex, amount, destroyRequestedBy);
                 planetInven.Add(item, amount);
             }
             else
@@ -54,7 +55,6 @@ public class ItemProps : MonoBehaviour
                 GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, amount, transform.position);
             }
         }
-        Debug.Log("drop : " + beltGroupIndex);
         itemPool.Release(gameObject);
     }
 

@@ -447,7 +447,7 @@ public class PreBuilding : NetworkBehaviour
             }
         }
         if (!debugModeOn)
-            PayCost(buildingData, spawnCount);
+            PayCost(isHostMap, buildingData, spawnCount);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -559,7 +559,7 @@ public class PreBuilding : NetworkBehaviour
             }
         }
         if (!debugModeOn)
-            PayCost(buildingData, spawnCount);
+            PayCost(isHostMap, buildingData, spawnCount);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -641,10 +641,10 @@ public class PreBuilding : NetworkBehaviour
             SetBuilding(setPos[i], bIndex, isHostMap, building.level - 1, dir[i], building.height, building.width, false, true, underBelt, sideObj[i]);
         }
         if (!debugModeOn)
-            PayCost(buildingData, spawnCount);
+            PayCost(isHostMap, buildingData, spawnCount);
     }
 
-    protected void PayCost(BuildingData buildingData, int amount)
+    protected void PayCost(bool isHostMap, BuildingData buildingData, int amount)
     {
         if (buildingData == null)
             return;
@@ -654,7 +654,13 @@ public class PreBuilding : NetworkBehaviour
             Item item = ItemList.instance.itemDic[buildingData.items[i]];
             int cost = buildingData.amounts[i];
             Overall.instance.OverallConsumption(item, cost * amount);
-            GameManager.instance.inventory.Sub(item, cost * amount);
+
+            Inventory inven;
+            if (isHostMap)
+                inven = gameManager.hostMapInven;
+            else
+                inven = gameManager.clientMapInven;
+            inven.Sub(item, cost * amount);
         }
     }
 

@@ -6,7 +6,8 @@ public class StrWarningManager : MonoBehaviour
 {
     [SerializeField] Button warningListBtn;
     [SerializeField] Text warningText;
-    public List<Structure> structureList = new();
+    public List<Structure> mainPlanetStructureList = new();
+    public List<Structure> subPlanetStructureList = new();
     int count;
 
     #region Singleton
@@ -27,48 +28,128 @@ public class StrWarningManager : MonoBehaviour
     private void Start()
     {
         warningListBtn.onClick.AddListener(() => FocusWarningStr());
+        SetButtonAndCount();
     }
 
-    public void AddStrList(Structure str)
+    public void SetButtonAndCount()
     {
-        warningListBtn.gameObject.SetActive(true);
+        if (GameManager.instance == null) return;
 
-        if (!structureList.Contains(str))
-            structureList.Add(str);
-        warningText.text = structureList.Count.ToString();
-    }
-
-    public void RemoveStrList(Structure str)
-    {
-        if (structureList.Contains(str))
-            structureList.Remove(str);
-        warningText.text = structureList.Count.ToString();
-
-        if (structureList.Count == 0)
+        if (GameManager.instance.isPlayerInMarket)
         {
             warningListBtn.gameObject.SetActive(false);
             warningText.text = string.Empty;
         }
+        else if (GameManager.instance.isPlayerInHostMap)
+        {
+            mainPlanetStructureList.RemoveAll(x => !x);
+
+            if (mainPlanetStructureList.Count > 0)
+            {
+                warningListBtn.gameObject.SetActive(true);
+                warningText.text = mainPlanetStructureList.Count.ToString();
+            }
+            else
+            {
+                warningListBtn.gameObject.SetActive(false);
+                warningText.text = string.Empty;
+            }
+        }
+        else
+        {
+            subPlanetStructureList.RemoveAll(x => !x);
+
+            if (subPlanetStructureList.Count > 0)
+            {
+                warningListBtn.gameObject.SetActive(true);
+                warningText.text = subPlanetStructureList.Count.ToString();
+            }
+            else
+            {
+                warningListBtn.gameObject.SetActive(false);
+                warningText.text = string.Empty;
+            }
+        }
+    }
+
+    public void SetButtonAndCount(int num)
+    {
+        //callback 연결용 오버로딩. num은 안 씀
+        SetButtonAndCount();
+    }
+
+    public void AddStrList(Structure str)
+    {
+        if (str.isInHostMap)
+        {
+            if (!mainPlanetStructureList.Contains(str))
+                mainPlanetStructureList.Add(str);
+        }
+        else
+        {
+            if (!subPlanetStructureList.Contains(str))
+                subPlanetStructureList.Add(str);
+        }
+
+        SetButtonAndCount();
+    }
+
+    public void RemoveStrList(Structure str)
+    {
+        if (str.isInHostMap)
+        {
+            if (mainPlanetStructureList.Contains(str))
+                mainPlanetStructureList.Remove(str);
+        }
+        else
+        {
+            if (subPlanetStructureList.Contains(str))
+                subPlanetStructureList.Remove(str);
+        }
+
+        SetButtonAndCount();
     }
 
     void FocusWarningStr()
     {
-        structureList.RemoveAll(x => !x);
-        warningText.text = structureList.Count.ToString();
+        if (GameManager.instance == null || GameManager.instance.isPlayerInMarket) return;
 
-        if (structureList.Count > 0)
+        SetButtonAndCount();
+
+        if (GameManager.instance.isPlayerInHostMap)
         {
-            if (!InputManager.instance.isMapOpened)
+            if (mainPlanetStructureList.Count > 0)
             {
-                count = 0;
-                Vector3 pos = structureList[count].transform.position;
-                MapCameraController.instance.ToggleMap(pos);
+                if (!InputManager.instance.isMapOpened)
+                {
+                    count = 0;
+                    Vector3 pos = mainPlanetStructureList[count].transform.position;
+                    MapCameraController.instance.ToggleMap(pos);
+                }
+                else
+                {
+                    count = ((count + 1) < mainPlanetStructureList.Count) ? count + 1 : 0;
+                    Vector3 pos = mainPlanetStructureList[count].transform.position;
+                    MapCameraController.instance.SetCamPos(pos, 4);
+                }
             }
-            else
+        }
+        else
+        {
+            if (subPlanetStructureList.Count > 0)
             {
-                count = ((count + 1) < structureList.Count) ? count + 1 : 0;
-                Vector3 pos = structureList[count].transform.position;
-                MapCameraController.instance.SetCamPos(pos, 4);
+                if (!InputManager.instance.isMapOpened)
+                {
+                    count = 0;
+                    Vector3 pos = subPlanetStructureList[count].transform.position;
+                    MapCameraController.instance.ToggleMap(pos);
+                }
+                else
+                {
+                    count = ((count + 1) < subPlanetStructureList.Count) ? count + 1 : 0;
+                    Vector3 pos = subPlanetStructureList[count].transform.position;
+                    MapCameraController.instance.SetCamPos(pos, 4);
+                }
             }
         }
     }

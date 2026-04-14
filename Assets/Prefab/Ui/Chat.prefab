@@ -1170,6 +1170,7 @@ MonoBehaviour:
   resizeAnchor: {fileID: 9218448366024455872}
   scrollHandle: {fileID: 5506365897182745589}
   background: {fileID: 5618879352206865493}
+  submitBtn: {fileID: 5618570065238227721}
   configBtn: {fileID: 1720011099332715162}
   timestampBtn: {fileID: 1342782577935434085}
   configText: {fileID: 8444427416542155845}
@@ -1931,19 +1932,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5617178509071018741}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1741095902975450614}
-        m_TargetAssemblyTypeName: Chat, Assembly-CSharp
-        m_MethodName: Submit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &5619019935505649061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3139,19 +3128,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 931295853818732906}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1741095902975450614}
-        m_TargetAssemblyTypeName: Chat, Assembly-CSharp
-        m_MethodName: Submit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &3527664969271467100
 MonoBehaviour:
   m_ObjectHideFlags: 0

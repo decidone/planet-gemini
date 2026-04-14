@@ -1,8 +1,9 @@
+using QFSW.QC;
+using QFSW.QC.Actions;
+using QFSW.QC.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using QFSW.QC.Actions;
-using QFSW.QC.UI;
 using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -20,6 +21,7 @@ public class Chat : NetworkBehaviour
     [SerializeField] GameObject resizeAnchor;
     [SerializeField] GameObject scrollHandle;
     [SerializeField] Image background;
+    [SerializeField] Button submitBtn;
     [SerializeField] Button configBtn;
     [SerializeField] Button timestampBtn;
     [SerializeField] TextMeshProUGUI configText;
@@ -57,6 +59,7 @@ public class Chat : NetworkBehaviour
     {
         chat.enabled = false;
         isChatOpened = false;
+        submitBtn.onClick.AddListener(Submit);
         configBtn.onClick.AddListener(Config);
         timestampBtn.onClick.AddListener(TimestampBtnClicked);
         float panelSizeX = PlayerPrefs.GetFloat("ChatX", defaultChatX);
@@ -75,11 +78,17 @@ public class Chat : NetworkBehaviour
     {
         inputManager = InputManager.instance;
         inputManager.controls.Chat.Enter.performed += Enter;
+        input.onSelect.AddListener(OnInputSelect);
+        input.onDeselect.AddListener(OnInputDeselect);
+        Application.logMessageReceived += HandleLog;
     }
 
     void OnDisable()
     {
         inputManager.controls.Chat.Enter.performed -= Enter;
+        input.onSelect.RemoveListener(OnInputSelect);
+        input.onDeselect.RemoveListener(OnInputDeselect);
+        Application.logMessageReceived -= HandleLog;
     }
 
     void Update()
@@ -99,37 +108,58 @@ public class Chat : NetworkBehaviour
 
         if (isDrag) return;
 
-        if (input.isFocused && input.gameObject == EventSystem.current.currentSelectedGameObject)
+        if (isChatOpened && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            if (!isChatOpened)
-            {
-                isChatOpened = true;
-                DisplayChat();
-                if (!isConfigMode)
-                {
-                    background.enabled = true;
-                    scrollHandle.SetActive(true);
-                }
-
-                if (!GameManager.instance.isGameOver && !GameManager.instance.isWaitingForRespawn)
-                    inputManager.OpenChat();
-            }
+            //Input System 입력을 TMP_InputField가 가로채는 문제가 있어서 따로 잡아줌
+            input.text = string.Empty;
+            EventSystem.current.SetSelectedGameObject(null);
         }
+    }
+
+    private void OnInputSelect(string text)
+    {
+        if (isChatOpened) return;
+
+        isChatOpened = true;
+        DisplayChat();
+        if (!isConfigMode)
+        {
+            background.enabled = true;
+            scrollHandle.SetActive(true);
+        }
+        if (!GameManager.instance.isGameOver && !GameManager.instance.isWaitingForRespawn)
+            inputManager.OpenChat();
+    }
+
+    private void OnInputDeselect(string text)
+    {
+        if (!isChatOpened) return;
+
+        isChatOpened = false;
+        if (!isConfigMode)
+        {
+            background.enabled = false;
+            scrollHandle.SetActive(false);
+        }
+        if (!GameManager.instance.isGameOver && !GameManager.instance.isWaitingForRespawn)
+            inputManager.CloseChat();
+    }
+
+    void HandleLog(string message, string stackTrace, LogType type)
+    {
+        string color = type switch
+        {
+            LogType.Error or LogType.Exception => "red",
+            LogType.Warning => "yellow",
+            _ => "white"
+        };
+
+        string colorMessage = $"<color={color}>{message}</color>";
+        chatLog.Add((DateTime.Now, colorMessage));
+        if (isTimestampOn)
+            chat.text += "\n" + DateTime.Now.ToString("[HH:mm:ss] ") + colorMessage;
         else
-        {
-            if (isChatOpened)
-            {
-                isChatOpened = false;
-                if (!isConfigMode)
-                {
-                    background.enabled = false;
-                    scrollHandle.SetActive(false);
-                }
-
-                if (!GameManager.instance.isGameOver && !GameManager.instance.isWaitingForRespawn)
-                    inputManager.CloseChat();
-            }
-        }
+            chat.text += "\n" + colorMessage;
     }
 
     void DisplayChat()
@@ -150,13 +180,13 @@ public class Chat : NetworkBehaviour
         if (GameManager.instance.popUpUIOpen)
             return;
 
-        if (input.gameObject != EventSystem.current.currentSelectedGameObject)
+        if (isChatOpened)
         {
-            input.Select();
+            Submit();
         }
         else
         {
-            Submit();
+            input.Select();
         }
 
         SoundManager.instance.PlayUISFX("ButtonClick");
@@ -201,7 +231,8 @@ public class Chat : NetworkBehaviour
                         GameManager.instance.Supply();
                         break;
                     case "/test":
-                        PlayerPrefs.DeleteAll();
+                        //PlayerPrefs.DeleteAll();
+                        ErrorTest();
                         break;
                 }
 
@@ -219,12 +250,19 @@ public class Chat : NetworkBehaviour
         }
 
         input.text = string.Empty;
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void SendMessageServerRpc(string message)
     {
         SendMessageClientRpc(message);
+    }
+
+    void ErrorTest()
+    {
+        int[] abc = {1, 2, 3, 4, 5};
+        abc[10] = 1;
     }
 
     [ClientRpc]

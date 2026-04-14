@@ -101,7 +101,7 @@ public class RemoveBuild : DragFunc
                 if (selectedObjects[i] != null)
                 {
                     selectedObjects[i].TryGet(out Structure structure);
-                    structure.DestroyServerRpc();
+                    structure.DestroyServerRpc(GameManager.instance.IsServer ? 0 : 1);
                 }
             }
         }

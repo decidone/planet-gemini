@@ -323,6 +323,21 @@ public class Inventory : NetworkBehaviour
         LootListManager.instance.DisplayLootInfo(item, amount);
     }
 
+    [ClientRpc(RequireOwnership = false)]
+    public void DisplayDestroyLootInfoClientRpc(int itemIndex, int amount, int destroyRequestedBy)
+    {
+        if (destroyRequestedBy == 0 && IsServer)
+        {
+            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+            LootListManager.instance.DisplayLootInfo(item, amount);
+        }
+        else if (destroyRequestedBy == 1 && !IsServer)
+        {
+            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+            LootListManager.instance.DisplayLootInfo(item, amount);
+        }
+    }
+
     public void SwapOrMerge(int slotNum)
     {
         SwapOrMergeServerRpc(slotNum, GameManager.instance.isHost);

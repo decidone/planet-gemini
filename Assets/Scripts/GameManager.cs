@@ -1586,7 +1586,7 @@ public class GameManager : NetworkBehaviour
             //DataManager.instance.LoadData(LoadManager.instance.GetSaveData());
         }
 
-        StartCoroutine(SetQuest());
+        StartCoroutine(DelaySet());
         //GenerationComplete?.Invoke();
     }
 
@@ -1927,14 +1927,17 @@ public class GameManager : NetworkBehaviour
     //    //MapGenerator.instance.LoadFogState(data.fogState);
     //}
 
-    IEnumerator SetQuest()
+    IEnumerator DelaySet()
     {
         while (player == null)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
         }
 
         QuestManager.instance.SetQuest(questData);
+
+        PlayerController playercon = player.GetComponent<PlayerController>();
+        playercon.onTeleportedCallback += StrWarningManager.instance.SetButtonAndCount;
     }
 
     public void AutoSaveTimeIntervalSet(float interval)

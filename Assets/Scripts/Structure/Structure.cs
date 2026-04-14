@@ -172,6 +172,7 @@ public class Structure : WorldObj
     public bool isRunning;          //isOperate쓰기 애매한 건물에 작동 체크용(드론운송 관련 건물들)
     protected float destroyInterval;
     protected float destroyTimer;
+    public int destroyRequestedBy = -1;
 
     public bool settingEndCheck = false;
     protected int buildingIndex;
@@ -458,13 +459,13 @@ public class Structure : WorldObj
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void DestroyServerRpc()
+    public void DestroyServerRpc(int isHostRequest)
     {
-        DestroyClientRpc();
+        DestroyClientRpc(isHostRequest);
     }
 
     [ClientRpc]
-    void DestroyClientRpc()
+    void DestroyClientRpc(int isHostRequest)
     {
         if (!destroyStart && destroyTimer > 0)
         {
@@ -472,7 +473,7 @@ public class Structure : WorldObj
             {
                 destroyTimer = (repairGauge > structureData.MaxBuildingGauge) ? structureData.MaxBuildingGauge : repairGauge;
             }
-
+            destroyRequestedBy = isHostRequest;
             isManualDestroy = true;
             destroyStart = true;
             isDestroying = true;
@@ -1514,13 +1515,29 @@ public class Structure : WorldObj
 
         if (planetInven.SpaceCheck(item) >= itemAmount)
         {
-            LootListManager.instance.DisplayLootInfo(item, itemAmount);
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
+            DisplayLootInfoClientRpc(itemIndex, itemAmount);
             planetInven.Add(item, itemAmount);
         }
         else
         {
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
             GeminiNetworkManager.instance.ItemSpawnServerRpc(itemIndex, itemAmount, transform.position);
+        }
+    }
+
+    [ClientRpc (RequireOwnership = false)]
+    public void DisplayLootInfoClientRpc(int itemIndex, int itemAmount)
+    {
+        if (destroyRequestedBy == 0 && IsServer)
+        {
+            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+            LootListManager.instance.DisplayLootInfo(item, itemAmount);
+        }
+        else if (destroyRequestedBy == 1 && !IsServer)
+        {
+            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+            LootListManager.instance.DisplayLootInfo(item, itemAmount);
         }
     }
 
