@@ -10,8 +10,6 @@ using UnityEngine.Events;
 public class OptionCanvas : MonoBehaviour
 {
     [SerializeField]
-    Button copyLobbyIdBtn;
-    [SerializeField]
     Button escapeBtn;
     [SerializeField]
     Button settingsBtn;
@@ -45,7 +43,6 @@ public class OptionCanvas : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
 
-        copyLobbyIdBtn.onClick.AddListener(() => CopyBtnFunc());
         escapeBtn.onClick.AddListener(() => EscapeBtnFunc());
         settingsBtn.onClick.AddListener(() => SettingsBtnFunc());
         saveBtn.onClick.AddListener(() => SaveBtnFunc());
@@ -53,7 +50,7 @@ public class OptionCanvas : MonoBehaviour
         quitBtn.onClick.AddListener(() => QuitBtnFunc());
 
         soundManager = SoundManager.instance;
-        Button[] btnArr = new Button[] { copyLobbyIdBtn, escapeBtn, settingsBtn, saveBtn, loadBtn, quitBtn };
+        Button[] btnArr = new Button[] { escapeBtn, settingsBtn, saveBtn, loadBtn, quitBtn };
 
         foreach (Button btn in btnArr)
         {
@@ -65,14 +62,14 @@ public class OptionCanvas : MonoBehaviour
         }
     }
 
-    void CopyBtnFunc()
-    {
-        TextEditor textEditor = new TextEditor();
-        textEditor.text = LobbySaver.instance.currentLobby?.Id.ToString();
-        textEditor.SelectAll();
-        textEditor.Copy();
-        soundManager.PlayUISFX("ButtonClick");
-    }
+    //void CopyBtnFunc()
+    //{
+    //    TextEditor textEditor = new TextEditor();
+    //    textEditor.text = LobbySaver.instance.currentLobby?.Id.ToString();
+    //    textEditor.SelectAll();
+    //    textEditor.Copy();
+    //    soundManager.PlayUISFX("ButtonClick");
+    //}
 
     public void EscapeBtnFunc()
     {

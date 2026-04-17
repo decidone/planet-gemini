@@ -1,60 +1,29 @@
+using Steamworks;
+using Steamworks.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Steamworks.Data;
-using Steamworks;
+using static SteamFriendLobbyFetcher;
 
 public class LobbyDataEntry : MonoBehaviour
 {
     [SerializeField] Text lobbyNameText;
-    [SerializeField] Text lobbyUserCount;
+    [SerializeField] RawImage profileImage;
     [SerializeField] Button joinBtn;
 
     public Lobby lobby;
     public float cooldownTime = 1f;
-    public bool isFriendLobby = false;
 
-    public bool SetLobbyData(Lobby _lobby)
+    public void SetLobbyData(Lobby _lobby, FriendProfile profile)
     {
-        bool state;
         lobby = _lobby;
-        if (lobby.GetData("ownerName") != string.Empty)
-        {
-            lobbyNameText.text = lobby.GetData("ownerName") + "' Game";
-            state = true;
-        }
-        else
-        {
-            lobbyNameText.text = "failed to get the lobby data";
-            state = false;
-        }
-        lobbyUserCount.text = lobby.MemberCount + " / " + lobby.MaxMembers;
-
-        string accessLevel = lobby.GetData("access");
-        string owner = lobby.GetData("owner");
-        if (owner != string.Empty)
-        {
-            state = false;
-            if (accessLevel == "1")
-            {
-                var friends = SteamFriends.GetFriends();
-                foreach (var friend in friends)
-                {
-                    if (friend.Id.ToString() == owner)
-                    {
-                        isFriendLobby = true;
-                        lobbyNameText.color = UnityEngine.Color.green;
-                        state = true;
-                        break;
-                    }
-                }
-            }
-        }
+        lobbyNameText.text = profile.name;
+        profileImage.texture = profile.avatar;
+        profileImage.uvRect = new Rect(0, 1, 1, -1);
 
         joinBtn.onClick.AddListener(() => SteamManager.instance.JoinLobby(lobby));
         joinBtn.onClick.AddListener(() => StartCoroutine(ButtonCooldownRoutine()));
-        return state;
     }
 
     private IEnumerator ButtonCooldownRoutine()

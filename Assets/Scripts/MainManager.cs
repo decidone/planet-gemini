@@ -23,8 +23,6 @@ public class MainManager : MonoBehaviour
     Button quitBtn;
 
     [SerializeField]
-    Button publicBtn;
-    [SerializeField]
     Button friendsBtn;
     [SerializeField]
     Button privateBtn;
@@ -69,22 +67,16 @@ public class MainManager : MonoBehaviour
         quitBtn.onClick.AddListener(() => QuitBtnFunc());
         newGameBtn.onClick.AddListener(() => NewGameBtnFunc());
         loadBtn.onClick.AddListener(() => LoadBtnFunc());
-        publicBtn.onClick.AddListener(() =>
+        privateBtn.onClick.AddListener(() =>
         {
             MainGameSetting.instance.accessLevel = 0;
-            accessText.text = "Public Room";
+            accessText.text = "Solo";
             OpenUI(2);
         });
         friendsBtn.onClick.AddListener(() =>
         {
             MainGameSetting.instance.accessLevel = 1;
-            accessText.text = "Friends & Code";
-            OpenUI(2);
-        });
-        privateBtn.onClick.AddListener(() =>
-        {
-            MainGameSetting.instance.accessLevel = 2;
-            accessText.text = "Single Play";
+            accessText.text = "With Friend";
             OpenUI(2);
         });
         

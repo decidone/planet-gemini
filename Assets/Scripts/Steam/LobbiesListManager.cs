@@ -1,8 +1,9 @@
+using Steamworks.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Steamworks.Data;
 using UnityEngine.UI;
+using static SteamFriendLobbyFetcher;
 
 public class LobbiesListManager : MonoBehaviour
 {
@@ -13,7 +14,11 @@ public class LobbiesListManager : MonoBehaviour
 
     public InputField lobbyIdInputField;
     public Button joinBtn;
+    public GameObject noLobbiesText;
     //public GameObject lobbiesButton, hostButton;
+    public GameObject lobbyPopupObj;
+    public Text popupText;
+    public Button popupBtn;
 
     public List<GameObject> listOfLobbies = new List<GameObject>();
 
@@ -37,6 +42,7 @@ public class LobbiesListManager : MonoBehaviour
     private void Start()
     {
         joinBtn.onClick.AddListener(() => JoinWithLobbyID());
+        popupBtn.onClick.AddListener(() => ClosePopup());
     }
 
     public void OpenUI()
@@ -53,32 +59,43 @@ public class LobbiesListManager : MonoBehaviour
             soundManager.PlayUISFX("ButtonClick");
     }
 
-    public void DisplayLobby(Lobby lobby)
+    public void DisplayLobby(Lobby lobby, FriendProfile profile)
     {
         GameObject createdItem = Instantiate(lobbyDataItemPrefab);
-        bool hasData = createdItem.GetComponent<LobbyDataEntry>().SetLobbyData(lobby);
-        if (hasData)
-        {
-            createdItem.transform.SetParent(lobbyListContent.transform);
-            createdItem.transform.localScale = Vector3.one;
-            
-            listOfLobbies.Add(createdItem);
-        }
-        else
-        {
-            Destroy(createdItem);
-        }
+        createdItem.GetComponent<LobbyDataEntry>().SetLobbyData(lobby, profile);
+        createdItem.transform.SetParent(lobbyListContent.transform);
+        createdItem.transform.localScale = Vector3.one;
+
+        listOfLobbies.Add(createdItem);
     }
 
-    public void SetFriendsLobbiesTop()
+    public void NoLobbiesText(bool isLobby)
     {
-        var list = GetComponentsInChildren<LobbyDataEntry>();
-        foreach (var item in list)
-        {
-            if (item.isFriendLobby)
-                item.transform.SetAsFirstSibling();
-        }
+        noLobbiesText.SetActive(isLobby);
     }
+
+    public void OpenPopup(string message)
+    {
+        lobbyPopupObj.SetActive(true);
+        popupText.text = message;
+    }
+
+    public void ClosePopup()
+    {
+        lobbyPopupObj.SetActive(false);
+        popupText.text = string.Empty;
+        SteamManager.instance.GetLobbiesList();
+    }
+
+    //public void SetFriendsLobbiesTop()
+    //{
+    //    var list = GetComponentsInChildren<LobbyDataEntry>();
+    //    foreach (var item in list)
+    //    {
+    //        if (item.isFriendLobby)
+    //            item.transform.SetAsFirstSibling();
+    //    }
+    //}
 
     public void DestroyLobbies()
     {
@@ -93,6 +110,7 @@ public class LobbiesListManager : MonoBehaviour
 
     public void JoinWithLobbyID()
     {
+        // 안쓰는데 일단 남겨둠
         ulong Id;
         if (!ulong.TryParse(lobbyIdInputField.text, out Id))
             return;

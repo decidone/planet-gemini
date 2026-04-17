@@ -82,30 +82,15 @@ public class SteamManager : MonoBehaviour
             MainGameSetting setting = MainGameSetting.instance;
             if (setting.accessLevel == 0)
             {
-                // public
-                lobby.SetPublic();
-                lobby.SetData("access", "0");
-                lobby.SetData("owner", string.Empty);
+                lobby.SetPrivate();
             }
             else if (setting.accessLevel == 1)
             {
-                // friends & code. lobby.SetFriendsOnly()로 설정을 잡으면 아예 로비 리스트 자체를 불러올수 없어서 access data를 따로 체크하는 방식
-                lobby.SetPublic();
-                lobby.SetData("access", "1");
-                lobby.SetData("owner", lobby.Owner.Id.ToString());
-            }
-            else
-            {
-                // private. 싱글 플레이
-                lobby.SetPrivate();
-                lobby.SetData("access", "2");
-                lobby.SetData("owner", string.Empty);
+                lobby.SetFriendsOnly();
             }
             lobby.SetJoinable(true);
-            lobby.SetData("ownerName", lobby.Owner.Name);
             lobby.SetData("mapSize", setting.mapSizeIndex.ToString());
             lobby.SetData("mapSeed", setting.randomSeed.ToString());
-            //NetworkManager.Singleton.StartHost();
         }
         else
         {
@@ -398,17 +383,54 @@ public class SteamManager : MonoBehaviour
 
     public async void JoinLobby(Lobby _lobby)
     {
-        Lobby[] lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
+        //Lobby[] lobbies = await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).RequestAsync();
 
-        foreach (Lobby lobby in lobbies)
+        //foreach (Lobby lobby in lobbies)
+        //{
+        //    if (lobby.Id == _lobby.Id)
+        //    {
+        //        await lobby.Join();
+        //        return;
+        //    }
+        //}
+        soundManager.PlayUISFX("ButtonClick");
+
+        // 친구 로비인지 확인 로비가 사라진 경우도 여기에 잡힘
+        bool isFriend = false;
+        foreach (var friend in SteamFriends.GetFriends())
         {
-            if (lobby.Id == _lobby.Id)
+            if (!friend.IsPlayingThisGame) continue;
+            var gameInfo = friend.GameInfo;
+            if (!gameInfo.HasValue) continue;
+            var friendLobby = gameInfo.Value.Lobby;
+            if (friendLobby.HasValue && friendLobby.Value.Id == _lobby.Id)
             {
-                await lobby.Join();
-                return;
+                isFriend = true;
+                break;
             }
         }
-        soundManager.PlayUISFX("ButtonClick");
+
+        if (!isFriend)
+        {
+            LobbiesListManager.instance.OpenPopup("This room is no longer available.");
+            return;
+        }
+
+        var result = await _lobby.Join();
+        switch (result)
+        {
+            case RoomEnter.Success:
+                break;
+            case RoomEnter.Full:
+                LobbiesListManager.instance.OpenPopup("This room is full.");
+                break;
+            case RoomEnter.DoesntExist:
+                LobbiesListManager.instance.OpenPopup("This room has been closed.");
+                break;
+            default:
+                LobbiesListManager.instance.OpenPopup("Failed to join. Please try again.");
+                break;
+        }
     }
 
     public async void JoinLobbyWithID(ulong Id)
@@ -480,19 +502,37 @@ public class SteamManager : MonoBehaviour
 
     public async void GetLobbiesList()
     {
-        Lobby[] lobbies = await SteamMatchmaking.LobbyList.RequestAsync();
+        //Lobby[] lobbies = await SteamMatchmaking.LobbyList.RequestAsync();
+        //LobbiesListManager.instance.OpenUI();
+        //LobbiesListManager.instance.DestroyLobbies();
+
+        //if (lobbies != null)
+        //{
+        //    foreach (Lobby lobby in lobbies)
+        //    {
+        //        LobbiesListManager.instance.DisplayLobby(lobby);
+        //    }
+        //}
+
+        //LobbiesListManager.instance.SetFriendsLobbiesTop();
+
+        var results = await SteamFriendLobbyFetcher.instance.FetchFriendLobbiesAsync();
         LobbiesListManager.instance.OpenUI();
         LobbiesListManager.instance.DestroyLobbies();
-
-        if (lobbies != null)
+        
+        if (results.Count > 0)
         {
-            foreach (Lobby lobby in lobbies)
+            foreach (var r in results)
             {
-                LobbiesListManager.instance.DisplayLobby(lobby);
+                LobbiesListManager.instance.DisplayLobby(r.lobby, r.profile);
             }
-        }
 
-        LobbiesListManager.instance.SetFriendsLobbiesTop();
+            LobbiesListManager.instance.NoLobbiesText(false);
+        }
+        else
+        {
+            LobbiesListManager.instance.NoLobbiesText(true);
+        }
     }
 
     IEnumerator DataSync()
