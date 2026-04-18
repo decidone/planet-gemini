@@ -464,10 +464,12 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             ItemSyncClientRpc(itemIndex);
         }
 
-        for (int i = 0; i < sendingItems.Count; i++)
+        List<(int, float)> sendingItemsCopy = new List<(int, float)>(sendingItems);
+
+        for (int i = 0; i < sendingItemsCopy.Count; i++)
         {
-            int itemIndex = sendingItems[i].Item1;
-            float time = sendingItems[i].Item2;
+            int itemIndex = sendingItemsCopy[i].Item1;
+            float time = sendingItemsCopy[i].Item2;
             SendingItemsAddSyncClientRpc(itemIndex, time);
         }
     }
@@ -484,6 +486,4 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         if (!IsServer)
             sendingItems.Clear();
     }
-
-
 }
