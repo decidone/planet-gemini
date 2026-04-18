@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Disintegrator
   m_EditorClassIdentifier: 
   factoryName: Disintegrator
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 32000000
   upgradeMaxHp: 64000000
   maxItemStorageLimit: 99

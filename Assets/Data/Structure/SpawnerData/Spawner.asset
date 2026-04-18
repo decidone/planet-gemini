@@ -13,16 +13,14 @@ MonoBehaviour:
   m_Name: Spawner
   m_EditorClassIdentifier: 
   factoryName: Spawner
-  maxLevel: 5
+  maxLevel: 7
   maxHp: 580200008a020000bc020000ee02000020030000200300002003000020030000
   upgradeMaxHp: 
   maxItemStorageLimit: 0
   maxFulidStorageLimit: 0
   sendSpeed: []
-  sendFluidAmount: 0
   sendDelay:
   - 0
-  upgradeSendDelay: []
   maxBuildingGauge: 0
   maxRepairGauge: 0
   colliderRadius: 0
@@ -42,3 +40,7 @@ MonoBehaviour:
   - 38
   - 41
   upgradedefense: []
+  canTakeItem: 0
+  canSendItem: 0
+  canTakeFluid: 0
+  canSendFluid: 0

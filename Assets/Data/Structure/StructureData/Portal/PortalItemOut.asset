@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PortalItemOut
   m_EditorClassIdentifier: 
   factoryName: PortalItemOut
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 2c010000
   upgradeMaxHp: 5e010000
   maxItemStorageLimit: 99

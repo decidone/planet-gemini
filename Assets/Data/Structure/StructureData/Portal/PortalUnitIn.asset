@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PortalUnitIn
   m_EditorClassIdentifier: 
   factoryName: PortalUnitIn
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 2c010000
   upgradeMaxHp: 5e010000
   maxItemStorageLimit: 99
@@ -21,8 +21,6 @@ MonoBehaviour:
   sendSpeed:
   - 1
   sendDelay:
-  - 0.2
-  upgradeSendDelay:
   - 0.2
   maxBuildingGauge: 10
   maxRepairGauge: 10
@@ -38,3 +36,7 @@ MonoBehaviour:
   - 5
   upgradedefense:
   - 7
+  canTakeItem: 0
+  canSendItem: 0
+  canTakeFluid: 0
+  canSendFluid: 0

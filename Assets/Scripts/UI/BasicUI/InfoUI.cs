@@ -180,9 +180,9 @@ public class InfoUI : MonoBehaviour
         {
             if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
             {
-                if (str.structureData.MaxLevel != str.level + 1)
+                if (str.maxLevel != str.level)
                 {
-                    if (ScienceDb.instance.IsLevelExists(str.buildName, str.level + 2))
+                    if (ScienceDb.instance.IsLevelExists(str.buildName, str.level + 1))
                     {
                         // 업그레이드 가능
                         upgradeBtn.gameObject.SetActive(true);

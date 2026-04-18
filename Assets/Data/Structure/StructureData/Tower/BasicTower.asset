@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BasicTower
   m_EditorClassIdentifier: 
   factoryName: BasicTower
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 2c010000
   upgradeMaxHp: 5e010000
   maxItemStorageLimit: 50
@@ -37,3 +37,6 @@ MonoBehaviour:
   upgradedefense:
   - 17
   canTakeItem: 1
+  canSendItem: 0
+  canTakeFluid: 0
+  canSendFluid: 0

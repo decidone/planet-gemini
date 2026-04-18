@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Overclock
   m_EditorClassIdentifier: 
   factoryName: Overclock
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 32000000
   upgradeMaxHp: 64000000
   maxItemStorageLimit: 0

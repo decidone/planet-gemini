@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UnitFactory
   m_EditorClassIdentifier: 
   factoryName: UnitFactory
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 64000000
   upgradeMaxHp: 64000000
   maxItemStorageLimit: 99

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FireTower
   m_EditorClassIdentifier: 
   factoryName: FireTower
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 2c010000
   upgradeMaxHp: 5e010000
   maxItemStorageLimit: 50

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BloodTower
   m_EditorClassIdentifier: 
   factoryName: BloodTower
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 2c010000
   upgradeMaxHp: 5e010000
   maxItemStorageLimit: 50

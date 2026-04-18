@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LocalPortal
   m_EditorClassIdentifier: 
   factoryName: LocalPortal
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 2c010000
   upgradeMaxHp: 5e010000
   maxItemStorageLimit: 0
@@ -36,3 +36,7 @@ MonoBehaviour:
   - 5
   upgradedefense:
   - 7
+  canTakeItem: 0
+  canSendItem: 0
+  canTakeFluid: 0
+  canSendFluid: 0

@@ -50,7 +50,7 @@ public class UpgradeBuild : DragFunc
                 continue;
             if (worldObj.Get<Portal>() || worldObj.Get<ScienceBuilding>())
                 continue;
-            if (structure.structureData.MaxLevel == structure.level + 1 || !ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
+            if (structure.maxLevel == structure.level || !ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 1))
                 continue;
 
             selectedObjectsList.Add(structure);
@@ -80,9 +80,9 @@ public class UpgradeBuild : DragFunc
                     {
                         if (!(structure.Get<Portal>() || structure.Get<ScienceBuilding>()))
                         {
-                            if (structure.structureData.MaxLevel != structure.level + 1)
+                            if (structure.maxLevel != structure.level)
                             {
-                                if (ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 2))
+                                if (ScienceDb.instance.IsLevelExists(structure.buildName, structure.level + 1))
                                 {
                                     // 업그레이드 가능
                                     selectedObjects[0] = structure;
@@ -112,9 +112,9 @@ public class UpgradeBuild : DragFunc
         {
             if (!(str.Get<Portal>() || str.Get<ScienceBuilding>()))
             {
-                if (str.structureData.MaxLevel != str.level + 1)
+                if (str.maxLevel != str.level)
                 {
-                    if (ScienceDb.instance.IsLevelExists(str.buildName, str.level + 2))
+                    if (ScienceDb.instance.IsLevelExists(str.buildName, str.level + 1))
                     {
                         // 업그레이드 가능
                         selectedObjects = new WorldObj[1];

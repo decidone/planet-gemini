@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pipe
   m_EditorClassIdentifier: 
   factoryName: Pipe
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 28000000
   upgradeMaxHp: 64000000
   maxItemStorageLimit: 0

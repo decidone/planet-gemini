@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Furnace
   m_EditorClassIdentifier: 
   factoryName: Furnace
-  maxLevel: 2
+  maxLevel: 1
   maxHp: 3200000064000000
   upgradeMaxHp: 6400000096000000
   maxItemStorageLimit: 99

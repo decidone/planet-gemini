@@ -938,6 +938,10 @@ public class Structure : WorldObj
     public virtual void GameStartSpawnSet(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         level = _level;
+        if(level > maxLevel)
+        {
+            level = maxLevel;
+        }
         dirNum = _beltDir;
         height = objHeight;
         width = objWidth;

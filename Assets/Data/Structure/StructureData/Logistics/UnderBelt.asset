@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UnderBelt
   m_EditorClassIdentifier: 
   factoryName: UnderBelt
-  maxLevel: 3
+  maxLevel: 2
   maxHp: 280000003200000046000000
   upgradeMaxHp: 640000006e00000078000000
   maxItemStorageLimit: 1

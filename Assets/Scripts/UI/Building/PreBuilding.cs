@@ -1218,12 +1218,12 @@ public class PreBuilding : NetworkBehaviour
             if(structure.TryGet(out BeltCtrl belt))
             {
                 BeltGroupMgr beltGroupMgr = beltGroupSet.GetComponent<BeltGroupMgr>();
-                beltGroupMgr.SetBelt(belt, level, dirNum, objHeight, objWidth, isInHostMap, this.buildingIndex);
+                beltGroupMgr.SetBelt(belt, level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
                 MapDataCheck(spawnobj, spawnPos);
             }
             else
             {
-                structure.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, this.buildingIndex);
+                structure.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
                 MapDataCheck(spawnobj, spawnPos);
             }
         }
@@ -1262,7 +1262,7 @@ public class PreBuilding : NetworkBehaviour
 
         if (netObj.TryGetComponent(out PortalObj portal))
         {
-            portal.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, this.buildingIndex);
+            portal.SettingClientRpc(level, dirNum, objHeight, objWidth, isInHostMap, buildingIndex);
             gameManager.portal[portalIndex].SetPortalObjEnd(portal.structureData.FactoryName, spawnobj);
             spawnobj.transform.parent = gameManager.portal[portalIndex].transform;
             MapDataCheck(spawnobj, spawnPos);

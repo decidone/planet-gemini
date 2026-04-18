@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SunTower
   m_EditorClassIdentifier: 
   factoryName: SunTower
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 18010000
   upgradeMaxHp: 4a010000
   maxItemStorageLimit: 50

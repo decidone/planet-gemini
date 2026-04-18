@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CoalGenerator
   m_EditorClassIdentifier: 
   factoryName: CoalGenerator
-  maxLevel: 1
+  maxLevel: 0
   maxHp: 32000000
   upgradeMaxHp: 64000000
   maxItemStorageLimit: 99
@@ -37,3 +37,6 @@ MonoBehaviour:
   upgradedefense:
   - 7
   canTakeItem: 1
+  canSendItem: 0
+  canTakeFluid: 0
+  canSendFluid: 0
