@@ -1,14 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
 using UnityEngine.Pool;
 
 // UTF-8 설정
 public class ItemProps : MonoBehaviour
 {
-    NetworkObjectPool networkObjectPool;
-
     public IObjectPool<GameObject> itemPool { get; set; }
 
     public Item item;
@@ -25,11 +20,6 @@ public class ItemProps : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    private void Start()
-    {
-        networkObjectPool = NetworkObjectPool.Singleton;
     }
 
     public void ResetItemProps(bool isInHostmap, int destroyRequestedBy)

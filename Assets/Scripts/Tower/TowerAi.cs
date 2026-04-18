@@ -86,7 +86,7 @@ public class TowerAi : Production
 
         if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (belt.beltGroupMgr.nextObj == this)
+            if (belt.beltGroupMgr.nextObj == this && (belt.beltState == BeltState.EndBelt || belt.beltState == BeltState.SoloBelt))
             {
                 StartCoroutine(SetInObjCoroutine(obj));
                 yield break;

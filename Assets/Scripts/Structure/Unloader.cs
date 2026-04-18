@@ -11,7 +11,9 @@ public class Unloader : LogisticsCtrl
     {
         //setModel = GetComponent<SpriteRenderer>();
         clickEvent = GetComponent<LogisticsClickEvent>();
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()
@@ -121,7 +123,7 @@ public class Unloader : LogisticsCtrl
         {
             if (obj.TryGet<BeltCtrl>(out var belt))
             {
-                if (belt.beltGroupMgr.nextObj == this)
+                if (belt.beltGroupMgr.nextObj == this && (belt.beltState == BeltState.EndBelt || belt.beltState == BeltState.SoloBelt))
                 {
                     yield break;
                 }

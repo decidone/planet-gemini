@@ -8,7 +8,9 @@ public class MergerCtrl : LogisticsCtrl
     {
         //setModel = GetComponent<SpriteRenderer>();
         //CheckPos();
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()

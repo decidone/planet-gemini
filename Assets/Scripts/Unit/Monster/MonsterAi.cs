@@ -85,13 +85,16 @@ public class MonsterAi : UnitCommonAi
         _effects = Effects.instance;
         unitIndex = GeminiNetworkManager.instance.GetUnitSOIndex(gameObject, monsterType, false);
 
-        if(waveState)
+        if (IsServer)
         {
-            MonsterStatusSet(GameManager.instance.hpMultiplier, GameManager.instance.atkMultiplier);
-        }
-        else
-        {
-            MonsterStatusSet((1 + monsterState[spawnerScript.spawnerLevel]), 1);
+            if (waveState)
+            {
+                MonsterStatusSet(GameManager.instance.hpMultiplier, GameManager.instance.atkMultiplier);
+            }
+            else
+            {
+                MonsterStatusSet((1 + monsterState[spawnerScript.spawnerLevel]), 1);
+            }
         }
     }
 

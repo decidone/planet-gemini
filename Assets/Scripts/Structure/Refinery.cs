@@ -5,7 +5,7 @@ using UnityEngine;
 // UTF-8 설정
 public class Refinery : FluidFactoryCtrl
 {
-    public Slot displaySlot;
+    //public Slot displaySlot;
     int preSaveFluidNum;
 
     protected override void Awake()
@@ -88,8 +88,8 @@ public class Refinery : FluidFactoryCtrl
         howFarSource = -1;
         preSaveFluidNum = 0;
 
-        displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
-            .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();
+        //displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
+        //    .transform.Find("Refinery").transform.Find("DisplaySlot").GetComponent<Slot>();
         fluidManager = FluidManager.instance;
         #endregion
     }
@@ -108,11 +108,13 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
         #endregion
 
-        displaySlot.SetInputItem(ItemList.instance.itemDic["CrudeOil"]);
-        displaySlot.AddItem(ItemList.instance.itemDic["CrudeOil"], 0);
+        //displaySlot.SetInputItem(ItemList.instance.itemDic["CrudeOil"]);
+        //displaySlot.AddItem(ItemList.instance.itemDic["CrudeOil"], 0);
         StartCoroutine(EfficiencyCheckLoop());
     }
 
@@ -274,16 +276,18 @@ public class Refinery : FluidFactoryCtrl
         {
             preSaveFluidNum = (int)saveFluidNum;
             if (isUIOpened)
-                displaySlot.SetItemAmount((int)saveFluidNum);
+                sInvenManager.DisplaySlotUpdate((int)saveFluidNum);
         }
     }
 
     public override void OpenUI()
     {
         base.OpenUI();
-        displaySlot.SetItemAmount((int)saveFluidNum);
 
-        sInvenManager.SetInven(inventory, ui);
+        if (recipe.name != null)
+            sInvenManager.DisplaySetInven((int)saveFluidNum, (int)recipe.amounts[0], false, inventory, ui);
+        else
+            sInvenManager.DisplaySetInven((int)saveFluidNum, 0, false, inventory, ui);
         sInvenManager.SetProd(this);
 
         rManager.recipeBtn.gameObject.SetActive(true);
@@ -314,7 +318,7 @@ public class Refinery : FluidFactoryCtrl
     public override void SetRecipe(Recipe _recipe, int index)
     {
         base.SetRecipe(_recipe, index);
-        displaySlot.SetReqAmount((int)recipe.amounts[0]);
+        sInvenManager.displaySlot.SetReqAmount((int)recipe.amounts[0]);
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[1]]);
         sInvenManager.slots[0].SetNeedAmount(recipe.amounts[1]);
         sInvenManager.slots[0].outputSlot = true;
@@ -322,6 +326,12 @@ public class Refinery : FluidFactoryCtrl
         sInvenManager.dicBtn.gameObject.SetActive(true);
         sInvenManager.dicBtn.onClick.RemoveAllListeners();
         sInvenManager.dicBtn.onClick.AddListener(() => InfoDictionary.instance.Search(recipe.items[1], true));
+    }
+
+    protected override void ResetUI()
+    {
+        base.ResetUI();
+        sInvenManager.displaySlot.SetReqAmount(0);
     }
 
     public override void SetOutput(Recipe recipe)

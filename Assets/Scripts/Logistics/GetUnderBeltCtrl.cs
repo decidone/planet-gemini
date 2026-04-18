@@ -19,7 +19,9 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         gameManager = GameManager.instance;
         preBuilding = PreBuilding.instance;
 
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()
@@ -112,18 +114,22 @@ public class GetUnderBeltCtrl : LogisticsCtrl
 
         float dist = 10;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, checkPos[0], dist);
-
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 1; i <= dist; i++)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if(hitCollider.TryGetComponent(out Structure str) && str != this)
+            Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(
+                (int)transform.position.x + (int)checkPos[0].x * i,
+                (int)transform.position.y + (int)checkPos[0].y * i
+            );
+
+            if (cell.structure == null || cell.structure.destroyStart)
+                continue;
+
+            Structure str = cell.structure;
+
+            if (str.TryGet(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)
             {
-                if (str.TryGet(out GetUnderBeltCtrl getUnderBelt) && getUnderBelt.dirNum == dirNum)
-                {
-                    getUnderBelt.NearStrBuilt();
-                    return;
-                }
+                othGet.NearStrBuilt();
+                return;
             }
         }
     }
@@ -187,38 +193,37 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         else
             dist = 1;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, dist);
-
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 1; i <= dist; i++)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.TryGetComponent(out Structure str))
+            Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(
+                (int)transform.position.x + (int)direction.x * i,
+                (int)transform.position.y + (int)direction.y * i
+            );
+
+            if (cell.structure == null || cell.structure.destroyStart)
+                continue;
+
+            Structure str = cell.structure;
+
+            if (index != 2)
             {
-                if(str.destroyStart)
-                    continue;
-                else if(str != this)
+                nearObj[index] = str;
+                callback(str);
+                break;
+            }
+            else
+            {
+                if (str.TryGet(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)
                 {
-                    if (index != 2)
+                    break;
+                }
+                else if (str.TryGet(out SendUnderBeltCtrl sendUnderBelt))
+                {
+                    if (sendUnderBelt.dirNum == dirNum)
                     {
                         nearObj[index] = str;
                         callback(str);
                         break;
-                    }
-                    else
-                    {
-                        if (str.TryGet(out GetUnderBeltCtrl othGet) && othGet.dirNum == dirNum)
-                        {
-                            break;
-                        }
-                        else if (str.TryGet(out SendUnderBeltCtrl sendUnderBelt))
-                        {
-                            if (sendUnderBelt.dirNum == dirNum)
-                            {
-                                nearObj[index] = str;
-                                callback(str);
-                                break;
-                            }
-                        }
                     }
                 }
             }

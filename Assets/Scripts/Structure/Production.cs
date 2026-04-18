@@ -72,7 +72,9 @@ public abstract class Production : Structure
         GetUIFunc();
         //CheckPos();
 
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()
@@ -141,11 +143,11 @@ public abstract class Production : Structure
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null && sizeOneByOne)
+            if (!nearObj[i] && sizeOneByOne)
             {
                 CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }
-            else if (nearObj[i] == null && !sizeOneByOne)
+            else if (!nearObj[i] && !sizeOneByOne)
             {
                 CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }
@@ -401,7 +403,7 @@ public abstract class Production : Structure
 
         if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (belt.beltGroupMgr.nextObj == this)
+            if (belt.beltGroupMgr.nextObj == this && (belt.beltState == BeltState.EndBelt || belt.beltState == BeltState.SoloBelt))
             {
                 StartCoroutine(SetInObjCoroutine(obj));
                 yield break;

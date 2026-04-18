@@ -26,9 +26,7 @@ public class Structure : WorldObj
     public int level = 0;
     public string buildName;
 
-    [HideInInspector]
     public int height;
-    [HideInInspector]
     public int width;
     [HideInInspector]
     public bool sizeOneByOne;
@@ -227,6 +225,9 @@ public class Structure : WorldObj
     public HashSet<RepairTower> repairTowers = new HashSet<RepairTower>();
 
     public SpriteRenderer view;
+
+    protected bool isStartCalled = false;
+    protected bool isCellCalled = false;
 
     protected override void Awake()
     {
@@ -655,7 +656,9 @@ public class Structure : WorldObj
         //gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         onEffectUpgradeCheck.Invoke();
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     [ClientRpc]
@@ -694,7 +697,7 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    protected virtual void ItemSyncClientRpc(int itemIndex, ClientRpcParams rpcParams = default)
+    protected void ItemSyncClientRpc(int itemIndex, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
@@ -721,16 +724,16 @@ public class Structure : WorldObj
 
     public virtual bool CheckOutItemNum() { return new bool(); }
 
-    public void BuildingSetting(int _level, int _height, int _width, int _dirCount)
-    {
-        isPreBuilding = true;
-        ColliderTriggerOnOff(true);
-        level = _level - 1;
-        height = _height;
-        width = _width;
-        dirCount = _dirCount;
-        onEffectUpgradeCheck.Invoke();
-    }
+    //public void BuildingSetting(int _level, int _height, int _width, int _dirCount)
+    //{
+    //    isPreBuilding = true;
+    //    ColliderTriggerOnOff(true);
+    //    level = _level - 1;
+    //    height = _height;
+    //    width = _width;
+    //    dirCount = _dirCount;
+    //    onEffectUpgradeCheck.Invoke();
+    //}
 
     public virtual void StrBuilt()
     {
@@ -746,7 +749,7 @@ public class Structure : WorldObj
             for (int i = 0; i < 4; i++)
             {
                 int nearX = posX + oneDirections[i, 0];
-                int nearY = posY + oneDirections[i, 1];
+                int nearY = posY + oneDirections[i, 1]; 
                 cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
                 if (cell.structure != null)
                 {
@@ -981,6 +984,11 @@ public class Structure : WorldObj
             hpBar.enabled = true;
             unitCanvas.SetActive(true);
         }
+        else
+        {
+            hpBar.enabled = false;
+            unitCanvas.SetActive(false);
+        }
     }
 
     public void ConnectedPosListPosSet(Vector3 pos)
@@ -990,11 +998,11 @@ public class Structure : WorldObj
 
     public virtual void GameStartRecipeSet(int recipeId) { }
 
-    public void GameStartItemSet(int itemIndex)
+    public virtual void GameStartItemSet(int itemIndex)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         itemList.Add(item);
-        if (itemList.Count >= structureData.MaxItemStorageLimit)
+        if (itemList.Count >= maxAmount)
         {
             isFull = true;
         }
@@ -1020,12 +1028,12 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    protected void OnFactoryItemClientRpc(int itemIndex)
+    protected virtual void OnFactoryItemClientRpc(int itemIndex)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         itemList.Add(item);
 
-        if (itemList.Count >= structureData.MaxItemStorageLimit)
+        if (itemList.Count >= maxAmount)
         {
             isFull = true;
         }
@@ -1492,7 +1500,7 @@ public class Structure : WorldObj
         //repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         ColliderTriggerOnOff(true);
         Instantiate(RuinExplo, transform.position, Quaternion.identity);
-        soundManager.PlaySFX(gameObject, "structureSFX", "Destory");
+        soundManager.PlaySFX(gameObject, "structureSFX", "Destroy");
 
         if (!IsServer)
         {
@@ -1684,10 +1692,11 @@ public class Structure : WorldObj
 
         if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (belt.beltGroupMgr.nextObj != this)
-            {
+            if(belt.beltGroupMgr.nextObj != this)
                 yield break;
-            }
+            if (belt.beltState != BeltState.EndBelt && belt.beltState != BeltState.SoloBelt)
+                yield break;
+
             belt.FactoryPosCheck(this);
         }
         inObj.Add(obj);
@@ -1703,9 +1712,9 @@ public class Structure : WorldObj
 
         if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (belt.beltGroupMgr.nextObj == this)
+            if (belt.beltGroupMgr.nextObj == this && (belt.beltState == BeltState.EndBelt || belt.beltState == BeltState.SoloBelt))
                 yield break;
-            
+
             if (!outObj.Contains(obj))
                 outObj.Add(obj);
 
@@ -2089,6 +2098,10 @@ public class Structure : WorldObj
                     GameManager.instance.clientMap.GetCellDataFromPos(x + j, y + i).structure = this;
             }
         }
+
+        isCellCalled = true;
+        if (isStartCalled)
+            StrBuilt();
     }
 
     public virtual StructureSaveData SaveData()

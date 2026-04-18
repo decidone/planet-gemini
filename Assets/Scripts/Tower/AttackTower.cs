@@ -51,7 +51,9 @@ public class AttackTower : TowerAi
             loadedBullet = bulletDic["EnergyBullet"];
             StartCoroutine(EfficiencyCheckLoop());
         }
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()

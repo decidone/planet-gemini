@@ -13,7 +13,9 @@ public class ExtractorCtrl : FluidFactoryCtrl
     {
         mainSource = myFluidScript;
         fluidName = "CrudeOil";
-        StrBuilt();
+        isStartCalled = true;
+        if(isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()

@@ -371,18 +371,19 @@ public class FluidFactoryCtrl : Production
         bool isFarther = (howFarSource == -1 || howFarSource > dis);
         bool isSameFluidName = fluidName == newSource.fluidName || fluidName == "";
         bool isFluidEmpty = saveFluidNum == 0;
+        bool isPipeOrTank = newSource.Get<PipeCtrl>() || newSource.Get<FluidTankCtrl>();
+        bool canAcceptNewFluid = isSameFluidName || (isFluidEmpty && isPipeOrTank);
         bool shouldUpdate;
 
         if (isSend)
         {
             shouldUpdate =
-                (isMainSourceNull && (isSameFluidName || isFluidEmpty)) || // 메인 소스가 없고 같은 유체를 사용하거나 유체가 비어있는 경우
-                (!isMainSourceNull && isSameFluidName && isFarther); // 메인 소스가 있고 같은 유체를 사용하고 거리가 먼경우
+                (isMainSourceNull && canAcceptNewFluid) ||
+                (!isMainSourceNull && canAcceptNewFluid && isFarther);
         }
         else
         {
-            shouldUpdate = (isMainSourceNull && (isSameFluidName || isFluidEmpty) && isFarther);
-            // 메인 소스가 없고 같은 유체를 사용하거나 유체가 비어있는 경우
+            shouldUpdate = (isMainSourceNull && canAcceptNewFluid && isFarther);
         }
 
         if (shouldUpdate)
@@ -450,14 +451,6 @@ public class FluidFactoryCtrl : Production
             foreach (Item item in itemList)
             {
                 ItemToItemProps(item, 1);
-            }
-        }
-
-        if (itemObjList.Count > 0)
-        {
-            foreach (ItemProps itemProps in itemObjList)
-            {
-                itemProps.ResetItemProps(isInHostMap, destroyRequestedBy);
             }
         }
     }

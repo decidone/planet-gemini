@@ -29,10 +29,10 @@ public class UnitFactory : Production
         {
             if (recipe.name != null)
             {
-                if (conn != null && conn.group != null && conn.group.efficiency > 0 && gameManager.playerUnitLimit > gameManager.playerUnitAmount)
+                if (conn != null && conn.group != null && conn.group.efficiency > 0)
                 {
-                    if (slot.Item2 >= recipe.amounts[0] && slot1.Item2 >= recipe.amounts[1]
-                    && slot2.Item2 >= recipe.amounts[2])
+                    if (slot.Item2 >= recipe.amounts[0] && slot1.Item2 >= recipe.amounts[1] && slot2.Item2 >= recipe.amounts[2] &&
+                        (gameManager.playerUnitLimit > gameManager.playerUnitAmount || recipe.name == "Tank"))
                     {
                         OperateStateSet(true);
                         prodTimer += Time.deltaTime;
