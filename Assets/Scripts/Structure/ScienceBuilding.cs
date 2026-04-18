@@ -5,7 +5,12 @@ using UnityEngine;
 
 public class ScienceBuilding : PortalObj
 {
-    Vector3 pos; 
+    Vector3 pos;
+
+    protected override void Update()
+    {
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -16,7 +21,8 @@ public class ScienceBuilding : PortalObj
 
     protected override void OnClientConnectedCallback(ulong clientId)
     {
-        base.OnClientConnectedCallback(clientId);
+        ClientConnectSyncServerRpc();
+        PortalObjConnectServerRpc();
     }
 
     public override void NearStrBuilt()

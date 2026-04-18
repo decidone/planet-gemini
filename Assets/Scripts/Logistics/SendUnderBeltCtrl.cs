@@ -14,7 +14,9 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
     void Start()
     {
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()
@@ -61,12 +63,19 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
         float dist = 10;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, checkPos[0], dist);
-
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 1; i <= dist; i++)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.TryGetComponent(out GetUnderBeltCtrl getUnderBelt) && hitCollider.gameObject != this.gameObject)
+            Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(
+                (int)transform.position.x + (int)checkPos[0].x * i,
+                (int)transform.position.y + (int)checkPos[0].y * i
+            );
+
+            if (cell.structure == null || cell.structure.destroyStart)
+                continue;
+
+            Structure str = cell.structure;
+
+            if (str.TryGet(out GetUnderBeltCtrl getUnderBelt))
             {
                 if (getUnderBelt.dirNum == dirNum)
                 {
@@ -120,9 +129,10 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             if (obj.TryGet<BeltCtrl>(out var belt))
             {
                 if (belt.beltGroupMgr.nextObj != this)
-                {
                     yield break;
-                }
+                if (belt.beltState != BeltState.EndBelt && belt.beltState != BeltState.SoloBelt)
+                    yield break;
+
                 belt.FactoryPosCheck(this);
             }
             inObj.Add(obj);
@@ -158,6 +168,11 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
             sendingItems.RemoveAt(0);
         }
+
+        if(sendingItems.Count >= maxAmount)
+            isFull = true;
+        else
+            isFull = false;
     }
 
     public void SetOutObj(Structure obj)
@@ -172,6 +187,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         {            
             outObj.Add(obj);
             sendDist = Vector2.Distance(transform.position, obj.transform.position) - 1;
+            maxAmount = Mathf.CeilToInt(sendDist * 4);
         }
     }
 
@@ -253,13 +269,18 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
     void SendingItem(int itemIndex, float sendTime)
     {
-        sendingItems.Add((itemIndex, sendTime));
+        SendingItemsAddSyncServerRpc(itemIndex, sendTime);
         itemList.RemoveAt(0);
         ItemNumCheck();
         if (sendCoroutine == null)
         {
             sendCoroutine = StartCoroutine(SendingItemCor());
         }
+
+        if (sendingItems.Count >= maxAmount)
+            isFull = true;
+        else
+            isFull = false;
     }
 
     IEnumerator SendingItemCor()
@@ -364,6 +385,11 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     public void LoadSendingItems(List<(int, float)> data)
     {
         sendingItems = new List<(int, float)>(data);
+
+        if (sendingItems.Count >= maxAmount)
+        {
+            isFull = true;
+        }
     }
 
     public override Dictionary<Item, int> PopUpItemCheck()
@@ -389,4 +415,75 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         else
             return null;
     }
+
+
+    public override void ItemNumCheck()
+    {
+        if (sendingItems.Count >= maxAmount)
+        {
+            isFull = true;
+        }
+        else
+            isFull = false;        
+    }
+
+    public override void GameStartItemSet(int itemIndex)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        itemList.Add(item);
+    }
+
+    [ClientRpc]
+    protected override void OnFactoryItemClientRpc(int itemIndex)
+    {
+        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+        itemList.Add(item);
+    }
+
+    [ServerRpc]
+    void SendingItemsAddSyncServerRpc(int itemIndex, float time)
+    {
+        SendingItemsAddSyncClientRpc(itemIndex, time);
+    }
+
+    [ClientRpc]
+    void SendingItemsAddSyncClientRpc(int itemIndex, float time)
+    {
+        sendingItems.Add((itemIndex, time));
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public override void ItemSyncServerRpc()
+    {
+        ItemListClearClientRpc();
+        SendingItemsListClearServerRpc();
+
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
+            ItemSyncClientRpc(itemIndex);
+        }
+
+        for (int i = 0; i < sendingItems.Count; i++)
+        {
+            int itemIndex = sendingItems[i].Item1;
+            float time = sendingItems[i].Item2;
+            SendingItemsAddSyncClientRpc(itemIndex, time);
+        }
+    }
+
+    [ServerRpc]
+    public void SendingItemsListClearServerRpc()
+    {
+        SendingItemsListClearClientRpc();
+    }
+
+    [ClientRpc]
+    public void SendingItemsListClearClientRpc()
+    {
+        if (!IsServer)
+            sendingItems.Clear();
+    }
+
+
 }

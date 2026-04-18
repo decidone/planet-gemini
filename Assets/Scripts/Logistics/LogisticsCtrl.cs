@@ -11,7 +11,7 @@ public class LogisticsCtrl : Structure
     {
         itemObjList.Add(itemObj);
         itemObj.setOnBelt = Get<BeltCtrl>();
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        if (itemObjList.Count >= maxAmount)
             isFull = true;
         else
             isFull = false;
@@ -41,7 +41,7 @@ public class LogisticsCtrl : Structure
     {
         if (Get<BeltCtrl>())
         {
-            if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+            if (itemObjList.Count >= maxAmount)
             {
                 isFull = true;
             }
@@ -50,7 +50,7 @@ public class LogisticsCtrl : Structure
         }
         else
         {
-            if (itemList.Count >= structureData.MaxItemStorageLimit)
+            if (itemList.Count >= maxAmount)
             {
                 isFull = true;
             }

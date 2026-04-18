@@ -527,7 +527,6 @@ public class PreBuilding : NetworkBehaviour
         if (isBelt)
         {
             BeltGroupSpawnServerRpc();
-
             if (reversSet)
             {
                 for (int i = spawnCount - 1; i >= 0; i--)
@@ -1314,8 +1313,8 @@ public class PreBuilding : NetworkBehaviour
         buildData = build;
         buildingIndex = buildingListSO.FindBuildingListIndex(buildData.name);
         level = buildData.level - 1;
-        int height = buildData.height;
-        int width = buildData.width;
+        objHeight = buildData.height;
+        objWidth = buildData.width;
         if (buildData.gameObj.GetComponent<BeltCtrl>())
             isBeltObj = true;
         isPortalObj = false;
@@ -1328,11 +1327,8 @@ public class PreBuilding : NetworkBehaviour
 
         nonNetObj = Instantiate(preBuildingNonNet);
 
-        objHeight = height;
-        objWidth = width;
-
         nonNetObj.TryGetComponent(out PreBuildingImg preBuildingImg);
-        preBuildingImg.BoxColliderSet(new Vector2(height, width));
+        preBuildingImg.BoxColliderSet(new Vector2(objHeight, objWidth));
 
         isGetAnim = buildData.isGetAnim;
 
@@ -1422,13 +1418,13 @@ public class PreBuilding : NetworkBehaviour
             isEnergyUse = false;
         }
 
-        if (height == 1 && width == 1)
+        if (objHeight == 1 && objWidth == 1)
         {
             setPos = Vector3.zero;
             isNeedSetPos = false;
             nonNetObj.transform.position = this.transform.position;
         }
-        else if (height == 2 && width == 2)
+        else if (objHeight == 2 && objWidth == 2)
         {
             setPos = new Vector3(-0.5f, -0.5f);
             isNeedSetPos = true;

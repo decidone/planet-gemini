@@ -14,6 +14,7 @@ public abstract class InventoryManager : MonoBehaviour
 
     //[HideInInspector]
     public Slot[] slots;
+    public Slot displaySlot;
     protected GameManager gameManager;
     protected Slot focusedSlot;  // 마우스 위치에 있는 슬롯
     float splitCooldown;
@@ -74,6 +75,8 @@ public abstract class InventoryManager : MonoBehaviour
 
     public void SetInven(Inventory inven, GameObject invenUI = null, int? invenSize = null)
     {
+        displaySlot = null;
+
         if (inventory != null)
         {
             inventory.onItemChangedCallback -= UpdateUI;
@@ -113,6 +116,30 @@ public abstract class InventoryManager : MonoBehaviour
         }
 
         inventory.Refresh();
+    }
+
+    public void DisplaySetInven(int saveFluidNum, int waterRequirement, bool fluid, Inventory inven, GameObject invenUI = null, int? invenSize = null )
+    {
+        SetInven(inven, invenUI, invenSize);
+
+        displaySlot = inventoryUI.transform.Find("DisplaySlot").gameObject.GetComponentInChildren<Slot>();
+        if (fluid)
+        {
+            displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
+            displaySlot.AddItem(ItemList.instance.itemDic["Water"], 0);
+        }
+        else
+        {
+            displaySlot.SetInputItem(ItemList.instance.itemDic["CrudeOil"]);
+            displaySlot.AddItem(ItemList.instance.itemDic["CrudeOil"], 0);
+        }
+        displaySlot.SetItemAmount(saveFluidNum);
+        displaySlot.SetReqAmount(waterRequirement);
+    }
+
+    public void DisplaySlotUpdate(int saveFluidNum)
+    {
+        displaySlot.SetItemAmount(saveFluidNum);
     }
 
     protected void SlotLeftClick(InputAction.CallbackContext ctx)

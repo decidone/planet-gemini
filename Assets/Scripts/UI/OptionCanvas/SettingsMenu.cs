@@ -266,6 +266,8 @@ public class SettingsMenu : MonoBehaviour
     {
         windowSize = new Dictionary<int, (string, int, int, bool, bool)>(winSize);
         inputActions = new Dictionary<string, InputAction>(inputs);
+        RectTransform rect = keyBindingsPanel.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(rect.sizeDelta.x, (inputActions.Count + 1) * 70f);
     }
 
     public void WindowSizeConfirm(bool isOk)

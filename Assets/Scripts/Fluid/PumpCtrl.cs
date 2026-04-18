@@ -13,7 +13,9 @@ public class PumpCtrl : FluidFactoryCtrl
     {
         mainSource = myFluidScript;
         fluidName = "Water";
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()

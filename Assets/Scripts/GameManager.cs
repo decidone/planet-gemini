@@ -9,7 +9,6 @@ using UnityEngine.InputSystem;
 using System;
 using UnityEngine.SceneManagement;
 using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
-using UnityEditor;
 
 // UTF-8 설정
 public class GameManager : NetworkBehaviour
@@ -1357,14 +1356,14 @@ public class GameManager : NetworkBehaviour
         {
             if (isHost)
             {
-                player.transform.position = hostPlayerSpawnPos;
+                player.GetComponent<ClientNetworkTransform>().Teleport(hostPlayerSpawnPos, Quaternion.identity, player.transform.localScale);
                 SetMapInven(true);
                 map = hostMap;
                 isPlayerInHostMap = true;
             }
             else
             {
-                player.transform.position = clientPlayerSpawnPos;
+                player.GetComponent<ClientNetworkTransform>().Teleport(clientPlayerSpawnPos, Quaternion.identity, player.transform.localScale);
                 SetMapInven(false);
                 map = clientMap;
                 isPlayerInHostMap = false;
@@ -1372,7 +1371,7 @@ public class GameManager : NetworkBehaviour
         }
         else
         {
-            player.transform.position = playerDataPos;
+            player.GetComponent<ClientNetworkTransform>().Teleport(playerDataPos, Quaternion.identity, player.transform.localScale);
             if (isPlayerInHostMap)
             {
                 SetMapInven(true);
@@ -1942,7 +1941,7 @@ public class GameManager : NetworkBehaviour
     public void PlayerEscapeFromStuck()
     {
         Vector3 pos = MapGenerator.instance.GetNearGroundPos(player.transform.position);
-        player.transform.position = pos;
+        player.GetComponent<ClientNetworkTransform>().Teleport(pos, Quaternion.identity, player.transform.localScale);
     }
 
     public void SetRespawnUI()

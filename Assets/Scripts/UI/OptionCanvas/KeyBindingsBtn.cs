@@ -65,7 +65,9 @@ public class KeyBindingsBtn : MonoBehaviour
             ConfirmPanel.instance.KeyBindingDuplication();
 
         rebindingOperation = inputAction.PerformInteractiveRebinding()
-            .WithControlsExcluding("Mouse")
+            .WithControlsExcluding("<Mouse>/PRESS")
+            .WithControlsExcluding("<Mouse>/leftButton")
+            .WithControlsExcluding("<Mouse>/rightButton")
             .WithCancelingThrough("<Keyboard>/escape")
             .OnPotentialMatch(operation =>
             {

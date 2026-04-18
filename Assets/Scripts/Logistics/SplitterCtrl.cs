@@ -32,7 +32,9 @@ public class SplitterCtrl : LogisticsCtrl
         CanSendCheck();
         clickEvent = Get<LogisticsClickEvent>();
 
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()
@@ -483,7 +485,7 @@ public class SplitterCtrl : LogisticsCtrl
 
         if (obj.TryGet<BeltCtrl>(out var belt))
         {
-            if (belt.beltGroupMgr.nextObj == this)
+            if (belt.beltGroupMgr.nextObj == this && (belt.beltState == BeltState.EndBelt || belt.beltState == BeltState.SoloBelt))
                 yield break;
 
             if (!outObj.Contains(obj))

@@ -82,6 +82,8 @@ public class PlayerController : NetworkBehaviour
     private float currentBgmInterval = 0.5f;
     bool enemyNearby;
 
+    private float recoilForce = 5f;
+    
     void Awake()
     {
         gameManager = GameManager.instance;
@@ -659,23 +661,29 @@ public class PlayerController : NetworkBehaviour
 
         if (beltList.Count > 0)
         {
-            BeltLootServerRpc(IsServer);
+            BeltLootServerRpc(IsServer, gameManager.isPlayerInHostMap);
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void BeltLootServerRpc(bool isServer)
+    void BeltLootServerRpc(bool isServer, bool hostMap)
     {        
         foreach (BeltCtrl belt in beltList)
         {
             List<ItemProps> beltItems = new List<ItemProps>();
             beltItems = belt.PlayerRootItemCheck();
+            Inventory inventory;
+            if(hostMap)
+                inventory = gameManager.hostMapInven;
+            else
+                inventory = gameManager.clientMapInven;
+
             foreach (ItemProps itemProps in beltItems)
             {
-                int containableAmount = gameManager.inventory.SpaceCheck(itemProps.item);
+                int containableAmount = inventory.SpaceCheck(itemProps.item);
                 if (itemProps.amount <= containableAmount)
                 {
-                    gameManager.inventory.Add(itemProps.item, itemProps.amount);
+                    inventory.Add(itemProps.item, itemProps.amount);
                     belt.beltGroupMgr.GroupItemLoot(belt, itemProps.beltGroupIndex, isServer);
                 }
                 else
@@ -708,19 +716,26 @@ public class PlayerController : NetworkBehaviour
             return;
         if (RaycastUtility.IsPointerOverUI(Input.mousePosition))
             return;
-
         if (tankAttackKeyPressed)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             if (onTankData.TankAttackCheck())
-            {                
+            {
                 var bulletData = onTankData.inventory.SlotCheck(0);
                 onTankData.inventory.SlotSubServerRpc(0, 1);
-
                 BulletSpawnServerRpc(mousePos, bulletData.item.name);
+
+                // 반동 효과
+                ApplyRecoil(mousePos);
             }
             Invoke(nameof(PlayerAttackClickFalse), 0.1f);
         }
+    }
+
+    private void ApplyRecoil(Vector3 targetPos)
+    {
+        Vector2 recoilDir = ((Vector2)(transform.position - targetPos)).normalized;
+        rb.AddForce(recoilDir * recoilForce, ForceMode2D.Impulse);
     }
 
     void PlayerAttackClickFalse()

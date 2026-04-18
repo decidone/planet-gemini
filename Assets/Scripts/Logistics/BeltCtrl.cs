@@ -108,7 +108,9 @@ public class BeltCtrl : LogisticsCtrl
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
         //AnimSyncFunc();
         isOperate = true;
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
         BeltModelSet();
     }
 
@@ -186,10 +188,16 @@ public class BeltCtrl : LogisticsCtrl
 
         if (!removeState)
         {
-            beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
-
             CheckPos();
             ModelSet();
+            beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+
+            if (beltGroupMgr != null)
+            {
+                beltGroupMgr.nextCheck = true;
+                beltGroupMgr.preCheck = true;
+                beltGroupMgr.BeltGroupRefresh();
+            }
 
             //animator.SetFloat("DirNum", dirNum);
             //animator.SetFloat("ModelNum", modelMotion);
@@ -285,7 +293,7 @@ public class BeltCtrl : LogisticsCtrl
         spawn.setOnBelt = this;
         itemObjList.Add(spawn);
 
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        if (itemObjList.Count >= maxAmount)
             isFull = true;
     }
 
@@ -309,7 +317,7 @@ public class BeltCtrl : LogisticsCtrl
         spawn.beltGroupIndex = beltGroupIndex;
         itemObjList.Add(spawn);
 
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        if (itemObjList.Count >= maxAmount)
             isFull = true;
     }
 
@@ -482,7 +490,7 @@ public class BeltCtrl : LogisticsCtrl
 
     public bool OnBeltItem(ItemProps itemObj)
     {
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        if (itemObjList.Count >= maxAmount)
         {
             if (nextBelt != null && beltState != BeltState.EndBelt)
             {
@@ -501,7 +509,7 @@ public class BeltCtrl : LogisticsCtrl
 
         beltGroupMgr.groupItem.Add(itemObj);
 
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        if (itemObjList.Count >= maxAmount)
             isFull = true;
         else
             isFull = false;
@@ -510,39 +518,6 @@ public class BeltCtrl : LogisticsCtrl
         //}
 
         return true;
-    }
-
-
-    void AddNewItem(ItemProps newItem)
-    {
-        // 새로운 아이템을 리스트에 추가합니다.
-        itemObjList.Add(newItem);
-
-        // 새로운 아이템의 위치를 가져옵니다.
-        Vector3 newItemPos = newItem.transform.position;
-
-        // 새로운 아이템이 들어갈 위치를 찾습니다.
-        int insertIndex = -1;
-        float minDist = 1.0f;
-        for (int i = 0; i < itemObjList.Count - 1; i++)
-        {
-            float dist = Vector3.Distance(newItemPos, itemObjList[i].transform.position);
-            if (dist < minDist)
-            {
-                insertIndex = i;
-                minDist = dist;
-            }
-        }
-
-        // 새로운 아이템을 리스트에서 제거하고, insertIndex에 다시 추가합니다.
-        itemObjList.Remove(newItem);
-        itemObjList.Insert(insertIndex, newItem);
-
-        //// 아이템의 위치를 다시 설정합니다.
-        //for (int i = 0; i < itemObjList.Count; i++)
-        //{
-        //    itemObjList[i].transform.position = nextPos[i];
-        //}
     }
 
     void ItemSend()
@@ -563,7 +538,7 @@ public class BeltCtrl : LogisticsCtrl
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc]
     void SendItemServerRpc()
     {
         SendItemClientRpc();
@@ -572,8 +547,26 @@ public class BeltCtrl : LogisticsCtrl
     [ClientRpc]
     void SendItemClientRpc()
     {
+        if (itemObjList.Count == 0)
+        {
+            StartCoroutine(ItemSendDelay());
+            return;
+        }
+        ProcessSendItem();
+    }
+
+    IEnumerator ItemSendDelay()
+    {
+        yield return new WaitUntil(() => itemObjList.Count > 0);
+        ProcessSendItem();
+    }
+
+    void ProcessSendItem()
+    {
+        if (itemObjList.Count == 0) return; // 방어 코드
+
         nextBelt.BeltGroupSendItem(itemObjList[0]);
-        itemObjList.Remove(itemObjList[0]);
+        itemObjList.RemoveAt(0);
         ItemNumCheck();
     }
 
@@ -818,23 +811,6 @@ public class BeltCtrl : LogisticsCtrl
         return sendItemList;
     }
 
-    public void PlayerRootFunc(ItemProps item)
-    {
-        if (itemObjList.Contains(item))
-        {
-            int index = itemObjList.IndexOf(item);
-            if (index != -1)
-                PlayerRootFuncServerRpc(index);
-            itemObjList.Remove(item);
-            beltGroupMgr.ItemRoot(item);
-            item.itemPool.Release(item.gameObject);
-
-            if (itemObjList.Count >= structureData.MaxItemStorageLimit)
-                isFull = true;
-            else
-                isFull = false;
-        }
-    }
 
     [ServerRpc(RequireOwnership = false)]
     public void PlayerRootFuncServerRpc(int index)
@@ -851,19 +827,19 @@ public class BeltCtrl : LogisticsCtrl
         itemObjList.RemoveAt(index);
         item.itemPool.Release(item.gameObject);
 
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        if (itemObjList.Count >= maxAmount)
             isFull = true;
         else
             isFull = false;
     }
 
-    public void PlayerRootFuncTest(ItemProps item)
+    public void PlayerRootFunc(ItemProps item)
     {
         itemObjList.Remove(item);
         beltGroupMgr.ItemRoot(item);
         item.itemPool.Release(item.gameObject);
 
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        if (itemObjList.Count >= maxAmount)
             isFull = true;
         else
             isFull = false;
@@ -875,7 +851,7 @@ public class BeltCtrl : LogisticsCtrl
         itemObjList.RemoveAt(itemObjList.Count - 1);
         item.itemPool.Release(item.gameObject);
 
-        if (itemObjList.Count >= structureData.MaxItemStorageLimit)
+        if (itemObjList.Count >= maxAmount)
             isFull = true;
         else
             isFull = false;

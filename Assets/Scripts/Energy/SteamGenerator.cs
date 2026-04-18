@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public class SteamGenerator : FluidFactoryCtrl
 {
-    public Slot displaySlot;
+    //public Slot displaySlot;
     int preSaveFluidNum;
 
     public EnergyGroupConnector connector;
@@ -92,8 +92,8 @@ public class SteamGenerator : FluidFactoryCtrl
         howFarSource = -1;
         preSaveFluidNum = 0;
 
-        displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
-            .transform.Find("SteamGenerator").transform.Find("DisplaySlot").GetComponent<Slot>();
+        //displaySlot = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
+        //    .transform.Find("SteamGenerator").transform.Find("DisplaySlot").GetComponent<Slot>();
         fluidManager = FluidManager.instance;
         #endregion
     }
@@ -111,7 +111,7 @@ public class SteamGenerator : FluidFactoryCtrl
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        StrBuilt();
+//        StrBuilt();
         #endregion
 
         maxFuel = 100;
@@ -119,8 +119,8 @@ public class SteamGenerator : FluidFactoryCtrl
         preBuildingCheck = false;
         preBuilding = PreBuilding.instance;
 
-        displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
-        displaySlot.AddItem(ItemList.instance.itemDic["Water"], 0);
+        //displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
+        //displaySlot.AddItem(ItemList.instance.itemDic["Water"], 0);
         view.enabled = false;
     }
 
@@ -378,7 +378,7 @@ public class SteamGenerator : FluidFactoryCtrl
         {
             preSaveFluidNum = (int)saveFluidNum;
             if (isUIOpened)
-                displaySlot.SetItemAmount((int)saveFluidNum);
+                sInvenManager.DisplaySlotUpdate((int)saveFluidNum);
         }
     }
 
@@ -419,10 +419,7 @@ public class SteamGenerator : FluidFactoryCtrl
     public override void OpenUI()
     {
         base.OpenUI();
-        displaySlot.SetItemAmount((int)saveFluidNum);
-        displaySlot.SetReqAmount((int)waterRequirement);
-
-        sInvenManager.SetInven(inventory, ui);
+        sInvenManager.DisplaySetInven((int)saveFluidNum, (int)waterRequirement, true, inventory, ui);
         sInvenManager.SetProd(this);
         sInvenManager.progressBar.SetMaxProgress(100);
         sInvenManager.SetCooldownText("water " + waterRequirement + "/s " + fuel + "/" + maxFuel);

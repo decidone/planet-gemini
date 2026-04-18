@@ -67,6 +67,7 @@ public class OptionDataManager : MonoBehaviour
         inputActions.Add("Time UI Scroll Up", InputManager.instance.controls.HotKey.TimeUIUp);
         inputActions.Add("Time UI Scroll Down", InputManager.instance.controls.HotKey.TimeUIDown);
         inputActions.Add("Factory Overlay", InputManager.instance.controls.HotKey.FactoryOverlay);
+        inputActions.Add("Ping", InputManager.instance.controls.Player.Ping);
     }
 
     public void Save()

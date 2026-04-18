@@ -9,7 +9,9 @@ public class ItemSpawner : LogisticsCtrl
 
     void Start()
     {
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()

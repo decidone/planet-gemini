@@ -7,7 +7,9 @@ public class WallCtrl : Structure
 {
     void Start()
     {
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     public override void NearStrBuilt()

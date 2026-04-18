@@ -157,48 +157,46 @@ public class BeltGroupMgr : NetworkBehaviour
 
     private Structure PreObjCheck()
     {
-        var Check = -transform.up;
+        var checkPos = -transform.up;
 
         BeltCtrl belt = beltList[0];
         if (belt.dirNum == 0)
         {
-            Check = -belt.transform.up;
+            checkPos = -belt.transform.up;
         }
         else if (belt.dirNum == 1)
         {
-            Check = -belt.transform.right;
+            checkPos = -belt.transform.right;
         }
         else if (belt.dirNum == 2)
         {
-            Check = belt.transform.up;
+            checkPos = belt.transform.up;
         }
         else if (belt.dirNum == 3)
         {
-            Check = belt.transform.right;
+            checkPos = belt.transform.right;
         }
 
-        RaycastHit2D[] raycastHits = Physics2D.RaycastAll(belt.transform.position, Check, 1f);
+        Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(
+            (int)belt.transform.position.x + (int)checkPos.x,
+            (int)belt.transform.position.y + (int)checkPos.y
+        );
 
-        for (int a = 0; a < raycastHits.Length; a++)
+        if (!cell.structure || cell.structure.destroyStart)
+            return null;
+
+        Structure str = cell.structure;
+
+        if (str.TryGet(out BeltCtrl otherBelt))
         {
-            Collider2D collider = raycastHits[a].collider;
-
-            if (collider.TryGetComponent(out Structure str) && str.Get<BeltCtrl>() != belt)
-            {
-                if (str.TryGet(out BeltCtrl otherBelt))
-                {
-                    CheckGroup(belt, otherBelt, false);
-                }
-                else
-                {
-                    preCheck = false;
-                }
-
-                return str;
-            }
+            CheckGroup(belt, otherBelt, false);
+        }
+        else
+        {
+            preCheck = false;
         }
 
-        return null;
+        return str;
     }
 
     void BeltModelSet(BeltCtrl preBelt, BeltCtrl nextBelt)
@@ -347,54 +345,51 @@ public class BeltGroupMgr : NetworkBehaviour
 
     private Structure NextObjCheck()
     {
-        var Check = transform.up;
+        Vector2 checkPos = transform.up;
 
         BeltCtrl belt = beltList[beltList.Count - 1];
         if (belt.dirNum == 0)
         {
-            Check = belt.transform.up;
+            checkPos = belt.transform.up;
         }
         else if (belt.dirNum == 1)
         {
-            Check = belt.transform.right;
+            checkPos = belt.transform.right;
         }
         else if (belt.dirNum == 2)
         {
-            Check = -belt.transform.up;
+            checkPos = -belt.transform.up;
         }
         else if (belt.dirNum == 3)
         {
-            Check = -belt.transform.right;
+            checkPos = -belt.transform.right;
         }
 
-        RaycastHit2D[] raycastHits = Physics2D.RaycastAll(belt.transform.position, Check, 1f);
+        Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(
+            (int)belt.transform.position.x + (int)checkPos.x,
+            (int)belt.transform.position.y + (int)checkPos.y
+        );
 
-        for (int a = 0; a < raycastHits.Length; a++)
+        if (!cell.structure || cell.structure.destroyStart)
+            return null;
+
+        Structure str = cell.structure;
+
+        if (str.TryGet(out BeltCtrl otherBelt))
         {
-            Collider2D collider = raycastHits[a].collider;
+            CheckGroup(belt, otherBelt, true);
 
-            if (collider.TryGetComponent(out Structure str) && str.Get<BeltCtrl>() != belt)
+            if (otherBelt.beltGroupMgr.nextObj)
             {
-                if (str.TryGet(out BeltCtrl otherBelt))
-                {
-                    CheckGroup(belt, otherBelt, true);
-
-                    if (otherBelt.beltGroupMgr.nextObj)
-                    {
-                        return otherBelt.beltGroupMgr.nextObj;
-                    }
-
-                    return str;
-                }
-                else
-                {
-                    nextCheck = false;
-                    return str;
-                }
+                return otherBelt.beltGroupMgr.nextObj;
             }
         }
+        else
+        {
+            nextCheck = false;
+        }
 
-        return null;
+        return str;
     }
 
     void CheckGroup(BeltCtrl belt, BeltCtrl otherBelt, bool isNextFind)
@@ -602,56 +597,91 @@ public class BeltGroupMgr : NetworkBehaviour
     public void GroupItemLootClientRpc(int beltIndex, int beltGroupIndex, bool isServer)
     {
         ItemProps findItemProps = null;
+        BeltCtrl foundBelt = null;
 
-        foreach (ItemProps itemProps in beltList[beltIndex].itemObjList)
+        // 전체 탐색으로 변경 (beltIndex 불일치 우회)
+        foreach (BeltCtrl belt in beltList)
         {
-            if (itemProps.beltGroupIndex == beltGroupIndex)
+            foreach (ItemProps itemProps in belt.itemObjList)
             {
-                findItemProps = itemProps;
-                beltList[beltIndex].PlayerRootFuncTest(findItemProps);
-                break;
-            }
-        }
-
-        if (!findItemProps)
-        {
-            int previousIndex = beltIndex - 1;
-            if (previousIndex >= 0)
-            {
-                foreach (ItemProps itemProps in beltList[previousIndex].itemObjList)
+                if (itemProps.beltGroupIndex == beltGroupIndex)
                 {
-                    if (itemProps.beltGroupIndex == beltGroupIndex)
-                    {
-                        findItemProps = itemProps;
-                        beltList[previousIndex].PlayerRootFuncTest(findItemProps);
-                        break;
-                    }
+                    findItemProps = itemProps;
+                    foundBelt = belt;
+                    break;
                 }
             }
-
-            int nextIndex = beltIndex + 1;
-            if (!findItemProps && nextIndex < beltList.Count)
-            {
-                foreach (ItemProps itemProps in beltList[nextIndex].itemObjList)
-                {
-                    if (itemProps.beltGroupIndex == beltGroupIndex)
-                    {
-                        findItemProps = itemProps;
-                        beltList[nextIndex].PlayerRootFuncTest(findItemProps);
-                        break;
-                    }
-                }
-            }
-
-            if (!findItemProps)
-            {
-                Debug.Log("Can't Found Item Index" + beltGroupIndex);
-            }
+            if (findItemProps != null) break;
         }
 
-        if (findItemProps && isServer == IsServer)
+        if (findItemProps == null)
+        {
+            Debug.Log($"Can't Found Item - beltGroupIndex:{beltGroupIndex}");
+            return;
+        }
+
+        foundBelt.PlayerRootFunc(findItemProps);
+
+        if (isServer == IsServer)
         {
             LootListManager.instance.DisplayLootInfo(findItemProps.item, findItemProps.amount);
         }
     }
+
+    //[ClientRpc]
+    //public void GroupItemLootClientRpc(int beltIndex, int beltGroupIndex, bool isServer)
+    //{
+    //    ItemProps findItemProps = null;
+
+    //    foreach (ItemProps itemProps in beltList[beltIndex].itemObjList)
+    //    {
+    //        if (itemProps.beltGroupIndex == beltGroupIndex)
+    //        {
+    //            findItemProps = itemProps;
+    //            beltList[beltIndex].PlayerRootFunc(findItemProps);
+    //            break;
+    //        }
+    //    }
+
+    //    if (!findItemProps)
+    //    {
+    //        int previousIndex = beltIndex - 1;
+    //        if (previousIndex >= 0)
+    //        {
+    //            foreach (ItemProps itemProps in beltList[previousIndex].itemObjList)
+    //            {
+    //                if (itemProps.beltGroupIndex == beltGroupIndex)
+    //                {
+    //                    findItemProps = itemProps;
+    //                    beltList[previousIndex].PlayerRootFunc(findItemProps);
+    //                    break;
+    //                }
+    //            }
+    //        }
+
+    //        int nextIndex = beltIndex + 1;
+    //        if (!findItemProps && nextIndex < beltList.Count)
+    //        {
+    //            foreach (ItemProps itemProps in beltList[nextIndex].itemObjList)
+    //            {
+    //                if (itemProps.beltGroupIndex == beltGroupIndex)
+    //                {
+    //                    findItemProps = itemProps;
+    //                    beltList[nextIndex].PlayerRootFunc(findItemProps);
+    //                    break;
+    //                }
+    //            }
+    //        }
+
+    //        if (!findItemProps)
+    //        {
+    //            Debug.Log("Can't Found Item Index" + beltGroupIndex);
+    //        }
+    //    }
+
+    //    if (findItemProps && isServer == IsServer)
+    //    {
+    //        LootListManager.instance.DisplayLootInfo(findItemProps.item, findItemProps.amount);
+    //    }
+    //}
 }

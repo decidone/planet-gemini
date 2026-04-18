@@ -19,7 +19,9 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         nearObj = new Structure[2];
         checkPos = new Vector2[2];
 
-        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
     }
 
     protected override void Update()
@@ -56,18 +58,22 @@ public class UnderPipeCtrl : FluidFactoryCtrl
 
         float dist = 10;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, checkPos[0], dist);
-
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 1; i <= dist; i++)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.TryGetComponent(out Structure str) && str != this)
+            Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(
+                (int)transform.position.x + (int)checkPos[0].x * i,
+                (int)transform.position.y + (int)checkPos[0].y * i
+            );
+
+            if (cell.structure == null || cell.structure.destroyStart)
+                continue;
+
+            Structure str = cell.structure;
+
+            if (str.TryGet(out UnderPipeCtrl othPipe) && CanConnectUnderPipe(othPipe))
             {
-                if (str.TryGet(out UnderPipeCtrl othPipe) && CanConnectUnderPipe(othPipe))
-                {
-                    othPipe.NearStrBuilt();
-                    return;
-                }
+                othPipe.NearStrBuilt();
+                return;
             }
         }
 
@@ -157,39 +163,39 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         else
             dist = 1;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, dist);
 
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 1; i <= dist; i++)
         {
-            Collider2D hitCollider = hits[i].collider;
-            if (hitCollider.TryGetComponent(out Structure str))
+            Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(
+                (int)transform.position.x + (int)direction.x * i,
+                (int)transform.position.y + (int)direction.y * i
+            );
+
+            if (cell.structure == null || cell.structure.destroyStart)
+                continue;
+
+            Structure str = cell.structure;
+
+            if (index == 0)
             {
-                if(str.destroyStart)
-                    continue; // 구조물이 파괴 중이면 무시
-                else if (str != this)
+                if (str.TryGet(out UnderPipeCtrl otherUnderPipe))
                 {
-                    if (index == 0)
-                    {
-                        if (str.TryGet(out UnderPipeCtrl otherUnderPipe))
-                        {
-                            if (CanConnectUnderPipe(otherUnderPipe))
-                            {
-                                nearObj[index] = str;
-                                callback(str);
-                                break;
-                            }
-                            else
-                                continue;
-                        }
-                    }
-                    else
+                    if (CanConnectUnderPipe(otherUnderPipe))
                     {
                         nearObj[index] = str;
                         callback(str);
                         break;
                     }
+                    else
+                        continue;
                 }
-            }            
+            }
+            else
+            {
+                nearObj[index] = str;
+                callback(str);
+                break;
+            }
         }
     }
 
