@@ -7,6 +7,7 @@ public class InfoNeedItemUi : MonoBehaviour
 {
     public Image icon;
     public Text amount;
+    public Button itemBtn;
     string itemName;
     ItemInfoWindow itemInfoWindow;
 
@@ -19,6 +20,11 @@ public class InfoNeedItemUi : MonoBehaviour
     {
         icon.sprite = sprite;
         itemName = item;
+        if (itemBtn != null)
+        {
+            itemBtn.onClick.RemoveAllListeners();
+            itemBtn.onClick.AddListener(() => InfoDictionary.instance.Search(itemName, true));
+        }
 
         EventTrigger trigger = icon.gameObject.GetComponent<EventTrigger>();
         trigger.triggers.RemoveRange(0, trigger.triggers.Count);
@@ -43,7 +49,8 @@ public class InfoNeedItemUi : MonoBehaviour
 
     void OnEnter()
     {
-        itemInfoWindow.OpenWindow(itemName);
+        string inGameName = InGameNameDataGet.instance.ReturnName(itemName);
+        itemInfoWindow.OpenWindow(inGameName);
     }
 
     void OnExit()

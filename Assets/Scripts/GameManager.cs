@@ -1004,7 +1004,6 @@ public class GameManager : NetworkBehaviour
     public void DebugMode()
     {
         Debug.Log(LobbySaver.instance.currentLobby?.Id);
-        Debug.Log(EventSystem.current.currentSelectedGameObject);
         Debug.Log("debug : " + debug);
         debug = !debug;
     }
