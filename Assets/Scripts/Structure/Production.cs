@@ -489,12 +489,7 @@ public abstract class Production : Structure
         {
             if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
             {
-                OnFactoryItem(belt.itemObjList[0]);
-                belt.isItemStop = false;
-                belt.itemObjList.RemoveAt(0);
-                if (belt.beltGroupMgr.groupItem.Count != 0)
-                    belt.beltGroupMgr.groupItem.RemoveAt(0);
-                belt.ItemNumCheck();
+                ClientGetItemFuncServerRpc(inObjIndex);
             }
         }
         DelayGetItem();

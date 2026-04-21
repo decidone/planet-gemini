@@ -476,7 +476,7 @@ public class SteamManager : MonoBehaviour
         else if (lobby.Owner.Id != friend.Id)
         {
             Debug.Log("Client left");
-            GameManager.instance.TimeScaleServerRpc();
+            GameManager.instance.SetClientSyncPauseServerRpc(false);
 
             if (Chat.instance != null)
             {

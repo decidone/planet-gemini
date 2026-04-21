@@ -333,6 +333,18 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SetClientSyncPauseServerRpc(bool timeStart)
+    {
+        SetClientSyncPauseClientRpc(timeStart);
+    }
+
+    [ClientRpc]
+    void SetClientSyncPauseClientRpc(bool timeStart)
+    {
+        GameStop(timeStart);
+    }
+
     public void GameStop(bool stop)
     {
         if (stop)
@@ -1342,7 +1354,7 @@ public class GameManager : NetworkBehaviour
     public void LoadingEnd()
     {
         GenerationComplete?.Invoke();
-        TimeScaleServerRpc();
+        //LoadingPopupServerRpc();
 
         if (!isHost)
         {
@@ -1596,15 +1608,14 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void TimeScaleServerRpc()
+    public void LoadingPopupServerRpc()
     {
-        TimeScaleClientRpc();
+        LoadingPopupClientRpc();
     }
 
     [ClientRpc]
-    void TimeScaleClientRpc()
+    void LoadingPopupClientRpc()
     {
-        Time.timeScale = 1;
         LoadingPopup.instance.CloseUI();
     }
 

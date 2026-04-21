@@ -145,7 +145,7 @@ public class UnitAi : UnitCommonAi
     {
         base.OnNetworkSpawn();
 
-        NetworkObjManager.instance.NetObjAdd(gameObject);
+        NetworkObjManager.instance.NetObjAdd(this);
         if(!Get<TankCtrl>())
             GameManager.instance.PlayerUnitCount(1);
     }
@@ -153,7 +153,7 @@ public class UnitAi : UnitCommonAi
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
-        NetworkObjManager.instance.NetObjRemove(gameObject);
+        NetworkObjManager.instance.NetObjRemove(this);
         if (!Get<TankCtrl>())
             GameManager.instance.PlayerUnitCount(-1);
     }

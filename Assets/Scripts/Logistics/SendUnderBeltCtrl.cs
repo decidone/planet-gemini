@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
 using System.Collections.Generic;
-using Steamworks.Ugc;
 
 // UTF-8 설정
 public class SendUnderBeltCtrl : LogisticsCtrl
@@ -188,6 +187,11 @@ public class SendUnderBeltCtrl : LogisticsCtrl
             outObj.Add(obj);
             sendDist = Vector2.Distance(transform.position, obj.transform.position) - 1;
             maxAmount = Mathf.CeilToInt(sendDist * 4);
+
+            if (sendingItems.Count >= maxAmount)
+                isFull = true;
+            else
+                isFull = false;
         }
     }
 
@@ -390,6 +394,11 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         {
             isFull = true;
         }
+
+        if (sendCoroutine == null && sendingItems.Count > 0)
+        {
+            sendCoroutine = StartCoroutine(SendingItemCor());
+        }
     }
 
     public override Dictionary<Item, int> PopUpItemCheck()
@@ -457,20 +466,35 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     {
         ItemListClearClientRpc();
         SendingItemsListClearServerRpc();
-
+        List<int> itemIndexList = new List<int>();
         for (int i = 0; i < itemList.Count; i++)
         {
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
-            ItemSyncClientRpc(itemIndex);
+            itemIndexList.Add(itemIndex);
         }
+        ItemSyncClientRpc(itemIndexList.ToArray());
 
         List<(int, float)> sendingItemsCopy = new List<(int, float)>(sendingItems);
+        int[] itemIndexs = new int[sendingItemsCopy.Count];
+        float[] times = new float[sendingItemsCopy.Count];
 
         for (int i = 0; i < sendingItemsCopy.Count; i++)
         {
-            int itemIndex = sendingItemsCopy[i].Item1;
-            float time = sendingItemsCopy[i].Item2;
-            SendingItemsAddSyncClientRpc(itemIndex, time);
+            itemIndexs[i] = sendingItemsCopy[i].Item1;
+            times[i] = sendingItemsCopy[i].Item2;
+        }
+        OnlyClientSyncSendingItemClientRpc(itemIndexs, times);
+    }
+
+    [ClientRpc]
+    void OnlyClientSyncSendingItemClientRpc(int[] itemIndex, float[] time)
+    {
+        if (!IsServer)
+        {
+            for (int i = 0; i < itemIndex.Length; i++)
+            {
+                sendingItems.Add((itemIndex[i], time[i]));
+            }    
         }
     }
 

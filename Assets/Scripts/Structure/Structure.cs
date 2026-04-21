@@ -552,7 +552,7 @@ public class Structure : WorldObj
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        NetworkObjManager.instance.NetObjAdd(gameObject);
+        NetworkObjManager.instance.NetObjAdd(this);
         if (IsServer)
         {
             NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
@@ -562,7 +562,7 @@ public class Structure : WorldObj
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
-        NetworkObjManager.instance.NetObjRemove(gameObject);
+        NetworkObjManager.instance.NetObjRemove(this);
 
         if (IsServer)
         {
@@ -579,38 +579,83 @@ public class Structure : WorldObj
     public void ClientConnectSync()
     {
         ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, hp);
+
+        // nearObj 수집
+        NetworkObjectReference[] nearObjRefs = new NetworkObjectReference[nearObj.Length];
+        bool[] nearObjValids = new bool[nearObj.Length]; // null 여부 체크용
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null)
-                continue;
+            if (nearObj[i] != null)
+            {
+                nearObjRefs[i] = nearObj[i].NetworkObject;
+                nearObjValids[i] = true;
+            }
+        }
 
-            NetworkObjectReference networkObjectReference = nearObj[i].NetworkObject;
-            NearObjSyncClientRpc(networkObjectReference, i);
-        }
+        // outObj 수집
+        NetworkObjectReference[] outObjRefs = new NetworkObjectReference[outObj.Count];
         for (int i = 0; i < outObj.Count; i++)
-        {
-            NetworkObjectReference networkObjectReference = outObj[i].NetworkObject;
-            InOutObjSyncClientRpc(networkObjectReference, false);
-        }
+            outObjRefs[i] = outObj[i].NetworkObject;
+
+        // inObj 수집
+        NetworkObjectReference[] inObjRefs = new NetworkObjectReference[inObj.Count];
         for (int i = 0; i < inObj.Count; i++)
-        {
-            NetworkObjectReference networkObjectReference = inObj[i].NetworkObject;
-            InOutObjSyncClientRpc(networkObjectReference, true);
-        }
+            inObjRefs[i] = inObj[i].NetworkObject;
+
+        NearAndInOutObjSyncClientRpc(nearObjRefs, nearObjValids, outObjRefs, inObjRefs);
 
         MapDataSaveClientRpc(transform.position);
         ConnectCheckClientRpc(true);
+    }
+
+    [ClientRpc]
+    void NearAndInOutObjSyncClientRpc(
+        NetworkObjectReference[] nearObjRefs,
+        bool[] nearObjValids,
+        NetworkObjectReference[] outObjRefs,
+        NetworkObjectReference[] inObjRefs,
+        ClientRpcParams rpcParams = default)
+    {
+        if (IsServer) return;
+
+        CheckPos();
+
+        // nearObj 복원
+        for (int i = 0; i < nearObjRefs.Length; i++)
+        {
+            if (!nearObjValids[i]) continue;
+            if (nearObjRefs[i].TryGet(out NetworkObject obj))
+                nearObj[i] = obj.GetComponent<Structure>();
+        }
+
+        // outObj 복원
+        outObj.Clear();
+        foreach (var objRef in outObjRefs)
+        {
+            if (objRef.TryGet(out NetworkObject obj))
+                outObj.Add(obj.GetComponent<Structure>());
+        }
+
+        // inObj 복원
+        inObj.Clear();
+        foreach (var objRef in inObjRefs)
+        {
+            if (objRef.TryGet(out NetworkObject obj))
+                inObj.Add(obj.GetComponent<Structure>());
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
     public virtual void ItemSyncServerRpc()
     {
         ItemListClearClientRpc();
+        List<int> itemIndexList = new List<int>();
         for (int i = 0; i < itemList.Count; i++)
         {
             int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
-            ItemSyncClientRpc(itemIndex);
+            itemIndexList.Add(itemIndex);
         }
+        ItemSyncClientRpc(itemIndexList.ToArray());
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -662,34 +707,6 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    void NearObjSyncClientRpc(NetworkObjectReference networkObjectReference, int index, ClientRpcParams rpcParams = default)
-    {
-        if (IsServer)
-            return;
-
-        CheckPos();
-        networkObjectReference.TryGet(out NetworkObject obj);
-        nearObj[index] = obj.GetComponent<Structure>();
-    }
-
-    [ClientRpc]
-    void InOutObjSyncClientRpc(NetworkObjectReference networkObjectReference, bool isIn, ClientRpcParams rpcParams = default)
-    {
-        if (IsServer)
-            return;
-
-        networkObjectReference.TryGet(out NetworkObject obj);
-        Structure str = obj.GetComponent<Structure>();
-        if (isIn)
-            inObj.Add(str);
-        else
-        {
-            if (!outObj.Contains(str))
-                outObj.Add(str);
-        }
-    }
-
-    [ClientRpc]
     protected virtual void ItemListClearClientRpc()
     {
         if (!IsServer)
@@ -697,13 +714,16 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    protected void ItemSyncClientRpc(int itemIndex, ClientRpcParams rpcParams = default)
+    protected void ItemSyncClientRpc(int[] itemIndex, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
 
-        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        itemList.Add(item);
+        for (int i = 0; i < itemIndex.Length; i++)
+        {
+            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
+            itemList.Add(item);
+        }
     }
 
     protected virtual void DataSet()
@@ -1139,22 +1159,8 @@ public class Structure : WorldObj
                 return;
             }
         }
-
-        GetItemServerRpc(getItemIndex);
+        GetItemFunc(getItemIndex);
         GetItemIndexSet();
-    }
-
-
-    [ServerRpc]
-    protected virtual void GetItemServerRpc(int inObjIndex)
-    {
-        GetItemClientRpc(inObjIndex);
-    }
-
-    [ClientRpc]
-    protected virtual void GetItemClientRpc(int inObjIndex)
-    {
-        GetItemFunc(inObjIndex);
     }
 
     protected virtual void GetItemFunc(int inObjIndex)
@@ -1166,14 +1172,65 @@ public class Structure : WorldObj
                 DelayGetItem();
                 return;
             }
-            OnFactoryItem(belt.itemObjList[0]);
-            belt.isItemStop = false;
-            belt.itemObjList.RemoveAt(0);
-            if (belt.beltGroupMgr.groupItem.Count != 0)
-                belt.beltGroupMgr.groupItem.RemoveAt(0);
-            belt.ItemNumCheck();
+
+            ClientGetItemFuncServerRpc(inObjIndex);
         }
         DelayGetItem();
+    }
+
+    [ServerRpc]
+    protected virtual void ClientGetItemFuncServerRpc(int inObjIndex)
+    {
+        ClientGetItemFuncClientRpc(inObjIndex);
+    }
+
+    [ClientRpc]
+    protected virtual void ClientGetItemFuncClientRpc(int inObjIndex)
+    {
+        inObj[inObjIndex].TryGet(out BeltCtrl belt);
+        if (IsServer)
+        {
+            GetItemBelt(belt);
+        }
+        else
+        {
+            if(belt.itemObjList.Count <= 0)
+            {
+                StartCoroutine(WaitAndRetryGetItem(belt));
+            }
+            else
+            {
+                GetItemBelt(belt);
+            }
+        }
+    }
+
+    void GetItemBelt(BeltCtrl belt)
+    {
+        OnFactoryItem(belt.itemObjList[0]);
+        belt.isItemStop = false;
+        belt.itemObjList.RemoveAt(0);
+        if (belt.beltGroupMgr.groupItem.Count != 0)
+            belt.beltGroupMgr.groupItem.RemoveAt(0);
+        belt.ItemNumCheck();
+    }
+
+    protected IEnumerator WaitAndRetryGetItem(BeltCtrl belt, float timeout = 5f)
+    {
+        float elapsed = 0f;
+
+        yield return new WaitUntil(() =>
+        {
+            elapsed += Time.deltaTime;
+            return belt.itemObjList.Count > 0 || elapsed >= timeout;
+        });
+
+        if (belt.itemObjList.Count <= 0)
+        {
+            DelayGetItem();
+            yield break;
+        }
+        GetItemBelt(belt); // 재시도
     }
 
     protected virtual void SendItem(int itemIndex)
@@ -1275,7 +1332,6 @@ public class Structure : WorldObj
     protected virtual void SendItemFunc(int itemIndex, int outObjIndex, int beltGroupIndex)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-
         outObj[outObjIndex].TryGet(out Structure outFactory);
         if (outFactory.TryGet(out BeltCtrl beltCtrl))
         {
@@ -1304,6 +1360,10 @@ public class Structure : WorldObj
                     ItemNumCheck();
                 }
             }
+            else
+            {
+                Debug.Log("SendItemFunc can't send to belt : " + gameObject.name + ", index : " + outObjIndex);
+            }
         }
         else
         {
@@ -1320,7 +1380,6 @@ public class Structure : WorldObj
     protected virtual void SendItemFunc(int itemIndex, int outObjIndex)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-
         outObj[outObjIndex].TryGet(out Structure outFactory);
 
         if (outFactory.TryGet(out BeltCtrl beltCtrl))
@@ -1348,6 +1407,10 @@ public class Structure : WorldObj
                     ItemListRemove();
                     ItemNumCheck();
                 }
+            }
+            else
+            {
+                Debug.Log("SendItemFunc can't send to belt : " + gameObject.name + ", index : " + outObjIndex);
             }
         }
         else
