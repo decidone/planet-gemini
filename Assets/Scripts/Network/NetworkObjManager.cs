@@ -18,7 +18,11 @@ public class NetworkObjManager : NetworkBehaviour
     public delegate void OnUnitChanged(int type);
     public OnUnitChanged onUnitChangedCallback;
 
-    #region Singleton
+    private int _syncTargetStructureCount = -1;
+    private int _syncTargetBeltGroupCount = -1;
+    private int _syncTargetBeltCount = -1;
+
+    #region SingletonAwake
     public static NetworkObjManager instance;
 
     void Awake()
@@ -33,51 +37,120 @@ public class NetworkObjManager : NetworkBehaviour
     }
     #endregion
 
-    public void NetObjAdd(GameObject netObj)
+    public override void OnNetworkSpawn()
     {
-        if(netObj.TryGetComponent(out Portal portal))
+        if (IsClient && !IsServer)
+        {
+            RequestSyncServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestSyncServerRpc(ServerRpcParams rpcParams = default)
+    {
+        ulong clientId = rpcParams.Receive.SenderClientId;
+
+        ClientRpcParams target = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { clientId }
+            }
+        };
+
+        SendSyncTargetClientRpc(netStructures.Count, netBeltGroupMgrs.Count, networkBelts.Count, target);
+    }
+
+    [ClientRpc]
+    private void SendSyncTargetClientRpc(int structureCount, int beltGroupCount, int beltCount, ClientRpcParams rpcParams = default)
+    {
+        _syncTargetStructureCount = structureCount;
+        _syncTargetBeltGroupCount = beltGroupCount;
+        _syncTargetBeltCount = beltCount;
+        StartCoroutine(WaitForSyncCoroutine());
+    }
+
+    public void NetObjAdd(WorldObj worldObj)
+    {
+        if(worldObj.TryGet(out Portal portal))
         {
             netPortals.Add(portal);
         }
-        else if (netObj.TryGetComponent(out Structure structure) && !netObj.GetComponent<BeltCtrl>())
+        else if (worldObj.TryGet(out Structure structure))
         {
-            netStructures.Add(structure);
-            onStructureChangedCallback?.Invoke(20);
+            if(worldObj.TryGet(out BeltCtrl belt))
+            {
+                networkBelts.Add(belt);
+            }
+            else
+            {
+                netStructures.Add(structure);
+                onStructureChangedCallback?.Invoke(20);
+            }
         }
-        else if (netObj.TryGetComponent(out BeltGroupMgr beltGroupMgr))
-        {
-            netBeltGroupMgrs.Add(beltGroupMgr);
-            onStructureChangedCallback?.Invoke(24);
-        }
-        else if (netObj.TryGetComponent(out UnitCommonAi unitCommonAi))
+        else if (worldObj.TryGet(out UnitCommonAi unitCommonAi))
         {
             netUnitCommonAis.Add(unitCommonAi);
             onUnitChangedCallback?.Invoke(23);
         }
-        else
-        {
-            networkBelts.Add(netObj.GetComponent<BeltCtrl>());
-        }
     }
 
-    public void NetObjRemove(GameObject netObj)
+    public void BeltGroupAdd(BeltGroupMgr beltGroupMgr)
     {
-        if (netObj.GetComponent<BeltCtrl>())
+        netBeltGroupMgrs.Add(beltGroupMgr);
+        onStructureChangedCallback?.Invoke(24);
+    }
+
+    public void NetObjRemove(WorldObj netObj)
+    {
+        if (netObj.TryGet(out BeltCtrl belt))
         {
-            networkBelts.Remove(netObj.GetComponent<BeltCtrl>());
+            networkBelts.Remove(belt);
         }
-        else if (netObj.TryGetComponent(out Structure structure))
+        else if (netObj.TryGet(out Structure structure))
         {
             netStructures.Remove(structure);
         }
-        else if (netObj.TryGetComponent(out BeltGroupMgr beltGroupMgr))
-        {
-            netBeltGroupMgrs.Remove(beltGroupMgr);
-        }
-        else if (netObj.TryGetComponent(out UnitCommonAi unitCommonAi))
+        else if (netObj.TryGet(out UnitCommonAi unitCommonAi))
         {
             netUnitCommonAis.Remove(unitCommonAi);
         }
+    }
+
+    private IEnumerator WaitForSyncCoroutine()
+    {
+        yield return new WaitUntil(() =>
+            netStructures.Count >= _syncTargetStructureCount &&
+            netBeltGroupMgrs.Count >= _syncTargetBeltGroupCount &&
+            networkBelts.Count >= _syncTargetBeltCount
+        );
+
+        OnSyncComplete();
+    }
+
+    private void OnSyncComplete()
+    {
+        Debug.Log($"Sync End - Structure {netStructures.Count} / BeltGroup {netBeltGroupMgrs.Count} / Belt {networkBelts.Count}");
+        foreach (BeltGroupMgr beltGroup in netBeltGroupMgrs)
+        {
+            beltGroup.ItemSyncServerRpc();
+        }
+        StartCoroutine(NotifySyncDelay());
+    }
+
+    private IEnumerator NotifySyncDelay()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+
+        GameManager gameManager = GameManager.instance;
+        gameManager.SetClientSyncPauseServerRpc(false);
+        gameManager.LoadingPopupServerRpc();
+        Debug.Log("Sync End");
+    }
+
+    public void BeltGroupRemove(BeltGroupMgr beltGroupMgr)
+    {
+        netBeltGroupMgrs.Remove(beltGroupMgr);
     }
 
     public bool StructureCheck(StructureData strData)

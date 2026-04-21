@@ -138,40 +138,87 @@ public class SplitterCtrl : LogisticsCtrl
     [ServerRpc(RequireOwnership = false)]
     public override void ClientConnectSyncServerRpc()
     {
-        //base.ClientConnectSyncServerRpc();
         ClientConnectSync();
+
+        // 데이터 한 번에 수집
+        FilterSyncData[] syncDataArr = new FilterSyncData[arrFilter.Length];
 
         for (int a = 0; a < arrFilter.Length; a++)
         {
-            int itemIndex = -1;
-            if (arrFilter[a].selItem != null)
+            syncDataArr[a] = new FilterSyncData
             {
-                itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(arrFilter[a].selItem);
-            }
-
-            if(arrFilter[a].outObj != null)
-            {
-                NetworkObjectReference networkObjectReference = arrFilter[a].outObj.NetworkObject;
-                ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex, networkObjectReference);
-            }
-            else
-            {
-                ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex);
-            }
+                isFilterOn = arrFilter[a].isFilterOn,
+                isReverseFilterOn = arrFilter[a].isReverseFilterOn,
+                itemIndex = arrFilter[a].selItem != null
+                                        ? GeminiNetworkManager.instance.GetItemSOIndex(arrFilter[a].selItem)
+                                        : -1,
+                hasOutObj = arrFilter[a].outObj != null,
+                networkObjectReference = arrFilter[a].outObj != null
+                                        ? arrFilter[a].outObj.NetworkObject
+                                        : default
+            };
         }
+
+        // RPC 한 번만 호출
+        ClientAllFilterSetClientRpc(syncDataArr);
     }
 
     [ClientRpc]
-    void ClientFillterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex, NetworkObjectReference networkObjectReference)
+    void ClientAllFilterSetClientRpc(FilterSyncData[] syncDataArr)
     {
         if (IsServer)
             return;
 
-        networkObjectReference.TryGet(out NetworkObject obj);
-        obj.TryGetComponent(out Structure str);
-        arrFilter[num].outObj = str;
-        GameStartFillterSet(num, filterOn, reverseFilterOn, itemIndex);
+        for (int a = 0; a < syncDataArr.Length; a++)
+        {
+            if (syncDataArr[a].hasOutObj)
+            {
+                syncDataArr[a].networkObjectReference.TryGet(out NetworkObject obj);
+                obj.TryGetComponent(out Structure str);
+                arrFilter[a].outObj = str;
+            }
+
+            GameStartFillterSet(a, syncDataArr[a].isFilterOn, syncDataArr[a].isReverseFilterOn, syncDataArr[a].itemIndex);
+        }
     }
+
+    //[ServerRpc(RequireOwnership = false)]
+    //public override void ClientConnectSyncServerRpc()
+    //{
+    //    //base.ClientConnectSyncServerRpc();
+    //    ClientConnectSync();
+
+    //    for (int a = 0; a < arrFilter.Length; a++)
+    //    {
+    //        int itemIndex = -1;
+    //        if (arrFilter[a].selItem != null)
+    //        {
+    //            itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(arrFilter[a].selItem);
+    //        }
+
+    //        if(arrFilter[a].outObj != null)
+    //        {
+    //            NetworkObjectReference networkObjectReference = arrFilter[a].outObj.NetworkObject;
+    //            ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex, networkObjectReference);
+    //        }
+    //        else
+    //        {
+    //            ClientFillterSetClientRpc(a, arrFilter[a].isFilterOn, arrFilter[a].isReverseFilterOn, itemIndex);
+    //        }
+    //    }
+    //}
+
+    //[ClientRpc]
+    //void ClientFillterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex, NetworkObjectReference networkObjectReference)
+    //{
+    //    if (IsServer)
+    //        return;
+
+    //    networkObjectReference.TryGet(out NetworkObject obj);
+    //    obj.TryGetComponent(out Structure str);
+    //    arrFilter[num].outObj = str;
+    //    GameStartFillterSet(num, filterOn, reverseFilterOn, itemIndex);
+    //}
 
     [ClientRpc]
     void ClientFillterSetClientRpc(int num, bool filterOn, bool reverseFilterOn, int itemIndex)
@@ -581,5 +628,24 @@ public class SplitterCtrl : LogisticsCtrl
         }
 
         return data;
+    }
+}
+
+public struct FilterSyncData : INetworkSerializable
+{
+    public bool isFilterOn;
+    public bool isReverseFilterOn;
+    public int itemIndex;
+    public bool hasOutObj;
+    public NetworkObjectReference networkObjectReference;
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref isFilterOn);
+        serializer.SerializeValue(ref isReverseFilterOn);
+        serializer.SerializeValue(ref itemIndex);
+        serializer.SerializeValue(ref hasOutObj);
+        if (hasOutObj)
+            serializer.SerializeValue(ref networkObjectReference);
     }
 }

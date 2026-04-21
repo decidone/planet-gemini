@@ -244,14 +244,52 @@ public class BeltCtrl : LogisticsCtrl
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public override void ItemSyncServerRpc()
-    {
-        for (int i = 0; i < itemObjList.Count; i++)
-        {
-            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemObjList[i].item);
-            ItemSyncClientRpc(itemIndex, itemObjList[i].transform.position, itemObjList[i].beltGroupIndex);
-        }
-    }
+    public override void ItemSyncServerRpc() { }
+
+    //[ServerRpc(RequireOwnership = false)]
+    //public override void ItemSyncServerRpc()
+    //{
+    //    int[] itemIndexs = new int[itemObjList.Count];
+    //    Vector2[] vector2s = new Vector2[itemObjList.Count];
+    //    int[] beltGroupIndexs = new int[itemObjList.Count];
+
+    //    for (int i = 0; i < itemObjList.Count; i++)
+    //    {
+    //        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemObjList[i].item);
+
+    //        itemIndexs[i] = itemIndex;
+    //        vector2s[i] = itemObjList[i].transform.position;
+    //        beltGroupIndexs[i] = itemObjList[i].beltGroupIndex;
+    //    }
+    //    ItemSyncClientRpc(itemIndexs, vector2s, beltGroupIndexs);
+    //}
+
+    //[ClientRpc]
+    //public void ItemSyncClientRpc(int[] itemIndex, Vector2[] tr, int[] beltGroupIndex)
+    //{
+    //    if (IsServer)
+    //        return;
+
+    //    for (int i = 0; i < itemIndex.Length; i++)
+    //    {
+    //        Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
+    //        var itemPool = ItemPoolManager.instance.Pool.Get();
+    //        ItemProps spawn = itemPool.GetComponent<ItemProps>();
+    //        SpriteRenderer sprite = spawn.spriteRenderer;
+    //        sprite.sprite = sendItem.icon;
+    //        sprite.sortingOrder = 2;
+    //        spawn.item = sendItem;
+    //        spawn.amount = 1;
+    //        spawn.transform.position = tr[i];
+    //        spawn.isOnBelt = true;
+    //        spawn.setOnBelt = this;
+    //        spawn.beltGroupIndex = beltGroupIndex[i];
+    //        itemObjList.Add(spawn);
+
+    //        if (itemObjList.Count >= maxAmount)
+    //            isFull = true;
+    //    }
+    //}
 
     [ClientRpc]
     public void ClientConnectBeltSyncClientRpc(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)
@@ -291,30 +329,6 @@ public class BeltCtrl : LogisticsCtrl
         spawn.transform.position = pos;
         spawn.isOnBelt = true;
         spawn.setOnBelt = this;
-        itemObjList.Add(spawn);
-
-        if (itemObjList.Count >= maxAmount)
-            isFull = true;
-    }
-
-    [ClientRpc]
-    public void ItemSyncClientRpc(int itemIndex, Vector3 tr, int beltGroupIndex)
-    {
-        if (IsServer)
-            return;
-
-        Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        var itemPool = ItemPoolManager.instance.Pool.Get();
-        ItemProps spawn = itemPool.GetComponent<ItemProps>();
-        SpriteRenderer sprite = spawn.spriteRenderer;
-        sprite.sprite = sendItem.icon;
-        sprite.sortingOrder = 2;
-        spawn.item = sendItem;
-        spawn.amount = 1;
-        spawn.transform.position = tr;
-        spawn.isOnBelt = true;
-        spawn.setOnBelt = this;
-        spawn.beltGroupIndex = beltGroupIndex;
         itemObjList.Add(spawn);
 
         if (itemObjList.Count >= maxAmount)
@@ -490,32 +504,13 @@ public class BeltCtrl : LogisticsCtrl
 
     public bool OnBeltItem(ItemProps itemObj)
     {
-        if (itemObjList.Count >= maxAmount)
-        {
-            if (nextBelt != null && beltState != BeltState.EndBelt)
-            {
-                if (!nextBelt.isFull && !nextBelt.destroyStart && itemObjList.Count > 0)
-                {
-                    nextBelt.BeltGroupSendItem(itemObjList[0]);
-                    itemObjList.Remove(itemObjList[0]);
-                    ItemNumCheck();
-                }
-            }
-        }
-
-        //if (itemObjList.Count < structureData.MaxItemStorageLimit)
-        //{
         itemObjList.Add(itemObj);
-
         beltGroupMgr.groupItem.Add(itemObj);
 
         if (itemObjList.Count >= maxAmount)
             isFull = true;
         else
             isFull = false;
-
-        //    return true;
-        //}
 
         return true;
     }

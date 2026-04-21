@@ -500,7 +500,6 @@ public class SpawnerSetManager : NetworkBehaviour
                     int j = Random.Range(0, i + 1);
                     (pool[i], pool[j]) = (pool[j], pool[i]);
                 }
-                Debug.LogWarning($"[PreSelectAreas] 안전거리 조건 충족 불가 → 조건 해제 (level pool:{pool.Count}, target:{targetCount})");
             }
         }
 
@@ -560,10 +559,6 @@ public class SpawnerSetManager : NetworkBehaviour
                     bestIdx = i;
                 }
             }
-
-            // minSafeDistance 위반 시 경고 (완화 단계를 이미 거쳤으므로 로그만)
-            if (bestDist < minSafeDistance)
-                Debug.LogWarning($"[GreedyFarthest] 최소 안전거리 미달: {bestDist:F1} < {minSafeDistance:F1}");
 
             Vector2 newPoint = pool[bestIdx];
             result.Add(newPoint);

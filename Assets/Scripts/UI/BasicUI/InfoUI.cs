@@ -176,13 +176,13 @@ public class InfoUI : MonoBehaviour
         SetStructureHp();
         str.onHpChangedCallback += SetStructureHp;
 
-        if (!str.isPreBuilding)
+        if (!str.isPreBuilding && str.canUpgrade)
         {
             if (!(str.GetComponent<Portal>() || str.GetComponent<ScienceBuilding>()))
             {
                 if (str.maxLevel != str.level)
                 {
-                    if (ScienceDb.instance.IsLevelExists(str.buildName, str.level + 1))
+                    if (ScienceDb.instance.IsLevelExists(str.buildName, str.level + 2))
                     {
                         // 업그레이드 가능
                         upgradeBtn.gameObject.SetActive(true);

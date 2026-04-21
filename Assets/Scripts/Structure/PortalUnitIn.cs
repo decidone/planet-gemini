@@ -23,7 +23,7 @@ public class PortalUnitIn : PortalObj
     {
         base.Start();
         isPortalBuild = true;
-        displaySlots = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
+        displaySlots = canvas.transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("PortalUnit").transform.Find("DisplaySlots").GetComponentsInChildren<Slot>();
         for (int i = 0; i < displaySlots.Length; i++)
         {
@@ -33,7 +33,7 @@ public class PortalUnitIn : PortalObj
             slot.amountText.gameObject.SetActive(false);
             slot.GetComponentInChildren<Button>().onClick.AddListener(() => UnitWithdraw(slot));
         }
-        withdrawBtn = GameObject.Find("Canvas").transform.Find("StructureInfo").transform.Find("Storage")
+        withdrawBtn = canvas.transform.Find("StructureInfo").transform.Find("Storage")
             .transform.Find("PortalUnit").transform.Find("Button (Legacy)").GetComponent<Button>();
         withdrawBtn.onClick.AddListener(() => WithdrawBtnFunc());
         maxFuel = 100;
@@ -161,27 +161,40 @@ public class PortalUnitIn : PortalObj
     [ServerRpc(RequireOwnership = false)]
     public override void ItemSyncServerRpc()
     {
+        int[] itemindexs = new int[displaySlots.Length];
+        NetworkObjectReference[] sendUnit = new NetworkObjectReference[displaySlots.Length];
         for (int i = 0; i < displaySlots.Length; i++)
         {
             if (sendUnitList.Count > i)
             {
                 int itemIndex = -1;
                 itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(displaySlots[i].item);
-                ItemSyncClientRpc(i, itemIndex, 1, sendUnitList[i].GetComponent<NetworkObject>());
+
+                itemindexs[i] = itemIndex;
+                sendUnit[i] = sendUnitList[i].GetComponent<NetworkObject>();
             }
             else
                 break;
         }
+
+        ItemSyncClientRpc(itemindexs, sendUnit);
     }
 
     [ClientRpc]
-    protected void ItemSyncClientRpc(int slotNum, int itemIndex, int itemAmount, NetworkObjectReference networkObjectReference, ClientRpcParams rpcParams = default)
+    protected void ItemSyncClientRpc(int[] itemIndex, NetworkObjectReference[] networkObjectReference, ClientRpcParams rpcParams = default)
     {
         if (IsServer)
             return;
-        networkObjectReference.TryGet(out NetworkObject networkObject);
-        GameObject unit = networkObject.gameObject;
-        sendUnitList.Add(unit);
+
+        for (int i = 0; i < itemIndex.Length; i++)
+        {
+            if (itemIndex[i] != -1)
+            {
+                networkObjectReference[i].TryGet(out NetworkObject networkObject);
+                GameObject unit = networkObject.gameObject;
+                sendUnitList.Add(unit);
+            }
+        }
 
         DisplaySlotChange();
     }
