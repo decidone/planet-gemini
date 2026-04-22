@@ -70,6 +70,9 @@ public class PlayerController : NetworkBehaviour
     PlayerTankTurret playerTankTurret;
     [SerializeField]
     GameObject tankTurret;
+    [SerializeField] SpriteRenderer tankMuzzleFlash;
+    [SerializeField] Sprite[] muzzleFlashFrames;
+    float frameRate = 0.05f;
 
     protected Collider2D[] targetColls = new Collider2D[128];
     protected LayerMask targetMask;
@@ -769,12 +772,29 @@ public class PlayerController : NetworkBehaviour
         dir.z = 0;
         BulletData bulletData = TwBulletDataManager.instance.bulletDic[bulletName];
 
+        tankMuzzleFlash.transform.rotation = rot;
+        tankMuzzleFlash.transform.position = (Vector3)spawnPos + rot * Vector3.right * 0.5f;
+        StartCoroutine(MuzzleFlashRoutine());
+
         NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, new Vector2(spawnPos.x, spawnPos.y), rot);
         if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
 
         bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
         fx.GetTarget2(dir.normalized * 3, bulletData.damage + onTankData.unitCommonData.Damage, status.Get<WorldObj>(), bulletData.explosion);
         BulletSpawnClientRpc(dir);
+    }
+
+    private IEnumerator MuzzleFlashRoutine()
+    {
+        tankMuzzleFlash.enabled = true;
+
+        for (int i = 0; i < muzzleFlashFrames.Length; i++)
+        {
+            tankMuzzleFlash.sprite = muzzleFlashFrames[i];
+            yield return new WaitForSeconds(frameRate);
+        }
+
+        tankMuzzleFlash.enabled = false;
     }
 
     [ClientRpc]
