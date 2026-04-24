@@ -28,20 +28,10 @@ public class WarningWindow : MonoBehaviour
     }
     #endregion
 
-    // Start is called before the first frame update
     void Start()
     {
         imgPanelImg = imgPanel.GetComponent<Image>();
         panelColor = imgPanelImg.color;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Time.timeScale == 0)
-        {
-            return;
-        }
     }
 
     public void WarningTextSet(string text)

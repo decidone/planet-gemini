@@ -108,7 +108,7 @@ public class EnergyGenerator : Production
         {
             yield return new WaitForSecondsRealtime(1f);
 
-            if (!isPreBuilding && !removeState)
+            if (!isPreBuilding && !removeState && settingEndCheck)
             {
                 if (fuel > 0)
                 {

@@ -118,6 +118,8 @@ public class SteamGenerator : FluidFactoryCtrl
         isBuildDone = false;
         preBuildingCheck = false;
         preBuilding = PreBuilding.instance;
+        if (isCellCalled)
+            StrBuilt();
 
         //displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
         //displaySlot.AddItem(ItemList.instance.itemDic["Water"], 0);
@@ -310,7 +312,7 @@ public class SteamGenerator : FluidFactoryCtrl
         {
             yield return new WaitForSecondsRealtime(1f);
 
-            if (!isPreBuilding && !removeState)
+            if (!isPreBuilding && !removeState && settingEndCheck)
             {
                 if (fuel > 0)
                 {

@@ -872,10 +872,11 @@ public class BeltCtrl : LogisticsCtrl
                 }
             }
             return returnDic;
-        }                
+        }
         else
             return null;
     }
+
     public override void GameStartSpawnSet(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         level = _level;

@@ -28,7 +28,6 @@ public class Structure : WorldObj
 
     public int height;
     public int width;
-    [HideInInspector]
     public bool sizeOneByOne;
 
     [HideInInspector]
@@ -362,7 +361,7 @@ public class Structure : WorldObj
         {
             yield return new WaitForSecondsRealtime(1f);
 
-            if (!isPreBuilding && !removeState && energyUse)
+            if (!isPreBuilding && !removeState && energyUse && settingEndCheck)
             {
                 if (conn != null && conn.group != null)
                 {
