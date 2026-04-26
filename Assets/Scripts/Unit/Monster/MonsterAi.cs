@@ -831,6 +831,7 @@ public class MonsterAi : UnitCommonAi
         var attackableCandidates = new List<(WorldObj obj, float dist, float aggro)>();
         WorldObj nearestUnattackable = null;
         float nearestUnattackDist = float.MaxValue;
+        float nearestUnattackScore = float.MinValue;
         float dist = 0;
 
         // 모든 타겟에 대해 탐색
@@ -839,27 +840,28 @@ public class MonsterAi : UnitCommonAi
             if (!target) continue;
 
             dist = Vector3.Distance(tr.position, target.transform.position);
-
-            // 공격 가능한 대상인지 확인
-            //bool isAttackable = target.TryGet(out UnitAi unitAi) || target.TryGet(out TowerAi towerAi) || target.TryGet(out PlayerController player);
-            bool isAttackable = target.Get<UnitAi>() || target.Get<TowerAi>() || target.Get<PlayerController>();
+            float aggro = 0f;
+            target.TryGet(out AggroAmount aggroAmount);
+            bool isAttackable = target.Get<UnitAi>() || target.Get<TowerAi>() || target.Get<PlayerController>() || target.Get<ScienceBuilding>();
             if (!isAttackable)
             {
-                //공격 불가능하지만 가까운 타겟 저장
-                if (dist < nearestUnattackDist)
+                aggro = aggroAmount.GetAggroAmount();
+
+                float score = aggro - (dist * 4f);
+
+                if (score > nearestUnattackScore)
                 {
+                    nearestUnattackScore = score;
                     nearestUnattackDist = dist;
                     nearestUnattackable = target;
                 }
                 continue;
             }
-
-            // 어그로 수치 가져오기
-            float aggro = 0f;
-            if (target.TryGet(out AggroAmount aggroAmount))
+            else
+            {
                 aggro = aggroAmount.GetAggroAmount();
-
-            attackableCandidates.Add((target, dist, aggro));
+                attackableCandidates.Add((target, dist, aggro));
+            }
         }
 
         WorldObj best = null;
@@ -884,6 +886,16 @@ public class MonsterAi : UnitCommonAi
                 bestScore = score;
                 best = x.obj;
             }
+        }
+
+        if (best != null && nearestUnattackable != null)
+        {
+            if (nearestUnattackScore > bestScore)
+                best = nearestUnattackable;
+        }
+        else if (best == null && nearestUnattackable != null)
+        {
+            best = nearestUnattackable;
         }
 
         if (best)
@@ -1351,7 +1363,6 @@ public class MonsterAi : UnitCommonAi
 
             if (currentWaypointIndex >= movePath.Count)
             {
-                //aIState = AIState.AI_NormalTrace;
                 return;
             }
         }       

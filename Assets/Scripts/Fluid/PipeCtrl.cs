@@ -128,7 +128,7 @@ public class PipeCtrl : FluidFactoryCtrl
                 outObj.Add(obj);
             if (obj.TryGet(out UnderPipeCtrl underPipe))
             {
-                UnderPipeConnectCheck(underPipe);
+                StartCoroutine(UnderPipeConnectCheck(underPipe));
             }
 
             //StartCoroutine(nameof(MainSourceCheck), factoryCtrl);

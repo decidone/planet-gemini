@@ -2299,6 +2299,10 @@ public class GameManager : NetworkBehaviour
         while (true)
         {
             yield return null;
+
+            if (Time.timeScale == 0)
+                continue;
+
             float index = (dayIndex == 5) ? dayTime : 0;
             float totalDayTime = dayTime * 2;
 
