@@ -96,6 +96,7 @@ MonoBehaviour:
   icon: {fileID: 3400951347560574421}
   amount: {fileID: 3087583685771914402}
   itemBtn: {fileID: 7808150809849467644}
+  inputField: {fileID: 2686205057801617412}
 --- !u!1 &259842782254490261
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98b9d77679155084589f433dce38dde8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 0}
+  inputField: {fileID: 2686205057801617412}
   invenItemAmount: 0
   isFinance: 0
 --- !u!1 &2699705843104309812

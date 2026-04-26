@@ -10,6 +10,8 @@ public class InfoNeedItemUi : MonoBehaviour
     public Button itemBtn;
     string itemName;
     ItemInfoWindow itemInfoWindow;
+    public InputField inputField;
+
 
     private void Start()
     {
@@ -56,5 +58,14 @@ public class InfoNeedItemUi : MonoBehaviour
     void OnExit()
     {
         itemInfoWindow.CloseWindow();
+    }
+
+    public void InputFieldSet(bool isOn)
+    {
+        if (inputField)
+        {
+            inputField.interactable = isOn;
+            Debug.Log("InputFieldSet");
+        }
     }
 }

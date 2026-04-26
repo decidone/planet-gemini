@@ -49,11 +49,6 @@ public class ScienceInfoGet : MonoBehaviour
     public SortedDictionary<int ,(string, int, int, float, bool)> GetSciLevelData(int desiredLevel)
     {
         SortedDictionary<int, (string, int, int, float, bool)> data = new SortedDictionary<int, (string, int, int, float, bool)>();
-        //List<string> name = new List<string>();
-        //List<int> coreLevel = new List<int>();
-        //List<int> level = new List<int>();
-        //List<float> time = new List<float>();
-        //List<bool> basicScience = new List<bool>();
 
         foreach (var scienceCategory in scienceInfoDataDic)
         {
@@ -73,18 +68,11 @@ public class ScienceInfoGet : MonoBehaviour
                         if (scienceInfo.coreLv == desiredLevel)
                         {
                             data.Add(levelEntry.Value.sortIndex, (scienceCategory.Key, levelEntry.Key, levelEntry.Value.coreLv, levelEntry.Value.time, levelEntry.Value.basicScience));
-                            //name.Add(scienceCategory.Key);
-                            //level.Add(levelEntry.Key);
-                            //coreLevel.Add(levelEntry.Value.coreLv);
-                            //time.Add(levelEntry.Value.time);
-                            //basicScience.Add(levelEntry.Value.basicScience);
                         }
                     }
                 }
             }
         }
-
-        //return (name, level, coreLevel, time, basicScience);
         return data;
     }
 
@@ -113,39 +101,4 @@ public class ScienceInfoGet : MonoBehaviour
 
         return time;
     }
-
-    //string myLog;
-    //Queue myLogQueue = new Queue();
-
-    //void OnEnable()
-    //{
-    //    Application.logMessageReceived += HandleLog;
-    //}
-
-    //void OnDisable()
-    //{
-    //    Application.logMessageReceived -= HandleLog;
-    //}
-
-    //void HandleLog(string logString, string stackTrace, LogType type)
-    //{
-    //    myLog = logString;
-    //    string newString = "\n [" + type + "] : " + myLog;
-    //    myLogQueue.Enqueue(newString);
-    //    if (type == LogType.Exception)
-    //    {
-    //        newString = "\n" + stackTrace;
-    //        myLogQueue.Enqueue(newString);
-    //    }
-    //    myLog = string.Empty;
-    //    foreach (string mylog in myLogQueue)
-    //    {
-    //        myLog += mylog;
-    //    }
-    //}
-
-    //void OnGUI()
-    //{
-    //    GUILayout.Label(myLog);
-    //}
 }

@@ -385,7 +385,7 @@ public class SplitterCtrl : LogisticsCtrl
                 break;
             }
         }
-        FilterSetItemClientRpc(filterIndex, smartFilterItemIndex);
+        FilterSetItemClientRpc(filterIndex, filter.outObj.NetworkObject, smartFilterItemIndex);
         FilterindexSet();
     }
 
@@ -485,13 +485,20 @@ public class SplitterCtrl : LogisticsCtrl
     //}
 
     [ClientRpc]
-    void FilterSetItemClientRpc(int outObjIndex, int itemIndex)
+    void FilterSetItemClientRpc(int filterIndex, NetworkObjectReference netObj, int itemIndex)
     {
         Item sendItem = itemList[itemIndex];
 
-        Filter filter = arrFilter[outObjIndex];
+        if (arrFilter[filterIndex].outObj.NetworkObjectId != netObj.NetworkObjectId)
+        {
+            netObj.TryGet(out NetworkObject obj);
+            obj.TryGetComponent(out Structure str);
+            arrFilter[filterIndex].outObj = str;
+        }
 
-        if (filter.outObj.TryGet(out BeltCtrl beltCtrl))
+        arrFilter[filterIndex].outObj.TryGet(out Structure structure);
+
+        if (structure.TryGet(out BeltCtrl beltCtrl))
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
             spawnItem = itemPool.GetComponent<ItemProps>();
@@ -510,13 +517,13 @@ public class SplitterCtrl : LogisticsCtrl
             }
             itemList.RemoveAt(itemIndex);
         }
-        else if (filter.outObj.Get<LogisticsCtrl>())
+        else if (structure.Get<LogisticsCtrl>())
         {
-            SendFacDelay(filter.outObj, sendItem);
+            SendFacDelay(structure, sendItem);
         }
-        else if (filter.outObj.TryGet(out Production production) && production.CanTakeItem(sendItem))
+        else if (structure.TryGet(out Production production) && production.CanTakeItem(sendItem))
         {
-            SendFacDelay(filter.outObj, sendItem);
+            SendFacDelay(structure, sendItem);
         }
         ItemNumCheck();
         Invoke(nameof(DelaySetItem), sendDelay);

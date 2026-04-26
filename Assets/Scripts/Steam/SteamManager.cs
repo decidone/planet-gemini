@@ -482,6 +482,7 @@ public class SteamManager : MonoBehaviour
             {
                 Chat.instance.SendMessageServerRpc(friend.Name + " has left.");
             }
+            LoadingPopup.instance.CloseUI();
         }
         //Debug.Log(lobby.Owner.Id);
         //Debug.Log(friend.Id);

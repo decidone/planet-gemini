@@ -21,6 +21,8 @@ public class KeyBindingsBtn : MonoBehaviour
     bool keybindingFalse;
     SoundManager soundManager;
     private InputActionRebindingExtensions.RebindingOperation rebindingOperation;
+    [SerializeField]
+    Button resetBtn;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +32,7 @@ public class KeyBindingsBtn : MonoBehaviour
             GetComponent<Button>().onClick.AddListener(() => BtnFunc());
         else
             GetComponent<Image>().color = Color.gray;
+        resetBtn.onClick.AddListener(() => ResetToDefault());
     }
 
     private void SaveRebindings()

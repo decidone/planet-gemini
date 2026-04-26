@@ -600,7 +600,6 @@ public class BeltGroupMgr : NetworkBehaviour
                     break;
                 }
             }
-            if (findItemProps != null) break;
         }
 
         if (findItemProps == null)
@@ -668,8 +667,6 @@ public class BeltGroupMgr : NetworkBehaviour
 
         ClientBeltSyncFunc();
         beltSyncCheck = true;
-
-        Debug.Log("ItemSyncClientRpc beltList.Count : " + beltList.Count);
 
         for (int i = 0; i < itemIndexes.Length; i++)
         {

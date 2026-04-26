@@ -12,7 +12,7 @@ public class ItemProps : MonoBehaviour
     public bool waitingForDestroy = false;
     [HideInInspector]
     public bool isOnBelt = false;
-    [HideInInspector]
+    //[HideInInspector]
     public BeltCtrl setOnBelt;
     public int beltGroupIndex;
     public SpriteRenderer spriteRenderer;

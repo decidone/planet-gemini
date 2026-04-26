@@ -130,7 +130,6 @@ public class NetworkObjManager : NetworkBehaviour
 
     private void OnSyncComplete()
     {
-        Debug.Log($"Sync End - Structure {netStructures.Count} / BeltGroup {netBeltGroupMgrs.Count} / Belt {networkBelts.Count}");
         foreach (BeltGroupMgr beltGroup in netBeltGroupMgrs)
         {
             beltGroup.ItemSyncServerRpc();
@@ -145,7 +144,6 @@ public class NetworkObjManager : NetworkBehaviour
         GameManager gameManager = GameManager.instance;
         gameManager.SetClientSyncPauseServerRpc(false);
         gameManager.LoadingPopupServerRpc();
-        Debug.Log("Sync End");
     }
 
     public void BeltGroupRemove(BeltGroupMgr beltGroupMgr)

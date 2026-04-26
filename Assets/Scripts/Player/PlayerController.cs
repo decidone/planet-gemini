@@ -12,6 +12,7 @@ public class PlayerController : NetworkBehaviour
     GameManager gameManager;
     public PlayerStatus status;
     public List<ItemProps> items = new List<ItemProps>();
+    [SerializeField]
     List<BeltCtrl> beltList = new List<BeltCtrl>();
 
     public Collider2D circleColl;
@@ -147,6 +148,16 @@ public class PlayerController : NetworkBehaviour
         inputManager.controls.Player.TankInven.performed -= TankInven;
     }
 
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+
+        if (tankOn)
+        {
+            TankOffFuncServerRpc();
+        }
+    }
+
     void Update()
     {
         if (Time.timeScale == 0)
@@ -238,22 +249,21 @@ public class PlayerController : NetworkBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        BeltCtrl belt = collision.GetComponent<BeltCtrl>();
-        if (belt && !beltList.Contains(belt))
+        if (collision.TryGetComponent(out BeltCtrl belt) && !beltList.Contains(belt))
             beltList.Add(belt);
 
         if (!IsOwner) { return; }
-        ItemProps itemProps = collision.GetComponent<ItemProps>();
-        Interactable interactable = collision.GetComponent<Interactable>();
-        NPCInteract shop = collision.GetComponent<NPCInteract>();
+
+        collision.TryGetComponent(out ItemProps itemProps);
+        collision.TryGetComponent(out Interactable interactable);
+        collision.TryGetComponent(out NPCInteract shop);
 
         if (interactable)
         {
             interactable.SpawnIcon();
-            if (collision.GetComponent<TankCtrl>() && nearTank == null)
+            if (collision.TryGetComponent(out TankCtrl tank) && nearTank == null)
             {
-                nearTank = collision.GetComponent<TankCtrl>();
-                //TankSetServerRpc(collision.GetComponent<NetworkObject>());
+                nearTank = tank;
             }
         }
 
@@ -270,25 +280,23 @@ public class PlayerController : NetworkBehaviour
 
     void OnTriggerExit2D(Collider2D collision)
     {
-        BeltCtrl belt = collision.GetComponent<BeltCtrl>();
-        if (belt && beltList.Contains(belt))
+        if (collision.TryGetComponent(out BeltCtrl belt) && beltList.Contains(belt))
             beltList.Remove(belt);
 
         if (!IsOwner) { return; }
-        ItemProps itemProps = collision.GetComponent<ItemProps>();
-        Portal portal = collision.GetComponent<Portal>();
-        MarketPortal marketPortal = collision.GetComponent<MarketPortal>();
-        Interactable interactable = collision.GetComponent<Interactable>();
-        NPCInteract shop = collision.GetComponent<NPCInteract>();
+
+        collision.TryGetComponent(out ItemProps itemProps);
+        collision.TryGetComponent(out Portal portal);
+        collision.TryGetComponent(out MarketPortal marketPortal);
+        collision.TryGetComponent(out Interactable interactable);
+        collision.TryGetComponent(out NPCInteract shop);
 
         if (interactable)
         {
             interactable.DespawnIcon();
-            if (nearTank == collision.GetComponent<TankCtrl>())
+            if (collision.TryGetComponent(out TankCtrl tank) && nearTank == tank)
             {
                 nearTank = null;
-                //if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsConnectedClient)
-                //    TankResetServerRpc();
             }
         }
 

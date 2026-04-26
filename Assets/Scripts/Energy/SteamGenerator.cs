@@ -111,13 +111,16 @@ public class SteamGenerator : FluidFactoryCtrl
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-//        StrBuilt();
+        isStartCalled = true;
+        if (isCellCalled)
+            StrBuilt();
         #endregion
 
         maxFuel = 100;
         isBuildDone = false;
         preBuildingCheck = false;
         preBuilding = PreBuilding.instance;
+        isStartCalled = true;
         if (isCellCalled)
             StrBuilt();
 
@@ -266,6 +269,7 @@ public class SteamGenerator : FluidFactoryCtrl
         // 변경사항이 생기면 DelayNearStrBuiltCoroutine()에도 반영해야 함
         if (IsServer)
         {
+            Debug.Log("NearStrBuilt call");
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {
