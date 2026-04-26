@@ -77,9 +77,9 @@ public class MainPanelsManager : MonoBehaviour
         //gameSetting.RandomSeedValue(seed);
 
         gameSetting.NewGameState(true);
+        soundManager.PlayUISFX("ButtonClick");
         NetworkManager.Singleton.StartHost();
         LoadingUICtrl.Instance.LoadScene("GameScene", true);
-        soundManager.PlayUISFX("ButtonClick");
     }
 
     //void MapSizeDropdownFunc(Dropdown dropdown)

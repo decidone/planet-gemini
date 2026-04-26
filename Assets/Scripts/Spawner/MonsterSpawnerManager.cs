@@ -416,6 +416,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         waveDayState = false;
         waveStartState = false;
+        QuestManager.instance.QuestCompCheck(50);
     }
 
     public bool HasMonsterSpawnerOnMap(bool isHostMap)

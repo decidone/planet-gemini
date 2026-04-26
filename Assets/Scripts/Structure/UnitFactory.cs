@@ -8,7 +8,8 @@ public class UnitFactory : Production
     public Vector2[] nearPos = new Vector2[8];
     public Vector2 spawnPos;
     bool isSetPos = false;
-
+    float spawnPosCheckTimer;
+    float spawnPosCheckInterval = 1f;
     List<GameObject> unitObjList;
 
     GameObject spawnUnit;
@@ -36,28 +37,32 @@ public class UnitFactory : Production
                     {
                         OperateStateSet(true);
                         prodTimer += Time.deltaTime;
+                        spawnPosCheckTimer += Time.deltaTime;
                         if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
                         {
-                            bool spawnPosExist = UnitSpawnPosFind();
-
-                            if (spawnPosExist)
+                            if (spawnPosCheckTimer > spawnPosCheckInterval)
                             {
-                                if (IsServer)
+                                bool spawnPosExist = UnitSpawnPosFind();
+
+                                if (spawnPosExist)
                                 {
-                                    Overall.instance.OverallConsumption(slot.Item1, recipe.amounts[0]);
-                                    Overall.instance.OverallConsumption(slot1.Item1, recipe.amounts[1]);
-                                    Overall.instance.OverallConsumption(slot2.Item1, recipe.amounts[2]);
+                                    if (IsServer)
+                                    {
+                                        Overall.instance.OverallConsumption(slot.Item1, recipe.amounts[0]);
+                                        Overall.instance.OverallConsumption(slot1.Item1, recipe.amounts[1]);
+                                        Overall.instance.OverallConsumption(slot2.Item1, recipe.amounts[2]);
 
-                                    inventory.SlotSubServerRpc(0, recipe.amounts[0]);
-                                    inventory.SlotSubServerRpc(1, recipe.amounts[1]);
-                                    inventory.SlotSubServerRpc(2, recipe.amounts[2]);
+                                        inventory.SlotSubServerRpc(0, recipe.amounts[0]);
+                                        inventory.SlotSubServerRpc(1, recipe.amounts[1]);
+                                        inventory.SlotSubServerRpc(2, recipe.amounts[2]);
 
-                                    SetUnit();
-                                    SpawnUnit();
+                                        SetUnit();
+                                        SpawnUnit();
+                                    }
+
+                                    soundManager.PlaySFX(gameObject, "structureSFX", "Structure");
+                                    prodTimer = 0;
                                 }
-
-                                soundManager.PlaySFX(gameObject, "structureSFX", "Structure");
-                                prodTimer = 0;
                             }
                         }
                     }
@@ -221,16 +226,31 @@ public class UnitFactory : Production
     public bool UnitSpawnPosFind()
     {
         bool spawnPosExist = false;
+        spawnPosCheckTimer = 0;
         for (int i = 0; i < nearPos.Length; i++)
         {
             if (nearObj[i] != null && !nearObj[i].Get<BeltCtrl>())
                 continue;
             else
             {
-                spawnPosExist = true;
-                if(!isSetPos)
-                    spawnPos = nearPos[i];
-                break;
+                if (recipe.name == "Tank")
+                {
+                    Collider2D[] hits = Physics2D.OverlapBoxAll(nearPos[i], new Vector2(1f, 1f), 0f, LayerMask.GetMask("Tank"));
+                    if (hits.Length == 0)
+                    {
+                        spawnPosExist = true;
+                        if (!isSetPos)
+                            spawnPos = nearPos[i];
+                        break;
+                    }
+                }
+                else
+                {
+                    spawnPosExist = true;
+                    if (!isSetPos)
+                        spawnPos = nearPos[i];
+                    break;
+                }
             }
         }
 

@@ -172,7 +172,15 @@ public class ConfirmPanel : MonoBehaviour
 
     public void OkBtnFunc()
     {
-        if(saveLoadBtn)
+        soundManager.PlayUISFX("ButtonClick");
+        StartCoroutine(OkBtnRoutine());
+    }
+
+    IEnumerator OkBtnRoutine()
+    {
+        yield return null;
+
+        if (saveLoadBtn)
         {
             if (isSaveLoadDelete)
             {
@@ -196,11 +204,12 @@ public class ConfirmPanel : MonoBehaviour
             OptionCanvas.instance.QuitFunc();
         }
         UIClose();
-        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void CancelBtnFunc()
     {
+        soundManager.PlayUISFX("ButtonClick");
+
         if (saveLoadBtn)
         {
             if (isSaveLoadDelete)
@@ -217,7 +226,6 @@ public class ConfirmPanel : MonoBehaviour
             SettingsMenu.instance.WindowSizeConfirm(false);
         }
         UIClose();
-        soundManager.PlayUISFX("ButtonClick");
     }
 
     public void UIClose()

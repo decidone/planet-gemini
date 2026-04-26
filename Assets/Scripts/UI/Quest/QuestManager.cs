@@ -170,8 +170,6 @@ public class QuestManager : MonoBehaviour
                     scienceManager.onUpgradeCompletedCallback += QuestCompCheck;
                 break;
             case 50:    // 웨이브 클리어. 웨이브 끝날 때 QuestCompCheck(50) 호출하면 완료
-                if (!GameManager.instance.bloodMoon)
-                    QuestClear();
                 break;
             default:
                 break;

@@ -80,7 +80,7 @@ public class Chat : NetworkBehaviour
         inputManager.controls.Chat.Enter.performed += Enter;
         input.onSelect.AddListener(OnInputSelect);
         input.onDeselect.AddListener(OnInputDeselect);
-        Application.logMessageReceived += HandleLog;
+        //Application.logMessageReceived += HandleLog;
     }
 
     void OnDisable()
@@ -88,7 +88,7 @@ public class Chat : NetworkBehaviour
         inputManager.controls.Chat.Enter.performed -= Enter;
         input.onSelect.RemoveListener(OnInputSelect);
         input.onDeselect.RemoveListener(OnInputDeselect);
-        Application.logMessageReceived -= HandleLog;
+        //Application.logMessageReceived -= HandleLog;
     }
 
     void Update()
