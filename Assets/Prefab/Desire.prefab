@@ -467,6 +467,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   status: {fileID: 7093100876002410941}
   items: []
+  beltList: []
   circleColl: {fileID: 0}
   isTeleporting: 1
   moveSpeed: 8
@@ -723,7 +724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f22eb66c4319c4f9e05326892aaeca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseAggroAmount: 0
+  baseAggroAmount: 8
   aggroAmount: 0
 --- !u!1 &2806405727007314623
 GameObject:

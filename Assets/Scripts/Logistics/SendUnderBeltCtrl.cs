@@ -6,6 +6,7 @@ using System.Collections.Generic;
 // UTF-8 설정
 public class SendUnderBeltCtrl : LogisticsCtrl
 {
+    [SerializeField]
     float sendDist;
     List<(int, float)> sendingItems = new List<(int, float)>(); // 아이템 인덱스, 아이템 전송 남은 시간
     Coroutine sendCoroutine;
@@ -25,7 +26,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         {
             if (IsServer && !isPreBuilding)
             {
-                if (inObj.Count > 0 && !isFull && !itemGetDelay && sendingItems.Count < sendDist * 4)
+                if (inObj.Count > 0 && !isFull && !itemGetDelay && sendingItems.Count < maxAmount)
                 {
                     GetItem();
                 }
@@ -148,7 +149,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
-        if (outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
+        if (outObj.Count <= outObjIndex || outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
         {
             netObj.TryGet(out NetworkObject obj);
             obj.TryGetComponent(out Structure str);
@@ -205,8 +206,8 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         if (!outObj.Contains(obj))
         {            
             outObj.Add(obj);
-            sendDist = Vector2.Distance(transform.position, obj.transform.position) - 1;
-            maxAmount = Mathf.CeilToInt(sendDist * 4);
+            sendDist = Vector2.Distance(transform.position, obj.transform.position);
+            maxAmount = Mathf.CeilToInt(sendDist * 3);
 
             if (sendingItems.Count >= maxAmount)
                 isFull = true;

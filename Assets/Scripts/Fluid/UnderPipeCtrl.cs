@@ -251,11 +251,6 @@ public class UnderPipeCtrl : FluidFactoryCtrl
     {
         if(obj)
         {
-            if (obj.Has<UnderPipeCtrl>())
-            {
-                return;
-            }
-
             otherPipe = obj;
             if (!outObj.Contains(obj))
                 outObj.Add(obj);
@@ -263,6 +258,10 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             if (obj.TryGet(out PipeCtrl otherPipeCtrl))
             {
                 otherPipeCtrl.FactoryVecCheck(this);
+            }
+            if (obj.TryGet(out UnderPipeCtrl underPipe))
+            {
+                StartCoroutine(UnderPipeConnectCheck(underPipe));
             }
         }
     }

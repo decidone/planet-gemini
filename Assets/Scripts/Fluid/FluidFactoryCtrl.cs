@@ -143,14 +143,15 @@ public class FluidFactoryCtrl : Production
                 outObj.Add(obj);
             if (obj.TryGet(out UnderPipeCtrl underPipe))
             {
-                UnderPipeConnectCheck(underPipe);
+                StartCoroutine(UnderPipeConnectCheck(underPipe));
             }
         }
     }
 
-    protected virtual void UnderPipeConnectCheck(UnderPipeCtrl underPipeCtrl)
+    protected IEnumerator UnderPipeConnectCheck(UnderPipeCtrl underPipeCtrl)
     {
-        if(underPipeCtrl)
+        yield return new WaitForEndOfFrame();
+        if (underPipeCtrl)
         {
             if (underPipeCtrl.otherPipe == null || underPipeCtrl.otherPipe != this)
             {
@@ -158,6 +159,17 @@ public class FluidFactoryCtrl : Production
             }
         }
     }
+
+    //protected virtual void UnderPipeConnectCheck(UnderPipeCtrl underPipeCtrl)
+    //{
+    //    if(underPipeCtrl)
+    //    {
+    //        if (underPipeCtrl.otherPipe == null || underPipeCtrl.otherPipe != this)
+    //        {
+    //            outObj.Remove(underPipeCtrl);
+    //        }
+    //    }
+    //}
 
     public virtual void SendFluid()
     {

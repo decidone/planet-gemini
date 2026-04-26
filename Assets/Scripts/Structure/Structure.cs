@@ -1185,7 +1185,7 @@ public class Structure : WorldObj
     [ClientRpc]
     protected virtual void GetItemFuncClientRpc(int inObjIndex, NetworkObjectReference netObj)
     {
-        if(inObj[inObjIndex].NetworkObjectId != netObj.NetworkObjectId)
+        if(inObj.Count <= inObjIndex || inObj[inObjIndex].NetworkObjectId != netObj.NetworkObjectId)
         {
             netObj.TryGet(out NetworkObject obj);
             obj.TryGetComponent(out Structure str);
@@ -1349,7 +1349,7 @@ public class Structure : WorldObj
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
-        if (outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
+        if (outObj.Count <= outObjIndex || outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
         {
             netObj.TryGet(out NetworkObject obj);
             obj.TryGetComponent(out Structure str);
@@ -1410,7 +1410,7 @@ public class Structure : WorldObj
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
-        if (outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
+        if (outObj.Count <= outObjIndex || outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
         {
             netObj.TryGet(out NetworkObject obj);
             obj.TryGetComponent(out Structure str);
@@ -1508,12 +1508,32 @@ public class Structure : WorldObj
     [ServerRpc]
     public void TakeDamageServerRpc(float damage)
     {
-        TakeDamageClientRpc(damage);
+        if (hp <= 0f)
+            return;
+
+        float defenseRate = defense * 0.01f; // 0 ~ 1 변환
+        float reducedDamage = Mathf.Max(damage * (1f - defenseRate), 5f);
+
+        hp -= reducedDamage;
+        if (IsServer && gameManager.violentDay)
+            gameManager.GetWaveDamage(reducedDamage);
+
+        if (hp > 0f)
+        {
+            TakeDamageClientRpc(hp);
+        }
+        else
+        {
+            hp = 0f;
+            DieFuncServerRpc();
+        }
     }
 
     [ClientRpc]
-    public void TakeDamageClientRpc(float damage)
+    public void TakeDamageClientRpc(float hpSync)
     {
+        hp = hpSync;
+
         if (!isPreBuilding)
         {
             if (!unitCanvas.activeSelf)
@@ -1523,31 +1543,13 @@ public class Structure : WorldObj
             }
         }
 
-        if (hp <= 0f)
-            return;
-
-        float defenseRate = defense * 0.01f; // 0 ~ 1 변환
-        float reducedDamage = Mathf.Max(damage * (1f - defenseRate), 5f);
-
         if (!damageEffectOn)
         {
             StartCoroutine(TakeDamageEffect());
         }
 
-        hp -= reducedDamage;
-        if (IsServer && gameManager.violentDay)
-            gameManager.GetWaveDamage(reducedDamage);
-
-        if (hp < 0f)
-            hp = 0f;
         onHpChangedCallback?.Invoke();
         hpBar.fillAmount = hp / maxHp;
-
-        if (IsServer && hp <= 0f)
-        {
-            hp = 0f;
-            DieFuncServerRpc();
-        }
     }
 
     protected IEnumerator TakeDamageEffect()
@@ -1569,28 +1571,20 @@ public class Structure : WorldObj
         DieFuncClientRpc();
     }
 
-
     [ClientRpc]
     protected virtual void DieFuncClientRpc()
     {
-        //hp = structureData.MaxHp[level];
-        //repairBar.enabled = true;
         hpBar.enabled = false;
         dieCheck = true;
-        //repairGauge = 0;
-        //repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
         ColliderTriggerOnOff(true);
         Instantiate(RuinExplo, transform.position, Quaternion.identity);
         soundManager.PlaySFX(gameObject, "structureSFX", "Destroy");
-
-        if (!IsServer)
+        if (IsServer)
         {
-            ClientItemDrop();
+            ItemDrop();
+            RemoveObjServerRpc(); // 여기로 이동
             return;
         }
-
-        ItemDrop();
-        RemoveObjServerRpc();
     }
 
     protected void ItemToItemProps(Item item, int itemAmount)
@@ -1898,7 +1892,8 @@ public class Structure : WorldObj
             GameManager.instance.focusedStructure = null;
         }
 
-        DestroyFuncServerRpc();
+        if(IsServer)
+            DestroyFuncServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
