@@ -272,7 +272,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void WindowSizeConfirm(bool isOk)
     {
-        Debug.Log(isOk);
+        //Debug.Log(isOk);
         if(isOk)
         {
             windowSizeIndex = tempWindowSizeIndex;

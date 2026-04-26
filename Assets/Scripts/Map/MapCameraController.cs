@@ -275,8 +275,7 @@ public class MapCameraController : MonoBehaviour
                         //연결 가능한 건물
                         if (focusedEvent.EndRenderer(tempEvent))
                             isLineRendered = false;
-
-                        Debug.Log("EndRenderer");
+                        //Debug.Log("EndRenderer");
                     }
                     else
                     {

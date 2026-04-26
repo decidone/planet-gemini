@@ -350,23 +350,23 @@ public class MapGenerator : MonoBehaviour
 
         if (biasX < 0)
         {
-            Debug.Log("left: " + (11 - bias[0]));
+            //Debug.Log("left: " + (11 - bias[0]));
             x -= (11 - bias[0]);
         }
         else if (biasX > 0)
         {
-            Debug.Log("right: " + (bias[1] + 1));
+            //Debug.Log("right: " + (bias[1] + 1));
             x += (bias[1] + 1);
         }
 
         if (biasY < 0)
         {
-            Debug.Log("down: " + (11 - bias[2]));
+            //Debug.Log("down: " + (11 - bias[2]));
             y -= (11 - bias[2]);
         }
         else if (biasY > 0)
         {
-            Debug.Log("up: " + (bias[3] + 1));
+            //Debug.Log("up: " + (bias[3] + 1));
             y += (bias[3] + 1);
         }
 
@@ -598,7 +598,7 @@ public class MapGenerator : MonoBehaviour
                     tilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), backgroundTile);
 
                     lakeTilemap.SetTile(new Vector3Int(x, (y + offsetY), 0), tile.tile);
-                    if (tile.form == "side")
+                    if (tile.form == "side" || tile.form == "corner")
                         cell.buildable.Add("pump");
                     else
                         cell.buildable.Add("none");
@@ -916,7 +916,7 @@ public class MapGenerator : MonoBehaviour
                 fogState[x, y] = 1;
             }
         }
-        Debug.Log(fogState[width - 1 , height+offsetY-1]);
+        //Debug.Log(fogState[width - 1 , height + offsetY - 1]);
     }
 
     public void RemoveFogTile(Vector3 pos, float radius)

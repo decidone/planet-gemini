@@ -54,7 +54,7 @@ public class EnergyGroupManager : MonoBehaviour
         {
             energyGroups.Add(group);
         }
-        Debug.Log("add group: " + energyGroups.Count);
+        //Debug.Log("add group: " + energyGroups.Count);
     }
 
     public void RemoveGroup(EnergyGroup group)
@@ -63,7 +63,7 @@ public class EnergyGroupManager : MonoBehaviour
         {
             energyGroups.Remove(group);
         }
-        Debug.Log("subtract group: " + energyGroups.Count);
+        //Debug.Log("subtract group: " + energyGroups.Count);
     }
 
     public void CheckGroups()
@@ -71,13 +71,12 @@ public class EnergyGroupManager : MonoBehaviour
         for (int i = 0; i < energyGroups.Count; i++)
         {
             EnergyGroup group = energyGroups[i];
-            Debug.Log(i + " group energy: " + group.energy + ", consumption: " + group.consumption
-                + ", efficiency: " + group.efficiency + ", isInHostMap: " + group.isHostMapEnergyGroup);
+            //Debug.Log(i + " group energy: " + group.energy + ", consumption: " + group.consumption
+            //    + ", efficiency: " + group.efficiency + ", isInHostMap: " + group.isHostMapEnergyGroup);
         }
         
-        var MapEnergyData = MapEnergyCheck();
-        Debug.Log("Host Map Energy consumption : " + MapEnergyData.Item1 + ", Client Map Energy consumption : " + MapEnergyData.Item2);
-
+        //var MapEnergyData = MapEnergyCheck();
+        //Debug.Log("Host Map Energy consumption : " + MapEnergyData.Item1 + ", Client Map Energy consumption : " + MapEnergyData.Item2);
     }
 
     public IEnumerator CalculateGroupsEnergy()

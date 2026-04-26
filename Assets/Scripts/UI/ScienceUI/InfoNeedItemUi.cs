@@ -65,7 +65,7 @@ public class InfoNeedItemUi : MonoBehaviour
         if (inputField)
         {
             inputField.interactable = isOn;
-            Debug.Log("InputFieldSet");
+            //Debug.Log("InputFieldSet");
         }
     }
 }

@@ -903,6 +903,7 @@ public class BeltCtrl : LogisticsCtrl
     public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
+        beltGroupMgr.GroupAddBelt(this);
         level = _level;
         dirNum = _beltDir;
         height = objHeight;

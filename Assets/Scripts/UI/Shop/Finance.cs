@@ -58,7 +58,7 @@ public class Finance : MonoBehaviour
         }
         else
         {
-            Debug.Log("SubFinance : " + _finance);
+            //Debug.Log("SubFinance : " + _finance);
             SetFinance(finance - _finance);
         }
     }

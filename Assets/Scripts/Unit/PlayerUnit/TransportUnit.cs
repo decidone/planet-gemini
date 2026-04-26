@@ -201,7 +201,7 @@ public class TransportUnit : UnitCommonAi
         {
             if (isSellerUnit)
             {
-                Debug.Log("Seller Unit arrived at the Portal");
+                //Debug.Log("Seller Unit arrived at the Portal");
                 GameManager.instance.AddFinanceServerRpc(price);
                 price = 0;
                 itemDic.Clear();
@@ -209,7 +209,7 @@ public class TransportUnit : UnitCommonAi
             }
             else if (isBuyerUnit)
             {
-                Debug.Log("Buyer Unit arrived at the Portal");
+                //Debug.Log("Buyer Unit arrived at the Portal");
 
                 // 세이브, 로드 시 드론이 반환점을 돌았는지 확인하기 위해서 넣어둔 확인용 아이템 제거
                 if (itemDic.Count > 1)
@@ -269,12 +269,12 @@ public class TransportUnit : UnitCommonAi
 
             if (isSellerUnit)
             {
-                Debug.Log("Seller Unit arrived at the AutoSeller");
+                //Debug.Log("Seller Unit arrived at the AutoSeller");
                 autoSeller.RemoveUnit(this.gameObject);
             }
             else if (isBuyerUnit)
             {
-                Debug.Log("Buyer Unit arrived at the AutoBuyer");
+                //Debug.Log("Buyer Unit arrived at the AutoBuyer");
                 if (itemDic.Count > 0)
                 {
                     autoBuyer.TakeTransportItem(this, itemDic);
@@ -318,7 +318,7 @@ public class TransportUnit : UnitCommonAi
     {
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
-            Debug.Log("Despawn : " + gameObject.name);
+            //Debug.Log("Despawn : " + gameObject.name);
             NetworkObject.Despawn();
         }
     }

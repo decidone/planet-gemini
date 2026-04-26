@@ -248,7 +248,7 @@ public class StructureInvenManager : InventoryManager
 
     public void EmptySlot()
     {
-        Debug.Log("EmptySlot");
+        //Debug.Log("EmptySlot");
         playerInven = gameManager.inventory;
 
         for (int i = 0; i < slots.Length; i++)

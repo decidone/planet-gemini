@@ -20,6 +20,7 @@ public class BuildingInvenManager : MonoBehaviour
 
     BuildingData buildingData;
     InputManager inputManager;
+    [SerializeField] Button dicBtn;
 
     public ItemInfoWindow itemInfoWindow;
 
@@ -48,7 +49,7 @@ public class BuildingInvenManager : MonoBehaviour
     {
         gameManager = GameManager.instance;
         SetInven(buildingInventory, buildingInventoryUI);
-        
+        dicBtn.onClick.AddListener(DicBtnClicked);
         itemInfoWindow = gameManager.inventoryUiCanvas.GetComponent<ItemInfoWindow>();
         soundManager = SoundManager.instance;
         onToggleMapChangeCallback += OnExit;
@@ -83,6 +84,18 @@ public class BuildingInvenManager : MonoBehaviour
             AddEvent(slot, EventTriggerType.PointerExit, delegate { OnExit(); });
         }
         buildingInventory.Refresh();
+    }
+
+    void DicBtnClicked()
+    {
+        if (PreBuilding.instance.buildData && selectSlot)
+        {
+            InfoDictionary.instance.Search(PreBuilding.instance.buildData.scienceName, true);
+        }
+        else
+        {
+            InfoDictionary.instance.OpenUI();
+        }
     }
 
     void BuildingInfo(InputAction.CallbackContext ctx)

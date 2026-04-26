@@ -168,7 +168,7 @@ public class GeminiNetworkManager : NetworkBehaviour
     public void ItemSpawnServerRpc(int itemIndex, int amount, Vector3 spawnPos)
     {
         Item item = GetItemSOFromIndex(itemIndex);
-        Debug.Log("Item : " + item.name + ", Amount : " + amount);
+        //Debug.Log("Item : " + item.name + ", Amount : " + amount);
 
         NetworkObject itemNetworkObject = NetworkObjectPool.Singleton.GetNetworkObject(itemPref, spawnPos, Quaternion.identity);
         ItemProps itemProps = itemNetworkObject.GetComponent<ItemProps>();

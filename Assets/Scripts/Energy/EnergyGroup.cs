@@ -186,7 +186,7 @@ public class EnergyGroup
 
     public void TerritoryViewOn()
     {
-        Debug.Log("connectors in group: " + connectors.Count + ", group energy: " + energy);
+        //Debug.Log("connectors in group: " + connectors.Count + ", group energy: " + energy);
         for (int i = 0; i < connectors.Count; i++)
         {
             connectors[i].ViewOn();

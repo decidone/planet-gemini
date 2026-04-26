@@ -92,7 +92,7 @@ public class UpgradeBuild : DragFunc
                                 else
                                 {
                                     // 상위 테크 건물은 있는데 아직 연구가 완료되지 않은 경우
-                                    Debug.Log("need to research next level building");
+                                    //Debug.Log("need to research next level building");
                                 }
                             }
                         }
@@ -126,7 +126,7 @@ public class UpgradeBuild : DragFunc
                     {
                         // 상위 테크 건물은 있는데 아직 연구가 완료되지 않은 경우
                         // 여기서는 ui동기화에 문제가 생겨서 이미 업그레이드가 됐는데 버튼이 남아있는 경우를 처리
-                        Debug.Log("need to research next level building");
+                        //Debug.Log("need to research next level building");
                         InfoUI.instance.RefreshStrInfo();
                     }
                 }

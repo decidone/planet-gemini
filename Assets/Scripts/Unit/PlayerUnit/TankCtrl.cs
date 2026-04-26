@@ -373,7 +373,7 @@ public class TankCtrl : UnitAi
     public void ClientUISet()
     {
         ClientUISetServerRpc(fuel);
-        Debug.Log("ClientUISet" + fuel);
+        //Debug.Log("ClientUISet" + fuel);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -386,7 +386,7 @@ public class TankCtrl : UnitAi
     protected void ClientUISetClientRpc(float syncFuel)
     {
         fuel = syncFuel;
-        Debug.Log("ClientUISetClientRpc" + fuel);
+        //Debug.Log("ClientUISetClientRpc" + fuel);
     }
 
     public void CloseUI()

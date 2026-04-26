@@ -269,7 +269,7 @@ public class SteamGenerator : FluidFactoryCtrl
         // 변경사항이 생기면 DelayNearStrBuiltCoroutine()에도 반영해야 함
         if (IsServer)
         {
-            Debug.Log("NearStrBuilt call");
+            //Debug.Log("NearStrBuilt call");
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {

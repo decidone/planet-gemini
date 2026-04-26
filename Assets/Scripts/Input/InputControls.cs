@@ -557,7 +557,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""id"": ""fb6591dc-5f00-4f3f-96cc-b8e0c218c208"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -575,7 +575,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""id"": ""708e82c5-ab8f-4e45-952f-d40237166de8"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -584,7 +584,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""id"": ""efdbe5b8-4e87-458e-bff3-0ae6aa00c50b"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -692,7 +692,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";PC"",
                     ""action"": ""TankAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -714,7 +714,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/x"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";PC"",
                     ""action"": ""TankInven"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

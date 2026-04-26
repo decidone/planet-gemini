@@ -52,7 +52,7 @@ public class PreBuildingImg : MonoBehaviour
         {
             if (col.GetComponent<UnitCommonAi>() || (col.GetComponent<PlayerController>() && col.isTrigger == false))
             {
-                Debug.Log(transform.position + " : " + (size - (size / 10)));
+                //Debug.Log(transform.position + " : " + (size - (size / 10)));
                 return false; // 겹치는 유닛이 있음 → 배치 불가
             }
         }

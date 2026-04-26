@@ -155,7 +155,7 @@ public class SteamManager : MonoBehaviour
 
     private void AcceptP2P(SteamId opponentId)
     {
-        Debug.Log("AcceptP2P : " + opponentId);
+        //Debug.Log("AcceptP2P : " + opponentId);
         try
         {
             // For two players to send P2P packets to each other, they each must call this on the other player
@@ -231,13 +231,13 @@ public class SteamManager : MonoBehaviour
                 chunk[8] = (byte)(i == totalChunks - 1 ? 1 : 0); // Last chunk flag
                 chunk[9] = (byte)0; // map data = 0, game data = 1
 
-                Debug.Log("chunkSize" + chunkSize);
+                //Debug.Log("chunkSize" + chunkSize);
                 Array.Copy(mapData, i * MaxChunkSize, chunk, 10, chunkSize);
 
                 bool success = SteamNetworking.SendP2PPacket(opponentSteamId, chunk, chunk.Length);
                 if (success)
                 {
-                    Debug.Log($"Map Packet {i + 1}/{totalChunks} Send Success!");
+                    //Debug.Log($"Map Packet {i + 1}/{totalChunks} Send Success!");
                 }
                 else
                 {
@@ -255,18 +255,18 @@ public class SteamManager : MonoBehaviour
                 chunk[8] = (byte)(i == totalChunks - 1 ? 1 : 0); // Last chunk flag
                 chunk[9] = (byte)1; // map data = 0, game data = 1
 
-                Debug.Log("chunkSize" + chunkSize);
+                //Debug.Log("chunkSize" + chunkSize);
                 Array.Copy(data, (i - mapChunks) * MaxChunkSize, chunk, 10, chunkSize);
 
                 bool success = SteamNetworking.SendP2PPacket(opponentSteamId, chunk, chunk.Length);
-                //if (success)
-                //{
-                //    Debug.Log($"Packet {i + 1}/{totalChunks} Send Success!");
-                //}
-                //else
-                //{
-                //    Debug.LogError($"Packet {i + 1}/{totalChunks} Send Failed!");
-                //}
+                if (success)
+                {
+                    //Debug.Log($"Packet {i + 1}/{totalChunks} Send Success!");
+                }
+                else
+                {
+                    Debug.LogError($"Packet {i + 1}/{totalChunks} Send Failed!");
+                }
             }
         }
     }
@@ -317,7 +317,7 @@ public class SteamManager : MonoBehaviour
             }
         }
 
-        Debug.Log("count : " + receivedChunkIndices.Count + ", totalChunks : " + totalChunks);
+        //Debug.Log("count : " + receivedChunkIndices.Count + ", totalChunks : " + totalChunks);
 
         if (isLastChunkReceived)
         {
@@ -366,7 +366,7 @@ public class SteamManager : MonoBehaviour
         string opponentDataSent = Compression.Decompress(dataPacket);
         SaveData saveData = JsonConvert.DeserializeObject<SaveData>(opponentDataSent);
         LoadManager.instance.SetSaveData(saveData);
-        Debug.Log("Get Data");
+        //Debug.Log("Get Data");
         getData = true;
         clientConnTry = false;
     }

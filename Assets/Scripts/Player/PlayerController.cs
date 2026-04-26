@@ -903,9 +903,13 @@ public class PlayerController : NetworkBehaviour
         if (onTankData)
         {
             if (onTankData.tankUIOpen)
+            {
                 onTankData.CloseUI();
+            }
             else
+            {
                 onTankData.OpenUI();
+            }
         }
     }
 

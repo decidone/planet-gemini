@@ -258,6 +258,7 @@ public class Biome : MonoBehaviour
                 }
                 else if (nearDiff.Count == 2 && corner.Count > 0)
                 {
+                    form = "corner";
                     if (nearDiff.Contains(1) && nearDiff.Contains(3) && !diagonalDiff.Contains(7))
                     {
                         tile = corner[0];
@@ -277,6 +278,7 @@ public class Biome : MonoBehaviour
                 }
                 else if (nearDiff.Count == 0 && diagonalDiff.Count == 1 && innerCorner.Count > 0)
                 {
+                    form = "innerCorner";
                     if (diagonalDiff.Contains(0))
                     {
                         tile = innerCorner[0];

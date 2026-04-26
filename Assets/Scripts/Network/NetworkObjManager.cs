@@ -179,7 +179,7 @@ public class NetworkObjManager : NetworkBehaviour
 
     public void InitConnectors()
     {
-        Debug.Log("InitConnectors");
+        //Debug.Log("InitConnectors");
         for (int i = 0; i < netStructures.Count; i++)
         {
             EnergyGroupConnector connector = netStructures[i].GetComponentInChildren<EnergyGroupConnector>();

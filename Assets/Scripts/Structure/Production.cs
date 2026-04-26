@@ -181,7 +181,7 @@ public abstract class Production : Structure
 
     public virtual void SetRecipe(Recipe _recipe, int index)
     {
-        Debug.Log("SetRecipe call : " + _recipe.name);
+        //Debug.Log("SetRecipe call : " + _recipe.name);
         recipe = _recipe;
         recipeIndex = index;
         sInvenManager.ResetInvenOption();
@@ -268,7 +268,7 @@ public abstract class Production : Structure
 
     protected virtual void ResetUI()
     {
-        Debug.Log("ResetUI call");
+        //Debug.Log("ResetUI call");
         recipe = new Recipe();
         recipeIndex = -1;
         output = null;
@@ -388,7 +388,7 @@ public abstract class Production : Structure
 
     public virtual void CloseUI()
     {
-        Debug.Log("CloseUI call");
+        //Debug.Log("CloseUI call");
         isUIOpened = false;
         sInvenManager.dicBtn.gameObject.SetActive(false);
         GameManager.instance.CheckAndCancelFocus(this);

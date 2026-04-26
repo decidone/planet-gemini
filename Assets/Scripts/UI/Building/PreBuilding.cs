@@ -79,7 +79,7 @@ public class PreBuilding : NetworkBehaviour
     public GameObject preBuildingNonNet;
     protected List<Sprite> spriteList = new List<Sprite>();
     protected bool isGetAnim;
-    protected Building buildData;
+    public Building buildData;
 
     public bool isEnergyUse;
     public bool isEnergyStr;

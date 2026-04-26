@@ -23898,7 +23898,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   warningListBtn: {fileID: 7807709470505238013}
   warningText: {fileID: 6676703438573630519}
-  structureList: []
+  mainPlanetStructureList: []
+  subPlanetStructureList: []
 --- !u!1 &3367954311377992194
 GameObject:
   m_ObjectHideFlags: 0
@@ -43495,6 +43496,7 @@ MonoBehaviour:
   inventoryUI: {fileID: 8669813804987299387}
   inventory: {fileID: 0}
   slots: []
+  displaySlot: {fileID: 0}
   itemInfoWindow: {fileID: 0}
   sManager: {fileID: 142728371453078230}
   title: {fileID: 8669813806468503359}
@@ -43514,6 +43516,7 @@ MonoBehaviour:
   inventoryUI: {fileID: 0}
   inventory: {fileID: 0}
   slots: []
+  displaySlot: {fileID: 0}
   itemInfoWindow: {fileID: 0}
   playerInven: {fileID: 0}
   structureInfoUI: {fileID: 142728372679589277}
@@ -43565,6 +43568,7 @@ MonoBehaviour:
   inventoryUI: {fileID: 142728371937010319}
   inventory: {fileID: 0}
   slots: []
+  displaySlot: {fileID: 0}
   itemInfoWindow: {fileID: 0}
   recipeBtn: {fileID: 142728371381880708}
   structureInfoUI: {fileID: 142728372679589277}
@@ -43585,6 +43589,7 @@ MonoBehaviour:
   buildingInventoryUI: {fileID: 1095768247212083314}
   buildingInventory: {fileID: 0}
   slots: []
+  dicBtn: {fileID: 381142221305362638}
   itemInfoWindow: {fileID: 0}
 --- !u!114 &8669813805128897139
 MonoBehaviour:
@@ -43656,6 +43661,7 @@ MonoBehaviour:
   inventoryUI: {fileID: 7203681278949141321}
   inventory: {fileID: 0}
   slots: []
+  displaySlot: {fileID: 0}
   itemInfoWindow: {fileID: 0}
   itemTagsPanel: {fileID: 1146744717}
 --- !u!114 &8669813805128897151
@@ -43673,6 +43679,7 @@ MonoBehaviour:
   inventoryUI: {fileID: 1095768247911523866}
   inventory: {fileID: 0}
   slots: []
+  displaySlot: {fileID: 0}
   itemInfoWindow: {fileID: 0}
   removeUI: {fileID: 21300000, guid: 46987c8e5957c534cbe5e840b11dd085, type: 3}
   splitter: {fileID: 8669813805128897149}

@@ -481,7 +481,8 @@ public class Structure : WorldObj
             unitCanvas.SetActive(true);
             repairBar.enabled = true;
 
-            CloseUI();
+            if (isUIOpened)
+                CloseUI();
         }
     }
 
@@ -1744,7 +1745,6 @@ public class Structure : WorldObj
     {
         hpBar.enabled = true;
         hp = maxHp;
-        Debug.Log("DataSet : " + hp);
         unitCanvas.SetActive(false);
         hpBar.fillAmount = hp / maxHp;
         repairBar.enabled = false;
@@ -1990,8 +1990,6 @@ public class Structure : WorldObj
 
     void CloseUI()
     {
-        Debug.Log("isUIOpened : " + isUIOpened);
-
         if (!isUIOpened) return;
 
         if (TryGet(out LogisticsClickEvent solidFacClickEvent))

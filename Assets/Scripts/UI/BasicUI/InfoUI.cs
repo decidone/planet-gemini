@@ -195,7 +195,7 @@ public class InfoUI : MonoBehaviour
                     else
                     {
                         // 상위 테크 건물은 있는데 아직 연구가 완료되지 않은 경우
-                        Debug.Log("need to research next level building");
+                        //Debug.Log("need to research next level building");
                     }
                 }
             }

@@ -118,10 +118,16 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     public void SetBelt(BeltCtrl belt, int level, int beltDir, int objHeight, int objWidth, bool isHostMap, int index)
-    {        
+    {
         belt.NetworkObject.TrySetParent(NetworkObject);
-        beltList.Add(belt);
+        //beltList.Add(belt);
         belt.SettingClientRpc(level, beltDir, objHeight, objWidth, isHostMap, index);
+    }
+
+    public void GroupAddBelt(BeltCtrl belt)
+    {
+        if (!beltList.Contains(belt))
+            beltList.Add(belt);
     }
 
     public void SetBeltData()
