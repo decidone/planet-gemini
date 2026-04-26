@@ -87,7 +87,6 @@ public class InfoWindow : MonoBehaviour
         {
             nameText.text = $"{name}";
             infoText.text = scienceInfoData.info;
-            //에러뜨는문제있음
             Vector2 anchoredPosition = infoRT.anchoredPosition;
             Vector2 sizeDelta = menuRT.sizeDelta;
 
@@ -133,78 +132,39 @@ public class InfoWindow : MonoBehaviour
 
                 if (item != null)
                 {
-                    if (item.tier != -1)
-                    {
-                        int value;
-                        bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out value);
-                        bool isEnough = hasItem && value >= scienceInfoData.amounts[index];
+                    int value;
+                    bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out value);
+                    bool isEnough = hasItem && value >= scienceInfoData.amounts[index];
 
-                        if (isEnough && totalAmountsEnough)
-                            totalAmountsEnough = true;
-                        else
-                            totalAmountsEnough = false;
-
-                        if (needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
-                        {
-                            itemUi.DataSet(item.icon, item.name);
-                            itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
-                            if (scienceBtn.ItemFullCheck())
-                            {
-                                itemUi.amount.color = Color.white;
-                            }
-                            else
-                            {
-                                if (value == 0)
-                                    itemUi.amount.color = Color.red;
-                                else
-                                    itemUi.amount.color = isEnough ? Color.white : Color.yellow;
-                            }
-
-                            needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
-                        }
-                    }
+                    if (isEnough && totalAmountsEnough)
+                        totalAmountsEnough = true;
                     else
+                        totalAmountsEnough = false;
+
+                    if (needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
                     {
-                        int useAmount = 0;
-
-                        if (itemName == "Diamond")
+                        itemUi.DataSet(item.icon, item.name);
+                        itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
+                        if (scienceBtn.ItemFullCheck())
                         {
-                            useAmount = 10000 * scienceInfoData.amounts[index];
+                            itemUi.amount.color = Color.green;
+                            itemUi.InputFieldSet(false);
                         }
-                        else if (itemName == "Ruby")
-                        {
-                            useAmount = 100 * scienceInfoData.amounts[index];
-                        }
-                        else if (itemName == "Amethyst")
-                        {
-                            useAmount = 1 * scienceInfoData.amounts[index];
-                        }
-
-                        bool isEnough = gameManager.finance.finance >= useAmount;  // 앞에서 사용하고 남은 금액 보다 많은지
-
-                        if (isEnough && totalAmountsEnough)
-                            totalAmountsEnough = true;
                         else
-                            totalAmountsEnough = false;
-
-                        if (needItemObj[index].TryGetComponent(out InfoNeedItemUi itemUi))
                         {
-                            itemUi.DataSet(item.icon, item.name);
-                            itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
-                            if (scienceBtn.ItemFullCheck())
+                            itemUi.InputFieldSet(true);
+                            if (value == 0)
+                                itemUi.amount.color = Color.red;
+                            else if (scienceBtn.itemAmountList[index].Item1 == scienceInfoData.amounts[index])
                             {
-                                itemUi.amount.color = Color.white;
+                                itemUi.amount.color = Color.green;
+                                itemUi.InputFieldSet(false);
                             }
                             else
-                            {
-                                if (!isEnough)
-                                    itemUi.amount.color = Color.red;
-                                else
-                                    itemUi.amount.color = isEnough ? Color.white : Color.yellow;
-                            }
-
-                            needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
+                                itemUi.amount.color = isEnough ? Color.white : Color.yellow;
                         }
+
+                        needItems.Add(new NeedItem(item, scienceInfoData.amounts[index]));
                     }
                 }
             }

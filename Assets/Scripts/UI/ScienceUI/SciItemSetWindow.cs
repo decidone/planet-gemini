@@ -61,7 +61,6 @@ public class SciItemSetWindow : MonoBehaviour
         scienceBtn = sciBtn;
         scienceInfoData = scienceBtn.scienceInfoData;
         titleText.text = sciBtn.gameName;
-        int financeIndex = 0;
 
         for (int index = 0; index < itemObjList.Count; index++)
         {
@@ -73,62 +72,35 @@ public class SciItemSetWindow : MonoBehaviour
 
                 if (item != null)
                 {
-                    if (item.tier != -1)
+                    if (itemObjList[index].TryGetComponent(out InfoNeedItemUi itemUi))
                     {
-                        if (itemObjList[index].TryGetComponent(out InfoNeedItemUi itemUi))
-                        {
-                            itemUi.DataSet(item.icon, item.name);
-                            itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
-                            int maxAmount = scienceBtn.itemAmountList[index].Item2 - scienceBtn.itemAmountList[index].Item1;
-                            bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out int value);
-                            bool isEnough = hasItem && value >= scienceInfoData.amounts[index];
+                        itemUi.DataSet(item.icon, item.name);
+                        itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
+                        int maxAmount = scienceBtn.itemAmountList[index].Item2 - scienceBtn.itemAmountList[index].Item1;
+                        bool hasItem = gameManager.inventory.totalItems.TryGetValue(ItemList.instance.itemDic[itemName], out int value);
+                        bool isEnough = hasItem && value >= scienceInfoData.amounts[index];
 
+                        if (scienceBtn.ItemFullCheck())
+                        {
+                            itemUi.amount.color = Color.green;
+                            itemUi.InputFieldSet(false);
+                        }
+                        else
+                        {
+                            itemUi.InputFieldSet(true);
                             if (value == 0)
                                 itemUi.amount.color = Color.red;
+                            else if (scienceBtn.itemAmountList[index].Item1 == scienceInfoData.amounts[index])
+                            {
+                                itemUi.amount.color = Color.green;
+                                itemUi.InputFieldSet(false);
+                            }
                             else
                                 itemUi.amount.color = isEnough ? Color.white : Color.yellow;
 
-                            itemInputFields[index].InputFieldFGetData(maxAmount, value, hasItem);
                         }
-                    }
-                    else
-                    {
-                        if (itemObjList[index].TryGetComponent(out InfoNeedItemUi itemUi))
-                        {
-                            int useAmount = 0;
-                            float value = 0;
-                            if (itemName == "Diamond")
-                            {
-                                useAmount = 10000 * scienceInfoData.amounts[index];
-                                value = gameManager.finance.finance / 10000;
-                            }
-                            else if (itemName == "Ruby")
-                            {
-                                useAmount = 100 * scienceInfoData.amounts[index];
-                                value = gameManager.finance.finance / 100;
-                            }
-                            else if (itemName == "Amethyst")
-                            {
-                                useAmount = 1 * scienceInfoData.amounts[index];
-                                value = gameManager.finance.finance;
-                            }
 
-                            itemUi.DataSet(item.icon, item.name);
-                            itemUi.AmountSet(scienceBtn.itemAmountList[index].Item1, scienceInfoData.amounts[index]);
-                            int maxAmount = scienceBtn.itemAmountList[index].Item2 - scienceBtn.itemAmountList[index].Item1;
-                            
-                            bool isEnough = gameManager.finance.finance >= useAmount;
-
-                            if (!isEnough)
-                                itemUi.amount.color = Color.red;
-                            else
-                                itemUi.amount.color = isEnough ? Color.white : Color.yellow;
-
-                            financeInputField.Add((itemName, itemInputFields[index]));
-                            itemInputFields[index].FinanceInputFieldFGetData(maxAmount, this, financeIndex, (int)value, (int)value > 0);
-                            useAmountList.Add(0);
-                            financeIndex++;
-                        }
+                        itemInputFields[index].InputFieldFGetData(maxAmount, value, hasItem);
                     }
                 }
             }

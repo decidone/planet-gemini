@@ -489,7 +489,7 @@ public abstract class Production : Structure
         {
             if (belt.itemObjList.Count > 0 && CanTakeItem(belt.itemObjList[0].item))
             {
-                ClientGetItemFuncServerRpc(inObjIndex);
+                GetItemFuncServerRpc(inObjIndex);
             }
         }
         DelayGetItem();

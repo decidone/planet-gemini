@@ -29,7 +29,7 @@ public class PlayerStatus : WorldObj
     [HideInInspector]
     public bool isPlayerInMarket = false;
     protected SpriteRenderer unitSprite;
-    [HideInInspector]
+    //[HideInInspector]
     public bool tankOn;
     public delegate void OnHpChanged();
     public OnHpChanged onHpChangedCallback;

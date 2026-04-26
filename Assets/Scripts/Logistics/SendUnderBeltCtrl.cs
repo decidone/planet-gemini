@@ -141,16 +141,36 @@ public class SendUnderBeltCtrl : LogisticsCtrl
     [ServerRpc]
     protected override void SendItemServerRpc(int itemIndex, int outObjIndex)
     {
-        SendItemClientRpc(itemIndex, outObjIndex);
+        SendItemClientRpc(itemIndex, outObjIndex, outObj[outObjIndex].NetworkObject);
     }
 
-    protected override void SendItemFunc(int itemIndex, int outObjIndex)
+    protected override void SendItemFunc(int itemIndex, int outObjIndex, NetworkObjectReference netObj)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
-        if (!outObj[0].isFull)
+        if (outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
         {
-            SendFacDelay(outObj[0], item);
+            netObj.TryGet(out NetworkObject obj);
+            obj.TryGetComponent(out Structure str);
+            if (outObjIndex < outObj.Count)
+            {
+                outObj[outObjIndex] = str;
+            }
+            else
+            {
+                // 빈 슬롯을 null로 채워서 인덱스 맞추기
+                while (outObj.Count < outObjIndex)
+                    outObj.Add(null);
+
+                outObj.Add(str); // 이제 inObj[inObjIndex]에 정확히 들어감
+            }
+        }
+
+        outObj[outObjIndex].TryGet(out Structure outFactory);
+
+        if (!outFactory.isFull)
+        {
+            SendFacDelay(outFactory, item);
         }
 
         Invoke(nameof(DelaySetItem), sendDelay);

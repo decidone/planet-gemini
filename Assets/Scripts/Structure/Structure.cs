@@ -287,7 +287,6 @@ public class Structure : WorldObj
         }
         NonOperateStateSet(isOperate);
         WarningStateCheck();
-
     }
 
     protected virtual void Update()
@@ -1173,20 +1172,38 @@ public class Structure : WorldObj
                 return;
             }
 
-            ClientGetItemFuncServerRpc(inObjIndex);
+            GetItemFuncServerRpc(inObjIndex);
         }
         DelayGetItem();
     }
 
     [ServerRpc]
-    protected virtual void ClientGetItemFuncServerRpc(int inObjIndex)
+    protected virtual void GetItemFuncServerRpc(int inObjIndex)
     {
-        ClientGetItemFuncClientRpc(inObjIndex);
+        GetItemFuncClientRpc(inObjIndex, inObj[inObjIndex].NetworkObject);
     }
 
     [ClientRpc]
-    protected virtual void ClientGetItemFuncClientRpc(int inObjIndex)
+    protected virtual void GetItemFuncClientRpc(int inObjIndex, NetworkObjectReference netObj)
     {
+        if(inObj[inObjIndex].NetworkObjectId != netObj.NetworkObjectId)
+        {
+            netObj.TryGet(out NetworkObject obj);
+            obj.TryGetComponent(out Structure str);
+            if (inObjIndex < inObj.Count)
+            {
+                inObj[inObjIndex] = str;
+            }
+            else
+            {
+                // 빈 슬롯을 null로 채워서 인덱스 맞추기
+                while (inObj.Count < inObjIndex)
+                    inObj.Add(null);
+
+                inObj.Add(str); // 이제 inObj[inObjIndex]에 정확히 들어감
+            }
+        }
+
         inObj[inObjIndex].TryGet(out BeltCtrl belt);
         if (IsServer)
         {
@@ -1311,28 +1328,48 @@ public class Structure : WorldObj
                     beltGroupIndex++;
                 }
             }
-            SendItemClientRpc(itemIndex, outObjIndex, beltGroupIndex);
+            SendItemClientRpc(itemIndex, outObjIndex, outObj[outObjIndex].NetworkObject, beltGroupIndex);
         }
         else
-            SendItemClientRpc(itemIndex, outObjIndex);
+            SendItemClientRpc(itemIndex, outObjIndex, outObj[outObjIndex].NetworkObject);
     }
 
     [ClientRpc]
-    protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex)
+    protected virtual void SendItemClientRpc(int itemIndex,int outObjIndex,  NetworkObjectReference netObj)
     {
-        SendItemFunc(itemIndex, outObjIndex);
+        SendItemFunc(itemIndex, outObjIndex, netObj);
     }
 
     [ClientRpc]
-    protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex, int beltGroupIndex)
+    protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex, NetworkObjectReference netObj, int beltGroupIndex)
     {
-        SendItemFunc(itemIndex, outObjIndex, beltGroupIndex);
+        SendItemFunc(itemIndex, outObjIndex, netObj, beltGroupIndex);
     }
 
-    protected virtual void SendItemFunc(int itemIndex, int outObjIndex, int beltGroupIndex)
+    protected virtual void SendItemFunc(int itemIndex, int outObjIndex, NetworkObjectReference netObj, int beltGroupIndex)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
+
+        if (outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
+        {
+            netObj.TryGet(out NetworkObject obj);
+            obj.TryGetComponent(out Structure str);
+            if (outObjIndex < outObj.Count)
+            {
+                outObj[outObjIndex] = str;
+            }
+            else
+            {
+                // 빈 슬롯을 null로 채워서 인덱스 맞추기
+                while (outObj.Count < outObjIndex)
+                    outObj.Add(null);
+
+                outObj.Add(str); // 이제 inObj[inObjIndex]에 정확히 들어감
+            }
+        }
+
         outObj[outObjIndex].TryGet(out Structure outFactory);
+
         if (outFactory.TryGet(out BeltCtrl beltCtrl))
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
@@ -1362,65 +1399,43 @@ public class Structure : WorldObj
             }
             else
             {
-                Debug.Log("SendItemFunc can't send to belt : " + gameObject.name + ", index : " + outObjIndex);
+                Debug.Log("SendItemFunc can't send to belt : " + gameObject.name);
             }
-        }
-        else
-        {
-            if (outFactory.Has<LogisticsCtrl>())
-                SendFacDelay(outObj[outObjIndex], item);
-            else if (outFactory.TryGet(out Production production) && production.CanTakeItem(item))
-                SendFacDelay(outObj[outObjIndex], item);
         }
 
         outFactory.takeItemDelay = false;
         Invoke(nameof(DelaySetItem), sendDelay);
     }
 
-    protected virtual void SendItemFunc(int itemIndex, int outObjIndex)
+    protected virtual void SendItemFunc(int itemIndex, int outObjIndex, NetworkObjectReference netObj)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        outObj[outObjIndex].TryGet(out Structure outFactory);
 
-        if (outFactory.TryGet(out BeltCtrl beltCtrl))
+        if (outObj[outObjIndex].NetworkObjectId != netObj.NetworkObjectId)
         {
-            var itemPool = ItemPoolManager.instance.Pool.Get();
-            ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
-            if (beltCtrl.OnBeltItem(spawnItem))
+            netObj.TryGet(out NetworkObject obj);
+            obj.TryGetComponent(out Structure str);
+            if (outObjIndex < outObj.Count)
             {
-                SpriteRenderer sprite = spawnItem.spriteRenderer;
-                sprite.sprite = item.icon;
-                sprite.sortingOrder = 2;
-                spawnItem.item = item;
-                spawnItem.amount = 1;
-                Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
-                spawnItem.transform.position = spawnPos;
-                spawnItem.isOnBelt = true;
-                spawnItem.setOnBelt = beltCtrl;
-
-                if (Has<Production>())
-                {
-                    SubFromInventory();
-                }
-                else if (Has<LogisticsCtrl>() && !Has<ItemSpawner>())
-                {
-                    ItemListRemove();
-                    ItemNumCheck();
-                }
+                outObj[outObjIndex] = str;
             }
             else
             {
-                Debug.Log("SendItemFunc can't send to belt : " + gameObject.name + ", index : " + outObjIndex);
+                // 빈 슬롯을 null로 채워서 인덱스 맞추기
+                while (outObj.Count < outObjIndex)
+                    outObj.Add(null);
+                 
+                outObj.Add(str); // 이제 inObj[inObjIndex]에 정확히 들어감
             }
         }
-        else
-        {
-            if (outFactory.Has<LogisticsCtrl>())
-                SendFacDelay(outObj[outObjIndex], item);
-            else if (outFactory.TryGet(out Production production) && production.CanTakeItem(item))
-                SendFacDelay(outObj[outObjIndex], item);
-        }
 
+        outObj[outObjIndex].TryGet(out Structure outFactory);
+
+        if (outFactory.Has<LogisticsCtrl>())
+            SendFacDelay(outFactory, item);
+        else if (outFactory.TryGet(out Production production) && production.CanTakeItem(item))
+            SendFacDelay(outFactory, item);
+        
         outFactory.takeItemDelay = false;
         Invoke(nameof(DelaySetItem), sendDelay);
     }
