@@ -93,6 +93,8 @@ public class PreBuilding : NetworkBehaviour
     [SerializeField]
     protected GameObject fluidLineObj;
 
+    protected float imgAlpha = 0.6f;
+
     #region Singleton
     public static PreBuilding instance;
 
@@ -1530,17 +1532,16 @@ public class PreBuilding : NetworkBehaviour
                 bool canBuilding = false;
                 Color colorRed = Color.red;
                 Color colorGreen = Color.green;
-                float alpha = 0.35f;
 
                 PreBuildingImg preBuildingImg = obj.GetComponent<PreBuildingImg>();
                 canBuilding = preBuildingImg.buildingPosUnit.Count == 0 ? true : false;
                 if (canBuilding && CellCheck(obj, posList[posIndex]))
                 {
-                    SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorGreen, alpha);
+                    SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorGreen, imgAlpha);
                 }
                 else
                 {
-                    SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorRed, alpha);
+                    SetColor(obj.GetComponentInChildren<SpriteRenderer>(), colorRed, imgAlpha);
                 }
                 posIndex++;
             }
@@ -1554,11 +1555,11 @@ public class PreBuilding : NetworkBehaviour
                 canBuilding = preBuildingImg.buildingPosUnit.Count == 0 ? true : false;
                 if (canBuilding && isEnough && GroupBuildCheck(nonNetObj, mousePos))
                 {
-                    SetColor(spriteRenderer, Color.green, 0.35f);
+                    SetColor(spriteRenderer, Color.green, imgAlpha);
                 }
                 else if (!canBuilding || !isEnough || !GroupBuildCheck(nonNetObj, mousePos))
                 {
-                    SetColor(spriteRenderer, Color.red, 0.35f);
+                    SetColor(spriteRenderer, Color.red, imgAlpha);
                 }
             }
         }

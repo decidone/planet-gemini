@@ -476,12 +476,11 @@ MonoBehaviour:
   animator: {fileID: 2369682121264992853}
   movement: {x: 0, y: 0}
   tankOn: 0
-  attackFX: {fileID: 3832536798139642931, guid: 1e24e7473d563d84dbb0d9059643c4d7, type: 3}
+  attackFX: {fileID: 3832536798139642931, guid: fc07e714adde36e41a18d7d008d4cc9f, type: 3}
   reloadingBar: {fileID: 3634581597052866230}
   reloadingBackBar: {fileID: 3692711839681959545}
   reloadInterval: 2.5
   stopTime: 0.3
-  nearTank: {fileID: 0}
   onTankData: {fileID: 0}
   visionRadius: 20
   playerTankTurret: {fileID: 4540160688976020215}

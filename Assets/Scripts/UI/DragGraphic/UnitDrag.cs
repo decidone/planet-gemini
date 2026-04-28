@@ -78,7 +78,7 @@ public class UnitDrag : DragFunc
 
     public void Attack()
     {
-        if (selectedObjects.Length > 0)
+        if (selectedObjects.Length > 0 && !selectedObjects[0].Get<TankCtrl>())
         {
             if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.None)
                 MouseSkin.instance.UnitCursorCursorSet(true);
@@ -94,7 +94,7 @@ public class UnitDrag : DragFunc
 
     public void Patrol()
     {
-        if (selectedObjects.Length > 0)
+        if (selectedObjects.Length > 0 && !selectedObjects[0].Get<TankCtrl>())
         {
             if (UpgradeRemoveBtn.instance.currentBtn == UpgradeRemoveBtn.SelectedButton.None)
                 MouseSkin.instance.UnitCursorCursorSet(false);
@@ -110,7 +110,7 @@ public class UnitDrag : DragFunc
 
     public void Hold()
     {
-        if (selectedObjects.Length > 0)
+        if (selectedObjects.Length > 0 && !selectedObjects[0].Get<TankCtrl>())
         {
             unitHoldSet?.Invoke();
         }
@@ -267,7 +267,7 @@ public class UnitDrag : DragFunc
 
     public override void RightMouseUp(Vector2 startPos, Vector2 endPos)
     {
-        if (!playerAttackClick)
+        if (!playerAttackClick && !selectedObjects[0].Get<TankCtrl>())
         {
             SetTargetPosition(false, endPos);
             UnitMovePos.instance.AnimStart(endPos);
@@ -284,7 +284,7 @@ public class UnitDrag : DragFunc
         {
             WorldObj obj = collider.GetComponentInParent<WorldObj>();
 
-            if (!obj || !obj.Has<UnitAi>() || obj.Has<TankCtrl>())
+            if (!obj || obj.Get<TankCtrl>() || !obj.Has<UnitAi>())
                 continue;
             //if (collider.GetComponentInParent<Portal>() || collider.GetComponentInParent<ScienceBuilding>())
             //    continue;

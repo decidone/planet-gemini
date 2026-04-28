@@ -16,16 +16,10 @@ public class Storage : Production
         inventory.space = invenSize[level];
     }
 
-    //protected override void Update()
-    //{
-    //    base.Update();
-    //    //SetDirNum();
-
-    //    // 여기 업글시 수정되는걸로 바꿔야 함
-    //    //CheckPos();
-    //    //setModel.sprite = modelNum[dirNum + level];
-    //    //inventory.space = invenSize[level];
-    //}
+    protected override void OnClientConnectSync()
+    {
+        inventory.space = invenSize[level];
+    }
 
     public override void NearStrBuilt()
     {

@@ -40,6 +40,6 @@ public class InGameNameDataGet : MonoBehaviour
                 return data[index];
             }
         }
-        return "";
+        return dataName;
     }
 }

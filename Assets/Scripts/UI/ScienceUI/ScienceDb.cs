@@ -121,7 +121,8 @@ public class ScienceDb : NetworkBehaviour
 
         if (!isLoad)
         {
-            WarningWindowSetServerRpc(sciName);
+            string name = InGameNameDataGet.instance.ReturnName(sciLv, sciName);
+            WarningWindowSetServerRpc(name);
         }
     }
 
@@ -217,7 +218,8 @@ public class ScienceDb : NetworkBehaviour
     void ScienceWindowItemAddServerRpc(int itemIndex, int scienceInfoDataIndex, int inputAmount, int btnIndex, bool isPlayerHostMap)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
-        ScienceBtn btn = ScienceManager.instance.scienceBtns[btnIndex];
+        //ScienceBtn btn = ScienceManager.instance.scienceBtns[btnIndex];
+        ScienceBtn btn = scienceBtns[btnIndex];
 
         int maxInputItemAmount = btn.itemAmountList[scienceInfoDataIndex].Item2 - btn.itemAmountList[scienceInfoDataIndex].Item1;
         Inventory inven; 
@@ -239,6 +241,19 @@ public class ScienceDb : NetworkBehaviour
         Overall.instance.OverallConsumption(item, maxInputItemAmount);
         inven.Sub(item, inputAmount);
         btn.ItemAddAmount(scienceInfoDataIndex, inputAmount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void InfoWindowRefreshServerRpc(int btnIndex)
+    {
+        InfoWindowRefreshClientRpc(btnIndex);
+    }
+
+    [ClientRpc]
+    void InfoWindowRefreshClientRpc(int btnIndex)
+    {
+        ScienceManager.instance.InfoWindowRefresh();
+        ScienceManager.instance.SciItemSetWinSet(btnIndex);
     }
 
     public void LoadData(List<ScienceData> data)

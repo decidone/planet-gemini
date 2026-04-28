@@ -155,7 +155,7 @@ public class InfoWindow : MonoBehaviour
                             itemUi.InputFieldSet(true);
                             if (value == 0)
                                 itemUi.amount.color = Color.red;
-                            else if (scienceBtn.itemAmountList[index].Item1 == scienceInfoData.amounts[index])
+                            else if (scienceBtn.itemAmountList[index].Item1 >= scienceInfoData.amounts[index])
                             {
                                 itemUi.amount.color = Color.green;
                                 itemUi.InputFieldSet(false);

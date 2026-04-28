@@ -267,7 +267,10 @@ public class SoundManager : MonoBehaviour
             bool playerMap = GameManager.instance.isPlayerInHostMap;
             bool isWave = playerMap ? isHostMapWaveOn : isClientMapWaveOn;
             ChangeBGM(GetBGMClip(playerMap, isWave));
-            isPlayingWaveBgm = false;
+            if(playerMap && isHostMapWaveOn || !playerMap && isClientMapWaveOn)
+                isPlayingWaveBgm = true;
+            else
+                isPlayingWaveBgm = false;
         }
     }
 
@@ -277,7 +280,12 @@ public class SoundManager : MonoBehaviour
             isHostMapWaveOn = waveState;
         else
             isClientMapWaveOn = waveState;
-        isPlayingWaveBgm = waveState;
+
+        if (isHostMap && isHostMapWaveOn || !isHostMap && isClientMapWaveOn)
+            isPlayingWaveBgm = true;
+        else
+            isPlayingWaveBgm = false;
+
         if (!GameManager.instance.isPlayerInMarket && GameManager.instance.isPlayerInHostMap == isHostMap)
             ChangeBGM(GetBGMClip(waveState, false));
     }
@@ -435,13 +443,21 @@ public class SoundManager : MonoBehaviour
         }
 
         AudioClip[] audioClips;
+
         switch (soundSource)
         {
             case 0:
                 audioClips = audioClipRefsSO.uiSfx;
                 break;
             case 1:
-                audioClips = audioClipRefsSO.structureSfx;
+                if(sfxName == "Miner")
+                    audioClips = audioClipRefsSO.miningSfx;
+                else if (sfxName == "Machine")
+                    audioClips = audioClipRefsSO.machineSfx;
+                else if (sfxName == "Flames")
+                    audioClips = audioClipRefsSO.flamesSfx;
+                else
+                    audioClips = audioClipRefsSO.structureSfx;
                 break;
             case 2:
                 audioClips = audioClipRefsSO.unitSfx;
@@ -451,14 +467,26 @@ public class SoundManager : MonoBehaviour
         }
 
         AudioClip clip = null;
-        for (int i = 0; i < audioClips.Length; i++)
+
+        bool isRandomGroup = soundSource == 1 &&
+            (sfxName == "Miner" || sfxName == "Machine" || sfxName == "Flames");
+
+        if (isRandomGroup)
         {
-            if (sfxName == audioClips[i].name)
+            clip = audioClips[Random.Range(0, audioClips.Length)];
+        }
+        else
+        {
+            for (int i = 0; i < audioClips.Length; i++)
             {
-                clip = audioClips[i];
-                break;
+                if (sfxName == audioClips[i].name)
+                {
+                    clip = audioClips[i];
+                    break;
+                }
             }
         }
+
         if (clip == null) return;
 
         AudioSource source = pool.Get();

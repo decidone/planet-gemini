@@ -71,7 +71,7 @@ public class RemoveBuild : DragFunc
                     WorldObj worldObj = info.GetComponentInParent<WorldObj>();
                     if (worldObj && worldObj.TryGet(out Structure structure))
                     {
-                        if (!structure.isPreBuilding && (!(structure.Get<Portal>() || structure.Get<ScienceBuilding>())))
+                        if (!(structure.Get<Portal>() || structure.Get<ScienceBuilding>()))
                         {
                             selectedObjects[0] = structure;
                             gameManager.inventoryUiCanvas.GetComponent<PopUpManager>().removeConfirm.OpenUI();

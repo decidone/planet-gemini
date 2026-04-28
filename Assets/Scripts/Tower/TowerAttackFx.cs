@@ -20,6 +20,14 @@ public class TowerAttackFx : NetworkBehaviour
     protected bool ignoreDdefense;      // 방어력 무시
     protected float ignorePercent;      // 방어력 무시 퍼센트
 
+
+    Vector3 baseLocalScale;
+
+    private void Awake()
+    {
+        baseLocalScale = transform.localScale;
+    }
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -31,9 +39,16 @@ public class TowerAttackFx : NetworkBehaviour
         if (IsServer)
         {
             ResetOption();
-            if(NetworkObject.IsSpawned)
+            ResetScaleClientRpc();
+            if (NetworkObject.IsSpawned)
                 NetworkObject.Despawn();
         }
+    }
+
+    [ClientRpc]
+    void ResetScaleClientRpc()
+    {
+        transform.localScale = baseLocalScale;
     }
 
     public void SlowDebuffSet(float time)

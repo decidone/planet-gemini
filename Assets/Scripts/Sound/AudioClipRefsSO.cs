@@ -12,4 +12,9 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip[] structureSfx;
     public AudioClip[] uiSfx;
     public AudioClip[] unitSfx;
+
+    public AudioClip[] miningSfx;
+    public AudioClip[] machineSfx;
+    public AudioClip[] flamesSfx;
+
 }
