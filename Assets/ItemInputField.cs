@@ -1,6 +1,3 @@
-using Mono.CSharp;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -79,7 +76,6 @@ public class ItemInputField : MonoBehaviour
             inputField.text = "0";
             return;
         }
-        setWindow.FinanceInputItemCheck(index, 0);
 
         if (fullAmount <= textInt)
             amount = fullAmount;
@@ -90,12 +86,10 @@ public class ItemInputField : MonoBehaviour
         if (isEnough)
         {
             inputField.text = amount.ToString();
-            setWindow.FinanceInputItemCheck(index, amount);
         }
         else
         {
             inputField.text = invenItemAmount.ToString();
-            setWindow.FinanceInputItemCheck(index, invenItemAmount);
         }
     }
 }

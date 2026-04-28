@@ -42,7 +42,7 @@ public class AttackTower : TowerAi
         aggroAmount = Get<AggroAmount>();
         towerAttackOption = Get<TowerAttackOption>();
         bulletDataManager = TwBulletDataManager.instance;
-        bulletDic = bulletDataManager.bulletDic;
+        bulletDic = bulletDataManager.TowerBulletDic;
         energyBulletMaxAmount = towerData.MaxEnergyBulletAmount;
         cooldown = towerData.ReloadCooldown;
         effiCooldown = cooldown;

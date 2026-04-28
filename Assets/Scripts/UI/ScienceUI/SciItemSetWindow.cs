@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,7 +22,6 @@ public class SciItemSetWindow : MonoBehaviour
     ScienceBtn scienceBtn;
     ScienceInfoData scienceInfoData;
     SoundManager soundManager;
-    List<(string, ItemInputField)> financeInputField = new List<(string, ItemInputField)>();
     List<int> useAmountList = new List<int>();
     ItemInfoWindow itemInfoWindow;
 
@@ -90,7 +88,7 @@ public class SciItemSetWindow : MonoBehaviour
                             itemUi.InputFieldSet(true);
                             if (value == 0)
                                 itemUi.amount.color = Color.red;
-                            else if (scienceBtn.itemAmountList[index].Item1 == scienceInfoData.amounts[index])
+                            else if (scienceBtn.itemAmountList[index].Item1 >= scienceInfoData.amounts[index])
                             {
                                 itemUi.amount.color = Color.green;
                                 itemUi.InputFieldSet(false);
@@ -105,51 +103,6 @@ public class SciItemSetWindow : MonoBehaviour
                 }
             }
             itemObjList[index].SetActive(isActive);
-        }
-    }
-
-    public void FinanceInputItemCheck(int index, int useAmount)
-    {
-        int amount = 0;
-        if (financeInputField[index].Item1 == "Diamond")
-        {
-            amount = 10000 * useAmount;
-        }
-        else if (financeInputField[index].Item1 == "Ruby")
-        {
-            amount = 100 * useAmount;
-        }
-        else if (financeInputField[index].Item1 == "Amethyst")
-        {
-            amount = 1 * useAmount;
-        }
-
-        useAmountList[index] = amount;
-
-        int totalAmount = 0;
-
-        for (int i = 0; i < useAmountList.Count; i++)
-        {
-            totalAmount += useAmountList[i];
-        }
-
-        int tempFinanceAmount = gameManager.finance.finance - totalAmount;
-
-        for (int i = 0; i < financeInputField.Count; i++)
-        {
-            if (financeInputField[i].Item1 == "Diamond")
-            {
-                financeInputField[i].Item2.invenItemAmount = tempFinanceAmount / 10000;
-            }
-            else if (financeInputField[i].Item1 == "Ruby")
-            {
-                financeInputField[i].Item2.invenItemAmount = tempFinanceAmount / 100;
-
-            }
-            else if (financeInputField[i].Item1 == "Amethyst")
-            {
-                financeInputField[i].Item2.invenItemAmount = tempFinanceAmount;
-            }
         }
     }
 
@@ -176,9 +129,18 @@ public class SciItemSetWindow : MonoBehaviour
                     continue;
                 }
 
-                ScienceDb.instance.ScienceWindowItemAdd(item, i, textInt, scienceBtn.btnIndex, gameManager.isPlayerInHostMap);
+                int itemSetAount = 0;
+
+                if (maxInputItemAmount >= textInt)
+                    itemSetAount = textInt;
+                else
+                    itemSetAount = maxInputItemAmount;
+
+                ScienceDb.instance.ScienceWindowItemAdd(item, i, itemSetAount, scienceBtn.btnIndex, gameManager.isPlayerInHostMap);
             }
         }
+
+        ScienceDb.instance.InfoWindowRefreshServerRpc(scienceBtn.btnIndex);
         CloseUI();
         soundManager.PlayUISFX("ButtonClick");
     }
@@ -198,8 +160,15 @@ public class SciItemSetWindow : MonoBehaviour
                 obj.inputField.text = "";
             }
         }
-        financeInputField.Clear();
         useAmountList.Clear();
+    }
+
+    public void InfoWindowRefresh(int btnIndex)
+    {
+        if (scienceBtn && btnIndex == scienceBtn.btnIndex)
+        {
+            SetUI(scienceBtn);
+        }
     }
 
     public void CloseUI()

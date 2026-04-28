@@ -28,11 +28,8 @@ MonoBehaviour:
   waveBgm:
   - {fileID: 8300000, guid: 5b51df0a72ba97d4fab192ab3a3b4f6a, type: 3}
   structureSfx:
-  - {fileID: 8300000, guid: 1017ea009d76e304c84246b111fdf68d, type: 3}
   - {fileID: 8300000, guid: 0792b4d4b4de2b440b628df901ee1e88, type: 3}
   - {fileID: 8300000, guid: c48a972d3d024c2408a3331750786a29, type: 3}
-  - {fileID: 8300000, guid: d2d2baa9c3ed8e9408437e8b611e46be, type: 3}
-  - {fileID: 8300000, guid: 88a2068476d007843b76aa2df69e91d4, type: 3}
   - {fileID: 8300000, guid: e9afb5c53eaca7e42979cd79c5a59b6c, type: 3}
   - {fileID: 8300000, guid: 0e041babb93b73a48b307bed5c332fb4, type: 3}
   - {fileID: 8300000, guid: 58f86bb5b35e97648b0632bfe1adb792, type: 3}
@@ -55,3 +52,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5e1a9f876d3dafd47bc6b3dde25135fa, type: 3}
   - {fileID: 8300000, guid: 7e22dfd2363182d42b4195dde9aa9d6f, type: 3}
   - {fileID: 8300000, guid: 6b18d12679ebe62499e5c2b237873203, type: 3}
+  miningSfx:
+  - {fileID: 8300000, guid: 1017ea009d76e304c84246b111fdf68d, type: 3}
+  - {fileID: 8300000, guid: 433e7a9d7fe28e44c97cf837f0546738, type: 3}
+  - {fileID: 8300000, guid: c5ede84342c5594459e754e1fa8decab, type: 3}
+  machineSfx:
+  - {fileID: 8300000, guid: 65548080ca56d894f964174be750e246, type: 3}
+  - {fileID: 8300000, guid: 5614337f67c6ea849835ab32eca93e97, type: 3}
+  - {fileID: 8300000, guid: d2d2baa9c3ed8e9408437e8b611e46be, type: 3}
+  flamesSfx:
+  - {fileID: 8300000, guid: 88a2068476d007843b76aa2df69e91d4, type: 3}
+  - {fileID: 8300000, guid: ecb20d352903538419561179f75fd582, type: 3}
+  - {fileID: 8300000, guid: 692e230a58c8c8d488c8962e33a42bc9, type: 3}

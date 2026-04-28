@@ -106,14 +106,13 @@ public class BeltPreBuilding : PreBuilding
             {
                 Color colorRed = Color.red;
                 Color colorGreen = Color.green;
-                float alpha = 0.35f;
 
                 PreBuildingImg preBuildingImg = obj.GetComponent<PreBuildingImg>();
                 if (CellCheck(obj, posList[posIndex]))
                 {
                     if (!preBuildingImg.spriteRenderer.enabled)
                         preBuildingImg.spriteRenderer.enabled = true;
-                    SetColor(preBuildingImg.spriteRenderer , colorGreen, alpha);
+                    SetColor(preBuildingImg.spriteRenderer , colorGreen, imgAlpha);
                 }
                 else
                 {
@@ -131,11 +130,11 @@ public class BeltPreBuilding : PreBuilding
                 PreBuildingImg preBuildingImg = nonNetObj.GetComponent<PreBuildingImg>();
                 if (isEnough && GroupBuildCheck(nonNetObj, mousePos))
                 {
-                    SetColor(spriteRenderer, Color.green, 0.35f);
+                    SetColor(spriteRenderer, Color.green, imgAlpha);
                 }
                 else if (!isEnough || !GroupBuildCheck(nonNetObj, mousePos))
                 {
-                    SetColor(spriteRenderer, Color.red, 0.35f);
+                    SetColor(spriteRenderer, Color.red, imgAlpha);
                 }
             }
         }

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 // UTF-8 설정
-public class PlayerController : NetworkBehaviour
+public class PlayerController : WorldObj
 {
     GameManager gameManager;
     public PlayerStatus status;
@@ -62,7 +62,7 @@ public class PlayerController : NetworkBehaviour
     bool attackMotion;
     [SerializeField]
     float stopTime;
-    [SerializeField]
+    List<TankCtrl> nearTanks = new List<TankCtrl>();
     TankCtrl nearTank;
     public TankCtrl onTankData;
     public float visionRadius;
@@ -87,9 +87,10 @@ public class PlayerController : NetworkBehaviour
     bool enemyNearby;
 
     private float recoilForce = 5f;
-    
-    void Awake()
+
+    protected override void Awake()
     {
+        base.Awake();
         gameManager = GameManager.instance;
         circleColl = GetComponent<CircleCollider2D>();
         capsuleColl = GetComponent<CapsuleCollider2D>();
@@ -251,25 +252,22 @@ public class PlayerController : NetworkBehaviour
     {
         if (collision.TryGetComponent(out BeltCtrl belt) && !beltList.Contains(belt))
             beltList.Add(belt);
-
         if (!IsOwner) { return; }
-
         collision.TryGetComponent(out ItemProps itemProps);
         collision.TryGetComponent(out Interactable interactable);
         collision.TryGetComponent(out NPCInteract shop);
-
         if (interactable)
         {
             interactable.SpawnIcon();
-            if (collision.TryGetComponent(out TankCtrl tank) && nearTank == null)
+            if (collision.TryGetComponent(out TankCtrl tank))
             {
-                nearTank = tank;
+                if (!nearTanks.Contains(tank))
+                    nearTanks.Add(tank);
+                nearTank = GetNearestTank();
             }
         }
-
         if (itemProps && !items.Contains(itemProps))
             items.Add(itemProps);
-
         if (shop && !gameManager.isShopOpened)
         {
             nearShop = shop;
@@ -282,36 +280,51 @@ public class PlayerController : NetworkBehaviour
     {
         if (collision.TryGetComponent(out BeltCtrl belt) && beltList.Contains(belt))
             beltList.Remove(belt);
-
         if (!IsOwner) { return; }
-
         collision.TryGetComponent(out ItemProps itemProps);
         collision.TryGetComponent(out Portal portal);
         collision.TryGetComponent(out MarketPortal marketPortal);
         collision.TryGetComponent(out Interactable interactable);
         collision.TryGetComponent(out NPCInteract shop);
-
         if (interactable)
         {
             interactable.DespawnIcon();
-            if (collision.TryGetComponent(out TankCtrl tank) && nearTank == tank)
+            if (collision.TryGetComponent(out TankCtrl tank))
             {
-                nearTank = null;
+                nearTanks.Remove(tank);
+                nearTank = GetNearestTank();
             }
         }
-
         if (itemProps && items.Contains(itemProps))
             items.Remove(itemProps);
-
         if (portal || marketPortal)
             teleportUI.CloseUI();
-
         if (shop && gameManager.isShopOpened)
         {
             nearShop.CloseUI();
             nearShop = null;
             gameManager.isShopOpened = false;
         }
+    }
+
+    TankCtrl GetNearestTank()
+    {
+        if (nearTanks.Count == 0) return null;
+
+        TankCtrl nearest = null;
+        float minDist = float.MaxValue;
+
+        foreach (TankCtrl tank in nearTanks)
+        {
+            if (tank == null) continue; // 혹시 파괴된 탱크 방어
+            float dist = Vector2.Distance(transform.position, tank.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nearest = tank;
+            }
+        }
+        return nearest;
     }
 
     IEnumerator PlayerSet()
@@ -765,48 +778,24 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void BulletSpawnServerRpc(Vector3 mousePos, string bulletName)
+    void BulletSpawnServerRpc(Vector2 mousePos, string bulletName)
     {
-        Vector2 spawnPos = playerTankTurret.TurretAttackPos();
-        Vector3 dir = mousePos - (Vector3)spawnPos;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        BulletData bulletData = TwBulletDataManager.instance.TankBulletDic[bulletName];
 
-        var rot = Quaternion.identity;
-        if (Quaternion.AngleAxis(angle + 180, Vector3.forward).z < 0)
-            rot = Quaternion.AngleAxis(angle + 180, Vector3.forward);
-        else
-            rot = Quaternion.AngleAxis(angle, Vector3.forward);
-
-        dir.z = 0;
-        BulletData bulletData = TwBulletDataManager.instance.bulletDic[bulletName];
-
-        tankMuzzleFlash.transform.rotation = rot;
-        tankMuzzleFlash.transform.position = (Vector3)spawnPos + rot * Vector3.right * 0.5f;
-        StartCoroutine(MuzzleFlashRoutine());
-
-        NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, new Vector2(spawnPos.x, spawnPos.y), rot);
+        NetworkObject bulletPool = NetworkObjectPool.Singleton.GetNetworkObject(attackFX, mousePos, Quaternion.identity);
         if (!bulletPool.IsSpawned) bulletPool.Spawn(true);
+        bulletPool.TryGetComponent(out TowerAreaAttackFx fx);
+        fx.transform.localScale = new Vector3(bulletData.range, bulletData.range, 1f);
+        fx.GetTarget(bulletData.damage + onTankData.unitCommonData.Damage, this);
 
-        bulletPool.TryGetComponent(out TowerSingleAttackFx fx);
-        fx.GetTarget2(dir.normalized * 3, bulletData.damage + onTankData.unitCommonData.Damage, status.Get<WorldObj>(), bulletData.explosion);
-        BulletSpawnClientRpc(dir);
-    }
+        Vector3 dir = (Vector3)mousePos - transform.position;
+        dir.z = 0;
 
-    private IEnumerator MuzzleFlashRoutine()
-    {
-        tankMuzzleFlash.enabled = true;
-
-        for (int i = 0; i < muzzleFlashFrames.Length; i++)
-        {
-            tankMuzzleFlash.sprite = muzzleFlashFrames[i];
-            yield return new WaitForSeconds(frameRate);
-        }
-
-        tankMuzzleFlash.enabled = false;
+        BulletSpawnClientRpc(dir, bulletData.range);
     }
 
     [ClientRpc]
-    void BulletSpawnClientRpc(Vector3 dir)
+    void BulletSpawnClientRpc(Vector3 dir, float scale)
     {
         animator.SetFloat("Horizontal", dir.x);
         animator.SetFloat("Vertical", dir.y);

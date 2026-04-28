@@ -23,7 +23,8 @@ public class BulletData
 
 public class TwBulletDataManager : MonoBehaviour
 {
-    public Dictionary<string, BulletData> bulletDic;
+    public Dictionary<string, BulletData> TowerBulletDic;
+    public Dictionary<string, BulletData> TankBulletDic;
 
     #region Singleton
     public static TwBulletDataManager instance;
@@ -42,30 +43,40 @@ public class TwBulletDataManager : MonoBehaviour
 
     private void Start()
     {
-        bulletDic = new Dictionary<string, BulletData>();
+        TowerBulletDic = new Dictionary<string, BulletData>();
+        TankBulletDic = new Dictionary<string, BulletData>();
         SetBulletData(); // 탄환 데이터 초기화
-    }
-
-    void SaveBulletData(BulletData data)
-    {
-        bulletDic.Add(data.bulletName, data);
     }
 
     void SetBulletData()
     {
-        BulletData[] bulletArray = new BulletData[]
-        {
-        new BulletData("EnergyBullet", 0, 0, 0, true),
-        new BulletData("CopperBullet", 15, 0f, 3, false),
-        new BulletData("IronBullet", 29, 0.3f, 5, false),
-        new BulletData("SteelBullet", 45, 0.3f, 6, false),
-        new BulletData("ExplosiveBullet", 25, 4, 3, true),
-        new BulletData("ManablastBullet", 35, 7, 3, true)
+        BulletData[] towerBulletArray = new BulletData[]
+        { // 타워 기본 데미지 15
+            new BulletData("EnergyBullet", 0, 0, 0, true),
+            new BulletData("CopperBullet", 15, 0f, 3, false),
+            new BulletData("IronBullet", 29, 0.3f, 5, false),
+            new BulletData("SteelBullet", 45, 0.3f, 6, false),
+            new BulletData("ExplosiveBullet", 25, 4, 3, true),
+            new BulletData("ManablastBullet", 35, 7, 3, true)
         };
         // 이름, 데미지, 공격속도, 범위, 폭발기능 순으로 넣어주면됨
-        foreach (BulletData data in bulletArray)
+        foreach (BulletData data in towerBulletArray)
         {
-            SaveBulletData(data);
+            TowerBulletDic.Add(data.bulletName, data);
+        }
+
+        BulletData[] tankBulletArray = new BulletData[]
+        { // 탱크 기본 데미지 40
+            new BulletData("CopperBullet", 10, 0, 1.7f, true),
+            new BulletData("IronBullet", 20, 0, 2.1f, true),
+            new BulletData("SteelBullet", 30, 0, 2.5f, true),
+            new BulletData("ExplosiveBullet", 40, 0, 2.9f, true),
+            new BulletData("ManablastBullet", 50, 0, 3.3f, true)
+        };
+        // 기존 데이터를 사용하되 사격 범위 대신 폭발 범위로 사용
+        foreach (BulletData data in tankBulletArray)
+        {
+            TankBulletDic.Add(data.bulletName, data);
         }
     }
 }

@@ -200,6 +200,11 @@ public class ScienceManager : MonoBehaviour
         gameManager.PopUpUISetting(true);
     }
 
+    public void SciItemSetWinSet(int btnIndex)
+    {
+        sciItemSetWindow.InfoWindowRefresh(btnIndex);
+    }
+
     public void OpenUpgradeWindow()
     {
         upgradeWindow.gameObject.SetActive(true);

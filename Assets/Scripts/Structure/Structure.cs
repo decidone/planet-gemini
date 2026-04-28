@@ -675,7 +675,7 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    public virtual void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, float syncHp)
+    public void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, float syncHp)
     {
         if (IsServer)
             return;
@@ -702,7 +702,11 @@ public class Structure : WorldObj
         isStartCalled = true;
         if (isCellCalled)
             StrBuilt();
+
+        OnClientConnectSync();
     }
+
+    protected virtual void OnClientConnectSync() { } //ClientConnectSyncClientRpc 에서 오버라드드 할것들용
 
     [ClientRpc]
     protected virtual void ItemListClearClientRpc()
@@ -1582,7 +1586,7 @@ public class Structure : WorldObj
         if (IsServer)
         {
             ItemDrop();
-            RemoveObjServerRpc(); // 여기로 이동
+            RemoveObjServerRpc();
             return;
         }
     }

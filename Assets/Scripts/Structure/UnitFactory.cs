@@ -5,8 +5,11 @@ using Unity.Netcode;
 
 public class UnitFactory : Production
 {
-    public Vector2[] nearPos = new Vector2[8];
-    public Vector2 spawnPos;
+    [SerializeField]
+    Vector2[] nearPos = new Vector2[8];
+    [SerializeField]
+    Vector2 spawnPos;
+    Vector2 movePos; 
     bool isSetPos = false;
     float spawnPosCheckTimer;
     float spawnPosCheckInterval = 1f;
@@ -60,7 +63,7 @@ public class UnitFactory : Production
                                         SpawnUnit();
                                     }
 
-                                    soundManager.PlaySFX(gameObject, "structureSFX", "Structure");
+                                    soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
                                     prodTimer = 0;
                                 }
                             }
@@ -119,7 +122,7 @@ public class UnitFactory : Production
             SetRecipe(recipe, recipeIndex);
 
         if (isSetPos)
-            LineRendererSet(spawnPos);
+            LineRendererSet(movePos);
     }
 
     public override void CloseUI()
@@ -144,17 +147,17 @@ public class UnitFactory : Production
     {
         if (isSetPos)
         {
-            ConnectedSetClientRpc(spawnPos);
+            ConnectedSetClientRpc(movePos);
         }
     }
 
     [ClientRpc]
-    void ConnectedSetClientRpc(Vector3 pos)
+    void ConnectedSetClientRpc(Vector3 _movePos)
     {
         if (IsServer)
             return;
 
-        UnitSpawnPosSetServerRpc(pos);
+        UnitSpawnPosSetServerRpc(_movePos);
     }
 
     public override void OpenRecipe()
@@ -239,16 +242,14 @@ public class UnitFactory : Production
                     if (hits.Length == 0)
                     {
                         spawnPosExist = true;
-                        if (!isSetPos)
-                            spawnPos = nearPos[i];
+                        spawnPos = nearPos[i];
                         break;
                     }
                 }
                 else
                 {
                     spawnPosExist = true;
-                    if (!isSetPos)
-                        spawnPos = nearPos[i];
+                    spawnPos = nearPos[i];
                     break;
                 }
             }
@@ -258,16 +259,16 @@ public class UnitFactory : Production
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void UnitSpawnPosSetServerRpc(Vector2 _spawnPos)
+    public void UnitSpawnPosSetServerRpc(Vector2 _movePos)
     {
-        UnitSpawnPosSetClientRpc(_spawnPos);
+        UnitSpawnPosSetClientRpc(_movePos);
     }
 
     [ClientRpc]
-    public void UnitSpawnPosSetClientRpc(Vector2 _spawnPos)
+    public void UnitSpawnPosSetClientRpc(Vector2 _movePos)
     {
         isSetPos = true;
-        spawnPos = _spawnPos;
+        movePos = _movePos;
     }
 
     void SetUnit()
@@ -296,7 +297,7 @@ public class UnitFactory : Production
 
         unit.TryGetComponent(out UnitAi unitAi);
         unitAi.AStarSet(isInHostMap);
-        unitAi.MovePosSetServerRpc(spawnPos, 0.1f, true);
+        unitAi.MovePosSetServerRpc(movePos, 0.1f, true);
     }
 
     public override void DestroyLineRenderer()
@@ -311,7 +312,7 @@ public class UnitFactory : Production
 
         if (isSetPos)
         {
-            data.connectedStrPos.Add(Vector3Extensions.FromVector3(spawnPos));
+            data.connectedStrPos.Add(Vector3Extensions.FromVector3(movePos));
         }
 
         return data;

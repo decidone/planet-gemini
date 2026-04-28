@@ -41,7 +41,7 @@ public class Smelter : Production
                                     Overall.instance.OverallProd(output, recipe.amounts[recipe.amounts.Count - 1]);
                                 }
 
-                                soundManager.PlaySFX(gameObject, "structureSFX", "Structure");
+                                soundManager.PlaySFX(gameObject, "structureSFX", "Machine");
                                 prodTimer = 0;
                             }
                         }
