@@ -49,12 +49,14 @@ public class PingUI : MonoBehaviour
         currentPage = -1;
         panel.SetActive(true);
         BuildGroupPage();
+        SoundManager.instance.PlayUISFX("SidebarClick");
         GameManager.instance.onUIChangedCallback?.Invoke(panel);
     }
 
     public void CloseUI()
     {
         panel.SetActive(false);
+        SoundManager.instance.PlayUISFX("CloseUI");
         GameManager.instance.onUIChangedCallback?.Invoke(panel);
     }
 
@@ -90,6 +92,7 @@ public class PingUI : MonoBehaviour
                 BuildIconPage(index);
             });
         }
+        SoundManager.instance.PlayUISFX("SidebarClick");
     }
 
     void BuildIconPage(int groupIndex)
@@ -124,6 +127,10 @@ public class PingUI : MonoBehaviour
             img.color = new Color(1f, 1f, 0.7f, 1f);
 
         if (btn != null)
-            btn.onClick.AddListener(() => onClick?.Invoke());
+            btn.onClick.AddListener(() => 
+            {
+                SoundManager.instance.PlayUISFX("ButtonClick");
+                onClick?.Invoke();
+            });
     }
 }

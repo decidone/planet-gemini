@@ -60,6 +60,6 @@ public class Bounty : MonoBehaviour
         spawnerText.text = overall.spawnerBountyReceived.ToString();
         monsterText.text = overall.monsterBountyReceived.ToString();
         btn.interactable = false;
-        SoundManager.instance.PlayUISFX("ButtonClick");
+        SoundManager.instance.PlayUISFX("PaySound");
     }
 }

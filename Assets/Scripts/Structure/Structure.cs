@@ -165,6 +165,7 @@ public class Structure : WorldObj
     public bool isInHostMap;
     public bool isManualDestroy;    //사용자가 철거 명령을 하는 경우 true. 철거로 인해 파괴되는지 몬스터에 의해 파괴되는지 구분하기 위해 사용
     public bool destroyStart;       //철거 시작하고 나서 계속 돌아감
+    public bool destroyEnd;      
     public bool isDestroying;       //철거 시작하는 순간 한 번만 돌아감
     public bool isRunning;          //isOperate쓰기 애매한 건물에 작동 체크용(드론운송 관련 건물들)
     protected float destroyInterval;
@@ -307,7 +308,7 @@ public class Structure : WorldObj
             }
         }
 
-        if (destroyStart)
+        if (destroyStart && !destroyEnd)
         {
             if (GameManager.instance.debug)
                 destroyTimer -= (Time.deltaTime * 10);
@@ -318,7 +319,7 @@ public class Structure : WorldObj
             if (destroyTimer <= 0)
             {
                 ObjRemoveFunc();
-                //destroyStart = false;
+                destroyEnd = true;
             }
         }
     }

@@ -80,7 +80,12 @@ public class Portal : Production
         sInvenManager.ResetInvenOption();
         BloodMoonProgressSet();        
         sInvenManager.slots[0].SetInputItem(itemDic[recipe.items[0]]);
-        sInvenManager.slots[0].SetNeedAmount(recipe.amounts[0]);
+        WaveSkipItemNeedAmountSet();
+    }
+
+    public void WaveSkipItemNeedAmountSet()
+    {
+        sInvenManager.slots[0].SetNeedAmount(gameManager.waveSkipItemNeedAmount);
     }
 
     public void BloodMoonProgressSet()

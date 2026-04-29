@@ -49,7 +49,7 @@ public class Shop : MonoBehaviour
     {
         GameManager.instance.SellScrapServerRpc();
         scrapBtn.interactable = false;
-        SoundManager.instance.PlayUISFX("ButtonClick");
+        SoundManager.instance.PlayUISFX("PaySound");
     }
 
     public void OpenUI()
@@ -158,7 +158,7 @@ public class Shop : MonoBehaviour
             {
                 GameManager.instance.inventory.BuyMerch(merchList, totalPrice);
                 ResetMerchList();
-                SoundManager.instance.PlayUISFX("ButtonClick");
+                SoundManager.instance.PlayUISFX("PaySound");
             }
             else
             {
@@ -176,7 +176,7 @@ public class Shop : MonoBehaviour
     {
         GameManager.instance.inventory.SellMerch(merchList);
         ResetMerchList();
-        SoundManager.instance.PlayUISFX("ButtonClick");
+        SoundManager.instance.PlayUISFX("PaySound");
     }
 
     void ResetMerchList()

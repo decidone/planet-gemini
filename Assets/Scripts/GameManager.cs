@@ -205,9 +205,10 @@ public class GameManager : NetworkBehaviour
     public float hpMultiplier = 1f;
     public float atkMultiplier = 1f;
 
-    Recipe waveSkipRecipe;
     int waveSkipItemIndex;
-    public int waveSkipItemAmount;
+    int waveSkipItemAmount;
+    [HideInInspector]
+    public int waveSkipItemNeedAmount = 2;
 
     #region Singleton
     public static GameManager instance;
@@ -259,8 +260,7 @@ public class GameManager : NetworkBehaviour
         SyncTimeServerRpc();
         PlayerUnitCount(0);
 
-        waveSkipRecipe = RecipeList.instance.GetRecipeIndex("Portal", 0);
-        Item item = ItemList.instance.itemDic[waveSkipRecipe.items[0]];
+        Item item = ItemList.instance.itemDic[RecipeList.instance.GetRecipeIndex("Portal", 0).items[0]];
         waveSkipItemIndex = GeminiNetworkManager.instance.GetItemSOIndex(item);
     }
 
@@ -501,9 +501,9 @@ public class GameManager : NetworkBehaviour
         }
         else if (!violentDay && (day >= energyOverLimitDay && (day - energyOverLimitDay) % violentCycle == 0))
         {
-            if (waveSkipItemAmount > waveSkipRecipe.amounts[0])
+            if (waveSkipItemAmount > waveSkipItemNeedAmount)
             {
-                WaveSkipItemSubServerRpc(0, waveSkipRecipe.amounts[0]);
+                WaveSkipItemSubServerRpc(0, waveSkipItemNeedAmount);
                 NoWaveDetectedTextClientRpc("The wave has been suppressed.");
             }
             else if (UnityEngine.Random.Range(0, 100) >= waveSkipChance)
@@ -1728,6 +1728,7 @@ public class GameManager : NetworkBehaviour
         prevWaveDamage = data.prevWaveDamage;
         currWaveDamage = data.currWaveDamage;
         difficultyPercent = data.difficultyPercent;
+        waveSkipItemNeedAmount = (int)((1 + Mathf.Round(difficultyPercent / 25f) / 10f) * 2);
 
         waveSkipItemAmount = data.waveSkipItemAmount;
         waveSkipChance = data.waveSkipChance;
@@ -2501,6 +2502,13 @@ public class GameManager : NetworkBehaviour
     {
         if (!IsServer)
             difficultyPercent = diff;
+
+        waveSkipItemNeedAmount = (int)((1 + Mathf.Round(difficultyPercent / 25f) / 10f) * 2);
+
+        if(portal[0].isUIOpened)
+            portal[0].WaveSkipItemNeedAmountSet();
+        if (portal[1].isUIOpened)
+            portal[1].WaveSkipItemNeedAmountSet();
     }
 
     public void BloodMoonOff()

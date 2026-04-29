@@ -20,6 +20,7 @@ public class PingMarker : MonoBehaviour
         if (closeButton != null)
             closeButton.onClick.AddListener(() =>
             {
+                SoundManager.instance.PlayUISFX("PingRemove");
                 onDismiss?.Invoke(pingId);
                 onDismiss = null;
             });

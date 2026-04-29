@@ -90,10 +90,12 @@ public class PingManager : NetworkBehaviour
             if (Vector2.Distance(pos, marker.Value.transform.position) <= pingClickRadius)
             {
                 RequestRemoveServerRpc(marker.Key);
+                SoundManager.instance.PlayUISFX("PingRemove");
                 return;
             }
         }
 
+        SoundManager.instance.PlayUISFX("PingSound");
         RequestSpawnServerRpc(pos, pingUI.SelectedGroup, pingUI.SelectedSub);
     }
 
