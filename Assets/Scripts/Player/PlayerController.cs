@@ -149,6 +149,15 @@ public class PlayerController : WorldObj
         inputManager.controls.Player.TankInven.performed -= TankInven;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        Debug.Log("[NetworkSpawn] IsOwner: " + IsOwner + " IsHost: " + IsHost);
+        if (IsOwner && !IsHost)
+        {
+            GameManager.instance.LoadingEnd();
+        }
+    }
+
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();

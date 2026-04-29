@@ -15,11 +15,17 @@ public class PortalObj : Production
     [ClientRpc]
     public virtual void ConnectMyObjClientRpc(NetworkObjectReference networkObjectReference) { }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        base.OnClientConnectedCallback(clientId);
+        base.OnClientConnectedCallback();
         PortalObjConnectServerRpc();
     }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    base.OnClientConnectedCallback(clientId);
+    //    PortalObjConnectServerRpc();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     protected virtual void PortalObjConnectServerRpc() { PortalObjConnectClientRpc(transform.position); }

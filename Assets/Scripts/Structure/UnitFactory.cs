@@ -136,11 +136,17 @@ public class UnitFactory : Production
         base.DestroyLineRenderer();
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        base.OnClientConnectedCallback(clientId);
+        base.OnClientConnectedCallback();
         ConnectedSetServerRpc();
     }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    base.OnClientConnectedCallback(clientId);
+    //    ConnectedSetServerRpc();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     void ConnectedSetServerRpc()

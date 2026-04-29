@@ -301,11 +301,17 @@ public class AutoBuyer : Production
         MinSliderUIValueChanged(0);
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        base.OnClientConnectedCallback(clientId);
+        base.OnClientConnectedCallback();
         ClientBuyerSyncServerRpc();
     }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    base.OnClientConnectedCallback(clientId);
+    //    ClientBuyerSyncServerRpc();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     public void ClientBuyerSyncServerRpc()

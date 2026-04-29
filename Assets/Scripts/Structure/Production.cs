@@ -169,15 +169,38 @@ public abstract class Production : Structure
         isInvenFull = true;
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
         ClientConnectSyncServerRpc();
-        RepairGaugeServerRpc();
-        if (recipeIndex != -1)
-            SetRecipeServerRpc(recipeIndex);
-        if (inventory != null)
-            ItemSyncServerRpc();
+        ClientSyncServerRpc();
+        //RepairGaugeServerRpc();
+        //if (recipeIndex != -1)
+        //    SetRecipeServerRpc(recipeIndex);
+        //if (inventory != null)
+        //    ItemSyncServerRpc();
     }
+
+    protected override void ClientSync()
+    {
+        if (IsServer)
+        {
+            RepairGaugeServerRpc();
+            if (recipeIndex != -1)
+                SetRecipeServerRpc(recipeIndex);
+            if (inventory != null)
+                ItemSyncServerRpc();
+        }
+    }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    ClientConnectSyncServerRpc();
+    //    RepairGaugeServerRpc();
+    //    if (recipeIndex != -1)
+    //        SetRecipeServerRpc(recipeIndex);
+    //    if (inventory != null)
+    //        ItemSyncServerRpc();
+    //}
 
     public virtual void SetRecipe(Recipe _recipe, int index)
     {

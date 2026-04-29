@@ -138,12 +138,6 @@ public class AutoSeller : Production
         sInvenManager.ReleaseInven();
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
-    {
-        base.OnClientConnectedCallback(clientId);
-        //SendFuncSetServerRpc(sendAmount);
-    }
-
     [ServerRpc]
     void OpenAnimServerRpc(string optionName)
     {

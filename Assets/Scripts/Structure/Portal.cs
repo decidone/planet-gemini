@@ -55,12 +55,25 @@ public class Portal : Production
         }
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        if (inventory != null)
-            ItemSyncServerRpc();
+        ClientSync();
     }
 
+    protected override void ClientSync()
+    {
+        if (IsServer)
+        {
+            if (inventory != null)
+                ItemSyncServerRpc();
+        }
+    }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    if (inventory != null)
+    //        ItemSyncServerRpc();
+    //}
 
     public override void OpenUI()
     {

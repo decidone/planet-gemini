@@ -116,11 +116,17 @@ public class FluidFactoryCtrl : Production
         }
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        base.OnClientConnectedCallback(clientId);
+        base.OnClientConnectedCallback();
         FluidSyncServerRpc();
     }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    base.OnClientConnectedCallback(clientId);
+    //    FluidSyncServerRpc();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     public void FluidSyncServerRpc()

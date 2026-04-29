@@ -82,11 +82,17 @@ public class LDConnector : Structure
         }
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        base.OnClientConnectedCallback(clientId);
+        base.OnClientConnectedCallback();
         LDConnectedSetServerRpc();
     }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    base.OnClientConnectedCallback(clientId);
+    //    LDConnectedSetServerRpc();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     void LDConnectedSetServerRpc()

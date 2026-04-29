@@ -542,21 +542,43 @@ public class Structure : WorldObj
         }
     }
 
-    protected virtual void OnClientConnectedCallback(ulong clientId)
+    public virtual void OnClientConnectedCallback()
     {
         ClientConnectSyncServerRpc();
         RepairGaugeServerRpc();
         ItemSyncServerRpc();
+        ClientSyncServerRpc();
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    protected void ClientSyncServerRpc()
+    {
+        ClientSyncClientRpc();
+    }
+
+    [ClientRpc]
+    protected void ClientSyncClientRpc()
+    {
+        ClientSync();
+    }
+
+    protected virtual void ClientSync() { }
+
+    //protected virtual void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    ClientConnectSyncServerRpc();
+    //    RepairGaugeServerRpc();
+    //    ItemSyncServerRpc();
+    //}
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         NetworkObjManager.instance.NetObjAdd(this);
-        if (IsServer)
-        {
-            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
-        }
+        //if (IsServer)
+        //{
+        //    NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        //}
     }
 
     public override void OnNetworkDespawn()
@@ -564,10 +586,10 @@ public class Structure : WorldObj
         base.OnNetworkDespawn();
         NetworkObjManager.instance.NetObjRemove(this);
 
-        if (IsServer)
-        {
-            NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
-        }
+        //if (IsServer)
+        //{
+        //    NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
+        //}
     }
 
     [ServerRpc(RequireOwnership = false)]

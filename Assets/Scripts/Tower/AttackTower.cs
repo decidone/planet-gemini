@@ -240,11 +240,17 @@ public class AttackTower : TowerAi
         }
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        base.OnClientConnectedCallback(clientId);
+        base.OnClientConnectedCallback();
         ClientTowerSyncServerRpc();
     }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    base.OnClientConnectedCallback(clientId);
+    //    ClientTowerSyncServerRpc();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     public void ClientTowerSyncServerRpc()

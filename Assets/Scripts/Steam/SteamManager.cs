@@ -563,10 +563,28 @@ public class SteamManager : MonoBehaviour
 
         while (!NetworkManager.Singleton.IsConnectedClient)
         {
-            //yield return null;
             yield return new WaitForEndOfFrame();
         }
 
+        // 여기서 동기화 완료까지 대기
+        int prevCount = 0;
+        int stableFrame = 0;
+
+        while (stableFrame < 30)
+        {
+            int currentCount = NetworkManager.Singleton.SpawnManager.SpawnedObjects.Count;
+            if (currentCount == prevCount)
+                stableFrame++;
+            else
+            {
+                stableFrame = 0;
+                prevCount = currentCount;
+            }
+            yield return null;
+        }
+
+        Debug.Log("[Client] Sync End ! Host Call");
+        GeminiNetworkManager.instance.ClientReadyServerRpc();
         GeminiNetworkManager.instance.ClientSpawnServerRPC();
         Debug.Log("Connected to Network");
     }

@@ -152,17 +152,30 @@ public class Transporter : Production
         sInvenManager.sortBtn.onClick.RemoveAllListeners();
         sInvenManager.ReleaseInven();
 
-        // ???
         //base.DestroyLineRenderer();
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        base.OnClientConnectedCallback(clientId);
+        base.OnClientConnectedCallback();
         ConnectedSetServerRpc();
         SendFuncSetServerRpc(isToggleOn, sendAmount);
     }
 
+    protected override void ClientSync()
+    {
+        if (IsServer)
+        {
+            SendFuncSetServerRpc(isToggleOn, sendAmount);
+        }
+    }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    base.OnClientConnectedCallback(clientId);
+    //    ConnectedSetServerRpc();
+    //    SendFuncSetServerRpc(isToggleOn, sendAmount);
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     void ConnectedSetServerRpc()

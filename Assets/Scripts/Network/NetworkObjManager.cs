@@ -37,16 +37,16 @@ public class NetworkObjManager : NetworkBehaviour
     }
     #endregion
 
-    public override void OnNetworkSpawn()
-    {
-        if (IsClient && !IsServer)
-        {
-            RequestSyncServerRpc();
-        }
-    }
+    //public override void OnNetworkSpawn()
+    //{
+    //    if (IsClient && !IsServer)
+    //    {
+    //        RequestSyncServerRpc();
+    //    }
+    //}
 
     [ServerRpc(RequireOwnership = false)]
-    private void RequestSyncServerRpc(ServerRpcParams rpcParams = default)
+    public void RequestSyncServerRpc(ServerRpcParams rpcParams = default)
     {
         ulong clientId = rpcParams.Receive.SenderClientId;
 
@@ -130,10 +130,51 @@ public class NetworkObjManager : NetworkBehaviour
 
     private void OnSyncComplete()
     {
-        foreach (BeltGroupMgr beltGroup in netBeltGroupMgrs)
+        StartCoroutine(SyncCoroutine());
+        //foreach (BeltGroupMgr beltGroup in netBeltGroupMgrs)
+        //{
+        //    beltGroup.ItemSyncServerRpc();
+        //}
+
+        //foreach (Structure structure in netStructures)
+        //{
+        //    structure.OnClientConnectedCallback();
+        //}
+
+        //StartCoroutine(NotifySyncDelay());
+    }
+
+    private IEnumerator SyncCoroutine()
+    {
+        int batchSize = 50; // 1프레임에 처리할 개수
+
+        // Structure 동기화
+        for (int i = 0; i < netStructures.Count; i++)
         {
-            beltGroup.ItemSyncServerRpc();
+            netStructures[i].OnClientConnectedCallback();
+
+            if (i % batchSize == 0)
+                yield return null;
         }
+
+        // Belt 동기화
+        for (int i = 0; i < networkBelts.Count; i++)
+        {
+            networkBelts[i].OnClientConnectedCallback();
+
+            if (i % batchSize == 0)
+                yield return null;
+        }
+
+        // BeltGroup 동기화
+        for (int i = 0; i < netBeltGroupMgrs.Count; i++)
+        {
+            netBeltGroupMgrs[i].ItemSyncServerRpc();
+
+            if (i % batchSize == 0)
+                yield return null;
+        }
+
         StartCoroutine(NotifySyncDelay());
     }
 

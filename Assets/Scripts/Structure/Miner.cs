@@ -77,13 +77,19 @@ public class Miner : Production
         slot = inventory.SlotCheck(0);
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
-    { 
-        base.OnClientConnectedCallback(clientId);
+    public override void OnClientConnectedCallback()
+    {
+        base.OnClientConnectedCallback();
         InitStartServerRpc();
     }
 
-    [ServerRpc]
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{ 
+    //    base.OnClientConnectedCallback(clientId);
+    //    InitStartServerRpc();
+    //}
+
+    [ServerRpc(RequireOwnership = false)]
     void InitStartServerRpc()
     {
         InitStartClientRpc();

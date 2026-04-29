@@ -19,11 +19,17 @@ public class EnergyBattery : Structure
         stored = 0;
     }
 
-    protected override void OnClientConnectedCallback(ulong clientId)
+    public override void OnClientConnectedCallback()
     {
-        base.OnClientConnectedCallback(clientId);
+        base.OnClientConnectedCallback();
         StoredSyncServerRpc();
     }
+
+    //protected override void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    base.OnClientConnectedCallback(clientId);
+    //    StoredSyncServerRpc();
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     void StoredSyncServerRpc()

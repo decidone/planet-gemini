@@ -50,10 +50,42 @@ public class GeminiNetworkManager : NetworkBehaviour
     public void ClientSpawnServerRPC(ServerRpcParams serverRpcParams = default)
     {
         ulong clientId = serverRpcParams.Receive.SenderClientId;
+        StartCoroutine(WaitForClientSync(clientId));
+    }
+
+    IEnumerator WaitForClientSync(ulong clientId)
+    {
+        int totalObjects = NetworkManager.Singleton.SpawnManager.SpawnedObjects.Count;
+        Debug.Log($"[Host] Sync Delay Start - {totalObjects}Count");
+
+        // 이미 true로 세팅된 경우 덮어쓰지 않음
+        if (!clientSyncDone.ContainsKey(clientId) || !clientSyncDone[clientId])
+        {
+            clientSyncDone[clientId] = false;
+        }
+
+        yield return new WaitUntil(() => clientSyncDone.ContainsKey(clientId) && clientSyncDone[clientId]);
+
         Transform playerTransform = Instantiate(clientChar);
         GameManager.instance.clientPlayerTransform = playerTransform;
         playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+
+        yield return null;
+        yield return null;
+
         PlayerObjSpawnDoneClientRpc(clientId);
+        Debug.Log("Client Spawned : " + clientId);
+    }
+
+    Dictionary<ulong, bool> clientSyncDone = new Dictionary<ulong, bool>();
+
+    // 클라이언트가 준비됐을때 호스트한테 알려주는 RPC
+    [ServerRpc(RequireOwnership = false)]
+    public void ClientReadyServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
+        clientSyncDone[clientId] = true;
+        Debug.Log($"[Host] Client {clientId} Sync Get");
     }
 
     [ClientRpc]
@@ -62,6 +94,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == clientId)
         {
             GameManager.instance.LoadingEnd();
+            NetworkObjManager.instance.RequestSyncServerRpc();
         }
     }
 
