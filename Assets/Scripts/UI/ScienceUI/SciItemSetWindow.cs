@@ -86,13 +86,13 @@ public class SciItemSetWindow : MonoBehaviour
                         else
                         {
                             itemUi.InputFieldSet(true);
-                            if (value == 0)
-                                itemUi.amount.color = Color.red;
-                            else if (scienceBtn.itemAmountList[index].Item1 >= scienceInfoData.amounts[index])
+                            if (scienceBtn.itemAmountList[index].Item1 >= scienceInfoData.amounts[index])
                             {
                                 itemUi.amount.color = Color.green;
                                 itemUi.InputFieldSet(false);
                             }
+                            else if (value == 0)
+                                itemUi.amount.color = Color.red;                            
                             else
                                 itemUi.amount.color = isEnough ? Color.white : Color.yellow;
 

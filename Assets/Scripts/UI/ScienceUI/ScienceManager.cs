@@ -267,6 +267,7 @@ public class ScienceManager : MonoBehaviour
     public void CloseUI()
     {
         isOpen = false;
+        isInfoWindowOpen = false;
         scienceTreeUI.SetActive(false);
         sciItemSetWindow.CloseUI();
         upgradeWindow.CloseUI();
