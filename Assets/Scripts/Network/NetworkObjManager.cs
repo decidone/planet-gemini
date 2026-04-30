@@ -169,8 +169,8 @@ public class NetworkObjManager : NetworkBehaviour
         // BeltGroup 동기화
         for (int i = 0; i < netBeltGroupMgrs.Count; i++)
         {
+            netBeltGroupMgrs[i].ClientConnectSyncServerRpc();
             netBeltGroupMgrs[i].ItemSyncServerRpc();
-
             if (i % batchSize == 0)
                 yield return null;
         }

@@ -949,6 +949,8 @@ public class GameManager : NetworkBehaviour
                     info = infoList[0];
                     info.Clicked();
                 }
+
+                soundManager.PlayUISFX("ClickSound");
             }
             else
             {

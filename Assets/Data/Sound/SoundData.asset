@@ -48,6 +48,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d86486ec58863264192b61d404cd8c9c, type: 3}
   - {fileID: 8300000, guid: a89b0692c406a5440bba1e5381c94adc, type: 3}
   - {fileID: 8300000, guid: 4a5f765f0322ccc4b998bfededd7b32c, type: 3}
+  - {fileID: 8300000, guid: e6ee4d63d7137454688f77fc62ef7e17, type: 3}
   unitSfx:
   - {fileID: 8300000, guid: e39ba8bd82bacb64db8ced9b6a1651a3, type: 3}
   - {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}

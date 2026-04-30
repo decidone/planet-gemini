@@ -61,20 +61,20 @@ public class BeltGroupMgr : NetworkBehaviour
         }
     }
 
-    private void OnClientConnectedCallback(ulong clientId)
-    {
-        ClientConnectSyncServerRpc();
-    }
+    //private void OnClientConnectedCallback(ulong clientId)
+    //{
+    //    ClientConnectSyncServerRpc();
+    //}
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
         NetworkObjManager.instance.BeltGroupAdd(this);
-        if (IsServer)
-        {
-            NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
-        }
+        //if (IsServer)
+        //{
+        //    NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        //}
     }
 
     public override void OnNetworkDespawn()
@@ -82,10 +82,10 @@ public class BeltGroupMgr : NetworkBehaviour
         base.OnNetworkDespawn();
 
         NetworkObjManager.instance.BeltGroupRemove(this);
-        if (IsServer)
-        {
-            NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
-        }
+        //if (IsServer)
+        //{
+        //    NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
+        //}
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -847,7 +847,7 @@ public class MonsterAi : UnitCommonAi
             {
                 aggro = aggroAmount.GetAggroAmount();
 
-                float score = aggro - (dist * 4f);
+                float score = aggro - (dist * 5.5f);
 
                 if (score > nearestUnattackScore)
                 {
