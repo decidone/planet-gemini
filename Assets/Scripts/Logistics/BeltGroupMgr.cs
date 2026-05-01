@@ -509,7 +509,7 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void NextBeltSetClientRpc(NetworkObjectReference thisBeltID, NetworkObjectReference othBeltID, ClientRpcParams rpcParams = default)
+    public void NextBeltSetClientRpc(NetworkObjectReference thisBeltID, NetworkObjectReference othBeltID)
     {
         var BeltCtrlArr = GetComponentsInChildren<BeltCtrl>();
         BeltCtrl thisBelt = thisBeltID.TryGet(out NetworkObject thisBeltObj) ? thisBeltObj.GetComponent<BeltCtrl>() : null;
@@ -518,7 +518,7 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void PreBeltSetClientRpc(NetworkObjectReference thisBeltID, NetworkObjectReference othBeltID, ClientRpcParams rpcParams = default)
+    public void PreBeltSetClientRpc(NetworkObjectReference thisBeltID, NetworkObjectReference othBeltID)
     {
         var BeltCtrlArr = GetComponentsInChildren<BeltCtrl>();
         BeltCtrl thisBelt = thisBeltID.TryGet(out NetworkObject thisBeltObj) ? thisBeltObj.GetComponent<BeltCtrl>() : null;
@@ -527,7 +527,7 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void NearObjSetClientRpc(NetworkObjectReference networkObjectReference, bool isNextObj, ClientRpcParams rpcParams = default)
+    public void NearObjSetClientRpc(NetworkObjectReference networkObjectReference, bool isNextObj)
     {
         if (IsServer)
             return;
@@ -623,7 +623,7 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ItemSyncServerRpc(ServerRpcParams rpcParams = default)
+    public void ItemSyncServerRpc(ulong targetClientId)
     {
         // 벨트별 아이템 수집
         List<int> itemIndexList = new List<int>();
@@ -643,12 +643,11 @@ public class BeltGroupMgr : NetworkBehaviour
             }
         }
 
-        ulong clientId = rpcParams.Receive.SenderClientId;
         ClientRpcParams target = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
             {
-                TargetClientIds = new[] { clientId }
+                TargetClientIds = new[] { targetClientId }
             }
         };
 

@@ -94,7 +94,9 @@ public class GeminiNetworkManager : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == clientId)
         {
             GameManager.instance.LoadingEnd();
-            NetworkObjManager.instance.RequestSyncServerRpc();
+            Debug.Log($"[Client] PlayerObjSpawnDoneClientRpc - ClientId: {clientId}");
+            if (!IsServer)
+                NetworkObjManager.instance.RequestSyncServerRpc();
         }
     }
 
