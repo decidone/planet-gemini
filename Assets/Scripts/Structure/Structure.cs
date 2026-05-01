@@ -616,8 +616,7 @@ public class Structure : WorldObj
         NetworkObjectReference[] nearObjRefs,
         bool[] nearObjValids,
         NetworkObjectReference[] outObjRefs,
-        NetworkObjectReference[] inObjRefs,
-        ClientRpcParams rpcParams = default)
+        NetworkObjectReference[] inObjRefs)
     {
         if (IsServer) return;
 
@@ -719,7 +718,7 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    protected void ItemSyncClientRpc(int[] itemIndex, ClientRpcParams rpcParams = default)
+    protected void ItemSyncClientRpc(int[] itemIndex)
     {
         if (IsServer)
             return;

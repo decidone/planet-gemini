@@ -24,6 +24,10 @@ public class NetworkObjManager : NetworkBehaviour
 
     public bool clientSyncComplete = false;
 
+    private int _clientAckedBatchId = -1;
+    private ClientRpcParams _syncTargetClient;
+    private ulong _syncTargetClientId;
+
     #region SingletonAwake
     public static NetworkObjManager instance;
 
@@ -50,17 +54,14 @@ public class NetworkObjManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RequestSyncServerRpc(ServerRpcParams rpcParams = default)
     {
-        ulong clientId = rpcParams.Receive.SenderClientId;
+        _syncTargetClientId = rpcParams.Receive.SenderClientId;
 
-        ClientRpcParams target = new ClientRpcParams
+        _syncTargetClient = new ClientRpcParams
         {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { clientId }
-            }
+            Send = new ClientRpcSendParams { TargetClientIds = new[] { _syncTargetClientId } }
         };
 
-        SendSyncTargetClientRpc(netStructures.Count, netBeltGroupMgrs.Count, networkBelts.Count, target);
+        SendSyncTargetClientRpc(netStructures.Count, netBeltGroupMgrs.Count, networkBelts.Count, _syncTargetClient);
     }
 
     [ClientRpc]
@@ -126,26 +127,37 @@ public class NetworkObjManager : NetworkBehaviour
             netBeltGroupMgrs.Count >= _syncTargetBeltGroupCount &&
             networkBelts.Count >= _syncTargetBeltCount
         );
-
-        OnSyncComplete();
+        NotifyReadyServerRpc();
     }
 
-    private void OnSyncComplete()
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyReadyServerRpc()
     {
-        StartCoroutine(SyncCoroutine());
+        StartCoroutine(SyncCoroutine()); // 서버에서 실행
     }
 
     private IEnumerator SyncCoroutine()
     {
-        int batchSize = 50; // 1프레임에 처리할 개수
+        int batchSize = 50;
 
         // Structure 동기화
         for (int i = 0; i < netStructures.Count; i++)
         {
             netStructures[i].OnClientConnectedCallback();
 
-            if (i % batchSize == 0)
-                yield return null;
+            bool isLastInBatch = (i + 1) % batchSize == 0;
+            bool isLast = i == netStructures.Count - 1;
+
+            if (isLastInBatch || isLast)
+            {
+                int batchId = i;
+                _clientAckedBatchId = -1; // 초기화
+
+                SendBatchBoundaryClientRpc(batchId, _syncTargetClient);
+
+                // 클라이언트 ACK 대기
+                yield return new WaitUntil(() => _clientAckedBatchId >= batchId);
+            }
         }
 
         yield return null;
@@ -155,8 +167,18 @@ public class NetworkObjManager : NetworkBehaviour
         {
             networkBelts[i].OnClientConnectedCallback();
 
-            if (i % batchSize == 0)
-                yield return null;
+            bool isLastInBatch = (i + 1) % batchSize == 0;
+            bool isLast = i == networkBelts.Count - 1;
+
+            if (isLastInBatch || isLast)
+            {
+                int batchId = netStructures.Count + i;
+                _clientAckedBatchId = -1;
+
+                SendBatchBoundaryClientRpc(batchId, _syncTargetClient);
+
+                yield return new WaitUntil(() => _clientAckedBatchId >= batchId);
+            }
         }
 
         yield return null;
@@ -165,12 +187,36 @@ public class NetworkObjManager : NetworkBehaviour
         for (int i = 0; i < netBeltGroupMgrs.Count; i++)
         {
             netBeltGroupMgrs[i].ClientConnectSyncServerRpc();
-            netBeltGroupMgrs[i].ItemSyncServerRpc();
-            if (i % batchSize == 0)
-                yield return null;
+            netBeltGroupMgrs[i].ItemSyncServerRpc(_syncTargetClientId);
+
+            bool isLastInBatch = (i + 1) % batchSize == 0;
+            bool isLast = i == netBeltGroupMgrs.Count - 1;
+
+            if (isLastInBatch || isLast)
+            {
+                int batchId = netStructures.Count + networkBelts.Count + i;
+                _clientAckedBatchId = -1;
+
+                SendBatchBoundaryClientRpc(batchId, _syncTargetClient);
+
+                yield return new WaitUntil(() => _clientAckedBatchId >= batchId);
+            }
         }
 
         StartCoroutine(NotifySyncDelay());
+    }
+
+    [ClientRpc]
+    private void SendBatchBoundaryClientRpc(int batchId, ClientRpcParams rpcParams = default)
+    {
+        // 중첩 RPC 무시, 앞의 RPC들이 처리된 후 도착이 보장되므로 바로 ACK
+        BatchAckServerRpc(batchId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void BatchAckServerRpc(int batchId, ServerRpcParams rpcParams = default)
+    {
+        _clientAckedBatchId = batchId;
     }
 
     private IEnumerator NotifySyncDelay()

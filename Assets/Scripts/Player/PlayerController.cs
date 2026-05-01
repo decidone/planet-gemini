@@ -152,10 +152,6 @@ public class PlayerController : WorldObj
     public override void OnNetworkSpawn()
     {
         Debug.Log("[NetworkSpawn] IsOwner: " + IsOwner + " IsHost: " + IsHost);
-        if (IsOwner && !IsHost)
-        {
-            GameManager.instance.LoadingEnd();
-        }
     }
 
     public override void OnNetworkDespawn()
