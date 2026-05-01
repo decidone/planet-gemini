@@ -552,7 +552,7 @@ public class SteamManager : MonoBehaviour
         }
 
         Debug.Log("ClientDataGet And StartClient");
-
+        ConfigureNetworkTimeouts();
         NetworkManager.Singleton.StartClient();
         StartCoroutine(WaitForNetworkConnection());
     }
@@ -587,6 +587,15 @@ public class SteamManager : MonoBehaviour
         GeminiNetworkManager.instance.ClientReadyServerRpc();
         GeminiNetworkManager.instance.ClientSpawnServerRPC();
         Debug.Log("Connected to Network");
+    }
+
+    public void ConfigureNetworkTimeouts()
+    {
+        NetworkManager.Singleton.NetworkConfig.ClientConnectionBufferTimeout = 30;
+        NetworkManager.Singleton.NetworkConfig.LoadSceneTimeOut = 180;
+
+        SteamNetworkingUtils.ConnectionTimeout = 20000;
+        SteamNetworkingUtils.Timeout = 20000;
     }
 
     public void GetLobbiesListButtonSound()

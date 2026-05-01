@@ -78,6 +78,7 @@ public class MainPanelsManager : MonoBehaviour
 
         gameSetting.NewGameState(true);
         soundManager.PlayUISFX("ButtonClick");
+        SteamManager.instance.ConfigureNetworkTimeouts();
         NetworkManager.Singleton.StartHost();
         LoadingUICtrl.Instance.LoadScene("GameScene", true);
     }
