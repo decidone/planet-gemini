@@ -22,6 +22,8 @@ public class NetworkObjManager : NetworkBehaviour
     private int _syncTargetBeltGroupCount = -1;
     private int _syncTargetBeltCount = -1;
 
+    public bool clientSyncComplete = false;
+
     #region SingletonAwake
     public static NetworkObjManager instance;
 
@@ -131,17 +133,6 @@ public class NetworkObjManager : NetworkBehaviour
     private void OnSyncComplete()
     {
         StartCoroutine(SyncCoroutine());
-        //foreach (BeltGroupMgr beltGroup in netBeltGroupMgrs)
-        //{
-        //    beltGroup.ItemSyncServerRpc();
-        //}
-
-        //foreach (Structure structure in netStructures)
-        //{
-        //    structure.OnClientConnectedCallback();
-        //}
-
-        //StartCoroutine(NotifySyncDelay());
     }
 
     private IEnumerator SyncCoroutine()
@@ -157,6 +148,8 @@ public class NetworkObjManager : NetworkBehaviour
                 yield return null;
         }
 
+        yield return null;
+
         // Belt 동기화
         for (int i = 0; i < networkBelts.Count; i++)
         {
@@ -165,6 +158,8 @@ public class NetworkObjManager : NetworkBehaviour
             if (i % batchSize == 0)
                 yield return null;
         }
+
+        yield return null;
 
         // BeltGroup 동기화
         for (int i = 0; i < netBeltGroupMgrs.Count; i++)
@@ -185,6 +180,13 @@ public class NetworkObjManager : NetworkBehaviour
         GameManager gameManager = GameManager.instance;
         gameManager.SetClientSyncPauseServerRpc(false);
         gameManager.LoadingPopupServerRpc();
+        ClientSyncCompleteClientRpc();
+    }
+
+    [ClientRpc]
+    void ClientSyncCompleteClientRpc()
+    {
+        clientSyncComplete = true;
     }
 
     public void BeltGroupRemove(BeltGroupMgr beltGroupMgr)

@@ -111,18 +111,17 @@ public class SteamGenerator : FluidFactoryCtrl
         sInvenManager = canvas.GetComponent<StructureInvenManager>();
         rManager = canvas.GetComponent<RecipeManager>();
         GetUIFunc();
-        isStartCalled = true;
-        if (isCellCalled)
+        if (IsServer)
             StrBuilt();
+        else if(NetworkObjManager.instance.clientSyncComplete == true)
+            StrBuilt();
+
         #endregion
 
         maxFuel = 100;
         isBuildDone = false;
         preBuildingCheck = false;
         preBuilding = PreBuilding.instance;
-        isStartCalled = true;
-        if (isCellCalled)
-            StrBuilt();
 
         //displaySlot.SetInputItem(ItemList.instance.itemDic["Water"]);
         //displaySlot.AddItem(ItemList.instance.itemDic["Water"], 0);

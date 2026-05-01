@@ -72,8 +72,9 @@ public abstract class Production : Structure
         GetUIFunc();
         //CheckPos();
 
-        isStartCalled = true;
-        if (isCellCalled)
+        if (IsServer)
+            StrBuilt();
+        else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
     }
 

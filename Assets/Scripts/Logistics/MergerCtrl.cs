@@ -8,8 +8,9 @@ public class MergerCtrl : LogisticsCtrl
     {
         //setModel = GetComponent<SpriteRenderer>();
         //CheckPos();
-        isStartCalled = true;
-        if (isCellCalled)
+        if (IsServer)
+            StrBuilt();
+        else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
     }
 

@@ -108,8 +108,9 @@ public class BeltCtrl : LogisticsCtrl
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
         //AnimSyncFunc();
         isOperate = true;
-        isStartCalled = true;
-        if (isCellCalled)
+        if (IsServer)
+            StrBuilt();
+        else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
         BeltModelSet();
     }

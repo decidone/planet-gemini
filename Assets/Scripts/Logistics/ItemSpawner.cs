@@ -9,8 +9,9 @@ public class ItemSpawner : LogisticsCtrl
 
     void Start()
     {
-        isStartCalled = true;
-        if (isCellCalled)
+        if (IsServer)
+            StrBuilt();
+        else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
     }
 

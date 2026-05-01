@@ -13,8 +13,9 @@ public class ExtractorCtrl : FluidFactoryCtrl
     {
         mainSource = myFluidScript;
         fluidName = "CrudeOil";
-        isStartCalled = true;
-        if(isCellCalled)
+        if (IsServer)
+            StrBuilt();
+        else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
     }
 

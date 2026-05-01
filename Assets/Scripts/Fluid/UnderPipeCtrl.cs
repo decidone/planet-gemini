@@ -19,8 +19,9 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         nearObj = new Structure[2];
         checkPos = new Vector2[2];
 
-        isStartCalled = true;
-        if (isCellCalled)
+        if (IsServer)
+            StrBuilt();
+        else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
     }
 

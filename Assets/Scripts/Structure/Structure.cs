@@ -226,9 +226,6 @@ public class Structure : WorldObj
 
     public SpriteRenderer view;
 
-    protected bool isStartCalled = false;
-    protected bool isCellCalled = false;
-
     protected override void Awake()
     {
         base.Awake();
@@ -564,32 +561,16 @@ public class Structure : WorldObj
 
     protected virtual void ClientSync() { }
 
-    //protected virtual void OnClientConnectedCallback(ulong clientId)
-    //{
-    //    ClientConnectSyncServerRpc();
-    //    RepairGaugeServerRpc();
-    //    ItemSyncServerRpc();
-    //}
-
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         NetworkObjManager.instance.NetObjAdd(this);
-        //if (IsServer)
-        //{
-        //    NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
-        //}
     }
 
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
         NetworkObjManager.instance.NetObjRemove(this);
-
-        //if (IsServer)
-        //{
-        //    NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
-        //}
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -626,7 +607,7 @@ public class Structure : WorldObj
 
         NearAndInOutObjSyncClientRpc(nearObjRefs, nearObjValids, outObjRefs, inObjRefs);
 
-        MapDataSaveClientRpc(transform.position);
+        ClientMapDataSetClientRpc(transform.position);
         ConnectCheckClientRpc(true);
     }
 
@@ -723,9 +704,7 @@ public class Structure : WorldObj
         //gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         onEffectUpgradeCheck.Invoke();
-        isStartCalled = true;
-        if (isCellCalled)
-            StrBuilt();
+        StrBuilt();
 
         OnClientConnectSync();
     }
@@ -2178,6 +2157,18 @@ public class Structure : WorldObj
     [ClientRpc]
     public void MapDataSaveClientRpc(Vector3 pos)
     {
+        MapDataSet(pos);
+        StrBuilt(); // 이거 스타트에서 도는데??
+    }
+
+    [ClientRpc]
+    public void ClientMapDataSetClientRpc(Vector3 pos) 
+    {
+        MapDataSet(pos);
+    }
+
+    void MapDataSet(Vector3 pos)
+    {
         Vector2 tileSetPos = pos;
 
         if (width == 2 && height == 2)
@@ -2200,9 +2191,6 @@ public class Structure : WorldObj
             }
         }
 
-        isCellCalled = true;
-        if (isStartCalled)
-            StrBuilt();
     }
 
     public virtual StructureSaveData SaveData()

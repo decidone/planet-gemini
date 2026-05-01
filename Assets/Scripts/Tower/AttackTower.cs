@@ -51,8 +51,9 @@ public class AttackTower : TowerAi
             loadedBullet = bulletDic["EnergyBullet"];
             StartCoroutine(EfficiencyCheckLoop());
         }
-        isStartCalled = true;
-        if (isCellCalled)
+        if (IsServer)
+            StrBuilt();
+        else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
     }
 

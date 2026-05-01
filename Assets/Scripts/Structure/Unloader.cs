@@ -11,8 +11,9 @@ public class Unloader : LogisticsCtrl
     {
         //setModel = GetComponent<SpriteRenderer>();
         clickEvent = GetComponent<LogisticsClickEvent>();
-        isStartCalled = true;
-        if (isCellCalled)
+        if (IsServer)
+            StrBuilt();
+        else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
     }
 
