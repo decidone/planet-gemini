@@ -559,7 +559,7 @@ public class BeltCtrl : LogisticsCtrl
 
     void ProcessSendItem()
     {
-        if (itemObjList.Count == 0) return; // 방어 코드
+        if (itemObjList.Count == 0 || !nextBelt) return; // 방어 코드
 
         nextBelt.BeltGroupSendItem(itemObjList[0]);
         itemObjList.RemoveAt(0);
