@@ -581,11 +581,9 @@ public class Structure : WorldObj
 
     public void ClientConnectSync()
     {
-        ClientConnectSyncClientRpc(level, dirNum, height, width, isInHostMap, hp);
-
         // nearObj 수집
         NetworkObjectReference[] nearObjRefs = new NetworkObjectReference[nearObj.Length];
-        bool[] nearObjValids = new bool[nearObj.Length]; // null 여부 체크용
+        bool[] nearObjValids = new bool[nearObj.Length];
         for (int i = 0; i < nearObj.Length; i++)
         {
             if (nearObj[i] != null)
@@ -605,47 +603,67 @@ public class Structure : WorldObj
         for (int i = 0; i < inObj.Count; i++)
             inObjRefs[i] = inObj[i].NetworkObject;
 
-        NearAndInOutObjSyncClientRpc(nearObjRefs, nearObjValids, outObjRefs, inObjRefs);
+        // 통합 데이터 구성
+        var data = new StructureSyncData
+        {
+            level = this.level,
+            dirNum = this.dirNum,
+            height = this.height,
+            width = this.width,
+            isInHostMap = this.isInHostMap,
+            hp = this.hp,
 
-        ClientMapDataSetClientRpc(transform.position);
-        ConnectCheckClientRpc(true);
+            nearObjRefs = nearObjRefs,
+            nearObjValids = nearObjValids,
+            outObjRefs = outObjRefs,
+            inObjRefs = inObjRefs,
+
+            position = transform.position
+        };
+
+        ClientConnectSyncClientRpc(data);
+
+        // 통합되면서 제거
+        // NearAndInOutObjSyncClientRpc(...)
+        // ClientMapDataSetClientRpc(transform.position)
+        // ConnectCheckClientRpc(true)
     }
 
-    [ClientRpc]
-    void NearAndInOutObjSyncClientRpc(
-        NetworkObjectReference[] nearObjRefs,
-        bool[] nearObjValids,
-        NetworkObjectReference[] outObjRefs,
-        NetworkObjectReference[] inObjRefs)
-    {
-        if (IsServer) return;
+    //[ClientRpc]
+    //void NearAndInOutObjSyncClientRpc(
+    //    NetworkObjectReference[] nearObjRefs,
+    //    bool[] nearObjValids,
+    //    NetworkObjectReference[] outObjRefs,
+    //    NetworkObjectReference[] inObjRefs)
+    //{
+    //    if (IsServer) return;
 
-        CheckPos();
+    //    CheckPos();
 
-        // nearObj 복원
-        for (int i = 0; i < nearObjRefs.Length; i++)
-        {
-            if (!nearObjValids[i]) continue;
-            if (nearObjRefs[i].TryGet(out NetworkObject obj))
-                nearObj[i] = obj.GetComponent<Structure>();
-        }
+    //    // nearObj 복원
+    //    for (int i = 0; i < nearObjRefs.Length; i++)
+    //    {
+    //        if (!nearObjValids[i]) continue;
+    //        if (nearObjRefs[i].TryGet(out NetworkObject obj))
+    //            nearObj[i] = obj.GetComponent<Structure>();
+    //    }
 
-        // outObj 복원
-        outObj.Clear();
-        foreach (var objRef in outObjRefs)
-        {
-            if (objRef.TryGet(out NetworkObject obj))
-                outObj.Add(obj.GetComponent<Structure>());
-        }
+    //    // outObj 복원
+    //    outObj.Clear();
+    //    foreach (var objRef in outObjRefs)
+    //    {
+    //        if (objRef.TryGet(out NetworkObject obj))
+    //            outObj.Add(obj.GetComponent<Structure>());
+    //    }
 
-        // inObj 복원
-        inObj.Clear();
-        foreach (var objRef in inObjRefs)
-        {
-            if (objRef.TryGet(out NetworkObject obj))
-                inObj.Add(obj.GetComponent<Structure>());
-        }
-    }
+    //    // inObj 복원
+    //    inObj.Clear();
+    //    foreach (var objRef in inObjRefs)
+    //    {
+    //        if (objRef.TryGet(out NetworkObject obj))
+    //            inObj.Add(obj.GetComponent<Structure>());
+    //    }
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     public virtual void ItemSyncServerRpc()
@@ -672,38 +690,67 @@ public class Structure : WorldObj
         StructureStateSet(preBuilding, destroy, hpSet, repairGaugeSet, destroyTimerSet);
     }
 
-    [ClientRpc]
-    public void ConnectCheckClientRpc(bool isEnd)
-    {
-        settingEndCheck = isEnd;
-    }
+    //[ClientRpc]
+    //public void ConnectCheckClientRpc(bool isEnd)
+    //{
+    //    settingEndCheck = isEnd;
+    //}
 
     [ClientRpc]
-    public void ClientConnectSyncClientRpc(int syncLevel, int syncDir, int syncHeight, int syncWidth, bool syncMap, float syncHp)
+    public void ClientConnectSyncClientRpc(StructureSyncData data)
     {
         if (IsServer)
             return;
 
-        level = syncLevel;
+        // ClientConnectSync 처리
+        level = data.level;
         DataSet();
         maxHp = structureData.MaxHp[level];
-        dirNum = syncDir;
-        height = syncHeight;
-        width = syncWidth;
-        isInHostMap = syncMap;
-        hp = syncHp;
+        dirNum = data.dirNum;
+        height = data.height;
+        width = data.width;
+        isInHostMap = data.isInHostMap;
+        hp = data.hp;
         ColliderTriggerOnOff(false);
 
         if (col != null)
         {
-            // 3. A* 그래프 업데이트 (해당 영역을 길막으로 인식시킴)
             Bounds b = col.bounds;
             AstarPath.active.UpdateGraphs(b);
         }
-        //gameObject.AddComponent<DynamicGridObstacle>();
         myVision.SetActive(true);
         onEffectUpgradeCheck.Invoke();
         StrBuilt();
+
+        // NearAndInOut 처리
+        CheckPos();
+
+        for (int i = 0; i < data.nearObjRefs.Length; i++)
+        {
+            if (!data.nearObjValids[i]) continue;
+            if (data.nearObjRefs[i].TryGet(out NetworkObject obj))
+                nearObj[i] = obj.GetComponent<Structure>();
+        }
+
+        outObj.Clear();
+        foreach (var objRef in data.outObjRefs)
+        {
+            if (objRef.TryGet(out NetworkObject obj))
+                outObj.Add(obj.GetComponent<Structure>());
+        }
+
+        inObj.Clear();
+        foreach (var objRef in data.inObjRefs)
+        {
+            if (objRef.TryGet(out NetworkObject obj))
+                inObj.Add(obj.GetComponent<Structure>());
+        }
+
+        // MapData 처리
+        MapDataSet(data.position);
+
+        // 모든 처리 끝 → 동기화 완료 표시
+        settingEndCheck = true;
 
         OnClientConnectSync();
     }
@@ -2160,11 +2207,11 @@ public class Structure : WorldObj
         StrBuilt(); // 이거 스타트에서 도는데??
     }
 
-    [ClientRpc]
-    public void ClientMapDataSetClientRpc(Vector3 pos) 
-    {
-        MapDataSet(pos);
-    }
+    //[ClientRpc]
+    //public void ClientMapDataSetClientRpc(Vector3 pos) 
+    //{
+    //    MapDataSet(pos);
+    //}
 
     void MapDataSet(Vector3 pos)
     {
