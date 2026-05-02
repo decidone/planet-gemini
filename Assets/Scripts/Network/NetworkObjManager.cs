@@ -187,7 +187,7 @@ public class NetworkObjManager : NetworkBehaviour
         for (int i = 0; i < netBeltGroupMgrs.Count; i++)
         {
             netBeltGroupMgrs[i].ClientConnectSyncServerRpc();
-            netBeltGroupMgrs[i].ItemSyncServerRpc(_syncTargetClientId);
+            netBeltGroupMgrs[i].BeltItemSyncServerRpc(_syncTargetClientId);
 
             bool isLastInBatch = (i + 1) % batchSize == 0;
             bool isLast = i == netBeltGroupMgrs.Count - 1;

@@ -479,7 +479,6 @@ public class SendUnderBeltCtrl : LogisticsCtrl
 
     public override void ItemSyncServer()
     {
-        ItemListClearClientRpc();
         SendingItemsListClearServerRpc();
         List<int> itemIndexList = new List<int>();
         for (int i = 0; i < itemList.Count; i++)

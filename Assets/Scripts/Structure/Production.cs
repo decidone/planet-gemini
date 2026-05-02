@@ -173,6 +173,7 @@ public abstract class Production : Structure
     public override void OnClientConnectedCallback()
     {
         ClientConnectSyncServerRpc();
+        //RepairGaugeServerRpc();
         ClientSyncServerRpc();
         //RepairGaugeServerRpc();
         //if (recipeIndex != -1)
@@ -185,7 +186,6 @@ public abstract class Production : Structure
     {
         if (IsServer)
         {
-            RepairGaugeServerRpc();
             if (recipeIndex != -1)
                 SetRecipeServerRpc(recipeIndex);
             if (inventory != null)
@@ -329,7 +329,6 @@ public abstract class Production : Structure
 
     public override void ItemSyncServer()
     {
-        ItemListClearClientRpc();
         List<int> slotNums = new List<int>();
         List<int> itemIndexs = new List<int>();
         List<int> itemAmounts = new List<int>();
@@ -362,6 +361,8 @@ public abstract class Production : Structure
     {
         if (IsServer)
             return;
+
+        ItemListClear();
 
         Item[] items = new Item[index];
         for (int i = 0; i < index; i++)

@@ -136,11 +136,11 @@ public class TankCtrl : UnitAi
     {
         base.OnClientConnectedCallback(clientId);
         if (inventory != null)
-            ItemSyncServerRpc();
+            TankItemSyncServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ItemSyncServerRpc()
+    public void TankItemSyncServerRpc()
     {
         ItemListClearClientRpc();
         List<int> slotNums = new List<int>();

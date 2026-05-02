@@ -20,6 +20,12 @@ public struct StructureSyncData : INetworkSerializable
     // ===== From: Structure.ClientMapDataSetClientRpc =====
     public Vector3 position;
 
+    // ===== From: Structure.RepairGaugeClientRpc =====
+    public bool isPreBuilding;
+    public bool destroyStart;
+    public float repairGauge;
+    public float destroyTimer;
+
     public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
     {
         s.SerializeValue(ref level);
@@ -35,5 +41,10 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref inObjRefs);
 
         s.SerializeValue(ref position);
+
+        s.SerializeValue(ref isPreBuilding);
+        s.SerializeValue(ref destroyStart);
+        s.SerializeValue(ref repairGauge);
+        s.SerializeValue(ref destroyTimer);
     }
 }

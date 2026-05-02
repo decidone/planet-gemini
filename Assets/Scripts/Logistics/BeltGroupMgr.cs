@@ -623,7 +623,7 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ItemSyncServerRpc(ulong targetClientId)
+    public void BeltItemSyncServerRpc(ulong targetClientId)
     {
         // 벨트별 아이템 수집
         List<int> itemIndexList = new List<int>();

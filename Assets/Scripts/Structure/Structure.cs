@@ -542,7 +542,7 @@ public class Structure : WorldObj
     public virtual void OnClientConnectedCallback()
     {
         ClientConnectSyncServerRpc();
-        RepairGaugeServerRpc();
+        //RepairGaugeServerRpc();
         ItemSyncServerRpc();
         ClientSyncServerRpc();
     }
@@ -581,7 +581,6 @@ public class Structure : WorldObj
 
     public virtual void ClientConnectSync()
     {
-        // nearObj 수집
         NetworkObjectReference[] nearObjRefs = new NetworkObjectReference[nearObj.Length];
         bool[] nearObjValids = new bool[nearObj.Length];
         for (int i = 0; i < nearObj.Length; i++)
@@ -593,17 +592,14 @@ public class Structure : WorldObj
             }
         }
 
-        // outObj 수집
         NetworkObjectReference[] outObjRefs = new NetworkObjectReference[outObj.Count];
         for (int i = 0; i < outObj.Count; i++)
             outObjRefs[i] = outObj[i].NetworkObject;
 
-        // inObj 수집
         NetworkObjectReference[] inObjRefs = new NetworkObjectReference[inObj.Count];
         for (int i = 0; i < inObj.Count; i++)
             inObjRefs[i] = inObj[i].NetworkObject;
 
-        // 통합 데이터 구성
         var data = new StructureSyncData
         {
             level = this.level,
@@ -618,15 +614,15 @@ public class Structure : WorldObj
             outObjRefs = outObjRefs,
             inObjRefs = inObjRefs,
 
-            position = transform.position
+            position = transform.position,
+
+            isPreBuilding = this.isPreBuilding,
+            destroyStart = this.destroyStart,
+            repairGauge = this.repairGauge,
+            destroyTimer = this.destroyTimer
         };
 
         ClientConnectSyncClientRpc(data);
-
-        // 통합되면서 제거
-        // NearAndInOutObjSyncClientRpc(...)
-        // ClientMapDataSetClientRpc(transform.position)
-        // ConnectCheckClientRpc(true)
     }
 
     //[ClientRpc]
@@ -673,7 +669,6 @@ public class Structure : WorldObj
 
     public virtual void ItemSyncServer()
     {
-        ItemListClearClientRpc();
         List<int> itemIndexList = new List<int>();
         for (int i = 0; i < itemList.Count; i++)
         {
@@ -707,7 +702,7 @@ public class Structure : WorldObj
         if (IsServer)
             return;
 
-        // ClientConnectSync 처리
+        // ClientConnectSync 처리 (기존 그대로)
         level = data.level;
         DataSet();
         maxHp = structureData.MaxHp[level];
@@ -727,9 +722,8 @@ public class Structure : WorldObj
         onEffectUpgradeCheck.Invoke();
         StrBuilt();
 
-        // NearAndInOut 처리
+        // NearAndInOut 처리 (기존 그대로)
         CheckPos();
-
         for (int i = 0; i < data.nearObjRefs.Length; i++)
         {
             if (!data.nearObjValids[i]) continue;
@@ -751,22 +745,19 @@ public class Structure : WorldObj
                 inObj.Add(obj.GetComponent<Structure>());
         }
 
-        // MapData 처리
+        // MapData 처리 (기존 그대로)
         MapDataSet(data.position);
 
-        // 모든 처리 끝 → 동기화 완료 표시
+        // ===== 추가: RepairGauge 처리 =====
+        StructureStateSet(data.isPreBuilding, data.destroyStart, data.hp, data.repairGauge, data.destroyTimer);
+
+        // 모든 처리 끝 → 동기화 완료
         settingEndCheck = true;
 
         OnClientConnectSync();
     }
 
     protected virtual void OnClientConnectSync() { } //ClientConnectSyncClientRpc 에서 오버라드드 할것들용
-
-    [ClientRpc]
-    protected void ItemListClearClientRpc()
-    {
-        ItemListClear();
-    }
 
     protected virtual void ItemListClear()
     {
@@ -779,6 +770,8 @@ public class Structure : WorldObj
     {
         if (IsServer)
             return;
+
+        ItemListClear();
 
         for (int i = 0; i < itemIndex.Length; i++)
         {

@@ -162,14 +162,6 @@ public class Transporter : Production
         SendFuncSetServerRpc(isToggleOn, sendAmount);
     }
 
-    protected override void ClientSync()
-    {
-        if (IsServer)
-        {
-            SendFuncSetServerRpc(isToggleOn, sendAmount);
-        }
-    }
-
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{
     //    base.OnClientConnectedCallback(clientId);
