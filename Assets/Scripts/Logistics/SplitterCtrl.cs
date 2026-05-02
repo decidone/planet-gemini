@@ -136,10 +136,9 @@ public class SplitterCtrl : LogisticsCtrl
         return setModel.sprite;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ClientConnectSyncServerRpc()
+    public override void ClientConnectSync()
     {
-        ClientConnectSync();
+        base.ClientConnectSync();
 
         // 데이터 한 번에 수집
         FilterSyncData[] syncDataArr = new FilterSyncData[arrFilter.Length];

@@ -502,8 +502,7 @@ public class FluidFactoryCtrl : Production
         saveFluidNum = storedFluid;
     }
 
-    [ClientRpc]
-    public override void RemoveObjClientRpc()
+    public override void RemoveObjClient()
     {
         StopAllCoroutines();
 

@@ -49,11 +49,9 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
     }
 
-    [ClientRpc]
-    public override void UpgradeFuncClientRpc()
+    public override void UpgradeFunc()
     {
-        //base.UpgradeFuncClientRpc();
-        UpgradeFunc();
+        base.UpgradeFunc();
 
         setModel.sprite = modelNum[dirNum + (level * 4)];
     }
@@ -140,8 +138,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
     }
 
-    [ServerRpc]
-    protected override void SendItemServerRpc(int itemIndex, int outObjIndex)
+    protected override void SendItemServer(int itemIndex, int outObjIndex)
     {
         SendItemClientRpc(itemIndex, outObjIndex, outObj[outObjIndex].NetworkObject);
     }
@@ -217,8 +214,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
     }
 
-    [ClientRpc]
-    public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
+    public override void SettingClient(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         level = _level;
         dirNum = _beltDir;
@@ -353,8 +349,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         }
     }
 
-    [ClientRpc]
-    public override void RemoveObjClientRpc()
+    public override void RemoveObjClient()
     {
         StopAllCoroutines();
 
@@ -464,8 +459,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         itemList.Add(item);
     }
 
-    [ClientRpc]
-    protected override void OnFactoryItemClientRpc(int itemIndex)
+    protected override void OnFactoryItemClient(int itemIndex)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         itemList.Add(item);
@@ -483,8 +477,7 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         sendingItems.Add((itemIndex, time));
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ItemSyncServerRpc()
+    public override void ItemSyncServer()
     {
         ItemListClearClientRpc();
         SendingItemsListClearServerRpc();

@@ -181,13 +181,13 @@ public class MonsterSpawner : WorldObj
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public virtual void ClientConnectSyncServerRpc()
+    public void ClientConnectSyncServerRpc()
     {
         ClientConnectSyncClientRpc(hp, maxHp);
     }
 
     [ClientRpc]
-    public virtual void ClientConnectSyncClientRpc(float syncHp, float syncMaxHp)
+    public void ClientConnectSyncClientRpc(float syncHp, float syncMaxHp)
     {
         hp = syncHp;
         maxHp = syncMaxHp;

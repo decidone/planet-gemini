@@ -387,8 +387,7 @@ public class SteamGenerator : FluidFactoryCtrl
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void RemoveObjServerRpc()
+    public override void RemoveObjServer()
     {
         DisableFocused();
         connector.RemoveFromGroup();

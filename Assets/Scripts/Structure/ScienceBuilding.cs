@@ -38,10 +38,10 @@ public class ScienceBuilding : PortalObj
         //CheckPos();
     }
 
-    [ClientRpc]
-    protected override void RepairGaugeClientRpc(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    public override void StructureStateSet(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
     {
-        StructureStateSet(preBuilding, destroy, hpSet, repairGaugeSet, destroyTimerSet);
+        base.StructureStateSet(preBuilding, destroy, hpSet, repairGaugeSet, destroyTimerSet);
+
         SciBuildingRepairEnd();
     }
 
@@ -63,8 +63,7 @@ public class ScienceBuilding : PortalObj
 
     public override void IncreasedStructureCheck() { }
 
-    [ServerRpc]
-    protected override void DieFuncServerRpc()
+    protected override void DieFuncServer()
     {
         gameManager.SetGameOverUI();
     }

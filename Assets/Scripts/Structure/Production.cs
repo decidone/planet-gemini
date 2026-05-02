@@ -327,8 +327,7 @@ public abstract class Production : Structure
             SetRecipeClientRpc(recipeId);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ItemSyncServerRpc()
+    public override void ItemSyncServer()
     {
         ItemListClearClientRpc();
         List<int> slotNums = new List<int>();
@@ -352,13 +351,11 @@ public abstract class Production : Structure
         ItemSyncClientRpc(slotNums.ToArray(), itemIndexs.ToArray(), itemAmounts.ToArray(), index);
     }
 
-    [ClientRpc]
-    protected override void ItemListClearClientRpc()
+    protected override void ItemListClear()
     {
         if (!IsServer)
             inventory.ResetInven();
     }
-
 
     [ClientRpc]
     protected void ItemSyncClientRpc(int[] slotNum, int[] itemIndex, int[] itemAmount, int index, ClientRpcParams rpcParams = default)

@@ -3,17 +3,35 @@ using UnityEngine;
 
 public class PortalObj : Production
 {
-    // Start is called before the first frame update
     public Portal myPortal;
 
     [ServerRpc]
-    public virtual void ConnectObjServerRpc(NetworkObjectReference networkObjectReference) { }
+    public void ConnectObjServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        ConnectObjClientRpc(networkObjectReference);
+    }
+
     [ClientRpc]
-    public virtual void ConnectObjClientRpc(NetworkObjectReference networkObjectReference) { }
+    public void ConnectObjClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        ConnectObj(networkObjectReference);
+    }
+
+    public virtual void ConnectObj(NetworkObjectReference networkObjectReference) { }
+
     [ServerRpc]
-    public virtual void ConnectMyObjServerRpc(NetworkObjectReference networkObjectReference) { }
+    public void ConnectMyObjServerRpc(NetworkObjectReference networkObjectReference)
+    {
+        ConnectMyObjClientRpc(networkObjectReference);
+    }
+
     [ClientRpc]
-    public virtual void ConnectMyObjClientRpc(NetworkObjectReference networkObjectReference) { }
+    public void ConnectMyObjClientRpc(NetworkObjectReference networkObjectReference)
+    {
+        ConnectMyObj(networkObjectReference);
+    }
+
+    public virtual void ConnectMyObj(NetworkObjectReference networkObjectReference) { }
 
     public override void OnClientConnectedCallback()
     {
@@ -28,10 +46,18 @@ public class PortalObj : Production
     //}
 
     [ServerRpc(RequireOwnership = false)]
-    protected virtual void PortalObjConnectServerRpc() { PortalObjConnectClientRpc(transform.position); }
+    protected void PortalObjConnectServerRpc()
+    {
+        PortalObjConnectServer();
+    }
+
+    protected virtual void PortalObjConnectServer()
+    {
+        PortalObjConnectClientRpc(transform.position);
+    }
 
     [ClientRpc]
-    protected virtual void PortalObjConnectClientRpc(Vector3 tr)
+    protected void PortalObjConnectClientRpc(Vector3 tr)
     {
         transform.position = tr;
     }
@@ -48,8 +74,7 @@ public class PortalObj : Production
         return false;
     }
 
-    [ClientRpc]
-    public override void RemoveObjClientRpc()
+    public override void RemoveObjClient()
     {
         StopAllCoroutines();
 

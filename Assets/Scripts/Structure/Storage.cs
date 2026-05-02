@@ -67,11 +67,10 @@ public class Storage : Production
         setModel.sprite = modelNum[level];
     }
 
-    [ClientRpc]
-    public override void UpgradeFuncClientRpc()
+    public override void UpgradeFunc()
     {
-        //base.UpgradeFuncClientRpc();
-        UpgradeFunc();
+        base.UpgradeFunc();
+
         setModel.sprite = modelNum[level];
         inventory.space = invenSize[level];
         CheckInvenIsFull(0);

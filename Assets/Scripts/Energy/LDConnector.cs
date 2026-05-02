@@ -160,8 +160,7 @@ public class LDConnector : Structure
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void RemoveObjServerRpc()
+    public override void RemoveObjServer()
     {
         //건물 철거 전 처리
         DisableFocused();

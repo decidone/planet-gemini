@@ -195,13 +195,18 @@ public class UnitCommonAi : WorldObj
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public virtual void ClientConnectSyncServerRpc()
+    public void ClientConnectSyncServerRpc()
+    {
+        ClientConnectSyncServer();
+    }
+
+    public virtual void ClientConnectSyncServer()
     {
         ClientConnectSyncClientRpc(hp); // ??? 여기 클라이언트쪽 오브젝트 스폰 전에 콜 되는 듯(트랜스포터 있으면 에러뜸)
     }
-    
+
     [ClientRpc]
-    public virtual void ClientConnectSyncClientRpc(float syncHp)
+    public void ClientConnectSyncClientRpc(float syncHp)
     {
         hp = syncHp;
 
@@ -314,13 +319,18 @@ public class UnitCommonAi : WorldObj
     }
 
     [ServerRpc]
-    protected virtual void TakeDamageServerRpc(float damage, int attackType, float option)
+    protected void TakeDamageServerRpc(float damage, int attackType, float option)
     {
         TakeDamageClientRpc(damage, attackType, option);
     }
 
     [ClientRpc]
-    protected virtual void TakeDamageClientRpc(float damage, int attackType, float option) { }
+    protected void TakeDamageClientRpc(float damage, int attackType, float option)
+    {
+        TakeDamageClient(damage, attackType, option);
+    }
+
+    protected virtual void TakeDamageClient(float damage, int attackType, float option) { }
 
     protected IEnumerator SlowDebuffDamage(float time)
     {
@@ -373,13 +383,18 @@ public class UnitCommonAi : WorldObj
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public virtual void DieFuncServerRpc()
+    public void DieFuncServerRpc()
+    {
+        DieFuncServer();
+    }
+
+    public virtual void DieFuncServer()
     {
         DieFuncClientRpc();
     }
 
     [ClientRpc]
-    protected virtual void DieFuncClientRpc()
+    protected void DieFuncClientRpc()
     {
         DieFunc();
     }

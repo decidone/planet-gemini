@@ -89,7 +89,7 @@ public class BeltGroupMgr : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public virtual void ClientConnectSyncServerRpc()
+    public void ClientConnectSyncServerRpc()
     {
         for(int i = 0; i < beltList.Count; i ++)
         {            

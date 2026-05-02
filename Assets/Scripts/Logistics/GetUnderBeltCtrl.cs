@@ -100,11 +100,9 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         preBuildingCheck = false;
     }
 
-    [ClientRpc]
-    public override void UpgradeFuncClientRpc()
+    public override void UpgradeFunc()
     {
-        //base.UpgradeFuncClientRpc();
-        UpgradeFunc();
+        base.UpgradeFunc();
 
         setModel.sprite = modelNum[dirNum + (level * 4)];
     }
@@ -231,8 +229,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         }
     }
 
-    [ClientRpc]
-    public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
+    public override void SettingClient(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         level = _level;
         dirNum = _beltDir;
@@ -305,8 +302,7 @@ public class GetUnderBeltCtrl : LogisticsCtrl
         EndRenderer();
     }
 
-    [ClientRpc]
-    public override void RemoveObjClientRpc()
+    public override void RemoveObjClient()
     {
         StopAllCoroutines();
 

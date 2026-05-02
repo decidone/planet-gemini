@@ -153,8 +153,7 @@ public class Overclock : Production
         view.enabled = false;
     }
 
-    [ClientRpc]
-    public override void RemoveObjClientRpc()
+    public override void RemoveObjClient()
     {
         StopAllCoroutines();
 

@@ -574,12 +574,12 @@ public class Structure : WorldObj
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public virtual void ClientConnectSyncServerRpc()
+    public void ClientConnectSyncServerRpc()
     {
         ClientConnectSync();
     }
 
-    public void ClientConnectSync()
+    public virtual void ClientConnectSync()
     {
         // nearObj 수집
         NetworkObjectReference[] nearObjRefs = new NetworkObjectReference[nearObj.Length];
@@ -666,7 +666,12 @@ public class Structure : WorldObj
     //}
 
     [ServerRpc(RequireOwnership = false)]
-    public virtual void ItemSyncServerRpc()
+    public void ItemSyncServerRpc()
+    {
+        ItemSyncServer();
+    }
+
+    public virtual void ItemSyncServer()
     {
         ItemListClearClientRpc();
         List<int> itemIndexList = new List<int>();
@@ -685,7 +690,7 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    protected virtual void RepairGaugeClientRpc(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    protected void RepairGaugeClientRpc(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
     {
         StructureStateSet(preBuilding, destroy, hpSet, repairGaugeSet, destroyTimerSet);
     }
@@ -758,7 +763,12 @@ public class Structure : WorldObj
     protected virtual void OnClientConnectSync() { } //ClientConnectSyncClientRpc 에서 오버라드드 할것들용
 
     [ClientRpc]
-    protected virtual void ItemListClearClientRpc()
+    protected void ItemListClearClientRpc()
+    {
+        ItemListClear();
+    }
+
+    protected virtual void ItemListClear()
     {
         if (!IsServer)
             itemList.Clear();
@@ -963,7 +973,12 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    public virtual void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
+    public void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
+    {
+        SettingClient(_level, _beltDir, objHeight, objWidth, isHostMap, index);
+    }
+
+    public virtual void SettingClient(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         level = _level;
         dirNum = _beltDir;
@@ -1103,7 +1118,12 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    protected virtual void OnFactoryItemClientRpc(int itemIndex)
+    protected void OnFactoryItemClientRpc(int itemIndex)
+    {
+        OnFactoryItemClient(itemIndex);
+    }
+
+    protected virtual void OnFactoryItemClient(int itemIndex)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         itemList.Add(item);
@@ -1152,7 +1172,7 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    protected virtual void InOutObjIndexResetClientRpc(bool isGetObj)
+    protected void InOutObjIndexResetClientRpc(bool isGetObj)
     {
         if (!IsServer)
             return;
@@ -1163,14 +1183,14 @@ public class Structure : WorldObj
             sendItemIndex = 0;
     }
 
-    protected virtual void GetItemIndexSet()
+    protected void GetItemIndexSet()
     {
         getItemIndex++;
         if (getItemIndex >= inObj.Count)
             getItemIndex = 0;
     }
 
-    protected virtual void GetItem()
+    protected void GetItem()
     {
         itemGetDelay = true;
 
@@ -1230,13 +1250,13 @@ public class Structure : WorldObj
     }
 
     [ServerRpc]
-    protected virtual void GetItemFuncServerRpc(int inObjIndex)
+    protected void GetItemFuncServerRpc(int inObjIndex)
     {
         GetItemFuncClientRpc(inObjIndex, inObj[inObjIndex].NetworkObject);
     }
 
     [ClientRpc]
-    protected virtual void GetItemFuncClientRpc(int inObjIndex, NetworkObjectReference netObj)
+    protected void GetItemFuncClientRpc(int inObjIndex, NetworkObjectReference netObj)
     {
         if(inObj.Count <= inObjIndex || inObj[inObjIndex].NetworkObjectId != netObj.NetworkObjectId)
         {
@@ -1360,7 +1380,12 @@ public class Structure : WorldObj
     }
 
     [ServerRpc]
-    protected virtual void SendItemServerRpc(int itemIndex, int outObjIndex)
+    protected void SendItemServerRpc(int itemIndex, int outObjIndex)
+    {
+        SendItemServer(itemIndex, outObjIndex);
+    }
+
+    protected virtual void SendItemServer(int itemIndex, int outObjIndex)
     {
         if (outObj[outObjIndex].TryGet(out BeltCtrl beltCtrl))
         {
@@ -1387,18 +1412,18 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    protected virtual void SendItemClientRpc(int itemIndex,int outObjIndex,  NetworkObjectReference netObj)
+    protected void SendItemClientRpc(int itemIndex,int outObjIndex,  NetworkObjectReference netObj)
     {
         SendItemFunc(itemIndex, outObjIndex, netObj);
     }
 
     [ClientRpc]
-    protected virtual void SendItemClientRpc(int itemIndex, int outObjIndex, NetworkObjectReference netObj, int beltGroupIndex)
+    protected void SendItemClientRpc(int itemIndex, int outObjIndex, NetworkObjectReference netObj, int beltGroupIndex)
     {
         SendItemFunc(itemIndex, outObjIndex, netObj, beltGroupIndex);
     }
 
-    protected virtual void SendItemFunc(int itemIndex, int outObjIndex, NetworkObjectReference netObj, int beltGroupIndex)
+    protected void SendItemFunc(int itemIndex, int outObjIndex, NetworkObjectReference netObj, int beltGroupIndex)
     {
         Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
 
@@ -1619,13 +1644,18 @@ public class Structure : WorldObj
     }
 
     [ServerRpc]
-    protected virtual void DieFuncServerRpc()
+    protected void DieFuncServerRpc()
+    {
+        DieFuncServer();
+    }
+
+    protected virtual void DieFuncServer()
     {
         DieFuncClientRpc();
     }
 
     [ClientRpc]
-    protected virtual void DieFuncClientRpc()
+    protected void DieFuncClientRpc()
     {
         hpBar.enabled = false;
         dieCheck = true;
@@ -1912,13 +1942,23 @@ public class Structure : WorldObj
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public virtual void RemoveObjServerRpc()
+    public void RemoveObjServerRpc()
+    {
+        RemoveObjServer();
+    }
+
+    public virtual void RemoveObjServer()
     {
         RemoveObjClientRpc();
     }
 
     [ClientRpc]
-    public virtual void RemoveObjClientRpc()
+    public void RemoveObjClientRpc()
+    {
+        RemoveObjClient();
+    }
+
+    public virtual void RemoveObjClient()
     {
         StopAllCoroutines();
 
@@ -1944,23 +1984,23 @@ public class Structure : WorldObj
             GameManager.instance.focusedStructure = null;
         }
 
-        if(IsServer)
+        if (IsServer)
             DestroyFuncServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public virtual void DestroyFuncServerRpc()
+    public void DestroyFuncServerRpc()
     {
         DestroyFuncClientRpc();
     }
 
     [ClientRpc]
-    public virtual void DestroyFuncClientRpc()
+    public void DestroyFuncClientRpc()
     {
         DestroyFunc();
     }
 
-    public void DestroyFunc()
+    public virtual void DestroyFunc()
     {
         ColliderTriggerOnOff(true);
         StrWarningManager.instance.RemoveStrList(this);
@@ -2122,12 +2162,12 @@ public class Structure : WorldObj
     }
 
     [ClientRpc]
-    public virtual void UpgradeFuncClientRpc()
+    public void UpgradeFuncClientRpc()
     {
         UpgradeFunc();
     }
 
-    public void UpgradeFunc()
+    public virtual void UpgradeFunc()
     {
         level++;
 

@@ -107,11 +107,9 @@ public class UnitAi : UnitCommonAi
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ClientConnectSyncServerRpc()
+    public override void ClientConnectSyncServer()
     {
-        //base.ClientConnectSyncServerRpc();
-        ClientConnectSyncClientRpc(hp);
+        base.ClientConnectSyncServer();
 
         if (playerUnitPortalIn)
         {
@@ -652,8 +650,7 @@ public class UnitAi : UnitCommonAi
         SelfHealingClientRpc(hp);
     }
 
-    [ClientRpc]
-    protected override void TakeDamageClientRpc(float damage, int attackType, float option)
+    protected override void TakeDamageClient(float damage, int attackType, float option)
     {
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
@@ -715,14 +712,13 @@ public class UnitAi : UnitCommonAi
         }       
     }
 
-    [ClientRpc]
-    protected override void DieFuncClientRpc()
+    protected override void DieFunc()
     {
-        DieFunc();
+        base.DieFunc();
         UnitRemove();
     }
 
-    public void UnitRemove()
+    protected void UnitRemove()
     {
         onEffectUpgradeCheck -= IncreasedStructureCheck;
 

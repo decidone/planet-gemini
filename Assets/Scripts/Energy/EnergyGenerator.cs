@@ -163,8 +163,7 @@ public class EnergyGenerator : Production
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void RemoveObjServerRpc()
+    public override void RemoveObjServer()
     {
         DisableFocused();
         connector.RemoveFromGroup();

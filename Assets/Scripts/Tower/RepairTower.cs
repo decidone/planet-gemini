@@ -151,8 +151,7 @@ public class RepairTower : TowerAi
         view.enabled = false;
     }
 
-    [ClientRpc]
-    public override void RemoveObjClientRpc()
+    public override void RemoveObjClient()
     {
         StopAllCoroutines();
 

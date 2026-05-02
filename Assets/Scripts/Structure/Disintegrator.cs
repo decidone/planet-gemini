@@ -144,11 +144,9 @@ public class Disintegrator : Production
             autoToggle.SetIsOnWithoutNotify(auto);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ClientConnectSyncServerRpc()
+    public override void ClientConnectSync()
     {
-        //base.ClientConnectSyncServerRpc();
-        ClientConnectSync();
+        base.ClientConnectSync();
 
         SetAutoClientRpc(isAuto);
     }

@@ -187,11 +187,10 @@ public class TankCtrl : UnitAi
         inventory.NonNetSlotsAdd(slotNum, items, itemAmount, index);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ClientConnectSyncServerRpc()
+    public override void ClientConnectSyncServer()
     {
-        //base.ClientConnectSyncServerRpc();
-        ClientConnectSyncClientRpc(hp);
+        base.ClientConnectSyncServer();
+
         if (playerUnitPortalIn)
         {
             PortalUnitInFuncClientRpc(hostClientUnitIn);

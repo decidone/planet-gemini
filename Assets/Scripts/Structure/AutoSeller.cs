@@ -362,8 +362,7 @@ public class AutoSeller : Production
         return data;
     }
 
-    [ClientRpc]
-    public override void RemoveObjClientRpc()
+    public override void RemoveObjClient()
     {
         StopAllCoroutines();
 

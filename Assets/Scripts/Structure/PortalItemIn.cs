@@ -172,9 +172,7 @@ public class PortalItemIn : PortalObj
         return exists;
     }
 
-
-    [ServerRpc(RequireOwnership = false)]
-    protected override void PortalObjConnectServerRpc()
+    protected override void PortalObjConnectServer()
     {
         //base.PortalObjConnectServerRpc();
         PortalObjConnectClientRpc(transform.position);
@@ -185,14 +183,7 @@ public class PortalItemIn : PortalObj
         }
     }
 
-    [ServerRpc]
-    public override void ConnectObjServerRpc(NetworkObjectReference networkObjectReference)
-    {
-        ConnectObjClientRpc(networkObjectReference);
-    }
-
-    [ClientRpc]
-    public override void ConnectObjClientRpc(NetworkObjectReference networkObjectReference)
+    public override void ConnectObj(NetworkObjectReference networkObjectReference)
     {
         networkObjectReference.TryGet(out NetworkObject networkObject);
         portalItemOut = networkObject.GetComponent<PortalItemOut>();

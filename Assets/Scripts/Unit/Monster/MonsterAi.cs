@@ -1089,8 +1089,7 @@ public class MonsterAi : UnitCommonAi
         stopTrace = false;
     }
 
-    [ClientRpc]
-    protected override void TakeDamageClientRpc(float damage, int attackType, float option)  
+    protected override void TakeDamageClient(float damage, int attackType, float option)  
     {
         if (!unitCanvas.activeSelf)
             unitCanvas.SetActive(true);
@@ -1233,8 +1232,7 @@ public class MonsterAi : UnitCommonAi
         waitForGraphUpdate = false;
     }
 
-    [ServerRpc]
-    public override void DieFuncServerRpc()
+    public override void DieFuncServer()
     {
         DieFuncClientRpc();
         if (bestTarget)
@@ -1249,11 +1247,10 @@ public class MonsterAi : UnitCommonAi
         MonsterSpawnerManager.instance.WaveRemoveMonster(this);
     }
 
-    [ClientRpc]
-    protected override void DieFuncClientRpc()
+    protected override void DieFunc()
     {
-        //base.DieFuncClientRpc();
-        DieFunc();
+        base.DieFunc();
+
         StopAllCoroutines();
         seeker.StopAllCoroutines();
         seeker.OnDestroy();

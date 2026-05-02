@@ -208,25 +208,16 @@ public class BeltCtrl : LogisticsCtrl
         }
     }
 
-    [ClientRpc]
-    public override void UpgradeFuncClientRpc()
+    public override void UpgradeFunc()
     {
-        //base.UpgradeFuncClientRpc();
-        UpgradeFunc();
-
-        //animator.SetFloat("DirNum", dirNum);
-        //animator.SetFloat("ModelNum", modelMotion);
-        //animator.SetFloat("Level", level);
+        base.UpgradeFunc();
 
         SetBeltAnim();
-        //AnimSyncFunc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ClientConnectSyncServerRpc()
+    public override void ClientConnectSync()
     {
-        //base.ClientConnectSyncServerRpc(); 
-        ClientConnectSync();
+        base.ClientConnectSync();
 
         DirSyncClientRpc(isUp, isRight, isDown, isLeft);
         ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
@@ -244,8 +235,7 @@ public class BeltCtrl : LogisticsCtrl
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ItemSyncServerRpc() { }
+    public override void ItemSyncServer() { }
 
     //[ServerRpc(RequireOwnership = false)]
     //public override void ItemSyncServerRpc()
@@ -900,8 +890,7 @@ public class BeltCtrl : LogisticsCtrl
         DataSet();
     }
 
-    [ClientRpc]
-    public override void SettingClientRpc(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
+    public override void SettingClient(int _level, int _beltDir, int objHeight, int objWidth, bool isHostMap, int index)
     {
         beltGroupMgr = GetComponentInParent<BeltGroupMgr>();
         beltGroupMgr.GroupAddBelt(this);
@@ -990,8 +979,7 @@ public class BeltCtrl : LogisticsCtrl
         }
     }
 
-    [ClientRpc]
-    public override void DestroyFuncClientRpc()
+    public override void DestroyFunc()
     {
         if (preBelt != null)
         {
@@ -1002,8 +990,7 @@ public class BeltCtrl : LogisticsCtrl
             nextBelt.DelayNearStrBuilt();
         }
 
-        //base.DestroyFuncClientRpc();
-        DestroyFunc();
+        base.DestroyFunc();
     }
 
     public override void ColliderTriggerOnOff(bool isOn)
@@ -1011,8 +998,7 @@ public class BeltCtrl : LogisticsCtrl
         col.isTrigger = true;
     }
 
-    [ClientRpc]
-    public override void RemoveObjClientRpc()
+    public override void RemoveObjClient()
     {
         StopAllCoroutines();
 

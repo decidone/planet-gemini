@@ -110,9 +110,7 @@ public class PortalUnitIn : PortalObj
         }
     }
 
-
-    [ServerRpc(RequireOwnership = false)]
-    protected override void PortalObjConnectServerRpc()
+    protected override void PortalObjConnectServer()
     {
         //base.PortalObjConnectServerRpc();
         PortalObjConnectClientRpc(transform.position);
@@ -127,27 +125,13 @@ public class PortalUnitIn : PortalObj
         }
     }
 
-    [ServerRpc]
-    public override void ConnectObjServerRpc(NetworkObjectReference networkObjectReference)
-    {
-        ConnectObjClientRpc(networkObjectReference);
-    }
-
-    [ClientRpc]
-    public override void ConnectObjClientRpc(NetworkObjectReference networkObjectReference)
+    public override void ConnectObj(NetworkObjectReference networkObjectReference)
     {
         networkObjectReference.TryGet(out NetworkObject networkObject);
         portalUnitOut = networkObject.GetComponent<PortalUnitOut>();
     }
 
-    [ServerRpc]
-    public override void ConnectMyObjServerRpc(NetworkObjectReference networkObjectReference)
-    {
-        ConnectMyObjClientRpc(networkObjectReference);
-    }
-
-    [ClientRpc]
-    public override void ConnectMyObjClientRpc(NetworkObjectReference networkObjectReference)
+    public override void ConnectMyObj(NetworkObjectReference networkObjectReference)
     {
         networkObjectReference.TryGet(out NetworkObject networkObject);
         myPortalUnitOut = networkObject.GetComponent<PortalUnitOut>();
@@ -158,8 +142,7 @@ public class PortalUnitIn : PortalObj
         base.DestroyLineRenderer();
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ItemSyncServerRpc()
+    public override void ItemSyncServer()
     {
         int[] itemindexs = new int[displaySlots.Length];
         NetworkObjectReference[] sendUnit = new NetworkObjectReference[displaySlots.Length];

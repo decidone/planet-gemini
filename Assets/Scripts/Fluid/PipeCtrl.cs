@@ -44,11 +44,9 @@ public class PipeCtrl : FluidFactoryCtrl
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public override void ClientConnectSyncServerRpc()
+    public override void ClientConnectSync()
     {
-        //base.ClientConnectSyncServerRpc();
-        ClientConnectSync();
+        base.ClientConnectSync();
 
         DirSyncClientRpc(isUp, isRight, isDown, isLeft);
     }
