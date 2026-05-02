@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct StructureSyncData : INetworkSerializable
 {
-    // ===== From: Structure.ClientConnectSyncClientRpc =====
+    // ===== 기존 필드들 =====
     public int level;
     public int dirNum;
     public int height;
@@ -11,20 +11,28 @@ public struct StructureSyncData : INetworkSerializable
     public bool isInHostMap;
     public float hp;
 
-    // ===== From: Structure.NearAndInOutObjSyncClientRpc =====
     public NetworkObjectReference[] nearObjRefs;
     public bool[] nearObjValids;
     public NetworkObjectReference[] outObjRefs;
     public NetworkObjectReference[] inObjRefs;
 
-    // ===== From: Structure.ClientMapDataSetClientRpc =====
     public Vector3 position;
 
-    // ===== From: Structure.RepairGaugeClientRpc =====
     public bool isPreBuilding;
     public bool destroyStart;
     public float repairGauge;
     public float destroyTimer;
+
+    // ===== 추가: ItemSync (Structure.itemList) =====
+    public int[] itemIndexes;
+
+    // ===== 추가: ItemSync (Production.inventory) =====
+    public int[] inventorySlotNums;
+    public int[] inventoryItemIndexes;
+    public int[] inventoryItemAmounts;
+
+    // ===== 추가: Recipe =====
+    public int recipeIndex;  // -1이면 미사용
 
     public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
     {
@@ -46,5 +54,13 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref destroyStart);
         s.SerializeValue(ref repairGauge);
         s.SerializeValue(ref destroyTimer);
+
+        s.SerializeValue(ref itemIndexes);
+
+        s.SerializeValue(ref inventorySlotNums);
+        s.SerializeValue(ref inventoryItemIndexes);
+        s.SerializeValue(ref inventoryItemAmounts);
+
+        s.SerializeValue(ref recipeIndex);
     }
 }

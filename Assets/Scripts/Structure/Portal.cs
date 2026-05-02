@@ -57,11 +57,6 @@ public class Portal : Production
 
     public override void OnClientConnectedCallback()
     {
-        ClientSync();
-    }
-
-    protected override void ClientSync()
-    {
         if (IsServer)
         {
             if (inventory != null)

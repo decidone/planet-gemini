@@ -22,7 +22,7 @@ public class ScienceBuilding : PortalObj
 
     public override void OnClientConnectedCallback()
     {
-        ClientConnectSyncServerRpc();
+        base.OnClientConnectedCallback();
         PortalObjConnectServerRpc();
     }
 

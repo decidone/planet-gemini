@@ -560,7 +560,7 @@ public class Inventory : NetworkBehaviour
             if (!IsServer && !structure.settingEndCheck)
                 return;
         }
-
+        
         totalItems[items[slotNum]] -= amount;
         amounts[slotNum] -= amount;
         if (amounts[slotNum] == 0)

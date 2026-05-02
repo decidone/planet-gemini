@@ -543,23 +543,9 @@ public class Structure : WorldObj
     {
         ClientConnectSyncServerRpc();
         //RepairGaugeServerRpc();
-        ItemSyncServerRpc();
-        ClientSyncServerRpc();
+        //ItemSyncServerRpc();
+        //ClientSyncServerRpc();
     }
-
-    [ServerRpc(RequireOwnership = false)]
-    protected void ClientSyncServerRpc()
-    {
-        ClientSyncClientRpc();
-    }
-
-    [ClientRpc]
-    protected void ClientSyncClientRpc()
-    {
-        ClientSync();
-    }
-
-    protected virtual void ClientSync() { }
 
     public override void OnNetworkSpawn()
     {
@@ -600,6 +586,12 @@ public class Structure : WorldObj
         for (int i = 0; i < inObj.Count; i++)
             inObjRefs[i] = inObj[i].NetworkObject;
 
+        int[] itemIndexes = new int[itemList.Count];
+        for (int i = 0; i < itemList.Count; i++)
+        {
+            itemIndexes[i] = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
+        }
+
         var data = new StructureSyncData
         {
             level = this.level,
@@ -619,7 +611,17 @@ public class Structure : WorldObj
             isPreBuilding = this.isPreBuilding,
             destroyStart = this.destroyStart,
             repairGauge = this.repairGauge,
-            destroyTimer = this.destroyTimer
+            destroyTimer = this.destroyTimer,
+
+            // ItemList
+            itemIndexes = itemIndexes,
+
+            // Production
+            inventorySlotNums = new int[0],
+            inventoryItemIndexes = new int[0],
+            inventoryItemAmounts = new int[0],
+
+            recipeIndex = -1
         };
 
         ClientConnectSyncClientRpc(data);
@@ -751,10 +753,25 @@ public class Structure : WorldObj
         // ===== 추가: RepairGauge 처리 =====
         StructureStateSet(data.isPreBuilding, data.destroyStart, data.hp, data.repairGauge, data.destroyTimer);
 
+        // ===== 추가: ItemList 처리 =====
+        ApplyItemSync(data);
+
         // 모든 처리 끝 → 동기화 완료
         settingEndCheck = true;
 
         OnClientConnectSync();
+    }
+
+    protected virtual void ApplyItemSync(StructureSyncData data)
+    {
+        // 베이스: itemList 적용
+        ItemListClear();
+
+        for (int i = 0; i < data.itemIndexes.Length; i++)
+        {
+            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(data.itemIndexes[i]);
+            itemList.Add(item);
+        }
     }
 
     protected virtual void OnClientConnectSync() { } //ClientConnectSyncClientRpc 에서 오버라드드 할것들용
