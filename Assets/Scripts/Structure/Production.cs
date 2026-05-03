@@ -170,45 +170,18 @@ public abstract class Production : Structure
         isInvenFull = true;
     }
 
-    public override void OnClientConnectedCallback()
-    {
-        ClientConnectSyncServerRpc();
-        //RepairGaugeServerRpc();
-        //ClientSyncServerRpc();
-        //RepairGaugeServerRpc();
-        //if (recipeIndex != -1)
-        //    SetRecipeServerRpc(recipeIndex);
-        //if (inventory != null)
-        //    ItemSyncServerRpc();
-    }
-
     public override void ClientConnectSync()
     {
-        NetworkObjectReference[] nearObjRefs = new NetworkObjectReference[nearObj.Length];
-        bool[] nearObjValids = new bool[nearObj.Length];
-        for (int i = 0; i < nearObj.Length; i++)
-        {
-            if (nearObj[i] != null)
-            {
-                nearObjRefs[i] = nearObj[i].NetworkObject;
-                nearObjValids[i] = true;
-            }
-        }
+        var data = CollectBaseSyncData();
 
-        NetworkObjectReference[] outObjRefs = new NetworkObjectReference[outObj.Count];
-        for (int i = 0; i < outObj.Count; i++)
-            outObjRefs[i] = outObj[i].NetworkObject;
-
-        NetworkObjectReference[] inObjRefs = new NetworkObjectReference[inObj.Count];
-        for (int i = 0; i < inObj.Count; i++)
-            inObjRefs[i] = inObj[i].NetworkObject;
-
-        var slotNums = new List<int>();
-        var itemIdxs = new List<int>();
-        var amounts = new List<int>();
+        data.itemIndexes = new int[0];
 
         if (inventory != null)
         {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
             for (int i = 0; i < inventory.space; i++)
             {
                 var slot = inventory.SlotCheck(i);
@@ -220,46 +193,19 @@ public abstract class Production : Structure
                     amounts.Add(slot.amount);
                 }
             }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
         }
 
-        var data = new StructureSyncData
-        {
-            level = this.level,
-            dirNum = this.dirNum,
-            height = this.height,
-            width = this.width,
-            isInHostMap = this.isInHostMap,
-            hp = this.hp,
-
-            nearObjRefs = nearObjRefs,
-            nearObjValids = nearObjValids,
-            outObjRefs = outObjRefs,
-            inObjRefs = inObjRefs,
-
-            position = transform.position,
-
-            isPreBuilding = this.isPreBuilding,
-            destroyStart = this.destroyStart,
-            repairGauge = this.repairGauge,
-            destroyTimer = this.destroyTimer,
-
-            // Production은 itemList 안 씀
-            itemIndexes = new int[0],
-
-            // Inventory 데이터
-            inventorySlotNums = slotNums.ToArray(),
-            inventoryItemIndexes = itemIdxs.ToArray(),
-            inventoryItemAmounts = amounts.ToArray(),
-
-            recipeIndex = this.recipeIndex
-        };
+        data.recipeIndex = this.recipeIndex;
 
         ClientConnectSyncClientRpc(data);
     }
 
     protected override void ApplyItemSync(StructureSyncData data)
     {
-        // 1. Recipe 먼저 적용 (inventory.space 세팅됨)
         if (data.recipeIndex != -1)
         {
             SetRecipeFromIndex(data.recipeIndex);

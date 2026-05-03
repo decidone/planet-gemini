@@ -241,11 +241,53 @@ public class AttackTower : TowerAi
         }
     }
 
-    public override void OnClientConnectedCallback()
+    public override void ClientConnectSync()
     {
-        base.OnClientConnectedCallback();
-        ClientTowerSyncServerRpc();
+        var data = CollectBaseSyncData();
+
+        // Production 상속 가정: itemList 안 씀
+        data.itemIndexes = new int[0];
+
+        // Production: inventory 데이터 (AttackTower는 inventory가 nullable)
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        // AttackTower 전용
+        data.energyBulletAmount = this.energyBulletAmount;
+
+        ClientConnectSyncClientRpc(data);
     }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        energyBulletAmount = data.energyBulletAmount;
+    }
+
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    ClientTowerSyncServerRpc();
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{
@@ -253,20 +295,20 @@ public class AttackTower : TowerAi
     //    ClientTowerSyncServerRpc();
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    public void ClientTowerSyncServerRpc()
-    {
-        ClientTowerSyncClientRpc(energyBulletAmount);
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //public void ClientTowerSyncServerRpc()
+    //{
+    //    ClientTowerSyncClientRpc(energyBulletAmount);
+    //}
 
-    [ClientRpc]
-    public void ClientTowerSyncClientRpc(int amount)
-    {
-        if (!IsServer)
-        {
-            energyBulletAmount = amount;
-        }
-    }
+    //[ClientRpc]
+    //public void ClientTowerSyncClientRpc(int amount)
+    //{
+    //    if (!IsServer)
+    //    {
+    //        energyBulletAmount = amount;
+    //    }
+    //}
 
     public override (float, float) PopUpStoredCheck()
     {

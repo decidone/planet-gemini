@@ -19,10 +19,16 @@ public class EnergyBattery : Structure
         stored = 0;
     }
 
-    public override void OnClientConnectedCallback()
+    public override void ClientConnectSync()
     {
-        base.OnClientConnectedCallback();
-        StoredSyncServerRpc();
+        var data = CollectBaseSyncData();
+        data.stored = this.stored;
+        ClientConnectSyncClientRpc(data);
+    }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        stored = data.stored;
     }
 
     //protected override void OnClientConnectedCallback(ulong clientId)
@@ -30,20 +36,6 @@ public class EnergyBattery : Structure
     //    base.OnClientConnectedCallback(clientId);
     //    StoredSyncServerRpc();
     //}
-
-    [ServerRpc(RequireOwnership = false)]
-    void StoredSyncServerRpc()
-    {
-        StoredSyncClientRpc(stored);
-    }
-
-    [ClientRpc]
-    void StoredSyncClientRpc(float syncStored)
-    {
-        if (IsServer)
-            return;
-        stored = syncStored;
-    }
 
     public float StoreEnergy(float energy)
     {

@@ -82,11 +82,41 @@ public class LDConnector : Structure
         }
     }
 
-    public override void OnClientConnectedCallback()
+    public override void ClientConnectSync()
     {
-        base.OnClientConnectedCallback();
-        LDConnectedSetServerRpc();
+        var data = CollectBaseSyncData();
+
+        if (clickEvent != null && clickEvent.lines.Count > 0)
+        {
+            Vector3[] linePositions = new Vector3[clickEvent.lines.Count];
+            for (int i = 0; i < clickEvent.lines.Count; i++)
+            {
+                LineRenderer lineRenderer = clickEvent.lines[i];
+                MapLine lineProps = lineRenderer.GetComponent<MapLine>();
+                linePositions[i] = lineProps.lineTarget.transform.position;
+            }
+            data.connectedLinePositions = linePositions;
+        }
+
+        ClientConnectSyncClientRpc(data);
     }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        if (data.connectedLinePositions != null)
+        {
+            foreach (var pos in data.connectedLinePositions)
+            {
+                StartCoroutine(SetInvoke(pos));
+            }
+        }
+    }
+
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    LDConnectedSetServerRpc();
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{
@@ -94,25 +124,25 @@ public class LDConnector : Structure
     //    LDConnectedSetServerRpc();
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    void LDConnectedSetServerRpc()
-    {
-        for (int i = 0; i < clickEvent.lines.Count; i++)
-        {
-            LineRenderer lineRenderer = clickEvent.lines[i];
-            MapLine lineProps = lineRenderer.GetComponent<MapLine>();
-            LDConnectedSetClientRpc(lineProps.lineTarget.transform.position);
-        }
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //void LDConnectedSetServerRpc()
+    //{
+    //    for (int i = 0; i < clickEvent.lines.Count; i++)
+    //    {
+    //        LineRenderer lineRenderer = clickEvent.lines[i];
+    //        MapLine lineProps = lineRenderer.GetComponent<MapLine>();
+    //        LDConnectedSetClientRpc(lineProps.lineTarget.transform.position);
+    //    }
+    //}
 
-    [ClientRpc]
-    void LDConnectedSetClientRpc(Vector3 pos)
-    {
-        if (IsServer)
-            return;
+    //[ClientRpc]
+    //void LDConnectedSetClientRpc(Vector3 pos)
+    //{
+    //    if (IsServer)
+    //        return;
 
-        StartCoroutine(SetInvoke(pos));
-    }
+    //    StartCoroutine(SetInvoke(pos));
+    //}
 
     IEnumerator SetInvoke(Vector3 pos)
     {

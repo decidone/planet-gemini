@@ -77,11 +77,48 @@ public class Miner : Production
         slot = inventory.SlotCheck(0);
     }
 
-    public override void OnClientConnectedCallback()
+    public override void ClientConnectSync()
     {
-        base.OnClientConnectedCallback();
-        InitStartServerRpc();
+        var data = CollectBaseSyncData();
+
+        data.itemIndexes = new int[0];
+
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        ClientConnectSyncClientRpc(data);
     }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        Init();
+    }
+
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    InitStartServerRpc();
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{ 
@@ -89,18 +126,18 @@ public class Miner : Production
     //    InitStartServerRpc();
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    void InitStartServerRpc()
-    {
-        InitStartClientRpc();
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //void InitStartServerRpc()
+    //{
+    //    InitStartClientRpc();
+    //}
 
-    [ClientRpc]
-    void InitStartClientRpc()
-    {
-        if(!IsServer)
-            Init();
-    }
+    //[ClientRpc]
+    //void InitStartClientRpc()
+    //{
+    //    if(!IsServer)
+    //        Init();
+    //}
 
     void Init()
     {

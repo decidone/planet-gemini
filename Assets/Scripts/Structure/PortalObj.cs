@@ -33,11 +33,16 @@ public class PortalObj : Production
 
     public virtual void ConnectMyObj(NetworkObjectReference networkObjectReference) { }
 
-    public override void OnClientConnectedCallback()
+    protected override void ApplyExtraSync(StructureSyncData data)
     {
-        base.OnClientConnectedCallback();
         PortalObjConnectServerRpc();
     }
+
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    PortalObjConnectServerRpc();
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{

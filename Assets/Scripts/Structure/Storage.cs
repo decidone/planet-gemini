@@ -16,7 +16,7 @@ public class Storage : Production
         inventory.space = invenSize[level];
     }
 
-    protected override void OnClientConnectSync()
+    protected override void ApplyExtraSync(StructureSyncData data)
     {
         inventory.space = invenSize[level];
     }

@@ -116,11 +116,55 @@ public class FluidFactoryCtrl : Production
         }
     }
 
-    public override void OnClientConnectedCallback()
+    public override void ClientConnectSync()
     {
-        base.OnClientConnectedCallback();
-        FluidSyncServerRpc();
+        var data = CollectBaseSyncData();
+
+        data.itemIndexes = new int[0];
+
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        data.recipeIndex = this.recipeIndex;
+
+        // FluidFactoryCtrl 전용
+        data.saveFluidNum = this.saveFluidNum;
+        data.fluidName = this.fluidName;
+
+        ClientConnectSyncClientRpc(data);
     }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        saveFluidNum = data.saveFluidNum;
+        fluidName = data.fluidName;
+    }
+
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    FluidSyncServerRpc();
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{

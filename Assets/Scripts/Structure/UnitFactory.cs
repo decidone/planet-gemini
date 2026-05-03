@@ -136,11 +136,59 @@ public class UnitFactory : Production
         base.DestroyLineRenderer();
     }
 
-    public override void OnClientConnectedCallback()
+    public override void ClientConnectSync()
     {
-        base.OnClientConnectedCallback();
-        ConnectedSetServerRpc();
+        var data = CollectBaseSyncData();
+
+        // Production은 itemList 안 씀
+        data.itemIndexes = new int[0];
+
+        // Production: inventory 데이터
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        data.recipeIndex = this.recipeIndex;
+
+        data.isSetPos = this.isSetPos;
+        data.movePos = this.movePos;
+
+        ClientConnectSyncClientRpc(data);
     }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        if (data.isSetPos)
+        {
+            isSetPos = true;
+            movePos = data.movePos;
+        }
+    }
+
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    ConnectedSetServerRpc();
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{
@@ -148,23 +196,23 @@ public class UnitFactory : Production
     //    ConnectedSetServerRpc();
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    void ConnectedSetServerRpc()
-    {
-        if (isSetPos)
-        {
-            ConnectedSetClientRpc(movePos);
-        }
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //void ConnectedSetServerRpc()
+    //{
+    //    if (isSetPos)
+    //    {
+    //        ConnectedSetClientRpc(movePos);
+    //    }
+    //}
 
-    [ClientRpc]
-    void ConnectedSetClientRpc(Vector3 _movePos)
-    {
-        if (IsServer)
-            return;
+    //[ClientRpc]
+    //void ConnectedSetClientRpc(Vector3 _movePos)
+    //{
+    //    if (IsServer)
+    //        return;
 
-        UnitSpawnPosSetServerRpc(_movePos);
-    }
+    //    UnitSpawnPosSetServerRpc(_movePos);
+    //}
 
     public override void OpenRecipe()
     {

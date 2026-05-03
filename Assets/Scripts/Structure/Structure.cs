@@ -542,9 +542,6 @@ public class Structure : WorldObj
     public virtual void OnClientConnectedCallback()
     {
         ClientConnectSyncServerRpc();
-        //RepairGaugeServerRpc();
-        //ItemSyncServerRpc();
-        //ClientSyncServerRpc();
     }
 
     public override void OnNetworkSpawn()
@@ -566,6 +563,12 @@ public class Structure : WorldObj
     }
 
     public virtual void ClientConnectSync()
+    {
+        var data = CollectBaseSyncData();
+        ClientConnectSyncClientRpc(data);
+    }
+
+    protected StructureSyncData CollectBaseSyncData()
     {
         NetworkObjectReference[] nearObjRefs = new NetworkObjectReference[nearObj.Length];
         bool[] nearObjValids = new bool[nearObj.Length];
@@ -592,7 +595,7 @@ public class Structure : WorldObj
             itemIndexes[i] = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
         }
 
-        var data = new StructureSyncData
+        return new StructureSyncData
         {
             level = this.level,
             dirNum = this.dirNum,
@@ -613,18 +616,27 @@ public class Structure : WorldObj
             repairGauge = this.repairGauge,
             destroyTimer = this.destroyTimer,
 
-            // ItemList
             itemIndexes = itemIndexes,
 
-            // Production
+            // 자식 전용 기본값
             inventorySlotNums = new int[0],
             inventoryItemIndexes = new int[0],
             inventoryItemAmounts = new int[0],
-
-            recipeIndex = -1
+            recipeIndex = -1,
+            stored = 0,
+            connectedLinePositions = new Vector3[0],
+            saveFluidNum = 0,
+            fluidName = "",
+            maxBuyAmount = 0,
+            buyInterval = 0,
+            takeBuildPos = Vector3.zero,
+            hasTakeBuild = false,
+            isToggleOn = false,
+            sendAmount = 0,
+            movePos = Vector2.zero,
+            isSetPos = false,
+            energyBulletAmount = 0
         };
-
-        ClientConnectSyncClientRpc(data);
     }
 
     //[ClientRpc]
@@ -704,7 +716,6 @@ public class Structure : WorldObj
         if (IsServer)
             return;
 
-        // ClientConnectSync 처리 (기존 그대로)
         level = data.level;
         DataSet();
         maxHp = structureData.MaxHp[level];
@@ -724,7 +735,6 @@ public class Structure : WorldObj
         onEffectUpgradeCheck.Invoke();
         StrBuilt();
 
-        // NearAndInOut 처리 (기존 그대로)
         CheckPos();
         for (int i = 0; i < data.nearObjRefs.Length; i++)
         {
@@ -747,19 +757,14 @@ public class Structure : WorldObj
                 inObj.Add(obj.GetComponent<Structure>());
         }
 
-        // MapData 처리 (기존 그대로)
         MapDataSet(data.position);
 
-        // ===== 추가: RepairGauge 처리 =====
         StructureStateSet(data.isPreBuilding, data.destroyStart, data.hp, data.repairGauge, data.destroyTimer);
 
-        // ===== 추가: ItemList 처리 =====
         ApplyItemSync(data);
+        ApplyExtraSync(data);
 
-        // 모든 처리 끝 → 동기화 완료
         settingEndCheck = true;
-
-        OnClientConnectSync();
     }
 
     protected virtual void ApplyItemSync(StructureSyncData data)
@@ -774,7 +779,10 @@ public class Structure : WorldObj
         }
     }
 
-    protected virtual void OnClientConnectSync() { } //ClientConnectSyncClientRpc 에서 오버라드드 할것들용
+    protected virtual void ApplyExtraSync(StructureSyncData data)
+    {
+        // 자식 클래스가 자기 추가 데이터 적용용
+    }
 
     protected virtual void ItemListClear()
     {

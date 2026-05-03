@@ -155,11 +155,69 @@ public class Transporter : Production
         //base.DestroyLineRenderer();
     }
 
-    public override void OnClientConnectedCallback()
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    ConnectedSetServerRpc();
+    //    SendFuncSetServerRpc(isToggleOn, sendAmount);
+    //}
+
+    public override void ClientConnectSync()
     {
-        base.OnClientConnectedCallback();
-        ConnectedSetServerRpc();
-        SendFuncSetServerRpc(isToggleOn, sendAmount);
+        var data = CollectBaseSyncData();
+
+        // Production은 itemList 안 씀
+        data.itemIndexes = new int[0];
+
+        // Production: inventory 데이터
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        data.recipeIndex = this.recipeIndex;
+
+        // Transporter 전용
+        if (takeBuild != null)
+        {
+            data.takeBuildPos = takeBuild.transform.position;
+            data.hasTakeBuild = true;
+        }
+        data.isToggleOn = this.isToggleOn;
+        data.sendAmount = this.sendAmount;
+
+        ClientConnectSyncClientRpc(data);
+    }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        if (data.hasTakeBuild)
+        {
+            StartCoroutine(SetInvoke(data.takeBuildPos));
+        }
+
+        isToggleOn = data.isToggleOn;
+        sendAmount = data.sendAmount;
+        if (sInvenManager != null)
+            sInvenManager.TransporterResetUI();
     }
 
     //protected override void OnClientConnectedCallback(ulong clientId)
@@ -169,23 +227,23 @@ public class Transporter : Production
     //    SendFuncSetServerRpc(isToggleOn, sendAmount);
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    void ConnectedSetServerRpc()
-    {
-        if (takeBuild != null)
-        {
-            ConnectedSetClientRpc(takeBuild.transform.position);
-        }
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //void ConnectedSetServerRpc()
+    //{
+    //    if (takeBuild != null)
+    //    {
+    //        ConnectedSetClientRpc(takeBuild.transform.position);
+    //    }
+    //}
 
-    [ClientRpc]
-    void ConnectedSetClientRpc(Vector3 pos)
-    {
-        if (IsServer)
-            return;
+    //[ClientRpc]
+    //void ConnectedSetClientRpc(Vector3 pos)
+    //{
+    //    if (IsServer)
+    //        return;
 
-        StartCoroutine(SetInvoke(pos));
-    }
+    //    StartCoroutine(SetInvoke(pos));
+    //}
 
     IEnumerator SetInvoke(Vector3 pos)
     {

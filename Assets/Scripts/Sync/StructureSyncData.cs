@@ -23,16 +23,38 @@ public struct StructureSyncData : INetworkSerializable
     public float repairGauge;
     public float destroyTimer;
 
-    // ===== 추가: ItemSync (Structure.itemList) =====
+    //itemList
     public int[] itemIndexes;
 
-    // ===== 추가: ItemSync (Production.inventory) =====
+    //inven
     public int[] inventorySlotNums;
     public int[] inventoryItemIndexes;
     public int[] inventoryItemAmounts;
 
-    // ===== 추가: Recipe =====
     public int recipeIndex;  // -1이면 미사용
+
+    public float stored;  // EnergyBattery
+
+    public Vector3[] connectedLinePositions;    // LDConnector
+
+    public float saveFluidNum;
+    public string fluidName;
+
+    // Buyer
+    public int maxBuyAmount;
+    public int buyInterval;
+
+    // Transporter
+    public Vector3 takeBuildPos;
+    public bool hasTakeBuild;
+    public bool isToggleOn;
+    public int sendAmount;
+
+    // UnitFactory
+    public Vector2 movePos;
+    public bool isSetPos;
+
+    public int energyBulletAmount;
 
     public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
     {
@@ -62,5 +84,25 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref inventoryItemAmounts);
 
         s.SerializeValue(ref recipeIndex);
+
+        s.SerializeValue(ref stored);
+
+        s.SerializeValue(ref connectedLinePositions);
+
+        s.SerializeValue(ref saveFluidNum);
+        s.SerializeValue(ref fluidName);
+
+        s.SerializeValue(ref maxBuyAmount);
+        s.SerializeValue(ref buyInterval);
+
+        s.SerializeValue(ref takeBuildPos);
+        s.SerializeValue(ref hasTakeBuild);
+        s.SerializeValue(ref isToggleOn);
+        s.SerializeValue(ref sendAmount);
+
+        s.SerializeValue(ref movePos);
+        s.SerializeValue(ref isSetPos);
+
+        s.SerializeValue(ref energyBulletAmount);
     }
 }

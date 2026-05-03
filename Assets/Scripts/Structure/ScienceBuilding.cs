@@ -20,11 +20,16 @@ public class ScienceBuilding : PortalObj
             unitCanvas.SetActive(false);
     }
 
-    public override void OnClientConnectedCallback()
+    protected override void ApplyExtraSync(StructureSyncData data)
     {
-        base.OnClientConnectedCallback();
         PortalObjConnectServerRpc();
     }
+
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    PortalObjConnectServerRpc();
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{

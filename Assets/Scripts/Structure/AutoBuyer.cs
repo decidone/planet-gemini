@@ -301,11 +301,11 @@ public class AutoBuyer : Production
         MinSliderUIValueChanged(0);
     }
 
-    public override void OnClientConnectedCallback()
-    {
-        base.OnClientConnectedCallback();
-        ClientBuyerSyncServerRpc();
-    }
+    //public override void OnClientConnectedCallback()
+    //{
+    //    base.OnClientConnectedCallback();
+    //    ClientBuyerSyncServerRpc();
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{
@@ -313,25 +313,77 @@ public class AutoBuyer : Production
     //    ClientBuyerSyncServerRpc();
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    public void ClientBuyerSyncServerRpc()
+    //[ServerRpc(RequireOwnership = false)]
+    //public void ClientBuyerSyncServerRpc()
+    //{
+    //    ClientBuyerSyncClientRpc(maxBuyAmount, buyInterval);
+    //}
+
+    //[ClientRpc]
+    //public void ClientBuyerSyncClientRpc(int max, int interval)
+    //{
+    //    if (!IsServer)
+    //    {
+    //        maxBuyAmount = max;
+    //        buyInterval = interval;
+    //        cooldown = buyInterval;
+    //        if (isUIOpened)
+    //        {
+    //            sInvenManager.progressBar.SetMaxProgress(cooldown);
+    //            sInvenManager.SetCooldownText(cooldown);
+    //        }
+    //    }
+    //}
+
+    public override void ClientConnectSync()
     {
-        ClientBuyerSyncClientRpc(maxBuyAmount, buyInterval);
+        var data = CollectBaseSyncData();
+
+        // Production은 itemList 안 씀
+        data.itemIndexes = new int[0];
+
+        // Production: inventory 데이터
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        data.recipeIndex = this.recipeIndex;
+
+        // AutoBuyer 전용
+        data.maxBuyAmount = this.maxBuyAmount;
+        data.buyInterval = this.buyInterval;
+
+        ClientConnectSyncClientRpc(data);
     }
 
-    [ClientRpc]
-    public void ClientBuyerSyncClientRpc(int max, int interval)
+    protected override void ApplyExtraSync(StructureSyncData data)
     {
-        if (!IsServer)
+        maxBuyAmount = data.maxBuyAmount;
+        buyInterval = data.buyInterval;
+        cooldown = buyInterval;
+        if (isUIOpened)
         {
-            maxBuyAmount = max;
-            buyInterval = interval;
-            cooldown = buyInterval;
-            if (isUIOpened)
-            {
-                sInvenManager.progressBar.SetMaxProgress(cooldown);
-                sInvenManager.SetCooldownText(cooldown);
-            }
+            sInvenManager.progressBar.SetMaxProgress(cooldown);
+            sInvenManager.SetCooldownText(cooldown);
         }
     }
 
