@@ -56,6 +56,10 @@ public struct StructureSyncData : INetworkSerializable
 
     public int energyBulletAmount;
 
+    // SendUnderBelt
+    public int[] sendingItemIndexes;
+    public float[] sendingItemTimes;
+
     public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
     {
         s.SerializeValue(ref level);
@@ -104,5 +108,7 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref isSetPos);
 
         s.SerializeValue(ref energyBulletAmount);
+        s.SerializeValue(ref sendingItemIndexes);
+        s.SerializeValue(ref sendingItemTimes);
     }
 }

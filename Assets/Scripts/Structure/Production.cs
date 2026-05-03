@@ -365,28 +365,28 @@ public abstract class Production : Structure
             SetRecipeClientRpc(recipeId);
     }
 
-    public override void ItemSyncServer()
-    {
-        List<int> slotNums = new List<int>();
-        List<int> itemIndexs = new List<int>();
-        List<int> itemAmounts = new List<int>();
-        int index = 0;
+    //public override void ItemSyncServer()
+    //{
+    //    List<int> slotNums = new List<int>();
+    //    List<int> itemIndexs = new List<int>();
+    //    List<int> itemAmounts = new List<int>();
+    //    int index = 0;
 
-        for (int i = 0; i < inventory.space; i++)
-        {
-            var slot = inventory.SlotCheck(i);
+    //    for (int i = 0; i < inventory.space; i++)
+    //    {
+    //        var slot = inventory.SlotCheck(i);
 
-            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
-            if (itemIndex != -1)
-            {
-                index++;
-                slotNums.Add(i);
-                itemIndexs.Add(itemIndex);
-                itemAmounts.Add(slot.amount);
-            }
-        }
-        ItemSyncClientRpc(slotNums.ToArray(), itemIndexs.ToArray(), itemAmounts.ToArray(), index);
-    }
+    //        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+    //        if (itemIndex != -1)
+    //        {
+    //            index++;
+    //            slotNums.Add(i);
+    //            itemIndexs.Add(itemIndex);
+    //            itemAmounts.Add(slot.amount);
+    //        }
+    //    }
+    //    ItemSyncClientRpc(slotNums.ToArray(), itemIndexs.ToArray(), itemAmounts.ToArray(), index);
+    //}
 
     protected override void ItemListClear()
     {

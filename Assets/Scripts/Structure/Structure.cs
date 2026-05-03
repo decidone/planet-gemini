@@ -635,7 +635,9 @@ public class Structure : WorldObj
             sendAmount = 0,
             movePos = Vector2.zero,
             isSetPos = false,
-            energyBulletAmount = 0
+            energyBulletAmount = 0,
+            sendingItemIndexes = new int[0],
+            sendingItemTimes = new float[0]
         };
     }
 
@@ -675,22 +677,22 @@ public class Structure : WorldObj
     //    }
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    public void ItemSyncServerRpc()
-    {
-        ItemSyncServer();
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //public void ItemSyncServerRpc()
+    //{
+    //    ItemSyncServer();
+    //}
 
-    public virtual void ItemSyncServer()
-    {
-        List<int> itemIndexList = new List<int>();
-        for (int i = 0; i < itemList.Count; i++)
-        {
-            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
-            itemIndexList.Add(itemIndex);
-        }
-        ItemSyncClientRpc(itemIndexList.ToArray());
-    }
+    //public virtual void ItemSyncServer()
+    //{
+    //    List<int> itemIndexList = new List<int>();
+    //    for (int i = 0; i < itemList.Count; i++)
+    //    {
+    //        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
+    //        itemIndexList.Add(itemIndex);
+    //    }
+    //    ItemSyncClientRpc(itemIndexList.ToArray());
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     protected void RepairGaugeServerRpc()

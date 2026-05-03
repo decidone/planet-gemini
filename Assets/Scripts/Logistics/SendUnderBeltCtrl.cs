@@ -477,51 +477,78 @@ public class SendUnderBeltCtrl : LogisticsCtrl
         sendingItems.Add((itemIndex, time));
     }
 
-    public override void ItemSyncServer()
+    public override void ClientConnectSync()
     {
-        SendingItemsListClearServerRpc();
-        List<int> itemIndexList = new List<int>();
-        for (int i = 0; i < itemList.Count; i++)
-        {
-            int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
-            itemIndexList.Add(itemIndex);
-        }
-        ItemSyncClientRpc(itemIndexList.ToArray());
+        var data = CollectBaseSyncData();
 
-        List<(int, float)> sendingItemsCopy = new List<(int, float)>(sendingItems);
-        int[] itemIndexs = new int[sendingItemsCopy.Count];
-        float[] times = new float[sendingItemsCopy.Count];
-
-        for (int i = 0; i < sendingItemsCopy.Count; i++)
+        // sendingItems 데이터 수집
+        int[] itemIndexes = new int[sendingItems.Count];
+        float[] times = new float[sendingItems.Count];
+        for (int i = 0; i < sendingItems.Count; i++)
         {
-            itemIndexs[i] = sendingItemsCopy[i].Item1;
-            times[i] = sendingItemsCopy[i].Item2;
+            itemIndexes[i] = sendingItems[i].Item1;
+            times[i] = sendingItems[i].Item2;
         }
-        OnlyClientSyncSendingItemClientRpc(itemIndexs, times);
+        data.sendingItemIndexes = itemIndexes;
+        data.sendingItemTimes = times;
+
+        ClientConnectSyncClientRpc(data);
     }
 
-    [ClientRpc]
-    void OnlyClientSyncSendingItemClientRpc(int[] itemIndex, float[] time)
+    protected override void ApplyExtraSync(StructureSyncData data)
     {
-        if (!IsServer)
+        sendingItems.Clear();
+        for (int i = 0; i < data.sendingItemIndexes.Length; i++)
         {
-            for (int i = 0; i < itemIndex.Length; i++)
-            {
-                sendingItems.Add((itemIndex[i], time[i]));
-            }    
+            sendingItems.Add((data.sendingItemIndexes[i], data.sendingItemTimes[i]));
         }
     }
 
-    [ServerRpc]
-    public void SendingItemsListClearServerRpc()
-    {
-        SendingItemsListClearClientRpc();
-    }
+    //public override void ItemSyncServer()
+    //{
+    //    SendingItemsListClearServerRpc();
+    //    List<int> itemIndexList = new List<int>();
+    //    for (int i = 0; i < itemList.Count; i++)
+    //    {
+    //        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemList[i]);
+    //        itemIndexList.Add(itemIndex);
+    //    }
+    //    ItemSyncClientRpc(itemIndexList.ToArray());
 
-    [ClientRpc]
-    public void SendingItemsListClearClientRpc()
-    {
-        if (!IsServer)
-            sendingItems.Clear();
-    }
+    //    List<(int, float)> sendingItemsCopy = new List<(int, float)>(sendingItems);
+    //    int[] itemIndexs = new int[sendingItemsCopy.Count];
+    //    float[] times = new float[sendingItemsCopy.Count];
+
+    //    for (int i = 0; i < sendingItemsCopy.Count; i++)
+    //    {
+    //        itemIndexs[i] = sendingItemsCopy[i].Item1;
+    //        times[i] = sendingItemsCopy[i].Item2;
+    //    }
+    //    OnlyClientSyncSendingItemClientRpc(itemIndexs, times);
+    //}
+
+    //[ClientRpc]
+    //void OnlyClientSyncSendingItemClientRpc(int[] itemIndex, float[] time)
+    //{
+    //    if (!IsServer)
+    //    {
+    //        for (int i = 0; i < itemIndex.Length; i++)
+    //        {
+    //            sendingItems.Add((itemIndex[i], time[i]));
+    //        }    
+    //    }
+    //}
+
+    //[ServerRpc]
+    //public void SendingItemsListClearServerRpc()
+    //{
+    //    SendingItemsListClearClientRpc();
+    //}
+
+    //[ClientRpc]
+    //public void SendingItemsListClearClientRpc()
+    //{
+    //    if (!IsServer)
+    //        sendingItems.Clear();
+    //}
 }

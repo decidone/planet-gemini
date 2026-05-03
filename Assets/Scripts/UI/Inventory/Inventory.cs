@@ -546,7 +546,7 @@ public class Inventory : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SlotSubServerRpc(int slotNum, int amount)
     {
-         if(!portalInven)
+        if (!portalInven)
             SlotSubClientRpc(slotNum, amount);
         else
             GameManager.instance.WaveSkipItemSubServerRpc(slotNum, amount);
@@ -717,7 +717,7 @@ public class Inventory : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void RemoveServerRpc(int slotNum)
     {
-        if(!portalInven)
+        if (!portalInven)
             RemoveClientRpc(slotNum);
         else
             GameManager.instance.WaveSkipItemRemoveServerRpc(slotNum);

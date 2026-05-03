@@ -235,7 +235,9 @@ public class BeltCtrl : LogisticsCtrl
         }
     }
 
-    public override void ItemSyncServer() { }
+    //public override void ItemSyncServer() { }
+
+    protected override void ApplyItemSync(StructureSyncData data) { }
 
     //[ServerRpc(RequireOwnership = false)]
     //public override void ItemSyncServerRpc()

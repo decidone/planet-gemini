@@ -142,7 +142,15 @@ public class PortalUnitIn : PortalObj
         base.DestroyLineRenderer();
     }
 
-    public override void ItemSyncServer()
+    public override void OnClientConnectedCallback()
+    {
+        base.OnClientConnectedCallback();
+
+        if (IsServer)
+            UnitSync();
+    }
+
+    public void UnitSync()
     {
         int[] itemindexs = new int[displaySlots.Length];
         NetworkObjectReference[] sendUnit = new NetworkObjectReference[displaySlots.Length];
@@ -160,22 +168,49 @@ public class PortalUnitIn : PortalObj
                 break;
         }
 
-        ItemSyncClientRpc(itemindexs, sendUnit);
+        UnitSyncClientRpc(itemindexs, sendUnit);
     }
 
-    [ClientRpc]
-    protected void ItemSyncClientRpc(int[] itemIndex, NetworkObjectReference[] networkObjectReference, ClientRpcParams rpcParams = default)
-    {
-        if (IsServer)
-            return;
+    //[ClientRpc]
+    //protected void UnitSyncClientRpc(int[] itemIndex, NetworkObjectReference[] networkObjectReference, ClientRpcParams rpcParams = default)
+    //{
+    //    if (IsServer)
+    //        return;
 
+    //    for (int i = 0; i < itemIndex.Length; i++)
+    //    {
+    //        if (itemIndex[i] != -1)
+    //        {
+    //            networkObjectReference[i].TryGet(out NetworkObject networkObject);
+    //            GameObject unit = networkObject.gameObject;
+    //            sendUnitList.Add(unit);
+    //        }
+    //    }
+
+    //    DisplaySlotChange();
+    //}
+
+    [ClientRpc]
+    protected void UnitSyncClientRpc(int[] itemIndex, NetworkObjectReference[] networkObjectReference, ClientRpcParams rpcParams = default)
+    {
+        if (IsServer) return;
+
+        StartCoroutine(WaitForSyncComplete(itemIndex, networkObjectReference));
+    }
+
+    IEnumerator WaitForSyncComplete(int[] itemIndex, NetworkObjectReference[] unitRefs)
+    {
+        // 클라이언트 동기화 완료까지 대기
+        yield return new WaitUntil(() => NetworkObjManager.instance.clientSyncComplete);
+
+        sendUnitList.Clear();
         for (int i = 0; i < itemIndex.Length; i++)
         {
-            if (itemIndex[i] != -1)
+            if (itemIndex[i] == -1) continue;
+
+            if (unitRefs[i].TryGet(out NetworkObject networkObject))
             {
-                networkObjectReference[i].TryGet(out NetworkObject networkObject);
-                GameObject unit = networkObject.gameObject;
-                sendUnitList.Add(unit);
+                sendUnitList.Add(networkObject.gameObject);
             }
         }
 

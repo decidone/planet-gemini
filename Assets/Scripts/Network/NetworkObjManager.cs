@@ -75,13 +75,13 @@ public class NetworkObjManager : NetworkBehaviour
 
     public void NetObjAdd(WorldObj worldObj)
     {
-        if(worldObj.TryGet(out Portal portal))
+        if (worldObj.TryGetComponent(out Portal portal))
         {
             netPortals.Add(portal);
         }
-        else if (worldObj.TryGet(out Structure structure))
+        else if (worldObj.TryGetComponent(out Structure structure))
         {
-            if(worldObj.TryGet(out BeltCtrl belt))
+            if(worldObj.TryGetComponent(out BeltCtrl belt))
             {
                 networkBelts.Add(belt);
             }
@@ -91,7 +91,7 @@ public class NetworkObjManager : NetworkBehaviour
                 onStructureChangedCallback?.Invoke(20);
             }
         }
-        else if (worldObj.TryGet(out UnitCommonAi unitCommonAi))
+        else if (worldObj.TryGetComponent(out UnitCommonAi unitCommonAi))
         {
             netUnitCommonAis.Add(unitCommonAi);
             onUnitChangedCallback?.Invoke(23);
@@ -138,7 +138,12 @@ public class NetworkObjManager : NetworkBehaviour
 
     private IEnumerator SyncCoroutine()
     {
-        int batchSize = 50;
+        int batchSize = 100;
+
+        for (int i = 0; i < netPortals.Count; i++)
+        {
+            netPortals[i].OnClientConnectedCallback();
+        }
 
         // Structure 동기화
         for (int i = 0; i < netStructures.Count; i++)

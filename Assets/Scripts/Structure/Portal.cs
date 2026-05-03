@@ -57,12 +57,57 @@ public class Portal : Production
 
     public override void OnClientConnectedCallback()
     {
-        if (IsServer)
+        if (IsServer && inventory != null)
         {
-            if (inventory != null)
-                ItemSyncServerRpc();
+            // inventory 데이터 수집
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            PortalInventorySyncClientRpc(slotNums.ToArray(), itemIdxs.ToArray(), amounts.ToArray());
         }
     }
+
+    [ClientRpc]
+    void PortalInventorySyncClientRpc(int[] slotNum, int[] itemIndex, int[] itemAmount)
+    {
+        if (IsServer) return;
+
+        if (inventory == null) return;
+
+        inventory.ResetInven();
+
+        int count = itemIndex.Length;
+        if (count == 0) return;
+
+        Item[] items = new Item[count];
+        for (int i = 0; i < count; i++)
+        {
+            items[i] = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
+        }
+        inventory.NonNetSlotsAdd(slotNum, items, itemAmount, count);
+    }
+
+    //public override void OnClientConnectedCallback()
+    //{
+    //    if (IsServer)
+    //    {
+    //        if (inventory != null)
+    //            ItemSyncServerRpc();
+    //    }
+    //}
 
     //protected override void OnClientConnectedCallback(ulong clientId)
     //{
