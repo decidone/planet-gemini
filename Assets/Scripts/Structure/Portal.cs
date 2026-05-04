@@ -18,6 +18,21 @@ public class Portal : Production
 
     protected override void Awake()
     {
+        foreach (var comp in GetComponents<Component>())
+        {
+            var type = comp.GetType();
+
+            // 자기 자신부터 Component까지 올라가면서 전부 등록
+            while (type != null && type != typeof(MonoBehaviour)
+                                && type != typeof(Behaviour)
+                                && type != typeof(Component))
+            {
+                if (!_cache.ContainsKey(type))
+                    _cache[type] = comp;
+
+                type = type.BaseType;
+            }
+        }
         //myVision.SetActive(false);
         buildName = "Portal";   // 포탈 건물은 따로 데이터를 두지 않아서 직접 이름을 잡아줌
         inventory = GetComponent<Inventory>();

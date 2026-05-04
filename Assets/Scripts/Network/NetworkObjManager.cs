@@ -75,13 +75,13 @@ public class NetworkObjManager : NetworkBehaviour
 
     public void NetObjAdd(WorldObj worldObj)
     {
-        if (worldObj.TryGetComponent(out Portal portal))
+        if (worldObj.TryGet(out Portal portal))
         {
             netPortals.Add(portal);
         }
-        else if (worldObj.TryGetComponent(out Structure structure))
+        else if (worldObj.TryGet(out Structure structure))
         {
-            if(worldObj.TryGetComponent(out BeltCtrl belt))
+            if(worldObj.TryGet(out BeltCtrl belt))
             {
                 networkBelts.Add(belt);
             }
@@ -91,7 +91,7 @@ public class NetworkObjManager : NetworkBehaviour
                 onStructureChangedCallback?.Invoke(20);
             }
         }
-        else if (worldObj.TryGetComponent(out UnitCommonAi unitCommonAi))
+        else if (worldObj.TryGet(out UnitCommonAi unitCommonAi))
         {
             netUnitCommonAis.Add(unitCommonAi);
             onUnitChangedCallback?.Invoke(23);
