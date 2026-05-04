@@ -88,23 +88,45 @@ public class Unloader : LogisticsCtrl
 
     public override void ClientConnectSync()
     {
-        base.ClientConnectSync();
+        var data = CollectBaseSyncData();
 
-        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
-        ClientFillterSetClientRpc(itemIndex);
+        // Unloader 전용
+        data.unloaderSelectItemIndex = selectItem != null
+            ? GeminiNetworkManager.instance.GetItemSOIndex(selectItem)
+            : -1;
+
+        ClientConnectSyncClientRpc(data);
     }
 
-    [ClientRpc]
-    void ClientFillterSetClientRpc(int itemIndex)
+    protected override void ApplyExtraSync(StructureSyncData data)
     {
-        if (IsServer)
-            return;
-
-        if (itemIndex >= 0)
+        if (data.unloaderSelectItemIndex >= 0)
         {
-            SelectItemSetClientRpc(itemIndex);
+            selectItem = GeminiNetworkManager.instance.GetItemSOFromIndex(data.unloaderSelectItemIndex);
+            FactoryOverlay();
+            UIReset();
         }
     }
+
+    //public override void ClientConnectSync()
+    //{
+    //    base.ClientConnectSync();
+
+    //    int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(selectItem);
+    //    ClientFillterSetClientRpc(itemIndex);
+    //}
+
+    //[ClientRpc]
+    //void ClientFillterSetClientRpc(int itemIndex)
+    //{
+    //    if (IsServer)
+    //        return;
+
+    //    if (itemIndex >= 0)
+    //    {
+    //        SelectItemSetClientRpc(itemIndex);
+    //    }
+    //}
 
     protected override IEnumerator SetOutObjCoroutine(Structure obj)
     {
@@ -161,7 +183,7 @@ public class Unloader : LogisticsCtrl
     {
         SelectItemSetClientRpc(itemIndex);
     }
-     
+    
     [ClientRpc]
     public void SelectItemSetClientRpc(int itemIndex)
     {

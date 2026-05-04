@@ -643,7 +643,9 @@ public class Structure : WorldObj
             modelMotion = 0,
             isTurn = false,
             isRightTurn = false,
-            beltStateInt = 0
+            beltStateInt = 0,
+            isAuto = false,
+            unloaderSelectItemIndex = -1
         };
     }
 
@@ -700,17 +702,17 @@ public class Structure : WorldObj
     //    ItemSyncClientRpc(itemIndexList.ToArray());
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    protected void RepairGaugeServerRpc()
-    {
-        RepairGaugeClientRpc(isPreBuilding, destroyStart, hp, repairGauge, destroyTimer);
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //protected void RepairGaugeServerRpc()
+    //{
+    //    RepairGaugeClientRpc(isPreBuilding, destroyStart, hp, repairGauge, destroyTimer);
+    //}
 
-    [ClientRpc]
-    protected void RepairGaugeClientRpc(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
-    {
-        StructureStateSet(preBuilding, destroy, hpSet, repairGaugeSet, destroyTimerSet);
-    }
+    //[ClientRpc]
+    //protected void RepairGaugeClientRpc(bool preBuilding, bool destroy, float hpSet, float repairGaugeSet, float destroyTimerSet)
+    //{
+    //    StructureStateSet(preBuilding, destroy, hpSet, repairGaugeSet, destroyTimerSet);
+    //}
 
     //[ClientRpc]
     //public void ConnectCheckClientRpc(bool isEnd)

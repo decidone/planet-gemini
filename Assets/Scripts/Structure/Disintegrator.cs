@@ -144,11 +144,52 @@ public class Disintegrator : Production
             autoToggle.SetIsOnWithoutNotify(auto);
     }
 
+    //public override void ClientConnectSync()
+    //{
+    //    base.ClientConnectSync();
+
+    //    SetAutoClientRpc(isAuto);
+    //}
+
     public override void ClientConnectSync()
     {
-        base.ClientConnectSync();
+        var data = CollectBaseSyncData();
 
-        SetAutoClientRpc(isAuto);
+        data.itemIndexes = new int[0];
+
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        data.isAuto = this.isAuto;
+
+        ClientConnectSyncClientRpc(data);
+    }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        isAuto = data.isAuto;
+        if (autoToggle != null)
+            autoToggle.SetIsOnWithoutNotify(isAuto);
     }
 
     public override void OpenUI()

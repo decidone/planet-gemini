@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -46,23 +47,75 @@ public class PipeCtrl : FluidFactoryCtrl
 
     public override void ClientConnectSync()
     {
-        base.ClientConnectSync();
+        var data = CollectBaseSyncData();
 
-        DirSyncClientRpc(isUp, isRight, isDown, isLeft);
-    }
+        // FluidFactoryCtrl 데이터 (Production 상속이므로 inventory 등도 채움)
+        data.itemIndexes = new int[0];
 
-    [ClientRpc]
-    void DirSyncClientRpc(bool up, bool right, bool down, bool left)
-    {
-        if(!IsServer)
+        if (inventory != null)
         {
-            isUp = up;
-            isRight = right;
-            isDown = down;
-            isLeft = left;
-            ChangeModel();
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
         }
+
+        data.saveFluidNum = this.saveFluidNum;
+        data.fluidName = this.fluidName;
+
+        data.isUp = this.isUp;
+        data.isRight = this.isRight;
+        data.isDown = this.isDown;
+        data.isLeft = this.isLeft;
+
+        ClientConnectSyncClientRpc(data);
     }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        base.ApplyExtraSync(data);
+
+        isUp = data.isUp;
+        isRight = data.isRight;
+        isDown = data.isDown;
+        isLeft = data.isLeft;
+        ChangeModel();
+    }
+
+    //public override void ClientConnectSync()
+    //{
+    //    base.ClientConnectSync();
+
+    //    DirSyncClientRpc(isUp, isRight, isDown, isLeft);
+    //}
+
+    //[ClientRpc]
+    //void DirSyncClientRpc(bool up, bool right, bool down, bool left)
+    //{
+    //    if(!IsServer)
+    //    {
+    //        isUp = up;
+    //        isRight = right;
+    //        isDown = down;
+    //        isLeft = left;
+    //        ChangeModel();
+    //    }
+    //}
 
     public override void NearStrBuilt()
     {

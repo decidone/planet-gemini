@@ -70,6 +70,11 @@ public struct StructureSyncData : INetworkSerializable
     public bool isRightTurn;
     public int beltStateInt;
 
+    // Disintegrator
+    public bool isAuto;
+
+    public int unloaderSelectItemIndex;
+
     public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
     {
         s.SerializeValue(ref level);
@@ -129,5 +134,9 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref isTurn);
         s.SerializeValue(ref isRightTurn);
         s.SerializeValue(ref beltStateInt);
+
+        s.SerializeValue(ref isAuto);
+
+        s.SerializeValue(ref unloaderSelectItemIndex);
     }
 }
