@@ -617,8 +617,6 @@ public class Structure : WorldObj
             destroyTimer = this.destroyTimer,
 
             itemIndexes = itemIndexes,
-
-            // 자식 전용 기본값
             inventorySlotNums = new int[0],
             inventoryItemIndexes = new int[0],
             inventoryItemAmounts = new int[0],
@@ -637,7 +635,15 @@ public class Structure : WorldObj
             isSetPos = false,
             energyBulletAmount = 0,
             sendingItemIndexes = new int[0],
-            sendingItemTimes = new float[0]
+            sendingItemTimes = new float[0],
+            isUp = false,
+            isRight = false,
+            isDown = false,
+            isLeft = false,
+            modelMotion = 0,
+            isTurn = false,
+            isRightTurn = false,
+            beltStateInt = 0
         };
     }
 
@@ -792,20 +798,20 @@ public class Structure : WorldObj
             itemList.Clear();
     }
 
-    [ClientRpc]
-    protected void ItemSyncClientRpc(int[] itemIndex)
-    {
-        if (IsServer)
-            return;
+    //[ClientRpc]
+    //protected void ItemSyncClientRpc(int[] itemIndex)
+    //{
+    //    if (IsServer)
+    //        return;
 
-        ItemListClear();
+    //    ItemListClear();
 
-        for (int i = 0; i < itemIndex.Length; i++)
-        {
-            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
-            itemList.Add(item);
-        }
-    }
+    //    for (int i = 0; i < itemIndex.Length; i++)
+    //    {
+    //        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
+    //        itemList.Add(item);
+    //    }
+    //}
 
     protected virtual void DataSet()
     {

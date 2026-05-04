@@ -388,28 +388,28 @@ public abstract class Production : Structure
     //    ItemSyncClientRpc(slotNums.ToArray(), itemIndexs.ToArray(), itemAmounts.ToArray(), index);
     //}
 
-    protected override void ItemListClear()
-    {
-        if (!IsServer)
-            inventory.ResetInven();
-    }
+    //protected override void ItemListClear()
+    //{
+    //    if (!IsServer)
+    //        inventory.ResetInven();
+    //}
 
-    [ClientRpc]
-    protected void ItemSyncClientRpc(int[] slotNum, int[] itemIndex, int[] itemAmount, int index, ClientRpcParams rpcParams = default)
-    {
-        if (IsServer)
-            return;
+    //[ClientRpc]
+    //protected void ItemSyncClientRpc(int[] slotNum, int[] itemIndex, int[] itemAmount, int index, ClientRpcParams rpcParams = default)
+    //{
+    //    if (IsServer)
+    //        return;
 
-        ItemListClear();
+    //    ItemListClear();
 
-        Item[] items = new Item[index];
-        for (int i = 0; i < index; i++)
-        {
-            Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
-            items[i] = item;
-        }
-        inventory.NonNetSlotsAdd(slotNum, items, itemAmount, index);
-    }
+    //    Item[] items = new Item[index];
+    //    for (int i = 0; i < index; i++)
+    //    {
+    //        Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
+    //        items[i] = item;
+    //    }
+    //    inventory.NonNetSlotsAdd(slotNum, items, itemAmount, index);
+    //}
 
     public void GameStartItemSet(InventorySaveData data)
     {

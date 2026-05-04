@@ -217,27 +217,58 @@ public class BeltCtrl : LogisticsCtrl
 
     public override void ClientConnectSync()
     {
-        base.ClientConnectSync();
+        var data = CollectBaseSyncData();
 
-        DirSyncClientRpc(isUp, isRight, isDown, isLeft);
-        ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
+        // BeltCtrl 전용 데이터
+        data.isUp = this.isUp;
+        data.isRight = this.isRight;
+        data.isDown = this.isDown;
+        data.isLeft = this.isLeft;
+        data.modelMotion = this.modelMotion;
+        data.isTurn = this.isTurn;
+        data.isRightTurn = this.isRightTurn;
+        data.beltStateInt = (int)this.beltState;
+
+        ClientConnectSyncClientRpc(data);
     }
-
-    [ClientRpc]
-    void DirSyncClientRpc(bool up, bool right, bool down, bool left)
-    {
-        if (!IsServer)
-        {
-            isUp = up;
-            isRight = right;
-            isDown = down;
-            isLeft = left;
-        }
-    }
-
-    //public override void ItemSyncServer() { }
 
     protected override void ApplyItemSync(StructureSyncData data) { }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        isUp = data.isUp;
+        isRight = data.isRight;
+        isDown = data.isDown;
+        isLeft = data.isLeft;
+        modelMotion = data.modelMotion;
+        isTurn = data.isTurn;
+        isRightTurn = data.isRightTurn;
+        beltState = (BeltState)data.beltStateInt;
+
+        DelayNearStrBuilt();
+    }
+
+    //public override void ClientConnectSync()
+    //{
+    //    base.ClientConnectSync();
+
+    //    DirSyncClientRpc(isUp, isRight, isDown, isLeft);
+    //    ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
+    //}
+
+    //[ClientRpc]
+    //void DirSyncClientRpc(bool up, bool right, bool down, bool left)
+    //{
+    //    if (!IsServer)
+    //    {
+    //        isUp = up;
+    //        isRight = right;
+    //        isDown = down;
+    //        isLeft = left;
+    //    }
+    //}
+
+    //public override void ItemSyncServer() { }
 
     //[ServerRpc(RequireOwnership = false)]
     //public override void ItemSyncServerRpc()
@@ -285,7 +316,7 @@ public class BeltCtrl : LogisticsCtrl
     //}
 
     [ClientRpc]
-    public void ClientConnectBeltSyncClientRpc(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)
+    public void ClientBeltSyncClientRpc(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)
     {
         if (IsServer)
         {
@@ -614,15 +645,17 @@ public class BeltCtrl : LogisticsCtrl
         {
             isTurn = false;
         }
+
         if (beltState == BeltState.StartBelt || beltState == BeltState.SoloBelt)
             Invoke(nameof(FactoryModelSet), 0.1f);
+
         BeltDataServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void BeltDataServerRpc()
     {
-        ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
+        ClientBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
     }
 
     public void FactoryPosCheck(Structure factory)

@@ -191,8 +191,9 @@ public class NetworkObjManager : NetworkBehaviour
         // BeltGroup 동기화
         for (int i = 0; i < netBeltGroupMgrs.Count; i++)
         {
-            netBeltGroupMgrs[i].ClientConnectSyncServerRpc();
-            netBeltGroupMgrs[i].BeltItemSyncServerRpc(_syncTargetClientId);
+            //netBeltGroupMgrs[i].ClientConnectSyncServerRpc();
+            //netBeltGroupMgrs[i].BeltItemSyncServerRpc(_syncTargetClientId);
+            netBeltGroupMgrs[i].BeltGroupClientConnectSyncServerRpc(_syncTargetClientId);
 
             bool isLastInBatch = (i + 1) % batchSize == 0;
             bool isLast = i == netBeltGroupMgrs.Count - 1;

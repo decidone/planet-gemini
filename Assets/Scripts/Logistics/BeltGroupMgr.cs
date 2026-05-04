@@ -88,32 +88,163 @@ public class BeltGroupMgr : NetworkBehaviour
         //}
     }
 
+    //[ServerRpc(RequireOwnership = false)]
+    //public void ClientConnectSyncServerRpc()
+    //{
+    //    for(int i = 0; i < beltList.Count; i ++)
+    //    {            
+    //        NetworkObjectReference mainId = beltList[i].NetworkObject;
+
+    //        if (i >= 1)
+    //        {
+    //            NetworkObjectReference preId = beltList[i - 1].NetworkObject;
+    //            PreBeltSetClientRpc(mainId, preId);
+    //        }
+    //        if (i < beltList.Count - 1)
+    //        {
+    //            NetworkObjectReference nextId = beltList[i + 1].NetworkObject;
+    //            NextBeltSetClientRpc(mainId, nextId);
+    //        }
+    //    }
+
+    //    if(nextObj)
+    //    {
+    //        NearObjSetClientRpc(nextObj.NetworkObject, true);
+    //    }
+    //    else if (preObj)
+    //    {
+    //        NearObjSetClientRpc(preObj.NetworkObject, false);
+    //    }
+    //}
+
     [ServerRpc(RequireOwnership = false)]
-    public void ClientConnectSyncServerRpc()
+    public void BeltGroupClientConnectSyncServerRpc(ulong targetClientId)
     {
-        for(int i = 0; i < beltList.Count; i ++)
-        {            
-            NetworkObjectReference mainId = beltList[i].NetworkObject;
+        NetworkObjectReference[] beltRefs = new NetworkObjectReference[beltList.Count];
+        for (int i = 0; i < beltList.Count; i++)
+            beltRefs[i] = beltList[i].NetworkObject;
 
-            if (i >= 1)
+        NetworkObjectReference nextRef = default;
+        bool hasNext = false;
+        NetworkObjectReference preRef = default;
+        bool hasPre = false;
+
+        if (nextObj != null)
+        {
+            nextRef = nextObj.NetworkObject;
+            hasNext = true;
+        }
+        else if (preObj != null)
+        {
+            preRef = preObj.NetworkObject;
+            hasPre = true;
+        }
+
+        var itemIndexList = new List<int>();
+        var itemPosList = new List<Vector2>();
+        var beltGroupIndexList = new List<int>();
+        var beltIndexList = new List<int>();
+
+        for (int beltIdx = 0; beltIdx < beltList.Count; beltIdx++)
+        {
+            BeltCtrl belt = beltList[beltIdx];
+            foreach (ItemProps item in belt.itemObjList)
             {
-                NetworkObjectReference preId = beltList[i - 1].NetworkObject;
-                PreBeltSetClientRpc(mainId, preId);
-            }
-            if (i < beltList.Count - 1)
-            {
-                NetworkObjectReference nextId = beltList[i + 1].NetworkObject;
-                NextBeltSetClientRpc(mainId, nextId);
+                itemIndexList.Add(GeminiNetworkManager.instance.GetItemSOIndex(item.item));
+                itemPosList.Add(item.transform.position);
+                beltGroupIndexList.Add(item.beltGroupIndex);
+                beltIndexList.Add(beltIdx);
             }
         }
 
-        if(nextObj)
+        var data = new BeltGroupSyncData
         {
-            NearObjSetClientRpc(nextObj.NetworkObject, true);
+            beltRefs = beltRefs,
+            nextObjRef = nextRef,
+            hasNextObj = hasNext,
+            preObjRef = preRef,
+            hasPreObj = hasPre,
+            itemIndexes = itemIndexList.ToArray(),
+            itemPositions = itemPosList.ToArray(),
+            itemBeltGroupIndexes = beltGroupIndexList.ToArray(),
+            itemBeltIndexes = beltIndexList.ToArray()
+        };
+
+        ClientRpcParams target = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new[] { targetClientId }
+            }
+        };
+
+        BeltGroupClientConnectSyncClientRpc(data, target);
+    }
+
+    [ClientRpc]
+    void BeltGroupClientConnectSyncClientRpc(BeltGroupSyncData data, ClientRpcParams rpcParams = default)
+    {
+        if (IsServer) return;
+
+        BeltCtrl[] belts = new BeltCtrl[data.beltRefs.Length];
+        for (int i = 0; i < data.beltRefs.Length; i++)
+        {
+            if (data.beltRefs[i].TryGet(out NetworkObject obj))
+                belts[i] = obj.GetComponent<BeltCtrl>();
         }
-        else if (preObj)
+
+        for (int i = 0; i < belts.Length; i++)
         {
-            NearObjSetClientRpc(preObj.NetworkObject, false);
+            if (belts[i] == null) continue;
+
+            if (i >= 1 && belts[i - 1] != null)
+                belts[i].preBelt = belts[i - 1];
+
+            if (i < belts.Length - 1 && belts[i + 1] != null)
+                belts[i].nextBelt = belts[i + 1];
+        }
+
+        if (data.hasNextObj)
+        {
+            if (data.nextObjRef.TryGet(out NetworkObject obj))
+                nextObj = obj.GetComponent<Structure>();
+        }
+        if (data.hasPreObj)
+        {
+            if (data.preObjRef.TryGet(out NetworkObject obj))
+                preObj = obj.GetComponent<Structure>();
+        }
+
+        ClientBeltSyncFunc();
+        beltSyncCheck = true;
+
+        for (int i = 0; i < data.itemIndexes.Length; i++)
+        {
+            int beltIdx = data.itemBeltIndexes[i];
+            if (beltIdx >= beltList.Count) continue;
+
+            BeltCtrl targetBelt = beltList[beltIdx];
+
+            Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(data.itemIndexes[i]);
+            var itemPool = ItemPoolManager.instance.Pool.Get();
+            ItemProps spawn = itemPool.GetComponent<ItemProps>();
+
+            SpriteRenderer sprite = spawn.spriteRenderer;
+            sprite.sprite = sendItem.icon;
+            sprite.sortingOrder = 2;
+
+            spawn.item = sendItem;
+            spawn.amount = 1;
+            spawn.transform.position = data.itemPositions[i];
+            spawn.isOnBelt = true;
+            spawn.setOnBelt = targetBelt;
+            spawn.beltGroupIndex = data.itemBeltGroupIndexes[i];
+
+            targetBelt.itemObjList.Add(spawn);
+            groupItem.Add(spawn);
+
+            if (targetBelt.itemObjList.Count >= targetBelt.maxAmount)
+                targetBelt.isFull = true;
         }
     }
 
@@ -622,87 +753,87 @@ public class BeltGroupMgr : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void BeltItemSyncServerRpc(ulong targetClientId)
-    {
-        // 벨트별 아이템 수집
-        List<int> itemIndexList = new List<int>();
-        List<Vector2> itemPosList = new List<Vector2>();
-        List<int> beltGroupIndexList = new List<int>();
-        List<int> beltIndexList = new List<int>(); // 어느 벨트 소속인지
+    //[ServerRpc(RequireOwnership = false)]
+    //public void BeltItemSyncServerRpc(ulong targetClientId)
+    //{
+    //    // 벨트별 아이템 수집
+    //    List<int> itemIndexList = new List<int>();
+    //    List<Vector2> itemPosList = new List<Vector2>();
+    //    List<int> beltGroupIndexList = new List<int>();
+    //    List<int> beltIndexList = new List<int>(); // 어느 벨트 소속인지
 
-        for (int beltIdx = 0; beltIdx < beltList.Count; beltIdx++)
-        {
-            BeltCtrl belt = beltList[beltIdx];
-            foreach (ItemProps item in belt.itemObjList)
-            {
-                itemIndexList.Add(GeminiNetworkManager.instance.GetItemSOIndex(item.item));
-                itemPosList.Add(item.transform.position);
-                beltGroupIndexList.Add(item.beltGroupIndex);
-                beltIndexList.Add(beltIdx); // 어느 벨트에 속하는지
-            }
-        }
+    //    for (int beltIdx = 0; beltIdx < beltList.Count; beltIdx++)
+    //    {
+    //        BeltCtrl belt = beltList[beltIdx];
+    //        foreach (ItemProps item in belt.itemObjList)
+    //        {
+    //            itemIndexList.Add(GeminiNetworkManager.instance.GetItemSOIndex(item.item));
+    //            itemPosList.Add(item.transform.position);
+    //            beltGroupIndexList.Add(item.beltGroupIndex);
+    //            beltIndexList.Add(beltIdx); // 어느 벨트에 속하는지
+    //        }
+    //    }
 
-        ClientRpcParams target = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new[] { targetClientId }
-            }
-        };
+    //    ClientRpcParams target = new ClientRpcParams
+    //    {
+    //        Send = new ClientRpcSendParams
+    //        {
+    //            TargetClientIds = new[] { targetClientId }
+    //        }
+    //    };
 
-        ItemSyncClientRpc(
-            itemIndexList.ToArray(),
-            itemPosList.ToArray(),
-            beltGroupIndexList.ToArray(),
-            beltIndexList.ToArray(),
-            target
-        );
-    }
+    //    ItemSyncClientRpc(
+    //        itemIndexList.ToArray(),
+    //        itemPosList.ToArray(),
+    //        beltGroupIndexList.ToArray(),
+    //        beltIndexList.ToArray(),
+    //        target
+    //    );
+    //}
 
-    [ClientRpc]
-    void ItemSyncClientRpc(
-        int[] itemIndexes,
-        Vector2[] itemPositions,
-        int[] beltGroupIndexes,
-        int[] beltIndexes,
-        ClientRpcParams rpcParams = default)
-    {
-        if (IsServer) return;
+    //[ClientRpc]
+    //void ItemSyncClientRpc(
+    //    int[] itemIndexes,
+    //    Vector2[] itemPositions,
+    //    int[] beltGroupIndexes,
+    //    int[] beltIndexes,
+    //    ClientRpcParams rpcParams = default)
+    //{
+    //    if (IsServer) return;
 
-        ClientBeltSyncFunc();
-        beltSyncCheck = true;
+    //    ClientBeltSyncFunc();
+    //    beltSyncCheck = true;
 
-        for (int i = 0; i < itemIndexes.Length; i++)
-        {
-            int beltIdx = beltIndexes[i];
-            if (beltIdx >= beltList.Count)
-            {
-                continue;
-            }
+    //    for (int i = 0; i < itemIndexes.Length; i++)
+    //    {
+    //        int beltIdx = beltIndexes[i];
+    //        if (beltIdx >= beltList.Count)
+    //        {
+    //            continue;
+    //        }
 
-            BeltCtrl targetBelt = beltList[beltIdx];
+    //        BeltCtrl targetBelt = beltList[beltIdx];
 
-            Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndexes[i]);
-            var itemPool = ItemPoolManager.instance.Pool.Get();
-            ItemProps spawn = itemPool.GetComponent<ItemProps>();
+    //        Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndexes[i]);
+    //        var itemPool = ItemPoolManager.instance.Pool.Get();
+    //        ItemProps spawn = itemPool.GetComponent<ItemProps>();
 
-            SpriteRenderer sprite = spawn.spriteRenderer;
-            sprite.sprite = sendItem.icon;
-            sprite.sortingOrder = 2;
+    //        SpriteRenderer sprite = spawn.spriteRenderer;
+    //        sprite.sprite = sendItem.icon;
+    //        sprite.sortingOrder = 2;
 
-            spawn.item = sendItem;
-            spawn.amount = 1;
-            spawn.transform.position = itemPositions[i];
-            spawn.isOnBelt = true;
-            spawn.setOnBelt = targetBelt;
-            spawn.beltGroupIndex = beltGroupIndexes[i];
+    //        spawn.item = sendItem;
+    //        spawn.amount = 1;
+    //        spawn.transform.position = itemPositions[i];
+    //        spawn.isOnBelt = true;
+    //        spawn.setOnBelt = targetBelt;
+    //        spawn.beltGroupIndex = beltGroupIndexes[i];
 
-            targetBelt.itemObjList.Add(spawn);
-            groupItem.Add(spawn);
+    //        targetBelt.itemObjList.Add(spawn);
+    //        groupItem.Add(spawn);
 
-            if (targetBelt.itemObjList.Count >= targetBelt.maxAmount)
-                targetBelt.isFull = true;
-        }
-    }
+    //        if (targetBelt.itemObjList.Count >= targetBelt.maxAmount)
+    //            targetBelt.isFull = true;
+    //    }
+    //}
 }

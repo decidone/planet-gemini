@@ -60,6 +60,16 @@ public struct StructureSyncData : INetworkSerializable
     public int[] sendingItemIndexes;
     public float[] sendingItemTimes;
 
+    // BeltCtrl
+    public bool isUp;
+    public bool isRight;
+    public bool isDown;
+    public bool isLeft;
+    public int modelMotion;
+    public bool isTurn;
+    public bool isRightTurn;
+    public int beltStateInt;
+
     public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
     {
         s.SerializeValue(ref level);
@@ -110,5 +120,14 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref energyBulletAmount);
         s.SerializeValue(ref sendingItemIndexes);
         s.SerializeValue(ref sendingItemTimes);
+
+        s.SerializeValue(ref isUp);
+        s.SerializeValue(ref isRight);
+        s.SerializeValue(ref isDown);
+        s.SerializeValue(ref isLeft);
+        s.SerializeValue(ref modelMotion);
+        s.SerializeValue(ref isTurn);
+        s.SerializeValue(ref isRightTurn);
+        s.SerializeValue(ref beltStateInt);
     }
 }
