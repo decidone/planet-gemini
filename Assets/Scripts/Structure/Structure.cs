@@ -645,7 +645,8 @@ public class Structure : WorldObj
             isRightTurn = false,
             beltStateInt = 0,
             isAuto = false,
-            unloaderSelectItemIndex = -1
+            unloaderSelectItemIndex = -1,
+            fuel = 0
         };
     }
 
@@ -1836,6 +1837,11 @@ public class Structure : WorldObj
                     unitCanvas.SetActive(false);
                 }
 
+                if (IsServer)
+                {
+                    BuildCompClientRpc(hp);
+                }
+
                 //ColliderTriggerOnOff(false);
             }
         }
@@ -1848,6 +1854,25 @@ public class Structure : WorldObj
             {
                 RepairEnd();
             }
+        }
+    }
+
+    [ClientRpc (RequireOwnership = false)]
+    public void BuildCompClientRpc(float _hp)
+    {
+        isPreBuilding = false;
+        repairGauge = 0.0f;
+        repairBar.enabled = false;
+        hp = _hp;
+
+        if (hp < maxHp)
+        {
+            unitCanvas.SetActive(true);
+            hpBar.enabled = true;
+        }
+        else
+        {
+            unitCanvas.SetActive(false);
         }
     }
 

@@ -352,6 +352,49 @@ public class SteamGenerator : FluidFactoryCtrl
         }
     }
 
+    public override void ClientConnectSync()
+    {
+        var data = CollectBaseSyncData();
+
+        data.itemIndexes = new int[0];
+
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        data.saveFluidNum = this.saveFluidNum;
+        data.fluidName = this.fluidName;
+        data.fuel = this.fuel;
+
+        ClientConnectSyncClientRpc(data);
+    }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        base.ApplyExtraSync(data);
+
+        fuel = data.fuel;
+    }
+
     public override float GetProgress() { return fuel; }
 
     public override void Focused()

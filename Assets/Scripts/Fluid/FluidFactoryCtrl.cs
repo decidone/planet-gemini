@@ -172,18 +172,18 @@ public class FluidFactoryCtrl : Production
     //    FluidSyncServerRpc();
     //}
 
-    [ServerRpc(RequireOwnership = false)]
-    public void FluidSyncServerRpc()
-    {
-        FluidSyncClientRpc(saveFluidNum, fluidName);
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //public void FluidSyncServerRpc()
+    //{
+    //    FluidSyncClientRpc(saveFluidNum, fluidName);
+    //}
 
-    [ClientRpc]
-    void FluidSyncClientRpc(float fluidNum, string fluidNameSync)
-    {
-        saveFluidNum = fluidNum;
-        fluidName = fluidNameSync;
-    }
+    //[ClientRpc]
+    //void FluidSyncClientRpc(float fluidNum, string fluidNameSync)
+    //{
+    //    saveFluidNum = fluidNum;
+    //    fluidName = fluidNameSync;
+    //}
 
     protected virtual void FluidSetOutObj(Structure obj)
     {

@@ -138,14 +138,22 @@ public class NetworkObjManager : NetworkBehaviour
 
     private IEnumerator SyncCoroutine()
     {
-        int batchSize = 100;
+        const int batchSize = 100;
+        const int maxInFlight = 5;
+
+        int currentBatchId = 0;
+
+        IEnumerator WaitForInFlightLimit()
+        {
+            while (currentBatchId - _clientAckedBatchId > maxInFlight)
+                yield return null;
+        }
 
         for (int i = 0; i < netPortals.Count; i++)
         {
             netPortals[i].OnClientConnectedCallback();
         }
 
-        // Structure 동기화
         for (int i = 0; i < netStructures.Count; i++)
         {
             netStructures[i].OnClientConnectedCallback();
@@ -155,19 +163,12 @@ public class NetworkObjManager : NetworkBehaviour
 
             if (isLastInBatch || isLast)
             {
-                int batchId = i;
-                _clientAckedBatchId = -1; // 초기화
-
-                SendBatchBoundaryClientRpc(batchId, _syncTargetClient);
-
-                // 클라이언트 ACK 대기
-                yield return new WaitUntil(() => _clientAckedBatchId >= batchId);
+                SendBatchBoundaryClientRpc(currentBatchId, _syncTargetClient);
+                currentBatchId++;
+                yield return WaitForInFlightLimit();
             }
         }
 
-        yield return null;
-
-        // Belt 동기화
         for (int i = 0; i < networkBelts.Count; i++)
         {
             networkBelts[i].OnClientConnectedCallback();
@@ -177,22 +178,14 @@ public class NetworkObjManager : NetworkBehaviour
 
             if (isLastInBatch || isLast)
             {
-                int batchId = netStructures.Count + i;
-                _clientAckedBatchId = -1;
-
-                SendBatchBoundaryClientRpc(batchId, _syncTargetClient);
-
-                yield return new WaitUntil(() => _clientAckedBatchId >= batchId);
+                SendBatchBoundaryClientRpc(currentBatchId, _syncTargetClient);
+                currentBatchId++;
+                yield return WaitForInFlightLimit();
             }
         }
 
-        yield return null;
-
-        // BeltGroup 동기화
         for (int i = 0; i < netBeltGroupMgrs.Count; i++)
         {
-            //netBeltGroupMgrs[i].ClientConnectSyncServerRpc();
-            //netBeltGroupMgrs[i].BeltItemSyncServerRpc(_syncTargetClientId);
             netBeltGroupMgrs[i].BeltGroupClientConnectSyncServerRpc(_syncTargetClientId);
 
             bool isLastInBatch = (i + 1) % batchSize == 0;
@@ -200,14 +193,14 @@ public class NetworkObjManager : NetworkBehaviour
 
             if (isLastInBatch || isLast)
             {
-                int batchId = netStructures.Count + networkBelts.Count + i;
-                _clientAckedBatchId = -1;
-
-                SendBatchBoundaryClientRpc(batchId, _syncTargetClient);
-
-                yield return new WaitUntil(() => _clientAckedBatchId >= batchId);
+                SendBatchBoundaryClientRpc(currentBatchId, _syncTargetClient);
+                currentBatchId++;
+                yield return WaitForInFlightLimit();
             }
         }
+
+        while (_clientAckedBatchId < currentBatchId - 1)
+            yield return null;
 
         StartCoroutine(NotifySyncDelay());
     }

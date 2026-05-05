@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using System.Xml.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Unity.Netcode;
 
 public class PingManager : NetworkBehaviour
 {
@@ -90,12 +91,10 @@ public class PingManager : NetworkBehaviour
             if (Vector2.Distance(pos, marker.Value.transform.position) <= pingClickRadius)
             {
                 RequestRemoveServerRpc(marker.Key);
-                SoundManager.instance.PlayUISFX("PingRemove");
                 return;
             }
         }
 
-        SoundManager.instance.PlayUISFX("PingSound");
         RequestSpawnServerRpc(pos, pingUI.SelectedGroup, pingUI.SelectedSub);
     }
 
@@ -115,6 +114,8 @@ public class PingManager : NetworkBehaviour
         var marker = go.GetComponent<PingMarker>();
         marker.Init(id, GetIcon(group, sub), OnMarkerDismiss);
         markers[id] = marker;
+
+        SoundManager.instance.PlaySFX(go, 0, "PingSound", 0.01f);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -127,6 +128,8 @@ public class PingManager : NetworkBehaviour
     void RemoveClientRpc(int id)
     {
         if (!markers.TryGetValue(id, out var marker)) return;
+
+        SoundManager.instance.PlaySFX(marker.gameObject, 0, "PingRemove", 0.01f);
 
         markers.Remove(id);
         if (marker != null) Destroy(marker.gameObject);

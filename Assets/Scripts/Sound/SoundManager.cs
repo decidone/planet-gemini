@@ -59,6 +59,8 @@ public class SoundManager : MonoBehaviour
     float defaultMaxDistance = 20f;
     float unitDefaultMinDistance = 20f;
     float unitDefaultMaxDistance = 30f;
+    float pingDefaultMinDistance = 40f;
+    float pingDefaultMaxDistance = 60f;
     Dictionary<string, float> lastPlayTime = new Dictionary<string, float>();
     AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic;
     ObjectPool<AudioSource> pool;
@@ -429,10 +431,28 @@ public class SoundManager : MonoBehaviour
         // soundSource 0: ui, 1: structrue, 2: unit
         if (target == null) return;
 
-        if (soundSource > 0)
+        bool isPing = false;
+
+        if (soundSource == 0)
+        {
+            if (sfxName == "PingSound" || sfxName == "PingRemove")
+            {
+                isPing = true;
+                float distance = Vector3.Distance(target.transform.position, mainCamera.transform.position);
+                if (distance > pingDefaultMaxDistance)
+                    return;
+            }
+        }
+        else if (soundSource == 1)
         {
             float distance = Vector3.Distance(target.transform.position, mainCamera.transform.position);
             if (distance > defaultMaxDistance)
+                return;
+        }
+        else if (soundSource == 2)
+        {
+            float distance = Vector3.Distance(target.transform.position, mainCamera.transform.position);
+            if (distance > unitDefaultMaxDistance)
                 return;
         }
 
@@ -450,7 +470,7 @@ public class SoundManager : MonoBehaviour
                 audioClips = audioClipRefsSO.uiSfx;
                 break;
             case 1:
-                if(sfxName == "Miner")
+                if (sfxName == "Miner")
                     audioClips = audioClipRefsSO.miningSfx;
                 else if (sfxName == "Machine")
                     audioClips = audioClipRefsSO.machineSfx;
@@ -513,6 +533,13 @@ public class SoundManager : MonoBehaviour
                 return;
         }
 
+        if (isPing)
+        {
+            source.spatialBlend = 1f;
+            source.minDistance = pingDefaultMinDistance;
+            source.maxDistance = pingDefaultMaxDistance;
+        }
+
         source.Play();
 
         lastPlayTime[sfxName] = Time.time;
@@ -541,7 +568,6 @@ public class SoundManager : MonoBehaviour
         //    }
         //}
     }
-
     #endregion
 
     #region Camera Check

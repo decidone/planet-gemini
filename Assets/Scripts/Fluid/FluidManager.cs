@@ -198,34 +198,106 @@ public class FluidManager : NetworkBehaviour
 
     void FluidSync()
     {
-        if (IsServer)
+        if (!IsServer) return;
+
+        var dataList = new List<FluidSyncData>();
+        var seen = new HashSet<FluidFactoryCtrl>();
+
+        foreach (var mainGroup in mainSourceGroupObj)
         {
-            foreach (var mainGroup in mainSourceGroupObj)
+            foreach (FluidFactoryCtrl obj in mainGroup.Value)
             {
-                List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>(mainGroup.Value);
+                if (obj == null) continue;
+                if (seen.Contains(obj)) continue;
+                seen.Add(obj);
 
-                foreach (FluidFactoryCtrl obj in fluidList)
+                dataList.Add(new FluidSyncData
                 {
-                    if (obj)
-                    {
-                        obj.FluidSyncServerRpc();
-                    }
-                }
+                    fluidRef = obj.NetworkObject,
+                    saveFluidNum = obj.saveFluidNum,
+                    fluidTypeIndex = FluidTypeHelper.StringToIndex(obj.fluidName)
+                });
             }
+        }
 
-            foreach (var consumeGroup in consumeSourceGroupObj)
+        foreach (var consumeGroup in consumeSourceGroupObj)
+        {
+            foreach (FluidFactoryCtrl obj in consumeGroup.Value)
             {
-                List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>(consumeGroup.Value);
+                if (obj == null) continue;
+                if (seen.Contains(obj)) continue;
+                seen.Add(obj);
 
-                foreach (FluidFactoryCtrl obj in fluidList)
+                dataList.Add(new FluidSyncData
                 {
-                    if (obj)
-                    {
-                        obj.FluidSyncServerRpc();
-                    }
-                }
+                    fluidRef = obj.NetworkObject,
+                    saveFluidNum = obj.saveFluidNum,
+                    fluidTypeIndex = FluidTypeHelper.StringToIndex(obj.fluidName)
+                });
             }
+        }
 
+        if (dataList.Count == 0) return;
+
+        // 배치 분할 전송 (페이로드 보호)
+        const int batchSize = 80;
+        for (int i = 0; i < dataList.Count; i += batchSize)
+        {
+            int count = Mathf.Min(batchSize, dataList.Count - i);
+            FluidSyncData[] batch = new FluidSyncData[count];
+            dataList.CopyTo(i, batch, 0, count);
+            FluidBatchSyncClientRpc(batch);
         }
     }
+
+    [ClientRpc]
+    void FluidBatchSyncClientRpc(FluidSyncData[] dataArr)
+    {
+        if (IsServer) return;
+
+        foreach (var data in dataArr)
+        {
+            if (data.fluidRef.TryGet(out NetworkObject obj))
+            {
+                if (obj.TryGetComponent(out FluidFactoryCtrl fluid))
+                {
+                    fluid.saveFluidNum = data.saveFluidNum;
+                    fluid.fluidName = FluidTypeHelper.IndexToString(data.fluidTypeIndex);
+                }
+            }
+        }
+    }
+
+    //void FluidSync()
+    //{
+    //    if (IsServer)
+    //    {
+    //        foreach (var mainGroup in mainSourceGroupObj)
+    //        {
+    //            List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>(mainGroup.Value);
+
+    //            foreach (FluidFactoryCtrl obj in fluidList)
+    //            {
+    //                if (obj)
+    //                {
+    //                    obj.FluidSyncServerRpc();
+    //                }
+    //            }
+    //        }
+
+    //        foreach (var consumeGroup in consumeSourceGroupObj)
+    //        {
+    //            List<FluidFactoryCtrl> fluidList = new List<FluidFactoryCtrl>(consumeGroup.Value);
+
+    //            foreach (FluidFactoryCtrl obj in fluidList)
+    //            {
+    //                if (obj)
+    //                {
+    //                    obj.FluidSyncServerRpc();
+    //                }
+    //            }
+    //        }
+
+    //    }
+    //}
 }

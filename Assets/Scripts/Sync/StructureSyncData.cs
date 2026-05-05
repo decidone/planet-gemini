@@ -75,6 +75,8 @@ public struct StructureSyncData : INetworkSerializable
 
     public int unloaderSelectItemIndex;
 
+    public int fuel;
+
     public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
     {
         s.SerializeValue(ref level);
@@ -138,5 +140,7 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref isAuto);
 
         s.SerializeValue(ref unloaderSelectItemIndex);
+
+        s.SerializeValue(ref fuel);
     }
 }
