@@ -1817,24 +1817,10 @@ public class Structure : WorldObj
             repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
             if (repairGauge >= structureData.MaxBuildingGauge)
             {
-                isPreBuilding = false;
-                repairGauge = 0.0f;
-                repairBar.enabled = false;
-
                 if (hp > maxHp)
                 {
                     hp = maxHp;
                     onHpChangedCallback?.Invoke();
-                }
-
-                if (hp < maxHp)
-                {
-                    unitCanvas.SetActive(true);
-                    hpBar.enabled = true;
-                }
-                else
-                {
-                    unitCanvas.SetActive(false);
                 }
 
                 if (IsServer)
