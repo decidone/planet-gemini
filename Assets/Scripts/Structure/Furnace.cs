@@ -79,6 +79,46 @@ public class Furnace : Production
         }
     }
 
+    public override void ClientConnectSync()
+    {
+        var data = CollectBaseSyncData();
+
+        data.itemIndexes = new int[0];
+
+        if (inventory != null)
+        {
+            var slotNums = new List<int>();
+            var itemIdxs = new List<int>();
+            var amounts = new List<int>();
+
+            for (int i = 0; i < inventory.space; i++)
+            {
+                var slot = inventory.SlotCheck(i);
+                int idx = GeminiNetworkManager.instance.GetItemSOIndex(slot.item);
+                if (idx != -1)
+                {
+                    slotNums.Add(i);
+                    itemIdxs.Add(idx);
+                    amounts.Add(slot.amount);
+                }
+            }
+
+            data.inventorySlotNums = slotNums.ToArray();
+            data.inventoryItemIndexes = itemIdxs.ToArray();
+            data.inventoryItemAmounts = amounts.ToArray();
+        }
+
+        data.recipeIndex = this.recipeIndex;
+        data.fuel = this.fuel;
+
+        ClientConnectSyncClientRpc(data);
+    }
+
+    protected override void ApplyExtraSync(StructureSyncData data)
+    {
+        fuel = data.fuel;
+    }
+
     public override void CheckSlotState(int slotindex)
     {
         // update에서 검사해야 하는 특정 슬롯들 상태를 인벤토리 콜백이 있을 때 미리 저장

@@ -606,6 +606,7 @@ public class Structure : WorldObj
             destroyTimer = this.destroyTimer,
 
             itemIndexes = itemIndexes,
+            prodTimer = this.prodTimer,
             inventorySlotNums = new int[0],
             inventoryItemIndexes = new int[0],
             inventoryItemAmounts = new int[0],
@@ -725,6 +726,7 @@ public class Structure : WorldObj
         isInHostMap = data.isInHostMap;
         hp = data.hp;
         buildHp = data.buildHp;
+        prodTimer = data.prodTimer;
         ColliderTriggerOnOff(false);
 
         if (col != null)
@@ -764,6 +766,7 @@ public class Structure : WorldObj
 
         ApplyItemSync(data);
         ApplyExtraSync(data);
+        CheckSlotState(0);
 
         settingEndCheck = true;
     }

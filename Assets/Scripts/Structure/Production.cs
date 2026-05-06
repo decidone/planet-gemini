@@ -18,7 +18,7 @@ public abstract class Production : Structure
     [HideInInspector]
     public Inventory inventory;
     protected Dictionary<string, Item> itemDic;
-    protected int fuel;
+    public int fuel;
     protected int maxFuel;
     protected Item output;
     protected Recipe recipe = new Recipe();
@@ -780,6 +780,7 @@ public abstract class Production : Structure
 
         data.recipeId = recipeIndex;
         data.prodTimer = prodTimer;
+        data.fuel = fuel;
 
         return data;
     }

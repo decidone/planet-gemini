@@ -66,6 +66,11 @@ public class BuildingInfo : MonoBehaviour
         }
     }
 
+    public Building GetBuilding()
+    {
+        return selectBuilding;
+    }
+
     public void ClearArr()
     {
         for (int i = 0; i < buildingNeedList.Length; i++) 

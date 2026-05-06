@@ -489,7 +489,7 @@ public class SplitterCtrl : LogisticsCtrl
     {
         Item sendItem = itemList[itemIndex];
 
-        if (arrFilter[filterIndex].outObj.NetworkObjectId != netObj.NetworkObjectId)
+        if (!arrFilter[filterIndex].outObj || arrFilter[filterIndex].outObj.NetworkObjectId != netObj.NetworkObjectId)
         {
             netObj.TryGet(out NetworkObject obj);
             obj.TryGetComponent(out Structure str);

@@ -278,6 +278,7 @@ public class DataManager : MonoBehaviour
             {
                 prod.GameStartItemSet(saveData.inven);
                 prod.loadedProdTimer = saveData.prodTimer;
+                prod.fuel = saveData.fuel;
 
                 if (prod.Get<PortalObj>())
                 {

@@ -33,6 +33,7 @@ public struct StructureSyncData : INetworkSerializable
     public int[] inventoryItemAmounts;
 
     public int recipeIndex;  // -1이면 미사용
+    public float prodTimer;
 
     public float stored;  // EnergyBattery
 
@@ -107,6 +108,7 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref inventoryItemAmounts);
 
         s.SerializeValue(ref recipeIndex);
+        s.SerializeValue(ref prodTimer);
 
         s.SerializeValue(ref stored);
 

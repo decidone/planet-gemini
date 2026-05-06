@@ -88,9 +88,25 @@ public class BuildingInvenManager : MonoBehaviour
 
     void DicBtnClicked()
     {
-        if (PreBuilding.instance.buildData && selectSlot)
+        Building building = global::BuildingInfo.instance.GetBuilding();
+        if (selectSlot && building)
         {
-            InfoDictionary.instance.Search(PreBuilding.instance.buildData.scienceName, true);
+            if (building.scienceName == "Furnace" && building.level == 2)
+            {
+                InfoDictionary.instance.Search("Energy Furnace", true);
+                return;
+            }
+
+            if (building.scienceName == "Splitter" && building.level == 2)
+            {
+                InfoDictionary.instance.Search("Smart Splitter", true);
+                return;
+            }
+
+            if (building.gameObj.TryGetComponent(out Structure str))
+            {
+                InfoDictionary.instance.Search(str);
+            }
         }
         else
         {
