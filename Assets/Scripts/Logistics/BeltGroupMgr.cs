@@ -17,9 +17,9 @@ public class BeltGroupMgr : NetworkBehaviour
     public bool nextCheck = true;
     public bool preCheck = true;
 
-    bool beltSyncCheck;
-
     public bool loadConnStr;
+
+    Coroutine clientBeltSyncCoroutine;
 
     void Start()
     {
@@ -216,7 +216,6 @@ public class BeltGroupMgr : NetworkBehaviour
         }
 
         ClientBeltSyncFunc();
-        beltSyncCheck = true;
 
         for (int i = 0; i < data.itemIndexes.Length; i++)
         {
@@ -339,8 +338,22 @@ public class BeltGroupMgr : NetworkBehaviour
         nextBelt.BeltStateSetClientRpc((int)BeltState.EndBelt);
     }
 
+    public void ClientBeltSync()
+    {
+        if(clientBeltSyncCoroutine == null)
+            clientBeltSyncCoroutine = StartCoroutine(ClientBeltSyncCoroutine());
+    }
+
+
+    IEnumerator ClientBeltSyncCoroutine()
+    {
+        yield return null;
+        ClientBeltSyncServerRpc();
+        clientBeltSyncCoroutine = null;
+    }
+
     [ServerRpc(RequireOwnership = false)]
-    public void ClientBeltSyncServerRpc()
+    void ClientBeltSyncServerRpc()
     {
         ClientBeltSyncClientRpc();
     }
@@ -349,15 +362,8 @@ public class BeltGroupMgr : NetworkBehaviour
     void ClientBeltSyncClientRpc()
     {
         if (IsServer) return;
-        beltSyncCheck = true;
-        StartCoroutine(ClientBeltSyncCoroutine());
-    }
-
-    IEnumerator ClientBeltSyncCoroutine()
-    {
-        yield return null;
-        yield return null;
         ClientBeltSyncFunc();
+        Debug.Log("ClientBeltSyncClientRpc call");
     }
 
     void ClientBeltSyncFunc()
@@ -435,8 +441,6 @@ public class BeltGroupMgr : NetworkBehaviour
                 groupItem.Add(item);
             }
         }
-
-        beltSyncCheck = false;
     }
 
     public void Reconfirm()

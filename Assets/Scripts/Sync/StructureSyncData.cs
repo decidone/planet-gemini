@@ -10,6 +10,7 @@ public struct StructureSyncData : INetworkSerializable
     public int width;
     public bool isInHostMap;
     public float hp;
+    public float buildHp;
 
     public NetworkObjectReference[] nearObjRefs;
     public bool[] nearObjValids;
@@ -83,6 +84,7 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref width);
         s.SerializeValue(ref isInHostMap);
         s.SerializeValue(ref hp);
+        s.SerializeValue(ref buildHp);
 
         s.SerializeValue(ref nearObjRefs);
         s.SerializeValue(ref nearObjValids);

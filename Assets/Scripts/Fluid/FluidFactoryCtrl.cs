@@ -110,7 +110,8 @@ public class FluidFactoryCtrl : Production
 
             if (destroyTimer <= 0)
             {
-                ObjRemoveFunc();
+                if (IsServer) 
+                    ObjRemoveFunc();
                 destroyStart = false;
             }
         }

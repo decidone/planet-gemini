@@ -177,7 +177,8 @@ public class SteamGenerator : FluidFactoryCtrl
 
             if (destroyTimer <= 0)
             {
-                ObjRemoveFunc();
+                if (IsServer) 
+                    ObjRemoveFunc();
                 destroyStart = false;
             }
         }

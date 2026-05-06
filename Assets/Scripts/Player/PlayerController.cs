@@ -719,6 +719,8 @@ public class PlayerController : WorldObj
 
             foreach (ItemProps itemProps in beltItems)
             {
+                if (!itemProps.isOnBelt)
+                    Debug.Log("item is not on belt");
                 int containableAmount = inventory.SpaceCheck(itemProps.item);
                 if (itemProps.amount <= containableAmount)
                 {

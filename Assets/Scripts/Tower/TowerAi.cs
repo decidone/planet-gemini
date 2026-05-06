@@ -94,12 +94,6 @@ public class TowerAi : Production
         }        
     }
 
-    protected override void RepairEnd()
-    {
-        base.RepairEnd();
-        animator.SetBool("isDie", false);
-    }
-
     public override void GetUIFunc()
     {
         InventoryList inventoryList = canvas.GetComponent<InventoryList>();
