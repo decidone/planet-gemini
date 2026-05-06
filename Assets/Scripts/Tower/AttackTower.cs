@@ -86,7 +86,8 @@ public class AttackTower : TowerAi
 
             if (destroyTimer <= 0)
             {
-                ObjRemoveFunc();
+                if (IsServer) 
+                    ObjRemoveFunc();
                 destroyStart = false;
             }
         }

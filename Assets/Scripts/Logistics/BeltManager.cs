@@ -68,7 +68,7 @@ public class BeltManager : NetworkBehaviour
             destroyObj.Despawn();
         }
 
-        fstGroupMgr.ClientBeltSyncServerRpc();
+        fstGroupMgr.ClientBeltSync();
         Destroy(secGroupMgr.gameObject);
     }
 
@@ -160,7 +160,7 @@ public class BeltManager : NetworkBehaviour
             beltGroup.beltList[0].FactoryModelSet();
         }
 
-        beltGroup.ClientBeltSyncServerRpc();
+        beltGroup.ClientBeltSync();
     }
 
     private void CreateNewBeltGroup(List<BeltCtrl> beltList)
@@ -194,6 +194,6 @@ public class BeltManager : NetworkBehaviour
             newBeltGroup.beltList[0].FactoryModelSet();
         }
 
-        newBeltGroup.ClientBeltSyncServerRpc();
+        newBeltGroup.ClientBeltSync();
     }
 }

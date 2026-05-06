@@ -16,7 +16,7 @@ public class Structure : WorldObj
     public StructureData structureData;
     protected StructureData StructureData { set { structureData = value; } }
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool isFull = false;
 
     [HideInInspector]
@@ -50,9 +50,6 @@ public class Structure : WorldObj
     public GameObject RuinExplo;
     bool damageEffectOn;
 
-    //[HideInInspector]
-    //public bool isRuin = false;
-
     [HideInInspector]
     public bool isRepair = false;
     [SerializeField]
@@ -64,9 +61,9 @@ public class Structure : WorldObj
     public bool canTakeFluid;   // 액체를 받을 수 있는지
     public bool canSendFluid;   // 액체를 받을 수 있는지
 
-    //[HideInInspector]
+    [HideInInspector]
     public List<Item> itemList = new List<Item>();
-    //[HideInInspector]
+    [HideInInspector]
     public List<ItemProps> itemObjList = new List<ItemProps>();
 
     [HideInInspector]
@@ -92,17 +89,15 @@ public class Structure : WorldObj
     [HideInInspector]
     public bool takeItemDelay = false;
 
-    //[HideInInspector]
+    [HideInInspector]
     public List<Structure> inObj = new List<Structure>();
-    //[HideInInspector]
+    [HideInInspector]
     public List<Structure> outObj = new List<Structure>();
-    //[HideInInspector]
+    [HideInInspector]
     public List<Structure> outSameList = new List<Structure>();
 
     protected int getItemIndex = 0;
     protected int sendItemIndex = 0;
-
-    //protected Coroutine setFacDelayCoroutine; // 실행 중인 코루틴을 저장하는 변수
 
     [SerializeField]
     protected Sprite[] modelNum;
@@ -315,8 +310,10 @@ public class Structure : WorldObj
             OperateStateSet(false);
             if (destroyTimer <= 0)
             {
-                ObjRemoveFunc();
+                if (IsServer)
+                    ObjRemoveFunc();
                 destroyEnd = true;
+                soundManager.PlayUISFX("BuildingRemove");
             }
         }
     }
@@ -499,17 +496,9 @@ public class Structure : WorldObj
 
     protected void ObjRemoveFunc()
     {
-        if (IsServer)
-        {
-            ItemDrop();
-            RefundCost();
-        }
-        //else
-        //    ClientItemDrop();
-        //AddInvenItem();
+        ItemDrop();
+        RefundCost();
         RemoveObjServerRpc();
-        //DestroyFuncServerRpc();
-        soundManager.PlayUISFX("BuildingRemove");
     }
 
     void RefundCost()
@@ -603,7 +592,7 @@ public class Structure : WorldObj
             width = this.width,
             isInHostMap = this.isInHostMap,
             hp = this.hp,
-
+            buildHp = this.buildHp,
             nearObjRefs = nearObjRefs,
             nearObjValids = nearObjValids,
             outObjRefs = outObjRefs,
@@ -735,6 +724,7 @@ public class Structure : WorldObj
         width = data.width;
         isInHostMap = data.isInHostMap;
         hp = data.hp;
+        buildHp = data.buildHp;
         ColliderTriggerOnOff(false);
 
         if (col != null)
@@ -1812,6 +1802,12 @@ public class Structure : WorldObj
                 repairGauge += Time.deltaTime;
                 hp += (Time.deltaTime * buildHp);
             }
+
+            if (hp > maxHp)
+            {
+                hp = maxHp;
+            }
+
             onHpChangedCallback?.Invoke();
 
             repairBar.fillAmount = repairGauge / structureData.MaxBuildingGauge;
@@ -1862,7 +1858,7 @@ public class Structure : WorldObj
         }
     }
 
-    protected virtual void RepairEnd()
+    protected void RepairEnd()
     {
         hpBar.enabled = true;
         hp = maxHp;
@@ -2111,7 +2107,7 @@ public class Structure : WorldObj
             AstarPath.active.UpdateGraphs(guo);
         }
         //NetworkObjManager.instance.NetObjRemove(NetworkObject);
-        onEffectUpgradeCheck -= IncreasedStructureCheck;
+        onEffectUpgradeCheck -= IncreasedStructureCheck;        
 
         if (IsServer && NetworkObject != null && NetworkObject.IsSpawned)
         {
@@ -2283,7 +2279,7 @@ public class Structure : WorldObj
     public void MapDataSaveClientRpc(Vector3 pos)
     {
         MapDataSet(pos);
-        StrBuilt(); // 이거 스타트에서 도는데??
+        //StrBuilt(); // 이거 스타트에서 도는데??
     }
 
     //[ClientRpc]
