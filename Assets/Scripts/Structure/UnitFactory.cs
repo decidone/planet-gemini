@@ -351,7 +351,8 @@ public class UnitFactory : Production
 
         unit.TryGetComponent(out UnitAi unitAi);
         unitAi.AStarSet(isInHostMap);
-        unitAi.MovePosSetServerRpc(movePos, 0.1f, true);
+        if (isSetPos)
+            unitAi.MovePosSetServerRpc(movePos, 0.1f, true);
     }
 
     public override void DestroyLineRenderer()
