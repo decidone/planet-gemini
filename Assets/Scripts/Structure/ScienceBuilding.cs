@@ -10,6 +10,7 @@ public class ScienceBuilding : PortalObj
     protected override void Awake()
     {
         base.Awake();
+        
     }
 
     protected override void Update() { }
@@ -21,6 +22,11 @@ public class ScienceBuilding : PortalObj
         pos = new Vector3(transform.position.x - 0.5f, transform.position.y - 0.5f, 0);
         MapDataSaveClientRpc(pos);
         isPreBuilding = false;
+        if (hp == maxHp)
+        {
+            hpBar.enabled = false;
+            unitCanvas.SetActive(false);
+        }
     }
 
     protected override void ApplyExtraSync(StructureSyncData data)
