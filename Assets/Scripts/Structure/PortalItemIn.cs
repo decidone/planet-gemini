@@ -79,7 +79,7 @@ public class PortalItemIn : PortalObj
     {
         if(IsServer)
             inventory.StorageAdd(itemProps.item, itemProps.amount);
-        itemProps.itemPool.Release(itemProps.gameObject);
+        itemProps.ClientResetItemProps();
     }
 
     public override void OnFactoryItem(Item item)

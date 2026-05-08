@@ -1125,7 +1125,7 @@ public class Structure : WorldObj
 
     public virtual void OnFactoryItem(ItemProps itemProps)
     {
-        itemProps.itemPool.Release(itemProps.gameObject);
+        itemProps.ClientResetItemProps();
     }
 
     public virtual void OnFactoryItem(Item item) { }
@@ -1470,7 +1470,6 @@ public class Structure : WorldObj
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
             ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
-            spawnItem.beltGroupIndex = beltGroupIndex;
             if (beltCtrl.OnBeltItem(spawnItem))
             {
                 SpriteRenderer sprite = spawnItem.spriteRenderer;
@@ -1482,6 +1481,7 @@ public class Structure : WorldObj
                 spawnItem.transform.position = spawnPos;
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl;
+                spawnItem.beltGroupIndex = beltGroupIndex;
 
                 if (Has<Production>())
                 {

@@ -51,6 +51,15 @@ public class ItemProps : MonoBehaviour
     public void ClientResetItemProps()
     {
         if(itemPool != null && gameObject)
+        {
+            item = null;
+            amount = 0;
+            waitingForDestroy = false;
+            isOnBelt = false;
+            setOnBelt = null;
+            beltGroupIndex = -1;
+            spriteRenderer.sprite = null;
             itemPool.Release(gameObject);
+        }
     }
 }

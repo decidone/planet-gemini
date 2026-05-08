@@ -30,7 +30,7 @@ public class ItemPoolManager : MonoBehaviour
         for (int i = 0; i < defaultCapacity; i++)
         {
             ItemProps item = CreatePooledItem().GetComponent<ItemProps>();
-            item.itemPool.Release(item.gameObject);
+            item.ClientResetItemProps(); ;
         }
     }
 

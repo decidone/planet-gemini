@@ -706,31 +706,45 @@ public class PlayerController : WorldObj
 
     [ServerRpc(RequireOwnership = false)]
     void BeltLootServerRpc(bool isServer, bool hostMap)
-    {        
+    {
         foreach (BeltCtrl belt in beltList)
         {
-            List<ItemProps> beltItems = new List<ItemProps>();
-            beltItems = belt.PlayerRootItemCheck();
-            Inventory inventory;
-            if(hostMap)
-                inventory = gameManager.hostMapInven;
-            else
-                inventory = gameManager.clientMapInven;
+            List<ItemProps> beltItems = belt.PlayerRootItemCheck();
+            Inventory inventory = hostMap ? gameManager.hostMapInven : gameManager.clientMapInven;
+
+            // 배치 전송용 리스트
+            List<int> beltIndices = new List<int>();
+            List<int> beltGroupIndices = new List<int>();
 
             foreach (ItemProps itemProps in beltItems)
             {
-                if (!itemProps.isOnBelt)
-                    Debug.Log("item is not on belt");
+                if (!itemProps.isOnBelt || itemProps.waitingForDestroy)
+                    continue;
+
                 int containableAmount = inventory.SpaceCheck(itemProps.item);
                 if (itemProps.amount <= containableAmount)
                 {
                     inventory.Add(itemProps.item, itemProps.amount);
-                    belt.beltGroupMgr.GroupItemLoot(belt, itemProps.beltGroupIndex, isServer);
+                    itemProps.waitingForDestroy = true;
+
+                    // 바로 호출하지 않고 리스트에 추가
+                    beltIndices.Add(beltList.IndexOf(belt));
+                    beltGroupIndices.Add(itemProps.beltGroupIndex);
                 }
                 else
                 {
                     Debug.Log("not enough space");
                 }
+            }
+
+            // 한 번에 묶어서 전송
+            if (beltIndices.Count > 0)
+            {
+                belt.beltGroupMgr.GroupItemLootBatchClientRpc(
+                    beltIndices.ToArray(),
+                    beltGroupIndices.ToArray(),
+                    isServer
+                );
             }
         }
     }

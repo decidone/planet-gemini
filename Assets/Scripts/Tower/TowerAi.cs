@@ -148,7 +148,7 @@ public class TowerAi : Production
             }
         }
 
-        itemProps.itemPool.Release(itemProps.gameObject);
+        itemProps.ClientResetItemProps();
     }
 
     public override Dictionary<Item, int> PopUpItemCheck()
