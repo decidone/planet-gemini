@@ -178,6 +178,9 @@ public class QuestManager : MonoBehaviour
 
     public void TeleportCheck(int type)
     {
+        if (quests.Count <= currentQuest)
+            return;
+
         if (type == 0 && quests[currentQuest].destination == 0)
         {
             PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
@@ -194,6 +197,8 @@ public class QuestManager : MonoBehaviour
 
     public void QuestCompCheck(int questType)
     {
+        if (quests.Count <= currentQuest)
+            return;
         if (questType != quests[currentQuest].type)
             return;
 
