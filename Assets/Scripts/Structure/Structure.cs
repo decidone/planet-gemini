@@ -1895,6 +1895,9 @@ public class Structure : WorldObj
     {
         yield return new WaitForSeconds(0.1f);
 
+        if(!obj)
+            yield break;
+
         if (obj.TryGet<BeltCtrl>(out var belt))
         {
             if(belt.beltGroupMgr.nextObj != this)

@@ -50,3 +50,4 @@ MonoBehaviour:
   canSendItem: 1
   canTakeFluid: 0
   canSendFluid: 0
+  canUpgrade: 1
