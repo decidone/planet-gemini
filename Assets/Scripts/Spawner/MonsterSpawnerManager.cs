@@ -234,9 +234,13 @@ public class MonsterSpawnerManager : NetworkBehaviour
         WarningWindow.instance.WarningTextSet("No Wave Detected.");
     }
 
-
     [ClientRpc]
     void WavePointOnClientRpc(Vector3 pos, bool hostMap)
+    {
+        WavePointOn(pos, hostMap);
+    }
+
+    void WavePointOn(Vector3 pos, bool hostMap)
     {
         wavePoint.WaveStart(pos, hostMap);
         WarningWindow.instance.WarningTextSet("Warning! Wave incoming at 8:00", hostMap);
@@ -332,13 +336,13 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         if (!IsServer)
         {
-            Debug.Log("WaveStateSyncClientRpc");
             waveDayState = waveDay;
             waveStartState = waveStart;
             hostMapWave = hostMap;
             wavePos = pos;
+
             if(waveDayState && !waveStartState)
-                WavePointOnClientRpc(wavePos, hostMapWave);
+                WavePointOn(wavePos, hostMapWave);
             else if(waveDayState && waveStartState)
             {
                 WavePointOnAreadyStartWave(wavePos, hostMapWave);
