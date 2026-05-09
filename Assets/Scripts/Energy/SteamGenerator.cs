@@ -455,7 +455,7 @@ public class SteamGenerator : FluidFactoryCtrl
         if (IsServer && FuelItem == itemProps.item)
             inventory.SlotAdd(0, itemProps.item, itemProps.amount);
 
-        itemProps.itemPool.Release(itemProps.gameObject);
+        itemProps.ClientResetItemProps();
     }
 
     public override void OnFactoryItem(Item item)

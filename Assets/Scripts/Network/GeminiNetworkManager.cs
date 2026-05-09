@@ -208,7 +208,6 @@ public class GeminiNetworkManager : NetworkBehaviour
         NetworkObject itemNetworkObject = NetworkObjectPool.Singleton.GetNetworkObject(itemPref, spawnPos, Quaternion.identity);
         ItemProps itemProps = itemNetworkObject.GetComponent<ItemProps>();
         NetworkItemPoolSync.instance.NetPoolItemSet(itemProps);
-        itemProps.waitingForDestroy = false;
         if (!itemNetworkObject.IsSpawned) itemNetworkObject.Spawn(true);
 
         SetItemPropsClientRpc(itemNetworkObject, itemIndex, amount);

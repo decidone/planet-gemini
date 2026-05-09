@@ -25,7 +25,7 @@ public class LogisticsCtrl : Structure
             OnFactoryItemServerRpc(itemIndex);
         }
 
-        itemProps.itemPool.Release(itemProps.gameObject);
+        itemProps.ClientResetItemProps();
     }
 
     public override void OnFactoryItem(Item item)
@@ -94,7 +94,7 @@ public class LogisticsCtrl : Structure
         {
             if(IsServer)
                 playerInven.Add(itemProps.item, itemProps.amount);
-            itemProps.itemPool.Release(itemProps.gameObject);
+            itemProps.ClientResetItemProps();
         }
     }
     

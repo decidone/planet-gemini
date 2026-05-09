@@ -23,6 +23,7 @@ MonoBehaviour:
   isUnderObj: 1
   isEnergyUse: 0
   isEnergyStr: 0
+  isBeltOnBuilding: 1
   sprites:
   - {fileID: -220168426, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}
   - {fileID: -627380388, guid: 06057ce3fda12154e8bef6e7dd100751, type: 3}

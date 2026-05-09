@@ -711,25 +711,21 @@ public class BeltGroupMgr : NetworkBehaviour
         }
     }
 
-    public void GroupItemLoot(BeltCtrl belt ,int beltGroupIndex, bool isServer)
-    {
-        int index = beltList.IndexOf(belt);
-        GroupItemLootServerRpc(index, beltGroupIndex, isServer);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void GroupItemLootServerRpc(int beltIndex, int beltGroupIndex, bool isServer)
-    {
-        GroupItemLootClientRpc(beltIndex, beltGroupIndex, isServer);
-    }
-
     [ClientRpc]
-    public void GroupItemLootClientRpc(int beltIndex, int beltGroupIndex, bool isServer)
+    public void GroupItemLootBatchClientRpc(int[] beltIndices, int[] beltGroupIndices, bool isServer)
+    {
+        for (int i = 0; i < beltGroupIndices.Length; i++)
+        {
+            ProcessLoot(beltGroupIndices[i], isServer);
+        }
+    }
+
+    // 공통 로직 분리
+    private void ProcessLoot(int beltGroupIndex, bool isServer)
     {
         ItemProps findItemProps = null;
         BeltCtrl foundBelt = null;
 
-        // 전체 탐색으로 변경 (beltIndex 불일치 우회)
         foreach (BeltCtrl belt in beltList)
         {
             foreach (ItemProps itemProps in belt.itemObjList)
@@ -741,6 +737,7 @@ public class BeltGroupMgr : NetworkBehaviour
                     break;
                 }
             }
+            if (foundBelt != null) break;
         }
 
         if (findItemProps == null)
@@ -749,12 +746,12 @@ public class BeltGroupMgr : NetworkBehaviour
             return;
         }
 
-        foundBelt.PlayerRootFunc(findItemProps);
-
         if (isServer == IsServer)
         {
             LootListManager.instance.DisplayLootInfo(findItemProps.item, findItemProps.amount);
         }
+
+        foundBelt.PlayerRootFunc(findItemProps);
     }
 
     //[ServerRpc(RequireOwnership = false)]

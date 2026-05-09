@@ -385,7 +385,27 @@ public class SplitterCtrl : LogisticsCtrl
                 break;
             }
         }
-        FilterSetItemClientRpc(filterIndex, filter.outObj.NetworkObject, smartFilterItemIndex);
+
+        int beltGroupIndex = 0;
+        if (filter.outObj.TryGet(out BeltCtrl belt))
+        {
+            int groupItemCount = belt.beltGroupMgr.groupItem.Count;
+
+            if (groupItemCount > 0)
+            {
+                beltGroupIndex = belt.beltGroupMgr.groupItem[groupItemCount - 1].beltGroupIndex;
+
+                if (beltGroupIndex == int.MaxValue)
+                {
+                    beltGroupIndex = 0;
+                }
+                else
+                {
+                    beltGroupIndex++;
+                }
+            }
+        }
+        FilterSetItemClientRpc(filterIndex, filter.outObj.NetworkObject, smartFilterItemIndex, beltGroupIndex);
         FilterindexSet();
     }
 
@@ -485,7 +505,7 @@ public class SplitterCtrl : LogisticsCtrl
     //}
 
     [ClientRpc]
-    void FilterSetItemClientRpc(int filterIndex, NetworkObjectReference netObj, int itemIndex)
+    void FilterSetItemClientRpc(int filterIndex, NetworkObjectReference netObj, int itemIndex, int beltGroupIndex)
     {
         Item sendItem = itemList[itemIndex];
 
@@ -514,6 +534,7 @@ public class SplitterCtrl : LogisticsCtrl
                 spawnItem.transform.position = spawnPos;
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl;
+                spawnItem.beltGroupIndex = beltGroupIndex;
             }
             itemList.RemoveAt(itemIndex);
         }

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using Mono.CSharp;
 
 // UTF-8 설정
 public class PreBuilding : NetworkBehaviour
@@ -94,6 +95,8 @@ public class PreBuilding : NetworkBehaviour
     protected GameObject fluidLineObj;
 
     protected float imgAlpha = 0.6f;
+    [SerializeField]
+    bool isBeltOnBuilding;
 
     #region Singleton
     public static PreBuilding instance;
@@ -232,7 +235,7 @@ public class PreBuilding : NetworkBehaviour
 
                 bool canBuild = false;
                 if (!canNotDrag)
-                {               
+                {
                     int index = 0;
                     foreach (GameObject obj in buildingList)
                     {
@@ -262,6 +265,17 @@ public class PreBuilding : NetworkBehaviour
 
                     if (!nonNetObj.GetComponent<UnderObjBuilding>())
                     {
+                        if(isBeltOnBuilding)
+                        {
+                            int x = Mathf.FloorToInt(pos[0].x);
+                            int y = Mathf.FloorToInt(pos[0].y);
+                            Cell cell = gameManager.map.GetCellDataFromPos(x, y);
+                            if(cell.structure && cell.structure.TryGet(out BeltCtrl removeBelt))
+                            {
+                                removeBelt.BeltOnBuildingRemoveFuncServerRpc();
+                            }
+                        }
+
                         BuildingServerRpc(isInHostMap, buildingIndex, pos, dirNum, isBeltObj, reversSet, gameManager.debug);
                     }
                     else
@@ -275,6 +289,17 @@ public class PreBuilding : NetworkBehaviour
                             UnderObjBuilding unObj = buildingList[i].GetComponent<UnderObjBuilding>();
                             dir[i] = unObj.dirNum;
                             sideObj[i] = unObj.isSendObj;
+
+                            if (isBeltOnBuilding)
+                            {
+                                int x = Mathf.FloorToInt(pos[0].x);
+                                int y = Mathf.FloorToInt(pos[0].y);
+                                Cell cell = gameManager.map.GetCellDataFromPos(x, y);
+                                if (cell.structure && cell.structure.TryGet(out BeltCtrl removeBelt))
+                                {
+                                    removeBelt.BeltOnBuildingRemoveFuncServerRpc();
+                                }
+                            }
                         }
                         BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isUnderBelt, sideObj, gameManager.debug);
                     }
@@ -1334,6 +1359,7 @@ public class PreBuilding : NetworkBehaviour
         isPortalObj = false;
         canBuildCount = _canBuildAmount;
         isInHostMap = _isInHostMap;
+        isBeltOnBuilding = build.isBeltOnBuilding;
         if (nonNetObj != null)
         {
             Destroy(nonNetObj);
@@ -1467,6 +1493,7 @@ public class PreBuilding : NetworkBehaviour
         canBuildCount = 1;
         portalScript = portal;
         isInHostMap = _isInHostMap;
+        isBeltOnBuilding = build.isBeltOnBuilding;
 
         if (gameManager.portal[0] == portal)        
             portalIndex = 0;
@@ -1640,7 +1667,14 @@ public class PreBuilding : NetworkBehaviour
                         }
 
                         Cell cell = gameManager.map.GetCellDataFromPos(newX, newY);
-                        if (cell.structure != null || cell.obj != null || (cell.corruptionId > 0))
+                        if (cell.structure)
+                        {
+                            if (!isBeltOnBuilding || !cell.structure.Get<BeltCtrl>())
+                                return false;
+                            else
+                                canBuild = true;
+                        }
+                        else if (cell.obj || cell.corruptionId > 0)
                         {
                             return false;
                         }
@@ -1661,7 +1695,7 @@ public class PreBuilding : NetworkBehaviour
                         }
                         else
                         {
-                            if (((cell.buildable.Count == 0 || cell.BuildCheck("miner")) && cell.biome.biome != "cliff") && cell.structure == null)
+                            if ((cell.buildable.Count == 0 || cell.BuildCheck("miner")) && cell.biome.biome != "cliff")
                             {
                                 canBuild = true;
                             }

@@ -18,6 +18,7 @@ public class Building : ScriptableObject
     public bool isUnderObj;
     public bool isEnergyUse;
     public bool isEnergyStr;
+    public bool isBeltOnBuilding;
 
     public List<Sprite> sprites = new List<Sprite>();
     public List<RuntimeAnimatorController> animatorController = new List<RuntimeAnimatorController>();

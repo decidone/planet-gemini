@@ -353,6 +353,20 @@ public class BeltCtrl : LogisticsCtrl
         spawn.transform.position = pos;
         spawn.isOnBelt = true;
         spawn.setOnBelt = this;
+
+        int beltGroupIndex = 0;
+             
+        if (beltGroupIndex == int.MaxValue)
+        {
+            beltGroupIndex = 0;
+        }
+        else
+        {
+            beltGroupIndex++;
+        }
+        
+        spawn.beltGroupIndex = beltGroupIndex;
+
         itemObjList.Add(spawn);
 
         if (itemObjList.Count >= maxAmount)
@@ -846,7 +860,7 @@ public class BeltCtrl : LogisticsCtrl
         ItemProps item = itemObjList[index];
         beltGroupMgr.ItemRoot(item);
         itemObjList.RemoveAt(index);
-        item.itemPool.Release(item.gameObject);
+        item.ClientResetItemProps();
 
         if (itemObjList.Count >= maxAmount)
             isFull = true;
@@ -858,7 +872,7 @@ public class BeltCtrl : LogisticsCtrl
     {
         itemObjList.Remove(item);
         beltGroupMgr.ItemRoot(item);
-        item.itemPool.Release(item.gameObject);
+        item.ClientResetItemProps();
 
         if (itemObjList.Count >= maxAmount)
             isFull = true;
@@ -870,7 +884,7 @@ public class BeltCtrl : LogisticsCtrl
     {
         ItemProps item = itemObjList[itemObjList.Count - 1];
         itemObjList.RemoveAt(itemObjList.Count - 1);
-        item.itemPool.Release(item.gameObject);
+        item.ClientResetItemProps();
 
         if (itemObjList.Count >= maxAmount)
             isFull = true;
@@ -885,6 +899,9 @@ public class BeltCtrl : LogisticsCtrl
             Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
             foreach (ItemProps itemProps in itemObjList)
             {
+                if (!itemProps)
+                    continue;
+
                 Item item = itemProps.item;
                 int amounts = itemProps.amount;
 
