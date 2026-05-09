@@ -494,7 +494,18 @@ public class Structure : WorldObj
     //    }
     //}
 
-    protected void ObjRemoveFunc()
+    [ServerRpc(RequireOwnership = false)]
+    public void BeltOnBuildingRemoveFuncServerRpc()
+    {
+        destroyStart = true;
+        destroyEnd = true;
+        isDestroying = true;
+        isPreBuilding = true;
+        removeState = true; 
+        ObjRemoveFunc();
+    }
+
+    public void ObjRemoveFunc()
     {
         ItemDrop();
         RefundCost();
