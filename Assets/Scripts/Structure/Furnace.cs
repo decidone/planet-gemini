@@ -117,6 +117,8 @@ public class Furnace : Production
     protected override void ApplyExtraSync(StructureSyncData data)
     {
         fuel = data.fuel;
+        CheckSlotState(0);
+        SetFurnaceRecipe(0);
     }
 
     public override void CheckSlotState(int slotindex)

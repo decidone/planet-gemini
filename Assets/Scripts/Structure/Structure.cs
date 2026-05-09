@@ -328,10 +328,9 @@ public class Structure : WorldObj
 
     void OnDisable()
     {
-        if (!IsServer && GameManager.instance && soundManager)
+        if (!IsServer && GameManager.instance)
         {
             ClientItemDrop();
-            soundManager.PlayUISFX("BuildingRemove");
         }
 
         if (overlayUse)
