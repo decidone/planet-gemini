@@ -44,7 +44,7 @@ public class UpgradeBuild : DragFunc
             
             Structure structure = worldObj.Get<Structure>();
 
-            if (structure == null)
+            if (!structure || !structure.canUpgrade)
                 continue;
             if (structure.isPreBuilding)
                 continue;
@@ -110,7 +110,7 @@ public class UpgradeBuild : DragFunc
 
         if (!str.isPreBuilding)
         {
-            if (!(str.Get<Portal>() || str.Get<ScienceBuilding>()))
+            if (str.canUpgrade && (!(str.Get<Portal>() || str.Get<ScienceBuilding>())))
             {
                 if (str.maxLevel != str.level)
                 {

@@ -899,7 +899,7 @@ public class BeltCtrl : LogisticsCtrl
             Dictionary<Item, int> returnDic = new Dictionary<Item, int>();
             foreach (ItemProps itemProps in itemObjList)
             {
-                if (!itemProps)
+                if (!itemProps || !itemProps.item)
                     continue;
 
                 Item item = itemProps.item;

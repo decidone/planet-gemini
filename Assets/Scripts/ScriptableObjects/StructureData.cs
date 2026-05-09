@@ -97,4 +97,8 @@ public class StructureData : ScriptableObject
     [SerializeField]
     private bool canSendFluid;
     public bool CanSendFluid { get { return canSendFluid; } }
+
+    [SerializeField]
+    private bool canUpgrade;
+    public bool CanUpgrade { get { return canUpgrade; } }
 }
