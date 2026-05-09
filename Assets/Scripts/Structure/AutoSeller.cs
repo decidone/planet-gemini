@@ -111,8 +111,8 @@ public class AutoSeller : Production
                 }
             }
         }
-
-        sInvenManager.finance.SetFinance(totalPrice);
+        if (isUIOpened)
+            sInvenManager.finance.SetFinance(totalPrice);
     }
 
     public override void OpenUI()

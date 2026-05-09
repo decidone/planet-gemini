@@ -192,7 +192,8 @@ public class AutoBuyer : Production
         }
         else
         {
-            sInvenManager.finance.SetFinance(0);
+            if (isUIOpened)
+                sInvenManager.finance.SetFinance(0);
         }
     }
 
@@ -219,7 +220,8 @@ public class AutoBuyer : Production
         }
 
         isBuyable = (GameManager.instance.finance.finance >= totalPrice);
-        sInvenManager.finance.SetFinance(totalPrice, isBuyable);
+        if (isUIOpened)
+            sInvenManager.finance.SetFinance(totalPrice, isBuyable);
     }
 
     public override void OpenUI()
