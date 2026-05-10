@@ -13,6 +13,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
     {
         mainSource = myFluidScript;
         fluidName = "CrudeOil";
+        effiCooldown = pumpInterval;
         if (IsServer)
             StrBuilt();
         else if (NetworkObjManager.instance.clientSyncComplete == true)
@@ -38,7 +39,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
                 //}
 
                 pumpTimer += Time.deltaTime;
-                if (pumpTimer > pumpInterval)
+                if (pumpTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
                 {
                     PumpUp();
                     pumpTimer = 0;
@@ -122,38 +123,5 @@ public class ExtractorCtrl : FluidFactoryCtrl
                 }
             }
         }
-
-        //StartCoroutine(SendFluidCoroutine());
     }
-
-    //protected IEnumerator SendFluidCoroutine()
-    //{
-    //    yield return null;
-
-    //    List<FluidFactoryCtrl> reversedList = new List<FluidFactoryCtrl>();
-    //    for (int i = fluidList.Count - 1; i >= 0; i--)
-    //    {
-    //        reversedList.Add(fluidList[i]);
-    //    }
-
-    //    foreach (FluidFactoryCtrl obj in reversedList)
-    //    {
-    //        if (obj)
-    //        {
-    //            obj.SendFluid();
-    //            yield return null;
-    //        }
-    //    }
-
-    //    if (IsServer)
-    //    {
-    //        foreach (FluidFactoryCtrl obj in reversedList)
-    //        {
-    //            if (obj)
-    //            {
-    //                obj.FluidSyncServerRpc();
-    //            }
-    //        }
-    //    }
-    //}
 }

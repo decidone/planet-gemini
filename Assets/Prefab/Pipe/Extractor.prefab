@@ -528,8 +528,8 @@ MonoBehaviour:
   col: {fileID: 0}
   overclockTower: {fileID: 0}
   overclockOn: 0
-  overclockPer: 0
-  effiCooldownUpgradePer: 0
+  overclockPer: 10
+  effiCooldownUpgradePer: 10
   isStorageBuilding: 0
   isUIOpened: 0
   isPortalBuild: 0
@@ -553,8 +553,10 @@ MonoBehaviour:
   isInHostMap: 0
   isManualDestroy: 0
   destroyStart: 0
+  destroyEnd: 0
   isDestroying: 0
   isRunning: 0
+  destroyRequestedBy: -1
   settingEndCheck: 0
   connectedPosList: []
   canUpgrade: 0
@@ -569,10 +571,12 @@ MonoBehaviour:
   selectPointSetPos: 0
   overlay: {fileID: 0}
   overlayUse: 0
+  view: {fileID: 0}
   ui: {fileID: 0}
   sInvenManager: {fileID: 0}
   rManager: {fileID: 0}
   inventory: {fileID: 0}
+  fuel: 0
   lineObj: {fileID: 0}
   lineRenderer: {fileID: 0}
   isGetLine: 0

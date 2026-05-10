@@ -144,7 +144,7 @@ public class Structure : WorldObj
     public float energyProduction;
     [HideInInspector]
     public float energyConsumption;
-    float upgradeConsumptionPer = 10;
+    protected float upgradeConsumptionPer = 10;
     public bool isEnergyConnected = false;
     public bool isOperate;
     [HideInInspector]
