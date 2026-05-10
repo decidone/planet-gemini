@@ -154,7 +154,7 @@ public abstract class InventoryManager : MonoBehaviour
         {
             if (focusedSlot != null)
             {
-                if (focusedSlot.item != null)
+                if (focusedSlot.item != null  || focusedSlot.amount != 0)
                 {
                     inventory.SwapOrMerge(focusedSlot.slotNum);
                     soundManager.PlayUISFX("ItemSelect");

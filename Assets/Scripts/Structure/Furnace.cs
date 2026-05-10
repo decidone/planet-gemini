@@ -37,7 +37,7 @@ public class Furnace : Production
                     {
                         OperateStateSet(true);
                         prodTimer += Time.deltaTime;
-                        if (prodTimer > cooldown)
+                        if (prodTimer > effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount))
                         {
                             fuel -= 25;
                             if (IsServer)
@@ -153,13 +153,15 @@ public class Furnace : Production
                 recipe = _recipe;
                 output = itemDic[recipe.items[recipe.items.Count - 1]];
                 cooldown = recipe.cooldown;
+                effiCooldown = cooldown;
                 FactoryOverlay();
 
                 if (isUIOpened)
                 {
-                    float productionPerMin = 60 / cooldown;
-                    sInvenManager.progressBar.SetMaxProgress(cooldown);
-                    sInvenManager.SetCooldownText(cooldown, FormatFloat(productionPerMin));
+                    float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+                    float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+                    sInvenManager.progressBar.SetMaxProgress(productionTime);
+                    sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
                 }
             }
         }
@@ -214,10 +216,11 @@ public class Furnace : Production
         sInvenManager.SetInven(inventory, ui);
         sInvenManager.SetProd(this);
 
-        float productionPerMin = 60 / cooldown;
-        sInvenManager.progressBar.SetMaxProgress(cooldown);
+        float productionTime = effiCooldown - ((overclockOn ? effiCooldown * overclockPer / 100 : 0) + effiCooldownUpgradeAmount);
+        float productionPerMin = (recipe.name != null) ? recipe.amounts[recipe.amounts.Count - 1] * (60 / productionTime) : 60 / productionTime;
+        sInvenManager.progressBar.SetMaxProgress(productionTime);
         sInvenManager.energyBar.SetMaxProgress(maxFuel);
-        sInvenManager.SetCooldownText(cooldown, FormatFloat(productionPerMin));
+        sInvenManager.SetCooldownText(productionTime, FormatFloat(productionPerMin));
 
         List<Item> items = new List<Item>();
         foreach (Recipe recipe in recipes)

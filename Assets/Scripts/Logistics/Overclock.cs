@@ -94,7 +94,7 @@ public class Overclock : Production
                     buildingList.Add(production);
                     production.overclocks.Add(this);
                     production.overclockTower = this;
-                    if (conn != null && conn.group != null && conn.group.efficiency > 0)
+                    if (isOperate)
                     {
                         production.OverclockSyncServerRpc(true);
                     }
