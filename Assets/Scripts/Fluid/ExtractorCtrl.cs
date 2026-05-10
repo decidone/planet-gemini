@@ -57,7 +57,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {
-                if (nearObj[i] == null)
+                if (!nearObj[i])
                 {
                     CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
                 }
@@ -84,7 +84,7 @@ public class ExtractorCtrl : FluidFactoryCtrl
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null)
+            if (!nearObj[i])
             {
                 CheckNearObj(checkPos[i], i, obj => FluidSetOutObj(obj));
             }

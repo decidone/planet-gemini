@@ -90,7 +90,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {
-                if (nearObj[i] == null)
+                if (!nearObj[i])
                 {
                     if (i == 0)
                         CheckNearObj(checkPos[0], 0, obj => UnderPipeSetInObj(obj));
@@ -120,7 +120,7 @@ public class UnderPipeCtrl : FluidFactoryCtrl
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null)
+            if (!nearObj[i])
             {
                 if (i == 0)
                     CheckNearObj(checkPos[0], 0, obj => UnderPipeSetInObj(obj));

@@ -86,11 +86,11 @@ public abstract class Production : Structure
         //{
         //    for (int i = 0; i < nearObj.Length; i++)
         //    {
-        //        if (nearObj[i] == null && sizeOneByOne)
+        //        if (!nearObj[i] && sizeOneByOne)
         //        {
         //            CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
         //        }
-        //        else if (nearObj[i] == null && !sizeOneByOne)
+        //        else if (!nearObj[i] && !sizeOneByOne)
         //        {
         //            int dirIndex = i / 2;
         //            CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
@@ -114,11 +114,11 @@ public abstract class Production : Structure
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {
-                if (nearObj[i] == null && sizeOneByOne)
+                if (!nearObj[i] && sizeOneByOne)
                 {
                     CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
-                else if (nearObj[i] == null && !sizeOneByOne)
+                else if (!nearObj[i] && !sizeOneByOne)
                 {
                     CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
