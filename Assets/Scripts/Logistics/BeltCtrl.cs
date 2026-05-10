@@ -1057,17 +1057,16 @@ public class BeltCtrl : LogisticsCtrl
         if (InfoUI.instance.str == this)
             InfoUI.instance.SetDefault();
 
-        for (int i = 0; i < nearObj.Length; i++)
+        int posX = (int)transform.position.x;
+        int posY = (int)transform.position.y;
+        for (int i = 0; i < 4; i++)
         {
-            if (nearObj[i])
+            int nearX = posX + oneDirections[i, 0];
+            int nearY = posY + oneDirections[i, 1];
+            Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
+            if (cell.structure != null)
             {
-                nearObj[i].ResetNearObj(this);
-                if (nearObj[i].TryGet(out BeltCtrl belt))
-                {
-                    BeltGroupMgr beltGroup = belt.beltGroupMgr;
-                    beltGroup.nextCheck = true;
-                    beltGroup.preCheck = true;
-                }
+                cell.structure.ResetNearObj(this);
             }
         }
 

@@ -16,7 +16,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
             //{                
             //    for (int i = 0; i < nearObj.Length; i++)
             //    {
-            //        if (nearObj[i] == null)
+            //        if (!nearObj[i])
             //        {
             //            int dirIndex = i / 2;
             //            CheckNearObj(startTransform[indices[i]], directions[dirIndex], i, obj => FluidSetOutObj(obj));
@@ -50,7 +50,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {
-                if (nearObj[i] == null)
+                if (!nearObj[i])
                 {
                     CheckNearObj(i, obj => FluidSetOutObj(obj));
                 }
@@ -76,7 +76,7 @@ public class FluidTankCtrl : FluidFactoryCtrl
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null)
+            if (!nearObj[i])
             {
                 CheckNearObj(i, obj => FluidSetOutObj(obj));
             }

@@ -66,9 +66,13 @@ public class SplitterCtrl : LogisticsCtrl
         if (IsServer)
         {
             CheckPos();
+            Debug.Log("NearStrBuilt this obj pos : " + gameObject.transform.position);
+
             for (int i = 0; i < nearObj.Length; i++)
             {
-                if (nearObj[i] == null)
+                Debug.Log("nearObj : " + i);
+
+                if (!nearObj[i])
                 {
                     if (i == 0)
                         CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
@@ -78,6 +82,11 @@ public class SplitterCtrl : LogisticsCtrl
                         CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
                     else if (i == 3)
                         CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
+                }
+                else
+                {
+                    Debug.Log("nearObj[i] : " + nearObj[i].gameObject.name);
+
                 }
             }
             SetSpriteModel();
@@ -103,7 +112,7 @@ public class SplitterCtrl : LogisticsCtrl
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null)
+            if (!nearObj[i])
             {
                 if (i == 0)
                     CheckNearObj(checkPos[0], 0, obj => StartCoroutine(SetOutObjCoroutine(obj, 1)));
@@ -337,6 +346,15 @@ public class SplitterCtrl : LogisticsCtrl
                 Invoke(nameof(ItemSetDelayReset), 0.05f);
                 return;
             }
+            else if (filter.outObj.TryGet(out SendUnderBeltCtrl sendUnderBelt))
+            {
+                if (sendUnderBelt.outObj.Count == 0)
+                {
+                    FilterindexSet();
+                    Invoke(nameof(ItemSetDelayReset), 0.05f);
+                    return;
+                }
+            }
         }
         else
         {
@@ -418,6 +436,14 @@ public class SplitterCtrl : LogisticsCtrl
 
         if (filter.outObj.TryGet(out Production production) && !production.CanTakeItem(sendItem))
             return false;
+    
+        if (filter.outObj.TryGet(out SendUnderBeltCtrl sendUnderBelt))
+        {
+            if (sendUnderBelt.outObj.Count == 0)
+            {
+                return false;
+            }
+        }
 
         return true;
     }
@@ -557,6 +583,8 @@ public class SplitterCtrl : LogisticsCtrl
 
         if (!obj || !obj.canTakeItem)
             yield break;
+
+        Debug.Log("Name : " + obj.name + ", index :" + num);
 
         if (obj.TryGet<BeltCtrl>(out var belt))
         {

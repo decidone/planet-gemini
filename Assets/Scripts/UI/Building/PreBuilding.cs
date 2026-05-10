@@ -437,7 +437,7 @@ public class PreBuilding : NetworkBehaviour
                     else
                         cell = gameManager.clientMap.GetCellDataFromPos(newX, newY);
 
-                    if (cell.structure != null)
+                    if (cell.structure)
                     {
                         return;
                     }

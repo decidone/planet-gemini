@@ -201,11 +201,11 @@ public class AttackTower : TowerAi
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {
-                if (nearObj[i] == null && sizeOneByOne)
+                if (!nearObj[i] && sizeOneByOne)
                 {
                     CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
-                else if (nearObj[i] == null && !sizeOneByOne)
+                else if (!nearObj[i] && !sizeOneByOne)
                 {
                     CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
@@ -231,11 +231,11 @@ public class AttackTower : TowerAi
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null && sizeOneByOne)
+            if (!nearObj[i] && sizeOneByOne)
             {
                 CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }
-            else if (nearObj[i] == null && !sizeOneByOne)
+            else if (!nearObj[i] && !sizeOneByOne)
             {
                 CheckNearObj(i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }

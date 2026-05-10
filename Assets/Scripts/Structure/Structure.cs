@@ -500,7 +500,7 @@ public class Structure : WorldObj
         destroyEnd = true;
         isDestroying = true;
         isPreBuilding = true;
-        removeState = true; 
+        removeState = true;
         ObjRemoveFunc();
     }
 
@@ -952,7 +952,6 @@ public class Structure : WorldObj
         int nearX = (int)(transform.position.x + direction.x);
         int nearY = (int)(transform.position.y + direction.y);
         Cell cell = GameManager.instance.GetCellDataFromPosWithoutMap(nearX, nearY);
-
         if (cell == null)
             return;
 
@@ -964,6 +963,8 @@ public class Structure : WorldObj
             bool strItem = obj.canSendItem || obj.canTakeItem;
             bool strFluid = obj.canSendFluid || obj.canTakeFluid;
 
+            if (obj.destroyStart)
+                return;
             // 아이템과 유체랑 관련 없는 건물들
             if (!myItem && !myFluid)
                 return;
@@ -1380,6 +1381,15 @@ public class Structure : WorldObj
             {
                 Item item = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
                 if (!production.CanTakeItem(item))
+                {
+                    SendItemIndexSet();
+                    Invoke(nameof(ItemSetDelayReset), 0.05f);
+                    return;
+                }
+            }
+            else if (outFactory.TryGet(out SendUnderBeltCtrl sendUnderBelt))
+            {
+                if (sendUnderBelt.outObj.Count == 0)
                 {
                     SendItemIndexSet();
                     Invoke(nameof(ItemSetDelayReset), 0.05f);

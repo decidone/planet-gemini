@@ -40,7 +40,7 @@ public class ItemSpawner : LogisticsCtrl
             CheckPos();
             for (int i = 0; i < nearObj.Length; i++)
             {
-                if (nearObj[i] == null)
+                if (!nearObj[i])
                 {
                     CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
                 }
@@ -66,7 +66,7 @@ public class ItemSpawner : LogisticsCtrl
         CheckPos();
         for (int i = 0; i < nearObj.Length; i++)
         {
-            if (nearObj[i] == null)
+            if (!nearObj[i])
             {
                 CheckNearObj(checkPos[i], i, obj => StartCoroutine(SetOutObjCoroutine(obj)));
             }
