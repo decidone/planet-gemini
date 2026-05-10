@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: IceTower
   maxLevel: 0
-  maxHp: 2c010000
-  upgradeMaxHp: 5e010000
+  maxHp: fa000000
+  upgradeMaxHp: 2c010000
   maxItemStorageLimit: 50
   maxFulidStorageLimit: 0
   sendSpeed:
@@ -40,3 +40,4 @@ MonoBehaviour:
   canSendItem: 0
   canTakeFluid: 0
   canSendFluid: 0
+  canUpgrade: 0

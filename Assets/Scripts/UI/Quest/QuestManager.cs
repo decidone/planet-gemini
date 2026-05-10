@@ -57,10 +57,14 @@ public class QuestManager : MonoBehaviour
 
     public void SetQuest(int order)
     {
-        if (quests.Count <= order)
-            return;
-
         currentQuest = order;
+
+        if (quests.Count <= order)
+        {
+            ResetUI();
+            return;
+        }
+
         PlayerController player = GameManager.instance.player.GetComponent<PlayerController>();
 
         titleText.text = quests[order].title;

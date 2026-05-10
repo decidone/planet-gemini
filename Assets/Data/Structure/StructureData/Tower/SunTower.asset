@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   factoryName: SunTower
   maxLevel: 0
-  maxHp: 18010000
-  upgradeMaxHp: 4a010000
+  maxHp: 90010000
+  upgradeMaxHp: f4010000
   maxItemStorageLimit: 50
   maxFulidStorageLimit: 0
   sendSpeed:
@@ -30,7 +30,7 @@ MonoBehaviour:
   production: 0
   energyUse: 01
   consumption:
-  - 100
+  - 200
   removeGauge: 10
   defense:
   - 18
@@ -40,3 +40,4 @@ MonoBehaviour:
   canSendItem: 0
   canTakeFluid: 0
   canSendFluid: 0
+  canUpgrade: 0
