@@ -87,6 +87,14 @@ public class LocalPortalListManager : MonoBehaviour
         okBtn.onClick.AddListener(() => SetPortalName(obj));
     }
 
+    public void CloseEditUI()
+    {
+        confirmPanel.SetActive(false);
+        isEditOpened = false;
+        inputField.text = "";
+        okBtn.onClick.RemoveAllListeners();
+    }
+
     void SetPortalName(GameObject obj)
     {
         if (obj.TryGetComponent(out Structure str))
@@ -107,14 +115,6 @@ public class LocalPortalListManager : MonoBehaviour
                 item.SetListItemName();
             }
         }
-    }
-
-    public void CloseEditUI()
-    {
-        confirmPanel.SetActive(false);
-        isEditOpened = false;
-        inputField.text = "";
-        okBtn.onClick.RemoveAllListeners();
     }
 
     public void DestroyListItems()

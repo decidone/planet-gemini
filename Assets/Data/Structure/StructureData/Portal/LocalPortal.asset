@@ -22,7 +22,7 @@ MonoBehaviour:
   - 0
   sendDelay:
   - 0
-  maxBuildingGauge: 30
+  maxBuildingGauge: 1
   maxRepairGauge: 10
   colliderRadius: 10
   cooldown: 0
@@ -31,7 +31,7 @@ MonoBehaviour:
   energyUse: 00
   consumption:
   - 0
-  removeGauge: 10
+  removeGauge: 1
   defense:
   - 5
   upgradedefense:
@@ -40,3 +40,4 @@ MonoBehaviour:
   canSendItem: 0
   canTakeFluid: 0
   canSendFluid: 0
+  canUpgrade: 0

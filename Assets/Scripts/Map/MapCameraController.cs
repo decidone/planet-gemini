@@ -149,7 +149,7 @@ public class MapCameraController : MonoBehaviour
 
     public void ToggleMap()
     {
-        if (inputManager.mouseLeft || inputManager.mouseRight)
+        if (inputManager.mouseLeft || inputManager.mouseRight || LocalPortalListManager.instance.isEditOpened)
             return;
 
         if (!inputManager.isMapOpened)
