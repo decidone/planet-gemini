@@ -825,7 +825,8 @@ public class GameManager : NetworkBehaviour
                 ",   resource : " + cell.resource +
                 ",   buildable : " + buildable +
                 ",   structure : " + cell.structure +
-                ",   spawn area : " + cell.spawnArea
+                ",   spawn area : " + cell.spawnArea +
+                ",   corruptionObj : " + cell.corruptionObj
                 );
             }
             else
@@ -836,7 +837,8 @@ public class GameManager : NetworkBehaviour
                 ",   obj : " + cell.obj.name +
                 ",   buildable : " + buildable +
                 ",   structure : " + cell.structure +
-                ",   spawn area : " + cell.spawnArea
+                ",   spawn area : " + cell.spawnArea +
+                ",   corruptionObj : " + cell.corruptionObj
                 );
             }
         }

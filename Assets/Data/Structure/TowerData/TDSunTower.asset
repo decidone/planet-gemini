@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDSunTower
   m_EditorClassIdentifier: 
-  damage: 75
-  attackDist: 16
-  attDelayTime: 1.1
-  maxEnergyBulletAmount: 5
-  reloadCooldown: 2
-  upgradeDamage: 200
-  upgradeAttDelayTime: 0.9
+  damage: 0
+  attackDist: 0
+  attDelayTime: 0
+  maxEnergyBulletAmount: 0
+  reloadCooldown: 0
+  upgradeDamage: 0
+  upgradeAttDelayTime: 0

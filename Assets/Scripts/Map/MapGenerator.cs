@@ -1040,7 +1040,7 @@ public class MapGenerator : MonoBehaviour
         SetCorruption(map, monsterSpawner, GetCorruptionRadiusByLevel(level), level);
     }
 
-    public void SetCorruption(Map map, MonsterSpawner monsterSpawner, float radius, int level)
+    public void SetCorruption(Map map, MonsterSpawner monsterSpawner, float radius, int level, bool isRemoving = false)
     {
         Tilemap tempTilemap;
         Biome biome;
@@ -1094,7 +1094,7 @@ public class MapGenerator : MonoBehaviour
                         if (cell.obj != null)
                             Destroy(cell.obj);
 
-                        if (3 < dist)   //스포너랑 겹치게 생성되는것을 방지
+                        if (3 < dist && !isRemoving)   //스포너랑 겹치게 생성되는것을 방지
                         {
                             GameObject obj = biome.SetRandomObject(random);
                             if (obj != null)
@@ -1183,7 +1183,7 @@ public class MapGenerator : MonoBehaviour
             if (radius <= corruptionClearRadius)
                 yield break;
 
-            SetCorruption(map, monsterSpawner, radius, level);
+            SetCorruption(map, monsterSpawner, radius, level, true);
         }
     }
 

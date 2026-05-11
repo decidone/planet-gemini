@@ -15,7 +15,7 @@ MonoBehaviour:
   damage: 25
   attackDist: 10
   attDelayTime: 6
-  maxEnergyBulletAmount: 10
+  maxEnergyBulletAmount: 7
   reloadCooldown: 8
-  upgradeDamage: 50
+  upgradeDamage: 40
   upgradeAttDelayTime: 5

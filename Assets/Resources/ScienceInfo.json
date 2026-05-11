@@ -218,12 +218,12 @@
   },
   "PoisonTower":{
     "Battle":{
-      "1":{"items":["ManaStone","ToxicPlant"],"amounts":[10,20],"coreLv":3,"time":30,"Info":"A tower that deals continuous damage over time to attacked enemies. Requires energy.","basicScience":false,"sortIndex":16}
+      "1":{"items":["ManaStone","ToxicPlant"],"amounts":[20,40],"coreLv":4,"time":30,"Info":"A tower that deals continuous damage over time to attacked enemies. Requires energy.","basicScience":false,"sortIndex":13}
     }
   },
   "FireTower":{
     "Battle":{
-      "1":{"items":["ManaStone","Sulfur"],"amounts":[20,40],"coreLv":4,"time":40,"Info":"A tower that has area-of-effect attacks. Requires energy.","basicScience":false,"sortIndex":13}
+      "1":{"items":["ManaStone","Sulfur"],"amounts":[10,40],"coreLv":3,"time":40,"Info":"A tower that has area-of-effect attacks. Requires energy.","basicScience":false,"sortIndex":16}
     }
   },
   "StormTower":{

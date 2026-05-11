@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cedcc7082bda8045bfb90a25010f012, type: 3}
   m_Name: TDPoisonTower
   m_EditorClassIdentifier: 
-  damage: 20
+  damage: 25
   attackDist: 16
-  attDelayTime: 7
-  maxEnergyBulletAmount: 7
-  reloadCooldown: 9
+  attDelayTime: 6
+  maxEnergyBulletAmount: 8
+  reloadCooldown: 8
   upgradeDamage: 40
-  upgradeAttDelayTime: 6
+  upgradeAttDelayTime: 5
