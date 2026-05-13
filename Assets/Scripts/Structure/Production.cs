@@ -458,7 +458,7 @@ public abstract class Production : Structure
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (!obj || !obj.canTakeItem)
+        if (!obj)
             yield break;
 
         if (obj.TryGet<BeltCtrl>(out var belt))
@@ -476,8 +476,8 @@ public abstract class Production : Structure
         {
             outSameList.Add(obj);
             StartCoroutine(OutCheck(obj));
+            StartCoroutine(UnderBeltConnectCheck(obj));
         }
-        StartCoroutine(UnderBeltConnectCheck(obj));        
     }
 
     public override void OnFactoryItem(ItemProps itemProps)

@@ -63,7 +63,7 @@ public class Structure : WorldObj
 
     [HideInInspector]
     public List<Item> itemList = new List<Item>();
-    [HideInInspector]
+    //[HideInInspector]
     public List<ItemProps> itemObjList = new List<ItemProps>();
 
     [HideInInspector]
@@ -89,11 +89,11 @@ public class Structure : WorldObj
     [HideInInspector]
     public bool takeItemDelay = false;
 
-    [HideInInspector]
+    //[HideInInspector]
     public List<Structure> inObj = new List<Structure>();
-    [HideInInspector]
+    //[HideInInspector]
     public List<Structure> outObj = new List<Structure>();
-    [HideInInspector]
+    //[HideInInspector]
     public List<Structure> outSameList = new List<Structure>();
 
     protected int getItemIndex = 0;
@@ -1335,6 +1335,25 @@ public class Structure : WorldObj
         if (belt.beltGroupMgr.groupItem.Count != 0)
             belt.beltGroupMgr.groupItem.RemoveAt(0);
         belt.ItemNumCheck();
+
+        // 아이템 가져간 시각 기준으로 나머지 슬롯 갱신
+        double transferTime = NetworkManager.Singleton.ServerTime.Time;
+
+        for (int i = 0; i < belt.itemObjList.Count; i++)
+        {
+            ItemProps item = belt.itemObjList[i];
+
+            double elapsed = transferTime - item.beltEnterTime;
+            float t = Mathf.Clamp01((float)(elapsed / item.beltTravelDuration));
+            Vector3 posAtTransfer = Vector3.Lerp(item.beltStartPos, item.beltEndPos, t);
+
+            item.SetBeltData(
+                transferTime,
+                posAtTransfer,
+                belt.nextPos[i],
+                belt.structureData.SendSpeed[belt.level]
+            );
+        }
     }
 
     protected IEnumerator WaitAndRetryGetItem(BeltCtrl belt, float timeout = 5f)
@@ -1431,23 +1450,16 @@ public class Structure : WorldObj
     {
         if (outObj[outObjIndex].TryGet(out BeltCtrl beltCtrl))
         {
-            int beltGroupIndex = 0;
-            int groupItemCount = beltCtrl.beltGroupMgr.groupItem.Count;
-
-            if (groupItemCount > 0)
+            if (beltCtrl.beltGroupMgr.beltOnItemIndex == int.MaxValue)
             {
-                beltGroupIndex = beltCtrl.beltGroupMgr.groupItem[groupItemCount - 1].beltGroupIndex;
-
-                if (beltGroupIndex == int.MaxValue)
-                {
-                    beltGroupIndex = 0;
-                }
-                else
-                {
-                    beltGroupIndex++;
-                }
+                beltCtrl.beltGroupMgr.beltOnItemIndex = 0;
             }
-            SendItemClientRpc(itemIndex, outObjIndex, outObj[outObjIndex].NetworkObject, beltGroupIndex);
+            else
+            {
+                beltCtrl.beltGroupMgr.beltOnItemIndex++;
+            }
+            
+            SendItemClientRpc(itemIndex, outObjIndex, outObj[outObjIndex].NetworkObject, beltCtrl.beltGroupMgr.beltOnItemIndex);
         }
         else
             SendItemClientRpc(itemIndex, outObjIndex, outObj[outObjIndex].NetworkObject);
@@ -1493,14 +1505,14 @@ public class Structure : WorldObj
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
             ItemProps spawnItem = itemPool.GetComponent<ItemProps>();
-            if (beltCtrl.OnBeltItem(spawnItem))
+            Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
+            if (beltCtrl.OnBeltItem(spawnItem, spawnPos))
             {
                 SpriteRenderer sprite = spawnItem.spriteRenderer;
                 sprite.sprite = item.icon;
                 sprite.sortingOrder = 2;
                 spawnItem.item = item;
                 spawnItem.amount = 1;
-                Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
                 spawnItem.transform.position = spawnPos;
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl;
@@ -1925,7 +1937,7 @@ public class Structure : WorldObj
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (!obj || !obj.canTakeItem)
+        if (!obj)
             yield break;
 
         if (obj.TryGet<BeltCtrl>(out var belt))
@@ -1946,9 +1958,12 @@ public class Structure : WorldObj
         }        
     }
 
-    protected virtual IEnumerator OutCheck(Structure otherObj)
+    protected IEnumerator OutCheck(Structure otherObj)
     {
         yield return new WaitForSeconds(0.1f);
+
+        if (!otherObj.canTakeItem)
+            yield break;
 
         if (otherObj.Has<Production>() && !otherObj.Has<LogisticsCtrl>())
         {

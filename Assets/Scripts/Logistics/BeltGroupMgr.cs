@@ -7,7 +7,7 @@ using Unity.Netcode;
 public class BeltGroupMgr : NetworkBehaviour
 {
     public BeltManager beltManager;
-
+    public int beltOnItemIndex = 0;
     public List<BeltCtrl> beltList = new List<BeltCtrl>();
     public List<ItemProps> groupItem = new List<ItemProps>();
 
@@ -140,10 +140,15 @@ public class BeltGroupMgr : NetworkBehaviour
             hasPre = true;
         }
 
+        // 아이템 수집 (SetBeltData 값 포함)
         var itemIndexList = new List<int>();
-        var itemPosList = new List<Vector2>();
-        var beltGroupIndexList = new List<int>();
-        var beltIndexList = new List<int>();
+        var itemBeltIndexList = new List<int>();
+        var itemBeltGroupIndexList = new List<int>();
+        var itemPosList = new List<Vector3>();
+        var itemEnterTimeList = new List<double>();
+        var itemStartPosList = new List<Vector3>();
+        var itemEndPosList = new List<Vector3>();
+        var itemTravelDurationList = new List<double>();
 
         for (int beltIdx = 0; beltIdx < beltList.Count; beltIdx++)
         {
@@ -151,9 +156,13 @@ public class BeltGroupMgr : NetworkBehaviour
             foreach (ItemProps item in belt.itemObjList)
             {
                 itemIndexList.Add(GeminiNetworkManager.instance.GetItemSOIndex(item.item));
+                itemBeltIndexList.Add(beltIdx);
+                itemBeltGroupIndexList.Add(item.beltGroupIndex);
                 itemPosList.Add(item.transform.position);
-                beltGroupIndexList.Add(item.beltGroupIndex);
-                beltIndexList.Add(beltIdx);
+                itemEnterTimeList.Add(item.beltEnterTime);
+                itemStartPosList.Add(item.beltStartPos);
+                itemEndPosList.Add(item.beltEndPos);
+                itemTravelDurationList.Add(item.beltTravelDuration);
             }
         }
 
@@ -164,10 +173,14 @@ public class BeltGroupMgr : NetworkBehaviour
             hasNextObj = hasNext,
             preObjRef = preRef,
             hasPreObj = hasPre,
-            itemIndexes = itemIndexList.ToArray(),
-            itemPositions = itemPosList.ToArray(),
-            itemBeltGroupIndexes = beltGroupIndexList.ToArray(),
-            itemBeltIndexes = beltIndexList.ToArray()
+            beltItemIndexes = itemIndexList.ToArray(),
+            beltItemBeltIndexes = itemBeltIndexList.ToArray(),
+            beltItemBeltGroupIndexes = itemBeltGroupIndexList.ToArray(),
+            beltItemPositions = itemPosList.ToArray(),
+            beltItemEnterTimes = itemEnterTimeList.ToArray(),
+            beltItemStartPositions = itemStartPosList.ToArray(),
+            beltItemEndPositions = itemEndPosList.ToArray(),
+            beltItemTravelDurations = itemTravelDurationList.ToArray()
         };
 
         ClientRpcParams target = new ClientRpcParams
@@ -217,33 +230,38 @@ public class BeltGroupMgr : NetworkBehaviour
 
         ClientBeltSyncFunc();
 
-        for (int i = 0; i < data.itemIndexes.Length; i++)
+        // 아이템 복원 (SetBeltData 값 직접 할당)
+        for (int i = 0; i < data.beltItemIndexes.Length; i++)
         {
-            int beltIdx = data.itemBeltIndexes[i];
+            int beltIdx = data.beltItemBeltIndexes[i];
             if (beltIdx >= beltList.Count) continue;
 
             BeltCtrl targetBelt = beltList[beltIdx];
 
-            Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(data.itemIndexes[i]);
+            Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(data.beltItemIndexes[i]);
             var itemPool = ItemPoolManager.instance.Pool.Get();
             ItemProps spawn = itemPool.GetComponent<ItemProps>();
 
-            SpriteRenderer sprite = spawn.spriteRenderer;
-            sprite.sprite = sendItem.icon;
-            sprite.sortingOrder = 2;
-
+            spawn.spriteRenderer.sprite = sendItem.icon;
+            spawn.spriteRenderer.sortingOrder = 2;
             spawn.item = sendItem;
             spawn.amount = 1;
-            spawn.transform.position = data.itemPositions[i];
             spawn.isOnBelt = true;
             spawn.setOnBelt = targetBelt;
-            spawn.beltGroupIndex = data.itemBeltGroupIndexes[i];
+            spawn.beltGroupIndex = data.beltItemBeltGroupIndexes[i];
+            spawn.transform.position = data.beltItemPositions[i];
+
+            // SetBeltData 대신 직접 복원 (서버 시간 기준 그대로 유지)
+            spawn.beltEnterTime = data.beltItemEnterTimes[i];
+            spawn.beltStartPos = data.beltItemStartPositions[i];
+            spawn.beltEndPos = data.beltItemEndPositions[i];
+            spawn.beltTravelDuration = data.beltItemTravelDurations[i];
 
             targetBelt.itemObjList.Add(spawn);
             groupItem.Add(spawn);
 
-            if (targetBelt.itemObjList.Count >= targetBelt.maxAmount)
-                targetBelt.isFull = true;
+            targetBelt.isFull = targetBelt.itemObjList.Count >= targetBelt.maxAmount;
+            targetBelt.isGameStartItemReady = true;
         }
     }
 
@@ -471,6 +489,7 @@ public class BeltGroupMgr : NetworkBehaviour
         {
             groupItem[i].beltGroupIndex = i;
         }
+        beltOnItemIndex = groupItem.Count;
     }
 
     private Structure NextObjCheck()
@@ -753,88 +772,4 @@ public class BeltGroupMgr : NetworkBehaviour
 
         foundBelt.PlayerRootFunc(findItemProps);
     }
-
-    //[ServerRpc(RequireOwnership = false)]
-    //public void BeltItemSyncServerRpc(ulong targetClientId)
-    //{
-    //    // 벨트별 아이템 수집
-    //    List<int> itemIndexList = new List<int>();
-    //    List<Vector2> itemPosList = new List<Vector2>();
-    //    List<int> beltGroupIndexList = new List<int>();
-    //    List<int> beltIndexList = new List<int>(); // 어느 벨트 소속인지
-
-    //    for (int beltIdx = 0; beltIdx < beltList.Count; beltIdx++)
-    //    {
-    //        BeltCtrl belt = beltList[beltIdx];
-    //        foreach (ItemProps item in belt.itemObjList)
-    //        {
-    //            itemIndexList.Add(GeminiNetworkManager.instance.GetItemSOIndex(item.item));
-    //            itemPosList.Add(item.transform.position);
-    //            beltGroupIndexList.Add(item.beltGroupIndex);
-    //            beltIndexList.Add(beltIdx); // 어느 벨트에 속하는지
-    //        }
-    //    }
-
-    //    ClientRpcParams target = new ClientRpcParams
-    //    {
-    //        Send = new ClientRpcSendParams
-    //        {
-    //            TargetClientIds = new[] { targetClientId }
-    //        }
-    //    };
-
-    //    ItemSyncClientRpc(
-    //        itemIndexList.ToArray(),
-    //        itemPosList.ToArray(),
-    //        beltGroupIndexList.ToArray(),
-    //        beltIndexList.ToArray(),
-    //        target
-    //    );
-    //}
-
-    //[ClientRpc]
-    //void ItemSyncClientRpc(
-    //    int[] itemIndexes,
-    //    Vector2[] itemPositions,
-    //    int[] beltGroupIndexes,
-    //    int[] beltIndexes,
-    //    ClientRpcParams rpcParams = default)
-    //{
-    //    if (IsServer) return;
-
-    //    ClientBeltSyncFunc();
-    //    beltSyncCheck = true;
-
-    //    for (int i = 0; i < itemIndexes.Length; i++)
-    //    {
-    //        int beltIdx = beltIndexes[i];
-    //        if (beltIdx >= beltList.Count)
-    //        {
-    //            continue;
-    //        }
-
-    //        BeltCtrl targetBelt = beltList[beltIdx];
-
-    //        Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndexes[i]);
-    //        var itemPool = ItemPoolManager.instance.Pool.Get();
-    //        ItemProps spawn = itemPool.GetComponent<ItemProps>();
-
-    //        SpriteRenderer sprite = spawn.spriteRenderer;
-    //        sprite.sprite = sendItem.icon;
-    //        sprite.sortingOrder = 2;
-
-    //        spawn.item = sendItem;
-    //        spawn.amount = 1;
-    //        spawn.transform.position = itemPositions[i];
-    //        spawn.isOnBelt = true;
-    //        spawn.setOnBelt = targetBelt;
-    //        spawn.beltGroupIndex = beltGroupIndexes[i];
-
-    //        targetBelt.itemObjList.Add(spawn);
-    //        groupItem.Add(spawn);
-
-    //        if (targetBelt.itemObjList.Count >= targetBelt.maxAmount)
-    //            targetBelt.isFull = true;
-    //    }
-    //}
 }

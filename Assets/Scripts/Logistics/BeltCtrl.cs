@@ -5,6 +5,7 @@ using Unity.Netcode;
 using Pathfinding;
 using System.Collections;
 using Unity.VisualScripting;
+using System;
 
 // UTF-8 설정
 public enum BeltState
@@ -38,7 +39,7 @@ public class BeltCtrl : LogisticsCtrl
     bool isRight = false;
     bool isDown = false;
     bool isLeft = false;
-
+    public bool isGameStartItemReady = false;
     protected override void Awake()
     {
         foreach (var comp in GetComponents<Component>())
@@ -113,25 +114,20 @@ public class BeltCtrl : LogisticsCtrl
         else if (NetworkObjManager.instance.clientSyncComplete == true)
             StrBuilt();
         BeltModelSet();
+        isGameStartItemReady = true;
     }
 
     private void FixedUpdate()
     {
-        if (destroyStart || isPreBuilding)
+        if (Time.timeScale == 0 || destroyStart || isPreBuilding)
             return;
-
+        if (!isGameStartItemReady)
+            return;
         if (itemObjList.Count > 0)
             ItemMove();
-        else if (itemObjList.Count == 0 && isItemStop)
+        else if (isItemStop)
             isItemStop = false;
     }
-
-    //public void AnimSyncFunc()
-    //{
-    //    animsync = beltManager.AnimSync(level);
-    //    var info = animsync.GetCurrentAnimatorStateInfo(0);
-    //    animator.Play(info.fullPathHash, 0, info.normalizedTime);
-    //}
 
     void SetBeltAnim()
     {
@@ -245,75 +241,9 @@ public class BeltCtrl : LogisticsCtrl
         isRightTurn = data.isRightTurn;
         beltState = (BeltState)data.beltStateInt;
 
+
         DelayNearStrBuilt();
     }
-
-    //public override void ClientConnectSync()
-    //{
-    //    base.ClientConnectSync();
-
-    //    DirSyncClientRpc(isUp, isRight, isDown, isLeft);
-    //    ClientConnectBeltSyncClientRpc(modelMotion, isTurn, isRightTurn, (int)beltState);
-    //}
-
-    //[ClientRpc]
-    //void DirSyncClientRpc(bool up, bool right, bool down, bool left)
-    //{
-    //    if (!IsServer)
-    //    {
-    //        isUp = up;
-    //        isRight = right;
-    //        isDown = down;
-    //        isLeft = left;
-    //    }
-    //}
-
-    //public override void ItemSyncServer() { }
-
-    //[ServerRpc(RequireOwnership = false)]
-    //public override void ItemSyncServerRpc()
-    //{
-    //    int[] itemIndexs = new int[itemObjList.Count];
-    //    Vector2[] vector2s = new Vector2[itemObjList.Count];
-    //    int[] beltGroupIndexs = new int[itemObjList.Count];
-
-    //    for (int i = 0; i < itemObjList.Count; i++)
-    //    {
-    //        int itemIndex = GeminiNetworkManager.instance.GetItemSOIndex(itemObjList[i].item);
-
-    //        itemIndexs[i] = itemIndex;
-    //        vector2s[i] = itemObjList[i].transform.position;
-    //        beltGroupIndexs[i] = itemObjList[i].beltGroupIndex;
-    //    }
-    //    ItemSyncClientRpc(itemIndexs, vector2s, beltGroupIndexs);
-    //}
-
-    //[ClientRpc]
-    //public void ItemSyncClientRpc(int[] itemIndex, Vector2[] tr, int[] beltGroupIndex)
-    //{
-    //    if (IsServer)
-    //        return;
-
-    //    for (int i = 0; i < itemIndex.Length; i++)
-    //    {
-    //        Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex[i]);
-    //        var itemPool = ItemPoolManager.instance.Pool.Get();
-    //        ItemProps spawn = itemPool.GetComponent<ItemProps>();
-    //        SpriteRenderer sprite = spawn.spriteRenderer;
-    //        sprite.sprite = sendItem.icon;
-    //        sprite.sortingOrder = 2;
-    //        spawn.item = sendItem;
-    //        spawn.amount = 1;
-    //        spawn.transform.position = tr[i];
-    //        spawn.isOnBelt = true;
-    //        spawn.setOnBelt = this;
-    //        spawn.beltGroupIndex = beltGroupIndex[i];
-    //        itemObjList.Add(spawn);
-
-    //        if (itemObjList.Count >= maxAmount)
-    //            isFull = true;
-    //    }
-    //}
 
     [ClientRpc]
     public void ClientBeltSyncClientRpc(int syncMotion, bool syncTurn, bool syncRightTurn, int syncBeltState)
@@ -345,32 +275,40 @@ public class BeltCtrl : LogisticsCtrl
         Item sendItem = GeminiNetworkManager.instance.GetItemSOFromIndex(itemIndex);
         var itemPool = ItemPoolManager.instance.Pool.Get();
         ItemProps spawn = itemPool.GetComponent<ItemProps>();
-        SpriteRenderer sprite = spawn.spriteRenderer;
-        sprite.sprite = sendItem.icon;
-        sprite.sortingOrder = 2;
+        spawn.spriteRenderer.sprite = sendItem.icon;
+        spawn.spriteRenderer.sortingOrder = 2;
         spawn.item = sendItem;
         spawn.amount = 1;
         spawn.transform.position = pos;
         spawn.isOnBelt = true;
         spawn.setOnBelt = this;
 
-        int beltGroupIndex = 0;
-             
-        if (beltGroupIndex == int.MaxValue)
-        {
-            beltGroupIndex = 0;
-        }
-        else
-        {
-            beltGroupIndex++;
-        }
-        
-        spawn.beltGroupIndex = beltGroupIndex;
+        spawn.SetBeltData(
+            NetworkManager.Singleton.ServerTime.Time,
+            pos,    // startPos = 저장 위치
+            pos,    // endPos = 동일 (Lerp(pos, pos, t) = pos → NaN 없음)
+            1f      // duration 0 방지용 임시값
+        );
 
         itemObjList.Add(spawn);
+        isFull = itemObjList.Count >= maxAmount;
+    }
 
-        if (itemObjList.Count >= maxAmount)
-            isFull = true;
+    public void GameStartItemDataSet()
+    {
+        double now = NetworkManager.Singleton.ServerTime.Time;
+        SetItemDir();
+        for (int i = 0; i < itemObjList.Count; i++)
+        {
+            ItemProps item = itemObjList[i];
+            int slotIndex = Mathf.Min(i, nextPos.Length - 1);
+            item.SetBeltData(
+                now,
+                item.transform.position,    // 저장된 위치가 시작점
+                nextPos[slotIndex],         // 리스트 순서 = 슬롯 인덱스
+                structureData.SendSpeed[level]
+            );
+        }
     }
 
     void ModelSet()
@@ -519,88 +457,115 @@ public class BeltCtrl : LogisticsCtrl
 
     void ItemMove()
     {
+        double serverNow = NetworkManager.Singleton.ServerTime.Time;
+
         for (int i = 0; i < itemObjList.Count; i++)
         {
-            if (nextPos.Length > i)
-            {
-                itemObjList[i].transform.position = Vector3.MoveTowards(itemObjList[i].transform.position, nextPos[i], Time.deltaTime * structureData.SendSpeed[level]);
-            }
+            ItemProps item = itemObjList[i];
+            double elapsed = serverNow - item.beltEnterTime;
+
+            float t;
+            if (item.beltTravelDuration <= 0)
+                t = 1f;
+            else
+                t = Mathf.Clamp01((float)(elapsed / item.beltTravelDuration));
+
+            // NaN 방어
+            if (float.IsNaN(t)) t = 1f;
+
+            Vector3 newPos = Vector3.Lerp(item.beltStartPos, item.beltEndPos, t);
+
+            // NaN 방어
+            if (!float.IsNaN(newPos.x) && !float.IsNaN(newPos.y))
+                item.transform.position = newPos;
         }
 
-        if (Vector2.Distance(itemObjList[0].transform.position, nextPos[0]) < 0.001f)
+        if (itemObjList.Count > 0)
         {
-            isItemStop = true;
-        }
-        else
-        {
-            isItemStop = false;
-        }
+            ItemProps front = itemObjList[0];
+            double elapsed = serverNow - front.beltEnterTime;
+            isItemStop = front.beltTravelDuration <= 0 || elapsed >= front.beltTravelDuration;
 
-        if(IsServer)
-            ItemSend();
-    }
-
-    public bool OnBeltItem(ItemProps itemObj)
-    {
-        itemObjList.Add(itemObj);
-        beltGroupMgr.groupItem.Add(itemObj);
-
-        if (itemObjList.Count >= maxAmount)
-            isFull = true;
-        else
-            isFull = false;
-
-        return true;
-    }
-
-    void ItemSend()
-    {
-        if (nextBelt != null && beltState != BeltState.EndBelt)
-        {
-            if (!nextBelt.isFull && !nextBelt.isPreBuilding && !nextBelt.destroyStart && itemObjList.Count > 0)
-            {
-                Vector2 fstItemPos = itemObjList[0].transform.position;
-                if (fstItemPos == nextPos[0])
-                {
-                    SendItemServerRpc();
-                    //nextBelt.BeltGroupSendItem(itemObjList[0]);
-                    //itemObjList.Remove(itemObjList[0]);
-                    //ItemNumCheck();
-                }
-            }
+            if (isItemStop)
+                TryTransferToNextBelt();
         }
     }
 
-    [ServerRpc]
-    void SendItemServerRpc()
+    void TryTransferToNextBelt()
     {
-        SendItemClientRpc();
-    }
+        if (nextBelt == null || beltState == BeltState.EndBelt) return;
+        if (nextBelt.isFull || nextBelt.isPreBuilding || nextBelt.destroyStart) return;
+        if (itemObjList.Count == 0) return;
 
-    [ClientRpc]
-    void SendItemClientRpc()
-    {
-        if (itemObjList.Count == 0)
-        {
-            StartCoroutine(ItemSendDelay());
-            return;
-        }
-        ProcessSendItem();
-    }
+        ItemProps front = itemObjList[0];
 
-    IEnumerator ItemSendDelay()
-    {
-        yield return new WaitUntil(() => itemObjList.Count > 0);
-        ProcessSendItem();
-    }
+        double serverNow = NetworkManager.Singleton.ServerTime.Time;
+        double idealTransferTime = front.beltEnterTime + front.beltTravelDuration;
 
-    void ProcessSendItem()
-    {
-        if (itemObjList.Count == 0 || !nextBelt) return; // 방어 코드
+        // ★ 핵심 수정: 대기가 있었다면(벨트 새로 연결 등) 현재 시각 기준으로 시작
+        // 정상 흐름이면 idealTransferTime ≈ serverNow 이므로 동일하게 동작
+        double transferTime = Math.Max(idealTransferTime, serverNow);
 
-        nextBelt.BeltGroupSendItem(itemObjList[0]);
+        int slotIndex = Mathf.Min(nextBelt.itemObjList.Count, nextBelt.nextPos.Length - 1);
+
+        front.SetBeltData(
+            transferTime,
+            front.beltEndPos,
+            nextBelt.nextPos[slotIndex],
+            nextBelt.structureData.SendSpeed[nextBelt.level]
+        );
+        nextBelt.ReceiveItemLocal(front);
         itemObjList.RemoveAt(0);
         ItemNumCheck();
+
+
+        for (int i = 0; i < itemObjList.Count; i++)
+        {
+            ItemProps item = itemObjList[i];
+            slotIndex = Mathf.Min(i, nextPos.Length - 1);
+
+            double elapsed = transferTime - item.beltEnterTime;
+            float t = Mathf.Clamp01((float)(elapsed / item.beltTravelDuration));
+            Vector3 posAtTransfer = Vector3.Lerp(item.beltStartPos, item.beltEndPos, t);
+
+            item.SetBeltData(
+                transferTime,
+                posAtTransfer,
+                nextPos[slotIndex],
+                structureData.SendSpeed[level]
+            );
+        }
+    }
+
+    // RPC 없이 로컬에서 직접 수신
+    public void ReceiveItemLocal(ItemProps item)
+    {
+        item.setOnBelt = this;
+        itemObjList.Add(item);
+        beltGroupMgr?.groupItem.Add(item);  // 필요시
+        isFull = itemObjList.Count >= maxAmount;
+    }
+
+    public bool OnBeltItem(ItemProps itemObj, Vector2 startPos)
+    {
+        if (IsServer && itemObjList.Count >= maxAmount) return false;
+
+        double enterTime = NetworkManager.Singleton.ServerTime.Time;
+        // 수정
+        int slotIndex = Mathf.Min(itemObjList.Count, nextPos.Length - 1);
+
+        itemObj.SetBeltData(
+            enterTime,
+            startPos,
+            nextPos[slotIndex],
+            structureData.SendSpeed[level]
+        );
+
+        itemObj.setOnBelt = this;
+        itemObjList.Add(itemObj);
+        beltGroupMgr?.groupItem.Add(itemObj);
+        isFull = itemObjList.Count >= maxAmount;
+        return true;
     }
 
     public void BeltModelSet()

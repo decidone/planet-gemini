@@ -132,9 +132,8 @@ public class Unloader : LogisticsCtrl
     {
         yield return new WaitForSeconds(0.1f);
 
-        if (!obj || !obj.canTakeItem)
+        if (!obj)
             yield break;
-
 
         if (obj.isStorageBuilding)
         {
@@ -148,16 +147,16 @@ public class Unloader : LogisticsCtrl
                 {
                     yield break;
                 }
+                if (!outObj.Contains(obj))
+                    outObj.Add(obj);
                 belt.FactoryPosCheck(this);
             }
             else
             {
                 outSameList.Add(obj);
                 StartCoroutine(OutCheck(obj));
+                StartCoroutine(UnderBeltConnectCheck(obj));
             }
-            if (!outObj.Contains(obj))
-                outObj.Add(obj);
-            StartCoroutine(UnderBeltConnectCheck(obj));
         }        
     }
 

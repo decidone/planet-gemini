@@ -2066,18 +2066,18 @@ public class GameManager : NetworkBehaviour
                 return;
         }
 
-        StructureUpgradeServerRpc(networkObjectReference, level);
+        StructureUpgradeServerRpc(networkObjectReference, level, isPlayerInHostMap);
     }
 
     Dictionary<Item, int> upgradeItemDic = new Dictionary<Item, int>();
     Dictionary<Item, int> returnItemDic = new Dictionary<Item, int>();
 
     [ServerRpc(RequireOwnership = false)]
-    void StructureUpgradeServerRpc(NetworkObjectReference[] networkObjectReference, int[] level)
+    void StructureUpgradeServerRpc(NetworkObjectReference[] networkObjectReference, int[] level, bool isHostMap)
     {
         upgradeItemDic.Clear();
         returnItemDic.Clear();
-
+        Inventory inv = isHostMap ? hostMapInven : clientMapInven;
         Structure[] str = new Structure[networkObjectReference.Length];
         for (int i = 0; i < networkObjectReference.Length; i++)
         {
@@ -2102,7 +2102,7 @@ public class GameManager : NetworkBehaviour
         foreach (var data in upgradeItemDic)
         {
             int value;
-            bool hasItem = inventory.totalItems.TryGetValue(data.Key, out value);
+            bool hasItem = inv.totalItems.TryGetValue(data.Key, out value);
             isEnough = hasItem && value >= data.Value;
 
             if (!isEnough)
@@ -2111,13 +2111,13 @@ public class GameManager : NetworkBehaviour
 
         foreach (var data in returnItemDic)
         {
-            inventory.Add(data.Key, data.Value);
+            inv.Add(data.Key, data.Value);
             Overall.instance.OverallConsumptionCancel(data.Key, data.Value);
         }
         foreach (var data in upgradeItemDic)
         {
             Overall.instance.OverallConsumption(data.Key, data.Value);
-            inventory.Sub(data.Key, data.Value);
+            inv.Sub(data.Key, data.Value);
         }
 
         for (int i = 0; i < str.Length; i++)
@@ -2233,13 +2233,15 @@ public class GameManager : NetworkBehaviour
 
 
         if (networkObjectReferences.Length > 0)
-            SendUpgradeRequestServerRpc(networkObjectReferences);
+            SendUpgradeRequestServerRpc(networkObjectReferences, isPlayerInHostMap);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void SendUpgradeRequestServerRpc(NetworkObjectReference[] networkObjectReference)
+    void SendUpgradeRequestServerRpc(NetworkObjectReference[] networkObjectReference ,bool isHostMap)
     {
         upgradeItemDic.Clear();
+
+        Inventory inv = isHostMap ? hostMapInven : clientMapInven;
 
         UnitAi[] units = new UnitAi[networkObjectReference.Length];
         Dictionary<string, int> unitCountDic = new Dictionary<string, int>();
@@ -2278,7 +2280,7 @@ public class GameManager : NetworkBehaviour
         foreach (var data in upgradeItemDic)
         {
             int value;
-            bool hasItem = inventory.totalItems.TryGetValue(data.Key, out value);
+            bool hasItem = inv.totalItems.TryGetValue(data.Key, out value);
             isEnough = hasItem && value >= data.Value;
 
             if (!isEnough)
@@ -2288,7 +2290,7 @@ public class GameManager : NetworkBehaviour
         foreach (var data in upgradeItemDic)
         {
             Overall.instance.OverallConsumption(data.Key, data.Value);
-            inventory.Sub(data.Key, data.Value);
+            inv.Sub(data.Key, data.Value);
         }
 
         for (int i = 0; i < units.Length; i++)
