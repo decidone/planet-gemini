@@ -8,7 +8,7 @@ public class ItemProps : MonoBehaviour
 
     public Item item;
     public int amount;
-    [HideInInspector]
+    //[HideInInspector]
     public bool waitingForDestroy = false;
     [HideInInspector]
     public bool isOnBelt = false;
@@ -16,6 +16,11 @@ public class ItemProps : MonoBehaviour
     public BeltCtrl setOnBelt;
     public int beltGroupIndex;
     public SpriteRenderer spriteRenderer;
+
+    public double beltEnterTime;   // ServerTime 기준 벨트 진입 시각
+    public Vector3 beltStartPos;   // 진입 시점의 시작 위치
+    public Vector3 beltEndPos;     // 목표 위치 (nextPos[0])
+    public double beltTravelDuration; // 이동에 걸리는 시간(초)
 
     private void Awake()
     {
@@ -59,7 +64,24 @@ public class ItemProps : MonoBehaviour
             setOnBelt = null;
             beltGroupIndex = -1;
             spriteRenderer.sprite = null;
+            beltEnterTime = 0;
+            beltStartPos = Vector2.zero;
+            beltEndPos = Vector2.zero;
+            beltTravelDuration = 0;
             itemPool.Release(gameObject);
         }
+    }
+
+    public void SetBeltData(double enterTime, Vector3 startPos, Vector3 endPos, float speed)
+    {
+        beltEnterTime = enterTime;
+        beltStartPos = startPos;
+        beltEndPos = endPos;
+        float dist = Vector3.Distance(startPos, endPos);
+
+        if (float.IsNaN(dist) || float.IsNaN(speed) || dist < 0.0001f || speed <= 0f)
+            beltTravelDuration = 0;
+        else
+            beltTravelDuration = dist / speed;
     }
 }

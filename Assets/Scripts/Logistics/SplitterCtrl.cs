@@ -66,12 +66,8 @@ public class SplitterCtrl : LogisticsCtrl
         if (IsServer)
         {
             CheckPos();
-            Debug.Log("NearStrBuilt this obj pos : " + gameObject.transform.position);
-
             for (int i = 0; i < nearObj.Length; i++)
             {
-                Debug.Log("nearObj : " + i);
-
                 if (!nearObj[i])
                 {
                     if (i == 0)
@@ -82,11 +78,6 @@ public class SplitterCtrl : LogisticsCtrl
                         CheckNearObj(checkPos[2], 2, obj => StartCoroutine(SetInObjCoroutine(obj)));
                     else if (i == 3)
                         CheckNearObj(checkPos[3], 3, obj => StartCoroutine(SetOutObjCoroutine(obj, 0)));
-                }
-                else
-                {
-                    Debug.Log("nearObj[i] : " + nearObj[i].gameObject.name);
-
                 }
             }
             SetSpriteModel();
@@ -403,27 +394,21 @@ public class SplitterCtrl : LogisticsCtrl
                 break;
             }
         }
-
-        int beltGroupIndex = 0;
+        int beltIndex = 0;
         if (filter.outObj.TryGet(out BeltCtrl belt))
         {
-            int groupItemCount = belt.beltGroupMgr.groupItem.Count;
-
-            if (groupItemCount > 0)
+            if (belt.beltGroupMgr.beltOnItemIndex == int.MaxValue)
             {
-                beltGroupIndex = belt.beltGroupMgr.groupItem[groupItemCount - 1].beltGroupIndex;
-
-                if (beltGroupIndex == int.MaxValue)
-                {
-                    beltGroupIndex = 0;
-                }
-                else
-                {
-                    beltGroupIndex++;
-                }
+                belt.beltGroupMgr.beltOnItemIndex = 0;
             }
+            else
+            {
+                belt.beltGroupMgr.beltOnItemIndex++;
+            }
+
+            beltIndex = belt.beltGroupMgr.beltOnItemIndex;
         }
-        FilterSetItemClientRpc(filterIndex, filter.outObj.NetworkObject, smartFilterItemIndex, beltGroupIndex);
+        FilterSetItemClientRpc(filterIndex, filter.outObj.NetworkObject, smartFilterItemIndex, beltIndex);
         FilterindexSet();
     }
 
@@ -548,15 +533,14 @@ public class SplitterCtrl : LogisticsCtrl
         {
             var itemPool = ItemPoolManager.instance.Pool.Get();
             spawnItem = itemPool.GetComponent<ItemProps>();
-
-            if (beltCtrl.OnBeltItem(spawnItem))
+            Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
+            if (beltCtrl.OnBeltItem(spawnItem, spawnPos))
             {
                 SpriteRenderer sprite = spawnItem.spriteRenderer;
                 sprite.sprite = sendItem.icon;
                 sprite.sortingOrder = 2;
                 spawnItem.item = sendItem;
                 spawnItem.amount = 1;
-                Vector3 spawnPos = Vector3.Lerp(transform.position, beltCtrl.nextPos[2], 0.8f);
                 spawnItem.transform.position = spawnPos;
                 spawnItem.isOnBelt = true;
                 spawnItem.setOnBelt = beltCtrl;
@@ -581,10 +565,8 @@ public class SplitterCtrl : LogisticsCtrl
         yield return new WaitForSeconds(0.1f);
         //yield return null;
 
-        if (!obj || !obj.canTakeItem)
+        if (!obj)
             yield break;
-
-        Debug.Log("Name : " + obj.name + ", index :" + num);
 
         if (obj.TryGet<BeltCtrl>(out var belt))
         {
@@ -608,6 +590,9 @@ public class SplitterCtrl : LogisticsCtrl
     protected IEnumerator OutCheck(Structure otherObj, int num)
     {
         yield return new WaitForSeconds(0.1f);
+
+        if(!otherObj.canTakeItem)
+            yield break;
 
         if (otherObj.Get<Production>() && !otherObj.Get<LogisticsCtrl>())
         {

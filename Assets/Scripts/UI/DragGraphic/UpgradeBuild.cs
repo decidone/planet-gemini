@@ -40,8 +40,8 @@ public class UpgradeBuild : DragFunc
         {
             WorldObj worldObj = collider.GetComponentInParent<WorldObj>();
             if (!worldObj)
-                continue; 
-            
+                continue;
+
             Structure structure = worldObj.Get<Structure>();
 
             if (!structure || !structure.canUpgrade)

@@ -448,6 +448,12 @@ public class DataManager : MonoBehaviour
 
         beltGroupMgr.SetBeltData();
         beltGroupMgr.ItemIndexSet();
+
+        foreach (BeltCtrl belt in beltGroupMgr.beltList)
+        {
+            belt.GameStartItemDataSet();
+            belt.isGameStartItemReady = true;
+        }
     }
 
     void SetConnectedFunc()
