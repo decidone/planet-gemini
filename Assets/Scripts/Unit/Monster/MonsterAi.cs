@@ -9,7 +9,7 @@ using System.Linq;
 public class MonsterAi : UnitCommonAi
 {
     public new string name;
-    MonsterSpawner spawnerScript;
+    public MonsterSpawner spawnerScript;
     Transform spawnPos;
     float spawnDist;
     float maxSpawnDist;

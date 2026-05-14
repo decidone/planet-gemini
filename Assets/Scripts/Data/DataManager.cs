@@ -548,7 +548,8 @@ public class DataManager : MonoBehaviour
         if(spawnerManagerSaveData.splitCount != 0)
             MonsterSpawnerManager.instance.SplitCountSet(spawnerManagerSaveData.splitCount);
 
-        MonsterSpawnerManager.instance.WaveStateLoad(spawnerManagerSaveData);
+        if(spawnerManagerSaveData.waveSpawnerAliveState)
+            MonsterSpawnerManager.instance.WaveStateLoad(spawnerManagerSaveData);
 
         for (int i = 0; i < spawnerManagerSaveData.splitCount; i++)
         {
@@ -579,7 +580,7 @@ public class DataManager : MonoBehaviour
         spawnerGroup.SpawnerGroupStatsSet(spawnerGroupData.spawnerMatrixIndex);
         foreach (SpawnerSaveData spawnerSaveData in spawnerGroupData.spawnerSaveDataList)
         {
-            if (spawnerSaveData.dieCheck && spawnerSaveData.monsterList.Count == 0)
+            if (spawnerSaveData.dieCheck)
                 continue;
 
             GameObject spawner = SpawnSpawner(spawnerSaveData);

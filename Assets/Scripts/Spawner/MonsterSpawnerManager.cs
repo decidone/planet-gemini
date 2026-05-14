@@ -19,6 +19,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     bool waveStartState;
     public bool hostMapWave;
     Vector3 wavePos;
+    bool waveSpawnerAliveState;
 
     public Sprite[] spawnerSprite;
 
@@ -124,7 +125,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         foreach (var kv in monsterSpawners)
         {
-            if (kv.Value.Count > 0)
+            if (kv.Value.Any(spawner => !spawner.dieCheck))
                 return true;
         }
         return false;
@@ -141,6 +142,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         waveDayState = data.waveDayState;
         waveStartState = data.waveStartState;
         hostMapWave = data.hostMapWave;
+        waveSpawnerAliveState = data.waveSpawnerAliveState;
         wavePos = Vector3Extensions.ToVector3(data.wavePos);
 
         if (waveDayState)
@@ -169,10 +171,24 @@ public class MonsterSpawnerManager : NetworkBehaviour
                     group2Data[x, y] = spawnerMap2Matrix[x, y].GetComponent<SpawnerGroupManager>().SaveData();
             }
         }
-        data.waveDayState = waveDayState;
-        data.waveStartState = waveStartState;
-        data.hostMapWave = hostMapWave;
-        data.wavePos = Vector3Extensions.FromVector3(wavePos);
+
+        if (waveSpawnerAliveState)
+        {
+            data.waveSpawnerAliveState = true;
+            data.waveDayState = waveDayState;
+            data.waveStartState = waveStartState;
+            data.hostMapWave = hostMapWave;
+            data.wavePos = Vector3Extensions.FromVector3(wavePos);
+        }
+        else
+        {
+            data.waveSpawnerAliveState = false;
+            data.waveDayState = false;
+            data.waveStartState = false;
+            data.hostMapWave = false;
+            data.wavePos = Vector3Extensions.FromVector3(Vector3.zero);
+        }
+
         data.spawnerMap1Matrix = group1Data;
         data.spawnerMap2Matrix = group2Data;
         return data;
@@ -206,6 +222,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
             hostMapWave = hostMap;
             aggroSpawner.violentDay = true;
             wavePos = aggroSpawner.transform.position;
+            waveSpawnerAliveState = true;
             WavePointOnServerRpc(wavePos, hostMap);
             return true;
         }
@@ -369,23 +386,14 @@ public class MonsterSpawnerManager : NetworkBehaviour
 
             if (waveMonsters.Count == 0)
             {
-                ViolentDayEnd();
+                ViolentDayEnd(monster.spawnerScript);
             }
         }
     }
 
-    void ViolentDayEnd()
+    public void ViolentDayEnd(MonsterSpawner waveSpawner)
     {
-        foreach (var data in monsterSpawners)
-        {
-            foreach (MonsterSpawner spawner in data.Value)
-            {
-                if (spawner.violentDay)
-                {
-                    spawner.violentDay = false;
-                }
-            }
-        }
+        waveSpawner.violentDay = false;
 
         if (IsServer)
         {
@@ -393,6 +401,8 @@ public class MonsterSpawnerManager : NetworkBehaviour
             WaveEndServerRpc();
             GameManager.instance.WaveEnd();
         }
+
+        waveSpawnerAliveState = false;
     }
 
     [ServerRpc]
@@ -429,9 +439,9 @@ public class MonsterSpawnerManager : NetworkBehaviour
     {
         int mapIndex = isHostMap ? 1 : 2;
 
-        foreach (var spawner in monsterSpawners)
+        foreach (var kv in monsterSpawners)
         {
-            if (spawner.Key.map == mapIndex && spawner.Value.Count > 0)
+            if (kv.Key.map == mapIndex && kv.Value.Count > 0 && kv.Value.Any(spawner => !spawner.dieCheck))
                 return true;
         }
         return false;
@@ -540,5 +550,14 @@ public class MonsterSpawnerManager : NetworkBehaviour
             normal = normal,
             strong = strong
         };
+    }
+
+    public void SpawnerAllKill()
+    {
+        foreach (var spawner in monsterSpawners.Values.SelectMany(list => list.ToList()).ToList())
+        {
+            spawner.DieFuncServerRpc();
+            spawner.dieCheck = true;
+        }
     }
 }

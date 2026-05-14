@@ -230,6 +230,9 @@ public class Chat : NetworkBehaviour
                     case "/supply":
                         GameManager.instance.Supply();
                         break;
+                    case "/spawnerAllKill":
+                        MonsterSpawnerManager.instance.SpawnerAllKill();
+                        break;
                     case "/test":
                         //PlayerPrefs.DeleteAll();
                         ErrorTest();

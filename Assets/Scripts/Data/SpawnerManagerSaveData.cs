@@ -11,6 +11,7 @@ public class SpawnerManagerSaveData
     public SpawnerGroupData[,] spawnerMap1Matrix;   // 호스트맵 스포너 그룹 배열
     public SpawnerGroupData[,] spawnerMap2Matrix;   // 클라이언트맵 스포너 그룹 배열
 
+    public bool waveSpawnerAliveState;                     // 웨이브 스포너 생존 여부
     public bool waveDayState;                          // 웨이브 상태
     public bool waveStartState;                        // 웨이브 시작 여부
     public bool hostMapWave;                        // true : hostMap, false : clientMap

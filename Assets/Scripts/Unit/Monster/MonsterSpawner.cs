@@ -183,15 +183,32 @@ public class MonsterSpawner : WorldObj
     [ServerRpc(RequireOwnership = false)]
     public void ClientConnectSyncServerRpc()
     {
-        ClientConnectSyncClientRpc(hp, maxHp);
+        ClientConnectSyncClientRpc(hp, maxHp, dieCheck);
     }
 
     [ClientRpc]
-    public void ClientConnectSyncClientRpc(float syncHp, float syncMaxHp)
+    public void ClientConnectSyncClientRpc(float syncHp, float syncMaxHp, bool syncDieCheck)
     {
         hp = syncHp;
         maxHp = syncMaxHp;
-        if (hp < maxHp)
+        dieCheck = syncDieCheck;
+
+        if (dieCheck)
+        {
+            unitSprite.color = new Color(1f, 1f, 1f, 0f);
+            unitCanvas.SetActive(false);
+            capsuleCollider2D.enabled = false;
+
+            if (InfoUI.instance.spawner == this)
+                InfoUI.instance.SetDefault();
+
+            GameObject InfoObj = GetComponentInChildren<InfoInteract>().gameObject;
+            InfoObj.SetActive(false);
+
+            MapGenerator.instance.ClearCorruption(this, spawnerLevel);
+            icon.enabled = false;
+        }
+        else if (hp < maxHp)
         {
             hpBar.fillAmount = hp / maxHp;
             unitCanvas.SetActive(true);
@@ -529,7 +546,7 @@ public class MonsterSpawner : WorldObj
     }
 
     [ServerRpc(RequireOwnership = false)]
-    protected void DieFuncServerRpc()
+    public void DieFuncServerRpc()
     {
         DieFuncClientRpc();
 
@@ -537,6 +554,7 @@ public class MonsterSpawner : WorldObj
         {
             violentDay = false;
             monsterSpawnerManager.WavePointOff();
+            MonsterSpawnerManager.instance.ViolentDayEnd(this);
         }
     }
 
@@ -578,6 +596,7 @@ public class MonsterSpawner : WorldObj
         icon.enabled = false;
         //spawnerSearchColl.DieFunc();
         spawnerAwakeColl.DieFunc();
+        monsterSpawnerManager.AreaGroupRemove(this, spawnerLevel, isInHostMap);
     }
 
     public void SearchObj(bool find)
