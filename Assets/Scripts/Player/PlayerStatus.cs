@@ -28,7 +28,7 @@ public class PlayerStatus : WorldObj
     public bool isPlayerInHostMap = true;
     [HideInInspector]
     public bool isPlayerInMarket = false;
-    protected SpriteRenderer unitSprite;
+    public SpriteRenderer unitSprite;
     //[HideInInspector]
     public bool tankOn;
     public delegate void OnHpChanged();
@@ -39,7 +39,6 @@ public class PlayerStatus : WorldObj
         base.Awake();
 
         playerController = gameObject.GetComponent<PlayerController>();
-        unitSprite = Get<SpriteRenderer>();
         hpBar.fillAmount = hp / maxHp;
         HPUISet(false);
     }

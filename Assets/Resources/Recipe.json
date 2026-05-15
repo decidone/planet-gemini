@@ -41,7 +41,7 @@
         {"name":"Engine","items":["ManaStone","AdamantitePlate","Motor","Engine"],"amounts":[4,12,6,1],"cooldown":36},
         {"name":"Chainsaw","items":["Battery","Motor","SteelPlate","Chainsaw"],"amounts":[2,2,6,1],"cooldown":24},
         {"name":"ExplosiveBullet","items":["SteelPlate","Sulfur","Coal","ExplosiveBullet"],"amounts":[3,2,8,3],"cooldown":12},
-        {"name":"ManablastBullet","items":["ManaStone","Sulfur","Coal","ManablastBullet"],"amounts":[1,4,10,3],"cooldown":16}
+        {"name":"ManablastBullet","items":["ManaStone","Sulfur","Coal","ManablastBullet"],"amounts":[2,4,10,3],"cooldown":16}
     ],
     "Refinery":[
         {"name":"UICancel","items":[],"amounts":[],"cooldown":0},

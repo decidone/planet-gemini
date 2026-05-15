@@ -461,6 +461,7 @@ public class PlayerController : WorldObj
     void TankOnFunc()
     {
         tankOn = true;
+        animator.transform.localPosition = new Vector3(0, -1.25f, 0);
         TankTurretSet(true);
         capsuleColl.size = new Vector2(2.25f, 2f);
         animator.Play("TankWalk");
@@ -487,6 +488,7 @@ public class PlayerController : WorldObj
         if (landData.Item1)
         {
             tankOn = false;
+            animator.transform.localPosition = new Vector3(0, 0, 0);
             TankTurretSet(false);
             onTankData.PlayerTankOff(transform.position, status.tankHp, reloading, reloadTimer, reloadInterval);
             ReloadingUISet(false);
@@ -524,6 +526,7 @@ public class PlayerController : WorldObj
     public void TankDestoryClientRpc()
     {
         tankOn = false;
+        animator.transform.localPosition = new Vector3(0, 0, 0);
         TankTurretSet(false);
         ReloadingUISet(false);
         onTankData.TankDestory();
