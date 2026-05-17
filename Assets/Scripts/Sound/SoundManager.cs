@@ -47,6 +47,7 @@ public class SoundManager : MonoBehaviour
     public bool isClientMapBattleOn = false;
     public bool isHostMapWaveOn = false;
     public bool isClientMapWaveOn = false;
+    public bool isWaveStandby = false;
     bool isPlayingWaveBgm = false;
 
     float fadeSeconds = 0.3f;
@@ -192,8 +193,15 @@ public class SoundManager : MonoBehaviour
 
         if (GameManager.instance.isPlayerInMarket)
         {
-            int index = GameManager.instance.dayIndex > 2 ? 1 : 0;
-            return audioClipRefsSO.marketBgm[index];
+            if (GameManager.instance.dayIndex > 2)
+            {
+                return audioClipRefsSO.marketBgm[0];
+
+            }
+            else
+            {
+                return audioClipRefsSO.marketBgm[Random.Range(1, audioClipRefsSO.waveBgm.Length)];
+            }
         }
 
         bool playerMap = GameManager.instance.isPlayerInHostMap;
@@ -205,6 +213,8 @@ public class SoundManager : MonoBehaviour
 
     AudioClip GetBGMClip(bool isWave, bool isBattle)
     {
+        if(isWaveStandby)
+            return audioClipRefsSO.waveStandbyBgm[0];
         if (isWave)
             return audioClipRefsSO.waveBgm[Random.Range(0, audioClipRefsSO.waveBgm.Length)];
         else if (isBattle)
@@ -232,7 +242,18 @@ public class SoundManager : MonoBehaviour
 
     public void PlayerMarketBgm()
     {
-        int index = GameManager.instance.dayIndex > 2 ? 1 : 0;
+        int index = 0;
+
+        if (GameManager.instance.dayIndex > 2)
+        {
+            index = 0;
+
+        }
+        else
+        {
+            index = Random.Range(1, audioClipRefsSO.waveBgm.Length);
+        }
+
         ChangeBGM(audioClipRefsSO.marketBgm[index]);
     }
 
@@ -247,6 +268,7 @@ public class SoundManager : MonoBehaviour
             {
                 // 웨이브 중이면 유지
                 if (isPlayingWaveBgm) return;
+                if (isWaveStandby) return;
 
                 // 웨이브 끝났지만 전투 중이면 전투 BGM으로
                 if (isBattleActive)

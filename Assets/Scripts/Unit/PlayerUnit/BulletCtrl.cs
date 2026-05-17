@@ -79,7 +79,7 @@ public class BulletCtrl : NetworkBehaviour
 
         if (obj.TryGet(out MonsterAi monster))
         {
-            monster.TakeDamage(damage, 0);
+            monster.TakeDamage(damage, 0, attackUnit);
         }
         else if (obj.TryGet(out MonsterSpawner spawner))
         {

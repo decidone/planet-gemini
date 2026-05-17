@@ -13,20 +13,26 @@ MonoBehaviour:
   m_Name: SoundData
   m_EditorClassIdentifier: 
   mainSceneBgm:
-  - {fileID: 8300000, guid: d64628477c028f64681c4d1b692345c9, type: 3}
+  - {fileID: 8300000, guid: d15de0f5a80b4f7449a27b09cc418cc8, type: 3}
   dayBgm:
-  - {fileID: 8300000, guid: cde089fb60c66154eb4d973d48349c79, type: 3}
-  - {fileID: 8300000, guid: f0782b7ec55f18045b0bed5b62261ba5, type: 3}
+  - {fileID: 8300000, guid: dd40f454ad976d842a25191da86ce72e, type: 3}
+  - {fileID: 8300000, guid: 893331a4e8924f941b176f21285544f9, type: 3}
+  - {fileID: 8300000, guid: c3ae883a0d06be94cbf4f5db7e3f232b, type: 3}
   nightBgm:
-  - {fileID: 8300000, guid: 388fbdb7ea2882a41a12308c2d8adc31, type: 3}
-  - {fileID: 8300000, guid: df3e766fc5898014c9cfc89266037a87, type: 3}
+  - {fileID: 8300000, guid: ff653e3587b91774b8fef6c5f57fb879, type: 3}
+  - {fileID: 8300000, guid: 67b476e78c217c0418ec3390ecb5d287, type: 3}
+  - {fileID: 8300000, guid: c29e75c8ddd2fca44b70c333ef0cef0e, type: 3}
+  - {fileID: 8300000, guid: 09ccbaf79da2f5e46bdddebdfe689778, type: 3}
   marketBgm:
-  - {fileID: 8300000, guid: 1605e74f7b492e246973a88e6630bded, type: 3}
-  - {fileID: 8300000, guid: 4a74532fd8433974abede05cdd1f9bbd, type: 3}
+  - {fileID: 8300000, guid: 00271f9739cb7984385125de8c6dd58b, type: 3}
+  - {fileID: 8300000, guid: 3f180b4ce96410646ad502b59502da71, type: 3}
+  - {fileID: 8300000, guid: 9dbacaa050d4fae4a930ab82d058143d, type: 3}
   battleBgm:
-  - {fileID: 8300000, guid: 106595ac96eaf784e8e955c09b69335f, type: 3}
+  - {fileID: 8300000, guid: 834f4676d98519044b4e247d7994aa44, type: 3}
   waveBgm:
-  - {fileID: 8300000, guid: 5b51df0a72ba97d4fab192ab3a3b4f6a, type: 3}
+  - {fileID: 8300000, guid: 77e5c31c6779a0043bc4e345bb8c8ed2, type: 3}
+  waveStandbyBgm:
+  - {fileID: 8300000, guid: 973e8d0a1e6898d448c588e008cfb968, type: 3}
   structureSfx:
   - {fileID: 8300000, guid: 0792b4d4b4de2b440b628df901ee1e88, type: 3}
   - {fileID: 8300000, guid: c48a972d3d024c2408a3331750786a29, type: 3}
@@ -49,6 +55,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a89b0692c406a5440bba1e5381c94adc, type: 3}
   - {fileID: 8300000, guid: 4a5f765f0322ccc4b998bfededd7b32c, type: 3}
   - {fileID: 8300000, guid: e6ee4d63d7137454688f77fc62ef7e17, type: 3}
+  - {fileID: 8300000, guid: 666223f33c2f4c249946420de3f0ff6e, type: 3}
   unitSfx:
   - {fileID: 8300000, guid: e39ba8bd82bacb64db8ced9b6a1651a3, type: 3}
   - {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}

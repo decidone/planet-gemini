@@ -305,7 +305,7 @@ public class UnitCommonAi : WorldObj
     }
 
     //attackType : 0 일반 공격, 1 고정 데미지, 2 방어력 무시 데미지, 3 독 공격, 4 슬로우 공격
-    public virtual void TakeDamage(float damage, int attackType, float option)
+    public virtual void TakeDamage(float damage, int attackType, float option, WorldObj attackObj = null)
     {
         if (!dieCheck)
         {
@@ -313,9 +313,9 @@ public class UnitCommonAi : WorldObj
         }
     }
 
-    public virtual void TakeDamage(float damage, int attackType)
+    public virtual void TakeDamage(float damage, int attackType, WorldObj attackObj = null)
     {
-        TakeDamage(damage, attackType, 100);
+        TakeDamage(damage, attackType, 100, attackObj);
     }
 
     [ServerRpc]

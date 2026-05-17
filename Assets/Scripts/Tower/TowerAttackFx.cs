@@ -76,23 +76,23 @@ public class TowerAttackFx : NetworkBehaviour
         ignoreDdefense = false;
     }
 
-    protected void TakeDamage(MonsterAi monster)
+    protected void TakeDamage(MonsterAi monster, WorldObj attackObj = null)
     {
         if (ignoreDdefense)
         {
-            monster.TakeDamage(damage, 2, ignorePercent);
+            monster.TakeDamage(damage, 2, ignorePercent, attackObj);
         }
         else if (poisonTrueAttack)
         {
-            monster.TakeDamage(damage, 3, poisonTime);
+            monster.TakeDamage(damage, 3, poisonTime, attackObj);
         }
         else if (slowDebuff)
         {
-            monster.TakeDamage(damage, 4, slowTime);
+            monster.TakeDamage(damage, 4, slowTime, attackObj);
         }
         else
         {
-            monster.TakeDamage(damage, 0);
+            monster.TakeDamage(damage, 0, attackObj);
         }
     }
 

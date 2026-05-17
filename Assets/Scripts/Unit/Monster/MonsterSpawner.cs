@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -368,6 +369,8 @@ public class MonsterSpawner : WorldObj
 
         NetworkObject networkObject = monScript.NetworkObject;
         if (!networkObject.IsSpawned) networkObject.Spawn(true);
+
+        monScript.Get<ClientNetworkTransform>().Teleport(transform.position, Quaternion.identity, transform.localScale);
 
         newMonster.transform.parent = this.transform;
 

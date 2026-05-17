@@ -33,7 +33,7 @@ public class GameManager : NetworkBehaviour
 
     public GameObject player;
     public PlayerStatus playerStatus;
-    public float playerMaxHp = 100.0f;
+    public float playerMaxHp = 200.0f;
     public float playerDataHp = -1;
     public Vector3 playerDataPos = Vector3.zero;
     bool loadTankOn;
@@ -673,10 +673,17 @@ public class GameManager : NetworkBehaviour
             if (canWave)
             {
                 violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet);
+                WaveStandbySetClientRpc();
             }
         }
 
         bloodMoonDDayText.text = "D - Day";
+    }
+
+    [ClientRpc]
+    void WaveStandbySetClientRpc()
+    {
+        soundManager.isWaveStandby = true;
     }
 
     public void WaveForcedStart()

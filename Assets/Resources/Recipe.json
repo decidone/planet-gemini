@@ -64,7 +64,7 @@
         {"name":"SpinRobot","items":["ControlUnit","Motor","SteelPlate","SpinRobot"],"amounts":[6,9,9,1],"cooldown":36},
         {"name":"CorrosionDrone","items":["ControlUnit","Battery","SteelPlate","CorrosionDrone"],"amounts":[6,4,9,1],"cooldown":36},
         {"name":"RepairerDrone","items":["ControlUnit","Battery","SteelPlate","RepairerDrone"],"amounts":[6,4,9,1],"cooldown":36},
-        {"name":"Tank","items":["AdamantiteArmor","Engine","ControlUnit","Tank"],"amounts":[40,20,20,1],"cooldown":144}
+        {"name":"Tank","items":["AdamantiteArmor","Engine","ControlUnit","Tank"],"amounts":[40,20,20,1],"cooldown":1}
     ],
     "Tower":[
         {"name":"BasicTower","items":["CopperBullet","IronBullet","SteelBullet","ExplosiveBullet","ManablastBullet"],"amounts":[0,0,0,0,0],"cooldown":0}
