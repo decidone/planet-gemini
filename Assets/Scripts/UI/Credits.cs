@@ -2,22 +2,62 @@ using UnityEngine;
 
 public class Credits : MonoBehaviour
 {
+    [SerializeField] RectTransform rectTransform;
     [SerializeField] GameObject creditsObj;
-    bool isUIOpened = false;
+    public float scrollSpeed;
+    public float stopY;
+    Vector2 startPosition;
+    bool uiOpened;
+    bool isFinished = false;
+    float startDelay = 3f;
+    float delayTimer;
 
-    public void ShowCredits()
+    void Awake()
     {
-        if (isUIOpened) return;
-
-        isUIOpened = true;
-        creditsObj.SetActive(true);
+        startPosition = rectTransform.anchoredPosition;
     }
 
-    public void HideCredits()
+    void Update()
     {
-        if (!isUIOpened) return;
+        if (creditsObj == null) return;
 
-        isUIOpened = false;
-        creditsObj.SetActive(false);
+        if (!creditsObj.activeSelf)
+        {
+            if (uiOpened) uiOpened = false;
+        }
+        else
+        {
+            if (!uiOpened)
+            {
+                ResetToTop();
+                uiOpened = true;
+            }
+
+            if (isFinished) return;
+
+            if (delayTimer > 0f)
+            {
+                delayTimer -= Time.deltaTime;
+                return;
+            }
+
+            Vector2 pos = rectTransform.anchoredPosition;
+            pos.y += scrollSpeed * Time.deltaTime;
+
+            if (pos.y >= stopY)
+            {
+                pos.y = stopY;
+                isFinished = true;
+            }
+
+            rectTransform.anchoredPosition = pos;
+        }
+    }
+
+    public void ResetToTop()
+    {
+        rectTransform.anchoredPosition = startPosition;
+        delayTimer = startDelay;
+        isFinished = false;
     }
 }

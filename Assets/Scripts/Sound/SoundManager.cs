@@ -257,6 +257,18 @@ public class SoundManager : MonoBehaviour
         ChangeBGM(audioClipRefsSO.marketBgm[index]);
     }
 
+    public void CreditsBGM(bool isOpenCall)
+    {
+        if (isOpenCall)
+        {
+            ChangeBGM(audioClipRefsSO.Credits[0]);
+        }
+        else
+        {
+            ChangeBGM(audioClipRefsSO.mainSceneBgm[0]);
+        }
+    }
+
     public void PlayBgmMapCheck()
     {
         if (sceneIndex == SceneIndex.GameScene)

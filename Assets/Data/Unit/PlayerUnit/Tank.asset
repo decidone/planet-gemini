@@ -20,7 +20,7 @@ MonoBehaviour:
   moveSpeed: 7
   attackDist: 4
   attDelayTime: 1.5
-  upgradeAttDelayTime: 0
+  upgradeAttDelayTime: 1.2
   colliderRadius: 10
   minCollRad: 0
   defense: 5

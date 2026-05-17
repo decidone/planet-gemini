@@ -297,8 +297,11 @@ public class ScienceManager : MonoBehaviour
     {
         foreach (var btn in scienceBtns)
         {
-            btn.upgradeStart = true;
-            btn.UpgradeFunc(false);
+            if (!btn.upgradeStart)
+            {
+                btn.upgradeStart = true;
+                btn.UpgradeFunc(false);
+            }
         }
     }
 }

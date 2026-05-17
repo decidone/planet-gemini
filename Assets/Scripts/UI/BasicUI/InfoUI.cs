@@ -120,7 +120,7 @@ public class InfoUI : MonoBehaviour
     {
         SetDefault();
         player = _player;
-        SpriteRenderer spriteRenderer = player.gameObject.GetComponent<SpriteRenderer>();
+        SpriteRenderer spriteRenderer = player.unitSprite;
         spriteRenderer.material = outlineMat;
         //nameText.text = player.name;
         SetNameText(player.name);
@@ -639,7 +639,7 @@ public class InfoUI : MonoBehaviour
     {
         if (player != null)
         {
-            SpriteRenderer spriteRenderer = player.gameObject.GetComponent<SpriteRenderer>();
+            SpriteRenderer spriteRenderer = player.unitSprite;
             spriteRenderer.material = mat;
 
             player.onHpChangedCallback -= SetPlayerHp;

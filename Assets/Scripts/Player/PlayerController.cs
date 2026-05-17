@@ -312,6 +312,12 @@ public class PlayerController : WorldObj
         }
     }
 
+    public void SyncTank()
+    {
+        if (tankOn)
+            animator.transform.localPosition = new Vector3(0, -1.25f, 0);
+    }
+
     TankCtrl GetNearestTank()
     {
         if (nearTanks.Count == 0) return null;

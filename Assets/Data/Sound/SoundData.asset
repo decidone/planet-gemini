@@ -75,3 +75,5 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 88a2068476d007843b76aa2df69e91d4, type: 3}
   - {fileID: 8300000, guid: ecb20d352903538419561179f75fd582, type: 3}
   - {fileID: 8300000, guid: 692e230a58c8c8d488c8962e33a42bc9, type: 3}
+  Credits:
+  - {fileID: 8300000, guid: 6430dcf9231a4a240a131b54ded6690f, type: 3}

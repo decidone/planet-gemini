@@ -108,6 +108,7 @@ public class PlayerStatus : WorldObj
             playerController.onTankData = networkObject.GetComponent<TankCtrl>();
             playerController.tankOn = tankOnSync;
             playerController.TankTurretSet(tankOnSync);
+            playerController.SyncTank();
 
             Debug.Log(tankOnSync + " : " + networkObject.name);
         }

@@ -20,6 +20,8 @@ public class MainManager : MonoBehaviour
     [SerializeField]
     Button settingsBtn;
     [SerializeField]
+    Button creditsBtn;
+    [SerializeField]
     Button quitBtn;
 
     [SerializeField]
@@ -38,6 +40,8 @@ public class MainManager : MonoBehaviour
 
     [SerializeField]
     MainPanelsManager panelsManager;
+    [SerializeField]
+    GameObject creditsObj;
 
     InputManager inputManager;
     public List<GameObject> openedUI = new List<GameObject>();
@@ -64,6 +68,7 @@ public class MainManager : MonoBehaviour
         hostBtn.onClick.AddListener(() => OpenUI(1));
         joinBtn.onClick.AddListener(() => JoinBtnFunc());
         settingsBtn.onClick.AddListener(() => SettingsBtnFunc());
+        creditsBtn.onClick.AddListener(() => OpenCredits());
         quitBtn.onClick.AddListener(() => QuitBtnFunc());
         newGameBtn.onClick.AddListener(() => NewGameBtnFunc());
         loadBtn.onClick.AddListener(() => LoadBtnFunc());
@@ -227,6 +232,9 @@ public class MainManager : MonoBehaviour
                 case "ConfirmPanel":
                     ConfirmPanel.instance.CancelBtnFunc();
                     break;
+                case "CreditsObj":
+                    CloseCredits();
+                    break;
 
             }
         }
@@ -244,6 +252,21 @@ public class MainManager : MonoBehaviour
 
             }
         }
+    }
+
+    public void OpenCredits()
+    {
+        OpenedUISet(creditsObj);
+        soundManager.PlayUISFX("ButtonClick");
+        SoundManager.instance.CreditsBGM(true);
+        creditsObj.SetActive(true);
+    }
+
+    public void CloseCredits()
+    {
+        ClosedUISet();
+        SoundManager.instance.CreditsBGM(false);
+        creditsObj.SetActive(false);
     }
 }
 
