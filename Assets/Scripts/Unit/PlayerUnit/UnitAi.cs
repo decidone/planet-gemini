@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 using Unity.Netcode;
-using System.Linq;
-using System.Threading;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 
 // UTF-8 설정
 public class UnitAi : UnitCommonAi
@@ -333,7 +332,7 @@ public class UnitAi : UnitCommonAi
 
             if(playerUnitPortalIn)
             {
-                if (Vector3.Distance(tr.position, targetWaypoint) <= 0.5f)
+                if (Vector3.Distance(tr.position, targetWaypoint) <= 0.001f)
                 {
                     currentWaypointIndex++;
 
@@ -773,11 +772,13 @@ public class UnitAi : UnitCommonAi
     [ClientRpc]
     public void PortalUnitOutFuncClientRpc(bool isInHostMap, Vector3 spawnPos)
     {
-        transform.position = spawnPos;
+        if(IsServer)
+            Get<ClientNetworkTransform>().Teleport(spawnPos, Quaternion.identity, transform.localScale);
         gameObject.SetActive(true);
         if (unitLevelData.Length > 0)
             animator.SetFloat("Level", unitLevel);
         AStarSet(isInHostMap);
+        playerUnitPortalIn = false;
     }
 
     UnitSaveData unitSaveData;
@@ -879,14 +880,8 @@ public class UnitAi : UnitCommonAi
 
         if (increasedUnit[0])
         {
-            bool isHpFull = false;
-            if (maxHp == hp)
-            {
-                isHpFull = true;
-            }
+            hp += unitCommonData.UpgradeMaxHp - maxHp;
             maxHp = unitCommonData.UpgradeMaxHp;
-            if (isHpFull)
-                hp = maxHp;
         }
         if (increasedUnit[1])
         {
@@ -914,6 +909,8 @@ public class UnitAi : UnitCommonAi
         if (unitLevel < unitLevelData.Length - 1)
         {
             unitLevel++;
+            UnitCommonData data = unitLevelData[unitLevel];
+            hp += data.UpgradeMaxHp - maxHp;
             SetUnitCommonData();
         }
     }
@@ -925,7 +922,7 @@ public class UnitAi : UnitCommonAi
             unitCommonData = unitLevelData[unitLevel];
             animator.SetFloat("Level", unitLevel);
         }
-        maxHp = unitCommonData.MaxHp;
+        maxHp = unitCommonData.UpgradeMaxHp;
         damage = unitCommonData.Damage;
         attackSpeed = unitCommonData.AttDelayTime;
         defense = unitCommonData.Defense;

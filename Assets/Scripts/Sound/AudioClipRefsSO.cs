@@ -9,6 +9,7 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip[] marketBgm;
     public AudioClip[] battleBgm;
     public AudioClip[] waveBgm;
+    public AudioClip[] waveStandbyBgm;
     public AudioClip[] structureSfx;
     public AudioClip[] uiSfx;
     public AudioClip[] unitSfx;
@@ -17,4 +18,5 @@ public class AudioClipRefsSO : ScriptableObject
     public AudioClip[] machineSfx;
     public AudioClip[] flamesSfx;
 
+    public AudioClip[] Credits;
 }

@@ -497,7 +497,7 @@ MonoBehaviour:
   isWaitingForRespawn: 0
   player: {fileID: 0}
   playerStatus: {fileID: 0}
-  playerMaxHp: 100
+  playerMaxHp: 200
   playerDataHp: -1
   playerDataPos: {x: 0, y: 0, z: 0}
   playerController: {fileID: 0}
@@ -571,7 +571,7 @@ MonoBehaviour:
   spawnMultiplier: 1
   hpMultiplier: 1
   atkMultiplier: 1
-  waveSkipItemAmount: 0
+  waveSkipItemNeedAmount: 2
 --- !u!114 &762871311885926062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -900,6 +900,7 @@ MonoBehaviour:
     unitData: []
     spawnerManagerSaveData:
       splitCount: 0
+      waveSpawnerAliveState: 0
       waveDayState: 0
       waveStartState: 0
       hostMapWave: 0

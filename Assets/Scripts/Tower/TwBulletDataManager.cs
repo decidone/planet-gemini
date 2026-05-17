@@ -67,11 +67,11 @@ public class TwBulletDataManager : MonoBehaviour
 
         BulletData[] tankBulletArray = new BulletData[]
         { // 탱크 기본 데미지 40
-            new BulletData("CopperBullet", 10, 0, 1.7f, true),
-            new BulletData("IronBullet", 20, 0, 2.1f, true),
-            new BulletData("SteelBullet", 30, 0, 2.5f, true),
-            new BulletData("ExplosiveBullet", 40, 0, 2.9f, true),
-            new BulletData("ManablastBullet", 50, 0, 3.3f, true)
+            new BulletData("CopperBullet", 0, 0, 1.5f, true),
+            new BulletData("IronBullet", 5, 0, 1.5f, true),
+            new BulletData("SteelBullet", 10, 0, 1.5f, true),
+            new BulletData("ExplosiveBullet", 20, 0, 2.0f, true),
+            new BulletData("ManablastBullet", 35, 0, 2.5f, true)
         };
         // 기존 데이터를 사용하되 사격 범위 대신 폭발 범위로 사용
         foreach (BulletData data in tankBulletArray)

@@ -2247,11 +2247,7 @@ public class Structure : WorldObj
     {
         level++;
 
-        if (hp == maxHp)
-        {
-            hp = structureData.MaxHp[level];
-        }
-
+        hp += structureData.MaxHp[level] - maxHp;
         maxHp = structureData.MaxHp[level];
         defense = structureData.Defense[level];
         sendDelay = structureData.SendDelay[level];
@@ -2392,15 +2388,8 @@ public class Structure : WorldObj
         }
         if (increasedStructure[1])
         {
-            bool isHpFull = false;
-            if (maxHp == hp)
-            {
-                isHpFull = true;
-            }
-
+            hp += structureData.UpgradeMaxHp[level] - maxHp;
             maxHp = structureData.UpgradeMaxHp[level];
-            if (isHpFull)
-                hp = maxHp;
         }
         if (increasedStructure[2])
         {

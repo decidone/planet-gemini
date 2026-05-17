@@ -61,6 +61,10 @@ public class MonsterAi : UnitCommonAi
 
     MonsterMapSeeker monsterMapSeeker;
 
+    bool takeDamageAggroCheck = false;
+    float takeDamageAggroTimer = 0f;
+    float takeDamageAggroDuration = 3f;
+
     protected override void Awake()
     {
         base.Awake();
@@ -174,6 +178,16 @@ public class MonsterAi : UnitCommonAi
                     normalTraceTimer = 0f;
                     stopTrace = true;
                     PatrolRandomPosSet();
+                }
+            }
+
+            if (takeDamageAggroCheck)
+            {
+                takeDamageAggroTimer += Time.deltaTime;
+                if (takeDamageAggroTimer >= takeDamageAggroDuration)
+                {
+                    takeDamageAggroCheck = false;
+                    takeDamageAggroTimer = 0f;
                 }
             }
         }
@@ -759,7 +773,7 @@ public class MonsterAi : UnitCommonAi
             }
         }
 
-        if (hitCount == 0)
+        if (hitCount == 0 && !takeDamageAggroCheck)
         {
             aggroTarget = null;
             if (targetList.Count > 0)
@@ -798,7 +812,8 @@ public class MonsterAi : UnitCommonAi
             return;
         }
 
-        targetList.Clear();
+        if(!takeDamageAggroCheck)
+            targetList.Clear();
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -948,7 +963,8 @@ public class MonsterAi : UnitCommonAi
             }
             else
             {
-                aggroTarget = null;
+                if(!takeDamageAggroCheck)
+                    aggroTarget = null;
                 selectTargetCo = null;
                 yield break;
             }
@@ -1075,16 +1091,32 @@ public class MonsterAi : UnitCommonAi
         selectTargetCo = null;
     }
 
-    public override void TakeDamage(float damage, int attackType, float ignorePercent)
+    public override void TakeDamage(float damage, int attackType, float ignorePercent, WorldObj attackObj = null)
     {
         base.TakeDamage(damage, attackType, ignorePercent);
+        if(!aggroTarget)
+        {
+            aggroTarget = attackObj;
+            targetList.Add(attackObj);
+            takeDamageAggroCheck = true;
+            if (checkPathCoroutine != null) StopCoroutine(checkPathCoroutine);
+            checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+        }
         normalTraceTimer = 0;
         stopTrace = false;
     }
 
-    public override void TakeDamage(float damage, int attackType)
+    public override void TakeDamage(float damage, int attackType, WorldObj attackObj = null)
     {
-        base.TakeDamage(damage, attackType);
+        base.TakeDamage(damage, attackType, attackObj);
+        if (!aggroTarget)
+        {
+            aggroTarget = attackObj;
+            targetList.Add(attackObj);
+            takeDamageAggroCheck = true;
+            if (checkPathCoroutine != null) StopCoroutine(checkPathCoroutine);
+            checkPathCoroutine = StartCoroutine(CheckPath(aggroTarget.transform.position, "NormalTrace"));
+        }
         normalTraceTimer = 0;
         stopTrace = false;
     }

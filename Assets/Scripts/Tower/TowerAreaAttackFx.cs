@@ -28,7 +28,7 @@ public class TowerAreaAttackFx : TowerAttackFx
 
         if (obj.TryGet(out MonsterAi monster))
         {
-            TakeDamage(monster);
+            TakeDamage(monster, attackUnit);
         }
         else if (obj.TryGet(out MonsterSpawner spawner))
         {

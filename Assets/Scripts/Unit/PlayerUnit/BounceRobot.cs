@@ -29,7 +29,7 @@ public class BounceRobot : UnitAi
         {
             if (aggroTarget.TryGet(out MonsterAi monster))
             {
-                monster.TakeDamage(damage, 0);
+                monster.TakeDamage(damage, 0, this);
             }
             else if (aggroTarget.TryGet(out MonsterSpawner spawner))
             {

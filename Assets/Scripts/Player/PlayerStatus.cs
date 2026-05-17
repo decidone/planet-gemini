@@ -277,7 +277,11 @@ public class PlayerStatus : WorldObj
                 hp = 0f; 
                 networkObjectReference.TryGet(out NetworkObject playerNetworkObject);
                 if (NetworkManager.Singleton.LocalClientId == playerNetworkObject.OwnerClientId)
+                {
                     GameManager.instance.SetRespawnUI();
+                    SoundManager.instance.PlayUISFX("PlayerDie");
+                }
+
             }
             onHpChangedCallback?.Invoke();
             hpBar.fillAmount = hp / maxHp;

@@ -40,7 +40,7 @@ public class SpinRobot : UnitAi
 
                 if (targetList[i].TryGet(out MonsterAi monster))
                 {
-                    monster.TakeDamage(damage, 0);
+                    monster.TakeDamage(damage, 0, this);
                 }
                 else if (targetList[i].TryGet(out MonsterSpawner spawner))
                 {
