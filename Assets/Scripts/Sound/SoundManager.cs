@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.Pool;
+using Unity.VisualScripting;
 
 public class SoundManager : MonoBehaviour
 {
@@ -49,8 +50,9 @@ public class SoundManager : MonoBehaviour
     public bool isClientMapWaveOn = false;
     public bool isWaveStandby = false;
     bool isPlayingWaveBgm = false;
+    bool isPlayStandbyWaveBgm = false;
 
-    float fadeSeconds = 0.3f;
+    float fadeSeconds = 2f;
 
     private Coroutine currentFade;
 
@@ -213,14 +215,30 @@ public class SoundManager : MonoBehaviour
 
     AudioClip GetBGMClip(bool isWave, bool isBattle)
     {
-        if(isWaveStandby)
-            return audioClipRefsSO.waveStandbyBgm[0];
         if (isWave)
+        {
+            isPlayingWaveBgm = true;
+            isPlayStandbyWaveBgm = false;
             return audioClipRefsSO.waveBgm[Random.Range(0, audioClipRefsSO.waveBgm.Length)];
+        }
         else if (isBattle)
+        {
+            isPlayingWaveBgm = false;
+            isPlayStandbyWaveBgm = false;
             return audioClipRefsSO.battleBgm[Random.Range(0, audioClipRefsSO.battleBgm.Length)];
+        }
+        else if (isWaveStandby)
+        {
+            isPlayingWaveBgm = false;
+            isPlayStandbyWaveBgm = true;
+            return audioClipRefsSO.waveStandbyBgm[0];
+        }
         else
+        {
+            isPlayingWaveBgm = false;
+            isPlayStandbyWaveBgm = false;
             return GetTimeBgmClip();
+        }
     }
 
     AudioClip GetTimeBgmClip()
@@ -254,6 +272,9 @@ public class SoundManager : MonoBehaviour
             index = Random.Range(1, audioClipRefsSO.waveBgm.Length);
         }
 
+        isPlayingWaveBgm = false;
+        isPlayStandbyWaveBgm = false;
+
         ChangeBGM(audioClipRefsSO.marketBgm[index]);
     }
 
@@ -267,8 +288,8 @@ public class SoundManager : MonoBehaviour
             if (!GameManager.instance.isPlayerInMarket)
             {
                 // 웨이브 중이면 유지
-                if (isPlayingWaveBgm) return;
-                if (isWaveStandby) return;
+                if (isWaveActive && isPlayingWaveBgm) return;
+                if (isWaveStandby && isPlayStandbyWaveBgm) return;
 
                 // 웨이브 끝났지만 전투 중이면 전투 BGM으로
                 if (isBattleActive)
@@ -285,16 +306,13 @@ public class SoundManager : MonoBehaviour
     public void PortalToOthMap()
     {
         if (sceneIndex != SceneIndex.GameScene) return;
+        bool playerMap = GameManager.instance.isPlayerInHostMap;
+        bool isWave = playerMap ? isHostMapWaveOn : isClientMapWaveOn;
+        bool isBattle = playerMap ? isHostMapBattleOn : isClientMapBattleOn;
 
-        if (isHostMapWaveOn != isClientMapWaveOn)
+        if((isWave && !isPlayingWaveBgm) || (isWaveStandby && !isPlayStandbyWaveBgm))
         {
-            bool playerMap = GameManager.instance.isPlayerInHostMap;
-            bool isWave = playerMap ? isHostMapWaveOn : isClientMapWaveOn;
-            ChangeBGM(GetBGMClip(playerMap, isWave));
-            if(playerMap && isHostMapWaveOn || !playerMap && isClientMapWaveOn)
-                isPlayingWaveBgm = true;
-            else
-                isPlayingWaveBgm = false;
+            ChangeBGM(GetBGMClip(isWave, isBattle));
         }
     }
 
@@ -304,14 +322,9 @@ public class SoundManager : MonoBehaviour
             isHostMapWaveOn = waveState;
         else
             isClientMapWaveOn = waveState;
-
-        if (isHostMap && isHostMapWaveOn || !isHostMap && isClientMapWaveOn)
-            isPlayingWaveBgm = true;
-        else
-            isPlayingWaveBgm = false;
-
+        bool isWave = isHostMap ? isHostMapWaveOn : isClientMapWaveOn;
         if (!GameManager.instance.isPlayerInMarket && GameManager.instance.isPlayerInHostMap == isHostMap)
-            ChangeBGM(GetBGMClip(waveState, false));
+            ChangeBGM(GetBGMClip(isWave, false));
     }
 
     public void BattleStateSet(bool isHostMap, bool battleState)
@@ -320,9 +333,10 @@ public class SoundManager : MonoBehaviour
             isHostMapBattleOn = battleState;
         else
             isClientMapBattleOn = battleState;
-
+        bool isBattle = isHostMap ? isHostMapBattleOn : isClientMapBattleOn;
+        bool isWave = isHostMap ? isHostMapWaveOn : isClientMapWaveOn;
         if (!GameManager.instance.isPlayerInMarket && GameManager.instance.isPlayerInHostMap == isHostMap)
-            PlayBgmMapCheck();
+            ChangeBGM(GetBGMClip(isWave, isBattle));
     }
 
     #endregion

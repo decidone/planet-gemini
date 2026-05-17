@@ -203,10 +203,13 @@ public class MonsterSpawner : WorldObj
             if (InfoUI.instance.spawner == this)
                 InfoUI.instance.SetDefault();
 
-            GameObject InfoObj = GetComponentInChildren<InfoInteract>().gameObject;
-            InfoObj.SetActive(false);
+            if (!IsServer)
+            {
+                GameObject InfoObj = GetComponentInChildren<InfoInteract>().gameObject;
+                InfoObj.SetActive(false);
+            }
 
-            MapGenerator.instance.ClearCorruption(this, spawnerLevel);
+            //MapGenerator.instance.ClearCorruption(this, spawnerLevel);
             icon.enabled = false;
         }
         else if (hp < maxHp)

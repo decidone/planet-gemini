@@ -753,11 +753,11 @@ public class MonsterAi : UnitCommonAi
         }
         else
         {
-            if (waveState && !bestTarget)
+            if (waveState)
             {
                 hitCount = Physics2D.OverlapCircle(
                     tr.position,
-                    unitCommonData.ColliderRadius + 15,
+                    unitCommonData.ColliderRadius + 5,
                     contactFilter,
                     targetColls
                 );
@@ -790,7 +790,7 @@ public class MonsterAi : UnitCommonAi
                 }
                 else
                 {
-                    if (!waveArrivePos)
+                    if (!waveArrivePos && targetList.Count == 0)
                     {
                         WaveStart(wavePos);
                     }

@@ -778,7 +778,14 @@ public class UnitAi : UnitCommonAi
         if (unitLevelData.Length > 0)
             animator.SetFloat("Level", unitLevel);
         AStarSet(isInHostMap);
+        if(unitSelect)
+        {
+            UnitSelImg(false);
+            unitGroupCtrl.DieUnitCheck(this);
+            InfoUI.instance.UnitAmountSub(this, (unitCommonData.UnitName, unitLevel));
+        }
         playerUnitPortalIn = false;
+        aIState = AIState.AI_Idle;
     }
 
     UnitSaveData unitSaveData;

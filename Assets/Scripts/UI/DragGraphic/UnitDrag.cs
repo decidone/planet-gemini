@@ -166,6 +166,7 @@ public class UnitDrag : DragFunc
                 else
                 {
                     selectedObjects = new WorldObj[0];
+                    removeUnit?.Invoke();
                 }
             }
 
@@ -203,6 +204,7 @@ public class UnitDrag : DragFunc
                 if (!hit)
                 {
                     SetTargetPosition(true, endPos);
+                    UnitMovePos.instance.AnimStart(endPos);
                 }
                 else
                 {
@@ -210,9 +212,9 @@ public class UnitDrag : DragFunc
                     if (obj && (obj.Get<MonsterAi>() || obj.Get<MonsterSpawner>()))
                     {
                         monsterTargetSet?.Invoke(obj);
+                        UnitMovePos.instance.AnimStart(endPos);
                     }
                 }
-                UnitMovePos.instance.AnimStart(endPos);
             }
         }
         ReSetBool();
@@ -267,7 +269,7 @@ public class UnitDrag : DragFunc
 
     public override void RightMouseUp(Vector2 startPos, Vector2 endPos)
     {
-        if (!playerAttackClick && !selectedObjects[0].Get<TankCtrl>())
+        if (!playerAttackClick && selectedObjects.Length > 0 && !selectedObjects[0].Get<TankCtrl>())
         {
             SetTargetPosition(false, endPos);
             UnitMovePos.instance.AnimStart(endPos);
@@ -313,14 +315,18 @@ public class UnitDrag : DragFunc
         }
     }
 
-    private void SelectedObjects(RaycastHit2D ray)
+    private void  SelectedObjects(RaycastHit2D ray)
     {
         WorldObj obj = ray.collider.GetComponentInParent<WorldObj>();
 
-        if (!obj || !obj.Has<UnitAi>())
-            return;
-
         removeUnit?.Invoke();
+
+        if (!obj || !obj.Has<UnitAi>())
+        {
+            selectedObjects = new WorldObj[0];
+            return;
+        }
+
         selectedObjects = new WorldObj[1];
         selectedObjects[0] = obj;
 
@@ -448,6 +454,17 @@ public class UnitDrag : DragFunc
         isUnitRemove = false;
         MouseSkin.instance.ResetCursor();
         removeUnitList.Clear();
+    }
+
+    public void UnitClear()
+    {
+        MouseSkin.instance.ResetCursor();
+        selectedObjects = new WorldObj[0];
+        removeUnitList.Clear();
+        removeUnit?.Invoke();
+        playerAttackClick = false;
+        isPKeyPressed = false;
+        isAKeyPressed = false;
     }
 
     public void UnitRemoveFunc()
