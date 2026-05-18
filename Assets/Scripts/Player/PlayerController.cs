@@ -73,7 +73,6 @@ public class PlayerController : WorldObj
     GameObject tankTurret;
     [SerializeField] SpriteRenderer tankMuzzleFlash;
     [SerializeField] Sprite[] muzzleFlashFrames;
-    float frameRate = 0.05f;
 
     protected Collider2D[] targetColls = new Collider2D[128];
     protected LayerMask targetMask;
@@ -628,11 +627,13 @@ public class PlayerController : WorldObj
             //StartCoroutine(Teleport(pos));
             //this.transform.position = pos;
             SoundManager.instance.PlaySFX(gameObject, "structureSFX", "PortalSound");
-            SoundManager.instance.PortalToOthMap();
             onTeleportedCallback?.Invoke(0);
 
             teleportUI.CloseUI();
             teleportUI.DisplayWorldName();
+            UnitDrag.instance.UnitClear();
+            InfoUI.instance.SetDefault();
+
         }
     }
 
@@ -654,6 +655,8 @@ public class PlayerController : WorldObj
 
             teleportUI.CloseUI();
             teleportUI.DisplayWorldName();
+            UnitDrag.instance.UnitClear();
+            InfoUI.instance.SetDefault();
         }
     }
 

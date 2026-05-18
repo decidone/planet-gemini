@@ -26,6 +26,23 @@ public class BeltGroupMgr : NetworkBehaviour
         beltManager = BeltManager.instance;
     }
 
+    private void FixedUpdate()
+    {
+        if (Time.timeScale == 0) return;
+
+        double serverNow = NetworkManager.Singleton.ServerTime.Time;
+
+        foreach (var belt in beltList)
+        {
+            if (!belt || belt.destroyStart || belt.isPreBuilding || !belt.isGameStartItemReady)
+                continue;
+            if (belt.itemObjList.Count > 0)
+                belt.ItemMove(serverNow); // serverNow 주입
+            else if(belt.isItemStop)
+                belt.isItemStop = false;
+        }
+    }
+
     public void BeltGroupRefresh()
     {
         if (!IsServer)

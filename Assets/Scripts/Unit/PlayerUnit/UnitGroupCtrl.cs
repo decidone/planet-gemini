@@ -134,6 +134,7 @@ public class UnitGroupCtrl : MonoBehaviour
         {
             unitList.Remove(obj);
         }
+        UnitDrag.instance.UnitRemoveGroup(obj);
     }
 
     private void HoldSet()

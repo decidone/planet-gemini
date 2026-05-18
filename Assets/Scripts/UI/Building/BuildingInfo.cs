@@ -63,6 +63,8 @@ public class BuildingInfo : MonoBehaviour
                 beltPreBuilding.SetImage(selectBuilding, sendAmount, GameManager.instance.isPlayerInHostMap);
                 beltPreBuilding.isEnough = AmountsEnoughCheck();
             }
+
+            UnitDrag.instance.UnitClear();
         }
     }
 

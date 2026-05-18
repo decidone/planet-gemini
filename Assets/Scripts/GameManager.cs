@@ -550,6 +550,8 @@ public class GameManager : NetworkBehaviour
                 if (canWave)
                 {
                     violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet);
+                    WaveStandbySetClientRpc();
+                    SoundManager.instance.PlayBgmMapCheck();
                 }
             }
             else
@@ -674,6 +676,7 @@ public class GameManager : NetworkBehaviour
             {
                 violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet);
                 WaveStandbySetClientRpc();
+                SoundManager.instance.PlayBgmMapCheck();
             }
         }
 
@@ -759,6 +762,7 @@ public class GameManager : NetworkBehaviour
             SetPlayerLocationServerRpc(false, false, IsServer);
             SetMapInven(false);
             mapCameraController.SetCamRange(map);
+            SoundManager.instance.PortalToOthMap();
             return clientPlayerSpawnPos;
         }
         else
@@ -768,6 +772,7 @@ public class GameManager : NetworkBehaviour
             SetPlayerLocationServerRpc(true, false, IsServer);
             SetMapInven(true);
             mapCameraController.SetCamRange(map);
+            SoundManager.instance.PortalToOthMap();
             return hostPlayerSpawnPos;
         }
     }
@@ -789,7 +794,7 @@ public class GameManager : NetworkBehaviour
             isPlayerInMarket = false;
             inputManager.OutMarket();
             SetPlayerLocationServerRpc(isPlayerInHostMap, false, IsServer);
-            SoundManager.instance.PlayBgmMapCheck();
+            SoundManager.instance.PortalToOthMap();
             if (isPlayerInHostMap)
             {
                 return hostPlayerSpawnPos;
@@ -1710,6 +1715,8 @@ public class GameManager : NetworkBehaviour
         if (violentDay)
         {
             timeImg.color = new Color32(255, 50, 50, 255);
+            soundManager.isWaveStandby = true;
+            soundManager.PlayBgmMapCheck();
         }
 
         dayText.text = "Day : " + day;
@@ -1779,6 +1786,7 @@ public class GameManager : NetworkBehaviour
             if (violentDay)
             {
                 timeImg.color = new Color32(255, 50, 50, 255);
+                soundManager.isWaveStandby = true;
                 SoundManager.instance.PlayBgmMapCheck();
             }
         }  
@@ -2361,6 +2369,7 @@ public class GameManager : NetworkBehaviour
     public void WaveEnd()
     {
         OnWaveFinished(waveDamage);
+        soundManager.isWaveStandby = false;
         waveDamage = 0;
     }
 

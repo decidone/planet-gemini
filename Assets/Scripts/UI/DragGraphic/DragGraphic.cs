@@ -173,8 +173,8 @@ public class DragGraphic : MonoBehaviour
     {
         if (preBuilding.isBuildingOn || beltPreBuilding.isBuildingOn) return;
         if (ItemDragManager.instance.isDrag) return;
-        if (!isDrag) return;
-
+        if (startPosition == Vector3.zero && endPosition == Vector3.zero)
+            return;
 
         if (isCtrlDrag || upgradeBtnOn)
             upgradeBuild.LeftMouseUp(startPosition, endPosition);

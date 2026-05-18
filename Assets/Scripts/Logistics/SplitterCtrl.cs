@@ -368,6 +368,7 @@ public class SplitterCtrl : LogisticsCtrl
                 }
             }
 
+
             // 유효한 인덱스가 아무 것도 없을 경우
             if (canSendIndex.All(pair => pair.Value.Count == 0))
             {
@@ -391,6 +392,7 @@ public class SplitterCtrl : LogisticsCtrl
                 }
 
                 recentItemSend.Add(filterIndex);
+                filter = arrFilter[filterIndex];
                 break;
             }
         }
