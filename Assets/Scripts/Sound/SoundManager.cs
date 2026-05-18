@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.Pool;
-using Unity.VisualScripting;
 
 public class SoundManager : MonoBehaviour
 {
@@ -53,8 +52,8 @@ public class SoundManager : MonoBehaviour
     bool isPlayStandbyWaveBgm = false;
 
     float fadeSeconds = 2f;
-
     private Coroutine currentFade;
+    private AudioClip pendingClip = null;
 
     int defaultPoolSize = 16;
     int maxPoolSize = 32;
@@ -150,21 +149,26 @@ public class SoundManager : MonoBehaviour
     public void ChangeBGM(AudioClip newClip)
     {
         if (newClip == null) return;
+        pendingClip = newClip;
 
-        if (currentFade != null)
-            StopCoroutine(currentFade);
-
-        currentFade = StartCoroutine(CrossFade(newClip));
+        if (currentFade == null)
+            currentFade = StartCoroutine(CrossFade());
     }
 
-    private IEnumerator CrossFade(AudioClip newClip)
+    private IEnumerator CrossFade()
     {
-        yield return StartCoroutine(FadeTo(0f));
+        while (pendingClip != null)
+        {
+            // 페이드 아웃
+            yield return StartCoroutine(FadeTo(0f));
 
-        bgmPlayer.clip = newClip;
-        bgmPlayer.Play();
+            bgmPlayer.clip = pendingClip;
+            pendingClip = null; // 소비
+            bgmPlayer.Play();
 
-        yield return StartCoroutine(FadeTo(bgmVolume));
+            // 페이드 인 도중 새 클립이 들어오면 while 루프로 돌아가 즉시 페이드 아웃
+            yield return StartCoroutine(FadeTo(bgmVolume));
+        }
 
         currentFade = null;
     }

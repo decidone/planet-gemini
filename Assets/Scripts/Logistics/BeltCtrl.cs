@@ -117,18 +117,6 @@ public class BeltCtrl : LogisticsCtrl
         isGameStartItemReady = true;
     }
 
-    private void FixedUpdate()
-    {
-        if (Time.timeScale == 0 || destroyStart || isPreBuilding)
-            return;
-        if (!isGameStartItemReady)
-            return;
-        if (itemObjList.Count > 0)
-            ItemMove();
-        else if (isItemStop)
-            isItemStop = false;
-    }
-
     void SetBeltAnim()
     {
         animController.SetAnimation(ShaderAnimSelector.instance.GetBeltAnimData(level, dirNum, modelMotion));
@@ -455,10 +443,8 @@ public class BeltCtrl : LogisticsCtrl
         }
     }
 
-    void ItemMove()
+    public void ItemMove(double serverNow)
     {
-        double serverNow = NetworkManager.Singleton.ServerTime.Time;
-
         for (int i = 0; i < itemObjList.Count; i++)
         {
             ItemProps item = itemObjList[i];
@@ -487,11 +473,11 @@ public class BeltCtrl : LogisticsCtrl
             isItemStop = front.beltTravelDuration <= 0 || elapsed >= front.beltTravelDuration;
 
             if (isItemStop)
-                TryTransferToNextBelt();
+                TryTransferToNextBelt(serverNow);
         }
     }
 
-    void TryTransferToNextBelt()
+    void TryTransferToNextBelt(double serverNow)
     {
         if (nextBelt == null || beltState == BeltState.EndBelt) return;
         if (nextBelt.isFull || nextBelt.isPreBuilding || nextBelt.destroyStart) return;
@@ -499,7 +485,6 @@ public class BeltCtrl : LogisticsCtrl
 
         ItemProps front = itemObjList[0];
 
-        double serverNow = NetworkManager.Singleton.ServerTime.Time;
         double idealTransferTime = front.beltEnterTime + front.beltTravelDuration;
 
         // ★ 핵심 수정: 대기가 있었다면(벨트 새로 연결 등) 현재 시각 기준으로 시작
