@@ -343,7 +343,7 @@ public class SpawnerSetManager : NetworkBehaviour
 
             spawnerObj.transform.position = newPoint;
 
-            int levelSet = levelData.sppawnerLevel;
+            int levelSet = levelData.spawnerLevel;
             AreaLevelData levelDataSet = levelData;
 
             if (upgradeTargets.Contains(centerPos))

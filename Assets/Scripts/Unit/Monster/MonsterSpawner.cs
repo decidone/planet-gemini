@@ -222,13 +222,13 @@ public class MonsterSpawner : WorldObj
     public void SpawnerSetting(AreaLevelData levelData, string _biome, Vector3 _basePos, bool isHostMap, int groupIndex)
     {
         spawnerLevelData = levelData;
-        spawnerLevel = levelData.sppawnerLevel;
+        spawnerLevel = levelData.spawnerLevel;
         biome = _biome;
         isInHostMap = isHostMap;
         spawnerGroupIndex = groupIndex;
-        hp = structureData.MaxHp[levelData.sppawnerLevel - 1];
-        maxHp = structureData.MaxHp[levelData.sppawnerLevel - 1];
-        defense = structureData.Defense[levelData.sppawnerLevel - 1];
+        hp = structureData.MaxHp[levelData.spawnerLevel - 1];
+        maxHp = structureData.MaxHp[levelData.spawnerLevel - 1];
+        defense = structureData.Defense[levelData.spawnerLevel - 1];
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
@@ -670,7 +670,7 @@ public class MonsterSpawner : WorldObj
     {
         hp = spawnerSaveData.hp;
         maxHp = structureData.MaxHp[spawnerSaveData.level - 1];
-        defense = structureData.Defense[levelData.sppawnerLevel - 1];
+        defense = structureData.Defense[levelData.spawnerLevel - 1];
 
         if (hp < maxHp)
         {
@@ -687,7 +687,7 @@ public class MonsterSpawner : WorldObj
         spawnerGroupIndex = groupIndex;
         violentDay = spawnerSaveData.violentDay;
         spawnerLevelData = levelData;
-        spawnerLevel = levelData.sppawnerLevel;
+        spawnerLevel = levelData.spawnerLevel;
         maxWeakSpawn = levelData.maxWeakSpawn;
         maxNormalSpawn = levelData.maxNormalSpawn;
         maxStrongSpawn = levelData.maxStrongSpawn;
