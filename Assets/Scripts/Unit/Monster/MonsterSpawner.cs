@@ -184,14 +184,16 @@ public class MonsterSpawner : WorldObj
     [ServerRpc(RequireOwnership = false)]
     public void ClientConnectSyncServerRpc()
     {
-        ClientConnectSyncClientRpc(hp, maxHp, dieCheck);
+        ClientConnectSyncClientRpc(spawnerLevel, hp, maxHp, dieCheck);
     }
 
     [ClientRpc]
-    public void ClientConnectSyncClientRpc(float syncHp, float syncMaxHp, bool syncDieCheck)
+    public void ClientConnectSyncClientRpc(int level, float syncHp, float syncMaxHp, bool syncDieCheck)
     {
+        spawnerLevel = level;
         hp = syncHp;
         maxHp = syncMaxHp;
+        defense = structureData.Defense[spawnerLevel - 1];
         dieCheck = syncDieCheck;
 
         if (dieCheck)
