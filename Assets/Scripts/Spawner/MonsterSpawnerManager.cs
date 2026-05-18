@@ -433,6 +433,7 @@ public class MonsterSpawnerManager : NetworkBehaviour
         SoundManager.instance.PlayBgmMapCheck();
         QuestManager.instance.QuestCompCheck(50);
         SoundManager.instance.WaveStateSet(hostMapWave, waveStartState);
+        SoundManager.instance.isWaveStandby = false;
     }
 
     public bool HasMonsterSpawnerOnMap(bool isHostMap)

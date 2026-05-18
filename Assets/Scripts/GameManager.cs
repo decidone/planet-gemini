@@ -676,7 +676,6 @@ public class GameManager : NetworkBehaviour
             {
                 violentDay = MonsterSpawnerManager.instance.ViolentDayOn(wavePlanet);
                 WaveStandbySetClientRpc();
-                SoundManager.instance.PlayBgmMapCheck();
             }
         }
 
@@ -687,6 +686,7 @@ public class GameManager : NetworkBehaviour
     void WaveStandbySetClientRpc()
     {
         soundManager.isWaveStandby = true;
+        SoundManager.instance.PlayBgmMapCheck();
     }
 
     public void WaveForcedStart()
@@ -1760,7 +1760,7 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SyncTimeServerRpc()
     {
-        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDay, energyOverLimitDay);
+        SyncTimeClientRpc(day, isDay, dayTimer, dayIndex, violentDay, energyOverLimitDay, soundManager.isWaveStandby);
         if (bloodMoonEventState)
         {
             int dday = CalculateDday(day - energyOverLimitDay, violentCycle);
@@ -1770,7 +1770,7 @@ public class GameManager : NetworkBehaviour
 
     [ClientRpc]
     public void SyncTimeClientRpc(int serverDay, bool serverIsDay, float serverDayTimer,
-        int serverDayIndex, bool serverViolentDay, int serverEnergyOverLimitDay)
+        int serverDayIndex, bool serverViolentDay, int serverEnergyOverLimitDay, bool isWaveStandby)
     {
         if(!IsServer)
         {
@@ -1786,8 +1786,11 @@ public class GameManager : NetworkBehaviour
             if (violentDay)
             {
                 timeImg.color = new Color32(255, 50, 50, 255);
-                soundManager.isWaveStandby = true;
-                SoundManager.instance.PlayBgmMapCheck();
+                if (isWaveStandby)
+                {
+                    soundManager.isWaveStandby = true;
+                    SoundManager.instance.PlayBgmMapCheck();
+                }
             }
         }  
     }
@@ -2369,7 +2372,6 @@ public class GameManager : NetworkBehaviour
     public void WaveEnd()
     {
         OnWaveFinished(waveDamage);
-        soundManager.isWaveStandby = false;
         waveDamage = 0;
     }
 

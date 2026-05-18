@@ -374,7 +374,7 @@ public class SoundManager : MonoBehaviour
         float sound = musicMasterSlider.value;
         if (!musicMasterToggle.isOn)
         {
-            audioMixer.SetFloat("Master", sound == -40f ? -80 : sound);
+            audioMixer.SetFloat("Master", sound == -20f ? -80 : sound);
         }
     }
 
@@ -393,7 +393,7 @@ public class SoundManager : MonoBehaviour
         float sound = musicBGMSlider.value;
         if (!musicBGMToggle.isOn)
         {
-            audioMixer.SetFloat("BGM", sound == -40f ? -80 : sound);
+            audioMixer.SetFloat("BGM", sound == -20f ? -80 : sound);
         }
     }
 
@@ -412,7 +412,7 @@ public class SoundManager : MonoBehaviour
         float sound = musicSFXSlider.value;
         if (!musicSFXToggle.isOn)
         {
-            audioMixer.SetFloat("SFX", sound == -40f ? -80 : sound);
+            audioMixer.SetFloat("SFX", sound == -20f ? -80 : sound);
         }
     }
 
@@ -699,18 +699,22 @@ public class SoundManager : MonoBehaviour
     {
         float loadedMasterVol = PlayerPrefs.GetFloat("MasterVolume");
         audioMixer.SetFloat("Master", loadedMasterVol);
-        musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterVolume", -10);
+        musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterVolume", 0);
         musicMasterToggle.isOn = PlayerPrefs.GetInt("MasterMute", 0) != 0;
 
         float loadedBgmVol = PlayerPrefs.GetFloat("BGMVolume");
         audioMixer.SetFloat("BGM", loadedBgmVol);
-        musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMVolume", -10);
+        musicBGMSlider.value = PlayerPrefs.GetFloat("TempBGMVolume", 0);
         musicBGMToggle.isOn = PlayerPrefs.GetInt("BGMMute", 0) != 0;
 
         float loadedSfxVol = PlayerPrefs.GetFloat("SFXVolume");
         audioMixer.SetFloat("SFX", loadedSfxVol);
-        musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXVolume", -10);
+        musicSFXSlider.value = PlayerPrefs.GetFloat("TempSFXVolume", -5);
         musicSFXToggle.isOn = PlayerPrefs.GetInt("SFXMute", 0) != 0;
+
+        SetMasterVolume();
+        SetBGMVolume();
+        SetSFXVolume();
     }
 
     #endregion

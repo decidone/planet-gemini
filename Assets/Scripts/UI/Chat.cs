@@ -230,7 +230,7 @@ public class Chat : NetworkBehaviour
                     case "/supply":
                         GameManager.instance.Supply();
                         break;
-                    case "/spawnerAllKill":
+                    case "/spawner all kill":
                         MonsterSpawnerManager.instance.SpawnerAllKill();
                         break;
                     case "/test":

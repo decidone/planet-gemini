@@ -1094,7 +1094,7 @@ public class MonsterAi : UnitCommonAi
     public override void TakeDamage(float damage, int attackType, float ignorePercent, WorldObj attackObj = null)
     {
         base.TakeDamage(damage, attackType, ignorePercent);
-        if(!aggroTarget)
+        if(!aggroTarget && attackObj)
         {
             aggroTarget = attackObj;
             targetList.Add(attackObj);
@@ -1109,7 +1109,7 @@ public class MonsterAi : UnitCommonAi
     public override void TakeDamage(float damage, int attackType, WorldObj attackObj = null)
     {
         base.TakeDamage(damage, attackType, attackObj);
-        if (!aggroTarget)
+        if (!aggroTarget && attackObj)
         {
             aggroTarget = attackObj;
             targetList.Add(attackObj);
