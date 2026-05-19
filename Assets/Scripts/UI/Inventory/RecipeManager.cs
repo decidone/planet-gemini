@@ -84,7 +84,7 @@ public class RecipeManager : InventoryManager
 
         if (_prod.GetComponent<UnitFactory>())
         {
-            if (GameManager.instance.debug)
+            if (GameManager.instance.isDebugMode)
             {
                 for (int i = 0; i < recipes.Count; i++)
                 {

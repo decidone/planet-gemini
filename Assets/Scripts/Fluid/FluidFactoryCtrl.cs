@@ -102,7 +102,7 @@ public class FluidFactoryCtrl : Production
 
         if (destroyStart)
         {
-            if (GameManager.instance.debug)
+            if (GameManager.instance.isDebugMode)
                 destroyTimer -= (Time.deltaTime * 10);
             else
                 destroyTimer -= Time.deltaTime;

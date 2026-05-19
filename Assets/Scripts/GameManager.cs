@@ -65,7 +65,7 @@ public class GameManager : NetworkBehaviour
     ItemSpManager iSpManager;
     [SerializeField]
     ScienceManager sTreeManager;
-    public bool debug;
+    public bool isDebugMode;
     public bool isHost;
     public bool isShopOpened;
     public Inventory hostDragInven;
@@ -228,7 +228,7 @@ public class GameManager : NetworkBehaviour
     void Start()
     {
         Debug.Log("Gamestart");
-        debug = false;
+        isDebugMode = false;
         isHost = false;
         openedUI = new List<GameObject>();
         onUIChangedCallback += UIChanged;
@@ -268,15 +268,12 @@ public class GameManager : NetworkBehaviour
     {
         inputManager = InputManager.instance;
         inputManager.controls.Structure.StrClick.performed += StrClick;
-        inputManager.controls.HotKey.Debug.performed += DebugMode;
-        inputManager.controls.HotKey.Supply.performed += Supply;
         inputManager.controls.HotKey.Escape.performed += Escape;
         inputManager.controls.HotKey.Enter.performed += Enter;
         inputManager.controls.Inventory.PlayerInven.performed += Inven;
         inputManager.controls.HotKey.ScienceTree.performed += ScienceTree;
         inputManager.controls.HotKey.InfoDictionary.performed += InfoDictionaryUI;
         inputManager.controls.HotKey.EnergyCheck.performed += EnergyCheck;
-        inputManager.controls.HotKey.GameStop.performed += GameStopSet;
         inputManager.controls.HotKey.UIClose.performed += BasicUIsClose;
         inputManager.controls.HotKey.FactoryOverlay.performed += FactoryOverlay;
         NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -285,15 +282,12 @@ public class GameManager : NetworkBehaviour
     void OnDisable()
     {
         inputManager.controls.Structure.StrClick.performed -= StrClick;
-        inputManager.controls.HotKey.Debug.performed -= DebugMode;
-        inputManager.controls.HotKey.Supply.performed -= Supply;
         inputManager.controls.HotKey.Escape.performed -= Escape;
         inputManager.controls.HotKey.Enter.performed -= Enter;
         inputManager.controls.Inventory.PlayerInven.performed -= Inven;
         inputManager.controls.HotKey.ScienceTree.performed -= ScienceTree;
         inputManager.controls.HotKey.InfoDictionary.performed -= InfoDictionaryUI;
         inputManager.controls.HotKey.EnergyCheck.performed -= EnergyCheck;
-        inputManager.controls.HotKey.GameStop.performed -= GameStopSet;
         inputManager.controls.HotKey.UIClose.performed -= BasicUIsClose;
         inputManager.controls.HotKey.FactoryOverlay.performed -= FactoryOverlay;
         if (NetworkManager.Singleton != null)
@@ -307,31 +301,31 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Client connected with ID: " + clientId);
     }
 
-    void GameStopSet(InputAction.CallbackContext ctx)
-    {
-        GameStopSetServerRpc();
-    }
+    //void GameStopSet(InputAction.CallbackContext ctx)
+    //{
+    //    GameStopSetServerRpc();
+    //}
 
-    [ServerRpc(RequireOwnership = false)]
-    void GameStopSetServerRpc()
-    {
-        GameStopSetClientRpc();
-    }
+    //[ServerRpc(RequireOwnership = false)]
+    //void GameStopSetServerRpc()
+    //{
+    //    GameStopSetClientRpc();
+    //}
 
-    [ClientRpc]
-    void GameStopSetClientRpc()
-    {
-        if (gameStop)
-        {
-            Time.timeScale = 1;
-            gameStop = !gameStop;
-        }
-        else
-        {
-            Time.timeScale = 0;
-            gameStop = !gameStop;
-        }
-    }
+    //[ClientRpc]
+    //void GameStopSetClientRpc()
+    //{
+    //    if (gameStop)
+    //    {
+    //        Time.timeScale = 1;
+    //        gameStop = !gameStop;
+    //    }
+    //    else
+    //    {
+    //        Time.timeScale = 0;
+    //        gameStop = !gameStop;
+    //    }
+    //}
 
     [ServerRpc(RequireOwnership = false)]
     public void SetClientSyncPauseServerRpc(bool timeStart)
@@ -819,53 +813,40 @@ public class GameManager : NetworkBehaviour
         Vector2 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D[] hits = Physics2D.RaycastAll(pos, Vector2.zero);
 
-        int x = Mathf.FloorToInt(pos.x);
-        int y = Mathf.FloorToInt(pos.y);
-        if (debug && inputManager.ctrl && map.IsOnMap(x, y))
+        if (isDebugMode)
         {
-            string buildable = "";
-            Cell cell = map.GetCellDataFromPos(x, y);
-            foreach (string str in cell.buildable)
+            int x = Mathf.FloorToInt(pos.x);
+            int y = Mathf.FloorToInt(pos.y);
+            if (inputManager.ctrl && map.IsOnMap(x, y))
             {
-                buildable = buildable + " " + str;
-            }
+                string buildable = "";
+                Cell cell = map.GetCellDataFromPos(x, y);
+                foreach (string str in cell.buildable)
+                {
+                    buildable = buildable + " " + str;
+                }
 
-            if (cell.obj == null)
-            {
+                string objName = cell.obj == null ? "null" : cell.obj.name;
                 Debug.Log("x : " + x + ",   y : " + y +
-                ",   biome : " + cell.biome +
-                ",   resource : " + cell.resource +
-                ",   buildable : " + buildable +
-                ",   structure : " + cell.structure +
-                ",   spawn area : " + cell.spawnArea +
-                ",   corruptionObj : " + cell.corruptionObj
-                );
+                    ",   biome : " + cell.biome +
+                    ",   resource : " + cell.resource +
+                    ",   obj : " + objName +
+                    ",   buildable : " + buildable +
+                    ",   structure : " + cell.structure +
+                    ",   spawn area : " + cell.spawnArea +
+                    ",   corruptionObj : " + cell.corruptionObj
+                    );
             }
-            else
+            else if (inputManager.alt && map.IsOnMap(x, y))
             {
-                Debug.Log("x : " + x + ",   y : " + y +
-                ",   biome : " + cell.biome +
-                ",   resource : " + cell.resource +
-                ",   obj : " + cell.obj.name +
-                ",   buildable : " + buildable +
-                ",   structure : " + cell.structure +
-                ",   spawn area : " + cell.spawnArea +
-                ",   corruptionObj : " + cell.corruptionObj
-                );
+                Vector3 vec = new Vector3(x + 0.5f, y + 0.5f, 0);
+                Bounds bounds = new Bounds(vec, new Vector3(0.4f, 0.4f, 0));
+
+                var guo = new GraphUpdateObject(bounds);
+                guo.updatePhysics = true;
+
+                AstarPath.active.UpdateGraphs(guo);
             }
-        }
-        else if (debug && inputManager.alt && map.IsOnMap(x, y))
-        {
-            Vector3 vec = new Vector3(x + 0.5f, y + 0.5f, 0);
-            Bounds bounds = new Bounds(vec, new Vector3(0.4f, 0.4f, 0));
-
-            var guo = new GraphUpdateObject(bounds);
-
-            // Set some settings
-
-            guo.updatePhysics = true;
-
-            AstarPath.active.UpdateGraphs(guo);
         }
 
         if (inputManager.ctrl || inputManager.shift)
@@ -1032,19 +1013,19 @@ public class GameManager : NetworkBehaviour
     public void DebugMode()
     {
         Debug.Log(LobbySaver.instance.currentLobby?.Id);
-        Debug.Log("debug : " + debug);
-        debug = !debug;
+        Debug.Log("debug : " + isDebugMode);
+        isDebugMode = !isDebugMode;
     }
 
-    public void DebugMode(InputAction.CallbackContext ctx)
-    {
-        DebugMode();
-    }
+    //public void DebugMode(InputAction.CallbackContext ctx)
+    //{
+    //    DebugMode();
+    //}
 
-    public void Supply(InputAction.CallbackContext ctx)
-    {
-        Supply();
-    }
+    //public void Supply(InputAction.CallbackContext ctx)
+    //{
+    //    Supply();
+    //}
 
     public void Supply()
     {
@@ -1465,7 +1446,7 @@ public class GameManager : NetworkBehaviour
 
     void EnergyCheck(InputAction.CallbackContext ctx)
     {
-        if (debug)
+        if (isDebugMode)
             EnergyGroupManager.instance.CheckGroups();
     }
 

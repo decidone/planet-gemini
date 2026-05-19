@@ -276,7 +276,7 @@ public class PreBuilding : NetworkBehaviour
                             }
                         }
 
-                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dirNum, isBeltObj, reversSet, gameManager.debug);
+                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dirNum, isBeltObj, reversSet, gameManager.isDebugMode);
                     }
                     else
                     {
@@ -301,7 +301,7 @@ public class PreBuilding : NetworkBehaviour
                                 }
                             }
                         }
-                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isUnderBelt, sideObj, gameManager.debug);
+                        BuildingServerRpc(isInHostMap, buildingIndex, pos, dir, isUnderBelt, sideObj, gameManager.isDebugMode);
                     }
                 }
 
@@ -314,7 +314,7 @@ public class PreBuilding : NetworkBehaviour
                 nonNetObj.SetActive(true);
 
                 isEnough = BuildingInfo.instance.AmountsEnoughCheck();
-                if (!gameManager.debug)
+                if (!gameManager.isDebugMode)
                     canBuildCount = BuildingInfo.instance.CanBuildAmount();
                 else
                     canBuildCount = int.MaxValue;

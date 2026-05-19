@@ -46,7 +46,7 @@ public class BuildingInfo : MonoBehaviour
         {
             int sendAmount;
 
-            if (!GameManager.instance.debug)
+            if (!GameManager.instance.isDebugMode)
                 sendAmount = CanBuildAmount();
             else
                 sendAmount = int.MaxValue;
@@ -157,7 +157,7 @@ public class BuildingInfo : MonoBehaviour
 
     public bool AmountsEnoughCheck()
     {
-        if (!GameManager.instance.debug)
+        if (!GameManager.instance.isDebugMode)
             SetItemSlot();
         else
             totalAmountsEnough = true;

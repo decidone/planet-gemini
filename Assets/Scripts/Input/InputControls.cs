@@ -981,24 +981,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             ""id"": ""51e334b0-de82-4a91-b786-f68e2d53ba6a"",
             ""actions"": [
                 {
-                    ""name"": ""Debug"",
-                    ""type"": ""Button"",
-                    ""id"": ""a6cb2400-8aa4-4172-8228-81f0969d277f"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": ""Tap"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Supply"",
-                    ""type"": ""Button"",
-                    ""id"": ""5716835f-ae40-458e-adab-563ea6d5a69d"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": ""Tap"",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Escape"",
                     ""type"": ""Button"",
                     ""id"": ""0921331f-fac7-46e5-b133-4d8280320b8e"",
@@ -1029,15 +1011,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""name"": ""Overall"",
                     ""type"": ""Button"",
                     ""id"": ""b6f12cc3-4e90-45b3-8a33-29fe864a060e"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": ""Tap"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""GameStop"",
-                    ""type"": ""Button"",
-                    ""id"": ""8901555e-f797-4070-bc3d-f1c78dddf09d"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Tap"",
@@ -1110,28 +1083,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""85bbca10-647d-49bd-9d1b-7676d4064648"",
-                    ""path"": ""<Keyboard>/f3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""Debug"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""993a7ceb-ca24-4d47-8c35-d3748d9c3bc0"",
-                    ""path"": ""<Keyboard>/equals"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""Supply"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""0ae25ffc-4bd9-4b3f-8a8a-2c4c5c179150"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
@@ -1171,17 +1122,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""Overall"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""09cb02a7-8e92-42e1-bf9d-c9f054dcc8aa"",
-                    ""path"": ""<Keyboard>/slash"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""GameStop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -2015,13 +1955,10 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Inventory_SlotRightClickHold = m_Inventory.FindAction("SlotRightClickHold", throwIfNotFound: true);
         // HotKey
         m_HotKey = asset.FindActionMap("HotKey", throwIfNotFound: true);
-        m_HotKey_Debug = m_HotKey.FindAction("Debug", throwIfNotFound: true);
-        m_HotKey_Supply = m_HotKey.FindAction("Supply", throwIfNotFound: true);
         m_HotKey_Escape = m_HotKey.FindAction("Escape", throwIfNotFound: true);
         m_HotKey_ScienceTree = m_HotKey.FindAction("ScienceTree", throwIfNotFound: true);
         m_HotKey_EnergyCheck = m_HotKey.FindAction("EnergyCheck", throwIfNotFound: true);
         m_HotKey_Overall = m_HotKey.FindAction("Overall", throwIfNotFound: true);
-        m_HotKey_GameStop = m_HotKey.FindAction("GameStop", throwIfNotFound: true);
         m_HotKey_BasicUIBtnsSwap = m_HotKey.FindAction("BasicUIBtnsSwap", throwIfNotFound: true);
         m_HotKey_UIClose = m_HotKey.FindAction("UIClose", throwIfNotFound: true);
         m_HotKey_InfoDictionary = m_HotKey.FindAction("InfoDictionary", throwIfNotFound: true);
@@ -3125,13 +3062,10 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     // HotKey
     private readonly InputActionMap m_HotKey;
     private List<IHotKeyActions> m_HotKeyActionsCallbackInterfaces = new List<IHotKeyActions>();
-    private readonly InputAction m_HotKey_Debug;
-    private readonly InputAction m_HotKey_Supply;
     private readonly InputAction m_HotKey_Escape;
     private readonly InputAction m_HotKey_ScienceTree;
     private readonly InputAction m_HotKey_EnergyCheck;
     private readonly InputAction m_HotKey_Overall;
-    private readonly InputAction m_HotKey_GameStop;
     private readonly InputAction m_HotKey_BasicUIBtnsSwap;
     private readonly InputAction m_HotKey_UIClose;
     private readonly InputAction m_HotKey_InfoDictionary;
@@ -3151,14 +3085,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         /// </summary>
         public HotKeyActions(@InputControls wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "HotKey/Debug".
-        /// </summary>
-        public InputAction @Debug => m_Wrapper.m_HotKey_Debug;
-        /// <summary>
-        /// Provides access to the underlying input action "HotKey/Supply".
-        /// </summary>
-        public InputAction @Supply => m_Wrapper.m_HotKey_Supply;
-        /// <summary>
         /// Provides access to the underlying input action "HotKey/Escape".
         /// </summary>
         public InputAction @Escape => m_Wrapper.m_HotKey_Escape;
@@ -3174,10 +3100,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "HotKey/Overall".
         /// </summary>
         public InputAction @Overall => m_Wrapper.m_HotKey_Overall;
-        /// <summary>
-        /// Provides access to the underlying input action "HotKey/GameStop".
-        /// </summary>
-        public InputAction @GameStop => m_Wrapper.m_HotKey_GameStop;
         /// <summary>
         /// Provides access to the underlying input action "HotKey/BasicUIBtnsSwap".
         /// </summary>
@@ -3232,12 +3154,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_HotKeyActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_HotKeyActionsCallbackInterfaces.Add(instance);
-            @Debug.started += instance.OnDebug;
-            @Debug.performed += instance.OnDebug;
-            @Debug.canceled += instance.OnDebug;
-            @Supply.started += instance.OnSupply;
-            @Supply.performed += instance.OnSupply;
-            @Supply.canceled += instance.OnSupply;
             @Escape.started += instance.OnEscape;
             @Escape.performed += instance.OnEscape;
             @Escape.canceled += instance.OnEscape;
@@ -3250,9 +3166,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @Overall.started += instance.OnOverall;
             @Overall.performed += instance.OnOverall;
             @Overall.canceled += instance.OnOverall;
-            @GameStop.started += instance.OnGameStop;
-            @GameStop.performed += instance.OnGameStop;
-            @GameStop.canceled += instance.OnGameStop;
             @BasicUIBtnsSwap.started += instance.OnBasicUIBtnsSwap;
             @BasicUIBtnsSwap.performed += instance.OnBasicUIBtnsSwap;
             @BasicUIBtnsSwap.canceled += instance.OnBasicUIBtnsSwap;
@@ -3285,12 +3198,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         /// <seealso cref="HotKeyActions" />
         private void UnregisterCallbacks(IHotKeyActions instance)
         {
-            @Debug.started -= instance.OnDebug;
-            @Debug.performed -= instance.OnDebug;
-            @Debug.canceled -= instance.OnDebug;
-            @Supply.started -= instance.OnSupply;
-            @Supply.performed -= instance.OnSupply;
-            @Supply.canceled -= instance.OnSupply;
             @Escape.started -= instance.OnEscape;
             @Escape.performed -= instance.OnEscape;
             @Escape.canceled -= instance.OnEscape;
@@ -3303,9 +3210,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
             @Overall.started -= instance.OnOverall;
             @Overall.performed -= instance.OnOverall;
             @Overall.canceled -= instance.OnOverall;
-            @GameStop.started -= instance.OnGameStop;
-            @GameStop.performed -= instance.OnGameStop;
-            @GameStop.canceled -= instance.OnGameStop;
             @BasicUIBtnsSwap.started -= instance.OnBasicUIBtnsSwap;
             @BasicUIBtnsSwap.performed -= instance.OnBasicUIBtnsSwap;
             @BasicUIBtnsSwap.canceled -= instance.OnBasicUIBtnsSwap;
@@ -4209,20 +4113,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     public interface IHotKeyActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Debug" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDebug(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Supply" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSupply(InputAction.CallbackContext context);
-        /// <summary>
         /// Method invoked when associated input action "Escape" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
@@ -4250,13 +4140,6 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnOverall(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "GameStop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnGameStop(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "BasicUIBtnsSwap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

@@ -58,20 +58,18 @@ public class BuildingInven : MonoBehaviour
     void OnEnable()
     {
         inputManager = InputManager.instance;
-        inputManager.controls.HotKey.Debug.performed += DebugMode;
         inputManager.controls.Building.BuildingInven.performed += OnBuildingInvenPerformed;
     }
 
     void OnDisable()
     {
-        inputManager.controls.HotKey.Debug.performed -= DebugMode;
         inputManager.controls.Building.BuildingInven.performed -= OnBuildingInvenPerformed;
     }
 
-    void DebugMode(InputAction.CallbackContext ctx)
-    {
-        Refresh();
-    }
+    //void DebugMode(InputAction.CallbackContext ctx)
+    //{
+    //    Refresh();
+    //}
 
     void ButtonClickedStart()
     {
@@ -157,7 +155,7 @@ public class BuildingInven : MonoBehaviour
         int index = 0;
         for (int i = 0; i < buildingDataList.Count; i++)
         {
-            if (!gameManager.debug)
+            if (!gameManager.isDebugMode)
             {
                 for (int a = 0; a < scienceDb.scienceNameDb.Count; a++)
                 {

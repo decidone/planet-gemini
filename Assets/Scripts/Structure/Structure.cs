@@ -302,7 +302,7 @@ public class Structure : WorldObj
 
         if (destroyStart && !destroyEnd)
         {
-            if (GameManager.instance.debug)
+            if (GameManager.instance.isDebugMode)
                 destroyTimer -= (Time.deltaTime * 10);
             else
                 destroyTimer -= Time.deltaTime;
@@ -1827,7 +1827,7 @@ public class Structure : WorldObj
                 hp = 0;
             }
 
-            if (GameManager.instance.debug)
+            if (GameManager.instance.isDebugMode)
             {
                 repairGauge += (Time.deltaTime * 10);
                 hp += (Time.deltaTime * 10 * buildHp);

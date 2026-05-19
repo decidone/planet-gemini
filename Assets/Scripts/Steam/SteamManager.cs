@@ -274,7 +274,7 @@ public class SteamManager : MonoBehaviour
     public bool ReceiveP2PPacket()
     {
         bool packetAvailable = SteamNetworking.IsP2PPacketAvailable();
-        Debug.Log("1 ReceiveP2PPacket : " + packetAvailable);
+        //Debug.Log("1 ReceiveP2PPacket : " + packetAvailable);
 
         if (!packetAvailable)
         {
@@ -286,7 +286,7 @@ public class SteamManager : MonoBehaviour
         bool isLastChunkReceived = false;
         int totalChunks = 0;
         HashSet<int> receivedChunkIndices = new HashSet<int>();
-        Debug.Log("2 ReceiveP2PPacket : " + packetAvailable);
+        //Debug.Log("2 ReceiveP2PPacket : " + packetAvailable);
         while (packetAvailable && !isLastChunkReceived)
         {
             clientConnTry = true;
@@ -583,7 +583,6 @@ public class SteamManager : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("[Client] Sync End ! Host Call");
         GeminiNetworkManager.instance.ClientReadyServerRpc();
         GeminiNetworkManager.instance.ClientSpawnServerRPC();
         Debug.Log("Connected to Network");

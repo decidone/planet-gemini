@@ -56,7 +56,7 @@ public class GeminiNetworkManager : NetworkBehaviour
     IEnumerator WaitForClientSync(ulong clientId)
     {
         int totalObjects = NetworkManager.Singleton.SpawnManager.SpawnedObjects.Count;
-        Debug.Log($"[Host] Sync Delay Start - {totalObjects}Count");
+        //Debug.Log($"[Host] Sync Delay Start - {totalObjects}Count");
 
         // 이미 true로 세팅된 경우 덮어쓰지 않음
         if (!clientSyncDone.ContainsKey(clientId) || !clientSyncDone[clientId])
@@ -85,7 +85,7 @@ public class GeminiNetworkManager : NetworkBehaviour
     {
         ulong clientId = serverRpcParams.Receive.SenderClientId;
         clientSyncDone[clientId] = true;
-        Debug.Log($"[Host] Client {clientId} Sync Get");
+        //Debug.Log($"[Host] Client {clientId} Sync Get");
     }
 
     [ClientRpc]
@@ -94,7 +94,7 @@ public class GeminiNetworkManager : NetworkBehaviour
         if (NetworkManager.Singleton.LocalClientId == clientId)
         {
             GameManager.instance.LoadingEnd();
-            Debug.Log($"[Client] PlayerObjSpawnDoneClientRpc - ClientId: {clientId}");
+            //Debug.Log($"[Client] PlayerObjSpawnDoneClientRpc - ClientId: {clientId}");
             if (!IsServer)
                 NetworkObjManager.instance.RequestSyncServerRpc();
         }

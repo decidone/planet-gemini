@@ -203,40 +203,40 @@ public class Chat : NetworkBehaviour
                 string message = "";
                 switch (userInput)
                 {
-                    case "/debug":
-                        GameManager.instance.DebugMode();
-                        break;
                     case "/seed":
-                        message = "seed: " + MapGenerator.instance.seed;
+                        GUIUtility.systemCopyBuffer = MapGenerator.instance.seed.ToString();
+                        message = "seed: " + MapGenerator.instance.seed + " (copied to clipboard)";
                         break;
-                    case "/respawn":
-                        GameManager.instance.SetRespawnUI();
-                        break;
-                    case "/gameover":
-                        GameManager.instance.SetGameOverUI();
-                        break;
-                    case "/energy regroup":
-                        NetworkObjManager.instance.InitConnectors();
-                        break;
-                    case "/wave set":
-                        GameManager.instance.WaveForcedOperation();
-                        break;
-                    case "/wave start":
-                        GameManager.instance.WaveForcedStart();
-                        break;
-                    case "/science":
-                        ScienceManager.instance.UnlockAll();
-                        break;
-                    case "/supply":
-                        GameManager.instance.Supply();
-                        break;
-                    case "/spawner all kill":
-                        MonsterSpawnerManager.instance.SpawnerAllKill();
-                        break;
-                    case "/test":
-                        //PlayerPrefs.DeleteAll();
-                        ErrorTest();
-                        break;
+                    //case "/debug":
+                    //    GameManager.instance.DebugMode();
+                    //    break;
+                    //case "/respawn":
+                    //    GameManager.instance.SetRespawnUI();
+                    //    break;
+                    //case "/gameover":
+                    //    GameManager.instance.SetGameOverUI();
+                    //    break;
+                    //case "/energy regroup":
+                    //    NetworkObjManager.instance.InitConnectors();
+                    //    break;
+                    //case "/wave set":
+                    //    GameManager.instance.WaveForcedOperation();
+                    //    break;
+                    //case "/wave start":
+                    //    GameManager.instance.WaveForcedStart();
+                    //    break;
+                    //case "/science":
+                    //    ScienceManager.instance.UnlockAll();
+                    //    break;
+                    //case "/supply":
+                    //    GameManager.instance.Supply();
+                    //    break;
+                    //case "/spawner all kill":
+                    //    MonsterSpawnerManager.instance.SpawnerAllKill();
+                    //    break;
+                    //case "/remove setting":
+                    //    PlayerPrefs.DeleteAll();
+                    //    break;
                 }
 
                 if (message != "")
@@ -260,12 +260,6 @@ public class Chat : NetworkBehaviour
     public void SendMessageServerRpc(string message)
     {
         SendMessageClientRpc(message);
-    }
-
-    void ErrorTest()
-    {
-        int[] abc = {1, 2, 3, 4, 5};
-        abc[10] = 1;
     }
 
     [ClientRpc]
