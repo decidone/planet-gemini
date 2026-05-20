@@ -699,7 +699,7 @@ public class SoundManager : MonoBehaviour
     {
         float loadedMasterVol = PlayerPrefs.GetFloat("MasterVolume");
         audioMixer.SetFloat("Master", loadedMasterVol);
-        musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterVolume", 0);
+        musicMasterSlider.value = PlayerPrefs.GetFloat("TempMasterVolume", -5);
         musicMasterToggle.isOn = PlayerPrefs.GetInt("MasterMute", 0) != 0;
 
         float loadedBgmVol = PlayerPrefs.GetFloat("BGMVolume");
