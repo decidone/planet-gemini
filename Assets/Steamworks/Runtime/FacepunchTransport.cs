@@ -44,6 +44,13 @@ namespace Netcode.Transports.Facepunch
         {
             try
             {
+#if !UNITY_EDITOR
+                if (SteamClient.RestartAppIfNecessary(steamAppId))
+                {
+                    Application.Quit();
+                    return;
+                }
+#endif
                 SteamClient.Init(steamAppId, false);
             }
             catch (Exception e)
@@ -68,7 +75,7 @@ namespace Netcode.Transports.Facepunch
             SteamClient.Shutdown();
         }
 
-        #endregion
+#endregion
 
         #region NetworkTransport Overrides
 
