@@ -607,6 +607,7 @@ public class Structure : WorldObj
             nearObjValids = nearObjValids,
             outObjRefs = outObjRefs,
             inObjRefs = inObjRefs,
+            overclock = overclockOn,
 
             position = transform.position,
 
@@ -737,6 +738,7 @@ public class Structure : WorldObj
         hp = data.hp;
         buildHp = data.buildHp;
         prodTimer = data.prodTimer;
+        overclockOn = data.overclock;
         ColliderTriggerOnOff(false);
 
         if (col != null)

@@ -23,6 +23,7 @@ public struct StructureSyncData : INetworkSerializable
     public bool destroyStart;
     public float repairGauge;
     public float destroyTimer;
+    public bool overclock;
 
     //itemList
     public int[] itemIndexes;
