@@ -101,6 +101,7 @@ public struct StructureSyncData : INetworkSerializable
         s.SerializeValue(ref destroyStart);
         s.SerializeValue(ref repairGauge);
         s.SerializeValue(ref destroyTimer);
+        s.SerializeValue(ref overclock);
 
         s.SerializeValue(ref itemIndexes);
 
